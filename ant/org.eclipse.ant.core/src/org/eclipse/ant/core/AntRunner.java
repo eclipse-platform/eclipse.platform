@@ -6,11 +6,7 @@ package org.eclipse.ant.core;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.*;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tools.ant.*;
 import org.eclipse.core.runtime.*;
@@ -27,15 +23,22 @@ public class AntRunner implements IAntCoreConstants {
 	 */
 	private Project project;
 	
-	private AntClassLoader loader;
+	private ClassLoader loader;
 
 public AntRunner() {
 	buildListeners = new ArrayList(5);
-	ClassLoader parent = Platform.getPlugin(PI_ANTCORE).getDescriptor().getPluginClassLoader();
-	loader = new AntClassLoader(parent, false);
-	loader.addPathElement("c:/eclipse/workspaces/newpde/org.apache.ant/ant.jar");
-	loader.addPathElement("c:/eclipse/workspaces/newpde/org.eclipse.ant.core/bin/");
-	loader.addPathElement("c:/ibm-jdk/lib/tools.jar");
+	try {
+		URL[] path = new URL[] {
+			new URL("file:c:/eclipse/workspaces/newpde/org.apache.xerces/xerces.jar"),
+			new URL("file:c:/eclipse/workspaces/newpde/org.apache.ant/ant.jar"),
+			new URL("file:c:/eclipse/workspaces/newpde/org.eclipse.ant.core/bin/"),
+			new URL("file:c:/ibm-jdk/lib/tools.jar")
+		};
+		loader = new URLClassLoader(path, null);
+	} catch (MalformedURLException e) {
+		// should never happen
+		e.printStackTrace();
+	}
 }
 
 /**
@@ -94,7 +97,7 @@ protected void invokeProject() throws CoreException {
 	try {
 		Class classProject = loader.loadClass("org.apache.tools.ant.Project");
 		Object project = classProject.newInstance();
-		
+
 		// init
 		Method init = classProject.getMethod("init", null);
 		init.invoke(project, null);
