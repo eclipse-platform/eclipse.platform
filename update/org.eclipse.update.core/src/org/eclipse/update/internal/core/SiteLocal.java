@@ -876,9 +876,9 @@ public class SiteLocal
 	}
 
 	/**
-	 * compare 2 feature references
+	 * compare two feature references
 	 * returns 0 if the feature are different
-	 * returns 1 if the version of feature 1 is > version of feature 2
+	 * returns 1 if the version of feature 1 is greater than version of feature 2
 	 * returns 2 if opposite
 	 */
 	private int compare(
@@ -904,14 +904,14 @@ public class SiteLocal
 
 		if (id1.getIdentifier() != null
 			&& id1.getIdentifier().equals(id2.getIdentifier())) {
-			Version version1 = id1.getVersion();
-			Version version2 = id2.getVersion();
+			PluginVersionIdentifier version1 = id1.getVersion();
+			PluginVersionIdentifier version2 = id2.getVersion();
 			if (version1 != null) {
-				int result = (version1.compare(version2));
-				if (result == -1) {
-					return 2;
-				} else {
+				boolean greaterOrEqual = (version1.isGreaterOrEqualTo(version2));
+				if (greaterOrEqual) {
 					return 1;
+				} else {
+					return 2;
 				}
 			} else {
 				return 2;

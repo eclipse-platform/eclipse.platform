@@ -4,6 +4,7 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
 
+import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.update.internal.core.Policy;
 
 /**
@@ -17,7 +18,7 @@ import org.eclipse.update.internal.core.Policy;
  */
 public class VersionedIdentifier {
 	private String id;
-	private Version version;
+	private PluginVersionIdentifier version;
 	private static final String SEPARATOR = "_"; //$NON-NLS-1$
 
 	/**
@@ -32,17 +33,17 @@ public class VersionedIdentifier {
 		if (idWithVersion == null
 			|| (idWithVersion = idWithVersion.trim()).equals("")) { //$NON-NLS-1$
 			this.id = ""; //$NON-NLS-1$
-			this.version = new Version(0, 0, 0);
+			this.version = new PluginVersionIdentifier(0, 0, 0);
 		}
 
 		int loc = idWithVersion.lastIndexOf(SEPARATOR);
 		if (loc != -1) {
 			id = idWithVersion.substring(0, loc);
 			String versionName = idWithVersion.substring(loc + 1);
-			version = new Version(versionName);
+			version = new PluginVersionIdentifier(versionName);
 		} else {
 			this.id = ""; //$NON-NLS-1$
-			version = new Version(0, 0, 0);
+			version = new PluginVersionIdentifier(0, 0, 0);
 		}
 	}
 
@@ -63,7 +64,7 @@ public class VersionedIdentifier {
 				Policy.bind("VersionedIdentifier.IdOrVersionNull", id, versionName));
 		//$NON-NLS-1$
 		this.id = id;
-		this.version = new Version(versionName);
+		this.version = new PluginVersionIdentifier(versionName);
 	}
 
 	/**
@@ -82,7 +83,7 @@ public class VersionedIdentifier {
 	 * @return version
 	 * @since 2.0
 	 */
-	public Version getVersion() {
+	public PluginVersionIdentifier getVersion() {
 		return version;
 	}
 

@@ -6,6 +6,7 @@ package org.eclipse.update.internal.security;
 
 import java.security.Principal;
 import java.security.cert.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -246,8 +247,7 @@ public class JarVerificationResult implements IVerificationResult {
 	 * 
 	 */
 	private String dateString(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, yyyyy");
-		return formatter.format(date);
+		return DateFormat.getDateInstance().format(date);
 	}
 
 	/*

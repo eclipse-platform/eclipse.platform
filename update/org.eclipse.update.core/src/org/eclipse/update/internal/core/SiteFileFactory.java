@@ -36,7 +36,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 			return null;
 		}
 
-		public Version getVersion() {
+		public PluginVersionIdentifier getVersion() {
 			if (id != null)
 				return id.getVersion();
 			return null;
@@ -69,12 +69,10 @@ public class SiteFileFactory extends BaseSiteFactory {
 			String path = url.getFile();
 			File siteLocation = new File(path);
 			if (siteLocation.isDirectory()) {
-				// need to add '/' if it is not there
-				if (!(path.endsWith("/") || path.endsWith(File.separator))) { //$NON-NLS-1$
-					url =
-						new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "/");
-					//$NON-NLS-1$
-				}
+				path = siteLocation.getAbsolutePath().replace(File.separatorChar,'/');
+				if (!path.endsWith("/"))
+					path += "/";
+				url = new URL("file:" + path); //$NON-NLS-1$
 
 				if (new File(siteLocation, Site.SITE_XML).exists()) {
 					siteStream = new FileInputStream(new File(siteLocation, Site.SITE_XML));

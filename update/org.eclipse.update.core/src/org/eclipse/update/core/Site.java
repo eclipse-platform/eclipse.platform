@@ -29,7 +29,7 @@ public class Site extends SiteModel implements ISite {
 	 * 
 	 * @since 2.0
 	 */
-	public static final String DEFAULT_INSTALLED_FEATURE_PATH = "install/features/";
+	public static final String DEFAULT_INSTALLED_FEATURE_PATH = "features/";
 	//$NON-NLS-1$
 
 	/**
