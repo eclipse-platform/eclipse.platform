@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2004 IBM Corporation and others.
- * Portions Copyright  2000-2004 The Apache Software Foundation
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Portions Copyright  2000-2005 The Apache Software Foundation
  * All rights reserved.  This program and the accompanying materials are made 
  * available under the terms of the Apache Software License v2.0 which 
  * accompanies this distribution and is available at 
@@ -120,7 +120,7 @@ public class InternalAntRunner {
     
     /** 
      * Indicates whether to execute all targets that 
-     * do not depend on failed targes(s)
+     * do not depend on failed targets
      * @since Ant 1.6.0
      */
     private boolean keepGoing= false;
@@ -132,7 +132,13 @@ public class InternalAntRunner {
     private boolean allowInput = true;
     
     public static void main(String[] args) {
-		new InternalAntRunner().run(getArrayList(args));
+    	try {
+    		new InternalAntRunner().run(getArrayList(args));
+    	} catch (Throwable t) {
+    	    t.printStackTrace();
+    		System.exit(1);
+    	}
+		System.exit(0);
 	}
 
 	private void addBuildListeners(Project project) {
@@ -797,9 +803,11 @@ public class InternalAntRunner {
 				eclipseSpecifiedTasks= new HashMap();
 			}
 			int index= arg.indexOf(',');
-			String name= arg.substring(0, index);
-			String className= arg.substring(index + 1);
-			eclipseSpecifiedTasks.put(name, className);
+			if (index != -1) {
+				String name= arg.substring(0, index);
+				String className= arg.substring(index + 1);
+				eclipseSpecifiedTasks.put(name, className);
+			}
 			arg = getArgument(commands, "-eclipseTask"); //$NON-NLS-1$
 		}
 		
@@ -809,9 +817,11 @@ public class InternalAntRunner {
 				eclipseSpecifiedTypes= new HashMap();
 			}
 			int index= arg.indexOf(',');
-			String name= arg.substring(0, index);
-			String className= arg.substring(index + 1);
-			eclipseSpecifiedTypes.put(name, className);
+			if (index != -1) {	
+				String name= arg.substring(0, index);
+				String className= arg.substring(index + 1);
+				eclipseSpecifiedTypes.put(name, className);
+			}
 			arg = getArgument(commands, "-eclipseType"); //$NON-NLS-1$
 		}
 	}
