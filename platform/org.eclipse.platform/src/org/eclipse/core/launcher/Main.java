@@ -118,6 +118,7 @@ public class Main {
 	private static final String PROP_USER_DIR = "user.dir"; //$NON-NLS-1$
 	private static final String PROP_INSTALL_AREA = "osgi.install.area"; //$NON-NLS-1$
 	private static final String PROP_CONFIG_AREA = "osgi.configuration.area"; //$NON-NLS-1$
+	private static final String PROP_CONFIG_AREA_DEFAULT = "osgi.configuration.area.default"; //$NON-NLS-1$
 	private static final String PROP_BASE_CONFIG_AREA = "osgi.baseConfiguration.area"; //$NON-NLS-1$
 	private static final String PROP_SHARED_CONFIG_AREA = "osgi.sharedConfiguration.area"; //$NON-NLS-1$
 	private static final String PROP_CONFIG_CASCADED = "osgi.configuration.cascaded"; //$NON-NLS-1$
@@ -514,10 +515,13 @@ public class Main {
 			else if (location.equalsIgnoreCase(NO_DEFAULT))
 				result = buildURL(location, true);
 			else {
-				if (location.equalsIgnoreCase(USER_HOME))
-					location = computeDefaultUserAreaLocation(userDefaultAppendage);
-				if (location.equalsIgnoreCase(USER_DIR))
-					location = new File(System.getProperty(PROP_USER_DIR), userDefaultAppendage).getAbsolutePath();
+				if (location.startsWith(USER_HOME)) {
+					String base = substituteVar(location, USER_HOME, PROP_USER_HOME);
+					location = new File(base, userDefaultAppendage).getAbsolutePath();
+				} else if (location.startsWith(USER_DIR)) {
+					String base = substituteVar(location, USER_DIR, PROP_USER_DIR);
+					location = new File(base, userDefaultAppendage).getAbsolutePath();
+				}
 				result = buildURL(location, true);
 			}
 		} finally {
@@ -525,6 +529,11 @@ public class Main {
 				System.getProperties().put(property, result.toExternalForm());
 		}
 		return result;
+	}
+
+	private String substituteVar(String source, String var, String prop) {
+		String value = System.getProperty(prop, "");
+		return value + source.substring(var.length());
 	}
 
 	/** 
@@ -814,8 +823,6 @@ public class Main {
 			}
 		}
 		// remove all the arguments consumed by this argument parsing
-		if (configArgIndex == 0)
-			return args;
 		String[] passThruArgs = new String[args.length - configArgIndex - (vmargs == null ? 0 : vmargs.length + 1)];
 		configArgIndex = 0;
 		int j = 0;
@@ -848,9 +855,12 @@ public class Main {
 	private URL getConfigurationLocation() {
 		if (configurationLocation != null)
 			return configurationLocation;
-		configurationLocation = buildLocation(PROP_CONFIG_AREA, null, CONFIG_DIR);
-		if (configurationLocation == null)
-			configurationLocation = buildURL(computeDefaultConfigurationLocation(), true);
+		configurationLocation = buildLocation(PROP_CONFIG_AREA, null, ""); //$NON-NLS-1$
+		if (configurationLocation == null) {
+			configurationLocation = buildLocation(PROP_CONFIG_AREA_DEFAULT, null, ""); //$NON-NLS-1$
+			if (configurationLocation == null)
+				configurationLocation = buildURL(computeDefaultConfigurationLocation(), true);
+		}
 		if (configurationLocation != null)
 			System.getProperties().put(PROP_CONFIG_AREA, configurationLocation.toExternalForm());
 		if (debug)
@@ -912,7 +922,7 @@ public class Main {
 			// if we are not cascaded then remove the parent property even if it was set.
 			System.getProperties().remove(PROP_SHARED_CONFIG_AREA);
 		else {
-			URL sharedConfigURL = buildLocation(PROP_SHARED_CONFIG_AREA, null, CONFIG_DIR);
+			URL sharedConfigURL = buildLocation(PROP_SHARED_CONFIG_AREA, null, "");
 			if (sharedConfigURL == null)
 				try {
 					// there is no shared config value so compute one

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site type="org.eclipse.update.core.file">
-  <feature url="features/feature3" type="org.eclipse.update.tests.core.feature1"/>
-</site>
