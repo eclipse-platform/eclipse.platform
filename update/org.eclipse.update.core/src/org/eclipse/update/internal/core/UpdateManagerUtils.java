@@ -427,7 +427,7 @@ public class UpdateManagerUtils {
 						};
 						if (childFeature.equals(compareFeature)) {
 							if (onlyOptional) {
-								if (children[j].isOptional()) {
+								if (UpdateManagerUtils.isOptional(children[j])) {
 									parentList.add(possiblesParent[i]);
 								} else {
 									UpdateManagerPlugin.warn("Feature :" + children[j] + " not optional. Not included in parents list.");
@@ -481,25 +481,14 @@ public class UpdateManagerUtils {
 	 * thow an IO exception
 	 * 
 	 */
-	public static void checkConnectionResult(URLConnection connection) throws IOException {
+	public static void checkConnectionResult(Response response,URL url) throws IOException {
 		// did the server return an error code ?
-		if (connection instanceof HttpURLConnection) {
-			int result = HttpURLConnection.HTTP_OK;
-			HttpURLConnection httpConnection = null;
-			URL url = null;
-			try {
-				httpConnection = (HttpURLConnection) connection;
-				url = httpConnection.getURL();
-				result = httpConnection.getResponseCode();
-			} catch (IOException e) {
-				// if an error occured, try again
-				result = httpConnection.getResponseCode();
-			}
-			if (result != HttpURLConnection.HTTP_OK) {
-				String serverMsg = httpConnection.getResponseMessage();
+			int result = response.getStatusCode();
+
+			if (result != IStatusCodes.HTTP_OK) {
+				String serverMsg = response.getStatusMessage();
 				throw new IOException(Policy.bind("ContentReference.HttpNok", new Object[] { new Integer(result), serverMsg, url })); //$NON-NLS-1$						
 			}
-		}
 	}
 
 	public static class StreamConsumer extends Thread {
@@ -536,7 +525,7 @@ public class UpdateManagerUtils {
 		List optionalChildrenToInstall = new ArrayList();
 		for (int i = 0; i < children.length; i++) {
 			IFeatureReference optionalFeature = children[i];
-			if (!optionalFeature.isOptional()) {
+			if (!UpdateManagerUtils.isOptional(optionalFeature)) {
 				optionalChildrenToInstall.add(optionalFeature);
 			} else {
 				for (int j = 0; j < optionalfeatures.length; j++) {
@@ -570,4 +559,43 @@ public class UpdateManagerUtils {
 			return IImport.RULE_PERFECT;
 		return ruleInt;
 	}
+	
+	/**
+	 * Method isOptional.
+	 * @param featureReference
+	 * @return boolean
+	 */
+	public static boolean isOptional(IFeatureReference featureReference) {
+		if (featureReference==null) return false;
+		if (featureReference instanceof IIncludedFeatureReference){
+			return ((IIncludedFeatureReference)featureReference).isOptional();
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	public static boolean isValidEnvironment(IPlatformEnvironment candidate) {
+		String os = candidate.getOS();
+		String ws = candidate.getWS();
+		String arch = candidate.getOSArch();
+		if (os!=null && isMatching(os, BootLoader.getOS())==false) return false;
+		if (ws!=null && isMatching(ws, BootLoader.getWS())==false) return false;
+		if (arch!=null && isMatching(arch, BootLoader.getOSArch())==false) return false;
+		return true;
+	}
+
+	/**
+	 * 
+	 */	
+	private static boolean isMatching(String values, String current) {
+		StringTokenizer stok = new StringTokenizer(values, ",");
+		while (stok.hasMoreTokens()) {
+			String token = stok.nextToken();
+			if (token.equalsIgnoreCase(current)) return true;
+		}
+		return false;
+	}
+
 }

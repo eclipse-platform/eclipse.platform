@@ -172,7 +172,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 		File featureDir = new File(directory, Site.DEFAULT_INSTALLED_FEATURE_PATH);
 		if (featureDir.exists()) {
 			String[] dir;
-			FeatureReferenceModel featureRef;
+			SiteFeatureReferenceModel featureRef;
 			URL featureURL;
 			File currentFeatureDir;
 			String newFilePath = null;
@@ -216,7 +216,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 		File featureDir = new File(directory, Site.DEFAULT_FEATURE_PATH);
 		if (featureDir.exists()) {
 			String[] dir;
-			FeatureReferenceModel featureRef;
+			SiteFeatureReferenceModel featureRef;
 			URL featureURL;
 			File currentFeatureFile;
 			String newFilePath = null;
@@ -385,7 +385,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 	 */
 	private IFeature createFeature(URL url, String type) throws CoreException {
 		// InternalFeatureReference
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(type);

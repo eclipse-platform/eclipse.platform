@@ -6,7 +6,6 @@ package org.eclipse.update.core;
 
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
 
 import org.eclipse.update.internal.core.*;
 
@@ -43,7 +42,7 @@ public class ContentReference {
 	private String id;
 	private URL url; // reference is either URL reference *OR*
 	private File file; //    local file reference
-	private URLConnection connection;
+	private Response response;
 	private int permission; 
 
 	/*
@@ -112,12 +111,12 @@ public class ContentReference {
 		if (file != null)
 			return new FileInputStream(file);
 		else if (url != null) {
-			if (connection == null) {
+			if (response == null) {
 				URL resolvedURL = URLEncoder.encode(url);
-				connection = resolvedURL.openConnection();
-				UpdateManagerUtils.checkConnectionResult(connection);
+				response = UpdateManagerPlugin.getPlugin().get(resolvedURL);
+				UpdateManagerUtils.checkConnectionResult(response,resolvedURL);
 			}
-			return connection.getInputStream();
+			return response.getInputStream();
 		} else
 			throw new IOException(Policy.bind("ContentReference.UnableToCreateInputStream", this.toString())); //$NON-NLS-1$
 	}
@@ -132,16 +131,17 @@ public class ContentReference {
 		if (file != null)
 			return file.length();
 		else if (url != null) {
-			if (connection == null) {
+			if (response == null) {
+				URL resolvedURL = null;
 				try {
-					URL resolvedURL = URLEncoder.encode(url);
-					connection = resolvedURL.openConnection();
+					resolvedURL = URLEncoder.encode(url);
+					response = UpdateManagerPlugin.getPlugin().get(resolvedURL);
 				} catch (IOException e) {
 					return ContentReference.UNKNOWN_SIZE;
 				}
-				UpdateManagerUtils.checkConnectionResult(connection);			
+				UpdateManagerUtils.checkConnectionResult(response,resolvedURL);			
 			}
-			long size = connection.getContentLength();
+			long size = response.getContentLength();
 			return size == -1 ? ContentReference.UNKNOWN_SIZE : size;
 		} else
 			return ContentReference.UNKNOWN_SIZE;

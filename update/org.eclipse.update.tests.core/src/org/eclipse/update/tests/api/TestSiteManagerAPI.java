@@ -34,6 +34,8 @@ public class TestSiteManagerAPI extends UpdateManagerTestCase {
 		fail("Connected to ftp://255.255.255.255/, should not happen");
 		} catch (CoreException e){
 			// expected
+		} catch (IllegalArgumentException e){
+			// expected as the version of the WebDav HTTP Connection returns so
 		}
 	}
 	

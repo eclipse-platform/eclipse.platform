@@ -1,4 +1,9 @@
 package org.eclipse.update.core;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.update.configuration.IConfiguredSite;
+
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -7,7 +12,7 @@ package org.eclipse.update.core;
 
 /**
  * Included Feature reference.
- * A reference to a included feature on a particular update site.
+ * A reference to a included feature.
  * <p>
  * Clients may implement this interface. However, in most cases clients should 
  * directly instantiate or subclass the provided implementation of this 
@@ -16,7 +21,34 @@ package org.eclipse.update.core;
  * @see org.eclipse.update.core.FeatureReference
  * @since 2.0.1
  */
-public interface IIncludedFeatureReference extends IFeatureReference {
+public interface IIncludedFeatureReference extends IFeatureReference, IPlatformEnvironment,  IAdaptable {
+
+	/**
+	 * Returns the referenced feature.
+	 * This is a factory method that creates the full feature object.
+	 * equivalent to getFeature(false,null);
+	 * 
+	 * @return the referenced feature
+	 * @since 2.0 
+	 */
+	public IFeature getFeature() throws CoreException;
+
+	/**
+	 * Returns the referenced feature.
+	 * This is a factory method that creates the full feature object.
+	 * 
+	 * @param perfectMatch <code>true</code> if the perfect match feature feature should be returned
+	 * <code>false</code> if the best match feature should be returned.
+	 * @param configuredSite the configured site to search for the Feature. If 
+	 * the configured site is <code>null</code> the search will be done in the current configured site.
+	 * @return the referenced feature
+	 * @since 2.0.2
+	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to
+	 * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
+	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
+	 * (repeatedly) as the API evolves.
+	 */
+	public IFeature getFeature(boolean perfectMatch,IConfiguredSite configuredSite) throws CoreException;
 
 	/**
 	 * Returns <code>true</code> if the feature is optional, <code>false</code> otherwise.
@@ -64,4 +96,16 @@ public interface IIncludedFeatureReference extends IFeatureReference {
 
 	public int getSearchLocation();
 	
+
+	/**
+	 * Returns <code>true</code> if the feature references can be run on the platform specified by the 
+	 * <code>Sitemanager</code>.
+	 * returns <code>false</code> if either the operating system, the windowing system or the architecture system
+	 * is not <code>null</code> and does not match the one specified in <code>SiteManager</code>
+	 * 
+	 * @return <code>true</code> if the included feature operating system, windowing system and srchitecture system
+	 * match the one specified in <code>SiteManager</code>
+	 */
+	public boolean matchesPlatform();
+
 }

@@ -1,4 +1,5 @@
 package org.eclipse.update.core.model;
+
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -92,7 +93,7 @@ public abstract class ContentEntryModel extends ModelObject {
 	 * @return the system architecture specification or <code>null</code>.
 	 * @since 2.0 
 	 */
-	public String getArch() {
+	public String getOSArch() {
 		return arch;
 	}
 

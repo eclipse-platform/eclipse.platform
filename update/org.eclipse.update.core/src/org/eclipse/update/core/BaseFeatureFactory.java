@@ -5,21 +5,11 @@ package org.eclipse.update.core;
  */
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.net.*;
+import java.util.*;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.model.FeatureModel;
-import org.eclipse.update.core.model.FeatureModelFactory;
-import org.eclipse.update.core.model.ImportModel;
-import org.eclipse.update.core.model.InstallHandlerEntryModel;
-import org.eclipse.update.core.model.NonPluginEntryModel;
-import org.eclipse.update.core.model.PluginEntryModel;
-import org.eclipse.update.core.model.URLEntryModel;
+import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 
@@ -88,6 +78,17 @@ public abstract class BaseFeatureFactory
 	 */
 	public FeatureModel createFeatureModel() {
 		return new Feature();
+	}
+
+	/**
+	 * Create a concrete implementation of included feature reference model.
+	 * 
+	 * @see IncludedFeatureReference
+	 * @return feature model
+	 * @since 2.1
+	 */
+	public IncludedFeatureReferenceModel createIncludedFeatureReferenceModel() {
+		return new IncludedFeatureReference();
 	}
 
 	/**

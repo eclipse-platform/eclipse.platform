@@ -130,7 +130,7 @@ public class KeyStores {
 		
 		try {
 			URL url = new URL(location);
-			in = url.openStream();
+			in = UpdateManagerPlugin.getPlugin().get(url).getInputStream();;
 			Reader reader = new InputStreamReader(in);
 			int result = reader.read(buff);
 			StringBuffer contentBuff = new StringBuffer();

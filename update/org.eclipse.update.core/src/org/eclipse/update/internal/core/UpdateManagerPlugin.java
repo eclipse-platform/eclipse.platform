@@ -6,15 +6,18 @@ package org.eclipse.update.internal.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Authenticator;
 import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.boot.IPlatformConfiguration;
+
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.JarContentReference;
 import org.eclipse.update.core.Utilities;
+
 
 /**
  * The main plugin class to be used in the desktop.
@@ -42,6 +45,8 @@ public class UpdateManagerPlugin extends Plugin {
 	// web install
 	private static String appServerHost =null;
 	private static int appServerPort = 0;
+	
+	private HttpClient client;
 
 	/**
 	 * The constructor.
@@ -100,6 +105,8 @@ public class UpdateManagerPlugin extends Plugin {
 		} catch (IOException e){
 			warn("",e);
 		}
+		
+		client = new HttpClient();
 	}
 
 	/**
@@ -112,6 +119,8 @@ public class UpdateManagerPlugin extends Plugin {
 		Utilities.shutdown(); // cleanup temp area
 		if (log!=null)
 			log.shutdown();
+			
+		if (client!=null) client.close();
 	}
 
 	private boolean getBooleanDebugOption(String flag, boolean dflt) {
@@ -232,6 +241,55 @@ public class UpdateManagerPlugin extends Plugin {
 			}
 		}
 		return updateStateLocation;
+	}
+
+	/**
+	 * Sends the GET request to the server and returns the server's
+	 * response.
+	 *
+	 * @param url the URL to open on the server
+	 * @return the server's response
+	 * @throws IOException if an I/O error occurs. Reasons include:
+	 * <ul>
+	 * <li>The client is closed.
+	 * <li>The client could not connect to the server
+	 * <li>An I/O error occurs while communicating with the server
+	 * <ul>
+	 */
+	public Response get(URL url) throws IOException {
+		//Request request = null;
+		Response response = null;
+		
+		if ("file".equals(url.getProtocol())){
+			response = new FileResponse(url.openStream());
+		} else {
+			response = new HttpResponse(url);
+		}
+		
+		/*else {
+			try {
+				request = new Request("GET", url, null);
+				response = client.invoke(request);
+			} finally {
+				if (request != null) {
+					try {
+						request.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}*/
+		return response;
+	}
+
+	/**
+	 * Method setDefaultAuthenticator.
+	 * @param authenticator
+	 */
+	public void setDefaultAuthenticator(Authenticator authenticator) {
+		if (client!=null)
+			client.setAuthenticator(authenticator);
 	}
 
 }

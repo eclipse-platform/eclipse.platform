@@ -151,7 +151,7 @@ public class SiteFile extends Site {
 			}
 
 			// remove feature reference from the site
-			IFeatureReference[] featureReferences = getFeatureReferences();
+			ISiteFeatureReference[] featureReferences = getFeatureReferences();
 			if (featureReferences != null) {
 				for (int indexRef = 0; indexRef < featureReferences.length; indexRef++) {
 					IFeatureReference element = featureReferences[indexRef];

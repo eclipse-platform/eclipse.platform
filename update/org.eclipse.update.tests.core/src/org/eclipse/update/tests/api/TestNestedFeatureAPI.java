@@ -32,7 +32,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "rootfeature.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -53,7 +53,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					 Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "org.eclipse.update.core.tests.childrenfeature_2.0.0.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -88,7 +88,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "rootfeature.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -109,7 +109,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					 Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "childrenfeature.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -144,7 +144,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "rootfeature.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -165,7 +165,7 @@ public class TestNestedFeatureAPI extends UpdateManagerTestCase {
 					 Site.DEFAULT_INSTALLED_FEATURE_PATH
 					+ "childrenfeature.jar",
 				null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURL(url);
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);

@@ -189,11 +189,11 @@ public class SiteStatusAnalyzer {
 		// do not check children if feature is disable
 		if (!(code == IFeature.STATUS_DISABLED)) {
 			for (int i = 0; i < children.length; i++) {
-				if (!children[i].isOptional()) {
+				if (!UpdateManagerUtils.isOptional(children[i])) {
 					try {
 						childFeature = children[i].getFeature();
 					} catch (CoreException e) {
-						if (!children[i].isOptional())
+						if (!UpdateManagerUtils.isOptional(children[i]))
 							UpdateManagerPlugin.warn("Error retrieving feature:" + children[i]);
 					}
 

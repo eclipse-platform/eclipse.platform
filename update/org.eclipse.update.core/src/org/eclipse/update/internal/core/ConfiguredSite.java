@@ -236,8 +236,8 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 
 		try {
 			IFeatureReference referenceToRemove = null;
-			IFeatureReference[] featureRef = getSite().getFeatureReferences();
-			IFeatureReference ref = getSite().getFeatureReference(feature);
+			ISiteFeatureReference[] featureRef = getSite().getFeatureReferences();
+			ISiteFeatureReference ref = getSite().getFeatureReference(feature);
 			for (int i = 0; i < featureRef.length; i++) {
 				if (featureRef[i].equals(ref)) {
 					referenceToRemove = featureRef[i];
@@ -305,9 +305,9 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			return;
 
 		// bottom up approach, same configuredSite
-		IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+		IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 		if (optionalFeatures!=null){
-			childrenRef = childrenToConfigure(childrenRef,optionalFeatures);
+			childrenRef = childrenToConfigure(childrenRef, optionalFeatures);
 		}	
 
 		for (int i = 0; i < childrenRef.length; i++) {
@@ -339,12 +339,12 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 * @param optionalfeatures optional features to install
 	 * @return IFeatureReference[]
 	 */
-	private IFeatureReference[] childrenToConfigure(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
+	private IIncludedFeatureReference[] childrenToConfigure(IIncludedFeatureReference[] children, IFeatureReference[] optionalfeatures) {
 		 
 		List childrenToInstall = new ArrayList(); 
 		for (int i = 0; i < children.length; i++) {
-			IFeatureReference optionalFeatureToConfigure = children[i];
-			if (!optionalFeatureToConfigure.isOptional()){
+			IIncludedFeatureReference optionalFeatureToConfigure = children[i];
+			if (!optionalFeatureToConfigure.isOptional()){ 
 				childrenToInstall.add(optionalFeatureToConfigure);
 			} else {
 				for (int j = 0; j < optionalfeatures.length; j++) {
@@ -363,7 +363,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			}
 		}
 		
-		IFeatureReference[] result = new IFeatureReference[childrenToInstall.size()];
+		IIncludedFeatureReference[] result = new IIncludedFeatureReference[childrenToInstall.size()];
 		if (childrenToInstall.size()>0){
 			childrenToInstall.toArray(result);
 		}
@@ -419,7 +419,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			if (includePatches) unconfigurePatches(feature);
 			
 			// top down approach, same configuredSite
-			IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+			IIncludedFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 			for (int i = 0; i < childrenRef.length; i++) {
 				try {
 					IFeature child = childrenRef[i].getFeature(true,null); // disable the exact feature
@@ -486,7 +486,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	public IFeatureReference[] getConfiguredFeatures() {
 		ConfigurationPolicy configPolicy = getConfigurationPolicy();
 		if (configPolicy == null)
-			return new IFeatureReference[0];
+			return new ISiteFeatureReference[0];
 
 		return configPolicy.getConfiguredFeatures();
 	}
@@ -498,7 +498,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 
 		ConfigurationPolicy configPolicy = getConfigurationPolicy();
 		if (configPolicy == null)
-			return new IFeatureReference[0];
+			return new ISiteFeatureReference[0];
 
 		IFeatureReference[] configuredFeatures = getConfiguredFeatures();
 		int confLen = configuredFeatures.length;

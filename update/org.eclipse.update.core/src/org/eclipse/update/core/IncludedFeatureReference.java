@@ -1,4 +1,10 @@
 package org.eclipse.update.core;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.update.configuration.IConfiguredSite;
+import org.eclipse.update.core.model.IncludedFeatureReferenceModel;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
+
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -13,29 +19,17 @@ package org.eclipse.update.core;
  * @see org.eclipse.update.core.VersionedIdentifier
  * @since 2.0.1
  */
-public class IncludedFeatureReference extends FeatureReference implements IIncludedFeatureReference {
-	private boolean isOptional;
-	private String name;
+public class IncludedFeatureReference extends IncludedFeatureReferenceModel implements IIncludedFeatureReference {
 	
-	// since 2.0.2
-	private int matchingRule;
-	private int searchLocation;
+	private IFeature feature;	 
 
 	/**
-	 * Construct a feature options from a string and a boolean
-	 * The string is the representation of the name.
-	 * The boolean is the representation of the optionality of the nested feature.
+	 * Construct a included feature reference
 	 * 
-	 * @param name string representation of the feature
-	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
-	 * @deprecated use other constructor
-	 * @since 2.0.1
+	 * @since 2.1
 	 */
-	public IncludedFeatureReference(String name, boolean isOptional) {
-		this.isOptional = isOptional;
-		this.name = name;
-		this.matchingRule = IImport.RULE_PERFECT;
-		this.searchLocation=IUpdateConstants.SEARCH_ROOT;
+	public IncludedFeatureReference() {
+		super();
 	}
 
 
@@ -48,64 +42,164 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	 * @param searchLocation the location to search for this feature's updates.
 	 * @since 2.0.2
 	 */
-	public IncludedFeatureReference(String name, boolean isOptional, int matchingRule, int searchLocation) {
-		this.isOptional = isOptional;
-		this.name = name;
-		this.matchingRule = matchingRule;
-		this.searchLocation=searchLocation;
+	public IncludedFeatureReference(IIncludedFeatureReference includedFeatureRef) {
+		super((IncludedFeatureReferenceModel)includedFeatureRef);
 	}
 
 	/**
-	 * Returns the isOptional
-	 * 
-	 * @return isOptional
-	 * @since 2.0.1
+	 * Constructor IncludedFeatureReference.
+	 * @param iFeatureReference
 	 */
-	public boolean isOptional() {
-		return isOptional;
+	public IncludedFeatureReference(IFeatureReference featureReference) {
+		super(featureReference);
 	}
 
-	/**
-	 * Returns a string representation of the feature identifier.
-	 * 
-	 * @return string representation of feature identifier or <code>null</code>.
-	 * @since 2.0.1
-	 */
-	public String getName() {
-		return name;
-	}
 
 	/**
-	 * Returns the matching rule for this included feature.
-	 * The rule will determine the ability of the included feature to move version 
-	 * without causing the overall feature to appear broken.
-	 * 
-	 * The default is <code>MATCH_PERFECT</code>
-	 * 
-	 * @see IImport#RULE_PERFECT
-	 * @see IImport#RULE_EQUIVALENT
-	 * @see IImport#RULE_COMPATIBLE
-	 * @see IImport#RULE_GREATER_OR_EQUAL
-	 * @return int representation of feature matching rule.
-	 * @since 2.0.2
+	* Method matches.
+	* @param identifier
+	* @param id
+	* @param options
+	* @return boolean
+	*/
+	private boolean matches(VersionedIdentifier baseIdentifier, VersionedIdentifier id) {
+		if (baseIdentifier == null || id == null)
+			return false;
+		if (!id.getIdentifier().equals(baseIdentifier.getIdentifier()))
+			return false;
+
+		switch (getMatch()) {
+			case IImport.RULE_PERFECT :
+				return id.getVersion().isPerfect(baseIdentifier.getVersion());
+			case IImport.RULE_COMPATIBLE :
+				return id.getVersion().isCompatibleWith(baseIdentifier.getVersion());
+			case IImport.RULE_EQUIVALENT :
+				return id.getVersion().isEquivalentTo(baseIdentifier.getVersion());
+			case IImport.RULE_GREATER_OR_EQUAL :
+				return id.getVersion().isGreaterOrEqualTo(baseIdentifier.getVersion());
+		}
+		UpdateManagerPlugin.warn("Unknown matching rule:" + getMatch());
+		return false;
+	}
+
+
+	/*
+	 * Method retrieveEnabledFeatures.
+	 * @param site
 	 */
-	public int getMatch(){
-		return matchingRule;
+	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
+		IConfiguredSite configuredSite = site.getCurrentConfiguredSite();
+		if (configuredSite == null)
+			return new IFeatureReference[0];
+		return configuredSite.getConfiguredFeatures();
+	}
+	
+	/*
+	 * Method isDisabled.
+	 * @return boolean
+	 */
+	private boolean isDisabled() {
+		/*IConfiguredSite cSite = getSite().getConfiguredSite();
+		if (cSite==null) return false;
+		IFeatureReference[] configured = cSite.getConfiguredFeatures();
+		for (int i = 0; i < configured.length; i++) {
+			if (this.equals(configured[i])) return false;
+		}
+		return true;*/
+		// FIXME
+		return false;
 	}
 	
 	/**
-	 * Returns the search location for this included feature.
-	 * The location will be used to search updates for this feature.
-	 * 
-	 * The default is <code>SEARCH_ROOT</code>
-	 * 
-	 * @see IFeatureReference#SEARCH_ROOT
-	 * @see IFeatureReference#SEARCH_SELF
-	 * @return int representation of feature searching rule.
-	 * @since 2.0.2
+	 * @see org.eclipse.update.core.IFeatureReference#getFeature(boolean)
 	 */
+	public IFeature getFeature(boolean perfectMatch,IConfiguredSite configuredSite) throws CoreException {
 
-	public int getSearchLocation(){
-		return searchLocation;
+		if (configuredSite==null)
+			configuredSite = getSite().getCurrentConfiguredSite();
+		
+		// if perfect match is asked or if the feature is disabled
+		// we return the exact match 		
+		if (perfectMatch || getMatch() == IImport.RULE_PERFECT || isDisabled()) {
+			return getFeature(this);
+		} else {
+			if (feature == null) {
+				// find best match
+				IFeatureReference bestMatch = getBestMatch(configuredSite);
+				feature = getFeature(bestMatch);
+			}
+			return feature;
+		}
 	}
+	
+	/*
+	 * 
+	 */
+	private IFeature getFeature(IFeatureReference ref) throws CoreException {
+		String type = getType();
+		if (type == null || type.equals("")) { //$NON-NLS-1$
+			// ask the Site for the default type 
+			type = getSite().getDefaultPackagedFeatureType();
+		}
+		return getSite().createFeature(type, ref.getURL());
+	}
+	
+	/*
+	 * Method getBestMatch.
+	 * @param enabledFeatures
+	 * @param identifier
+	 * @param options
+	 * @return Object
+	 */
+	private IIncludedFeatureReference getBestMatch(IConfiguredSite configuredSite) throws CoreException {
+		IncludedFeatureReference newRef = null;
+
+		if (configuredSite==null) return this;
+		IFeatureReference[] enabledFeatures = configuredSite.getConfiguredFeatures();
+
+		// find the best feature based on match from enabled features
+		for (int ref = 0; ref < enabledFeatures.length; ref++) {
+			if (enabledFeatures[ref] != null) {
+				VersionedIdentifier id = null;
+				try {
+					id = enabledFeatures[ref].getVersionedIdentifier();
+				} catch (CoreException e) {
+					UpdateManagerPlugin.warn(null, e);
+				};
+				if (matches(getVersionedIdentifier(), id)) {
+					if (newRef == null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())) {
+						newRef = new IncludedFeatureReference(enabledFeatures[ref]);
+						newRef.setMatchingRule(getMatch());
+						newRef.isOptional(isOptional());
+						newRef.setName(getName());
+					}
+				}
+			}
+		}
+
+		if (newRef != null)
+			return newRef;
+		else 
+			return this;
+	}			
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#getFeature()
+	 */
+	public IFeature getFeature() throws CoreException {
+		return getFeature(false,null);
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IIncludedFeatureReference#matchesPlatform()
+	 */
+	public boolean matchesPlatform() {
+		if (getWS()!=null && !SiteManager.getWS().equalsIgnoreCase(getWS()))
+			return false;
+		if (getOS() != null && !SiteManager.getOS().equalsIgnoreCase(getOS()))
+			return false;
+		if (getOSArch()!= null && !SiteManager.getOSArch().equalsIgnoreCase(getOSArch()))
+			return false;
+		return true;		
+	}
+
 }

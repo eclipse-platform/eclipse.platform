@@ -432,13 +432,36 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getPluginEntries()
 	 * @since 2.0
 	 */
-	public IPluginEntry[] getPluginEntries() {
+	public IPluginEntry[] getRawPluginEntries() {
 		PluginEntryModel[] result = getPluginEntryModels();
 		if (result.length == 0)
 			return new IPluginEntry[0];
-		else
-			return (IPluginEntry[]) result;
+		else 
+			return (IPluginEntry[])result;
 	}
+
+	/*
+	 * Method filter.
+	 * @param result
+	 * @return IPluginEntry[]
+	 */
+	private IPluginEntry[] filterPluginEntry(IPluginEntry[] all) {
+		List list = new ArrayList();
+		if (all!=null){
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add((IPluginEntry)all[i]);
+			}
+		}
+		
+		IPluginEntry[] result = new IPluginEntry[list.size()];
+		if (!list.isEmpty()){
+			list.toArray(result);
+		}
+		
+		return result;
+	}
+
 
 	/**
 	 * Returns the count of referenced plug-in entries.
@@ -447,7 +470,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @since 2.0
 	 */
 	public int getPluginEntryCount() {
-		return getPluginEntryModels().length;
+		return getPluginEntries().length;
 	}
 
 	/**
@@ -456,7 +479,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @see IFeature#getNonPluginEntries()
 	 * @since 2.0
 	 */
-	public INonPluginEntry[] getNonPluginEntries() {
+	public INonPluginEntry[] getRawNonPluginEntries() {
 		NonPluginEntryModel[] result = getNonPluginEntryModels();
 		if (result.length == 0)
 			return new INonPluginEntry[0];
@@ -480,14 +503,14 @@ public class Feature extends FeatureModel implements IFeature {
 	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public IFeatureReference[] getIncludedFeatureReferences() throws CoreException {
+	public IIncludedFeatureReference[] getRawIncludedFeatureReferences() throws CoreException {
 		if (includedFeatureReferences == null)
 			initializeIncludedReferences();
 
 		if (includedFeatureReferences.size() == 0)
 			return new IncludedFeatureReference[0];
 
-		return (IFeatureReference[]) includedFeatureReferences.toArray(arrayTypeFor(includedFeatureReferences));
+		return (IIncludedFeatureReference[]) includedFeatureReferences.toArray(arrayTypeFor(includedFeatureReferences));
 	}
 	/**
 	 * Returns the download size of the feature, if it can be determined.
@@ -653,31 +676,53 @@ public class Feature extends FeatureModel implements IFeature {
 	private void initializeIncludedReferences() throws CoreException {
 		includedFeatureReferences = new ArrayList();
 
-		// key = versionedIdentifer, value = IncludeFeatureOptions
-		Map nestedFeatures = getFeatureIncludeMap();
-		if (nestedFeatures.isEmpty())
+		IIncludedFeatureReference[] nestedFeatures = getFeatureIncluded();
+		if (nestedFeatures.length==0)
 			return;
 
 		ISite site = getSite();
 		if (site == null)
 			return;
 
-		Iterator nestedVersionedIdentifier = nestedFeatures.keySet().iterator();
-		while (nestedVersionedIdentifier.hasNext()) {
-			VersionedIdentifier identifier = (VersionedIdentifier) nestedVersionedIdentifier.next();
-			IncludedFeatureReference options = (IncludedFeatureReference) nestedFeatures.get(identifier);
-			IFeatureReference newRef = getPerfectIncludeFeature(site, identifier, options);
+		for (int i = 0; i < nestedFeatures.length; i++) {
+			IIncludedFeatureReference include = nestedFeatures[i];
+			IIncludedFeatureReference newRef = getPerfectIncludeFeature(site, include);
 			includedFeatureReferences.add(newRef);
 		}
 	}
 
+	/**
+	 * Method filterFeatures.
+	 * @param list
+	 * @return List
+	 */
+	private IIncludedFeatureReference[] filterFeatures(IIncludedFeatureReference[] allIncluded) {
+		List list = new ArrayList();
+		if (allIncluded!=null){
+			for (int i = 0; i < allIncluded.length; i++) {
+				IIncludedFeatureReference included = allIncluded[i];
+				if (included.matchesPlatform())
+					list.add(included);
+			}
+		}
+		
+		IIncludedFeatureReference[] result = new IIncludedFeatureReference[list.size()];
+		if (!list.isEmpty()){
+			list.toArray(result);
+		}
+		
+		return result;	
+	}
+
+
 	/*
 	 * 
 	 */
-	private IFeatureReference getPerfectIncludeFeature(ISite site, VersionedIdentifier identifier, IncludedFeatureReference options) throws CoreException {
+	private IIncludedFeatureReference getPerfectIncludeFeature(ISite site, IIncludedFeatureReference include) throws CoreException {
 
 		// [20367] no site, cannot initialize nested references
-		IFeatureReference[] refs = site.getFeatureReferences();
+		ISiteFeatureReference[] refs = site.getFeatureReferences();
+		VersionedIdentifier identifier = include.getVersionedIdentifier();
 		
 		// too long to compute if not a file system
 		// other solution would be to parse feature.xml
@@ -695,9 +740,12 @@ public class Feature extends FeatureModel implements IFeature {
 						};
 
 						if (identifier.equals(id)) {
-							// included featureReferences may also be a Map then
-							FeatureReference newRef = new FeatureReference(refs[ref]);
-							newRef.setOptions(options);
+							// found a ISiteFeatureReference that matches our IIncludedFeatureReference
+							IncludedFeatureReference newRef = new IncludedFeatureReference(refs[ref]);
+							newRef.isOptional(include.isOptional());
+							newRef.setName(include.getName());
+							newRef.setMatchingRule(include.getMatch());
+							newRef.setSearchLocation(include.getSearchLocation());
 							return newRef;
 						}
 					}
@@ -707,8 +755,7 @@ public class Feature extends FeatureModel implements IFeature {
 
 		// instanciate by mapping it based on the site.xml
 		// in future we may ask for a factory to create the feature ref
-		FeatureReference newRef = new FeatureReference();
-		newRef.setOptions(options);
+		IncludedFeatureReference newRef = new IncludedFeatureReference(include);
 		newRef.setSite(getSite());
 		IFeatureReference parentRef = getSite().getFeatureReference(this);
 		if (parentRef instanceof FeatureReference) {
@@ -819,7 +866,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 */
 	private IFeatureReference featureAlreadyInstalled(ISite targetSite) {
 
-		IFeatureReference[] references = targetSite.getFeatureReferences();
+		ISiteFeatureReference[] references = targetSite.getFeatureReferences();
 		IFeatureReference currentReference = null;
 		for (int i = 0; i < references.length; i++) {
 			currentReference = references[i];
@@ -869,4 +916,48 @@ public class Feature extends FeatureModel implements IFeature {
 			UpdateManagerPlugin.warn("", e);
 		}
 	}
+	/**
+	 * @see org.eclipse.update.core.IFeature#getRawIncludedFeatureReferences()
+	 */
+	public IIncludedFeatureReference[] getIncludedFeatureReferences() throws CoreException {
+		return filterFeatures(getRawIncludedFeatureReferences());
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IFeature#getRawNonPluginEntries()
+	 */
+	public INonPluginEntry[] getNonPluginEntries() {
+		return filterNonPluginEntry(getRawNonPluginEntries());
+	}
+
+	/**
+	 * Method filterPluginEntry.
+	 * @param iNonPluginEntrys
+	 * @return INonPluginEntry[]
+	 */
+	private INonPluginEntry[] filterNonPluginEntry(INonPluginEntry[] all) {
+		List list = new ArrayList();
+		if (all!=null){
+			for (int i = 0; i < all.length; i++) {
+				if (UpdateManagerUtils.isValidEnvironment(all[i]))
+					list.add((INonPluginEntry)all[i]);
+			}
+		}
+		
+		INonPluginEntry[] result = new INonPluginEntry[list.size()];
+		if (!list.isEmpty()){
+			list.toArray(result);
+		}
+		
+		return result;
+	}
+
+
+	/**
+	 * @see org.eclipse.update.core.IFeature#getRawPluginEntries()
+	 */
+	public IPluginEntry[] getPluginEntries() {
+		return filterPluginEntry(getRawPluginEntries());
+	}
+
 }

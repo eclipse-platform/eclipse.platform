@@ -145,7 +145,7 @@ public class InstallChangeParser extends DefaultHandler {
 		URL featureURL = new URL(siteURL, featureUrlPath);
 
 		if (featureURL != null) {
-			FeatureReference ref = new FeatureReference();
+			SiteFeatureReference ref = new SiteFeatureReference();
 			ref.setSite(currentSite);
 			ref.setURL(featureURL);
 			change.addReference(ref);

@@ -166,11 +166,11 @@ public class TestSiteParse extends UpdateManagerTestCase {
 		assertTrue("Wrong number of features", featureRef.length == 1);
 		assertTrue("Wrong number of archives", archives.length == 0);
 		
-		try {
+		try { 
 			((FeatureReference)featureRef[0]).getFeature();
 		} catch (CoreException e){
 			Throwable e1 = e.getStatus().getException();
-				if (!e1.getMessage().endsWith("www.eclipse.org/feature3/feature.xml")){
+				if (e1.getMessage().indexOf("not-eclipse")==-1){
 					throw e;
 				}
 		}		
@@ -211,7 +211,7 @@ public class TestSiteParse extends UpdateManagerTestCase {
 		remoteSite.resolve(remoteURL, null);
 
 		FeatureReferenceModel[] featureRef = remoteSite.getFeatureReferenceModels();
-		ICategory[] categories = ((FeatureReference)featureRef[0]).getCategories();
+		ICategory[] categories = ((SiteFeatureReference)featureRef[0]).getCategories();
 		assertTrue(categories.length==0);
 	}	
 	

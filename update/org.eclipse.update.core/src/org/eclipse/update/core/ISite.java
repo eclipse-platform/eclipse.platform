@@ -102,7 +102,7 @@ public interface ISite extends IAdaptable {
 	 * @return an array of feature references, or an empty array.
 	 * @since 2.0 
 	 */
-	public IFeatureReference[] getFeatureReferences();
+	public ISiteFeatureReference[] getFeatureReferences();
 
 	/**
 	 * Returns a reference to the specified feature if 
@@ -111,8 +111,9 @@ public interface ISite extends IAdaptable {
 	 * @param feature feature
 	 * @return feature reference, or <code>null</code> if this feature
 	 * cannot be located on this site.
+	 * @since 2.0
 	 */
-	public IFeatureReference getFeatureReference(IFeature feature);
+	public ISiteFeatureReference getFeatureReference(IFeature feature);
 
 	/**
 	 * Returns an array of plug-in and non-plug-in archives located

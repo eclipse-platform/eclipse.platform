@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.internal.model.ConfiguredSiteModel;
 
 /**
@@ -69,11 +70,11 @@ public class SiteModel extends ModelObject {
 	 * @return an array of feature reference models, or an empty array.
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel[] getFeatureReferenceModels() {
+	public SiteFeatureReferenceModel[] getFeatureReferenceModels() {
 		if (featureReferences == null)
-			return new FeatureReferenceModel[0];
+			return new SiteFeatureReferenceModel[0];
 
-		return (FeatureReferenceModel[]) featureReferences.toArray(
+		return (SiteFeatureReferenceModel[]) featureReferences.toArray(
 			arrayTypeFor(featureReferences));
 	}
 
@@ -216,7 +217,7 @@ public class SiteModel extends ModelObject {
 	 * @param featureReference feature reference model
 	 * @since 2.0
 	 */
-	public void addFeatureReferenceModel(FeatureReferenceModel featureReference) {
+	public void addFeatureReferenceModel(SiteFeatureReferenceModel featureReference) {
 		assertIsWriteable();
 		if (this.featureReferences == null)
 			this.featureReferences = new ArrayList();

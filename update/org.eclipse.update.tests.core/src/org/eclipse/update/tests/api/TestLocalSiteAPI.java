@@ -66,7 +66,7 @@ public class TestLocalSiteAPI extends UpdateManagerTestCase {
 		}
 		if (!found) fail("cannot find category 'category' in site");
 
-		IFeatureReference ref = new FeatureReference();
+		ISiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.addCategory(category);		
 		categories = ref.getCategories();

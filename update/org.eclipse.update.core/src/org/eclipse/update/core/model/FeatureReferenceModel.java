@@ -6,9 +6,8 @@ package org.eclipse.update.core.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
 
-import org.eclipse.update.core.IncludedFeatureReference;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 
 /**
@@ -29,11 +28,6 @@ public class FeatureReferenceModel extends ModelObject {
 	private String featureId;
 	private String featureVersion;
 	private SiteModel site;
-	private List /* of String*/
-	categoryNames;
-
-	// [2.0.1]
-	private IncludedFeatureReference options;
 
 	/**
 	 * Creates an uninitialized feature reference model object.
@@ -52,7 +46,7 @@ public class FeatureReferenceModel extends ModelObject {
 		setFeatureIdentifier(ref.getFeatureIdentifier());
 		setFeatureVersion(ref.getFeatureVersion());
 		setType(ref.getType());
-		setCategoryNames(ref.getCategoryNames());
+		setSiteModel(ref.getSiteModel());
 	}
 
 	/**
@@ -117,19 +111,6 @@ public class FeatureReferenceModel extends ModelObject {
 	 */
 	public URL getURL() {
 		return url;
-	}
-
-	/**
-	 * Returns the names of categories the referenced feature belongs to.
-	 * 
-	 * @return an array of names, or an empty array.
-	 * @since 2.0
-	 */
-	public String[] getCategoryNames() {
-		if (categoryNames == null)
-			return new String[0];
-
-		return (String[]) categoryNames.toArray(new String[0]);
 	}
 
 	/**
@@ -216,48 +197,6 @@ public class FeatureReferenceModel extends ModelObject {
 	}
 
 	/**
-	 * Sets the names of categories this feature belongs to.
-	 * Throws a runtime exception if this object is marked read-only.
-	 * 
-	 * @param categoryNames an array of category names
-	 * @since 2.0
-	 */
-	public void setCategoryNames(String[] categoryNames) {
-		assertIsWriteable();
-		if (categoryNames == null)
-			this.categoryNames = null;
-		else
-			this.categoryNames = new ArrayList(Arrays.asList(categoryNames));
-	}
-
-	/**
-	 * Adds the name of a category this feature belongs to.
-	 * Throws a runtime exception if this object is marked read-only.
-	 * 
-	 * @param categoryName category name
-	 * @since 2.0
-	 */
-	public void addCategoryName(String categoryName) {
-		assertIsWriteable();
-		if (this.categoryNames == null)
-			this.categoryNames = new ArrayList();
-		if (!this.categoryNames.contains(categoryName))
-			this.categoryNames.add(categoryName);
-	}
-	/**
-	 * Removes the name of a categorys this feature belongs to.
-	 * Throws a runtime exception if this object is marked read-only.
-	 * 
-	 * @param categoryName category name
-	 * @since 2.0
-	 */
-	public void removeCategoryName(String categoryName) {
-		assertIsWriteable();
-		if (this.categoryNames != null)
-			this.categoryNames.remove(categoryName);
-	}
-
-	/**
 	 * Resolve the model object.
 	 * Any URL strings in the model are resolved relative to the 
 	 * base URL argument. Any translatable strings in the model that are
@@ -284,22 +223,6 @@ public class FeatureReferenceModel extends ModelObject {
 		if (url != null)
 			buffer.append(url.toExternalForm());
 		return buffer.toString();
-	}
-
-	/**
-	 * Returns the options.
-	 * @return IncludedFeatureOptions
-	 */
-	public IncludedFeatureReference getOptions() {
-			return options;
-		}
-
-	/**
-	 * Sets the options.
-	 * @param options The options to set
-	 */
-	public void setOptions(IncludedFeatureReference options) {
-		this.options = options;
 	}
 
 }

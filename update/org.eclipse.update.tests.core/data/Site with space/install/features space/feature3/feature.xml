@@ -8,5 +8,5 @@
     <discovery label="Discovery 1" url="http://www.eclipse.org"/>
     <discovery label="Discovery 2" url="http://www.eclipse.org"/>
   </url>
-  <plugin download-size="1500" id="org.eclipse.update.plugin1" install-size="1000" fragment="false" nl="us" os="OS_WIN32" version="1.1.1" ws="WS_WIN32"/>
+  <plugin download-size="1500" id="org.eclipse.update.plugin1" install-size="1000" fragment="false" nl="en,fr" os="WIN32,LINUX" version="1.1.1" ws="WIN32,MOTIF,GTK"/>
 </feature>

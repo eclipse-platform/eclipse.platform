@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
+import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.xml.sax.*;
@@ -537,7 +538,7 @@ public class DefaultSiteParser extends DefaultHandler {
 	 * process feature info
 	 */
 	private void processFeature(Attributes attributes) {
-		FeatureReferenceModel feature = factory.createFeatureReferenceModel();
+		SiteFeatureReferenceModel feature = factory.createFeatureReferenceModel();
 		String urlInfo = attributes.getValue("url"); //$NON-NLS-1$
 		if (urlInfo == null || urlInfo.trim().equals("")) //$NON-NLS-1$
 			internalError(
@@ -612,7 +613,7 @@ public class DefaultSiteParser extends DefaultHandler {
 	 */
 	private void processCategory(Attributes attributes) {
 		String category = attributes.getValue("name"); //$NON-NLS-1$
-		FeatureReferenceModel feature = (FeatureReferenceModel) objectStack.peek();
+		SiteFeatureReferenceModel feature = (SiteFeatureReferenceModel) objectStack.peek();
 		feature.addCategoryName(category);
 
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING)

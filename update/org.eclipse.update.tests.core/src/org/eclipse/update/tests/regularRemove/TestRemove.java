@@ -47,7 +47,7 @@ public class TestRemove extends UpdateManagerTestCase {
 	private IFeature getFeature1(ISite site)
 		throws MalformedURLException, CoreException {
 		//URL url = UpdateManagerUtils.getURL(site.getURL(), "features/org.eclipse.update.core.tests.feature1_1.0.4.jar", null);
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURLString("features/org.eclipse.update.core.tests.feature1_1.0.4.jar");
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);

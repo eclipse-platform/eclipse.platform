@@ -51,7 +51,7 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 
 	private IFeature getFeature1(ISite site)
 		throws MalformedURLException, CoreException {
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(site);
 		ref.setURLString("features/org.eclipse.update.core.tests.feature1_1.0.4.jar");
 		ref.setType(ISite.DEFAULT_PACKAGED_FEATURE_TYPE);
@@ -216,7 +216,7 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 		((ConfiguredSite)site).isUpdatable(true);
 		site.install(remoteFeature, null, null);
 
-		IPluginEntry[] entries = remoteFeature.getPluginEntries();
+		IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
 		assertTrue("no plugins entry", (entries != null && entries.length != 0));
 
 		String sitePath = site.getSite().getURL().getFile();

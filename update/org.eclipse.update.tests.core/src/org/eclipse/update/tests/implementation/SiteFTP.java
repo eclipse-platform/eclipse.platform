@@ -29,7 +29,7 @@ public class SiteFTP implements ISite {
 	/*
 	 * @see ISite#getFeatureReferences()
 	 */
-	public IFeatureReference[] getFeatureReferences() {
+	public ISiteFeatureReference[] getFeatureReferences() {
 		return null;
 	}
 
@@ -202,7 +202,7 @@ public class SiteFTP implements ISite {
 	/*
 	 * @see ISite#getFeatureReference(IFeature)
 	 */
-	public IFeatureReference getFeatureReference(IFeature feature) {
+	public ISiteFeatureReference getFeatureReference(IFeature feature) {
 		return null;
 	}
 

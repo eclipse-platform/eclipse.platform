@@ -86,8 +86,8 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 	 * @return feature reference model
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel createFeatureReferenceModel() {
-		return new FeatureReference();
+	public SiteFeatureReferenceModel createFeatureReferenceModel() {
+		return new SiteFeatureReference();
 	}
 
 	/**
@@ -133,52 +133,8 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 	 * @return InputStream
 	 */
 	protected InputStream openStream(URL resolvedURL)  throws IOException {
-		URLConnection connection = openConnection(resolvedURL);
-		return connection.getInputStream();
-	}
-
-	/**
-	 * Opens a connection to a URL.
-	 * Manages time out
-	 * 
-	 * @param resolvedURL
-	 * @return URLConnection
-	 */
-	protected URLConnection openConnection(final URL resolvedURL) throws IOException {
-		
-	/*	int time = 100000;
-		connection = null;
-		exception = null;
-
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					connection = resolvedURL.openConnection();
-				} catch (IOException e){
-					exception = e;
-				}
-			}
-		});
-		
-		long start = new Date().getTime();
-		boolean timeout = false;
-		while (connection==null && !timeout){
-			try {
-				Thread.currentThread().sleep(2000);
-			} catch(InterruptedException e) {
-			}
-			if(exception!=null) throw exception;
-			if (new Date().getTime()-start>time) timeout=true;
-		}
-		
-		
-		if (timeout) {
-			thread.stop(); // better solution ?
-			throw new IOException("Unable to obtain connection to:"+resolvedURL.toExternalForm());
-		}
-		return connection;*/
-		
-		return resolvedURL.openConnection();	
+		Response response = UpdateManagerPlugin.getPlugin().get(resolvedURL);
+		return response.getInputStream();
 	}
 
 }

@@ -12,7 +12,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.ArchiveReferenceModel;
-import org.eclipse.update.core.model.FeatureReferenceModel;
 
 /**
  * ContentConsummer for a SiteFile
@@ -128,7 +127,7 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 			UpdateManagerPlugin.warn("Attempt to close a closed SiteFileContentConsumer", new Exception());
 
 		// create a new Feature reference to be added to the site
-		FeatureReference ref = new FeatureReference();
+		SiteFeatureReference ref = new SiteFeatureReference();
 		ref.setSite(getSite());
 		File file = null;
 
@@ -238,7 +237,7 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 	private void commitPlugins(IFeatureReference localFeatureReference) throws CoreException {
 
 		// get the feature
-		 ((SiteFile) getSite()).addFeatureReferenceModel((FeatureReferenceModel) localFeatureReference);
+		 ((SiteFile) getSite()).addFeatureReferenceModel((SiteFeatureReferenceModel) localFeatureReference);
 		IFeature localFeature = null;
 		try {
 			localFeature = localFeatureReference.getFeature();

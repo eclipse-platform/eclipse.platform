@@ -103,7 +103,8 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		//attempt to parse the LocalSite.xml	
 		URL resolvedURL = URLEncoder.encode(configXML);
 		try {
-			new SiteLocalParser(resolvedURL.openStream(), localSite);
+			InputStream in = UpdateManagerPlugin.getPlugin().get(resolvedURL).getInputStream();;
+			new SiteLocalParser(in, localSite);
 		} catch (FileNotFoundException exception) {
 			// file SITE_LOCAL_FILE doesn't exist, ok, log it 
 			// and reconcile with platform configuration

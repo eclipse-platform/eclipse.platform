@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 
+import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.core.model.ArchiveReferenceModel;
 import org.eclipse.update.core.model.DefaultSiteParser;
@@ -95,7 +96,7 @@ public class SiteMain extends UpdateManagerTestCase {
 		getIndent(level+1);
 		w.println("");
 		
-		FeatureReferenceModel[] features = site.getFeatureReferenceModels();
+		SiteFeatureReferenceModel[] features = site.getFeatureReferenceModels();
 		for (int i=0; i<features.length; i++) {
 			w.println(in+"<feature");
 			w.println(in+"   "+"type=\""+features[i].getType()+"\"");
@@ -135,7 +136,7 @@ public class SiteMain extends UpdateManagerTestCase {
 		}
 	}
 	
-	private static void writeCategories(PrintWriter w, int level, FeatureReferenceModel feature) {
+	private static void writeCategories(PrintWriter w, int level, SiteFeatureReferenceModel feature) {
 		String in = getIndent(level);
 		String[] cat = feature.getCategoryNames();
 		for (int i=0; i<cat.length; i++) {

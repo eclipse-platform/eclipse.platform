@@ -218,7 +218,7 @@ public interface IConfiguredSite extends IAdaptable {
 	 * on the underlying site.
 	 * 
 	 * @see ISite#getFeatureReferences()
-	 * @return an array of feature references, or an empty array.
+	 * @return an array of site feature references, or an empty array.
 	 * @since 2.0 
 	 * <p>
 	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to

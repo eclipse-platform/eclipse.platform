@@ -3,6 +3,7 @@ package org.eclipse.update.internal.model;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
+import java.io.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -27,7 +28,8 @@ public class InstallConfigurationModel extends ModelObject {
 	public void initialize() throws CoreException {
 		try {
 			URL resolvedURL = URLEncoder.encode(getURL());
-			new InstallConfigurationParser(resolvedURL.openStream(), this);
+			InputStream in = UpdateManagerPlugin.getPlugin().get(resolvedURL).getInputStream();
+			new InstallConfigurationParser(in, this);
 		} catch (FileNotFoundException exception) {
 			UpdateManagerPlugin.warn(getLocationURLString() + " does not exist, The local site is not in synch with the file system and is pointing to a file that doesn't exist.",exception); //$NON-NLS-1$
 			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ErrorDuringFileAccess",getLocationURLString()), exception); //$NON-NLS-1$			

@@ -471,7 +471,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 			InputStream is = null;
 			try {
 				fos = new FileOutputStream(tempLib);
-				is = cp.openStream();
+				is = UpdateManagerPlugin.getPlugin().get(cp).getInputStream();
 				Utilities.copy(is, fos, null);
 			} finally {
 				if (fos != null)

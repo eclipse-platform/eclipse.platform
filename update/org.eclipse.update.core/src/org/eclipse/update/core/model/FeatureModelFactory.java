@@ -10,8 +10,8 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.update.core.Utilities;
-import org.xml.sax.SAXException;
 import org.eclipse.update.internal.core.Policy;
+import org.xml.sax.SAXException;
 
 /**
  * Default feature model factory.
@@ -74,6 +74,18 @@ public class FeatureModelFactory {
 	public FeatureModel createFeatureModel() {
 		return new FeatureModel();
 	}
+
+	/**
+	 * Create a default included feature reference model.
+	 * 
+	 * @see IncludedFeatureReferenceModel
+	 * @return feature model
+	 * @since 2.1
+	 */
+	public IncludedFeatureReferenceModel createIncludedFeatureReferenceModel() {
+		return new IncludedFeatureReferenceModel();
+	}
+
 
 	/**
 	 * Create a default install handler model.

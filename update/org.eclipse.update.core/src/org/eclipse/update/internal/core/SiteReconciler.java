@@ -127,7 +127,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 				// Add the features to the list of new found features
 				// and configure it based on reconciliation type
-				IFeatureReference[] newFeaturesRef = site.getFeatureReferences();
+				ISiteFeatureReference[] newFeaturesRef = site.getFeatureReferences();
 				for (int i = 0; i < newFeaturesRef.length; i++) {
 					// TRACE
 					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
@@ -220,7 +220,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// and the new one. Add the new Features as Configured
 		List toCheck = new ArrayList();
 		ISite site = oldConfiguredSite.getSite();
-		IFeatureReference[] foundFeatures = site.getFeatureReferences();
+		ISiteFeatureReference[] foundFeatures = site.getFeatureReferences();
 		IFeatureReference[] oldConfiguredFeaturesRef = oldConfiguredSite.getFeatureReferences();
 
 		// TRACE
@@ -717,7 +717,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		// remove all features that nest in some other feature
 		for (int i = 0; i < list.length; i++) {
-			IFeatureReference[] children = null;
+			IIncludedFeatureReference[] children = null;
 			try {
 				children = list[i].getIncludedFeatureReferences();
 			} catch (CoreException e) {
@@ -819,7 +819,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			try {
 				child = children[j].getFeature();
 			} catch (CoreException e) {
-				if (!children[j].isOptional())
+				if (!UpdateManagerUtils.isOptional(children[j]))
 					UpdateManagerPlugin.warn("", e);
 				// 25202 do not return right now, the peer children may be ok
 			}

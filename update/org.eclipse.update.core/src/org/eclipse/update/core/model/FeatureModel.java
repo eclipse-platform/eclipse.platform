@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.update.core.IncludedFeatureReference;
+import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
 
 /**
@@ -49,7 +49,7 @@ public class FeatureModel extends ModelObject {
 	imports;
 	private List /*of PluginEntryModel*/
 	pluginEntries;
-	private Map /*of VersionedIdentifier, IncludedFeatureOptions */	
+	private List /*of IncludedFeatureReferenceModel */	
 	featureIncludes;
 	private List /*of NonPluginEntryModel*/
 	nonPluginEntries;
@@ -202,7 +202,7 @@ public class FeatureModel extends ModelObject {
 	 * @return the system architecture specification string, or <code>null</code>.
 	 * @since 2.0
 	 */
-	public String getArch() {
+	public String getOSArch() {
 		return arch;
 	}
 
@@ -353,29 +353,28 @@ public class FeatureModel extends ModelObject {
 			return new VersionedIdentifier[0];
 			
 		//
-		Set featureIncluded = featureIncludes.keySet();
-		Iterator iter = featureIncluded.iterator();
-		VersionedIdentifier[] versionIncluded = new VersionedIdentifier[featureIncluded.size()];
+		Iterator iter = featureIncludes.iterator();
+		VersionedIdentifier[] versionIncluded = new VersionedIdentifier[featureIncludes.size()];
 		int index = 0;
 		while (iter.hasNext()) {
-			versionIncluded[index]=(VersionedIdentifier) iter.next();
+			IncludedFeatureReferenceModel model = (IncludedFeatureReferenceModel)iter.next();
+			versionIncluded[index]=model.getVersionedIdentifier();
 			index++;
 		}
 		return versionIncluded;
 	}
 
 	/**
-	 * Returns a map of feature versioned identifier referenced by this feature.
-	 * The key is an <code>IFeatureIdentifier</code> representing the nested feature.
-	 * The value is a <code>Boolean</code>. The valuse is <code>true</code> if the nested feature is optional, otherwise <code>false</code>.
-	 * 
-	 * @return a Map of feature versioned identifier and Boolean, or an empty Map.
+	 * Returns an array of included feature reference model referenced by this feature.
+	 *
+	 * @return an array of included feature reference model, or an empty array.
 	 * @since 2.0
 	 */
-	public Map getFeatureIncludeMap() {
+	public IIncludedFeatureReference[] getFeatureIncluded() {
 		if (featureIncludes == null)
-			return new HashMap();	
-		return featureIncludes;
+			return new IIncludedFeatureReference[0];	
+		return (IIncludedFeatureReference[]) featureIncludes.toArray(
+			arrayTypeFor(featureIncludes));
 	}
 
 	/**
@@ -710,16 +709,6 @@ public class FeatureModel extends ModelObject {
 		if (!this.pluginEntries.contains(pluginEntry))
 			this.pluginEntries.add(pluginEntry);
 	}
-	/**
-	 * Adds a feature identifier.
-	 * Throws a runtime exception if this object is marked read-only.
-	 * 
-	 * @param identifier feature identifer
-	 * @since 2.0
-	 */
-	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier){
-		addIncludesFeatureIdentifier(identifier,null);
-	}
 	
 	/**
 	 * Adds a feature identifier.
@@ -727,15 +716,14 @@ public class FeatureModel extends ModelObject {
 	 * 
 	 * @param identifier feature identifer
 	 * @param options the options associated with the nested feature
-	 * @since 2.0
+	 * @since 2.1
 	 */
-	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier,IncludedFeatureReference options){
+	public void addIncludedFeatureReferenceModel(IncludedFeatureReferenceModel include){
 		assertIsWriteable();
-		if (identifier==null) return;
-		if (this.featureIncludes == null)
-			this.featureIncludes = new HashMap();
-		if (!this.featureIncludes.containsKey(identifier))
-			this.featureIncludes.put(identifier,options);
+		if (this.featureIncludes==null)
+			this.featureIncludes = new ArrayList();
+		if (!this.featureIncludes.contains(include))
+			this.featureIncludes.add(include);
 	}
 		
 	/**

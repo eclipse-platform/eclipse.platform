@@ -271,15 +271,11 @@ public class DefaultFeatureParser extends DefaultHandler {
 
 			case STATE_INCLUDES :
 				stateStack.pop();
-				if (objectStack.peek() instanceof VersionedIdentifier) {
-					VersionedIdentifier identifier = (VersionedIdentifier) objectStack.pop();
-					IncludedFeatureReference options = null;
-					if (objectStack.peek() instanceof IncludedFeatureReference){
-						options = ((IncludedFeatureReference)objectStack.pop());
-					} 
+				if (objectStack.peek() instanceof IncludedFeatureReferenceModel) {
+					IncludedFeatureReferenceModel includedFeatureRefModel = ((IncludedFeatureReferenceModel)objectStack.pop());
 					if (objectStack.peek() instanceof FeatureModel) {
 						featureModel = (FeatureModel) objectStack.peek();
-						featureModel.addIncludesFeatureIdentifier(identifier,options);
+						featureModel.addIncludedFeatureReferenceModel(includedFeatureRefModel);
 					}
 				}				
 				break;
@@ -1056,16 +1052,23 @@ public class DefaultFeatureParser extends DefaultHandler {
 			//$NON-NLS-1$
 			}
 			
+		IncludedFeatureReferenceModel includedFeature = factory.createIncludedFeatureReferenceModel();
+		includedFeature.setFeatureIdentifier(id);
+		includedFeature.setFeatureVersion(ver);
+					
 		// name
 		String name = attributes.getValue("name");
+		includedFeature.setName(name);
 		
 		// optional
 		String optional = attributes.getValue("optional");
 		boolean isOptional = "true".equalsIgnoreCase(optional);
+		includedFeature.isOptional(isOptional);
 		
 		// match
 		String ruleName = attributes.getValue("match");
 		int rule = UpdateManagerUtils.getMatchingRule(ruleName);
+		includedFeature.setMatchingRule(rule);
 		
 		// search location
 		String locationName = attributes.getValue("search_location");
@@ -1074,10 +1077,19 @@ public class DefaultFeatureParser extends DefaultHandler {
 			searchLocation = IUpdateConstants.SEARCH_ROOT & IUpdateConstants.SEARCH_SELF;
 		if("root".equalsIgnoreCase(locationName))
 			searchLocation = IUpdateConstants.SEARCH_ROOT;
+		includedFeature.setSearchLocation(searchLocation);
 		
+		// os arch ws
+		String os = attributes.getValue("os");
+		includedFeature.setOS(os);
 		
-		objectStack.push(new IncludedFeatureReference(name,isOptional,rule, searchLocation));
-		objectStack.push(new VersionedIdentifier(id,ver));	
+		String ws = attributes.getValue("ws");
+		includedFeature.setWS(ws);
+				
+		String arch = attributes.getValue("arch");				
+		includedFeature.setArch(arch);
+		
+		objectStack.push(includedFeature);
 			
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
 			debug("End process Includes tag: id:" //$NON-NLS-1$

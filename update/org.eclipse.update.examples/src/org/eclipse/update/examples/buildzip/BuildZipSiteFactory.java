@@ -67,7 +67,7 @@ public class BuildZipSiteFactory extends BaseSiteFactory {
 		File[] zips = file.listFiles(filter);
 
 		// create a reference for each matching zip
-		FeatureReferenceModel ref = null;
+		SiteFeatureReferenceModel ref = null;
 		for (int i = 0; zips != null && i < zips.length; i++) {
 			ref = createFeatureReferenceModel();
 			ref.setType("org.eclipse.update.examples.zip");

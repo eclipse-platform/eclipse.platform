@@ -196,7 +196,8 @@ public class Utilities {
 				completeString.append(s);
 			if (e != null) {
 				completeString.append(" [");
-				completeString.append(e.toString());
+				String msg = e.getLocalizedMessage();
+				completeString.append(msg!=null?msg:e.toString());
 				completeString.append("]");
 			}
 			status = new Status(IStatus.ERROR, id, code, completeString.toString(), e);

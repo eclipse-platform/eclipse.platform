@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.update.core.SiteFeatureReferenceModel;
 import org.eclipse.update.core.Utilities;
 import org.eclipse.update.internal.core.Policy;
 import org.xml.sax.SAXException;
@@ -98,14 +99,14 @@ public class SiteModelFactory {
 	}
 
 	/**
-	 * Create a default feature reference model.
+	 * Create a default site feature reference model.
 	 * 
-	 * @see FeatureReferenceModel
-	 * @return feature reference model
+	 * @see SiteFeatureReferenceModel
+	 * @return site feature reference model
 	 * @since 2.0
 	 */
-	public FeatureReferenceModel createFeatureReferenceModel() {
-		return new FeatureReferenceModel();
+	public SiteFeatureReferenceModel createFeatureReferenceModel() {
+		return new SiteFeatureReferenceModel();
 	}
 
 	/**

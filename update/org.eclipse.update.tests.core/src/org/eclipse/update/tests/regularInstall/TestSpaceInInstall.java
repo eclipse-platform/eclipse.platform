@@ -9,7 +9,6 @@ import java.net.URL;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.tests.UpdateManagerTestCase;
-import org.eclipse.update.tests.UpdateTestsPlugin;
 
 public class TestSpaceInInstall extends UpdateManagerTestCase {
 	/**
@@ -54,7 +53,7 @@ public class TestSpaceInInstall extends UpdateManagerTestCase {
 
 			// verify
 			String site = testURL.getFile();
-			IPluginEntry[] entries = remoteFeature.getPluginEntries();
+			IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
 			assertTrue("no plugins entry", (entries != null && entries.length != 0));
 			String pluginName = entries[0].getVersionedIdentifier().toString();
 			File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
@@ -108,7 +107,7 @@ public class TestSpaceInInstall extends UpdateManagerTestCase {
 
 			// verify
 			String site = TARGET_FILE_SITE.getFile();			
-			IPluginEntry[] entries = remoteFeature.getPluginEntries();
+			IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
 			assertTrue("no plugins entry", (entries != null && entries.length != 0));
 			String pluginName = entries[0].getVersionedIdentifier().toString();
 			File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);

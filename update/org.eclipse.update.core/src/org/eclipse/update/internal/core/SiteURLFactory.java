@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.CoreException; 
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
 import org.eclipse.update.core.model.SiteModelFactory;
@@ -41,9 +41,9 @@ public class SiteURLFactory extends BaseSiteFactory {
 			SiteURLContentProvider contentProvider = new SiteURLContentProvider(url);
 
 			URL resolvedURL = URLEncoder.encode(url);
-			URLConnection connection = openConnection(resolvedURL);
-			UpdateManagerUtils.checkConnectionResult(connection);
-			siteStream = connection.getInputStream();
+			Response response = UpdateManagerPlugin.getPlugin().get(resolvedURL);
+			UpdateManagerUtils.checkConnectionResult(response,resolvedURL);
+			siteStream = response.getInputStream();
 
 			SiteModelFactory factory = (SiteModelFactory) this;
 			site = (Site) factory.parseSite(siteStream);

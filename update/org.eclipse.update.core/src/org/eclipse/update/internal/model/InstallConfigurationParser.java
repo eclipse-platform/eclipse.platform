@@ -194,7 +194,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 		boolean configured = configuredString.trim().equalsIgnoreCase("true") ? true : false; //$NON-NLS-1$
 
 		if (url != null) {
-			FeatureReference ref = new FeatureReference();
+			SiteFeatureReference ref = new SiteFeatureReference();
 			ref.setSite((ISite) configSite.getSiteModel());
 			ref.setURL(url);
 			if (ref != null)

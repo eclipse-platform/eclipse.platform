@@ -92,7 +92,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		try {
 			feature = featureReference.getFeature();
 		} catch (CoreException e) {
-			if (!featureReference.isOptional()){			
+			if (!UpdateManagerUtils.isOptional(featureReference)){			
 				URL url = featureReference.getURL();
 				String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
 				UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);
@@ -174,7 +174,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		try {
 			feature = featureReference.getFeature();
 		} catch (CoreException e) {
-			if (!featureReference.isOptional()){
+			if (!UpdateManagerUtils.isOptional(featureReference)){
 				URL url = featureReference.getURL();
 				String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
 				UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);

@@ -1,4 +1,5 @@
 package org.eclipse.update.core.model;
+
 /*
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
@@ -19,7 +20,7 @@ public class PluginEntryModel extends ContentEntryModel {
 	private String pluginId;
 	private String pluginVersion;
 	private boolean isFragment = false;
-
+	
 	/**
 	 * Creates a uninitialized plug-in entry model object.
 	 * 

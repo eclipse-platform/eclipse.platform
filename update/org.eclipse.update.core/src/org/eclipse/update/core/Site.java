@@ -168,12 +168,12 @@ public class Site extends SiteModel implements ISite {
 	 * @see ISite#getFeatureReferences()
 	 * @since 2.0
 	 */
-	public IFeatureReference[] getFeatureReferences() {
+	public ISiteFeatureReference[] getFeatureReferences() {
 		FeatureReferenceModel[] result = getFeatureReferenceModels();
 		if (result.length == 0)
-			return new IFeatureReference[0];
+			return new ISiteFeatureReference[0];
 		else
-			return (IFeatureReference[]) result;
+			return (ISiteFeatureReference[]) result;
 	}
 
 	/**
@@ -182,15 +182,15 @@ public class Site extends SiteModel implements ISite {
 	 * @see ISite#getFeatureReference(IFeature)
 	 * @since 2.0
 	 */
-	public IFeatureReference getFeatureReference(IFeature feature) {
+	public ISiteFeatureReference getFeatureReference(IFeature feature) {
 
 		if (feature == null) {
 			UpdateManagerPlugin.warn("Site:getFeatureReference: The feature is null");
 			return null;
 		}
 
-		IFeatureReference[] references = getFeatureReferences();
-		IFeatureReference currentReference = null;
+		ISiteFeatureReference[] references = getFeatureReferences();
+		ISiteFeatureReference currentReference = null;
 		for (int i = 0; i < references.length; i++) {
 			currentReference = references[i];
 			if (UpdateManagerUtils.sameURL(feature.getURL(), currentReference.getURL()))
@@ -280,7 +280,7 @@ public class Site extends SiteModel implements ISite {
 		if (entries != null) {
 			// get all the other plugins from all the other features
 			Set allPluginID = new HashSet();
-			IFeatureReference[] features = getFeatureReferences();
+			ISiteFeatureReference[] features = getFeatureReferences();
 			if (features != null) {
 				for (int indexFeatures = 0; indexFeatures < features.length; indexFeatures++) {
 					IFeature featureToCompare = null;

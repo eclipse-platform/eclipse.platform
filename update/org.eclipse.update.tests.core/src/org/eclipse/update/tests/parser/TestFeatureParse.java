@@ -31,7 +31,7 @@ public class TestFeatureParse extends UpdateManagerTestCase {
 			ISite remoteSite = SiteManager.getSite(SOURCE_FILE_SITE);
 			URL url = UpdateManagerUtils.getURL(remoteSite.getURL(),xmlFile,null);
 			
-			FeatureReference ref = new FeatureReference();
+			SiteFeatureReference ref = new SiteFeatureReference();
 			ref.setSite(remoteSite);
 			ref.setURL(url);
 			IFeature feature = ref.getFeature();

@@ -22,6 +22,7 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.model.SiteLocalModel;
 import org.eclipse.update.internal.ui.forms.UpdateAdapterFactory;
 import org.eclipse.update.internal.ui.model.*;
@@ -29,7 +30,7 @@ import org.eclipse.update.internal.ui.parts.AboutInfo;
 import org.eclipse.update.internal.ui.parts.SWTUtil;
 import org.eclipse.update.internal.ui.preferences.MainPreferencePage;
 import org.eclipse.update.internal.ui.preferences.UpdateColors;
-import org.eclipse.update.internal.ui.security.AuthorizationDatabase;
+import org.eclipse.update.internal.ui.security.UpdateManagerAuthenticator;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -42,7 +43,7 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 	private ResourceBundle resourceBundle;
 	private UpdateAdapterFactory adapterFactory;
 	private UpdateModel model;
-	private AuthorizationDatabase database;
+	private UpdateManagerAuthenticator authenticator;
 	private AboutInfo aboutInfo;
 
 	/**
@@ -139,8 +140,8 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 		IAdapterManager manager = Platform.getAdapterManager();
 		adapterFactory = new UpdateAdapterFactory();
 		manager.registerAdapters(adapterFactory, UIModelObject.class);
-		database = new AuthorizationDatabase();
-		Authenticator.setDefault(database);
+		authenticator = new UpdateManagerAuthenticator();
+		UpdateManagerPlugin.getPlugin().setDefaultAuthenticator(authenticator); 
 		int historyPref = getPluginPreferences().getInt(MainPreferencePage.P_HISTORY_SIZE);
 		if(historyPref>0){
 			SiteLocalModel.DEFAULT_HISTORY= historyPref;
@@ -301,14 +302,6 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 		return null;
 	}
 
-	/**
-	 * Gets the database.
-	 * @return Returns a AuthorizationDatabase
-	 */
-	public AuthorizationDatabase getDatabase() {
-		return database;
-	}
-	
 	public static URL getOriginatingURL(String id) {
 		IDialogSettings section = getOriginatingURLSection();
 		String value=section.get(id);
@@ -408,4 +401,12 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 			MainPreferencePage.EQUIVALENT_VALUE);
 		UpdateColors.setDefaults(store);
 	}
+	/**
+	 * Returns the authenticator.
+	 * @return UpdateManagerAuthenticator
+	 */
+	public UpdateManagerAuthenticator getAuthenticator() {
+		return authenticator;
+	}
+
 }

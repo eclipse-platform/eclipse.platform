@@ -168,7 +168,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 */
 	private void configure(ConfiguredSite linkedSite) throws CoreException {
 		ISite site = linkedSite.getSite();
-		IFeatureReference[] newFeaturesRef = site.getFeatureReferences();
+		ISiteFeatureReference[] newFeaturesRef = site.getFeatureReferences();
 
 		for (int i = 0; i < newFeaturesRef.length; i++) {
 			// TRACE
@@ -596,7 +596,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 				} else {
 					// the site didn't exist in the InstallConfiguration we are reverting to
 					// unconfigure everything from this site so it is still present
-					IFeatureReference[] featuresToUnconfigure = nowConfigSites[i].getSite().getFeatureReferences();
+					ISiteFeatureReference[] featuresToUnconfigure = nowConfigSites[i].getSite().getFeatureReferences();
 					for (int j = 0; j < featuresToUnconfigure.length; j++) {
 						IFeature featureToUnconfigure = null;
 						try {

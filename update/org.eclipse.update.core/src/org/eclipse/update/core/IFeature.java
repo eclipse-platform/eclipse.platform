@@ -29,7 +29,7 @@ import org.eclipse.update.core.model.InstallAbortedException;
  * @see org.eclipse.update.core.Feature
  * @since 2.0
  */
-public interface IFeature extends IAdaptable {
+public interface IFeature extends IAdaptable, IPlatformEnvironment {
 
 	/**
 	 * Indicates a 'happy' feature
@@ -195,70 +195,6 @@ public interface IFeature extends IAdaptable {
 	public IURLEntry getLicense();
 
 	/**
-	 * Returns optional operating system specification.
-	 * A comma-separated list of os designators defined by the platform.
-	 * Indicates this feature should only be installed on one of the specified
-	 * os systems. If this attribute is not specified, the feature can be
-	 * installed on all systems (portable implementation).
-	 * 
-	 * This information is used as a hint by the installation and update
-	 * support (user can force installation of feature regardless of this setting).
-	 *
-	 * @see org.eclipse.core.boot.BootLoader 
-	 * @return the operating system specification, or <code>null</code>.
-	 * @since 2.0 
-	 */
-	public String getOS();
-
-	/**
-	 * Returns optional windowing system specification. 
-	 * A comma-separated list of ws designators defined by the platform.
-	 * Indicates this feature should only be installed on one of the specified
-	 * ws systems. If this attribute is not specified, the feature can be
-	 * installed on all systems (portable implementation).
-	 * 
-	 * This information is used as a hint by the installation and update
-	 * support (user can force installation of feature regardless of this setting).
-	 * 
-	 * @see org.eclipse.core.boot.BootLoader 
-	 * @return the windowing system specification, or <code>null</code>.
-	 * @since 2.0 
-	 */
-	public String getWS();
-
-	/**
-	 * Returns optional system architecture specification. 
-	 * A comma-separated list of arch designators defined by the platform.
-	 * Indicates this feature should only be installed on one of the specified
-	 * systems. If this attribute is not specified, the feature can be
-	 * installed on all systems (portable implementation).
-	 * 
-	 * This information is used as a hint by the installation and update
-	 * support (user can force installation of feature regardless of this setting).
-	 * 
-	 * @see org.eclipse.core.boot.BootLoader 
-	 * @return system architecture specification, or <code>null</code>.
-	 * @since 2.0 
-	 */
-	public String getArch();
-
-	/**
-	 * Returns optional locale specification. 
-	 * A comma-separated list of locale designators defined by Java.
-	 * Indicates this feature should only be installed on a system running
-	 * with a compatible locale (using Java locale-matching rules).
-	 * If this attribute is not specified, the feature can be installed 
-	 * on all systems (language-neutral implementation). 
-	 * 
-	 * This information is used as a hint by the installation and update
-	 *  support (user can force installation of feature regardless of this setting).
-	 * 
-	 * @return the locale specification, or <code>null</code>.
-	 * @since 2.0 
-	 */
-	public String getNL();
-
-	/**
 	 * Return optional image for the feature.
 	 * 
 	 * @return the URL pointing to the image, , or <code>null</code>.
@@ -314,19 +250,41 @@ public interface IFeature extends IAdaptable {
 
 	/**
 	 * Returns an array of feature references included by this feature
+	 * filtered by the operating system, windowing system and architecture system
+	 * set in <code>Sitemanager</code>
 	 * 
 	 * @return an erray of feature references, or an empty array.
 	 * @since 2.0
 	 */
-	public IFeatureReference[] getIncludedFeatureReferences() throws CoreException;
+	public IIncludedFeatureReference[] getIncludedFeatureReferences() throws CoreException;
+
+	/**
+	 * Returns an array of feature references included by this feature
+	 * No filtering occurs
+	 * 
+	 * @return an erray of feature references, or an empty array.
+	 * @since 2.0
+	 */
+	public IIncludedFeatureReference[] getRawIncludedFeatureReferences() throws CoreException;
 
 	/**
 	 * Returns an array of plug-in entries referenced by this feature
+	 * filtered by the operating system, windowing system and architecture system
+	 * set in <code>Sitemanager</code>
 	 * 
 	 * @return an erray of plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
 	public IPluginEntry[] getPluginEntries();
+
+	/**
+	 * Returns an array of plug-in entries referenced by this feature
+	 * No filtering occurs
+	 * 
+	 * @return an erray of plug-in entries, or an empty array.
+	 * @since 2.0
+	 */
+	public IPluginEntry[] getRawPluginEntries();
 
 	/**
 	 * Returns the count of referenced plug-in entries.
@@ -338,11 +296,22 @@ public interface IFeature extends IAdaptable {
 
 	/**
 	 * Returns an array of non-plug-in entries referenced by this feature
+	 * filtered by the operating system, windowing system and architecture system
+	 * set in <code>Sitemanager</code>
 	 * 
 	 * @return an erray of non-plug-in entries, or an empty array.
 	 * @since 2.0
 	 */
 	public INonPluginEntry[] getNonPluginEntries();
+
+	/**
+	 * Returns an array of non-plug-in entries referenced by this feature
+	 * No filtering occurs
+	 * 
+	 * @return an erray of non-plug-in entries, or an empty array.
+	 * @since 2.0
+	 */
+	public INonPluginEntry[] getRawNonPluginEntries();
 
 	/**
 	 * Returns the count of referenced non-plug-in entries.

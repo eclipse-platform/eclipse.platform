@@ -6,6 +6,7 @@ package org.eclipse.update.core;
 
 import java.net.URL;
 
+import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.internal.core.InternalSiteManager;
@@ -22,6 +23,10 @@ import org.eclipse.update.internal.core.InternalSiteManager;
  * @since 2.0
  */
 public class SiteManager {
+	
+	private static String os;
+	private static String ws;
+	private static String arch;	
 
 	private SiteManager() {
 	}
@@ -82,4 +87,67 @@ public class SiteManager {
 	public static void handleNewChanges() throws CoreException{
 		InternalSiteManager.handleNewChanges();
 	}
+	/**
+	 * Returns the string name of the system architecture 
+	 * 
+	 * @see BootLoader#ARCH_LIST
+	 * @return String
+	 * @since 2.1
+	 */
+	public static String getOSArch(){
+		if (arch==null) 
+			arch = BootLoader.getOSArch();
+		return arch;
+	}
+
+	/**
+	 * Returns the string name of the opearting system
+	 * 
+	 * @see BootLoader#OS_LIST
+	 * @return String
+	 * @since 2.1
+	 */
+	public static String getOS(){
+		if (os==null)
+			os = BootLoader.getOS();
+		return os;
+	}
+
+	/**
+	 * Returns the string name of the windowing system
+	 * 
+	 * @see BootLoader#WS_LIST
+	 * @return String
+	 * @since 2.1
+	 */
+	public static String getWS() {
+		if (ws==null)
+			ws = BootLoader.getWS();
+		return ws;
+	}
+	
+	/**
+	 * Sets the arch.
+	 * @param arch The arch to set
+	 */
+	public static void setOSArch(String arch) {
+		SiteManager.arch = arch;
+	}
+
+	/**
+	 * Sets the os.
+	 * @param os The os to set
+	 */
+	public static void setOS(String os) {
+		SiteManager.os = os;
+	}
+
+	/**
+	 * Sets the ws.
+	 * @param ws The ws to set
+	 */
+	public static void setWS(String ws) {
+		SiteManager.ws = ws;
+	}
+
 }

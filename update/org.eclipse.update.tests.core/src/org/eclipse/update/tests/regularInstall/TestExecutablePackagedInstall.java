@@ -50,7 +50,7 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 
 			// verify
 			String site = localSite.getURL().getFile();
-			IPluginEntry[] entries = remoteFeature.getPluginEntries();
+			IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
 			assertTrue("no plugins entry", (entries != null && entries.length != 0));
 			String pluginName = entries[0].getVersionedIdentifier().toString();
 			File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
@@ -114,7 +114,7 @@ public class TestExecutablePackagedInstall extends UpdateManagerTestCase {
 	
 				// verify
 				String site = localSite.getURL().getFile();
-				IPluginEntry[] entries = remoteFeature.getPluginEntries();
+				IPluginEntry[] entries = remoteFeature.getRawPluginEntries();
 				assertTrue("no plugins entry", (entries != null && entries.length != 0));
 				String pluginName = entries[0].getVersionedIdentifier().toString();
 				File pluginFile = new File(site, Site.DEFAULT_PLUGIN_PATH + pluginName);
