@@ -303,7 +303,7 @@ public class InstallWizard extends Wizard {
 			if (!fe.isEnabled(config)) {
 				IFeature newFeature = fe.getFeature();
 				try {
-					unconfigure(config, newFeature);
+					targetSite.unconfigure(newFeature);
 				} catch (CoreException e) {
 					// Eat this - we will leave with it
 				}
