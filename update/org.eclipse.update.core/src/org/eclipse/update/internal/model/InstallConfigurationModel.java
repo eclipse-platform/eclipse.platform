@@ -221,7 +221,6 @@ public class InstallConfigurationModel extends ModelObject {
 	 * @return long
 	 */
 	public long getTimeline() {
-		if (timeline==0) timeline = getCreationDate().getTime();
 		return timeline;
 	}
 

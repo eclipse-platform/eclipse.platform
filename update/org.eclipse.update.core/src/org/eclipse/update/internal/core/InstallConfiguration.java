@@ -40,6 +40,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	public InstallConfiguration(IInstallConfiguration config, URL newLocation, String label) throws MalformedURLException {
 		setLocationURLString(newLocation.toExternalForm());
 		setLabel(label);
+		
 		// do not copy list of listeners nor activities
 		// make a copy of the siteConfiguration object
 		if (config != null) {
@@ -49,12 +50,14 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 					ConfiguredSite configSite = new ConfiguredSite(csites[i]);
 					addConfigurationSiteModel(configSite);
 				}
-			}
-			setTimeline(config.getTimeline());			
+			}			
 		}
-		// set dummy date as caller can call set date if the
+		
+		// set dummy date and timeline as caller can call set date if the
 		// date on the URL string has to be the same 
-		setCreationDate(new Date());
+		Date now = new Date();
+		setCreationDate(now);
+		setTimeline(now.getTime());
 		setCurrent(false);
 		resolve(newLocation, null);
 	}

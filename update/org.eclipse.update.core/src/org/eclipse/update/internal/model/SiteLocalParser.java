@@ -153,15 +153,9 @@ public class SiteLocalParser extends DefaultHandler {
 		String label = attributes.getValue("label"); //$NON-NLS-1$
 		label = UpdateManagerUtils.getResourceString(label, bundle);
 		
-		//timeline
-		String timelineString = attributes.getValue("timeline"); //$NON-NLS-1$
-		long timeline = 0;
-		if (timelineString!=null) timeline = Long.parseLong(timelineString);
-		
 		InstallConfigurationModel config = new BaseSiteLocalFactory().createInstallConfigurationModel();
 		config.setLocationURLString(url.toExternalForm());
 		config.setLabel(label);
-		config.setTimeline(timeline);
 		config.resolve(url,getResourceBundle());
 		try {
 			config.initialize(); 

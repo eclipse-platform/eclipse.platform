@@ -318,10 +318,21 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	}
 
 	/**
+	 * Method createNewInstallConfiguration.
+	 * @return IInstallConfiguration
+	 */
+	public IInstallConfiguration createNewInstallConfiguration() throws CoreException {
+		InstallConfiguration newInstallConfig = createConfigurationSite(null);
+		newInstallConfig.setTimeline(newInstallConfig.getCreationDate().getTime());
+		return newInstallConfig;
+	}
+
+
+	/*
+	 *	creates a new InstallConfiguration or clone an installConfiguration 
 	 * @since 2.0
 	 */
-	/*package*/
-	IInstallConfiguration cloneConfigurationSite(IInstallConfiguration installConfig, URL newFile, String name) throws CoreException {
+	private InstallConfiguration createConfigurationSite(IInstallConfiguration installConfig) throws CoreException {
 
 		// save previous current configuration
 		if (getCurrentConfiguration() != null)
@@ -329,16 +340,13 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 
 		InstallConfiguration result = null;
 		Date currentDate = new Date();
-
 		String newFileName = UpdateManagerUtils.getLocalRandomIdentifier(DEFAULT_CONFIG_FILE, currentDate);
 		try {
-			if (newFile == null)
-				newFile = UpdateManagerUtils.getURL(getLocationURL(), newFileName, null);
+			URL newFile = UpdateManagerUtils.getURL(getLocationURL(), newFileName, null);
 			// pass the date onto the name
-			if (name == null)
-				name = Utilities.format(currentDate);
+			String name = Utilities.format(currentDate);
 			result = new InstallConfiguration(installConfig, newFile, name);
-			// set teh same date in the installConfig
+			// set the same date in the installConfig
 			result.setCreationDate(currentDate);
 		} catch (MalformedURLException e) {
 			throw Utilities.newCoreException(Policy.bind("SiteLocal.UnableToCreateURLFor") + newFileName, e);
@@ -351,7 +359,10 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	 * @since 2.0
 	 */
 	public IInstallConfiguration cloneCurrentConfiguration() throws CoreException {
-		return cloneConfigurationSite(getCurrentConfiguration(), null, null);
+		IInstallConfiguration currentConfiguration = getCurrentConfiguration();
+		InstallConfiguration clonedConfiguration = createConfigurationSite(currentConfiguration);
+		clonedConfiguration.setTimeline(currentConfiguration.getTimeline());
+		return clonedConfiguration;
 	}
 
 	/**
@@ -410,9 +421,8 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 				Date currentDate = configuration.getCreationDate();
 				String name = configuration.getLabel();
 				newConfiguration = new InstallConfiguration(configuration, newFile, name);
-				// set teh same date in the installConfig
+				// set the same date in the installConfig
 				newConfiguration.setCreationDate(currentDate);
-
 			} catch (MalformedURLException e) {
 				throw Utilities.newCoreException(Policy.bind("SiteLocal.UnableToCreateURLFor") + newFileName, e);
 				//$NON-NLS-1$
@@ -619,7 +629,8 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	}
 
 	/**
-	 * if we are unable to parse the SiteLoca we will attempt to parse the file system
+	 * if we are unable to parse the SiteLocal.xml
+	 * we will attempt to parse the file system
 	 */
 	private static void recoverSiteLocal(URL url, SiteLocal site) throws CoreException, MalformedURLException {
 
@@ -764,5 +775,4 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	public IStatus getFeatureStatus(IFeature feature) throws CoreException {
 		return getSiteStatusAnalyzer().getFeatureStatus(feature);
 	}
-
 }

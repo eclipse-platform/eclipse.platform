@@ -11,7 +11,7 @@ import java.util.*;
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureReferenceModel;
 import org.eclipse.update.core.model.SiteModel;
@@ -268,10 +268,20 @@ public class InstallConfigurationParser extends DefaultHandler {
 		// date
 		long date = Long.parseLong(attributes.getValue("date")); //$NON-NLS-1$
 		config.setCreationDate(new Date(date));
+		
+		//timeline
+		String timelineString = attributes.getValue("timeline"); //$NON-NLS-1$
+		long timeline = 0;
+		if (timelineString!=null) {
+			timeline = Long.parseLong(timelineString);
+		} else {
+			timeline = config.getCreationDate().getTime();			
+		}
+		config.setTimeline(timeline);
 
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
-			UpdateManagerPlugin.debug("End Processing Config Tag: date:" + date); //$NON-NLS-1$
+			UpdateManagerPlugin.debug("End Processing Config Tag: date:" + date+" timeline:"+ timeline); //$NON-NLS-1$
 		}
 
 	}

@@ -57,16 +57,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 *  @return the feature on the Site
 	 */
 	public IFeature getFeature() throws CoreException {
-	
-		if (getMatch() == IImport.RULE_PERFECT) return getFeature(true);		
-	
-		if (feature == null) {
-			// find best match
-			IFeatureReference bestMatch = getBestMatch();
-			feature = getFeature(bestMatch);	
-		}
-	
-		return feature;
+		return getFeature(false);
 	}
 
 	/**
@@ -239,14 +230,6 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 
 		IFeatureReference[] enabledFeatures = retrieveEnabledFeatures(getSite());
 
-		// if we need the exact feature, return the feature reference
-		if (getMatch() == IUpdateConstants.RULE_PERFECT)
-			return this;
-
-		// 24536 if the feature reference is disabled we show the perfect and not the best match
-		if (isDisabled())
-			return this;
-
 		// otherwise , find the best feature to create based on match and enabled features
 		if (enabledFeatures != null) {
 			for (int ref = 0; ref < enabledFeatures.length; ref++) {
@@ -333,14 +316,22 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 * @see org.eclipse.update.core.IFeatureReference#getFeature(boolean)
 	 */
 	public IFeature getFeature(boolean perfectMatch) throws CoreException {
-		
-		if (!perfectMatch) return getFeature();
 
-		if (featureExact == null) {
-			featureExact = getFeature(this);
-		}
-
-		return featureExact;
+		// if perfect match is asked or if the feature is disabled
+		// we return the exact match 		
+		if (perfectMatch || getMatch()==IImport.RULE_PERFECT || isDisabled()){
+			if (featureExact == null) {
+				featureExact = getFeature(this);
+			}
+			return featureExact;			
+		} else {
+			if (feature == null) {
+				// find best match
+				IFeatureReference bestMatch = getBestMatch();
+				feature = getFeature(bestMatch);	
+			}
+			return feature;
+		}	
 	}
 
 	/*

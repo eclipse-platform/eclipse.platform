@@ -59,7 +59,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		IPlatformConfiguration platformConfig = BootLoader.getCurrentPlatformConfiguration();
 		IPlatformConfiguration.ISiteEntry[] newSiteEntries = platformConfig.getConfiguredSites();
-		IInstallConfiguration newDefaultConfiguration = siteLocal.cloneConfigurationSite(null, null, null);
+		IInstallConfiguration newDefaultConfiguration = siteLocal.createNewInstallConfiguration();
 		IConfiguredSite[] oldConfiguredSites = new IConfiguredSite[0];
 		newFoundFeatures = new ArrayList();
 
