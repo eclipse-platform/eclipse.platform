@@ -15,6 +15,7 @@ import org.eclipse.update.internal.ui.forms.ActivityConstraints;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.*;
 import org.eclipse.update.internal.ui.preferences.MainPreferencePage;
+import org.eclipse.update.internal.ui.wizards.FeatureHierarchyElement;
 import org.eclipse.update.ui.forms.internal.FormWidgetFactory;
 
 public class UpdatesSearchCategory extends SearchCategory {
@@ -234,7 +235,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 						// otherwise it is a broken feature that we 
 						// do not care about.
 						if (ref.isOptional()) {
-							return true;
+							return FeatureHierarchyElement.hasOlderVersion(ref);
 						}
 					}
 				}
