@@ -214,10 +214,10 @@ public class NewUpdatesWizard extends Wizard {
 		else
 			targetSite.install(feature, getVerificationListener(), monitor);
 		if (!reinstall) {
-			unconfigure(oldFeature);
 			if (optionalFeatures!=null) {
 				InstallWizard.preserveOptionalState(config, targetSite, optionalElements.toArray());
 			}
+			unconfigure(oldFeature);
 		}
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		model.addPendingChange(job);

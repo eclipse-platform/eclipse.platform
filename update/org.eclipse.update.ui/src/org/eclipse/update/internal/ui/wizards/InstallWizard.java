@@ -176,14 +176,14 @@ public class InstallWizard extends Wizard {
 					monitor);
 			IFeature oldFeature = job.getOldFeature();
 			if (oldFeature != null && !job.isOptionalDelta()) {
+				if (optionalElements != null)
+					preserveOptionalState(config, targetSite, optionalElements);
 				boolean oldSuccess = unconfigure(config, oldFeature);
 				if (!oldSuccess) {
 					if (!isNestedChild(oldFeature))
 						// "eat" the error if nested child
 						throwError(UpdateUIPlugin.getResourceString(KEY_OLD));
 				}
-				if (optionalElements != null)
-					preserveOptionalState(config, targetSite, optionalElements);
 			}
 		} else if (job.getJobType() == PendingChange.CONFIGURE) {
 			configure(job.getFeature());
