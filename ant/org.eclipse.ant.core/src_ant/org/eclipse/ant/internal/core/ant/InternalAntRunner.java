@@ -801,34 +801,4 @@ public String[][] getTargets() {
 	}
 	infos[i][0] = defaultName;
 	return infos;
-}
-/**
- * Gets all the target information from the build script.
- * Returns a two dimension array. Each row represents a
- * target, where the first column is the name and the
- * second column is the description. The last row is
- * special and represents the name of the default target.
- * This default target name is in the first column, the
- * second column is null. Note, the default name can be
- * null.
- */
-public String[][] getTargets() {
-	// create a project and initialize it
-	Project antProject = new Project();
-	antProject.init();
-	antProject.setProperty("ant.file", getBuildFileLocation()); //$NON-NLS-1$
-	parseScript(antProject);
-	String defaultName = antProject.getDefaultTarget();
-	Collection targets = antProject.getTargets().values();
-	String[][] infos = new String[targets.size() + 1][2];
-	Iterator enum = targets.iterator();
-	int i = 0;
-	while (enum.hasNext()) {
-		Target target = (Target) enum.next();
-		infos[i][0] = target.getName();
-		infos[i][1] = target.getDescription();
-		i++;
-	}
-	infos[i][0] = defaultName;
-	return infos;
 }}
