@@ -216,11 +216,12 @@ public class NewUpdatesWizard extends Wizard {
 			reinstall=true;
 		}
 		ArrayList optionalElements = new ArrayList();
+		boolean patch = UpdateUI.isPatch(feature);
 		boolean hasOptionalFeatures = FeatureHierarchyElement.computeElements(
 			oldFeature,
 			feature,
 			oldFeature != null,
-			false,
+			patch,
 			config,
 			optionalElements);
 		if (hasOptionalFeatures)
