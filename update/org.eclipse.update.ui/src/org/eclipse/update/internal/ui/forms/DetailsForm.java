@@ -60,6 +60,8 @@ public class DetailsForm extends PropertyWebForm {
 		"FeaturePage.doButton.unconfigure";
 	private static final String KEY_DO_CONFIGURE =
 		"FeaturePage.doButton.configure";
+	private static final String KEY_DO_REPAIR = "FeaturePage.doButton.repair";
+	private static final String KEY_DO_CHANGE = "FeaturePage.doButton.change";
 	private static final String KEY_DO_UPDATE = "FeaturePage.doButton.update";
 	private static final String KEY_DO_INSTALL = "FeaturePage.doButton.install";
 	private static final String KEY_DO_UNINSTALL =
@@ -88,6 +90,9 @@ public class DetailsForm extends PropertyWebForm {
 	private static final String KEY_OPTIONAL_INSTALL_MESSAGE = "FeaturePage.optionalInstall.message";
 	private static final String KEY_OPTIONAL_INSTALL_TITLE = "FeaturePage.optionalInstall.title";
 	//	
+	private static final int REPAIR = 1;
+	private static final int CHANGE = 2;
+	private int reinstallCode = 0;
 
 	private Label imageLabel;
 	private Label providerLabel;
@@ -520,6 +525,7 @@ public class DetailsForm extends PropertyWebForm {
 
 		licenseLink.setInfo(feature.getLicense());
 		copyrightLink.setInfo(feature.getCopyright());
+		this.reinstallCode = 0;
 		doButton.setVisible(getDoButtonVisibility());
 		uninstallButton.setVisible(getUninstallButtonVisibility());
 		if (doButton.isVisible())
@@ -575,7 +581,15 @@ public class DetailsForm extends PropertyWebForm {
 		}
 		// Random site feature
 		if (alreadyInstalled) {
-			return isBrokenFeatureUpdate() || isOptionalFeatureInstall();
+			if (isBrokenFeatureUpdate()) {
+				reinstallCode = REPAIR;
+				return true;
+			}
+			if (isOptionalFeatureInstall()) {
+				reinstallCode = CHANGE;
+				return true;
+			}
+			return false;
 		}
 		// Not installed - check if there are other 
 		// features with this ID that are installed
@@ -671,6 +685,16 @@ public class DetailsForm extends PropertyWebForm {
 	}
 
 	private void updateButtonText(boolean update) {
+		if (reinstallCode==REPAIR) {
+			doButton.setText(
+				UpdateUIPlugin.getResourceString(KEY_DO_REPAIR));
+			return;
+		}
+		if (reinstallCode==CHANGE) {
+			doButton.setText(
+				UpdateUIPlugin.getResourceString(KEY_DO_CHANGE));
+			return;
+		}
 		if (currentFeature instanceof MissingFeature) {
 			MissingFeature mf = (MissingFeature) currentFeature;
 			if (mf.isOptional() && mf.getOriginatingSiteURL() != null) {
