@@ -62,7 +62,7 @@ body {
 /* First, set the width of both the label and the description to a max of 15 em. */
 /* This can be changed when translated to different country locals. */
 #page-links a span {
-	width : 15em;}
+	width : 16em;}
 /* Set up left links orientation first. */
 #page-links a.left:link .link-label,
 #page-links a.left:visited .link-label {
