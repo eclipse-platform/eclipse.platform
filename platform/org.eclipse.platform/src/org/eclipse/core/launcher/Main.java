@@ -66,6 +66,7 @@ public class Main {
 	private String vm = null;
 	private String[] vmargs = null;
 	private String[] commands = null;
+	private String[] extensionPaths = null;
 
 	// splash handling
 	private String showSplash = null;
@@ -177,7 +178,7 @@ public class Main {
 		handleSplash(bootPath);
 
 		// load the BootLoader and startup the platform
-		URLClassLoader loader = new URLClassLoader(bootPath, null);
+		URLClassLoader loader = new StartupClassLoader(bootPath, null);
 		Class clazz = loader.loadClass(STARTER);
 		Method method = clazz.getDeclaredMethod("run", new Class[] {String[].class, Runnable.class}); //$NON-NLS-1$
 		try {
@@ -289,6 +290,7 @@ public class Main {
 	private void readFrameworkExtensions(URL base, ArrayList result) throws IOException {
 		String[] extensions = getArrayFromList(System.getProperties().getProperty(PROP_EXTENSIONS));
 		String parent = new File(base.getFile()).getParent().toString();
+		ArrayList extensionResults = new ArrayList(extensions.length);
 		for (int i = 0; i < extensions.length; i++) {
 			//Search the extension relatively to the osgi plugin 
 			String path = searchFor(extensions[i], parent);
@@ -300,9 +302,10 @@ public class Main {
 				System.out.println("Loading extension: " + extensions[i]); //$NON-NLS-1$
 
 			URL extensionURL = null;
-			if (installLocation.getProtocol().equals("file")) //$NON-NLS-1$
+			if (installLocation.getProtocol().equals("file")) { //$NON-NLS-1$
+				extensionResults.add(path);
 				extensionURL = new File(path).toURL();
-			else
+			} else
 				extensionURL = new URL(installLocation.getProtocol(), installLocation.getHost(), installLocation.getPort(), path);
 
 			//Load the eclipse.properties of the extension, merge its content, and in case of dev mode add the bin entries
@@ -319,6 +322,7 @@ public class Main {
 			}
 			mergeProperties(System.getProperties(), extensionProperties);
 		}
+		extensionPaths = (String[]) extensionResults.toArray(new String[extensionResults.size()]);
 	}
 
 	private void addBaseJars(URL base, ArrayList result) throws IOException {
@@ -1558,5 +1562,23 @@ public class Main {
 			}
 			System.getProperties().put(property, result.toString());
 		}
+	}
+
+	private class StartupClassLoader extends URLClassLoader {
+		public StartupClassLoader(URL[] urls, ClassLoader parent) {
+			super(urls, parent);
+		}
+
+		protected String findLibrary(String name) {
+			if (extensionPaths ==  null)
+				return super.findLibrary(name);
+			String libName = System.mapLibraryName(name);
+			for (int i = 0; i < extensionPaths.length; i++) {
+				File libFile = new File(extensionPaths[i], libName);
+				if (libFile.isFile())
+					return libFile.getAbsolutePath();
+			}
+			return super.findLibrary(name);
+		}		
 	}
 }
