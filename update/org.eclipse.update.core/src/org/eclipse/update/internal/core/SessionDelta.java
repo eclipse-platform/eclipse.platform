@@ -52,14 +52,13 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 	 * @see ISessionDelta#process(IProgressMonitor)
 	 */
 	public void process(IProgressMonitor pm) throws CoreException {
-
 		createInstallConfiguration();
 
 		// process all feature references to configure
 		// find the configured site each feature belongs to
 		if (process == ENABLE) {
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
-				UpdateManagerPlugin.warn("ENABLE SESSION DELTA");			
+				UpdateManagerPlugin.warn("ENABLE SESSION DELTA");
 			if (featureReferences != null && featureReferences.size() > 0) {
 				// manage ProgressMonitor
 				if (pm != null) {
@@ -82,7 +81,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 				IFeature featureToConfigure = null;
 				while (iterator.hasNext()) {
 					ref = (IFeatureReference) iterator.next();
-					
+
 					try {
 						featureToConfigure = ref.getFeature();
 					} catch (CoreException e) {
@@ -92,13 +91,15 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 					if (featureToConfigure != null) {
 						if (pm != null)
 							pm.worked(1);
-							
+
 						configSite = ref.getSite().getCurrentConfiguredSite();
 						try {
 							// make sure only the latest version of the configured features
 							// is configured across sites [16502]													
 							if (enable(featureToConfigure)) {
-								configSite.configure(featureToConfigure);
+								configSite.configure(featureToConfigure);								
+								if (UpdateManagerPlugin.isPatch(featureToConfigure))
+									disablePatchedFeature(featureToConfigure, configSite);
 							} else {
 								configSite.unconfigure(featureToConfigure);
 							}
@@ -108,7 +109,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 							UpdateManagerPlugin.warn("Unable to configure feature:" + featureToConfigure, e);
 						}
 					} else {
-						UpdateManagerPlugin.warn("Unable to configure null feature:" + ref,null);
+						UpdateManagerPlugin.warn("Unable to configure null feature:" + ref, null);
 					}
 
 				}
@@ -117,6 +118,42 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 
 		delete();
 		saveLocalSite();
+	}
+
+	/*
+	 * Disable any patched features 
+	 * 
+	 * This occurs in the same configuredSite as patch is always installed in the same site as the feature
+	 * it patches
+	 */
+	private void disablePatchedFeature(IFeature patchToEnable, IConfiguredSite configSite) {
+		try {
+			IFeatureReference[] children = patchToEnable.getIncludedFeatureReferences();
+			IFeature child = null;
+			for (int i = 0; i < children.length; i++) {
+				try {
+					child = children[i].getFeature(true, configSite);
+				} catch (CoreException e) {
+					//nothing
+				}
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+					UpdateManagerPlugin.debug("Checking if children :" + child + " of efix " + patchToEnable + " should be enabled");
+				if (child != null) {
+					if (UpdateManagerPlugin.isPatch(child))
+						disablePatchedFeature(child, configSite);
+					else
+						try {
+							enable(child);
+						} catch (CoreException e) {
+							if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS)
+								UpdateManagerPlugin.warn("Unable to enable child " + child, e);
+						}
+				}
+			}
+		} catch (CoreException e) {
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS)
+				UpdateManagerPlugin.warn("Unable to retrieve children of patch " + patchToEnable, e);
+		}
 	}
 
 	/*
@@ -189,10 +226,12 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		localSite.save();
 	}
 
-	/**
+	/*
 	 * return true if this feature should be configured 
 	 * A feature should be configure if it has the highest version across 
 	 * all configured features with the same identifier
+	 * 
+	 * Disable all other lower versions of the same feature in all the configured sites
 	 */
 	private boolean enable(IFeature newlyConfiguredFeatures) throws CoreException {
 
@@ -212,9 +251,13 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 						if (result == 1) {
 							ConfiguredSite cSite = (ConfiguredSite) configuredSites[i];
 							cSite.unconfigure(feature);
-							return true;
+							if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+								UpdateManagerPlugin.debug("Found an old version of the feature to disable:"+feature);
 						}
 						if (result == 2) {
+							// we found at least one higher version, do not enable this feature
+							if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+								UpdateManagerPlugin.debug("Found an old version of the feature with a higher version:"+feature);							
 							return false;
 						}
 					}
@@ -223,7 +266,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 				}
 			}
 		}
-		// feature not found, configure it then
+		// feature not found, or no better version found, configure it then
 		return true;
 	}
 

@@ -309,7 +309,6 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		if (optionalFeatures!=null){
 			childrenRef = childrenToConfigure(childrenRef,optionalFeatures);
 		}	
-
 		for (int i = 0; i < childrenRef.length; i++) {
 			try {
 				IFeature child = childrenRef[i].getFeature();

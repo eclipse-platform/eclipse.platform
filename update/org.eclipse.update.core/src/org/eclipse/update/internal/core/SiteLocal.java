@@ -664,7 +664,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		File dir = localXml.getParentFile();
 		File[] configFiles = dir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return (name.startsWith("Config") && name.endsWith("xml"));
+				return (name.startsWith(DEFAULT_CONFIG_PREFIX) && name.endsWith("xml"));
 			}
 		});
 		if (configFiles == null)
@@ -672,7 +672,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 
 		File[] preservedFiles = dir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
-				return (name.startsWith("PreservedConfig") && name.endsWith("xml"));
+				return (name.startsWith(DEFAULT_PRESERVED_CONFIG_PREFIX) && name.endsWith("xml"));
 			}
 		});
 		if (preservedFiles == null)
@@ -726,7 +726,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 
 		// parse preserved configuration information
 		for (int i = 0; i < preservedFiles.length; i++) {
-			URL configURL = configFiles[i].toURL();
+			URL configURL = preservedFiles[i].toURL();
 			InstallConfigurationModel config = new BaseSiteLocalFactory().createInstallConfigurationModel();
 			String relativeURL = UpdateManagerUtils.getURLAsString(url, configURL);
 			config.setLocationURLString(relativeURL);
