@@ -237,17 +237,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			// or [2.0.1] if the feature is optional by all the parents AND one exact parent 
 			// (pointing to same version) is enable
 			if (!newFeatureFound) {
-				// TRACE
-				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-					String reconciliationType = isOptimistic ? "enable (optimistic)" : "disable (pessimistic)";
-					UpdateManagerPlugin.debug("This feature is new: " + foundFeatures[i].getURL() + " reconciled as " + reconciliationType);
-				}
-				if (isOptimistic || enableAsOptional(foundFeatures[i],oldConfiguredFeaturesRef,oldSitePolicy)) {
-					newSitePolicy.configure(foundFeatures[i], true, false);
-				} else {
-					newSitePolicy.unconfigure(foundFeatures[i], true, false);
-					newFoundFeatures.add(foundFeatures[i]);
-				}
+				configureNewFoundFeature(isOptimistic, newSitePolicy, oldSitePolicy, foundFeatures[i], oldConfiguredFeaturesRef);
 			}
 		}
 
@@ -268,46 +258,86 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		return newConfiguredSite;
 	}
 
-	/**
-	 * Method enableAsOptional.
-	 * returns true if all the parent consider the feature as optional and one is enable.
-	 * A parent must include the exact same version as this feature
+	/*
+	 * Enable feature if:
+	 * This is an optimistic reconciliation OR
+	 * The feature is considered optional by ALL its parents AND at least one of them is enable
+	 * Otherwise disable the feature.
 	 * 
-	 * @param possibleOptional
-	 * @param possibleParents
-	 * @return boolean <code>true</code> if the feature should be enabled, <code>false </code> otherwise
+	 * If all its parent consider the feature as optional but none are enable, 
+	 * do not add in the list of new found features. Just disable it.
 	 */
-	private boolean enableAsOptional(IFeatureReference possibleOptional, IFeatureReference[] possibleParents,ConfigurationPolicy oldSitePolicy) throws CoreException {
-		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(possibleOptional,possibleParents,true);
-		if (parents.length==0) return false;
-		
-		IFeature compareFeature = null;
-		IFeature possibleOptionalFeature=null;
-		try {
-			possibleOptionalFeature=possibleOptional.getFeature();
-		} catch (CoreException e) {
-			UpdateManagerPlugin.warn("",e);
-			return false;
+	private void configureNewFoundFeature(boolean isOptimistic, ConfigurationPolicy newSitePolicy, ConfigurationPolicy oldSitePolicy, IFeatureReference foundFeature, IFeatureReference[] possibleParents) throws CoreException {
+
+		// TRACE
+		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+			String reconciliationType = isOptimistic ? "enable (optimistic)" : "disable (pessimistic)";
+			UpdateManagerPlugin.debug("This feature is new: " + foundFeature.getURL() + " reconciled as " + reconciliationType);
 		}
-		for (int i = 0; i < parents.length; i++) {
-			if (oldSitePolicy.isConfigured(parents[i])) return true;
+
+		if (isOptimistic) {
+			newSitePolicy.configure(foundFeature, true, false);
+			return;
 		}
-		
-		return false;
+
+		IFeatureReference[] allOptionalParents = UpdateManagerUtils.getParentFeatures(foundFeature, possibleParents, true);
+		IFeatureReference[] allParents = UpdateManagerUtils.getParentFeatures(foundFeature, possibleParents, false);
+
+		// none of my parents consider me as optional OR I have no parents,
+		// consider as root feature
+		if (allOptionalParents.length == 0) {
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+				UpdateManagerPlugin.debug("There are no features who consider the feature as optional. Treat as root feature.");
+			}
+			newSitePolicy.unconfigure(foundFeature, true, false);
+			newFoundFeatures.add(foundFeature);
+			return;
+
+		}
+
+		//At least one of my parent considers me non optional
+		// consider root feature
+		if (allParents.length > allOptionalParents.length) {
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+				UpdateManagerPlugin.debug("At least one parent considers the feature as NON optional. Treat as root feature.");
+			}
+			newSitePolicy.unconfigure(foundFeature, true, false);
+			newFoundFeatures.add(foundFeature);
+			return;
+		}
+
+		for (int i = 0; i < allOptionalParents.length; i++) {
+			// one parent that consider me optional is enable, enable feature
+			if (oldSitePolicy.isConfigured(allOptionalParents[i])) {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+					UpdateManagerPlugin.debug("Found parent feature:" + allOptionalParents[i] + " as enable: Enable optional child feature:" + foundFeature);
+				}
+				newSitePolicy.configure(foundFeature, true, false);
+				return;
+			}
+		}
+
+		// found parent that consider me optional but they are all disable
+		// unconfigure feature without adding it to the list fo new found features
+		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+			UpdateManagerPlugin.debug("No parents are enable. Disable feature.");
+		}
+		newSitePolicy.unconfigure(foundFeature, true, false);
+
 	}
 
-		/**
-	 * Validate we have only one configured feature per site
-	 * even if we found multiples
-	 * 
-	 * If we find 2 features, the one with a higher version is configured
-	 * If they have the same version, the first feature is configured
-	 * 
-	 * DO NOT check across sites [17980]
-	 * If Feature1 is installed natively on Site A
-	 * If Feature1 is installed on Site B
-	 * If Feature1 from SiteA is removed... 
-	 */
+	/**
+	* Validate we have only one configured feature per site
+	* even if we found multiples
+	* 
+	* If we find 2 features, the one with a higher version is configured
+	* If they have the same version, the first feature is configured
+	* 
+	* DO NOT check across sites [17980]
+	* If Feature1 is installed natively on Site A
+	* If Feature1 is installed on Site B
+	* If Feature1 from SiteA is removed... 
+	*/
 	private void checkConfiguredFeatures(IInstallConfiguration newDefaultConfiguration) throws CoreException {
 
 		IConfiguredSite[] configuredSites = newDefaultConfiguration.getConfiguredSites();
@@ -674,10 +704,11 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				IFeature child = null;
 				try {
 					children[j].getFeature();
-					result.remove(child);					
-				} catch (CoreException e){
+					result.remove(child);
+				} catch (CoreException e) {
 					// if optional, it may not exist, do not throw error for that
-					if (!children[j].isOptional()) throw e;
+					if (!children[j].isOptional())
+						throw e;
 				}
 			}
 		}
@@ -744,15 +775,15 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			IFeature child = null;
 			try {
 				child = children[j].getFeature();
-			} catch (CoreException e){
+			} catch (CoreException e) {
 				// the child may be missing, warn and return
 				if (children[j].isOptional()) {
-					UpdateManagerPlugin.warn("",e);
+					UpdateManagerPlugin.warn("", e);
 					return;
 				}
 				throw e;
 			}
-			expandFeature(child, features);				
+			expandFeature(child, features);
 		}
 	}
 
