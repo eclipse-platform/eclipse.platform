@@ -167,7 +167,7 @@
             category="org.eclipse.ui.preferencePages.Workbench"
             name="%PreferencePages.Capabilities"
             id="org.eclipse.sdk.capabilities">
-            <class class="org.eclipse.ui.activities.ActivityCategoryPreferencePage">
+            <class class="org.eclipse.ui.activities.ActivitiesPreferencePage3">
                 <parameter name="allowAdvanced" value="true"/>
                 <parameter name="captionMessage" value="%PreferencePages.Capabilities.captionMessage" />
             	<parameter name="activityName" value="%PreferencePages.Capabilities.activityName" />
