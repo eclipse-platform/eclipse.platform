@@ -3,7 +3,7 @@
 <plugin
   name = "%pluginName"
   id="org.eclipse.ant.ui"
-  version = "0.9"
+  version = "1.0"
   provider-name = "Object Technology International, Inc."
   class="org.eclipse.ant.internal.ui.AntUIPlugin">
 

@@ -2,7 +2,7 @@
 <plugin
   name="%pluginName"
   id="org.eclipse.ant.core"
-  version="0.9"
+  version="1.0"
   class="org.eclipse.ant.core.AntPlugin"
   provider-name="Object Technology International, Inc.">
 
