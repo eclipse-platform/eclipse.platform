@@ -59,6 +59,27 @@ public class FeatureHierarchyElement {
 			return false;
 		return true;
 	}
+
+	/**
+	 * A hirearchy node represents a 'false update' if
+	 * both old and new references exist and both
+	 * point to the feature with the same ID and version.
+	 * These nodes will not any bytes to be downloaded - 
+	 * they simply exist to allow the hirarchy to
+	 * reach the optional children that are missing
+	 * and will be installed.
+	 */
+
+	public boolean isFalseUpdate() {
+		if (oldFeatureRef != null && newFeatureRef != null) {
+			try {
+				return oldFeatureRef.getVersionedIdentifier().equals(
+					newFeatureRef.getVersionedIdentifier());
+			} catch (CoreException e) {
+			}
+		}
+		return false;
+	}
 	/**
 	 * Returns true if feature is included as optional.
 	 */
@@ -73,7 +94,7 @@ public class FeatureHierarchyElement {
 	public boolean isChecked() {
 		return checked;
 	}
-	
+
 	/**
 	 * Returns true if this optional feature should
 	 * be enabled when installed. By default, all
@@ -87,24 +108,23 @@ public class FeatureHierarchyElement {
 	 * its state.
 	 */
 	public boolean isEnabled(IInstallConfiguration config) {
-		if (isOptional() && oldFeatureRef!=null) {
+		if (isOptional() && oldFeatureRef != null) {
 			try {
 				IFeature oldFeature = oldFeatureRef.getFeature();
-				IConfiguredSite csite = InstallWizard.findConfigSite(oldFeature, config);
+				IConfiguredSite csite =
+					InstallWizard.findConfigSite(oldFeature, config);
 				return csite.isConfigured(oldFeature);
-			}
-			catch (CoreException e) {
+			} catch (CoreException e) {
 			}
 		}
 		return true;
 	}
-	
+
 	public IFeature getFeature() {
 		try {
 			IFeature feature = newFeatureRef.getFeature();
 			return feature;
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			return null;
 		}
 	}
@@ -171,8 +191,14 @@ public class FeatureHierarchyElement {
 	 * Adds checked optional features to the provided set.
 	 */
 	public void addCheckedOptionalFeatures(boolean update, Set set) {
-		if (isOptional() && isChecked())
+		if (isOptional() && isChecked()) {
+			// Do not add checked optional features
+			// if this is an update case but
+			// the node is not a 'true' update
+			// (old and new feature are the equal)
+			if (!update || !isFalseUpdate())
 			set.add(newFeatureRef);
+		}
 		Object[] list = getChildren(update);
 		for (int i = 0; i < list.length; i++) {
 			FeatureHierarchyElement element = (FeatureHierarchyElement) list[i];
@@ -227,7 +253,7 @@ public class FeatureHierarchyElement {
 				// Otherwise, always check.
 				if (newRef.isOptional() && update) {
 					element.setChecked(oldRef != null);
-					if (oldRef==null) {
+					if (oldRef == null) {
 						// Does not have an old reference,
 						// but it may contain an older
 						// feature that may still qualify
@@ -238,8 +264,7 @@ public class FeatureHierarchyElement {
 							element.setChecked(true);
 						}
 					}
-				}
-				else
+				} else
 					element.setChecked(true);
 				list.add(element);
 				element.computeChildren(update);
@@ -253,24 +278,24 @@ public class FeatureHierarchyElement {
 			VersionedIdentifier vid = feature.getVersionedIdentifier();
 			PluginVersionIdentifier version = vid.getVersion();
 			String mode = MainPreferencePage.getUpdateVersionsMode();
-			
-			IFeature [] allInstalled = UpdateUIPlugin.getInstalledFeatures(feature, false);
-			for (int i=0; i<allInstalled.length; i++) {
+
+			IFeature[] allInstalled =
+				UpdateUIPlugin.getInstalledFeatures(feature, false);
+			for (int i = 0; i < allInstalled.length; i++) {
 				IFeature candidate = allInstalled[i];
-				PluginVersionIdentifier cversion = candidate.getVersionedIdentifier().getVersion();
+				PluginVersionIdentifier cversion =
+					candidate.getVersionedIdentifier().getVersion();
 				// Verify that the difference qualifies as
 				// an update.
 				if (mode.equals(MainPreferencePage.EQUIVALENT_VALUE)) {
 					if (version.isEquivalentTo(cversion))
 						return true;
-				}
-				else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE)) {
+				} else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE)) {
 					if (version.isCompatibleWith(cversion))
 						return true;
 				}
 			}
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 		}
 		return false;
 	}
