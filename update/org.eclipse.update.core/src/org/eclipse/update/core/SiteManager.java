@@ -40,7 +40,23 @@ public class SiteManager {
 	 * @since 2.0 
 	 */
 	public static ISite getSite(URL siteURL) throws CoreException {
-		return InternalSiteManager.getSite(siteURL);
+		return InternalSiteManager.getSite(siteURL,true);
+	}
+
+	/** 
+	 * Returns a site object for the site specified by the argument URL.
+	 * Typically, the URL references a site manifest file on an update 
+	 * site. An update site acts as a source of features for installation
+	 * actions.
+	 * 
+	 * @param siteURL site URL
+	 * @param usesCache <code>false</code> if the cache should be refreshed, and the site entirely reparsed, <code>false</code> otherwise.
+	 * @return site object for the url
+	 * @exception CoreException
+	 * @since 2.0 
+	 */
+	public static ISite getSite(URL siteURL, boolean usesCache) throws CoreException {
+		return InternalSiteManager.getSite(siteURL, usesCache);
 	}
 
 	/**

@@ -79,8 +79,7 @@ public abstract class UpdateManagerTestCase extends TestCase {
 		UpdateManagerUtils.removeFromFileSystem(target);
 		
 		// setup cache site to false
-		InternalSiteManager.cache = false;
-
+		InternalSiteManager.globalUseCache = false;
 	}
 
 	/**

@@ -36,7 +36,7 @@ public class InternalSiteManager {
 
 	// cache found sites
 	private static Map sites = new HashMap();
-	public static boolean cache = true;
+	public static boolean globalUseCache = true;
 
 	// true if an exception occured creating localSite
 	// so we cache it and don't attempt to create it again
@@ -74,13 +74,15 @@ public class InternalSiteManager {
 	/*
 	 * @see ILocalSite#getSite(URL)
 	 */
-	public static ISite getSite(URL siteURL) throws CoreException {
+	public static ISite getSite(URL siteURL, boolean useCache) throws CoreException {
 		ISite site = null;
 
 		if (siteURL == null)
 			return null;
 
-		if (cache && sites.containsKey(siteURL)) {
+		// use cache if set up globally (globalUseCache=true)
+		// and passed as parameter (useCache=true)
+		if ((useCache && globalUseCache) && sites.containsKey(siteURL)) {
 			site = (ISite) sites.get(siteURL);
 			return site;
 		}
@@ -280,7 +282,7 @@ public class InternalSiteManager {
 		if (siteLocation != null) {
 			try {
 				URL siteURL = siteLocation.toURL();
-				site = getSite(siteURL);
+				site = getSite(siteURL,false);
 			} catch (MalformedURLException e) {
 				throw Utilities.newCoreException(
 					Policy.bind(
