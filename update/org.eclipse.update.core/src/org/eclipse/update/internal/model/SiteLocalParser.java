@@ -106,9 +106,9 @@ public class SiteLocalParser extends DefaultHandler {
 			}
 
 		} catch (MalformedURLException e) {
-			throw new SAXException(Policy.bind("Parser.UnableToCreateURL", e.getMessage()), e); //$NON-NLS-1$
+			throw new SAXException(Policy.bind("Parser.UnableToCreateURL",e.getMessage()), e); //$NON-NLS-1$
 		} catch (CoreException e) {
-			throw new SAXException(Policy.bind("Parser.InternalError", e.toString()), e); //$NON-NLS-1$
+			throw new SAXException(Policy.bind("Parser.InternalError",e.toString()), e); //$NON-NLS-1$
 		}
 
 	}
@@ -136,7 +136,7 @@ public class SiteLocalParser extends DefaultHandler {
 		String stampString = attributes.getValue("stamp"); //$NON-NLS-1$
 		long stamp = Long.parseLong(stampString);
 		site.setStamp(stamp);
-
+	
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
 			UpdateManagerPlugin.debug("End process Site label:" + info); //$NON-NLS-1$
@@ -152,17 +152,21 @@ public class SiteLocalParser extends DefaultHandler {
 		URL url = UpdateManagerUtils.getURL(site.getLocationURL(), attributes.getValue("url"), null); //$NON-NLS-1$
 		String label = attributes.getValue("label"); //$NON-NLS-1$
 		label = UpdateManagerUtils.getResourceString(label, bundle);
-
+		
 		InstallConfigurationModel config = new BaseSiteLocalFactory().createInstallConfigurationModel();
 		config.setLocationURLString(url.toExternalForm());
 		config.setLabel(label);
-		config.resolve(url, getResourceBundle());
-
-		// add the config
-		if (preserved) {
-			site.addPreservedInstallConfigurationModel(config);
-		} else {
-			site.addConfigurationModel(config);
+		config.resolve(url,getResourceBundle());
+		try {
+			config.initialize(); 
+			// add the config
+			if (preserved) {
+				site.addPreservedInstallConfigurationModel(config);
+			} else {
+				site.addConfigurationModel(config);
+			}
+		} catch (CoreException e){
+			UpdateManagerPlugin.warn("Error processing configuration history:"+url.toExternalForm(),e);
 		}
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {

@@ -25,55 +25,44 @@ public class InstallConfigurationModel extends ModelObject {
 	/**
 	 * initialize the configurations from the persistent model.
 	 */
-	private void initialize() {
+	public void initialize() throws CoreException {
 		try {
-			try {
-				URL resolvedURL = URLEncoder.encode(locationURL);
-				InputStream in = UpdateManagerPlugin.getPlugin().get(resolvedURL).getInputStream();
-				new InstallConfigurationParser(in, this);
-			} catch (FileNotFoundException exception) {
-				UpdateManagerPlugin.warn(locationURLString + " does not exist, The local site is not in synch with the file system and is pointing to a file that doesn't exist.", exception); //$NON-NLS-1$
-				throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ErrorDuringFileAccess", locationURLString), exception); //$NON-NLS-1$			
-			} catch (SAXException exception) {
-				throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ParsingErrorDuringCreation", locationURLString, "\r\n" + exception.toString()), exception); //$NON-NLS-1$ //$NON-NLS-2$
-			} catch (IOException exception) {
-				throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ErrorDuringFileAccess", locationURLString), exception); //$NON-NLS-1$
-			}
-		} catch (CoreException e) {
-			UpdateManagerPlugin.warn("Error processing configuration history:" + locationURL.toExternalForm(), e);
-		} finally {
-			initialized = true;
+			URL resolvedURL = URLEncoder.encode(getURL());
+			InputStream in = UpdateManagerPlugin.getPlugin().get(resolvedURL).getInputStream();
+			new InstallConfigurationParser(in, this);
+		} catch (FileNotFoundException exception) {
+			UpdateManagerPlugin.warn(getLocationURLString() + " does not exist, The local site is not in synch with the file system and is pointing to a file that doesn't exist.",exception); //$NON-NLS-1$
+			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ErrorDuringFileAccess",getLocationURLString()), exception); //$NON-NLS-1$			
+		} catch (SAXException exception) {
+			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ParsingErrorDuringCreation", getLocationURLString(),"\r\n"+exception.toString()), exception); //$NON-NLS-1$ //$NON-NLS-2$
+		} catch (IOException exception) {
+			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.ErrorDuringFileAccess",getLocationURLString()), exception); //$NON-NLS-1$
 		}
-
 	}
 
 	private boolean isCurrent;
 	private URL locationURL;
-	private String locationURLString;
+	private String locationURLString;	
 	private Date date;
 	private String label;
-	private List /* of ConfiguretionActivityModel */
-	activities;
-	private List /* of configurationSiteModel */
-	configurationSites;
-
+	private List /* of ConfiguretionActivityModel */activities;
+	private List /* of configurationSiteModel */ configurationSites;
+	
 	private long timeline;
-	private boolean initialized = false;
 
 	/**
 	 * default constructor. Create
 	 */
-	public InstallConfigurationModel() {
+	public InstallConfigurationModel(){
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public ConfiguredSiteModel[] getConfigurationSitesModel() {
-		if (!initialized) initialize();
 		if (configurationSites == null)
 			return new ConfiguredSiteModel[0];
-
+			
 		return (ConfiguredSiteModel[]) configurationSites.toArray(arrayTypeFor(configurationSites));
 	}
 
@@ -87,41 +76,40 @@ public class InstallConfigurationModel extends ModelObject {
 		if (configurationSites == null) {
 			configurationSites = new ArrayList();
 		}
-		if (!configurationSites.contains(site)) {
+		if (!configurationSites.contains(site)){
 			configurationSites.add(site);
 		}
 	}
+	
 
 	public void setConfigurationSiteModel(ConfiguredSiteModel[] sites) {
-		configurationSites = null;
+		configurationSites=null;
 		for (int i = 0; i < sites.length; i++) {
 			addConfigurationSiteModel(sites[i]);
 		}
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public boolean removeConfigurationSiteModel(ConfiguredSiteModel site) {
-		if (!initialized) initialize();
 		if (!isCurrent)
 			return false;
-
+			
 		if (configurationSites != null) {
 			return configurationSites.remove(site);
 		}
-
+		
 		return false;
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public boolean isCurrent() {
-		if (!initialized) initialize();
 		return isCurrent;
 	}
-
+	
 	/**
 	 *  @since 2.0
 	 */
@@ -130,24 +118,25 @@ public class InstallConfigurationModel extends ModelObject {
 		// set an install config as Not current
 		this.isCurrent = isCurrent;
 	}
-
+	
+		
+	
 	/**
 	 * @since 2.0
 	 */
 	public ConfigurationActivityModel[] getActivityModel() {
-		if (!initialized) initialize();
-		if (activities == null)
+	if (activities==null)
 			return new ConfigurationActivityModel[0];
-		return (ConfigurationActivityModel[]) activities.toArray(arrayTypeFor(activities));
+	return (ConfigurationActivityModel[]) activities.toArray(arrayTypeFor(activities));
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public void addActivityModel(ConfigurationActivityModel activity) {
 		if (activities == null)
 			activities = new ArrayList();
-		if (!activities.contains(activity)) {
+		if (!activities.contains(activity)){
 			activities.add(activity);
 			activity.setInstallConfigurationModel(this);
 		}
@@ -156,7 +145,6 @@ public class InstallConfigurationModel extends ModelObject {
 	 * 
 	 */
 	public Date getCreationDate() {
-		if (!initialized) initialize();
 		return date;
 	}
 	/**
@@ -171,27 +159,24 @@ public class InstallConfigurationModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public URL getURL() {
-		//if (!initialized) initialize();
-		//no need to initialize, always set
 		return locationURL;
 	}
-
+	
 	/**
 	 * @since 2.0
 	 */
 	public String getLabel() {
-		if (!initialized) initialize();
 		return label;
 	}
-
+	
 	/**
 	 * @since 2.0.2
 	 */
-
+	
 	public String toString() {
 		return getLabel();
 	}
-
+	
 	/**
 	 * Sets the label.
 	 * @param label The label to set
@@ -200,13 +185,12 @@ public class InstallConfigurationModel extends ModelObject {
 		assertIsWriteable();
 		this.label = label;
 	}
-
+	
 	/**
 	 * Gets the locationURLString.
 	 * @return Returns a String
 	 */
 	public String getLocationURLString() {
-		if (!initialized) initialize();
 		return locationURLString;
 	}
 
@@ -220,16 +204,18 @@ public class InstallConfigurationModel extends ModelObject {
 		this.locationURL = null;
 	}
 
+
 	/*
 	 * @see ModelObject#resolve(URL, ResourceBundle)
 	 */
-	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
+	public void resolve(URL base, ResourceBundle bundle)
+		throws MalformedURLException {
 		// local
-		locationURL = resolveURL(base, bundle, locationURLString);
-
+		locationURL = resolveURL(base,bundle,locationURLString);
+		
 		// delagate
-		resolveListReference(getActivityModel(), base, bundle);
-		resolveListReference(getConfigurationSitesModel(), base, bundle);
+		resolveListReference(getActivityModel(),base,bundle);
+		resolveListReference(getConfigurationSitesModel(),base,bundle);
 	}
 
 	/**
@@ -237,7 +223,6 @@ public class InstallConfigurationModel extends ModelObject {
 	 * @return long
 	 */
 	public long getTimeline() {
-		if (!initialized) initialize();
 		return timeline;
 	}
 
