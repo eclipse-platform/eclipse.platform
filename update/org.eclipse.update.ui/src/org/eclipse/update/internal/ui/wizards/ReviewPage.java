@@ -646,9 +646,6 @@ public class ReviewPage
 
 	private void handleSelectAll(boolean select) {
 		tableViewer.setAllChecked(select);
-//		 make sure model is local (download using progress monitor from container)
-		downloadIncludedFeatures(); 
-			
 		tableViewer.getControl().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				pageChanged();
