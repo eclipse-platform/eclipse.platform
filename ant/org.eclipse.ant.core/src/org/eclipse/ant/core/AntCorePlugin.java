@@ -34,6 +34,12 @@ public class AntCorePlugin extends Plugin {
 	private AntCorePreferences preferences;
 
 	/**
+	 * Unique identifier constant (value <code>"org.eclipse.ant.core"</code>)
+	 * for the Ant Core plug-in.
+	 */
+	public static final String PI_ANTCORE= "org.eclipse.ant.core";
+
+	/**
 	 * Simple identifier constant (value <code>"tasks"</code>)
 	 * for the Ant tasks extension point.
 	 */

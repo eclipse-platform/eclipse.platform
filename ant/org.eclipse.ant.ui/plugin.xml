@@ -8,10 +8,10 @@
   class="org.eclipse.ant.internal.ui.AntUIPlugin">
 
   <requires>
-    <import plugin="org.eclipse.ui"/>
-    <import plugin="org.eclipse.core.resources"/>
-    <import plugin="org.eclipse.ant.core"/>
     <import plugin="org.apache.ant"/>
+    <import plugin="org.eclipse.ant.core"/>
+    <import plugin="org.eclipse.core.resources"/>
+    <import plugin="org.eclipse.ui"/>
   </requires>
 
   <runtime>
@@ -60,6 +60,12 @@
   		id="org.eclipse.ant.ui.AntConsolePreferences" 
   		name="%antConsolePreferences"
   		class="org.eclipse.ant.internal.ui.AntConsolePreferencePage"
+  		category="org.eclipse.ant.ui.AntPreferences">
+  	</page>
+  	<page 
+  		id="org.eclipse.ant.ui.AntClasspathPreferences" 
+  		name="%antClasspathPreferences"
+  		class="org.eclipse.ant.internal.ui.AntClasspathPreferencePage"
   		category="org.eclipse.ant.ui.AntPreferences">
   	</page>
   </extension>
