@@ -1044,7 +1044,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 			
 		// name
 		String name = attributes.getValue("name");
-		String optional = attributes.getValue("isOptional");
+		String optional = attributes.getValue("optional");
 		boolean isOptional = "true".equalsIgnoreCase(optional);
 		
 		objectStack.push(new IncludedFeatureReference(name,isOptional));
