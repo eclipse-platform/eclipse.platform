@@ -127,6 +127,7 @@ public class SearchResultView extends ViewPart implements ISelectionListener {
 		public void objectsAdded(Object parent, Object[] children) {
 			if (parent instanceof SearchResultSite) {
 				viewer.add(children);
+				updateTitle();
 			}
 		}
 		public void objectsRemoved(Object parent, Object[] children) {
@@ -135,6 +136,7 @@ public class SearchResultView extends ViewPart implements ISelectionListener {
 			if (object instanceof SearchObject) {
 				if (SearchObject.P_REFRESH.equals(property)) {
 					viewer.refresh();
+					updateTitle();
 				}
 			}
 		}
@@ -288,8 +290,8 @@ public class SearchResultView extends ViewPart implements ISelectionListener {
 
 	public void setCurrentSearch(SearchObject currentSearch) {
 		this.currentSearch = currentSearch;
-		updateTitle();
 		viewer.setInput(currentSearch);
+		updateTitle();
 	}
 
 	private void updateTitle() {
@@ -297,10 +299,12 @@ public class SearchResultView extends ViewPart implements ISelectionListener {
 			setTitle(getSite().getRegisteredName());
 		else {
 			String searchLabel = getSearchLabel(currentSearch);
+			int count = viewer.getTable().getItemCount();
 			String title = UpdateUIPlugin.getFormattedMessage(KEY_TITLE, 
 				new String [] {
 					getSite().getRegisteredName(),
-					getSearchLabel(currentSearch) });
+					getSearchLabel(currentSearch),
+					""+count });
 			setTitle(title);
 		}
 	}

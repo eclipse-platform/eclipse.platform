@@ -31,6 +31,8 @@ public class NewUpdatesWizardPage extends BannerPage {
 	// NL keys
 	private static final String KEY_TITLE = "NewUpdatesWizard.MainPage.title";
 	private static final String KEY_DESC = "NewUpdatesWizard.MainPage.desc";
+	private static final String KEY_TABLE_LABEL =
+		"NewUpdatesWizard.MainPage.tableLabel";
 	private static final String KEY_SELECT_ALL =
 		"NewUpdatesWizard.MainPage.selectAll";
 	private static final String KEY_DESELECT_ALL =
@@ -280,11 +282,17 @@ public class NewUpdatesWizardPage extends BannerPage {
 	}
 
 	private void createTableViewer(Composite parent) {
+		Label label = new Label(parent, SWT.NULL);
+		label.setText(UpdateUIPlugin.getResourceString(KEY_TABLE_LABEL));
+		GridData gd = new GridData();
+		gd.horizontalSpan = 2;
+		label.setLayoutData(gd);
+		
 		tableViewer =
 			CheckboxTableViewer.newCheckList(
 				parent,
 				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd = new GridData(GridData.FILL_BOTH);
 		Table table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 
