@@ -72,7 +72,7 @@ public class NewUpdatesWizard extends Wizard {
 				IFeature feature = adapter.getFeature(null);
 				IFeature[] installed =
 					UpdateUI.getInstalledFeatures(feature);
-				PendingChange change = new PendingChange(installed[0], feature);
+				PendingChange change = new PendingChange(installed.length>0?installed[0]:null, feature);
 				result.add(change);
 			} catch (CoreException e) {
 				UpdateUI.logException(e);
@@ -212,15 +212,16 @@ public class NewUpdatesWizard extends Wizard {
 		IFeature oldFeature = job.getOldFeature();
 		boolean reinstall=false;
 		IFeatureReference [] optionalFeatures=null;
-		if (feature.getVersionedIdentifier().equals(oldFeature.getVersionedIdentifier())) {
+		if (oldFeature!=null && feature.getVersionedIdentifier().equals(oldFeature.getVersionedIdentifier())) {
 			reinstall=true;
 		}
 		ArrayList optionalElements = new ArrayList();
+		boolean patch = UpdateUI.isPatch(feature);
 		boolean hasOptionalFeatures = FeatureHierarchyElement.computeElements(
 			oldFeature,
 			feature,
 			oldFeature != null,
-			false,
+			patch,
 			config,
 			optionalElements);
 		if (hasOptionalFeatures)
@@ -235,7 +236,10 @@ public class NewUpdatesWizard extends Wizard {
 			if (optionalFeatures!=null) {
 				InstallWizard.preserveOptionalState(config, targetSite, false, optionalElements.toArray());
 			}
-			unconfigure(oldFeature);
+			if (oldFeature!=null) unconfigure(oldFeature);
+			else {
+				MultiInstallWizard.ensureUnique(config, feature, targetSite);
+			}
 		}
 		UpdateModel model = UpdateUI.getDefault().getUpdateModel();
 		model.addPendingChange(job);

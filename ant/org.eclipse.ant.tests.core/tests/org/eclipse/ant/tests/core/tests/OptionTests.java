@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
 import org.eclipse.core.resources.IFile;
@@ -25,7 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 public class OptionTests extends AbstractAntTest {
 	
 	protected static final String START_OF_HELP= "ant [options] [target [target2 [target3] ...]]";
-	protected static final String VERSION= "Apache Ant version 1.5.2 compiled on February 28 2003";
+	protected static final String VERSION= "Apache Ant version 1.5.3 compiled on April 9 2003";
 	 
 	public OptionTests(String name) {
 		super(name);
@@ -83,8 +84,7 @@ public class OptionTests extends AbstractAntTest {
 	/**
 	 * Tests passing an unrecognized argument
 	 */
-	public void testUnknownArg() throws CoreException {
-		
+	public void testUnknownArg() throws CoreException {	
 		run("TestForEcho.xml", new String[]{"-listenr"});
 		//unknown arg, print usage
 		assertTrue("Two message should have been logged", AntTestChecker.getDefault().getMessagesLoggedCount() == 2);
@@ -240,11 +240,10 @@ public class OptionTests extends AbstractAntTest {
 	 * Tests specifying the -buildfile
 	 */
 	public void testBuildFile() throws CoreException {
-		String buildFileName= getProject().getFolder("scripts").getFile("echoing.xml").getLocation().toFile().getAbsolutePath();
-		run("TestForEcho.xml", new String[]{"-buildfile", buildFileName}, false, "scripts");
+		String buildFileName= getProject().getFolder("buildfiles").getFile("echoing.xml").getLocation().toFile().getAbsolutePath();
+		run("TestForEcho.xml", new String[]{"-buildfile", buildFileName}, false, "buildfiles");
 		
 		assertTrue("Should have been 1 tasks, was: " + AntTestChecker.getDefault().getTaskStartedCount(), AntTestChecker.getDefault().getTaskStartedCount() == 1);
-		
 	}
 	
 	/**
@@ -430,7 +429,7 @@ public class OptionTests extends AbstractAntTest {
 	 * Tests the "-diagnostics" option with ANT_HOME set
 	 * bug 25693
 	 */
-	/*public void testDiagnostics() throws CoreException {
+	public void testDiagnostics() throws CoreException {
 		AntCorePlugin.getPlugin().getPreferences().setAntHome(getAntHome());
 		try {
 			run("input.xml", new String[]{"-diagnostics"});
@@ -438,7 +437,8 @@ public class OptionTests extends AbstractAntTest {
 			restorePreferenceDefaults();
 		}
 		
-		String msg= (String)AntTestChecker.getDefault().getMessages().get(1);
-		assertTrue("Message incorrect: " + msg, msg.equals("testing handling input requests"));
-	}*/
+		String msg= (String)AntTestChecker.getDefault().getMessages().get(12);
+		//msg depends on whether self hosting testing or build testing
+		assertTrue("Message incorrect: " + msg, msg.endsWith("org.apache.ant") || msg.endsWith("org.apache.ant_1.5.3"));
+	}
 }

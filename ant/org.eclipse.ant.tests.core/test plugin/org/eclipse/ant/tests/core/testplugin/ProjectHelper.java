@@ -26,7 +26,7 @@ import org.eclipse.ui.wizards.datatransfer.*;
  */
 public class ProjectHelper {
 	
-	public static final IPath TEST_SCRIPTS_DIR= new Path("testscripts");
+	public static final IPath TEST_BUILDFILES_DIR= new Path("testbuildfiles");
 	public static final IPath TEST_RESOURCES_DIR= new Path("testresources");	
 	public static final IPath TEST_LIB_DIR= new Path("testlib");
 	
