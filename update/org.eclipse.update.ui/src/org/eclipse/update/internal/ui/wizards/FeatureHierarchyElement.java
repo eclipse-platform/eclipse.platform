@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.internal.ui.UpdateUIPlugin;
+import org.eclipse.update.internal.ui.preferences.MainPreferencePage;
 
 /**
  * This class is used to construct a joint feature hiearchy.
@@ -68,6 +71,7 @@ public class FeatureHierarchyElement {
 	public boolean isChecked() {
 		return checked;
 	}
+
 	/**
 	 * Selects an editable feature for installation.
 	 */
@@ -184,8 +188,20 @@ public class FeatureHierarchyElement {
 				// If this is an update (old feature exists), 
 				// only check the new optional feature if the old exists.
 				// Otherwise, always check.
-				if (newRef.isOptional() && update)
+				if (newRef.isOptional() && update) {
 					element.setChecked(oldRef != null);
+					if (oldRef==null) {
+						// Does not have an old reference,
+						// but it may contain an older
+						// feature that may still qualify
+						// for update. For example,
+						// an older version may have been
+						// installed natively from the CD-ROM.
+						if (hasOlderVersion(newRef)) {
+							element.setChecked(true);
+						}
+					}
+				}
 				else
 					element.setChecked(true);
 				list.add(element);
@@ -193,6 +209,33 @@ public class FeatureHierarchyElement {
 			}
 		} catch (CoreException e) {
 		}
+	}
+	private static boolean hasOlderVersion(IFeatureReference newRef) {
+		try {
+			IFeature feature = newRef.getFeature();
+			VersionedIdentifier vid = feature.getVersionedIdentifier();
+			PluginVersionIdentifier version = vid.getVersion();
+			String mode = MainPreferencePage.getUpdateVersionsMode();
+			
+			IFeature [] allInstalled = UpdateUIPlugin.getInstalledFeatures(feature, false);
+			for (int i=0; i<allInstalled.length; i++) {
+				IFeature candidate = allInstalled[i];
+				PluginVersionIdentifier cversion = candidate.getVersionedIdentifier().getVersion();
+				// Verify that the difference qualifies as
+				// an update.
+				if (mode.equals(MainPreferencePage.EQUIVALENT_VALUE)) {
+					if (version.isEquivalentTo(cversion))
+						return true;
+				}
+				else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE)) {
+					if (version.isCompatibleWith(cversion))
+						return true;
+				}
+			}
+		}
+		catch (CoreException e) {
+		}
+		return false;
 	}
 	/**
 	 * Returns included feature references for the given reference.

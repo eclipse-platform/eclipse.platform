@@ -227,6 +227,10 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 	}
 	
 	public static IFeature[] getInstalledFeatures(IFeature feature) {
+		return getInstalledFeatures(feature, true);
+	}
+	
+	public static IFeature[] getInstalledFeatures(IFeature feature, boolean onlyConfigured) {
 		Vector features = new Vector();
 		try {
 			ILocalSite localSite = SiteManager.getLocalSite();
@@ -237,7 +241,7 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 
 			for (int i = 0; i < isites.length; i++) {
 				IConfiguredSite isite = isites[i];
-				IFeature[] result = UpdateUIPlugin.searchSite(id, isite, true);
+				IFeature[] result = UpdateUIPlugin.searchSite(id, isite, onlyConfigured);
 				for (int j = 0; j < result.length; j++) {
 					IFeature installedFeature = result[j];
 					features.add(installedFeature);
