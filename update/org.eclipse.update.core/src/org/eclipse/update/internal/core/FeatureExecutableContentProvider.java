@@ -259,6 +259,10 @@ public class FeatureExecutableContentProvider extends FeatureContentProvider {
 				e);
 			//$NON-NLS-1$
 		}
+		
+		//[20866] we did not preserve executable bit
+		validatePermissions(result);
+		
 		return result;
 	}
 }

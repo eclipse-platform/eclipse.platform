@@ -104,7 +104,7 @@ public class SiteFilePluginContentConsumer extends ContentConsumer {
 					pluginPath);
 			}
 			UpdateManagerUtils.copyToLocal(inStream, pluginPath, null);
-			UpdateManagerUtils.checkPermissions(pluginPath); // 20305
+			UpdateManagerUtils.checkPermissions(contentReference,pluginPath); // 20305
 			installedFiles.add(pluginPath);
 		} catch (IOException e) {
 			throw Utilities.newCoreException(

@@ -117,7 +117,7 @@ public class SiteFileContentConsumer extends SiteContentConsumer {
 		try {
 			inStream = contentReference.getInputStream();
 			UpdateManagerUtils.copyToLocal(inStream, featurePath, null);
-			UpdateManagerUtils.checkPermissions(featurePath); // 20305
+			UpdateManagerUtils.checkPermissions(contentReference,featurePath); // 20305
 			installedFiles.add(featurePath);
 		} catch (IOException e) {
 			throw Utilities.newCoreException(

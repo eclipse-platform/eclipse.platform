@@ -6,9 +6,13 @@ package org.eclipse.update.core;
 
 import java.io.*;
 import java.net.URL;
+import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.model.*;
+import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -30,6 +34,8 @@ public abstract class FeatureContentProvider
 	private IFeature feature;
 	private File tmpDir; // local work area for each provider
 	public static final String JAR_EXTENSION = ".jar"; //$NON-NLS-1$	
+	
+	private static final String DOT_PERMISSIONS = ".permissions";
 	
 	// lock
 	private final static Object lock = new Object();
@@ -295,4 +301,79 @@ public abstract class FeatureContentProvider
 		return nonPluginBaseID + entry.getIdentifier();
 	}
 
+	/**
+	 * Sets the permission of all the ContentReferences
+	 * Check for the .permissions contentReference and use it
+	 * to set the permissions of other ContentReference 
+	 * 
+	 * @return void
+  	 */
+	protected void validatePermissions(ContentReference[] references) {
+		
+		if (references==null || references.length==0) return;
+		
+		Map permissions = getPermissions(references);
+		if (permissions.isEmpty()) return;
+		
+		for (int i = 0; i < references.length; i++) {
+			ContentReference contentReference = references[i];
+			String id = contentReference.getIdentifier();
+			Object value = null;
+			if ((value = permissions.get(id))!=null){
+				Integer permission = (Integer)value;
+				contentReference.setPermission(permission.intValue());
+			}
+		}
+	}
+	
+	/*
+	 * returns the permission MAP 
+	 */
+	private Map getPermissions(ContentReference[] references){
+
+		Map result = new HashMap();
+		// search for .permissions
+		boolean notfound = true;
+		ContentReference permissionReference = null;
+		for (int i = 0; i < references.length && notfound; i++) {
+			ContentReference contentReference = references[i];
+			if (DOT_PERMISSIONS.equals(contentReference.getIdentifier())){
+				 notfound= false;
+				 permissionReference = contentReference;
+			}
+		}
+		if (notfound) return result;
+		
+		// parse permissions file
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(new InputStreamReader(permissionReference.getInputStream()));
+		} catch (IOException e){
+			// TODO
+			UpdateManagerPlugin.warn("Unable to access .permissions",e);
+		}
+		
+		if (in!=null){
+			try {
+				String line = in.readLine();
+				StringTokenizer tokenizer ;
+				while(line!=null){
+					tokenizer = new StringTokenizer(line,"=");
+					String path = tokenizer.nextToken();
+					Integer permission = new Integer(ContentReference.DEFAULT_PERMISSION);
+					if (tokenizer.hasMoreTokens()){
+						permission = Integer.valueOf(tokenizer.nextToken());
+					}	
+					result.put(path,permission);
+					line=in.readLine();
+				}
+			} catch (IOException e){
+				//TODO
+				UpdateManagerPlugin.warn("Unable to read .permissions",e);
+			} finally {
+				try {in.close();} catch (Exception exc){};
+			} 
+		}
+		return result;
+	}
 }

@@ -33,12 +33,21 @@ public class ContentReference {
 	 */
 	public static final long UNKNOWN_SIZE = -1;
 
+	/**
+	 * Default permission when installing a content reference
+	 * Will add executable bit if necessary
+	 * 
+	 * @since 2.0.1
+	 */
+	public static final int DEFAULT_PERMISSION = -1;
+
 	private static final String FILE_URL_PROTOCOL = "file"; //$NON-NLS-1$
 
 	private String id;
 	private URL url; // reference is either URL reference *OR*
 	private File file; //    local file reference
 	private URLConnection connection;
+	private int permission; 
 
 	/*
 	 * do not allow default contruction
@@ -210,4 +219,24 @@ public class ContentReference {
 		else
 			return url.toExternalForm();
 	}
+	/**
+	 * Returns the permission for this file.
+	 * 
+	 * @return the content reference permission
+	 * @see DEFAULT_PERMISSION
+	 * @since 2.0.1
+	 */
+	public int getPermission() {
+		return permission;
+	}
+
+	/**
+	 * Sets the permission of this content reference.
+	 * 
+	 * @param permission The permission to set
+	 */
+	public void setPermission(int permission) {
+		this.permission = permission;
+	}
+
 }

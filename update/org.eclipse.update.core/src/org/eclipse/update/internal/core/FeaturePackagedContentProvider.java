@@ -263,20 +263,14 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
 	 */
-	public ContentReference[] getPluginEntryContentReferences(
-		IPluginEntry pluginEntry,
-		InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry,InstallMonitor monitor) throws CoreException {
 
-		ContentReference[] references =
-			getPluginEntryArchiveReferences(pluginEntry, monitor);
+		ContentReference[] references =	getPluginEntryArchiveReferences(pluginEntry, monitor);
 		ContentReference[] pluginReferences = new ContentReference[0];
 
 		try {
 			if (references[0] instanceof JarContentReference) {
-				JarContentReference localRef =
-					(JarContentReference) asLocalReference(references[0],
-						monitor);
+				JarContentReference localRef = (JarContentReference) asLocalReference(references[0],monitor);
 				pluginReferences = localRef.peek(null, monitor);
 			} else {
 				// return the list of all subdirectories
@@ -284,10 +278,12 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 				pluginReferences = new ContentReference[files.size()];
 				for (int i = 0; i < pluginReferences.length; i++) {
 					File currentFile = (File) files.get(i);
-					pluginReferences[i] =
-						new ContentReference(null, currentFile.toURL());
+					pluginReferences[i] = new ContentReference(null, currentFile.toURL());
 				}
 			};
+			
+		//[20866] we did not preserve executable bit
+		validatePermissions(pluginReferences);
 
 		} catch (IOException e) {
 			throw errorRetrieving(pluginEntry.getVersionedIdentifier().toString(),references[0],getFeature().getURL(),e);

@@ -40,7 +40,7 @@ public class SiteFileNonPluginContentConsumer extends ContentConsumer {
 		try {
 			inStream = contentReference.getInputStream();
 			UpdateManagerUtils.copyToLocal(inStream, featurePath, null);
-			UpdateManagerUtils.checkPermissions(featurePath); // 20305
+			UpdateManagerUtils.checkPermissions(contentReference,featurePath); // 20305
 		} catch (IOException e) {
 			throw Utilities.newCoreException(Policy.bind("GlobalConsumer.ErrorCreatingFile", featurePath), e); //$NON-NLS-1$
 		} finally {

@@ -189,10 +189,16 @@ public class UpdateManagerUtils {
 	 * [20305] need to slam permissions for executable libs on some
 	 * platforms. This is a temporary fix
 	 */
-	public static void checkPermissions(String filePath) {
+	public static void checkPermissions(ContentReference ref,String filePath) {
+		
+		if(ref.getPermission()!=0){
+			UpdateManagerPlugin.warn("Change permission for "+filePath+" to "+ref.getPermission());
+			// FIXME
+		}
+		
 		if (filePath != null
 			&& BootLoader.OS_HPUX.equals(BootLoader.getOS())
-			&& filePath.endsWith(".sl")) {
+			&& ref.getPermission()!=0) {
 			// add execute permission on shared libraries 20305
 			// do not remove write permission 20896
 			// chmod a+x *.sl
