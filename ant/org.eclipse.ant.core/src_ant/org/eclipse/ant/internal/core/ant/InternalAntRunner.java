@@ -398,7 +398,9 @@ public class InternalAntRunner {
 	
 	/**
 	 * Returns the default target name that was last computed or <code>null</code>
-	 * if no default target has been computed.	 * @return the default target name	 */
+	 * if no default target has been computed.
+	 * @return the default target name
+	 */
 	public String getDefaultTarget() {
 		return defaultTarget;
 	}
@@ -539,7 +541,8 @@ public class InternalAntRunner {
 
 	/*
 	 * Note that the list passed to this method must support
-	 * List#remove(Object)	 */
+	 * List#remove(Object)
+	 */
 	private void run(List argList) {
 		setCurrentProject(new Project());
 		Throwable error = null;
@@ -1115,7 +1118,8 @@ public class InternalAntRunner {
 	
 
 	/*
-	 * Checks for targets specified at the command line.	 */
+	 * Checks for targets specified at the command line.
+	 */
 	private void processTargets(List commands) {
 		if (targets == null) {
 			targets = new Vector(commands.size());
@@ -1169,7 +1173,8 @@ public class InternalAntRunner {
 	/*
 	 * Processes cmd line properties and adds the user properties
 	 * Any user properties that have been explicitly set are set as well.
-	 * Ensures that -D properties take precedence.	 */
+	 * Ensures that -D properties take precedence.
+	 */
 	private void processProperties(List commands) {
 		//MULTIPLE property files are allowed
 		String arg= getArgument(commands, "-propertyfile"); //$NON-NLS-1$

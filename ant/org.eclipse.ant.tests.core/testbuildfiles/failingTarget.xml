@@ -1,9 +1,0 @@
-<project default="all">
-	<target name="all" depends="fails, echos"/>
-	<target name="fails">
-		<jar jarfile="jar16.jar" basedir="doesNotExist"/>
-	</target>
-	<target name="echos">
-		<echo>Still echo on failure</echo>
-	</target>
-</project>
