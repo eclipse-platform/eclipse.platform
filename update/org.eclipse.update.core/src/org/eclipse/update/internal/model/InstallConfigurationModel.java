@@ -72,8 +72,9 @@ public class InstallConfigurationModel extends ModelObject {
 		if (configurationSites == null) {
 			configurationSites = new ArrayList();
 		}
-		if (!configurationSites.contains(site))
+		if (!configurationSites.contains(site)){
 			configurationSites.add(site);
+		}
 	}
 	
 

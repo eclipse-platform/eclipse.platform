@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
@@ -62,7 +63,6 @@ public class Site extends SiteModel implements ISite {
 	public static final String SITE_XML = SITE_FILE + ".xml"; //$NON-NLS-1$
 
 	private ISiteContentProvider siteContentProvider;
-
 	/**
 	 * Constructor for Site
 	 */
@@ -451,4 +451,11 @@ public class Site extends SiteModel implements ISite {
 	public void setSiteContentProvider(ISiteContentProvider siteContentProvider) {
 		this.siteContentProvider = siteContentProvider;
 	}
+	/**
+	 * @see org.eclipse.update.core.model.SiteModel#getConfiguredSite()
+	 */
+	public IConfiguredSite getConfiguredSite() {
+		return (IConfiguredSite) getConfiguredSiteModel();
+	}
+
 }

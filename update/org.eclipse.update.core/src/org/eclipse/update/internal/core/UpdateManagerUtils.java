@@ -25,6 +25,18 @@ public class UpdateManagerUtils {
 										BootLoader.OS_LINUX.equals(BootLoader.getOS()) ||
 										BootLoader.OS_SOLARIS.equals(BootLoader.getOS());
 
+
+	private static Map table;
+	static {
+		table = new HashMap();
+		table.put("compatible", new Integer(IImport.RULE_COMPATIBLE)); //$NON-NLS-1$
+		table.put("perfect", new Integer(IImport.RULE_PERFECT)); //$NON-NLS-1$
+		table.put("equivalent", new Integer(IImport.RULE_EQUIVALENT)); //$NON-NLS-1$
+		table.put("greaterOrEqual", new Integer(IImport.RULE_GREATER_OR_EQUAL));//$NON-NLS-1$
+	}
+
+
+
 	/**
 	 * return the urlString if it is a absolute URL
 	 * otherwise, return the default URL if the urlString is null
@@ -573,5 +585,19 @@ public class UpdateManagerUtils {
 		}
 		
 		return result;
+	}
+	
+	
+	/**
+	 * returns the mapping of matching rules
+	 * the default returns perfect
+	 * 
+	 * @since 2.0.2
+	 */
+	public static int getMatchingRule(String rule){
+		if (rule==null) return IImport.RULE_PERFECT;
+		int ruleInt = ((Integer) table.get(rule)).intValue();
+		if (ruleInt == IImport.RULE_NONE) return IImport.RULE_PERFECT;
+		return ruleInt;
 	}
 }

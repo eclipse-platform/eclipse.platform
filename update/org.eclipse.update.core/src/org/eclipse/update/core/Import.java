@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.update.core.model.ImportModel;
+import org.eclipse.update.internal.core.UpdateManagerUtils;
 
 /**
  * Convenience implementation of a plug-in dependency.
@@ -19,16 +20,6 @@ import org.eclipse.update.core.model.ImportModel;
  */
 public class Import extends ImportModel implements IImport {
 
-	private static Map table;
-
-	static {
-		table = new HashMap();
-		table.put("compatible", new Integer(IImport.RULE_COMPATIBLE)); //$NON-NLS-1$
-		table.put("perfect", new Integer(IImport.RULE_PERFECT)); //$NON-NLS-1$
-		table.put("equivalent", new Integer(IImport.RULE_EQUIVALENT)); //$NON-NLS-1$
-		table.put("greaterOrHigher", new Integer(IImport.RULE_GREATER_OR_EQUAL));
-		//$NON-NLS-1$
-	}
 
 	/**
 	 * Returns an identifier of the dependent plug-in.
@@ -43,7 +34,7 @@ public class Import extends ImportModel implements IImport {
 	 * @see IImport#getRule()
 	 */
 	public int getRule() {
-		return ((Integer) table.get(getMatchingRuleName())).intValue();
+		return UpdateManagerUtils.getMatchingRule(getMatchingRuleName());
 	}
 
 }

@@ -6,6 +6,7 @@ package org.eclipse.update.core;
 import java.net.URL;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.InstallAbortedException;
 
 /**
@@ -261,4 +262,12 @@ public interface ISite extends IAdaptable {
 	 * @since 2.0
 	 */
 	public void setSiteContentProvider(ISiteContentProvider siteContentProvider);
+	
+	/** 
+	 * Returns the <code>IConfiguredSite</code> for this site in the current 
+	 * configuration or <code>null</code> if none found.
+	 * 
+	 * @since 2.0.2
+	 */
+	public IConfiguredSite getConfiguredSite();
 }

@@ -13,8 +13,10 @@ import java.util.Stack;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.IncludedFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.xml.sax.*;
@@ -1044,10 +1046,29 @@ public class DefaultFeatureParser extends DefaultHandler {
 			
 		// name
 		String name = attributes.getValue("name");
+		
+		// optional
 		String optional = attributes.getValue("optional");
 		boolean isOptional = "true".equalsIgnoreCase(optional);
 		
-		objectStack.push(new IncludedFeatureReference(name,isOptional));
+		// match
+		String ruleName = attributes.getValue("match");
+		int rule = UpdateManagerUtils.getMatchingRule(ruleName);
+		
+		// update allowed
+		String allowed = attributes.getValue("update-allowed");
+		boolean isUpdatable = !("false".equalsIgnoreCase(optional));
+		
+		// search location
+		String locationName = attributes.getValue("search_location");
+		int searchLocation = IFeatureReference.SEARCH_ROOT;
+		if("both".equalsIgnoreCase(locationName))
+			searchLocation = IFeatureReference.SEARCH_ROOT & IFeatureReference.SEARCH_SELF;
+		if("root".equalsIgnoreCase(locationName))
+			searchLocation = IFeatureReference.SEARCH_ROOT;
+		
+		
+		objectStack.push(new IncludedFeatureReference(name,isOptional,rule, isUpdatable, searchLocation));
 		objectStack.push(new VersionedIdentifier(id,ver));	
 			
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
@@ -1091,7 +1112,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 						
 			if (ver==null){
 				ver = "0.0.0";
-				match = "greaterOrHigher";
+				match = "greaterOrEqual";
 			} else {
 				if (match==null)
 					match = "compatible";

@@ -21,6 +21,19 @@ import org.eclipse.core.runtime.IAdaptable;
  */
 public interface IFeatureReference extends IAdaptable {
 
+
+	/**
+	 * The search location for updates is defined by the root feature
+	 * @since 2.0.2
+	 */
+	public static final int SEARCH_ROOT = 1<<1;
+	
+	/**
+	 * The search location for updates is defined by this feature
+	 * @since 2.0.2
+	 */
+	public static final int SEARCH_SELF = 1<<2;
+
 	/**
 	 * Returns the referenced feature URL.
 	 * 
@@ -107,4 +120,46 @@ public interface IFeatureReference extends IAdaptable {
 	 */
 	public String getName();	
 	
+	
+		/**
+	 * Returns the matching rule for this included feature.
+	 * The rule will determine the ability of the included feature to move version 
+	 * without causing the overall feature to appear broken.
+	 * 
+	 * The default is <code>MATCH_PERFECT</code>
+	 * 
+	 * @see IImport#RULE_PERFECT
+	 * @see IImport#RULE_EQUIVALENT
+	 * @see IImport#RULE_COMPATIBLE
+	 * @see IImport#RULE_GREATER_OR_EQUAL
+	 * @return int representation of feature matching rule.
+	 * @since 2.0.2
+	 */
+	public int getMatch();
+	
+	/**
+	 * If the included feature is not updatable, we cannot install or enable another version, unless the 
+	 * root feature installs it. 
+	 * 
+	 * The default is <code>true</code>.
+	 *
+	 * @return <code>true</code> if a new version of the feature can be installed and enabled,
+	 * <code>false  </code>otherwise.
+	 * @since 2.0.2
+	 */
+	public boolean isUpdateAllowed();
+
+	/**
+	 * Returns the search location for this included feature.
+	 * The location will be used to search updates for this feature.
+	 * 
+	 * The default is <code>SEARCH_ROOT</code>
+	 * 
+	 * @see IFeatureReference#SEARCH_ROOT
+	 * @see IFeatureReference#SEARCH_SELF
+	 * @return int representation of feature searching rule.
+	 * @since 2.0.2
+	 */
+
+	public int getSearchLocation();
 }

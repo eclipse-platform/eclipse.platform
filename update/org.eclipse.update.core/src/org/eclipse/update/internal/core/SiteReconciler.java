@@ -565,16 +565,9 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	 * Returns the Site URL, attempting to replace it by platform: URL if needed
 	 */
 	private String getURLSiteString(ISite site) {
-
-		IConfiguredSite[] configSites = siteLocal.getCurrentConfiguration().getConfiguredSites();
-		for (int i = 0; i < configSites.length; i++) {
-			if (configSites[i] instanceof ConfiguredSite) {
-				ConfiguredSite cSite = (ConfiguredSite) configSites[i];
-				if (site.equals(cSite.getSite())) {
-					return cSite.getPlatformURLString();
-				}
-			}
-		}
+		// since 2.0.2 ISite.getConfiguredSite();
+		ConfiguredSite cSite = (ConfiguredSite)site.getConfiguredSite();
+		if (cSite!=null) return cSite.getPlatformURLString();
 		return site.getURL().toExternalForm();
 	}
 

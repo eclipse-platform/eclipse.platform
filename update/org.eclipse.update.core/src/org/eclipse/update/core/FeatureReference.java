@@ -222,4 +222,28 @@ public class FeatureReference
 		return getOptions().isOptional();
 	}
 
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#getMatch()
+	 */
+	public int getMatch() {
+		if (getOptions()==null) return IImport.RULE_PERFECT;
+		return getOptions().getMatch();
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#getSearchLocation()
+	 */
+	public int getSearchLocation() {
+		if (getOptions()==null) return IFeatureReference.SEARCH_ROOT;
+		return getOptions().getSearchLocation();
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#isUpdateAllowed()
+	 */
+	public boolean isUpdateAllowed() {
+		if (getOptions()==null) return true;
+		return getOptions().isUpdateAllowed();
+	}
+
 }

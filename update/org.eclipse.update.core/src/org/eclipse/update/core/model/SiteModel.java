@@ -4,9 +4,15 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+import org.eclipse.update.configuration.IConfiguredSite;
+import org.eclipse.update.internal.core.Policy;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
+import org.eclipse.update.internal.model.ConfiguredSiteModel;
 
 /**
  * Site model object.
@@ -30,6 +36,7 @@ public class SiteModel extends ModelObject {
 	categories;
 	private String locationURLString;
 	private URL locationURL;
+	public ConfiguredSiteModel configuredSiteModel;
 
 	/**
 	 * Creates an uninitialized site model object.
@@ -329,5 +336,23 @@ public class SiteModel extends ModelObject {
 		resolveReference(getDescriptionModel(), base, bundle);
 		resolveListReference(getCategoryModels(), base, bundle);
 	}
+
+	/**
+	 * 
+	 */
+	public ConfiguredSiteModel getConfiguredSiteModel() {
+		return this.configuredSiteModel;
+	}
+
+
+
+	/**
+	 * @see org.eclipse.update.core.ISite#setConfiguredSite(IConfiguredSite)
+	 */
+	public void setConfiguredSiteModel(ConfiguredSiteModel configuredSiteModel) {
+		this.configuredSiteModel = configuredSiteModel;		
+	}
+
+
 
 }

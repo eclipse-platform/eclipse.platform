@@ -11,8 +11,10 @@ import java.util.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.model.ConfiguredSiteModel;
 
 /**
  * Convenience implementation of a feature.
@@ -203,7 +205,7 @@ public class Feature extends FeatureModel implements IFeature {
 	public IFeatureReference install(IFeature targetFeature, IVerificationListener verificationListener, IProgressMonitor progress) throws InstallAbortedException, CoreException {
 		//TODO
 		// call other API with all optional features, or setup variabel meaning install all
-		return install(targetFeature,null,verificationListener,progress);
+		return install(targetFeature, null, verificationListener, progress);
 	}
 
 	/**
@@ -259,12 +261,11 @@ public class Feature extends FeatureModel implements IFeature {
 			}
 			IPluginEntry[] pluginsToInstall = UpdateManagerUtils.diff(sourceFeaturePluginEntries, targetSitePluginEntries);
 			INonPluginEntry[] nonPluginsToInstall = getNonPluginEntries();
-			
+
 			IFeatureReference[] children = getIncludedFeatureReferences();
-			if (optionalfeatures!=null){
-				children = UpdateManagerUtils.optionalChildrenToInstall(children,optionalfeatures);
+			if (optionalfeatures != null) {
+				children = UpdateManagerUtils.optionalChildrenToInstall(children, optionalfeatures);
 			}
-			
 
 			// determine number of monitor tasks
 			//   2 tasks for the feature jar (download/verify + install)
@@ -392,9 +393,9 @@ public class Feature extends FeatureModel implements IFeature {
 				if (consumer != null) {
 					if (success) {
 						result = consumer.close();
-						if (result == null){
+						if (result == null) {
 							result = alreadyInstalledFeature; // 18867
-							if (result!=null && optionalfeatures!=null && optionalfeatures.length>0){
+							if (result != null && optionalfeatures != null && optionalfeatures.length > 0) {
 								// reinitialize as new optional children may have been installed
 								reinitializeFeature(result);
 							}
@@ -651,78 +652,161 @@ public class Feature extends FeatureModel implements IFeature {
 	 * Initializes includes feature references
 	 * If the included feature reference is found on the site, add it to the List
 	 * Otherwise attempt to instanciate it using the same type as this feature and
-	 * using the default location on the site
+	 * using the default location on the site.
 	 */
 	private void initializeIncludedReferences() throws CoreException {
 		includedFeatureReferences = new ArrayList();
 
 		// key = versionedIdentifer, value = IncludeFeatureOptions
-		Map nestedFeatures = getFeatureIncludeMap();	
+		Map nestedFeatures = getFeatureIncludeMap();
 		if (nestedFeatures.isEmpty())
 			return;
-		
+
 		ISite site = getSite();
 		if (site == null)
-			return; 
-			
-		// [20367] no site, cannot initialize nested references
-		IFeatureReference[] refs = site.getFeatureReferences();
+			return;
 
+		IFeatureReference enabledFeatures[] = null;
 		Iterator nestedVersionedIdentifier = nestedFeatures.keySet().iterator();
-		while (nestedVersionedIdentifier.hasNext()){
-			VersionedIdentifier identifier = (VersionedIdentifier)nestedVersionedIdentifier.next();
-			IncludedFeatureReference options = (IncludedFeatureReference)nestedFeatures.get(identifier);			
+		while (nestedVersionedIdentifier.hasNext()) {
+			VersionedIdentifier identifier = (VersionedIdentifier) nestedVersionedIdentifier.next();
+			IncludedFeatureReference options = (IncludedFeatureReference) nestedFeatures.get(identifier);
 			boolean found = false;
 
-			// too long to compute if not a file system
-			// other solution would be to parse feature.xml
-			// when parsing file system to create archive features/FeatureId_Ver.jar
-			if ("file".equals(site.getURL().getProtocol())) {
-				// check if declared on the Site
-				if (refs != null) {
-					for (int ref = 0; ref < refs.length && !found; ref++) {
-						if (refs[ref] != null) {
-							IFeature feature = null;
-							try {
-								feature = refs[ref].getFeature();
-							} catch (CoreException e) {
-								UpdateManagerPlugin.warn(null, e);
-							};
+			if (options != null && options.getMatch() == IImport.RULE_PERFECT) {
+				IFeatureReference newRef = getPerfectIncludeFeature(site, identifier, options);
+				includedFeatureReferences.add(newRef);
+			} else {
+				// find best match from enabled features.
+				if (enabledFeatures==null) enabledFeatures = retrieveEnabledFeatures(site);
+				includedFeatureReferences.add(getBestMatch(enabledFeatures, identifier, options));
+			}
+		}
+	}
 
-							if (feature != null) {
-								if (identifier.equals(feature.getVersionedIdentifier())) {
-									// included featureReferences may also be a Map then
-									FeatureReference newRef = new FeatureReference(refs[ref]);
-									newRef.setOptions(options);
-									includedFeatureReferences.add(newRef);
-									found = true;
-								}
-							}
+	/**
+	 * Method getBestMatch.
+	 * @param enabledFeatures
+	 * @param identifier
+	 * @param options
+	 * @return Object
+	 */
+	private Object getBestMatch(IFeatureReference[] enabledFeatures, VersionedIdentifier identifier, IncludedFeatureReference options) throws CoreException {
+		FeatureReference newRef=null;
+		if (enabledFeatures != null) {
+			for (int ref = 0; ref < enabledFeatures.length; ref++) {
+				if (enabledFeatures[ref] != null) {
+					VersionedIdentifier id = null;
+					try {
+						id = enabledFeatures[ref].getVersionedIdentifier();
+					} catch (CoreException e) {
+						UpdateManagerPlugin.warn(null, e);
+					};
+					if (matches(identifier,id,options)) {
+						if (newRef==null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())){
+							newRef = new FeatureReference(enabledFeatures[ref]);
+							newRef.setOptions(options);
 						}
 					}
 				}
 			}
+		}
+		
+		if (newRef!=null) return newRef;
+		return getPerfectIncludeFeature(getSite(),identifier, options);
+	}
 
-			// instanciate by mapping it based on the site.xml
-			// in future we may ask for a factory to create the feature ref
-			if (!found) {
-				FeatureReference newRef = new FeatureReference();
-				newRef.setOptions(options);
-				newRef.setSite(getSite());
-				IFeatureReference parentRef = getSite().getFeatureReference(this);
-				if (parentRef instanceof FeatureReference) {
-					newRef.setType(((FeatureReference) parentRef).getType());
-				}
-				String featureID = Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
-				URL featureURL = getSite().getSiteContentProvider().getArchiveReference(featureID);
-				newRef.setURL(featureURL);
-				try {
-					newRef.resolve(getSite().getURL(), null); // no need to get the bundle
-					includedFeatureReferences.add(newRef);
-				} catch (Exception e) {
-					throw Utilities.newCoreException(Policy.bind("Feature.UnableToInitializeFeatureReference", identifier.toString()), e);
+	/**
+	 * Method matches.
+	 * @param identifier
+	 * @param id
+	 * @param options
+	 * @return boolean
+	 */
+	private boolean matches(VersionedIdentifier baseIdentifier, VersionedIdentifier id, IncludedFeatureReference options) {
+		if (baseIdentifier==null || id ==null) return false;
+		if (!id.getIdentifier().equals(baseIdentifier.getIdentifier())) return false;
+		int match = IImport.RULE_PERFECT;
+		if (options!=null) {
+			match = options.getMatch();
+		}
+		
+		switch (match) {
+			case IImport.RULE_PERFECT :
+				return id.getVersion().isPerfect(baseIdentifier.getVersion());
+			case IImport.RULE_COMPATIBLE :
+				return id.getVersion().isCompatibleWith(baseIdentifier.getVersion());
+			case IImport.RULE_EQUIVALENT :
+				return id.getVersion().isEquivalentTo(baseIdentifier.getVersion());
+			case IImport.RULE_GREATER_OR_EQUAL :
+				return id.getVersion().isGreaterOrEqualTo(baseIdentifier.getVersion());
+		}		
+		UpdateManagerPlugin.warn("Unknown matching rule:"+match);
+		return false;
+	}
+
+
+
+
+	/**
+	 * Method retrieveEnabledFeatures.
+	 * @param site
+	 */
+	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
+		IConfiguredSite configuredSite = site.getConfiguredSite();
+		if (configuredSite==null) return null;
+		return configuredSite.getConfiguredFeatures();		
+	}
+
+
+	private IFeatureReference getPerfectIncludeFeature(ISite site, VersionedIdentifier identifier, IncludedFeatureReference options) throws CoreException {
+
+		// [20367] no site, cannot initialize nested references
+		IFeatureReference[] refs = site.getFeatureReferences();
+		
+		// too long to compute if not a file system
+		// other solution would be to parse feature.xml
+		// when parsing file system to create archive features/FeatureId_Ver.jar
+		if ("file".equals(site.getURL().getProtocol())) {
+			// check if declared on the Site
+			if (refs != null) {
+				for (int ref = 0; ref < refs.length; ref++) {
+					if (refs[ref] != null) {
+						VersionedIdentifier id = null;
+						try {
+							id = refs[ref].getVersionedIdentifier();
+						} catch (CoreException e) {
+							UpdateManagerPlugin.warn(null, e);
+						};
+
+						if (identifier.equals(id)) {
+							// included featureReferences may also be a Map then
+							FeatureReference newRef = new FeatureReference(refs[ref]);
+							newRef.setOptions(options);
+							return newRef;
+						}
+					}
 				}
 			}
+		}
+
+		// instanciate by mapping it based on the site.xml
+		// in future we may ask for a factory to create the feature ref
+		FeatureReference newRef = new FeatureReference();
+		newRef.setOptions(options);
+		newRef.setSite(getSite());
+		IFeatureReference parentRef = getSite().getFeatureReference(this);
+		if (parentRef instanceof FeatureReference) {
+			newRef.setType(((FeatureReference) parentRef).getType());
+		}
+		String featureID = Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
+		URL featureURL = getSite().getSiteContentProvider().getArchiveReference(featureID);
+		newRef.setURL(featureURL);
+		try {
+			newRef.resolve(getSite().getURL(), null); // no need to get the bundle
+			return newRef;
+		} catch (Exception e) {
+			throw Utilities.newCoreException(Policy.bind("Feature.UnableToInitializeFeatureReference", identifier.toString()), e);
 		}
 	}
 
@@ -834,24 +918,24 @@ public class Feature extends FeatureModel implements IFeature {
 		UpdateManagerPlugin.warn("ValidateAlreadyInstalled:Feature " + this +" not found on site" + this.getURL());
 		return null;
 	}
-	
+
 	/*
 	 * re initialize children of the feature, invalidate the cache
 	 * @param result FeatureReference to reinitialize.
 	 */
 	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
-		
+
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
-			UpdateManagerPlugin.debug("Re initialize feature reference:"+referenceToReinitialize);
-		
+			UpdateManagerPlugin.debug("Re initialize feature reference:" + referenceToReinitialize);
+
 		IFeature feature = null;
 		try {
 			feature = referenceToReinitialize.getFeature();
-			if (feature!=null && feature instanceof Feature){
-				((Feature)feature).initializeIncludedReferences();
+			if (feature != null && feature instanceof Feature) {
+				((Feature) feature).initializeIncludedReferences();
 			}
 		} catch (CoreException e) {
-			UpdateManagerPlugin.warn("",e);
+			UpdateManagerPlugin.warn("", e);
 		}
-	}	
+	}
 }

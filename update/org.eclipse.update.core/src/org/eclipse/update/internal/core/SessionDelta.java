@@ -39,7 +39,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 	 */
 	public SessionDelta() {
 		super();
-		process=ENABLE;
+		process = ENABLE;
 		deleted = false;
 	}
 
@@ -50,8 +50,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		if (featureReferences == null)
 			return new IFeatureReference[0];
 
-		return (IFeatureReference[]) featureReferences.toArray(
-			arrayTypeFor(featureReferences));
+		return (IFeatureReference[]) featureReferences.toArray(arrayTypeFor(featureReferences));
 	}
 
 	/**
@@ -70,59 +69,54 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 
 		// process all feature references to configure
 		// find the configured site each feature belongs to
-		if (process==ENABLE) {
+		if (process == ENABLE) {
 			if (featureReferences != null && featureReferences.size() > 0) {
-				IInstallConfiguration currentConfig =
-					SiteManager.getLocalSite().getCurrentConfiguration();
-				if (currentConfig != null) {
-					IConfiguredSite[] configSites = currentConfig.getConfiguredSites();
-					
-							// manage ProgressMonitor
-					if (pm!=null){
-						int nbFeatures = featureReferences.size();
-						pm.beginTask(Policy.bind("SessionDelta.EnableFeatures"),nbFeatures);
+				IConfiguredSite configSite = null;
+
+				// manage ProgressMonitor
+				if (pm != null) {
+					int nbFeatures = featureReferences.size();
+					pm.beginTask(Policy.bind("SessionDelta.EnableFeatures"), nbFeatures);
+				}
+				// since 2.0.2 ISite.getConfiguredSite()
+				// find the configuredSite that maintains this featureReference
+				// configure the feature
+
+				Iterator iterator = featureReferences.iterator();
+				while (iterator.hasNext()) {
+					IFeatureReference ref = (IFeatureReference) iterator.next();
+					ISite site = ref.getSite();
+
+					IFeature featureToConfigure = null;
+					try {
+						featureToConfigure = ref.getFeature();
+					} catch (CoreException e) {
+						UpdateManagerPlugin.warn(null, e);
 					}
-					// loop through all the configured site
-					// find the configuredSite that maintains this featureReference
-					// configure the feature
-					for (int i = 0; i < configSites.length; i++) {
-						Iterator iterator = featureReferences.iterator();
-						while (iterator.hasNext()) {
-							IFeatureReference ref = (IFeatureReference) iterator.next();
-							ISite site = ref.getSite();
-							
-							if(site!=null && site.equals(configSites[i].getSite())){
-								IFeature featureToConfigure = null;
-								
-								try {
-									featureToConfigure = ref.getFeature();
-								} catch (CoreException e){
-									UpdateManagerPlugin.warn(null,e);								
-								}
-								
-								if (featureToConfigure!=null){
-									if (pm!=null) pm.worked(1);
-									try {
-										// make sure only the latest version of the configured features
-										// is configured across sites [16502]													
-										if (enable(featureToConfigure)){
-											configSites[i].configure(featureToConfigure);									
-										} else {
-											configSites[i].unconfigure(featureToConfigure);
-										}
-									} catch (CoreException e){
-										// if I cannot configure one, 
-										//then continue with others 
-										UpdateManagerPlugin.warn("Unable to configure feature:"+featureToConfigure,e);
-									}
-								}
+
+					if (featureToConfigure != null) {
+						if (pm != null)
+							pm.worked(1);
+						configSite = site.getConfiguredSite();
+						try {
+							// make sure only the latest version of the configured features
+							// is configured across sites [16502]													
+							if (enable(featureToConfigure)) {
+								configSite.configure(featureToConfigure);
+							} else {
+								configSite.unconfigure(featureToConfigure);
 							}
+						} catch (CoreException e) {
+							// if I cannot configure one, 
+							//then continue with others 
+							UpdateManagerPlugin.warn("Unable to configure feature:" + featureToConfigure, e);
 						}
 					}
+
 				}
 			}
 		}
-		
+
 		delete();
 		saveLocalSite();
 	}
@@ -130,21 +124,21 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 	/*
 	 * 
 	 */
-	public void delete(){
-		if (deleted){
-			UpdateManagerPlugin.warn("Attempt to delete an already deleted session delta:"+file);
+	public void delete() {
+		if (deleted) {
+			UpdateManagerPlugin.warn("Attempt to delete an already deleted session delta:" + file);
 			return;
 		}
-		
+
 		// remove the file from the file system
-		if (file != null){
+		if (file != null) {
 			UpdateManagerUtils.removeFromFileSystem(file);
-			UpdateManagerPlugin.warn("Removing SessionDelta:"+file);
+			UpdateManagerPlugin.warn("Removing SessionDelta:" + file);
 		} else {
 			UpdateManagerPlugin.warn("Unable to remove SessionDelta. File is null");
-		}	
-		
-		deleted = true;	
+		}
+
+		deleted = true;
 	}
 
 	/**
@@ -177,7 +171,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 	public void setFile(File file) {
 		this.file = file;
 	}
-	
+
 	/*@
 	 * @see ISessionDelta#getType()
 	 */
@@ -196,67 +190,58 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		ILocalSite localSite = SiteManager.getLocalSite();
 		localSite.save();
 	}
-	
+
 	/**
 	 * return true if this feature should be configured 
 	 * A feature should be configure if it has the highest version across 
 	 * all configured features with the same identifier
 	 */
-	private boolean enable(IFeature newlyConfiguredFeatures)
-		throws CoreException {
+	private boolean enable(IFeature newlyConfiguredFeatures) throws CoreException {
 
-			ILocalSite siteLocal = SiteManager.getLocalSite();
-			IInstallConfiguration currentConfiguration = siteLocal.getCurrentConfiguration();			
-			IConfiguredSite[] configuredSites;
-			IFeatureReference[] configuredFeaturesRef;
-			IFeature feature;
-			configuredSites = currentConfiguration.getConfiguredSites();
-			for (int i = 0; i < configuredSites.length; i++) {
-				configuredFeaturesRef = configuredSites[i].getConfiguredFeatures();
-				for (int j = 0; j < configuredFeaturesRef.length; j++) {
-					try {
-						feature = configuredFeaturesRef[j].getFeature();
-						int result = compare(newlyConfiguredFeatures,feature);
-						if (result!=0){
-							if (result==1){
-								ConfiguredSite cSite = (ConfiguredSite)configuredSites[i];
-								cSite.unconfigure(feature);
-								return true;
-							}
-							if (result==2){
-								return false;
-							}
+		ILocalSite siteLocal = SiteManager.getLocalSite();
+		IInstallConfiguration currentConfiguration = siteLocal.getCurrentConfiguration();
+		IConfiguredSite[] configuredSites;
+		IFeatureReference[] configuredFeaturesRef;
+		IFeature feature;
+		configuredSites = currentConfiguration.getConfiguredSites();
+		for (int i = 0; i < configuredSites.length; i++) {
+			configuredFeaturesRef = configuredSites[i].getConfiguredFeatures();
+			for (int j = 0; j < configuredFeaturesRef.length; j++) {
+				try {
+					feature = configuredFeaturesRef[j].getFeature();
+					int result = compare(newlyConfiguredFeatures, feature);
+					if (result != 0) {
+						if (result == 1) {
+							ConfiguredSite cSite = (ConfiguredSite) configuredSites[i];
+							cSite.unconfigure(feature);
+							return true;
 						}
-					} catch (CoreException e) {
-						UpdateManagerPlugin.warn(null, e);
+						if (result == 2) {
+							return false;
+						}
 					}
+				} catch (CoreException e) {
+					UpdateManagerPlugin.warn(null, e);
 				}
 			}
-			// feature not found, configure it then
-			return true;
+		}
+		// feature not found, configure it then
+		return true;
 	}
-	
+
 	/**
 	 * compare two feature references
 	 * returns 0 if the feature are different
 	 * returns 1 if the version of feature 1 is greater than the version of feature 2
 	 * returns 2 if opposite
 	 */
-	private int compare(
-		IFeature feature1,
-		IFeature feature2)
-		throws CoreException {
-			
+	private int compare(IFeature feature1, IFeature feature2) throws CoreException {
+
 		// TRACE
-		if (UpdateManagerPlugin.DEBUG
-			&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-			UpdateManagerPlugin.debug(
-				"Compare: "
-					+ feature1
-					+ " && "
-					+ feature2);
+		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+			UpdateManagerPlugin.debug("Compare: " + feature1 + " && " + feature2);
 		}
-					
+
 		if (feature1 == null)
 			return 0;
 
@@ -271,8 +256,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 			return 0;
 		}
 
-		if (id1.getIdentifier() != null
-			&& id1.getIdentifier().equals(id2.getIdentifier())) {
+		if (id1.getIdentifier() != null && id1.getIdentifier().equals(id2.getIdentifier())) {
 			PluginVersionIdentifier version1 = id1.getVersion();
 			PluginVersionIdentifier version2 = id2.getVersion();
 			if (version1 != null) {
@@ -287,7 +271,5 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		}
 		return 0;
 	};
-	
-		
-			
+
 }

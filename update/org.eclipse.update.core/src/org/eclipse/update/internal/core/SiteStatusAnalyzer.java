@@ -129,18 +129,14 @@ public class SiteStatusAnalyzer  {
 			return createStatus(IStatus.ERROR,IFeature.STATUS_AMBIGUOUS,msg,null);
 		}
 
-		ConfiguredSite cSite = null;
-		for (int i = 0; i < configuredSites.length && cSite==null; i++) {
-			if (featureSite.equals(configuredSites[i].getSite())) {
-				cSite = (ConfiguredSite)configuredSites[i];
-				IStatus status = cSite.getBrokenStatus(feature);
-				if (status.getSeverity()!=IStatus.OK) {
-					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
-						UpdateManagerPlugin.debug("Feature broken:" + feature.getLabel() + ".Site:" + cSite.toString());
-					return status;
-				}
+		ConfiguredSite cSite = (ConfiguredSite)featureSite.getConfiguredSite();
+		// since 2.0.2, ISite.getConfiguredSite().
+		IStatus status = cSite.getBrokenStatus(feature);
+			if (status.getSeverity()!=IStatus.OK) {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+					UpdateManagerPlugin.debug("Feature broken:" + feature.getLabel() + ".Site:" + cSite.toString());
+				return status;
 			}
-		}
 
 		// if unconfigured, do not check if ambiguous
 		if(cSite!=null){

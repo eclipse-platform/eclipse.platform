@@ -233,4 +233,11 @@ public class SiteFTP implements ISite {
 		return null;
 	}
 
+	/**
+	 * @see org.eclipse.update.core.ISite#getConfiguredSite()
+	 */
+	public IConfiguredSite getConfiguredSite() {
+		return null;
+	}
+
 }
