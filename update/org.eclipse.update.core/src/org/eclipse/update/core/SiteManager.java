@@ -56,5 +56,16 @@ public class SiteManager {
 	public static ILocalSite getLocalSite() throws CoreException {
 		return InternalSiteManager.getLocalSite();
 	}
-
+	
+	/**
+	 * Trigger handling of newly discovered features. This method
+	 * can be called by the executing application whenever it
+	 * is invoked with the -newUpdates command line argument.
+	 * 
+	 * @throws CoreException if an error occurs.
+	 * @since 2.0
+	 */
+	public static void handleNewChanges() throws CoreException{
+		//InternalSiteManager.handleNewChanges();
+	}
 }
