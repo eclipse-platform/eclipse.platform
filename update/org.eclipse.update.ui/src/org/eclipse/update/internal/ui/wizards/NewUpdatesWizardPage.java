@@ -26,6 +26,7 @@ import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.*;
 import org.eclipse.update.internal.ui.views.DetailsView;
+import org.eclipse.update.internal.ui.views.FeatureSorter;
 
 public class NewUpdatesWizardPage extends BannerPage {
 	// NL keys
@@ -143,7 +144,8 @@ public class NewUpdatesWizardPage extends BannerPage {
 		}
 		private boolean isContained(PendingChange job) {
 			VersionedIdentifier vid = job.getFeature().getVersionedIdentifier();
-			Object[] selected = tableViewer.getCheckedElements();
+			//Object[] selected = tableViewer.getCheckedElements();
+			Object [] selected = pendingChanges;
 			for (int i = 0; i < selected.length; i++) {
 				PendingChange candidate = (PendingChange) selected[i];
 				if (candidate.equals(job))
@@ -245,7 +247,8 @@ public class NewUpdatesWizardPage extends BannerPage {
 		SWTUtil.setButtonDimensionHint(moreInfoButton);
 
 		tableViewer.setInput(UpdateUI.getDefault().getUpdateModel());
-		tableViewer.setCheckedElements(pendingChanges);
+		//tableViewer.setCheckedElements(pendingChanges);
+		selectTrueUpdates();
 
 		Label label = new Label(client, SWT.NULL);
 		label.setText(UpdateUI.getString(KEY_FEATURE_DESC));
@@ -287,6 +290,16 @@ public class NewUpdatesWizardPage extends BannerPage {
 			client,
 			"org.eclipse.update.ui.NewUpdatesWizardPage");
 		return client;
+	}
+	
+	private void selectTrueUpdates() {
+		ArrayList trueUpdates = new ArrayList();
+		for (int i=0; i<pendingChanges.length; i++) {
+			PendingChange job = pendingChanges[i];
+			if (!UpdateUI.isPatch(job.getFeature()))
+				trueUpdates.add(job);
+		}
+		tableViewer.setCheckedElements(trueUpdates.toArray()); 
 	}
 
 	private void selectAll(boolean state) {
@@ -364,6 +377,14 @@ public class NewUpdatesWizardPage extends BannerPage {
 			.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent e) {
 				tableSelectionChanged((IStructuredSelection) e.getSelection());
+			}
+		});
+		tableViewer.setSorter(new FeatureSorter() {
+			public int category(Object obj) {
+				PendingChange job = (PendingChange)obj;
+				if (UpdateUI.isPatch(job.getFeature()))
+					return 1;
+				return 0;
 			}
 		});
 	}

@@ -99,7 +99,8 @@ public class LicensePage extends WizardPage implements IDynamicPage {
 					| SWT.BORDER
 					| SWT.V_SCROLL
 					| SWT.H_SCROLL
-					| SWT.READ_ONLY);
+					| SWT.READ_ONLY
+					| SWT.WRAP);
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		if (multiLicenseMode)
