@@ -45,6 +45,7 @@ public class ActivityConstraints {
 		"ActivityConstraints.optionalChild";
 	private static final String KEY_CYCLE = "ActivityConstraints.cycle";
 	private static final String KEY_CONFLICT = "ActivityConstraints.conflict";
+	private static final String KEY_WRONG_TIMELINE = "ActivityConstraints.timeline";
 
 	/*
 	 * Called by UI before performing operation
@@ -217,6 +218,9 @@ public class ActivityConstraints {
 		IInstallConfiguration config,
 		ArrayList status) {
 		try {
+			// check the timeline and don't bother
+			// to check anything else if negative
+			if (!checkTimeline(config, status)) return;
 			ArrayList features = computeFeaturesAfterRevert(config);
 			checkConstraints(features, status);
 			checkRevertConstraints(features, status);
@@ -582,6 +586,10 @@ public class ActivityConstraints {
 					// be unconfigured. Check if it is lower,
 					// otherwise flag.
 					found = true;
+					// Ignore equal - will be filtered in the download
+					if (version.equals(cversion)) continue;
+					// Flag only the case when the installed one is
+					// newer than the one that will be installed.
 					if (!version.isGreaterThan(cversion)) {
 						// Don't allow this.
 						String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_REGRESSION,
@@ -952,6 +960,23 @@ public class ActivityConstraints {
 			}
 		}
 		return false;
+	}
+	
+	private static boolean checkTimeline(IInstallConfiguration config, ArrayList status) {
+		try {
+			ILocalSite lsite = SiteManager.getLocalSite();
+			IInstallConfiguration cconfig = lsite.getCurrentConfiguration();
+			if (cconfig.getTimeline()!=config.getTimeline()) {
+				// Not the same timeline - cannot revert
+				String msg = UpdateUIPlugin.getFormattedMessage(KEY_WRONG_TIMELINE, config.getLabel());
+				status.add(createStatus(null, msg));
+				return false;
+			}
+		}
+		catch (CoreException e) {
+			status.add(e.getStatus());
+		}
+		return true;
 	}
 
 	private static IStatus createMultiStatus(

@@ -67,6 +67,7 @@ public class ConfigurationView
 	private Image linkedSiteImage;
 	private Image configImage;
 	private Image currentConfigImage;
+	private Image modConfigImage;
 	private Image historyImage;
 	private Image savedImage;
 	private boolean initialized;
@@ -437,9 +438,17 @@ public class ConfigurationView
 				IInstallConfiguration config = (IInstallConfiguration) obj;
 				if (config.isCurrent())
 					return currentConfigImage;
-				return configImage;
+				boolean currentTimeline = isCurrentTimeline(config);
+				return currentTimeline?configImage:modConfigImage;
 			}
 			return null;
+		}
+		
+		private boolean isCurrentTimeline(IInstallConfiguration config) {
+			ILocalSite localSite = getLocalSite();
+			if (localSite==null) return true;
+			IInstallConfiguration cconfig = localSite.getCurrentConfiguration();
+			return config.getTimeline()==cconfig.getTimeline();
 		}
 
 		private Image getFeatureImage(IFeatureAdapter adapter) {
@@ -598,6 +607,14 @@ public class ConfigurationView
 				UpdateUIPluginImages.DESC_CURRENT_CO }
 		});
 		currentConfigImage = cdesc.createImage();
+		cdesc =
+			new OverlayIcon(
+				UpdateUIPluginImages.DESC_CONFIG_OBJ,
+				new ImageDescriptor[][] { {
+			}, {
+				UpdateUIPluginImages.DESC_MOD_CO }
+		});
+		modConfigImage = cdesc.createImage();
 		savedImage = UpdateUIPluginImages.DESC_SAVED_OBJ.createImage();
 		historyImage = UpdateUIPluginImages.DESC_HISTORY_OBJ.createImage();
 	}
@@ -708,6 +725,7 @@ public class ConfigurationView
 		historyImage.dispose();
 		configImage.dispose();
 		currentConfigImage.dispose();
+		modConfigImage.dispose();
 		if (initialized) {
 			try {
 				ILocalSite localSite = SiteManager.getLocalSite();
@@ -807,6 +825,7 @@ public class ConfigurationView
 					RevertSection.performRevert(target);
 			}
 		};
+		revertAction.setText(UpdateUIPlugin.getResourceString(KEY_RESTORE));
 		WorkbenchHelp.setHelp(
 			revertAction,
 			"org.eclipse.update.ui.CofigurationView_revertAction");
@@ -829,7 +848,6 @@ public class ConfigurationView
 			"org.eclipse.update.ui.CofigurationView_showStatusAction");
 		showStatusAction.setText(
 			UpdateUIPlugin.getResourceString(KEY_SHOW_STATUS));
-		revertAction.setText(UpdateUIPlugin.getResourceString(KEY_RESTORE));
 		preserveAction = new Action() {
 			public void run() {
 				Object obj = getSelectedObject();
