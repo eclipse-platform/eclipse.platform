@@ -57,19 +57,20 @@ public class ConfiguredFeatureAdapter
 				IFeatureReference fref = included[i];
 				IFeature feature;
 				boolean childConfigured=configured;
+				boolean updated = false;
 				try {
 					feature = fref.getFeature();
 					childConfigured = adapter.getConfigurationSite().isConfigured(feature);
+					/*
+					PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
+					PluginVersionIdentifier fpid = feature.getVersionedIdentifier().getVersion();
+					updated = !refpid.equals(fpid);
+					*/
 				} catch (CoreException e) {
 					feature = new MissingFeature(getFeature(), fref);
 					childConfigured = false;
 				}
 				
-				//PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
-				//PluginVersionIdentifier fpid = feature.getVersionedIdentifier().getVersion();
-				//boolean updated = !refpid.equals(fpid);
-				boolean updated = false;
-
 				result[i] =
 					new ConfiguredFeatureAdapter(adapter, feature, childConfigured, updated, fref.isOptional());
 				result[i].setIncluded(true);

@@ -126,8 +126,9 @@ public class NewUpdatesWizardPage extends BannerPage {
 		}
 		private boolean isContained(PendingChange job) {
 			VersionedIdentifier vid = job.getFeature().getVersionedIdentifier();
-			for (int i = 0; i < pendingChanges.length; i++) {
-				PendingChange candidate = pendingChanges[i];
+			Object [] selected = tableViewer.getCheckedElements();
+			for (int i = 0; i < selected.length; i++) {
+				PendingChange candidate = (PendingChange)selected[i];
 				if (candidate.equals(job))
 					continue;
 				IFeature feature = candidate.getFeature();
