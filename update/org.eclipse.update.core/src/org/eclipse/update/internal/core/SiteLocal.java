@@ -420,6 +420,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 				newConfiguration = new InstallConfiguration(configuration, newFile, name);
 				// set the same date in the installConfig
 				newConfiguration.setCreationDate(currentDate);
+				newConfiguration.setTimeline(configuration.getTimeline());
 			} catch (MalformedURLException e) {
 				throw Utilities.newCoreException(Policy.bind("SiteLocal.UnableToCreateURLFor") + newFileName, e);
 				//$NON-NLS-1$

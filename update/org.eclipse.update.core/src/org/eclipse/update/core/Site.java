@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.*;
+import org.eclipse.update.internal.URLKey;
 import org.eclipse.update.internal.core.*;
 
 /**
@@ -62,7 +63,7 @@ public class Site extends SiteModel implements ISite {
 
 	private ISiteContentProvider siteContentProvider;
 	
-	Map featureCache = new HashMap();
+	private Map featureCache = new HashMap(); // key=URLKey value=IFeature
 	
 	/**
 	 * Constructor for Site
@@ -442,7 +443,8 @@ public class Site extends SiteModel implements ISite {
 	public IFeature createFeature(String type, URL url) throws CoreException {
 
 		// First check the cache
-		IFeature feature = (IFeature) featureCache.get(url);
+		URLKey key = new URLKey(url);
+		IFeature feature = (IFeature) featureCache.get(key);
 		if (feature != null) return feature;
 			
 		// Create a new one
@@ -455,7 +457,7 @@ public class Site extends SiteModel implements ISite {
 		feature = factory.createFeature(url, this);
 		if (feature != null) {
 			// Add the feature to the cache 
-			featureCache.put(url, feature);
+			featureCache.put(key, feature);
 		}
 		return feature;
 	}
