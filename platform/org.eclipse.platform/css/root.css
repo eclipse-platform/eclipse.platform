@@ -56,13 +56,13 @@ body {
 }
 /* properly align the link label and text based on class (left vs. right) */
 #page-links a:hover {
-	/* This is needed for IE to force the hover pseudo selectors below to work.*/	padding : 0 em;}
+	/* This is needed for IE to force the hover pseudo selectors below to work.*/	padding : 0 em;
+}
 /* Hide both the label and the description of the link and remove them from static HTML flow, until user hovers over link */
 /* First, set the width of both the label and the description to a max of 15 em. */
-/* This can be changed when translated to different country locals. */
+/* This can be changed when translated to different country locals. */
 #page-links a span {
-	width : 15em;
-}
+	width : 15em;}
 /* Set up left links orientation first. */
 #page-links a.left:link .link-label,
 #page-links a.left:visited .link-label {
