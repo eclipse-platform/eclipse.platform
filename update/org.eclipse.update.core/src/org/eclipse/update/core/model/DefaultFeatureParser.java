@@ -1057,8 +1057,8 @@ public class DefaultFeatureParser extends DefaultHandler {
 		int rule = UpdateManagerUtils.getMatchingRule(ruleName);
 		
 		// update allowed
-		String allowed = attributes.getValue("update-allowed");
-		boolean isUpdatable = !("false".equalsIgnoreCase(optional));
+		String allowed = attributes.getValue("unique");
+		boolean isUnique = "true".equalsIgnoreCase(optional);
 		
 		// search location
 		String locationName = attributes.getValue("search_location");
@@ -1069,7 +1069,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 			searchLocation = IUpdateConstants.SEARCH_ROOT;
 		
 		
-		objectStack.push(new IncludedFeatureReference(name,isOptional,rule, isUpdatable, searchLocation));
+		objectStack.push(new IncludedFeatureReference(name,isOptional,rule, isUnique, searchLocation));
 		objectStack.push(new VersionedIdentifier(id,ver));	
 			
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {

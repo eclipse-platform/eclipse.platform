@@ -19,7 +19,7 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	
 	// since 2.0.2
 	private int matchingRule;
-	private boolean updateAllowed;
+	private boolean unique;
 	private int searchLocation;
 
 	/**
@@ -36,7 +36,7 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 		this.isOptional = isOptional;
 		this.name = name;
 		this.matchingRule = IImport.RULE_PERFECT;
-		this.updateAllowed=true;
+		this.unique=false;
 		this.searchLocation=IUpdateConstants.SEARCH_ROOT;
 	}
 
@@ -47,15 +47,15 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	 * @param name string representation of the feature
 	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
 	 * @param matchingRule the matching rule
-	 * @param isUpdatable <code>false</code> if the feature cannot be updated.
+	 * @param isUnique <code>true</code> if the other versions of the feature have to be disabled.
 	 * @param searchLocation the location to search for this feature's updates.
 	 * @since 2.0.2
 	 */
-	public IncludedFeatureReference(String name, boolean isOptional, int matchingRule, boolean isUpdatable, int searchLocation) {
+	public IncludedFeatureReference(String name, boolean isOptional, int matchingRule, boolean isUnique, int searchLocation) {
 		this.isOptional = isOptional;
 		this.name = name;
 		this.matchingRule = matchingRule;
-		this.updateAllowed= isUpdatable;
+		this.unique= isUnique;
 		this.searchLocation=searchLocation;
 	}
 
@@ -98,17 +98,17 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	}
 	
 	/**
-	 * If the included feature is not updatable, we cannot install or enable another version, unless the 
-	 * root feature installs it. 
-	 * 
-	 * The default is <code>true</code>.
+	 * If the included feature is unique, we need to disable all other versions already installed.
+	 * This will be used when shipping emergency fixes.
+	 *  
+	 * The default is <code>false</code>.
 	 *
-	 * @return <code>true</code> if a new version of the feature can be installed and enabled,
+	 * @return <code>true</code> if other version of the feature have to be disabled,
 	 * <code>false  </code>otherwise.
 	 * @since 2.0.2
 	 */
-	public boolean isUpdateAllowed() {
-		return updateAllowed;
+	public boolean isUnique() {
+		return unique;
 	}
 
 	/**

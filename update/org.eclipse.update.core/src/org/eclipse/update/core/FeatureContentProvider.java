@@ -164,17 +164,16 @@ public abstract class FeatureContentProvider
 		// is still copying into it
 		File localFile=null;
 		synchronized(lock){
+				
 			localFile = Utilities.lookupLocalFile(key);
 			if (localFile != null)
 				return ref.createContentReference(ref.getIdentifier(), localFile);
-		
 			// 
 			// download the referenced file into local temporary area
 			InputStream is = null;
 			OutputStream os = null;
 			localFile = Utilities.createLocalFile(getWorkingDirectory(), key, null /*name*/);			
 			boolean sucess = false;
-			
 			if (monitor != null) {
 				monitor.saveState();
 				monitor.setTaskName(Policy.bind("FeatureContentProvider.Downloading"));
@@ -196,7 +195,6 @@ public abstract class FeatureContentProvider
 				} catch (FileNotFoundException e){
 					throw Utilities.newCoreException(Policy.bind("FeatureContentProvider.UnableToCreate",new Object[]{localFile}),e);									
 				}
-				
 				Utilities.copy(is, os, monitor);
 				sucess = true;
 			} catch (CoreException e) {
@@ -222,8 +220,8 @@ public abstract class FeatureContentProvider
 					monitor.restoreState();
 			}
 		}// end lock
-	
-		return ref.createContentReference(ref.getIdentifier(), localFile);
+		ContentReference reference = ref.createContentReference(ref.getIdentifier(), localFile);
+		return  reference;
 	}
 
 	/**
@@ -242,7 +240,6 @@ public abstract class FeatureContentProvider
 		File file = ref.asFile();
 		if (file != null)
 			return file;
-
 		ContentReference localRef = asLocalReference(ref, monitor);
 		file = localRef.asFile();
 		return file;

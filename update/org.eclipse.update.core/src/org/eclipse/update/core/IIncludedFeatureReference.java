@@ -33,4 +33,47 @@ public interface IIncludedFeatureReference extends IFeatureReference {
 	 * @since 2.0.1
 	 */
 	public String getName();
+	
+	/**
+	 * Returns the matching rule for this included feature.
+	 * The rule will determine the ability of the included feature to move version 
+	 * without causing the overall feature to appear broken.
+	 * 
+	 * The default is <code>RULE_PERFECT</code>
+	 * 
+	 * @see IUpdateConstants#RULE_PERFECT
+	 * @see IUpdateConstants#RULE_EQUIVALENT
+	 * @see IUpdateConstants#RULE_COMPATIBLE
+	 * @see IUpdateConstants#RULE_GREATER_OR_EQUAL
+	 * @return int representation of feature matching rule.
+	 * @since 2.0.2
+	 */
+	public int getMatch();
+	
+	/**
+	 * If the included feature is unique, we need to disable all other versions already installed.
+	 * This will be used when shipping emergency fixes.
+	 *  
+	 * The default is <code>false</code>.
+	 *
+	 * @return <code>true</code> if other version of the feature have to be disabled,
+	 * <code>false  </code>otherwise.
+	 * @since 2.0.2
+	 */
+	public boolean isUnique();
+
+	/**
+	 * Returns the search location for this included feature.
+	 * The location will be used to search updates for this feature.
+	 * 
+	 * The default is <code>SEARCH_ROOT</code>
+	 * 
+	 * @see IFeatureReference#SEARCH_ROOT
+	 * @see IFeatureReference#SEARCH_SELF
+	 * @return int representation of feature searching rule.
+	 * @since 2.0.2
+	 */
+
+	public int getSearchLocation();
+	
 }

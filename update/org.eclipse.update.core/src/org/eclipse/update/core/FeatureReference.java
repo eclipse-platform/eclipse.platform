@@ -172,7 +172,8 @@ public class FeatureReference
 		throws CoreException {
 		IFeatureFactory factory =
 			FeatureTypeFactory.getInstance().getFactory(featureType);
-		return factory.createFeature(url, site);
+		IFeature result = factory.createFeature(url, site);
+		return result;
 	}
 
 	/**
@@ -239,11 +240,11 @@ public class FeatureReference
 	}
 
 	/**
-	 * @see org.eclipse.update.core.IFeatureReference#isUpdateAllowed()
+	 * @see org.eclipse.update.core.IFeatureReference#isUnique()
 	 */
-	public boolean isUpdateAllowed() {
+	public boolean isUnique() {
 		if (getOptions()==null) return true;
-		return getOptions().isUpdateAllowed();
+		return getOptions().isUnique();
 	}
 
 }

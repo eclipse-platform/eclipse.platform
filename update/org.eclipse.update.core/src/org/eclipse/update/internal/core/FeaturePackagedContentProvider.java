@@ -54,30 +54,20 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getFeatureManifestReference()
 	 */
-	public ContentReference getFeatureManifestReference(InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference getFeatureManifestReference(InstallMonitor monitor) throws CoreException {
 
 		// check to see if we already have local copy of the manifest
 		if (localManifest != null)
 			return localManifest;
-
-		ContentReference[] featureArchiveReference =
-			getFeatureEntryArchiveReferences(monitor);
-		JarContentReference featureJarReference=null;
+		ContentReference[] featureArchiveReference = getFeatureEntryArchiveReferences(monitor);
+		JarContentReference featureJarReference = null;
 		try {
 
 			// force feature archive to local.
 			// This content provider always assumes exactly 1 archive file (index [0])		
-			featureJarReference =
-				(JarContentReference) asLocalReference(featureArchiveReference[0],
-					null);
-
+			featureJarReference = (JarContentReference) asLocalReference(featureArchiveReference[0], null);
 			// we need to unpack archive locally for UI browser references to be resolved correctly
-			localFeatureFiles =
-				featureJarReference.unpack(
-					getWorkingDirectory(),
-					null,
-					monitor);
+			localFeatureFiles = featureJarReference.unpack(getWorkingDirectory(), null, monitor);
 		} catch (IOException e) {
 			throw errorRetrieving(Feature.FEATURE_XML, featureJarReference, getURL(), e);
 			//$NON-NLS-1$ 
@@ -85,9 +75,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 
 		// find the manifest in the unpacked feature files
 		for (int i = 0; i < localFeatureFiles.length; i++) {
-			if (localFeatureFiles[i]
-				.getIdentifier()
-				.equals(Feature.FEATURE_XML)) {
+			if (localFeatureFiles[i].getIdentifier().equals(Feature.FEATURE_XML)) {
 				localManifest = localFeatureFiles[i];
 				// cache reference to manifest
 				return localManifest;
@@ -95,13 +83,8 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 		}
 
 		// the manifest has not been found
-		String[] values =
-			new String[] { Feature.FEATURE_XML, getURL().toExternalForm()};
-		throw Utilities.newCoreException(
-			Policy.bind(
-				"FeaturePackagedContentProvider.NoManifestFile",
-				values),
-			new Exception());
+		String[] values = new String[] { Feature.FEATURE_XML, getURL().toExternalForm()};
+		throw Utilities.newCoreException(Policy.bind("FeaturePackagedContentProvider.NoManifestFile", values), new Exception());
 		//$NON-NLS-1$ 
 
 	}
@@ -109,8 +92,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getArchiveReferences()
 	 */
-	public ContentReference[] getArchiveReferences(InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getArchiveReferences(InstallMonitor monitor) throws CoreException {
 
 		IPluginEntry[] entries = getFeature().getPluginEntries();
 		INonPluginEntry[] nonEntries = getFeature().getNonPluginEntries();
@@ -118,23 +100,16 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 		ContentReference[] allContentRef = new ContentReference[0];
 
 		// feature
-		listAllContentRef.addAll(
-			Arrays.asList(getFeatureEntryArchiveReferences(monitor)));
+		listAllContentRef.addAll(Arrays.asList(getFeatureEntryArchiveReferences(monitor)));
 
 		// plugins
 		for (int i = 0; i < entries.length; i++) {
-			listAllContentRef.addAll(
-				Arrays.asList(
-					getPluginEntryArchiveReferences(entries[i], monitor)));
+			listAllContentRef.addAll(Arrays.asList(getPluginEntryArchiveReferences(entries[i], monitor)));
 		}
 
 		// non plugins
 		for (int i = 0; i < nonEntries.length; i++) {
-			listAllContentRef.addAll(
-				Arrays.asList(
-					getNonPluginEntryArchiveReferences(
-						nonEntries[i],
-						monitor)));
+			listAllContentRef.addAll(Arrays.asList(getNonPluginEntryArchiveReferences(nonEntries[i], monitor)));
 		}
 
 		// transform List in Array
@@ -149,8 +124,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getFeatureEntryArchiveReferences()
 	 */
-	public ContentReference[] getFeatureEntryArchiveReferences(InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getFeatureEntryArchiveReferences(InstallMonitor monitor) throws CoreException {
 
 		//1 jar file <-> 1 feature
 		// we will return the JAR file 
@@ -159,16 +133,13 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 		String archiveID = null;
 
 		try {
-			archiveID =
-				(getFeature() != null)
-					? getFeature().getVersionedIdentifier().toString()
-					: "";
+			archiveID = (getFeature() != null) ? getFeature().getVersionedIdentifier().toString() : "";
 			//$NON-NLS-1$
 			currentReference = new JarContentReference(archiveID, getURL());
 			currentReference = asLocalReference(currentReference, monitor);
 			references[0] = currentReference;
 		} catch (IOException e) {
-			throw errorRetrieving(archiveID,currentReference,getFeature().getURL(),e);
+			throw errorRetrieving(archiveID, currentReference, getFeature().getURL(), e);
 			//$NON-NLS-1$
 		}
 		return references;
@@ -177,30 +148,20 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getPluginEntryArchiveReferences(IPluginEntry)
 	 */
-	public ContentReference[] getPluginEntryArchiveReferences(
-		IPluginEntry pluginEntry,
-		InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getPluginEntryArchiveReferences(IPluginEntry pluginEntry, InstallMonitor monitor) throws CoreException {
 
 		// 1 plugin <-> 1 jar
 		// we return the JAR file	
 		ContentReference[] references = new ContentReference[1];
 		String archiveID = getPathID(pluginEntry);
 		ISite site = (getFeature() == null) ? null : getFeature().getSite();
-		ISiteContentProvider siteContentProvider =
-			(site == null) ? null : site.getSiteContentProvider();
-		URL url =
-			(siteContentProvider == null)
-				? null
-				: siteContentProvider.getArchiveReference(archiveID);
+		ISiteContentProvider siteContentProvider = (site == null) ? null : site.getSiteContentProvider();
+		URL url = (siteContentProvider == null) ? null : siteContentProvider.getArchiveReference(archiveID);
 
 		try {
-			references[0] =
-				asLocalReference(
-					new JarContentReference(archiveID, url),
-					monitor);
+			references[0] = asLocalReference(new JarContentReference(archiveID, url), monitor);
 		} catch (IOException e) {
-			throw errorRetrieving(archiveID,references[0],getFeature().getURL(),e);
+			throw errorRetrieving(archiveID, references[0], getFeature().getURL(), e);
 			//$NON-NLS-1$
 		}
 		return references;
@@ -209,17 +170,10 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getNonPluginEntryArchiveReferences(INonPluginEntry)
 	 */
-	public ContentReference[] getNonPluginEntryArchiveReferences(
-		INonPluginEntry nonPluginEntry,
-		InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getNonPluginEntryArchiveReferences(INonPluginEntry nonPluginEntry, InstallMonitor monitor) throws CoreException {
 
 		// archive = feature/<id>_<ver>/<file>
-		String archiveID =
-			Site.DEFAULT_FEATURE_PATH
-				+ ((getFeature() != null)
-					? getFeature().getVersionedIdentifier().toString()
-					: "");
+		String archiveID = Site.DEFAULT_FEATURE_PATH + ((getFeature() != null) ? getFeature().getVersionedIdentifier().toString() : "");
 		//$NON-NLS-1$
 		archiveID += "/" + nonPluginEntry.getIdentifier(); //$NON-NLS-1$
 
@@ -228,20 +182,15 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 
 		try {
 			ISite site = (getFeature() == null) ? null : getFeature().getSite();
-			ISiteContentProvider siteContentProvider =
-				(site == null) ? null : site.getSiteContentProvider();
-			URL url =
-				(siteContentProvider == null)
-					? null
-					: siteContentProvider.getArchiveReference(archiveID);
+			ISiteContentProvider siteContentProvider = (site == null) ? null : site.getSiteContentProvider();
+			URL url = (siteContentProvider == null) ? null : siteContentProvider.getArchiveReference(archiveID);
 
-			currentReference =
-				new ContentReference(nonPluginEntry.getIdentifier(), url);
+			currentReference = new ContentReference(nonPluginEntry.getIdentifier(), url);
 			currentReference = asLocalReference(currentReference, monitor);
 			references[0] = currentReference;
 
 		} catch (IOException e) {
-			throw errorRetrieving(archiveID,currentReference,getFeature().getURL(),e);
+			throw errorRetrieving(archiveID, currentReference, getFeature().getURL(), e);
 			//$NON-NLS-1$
 		}
 
@@ -251,8 +200,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getFeatureEntryContentReferences()
 	 */
-	public ContentReference[] getFeatureEntryContentReferences(InstallMonitor monitor)
-		throws CoreException {
+	public ContentReference[] getFeatureEntryContentReferences(InstallMonitor monitor) throws CoreException {
 
 		return localFeatureFiles; // return cached feature references
 		// Note: assumes this content provider is always called first to
@@ -263,14 +211,14 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * @see IFeatureContentProvider#getPluginEntryContentReferences(IPluginEntry)
 	 */
-	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry,InstallMonitor monitor) throws CoreException {
+	public ContentReference[] getPluginEntryContentReferences(IPluginEntry pluginEntry, InstallMonitor monitor) throws CoreException {
 
-		ContentReference[] references =	getPluginEntryArchiveReferences(pluginEntry, monitor);
+		ContentReference[] references = getPluginEntryArchiveReferences(pluginEntry, monitor);
 		ContentReference[] pluginReferences = new ContentReference[0];
 
 		try {
 			if (references[0] instanceof JarContentReference) {
-				JarContentReference localRef = (JarContentReference) asLocalReference(references[0],monitor);
+				JarContentReference localRef = (JarContentReference) asLocalReference(references[0], monitor);
 				pluginReferences = localRef.peek(null, monitor);
 			} else {
 				// return the list of all subdirectories
@@ -281,12 +229,12 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 					pluginReferences[i] = new ContentReference(null, currentFile.toURL());
 				}
 			};
-			
-		//[20866] we did not preserve executable bit
-		validatePermissions(pluginReferences);
+
+			//[20866] we did not preserve executable bit
+			validatePermissions(pluginReferences);
 
 		} catch (IOException e) {
-			throw errorRetrieving(pluginEntry.getVersionedIdentifier().toString(),references[0],getFeature().getURL(),e);
+			throw errorRetrieving(pluginEntry.getVersionedIdentifier().toString(), references[0], getFeature().getURL(), e);
 			//$NON-NLS-1$
 		}
 		return pluginReferences;
@@ -299,7 +247,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 		List result = new ArrayList();
 
 		if (!dir.isDirectory())
-			throw new IOException(	Policy.bind("FeaturePackagedContentProvider.InvalidDirectory",dir.getPath()));//$NON-NLS-1$
+			throw new IOException(Policy.bind("FeaturePackagedContentProvider.InvalidDirectory", dir.getPath())); //$NON-NLS-1$
 
 		File[] files = dir.listFiles();
 		if (files != null) // be careful since it can be null
@@ -316,14 +264,13 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	/*
 	 * 
 	 */
-	 private CoreException errorRetrieving(String obj, ContentReference archive, URL url, Exception e){
-	 	
-			String[] values = new String[] { obj };
-			
-			return Utilities.newCoreException(
-				Policy.bind("FeaturePackagedContentProvider.ErrorRetrieving",values),e);
-			//$NON-NLS-1$	 	
-	 	
-	 }
+	private CoreException errorRetrieving(String obj, ContentReference archive, URL url, Exception e) {
+
+		String[] values = new String[] { obj };
+
+		return Utilities.newCoreException(Policy.bind("FeaturePackagedContentProvider.ErrorRetrieving", values), e);
+		//$NON-NLS-1$	 	
+
+	}
 
 }

@@ -6,10 +6,12 @@ package org.eclipse.update.core;
 
 import java.io.*;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.model.InstallAbortedException;
+import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -20,8 +22,9 @@ import org.eclipse.update.internal.core.UpdateManagerPlugin;
 public class Utilities {
 
 	private static Map entryMap;
+	private static Map timerMap = new HashMap();
 	private static Stack bufferPool;
-	private static final int BUFFER_SIZE = 262144; //256K
+	private static final int BUFFER_SIZE = 4096; //256K
 	private static final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
 	private static long tmpseed = (new Date()).getTime();
 	private static String dirRoot = null;
@@ -230,10 +233,9 @@ public class Utilities {
 
 		IStatus childStatus1 = ((CoreException) e1).getStatus();
 		IStatus childStatus2 = ((CoreException) e2).getStatus();
-		int code = (childStatus1.getCode()==childStatus2.getCode())?childStatus1.getCode():IStatus.OK;
+		int code = (childStatus1.getCode() == childStatus2.getCode()) ? childStatus1.getCode() : IStatus.OK;
 		MultiStatus multi = new MultiStatus(id, code, s, null);
-		
-						
+
 		multi.add(childStatus1);
 		multi.addAll(childStatus1);
 		multi.add(childStatus2);
@@ -324,6 +326,26 @@ public class Utilities {
 		if (bufferPool == null)
 			bufferPool = new Stack();
 		bufferPool.push(buf);
+	}
+
+	public static void startTimer(String task) {
+		Date d = new Date();
+		//UpdateManagerPlugin.debug("TIMER: start " + task + " " + format(d));
+		timerMap.put(task, d);
+	}
+
+	public static void stopTimer(String task) {
+		Date d = new Date();
+		//UpdateManagerPlugin.debug("TIMER: stop " + task + " " + format(d));
+		Date start = (Date) timerMap.get(task);
+		if (start == null) {
+			UpdateManagerPlugin.debug("Unknown task:" + task);
+			return;
+		}
+		long diff = d.getTime() - start.getTime();
+		Date delta = new Date(diff);
+		SimpleDateFormat simple = new SimpleDateFormat("mm:ss:SS");
+		UpdateManagerPlugin.debug("TIMER:" + task + " " + simple.format(delta));
 	}
 
 }

@@ -108,7 +108,7 @@ public interface IFeatureReference extends IAdaptable {
 	public String getName();	
 	
 	
-		/**
+	/**
 	 * Returns the matching rule for this included feature.
 	 * The rule will determine the ability of the included feature to move version 
 	 * without causing the overall feature to appear broken.
@@ -125,16 +125,16 @@ public interface IFeatureReference extends IAdaptable {
 	public int getMatch();
 	
 	/**
-	 * If the included feature is not updatable, we cannot install or enable another version, unless the 
-	 * root feature installs it. 
-	 * 
-	 * The default is <code>true</code>.
+	 * If the included feature is unique, we need to disable all other versions already installed.
+	 * This will be used when shipping emergency fixes.
+	 *  
+	 * The default is <code>false</code>.
 	 *
-	 * @return <code>true</code> if a new version of the feature can be installed and enabled,
+	 * @return <code>true</code> if other version of the feature have to be disabled,
 	 * <code>false  </code>otherwise.
 	 * @since 2.0.2
 	 */
-	public boolean isUpdateAllowed();
+	public boolean isUnique();
 
 	/**
 	 * Returns the search location for this included feature.

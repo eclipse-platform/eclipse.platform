@@ -684,6 +684,7 @@ public class Feature extends FeatureModel implements IFeature {
 		}
 	}
 
+
 	/**
 	 * Method getBestMatch.
 	 * @param enabledFeatures
