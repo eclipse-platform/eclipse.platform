@@ -123,6 +123,7 @@ public class Main {
 	private static final String PROP_SPLASHPATH = "osgi.splashPath"; //$NON-NLS-1$
 	private static final String PROP_SPLASHLOCATION = "osgi.splashLocation"; //$NON-NLS-1$
 	private static final String PROP_CLASSPATH = "osgi.frameworkClassPath"; //$NON-NLS-1$
+	private static final String PROP_EXTENSIONS = "osgi.framework.extensions"; //$NON-NLS-1$
 	private static final String PROP_LOGFILE = "osgi.logfile"; //$NON-NLS-1$
 	private static final String PROP_EOF = "eof"; //$NON-NLS-1$
 
@@ -285,17 +286,52 @@ public class Main {
 		return (URL[]) result.toArray(new URL[result.size()]);
 	}
 
+	private void readFrameworkExtensions(URL base, ArrayList result) throws IOException {
+		String[] extensions = getArrayFromList(System.getProperties().getProperty(PROP_EXTENSIONS));
+		String parent = new File(base.getFile()).getParent().toString();
+		for (int i = 0; i < extensions.length; i++) {
+			//Search the extension relatively to the osgi plugin 
+			String path = searchFor(extensions[i], parent);
+			if (path == null) {
+				log("Could not find extension: " + extensions[i]); //$NON-NLS-1$
+				continue;
+			}
+			if (debug)
+				System.out.println("Loading extension: " + extensions[i]); //$NON-NLS-1$
+
+			URL extensionURL = null;
+			if (installLocation.getProtocol().equals("file")) //$NON-NLS-1$
+				extensionURL = new File(path).toURL();
+			else
+				extensionURL = new URL(installLocation.getProtocol(), installLocation.getHost(), installLocation.getPort(), path);
+
+			//Load the eclipse.properties of the extension, merge its content, and in case of dev mode add the bin entries
+			Properties extensionProperties = loadProperties(new URL(extensionURL, ECLIPSE_PROPERTIES));
+			String extensionPath = extensionProperties.getProperty(PROP_CLASSPATH);
+			if (extensionPath != null) {
+				if (inDevelopmentMode) 
+					addDevEntries(extensionURL, result);
+				String[] entries = getArrayFromList(extensionPath);
+				String qualifiedPath = ""; //$NON-NLS-1$
+				for (int j = 0; j < entries.length; j++) 
+					qualifiedPath += ", file:" + path + entries[j]; //$NON-NLS-1$
+				extensionProperties.put(PROP_CLASSPATH, qualifiedPath);
+			}
+			mergeProperties(System.getProperties(), extensionProperties);
+		}
+	}
+
 	private void addBaseJars(URL base, ArrayList result) throws IOException {
 		String baseJarList = System.getProperty(PROP_CLASSPATH);
 		if (baseJarList == null) {
 			URL url = new URL(base, ECLIPSE_PROPERTIES);
 			if (debug)
 				System.out.println("Loading framework classpath from:\n    " + url.toExternalForm()); //$NON-NLS-1$
-			Properties defaults = loadProperties(url);
-			baseJarList = defaults.getProperty(PROP_CLASSPATH);
+			mergeProperties(System.getProperties(), loadProperties(url));
+			readFrameworkExtensions(base, result);
+			baseJarList = System.getProperties().getProperty(PROP_CLASSPATH);
 			if (baseJarList == null)
 				throw new IOException("Unable to initialize " + PROP_CLASSPATH); //$NON-NLS-1$
-			System.getProperties().put(PROP_CLASSPATH, baseJarList);
 		}
 		String[] baseJars = getArrayFromList(baseJarList);
 		for (int i = 0; i < baseJars.length; i++) {
@@ -673,8 +709,6 @@ public class Main {
 		setExitData();
 		return result;
 	}
-
-
 
 	private void setExitData() {
 		String data = System.getProperty(PROP_EXITDATA);
@@ -1488,6 +1522,16 @@ public class Main {
 			return;
 		for (Enumeration e = source.keys(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
+			if (key.equals(PROP_CLASSPATH)) {
+				String destinationClasspath = destination.getProperty(PROP_CLASSPATH);
+				String sourceClasspath = source.getProperty(PROP_CLASSPATH);
+				if (destinationClasspath == null)
+					destinationClasspath = sourceClasspath;
+				else
+					destinationClasspath = destinationClasspath + sourceClasspath;
+				destination.put(PROP_CLASSPATH, destinationClasspath);
+				continue;
+			}
 			if (!key.equals(PROP_EOF)) {
 				String value = source.getProperty(key);
 				if (destination.getProperty(key) == null)
