@@ -581,16 +581,16 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 	 * @since 3.0
 	 */
 	public IAntClasspathEntry getToolsJarEntry(IPath javaHomePath) {
-		if ("jre".equalsIgnoreCase(javaHomePath.lastSegment())) { //$NON-NLS-1$
+		if (javaHomePath.lastSegment().equalsIgnoreCase("jre")) { //$NON-NLS-1$
 			javaHomePath = javaHomePath.removeLastSegments(1);
 		}
-		javaHomePath= javaHomePath.append("lib").append("tools.jar"); //$NON-NLS-1$ //$NON-NLS-2$
-		File tools= javaHomePath.toFile();
+		javaHomePath = javaHomePath.append("lib").append("tools.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+		File tools = javaHomePath.toFile();
 		if (!tools.exists()) {
 			//attempt to find in the older 1.1.* 
 			javaHomePath= javaHomePath.removeLastSegments(1);
 			javaHomePath= javaHomePath.append("classes.zip"); //$NON-NLS-1$
-			tools= javaHomePath.toFile();
+			tools = javaHomePath.toFile();
 			if (!tools.exists()) {
 				return null;
 			}

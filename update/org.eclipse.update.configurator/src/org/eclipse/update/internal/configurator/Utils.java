@@ -13,7 +13,6 @@ package org.eclipse.update.internal.configurator;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import org.eclipse.core.internal.boot.*;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.framework.log.*;
