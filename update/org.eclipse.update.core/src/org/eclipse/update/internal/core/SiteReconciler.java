@@ -682,25 +682,30 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// find "unique" top level features (latest version)
 		ArrayList topFeatures = computeTopFeatures(allPossibleConfiguredFeatures, configuredSite);
 
-		// expand features (compute full nesting structures).
-		ArrayList configuredFeatures = expandFeatures(topFeatures, configuredSite);
+		// find non efix top level features
+		ArrayList topNonEfixFeatures = getNonEfixFeatures(topFeatures);
 
-		// compute extra features
+		// expand non efix top level features (compute full nesting structures).
+		ArrayList configuredFeatures = expandFeatures(topNonEfixFeatures, configuredSite);
+
+		// retrieve efixes that patch enable feature
+		// they must be kept enabled
+		if (topFeatures.size() != topNonEfixFeatures.size()) {
+			Map patches = getPatches(allPossibleConfiguredFeatures);
+			if (!patches.isEmpty()) {
+				// calculate efixes to enable
+				List efixesToEnable = getPatchesToEnable(patches, configuredFeatures);
+				// add efies to keep enable
+				for (int i = 0; i < efixesToEnable.size(); i++) {
+					IFeature feature = (IFeature) efixesToEnable.get(i);
+					configuredFeatures.add(feature);
+				}
+			}
+		}
+
+		// compute extra features: features are are going to be disabled
 		ArrayList extras = diff(allPossibleConfiguredFeatures, configuredFeatures);
 
-		// retrieve efixes that patch disable features
-		// efixes will show as root features.
-		Map patches = getPatches(topFeatures);
-		if (!patches.isEmpty()){
-			ArrayList disabledVersionedIdentifier  =new ArrayList();
-			Iterator iter = extras.iterator();
-			while (iter.hasNext()) {
-				IFeature element = (IFeature) iter.next();
-				disabledVersionedIdentifier.add(element.getVersionedIdentifier());
-			}
-			List efixesToDisable = getPatchesToDisable(patches,disabledVersionedIdentifier);
-			extras.addAll(efixesToDisable);
-		}
 		// unconfigure extra features
 		ConfigurationPolicy cPolicy = cSite.getConfigurationPolicy();
 		for (int i = 0; i < extras.size(); i++) {
@@ -716,7 +721,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				UpdateManagerPlugin.warn("", e);
 			}
 		}
-		
 	}
 
 	/*
@@ -911,60 +915,90 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	private static Map getPatches(ArrayList allConfiguredFeatures) {
 		// get all efixes and the associated patched features
 		Map patches = new HashMap();
-		if (allConfiguredFeatures!=null){
+		if (allConfiguredFeatures != null) {
 			Iterator iter = allConfiguredFeatures.iterator();
 			while (iter.hasNext()) {
 				List patchedFeaturesID = new ArrayList();
 				IFeature element = (IFeature) iter.next();
 				// add the patched feature identifiers
 				for (int i = 0; i < element.getImports().length; i++) {
-					if (element.getImports()[i].isPatch()){
-						VersionedIdentifier id = element.getImports()[i].getVersionedIdentifier(); 
-						patchedFeaturesID.add(id);
+					if (element.getImports()[i].isPatch()) {
+						VersionedIdentifier id = element.getImports()[i].getVersionedIdentifier();
 						if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
-							UpdateManagerPlugin.debug("Found patch "+element+" for feature identifier "+id);
+							UpdateManagerPlugin.debug("Found patch " + element + " for feature identifier " + id);
+						patchedFeaturesID.add(id);							
 					}
 				}
 
-				if (!patchedFeaturesID.isEmpty()){
-					patches.put(element,patchedFeaturesID);
-				} 
+				if (!patchedFeaturesID.isEmpty()) {
+					patches.put(element, patchedFeaturesID);
+				}
 			}
 		}
-		
+
 		return patches;
 	}
 
 	/*
-	 * retruns the list of pathes-feature who patch disabled features
+	 * retruns the list of pathes-feature who patch enabled features
 	 */
-	private static List getPatchesToDisable(Map efixes, ArrayList disabledVersionedIdentifer) {
-		List result = new ArrayList();
-		Iterator iter = efixes.keySet().iterator();
+	private static List getPatchesToEnable(Map efixes, ArrayList configuredFeatures) {
+
+		ArrayList enabledVersionedIdentifier = new ArrayList();
+		Iterator iter = configuredFeatures.iterator();
 		while (iter.hasNext()) {
-			boolean toDisable = true;
+			IFeature element = (IFeature) iter.next();
+			enabledVersionedIdentifier.add(element.getVersionedIdentifier());
+		}
+
+		// loop through the patches
+		List result = new ArrayList();
+		iter = efixes.keySet().iterator();
+		while (iter.hasNext()) {
+			boolean toEnable = false;
 			IFeature efixFeature = (IFeature) iter.next();
-			List patchedFeatures = (List)efixes.get(efixFeature);
-			// loop through the patched features
+			List patchedFeatures = (List) efixes.get(efixFeature);
+			// loop through the 'patched features identifier' the for this patch
+			// see if it the patch patches at least one enable feature
 			Iterator patchedFeaturesIter = patchedFeatures.iterator();
-			while (patchedFeaturesIter.hasNext() && toDisable) {
+			while (patchedFeaturesIter.hasNext() && !toEnable) {
 				VersionedIdentifier patchedFeatureID = (VersionedIdentifier) patchedFeaturesIter.next();
-				if (!disabledVersionedIdentifer.contains(patchedFeatureID)){
-					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
-						UpdateManagerPlugin.debug("the patch "+efixFeature+" will not be disabled as it patches the enable feature "+patchedFeatureID);
-					toDisable = false;
+				if (enabledVersionedIdentifier.contains(patchedFeatureID)) {
+					toEnable = true;
 				}
 			}
-			
-			if (toDisable){
+
+			if (!toEnable) {
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
-					UpdateManagerPlugin.debug("Found patch to disable:"+efixFeature);
-			 	result.add(efixFeature);	
+					UpdateManagerPlugin.debug("The Patch " + efixFeature + " does not patch any enabled features: it will be disabled");
+			} else {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+					UpdateManagerPlugin.debug("The patch " + efixFeature + " will be enabled.");
+
+				result.add(efixFeature);
 			}
 		}
 		return result;
 	}
 
+	/*
+	 * returns the feature that are not patches
+	 */
+	private static ArrayList getNonEfixFeatures(ArrayList topFeatures) {
+		Map efixFeatures = getPatches(topFeatures);
+		Set keySet = efixFeatures.keySet();
+		if (keySet == null || keySet.isEmpty())
+			return topFeatures;
 
+		Iterator iter = topFeatures.iterator();
+		ArrayList result = new ArrayList();
+		while (iter.hasNext()) {
+			IFeature element = (IFeature) iter.next();
+			if (!keySet.contains(element)) {
+				result.add(element);
+			}
+		}
+		return result;
+	}
 
 }
