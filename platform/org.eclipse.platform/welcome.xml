@@ -39,13 +39,12 @@ the HEAD branch. You will see a list of the modules in that repository. Select a
 <b>Checkout as Project</b> from the context menu. This will checkout the module from the CVS 
 repository and create a project by that name in your workspace.</item>
 
-<item><b>Running an Ant Buildfile</b>
-To run an Ant buildfile, click on Run > External Tools > External Tools.... Select Ant Build as the launch
-configuration type and click New. Identify the buildfile in the Location field and then click Run.</item>
+<item><b>Running an Ant Build File</b>
+To run an Ant build file, click on Run > External Tools > External Tools.... Select Ant Build as the launch
+configuration type and click New. Identify the build file in the Location field and then click Run.</item>
 
 <item><b>Learn more </b>
-To learn more you can browse the <topic id="/org.eclipse.platform.doc.user/toc.xml">Workbench User Guide</topic>. Browse the <topic href="/org.eclipse.platform.doc.user/reference/ref-anticons.htm">External Tools and Ant Icons</topic>
-section to recognize the various External Tools and Ant elements. </item>
+To learn more you can browse the <topic id="/org.eclipse.platform.doc.user/toc.xml">Workbench User Guide</topic>.</item>
 
 
 </welcomePage>
