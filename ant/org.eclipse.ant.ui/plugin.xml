@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <plugin
   name = "%pluginName"
@@ -42,7 +42,7 @@
 	</category>
 	<view
 		id="org.eclipse.ant.ui.antconsole"
-		name="Ant Console"
+		name="%antConsole"
 		icon="icons/basic/cview/ant_view.gif"
 		category="org.eclipse.ant.ui"
 		class="org.eclipse.ant.internal.ui.AntConsole">

@@ -9,7 +9,7 @@
     <classpathentry kind="var" path="TARGET/org.eclipse.ant.core/ant.jar"/>
     <classpathentry kind="var"
         path="TARGET/org.eclipse.ui/workbench.jar" sourcepath="TARGET/org.eclipse.ui/workbenchsrc.zip"/>
-    <classpathentry kind="var" path="TARGET/org.eclipse.swt/swt.jar"
-        rootpath="" sourcepath="TARGET/org.eclipse.swt/swtsrc.zip"/>
+    <classpathentry kind="var" path="TARGET/org.eclipse.swt/swt.jar" sourcepath="TARGET/org.eclipse.swt/swtsrc.zip"/>
+    <classpathentry kind="src" path="/org.eclipse.ui"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
