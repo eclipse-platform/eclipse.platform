@@ -16,9 +16,9 @@ import junit.framework.TestResult;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.console.IConsoleHyperlink;
 import org.eclipse.swt.widgets.Display;
-
 
 public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 
@@ -66,11 +66,23 @@ public abstract class AbstractAntUIBuildTest extends AbstractAntUITest {
 	 * Launches the Ant build with the buildfile name (no extension).
 	 * Waits for all of the lines to be appended to the console.
 	 * 
-	 * @param mainTypeName the program to launch
+	 * @param buildFileName the buildfile to execute
 	 * @return thread in which the first suspend event occurred
 	 */
 	protected void launch(String buildFileName) throws CoreException {
 		super.launch(buildFileName);
+		ConsoleLineTracker.waitForConsole();
+	}
+	
+	/**
+	 * Launches the launch configuration
+	 * Waits for all of the lines to be appended to the console.
+	 * 
+	 * @param config the config to execute
+	 * @return thread in which the first suspend event occurred
+	 */
+	protected void launch(ILaunchConfiguration config) throws CoreException {
+	    launchAndTerminate(config, 20000);
 		ConsoleLineTracker.waitForConsole();
 	}
 	
