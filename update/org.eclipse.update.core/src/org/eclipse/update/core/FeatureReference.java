@@ -26,7 +26,8 @@ import org.eclipse.update.internal.core.*;
  */
 public class FeatureReference extends FeatureReferenceModel implements IFeatureReference {
 
-	private IFeature feature;
+	private IFeature feature; // best match
+	private IFeature featureExact; // exact match
 	private List categories;
 	private VersionedIdentifier versionId;
 
@@ -56,27 +57,15 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 *  @return the feature on the Site
 	 */
 	public IFeature getFeature() throws CoreException {
-
-		String type = getType();
+	
+		if (getMatch() == IImport.RULE_PERFECT) return getFeature(true);		
+	
 		if (feature == null) {
-
 			// find best match
 			IFeatureReference bestMatch = getBestMatch();
-
-			if (type == null || type.equals("")) { //$NON-NLS-1$
-				// ask the Site for the default type 
-				type = getSite().getDefaultPackagedFeatureType();
-			}
-			feature = createFeature(type, bestMatch.getURL(), getSite());
-			if (feature != null) {
-				VersionedIdentifier featureID = feature.getVersionedIdentifier();
-				if (versionId != null && !versionId.equals(featureID)) {
-					UpdateManagerPlugin.warn("The versionId of the referenced feature doesn't match the one of the feature reference:" + getURL());
-				}
-				versionId = featureID;
-			}
+			feature = getFeature(bestMatch);	
 		}
-
+	
 		return feature;
 	}
 
@@ -340,4 +329,38 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 			return null;
 		return configuredSite.getConfiguredFeatures();
 	}
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#getFeature(boolean)
+	 */
+	public IFeature getFeature(boolean perfectMatch) throws CoreException {
+		
+		if (!perfectMatch) return getFeature();
+
+		if (featureExact == null) {
+			featureExact = getFeature(this);
+		}
+
+		return featureExact;
+	}
+
+	/*
+	 * 
+	 */
+	private IFeature getFeature(IFeatureReference ref) throws CoreException {
+		String type = getType();
+		if (type == null || type.equals("")) { //$NON-NLS-1$
+			// ask the Site for the default type 
+			type = getSite().getDefaultPackagedFeatureType();
+		}
+		IFeature feature = createFeature(type, ref.getURL(), getSite());
+		if (feature != null) {
+			VersionedIdentifier featureID = feature.getVersionedIdentifier();
+			if (versionId != null && !versionId.equals(featureID)) {
+				UpdateManagerPlugin.warn("The versionId of the referenced feature doesn't match the one of the feature reference:" + getURL());
+			}
+			versionId = featureID;
+		}
+		return feature;
+	}
+
 }

@@ -55,6 +55,17 @@ public interface IFeatureReference extends IAdaptable {
 	public IFeature getFeature() throws CoreException;
 
 	/**
+	 * Returns the referenced feature.
+	 * This is a factory method that creates the full feature object.
+	 * 
+	 * @param perfectMatch <code>true</code> if the match perfect feature should be return
+	 * <code>false</code> if teh best match feature should be return.
+	 * @return the referenced feature
+	 * @since 2.0.2
+	 */
+	public IFeature getFeature(boolean perfectMatch) throws CoreException;
+
+	/**
 	 * Returns the feature identifier.
 	 * 
 	 * @return the feature identifier.
