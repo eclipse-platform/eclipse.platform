@@ -846,7 +846,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 			searchLocation = IUpdateConstants.SEARCH_SELF;				
 		includedFeature.setSearchLocation(searchLocation);
 
-		// os arch ws
+		// os arch ws nl
 		String os = attributes.getValue("os");
 		includedFeature.setOS(os);
 
@@ -856,6 +856,9 @@ public class DefaultFeatureParser extends DefaultHandler {
 		String arch = attributes.getValue("arch");
 		includedFeature.setArch(arch);
 
+		String nl = attributes.getValue("nl"); //$NON-NLS-1$
+		includedFeature.setNL(nl);
+		
 		objectStack.push(includedFeature);
 
 		if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_PARSING) {
