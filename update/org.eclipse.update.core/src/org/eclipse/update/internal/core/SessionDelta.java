@@ -70,9 +70,9 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		// process all feature references to configure
 		// find the configured site each feature belongs to
 		if (process == ENABLE) {
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+				UpdateManagerPlugin.warn("ENABLE SESSION DELTA");			
 			if (featureReferences != null && featureReferences.size() > 0) {
-				IConfiguredSite configSite = null;
-
 				// manage ProgressMonitor
 				if (pm != null) {
 					int nbFeatures = featureReferences.size();
@@ -81,13 +81,13 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 				// since 2.0.2 ISite.getConfiguredSite()
 				// find the configuredSite that maintains this featureReference
 				// configure the feature
-
 				Iterator iterator = featureReferences.iterator();
+				IFeatureReference ref = null;
+				IConfiguredSite configSite = null;
+				IFeature featureToConfigure = null;
 				while (iterator.hasNext()) {
-					IFeatureReference ref = (IFeatureReference) iterator.next();
-					ISite site = ref.getSite();
-
-					IFeature featureToConfigure = null;
+					ref = (IFeatureReference) iterator.next();
+					
 					try {
 						featureToConfigure = ref.getFeature();
 					} catch (CoreException e) {
@@ -97,7 +97,8 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 					if (featureToConfigure != null) {
 						if (pm != null)
 							pm.worked(1);
-						configSite = site.getConfiguredSite();
+							
+						configSite = ref.getSite().getConfiguredSite();
 						try {
 							// make sure only the latest version of the configured features
 							// is configured across sites [16502]													
@@ -111,6 +112,8 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 							//then continue with others 
 							UpdateManagerPlugin.warn("Unable to configure feature:" + featureToConfigure, e);
 						}
+					} else {
+						UpdateManagerPlugin.warn("Unable to configure null feature:" + ref,null);
 					}
 
 				}

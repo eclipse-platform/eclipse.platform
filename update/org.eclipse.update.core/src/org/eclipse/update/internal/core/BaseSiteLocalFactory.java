@@ -48,7 +48,7 @@ public class BaseSiteLocalFactory {
 		ConfigurationPolicyModel policyModel= this.createConfigurationPolicyModel();
 		policyModel.setPolicy(policy);
 		configSite.setConfigurationPolicyModel(policyModel);
-		((ConfigurationPolicy) policyModel).setConfiguredSite((IConfiguredSite)configSite);
+		((ConfigurationPolicy) policyModel).setConfiguredSiteModel(configSite);
 		// 2.0.2 set configSite into site
 		site.setConfiguredSiteModel(configSite);
 		return configSite;

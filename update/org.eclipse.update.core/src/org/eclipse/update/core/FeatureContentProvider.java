@@ -192,7 +192,7 @@ public abstract class FeatureContentProvider
 				}
 				
 				try {
-					os = new FileOutputStream(localFile);
+					os = new BufferedOutputStream(new FileOutputStream(localFile));
 				} catch (FileNotFoundException e){
 					throw Utilities.newCoreException(Policy.bind("FeatureContentProvider.UnableToCreate",new Object[]{localFile}),e);									
 				}
@@ -215,7 +215,7 @@ public abstract class FeatureContentProvider
 					}
 				if (os != null)
 					try {
-						os.close();
+						os.close(); // should flush buffer stream
 					} catch (IOException e) {
 					}
 				if (monitor != null)

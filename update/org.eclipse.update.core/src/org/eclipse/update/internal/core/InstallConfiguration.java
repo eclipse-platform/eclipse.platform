@@ -53,10 +53,10 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		// do not copy list of listeners nor activities
 		// make a copy of the siteConfiguration object
 		if (config != null) {
-			IConfiguredSite[] sites = config.getConfiguredSites();
-			if (sites != null) {
-				for (int i = 0; i < sites.length; i++) {
-					ConfiguredSite configSite = new ConfiguredSite(sites[i]);
+			IConfiguredSite[] csites = config.getConfiguredSites();
+			if (csites != null) {
+				for (int i = 0; i < csites.length; i++) {
+					ConfiguredSite configSite = new ConfiguredSite(csites[i]);
 					addConfigurationSiteModel(configSite);
 				}
 			}

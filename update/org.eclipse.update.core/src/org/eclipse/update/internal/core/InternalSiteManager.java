@@ -28,10 +28,8 @@ public class InternalSiteManager {
 
 	public static ILocalSite localSite;
 
-	public static final String DEFAULT_SITE_TYPE =
-		SiteURLContentProvider.SITE_TYPE;
-	private static final String DEFAULT_EXECUTABLE_SITE_TYPE =
-		SiteFileContentProvider.SITE_TYPE;
+	public static final String DEFAULT_SITE_TYPE = SiteURLContentProvider.SITE_TYPE;
+	private static final String DEFAULT_EXECUTABLE_SITE_TYPE = SiteFileContentProvider.SITE_TYPE;
 	private static final String SIMPLE_EXTENSION_ID = "deltaHandler";
 	//$NON-NLS-1$
 
@@ -43,7 +41,6 @@ public class InternalSiteManager {
 	// so we cache it and don't attempt to create it again
 	private static CoreException exceptionOccured = null;
 
-
 	/*
 	 * @see SiteManager#getLocalSite()
 	 */
@@ -54,8 +51,7 @@ public class InternalSiteManager {
 	/*
 	 * Internal call if optimistic reconciliation needed
 	 */
-	private static ILocalSite internalGetLocalSite(boolean isOptimistic)
-		throws CoreException {
+	private static ILocalSite internalGetLocalSite(boolean isOptimistic) throws CoreException {
 
 		// if an exception occured while retrieving the Site
 		// rethrow it
@@ -116,8 +112,7 @@ public class InternalSiteManager {
 	 * if the site guessed is not the type found,
 	 * attempt to create a type with the type found in the site.xml
 	 */
-	private static ISite attemptCreateSite(String guessedTypeSite, URL siteURL)
-		throws CoreException {
+	private static ISite attemptCreateSite(String guessedTypeSite, URL siteURL) throws CoreException {
 		ISite site = null;
 
 		try {
@@ -128,13 +123,8 @@ public class InternalSiteManager {
 			// attempt to use this type instead	
 
 			//DEBUG:
-			if (UpdateManagerPlugin.DEBUG
-				&& UpdateManagerPlugin.DEBUG_SHOW_TYPE) {
-				UpdateManagerPlugin.debug(
-					"The Site :"
-						+ siteURL.toExternalForm()
-						+ " is a different type than the guessed type based on the protocol. new Type:"
-						+ e.getNewType());
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_TYPE) {
+				UpdateManagerPlugin.debug("The Site :" + siteURL.toExternalForm() + " is a different type than the guessed type based on the protocol. new Type:" + e.getNewType());
 				//$NON-NLS-1$ //$NON-NLS-2$
 			}
 
@@ -144,12 +134,7 @@ public class InternalSiteManager {
 					throw e;
 				site = createSite(exception.getNewType(), siteURL);
 			} catch (InvalidSiteTypeException e1) {
-				throw Utilities.newCoreException(
-					Policy.bind(
-						"InternalSiteManager.UnableToCreateSiteWithType",
-						e.getNewType(),
-						siteURL.toExternalForm()),
-					e1);
+				throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToCreateSiteWithType", e.getNewType(), siteURL.toExternalForm()), e1);
 				//$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}
@@ -179,11 +164,9 @@ public class InternalSiteManager {
 	 * 
 	 * 4 open the stream	
 	 */
-	private static ISite createSite(String siteType, URL url)
-		throws CoreException, InvalidSiteTypeException {
+	private static ISite createSite(String siteType, URL url) throws CoreException, InvalidSiteTypeException {
 		ISite site = null;
-		ISiteFactory factory =
-			SiteTypeFactory.getInstance().getFactory(siteType);
+		ISiteFactory factory = SiteTypeFactory.getInstance().getFactory(siteType);
 
 		try {
 
@@ -194,11 +177,7 @@ public class InternalSiteManager {
 			// or a directory, without reference			
 			if (url.getRef() != null) {
 				// 4 nothing we can do
-				throw Utilities.newCoreException(
-					Policy.bind(
-						"InternalSiteManager.UnableToAccessURL",
-						url.toExternalForm()),
-					e);
+				throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToAccessURL", url.toExternalForm()), e);
 				//$NON-NLS-1$
 			} else if (url.getFile().endsWith("/")) { //$NON-NLS-1$
 				// 1 try to add site.xml
@@ -206,65 +185,34 @@ public class InternalSiteManager {
 				try {
 					urlRetry = new URL(url, Site.SITE_XML);
 				} catch (MalformedURLException e1) {
-					throw Utilities.newCoreException(
-						Policy.bind(
-							"InternalSiteManager.UnableToCreateURL",
-							url.toExternalForm() + "+" + Site.SITE_XML),
-						e1);
+					throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToCreateURL", url.toExternalForm() + "+" + Site.SITE_XML), e1);
 					//$NON-NLS-1$ //$NON-NLS-2$
 				}
 				try {
 					site = factory.createSite(urlRetry);
 				} catch (CoreException e1) {
-					throw Utilities.newCoreException(
-						Policy.bind(
-							"InternalSiteManager.UnableToAccessURL",
-							url.toExternalForm()),
-						url.toExternalForm(),
-						urlRetry.toExternalForm(),
-						e,
-						e1);
+					throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToAccessURL", url.toExternalForm()), url.toExternalForm(), urlRetry.toExternalForm(), e, e1);
 					//$NON-NLS-1$
 				}
 			} else if (url.getFile().endsWith(Site.SITE_XML)) {
 				// 3 nothing we can do
-				throw Utilities.newCoreException(
-					Policy.bind(
-						"InternalSiteManager.UnableToAccessURL",
-						url.toExternalForm()),
-					e);
+				throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToAccessURL", url.toExternalForm()), e);
 				//$NON-NLS-1$
 			} else {
 				// 2 try to add /site.xml 
 				URL urlRetry;
 				try {
-					urlRetry =
-						new URL(
-							url.getProtocol(),
-							url.getHost(),
-							url.getPort(),
-							url.getFile() + "/" + Site.SITE_XML);
+					urlRetry = new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile() + "/" + Site.SITE_XML);
 					//$NON-NLS-1$
 				} catch (MalformedURLException e1) {
-					throw Utilities.newCoreException(
-						Policy.bind(
-							"InternalSiteManager.UnableToCreateURL",
-							url.toExternalForm() + "+" + Site.SITE_XML),
-						e1);
+					throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToCreateURL", url.toExternalForm() + "+" + Site.SITE_XML), e1);
 					//$NON-NLS-1$ //$NON-NLS-2$
 				}
 
 				try {
 					site = factory.createSite(urlRetry);
 				} catch (CoreException e1) {
-					throw Utilities.newCoreException(
-						Policy.bind(
-							"InternalSiteManager.UnableToAccessURL",
-							url.toExternalForm()),
-						url.toExternalForm(),
-						urlRetry.toExternalForm(),
-						e,
-						e1);
+					throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToAccessURL", url.toExternalForm()), url.toExternalForm(), urlRetry.toExternalForm(), e, e1);
 					//$NON-NLS-1$
 				}
 			}
@@ -284,13 +232,9 @@ public class InternalSiteManager {
 		if (siteLocation != null) {
 			try {
 				URL siteURL = siteLocation.toURL();
-				site = getSite(siteURL,false);
+				site = getSite(siteURL, false);
 			} catch (MalformedURLException e) {
-				throw Utilities.newCoreException(
-					Policy.bind(
-						"InternalSiteManager.UnableToCreateURL",
-						siteLocation.getAbsolutePath()),
-					e);
+				throw Utilities.newCoreException(Policy.bind("InternalSiteManager.UnableToCreateURL", siteLocation.getAbsolutePath()), e);
 				//$NON-NLS-1$
 			}
 		}
@@ -307,28 +251,18 @@ public class InternalSiteManager {
 		// find extension point
 		IInstallDeltaHandler handler = null;
 
-		String pluginID =
-			UpdateManagerPlugin
-				.getPlugin()
-				.getDescriptor()
-				.getUniqueIdentifier();
-				    
+		String pluginID = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+
 		IPluginRegistry pluginRegistry = Platform.getPluginRegistry();
-		
-		IConfigurationElement[] elements = pluginRegistry.getConfigurationElementsFor(pluginID,	SIMPLE_EXTENSION_ID);
-				
+
+		IConfigurationElement[] elements = pluginRegistry.getConfigurationElementsFor(pluginID, SIMPLE_EXTENSION_ID);
+
 		if (elements == null || elements.length == 0) {
-			throw Utilities.newCoreException(
-				Policy.bind(
-					"SiteReconciler.UnableToFindInstallDeltaFactory",
-					pluginID+"."+SIMPLE_EXTENSION_ID),
-				null);
+			throw Utilities.newCoreException(Policy.bind("SiteReconciler.UnableToFindInstallDeltaFactory", pluginID + "." + SIMPLE_EXTENSION_ID), null);
 			//$NON-NLS-1$
 		} else {
 			IConfigurationElement element = elements[0];
-			handler =
-				(IInstallDeltaHandler) element.createExecutableExtension(
-					"class");
+			handler = (IInstallDeltaHandler) element.createExecutableExtension("class");
 			//$NON-NLS-1$
 		}
 
@@ -361,10 +295,8 @@ public class InternalSiteManager {
 			for (int i = 0; i < allFiles.length; i++) {
 				try {
 					// TRACE
-					if (UpdateManagerPlugin.DEBUG
-						&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-						UpdateManagerPlugin.debug(
-							"Found delta change:" + allFiles[i]);
+					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+						UpdateManagerPlugin.debug("Found delta change:" + allFiles[i]);
 					}
 					parser = new InstallChangeParser(allFiles[i]);
 					ISessionDelta change = parser.getInstallChange();
@@ -372,9 +304,8 @@ public class InternalSiteManager {
 						sessionDeltas.add(change);
 					}
 				} catch (Exception e) {
-					if (UpdateManagerPlugin.DEBUG
-						&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-						UpdateManagerPlugin.log("Unable to parse install change:" + allFiles[i],e);
+					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+						UpdateManagerPlugin.log("Unable to parse install change:" + allFiles[i], e);
 					}
 				}
 			}
@@ -383,8 +314,7 @@ public class InternalSiteManager {
 		if (sessionDeltas.size() == 0)
 			return new ISessionDelta[0];
 
-		return (ISessionDelta[]) sessionDeltas.toArray(
-			arrayTypeFor(sessionDeltas));
+		return (ISessionDelta[]) sessionDeltas.toArray(arrayTypeFor(sessionDeltas));
 	}
 
 	/*
@@ -410,14 +340,13 @@ public class InternalSiteManager {
 	 * 
 	 * Called internally by UpdateManagerReconciler aplication
 	 */
-	public static boolean reconcile(boolean optimisticReconciliation)
-		throws CoreException {
+	public static boolean reconcile(boolean optimisticReconciliation) throws CoreException {
 		// reconcile
 		internalGetLocalSite(optimisticReconciliation);
-		
+
 		// check if new features have been found
-		if (localSite instanceof SiteLocal){
-			return ((SiteLocal)localSite).newFeaturesFound;
+		if (localSite instanceof SiteLocal) {
+			return ((SiteLocal) localSite).newFeaturesFound;
 		}
 		return false;
 	}

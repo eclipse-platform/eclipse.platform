@@ -51,6 +51,7 @@ public class ConfiguredSiteModel extends ModelObject {
 	public void setSiteModel(SiteModel site) {
 		assertIsWriteable();
 		this.site = site;
+		site.setConfiguredSiteModel(this);
 	}
 
 	/**
@@ -67,6 +68,7 @@ public class ConfiguredSiteModel extends ModelObject {
 	public void setConfigurationPolicyModel(ConfigurationPolicyModel policy) {
 		assertIsWriteable();
 		this.policy = policy;
+		policy.setConfiguredSiteModel(this);
 	}
 
 	/**

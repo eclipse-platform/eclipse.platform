@@ -21,7 +21,7 @@ public class Utilities {
 
 	private static Map entryMap;
 	private static Stack bufferPool;
-	private static final int BUFFER_SIZE = 4096;
+	private static final int BUFFER_SIZE = 262144; //256K
 	private static final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
 	private static long tmpseed = (new Date()).getTime();
 	private static String dirRoot = null;

@@ -47,7 +47,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 */
 	public ConfiguredSite(IConfiguredSite configSite) {
 		ConfiguredSite cSite = (ConfiguredSite) configSite;
-		setSiteModel((SiteModel) cSite.getSite());
+		setSiteModel(cSite.getSiteModel());
 		setConfigurationPolicyModel(new ConfigurationPolicy(cSite.getConfigurationPolicy()));
 		isUpdatable(cSite.isUpdatable());
 		setPreviousPluginPath(cSite.getPreviousPluginPath());
@@ -661,17 +661,12 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		return found;
 	}
 
-	/*
-	 *
-	 */
-	public void setConfigurationPolicy(ConfigurationPolicy policy) {
-		setConfigurationPolicyModel((ConfigurationPolicyModel) policy);
-	}
 
 	/*
 	 * 
 	 */
 	public ConfigurationPolicy getConfigurationPolicy() {
+System.out.print("\t\t\t["+super.toString()+"]");		
 		return (ConfigurationPolicy) getConfigurationPolicyModel();
 	}
 

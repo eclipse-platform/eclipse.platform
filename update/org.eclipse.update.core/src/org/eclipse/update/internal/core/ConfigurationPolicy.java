@@ -24,8 +24,6 @@ import org.eclipse.update.internal.model.ConfigurationPolicyModel;
  */
 public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
-	private IConfiguredSite configuredSite;
-
 	/**
 	 * Constructor for ConfigurationPolicyModel.
 	 */
@@ -40,7 +38,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		setPolicy(configPolicy.getPolicy());
 		setConfiguredFeatureReferences(configPolicy.getConfiguredFeatures());
 		setUnconfiguredFeatureReferences(configPolicy.getUnconfiguredFeatures());
-		setConfiguredSite(configPolicy.getConfiguredSite());
+		setConfiguredSiteModel(configPolicy.getConfiguredSiteModel());						
 	}
 
 	/**
@@ -281,7 +279,11 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		if (getPolicy() == IPlatformConfiguration.ISitePolicy.USER_EXCLUDE) {
 			//	EXCLUDE: return unconfigured plugins MINUS any plugins that
 			//           are configured
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+				UpdateManagerPlugin.warn("UNCONFIGURED PLUGINS");			
 			String[] unconfigured = getPluginString(site, getUnconfiguredFeatures());
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+				UpdateManagerPlugin.warn("CONFIGURED PLUGINS");			
 			String[] configured = getPluginString(site, getConfiguredFeatures());
 			pluginsToWrite = delta(configured, unconfigured);
 		} else {
@@ -358,15 +360,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * @return Returns a IConfiguredSite
 	 */
 	public IConfiguredSite getConfiguredSite() {
-		return configuredSite;
-	}
-
-	/**
-	 * Sets the configuredSite.
-	 * @param configuredSite The configuredSite to set
-	 */
-	public void setConfiguredSite(IConfiguredSite configuredSite) {
-		this.configuredSite = configuredSite;
+		return (IConfiguredSite)getConfiguredSiteModel();
 	}
 
 	/**
@@ -432,6 +426,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 								path += entry.isFragment() ? "fragment.xml" : "plugin.xml";
 								//$NON-NLS-1$ //$NON-NLS-2$
 								pluginsString.add(path);
+								if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+									UpdateManagerPlugin.warn("Add plugin: "+path+" to the list");
 							}
 						}
 					}
@@ -468,8 +464,9 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		List list1 = new ArrayList();
 		list1.addAll(Arrays.asList(allPlugins));
 		for (int i = 0; i < pluginsToRemove.length; i++) {
-			if (list1.contains(pluginsToRemove[i]))
+			if (list1.contains(pluginsToRemove[i])){
 				list1.remove(pluginsToRemove[i]);
+			}
 		}
 
 		String[] resultEntry = new String[list1.size()];
