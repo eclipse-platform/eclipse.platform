@@ -714,10 +714,15 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			IFeature child = null;
 			try {
 				child = children[j].getFeature();
-				expandFeature(child, features);				
 			} catch (CoreException e){
-				if (!children[j].isOptional()) throw e;
+				// the child may be missing, warn and return
+				if (children[j].isOptional()) {
+					UpdateManagerPlugin.warn("",e);
+					return;
+				}
+				throw e;
 			}
+			expandFeature(child, features);				
 		}
 	}
 

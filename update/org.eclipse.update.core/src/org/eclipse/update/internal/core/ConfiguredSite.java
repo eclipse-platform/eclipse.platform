@@ -210,7 +210,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		}
 		// call the configure task	
 		if (installedFeature != null)
-			configure(installedFeature, false);
+			configure(installedFeature, optionalFeatures, false);
 		/*callInstallHandler*/
 
 		return installedFeatureRef;
@@ -284,14 +284,14 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 * @see IConfiguredSite#configure(IFeature) 
 	 */
 	public void configure(IFeature feature) throws CoreException {
-		configure(feature, true /*callInstallHandler*/
+		configure(feature, null, true /*callInstallHandler*/
 		);
 	}
 
 	/*
-	 * @see IConfiguredSite#configure(IFeatureReference,boolean)
+	 * 
 	 */
-	private void configure(IFeature feature, boolean callInstallHandler) throws CoreException {
+	private void configure(IFeature feature, IFeatureReference[] optionalFeatures, boolean callInstallHandler) throws CoreException {
 
 		if (feature == null) {
 			UpdateManagerPlugin.warn("Attempting to configure a null feature in site:" + getSite().getURL().toExternalForm());
@@ -303,11 +303,16 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			return;
 
 		// bottom up approach, same configuredSite
+		//IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 		IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
+			if (optionalFeatures!=null){
+				childrenRef = optionalChildrenToInstall(childrenRef,optionalFeatures);
+			}	
+				
 		for (int i = 0; i < childrenRef.length; i++) {
 			try {
 				IFeature child = childrenRef[i].getFeature();
-				configure(child, callInstallHandler);
+				configure(child, optionalFeatures, callInstallHandler);
 			} catch (CoreException e) {
 				// will skip any bad children
 				if (!childrenRef[i].isOptional())
@@ -324,7 +329,46 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		for (int i = 0; i < siteListeners.length; i++) {
 			((IConfiguredSiteChangedListener) siteListeners[i]).featureConfigured(feature);
 		}
+	}
 
+	/**
+	 * Return the optional children to install
+	 * The optional features to install may not all be direct children 
+	 * of the feature.
+	 * 
+	 * @param children all the nested features
+	 * @param optionalfeatures optional features to install
+	 * @return IFeatureReference[]
+	 */
+	private IFeatureReference[] optionalChildrenToInstall(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
+		if (optionalfeatures.length==0) return optionalfeatures;
+		
+		List optionalChildrenToInstall = new ArrayList();
+		for (int i = 0; i < children.length; i++) {
+			IFeatureReference optionalFeature = children[i];
+			if (!optionalFeature.isOptional()){
+				optionalChildrenToInstall.add(optionalFeature);
+			} else {
+				for (int j = 0; j < optionalfeatures.length; j++) {
+					// must compare feature as optionalFeatures are from the install site
+					// where children are on the local site
+					try {
+						IFeature installedChildren = optionalfeatures[j].getFeature();
+						if (installedChildren.equals(optionalFeature.getFeature())){
+							optionalChildrenToInstall.add(optionalFeature);
+							break;
+						}
+					} catch (CoreException e){}
+				}
+			}
+		}
+		
+		IFeatureReference[] result = new IFeatureReference[optionalChildrenToInstall.size()];
+		if (optionalChildrenToInstall.size()>0){
+			optionalChildrenToInstall.toArray(result);
+		}
+		
+		return result;
 	}
 
 	/*

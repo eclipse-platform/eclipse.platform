@@ -262,7 +262,7 @@ public class Feature extends FeatureModel implements IFeature {
 			
 			IFeatureReference[] children = getIncludedFeatureReferences();
 			if (optionalfeatures!=null){
-				children = optionalChildrenToInstall(children,optionalfeatures);
+				children = UpdateManagerUtils.optionalChildrenToInstall(children,optionalfeatures);
 			}
 			
 
@@ -423,42 +423,6 @@ public class Feature extends FeatureModel implements IFeature {
 		}
 		return result;
 	}
-
-	/**
-	 * Return the optional children to install
-	 * The optional features to install may not all be direct children 
-	 * of the feature.
-	 * 
-	 * @param children all the nested features
-	 * @param optionalfeatures optional features to install
-	 * @return IFeatureReference[]
-	 */
-	private IFeatureReference[] optionalChildrenToInstall(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
-		if (optionalfeatures.length==0) return optionalfeatures;
-		
-		List optionalChildrenToInstall = new ArrayList();
-		for (int i = 0; i < children.length; i++) {
-			IFeatureReference optionalFeature = children[i];
-			if (!optionalFeature.isOptional()){
-				optionalChildrenToInstall.add(optionalFeature);
-			} else {
-				for (int j = 0; j < optionalfeatures.length; j++) {
-					if (optionalFeature.equals(optionalfeatures[j])){
-						optionalChildrenToInstall.add(optionalFeature);
-						break;
-					}
-				}
-			}
-		}
-		
-		IFeatureReference[] result = new IFeatureReference[optionalChildrenToInstall.size()];
-		if (optionalChildrenToInstall.size()>0){
-			optionalChildrenToInstall.toArray(result);
-		}
-		
-		return result;
-	}
-
 
 	/**
 	 * Returns an array of plug-in entries referenced by this feature
