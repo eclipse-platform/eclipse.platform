@@ -1226,6 +1226,7 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	}
 	
 	private void saveAsXML(OutputStream stream) throws CoreException {	
+		StreamResult result = null;
 		try {
 			DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document doc = docBuilder.newDocument();
@@ -1244,14 +1245,17 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(stream);
+			result = new StreamResult(stream);
 
 			transformer.transform(source,result);
 			//will close the stream in the caller
 			//stream.close();
 		} catch (Exception e) {
 			throw Utils.newCoreException("", e);
-		}  
+		} finally {
+			result.setOutputStream(null);
+			result = null;
+		}
 	}
 	
 	private void reconcile() throws CoreException {
