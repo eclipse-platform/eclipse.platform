@@ -488,8 +488,8 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		while (iter.hasNext()) {
 			IFeatureReference element = (IFeatureReference) iter.next();
 			try {
-				// do not og activity
-				getConfigurationPolicy().unconfigure(element, true, true);
+				// do not log activity
+				boolean succes = getConfigurationPolicy().unconfigure(element, true, true);
 			} catch (CoreException e) {
 				// log no feature to unconfigure
 				String url = element.getURL().toString();
@@ -584,7 +584,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 */
 	private List calculateUnconfiguredFeatures(IFeatureReference[] configuredFeatures) throws CoreException {
 
-		List featureToUnconfigure = new ArrayList(0);
+		Set featureToUnconfigureSet = new HashSet();
 
 		// loop for all history
 		// try to see if the configured site existed
@@ -598,32 +598,32 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			for (int j = 0; j < configSites.length; j++) {
 				ConfiguredSite configSite = (ConfiguredSite) configSites[j];
 				if (configSite.getSite().equals(getSite())) {
-					featureToUnconfigure.addAll(Arrays.asList(configSite.getConfigurationPolicy().getUnconfiguredFeatures()));
-					featureToUnconfigure.addAll(Arrays.asList(configSite.getConfigurationPolicy().getConfiguredFeatures()));
+					featureToUnconfigureSet.addAll(Arrays.asList(configSite.getConfigurationPolicy().getUnconfiguredFeatures()));
+					featureToUnconfigureSet.addAll(Arrays.asList(configSite.getConfigurationPolicy().getConfiguredFeatures()));
 				}
 			}
 		}
 
 		// remove the unconfigured feature we found that are now to be configured 
 		// (they may have been unconfigured in the past, but the revert makes them configured)
-		featureToUnconfigure = remove(configuredFeatures, featureToUnconfigure);
+		List featureToUnconfigureList = remove(configuredFeatures, featureToUnconfigureSet);
 
-		return featureToUnconfigure;
+		return featureToUnconfigureList;
 	}
 
 	/*
 	 * Utilities: Remove an array of feature references
 	 * from a list
 	 */
-	private List remove(IFeatureReference[] featureRefs, List list) {
+	private List remove(IFeatureReference[] featureRefs, Set set) {
 		List result = new ArrayList();
 
-		if (list == null)
+		if (set == null)
 			return result;
 
 		// if an element of the list is NOT found in the array,
 		// add it to the result list			
-		Iterator iter = list.iterator();
+		Iterator iter = set.iterator();
 		while (iter.hasNext()) {
 			IFeatureReference element = (IFeatureReference) iter.next();
 			boolean found = false;

@@ -46,6 +46,24 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	/**
 	 * @since 2.0
 	 */
+	private boolean isUnconfigured(IFeatureReference featureReference) {
+
+		if (featureReference == null)
+			return false;
+
+		// returns true if the feature is part of the configured list
+		IFeatureReference[] refs = getUnconfiguredFeatures();
+		for (int i = 0; i < refs.length; i++) {
+			if (featureReference.equals(refs[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @since 2.0
+	 */
 	public boolean isConfigured(IFeatureReference featureReference) {
 
 		if (featureReference == null)
@@ -60,6 +78,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		}
 		return false;
 	}
+
+
 
 	/**
 	 * adds the feature to the list of features if the policy is USER_INCLUDE
@@ -146,8 +166,10 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 */
 	public boolean unconfigure(IFeatureReference featureReference, boolean callInstallHandler, boolean createActivity) throws CoreException {
 
-		if (!isConfigured(featureReference))
+		if (isUnconfigured(featureReference)){
+			UpdateManagerPlugin.warn("Feature already unconfigured");			
 			return true;
+		}
 
 		if (featureReference == null) {
 			UpdateManagerPlugin.warn("The feature reference to unconfigure is null");

@@ -549,9 +549,14 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 	/*
 	 * reverts this configuration to the match the new one
-	 * remove any site that are in the current but not in the old state
-	 * replace all the config sites of the current state with the old one
-	 * for all the sites left in the current state, calculate the revert
+	 *
+	 * Compare the oldSites with the currentOne. the old state is the state we want to revert to.
+	 * 
+	 * If a site was in old state, but not in the currentOne, keep it in the hash.
+	 * If a site is in the currentOne but was not in the old state, unconfigure all features and add it in the hash
+	 * If a site was in baoth state, calculate the 'delta' and re-set it in the hash map
+	 * 
+	 * At the end, set the configured site from the new sites hash map
 	 * 
 	 */
 	public void revertTo(IInstallConfiguration configuration, IProgressMonitor monitor, IProblemHandler handler) throws CoreException, InterruptedException {
@@ -559,26 +564,26 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		IConfiguredSite[] oldConfigSites = configuration.getConfiguredSites();
 		IConfiguredSite[] nowConfigSites = this.getConfiguredSites();
 
-		// create a hashtable of the *old* sites
+		// create a hashtable of the *old* and *new* sites
 		Map oldSitesMap = new Hashtable(0);
+		Map newSitesMap = new Hashtable(0);		
 		for (int i = 0; i < oldConfigSites.length; i++) {
 			IConfiguredSite element = oldConfigSites[i];
 			oldSitesMap.put(element.getSite().getURL().toExternalForm(), element);
+			newSitesMap.put(element.getSite().getURL().toExternalForm(), element);			
 		}
 		// create list of all the sites that map the *old* sites
 		// we want the intersection between the old sites and the current sites
 		if (nowConfigSites != null) {
-			// for each current site, ask the old site
-			// to calculate the delta 
 			String key = null;
+			
 			for (int i = 0; i < nowConfigSites.length; i++) {
 				key = nowConfigSites[i].getSite().getURL().toExternalForm();
 				IConfiguredSite oldSite = (IConfiguredSite) oldSitesMap.get(key);
 				if (oldSite != null) {
 					// the Site existed before, calculate the delta between its current state and the
-					// state we are reverting to
+					// state we are reverting to and put it back into the map
 					 ((ConfiguredSite) nowConfigSites[i]).revertTo(oldSite, monitor, handler);
-					nowConfigSites[i] = oldSite;
 				} else {
 					// the site didn't exist in the InstallConfiguration we are reverting to
 					// unconfigure everything from this site so it is still present
@@ -594,11 +599,13 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 							nowConfigSites[i].unconfigure(featureToUnconfigure);
 					}
 				}
+				newSitesMap.put(key,nowConfigSites[i]);				
 			}
+			
 			// the new configuration has the exact same sites as the old configuration
 			// the old configuration in the Map are either as-is because they don't exist
 			// in the current one, or they are the delta from the current one to the old one
-			Collection sites = oldSitesMap.values();
+			Collection sites = newSitesMap.values();
 			if (sites != null && !sites.isEmpty()) {
 				ConfiguredSiteModel[] sitesModel = new ConfiguredSiteModel[sites.size()];
 				sites.toArray(sitesModel);
