@@ -236,7 +236,7 @@ public class ConfigurationView
 					feature = new MissingFeature(ref.getSite(), ref.getURL());
 				}
 				result.add(
-					new ConfiguredFeatureAdapter(adapter, feature, true));
+					new ConfiguredFeatureAdapter(adapter, feature, true, ref.isOptional()));
 			}
 			return getRootFeatures(result);
 		}
@@ -258,7 +258,8 @@ public class ConfigurationView
 					new ConfiguredFeatureAdapter(
 						adapter,
 						feature,
-						csite.isConfigured(feature)));
+						csite.isConfigured(feature),
+						allRefs[i].isOptional()));
 			}
 			return getRootFeatures(result);
 		}

@@ -22,4 +22,5 @@ public interface IFeatureAdapter {
 	public IFeatureAdapter [] getIncludedFeatures();
 	public boolean hasIncludedFeatures();
 	public boolean isIncluded();
+	public boolean isOptional();
 }

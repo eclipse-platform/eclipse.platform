@@ -17,8 +17,12 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class SimpleFeatureAdapter extends FeatureAdapter {
 	protected IFeature feature;
+	private boolean optional;
 	public SimpleFeatureAdapter(IFeature feature) {
-		this.feature = feature;
+		this(feature, false);
+	}
+	public SimpleFeatureAdapter(IFeature feature, boolean optional) {
+		this.optional = optional;
 	}
 	
 	public IFeature getFeature() throws CoreException {
@@ -40,12 +44,15 @@ public class SimpleFeatureAdapter extends FeatureAdapter {
 				new SimpleFeatureAdapter[included.length];
 			for (int i = 0; i < included.length; i++) {
 				result[i] =
-					new SimpleFeatureAdapter(included[i].getFeature());
+					new SimpleFeatureAdapter(included[i].getFeature(), included[i].isOptional());
 				result[i].setIncluded(true);
 			}
 			return result;
 		} catch (CoreException e) {
 			return new IFeatureAdapter[0];
 		}
+	}
+	public boolean isOptional() {
+		return optional;
 	}
 }

@@ -32,6 +32,10 @@ public class FeatureReferenceAdapter extends FeatureAdapter {
 	public URL getURL() {
 		return featureRef.getURL();
 	}
+	
+	public boolean isOptional() {
+		return featureRef.isOptional();
+	}
 
 	public IFeatureAdapter[] getIncludedFeatures() {
 		try {
