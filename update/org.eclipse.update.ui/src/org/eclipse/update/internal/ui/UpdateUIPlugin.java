@@ -6,6 +6,7 @@ package org.eclipse.update.internal.ui;
  */
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.*;
 import java.net.Authenticator;
 import java.util.*;
 
@@ -278,6 +279,32 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 	 */
 	public AuthorizationDatabase getDatabase() {
 		return database;
+	}
+	
+	public static URL getOriginatingURL(String id) {
+		IDialogSettings section = getOriginatingURLSection();
+		String value=section.get(id);
+		if (value!=null) {
+			try {
+				return new URL(value);
+			}
+			catch (MalformedURLException e) {
+			}
+		}
+		return null;
+	}
+	
+	public static void setOriginatingURL(String id, URL url) {
+		IDialogSettings section = getOriginatingURLSection();
+		section.put(id, url.toString());
+	}
+	
+	private static IDialogSettings getOriginatingURLSection() {
+		IDialogSettings settings = getDefault().getDialogSettings();
+		IDialogSettings section = settings.getSection("originatingURLs");
+		if (section==null)
+			section = settings.addNewSection("originatingURLs");
+		return section;
 	}
 
 	private void readInfo() {

@@ -78,15 +78,11 @@ public class MissingFeature implements IFeature {
 		return parent;
 	}
 	
-	public URL getParentOriginatingSiteURL() {
-		if (parent==null) return null;
-		try {
-			ILocalSite localSite = SiteManager.getLocalSite();
-			return localSite.getOriginatingSiteURL(parent);
-		}
-		catch (CoreException e) {
-			return null;
-		}
+	public URL getOriginatingSiteURL() {
+		VersionedIdentifier vid = getVersionedIdentifier();
+		if (vid==null) return null;
+		String key = vid.getIdentifier();
+		return UpdateUIPlugin.getOriginatingURL(key);
 	}
 
 	/*

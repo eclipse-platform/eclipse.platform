@@ -61,11 +61,11 @@ public class ConfiguredFeatureAdapter
 				try {
 					feature = fref.getFeature();
 					childConfigured = adapter.getConfigurationSite().isConfigured(feature);
-					/*
+					///*
 					PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
 					PluginVersionIdentifier fpid = feature.getVersionedIdentifier().getVersion();
 					updated = !refpid.equals(fpid);
-					*/
+					//*/
 				} catch (CoreException e) {
 					feature = new MissingFeature(getFeature(), fref);
 					childConfigured = false;

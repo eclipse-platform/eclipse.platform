@@ -4,6 +4,7 @@ package org.eclipse.update.internal.ui.wizards;
  * All Rights Reserved.
  */
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 
@@ -56,11 +57,18 @@ public class InstallWizard extends Wizard {
 			(optionalFeaturesPage == null)
 				? null
 				: optionalFeaturesPage.getOptionalElements();
-		if (job.getJobType()==PendingChange.INSTALL) {
-			ArrayList conflicts = DuplicateConflictsDialog.computeDuplicateConflicts(job, config, targetSite, optionalFeatures);
-			if (conflicts!=null) {
-				DuplicateConflictsDialog dialog = new DuplicateConflictsDialog(getShell(), conflicts);
-				if (dialog.open()!=0) return false;
+		if (job.getJobType() == PendingChange.INSTALL) {
+			ArrayList conflicts =
+				DuplicateConflictsDialog.computeDuplicateConflicts(
+					job,
+					config,
+					targetSite,
+					optionalFeatures);
+			if (conflicts != null) {
+				DuplicateConflictsDialog dialog =
+					new DuplicateConflictsDialog(getShell(), conflicts);
+				if (dialog.open() != 0)
+					return false;
 			}
 		}
 		IRunnableWithProgress operation = new IRunnableWithProgress() {
@@ -194,6 +202,9 @@ public class InstallWizard extends Wizard {
 			}
 			if (oldFeature == null) {
 				ensureUnique(config, feature, targetSite);
+				if (optionalFeatures != null) {
+					preserveOriginatingURLs(feature, optionalFeatures);
+				}
 			}
 		} else if (job.getJobType() == PendingChange.CONFIGURE) {
 			configure(job.getFeature());
@@ -271,7 +282,7 @@ public class InstallWizard extends Wizard {
 		}
 		return false;
 	}
-	
+
 	private void configure(IFeature feature) throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
@@ -390,5 +401,51 @@ public class InstallWizard extends Wizard {
 				return ref.getFeature();
 		}
 		return null;
+	}
+
+	private void preserveOriginatingURLs(
+		IFeature feature,
+		IFeatureReference[] optionalFeatures) {
+		// walk the hieararchy and preserve the originating URL
+		// for all the optional features that are not chosen to
+		// be installed.
+		URL url = feature.getSite().getURL();
+		try {
+			IFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+			for (int i = 0; i < irefs.length; i++) {
+				IFeatureReference iref = irefs[i];
+				boolean preserve = false;
+				if (iref.isOptional()) {
+					boolean onTheList = false;
+					for (int j = 0; j < optionalFeatures.length; j++) {
+						if (optionalFeatures[j].equals(iref)) {
+							//was on the list
+							onTheList = true;
+							break;
+						}
+					}
+					if (!onTheList)
+						preserve = true;
+				}
+				if (preserve) {
+					try {
+						String id =
+							iref.getVersionedIdentifier().getIdentifier();
+						UpdateUIPlugin.setOriginatingURL(id, url);
+					} catch (CoreException e) {
+						// Silently ignore
+					}
+				} else {
+					try {
+						IFeature ifeature = iref.getFeature();
+						preserveOriginatingURLs(ifeature, optionalFeatures);
+					} catch (CoreException e) {
+						// Silently ignore
+					}
+				}
+			}
+		} catch (CoreException e) {
+			// Silently ignore
+		}
 	}
 }

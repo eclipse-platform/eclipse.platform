@@ -530,7 +530,7 @@ public class DetailsForm extends PropertyWebForm {
 	private boolean getDoButtonVisibility() {
 		if (currentFeature instanceof MissingFeature) {
 			MissingFeature mf = (MissingFeature) currentFeature;
-			if (mf.isOptional() && mf.getParentOriginatingSiteURL() != null)
+			if (mf.isOptional() && mf.getOriginatingSiteURL() != null)
 				return true;
 			else
 				return false;
@@ -665,7 +665,7 @@ public class DetailsForm extends PropertyWebForm {
 	private void updateButtonText(boolean update) {
 		if (currentFeature instanceof MissingFeature) {
 			MissingFeature mf = (MissingFeature) currentFeature;
-			if (mf.isOptional() && mf.getParentOriginatingSiteURL() != null) {
+			if (mf.isOptional() && mf.getOriginatingSiteURL() != null) {
 				doButton.setText(
 					UpdateUIPlugin.getResourceString(KEY_DO_INSTALL));
 				return;
@@ -837,24 +837,15 @@ public class DetailsForm extends PropertyWebForm {
 		// Locate remote site, find the optional feature
 		// and install it
 		final VersionedIdentifier vid = mf.getVersionedIdentifier();
-		final URL siteURL = mf.getParentOriginatingSiteURL();
+		final URL siteURL = mf.getOriginatingSiteURL();
 		final IFeature [] result = new IFeature[1];
 		final CoreException [] exception = new CoreException [1];
 		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
 			public void run() {
 				try {
 					ISite site = SiteManager.getSite(siteURL);
-					IFeatureReference[] refs = site.getFeatureReferences();
-					for (int i = 0; i < refs.length; i++) {
-						IFeatureReference ref = refs[i];
-						VersionedIdentifier refVid =
-							ref.getVersionedIdentifier();
-						if (refVid.equals(vid)) {
-							// Bingo - take this one
-							result[0] = ref.getFeature();
-							break;
-						}
-					}
+					IFeatureReference [] refs = site.getFeatureReferences();
+					result[0] = findFeature(vid, refs);
 				} catch (CoreException e) {
 					exception[0] = e;
 				}
@@ -866,17 +857,43 @@ public class DetailsForm extends PropertyWebForm {
 			status = exception[0].getStatus();
 		}
 		else if (result[0]!=null) {
-			PendingChange job = new PendingChange(result[0], PendingChange.INSTALL);
+			IConfiguredSite targetSite = null;
+			if (mf.getParent()!=null) {
+				ISite psite = mf.getParent().getSite();
+				targetSite = psite.getConfiguredSite();
+			}
+			PendingChange job = new PendingChange(result[0], targetSite);
 			executeJob(job);
 		}
 		else {
-			String message = "Feature does not exist on "+siteURL;
+			String message = "Feature cannot be found using "+siteURL;
 			status = new Status(IStatus.ERROR, UpdateUIPlugin.PLUGIN_ID, IStatus.OK, message, null);
 		}
 		if (status!=null) {
 			// Show error dialog
 			ErrorDialog.openError(getControl().getShell(), "Optional Install", null, status);
 		}
+	}
+	
+	private IFeature findFeature(VersionedIdentifier vid, IFeatureReference [] refs) {
+		for (int i=0; i<refs.length; i++) {
+			IFeatureReference ref = refs[i];
+			try {
+				VersionedIdentifier refVid = ref.getVersionedIdentifier();
+				if (refVid.equals(vid)) {
+					return ref.getFeature();
+				}
+				// Try children
+				IFeature feature = ref.getFeature();
+				IFeatureReference [] irefs = feature.getIncludedFeatureReferences();
+				IFeature result = findFeature(vid, irefs);
+				if (result!=null)
+					return result;
+			}
+			catch (CoreException e) {
+			}
+		}
+		return null;
 	}
 
 	private void executeJob(final PendingChange job) {
@@ -911,8 +928,9 @@ public class DetailsForm extends PropertyWebForm {
 			if (currentFeature instanceof MissingFeature) {
 				MissingFeature mf = (MissingFeature) currentFeature;
 				if (mf.isOptional()
-					&& mf.getParentOriginatingSiteURL() != null) {
+					&& mf.getOriginatingSiteURL() != null) {
 					executeOptionalInstall(mf);
+					return;
 				}
 			}
 			int mode;

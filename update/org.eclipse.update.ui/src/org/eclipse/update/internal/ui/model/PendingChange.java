@@ -4,6 +4,7 @@ package org.eclipse.update.internal.ui.model;
  * All Rights Reserved.
  */
 
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.*;
 import java.util.*;
 import org.eclipse.core.runtime.*;
@@ -17,10 +18,16 @@ public class PendingChange extends SimpleFeatureAdapter {
 	private int jobType;
 	private IFeature oldFeature;
 	private boolean optionalDelta;
+	private IConfiguredSite targetSite;
 	
 	public PendingChange(IFeature feature, int jobType) {
 		super(feature);
 		this.jobType = jobType;
+	}
+	
+	public PendingChange(IFeature feature, IConfiguredSite targetSite) {
+		this(feature, INSTALL);
+		this.targetSite = targetSite;
 	}
 	
 	public PendingChange(IFeature oldFeature, IFeature newFeature) {
@@ -46,5 +53,9 @@ public class PendingChange extends SimpleFeatureAdapter {
 	}
 	public boolean isOptionalDelta() {
 		return optionalDelta;
+	}
+	
+	public IConfiguredSite getTargetSite() {
+		return targetSite;
 	}
 }

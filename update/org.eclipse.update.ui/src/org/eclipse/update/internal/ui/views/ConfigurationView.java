@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -47,6 +48,7 @@ public class ConfigurationView
 		"ConfigurationView.missingOptionalStatus";
 	private static final String KEY_MISSING_STATUS =
 		"ConfigurationView.missingStatus";
+	private static final String STATE_SHOW_UNCONF = "ConfigurationView.showUnconf";
 	private Image eclipseImage;
 	private Image featureImage;
 	private Image updatedFeatureImage;
@@ -741,9 +743,12 @@ public class ConfigurationView
 
 	protected void makeActions() {
 		super.makeActions();
+		final IDialogSettings settings = UpdateUIPlugin.getDefault().getDialogSettings();
+		boolean showUnconfState = settings.getBoolean(STATE_SHOW_UNCONF);
 		showUnconfFeaturesAction = new Action() {
 			public void run() {
 				viewer.refresh(getLocalSite());
+				settings.put(STATE_SHOW_UNCONF, showUnconfFeaturesAction.isChecked());
 			}
 		};
 		WorkbenchHelp.setHelp(
@@ -753,7 +758,7 @@ public class ConfigurationView
 			UpdateUIPlugin.getResourceString(KEY_SHOW_UNCONF_FEATURES));
 		showUnconfFeaturesAction.setImageDescriptor(
 			UpdateUIPluginImages.DESC_UNCONF_FEATURE_OBJ);
-		showUnconfFeaturesAction.setChecked(false);
+		showUnconfFeaturesAction.setChecked(showUnconfState);
 		showUnconfFeaturesAction.setToolTipText(
 			UpdateUIPlugin.getResourceString(KEY_SHOW_UNCONF_FEATURES_TOOLTIP));
 		drillDownAdapter = new DrillDownAdapter(viewer);
