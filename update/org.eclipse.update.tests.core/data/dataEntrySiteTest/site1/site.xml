@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site type="org.eclipse.update.core.file">
-<description url="info/siteInfo.html"/>
-  <feature url="install/features/feature3">
-  </feature>
-  <archive path="features/org.eclipse.update.core.tests.feature3_1.0.0/file.zip" url="file1.zip"/>
-</site>
