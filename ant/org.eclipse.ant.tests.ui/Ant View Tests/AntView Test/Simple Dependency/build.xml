@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Simple" basedir="." default="test-a">        
-    <target name="test-a">
-       <echo message="A - no dependents"/>
-    </target>
-    <target name="test-b" depends="test-a">
-       <echo message="B - simple dependency"/>
-    </target>
-</project>

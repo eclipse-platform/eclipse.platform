@@ -29,6 +29,11 @@ import org.eclipse.update.internal.ui.model.IFeatureAdapter;
 public class FeatureSorter extends ViewerSorter {
 
 	public int compare(Viewer viewer, Object e1, Object e2) {
+		int cat1 = category(e1);
+		int cat2 = category(e2);
+
+		if (cat1 != cat2)
+			return cat1 - cat2;
 
 		if (!(e1 instanceof IFeatureAdapter && e2 instanceof IFeatureAdapter))
 			return super.compare(viewer, e1, e2);

@@ -39,12 +39,6 @@ public class AntTestChecker {
 	
 	private List projects= new ArrayList();
 	
-	private String currentProject;
-	
-	private String currentTask;
-	
-	private String currentTarget;
-	
 	private Hashtable userProperties;
 	
 	private List nameOfListeners= new ArrayList();
@@ -81,7 +75,6 @@ public class AntTestChecker {
 	public void buildStarted(String projectName) {
 		buildsStartedCount++;
 		projects.add(projectName);
-		currentProject= projectName;
 	}
 
 	
@@ -187,19 +180,27 @@ public class AntTestChecker {
 		targets= new ArrayList();
 		projects= new ArrayList();
 		userProperties= null;
-		currentProject= null;
-		currentTarget= null;
-		currentTask= null;
 		nameOfListeners= new ArrayList();
 	}
 	
-	
-	public String getLastMessageLogged() {
-		if (messages.isEmpty()) {
-			return null;
-		}
-		return (String) messages.get(messages.size() - 1);
-	}
+	/**
+     * Return the message n from the last:
+     * e.g. getLoggedMessage(0) returns the most recent message
+     * 
+	 * @param n message index
+	 * @return the nth last message
+	 */
+    public String getLoggedMessage(int n) {
+        n = messages.size() - (n + 1);
+        if ((n < 0) || (n >= messages.size())) {
+            return null;
+        }
+        return (String) messages.get(n);
+    }
+
+    public String getLastMessageLogged() {
+        return getLoggedMessage(0);
+    }
 	
 	public void setUserProperties(Hashtable userProperties) {
 		this.userProperties= userProperties;

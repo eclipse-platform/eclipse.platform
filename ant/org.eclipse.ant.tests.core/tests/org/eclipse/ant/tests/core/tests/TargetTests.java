@@ -86,7 +86,7 @@ public class TargetTests extends AbstractAntTest {
 	public void testRunScript() throws CoreException {
 		run("TestForEcho.xml");
 		String message= (String)AntTestChecker.getDefault().getMessages().get(0);
-		assertTrue("Build file location should be logged as the first message", message != null && message.endsWith("AntTests" + File.separator + "scripts" + File.separator + "TestForEcho.xml"));
+		assertTrue("Build file location should be logged as the first message", message != null && message.endsWith("AntTests" + File.separator + "buildfiles" + File.separator + "TestForEcho.xml"));
 		assertSuccessful();
 	}
 }
