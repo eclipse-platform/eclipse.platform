@@ -698,7 +698,10 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			for (int j = 0; j < children.length; j++) {
 				IFeature child = null;
 				try {
-					child = children[j].getFeature();
+					//remove best match and exact feature
+					child = children[j].getFeature(false);
+					result.remove(child);
+					child = children[j].getFeature(true);
 					result.remove(child);
 				} catch (CoreException e) {
 					// if optional, it may not exist, do not throw error for that
