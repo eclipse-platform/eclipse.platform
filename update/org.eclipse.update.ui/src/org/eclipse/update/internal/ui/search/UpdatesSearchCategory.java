@@ -21,6 +21,96 @@ public class UpdatesSearchCategory extends SearchCategory {
 	private static final String KEY_CURRENT_SEARCH =
 		"UpdatesSearchCategory.currentSearch";
 	private CheckboxTableViewer tableViewer;
+	
+	class Candidate {
+		ArrayList children;
+		Candidate parent;
+		IFeatureReference ref;
+		public Candidate(IFeatureReference ref) {
+			this.ref = ref;
+		}
+		public Candidate(IFeatureReference ref, Candidate parent) {
+			this(ref);
+			this.parent = parent;
+		}
+		public void add(Candidate child) {
+			if (children==null) children = new ArrayList();
+			child.setParent(this);
+			children.add(child);
+		}
+		public Candidate [] getChildren() {
+			if (children==null) return new Candidate[0];
+			return (Candidate[])children.toArray(new Candidate[children.size()]);
+		}
+		void setParent(Candidate parent) {
+			this.parent = parent;
+		}
+		public IFeatureReference getReference() {
+			return ref;
+		}
+		public VersionedIdentifier getVersionedIdentifier() {
+			try {
+				return ref.getVersionedIdentifier();
+			}
+			catch (CoreException e) {
+				return new VersionedIdentifier("unknown", "0.0.0");
+			}
+		}
+		public IFeature getFeature() {
+			try {
+				return ref.getFeature();
+			}
+			catch (CoreException e) {
+				return null;
+			}
+		}
+		public Candidate getParent() {
+			return parent;
+		}
+		public Candidate getRoot() {
+			Candidate root = this;
+			
+			while (root.getParent()!=null) {
+				root = root.getParent();
+			}
+			return root;
+		}
+		public IURLEntry getUpdateEntry() {
+			int location = ref.getSearchLocation();
+			if (parent == null || location==IUpdateConstants.SEARCH_SELF) {
+				return getFeature().getUpdateSiteEntry();
+			}
+			return getRoot().getUpdateEntry();
+		}
+		public String toString() {
+			return ref.toString();
+		}
+		public boolean equals(Object source) {
+			if (source instanceof Candidate) {
+				return this.ref.equals(((Candidate)source).getReference());
+			}
+			if (source instanceof IFeatureReference) {
+				return this.ref.equals(source);
+			}
+			return false;
+		}
+		public void addToFlatList(ArrayList list, boolean updatableOnly) {
+			// add itself
+			if (!updatableOnly || isUpdatable())
+				list.add(this);
+			// add children
+			if (children!=null) {
+				for (int i=0; i<children.size(); i++) {
+					Candidate child = (Candidate)children.get(i);
+					child.addToFlatList(list, updatableOnly);
+				}
+			}
+		}
+		public boolean isUpdatable() {
+			System.out.println("Feature "+getVersionedIdentifier()+", match="+ref.getMatch());
+			return parent==null || ref.getMatch()!=IUpdateConstants.RULE_PERFECT;
+		}
+	}
 
 	class FeatureContentProvider
 		extends DefaultContentProvider
@@ -34,10 +124,10 @@ public class UpdatesSearchCategory extends SearchCategory {
 
 	class FeatureLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
-			if (obj instanceof IFeatureReference) {
-				IFeatureReference fref = (IFeatureReference)obj;
+			if (obj instanceof Candidate) {
+				Candidate c = (Candidate)obj;
 				try {
-					return fref.getVersionedIdentifier().toString();
+					return c.ref.getVersionedIdentifier().toString();
 				}
 				catch (CoreException e) {
 				}
@@ -106,16 +196,11 @@ public class UpdatesSearchCategory extends SearchCategory {
 		ISiteAdapter adapter;
 		int match = IImport.RULE_PERFECT;
 
-		public UpdateQuery(IFeature candidate) {
+		public UpdateQuery(IFeature candidate, int match, IURLEntry updateEntry) {
 			this.candidate = candidate;
-			IURLEntry entry = candidate.getUpdateSiteEntry();
-			if (entry != null && entry.getURL() != null)
-				adapter = new SiteAdapter(entry);
-		}
-		
-		public UpdateQuery(IFeature candidate, int match) {
-			this(candidate);
 			this.match = match;
+			if (updateEntry!=null && updateEntry.getURL() != null)
+				adapter = new SiteAdapter(updateEntry);
 		}
 		
 		public ISiteAdapter getSearchSite() {
@@ -238,59 +323,70 @@ public class UpdatesSearchCategory extends SearchCategory {
 			IInstallConfiguration config = localSite.getCurrentConfiguration();
 			IConfiguredSite[] isites = config.getConfiguredSites();
 			for (int i = 0; i < isites.length; i++) {
-				IFeatureReference[] refs = isites[i].getConfiguredFeatures();
-				ArrayList candidatesPerSite = new ArrayList();
-				for (int j = 0; j < refs.length; j++) {
-					IFeatureReference ref = refs[j];
-					candidatesPerSite.add(ref);
-				}
-				// All included features must be local to the
-				// configuration site, so filter out included
-				// features here.
-				filterIncludedFeatures(candidatesPerSite);
-				// Add the remaining root candidates to 
-				// the global list of candidates.
-				candidates.addAll(candidatesPerSite);
+				contributeCandidates(isites[i]);
 			}
 		} catch (CoreException e) {
 			UpdateUIPlugin.logException(e, false);
 		}
 	}
+	
+	private void contributeCandidates(IConfiguredSite isite) throws CoreException {
+		IFeatureReference[] refs = isite.getConfiguredFeatures();
+		ArrayList candidatesPerSite = new ArrayList();
+		for (int i = 0; i < refs.length; i++) {
+			IFeatureReference ref = refs[i];
+			Candidate c = new Candidate(ref);
+			candidatesPerSite.add(c);
+		}
+		// Create a tree from a flat list
+		buildHierarchy(candidatesPerSite);
+		// Add the remaining root candidates to 
+		// the global list of candidates.
+		candidates.addAll(candidatesPerSite);
+	}
 
-	private void filterIncludedFeatures(ArrayList candidates)
+	private void buildHierarchy(ArrayList candidates)
 		throws CoreException {
-		IFeatureReference[] array =
-			(IFeatureReference[]) candidates.toArray(new IFeatureReference[candidates.size()]);
+		Candidate[] array =
+			(Candidate[]) candidates.toArray(new Candidate[candidates.size()]);
 		// filter out included features so that only top-level features remain on the list
 		for (int i = 0; i < array.length; i++) {
-			IFeature feature = array[i].getFeature();
+			Candidate parent = array[i];
+			IFeature feature = parent.getFeature();
 			IFeatureReference[] included =
 				feature.getIncludedFeatureReferences();
 			for (int j = 0; j < included.length; j++) {
 				IFeatureReference fref = included[j];
-				int index = candidates.indexOf(fref);
-				if (index != -1) {
-					// leave it on the list only 
-					// if 'match' is not perfect.
-					if (fref.getMatch()==IImport.RULE_PERFECT)
-						candidates.remove(index);
+				Candidate child = findCandidate(candidates, fref);
+				if (child!=null) {
+					parent.add(child);
+					candidates.remove(child);
 				}
 			}
 		}
 	}
+	private Candidate findCandidate(ArrayList list, IFeatureReference ref) {
+		for (int i=0; i<list.size(); i++) {
+			Candidate c = (Candidate)list.get(i);
+			if (c.ref.equals(ref)) return c;
+		}
+		return null;
+	}
+
 	public ISearchQuery[] getQueries() {
 		initialize();
 		ArrayList selected = getSelectedCandidates();
 		ISearchQuery[] queries = new ISearchQuery[selected.size()];
 		for (int i = 0; i < selected.size(); i++) {
-			IFeatureReference ref = (IFeatureReference)selected.get(i);
-			try {
-				IFeature candidate = ref.getFeature();
-				queries[i] = new UpdateQuery(candidate, ref.getMatch());
-			}
-			catch (CoreException e) {
-				// cannot really be here
+			Candidate candidate = (Candidate)selected.get(i);
+			IFeature feature = candidate.getFeature();
+			int match = candidate.getReference().getMatch();
+			IURLEntry updateEntry = candidate.getUpdateEntry();
+			if (feature==null) {
 				queries[i] = null;
+			}
+			else {
+				queries[i] = new UpdateQuery(feature, match, updateEntry);
 			}
 		}
 		return queries;
@@ -395,18 +491,19 @@ public class UpdatesSearchCategory extends SearchCategory {
 				id = token;
 				version = "0.0.0";
 			}
-			IFeature feature =
+			Candidate c =
 				findCandidate(new VersionedIdentifier(id, version));
-			if (feature != null)
-				tableViewer.setChecked(feature, false);
+			if (c != null)
+				tableViewer.setChecked(c, false);
 		}
 	}
 
-	private IFeature findCandidate(VersionedIdentifier vid) {
+	private Candidate findCandidate(VersionedIdentifier vid) {
 		if (candidates == null)
 			initialize();
-		for (int i = 0; i < candidates.size(); i++) {
-			IFeature candidate = (IFeature) candidates.get(i);
+		ArrayList list = getAllCandidates();
+		for (int i = 0; i < list.size(); i++) {
+			Candidate candidate = (Candidate) candidates.get(i);
 			if (candidate.getVersionedIdentifier().equals(vid))
 				return candidate;
 		}
@@ -417,8 +514,9 @@ public class UpdatesSearchCategory extends SearchCategory {
 			return;
 		int counter = 0;
 		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < candidates.size(); i++) {
-			IFeature candidate = (IFeature) candidates.get(i);
+		ArrayList list = getAllCandidates();
+		for (int i = 0; i < list.size(); i++) {
+			Candidate candidate = (Candidate) list.get(i);
 			if (tableViewer.getChecked(candidate) == false) {
 				if (counter > 0)
 					buf.append(":");
@@ -427,16 +525,27 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 		map.put("unchecked", buf.toString());
 	}
+	
+	private ArrayList getAllCandidates() {
+		ArrayList selected = new ArrayList();
+		for (int i=0; i<candidates.size(); i++) {
+			Candidate c = (Candidate)candidates.get(i);
+			c.addToFlatList(selected, true);
+		}
+		return selected;
+	}
 	private ArrayList getSelectedCandidates() {
 		if (tableViewer == null
 			|| tableViewer.getControl() == null
 			|| tableViewer.getControl().isDisposed()) {
-			return candidates;
+			return getAllCandidates();
 		}
-		ArrayList selected = new ArrayList();
-		Object[] sel = tableViewer.getCheckedElements();
-		for (int i = 0; i < sel.length; i++)
-			selected.add(sel[i]);
-		return selected;
+		else {
+			ArrayList selected = new ArrayList();
+			Object[] sel = tableViewer.getCheckedElements();
+			for (int i = 0; i < sel.length; i++)
+				selected.add(sel[i]);
+			return selected;
+		}
 	}
 }
