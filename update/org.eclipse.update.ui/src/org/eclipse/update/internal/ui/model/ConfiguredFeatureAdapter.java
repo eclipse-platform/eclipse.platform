@@ -65,9 +65,10 @@ public class ConfiguredFeatureAdapter
 					childConfigured = false;
 				}
 				
-				PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
-				PluginVersionIdentifier fpid = feature.getVersionedIdentifier().getVersion();
-				boolean updated = !refpid.equals(fpid);
+				//PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
+				//PluginVersionIdentifier fpid = feature.getVersionedIdentifier().getVersion();
+				//boolean updated = !refpid.equals(fpid);
+				boolean updated = false;
 
 				result[i] =
 					new ConfiguredFeatureAdapter(adapter, feature, childConfigured, updated, fref.isOptional());

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -41,6 +42,10 @@ public class ConfigurationView
 		"ConfigurationView.showUnconfFeatures";
 	private static final String KEY_SHOW_UNCONF_FEATURES_TOOLTIP =
 		"ConfigurationView.showUnconfFeatures.tooltip";
+	private static final String KEY_MISSING_OPTIONAL_STATUS = 
+		"ConfigurationView.missingOptionalStatus";
+	private static final String KEY_MISSING_STATUS = 
+		"ConfigurationView.missingStatus";
 	private Image eclipseImage;
 	private Image featureImage;
 	private Image updatedFeatureImage;
@@ -822,7 +827,26 @@ public class ConfigurationView
 	}
 
 	private void showFeatureStatus(IFeature feature) throws CoreException {
-		IStatus status = getLocalSite().getFeatureStatus(feature);
+		IStatus status;
+		if (feature instanceof MissingFeature) {
+			MissingFeature missingFeature = (MissingFeature)feature;
+			String msg;
+			int severity;
+			
+			if (missingFeature.isOptional()) {
+				severity = IStatus.INFO;
+				msg = UpdateUIPlugin.getResourceString(KEY_MISSING_OPTIONAL_STATUS);
+			}
+			else {
+				severity = IStatus.ERROR;
+				msg = UpdateUIPlugin.getResourceString(KEY_MISSING_STATUS);
+			}
+			status = new Status(severity, UpdateUIPlugin.PLUGIN_ID,
+					IStatus.OK, msg, null);
+		}
+		else {
+			status = getLocalSite().getFeatureStatus(feature);
+		}
 		String title = UpdateUIPlugin.getResourceString(KEY_STATUS_TITLE);
 		switch (status.getSeverity()) {
 			case IStatus.ERROR :
