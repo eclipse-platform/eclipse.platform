@@ -313,7 +313,7 @@ public class ConfigurationView
 						(ConfiguredFeatureAdapter) list.get(i);
 					IFeature feature = cf.getFeature();
 					if (feature != null)
-						addChildFeatures(feature, children, cf.isConfigured());
+						addChildFeatures(feature, cf.getConfigurationSite(), children, cf.isConfigured());
 				}
 				for (int i = 0; i < list.size(); i++) {
 					ConfiguredFeatureAdapter cf =
@@ -329,14 +329,14 @@ public class ConfigurationView
 			return result.toArray();
 		}
 
-		private void addChildFeatures(IFeature feature, ArrayList children, boolean configured) {
+		private void addChildFeatures(IFeature feature, IConfiguredSite csite, ArrayList children, boolean configured) {
 			try {
 				IFeatureReference[] included =
 					feature.getIncludedFeatureReferences();
 				for (int i = 0; i < included.length; i++) {
 					IFeature childFeature;
 					try {
-						childFeature = included[i].getFeature(!configured);
+						childFeature = included[i].getFeature(!configured, csite);
 					} catch (CoreException e) {
 						childFeature = new MissingFeature(included[i]);
 					}
@@ -454,10 +454,12 @@ public class ConfigurationView
 		private Image getFeatureImage(IFeatureAdapter adapter) {
 			boolean configured = true;
 			boolean updated = false;
+			boolean current = true;
 			if (adapter instanceof IConfiguredFeatureAdapter) {
-				configured =
-					((IConfiguredFeatureAdapter) adapter).isConfigured();
-				updated = ((IConfiguredFeatureAdapter) adapter).isUpdated();
+				IConfiguredFeatureAdapter cadapter = (IConfiguredFeatureAdapter)adapter;
+				configured = cadapter.isConfigured();
+				updated = cadapter.isUpdated();
+				current = cadapter.getInstallConfiguration().isCurrent();
 			}
 			ILocalSite localSite = getLocalSite();
 			try {
@@ -468,8 +470,11 @@ public class ConfigurationView
 						return errorFeatureImage;
 					return optionalFeatureImage;
 				}
-				IStatus status = localSite.getFeatureStatus(feature);
-				int code = getStatusCode(feature, status);
+				int code = IFeature.STATUS_HAPPY;
+				if (current) {
+					IStatus status = localSite.getFeatureStatus(feature);
+					code = getStatusCode(feature, status);
+				}
 				if (configured) {
 					boolean efix = UpdateUIPlugin.isPatch(feature);
 					switch (code) {
@@ -1018,8 +1023,11 @@ public class ConfigurationView
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		manager.add(new Separator());
-		if (obj instanceof IFeatureAdapter)
-			manager.add(showStatusAction);
+		if (obj instanceof IConfiguredFeatureAdapter) {
+			IConfiguredFeatureAdapter adapter = (IConfiguredFeatureAdapter)obj;
+			if (adapter.getInstallConfiguration().isCurrent())
+				manager.add(showStatusAction);
+		}
 		super.fillContextMenu(manager);
 		if (obj instanceof PreservedConfiguration
 			|| obj instanceof IInstallConfiguration)
@@ -1170,7 +1178,7 @@ public class ConfigurationView
 			for (int i = 0; i < irefs.length; i++) {
 				IFeatureReference iref = irefs[i];
 				IFeature ifeature = iref.getFeature();
-				IConfiguredSite csite = ifeature.getSite().getConfiguredSite();
+				IConfiguredSite csite = ifeature.getSite().getCurrentConfiguredSite();
 				if (!csite.isConfigured(ifeature)) {
 					if (!isPatchHappy(ifeature))
 						return false;
@@ -1213,7 +1221,7 @@ public class ConfigurationView
 		VersionedIdentifier refVid = patchReference.getVersionedIdentifier();
 
 		// Find the patched feature and 
-		IConfiguredSite csite = feature.getSite().getConfiguredSite();
+		IConfiguredSite csite = feature.getSite().getCurrentConfiguredSite();
 		if (csite == null)
 			return false;
 

@@ -547,6 +547,12 @@ public class DetailsForm extends PropertyWebForm {
 			if (!currentAdapter.isOptional())
 				return false;
 		}
+		
+		if (localContext) {
+			IConfiguredSiteContext context = (IConfiguredSiteContext)currentAdapter;
+			if (!context.getInstallConfiguration().isCurrent())
+				return false;
+		}
 
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		if (model.findRelatedPendingChange(currentFeature) != null)
@@ -860,7 +866,7 @@ public class DetailsForm extends PropertyWebForm {
 			IConfiguredSite targetSite = null;
 			if (mf.getParent()!=null) {
 				ISite psite = mf.getParent().getSite();
-				targetSite = psite.getConfiguredSite();
+				targetSite = psite.getCurrentConfiguredSite();
 			}
 			PendingChange job = new PendingChange(result[0], targetSite);
 			executeJob(job);

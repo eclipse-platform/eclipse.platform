@@ -77,7 +77,7 @@ public class DuplicateConflictsDialog extends MessageDialog {
 		public IConfiguredSite getConfiguredSite() {
 			if (csite != null)
 				return csite;
-			return feature.getSite().getConfiguredSite();
+			return feature.getSite().getCurrentConfiguredSite();
 		}
 		public boolean sameLevel(IdEntry entry) {
 			VersionedIdentifier vid = feature.getVersionedIdentifier();
