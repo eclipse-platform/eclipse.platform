@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <welcomePage 
-	title="Eclipse Platform">
+	title="Welcome to the Workbench">
 	<intro>This page will help familiarize you with the Eclipse Workbench.
 To get started, read the sections below and click on the related links. </intro>
-
-<item><b>Installed Features </b>
-To find out more about the features installed in your workbench, choose <action pluginId="org.eclipse.ui"  class="org.eclipse.ui.internal.OpenWelcomeAction">Help > Welcome...</action>
-and select the feature you are interested in.</item>
 
 <item><b>Perspectives, views and editors </b>
 A window contains one or more perspectives. A perspective consists of views (e.g. Navigator) 
@@ -14,7 +10,8 @@ and editors for working with your resources.
 
 The shortcut bar at the far left of the window allows you to open new perspectives and move
 between perspectives that are already open. The perspective you are currently working with 
-is shown in the title of the window and in the shortcut bar as a pushed-in icon.</item>
+is shown in the title of the window and in the shortcut bar as a pushed-in icon.
+</item>
 
 <item><b>Configuring your perspectives</b>
 You can move views and editors around the workbench by dragging their titlebars. You can
