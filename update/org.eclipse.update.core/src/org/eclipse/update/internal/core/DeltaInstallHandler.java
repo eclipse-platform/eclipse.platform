@@ -40,21 +40,14 @@ public class DeltaInstallHandler extends BaseInstallHandler {
 			if (pluginEntries == null)
 				return;
 
-			if (!feature.isPatch()) {
-				// Get the old feature
-				IFeature[] oldFeatures = UpdateUtils
-						.getInstalledFeatures(feature);
-				if (oldFeatures.length == 0)
-					return;
-				oldFeature = oldFeatures[0];
-			} else {
-				oldFeature = UpdateUtils.getPatchedFeature(feature);
-				if (oldFeature == null) {
-					return;
-				}
-			}
-			
+			// Get the old feature
+			IFeature[] oldFeatures = UpdateUtils.getInstalledFeatures(feature);
+			if (oldFeatures.length == 0)
+				return;
+
+			oldFeature = oldFeatures[0];
 			IPluginEntry[] oldPlugins = oldFeature.getPluginEntries();
+
 			for (int i = 0; i < pluginEntries.length; i++) {
 				IPluginEntry newPlugin = pluginEntries[i];
 				IPluginEntry oldPlugin =

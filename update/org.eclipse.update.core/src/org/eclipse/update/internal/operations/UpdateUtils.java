@@ -102,20 +102,9 @@ public class UpdateUtils {
 		return getInstalledFeatures(feature, true);
 	}
 
-	/**
-	 * 
-	 * @param feature
-	 * @param onlyConfigured
-	 * @return IFeature[] with features matching feature ID
-	 */
 	public static IFeature[] getInstalledFeatures(IFeature feature, boolean onlyConfigured) {
 		return getInstalledFeatures(feature.getVersionedIdentifier(), onlyConfigured);
 	}
-	/**
-	 * @param vid
-	 * @param onlyConfigured
-	 * @return IFeature[] with features matching feature ID
-	 */
 	public static IFeature[] getInstalledFeatures(VersionedIdentifier vid, boolean onlyConfigured) {
 		Vector features = new Vector();
 		try {
@@ -138,30 +127,6 @@ public class UpdateUtils {
 		return (IFeature[]) features.toArray(new IFeature[features.size()]);
 	}
 	
-	/**
-	 * @param patch
-	 * @return IFeature or null
-	 */
-	public static IFeature getPatchedFeature(IFeature patch) {
-		IImport[] imports = patch.getImports();
-		for (int i = 0; i < imports.length; i++) {
-			IImport iimport = imports[i];
-			if (iimport.isPatch()) {
-				VersionedIdentifier patchedVid = iimport
-						.getVersionedIdentifier();
-				// features with matching id
-				IFeature[] features = getInstalledFeatures(patchedVid, false);
-				for (int f = 0; f < features.length; f++) {
-					// check if version match
-					if (patchedVid.equals(features[f].getVersionedIdentifier())) {
-						return features[f];
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	public static boolean isPatch(IFeature candidate) {
 		IImport[] imports = candidate.getImports();
 
