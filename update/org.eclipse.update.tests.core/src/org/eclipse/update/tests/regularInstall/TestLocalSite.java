@@ -182,7 +182,7 @@ public class TestLocalSite extends UpdateManagerTestCase {
 		IConfiguredSite configSite = newConfig.getConfiguredSites()[0];
 		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicyModel();
 		configPolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_INCLUDE);
-		((ConfiguredSite)configSite).setConfigurationPolicy((ConfigurationPolicy)configPolicy);	
+		((ConfiguredSite)configSite).setConfigurationPolicyModel(configPolicy);	
 		int oldNumberOfhistory = site.getConfigurationHistory().length;			
 		site.addConfiguration(newConfig);
 		assertNotNull(feature);			
@@ -266,7 +266,7 @@ public class TestLocalSite extends UpdateManagerTestCase {
 		IConfiguredSite configSite = newConfig.getConfiguredSites()[0];
 		ConfigurationPolicyModel configPolicy = new BaseSiteLocalFactory().createConfigurationPolicyModel();
 		configPolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_INCLUDE);
-		((ConfiguredSite)configSite).setConfigurationPolicy((ConfigurationPolicy)configPolicy);	
+		((ConfiguredSite)configSite).setConfigurationPolicyModel(configPolicy);	
 		int oldNumberOfhistory = site.getConfigurationHistory().length;			
 		site.addConfiguration(newConfig);
 		

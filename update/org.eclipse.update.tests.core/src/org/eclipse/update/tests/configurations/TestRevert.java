@@ -50,7 +50,7 @@ public class TestRevert extends UpdateManagerTestCase {
 		ConfigurationPolicy excludepolicy = new ConfigurationPolicy();
 		excludepolicy.setPolicy(IPlatformConfiguration.ISitePolicy.USER_EXCLUDE);
 		IConfiguredSite oldConfigSite = old.getConfiguredSites()[0];
-		excludepolicy.setConfiguredSite(oldConfigSite);		
+		excludepolicy.setConfiguredSiteModel((ConfiguredSiteModel)oldConfigSite);		
 		((ConfiguredSiteModel)oldConfigSite).setConfigurationPolicyModel((ConfigurationPolicyModel)excludepolicy);
 		
 		// install one feature
