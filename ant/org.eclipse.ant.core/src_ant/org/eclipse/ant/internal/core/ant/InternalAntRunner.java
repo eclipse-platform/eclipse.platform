@@ -145,17 +145,7 @@ public InternalAntRunner() {
  * @param buildListener a build listener
  */
 public void addBuildListeners(List classNames) {
-	List result = new ArrayList(10);
-	try {
-		for (Iterator iterator = classNames.iterator(); iterator.hasNext();) {
-			String className = (String) iterator.next();
-			Class listener = Class.forName(className);
-			result.add(listener.newInstance());
-		}
-	} catch (Exception e) {
-		throw new BuildException(e);
-	}
-	this.buildListeners = result;
+	this.buildListeners = classNames;
 }
 
 /**
@@ -177,8 +167,11 @@ public void addUserProperties(Map properties) {
 protected void addBuildListeners(Project project) {
 	try {
 		project.addBuildListener(createLogger());
-		for (Iterator iterator = buildListeners.iterator(); iterator.hasNext();)
-			project.addBuildListener((BuildListener) iterator.next());
+		for (Iterator iterator = buildListeners.iterator(); iterator.hasNext();) {
+			String className = (String) iterator.next();
+			Class listener = Class.forName(className);
+			project.addBuildListener((BuildListener) listener.newInstance());
+		}
 	} catch (Exception e) {
 		throw new BuildException(e);
 	}
