@@ -99,6 +99,7 @@ public class NewExtensionLocationAction extends Action {
 		try {
 			IInstallConfiguration config = SiteManager.getLocalSite().getCurrentConfiguration();
 			IConfiguredSite csite = config.createLinkedConfiguredSite(dir);
+			csite.verifyUpdatableStatus();
 			config.addConfiguredSite(csite);
 			boolean restartNeeded = SiteManager.getLocalSite().save();
 			UpdateUI.requestRestart(restartNeeded);

@@ -164,7 +164,9 @@ public class ConfigurationPreview implements IUpdateModelChangedListener {
 		if (!hasEnabledTasks)
 			return "<form/>"; //$NON-NLS-1$
 		StringBuffer buf = new StringBuffer();
-		buf.append("<form><p><b>Available Tasks</b></p>"); //$NON-NLS-1$
+		buf.append("<form><p><b>"); //$NON-NLS-1$
+		buf.append(UpdateUI.getString("ConfigurationPreviewForm.AvailableTasks")); //$NON-NLS-1$
+		buf.append("</b></p>"); //$NON-NLS-1$
 		for (int i = 0; i < tasks.length; i++) {
 			IPreviewTask task = tasks[i];
 			if (task.isEnabled() == false)

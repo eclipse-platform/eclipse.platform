@@ -150,6 +150,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 			// if the privatre marker doesn't already exist create it
 			configSite.createPrivateSiteMarker();
+			((SiteModel)site).setConfiguredSiteModel(configSite);
 		}
 		// configure all features as enable
 		configure(configSite);
