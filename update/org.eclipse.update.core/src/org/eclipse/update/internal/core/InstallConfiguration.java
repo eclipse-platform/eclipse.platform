@@ -378,8 +378,7 @@ public class InstallConfiguration
 		// into platform.cfg
 		for (int i = 0; i < configurationSites.length; i++) {
 			ConfiguredSite cSite = ((ConfiguredSite) configurationSites[i]);
-			ConfigurationPolicy configurationPolicy =
-				cSite.getConfigurationPolicy();
+			ConfigurationPolicy configurationPolicy = cSite.getConfigurationPolicy();
 
 			savePluginPath(cSite, runtimeConfiguration, tempConfig);
 
@@ -438,14 +437,8 @@ public class InstallConfiguration
 
 		// create a ISitePolicy (policy, pluginPath)
 		// for the site			
-		String[] pluginPath =
-			configurationPolicy.getPluginPath(
-				cSite.getSite(),
-				cSite.getPreviousPluginPath());
-		IPlatformConfiguration.ISitePolicy sitePolicy =
-			runtimeConfiguration.createSitePolicy(
-				configurationPolicy.getPolicy(),
-				pluginPath);
+		String[] pluginPath = configurationPolicy.getPluginPath(cSite.getSite(),cSite.getPreviousPluginPath());
+		IPlatformConfiguration.ISitePolicy sitePolicy =	runtimeConfiguration.createSitePolicy(configurationPolicy.getPolicy(),pluginPath);
 
 		// get the URL of the site that matches the one platform.cfg gave us
 		URL urlToCheck = null;

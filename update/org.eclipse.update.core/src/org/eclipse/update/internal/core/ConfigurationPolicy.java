@@ -372,6 +372,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 	/**
 	 * return an array of plugin path for the array of feature reference
+	 * Each plugin path only appears once [bug 21750]
 	 */
 	private String[] getPluginString(
 		ISite site,
@@ -382,7 +383,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 		// obtain path for each feature
 		if (arrayOfFeatureRef != null) {
-			List pluginsString = new ArrayList();
+			//[bug 21750] replace the List by a Set
+			Set pluginsString = new HashSet();
 			for (int i = 0; i < arrayOfFeatureRef.length; i++) {
 				IFeatureReference element = arrayOfFeatureRef[i];
 				IFeature feature = null;
