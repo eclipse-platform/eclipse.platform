@@ -40,25 +40,6 @@ protected void addBuildListeners(Project project) {
 	} catch (Exception e) {
 		throw new BuildException(e);
 	}
-//	// hack
-//	BuildListener listener = new BuildListener() {
-//		public void buildStarted(BuildEvent event) {
-//		}
-//		public void buildFinished(BuildEvent event) {
-//		}
-//		public void targetStarted(BuildEvent event) {
-//		}
-//		public void targetFinished(BuildEvent event) {
-//		}
-//		public void taskStarted(BuildEvent event) {
-//		}
-//		public void taskFinished(BuildEvent event) {
-//		}
-//		public void messageLogged(BuildEvent event) {
-//			System.out.println(event.getMessage());
-//		}
-//	};
-//	project.addBuildListener(listener);
 }
 
 protected Project getProject() {
@@ -68,12 +49,22 @@ protected Project getProject() {
 	project.init();
 	addBuildListeners(project);
 	setProperties(project);
+	setTasks(project);
 	parseScript(project);
 	return project;
 }
 
 protected void setProperties(Project project) {
 	project.setProperty(PROPERTY_ECLIPSE_RUNNING, "true");
+}
+
+protected void setTasks(Project project) {
+	try {
+		Class taskClass = Class.forName("org.eclipse.ant.internal.ui.tasks.RefreshLocalTask");
+		project.addTaskDefinition("refreshLocal", taskClass);
+	} catch (Exception e) {
+		throw new BuildException(e);
+	}
 }
 
 

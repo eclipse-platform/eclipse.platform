@@ -38,7 +38,8 @@ protected ClassLoader getClassLoader() {
 		e.printStackTrace();
 	}
 	ClassLoader[] pluginLoaders = {
-		Platform.getPlugin("org.eclipse.ant.ui").getClass().getClassLoader()
+		Platform.getPlugin("org.eclipse.ant.ui").getClass().getClassLoader(),
+		Platform.getPlugin("org.eclipse.core.resources").getClass().getClassLoader(),
 	};
 	return new AntClassLoader(urls, pluginLoaders, null);
 }
