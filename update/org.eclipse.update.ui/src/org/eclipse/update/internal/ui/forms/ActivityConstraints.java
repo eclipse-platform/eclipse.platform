@@ -615,8 +615,11 @@ public class ActivityConstraints {
 			if (!found) {
 				// All the features carried in a patch must
 				// already be present, unless this feature
-				// is a patch itself
-				if (!isPatch(ifeature)) {
+				// is a patch itself.
+				//
+				// 30849: optional feature does not need
+				// to be present.
+				if (!isPatch(ifeature) && iref.isOptional()==false) {
 					String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
 							new String[] { ifeature.getLabel(), version.toString() });
 					status.add(createStatus(feature, msg));

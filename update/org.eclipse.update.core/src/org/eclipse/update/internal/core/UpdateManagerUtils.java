@@ -421,7 +421,7 @@ public class UpdateManagerUtils {
 					children = possibleParentFeature.getIncludedFeatureReferences();
 					for (int j = 0; j < children.length; j++) {
 						try {
-							compareFeature = children[j].getFeature();
+							compareFeature = children[j].getFeature(true,null); //BUG 25796
 						} catch (CoreException e) {
 							UpdateManagerPlugin.warn("", e);
 						};
