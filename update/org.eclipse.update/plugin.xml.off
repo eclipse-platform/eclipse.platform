@@ -21,6 +21,18 @@
 
     <!-- ================================================================================= -->
     <!--                                                                                   -->
+    <!-- Update Manager Preference Page Settings                                           -->
+    <!--                                                                                   -->
+    <!-- ================================================================================= -->
+    <extension point="org.eclipse.ui.preferencePages">
+        <page id       = "UMPreferencePageSettings"
+              name     = "%S_Software_Updates_Preferences"
+              class    = "org.eclipse.update.internal.ui.UMPreferencePageSettings">
+        </page>
+    </extension>
+
+    <!-- ================================================================================= -->
+    <!--                                                                                   -->
     <!-- Update Manager Help Menu Action Set                                               -->
     <!--                                                                                   -->
     <!-- ================================================================================= -->
@@ -28,7 +40,7 @@
         <actionSet
             id      = "org.eclipse.update.internal.ui.UpdateManagerActionSet"
             label   = "%S_Software_Updates"
-            visible = "false">
+            visible = "true">
             <action id          = "org.eclipse.update.internal.ui.UpdateManagerAction"
                     menubarPath = "help/helpEnd"
                     label       = "%S_Software_Updates"
