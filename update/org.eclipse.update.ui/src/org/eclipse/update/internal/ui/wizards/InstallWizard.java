@@ -32,6 +32,7 @@ public class InstallWizard extends Wizard {
 	private PendingChange job;
 	private boolean successfulInstall = false;
 	private IInstallConfiguration config;
+	private boolean patch;
 
 	public InstallWizard(PendingChange job) {
 		setDialogSettings(UpdateUIPlugin.getDefault().getDialogSettings());
@@ -39,6 +40,8 @@ public class InstallWizard extends Wizard {
 		setForcePreviousAndNextButtons(true);
 		setNeedsProgressMonitor(true);
 		this.job = job;
+		IFeature feature = job.getFeature();
+		patch = UpdateUIPlugin.isPatch(feature);
 	}
 
 	public boolean isSuccessfulInstall() {
@@ -206,8 +209,10 @@ public class InstallWizard extends Wizard {
 					monitor);
 			IFeature oldFeature = job.getOldFeature();
 			if (oldFeature != null && !job.isOptionalDelta()) {
-				if (optionalElements != null)
-					preserveOptionalState(config, targetSite, optionalElements);
+				if (optionalElements != null) {
+					boolean patch = UpdateUIPlugin.isPatch(feature);
+					preserveOptionalState(config, targetSite, patch, optionalElements);
+				}
 				boolean oldSuccess = unconfigure(config, oldFeature);
 				if (!oldSuccess) {
 					if (!isNestedChild(oldFeature))
@@ -366,12 +371,13 @@ public class InstallWizard extends Wizard {
 	static void preserveOptionalState(
 		IInstallConfiguration config,
 		IConfiguredSite targetSite,
+		boolean patch,
 		Object[] optionalElements) {
 		for (int i = 0; i < optionalElements.length; i++) {
 			FeatureHierarchyElement fe =
 				(FeatureHierarchyElement) optionalElements[i];
-			Object[] children = fe.getChildren(true);
-			preserveOptionalState(config, targetSite, children);
+			Object[] children = fe.getChildren(true, patch, config);
+			preserveOptionalState(config, targetSite, patch, children);
 			if (!fe.isEnabled(config)) {
 				IFeature newFeature = fe.getFeature();
 				try {
@@ -394,7 +400,16 @@ public class InstallWizard extends Wizard {
 		IFeatureReference[] included = feature.getIncludedFeatureReferences();
 		for (int i = 0; i < included.length; i++) {
 			IFeatureReference iref = included[i];
-			IFeature ifeature = iref.getFeature();
+			IFeature ifeature;
+			
+			try {
+				ifeature = iref.getFeature();
+			}
+			catch (CoreException e) {
+				if (iref.isOptional())
+					continue;
+				throw e;
+			}
 			// find other features and unconfigure
 			String id = iref.getVersionedIdentifier().getIdentifier();
 			IFeature[] sameIds =

@@ -213,6 +213,8 @@ public class NewUpdatesWizard extends Wizard {
 			oldFeature,
 			feature,
 			oldFeature != null,
+			false,
+			config,
 			optionalElements);
 		if (hasOptionalFeatures)
 			optionalFeatures = computeOptionalFeatures(optionalElements, oldFeature!=null);
@@ -224,7 +226,7 @@ public class NewUpdatesWizard extends Wizard {
 			targetSite.install(feature, getVerificationListener(), monitor);
 		if (!reinstall) {
 			if (optionalFeatures!=null) {
-				InstallWizard.preserveOptionalState(config, targetSite, optionalElements.toArray());
+				InstallWizard.preserveOptionalState(config, targetSite, false, optionalElements.toArray());
 			}
 			unconfigure(oldFeature);
 		}
@@ -239,6 +241,8 @@ public class NewUpdatesWizard extends Wizard {
 				(FeatureHierarchyElement) elements.get(i);
 			element.addCheckedOptionalFeatures(
 				update,
+				false,
+				config,
 				set);
 		}
 		return (IFeatureReference[]) set.toArray(

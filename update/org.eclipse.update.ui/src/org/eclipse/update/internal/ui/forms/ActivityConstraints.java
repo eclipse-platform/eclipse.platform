@@ -342,7 +342,7 @@ public class ActivityConstraints {
 
 		return features;
 	}
-
+	
 	/*
 	 * Compute the nested feature subtree starting at the specified base feature
 	 */
@@ -351,6 +351,24 @@ public class ActivityConstraints {
 		IFeature feature,
 		ArrayList features,
 		boolean tolerateMissingChildren)
+		throws CoreException {
+		return computeFeatureSubtree(
+			top,
+			feature,
+			features,
+			tolerateMissingChildren,
+			null);
+	}
+
+	/*
+	 * Compute the nested feature subtree starting at the specified base feature
+	 */
+	private static ArrayList computeFeatureSubtree(
+		IFeature top,
+		IFeature feature,
+		ArrayList features,
+		boolean tolerateMissingChildren,
+		ArrayList configuredFeatures)
 		throws CoreException {
 
 		// check arguments
@@ -373,7 +391,11 @@ public class ActivityConstraints {
 		IFeatureReference[] children = feature.getIncludedFeatureReferences();
 		for (int i = 0; i < children.length; i++) {
 			try {
-				IFeature child = children[i].getFeature();
+				IFeature child;
+				if (configuredFeatures == null)
+					child = children[i].getFeature();
+				else
+					child = getBestMatch(children[i], configuredFeatures);
 				features =
 					computeFeatureSubtree(
 						top,
@@ -402,7 +424,8 @@ public class ActivityConstraints {
 				add,
 				null,
 				null,
-				false /* do not tolerate missing children */
+				false, /* do not tolerate missing children */
+				features
 		);
 		ArrayList removeTree =
 			computeFeatureSubtree(
@@ -416,14 +439,82 @@ public class ActivityConstraints {
 			// those features. Include them in the list.
 			contributePatchesFor(removeTree, features, removeTree);
 		}
+		
+		if (remove != null)
+			features.removeAll(removeTree);
 
 		if (add != null)
 			features.addAll(addTree);
 
-		if (remove != null)
-			features.removeAll(removeTree);
-
 		return features;
+	}
+	
+	/*
+	 * This method fixes the defect 34241. Included feature reference
+	 * of the feature from the remote server always returns 
+	 * a perfect match. However, the actual install behaviour is
+	 * different if that feature already exists (as disabled) 
+	 * while a better one is enabled. This typically happens
+	 * through branch updates or patches.
+	 * 
+	 * To avoid this problem, we need to check if a better feature
+	 * that still matches the reference is enabled in the current
+	 * configuration. If it is, it will be used instead of the
+	 * 'perfect' match. If not, we should default to the old
+	 * behaviour.
+	 */
+
+	private static IFeature getBestMatch(
+		IFeatureReference ref,
+		ArrayList configuredFeatures)
+		throws CoreException {
+		int match = ref.getMatch();
+		ISite site = ref.getSite();
+		IConfiguredSite csite = site.getCurrentConfiguredSite();
+		// If the feature is from the remote server and
+		// it can handle better features, see if you can
+		// resolve locally.
+		if (csite == null && match != IUpdateConstants.RULE_PERFECT) {
+			// there is a chance that there is a better match
+			// in the platform
+			VersionedIdentifier vid = ref.getVersionedIdentifier();
+			PluginVersionIdentifier version = vid.getVersion();
+
+			for (int i = 0; i < configuredFeatures.size(); i++) {
+				IFeature feature = (IFeature) configuredFeatures.get(i);
+				VersionedIdentifier fvid = feature.getVersionedIdentifier();
+				if (fvid.getIdentifier().equals(vid.getIdentifier())) {
+					// Feature found in local configuration.
+					// Ignore if the same version.
+					// Use it if better
+					PluginVersionIdentifier fversion = fvid.getVersion();
+					if (fversion.isGreaterThan(version)) {
+						boolean matches = false;
+						switch (match) {
+							case IImport.RULE_COMPATIBLE :
+								matches =
+									fvid.getVersion().isCompatibleWith(
+										vid.getVersion());
+								break;
+							case IImport.RULE_EQUIVALENT :
+								matches =
+									fvid.getVersion().isEquivalentTo(
+										vid.getVersion());
+								break;
+							case IImport.RULE_GREATER_OR_EQUAL :
+								matches =
+									fvid.getVersion().isGreaterOrEqualTo(
+										vid.getVersion());
+								break;
+						}
+						if (matches)
+							return feature;
+					}
+				}
+			}
+		}
+		// fallback - just get the feature from the reference.
+		return ref.getFeature();
 	}
 	
 	private static void contributePatchesFor(
@@ -516,6 +607,7 @@ public class ActivityConstraints {
 			IFeature[] array =
 				(IFeature[]) siteFeatures.toArray(
 					new IFeature[siteFeatures.size()]);
+			ArrayList removeTree = new ArrayList();
 			for (int j = 0; j < array.length; j++) {
 				VersionedIdentifier id1 = array[j].getVersionedIdentifier();
 				for (int k = 0; k < array.length; k++) {
@@ -525,11 +617,17 @@ public class ActivityConstraints {
 					if (id1.getIdentifier().equals(id2.getIdentifier())) {
 						if (id2.getVersion().isGreaterThan(id1.getVersion())) {
 							siteFeatures.remove(array[j]);
+							removeTree.add(array[j]);
 							break;
 						}
 					}
 				}
 			}
+			// Compute patches that will need to be removed together with 
+			// the removed features
+			ArrayList patchesTree = new ArrayList();
+			contributePatchesFor(removeTree, siteFeatures, patchesTree);
+			siteFeatures.removeAll(patchesTree);
 
 			// accumulate site results
 			features.addAll(siteFeatures);
@@ -585,6 +683,7 @@ public class ActivityConstraints {
 		for (int i = 0; i < irefs.length; i++) {
 			IFeatureReference iref = irefs[i];
 			IFeature ifeature = iref.getFeature();
+			boolean patch = isPatch(ifeature);
 			VersionedIdentifier vid = ifeature.getVersionedIdentifier();
 			String id = vid.getIdentifier();
 			PluginVersionIdentifier version = vid.getVersion();
@@ -615,14 +714,17 @@ public class ActivityConstraints {
 			if (!found) {
 				// All the features carried in a patch must
 				// already be present, unless this feature
-				// is a patch itself
-				if (!isPatch(ifeature)) {
+				// is a patch itself.
+				//
+				// 30849: optional feature does not need
+				// to be present.
+				if (!patch && iref.isOptional()==false) {
 					String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
 							new String[] { ifeature.getLabel(), version.toString() });
 					status.add(createStatus(feature, msg));
 				}
 			}
-			checkUnique(ifeature, features, status);
+			if (patch) checkUnique(ifeature, features, status);
 		}
 	}
 

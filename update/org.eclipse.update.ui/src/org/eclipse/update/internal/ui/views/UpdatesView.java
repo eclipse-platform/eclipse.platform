@@ -27,7 +27,7 @@ import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.*;
 import org.eclipse.update.internal.ui.search.*;
-import org.eclipse.update.internal.ui.security.UpdateManagerAuthenticator;
+import org.eclipse.update.internal.ui.security.AuthorizationDatabase;
 import org.eclipse.update.internal.ui.wizards.*;
 
 /**
@@ -717,9 +717,9 @@ public class UpdatesView
 				.showWhile(viewer.getTree().getDisplay(), new Runnable() {
 				public void run() {
 					try {
-						// reinitialize the authenticator  
-						UpdateManagerAuthenticator auth =
-							UpdateUIPlugin.getDefault().getAuthenticator();
+						// reinitialize the authenticator 
+						AuthorizationDatabase auth =
+							UpdateUIPlugin.getDefault().getDatabase();
 						if (auth != null)
 							auth.reset();
 						if (obj instanceof SiteBookmark)
