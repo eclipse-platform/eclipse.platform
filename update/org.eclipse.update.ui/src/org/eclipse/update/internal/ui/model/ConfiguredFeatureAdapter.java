@@ -48,14 +48,17 @@ public class ConfiguredFeatureAdapter
 			for (int i = 0; i < included.length; i++) {
 				IFeatureReference fref = included[i];
 				IFeature feature;
+				boolean childConfigured=configured;
 				try {
 					feature = fref.getFeature();
+					childConfigured = adapter.getConfigurationSite().isConfigured(feature);
 				} catch (CoreException e) {
 					feature = new MissingFeature(fref);
+					childConfigured = false;
 				}
 
 				result[i] =
-					new ConfiguredFeatureAdapter(adapter, feature, configured, fref.isOptional());
+					new ConfiguredFeatureAdapter(adapter, feature, childConfigured, fref.isOptional());
 				result[i].setIncluded(true);
 			}
 			return result;

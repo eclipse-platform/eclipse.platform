@@ -84,6 +84,8 @@ public class ConfigurationView
 		"ConfigurationView.statusTitle";
 	private static final String KEY_STATUS_DEFAULT =
 		"ConfigurationView.statusDefault";
+	private static final String KEY_MISSING_FEATURE = 
+		"ConfigurationView.missingFeature";
 
 	abstract class ViewFolder extends UIModelObject {
 		private String label;
@@ -356,8 +358,9 @@ public class ConfigurationView
 			if (obj instanceof IFeatureAdapter) {
 				try {
 					IFeature feature = ((IFeatureAdapter) obj).getFeature();
-					if (feature instanceof MissingFeature)
-						return feature.getLabel();
+					if (feature instanceof MissingFeature) {
+						return UpdateUIPlugin.getFormattedMessage(KEY_MISSING_FEATURE, feature.getLabel());
+					}
 					String version =
 						feature
 							.getVersionedIdentifier()
@@ -528,6 +531,17 @@ public class ConfigurationView
 		viewer.setContentProvider(new LocalSiteProvider());
 		viewer.setInput(UpdateUIPlugin.getDefault().getUpdateModel());
 		viewer.setLabelProvider(new LocalSiteLabelProvider());
+		viewer.addFilter(new ViewerFilter() {
+			public boolean select(Viewer v, Object parent, Object element) {
+				if (element instanceof IConfiguredFeatureAdapter) {
+					IConfiguredFeatureAdapter adapter = (IConfiguredFeatureAdapter)element;
+					if (adapter.isConfigured()) return true;
+					boolean showUnconf = showUnconfFeaturesAction.isChecked();
+					return showUnconf;
+				}
+				return true;
+			}
+		});
 		try {
 			ILocalSite localSite = SiteManager.getLocalSite();
 			localSite.addLocalSiteChangedListener(this);
