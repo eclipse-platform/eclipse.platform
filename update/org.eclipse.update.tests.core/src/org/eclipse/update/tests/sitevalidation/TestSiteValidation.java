@@ -136,6 +136,7 @@ public class TestSiteValidation extends UpdateManagerTestCase {
 
 		URL remoteUrl = new URL(SOURCE_FILE_SITE + "validation/site6/children/children");
 		File file = new File(remoteUrl.getFile());
+		if (!file.exists()) file.mkdirs();
 		ILocalSite local = SiteManager.getLocalSite();
 		IInstallConfiguration currentConfig = local.getCurrentConfiguration();
 		IConfiguredSite configuredSite = currentConfig.createConfiguredSite(file);
