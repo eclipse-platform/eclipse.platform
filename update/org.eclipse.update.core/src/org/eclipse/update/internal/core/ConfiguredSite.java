@@ -406,7 +406,17 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			throw e;
 		}
 		if (sucessfullyUnconfigured) {
-
+			// 2.0.2: unconfigure patches that reference this feature.
+			// A patch is a feature that contains an import
+			// statement with patch="true" and an id/version
+			// that matches an already installed and configured
+			// feature. When patched feature is unconfigured,
+			// all the patches that reference it must be 
+			// unconfigured as well
+			// (in contrast, patched features can be
+			// configured without the patches).
+			if (includePatches) unconfigurePatches(feature);
+			
 			// top down approach, same configuredSite
 			IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 			for (int i = 0; i < childrenRef.length; i++) {
@@ -418,16 +428,6 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 					UpdateManagerPlugin.warn("Unable to unconfigure child feature: " + childrenRef[i] + " " + e);
 				}
 			}
-			// 2.0.2: unconfigure patches that reference this feature.
-			// A patch is a feature that contains an import
-			// statement with patch="true" and an id/version
-			// that matches an already installed and configured
-			// feature. When patched feature is unconfigured,
-			// all the patches that reference it must be 
-			// unconfigured as well
-			// (in contrast, patched features can be
-			// configured without the patches).
-			if (includePatches) unconfigurePatches(feature);
 
 			// notify listeners
 			Object[] siteListeners = listeners.getListeners();
@@ -467,14 +467,14 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 					if (iimport.isPatch()) {
 						if (iimport.getVersionedIdentifier().equals(feature.getVersionedIdentifier())) {
 							// bingo - unconfigure this patch
-							unconfigure(candidate, false,true);
+							unconfigure(candidate, false,false);
 							break;
 						}
 					}
 				}
 			}
 			catch (CoreException e) {
-				// Ignore
+				UpdateManagerPlugin.warn("",e);
 			}
 		}
 	}
