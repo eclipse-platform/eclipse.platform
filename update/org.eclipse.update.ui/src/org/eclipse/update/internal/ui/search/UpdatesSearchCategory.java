@@ -119,11 +119,44 @@ public class UpdatesSearchCategory extends SearchCategory {
 				return false;
 			}
 		}
+		private boolean isMissingOptionalChildren(IFeature feature) {
+			try {
+				IFeatureReference [] children=feature.getIncludedFeatureReferences();
+				for (int i=0; i<children.length; i++) {
+					IFeatureReference ref = children[i];
+					try {
+						IFeature child = ref.getFeature();
+						// If we are here, the child is not missing.
+						// Check it's children recursively.
+						if (isMissingOptionalChildren(child))
+							return true;
+					}
+					catch (CoreException e) {
+						// Missing child. Return true if optional,
+						// otherwise it is a broken feature that we 
+						// do not care about.
+						if (ref.isOptional()) {
+							return true;
+						}
+					}
+				}
+			}
+			catch (CoreException e) {
+			}
+			return false;
+		}
 		public IFeature[] getMatchingFeatures(
 			ISite site,
 			IProgressMonitor monitor) {
 			ArrayList hits = new ArrayList();
 			boolean broken = isBroken();
+			boolean missingOptionalChildren = false;
+			
+			// Don't bother to compute missing optional children
+			// if the feature is broken - all we want is to 
+			// see if we should allow same-version re-install.
+			if (!broken) 
+				missingOptionalChildren = isMissingOptionalChildren(candidate);
 			IFeatureReference[] refs = site.getFeatureReferences();
 			monitor.beginTask("", refs.length + 1);
 			for (int i = 0; i < refs.length; i++) {
@@ -135,7 +168,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 					} else {
 						// accept the same feature if the installed
 						// feature is broken
-						if (broken
+						if ((broken || missingOptionalChildren)
 							&& candidate.getVersionedIdentifier().equals(
 								ref.getVersionedIdentifier()))
 							hits.add(new Hit(candidate, ref));
