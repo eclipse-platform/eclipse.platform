@@ -263,6 +263,11 @@ public class OptionalFeaturesPage extends BannerPage {
 			fe.setChecked(checked);
 		}
 	}
+	
+	public Object [] getOptionalElements() {
+		return elements;
+	}
+
 
 	public IFeatureReference[] getCheckedOptionalFeatures() {
 		HashSet set = new HashSet();

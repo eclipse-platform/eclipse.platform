@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.eclipse.update.configuration.IConfiguredSite;
+import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
@@ -70,6 +72,41 @@ public class FeatureHierarchyElement {
 	 */
 	public boolean isChecked() {
 		return checked;
+	}
+	
+	/**
+	 * Returns true if this optional feature should
+	 * be enabled when installed. By default, all
+	 * features in the hiearchy should be enabled.
+	 * The exception is for optional features that
+	 * are updated to a new version in case where
+	 * the older version of the optional feature
+	 * is disabled in the given configuration. 
+	 * In this case, the feature is
+	 * updated and disabled in order to maintain
+	 * its state.
+	 */
+	public boolean isEnabled(IInstallConfiguration config) {
+		if (isOptional() && oldFeatureRef!=null) {
+			try {
+				IFeature oldFeature = oldFeatureRef.getFeature();
+				IConfiguredSite csite = InstallWizard.findConfigSite(oldFeature, config);
+				return csite.isConfigured(oldFeature);
+			}
+			catch (CoreException e) {
+			}
+		}
+		return true;
+	}
+	
+	public IFeature getFeature() {
+		try {
+			IFeature feature = newFeatureRef.getFeature();
+			return feature;
+		}
+		catch (CoreException e) {
+			return null;
+		}
 	}
 
 	/**

@@ -200,37 +200,43 @@ public class NewUpdatesWizard extends Wizard {
 		if (feature.getVersionedIdentifier().equals(oldFeature.getVersionedIdentifier())) {
 			reinstall=true;
 		}
-		optionalFeatures = computeOptionalFeatures(oldFeature, feature);
+		ArrayList optionalElements = new ArrayList();
+		FeatureHierarchyElement.computeElements(
+			oldFeature,
+			feature,
+			oldFeature != null,
+			optionalElements);
+		optionalFeatures = computeOptionalFeatures(optionalElements, oldFeature!=null);
 		IConfiguredSite targetSite =
 			TargetPage.getDefaultTargetSite(config, job);
 		if (optionalFeatures!=null)
 			targetSite.install(feature, optionalFeatures, getVerificationListener(), monitor);
 		else
 			targetSite.install(feature, getVerificationListener(), monitor);
-		if (!reinstall) unconfigure(oldFeature);
+		if (!reinstall) {
+			unconfigure(oldFeature);
+			if (optionalFeatures!=null) {
+				InstallWizard.preserveOptionalState(config, targetSite, optionalElements.toArray());
+			}
+		}
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		model.addPendingChange(job);
 	}
 
-	private IFeatureReference[] computeOptionalFeatures(IFeature oldFeature, IFeature newFeature) {
-		ArrayList elements = new ArrayList();
-		FeatureHierarchyElement.computeElements(
-			oldFeature,
-			newFeature,
-			oldFeature != null,
-			elements);
+	private IFeatureReference[] computeOptionalFeatures(ArrayList elements, boolean update) {
 		HashSet set = new HashSet();
 		for (int i = 0; i < elements.size(); i++) {
 			FeatureHierarchyElement element =
 				(FeatureHierarchyElement) elements.get(i);
 			element.addCheckedOptionalFeatures(
-				oldFeature != null,
+				update,
 				set);
 		}
+		if (set.isEmpty()) return null;
 		return (IFeatureReference[]) set.toArray(
 			new IFeatureReference[set.size()]);
 	}
-
+	
 	private void throwError(String message) throws CoreException {
 		IStatus status =
 			new Status(
