@@ -59,23 +59,27 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		// find the configured site each feature belongs to
 		if (process == ENABLE) {
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
-				UpdateManagerPlugin.warn("ENABLE SESSION DELTA");			
+				UpdateManagerPlugin.warn("ENABLE SESSION DELTA");
 			if (featureReferences != null && featureReferences.size() > 0) {
-				// manage ProgressMonitor
-				if (pm != null) {
-					int nbFeatures = featureReferences.size();
-					pm.beginTask(Policy.bind("SessionDelta.EnableFeatures"), nbFeatures);
-				}
 				// since 2.0.2 ISite.getConfiguredSite()
 				// find the configuredSite that maintains this featureReference
 				// configure the feature
-				Iterator iterator = featureReferences.iterator();
+
+				// remove duplicate and any efixes that should not be enabled
+				List featureReferencesToEnable = processDuplicate(featureReferences);
+
+				// manage ProgressMonitor
+				if (pm != null) {
+					int nbFeatures = featureReferencesToEnable.size();
+					pm.beginTask(Policy.bind("SessionDelta.EnableFeatures"), nbFeatures);
+				}
+
 				IFeatureReference ref = null;
 				IConfiguredSite configSite = null;
 				IFeature featureToConfigure = null;
-				while (iterator.hasNext()) {
-					ref = (IFeatureReference) iterator.next();
-					
+				for (Iterator iter = featureReferencesToEnable.iterator(); iter.hasNext();) {
+					ref = (IFeatureReference) iter.next();
+
 					try {
 						featureToConfigure = ref.getFeature();
 					} catch (CoreException e) {
@@ -85,11 +89,11 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 					if (featureToConfigure != null) {
 						if (pm != null)
 							pm.worked(1);
-							
+
 						configSite = ref.getSite().getCurrentConfiguredSite();
 						try {
 							// make sure only the latest version of the configured features
-							// is configured across sites [16502]													
+							// is configured across sites [16502]
 							if (enable(featureToConfigure)) {
 								configSite.configure(featureToConfigure);
 							} else {
@@ -101,9 +105,8 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 							UpdateManagerPlugin.warn("Unable to configure feature:" + featureToConfigure, e);
 						}
 					} else {
-						UpdateManagerPlugin.warn("Unable to configure null feature:" + ref,null);
+						UpdateManagerPlugin.warn("Unable to configure null feature:" + ref, null);
 					}
-
 				}
 			}
 		}
@@ -262,5 +265,141 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 		}
 		return 0;
 	};
+
+	/*
+	 * Method processDuplicate.
+	 * @param featureReferences
+	 * @return List of features to enable of empty list
+	 */
+	private List processDuplicate(List featureReferencesToProcess) {
+
+		// eliminate duplicate versions (keep latest)
+		IFeatureReference[] list = (IFeatureReference[]) featureReferencesToProcess.toArray(new IFeatureReference[0]);
+		boolean foundDuplicate = false;
+		for (int i = 0; i < list.length - 1; i++) {
+			IFeatureReference left = list[i];
+			try {
+				VersionedIdentifier leftVid = left.getVersionedIdentifier();
+				for (int j = i + 1; j < list.length; j++) {
+					IFeatureReference right = list[j];
+					try {
+						VersionedIdentifier rightVid = right.getVersionedIdentifier();
+						if (leftVid.getIdentifier().equals(rightVid.getIdentifier())) {
+							// duplicate versions ... keep latest
+							IFeatureReference oldest = null;
+							// bug 31940. If right>left remove left ELSE REMOVE RIGHT
+							if (rightVid.getVersion().isGreaterOrEqualTo(leftVid.getVersion()))
+								oldest = left;
+							else
+								oldest = right;
+							featureReferencesToProcess.remove(oldest);
+							// debug
+							if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+								UpdateManagerPlugin.debug("Removing \"duplicate\" during delta processing" + oldest.getVersionedIdentifier().toString());
+							}
+							foundDuplicate = true;
+						}
+					} catch (CoreException e) {
+					};
+				}
+			} catch (CoreException e1) {
+			};
+		}
+
+		// duplicate found, remove any efixes of the removed duplicate
+		if (foundDuplicate) {
+			ArrayList result = new ArrayList();
+			Map patches = getPatchesAsFeatureReference(featureReferencesToProcess);
+			if (!patches.isEmpty()){
+				List patchesToEnable = getFeatureReferencePatchesToEnable(patches,featureReferencesToProcess);
+				featureReferencesToProcess.removeAll(patches.keySet());
+				// add efixes first so they will be processed first and may be disabled
+				result.addAll(patchesToEnable);
+				result.addAll(featureReferencesToProcess);
+				return result;
+			}				
+		}
+		return featureReferencesToProcess;
+	}
+
+	/*
+	 * get the map of enabled patches (as feature reference)  or an empty map
+	 */
+	private Map getPatchesAsFeatureReference(List listOfFeatureReferences) {
+		// get all efixes and the associated patched features
+		Map patches = new HashMap();
+		if (listOfFeatureReferences != null) {
+			Iterator iter = listOfFeatureReferences.iterator();
+			while (iter.hasNext()) {
+				List patchedFeaturesID = new ArrayList();
+				IFeatureReference element = (IFeatureReference) iter.next();
+				// add the patched feature identifiers
+				try {
+					IFeature feature = element.getFeature();
+					if (feature != null) {
+						IImport[] imports = feature.getImports();
+						for (int i = 0; i < imports.length; i++) {
+							if (imports[i].isPatch()) {
+								VersionedIdentifier id = imports[i].getVersionedIdentifier();
+								if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+									UpdateManagerPlugin.debug("Found patch " + element + " for feature identifier " + id);
+								patchedFeaturesID.add(id);
+							}
+						}
+					}
+
+					if (!patchedFeaturesID.isEmpty()) {
+						patches.put(element, patchedFeaturesID);
+					}
+				} catch (CoreException e) {
+				}
+			}
+		}
+		return patches;
+	}
+
+	/*
+		 * retruns the list of pathes-featureReference who patch enabled features
+		 */
+	private List getFeatureReferencePatchesToEnable(Map efixes, List configuredFeatureReferences) {
+
+		ArrayList enabledVersionedIdentifier = new ArrayList();
+		Iterator iter = configuredFeatureReferences.iterator();
+		while (iter.hasNext()) {
+			IFeatureReference element = (IFeatureReference) iter.next();
+			try {
+				enabledVersionedIdentifier.add(element.getVersionedIdentifier());
+			} catch (CoreException e){};
+		}
+
+		// loop through the patches
+		List result = new ArrayList();
+		iter = efixes.keySet().iterator();
+		while (iter.hasNext()) {
+			boolean toEnable = false;
+			IFeatureReference efixFeatureReference = (IFeatureReference) iter.next();
+			List patchedFeatures = (List) efixes.get(efixFeatureReference);
+			// loop through the 'patched features identifier' the for this patch
+			// see if it the patch patches at least one enable feature
+			Iterator patchedFeaturesIter = patchedFeatures.iterator();
+			while (patchedFeaturesIter.hasNext() && !toEnable) {
+				VersionedIdentifier patchedFeatureID = (VersionedIdentifier) patchedFeaturesIter.next();
+				if (enabledVersionedIdentifier.contains(patchedFeatureID)) {
+					toEnable = true;
+				}
+			}
+
+			if (!toEnable) {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+					UpdateManagerPlugin.debug("The Patch " + efixFeatureReference + " does not patch any enabled features: it will be disabled");
+			} else {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+					UpdateManagerPlugin.debug("The patch " + efixFeatureReference + " will be enabled.");
+
+				result.add(efixFeatureReference);
+			}
+		}
+		return result;
+	}
 
 }
