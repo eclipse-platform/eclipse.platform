@@ -82,8 +82,16 @@ public class ConfigurationPropertyPage extends PropertyPage implements IWorkbenc
 	}
 	private void checkFields() {
 		boolean valid = true;
+		String error = null;
 		// check the value
-		setValid(valid);
+		String text = nameText.getText();
+		if (text.length()==0) valid = false;
+		else if (text.charAt(0)=='@') {
+			error = "Configuration label cannot start with a '@'";
+			valid=false;
+		}
+		setValid(valid);		
+		setErrorMessage(error);
 		changed=true;
 	}
 }
