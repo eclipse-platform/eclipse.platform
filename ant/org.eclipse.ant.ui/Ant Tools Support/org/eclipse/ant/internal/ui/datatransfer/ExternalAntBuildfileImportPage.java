@@ -355,6 +355,7 @@ public class ExternalAntBuildfileImportPage extends WizardPage {
 
 	/**
 	 * Creates a new project resource based on the Ant buildfile.
+	 * The classpath is configured based on the classpath of the javac declaration in the buildfile.
 	 *
 	 * @return the created project resource, or <code>null</code> if the project
 	 *    was not created
@@ -517,7 +518,7 @@ public class ExternalAntBuildfileImportPage extends WizardPage {
 				getJavacNodes(javacNodes, node);
 			} else if (node instanceof AntTaskNode) {
 				AntTaskNode task= (AntTaskNode)node;
-				if (task.getName() == "javac") { //$NON-NLS-1$
+				if ("javac".equals(task.getName())) { //$NON-NLS-1$
 					javacNodes.add(task);
 				}
 			}
