@@ -141,6 +141,8 @@ public class SiteFilePluginContentConsumer extends ContentConsumer {
 		}
 
 		boolean success = true;
+		InstallRegistry.unregisterPlugin(pluginEntry);
+
 		// delete plugin manifests first
 		for(Iterator it = renames.values().iterator(); it.hasNext();){
 			String originalName = (String) it.next();
