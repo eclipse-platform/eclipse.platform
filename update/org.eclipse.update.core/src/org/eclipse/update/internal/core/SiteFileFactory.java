@@ -101,10 +101,16 @@ public class SiteFileFactory extends BaseSiteFactory {
 					File file = new File(url.getFile());
 					File parentDirectory = file.getParentFile();
 
-					// create directory if it doesn't exist						
-					if (parentDirectory != null && !parentDirectory.exists()) {
-						parentDirectory.mkdirs();
-					}
+					// do not create directory if it doesn't exist	[18318]
+					// instead hrow error					
+					if (parentDirectory != null && !parentDirectory.exists()) 
+						throw Utilities.newCoreException(
+							Policy.bind(
+								"SiteFileFactory.DirectoryDoesNotExist",
+								file.getAbsolutePath()),
+							null);
+					//$NON-NLS-1$
+					
 
 					if (parentDirectory == null || !parentDirectory.isDirectory())
 						throw Utilities.newCoreException(
