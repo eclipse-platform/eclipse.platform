@@ -13,21 +13,12 @@ package org.eclipse.update.internal.configurator;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
-import javax.xml.parsers.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
-
 import org.eclipse.core.internal.boot.*;
 import org.eclipse.update.configurator.*;
-import org.w3c.dom.*;
 
 public class PlatformConfiguration implements IPlatformConfiguration {
 
 	private static PlatformConfiguration currentPlatformConfiguration = null;
-	private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-	private static final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 	private URL configLocation;
 	private HashMap sites;
@@ -57,6 +48,7 @@ public class PlatformConfiguration implements IPlatformConfiguration {
 	private static boolean cmdDev = false;
 
 	private static final String ECLIPSE = "eclipse"; //$NON-NLS-1$
+
 	private static final String CONFIG_DIR = ".config"; //$NON-NLS-1$
 	private static final String CONFIG_NAME = "platform.cfg"; //$NON-NLS-1$
 	private static final String CONFIG_FILE = CONFIG_DIR + "/" + CONFIG_NAME; //$NON-NLS-1$
@@ -67,9 +59,9 @@ public class PlatformConfiguration implements IPlatformConfiguration {
 	private static final String CONFIG_FILE_BAK_SUFFIX = ".bak"; //$NON-NLS-1$
 	private static final String CHANGES_MARKER = ".newupdates"; //$NON-NLS-1$
 	private static final String LINKS = "links"; //$NON-NLS-1$
+
 	private static final String RUNTIME_PLUGIN_ID = "org.eclipse.core.runtime"; //$NON-NLS-1$
 	private static final String[] BOOTSTRAP_PLUGINS = { "org.eclipse.core.boot" }; //$NON-NLS-1$
-	private static final String CFG = "config"; //$NON-NLS-1$
 	private static final String CFG_BOOT_PLUGIN = "bootstrap"; //$NON-NLS-1$
 	private static final String CFG_SITE = "site"; //$NON-NLS-1$
 	private static final String CFG_URL = "url"; //$NON-NLS-1$
@@ -590,7 +582,7 @@ public class PlatformConfiguration implements IPlatformConfiguration {
 				File sourceConfigIni = new File(configIniURL.getFile());
 				copy(sourceConfigIni, configIni);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println(Messages.getString("cfg.unableToCreateConfig.ini"));
 		}
 	}
@@ -1716,143 +1708,5 @@ public class PlatformConfiguration implements IPlatformConfiguration {
 	public void invalidatePluginsChangeStamp() {
 		changeStampIsValid = false;
 		pluginsChangeStampIsValid = false;
-	}
-	
-	private void saveAsXML(File platformXML) {
-		try {
-			DocumentBuilder docBuilder = documentBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.newDocument();
-			
-			doc.appendChild(doc.createProcessingInstruction("date", "\""+(new Date()).toString()+"\""));
-			
-			Element configElement = doc.createElement(CFG);
-			doc.appendChild(configElement);
-			configElement.setAttribute(CFG_VERSION, VERSION);
-			if (transientConfig)
-				configElement.setAttribute(CFG_TRANSIENT, "true"); //$NON-NLS-1$
-
-			// collect global attributes
-			configElement.setAttribute(CFG_STAMP, Long.toString(getChangeStamp()));
-			configElement.setAttribute(CFG_FEATURE_STAMP, Long.toString(getFeaturesChangeStamp()));
-			configElement.setAttribute(CFG_PLUGIN_STAMP, Long.toString(getPluginsChangeStamp()));
-
-			// collect bootstrap entries
-			String[] ids = getBootstrapPluginIdentifiers();
-			for (int i = 0; i < ids.length; i++) {
-				String location = (String) bootPlugins.get(ids[i]);
-				if (location != null) {
-					Element bootPlugin = doc.createElement(CFG_BOOT_PLUGIN);
-					bootPlugin.setNodeValue(location);
-					configElement.appendChild(bootPlugin);
-				}
-			}
-
-			// collect feature entries
-			configElement.setAttribute(CFG_FEATURE_ENTRY_DEFAULT, defaultFeature);
-			IFeatureEntry[] feats = getConfiguredFeatureEntries();
-			for (int i = 0; i < feats.length; i++) {
-				saveFeatureAsXML(feats[i], configElement); 
-			}
-
-			// collect site entries
-			SiteEntry[] list = (SiteEntry[]) sites.values().toArray(new SiteEntry[0]);
-			for (int i = 0; i < list.length; i++) {
-				saveSiteAsXML(list[i], configElement); 
-			}
-
-			// Write out to a file
-			FileOutputStream stream = new FileOutputStream(platformXML);
-			
-			Transformer transformer=transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(stream);
-
-			transformer.transform(source,result);
-			stream.close();
-		} catch (DOMException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	/**
-	 * Saves state as xml content in a given parent element
-	 * @param parent
-	 */
-	private void saveSiteAsXML(SiteEntry site, Element parent) {
-		Document doc = parent.getOwnerDocument();
-		Element siteElement = doc.createElement(CFG_SITE);
-		siteElement.setAttribute(CFG_URL, site.getURL().toString());
-		siteElement.setAttribute(CFG_STAMP, Long.toString(site.getChangeStamp()));
-		siteElement.setAttribute(CFG_FEATURE_STAMP, Long.toString(site.getFeaturesChangeStamp()));
-		siteElement.setAttribute(CFG_PLUGIN_STAMP, Long.toString(site.getPluginsChangeStamp()));
-		siteElement.setAttribute(CFG_UPDATEABLE, site.isUpdateable() ? "true" : "false");
-		if (site.isExternallyLinkedSite()) 
-			siteElement.setAttribute(CFG_LINK_FILE, site.getLinkFileName().trim().replace(File.separatorChar, '/')); 
-
-		int type = site.getSitePolicy().getType();
-		String typeString = CFG_POLICY_TYPE_UNKNOWN;
-		try {
-			typeString = CFG_POLICY_TYPE[type];
-		} catch (IndexOutOfBoundsException e) {
-			// ignore bad attribute ...
-		}
-		siteElement.setAttribute(CFG_POLICY, typeString); 
-		String[] list = site.getSitePolicy().getList();
-		for (int i=0; i<list.length; i++) {
-			Element listElement = doc.createElement(CFG_LIST);
-			listElement.setNodeValue(list[i]);
-			siteElement.appendChild(listElement);
-		}
-		parent.appendChild(siteElement);
-
-		// note: we don't save features inside the site element.
-	}
-	
-	/**
-	 * Saves state as xml content in a given parent element
-	 * @param parent
-	 */
-	private void saveFeatureAsXML(IFeatureEntry feature, Element parent) {
-		Document doc = parent.getOwnerDocument();
-		Element featureElement = doc.createElement(CFG_FEATURE_ENTRY);
-	
-		// write out feature entry settings
-		featureElement.setAttribute(CFG_FEATURE_ENTRY_ID, feature.getFeatureIdentifier()); 
-		if (feature.canBePrimary())
-			featureElement.setAttribute(CFG_FEATURE_ENTRY_PRIMARY, "true"); 
-		featureElement.setAttribute(CFG_FEATURE_ENTRY_VERSION, feature.getFeatureVersion()); 
-		if (feature.getFeatureVersion() != null && !feature.getFeatureVersion().equals(feature.getFeaturePluginVersion()))
-			featureElement.setAttribute(CFG_FEATURE_ENTRY_PLUGIN_VERSION, feature.getFeaturePluginVersion()); 
-		if (feature.getFeatureIdentifier() != null && !feature.getFeatureIdentifier().equals(feature.getFeaturePluginIdentifier()))
-			featureElement.setAttribute(CFG_FEATURE_ENTRY_PLUGIN_IDENTIFIER, feature.getFeaturePluginIdentifier()); 
-		featureElement.setAttribute(CFG_FEATURE_ENTRY_APPLICATION, feature.getFeatureApplication()); 
-		URL[] roots = feature.getFeatureRootURLs();
-		for (int i=0; i<roots.length; i++) {
-			Element rootElement = doc.createElement(CFG_FEATURE_ENTRY_ROOT);
-			rootElement.setNodeValue(roots[i].toExternalForm());
-			featureElement.appendChild(rootElement);
-		}
 	}
 }
