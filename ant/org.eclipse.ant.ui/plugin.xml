@@ -434,7 +434,7 @@
       </resolver>
       <include
       		file="templates/ant.xml"
-      		translations="templates/ant.properties">
+      		translations="$nl$/templates/ant.properties">
       </include>
    </extension>
     
