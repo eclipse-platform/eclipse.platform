@@ -907,6 +907,11 @@ public class DetailsForm extends PropertyWebForm {
 				validationStatus);
 			return;
 		}
+		if (job.getJobType()==PendingChange.UNCONFIGURE &&
+			UpdateUIPlugin.isPatch(job.getFeature())) {
+			unconfigurePatch(job.getFeature());
+			return;
+		}
 		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
 			public void run() {
 				InstallWizard wizard = new InstallWizard(job);
@@ -921,6 +926,9 @@ public class DetailsForm extends PropertyWebForm {
 					UpdateUIPlugin.informRestartNeeded();
 			}
 		});
+	}
+	
+	private void unconfigurePatch(IFeature feature) {
 	}
 
 	private void doButtonSelected() {

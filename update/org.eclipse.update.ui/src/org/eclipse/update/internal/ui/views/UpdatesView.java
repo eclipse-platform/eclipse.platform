@@ -746,7 +746,7 @@ public class UpdatesView
 					config,
 					dir,
 					true)) {
-				InstallWizard.makeConfigurationCurrent(config);
+				InstallWizard.makeConfigurationCurrent(config, null);
 				InstallWizard.saveLocalSite();
 				UpdateUIPlugin.informRestartNeeded();
 			}

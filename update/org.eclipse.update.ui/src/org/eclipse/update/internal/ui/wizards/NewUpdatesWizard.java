@@ -118,7 +118,7 @@ public class NewUpdatesWizard extends Wizard {
 				throws InvocationTargetException {
 				try {
 					installCount = 0;
-					InstallWizard.makeConfigurationCurrent(config);
+					InstallWizard.makeConfigurationCurrent(config, null);
 					execute(selectedJobs, monitor);
 				} catch (InstallAbortedException e) {
 					throw new InvocationTargetException(e);

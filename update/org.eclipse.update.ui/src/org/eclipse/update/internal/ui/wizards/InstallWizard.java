@@ -24,6 +24,7 @@ import org.eclipse.update.internal.ui.security.JarVerificationService;
 public class InstallWizard extends Wizard {
 	private static final String KEY_UNABLE = "InstallWizard.error.unable";
 	private static final String KEY_OLD = "InstallWizard.error.old";
+	private static final String KEY_SAVED_CONFIG = "InstallWizard.savedConfig";
 	private ReviewPage reviewPage;
 	private OptionalFeaturesPage optionalFeaturesPage;
 	private TargetPage targetPage;
@@ -76,7 +77,7 @@ public class InstallWizard extends Wizard {
 				throws InvocationTargetException {
 				try {
 					successfulInstall = false;
-					makeConfigurationCurrent(config);
+					makeConfigurationCurrent(config, job);
 					execute(
 						targetSite,
 						optionalElements,
@@ -139,9 +140,22 @@ public class InstallWizard extends Wizard {
 		}
 	}
 
-	public static void makeConfigurationCurrent(IInstallConfiguration config)
+	public static void makeConfigurationCurrent(IInstallConfiguration config, PendingChange job)
 		throws CoreException {
 		ILocalSite localSite = SiteManager.getLocalSite();
+		if (job!=null && job.getJobType()==PendingChange.INSTALL) {
+			if (UpdateUIPlugin.isPatch(job.getFeature())) {
+				// Installing a patch - preserve the current configuration
+				IInstallConfiguration cconfig = localSite.getCurrentConfiguration();
+				IInstallConfiguration savedConfig = localSite.addToPreservedConfigurations(cconfig);
+				VersionedIdentifier vid = job.getFeature().getVersionedIdentifier();
+				String key = "@"+vid.getIdentifier()+"_"+vid.getVersion();
+				String newLabel = UpdateUIPlugin.getFormattedMessage(KEY_SAVED_CONFIG, key);
+				savedConfig.setLabel(newLabel);
+				UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
+				model.fireObjectChanged(savedConfig, null);
+			}
+		}
 		localSite.addConfiguration(config);
 	}
 
