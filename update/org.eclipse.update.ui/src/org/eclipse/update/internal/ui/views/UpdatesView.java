@@ -43,6 +43,8 @@ public class UpdatesView
 	private static final String KEY_NEW_SEARCH = "UpdatesView.Popup.newSearch";
 	private static final String KEY_NEW_LOCAL_SITE =
 		"UpdatesView.Popup.newLocalSite";
+	private static final String KEY_SHOW_SEARCH_RESULT =
+		"UpdatesView.Popup.showSearchResult";
 	private static final String KEY_DELETE = "UpdatesView.Popup.delete";
 	private static final String KEY_REFRESH = "UpdatesView.Popup.refresh";
 	private static final String KEY_REFRESH_TOOLTIP =
@@ -91,6 +93,7 @@ public class UpdatesView
 	private Image computerImage;
 	private VolumeLabelProvider volumeLabelProvider;
 	private Action refreshAction;
+	private Action showSearchResultAction;
 	private SearchObject updateSearchObject;
 	private SelectionChangedListener selectionListener;
 	private Hashtable fileImages = new Hashtable();
@@ -404,9 +407,20 @@ public class UpdatesView
 				performNewLocal();
 			}
 		};
+		
 		WorkbenchHelp.setHelp(newLocalAction, "org.eclipse.update.ui.UpdatesView_newLocalAction");
 		newLocalAction.setText(
 			UpdateUIPlugin.getResourceString(KEY_NEW_LOCAL_SITE));
+
+		showSearchResultAction = new Action() {
+			public void run() {
+				performShowSearchResult();
+			}
+		};
+		WorkbenchHelp.setHelp(newLocalAction, "org.eclipse.update.ui.UpdatesView_showSearchResultAction");
+		showSearchResultAction.setText(
+			UpdateUIPlugin.getResourceString(KEY_SHOW_SEARCH_RESULT));
+
 
 		deleteAction = new DeleteAction();
 		WorkbenchHelp.setHelp(deleteAction, "org.eclipse.update.ui.UpdatesView_deleteAction");
@@ -533,6 +547,11 @@ public class UpdatesView
 		if (canDelete(obj))
 			manager.add(deleteAction);
 		manager.add(new Separator());
+		if (obj instanceof SearchObject) {
+			manager.add(showSearchResultAction);
+			manager.add(new Separator());
+		}
+		
 		super.fillContextMenu(manager);
 		if (obj instanceof NamedModelObject)
 			manager.add(propertiesAction);
@@ -664,6 +683,25 @@ public class UpdatesView
 				}
 			}
 		}
+	}
+	
+	private void performShowSearchResult() {
+		IWorkbenchPage page = UpdateUIPlugin.getActivePage();
+		SearchResultView view = (SearchResultView)page.findView(UpdatePerspective.ID_SEARCH_RESULTS);
+		if (view!=null) {
+			page.bringToTop(view);
+		}
+		else {
+			try {
+				view = (SearchResultView)page.showView(UpdatePerspective.ID_SEARCH_RESULTS);
+				view.setSelectionActive(true);
+			}
+			catch (PartInitException e) {
+				UpdateUIPlugin.logException(e);
+			}
+		}
+		if (view!=null)
+			view.setCurrentSearch((SearchObject)getSelectedObject());
 	}
 
 	private void performRefresh() {

@@ -131,7 +131,7 @@ public class ExpressionSearchCategory extends SearchCategory {
 	}
 	
 	public String getCurrentSearch() {
-		return expressionText.getText();
+		return "\""+expressionText.getText()+"\"";
 	}
 	private boolean internalMatches(IFeature feature) {
 		if (searchName) {
