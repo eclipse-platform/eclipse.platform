@@ -752,7 +752,17 @@ public class ActivityConstraints {
 			IFeatureReference[] crefs = csite.getSite().getFeatureReferences();
 			for (int j = 0; j < crefs.length; j++) {
 				IFeatureReference cref = crefs[j];
-				IFeature cfeature = cref.getFeature();
+				IFeature cfeature=null;
+				try {
+					cfeature = cref.getFeature();
+				}
+				catch (CoreException e) {
+					// Ignore missing optional feature.
+					if (cref.isOptional())
+						continue;
+					else
+						throw e;
+				}
 				if (isParent(cfeature, feature, true)) {
 					// Included in at least one feature as optional
 					included=true;
@@ -780,7 +790,18 @@ public class ActivityConstraints {
 		IFeatureReference [] refs = candidate.getIncludedFeatureReferences();
 		for (int i=0; i<refs.length; i++) {
 			IFeatureReference child = refs[i];
-			if (feature.getVersionedIdentifier().equals(child.getVersionedIdentifier())) {
+			VersionedIdentifier cvid;
+			try {
+				cvid = child.getVersionedIdentifier();
+			}
+			catch (CoreException e) {
+				// Ignore missing optional children
+				if (child.isOptional())
+					continue;
+				else
+					throw e;
+			}
+			if (feature.getVersionedIdentifier().equals(cvid)) {
 				// included; return true if optionality is not 
 				// important or it is and the inclusion is optional
 				return optionalOnly==false || child.isOptional();
