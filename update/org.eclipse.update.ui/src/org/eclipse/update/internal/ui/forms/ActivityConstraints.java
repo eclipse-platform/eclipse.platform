@@ -397,7 +397,7 @@ public class ActivityConstraints {
 		if (remove != null) {
 			// Patches to features are removed together with
 			// those features. Include them in the list.
-			contributePatchesFor(remove, features, removeTree);
+			contributePatchesFor(removeTree, features, removeTree);
 		}
 
 		if (add != null)
@@ -407,6 +407,18 @@ public class ActivityConstraints {
 			features.removeAll(removeTree);
 
 		return features;
+	}
+	
+	private static void contributePatchesFor(
+		ArrayList removeTree,
+		ArrayList features,
+		ArrayList result)
+		throws CoreException {
+		
+		for (int i=0; i<removeTree.size(); i++) {
+			IFeature feature = (IFeature)removeTree.get(i);
+			contributePatchesFor(feature, features, result);
+		}
 	}
 
 	private static void contributePatchesFor(

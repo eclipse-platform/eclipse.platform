@@ -146,6 +146,21 @@ public class UpdatesView
 			updateForSelection((IStructuredSelection) event.getSelection());
 		}
 	}
+	
+	class UpdatesViewSorter extends ViewerSorter {
+		public int category(Object obj) {
+			// Level 0
+			if (obj instanceof DiscoveryFolder)
+				return 1;
+			if (obj.equals(updateSearchObject))
+				return 2;
+			if (obj instanceof MyComputer)
+				return 3;
+			if (obj instanceof SiteBookmark || obj instanceof BookmarkFolder || obj instanceof SearchObject)
+				return 4;
+			return super.category(obj);
+		}
+	}
 
 	class SiteProvider
 		extends DefaultContentProvider
@@ -440,6 +455,7 @@ public class UpdatesView
 		filterEnvironmentAction.setChecked(envValue);
 
 		viewer.addFilter(environmentFilter);
+		viewer.setSorter(new UpdatesViewSorter());
 
 		showCategoriesAction = new Action() {
 			public void run() {

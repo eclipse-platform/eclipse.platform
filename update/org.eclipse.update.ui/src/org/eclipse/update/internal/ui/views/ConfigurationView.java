@@ -165,9 +165,7 @@ public class ConfigurationView
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			if (e1 instanceof IInstallConfiguration
 				&& e2 instanceof IInstallConfiguration) {
-				// Reverse order of configurations in the history
-				// so that they are in descending order
-				return - (super.compare(viewer, e1, e2));
+				return 0;
 			}
 			return super.compare(viewer, e1, e2);
 		}

@@ -260,31 +260,9 @@ public class InstallWizard extends Wizard {
 		throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
-			boolean result = site.unconfigure(feature);
-			if (!result) return false;
-			return unconfigurePatches(site, feature);
+			return site.unconfigure(feature);
 		}
 		return false;
-	}
-	
-	static boolean unconfigurePatches(IConfiguredSite site, IFeature feature) {
-		IFeatureReference [] refs = site.getFeatureReferences();
-		boolean totalResult = true;
-		for (int i=0; i<refs.length; i++) {
-			IFeatureReference ref = refs[i];
-			try {
-				IFeature candidate = ref.getFeature();
-				if (UpdateUIPlugin.isPatch(feature, candidate)) {
-					// Unconfigure patch as well.
-					if (site.unconfigure(candidate)==false)
-						totalResult=false;
-				}
-			}
-			catch (CoreException e) {
-				// Tolerate this
-			}
-		}
-		return totalResult;
 	}
 	
 	private void configure(IFeature feature) throws CoreException {
