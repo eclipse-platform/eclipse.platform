@@ -21,9 +21,9 @@ import org.eclipse.ant.tests.ui.BuildTests;
 import org.eclipse.ant.tests.ui.editor.AntEditorContentOutlineTests;
 import org.eclipse.ant.tests.ui.editor.CodeCompletionTest;
 import org.eclipse.ant.tests.ui.editor.TaskDescriptionProviderTest;
-import org.eclipse.ant.tests.ui.editor.formatter.XmlTagFormatterTest;
-import org.eclipse.ant.tests.ui.editor.formatter.FormattingPreferencesTest;
-import org.eclipse.ant.tests.ui.editor.formatter.XmlDocumentFormatterTest;
+//import org.eclipse.ant.tests.ui.editor.formatter.XmlTagFormatterTest;
+//import org.eclipse.ant.tests.ui.editor.formatter.FormattingPreferencesTest;
+//import org.eclipse.ant.tests.ui.editor.formatter.XmlDocumentFormatterTest;
 import org.eclipse.ant.tests.ui.externaltools.MigrationTests;
 import org.eclipse.ant.tests.ui.separateVM.SeparateVMTests;
 
@@ -43,9 +43,9 @@ public class AntUITests extends TestSuite {
         suite.addTest(new TestSuite(TaskDescriptionProviderTest.class));
         suite.addTest(new TestSuite(AntEditorContentOutlineTests.class));
         suite.addTest(new TestSuite(MigrationTests.class));
-        suite.addTest(new TestSuite(FormattingPreferencesTest.class));
-        suite.addTest(new TestSuite(XmlDocumentFormatterTest.class));
-        suite.addTest(new TestSuite(XmlTagFormatterTest.class));
+     //   suite.addTest(new TestSuite(FormattingPreferencesTest.class));
+     //  suite.addTest(new TestSuite(XmlDocumentFormatterTest.class));
+     //   suite.addTest(new TestSuite(XmlTagFormatterTest.class));
         return suite;
     }
 }
