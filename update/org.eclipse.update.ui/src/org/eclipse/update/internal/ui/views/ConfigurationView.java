@@ -803,7 +803,8 @@ public class ConfigurationView
 		boolean showUnconfState = settings.getBoolean(STATE_SHOW_UNCONF);
 		showUnconfFeaturesAction = new Action() {
 			public void run() {
-				viewer.refresh(getLocalSite());
+				//viewer.refresh(getLocalSite());
+				viewer.refresh();
 				settings.put(
 					STATE_SHOW_UNCONF,
 					showUnconfFeaturesAction.isChecked());
