@@ -265,7 +265,9 @@ public class NewUpdatesWizard extends Wizard {
 	private boolean unconfigure(IFeature feature) throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
-			return site.unconfigure(feature);
+			boolean result = site.unconfigure(feature);
+			if (!result) return false;
+			return InstallWizard.unconfigurePatches(site, feature);
 		}
 		return false;
 	}

@@ -185,6 +185,9 @@ public class InstallWizard extends Wizard {
 						throwError(UpdateUIPlugin.getResourceString(KEY_OLD));
 				}
 			}
+			if (oldFeature == null) {
+				ensureUnique(config, feature, targetSite);
+			}
 		} else if (job.getJobType() == PendingChange.CONFIGURE) {
 			configure(job.getFeature());
 		} else if (job.getJobType() == PendingChange.UNCONFIGURE) {
@@ -195,6 +198,35 @@ public class InstallWizard extends Wizard {
 		}
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		model.addPendingChange(job);
+	}
+
+	static void ensureUnique(
+		IInstallConfiguration config,
+		IFeature feature,
+		IConfiguredSite targetSite)
+		throws CoreException {
+		boolean patch = false;
+		IImport[] imports = feature.getImports();
+		for (int i = 0; i < imports.length; i++) {
+			IImport iimport = imports[i];
+			if (iimport.isPatch()) {
+				patch = true;
+				break;
+			}
+		}
+		// Only need to check features that patch other features.
+		if (!patch)
+			return;
+		IFeature localFeature = findLocalFeature(targetSite, feature);
+		ArrayList oldFeatures = new ArrayList();
+		// First collect all older active features that
+		// have the same ID as new features marked as 'unique'.
+		collectOldFeatures(localFeature, targetSite, oldFeatures);
+		// Now unconfigure old features to enforce uniqueness
+		for (int i = 0; i < oldFeatures.size(); i++) {
+			IFeature oldFeature = (IFeature) oldFeatures.get(i);
+			unconfigure(config, oldFeature);
+		}
 	}
 
 	private void throwError(String message) throws CoreException {
@@ -228,10 +260,33 @@ public class InstallWizard extends Wizard {
 		throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
-			return site.unconfigure(feature);
+			boolean result = site.unconfigure(feature);
+			if (!result) return false;
+			return unconfigurePatches(site, feature);
 		}
 		return false;
 	}
+	
+	static boolean unconfigurePatches(IConfiguredSite site, IFeature feature) {
+		IFeatureReference [] refs = site.getFeatureReferences();
+		boolean totalResult = true;
+		for (int i=0; i<refs.length; i++) {
+			IFeatureReference ref = refs[i];
+			try {
+				IFeature candidate = ref.getFeature();
+				if (UpdateUIPlugin.isPatch(feature, candidate)) {
+					// Unconfigure patch as well.
+					if (site.unconfigure(candidate)==false)
+						totalResult=false;
+				}
+			}
+			catch (CoreException e) {
+				// Tolerate this
+			}
+		}
+		return totalResult;
+	}
+	
 	private void configure(IFeature feature) throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
@@ -298,13 +353,14 @@ public class InstallWizard extends Wizard {
 		for (int i = 0; i < optionalElements.length; i++) {
 			FeatureHierarchyElement fe =
 				(FeatureHierarchyElement) optionalElements[i];
-			Object [] children = fe.getChildren(true);
+			Object[] children = fe.getChildren(true);
 			preserveOptionalState(config, targetSite, children);
 			if (!fe.isEnabled(config)) {
 				IFeature newFeature = fe.getFeature();
 				try {
-					IFeature localFeature = findLocalFeature(targetSite, newFeature);
-					if (localFeature!=null)
+					IFeature localFeature =
+						findLocalFeature(targetSite, newFeature);
+					if (localFeature != null)
 						targetSite.unconfigure(localFeature);
 				} catch (CoreException e) {
 					// Eat this - we will leave with it
@@ -312,9 +368,37 @@ public class InstallWizard extends Wizard {
 			}
 		}
 	}
-	private static IFeature findLocalFeature(IConfiguredSite csite, IFeature feature) throws CoreException {
-		IFeatureReference [] refs = csite.getConfiguredFeatures();
-		for (int i=0; i<refs.length; i++) {
+
+	static void collectOldFeatures(
+		IFeature feature,
+		IConfiguredSite targetSite,
+		ArrayList result)
+		throws CoreException {
+		IFeatureReference[] included = feature.getIncludedFeatureReferences();
+		for (int i = 0; i < included.length; i++) {
+			IFeatureReference iref = included[i];
+			IFeature ifeature = iref.getFeature();
+			// find other features and unconfigure
+			String id = iref.getVersionedIdentifier().getIdentifier();
+			IFeature[] sameIds =
+				UpdateUIPlugin.searchSite(id, targetSite, true);
+			for (int j = 0; j < sameIds.length; j++) {
+				IFeature sameId = sameIds[j];
+				// Ignore self.
+				if (sameId.equals(ifeature))
+					continue;
+				result.add(sameId);
+			}
+			collectOldFeatures(ifeature, targetSite, result);
+		}
+	}
+
+	private static IFeature findLocalFeature(
+		IConfiguredSite csite,
+		IFeature feature)
+		throws CoreException {
+		IFeatureReference[] refs = csite.getConfiguredFeatures();
+		for (int i = 0; i < refs.length; i++) {
 			IFeatureReference ref = refs[i];
 			VersionedIdentifier refVid = ref.getVersionedIdentifier();
 			if (feature.getVersionedIdentifier().equals(refVid))

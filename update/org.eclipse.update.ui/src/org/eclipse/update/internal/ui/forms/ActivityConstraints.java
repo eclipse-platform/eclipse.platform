@@ -25,6 +25,10 @@ public class ActivityConstraints {
 	private static final String KEY_WS = "ActivityConstraints.ws";
 	private static final String KEY_ARCH = "ActivityConstraints.arch";
 	private static final String KEY_PREREQ = "ActivityConstraints.prereq";
+	private static final String KEY_PREREQ_PLUGIN =
+		"ActivityConstaints.prereq.plugin";
+	private static final String KEY_PREREQ_FEATURE =
+		"ActivityConstaints.prereq.feature";
 	private static final String KEY_PREREQ_PERFECT =
 		"ActivityConstraints.prereqPerfect";
 	private static final String KEY_PREREQ_EQUIVALENT =
@@ -33,7 +37,7 @@ public class ActivityConstraints {
 		"ActivityConstraints.prereqCompatible";
 	private static final String KEY_PREREQ_GREATER =
 		"ActivityConstraints.prereqGreaterOrEqual";
-	private static final String KEY_OPTIONAL_CHILD = 
+	private static final String KEY_OPTIONAL_CHILD =
 		"ActivityConstraints.optionalChild";
 	private static final String KEY_CYCLE = "ActivityConstraints.cycle";
 	private static final String KEY_CONFLICT = "ActivityConstraints.conflict";
@@ -192,6 +196,8 @@ public class ActivityConstraints {
 		ArrayList status) {
 		try {
 			ArrayList features = computeFeatures();
+			if (oldFeature == null)
+				checkPatch(newFeature, features, status);
 			features =
 				computeFeaturesAfterOperation(features, newFeature, oldFeature);
 			checkConstraints(features, status);
@@ -290,7 +296,8 @@ public class ActivityConstraints {
 	/*
 	 * Compute a list of configured features
 	 */
-	private static ArrayList computeFeatures(boolean configuredOnly) throws CoreException {
+	private static ArrayList computeFeatures(boolean configuredOnly)
+		throws CoreException {
 		ArrayList features = new ArrayList();
 		ILocalSite localSite = SiteManager.getLocalSite();
 		IInstallConfiguration config = localSite.getCurrentConfiguration();
@@ -298,9 +305,9 @@ public class ActivityConstraints {
 
 		for (int i = 0; i < csites.length; i++) {
 			IConfiguredSite csite = csites[i];
-			
+
 			IFeatureReference[] crefs;
-			
+
 			if (configuredOnly)
 				crefs = csite.getConfiguredFeatures();
 			else
@@ -383,6 +390,11 @@ public class ActivityConstraints {
 				null,
 				true /* tolerate missing children */
 		);
+		if (remove!=null) {
+			// Patches to features are removed together with
+			// those features. Include them in the list.
+			contributePatchesFor(remove, features, removeTree);
+		}
 
 		if (add != null)
 			features.addAll(addTree);
@@ -391,6 +403,21 @@ public class ActivityConstraints {
 			features.removeAll(removeTree);
 
 		return features;
+	}
+
+	private static void contributePatchesFor(
+		IFeature feature,
+		ArrayList features,
+		ArrayList result)
+		throws CoreException {
+		for (int i = 0; i < features.size(); i++) {
+			IFeature candidate = (IFeature) features.get(i);
+			if (UpdateUIPlugin.isPatch(feature, candidate)) {
+				ArrayList removeTree =
+					computeFeatureSubtree(candidate, null, null, true);
+				result.addAll(removeTree);
+			}
+		}
 	}
 
 	/*
@@ -498,6 +525,68 @@ public class ActivityConstraints {
 		ArrayList result = new ArrayList();
 		result.addAll(plugins.values());
 		return result;
+	}
+
+	/*
+	 * 
+	 */
+	private static void checkPatch(
+		IFeature feature,
+		ArrayList features,
+		ArrayList status)
+		throws CoreException {
+		IImport[] imports = feature.getImports();
+		for (int i = 0; i < imports.length; i++) {
+			IImport iimport = imports[i];
+			if (iimport.isPatch()) {
+				// A patch - check unique
+				checkUnique(feature, features, status);
+				return;
+			}
+		}
+	}
+
+	/*
+	 * 
+	 */
+	private static void checkUnique(
+		IFeature feature,
+		ArrayList features,
+		ArrayList status)
+		throws CoreException {
+		if (features == null)
+			return;
+		IFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+		for (int i = 0; i < irefs.length; i++) {
+			IFeatureReference iref = irefs[i];
+			IFeature ifeature = iref.getFeature();
+			VersionedIdentifier vid = ifeature.getVersionedIdentifier();
+			String id = vid.getIdentifier();
+			PluginVersionIdentifier version = vid.getVersion();
+			for (int j = 0; j < features.size(); j++) {
+				IFeature candidate = (IFeature) features.get(j);
+				VersionedIdentifier cvid = candidate.getVersionedIdentifier();
+				String cid = cvid.getIdentifier();
+				PluginVersionIdentifier cversion = cvid.getVersion();
+				if (cid.equals(id)) {
+					// The same identifier - this one will
+					// be unconfigured. Check if it is lower,
+					// otherwise flag.
+					if (!version.isGreaterThan(cversion)) {
+						// Don't allow this.
+						String msg =
+							"Included feature \""
+								+ ifeature.getLabel()
+								+ "("
+								+ version.toString()
+								+ ")\" is older than the currently active feature.";
+						status.add(createStatus(feature, msg));
+
+					}
+				}
+			}
+			checkUnique(ifeature, features, status);
+		}
 	}
 
 	/*
@@ -635,10 +724,12 @@ public class ActivityConstraints {
 
 			for (int j = 0; j < imports.length; j++) {
 				IImport iimport = imports[j];
-				// for each import determine plugin, version, match we need
+				// for each import determine plugin or feature, version, match we need
 				VersionedIdentifier iid = iimport.getVersionedIdentifier();
 				String id = iid.getIdentifier();
 				PluginVersionIdentifier version = iid.getVersion();
+				boolean featurePrereq =
+					iimport.getKind() == IImport.KIND_FEATURE;
 				boolean ignoreVersion =
 					version.getMajorComponent() == 0
 						&& version.getMinorComponent() == 0
@@ -648,65 +739,99 @@ public class ActivityConstraints {
 					rule = IImport.RULE_COMPATIBLE;
 
 				boolean found = false;
-				for (int k = 0; k < plugins.size(); k++) {
-					// see if we have a plugin that matches
-					IPluginEntry plugin = (IPluginEntry) plugins.get(k);
-					VersionedIdentifier pid = plugin.getVersionedIdentifier();
-					PluginVersionIdentifier pversion = pid.getVersion();
-					if (id.equals(pid.getIdentifier())) {
+
+				ArrayList candidates;
+
+				if (featurePrereq)
+					candidates = features;
+				else
+					candidates = plugins;
+				for (int k = 0; k < candidates.size(); k++) {
+					VersionedIdentifier cid;
+					if (featurePrereq) {
+						// the candidate is a feature
+						IFeature candidate = (IFeature) candidates.get(k);
+						// skip self
+						if (feature.equals(candidate))
+							continue;
+						cid = candidate.getVersionedIdentifier();
+					} else {
+						// the candidate is a plug-in
+						IPluginEntry plugin = (IPluginEntry) candidates.get(k);
+						cid = plugin.getVersionedIdentifier();
+					}
+					PluginVersionIdentifier cversion = cid.getVersion();
+					if (id.equals(cid.getIdentifier())) {
 						// have a candidate
 						if (ignoreVersion)
 							found = true;
 						else if (
 							rule == IImport.RULE_PERFECT
-								&& pversion.isPerfect(version))
+								&& cversion.isPerfect(version))
 							found = true;
 						else if (
 							rule == IImport.RULE_EQUIVALENT
-								&& pversion.isEquivalentTo(version))
+								&& cversion.isEquivalentTo(version))
 							found = true;
 						else if (
 							rule == IImport.RULE_COMPATIBLE
-								&& pversion.isCompatibleWith(version))
+								&& cversion.isCompatibleWith(version))
 							found = true;
 						else if (
 							rule == IImport.RULE_GREATER_OR_EQUAL
-								&& pversion.isGreaterOrEqualTo(version))
+								&& cversion.isGreaterOrEqualTo(version))
 							found = true;
 					}
 					if (found)
 						break;
 				}
+
 				if (!found) {
 					// report status
+					String target =
+						featurePrereq
+							? UpdateUIPlugin.getResourceString(
+								KEY_PREREQ_FEATURE)
+							: UpdateUIPlugin.getResourceString(KEY_PREREQ_PLUGIN);
 					String msg =
 						UpdateUIPlugin.getFormattedMessage(
 							KEY_PREREQ,
-							new String[] { id });
+							new String[] { target, id });
 
 					if (!ignoreVersion) {
 						if (rule == IImport.RULE_PERFECT)
 							msg =
 								UpdateUIPlugin.getFormattedMessage(
 									KEY_PREREQ_PERFECT,
-									new String[] { id, version.toString()});
+									new String[] {
+										target,
+										id,
+										version.toString()});
 						else if (rule == IImport.RULE_EQUIVALENT)
 							msg =
 								UpdateUIPlugin.getFormattedMessage(
 									KEY_PREREQ_EQUIVALENT,
-									new String[] { id, version.toString()});
+									new String[] {
+										target,
+										id,
+										version.toString()});
 						else if (rule == IImport.RULE_COMPATIBLE)
 							msg =
 								UpdateUIPlugin.getFormattedMessage(
 									KEY_PREREQ_COMPATIBLE,
-									new String[] { id, version.toString()});
+									new String[] {
+										target,
+										id,
+										version.toString()});
 						else if (rule == IImport.RULE_GREATER_OR_EQUAL)
 							msg =
 								UpdateUIPlugin.getFormattedMessage(
 									KEY_PREREQ_GREATER,
-									new String[] { id, version.toString()});
+									new String[] {
+										target,
+										id,
+										version.toString()});
 					}
-
 					status.add(createStatus(feature, msg));
 				}
 			}
@@ -734,28 +859,30 @@ public class ActivityConstraints {
 			}
 		}
 	}
-	
+
 	/*
 	 * Verify that a parent of an optional child is configured
 	 * before we allow the child to be configured as well
 	 */
-	
-	private static void checkOptionalChildConfiguring(IFeature feature, ArrayList status) throws CoreException {
+
+	private static void checkOptionalChildConfiguring(
+		IFeature feature,
+		ArrayList status)
+		throws CoreException {
 		ILocalSite localSite = SiteManager.getLocalSite();
 		IInstallConfiguration config = localSite.getCurrentConfiguration();
 		IConfiguredSite[] csites = config.getConfiguredSites();
 
-		boolean included=false;
+		boolean included = false;
 		for (int i = 0; i < csites.length; i++) {
 			IConfiguredSite csite = csites[i];
 			IFeatureReference[] crefs = csite.getSite().getFeatureReferences();
 			for (int j = 0; j < crefs.length; j++) {
 				IFeatureReference cref = crefs[j];
-				IFeature cfeature=null;
+				IFeature cfeature = null;
 				try {
 					cfeature = cref.getFeature();
-				}
-				catch (CoreException e) {
+				} catch (CoreException e) {
 					// Ignore missing optional feature.
 					if (cref.isOptional())
 						continue;
@@ -764,7 +891,7 @@ public class ActivityConstraints {
 				}
 				if (isParent(cfeature, feature, true)) {
 					// Included in at least one feature as optional
-					included=true;
+					included = true;
 					if (csite.isConfigured(cfeature)) {
 						// At least one feature parent
 						// is enabled - it is OK to
@@ -779,21 +906,23 @@ public class ActivityConstraints {
 			// no parent is currently configured.
 			String msg = UpdateUIPlugin.getResourceString(KEY_OPTIONAL_CHILD);
 			status.add(createStatus(feature, msg));
-		}
-		else {
+		} else {
 			//feature is root - can be configured
 		}
 	}
-	
-	private static boolean isParent(IFeature candidate, IFeature feature, boolean optionalOnly) throws CoreException {
-		IFeatureReference [] refs = candidate.getIncludedFeatureReferences();
-		for (int i=0; i<refs.length; i++) {
+
+	private static boolean isParent(
+		IFeature candidate,
+		IFeature feature,
+		boolean optionalOnly)
+		throws CoreException {
+		IFeatureReference[] refs = candidate.getIncludedFeatureReferences();
+		for (int i = 0; i < refs.length; i++) {
 			IFeatureReference child = refs[i];
 			VersionedIdentifier cvid;
 			try {
 				cvid = child.getVersionedIdentifier();
-			}
-			catch (CoreException e) {
+			} catch (CoreException e) {
 				// Ignore missing optional children
 				if (child.isOptional())
 					continue;
@@ -803,7 +932,7 @@ public class ActivityConstraints {
 			if (feature.getVersionedIdentifier().equals(cvid)) {
 				// included; return true if optionality is not 
 				// important or it is and the inclusion is optional
-				return optionalOnly==false || child.isOptional();
+				return optionalOnly == false || child.isOptional();
 			}
 		}
 		return false;
@@ -847,12 +976,13 @@ public class ActivityConstraints {
 			fullMessage,
 			null);
 	}
-	
+
 	private static ArrayList createList(String commaSeparatedList) {
 		ArrayList list = new ArrayList();
 		if (commaSeparatedList != null) {
-			StringTokenizer t = new StringTokenizer(commaSeparatedList.trim(), ",");
-			while(t.hasMoreTokens()) {
+			StringTokenizer t =
+				new StringTokenizer(commaSeparatedList.trim(), ",");
+			while (t.hasMoreTokens()) {
 				String token = t.nextToken().trim();
 				if (!token.equals(""))
 					list.add(token);

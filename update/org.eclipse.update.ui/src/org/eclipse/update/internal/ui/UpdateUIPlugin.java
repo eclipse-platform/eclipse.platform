@@ -252,6 +252,26 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 		}
 		return (IFeature[]) features.toArray(new IFeature[features.size()]);
 	}
+	
+	public static boolean isPatch(
+		IFeature target,
+		IFeature candidate) {
+		VersionedIdentifier vid = target.getVersionedIdentifier();
+		IImport[] imports = candidate.getImports();
+		IImport reference = null;
+		for (int i = 0; i < imports.length; i++) {
+			IImport iimport = imports[i];
+			if (iimport.isPatch()) {
+				VersionedIdentifier ivid = iimport.getVersionedIdentifier();
+				if (vid.equals(ivid)) {
+					// Bingo.
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Gets the database.
 	 * @return Returns a AuthorizationDatabase
