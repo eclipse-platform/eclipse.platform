@@ -14,13 +14,12 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.help.WorkbenchHelp;
+import org.eclipse.ui.help.*;
 import org.eclipse.update.internal.operations.UpdateUtils;
 import org.eclipse.update.internal.ui.UpdateUI;
-import org.eclipse.update.search.UpdateSearchRequest;
+import org.eclipse.update.search.*;
 
 /**
  */
@@ -69,20 +68,11 @@ public class ModeSelectionPage extends BannerPage implements ISearchProvider {
 		updatesButton.setText(UpdateUI.getString("ModeSelectionPage.updates")); //$NON-NLS-1$
 		boolean newFeaturesMode = getSettings().getBoolean(P_NEW_FEATURES_MODE);
 		updatesButton.setSelection(!newFeaturesMode);
-		
-		final Label updatesText = new Label(composite, SWT.WRAP);
-		updatesText.setText(UpdateUI.getString("ModeSelectionPage.updatesText"));
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.widthHint = 100;
-		updatesText.setLayoutData(gd);
-		
 		updatesButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				switchMode();
 			}
 		});
-		// spacer
-		new Label(composite, SWT.NULL);
 		newFeaturesButton = new Button(composite, SWT.RADIO);
 		newFeaturesButton.setSelection(newFeaturesMode);
 		newFeaturesButton.setText(UpdateUI.getString("ModeSelectionPage.newFeatures")); //$NON-NLS-1$
@@ -90,25 +80,7 @@ public class ModeSelectionPage extends BannerPage implements ISearchProvider {
 			public void widgetSelected(SelectionEvent e) {
 				switchMode();
 			}
-		});
-		final Label newFeaturesText = new Label(composite, SWT.WRAP);
-		newFeaturesText.setText(UpdateUI.getString("ModeSelectionPage.newFeaturesText"));
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.widthHint = 100;
-		newFeaturesText.setLayoutData(gd);
-
-		/*
-		composite.addControlListener(new ControlAdapter() {
-			public void controlResized(ControlEvent e) {
-				Composite parent = (Composite)e.widget;
-				Rectangle carea = parent.getClientArea();
-				GridData gd = (GridData)updatesText.getLayoutData();
-				gd.widthHint = carea.width; 
-				gd = (GridData)newFeaturesText.getLayoutData();
-				gd.widthHint = carea.width; 
-			}
-		});
-		*/
+		});		
 		switchMode();
 		
 		Dialog.applyDialogFont(parent);
