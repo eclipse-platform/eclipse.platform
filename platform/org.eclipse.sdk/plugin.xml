@@ -61,10 +61,10 @@
             activityId="org.eclipse.plugInDevelopment"
             categoryId="org.eclipse.categories.pdeCategory">
       </categoryActivityBinding>
-      <activityActivityBinding
-            childActivityId="org.eclipse.javaDevelopment"
-            parentActivityId="org.eclipse.plugInDevelopment">
-      </activityActivityBinding>
+      <activityRequirementBinding
+            requiredActivityId="org.eclipse.javaDevelopment"
+            activityId="org.eclipse.plugInDevelopment">
+      </activityRequirementBinding>
       <defaultEnablement
             id="org.eclipse.javaDevelopment">
       </defaultEnablement>
