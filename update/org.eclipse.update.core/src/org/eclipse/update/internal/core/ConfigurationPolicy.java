@@ -487,7 +487,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			return true;
 		}
 
-		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures());
+		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(),false);
 		if (parents.length == 0)
 			return true;
 

@@ -418,13 +418,13 @@ public class UpdateManagerUtils {
 	}	
 	
 	/*
-	 * returns the list of FeatureRference that are parent of 
+	 * returns the list of FeatureReference that are parent of 
 	 * the Feature or an empty array if no parent found.
-	 * Does not return parent that consider the childFeature as optional
+	 * @param onlyOptional if set to <code>true</code> only return parents that consider the feature optional
 	 * @param child
 	 * @param possiblesParent
 	 */ 
-	 public static IFeatureReference[] getParentFeatures(IFeature childFeature,IFeatureReference[] possiblesParent) throws CoreException {
+	 public static IFeatureReference[] getParentFeatures(IFeature childFeature,IFeatureReference[] possiblesParent,boolean onlyOptional) throws CoreException {
 
 	 	if (childFeature==null)
 	 		return new IFeatureReference[0];
@@ -441,13 +441,25 @@ public class UpdateManagerUtils {
 					for (int j = 0; j < children.length; j++) {
 						try {
 							compareFeature = children[j].getFeature();
-						} catch (CoreException e){};
-						if (childFeature.equals(compareFeature) && !children[j].isOptional()){
-							parentList.add(possiblesParent[i]);
+						} catch (CoreException e){
+							UpdateManagerPlugin.warn("",e);
+						};
+						if (childFeature.equals(compareFeature)){
+							if (onlyOptional){
+								if (children[j].isOptional()){
+									parentList.add(possiblesParent[i]);
+								} else {
+									UpdateManagerPlugin.warn("Feature :"+children[j]+" not optional. Not included in parents list.");
+								} 
+							} else {
+								parentList.add(possiblesParent[i]);
+							} 
 						}
 					}
 		 		}
-	 		}catch (CoreException e){};
+	 		}catch (CoreException e){
+	 			UpdateManagerPlugin.warn("",e);
+	 		};
 		}
 		
 		IFeatureReference[] parents = new IFeatureReference[0];
@@ -461,10 +473,11 @@ public class UpdateManagerUtils {
 	/*
 	 * returns the list of Features that are parent of 
 	 * the Feature or an empty array if no parent found
+	 * @param onlyOptional if set to <code>true</code> only return parents that consider the feature optional
 	 * @param child
 	 * @param possiblesParent
 	 */ 
-	 public static IFeatureReference[] getParentFeatures(IFeatureReference child,IFeatureReference[] possiblesParent) throws CoreException {
+	 public static IFeatureReference[] getParentFeatures(IFeatureReference child,IFeatureReference[] possiblesParent,boolean onlyOptional) throws CoreException {
 
 	 	if (child==null)
 	 		return new IFeatureReference[0];
@@ -479,7 +492,7 @@ public class UpdateManagerUtils {
 	 	if (childFeature==null)
 	 		return new IFeatureReference[0];
 	 		 	
-	 	return getParentFeatures(childFeature,possiblesParent);	
+	 	return getParentFeatures(childFeature,possiblesParent,onlyOptional);	
 	 }	
 	 
 	/*

@@ -234,13 +234,15 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			}
 
 			// new feature found: add as configured if the policy is optimistic
+			// or [2.0.1] if the feature is optional by all the parents AND one exact parent 
+			// (pointing to same version) is enable
 			if (!newFeatureFound) {
 				// TRACE
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
 					String reconciliationType = isOptimistic ? "enable (optimistic)" : "disable (pessimistic)";
 					UpdateManagerPlugin.debug("This feature is new: " + foundFeatures[i].getURL() + " reconciled as " + reconciliationType);
 				}
-				if (isOptimistic) {
+				if (isOptimistic || enableAsOptional(foundFeatures[i],oldConfiguredFeaturesRef,oldSitePolicy)) {
 					newSitePolicy.configure(foundFeatures[i], true, false);
 				} else {
 					newSitePolicy.unconfigure(foundFeatures[i], true, false);
@@ -267,6 +269,34 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	}
 
 	/**
+	 * Method enableAsOptional.
+	 * returns true if all the parent consider the feature as optional and one is enable.
+	 * A parent must include the exact same version as this feature
+	 * 
+	 * @param possibleOptional
+	 * @param possibleParents
+	 * @return boolean <code>true</code> if the feature should be enabled, <code>false </code> otherwise
+	 */
+	private boolean enableAsOptional(IFeatureReference possibleOptional, IFeatureReference[] possibleParents,ConfigurationPolicy oldSitePolicy) throws CoreException {
+		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(possibleOptional,possibleParents,true);
+		if (parents.length==0) return false;
+		
+		IFeature compareFeature = null;
+		IFeature possibleOptionalFeature=null;
+		try {
+			possibleOptionalFeature=possibleOptional.getFeature();
+		} catch (CoreException e) {
+			UpdateManagerPlugin.warn("",e);
+			return false;
+		}
+		for (int i = 0; i < parents.length; i++) {
+			if (oldSitePolicy.isConfigured(parents[i])) return true;
+		}
+		
+		return false;
+	}
+
+		/**
 	 * Validate we have only one configured feature per site
 	 * even if we found multiples
 	 * 
@@ -420,7 +450,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		IFeatureReference[] refs = getFeatureReferences();
 		newFoundFeatures = new ArrayList();
 		for (int i = 0; i < refs.length; i++) {
-			IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(refs[i], refs);
+			IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(refs[i], refs, false);
 			if (parents.length == 0)
 				newFoundFeatures.add(refs[i]);
 		}
