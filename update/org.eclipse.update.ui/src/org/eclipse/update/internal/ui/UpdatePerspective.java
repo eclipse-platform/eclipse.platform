@@ -37,7 +37,7 @@ public class UpdatePerspective implements IPerspectiveFactory {
 		upperFolder.addView(ID_ITEMS);
 		
 		factory.addView(ID_UPDATES, IPageLayout.BOTTOM, 0.5f, "upper");
-		IFolderLayout detailsFolder = factory.createFolder("details", IPageLayout.TOP, 0.67f, factory.getEditorArea());
+		IFolderLayout detailsFolder = factory.createFolder("details", IPageLayout.RIGHT, 0.67f, factory.getEditorArea());
 		detailsFolder.addView(ID_DETAILS);
 		if (SWT.getPlatform().equals("win32"))
 			detailsFolder.addPlaceholder(ID_BROWSER);

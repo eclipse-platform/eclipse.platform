@@ -21,7 +21,6 @@ import org.eclipse.update.internal.ui.UpdateUI;
 import org.eclipse.update.internal.ui.model.NamedModelObject;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.resource.JFaceColors;
 
 /**
  * @author dejan
@@ -85,8 +84,6 @@ public class RenameDialog extends Dialog {
 		status = new CLabel(container, SWT.NULL);
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		status.setLayoutData(gd);
-		status.setForeground(JFaceColors.getErrorText(status.getDisplay()));
-		status.setBackground(JFaceColors.getErrorBackground(status.getDisplay()));
 
 		text.setText(object.getName());
 		text.selectAll();

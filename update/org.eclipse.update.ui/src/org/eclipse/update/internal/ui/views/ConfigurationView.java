@@ -388,8 +388,6 @@ public class ConfigurationView
 						: (configured
 							? UpdateUIImages.DESC_FEATURE_OBJ
 							: UpdateUIImages.DESC_UNCONF_FEATURE_OBJ);
-				if (efix && !configured)
-					flags |= UpdateLabelProvider.F_UNCONFIGURED;
 				switch (code) {
 					case IFeature.STATUS_UNHAPPY :
 						flags |= UpdateLabelProvider.F_ERROR;

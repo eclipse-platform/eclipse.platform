@@ -66,7 +66,7 @@ public class UpdateUIImages {
 	public static final ImageDescriptor DESC_COMPUTER_OBJ = create(PATH_OBJ, "computer_obj.gif");
 	public static final ImageDescriptor DESC_CONFIG_OBJ = create(PATH_OBJ, "config_obj.gif");
 	public static final ImageDescriptor DESC_FEATURE_OBJ = create(PATH_OBJ, "feature_obj.gif");
-	public static final ImageDescriptor DESC_EFIX_OBJ = create(PATH_OBJ, "efix2_obj.gif");
+	public static final ImageDescriptor DESC_EFIX_OBJ = create(PATH_OBJ, "efix_obj.gif");
 	public static final ImageDescriptor DESC_FLOPPY_OBJ = create(PATH_OBJ, "floppy_obj.gif");
 	public static final ImageDescriptor DESC_HISTORY_OBJ = create(PATH_OBJ, "history_obj.gif");
 	public static final ImageDescriptor DESC_LSITE_OBJ = create(PATH_OBJ, "lsite_obj.gif");
