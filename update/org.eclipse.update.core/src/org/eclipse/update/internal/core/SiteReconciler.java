@@ -59,18 +59,21 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		IPlatformConfiguration platformConfig = BootLoader.getCurrentPlatformConfiguration();
 		IPlatformConfiguration.ISiteEntry[] newSiteEntries = platformConfig.getConfiguredSites();
-		IInstallConfiguration newDefaultConfiguration = siteLocal.createNewInstallConfiguration();
+		IInstallConfiguration newInstallConfiguration = siteLocal.createNewInstallConfiguration();
+
+		IInstallConfiguration oldInstallConfiguration = siteLocal.getCurrentConfiguration();
 		IConfiguredSite[] oldConfiguredSites = new IConfiguredSite[0];
 		newFoundFeatures = new ArrayList();
 
 		// sites from the current configuration
-		if (siteLocal.getCurrentConfiguration() != null)
-			oldConfiguredSites = siteLocal.getCurrentConfiguration().getConfiguredSites();
+		if (oldInstallConfiguration != null) {
+			oldConfiguredSites = oldInstallConfiguration.getConfiguredSites();
 
-		// TRACE
-		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-			for (int i = 0; i < oldConfiguredSites.length; i++) {
-				UpdateManagerPlugin.debug("Old Site :" + oldConfiguredSites[i].getSite().getURL());
+			// TRACE
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+				for (int i = 0; i < oldConfiguredSites.length; i++) {
+					UpdateManagerPlugin.debug("Old Site :" + oldConfiguredSites[i].getSite().getURL());
+				}
 			}
 		}
 
@@ -91,11 +94,11 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 			// TRACE
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-				UpdateManagerPlugin.debug("New Site?:" + resolvedURL);
+				UpdateManagerPlugin.debug("Checking if:" + resolvedURL+" is a new site or a site to reconcile.");
 			}
 
 			// check if SiteEntry has been possibly modified
-			// if it was part of the previously known configuredSite
+			// if it was part of the previously known configuredSite; reconcile
 			for (int index = 0; index < oldConfiguredSites.length && !found; index++) {
 				currentConfigurationSite = oldConfiguredSites[index];
 				URL currentConfigURL = currentConfigurationSite.getSite().getURL();
@@ -104,7 +107,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 					found = true;
 					ConfiguredSite reconciledConfiguredSite = reconcile(currentConfigurationSite, isOptimistic);
 					reconciledConfiguredSite.setPreviousPluginPath(currentSiteEntry.getSitePolicy().getList());
-					newDefaultConfiguration.addConfiguredSite(reconciledConfiguredSite);
+					newInstallConfiguration.addConfiguredSite(reconciledConfiguredSite);
 				}
 			}
 
@@ -112,9 +115,8 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			if (!found) {
 				// TRACE
 				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-					UpdateManagerPlugin.debug("Configured Site to create:" + resolvedURL);
+					UpdateManagerPlugin.debug("Site not found in previous configurations.Create new Configured Site:" + resolvedURL);
 				}
-
 				ISite site = SiteManager.getSite(resolvedURL);
 
 				//site policy
@@ -130,7 +132,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 					// TRACE
 					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
 						String reconciliationType = isOptimistic ? "enable (optimistic)" : "disable (pessimistic)";
-						UpdateManagerPlugin.debug("New Site:New Feature: " + newFeaturesRef[i].getURL() + " as " + reconciliationType);
+						UpdateManagerPlugin.debug("New Site Found:New Feature to create: " + newFeaturesRef[i].getURL() + " as " + reconciliationType);
 					}
 
 					if (isOptimistic) {
@@ -140,13 +142,13 @@ public class SiteReconciler extends ModelObject implements IWritable {
 						newFoundFeatures.add(newFeaturesRef[i]);
 					}
 				}
-				newDefaultConfiguration.addConfiguredSite(configSite);
+				newInstallConfiguration.addConfiguredSite(configSite);
 			}
 		}
 
 		// verify we do not have 2 features with different version that
 		// are configured 
-		checkConfiguredFeatures(newDefaultConfiguration);
+		checkConfiguredFeatures(newInstallConfiguration);
 
 		// add Activity reconciliation
 		BaseSiteLocalFactory siteLocalFactory = new BaseSiteLocalFactory();
@@ -154,10 +156,20 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		activity.setAction(IActivity.ACTION_RECONCILIATION);
 		activity.setDate(new Date());
 		activity.setLabel(siteLocal.getLocationURLString());
-		((InstallConfiguration) newDefaultConfiguration).addActivityModel(activity);
+		((InstallConfiguration) newInstallConfiguration).addActivityModel(activity);
+
+		// [22993] set the timeline to the previous InstallConfiguration
+		// if the reconciliation is not optimistic (if the world hasn't changed)
+		if (!isOptimistic){
+			if (oldInstallConfiguration !=null){
+				if (newInstallConfiguration instanceof InstallConfiguration){
+					((InstallConfiguration)newInstallConfiguration).setTimeline(oldInstallConfiguration.getTimeline());
+				}
+			}
+		}
 
 		// add the configuration as the currentConfig
-		siteLocal.addConfiguration(newDefaultConfiguration);
+		siteLocal.addConfiguration(newInstallConfiguration);
 		siteLocal.save();
 
 		return saveNewFeatures();
@@ -197,7 +209,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		// TRACE
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-			UpdateManagerPlugin.debug("Configured Site to reconfigure:" + oldConfiguredSite.getSite().getURL()+(isOptimistic?" OPTIMISTIC":" PESSIMISTIC"));
+			UpdateManagerPlugin.debug("Configured Site to reconfigure:" + oldConfiguredSite.getSite().getURL() + (isOptimistic ? " OPTIMISTIC" : " PESSIMISTIC"));
 		}
 
 		ConfiguredSite newConfiguredSite = createNewConfigSite(oldConfiguredSite);
@@ -566,8 +578,9 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	 */
 	private String getURLSiteString(ISite site) {
 		// since 2.0.2 ISite.getConfiguredSite();
-		ConfiguredSite cSite = (ConfiguredSite)site.getConfiguredSite();
-		if (cSite!=null) return cSite.getPlatformURLString();
+		ConfiguredSite cSite = (ConfiguredSite) site.getConfiguredSite();
+		if (cSite != null)
+			return cSite.getPlatformURLString();
 		return site.getURL().toExternalForm();
 	}
 
@@ -705,8 +718,8 @@ public class SiteReconciler extends ModelObject implements IWritable {
 					result.remove(child);
 				} catch (CoreException e) {
 					// if optional, it may not exist, do not throw error for that
-					if (!children[j].isOptional()){
-						UpdateManagerPlugin.warn(null,e);
+					if (!children[j].isOptional()) {
+						UpdateManagerPlugin.warn(null, e);
 					}
 				}
 			}
