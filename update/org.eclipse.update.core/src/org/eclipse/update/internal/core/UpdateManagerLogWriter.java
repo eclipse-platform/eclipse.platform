@@ -55,6 +55,7 @@ public class UpdateManagerLogWriter {
 	 */
 	public UpdateManagerLogWriter(File file) {
 		this.logFile = file;
+		UpdateManagerPlugin.warn("UPDATE MANAGER LOG Location: "+file.getAbsolutePath());
 	}
 
 	/*

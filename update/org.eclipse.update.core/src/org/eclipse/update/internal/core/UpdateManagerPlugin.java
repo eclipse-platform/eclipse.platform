@@ -44,6 +44,7 @@ public class UpdateManagerPlugin extends Plugin {
 
 	//log
 	private static UpdateManagerLogWriter log;
+	private static final String LOG_FILE=".install-log";
 
 	// web install
 	private static String appServerHost =null;
@@ -209,15 +210,20 @@ public class UpdateManagerPlugin extends Plugin {
 	 */
 	private static File getUpdateStateLocation() throws IOException {
 		
-		IPlatformConfiguration config = BootLoader.getPlatformConfiguration(null);		
-		URL configLocation = Platform.resolve(config.getConfigurationLocation());
+		IPlatformConfiguration config = BootLoader.getCurrentPlatformConfiguration();		
+		URL configurationLocation = config.getConfigurationLocation();
+		if (configurationLocation==null){
+			warn("Unable to retrieve location for update manager log file");
+			return null;
+		}
+		URL configLocation = Platform.resolve(configurationLocation);
 		File updateStateLocation = null;
 
 		if ("file".equalsIgnoreCase(configLocation.getProtocol())) {
 			// ensure path exists. Handle transient configurations
 			ArrayList list = new ArrayList();
 			File path = new File(configLocation.getFile());
-			updateStateLocation = path;
+			updateStateLocation = new File(path.getParentFile(),LOG_FILE);
 			while (path != null) { // walk up to first dir that exists
 				if (!path.exists()) {
 					list.add(path);
