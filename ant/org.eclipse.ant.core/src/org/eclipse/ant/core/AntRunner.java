@@ -128,6 +128,7 @@ private String[] getArray(String args) {
  * Sets the arguments to be passed to the script (e.g. -Dos=win32 -Dws=win32 -verbose).
  * 
  * @param arguments the arguments to be passed to the script
+ * @since 2.1
  */
 public void setArguments(String[] arguments) {
 	this.arguments = arguments;
@@ -286,6 +287,7 @@ public Object run(Object argArray) throws Exception {
  * @return an array containing the target information
  * 
  * @see TargetInfo
+ * @since 2.1
  */
 public TargetInfo[] getAvailableTargets() throws CoreException {
 	try {
