@@ -11,6 +11,7 @@
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial API and implementation
  * 	   IBM Corporation - bug fixes
  *     John-Mason P. Shackelford - bug 40255
+ *     Rob Dingwell - bug 68886
  *******************************************************************************/
 
 package org.eclipse.ant.internal.ui.editor;
@@ -18,6 +19,7 @@ package org.eclipse.ant.internal.ui.editor;
 import org.eclipse.ant.internal.ui.editor.derived.HTMLTextPresenter;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlDocumentFormattingStrategy;
 import org.eclipse.ant.internal.ui.editor.formatter.XmlElementFormattingStrategy;
+import org.eclipse.ant.internal.ui.editor.text.AntDocumentSetupParticipant;
 import org.eclipse.ant.internal.ui.editor.text.AntEditorPartitionScanner;
 import org.eclipse.ant.internal.ui.editor.text.NotifyingReconciler;
 import org.eclipse.ant.internal.ui.editor.text.XMLAnnotationHover;
@@ -76,6 +78,7 @@ public class AntEditorSourceViewerConfiguration extends AbstractAntSourceViewerC
         AntEditorCompletionProcessor processor = new AntEditorCompletionProcessor(fEditor.getAntModel()); 
 		contentAssistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
 		contentAssistant.setContentAssistProcessor(processor, AntEditorPartitionScanner.XML_TAG);
+        contentAssistant.setDocumentPartitioning(AntDocumentSetupParticipant.ANT_PARTITIONING);
         
 		IPreferenceStore store= AntUIPlugin.getDefault().getPreferenceStore();
 		
