@@ -374,10 +374,11 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 * @see IConfiguredSite#unconfigure(IFeature)
 	 */
 	public boolean unconfigure(IFeature feature) throws CoreException {
-		return unconfigure(feature, true);
+		// the first call sould disable without checking for enable parent
+		return unconfigure(feature, true, false);
 	}
 	
-	private boolean unconfigure(IFeature feature, boolean includePatches) throws CoreException {
+	private boolean unconfigure(IFeature feature, boolean includePatches, boolean verifyEnableParent) throws CoreException {
 		IFeatureReference featureReference = getSite().getFeatureReference(feature);
 
 		if (featureReference == null) {
@@ -388,6 +389,12 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		ConfigurationPolicy configPolicy = getConfigurationPolicy();
 		if (configPolicy == null)
 			return false;
+
+		// verify no enable parent
+		if (verifyEnableParent && !validateNoConfiguredParents(feature)){
+			UpdateManagerPlugin.warn("The feature "+feature.getVersionedIdentifier()+" to disable is needed by another enable feature");
+			return false;
+		}		
 
 		boolean sucessfullyUnconfigured = false;
 		try {
@@ -405,7 +412,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			for (int i = 0; i < childrenRef.length; i++) {
 				try {
 					IFeature child = childrenRef[i].getFeature();
-					unconfigure(child, includePatches);
+					unconfigure(child, includePatches,true);
 				} catch (CoreException e) {
 					// skip any bad children
 					UpdateManagerPlugin.warn("Unable to unconfigure child feature: " + childrenRef[i] + " " + e);
@@ -460,7 +467,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 					if (iimport.isPatch()) {
 						if (iimport.getVersionedIdentifier().equals(feature.getVersionedIdentifier())) {
 							// bingo - unconfigure this patch
-							unconfigure(candidate, false);
+							unconfigure(candidate, false,true);
 							break;
 						}
 					}
@@ -1114,5 +1121,19 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		}
 
 		return false;
+	}
+	
+	
+		/*
+	 * we have to check that no configured/enable parent include this feature
+	 */
+	private boolean validateNoConfiguredParents(IFeature feature) throws CoreException {
+		if (feature == null) {
+			UpdateManagerPlugin.warn("ConfigurationPolicy: validate Feature is null");
+			return true;
+		}
+
+		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(), false);
+		return (parents.length == 0);
 	}
 }

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IInstallConfiguration;
 /**
- * A log writer that writes update manager log entries in XML format.  
+ * A log writer that writes update manager log entries.  
  */
 public class UpdateManagerLogWriter {
 	private File logFile = null;
@@ -244,7 +244,7 @@ public class UpdateManagerLogWriter {
 		writeln();		
 	}
 
-	/**
+	/*
 	 * 
 	 */
 	private String getAction(int i) {

@@ -506,37 +506,4 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 		return resultEntry;
 	}
-
-	/*
-	 * since 2.0.1 we have to check that the parent doesn't consider it
-	 * as optional. 
-	 */
-	private boolean validateNoConfiguredParents(IFeature feature) throws CoreException {
-		if (feature == null) {
-			UpdateManagerPlugin.warn("ConfigurationPolicy: validate Feature is null");
-			return true;
-		}
-
-		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(), false);
-		if (parents.length == 0)
-			return true;
-
-		// if all parents consider me optional return true
-		IFeatureReference[] parentsOptional = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(), true);
-		if (parents.length == parentsOptional.length)
-			return true;
-
-		String msg = Policy.bind("ConfigurationPolicy.UnableToDisable", feature.getLabel());
-		UpdateManagerPlugin.warn(msg);
-		IFeature parentFeature = null;
-		for (int i = 0; i < parents.length; i++) {
-			try {
-				parentFeature = parents[i].getFeature();
-			} catch (CoreException e) {
-			}
-			String featureLabel = (parentFeature == null) ? parents[i].getURL().toExternalForm() : parentFeature.getLabel();
-			UpdateManagerPlugin.warn(Policy.bind("ConfigurationPolicy.ParentIsEnable",featureLabel));
-		}
-		return false;
-	}
 }
