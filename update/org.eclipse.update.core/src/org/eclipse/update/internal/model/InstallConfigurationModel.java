@@ -166,6 +166,14 @@ public class InstallConfigurationModel extends ModelObject {
 	}
 	
 	/**
+	 * @since 2.0.2
+	 */
+	
+	public String toString() {
+		return getLabel();
+	}
+	
+	/**
 	 * Sets the label.
 	 * @param label The label to set
 	 */
