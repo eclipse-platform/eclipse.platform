@@ -515,7 +515,7 @@ public class Feature extends FeatureModel implements IFeature {
 			initializeIncludedReferences();
 
 		if (includedFeatureReferences.size() == 0)
-			return new FeatureReference[0];
+			return new IncludedFeatureReference[0];
 
 		return (IFeatureReference[]) includedFeatureReferences.toArray(arrayTypeFor(includedFeatureReferences));
 	}
@@ -698,7 +698,7 @@ public class Feature extends FeatureModel implements IFeature {
 		Iterator nestedVersionedIdentifier = nestedFeatures.keySet().iterator();
 		while (nestedVersionedIdentifier.hasNext()){
 			VersionedIdentifier identifier = (VersionedIdentifier)nestedVersionedIdentifier.next();
-			IncludedFeatureOptions options = (IncludedFeatureOptions)nestedFeatures.get(identifier);			
+			IncludedFeatureReference options = (IncludedFeatureReference)nestedFeatures.get(identifier);			
 			boolean found = false;
 
 			// too long to compute if not a file system

@@ -13,7 +13,7 @@ package org.eclipse.update.core;
  * @see org.eclipse.update.core.VersionedIdentifier
  * @since 2.0
  */
-public class IncludedFeatureOptions {
+public class IncludedFeatureReference extends FeatureReference implements IIncludedFeatureReference {
 	private boolean isOptional;
 	private String name;
 
@@ -26,7 +26,7 @@ public class IncludedFeatureOptions {
 	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
 	 * @since 2.0.1
 	 */
-	public IncludedFeatureOptions(String name, boolean isOptional) {
+	public IncludedFeatureReference(String name, boolean isOptional) {
 		this.isOptional = isOptional;
 		this.name = name;
 	}

@@ -730,7 +730,7 @@ public class FeatureModel extends ModelObject {
 	 * @param options the options associated with the nested feature
 	 * @since 2.0
 	 */
-	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier,IncludedFeatureOptions options){
+	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier,IncludedFeatureReference options){
 		assertIsWriteable();
 		if (identifier==null) return;
 		if (this.featureIncludes == null)

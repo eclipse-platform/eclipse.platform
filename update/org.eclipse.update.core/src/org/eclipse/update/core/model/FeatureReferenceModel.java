@@ -10,7 +10,7 @@ import java.util.*;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.IncludedFeatureOptions;
+import org.eclipse.update.core.IncludedFeatureReference;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 
@@ -36,7 +36,7 @@ public class FeatureReferenceModel extends ModelObject {
 	categoryNames;
 
 	// [2.0.1]
-	private IncludedFeatureOptions options;
+	private IncludedFeatureReference options;
 
 	/**
 	 * Creates an uninitialized feature reference model object.
@@ -300,7 +300,7 @@ public class FeatureReferenceModel extends ModelObject {
 	 * Returns the options.
 	 * @return IncludedFeatureOptions
 	 */
-	public IncludedFeatureOptions getOptions() {
+	public IncludedFeatureReference getOptions() {
 		return options;
 	}
 
@@ -308,7 +308,7 @@ public class FeatureReferenceModel extends ModelObject {
 	 * Sets the options.
 	 * @param options The options to set
 	 */
-	public void setOptions(IncludedFeatureOptions options) {
+	public void setOptions(IncludedFeatureReference options) {
 		this.options = options;
 	}
 

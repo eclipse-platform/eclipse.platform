@@ -200,4 +200,18 @@ public class FeatureReference
 		
 		return getFeature().getVersionedIdentifier();
 	}
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#getName()
+	 */
+	public String getName() {
+		return getOptions().getName();
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IFeatureReference#isOptional()
+	 */
+	public boolean isOptional() {
+		return getOptions().isOptional();
+	}
+
 }
