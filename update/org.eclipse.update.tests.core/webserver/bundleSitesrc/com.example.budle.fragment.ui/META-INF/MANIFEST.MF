@@ -1,8 +1,0 @@
-Generated-from: 1077062974451
-Bundle-Name: Ui Fragment
-Bundle-Version: 1.0.0
-Bundle-GlobalName: com.example.budle.fragment.ui
-Bundle-Vendor: Eclipse.org
-Bundle-ClassPath: ui.jar
-Legacy: true
-Host-Bundle: com.example.bundle.plugin.ui; bundle-version=2.0.0
