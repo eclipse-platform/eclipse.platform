@@ -11,7 +11,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.InstallAbortedException;
 import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.search.*;
@@ -93,8 +92,6 @@ public class NewUpdatesWizard extends Wizard {
 					InstallWizard.makeConfigurationCurrent(config);
 					execute(selectedJobs, monitor);
 					InstallWizard.saveLocalSite();
-				} catch (InstallAbortedException e) {
-					throw new InvocationTargetException(e);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -105,18 +102,7 @@ public class NewUpdatesWizard extends Wizard {
 		try {
 			getContainer().run(true, true, operation);
 		} catch (InvocationTargetException e) {
-			Throwable targetException = e.getTargetException();
-			if (targetException instanceof InstallAbortedException) {
-				// We may want to reset install count to avoid
-				// restarting the workbench.
-				// We may also want to revert to the previous
-				// configuration unless we want a record of 
-				// the cancelation showing up as activity.
-				//installCount = 0;
-			}
-			else {
-				UpdateUIPlugin.logException(e);
-			}
+			UpdateUIPlugin.logException(e);
 			return false;
 		} catch (InterruptedException e) {
 			return false;
@@ -140,7 +126,7 @@ public class NewUpdatesWizard extends Wizard {
 	/*
 	 * When we are uninstalling, there is not targetSite
 	 */
-	private void execute(PendingChange [] selectedJobs, IProgressMonitor monitor) throws InstallAbortedException, CoreException {
+	private void execute(PendingChange [] selectedJobs, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(UpdateUIPlugin.getResourceString(KEY_INSTALLING), jobs.length);
 		for (int i=0; i<selectedJobs.length; i++) {
 			PendingChange job = selectedJobs[i];
@@ -150,7 +136,7 @@ public class NewUpdatesWizard extends Wizard {
 		}
 	}
 	
-	private void executeOneJob(PendingChange job, SubProgressMonitor monitor) throws InstallAbortedException, CoreException {
+	private void executeOneJob(PendingChange job, SubProgressMonitor monitor) throws CoreException {
 		IFeature feature = job.getFeature();
 		IFeature oldFeature = job.getOldFeature();
 		IConfiguredSite targetSite = TargetPage.getDefaultTargetSite(config, job);
