@@ -50,7 +50,6 @@ public class UpdateManagerUtils {
 	private static Map localFileFragmentMap;
 	private static Stack bufferPool;
 	private static final int BUFFER_SIZE = 4096; // 4kbytes
-	private static String dirRoot = null;
 	private static final int INCREMENT_SIZE = 10240; // 10kbytes
 	/**
 	 * return the urlString if it is a absolute URL
@@ -172,7 +171,7 @@ public class UpdateManagerUtils {
 	public static String getResourceString(String infoURL, ResourceBundle bundle) {
 		String result = null;
 		if (infoURL != null) {
-			result = UpdateCore.getPlugin().getDescriptor().getResourceString(infoURL, bundle);
+			result = Platform.getResourceString(UpdateCore.getPlugin().getBundle(), infoURL, bundle);
 		}
 		return result;
 	}

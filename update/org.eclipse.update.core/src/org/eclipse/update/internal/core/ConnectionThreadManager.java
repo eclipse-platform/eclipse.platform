@@ -143,7 +143,7 @@ public class ConnectionThreadManager {
 		if (aliveCount > MAX_COUNT) {
 			ArrayList children = new ArrayList();
 			String pluginId =
-				UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+				UpdateCore.getPlugin().getBundle().getSymbolicName();
 			for (int i = 0; i < threads.size(); i++) {
 				ConnectionThread t = (ConnectionThread) threads.get(i);
 				String url = t.getRunnable().getURL().toString();

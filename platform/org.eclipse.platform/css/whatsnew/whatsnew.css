@@ -1,70 +1,169 @@
 body {
+	min-height : 600px;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
 	background-image : url(../graphics/watermark/whatsnew_wmk.gif);
 	background-repeat : no-repeat;
-	background-position : bottom right;	
+	background-position : bottom right;
+	
+}
+/* The presentation title */
+#presentation-header {
+	background-color : #BCCEE4;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
 }
 
-/* show the "selected" image for this page */
-#navigation-links a#news img { background-image : url(../graphics/obj_32/selwhatsnew_obj.gif); }
+#presentation-title {
+	font-weight : normal;
+	margin-left : 10px;
+}
 
-/* 
- * Set up the content of the Whats New page to be displayed in 
- * two columns that are centered in the middle of the page.
- */
+.page-content {
+	overflow : visible;
+	min-height : 600px;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
+}
 
-div#page-links {
-	width : 800px;
-	height : 150px;
+
+#background-image {
 	position : relative;
-	left : 50%;
-	margin-left : -400px;
+	height : 120px;
+	width : 100%;
+	background-image : url(../graphics/background/content_background.jpg);
+	background-repeat : repeat-x;
+	text-align : center;
+}
+
+#background-image img {
+	height : 120px;
+	width : 850px;
+
+}
+
+/* don't display the page title */
+#page-header {
+	display : none;
+}
+
+/* use this as the page title */
+p #whatsnew-title {
+	font-size : 15pt;
+	font-weight : bold;
+	color : #7B8694;
+	position : relative;
+	top : -100px;
+	left : 10px;
+}
+
+#navigation-links {
+	position : relative;
+	top : -100px;
+	left : 20px;
+	height : 60;
+	width : 100px;
+}
+
+#navigation-links a {
+	width : 60px;
+	height : 60px;
+	position : absolute;
+	top : 0;
+	text-indent : 0;
+}
+
+#navigation-links a img, #workbench a img {
+	height : 40px;
+	width : 40px;
+	vertical-align : middle;
+}
+
+#navigation-links a .link-label, #navigation-links a .text {
+	display : none;
+}
+#navigation-links a:hover, a#workbench:hover { border-right : 5px; }
+
+/* properties for each of the navigation-links  */
+a#overview img { background-image : url(../graphics/obj_32/overview_obj.gif); }
+a#overview:hover img { background-image : url(../graphics/obj_32/hovoverview_obj.gif); }
+
+a#tutorials { left : 50px; }  
+a#tutorials img { background-image : url(../graphics/obj_32/tutorials_obj.gif); }
+a#tutorials:hover img { background-image : url(../graphics/obj_32/hovtutorials_obj.gif); }
+
+a#samples { left : 100px; }
+a#samples img { background-image : url(../graphics/obj_32/examples_obj.gif); }
+a#samples:hover img { background-image : url(../graphics/obj_32/hovexamples_obj.gif); }
+
+a#news { left : 150px; }
+a#news img { background-image : url(../graphics/obj_32/whatsnew_obj.gif); }
+a#news:hover img { background-image : url(../graphics/obj_32/hovwhatsnew_obj.gif); }
+
+a#workbench { left : 200px; }
+a#workbench img { background-image : url(../graphics/obj_32/workbench_obj.gif); }
+a#workbench:hover img { background-image : url(../graphics/obj_32/hovworkbench_obj.gif); }
+
+/* The real content of the whats new page: */
+p #whatsnew-text { 
+	font-size : 10pt;
+	position : relative;
+	top : -90px;
+	width : 90%;
+	padding : 10px;
+}
+
+a#basics img { background-image : url(../graphics/obj_48/wbbasics_obj.gif); }
+a#basics:hover img { background-image : url(../graphics/obj_48/hovwbbasics_obj.gif); }
+
+a#team img { background-image : url(../graphics/obj_48/team_obj.gif); }
+a#team:hover img { background-image : url(../graphics/obj_48/hovteam_obj.gif); }
+
+a { 
+	display : block; 
+	height : 60px; 
+	text-align : left; 
+	text-indent : 20px;
+	position : relative;
 	top : -50px;
 }
 
-div#page-links a { 
-	display : block; 
-	height : 60px; 
-	width : 375px;
-	text-align : left; 
-	margin-left : 10px;
-	position : absolute;
+a .link-label {
+	font-size : 10pt;
+	font-weight : normal;
 }
 
-
-div#page-links a img {
+a img {
 	height : 56px;
 	width : 56px;
 	vertical-align : middle;
 }
 
-##page-links a .link-label {
-	position : relative;
-	top : -10px;
-}
+a p span { display : none; }
 
-div#page-links a p .text {
+a:hover { border-right : 5px; }
+
+a:hover p span {
 	display : block;
-	position : relative;
-	left : 50px;
-	width : 350px;
-	margin-top : -20px;
+	font-size : 8pt;
+	font-weight : normal;
+	margin-left : 60px;
+	margin-top : -12px;
 }
-
-div#page-links a:hover { border-right : 5px; }
 
 a#new-and-noteworthy img { background-image : url(../graphics/obj_48/whatsnew_obj.gif); }
 a#new-and-noteworthy:hover img { background-image : url(../graphics/obj_48/hovwhatsnew_obj.gif); }
 
-a#migration { left : 400px; }
 a#migration img { background-image : url(../graphics/obj_48/migrate_obj.gif); }
 a#migration:hover img { background-image : url(../graphics/obj_48/hovmigrate_obj.gif); }
 
-a#updates { top : 80px; }
 a#updates img { background-image : url(../graphics/obj_48/whatsnew_obj.gif); }
-a#updates:hover img { background-image : url(../graphics/obj_48/hovwhatsnew_obj.gif); }
+a#updates:hover img { background-image : url(../graphics/obj_48/whatsnew_obj.gif); }
 
-a#eclipse { top : 80px; left : 400px;}
-a#eclipse img { background-image : url(../graphics/obj_48/whatsnew_obj.gif); }
-a#eclipse:hover img { background-image : url(../graphics/obj_48/hovwhatsnew_obj.gif); }
-
-
+#eclipse-wordmark {
+	height : 23px;
+	width : 71px;
+}

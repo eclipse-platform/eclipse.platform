@@ -33,13 +33,12 @@ import org.eclipse.update.internal.api.search.*;
  * All the methods are static and this class should be a singleton.
  */
 public class UpdateUtils {
-	private static final String KEY_SAVED_CONFIG =
-		"MultiInstallWizard.savedConfig";
+
 	private static final String RESOURCE_BUNDLE =
 		"org.eclipse.update.internal.operations.UpdateManagerResources";
 	private static ResourceBundle bundle;
 	
-	private static final String PREFIX = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+	private static final String PREFIX = UpdateCore.getPlugin().getBundle().getSymbolicName();
 	public static final String P_UPDATE_POLICY_URL = PREFIX + ".updatePolicyURL";
 
 	static {
@@ -75,7 +74,7 @@ public class UpdateUtils {
 	}
 
 	public static String getPluginId() {
-		return UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		return UpdateCore.getPlugin().getBundle().getSymbolicName();
 	}
 
 

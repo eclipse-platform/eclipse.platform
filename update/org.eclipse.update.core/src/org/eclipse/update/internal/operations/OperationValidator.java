@@ -61,8 +61,6 @@ public class OperationValidator implements IOperationValidator {
 	private static final String KEY_CYCLE = "ActivityConstraints.cycle";
 	private static final String KEY_CONFLICT = "ActivityConstraints.conflict";
 	private static final String KEY_EXCLUSIVE = "ActivityConstraints.exclusive";
-	private static final String KEY_WRONG_TIMELINE =
-		"ActivityConstraints.timeline";
 	private static final String KEY_NO_LICENSE =
 		"ActivityConstraints.noLicense";
 
@@ -762,16 +760,6 @@ public class OperationValidator implements IOperationValidator {
 		return result;
 	}
 
-	private static boolean isPatch(IFeature feature) {
-		IImport[] imports = feature.getImports();
-		for (int i = 0; i < imports.length; i++) {
-			IImport iimport = imports[i];
-			if (iimport.isPatch()) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * Check for feature cycles:
@@ -1270,7 +1258,7 @@ public class OperationValidator implements IOperationValidator {
 			(IStatus[]) children.toArray(new IStatus[children.size()]);
 		String message = UpdateUtils.getString(rootKey);
 		return new MultiStatus(
-			UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier(),
+			UpdateCore.getPlugin().getBundle().getSymbolicName(),
 			code,
 			carray,
 			message,
@@ -1297,7 +1285,7 @@ public class OperationValidator implements IOperationValidator {
 		return new FeatureStatus(
 			feature,
 			IStatus.ERROR,
-			UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier(),
+			UpdateCore.getPlugin().getBundle().getSymbolicName(),
 			errorCode,
 			fullMessage,
 			null);

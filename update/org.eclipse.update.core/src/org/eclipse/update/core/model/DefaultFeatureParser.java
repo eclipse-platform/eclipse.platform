@@ -56,7 +56,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 	private static final int STATE_IMPORT = 11;
 	private static final int STATE_PLUGIN = 12;
 	private static final int STATE_DATA = 13;
-	private static final String PLUGIN_ID = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+	private static final String PLUGIN_ID = UpdateCore.getPlugin().getBundle().getSymbolicName();
 
 	private static final String FEATURE = "feature"; //$NON-NLS-1$
 	private static final String INCLUDES = "includes"; //$NON-NLS-1$

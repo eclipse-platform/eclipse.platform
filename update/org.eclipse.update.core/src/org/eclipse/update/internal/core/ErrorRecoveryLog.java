@@ -295,7 +295,7 @@ public class ErrorRecoveryLog {
 	 */
 	private IStatus createStatus(int statusSeverity, String msg, Exception e){
 		String id =
-			UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+			UpdateCore.getPlugin().getBundle().getSymbolicName();
 	
 		StringBuffer completeString = new StringBuffer("");
 		if (msg!=null)

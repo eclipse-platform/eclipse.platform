@@ -284,7 +284,7 @@ public class SiteStatusAnalyzer {
 	 * creates a Status
 	 */
 	private IStatus createStatus(int statusSeverity, int statusCode, String msg, Exception e) {
-		String id = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		String id = UpdateCore.getPlugin().getBundle().getSymbolicName();
 
 		StringBuffer completeString = new StringBuffer("");
 		if (msg != null)

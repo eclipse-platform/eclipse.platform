@@ -404,7 +404,7 @@ public class SiteFile extends Site {
 				try {
 					recoveryLog.appendPath(ErrorRecoveryLog.FEATURE_ENTRY, references[i].asFile().getAbsolutePath());
 				} catch (IOException e) {
-					String id = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+					String id = UpdateCore.getPlugin().getBundle().getSymbolicName();
 					throw Utilities.newCoreException(Policy.bind("SiteFile.CannotRemoveFeature", feature.getVersionedIdentifier().getIdentifier(), getURL().toExternalForm()), e);
 					//$NON-NLS-1$
 				}

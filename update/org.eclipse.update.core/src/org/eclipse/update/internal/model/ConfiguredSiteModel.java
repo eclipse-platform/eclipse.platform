@@ -147,8 +147,7 @@ public class ConfiguredSiteModel extends ModelObject {
 	 * creates a Status
 	 */
 	protected IStatus createStatus(int statusSeverity, int statusCode, String msg, Exception e){
-		String id =
-			UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		String id =	UpdateCore.getPlugin().getBundle().getSymbolicName();
 	
 		StringBuffer completeString = new StringBuffer("");
 		if (msg!=null)

@@ -53,7 +53,7 @@ public class DefaultSiteParser extends DefaultHandler {
 	private static final int STATE_CATEGORY_DEF = 5;
 	private static final int STATE_DESCRIPTION_SITE = 6;
 	private static final int STATE_DESCRIPTION_CATEGORY_DEF = 7;
-	private static final String PLUGIN_ID = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+	private static final String PLUGIN_ID = UpdateCore.getPlugin().getBundle().getSymbolicName();
 
 	private static final String SITE = "site"; //$NON-NLS-1$
 	private static final String FEATURE = "feature"; //$NON-NLS-1$

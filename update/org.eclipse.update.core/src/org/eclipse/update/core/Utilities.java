@@ -25,12 +25,10 @@ import org.eclipse.update.internal.core.*;
 public class Utilities {
 
 	private static Map entryMap;
-	private static Stack bufferPool;
-	private static final int BUFFER_SIZE = 4096; //256K
 	private static final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
 	private static long tmpseed = (new Date()).getTime();
 	private static String dirRoot = null;
-	private static final int INCREMENT_SIZE = 4096; // 4kbytes
+
 	/**
 	 * Returns a new working directory (in temporary space). Ensures
 	 * the directory exists. Any directory levels that had to be created
@@ -182,7 +180,7 @@ public class Utilities {
 	 * @since 2.0
 	 */
 	public static CoreException newCoreException(String s, int code, Throwable e) {
-		String id = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		String id = UpdateCore.getPlugin().getBundle().getSymbolicName();
 
 		// check the case of a multistatus
 		IStatus status;
@@ -239,7 +237,7 @@ public class Utilities {
 	 * @since 2.0
 	 */
 	public static CoreException newCoreException(String s, String s1, String s2, CoreException e1, CoreException e2) {
-		String id = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		String id = UpdateCore.getPlugin().getBundle().getSymbolicName();
 		if (s == null)
 			s = "";
 

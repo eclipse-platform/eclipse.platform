@@ -23,16 +23,21 @@ public class StandaloneUpdateApplication implements IPlatformRunnable {
 			String[] params = (String[]) args;
 			CmdLineArgs cmdLineArgs = new CmdLineArgs(params);
 			ScriptedCommand cmd = cmdLineArgs.getCommand();
-			if (cmd == null)
+			if (cmd == null) {
+
+				System.out.println(
+						"Command failed.  Please check "
+							+ Platform.getLogFileLocation().toOSString()
+							+ " log file for details.");
 				return EXIT_ERROR;
+			}
 			loggedException = false;
 			boolean result = cmd.run();
-			String log = Platform.getLogFileLocation().toOSString();
 			if (result) {
 				if (loggedException) {
 					System.out.println(
 						"Command completed with errors.  Please check "
-							+ log
+							+ Platform.getLogFileLocation().toOSString()
 							+ " log file for details.");
 				} else {
 					System.out.println("Command completed successfully.");
@@ -42,7 +47,7 @@ public class StandaloneUpdateApplication implements IPlatformRunnable {
 				if (loggedException) {
 					System.out.println(
 						"Command failed.  Please check "
-							+ log
+							+ Platform.getLogFileLocation().toOSString()
 							+ " log file for details.");
 				} else {
 					System.out.println("Command failed.");

@@ -26,7 +26,6 @@ import org.eclipse.update.internal.model.*;
 public class SiteLocal extends SiteLocalModel implements ILocalSite{
 
 	private ListenersList listeners = new ListenersList();
-	private SiteReconciler reconciler;
 	private SiteStatusAnalyzer siteStatusAnalyzer;
 	private boolean isTransient = false;
 
@@ -342,43 +341,6 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite{
 			 ((InstallConfiguration) configuration).remove();
 	}
 
-	/**
-	 * Add the list of plugins the platform found for each site. This list will be preserved in 
-	 * a transient way. 
-	 * 
-	 * We do not lose explicitly set plugins found in platform.cfg.
-	 */
-	private void preserveRuntimePluginPath() throws CoreException {
-
-		IPlatformConfiguration platformConfig = ConfiguratorUtils.getCurrentPlatformConfiguration();
-		IPlatformConfiguration.ISiteEntry[] siteEntries = platformConfig.getConfiguredSites();
-
-		// sites from the current configuration
-		IConfiguredSite[] configured = new IConfiguredSite[0];
-		if (this.getCurrentConfiguration() != null)
-			configured = this.getCurrentConfiguration().getConfiguredSites();
-
-		// sites from the platform			
-		for (int siteIndex = 0; siteIndex < siteEntries.length; siteIndex++) {
-			URL resolvedURL = getReconciler().resolveSiteEntry(siteEntries[siteIndex]);
-
-			boolean found = false;
-			for (int index = 0; index < configured.length && !found; index++) {
-
-				// the array may have hole as we set found site to null
-				if (configured[index] != null) {
-					if (UpdateManagerUtils.sameURL(configured[index].getSite().getURL(), resolvedURL)) {
-						found = true;
-						String[] listOfPlugins = siteEntries[siteIndex].getSitePolicy().getList();
-						((ConfiguredSite) configured[index]).setPreviousPluginPath(listOfPlugins);
-						configured[index] = null;
-					}
-				}
-			}
-		}
-
-	}
-
 	/*
 	 * @see ILocalSite#getConfigurationHistory()
 	 */
@@ -388,14 +350,6 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite{
 		return (IInstallConfiguration[]) getConfigurationHistoryModel();
 	}
 
-	/*
-	 * 
-	 */
-	private SiteReconciler getReconciler() {
-		if (reconciler == null)
-			reconciler = new SiteReconciler(this);
-		return reconciler;
-	}
 
 	/**
 	 * Gets the isTransient.

@@ -373,7 +373,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 		if (isUndoAction()) {
 			// for "undo" operations, deactivate handler and log error
 			String id =
-				UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+				UpdateCore.getPlugin().getBundle().getSymbolicName();
 			IStatus status =
 				new Status(IStatus.ERROR, id, 0, "InstallHandler.deactivated", ce);
 			//$NON-NLS-1$
@@ -404,7 +404,7 @@ public class InstallHandlerProxy implements IInstallHandler {
 		if (isUndoAction()) {
 			// for "undo" operations, deactivate handler and log error
 			String id =
-				UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+				UpdateCore.getPlugin().getBundle().getSymbolicName();
 			IStatus status =
 				new Status(IStatus.ERROR, id, 0, "InstallHandler.deactivated", ce);
 			//$NON-NLS-1$

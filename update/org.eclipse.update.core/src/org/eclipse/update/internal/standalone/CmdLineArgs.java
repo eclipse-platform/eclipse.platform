@@ -70,7 +70,9 @@ public class CmdLineArgs {
 			|| cmd.equals("search")
 			|| cmd.equals("update")
 			|| cmd.equals("mirror")
-			|| cmd.equals("uninstall");
+			|| cmd.equals("uninstall")
+			|| cmd.equals("configuredFeatures")
+			|| cmd.equals("addSite");
 	}
 
 	public ScriptedCommand getCommand() {
@@ -114,7 +116,12 @@ public class CmdLineArgs {
 					(String) options.get("-version"),
 					(String) options.get("-to"),
 					(String) options.get("-verifyOnly"));
-			return null;
+			else if (cmd.equals("configuredFeatures"))
+				return new ListConfigFeaturesCommand((String) options.get("-from"));
+			else if (cmd.equals("addSite"))
+				return new AddSiteCommand((String) options.get("-from"));
+			else
+				return null;
 		} catch (Exception e) {
 			StandaloneUpdateApplication.exceptionLogged();
 			UpdateCore.log(e);

@@ -1,8 +1,3 @@
-/*
- * Set up the content for the root page.  Note that the settings
- * for the background images and navigation bar override 
- * settings in the shared CSS
- */
 body {
 	min-width : 611px;
 	/* since IE doesn't support min-width, try expression */
@@ -10,13 +5,14 @@ body {
 	background-image : url(graphics/watermark/eclipse_logo.gif);
 	background-position : bottom left;
 }
-
+/* The presentation title */
 #presentation-header {
 	background-color : #BCCEE4;
 	min-width : 611px;
 	/* since IE doesn't support min-width, try expression */
 	width:expression(document.body.clientWidth < 611? "611px": "auto" );
 }
+#presentation-title { margin-left : 10px; }
 
 .page-content {
 	min-width : 611px;
@@ -41,22 +37,15 @@ body {
 	width : 100%;
 	background-image : url(graphics/background/background.jpg);
 	background-repeat : repeat-x;
-	text-align : left;
+	text-align : center;
 }
 
-#curve-image {
+#background-image img {
 	height : 253px;
 	width : 611px;
 	background-image : url(graphics/background/curve.gif);
-	background-repeat : no-repeat;
-	position : relative;
-	left : 50%;
-	margin-left : -305px;
 }
 
-/* 
- * Set up the navigation bar
- */
 #navigation-links {
 	position : relative;
 	top : 10%;
@@ -68,7 +57,6 @@ body {
 
 #navigation-links a {
 	width : 80px;
-	height : 80px;
 	position : absolute;
 	top : -70px;
 	text-align : center;
@@ -81,12 +69,11 @@ body {
 }
 
 #navigation-links a .link-label, #navigation-links a .text {
-	font-size : 10pt;
-	display : block;
+	font-size : 11pt;
 }
 
 
-#navigation-links a span {
+#navigation-links a span, a#workbench span {
 	display : block;
 	font-size : 10pt;
 	font-weight : normal;
@@ -103,38 +90,36 @@ body {
 	/* width should be same as navigation-links width */
 	width : 320px;
 	position : relative;
-	top : 35px;
+	top : 30px;
 }
 
 /* properties for each of the navigation-links  */
 a#overview img { background-image : url(graphics/obj_64/overview_obj.gif); }
 a#overview:hover img { background-image : url(graphics/obj_64/hovoverview_obj.gif); }
 
-a#tutorials { left : 85px; }  
+a#tutorials { left : 80px; }  
 a#tutorials img { background-image : url(graphics/obj_64/tutorials_obj.gif); }
 a#tutorials:hover img { background-image : url(graphics/obj_64/hovtutorials_obj.gif); }
-a#tutorials:hover p .text { left : -85px; }
+a#tutorials:hover p .text { left : -80px; }
 
-a#samples { left : 165px;}
+a#samples { left : 160px;}
 a#samples img { background-image : url(graphics/obj_64/examples_obj.gif); }
 a#samples:hover img { background-image : url(graphics/obj_64/hovexamples_obj.gif); }
-a#samples:hover p .text { left : -165px; }
+a#samples:hover p .text { left : -160px; }
 
-a#news { left : 245px;}
+a#news { left : 240px;}
 a#news img { background-image : url(graphics/obj_64/whatsnew_obj.gif); }
 a#news:hover img { background-image : url(graphics/obj_64/hovwhatsnew_obj.gif); }
-a#news:hover p .text { left : -245px; }
+a#news:hover p .text { left : -240px; }
 
 a#workbench { 
 	position : absolute; 
 	top : 100px;
-	width : 200px; 
+	width : 150px; 
 	left : 50%;
-	margin-left : -100px;
+	margin-left : -75px;
 	text-align : center;  
 }
-
-a#workbench .link-label { display : inline; }
 
 a#workbench img {
 	background-image : url(graphics/obj_48/workbench_obj.gif); 
@@ -147,10 +132,7 @@ a#workbench:hover img {
 	height : 56px;
 	width : 56px;
 }
+
 a#workbench:hover p .text {
-	width : 360px;
-	position : relative;
-	top : -105px;
-	left : 50%;
-	margin-left : -180px;
+	display : none;
 }

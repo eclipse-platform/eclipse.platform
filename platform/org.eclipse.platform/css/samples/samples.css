@@ -1,41 +1,131 @@
 body {
+	min-height : 600px;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
 	background-image : url(../graphics/watermark/examples_wmk.gif);
 	background-repeat : no-repeat;
 	background-position : bottom right;
 	
 }
+/* The presentation title */
+#presentation-header {
+	background-color : #BCCEE4;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
+}
 
-/* show the "selected" image for this page */
-#navigation-links a#samples img { background-image : url(../graphics/obj_32/selexamples_obj.gif); }
+#presentation-title {
+	font-weight : normal;
+	margin-left : 10px;
+}
+
+.page-content {
+	overflow : visible;
+	min-height : 600px;
+	min-width : 850px;
+	/* since IE doesn't support min-width, try expression */
+	width:expression(document.body.clientWidth < 850? "850px": "auto" );
+}
+
+
+#background-image {
+	position : relative;
+	height : 120px;
+	width : 100%;
+	background-image : url(../graphics/background/content_background.jpg);
+	background-repeat : repeat-x;
+	text-align : center;
+}
+
+#background-image img {
+	height : 120px;
+	width : 850px;
+
+}
+
+/* don't display the page title */
+#page-header {
+	display : none;
+}
+
+/* use this as the page title */
+p #samples-title {
+	font-size : 15pt;
+	font-weight : bold;
+	color : #7B8694;
+	position : relative;
+	top : -100px;
+	left : 10px;
+}
+
+#navigation-links {
+	position : relative;
+	top : -100px;
+	left : 20px;
+	height : 60;
+	width : 100px;
+}
+
+#navigation-links a {
+	width : 60px;
+	height : 60px;
+	position : absolute;
+	top : 0;
+	text-indent : 0;
+}
+
+#navigation-links a img, a#workbench a img {
+	height : 40px;
+	width : 40px;
+	vertical-align : middle;
+}
+
+#navigation-links a .link-label, #navigation-links a .text {
+	display : none;
+}
+#navigation-links a:hover, a#workbench:hover { border-right : 5px; }
+
+/* properties for each of the navigation-links  */
+a#overview img { background-image : url(../graphics/obj_32/overview_obj.gif); }
+a#overview:hover img { background-image : url(../graphics/obj_32/hovoverview_obj.gif); }
+
+a#tutorials { left : 50px; }  
+a#tutorials img { background-image : url(../graphics/obj_32/tutorials_obj.gif); }
+a#tutorials:hover img { background-image : url(../graphics/obj_32/hovtutorials_obj.gif); }
+
+a#samples { left : 100px; }
+a#samples img { background-image : url(../graphics/obj_32/examples_obj.gif); }
+a#samples:hover img { background-image : url(../graphics/obj_32/hovexamples_obj.gif); }
+
+a#news { left : 150px; }
+a#news img { background-image : url(../graphics/obj_32/whatsnew_obj.gif); }
+a#news:hover img { background-image : url(../graphics/obj_32/hovwhatsnew_obj.gif); }
+
+a#workbench { left : 200px; }
+a#workbench img { background-image : url(../graphics/obj_32/workbench_obj.gif); }
+a#workbench:hover img { background-image : url(../graphics/obj_32/hovworkbench_obj.gif); }
 
 /* The real content of the samples page: */
+p #samples-text { 
+	font-size : 10pt;
+	position : relative;
+	top : -90px;
+	width : 90%;
+	padding : 10px;
+}
 
 a { 
 	display : block; 
 	height : 60px; 
-	width : 425px;
 	text-align : left; 
-	margin-left : 10px;
-	position : absolute;
+	text-indent : 20px;
 }
-
-/* cancel out the indent for the navigation links from above */
-#navigation-links a { margin-left : 0; }
 
 a .link-label {
-	position : relative;
-	top : -15px;
-}
-
-/* cancel out the top positioning for the navigation links from above */
-#navigation-links a .link-label { top : 0; }
-
-a p .text {
-	display : block;
-	position : relative;
-	left : 50px;
-	width : 350px;
-	top : -25px;
+	font-size : 10pt;
+	font-weight : normal;
 }
 
 a img {
@@ -49,40 +139,29 @@ a:hover img {
 	background-image : url(../graphics/obj_48/hovexamples_obj.gif);
 }
 
+a p span { display : none; }
+
 a:hover { border-right : 5px; }
 
-#swt {
-	width : 850px;
-	height : 150px;
-	position : relative;
-	left : 50%;
-	margin-left : -425px;
-	top : -60px;
-}
-div#swt a p {
+a:hover p span {
 	display : block;
-	text-align : left;
+	font-size : 8pt;
+	font-weight : normal;
+	margin-left : 60px;
+	margin-top : -12px;
 }
-a#standalone { top : 40px; }
-a#views { top : 40px; left : 425px; }
 
-div#workbench {
-	width : 850px;
-	height : 150px;
+#swt {
 	position : relative;
-	left : 50%;
-	margin-left : -425px;
-	top : -75px;
+	top : -90px;
 }
 
-a#multi-page-editor { top : 40px; }
-a#property-sheet { top : 40px; left : 425px; }
-a#readmetool { top : 110px; }
+#workbench {
+	position : relative;
+	top : -90px;
+}
 
 #eclipse-wordmark {
-	position : absolute;
-	bottom : 10px;
-	left : 20px;	
 	height : 23px;
 	width : 71px;
 }

@@ -329,7 +329,7 @@ public class InternalSiteManager {
 		// find extension point
 		IInstallDeltaHandler handler = null;
 
-		String pluginID = UpdateCore.getPlugin().getDescriptor().getUniqueIdentifier();
+		String pluginID = UpdateCore.getPlugin().getBundle().getSymbolicName();
 
 		IPluginRegistry pluginRegistry = Platform.getPluginRegistry();
 
