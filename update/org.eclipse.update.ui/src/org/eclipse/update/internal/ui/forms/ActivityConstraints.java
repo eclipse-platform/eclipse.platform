@@ -416,12 +416,12 @@ public class ActivityConstraints {
 			// those features. Include them in the list.
 			contributePatchesFor(removeTree, features, removeTree);
 		}
+		
+		if (remove != null)
+			features.removeAll(removeTree);
 
 		if (add != null)
 			features.addAll(addTree);
-
-		if (remove != null)
-			features.removeAll(removeTree);
 
 		return features;
 	}
