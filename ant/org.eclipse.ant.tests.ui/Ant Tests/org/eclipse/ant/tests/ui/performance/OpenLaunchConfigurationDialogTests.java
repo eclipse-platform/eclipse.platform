@@ -33,8 +33,8 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
         //cold run
         ILaunchConfiguration configuration= getLaunchConfiguration("big");
 		IStructuredSelection selection= new StructuredSelection(configuration);
-		for (int i = 0; i < 20; i++) {
-		    openLCD(selection, fgIdentifier); 
+		for (int i = 0; i < 10; i++) {
+		    openLCD(selection, fgIdentifier, 20); 
         }
 		
 		commitMeasurements();
@@ -46,8 +46,8 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
         ILaunchConfiguration configuration= getLaunchConfiguration("big");
 		IStructuredSelection selection= new StructuredSelection(configuration);
 		tagAsSummary("Open LCD on Targets tab", Dimension.CPU_TIME);
-		for (int i = 0; i < 20; i++) {
-		    openLCD(selection, fgIdentifier); 
+		for (int i = 0; i < 10; i++) {
+		    openLCD(selection, fgIdentifier, 20); 
         }
 		
 		commitMeasurements();
@@ -61,18 +61,20 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 		return config;
     }
 
-    private void openLCD(final IStructuredSelection selection, final String groupIdentifier) {
-       
-        //set a status to go to the targets tab
-	    IStatus status = new Status(IStatus.INFO, IAntUIConstants.PLUGIN_ID, IAntUIConstants.STATUS_INIT_RUN_ANT, "", null); //$NON-NLS-1$
-		LaunchConfigurationsDialog dialog= new LaunchConfigurationsDialog(DebugUIPlugin.getShell(), DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(groupIdentifier));
-		dialog.setBlockOnOpen(false);
-		dialog.setOpenMode(LaunchConfigurationsDialog.LAUNCH_CONFIGURATION_DIALOG_OPEN_ON_SELECTION);
-		dialog.setInitialSelection(selection);
-		dialog.setInitialStatus(status);
-		startMeasuring();
-		dialog.open();
-		dialog.close();
+    private void openLCD(final IStructuredSelection selection, final String groupIdentifier, int numberOfOpens) {
+        startMeasuring();
+        for (int i = 0; i < numberOfOpens; i++) {
+	        //set a status to go to the targets tab
+		    IStatus status = new Status(IStatus.INFO, IAntUIConstants.PLUGIN_ID, IAntUIConstants.STATUS_INIT_RUN_ANT, "", null); //$NON-NLS-1$
+			LaunchConfigurationsDialog dialog= new LaunchConfigurationsDialog(DebugUIPlugin.getShell(), DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchGroup(groupIdentifier));
+			dialog.setBlockOnOpen(false);
+			dialog.setOpenMode(LaunchConfigurationsDialog.LAUNCH_CONFIGURATION_DIALOG_OPEN_ON_SELECTION);
+			dialog.setInitialSelection(selection);
+			dialog.setInitialStatus(status);
+			
+			dialog.open();
+			dialog.close();
+        }
 		stopMeasuring();
     }
 }

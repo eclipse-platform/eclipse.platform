@@ -129,20 +129,25 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	 * Waits for all of the lines to be appended to the console.
 	 * 
 	 * @param mainTypeName the program to launch
+	 * @param i the number of times to perform the launch
 	 * @return thread in which the first suspend event occurred
 	 */
-	protected void launch(String buildFileName) throws CoreException {
+	protected void launch(String buildFileName, int i) throws CoreException {
 		startMeasuring();
-		super.launch(buildFileName);
+		for (int j = 0; j < i; j++) {
+		    super.launch(buildFileName);    
+        }
 		stopMeasuring();
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest#launch(java.lang.String, java.lang.String)
 	 */
-	protected void launch(String buildFileName, String arguments) throws CoreException {
-		startMeasuring();
-		super.launch(buildFileName, arguments);
+	protected void launch(String buildFileName, String arguments, int i) throws CoreException {
+	    startMeasuring();
+		for (int j = 0; j < i; j++) {
+		    super.launch(buildFileName, arguments);
+		}
 		stopMeasuring();
 	}
 }
