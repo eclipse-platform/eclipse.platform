@@ -188,27 +188,30 @@ public class SiteStatusAnalyzer  {
 		if (featureStatus.getCode()>code) code = featureStatus.getCode();
 		
 		for (int i = 0; i < children.length; i++) {
-			try {
-				childFeature = children[i].getFeature();
-			} catch (CoreException e){
-				UpdateManagerPlugin.warn("Error retrieving feature:"+children[i]);
-			}
-			if (childFeature==null){
-				UpdateManagerPlugin.warn("getFeatureStatus: Feature is null for:"+children[i]);
-				// Unable to find children feature, broken
-				String msg1 = Policy.bind("SiteLocal.NestedFeatureUnavailable",new Object[]{children[i].getURL()});
-				multiTemp.add(createStatus(IStatus.ERROR,IFeature.STATUS_UNHAPPY,msg1,null));
-				if (IFeature.STATUS_UNHAPPY>code) code = IFeature.STATUS_UNHAPPY;					
-			} else {
-				childStatus = getFeatureStatus(childFeature);	
-				// do not add the status, add the children status as getFeatureStatus
-				// returns a multiStatus 
-				if (childStatus.getSeverity()!=IStatus.OK){
-					VersionedIdentifier versionID = childFeature.getVersionedIdentifier();
-					String featureVer = (versionID==null)?"":versionID.getVersion().toString();
-					String msg1 = Policy.bind("SiteLocal.NestedFeatureUnHappy",childFeature.getLabel(),featureVer);
-					multiTemp.add(createStatus(IStatus.ERROR,childStatus.getCode(),msg1,null));
-					if (childStatus.getCode()>code) code = childStatus.getCode();					
+			if (!children[i].isOptional()){
+				try {
+					childFeature = children[i].getFeature();
+				} catch (CoreException e){
+					if (!children[i].isOptional())
+						UpdateManagerPlugin.warn("Error retrieving feature:"+children[i]);
+				}
+				if (childFeature==null){
+					UpdateManagerPlugin.warn("getFeatureStatus: Feature is null for:"+children[i]);
+					// Unable to find children feature, broken
+					String msg1 = Policy.bind("SiteLocal.NestedFeatureUnavailable",new Object[]{children[i].getURL()});
+					multiTemp.add(createStatus(IStatus.ERROR,IFeature.STATUS_UNHAPPY,msg1,null));
+					if (IFeature.STATUS_UNHAPPY>code) code = IFeature.STATUS_UNHAPPY;					
+				} else {
+					childStatus = getFeatureStatus(childFeature);	
+					// do not add the status, add the children status as getFeatureStatus
+					// returns a multiStatus 
+					if (childStatus.getSeverity()!=IStatus.OK){
+						VersionedIdentifier versionID = childFeature.getVersionedIdentifier();
+						String featureVer = (versionID==null)?"":versionID.getVersion().toString();
+						String msg1 = Policy.bind("SiteLocal.NestedFeatureUnHappy",childFeature.getLabel(),featureVer);
+						multiTemp.add(createStatus(IStatus.ERROR,childStatus.getCode(),msg1,null));
+						if (childStatus.getCode()>code) code = childStatus.getCode();					
+					}
 				}
 			}
 		}

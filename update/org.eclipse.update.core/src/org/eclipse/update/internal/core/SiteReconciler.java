@@ -705,7 +705,12 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// add nested children to the list
 		IFeatureReference[] children = feature.getIncludedFeatureReferences();
 		for (int j = 0; j < children.length; j++) {
-			IFeature child = children[j].getFeature();
+			IFeature child = null;
+			try {
+				child = children[j].getFeature();
+			} catch (CoreException e){
+				if (!children[j].isOptional()) throw e;
+			}
 			expandFeature(child, features);
 		}
 	}

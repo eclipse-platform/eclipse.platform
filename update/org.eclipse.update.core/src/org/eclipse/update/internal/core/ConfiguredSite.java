@@ -310,7 +310,8 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 				configure(child, callInstallHandler);
 			} catch (CoreException e) {
 				// will skip any bad children
-				UpdateManagerPlugin.warn("Unable to configure child feature: " + childrenRef[i] + " " + e);
+				if (!childrenRef[i].isOptional())
+					UpdateManagerPlugin.warn("Unable to configure child feature: " + childrenRef[i] + " " + e);
 			}
 		}
 
