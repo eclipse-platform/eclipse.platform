@@ -33,7 +33,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 	public void testBuild() throws CoreException {
     	tagAsSummary("Simple separate JRE Build", Dimension.CPU_TIME);
     	for (int i = 0; i < 10; i++) {
-    		launch("echoingSepVM");
+    		launch("echoingSepVM", 10);
 		}
     	commitMeasurements();
 		assertPerformance(); 	
@@ -45,7 +45,7 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
     public void testBuildMinusDebug() throws CoreException {
     	tagAsSummary("Simple separate JRE Build with debug information", Dimension.CPU_TIME);
     	for (int i = 0; i < 10; i++) {
-    		launch("echoingSepVM", "-debug");
+    		launch("echoingSepVM", "-debug", 10);
         }
     	commitMeasurements();
 		assertPerformance();
