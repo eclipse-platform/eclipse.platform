@@ -45,6 +45,8 @@ public class InstallConfigurationModel extends ModelObject {
 	private String label;
 	private List /* of ConfiguretionActivityModel */activities;
 	private List /* of configurationSiteModel */ configurationSites;
+	
+	private long timeline;
 
 	/**
 	 * default constructor. Create
@@ -212,6 +214,23 @@ public class InstallConfigurationModel extends ModelObject {
 		// delagate
 		resolveListReference(getActivityModel(),base,bundle);
 		resolveListReference(getConfigurationSitesModel(),base,bundle);
+	}
+
+	/**
+	 * Returns the timeline.
+	 * @return long
+	 */
+	public long getTimeline() {
+		if (timeline==0) timeline = getCreationDate().getTime();
+		return timeline;
+	}
+
+	/**
+	 * Sets the timeline.
+	 * @param timeline The timeline to set
+	 */
+	public void setTimeline(long timeline) {
+		this.timeline = timeline;
 	}
 
 }

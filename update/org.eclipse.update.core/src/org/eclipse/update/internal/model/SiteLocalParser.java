@@ -136,8 +136,7 @@ public class SiteLocalParser extends DefaultHandler {
 		String stampString = attributes.getValue("stamp"); //$NON-NLS-1$
 		long stamp = Long.parseLong(stampString);
 		site.setStamp(stamp);
-		
-
+	
 		// DEBUG:		
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
 			UpdateManagerPlugin.debug("End process Site label:" + info); //$NON-NLS-1$
@@ -153,9 +152,16 @@ public class SiteLocalParser extends DefaultHandler {
 		URL url = UpdateManagerUtils.getURL(site.getLocationURL(), attributes.getValue("url"), null); //$NON-NLS-1$
 		String label = attributes.getValue("label"); //$NON-NLS-1$
 		label = UpdateManagerUtils.getResourceString(label, bundle);
+		
+		//timeline
+		String timelineString = attributes.getValue("timeline"); //$NON-NLS-1$
+		long timeline = 0;
+		if (timelineString!=null) timeline = Long.parseLong(timelineString);
+		
 		InstallConfigurationModel config = new BaseSiteLocalFactory().createInstallConfigurationModel();
 		config.setLocationURLString(url.toExternalForm());
 		config.setLabel(label);
+		config.setTimeline(timeline);
 		config.resolve(url,getResourceBundle());
 		try {
 			config.initialize(); 

@@ -58,8 +58,8 @@ public interface IFeatureReference extends IAdaptable {
 	 * Returns the referenced feature.
 	 * This is a factory method that creates the full feature object.
 	 * 
-	 * @param perfectMatch <code>true</code> if the match perfect feature should be return
-	 * <code>false</code> if teh best match feature should be return.
+	 * @param perfectMatch <code>true</code> if the perfect match feature feature should be returned
+	 * <code>false</code> if the best match feature should be returned.
 	 * @return the referenced feature
 	 * @since 2.0.2
 	 */

@@ -35,16 +35,6 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	}
 
 	/*
-	 * default constructor. 
-	 */
-	public InstallConfiguration(URL newLocation, String label) throws MalformedURLException {
-		setLocationURLString(newLocation.toExternalForm());
-		setLabel(label);
-		setCurrent(false);
-		resolve(newLocation, null);
-	}
-
-	/*
 	 * copy constructor
 	 */
 	public InstallConfiguration(IInstallConfiguration config, URL newLocation, String label) throws MalformedURLException {
@@ -60,6 +50,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 					addConfigurationSiteModel(configSite);
 				}
 			}
+			setTimeline(config.getTimeline());			
 		}
 		// set dummy date as caller can call set date if the
 		// date on the URL string has to be the same 
@@ -535,6 +526,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		//$NON-NLS-1$ //$NON-NLS-2$
 		long time = (getCreationDate() != null) ? getCreationDate().getTime() : 0L;
 		w.print("date=\"" + time + "\" "); //$NON-NLS-1$ //$NON-NLS-2$
+		w.print("timeline=\"" + getTimeline() + "\" "); //$NON-NLS-1$ //$NON-NLS-2$		
 		w.println(">"); //$NON-NLS-1$
 
 		// site configurations
