@@ -31,7 +31,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 	private static final String KEY_CURRENT_SEARCH =
 		"UpdatesSearchCategory.currentSearch";
 	private CheckboxTableViewer tableViewer;
-	
+
 	class Candidate {
 		ArrayList children;
 		Candidate parent;
@@ -44,13 +44,16 @@ public class UpdatesSearchCategory extends SearchCategory {
 			this.parent = parent;
 		}
 		public void add(Candidate child) {
-			if (children==null) children = new ArrayList();
+			if (children == null)
+				children = new ArrayList();
 			child.setParent(this);
 			children.add(child);
 		}
-		public Candidate [] getChildren() {
-			if (children==null) return new Candidate[0];
-			return (Candidate[])children.toArray(new Candidate[children.size()]);
+		public Candidate[] getChildren() {
+			if (children == null)
+				return new Candidate[0];
+			return (Candidate[]) children.toArray(
+				new Candidate[children.size()]);
 		}
 		void setParent(Candidate parent) {
 			this.parent = parent;
@@ -71,8 +74,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		public IFeature getFeature(IProgressMonitor monitor) {
 			try {
 				return ref.getFeature(monitor);
-			}
-			catch (CoreException e) {
+			} catch (CoreException e) {
 				return null;
 			}
 		}
@@ -81,18 +83,19 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 		public Candidate getRoot() {
 			Candidate root = this;
-			
-			while (root.getParent()!=null) {
+
+			while (root.getParent() != null) {
 				root = root.getParent();
 			}
 			return root;
 		}
 		public IURLEntry getUpdateEntry() {
 			int location = IUpdateConstants.SEARCH_ROOT;
-			
+
 			if (ref instanceof IIncludedFeatureReference)
-				location = ((IIncludedFeatureReference)ref).getSearchLocation();
-			if (parent == null || location==IUpdateConstants.SEARCH_SELF) {
+				location =
+					((IIncludedFeatureReference) ref).getSearchLocation();
+			if (parent == null || location == IUpdateConstants.SEARCH_SELF) {
 				return getFeature(null).getUpdateSiteEntry();
 			}
 			return getRoot().getUpdateEntry();
@@ -102,7 +105,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 		public boolean equals(Object source) {
 			if (source instanceof Candidate) {
-				return this.ref.equals(((Candidate)source).getReference());
+				return this.ref.equals(((Candidate) source).getReference());
 			}
 			if (source instanceof IFeatureReference) {
 				return this.ref.equals(source);
@@ -114,24 +117,26 @@ public class UpdatesSearchCategory extends SearchCategory {
 			if (!updatableOnly || isUpdatable())
 				list.add(this);
 			// add children
-			if (children!=null) {
-				for (int i=0; i<children.size(); i++) {
-					Candidate child = (Candidate)children.get(i);
+			if (children != null) {
+				for (int i = 0; i < children.size(); i++) {
+					Candidate child = (Candidate) children.get(i);
 					child.addToFlatList(list, updatableOnly);
 				}
 			}
 		}
 		public boolean isUpdatable() {
-			if (parent == null) return true;
+			if (parent == null)
+				return true;
 			if (ref instanceof IIncludedFeatureReference) {
-				return ((IIncludedFeatureReference)ref).getMatch()!=IUpdateConstants.RULE_PERFECT;
+				return ((IIncludedFeatureReference) ref).getMatch()
+					!= IUpdateConstants.RULE_PERFECT;
 			}
 			return false;
 		}
-		
+
 		public int getMatch() {
 			if (ref instanceof IIncludedFeatureReference)
-				return ((IIncludedFeatureReference)ref).getMatch();
+				return ((IIncludedFeatureReference) ref).getMatch();
 			return IUpdateConstants.RULE_PERFECT;
 		}
 	}
@@ -149,11 +154,10 @@ public class UpdatesSearchCategory extends SearchCategory {
 	class FeatureLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
 			if (obj instanceof Candidate) {
-				Candidate c = (Candidate)obj;
+				Candidate c = (Candidate) obj;
 				try {
 					return c.ref.getVersionedIdentifier().toString();
-				}
-				catch (CoreException e) {
+				} catch (CoreException e) {
 				}
 			}
 			return obj.toString();
@@ -176,12 +180,12 @@ public class UpdatesSearchCategory extends SearchCategory {
 		public PendingChange getJob() {
 			try {
 				IFeature feature = ref.getFeature(null);
-				return new PendingChange(patch?null:candidate, feature);
+				return new PendingChange(patch ? null : candidate, feature);
 			} catch (CoreException e) {
 				return null;
 			}
 		}
-		
+
 		public boolean isPatch() {
 			return patch;
 		}
@@ -229,13 +233,16 @@ public class UpdatesSearchCategory extends SearchCategory {
 		ISiteAdapter adapter;
 		int match = IImport.RULE_PERFECT;
 
-		public UpdateQuery(IFeature candidate, int match, IURLEntry updateEntry) {
+		public UpdateQuery(
+			IFeature candidate,
+			int match,
+			IURLEntry updateEntry) {
 			this.candidate = candidate;
 			this.match = match;
-			if (updateEntry!=null && updateEntry.getURL() != null)
+			if (updateEntry != null && updateEntry.getURL() != null)
 				adapter = new SiteAdapter(updateEntry);
 		}
-		
+
 		public ISiteAdapter getSearchSite() {
 			return adapter;
 		}
@@ -250,8 +257,9 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 		private boolean isMissingOptionalChildren(IFeature feature) {
 			try {
-				IIncludedFeatureReference [] children=feature.getIncludedFeatureReferences();
-				for (int i=0; i<children.length; i++) {
+				IIncludedFeatureReference[] children =
+					feature.getIncludedFeatureReferences();
+				for (int i = 0; i < children.length; i++) {
 					IIncludedFeatureReference ref = children[i];
 					try {
 						IFeature child = ref.getFeature(null);
@@ -259,8 +267,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 						// Check it's children recursively.
 						if (isMissingOptionalChildren(child))
 							return true;
-					}
-					catch (CoreException e) {
+					} catch (CoreException e) {
 						// Missing child. Return true if optional,
 						// otherwise it is a broken feature that we 
 						// do not care about.
@@ -269,8 +276,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 						}
 					}
 				}
-			}
-			catch (CoreException e) {
+			} catch (CoreException e) {
 			}
 			return false;
 		}
@@ -280,11 +286,11 @@ public class UpdatesSearchCategory extends SearchCategory {
 			ArrayList hits = new ArrayList();
 			boolean broken = isBroken();
 			boolean missingOptionalChildren = false;
-			
+
 			// Don't bother to compute missing optional children
 			// if the feature is broken - all we want is to 
 			// see if we should allow same-version re-install.
-			if (!broken) 
+			if (!broken)
 				missingOptionalChildren = isMissingOptionalChildren(candidate);
 			ISiteFeatureReference[] refs = site.getFeatureReferences();
 			monitor.beginTask("", refs.length + 1);
@@ -292,7 +298,8 @@ public class UpdatesSearchCategory extends SearchCategory {
 				ISiteFeatureReference ref = refs[i];
 				try {
 					if (isNewerVersion(candidate.getVersionedIdentifier(),
-						ref.getVersionedIdentifier(), match)) {
+						ref.getVersionedIdentifier(),
+						match)) {
 						hits.add(new Hit(candidate, ref));
 					} else {
 						// accept the same feature if the installed
@@ -308,7 +315,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 						}
 					}
 				} catch (CoreException e) {
-				}				
+				}
 				monitor.worked(1);
 				if (monitor.isCanceled())
 					return new IFeature[0];
@@ -356,8 +363,8 @@ public class UpdatesSearchCategory extends SearchCategory {
 		// no valid hits
 		return null;
 	}
-	
-	private IFeature [] getValidHits(ArrayList hits) {
+
+	private IFeature[] getValidHits(ArrayList hits) {
 		Object[] array = hits.toArray();
 		HitSorter sorter = new HitSorter();
 		sorter.sortInPlace(array);
@@ -373,15 +380,19 @@ public class UpdatesSearchCategory extends SearchCategory {
 				continue;
 			IStatus status = ActivityConstraints.validatePendingChange(job);
 			if (status == null) {
-				if (hit.isPatch())
-					result.add(job.getFeature());
-				else if (topHit==null) {
+				if (hit.isPatch()) {
+					// Do not add the patch if already installed
+					IFeature[] sameId =
+						UpdateUI.getInstalledFeatures(job.getFeature(), false);
+					if (sameId.length == 0)
+						result.add(job.getFeature());
+				} else if (topHit == null) {
 					topHit = job.getFeature();
 					result.add(topHit);
 				}
 			}
 		}
-		return (IFeature [])result.toArray(new IFeature[result.size()]);
+		return (IFeature[]) result.toArray(new IFeature[result.size()]);
 	}
 
 	public void initialize() {
@@ -397,12 +408,21 @@ public class UpdatesSearchCategory extends SearchCategory {
 			UpdateUI.logException(e, false);
 		}
 	}
-	
-	private void contributeCandidates(IConfiguredSite isite) throws CoreException {
+
+	private void contributeCandidates(IConfiguredSite isite)
+		throws CoreException {
 		IFeatureReference[] refs = isite.getConfiguredFeatures();
 		ArrayList candidatesPerSite = new ArrayList();
 		for (int i = 0; i < refs.length; i++) {
 			IFeatureReference ref = refs[i];
+			// Don't waste time searching for updates to 
+			// patches.
+			try {
+				if (UpdateUI.isPatch(ref.getFeature(null)))
+					continue;
+			} catch (CoreException e) {
+				continue;
+			}
 			Candidate c = new Candidate(ref);
 			candidatesPerSite.add(c);
 		}
@@ -413,8 +433,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		candidates.addAll(candidatesPerSite);
 	}
 
-	private void buildHierarchy(ArrayList candidates)
-		throws CoreException {
+	private void buildHierarchy(ArrayList candidates) throws CoreException {
 		Candidate[] array =
 			(Candidate[]) candidates.toArray(new Candidate[candidates.size()]);
 		// filter out included features so that only top-level features remain on the list
@@ -426,7 +445,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 			for (int j = 0; j < included.length; j++) {
 				IFeatureReference fref = included[j];
 				Candidate child = findCandidate(candidates, fref);
-				if (child!=null) {
+				if (child != null) {
 					parent.add(child);
 					child.setReference(fref);
 					candidates.remove(child);
@@ -435,9 +454,10 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 	}
 	private Candidate findCandidate(ArrayList list, IFeatureReference ref) {
-		for (int i=0; i<list.size(); i++) {
-			Candidate c = (Candidate)list.get(i);
-			if (c.ref.equals(ref)) return c;
+		for (int i = 0; i < list.size(); i++) {
+			Candidate c = (Candidate) list.get(i);
+			if (c.ref.equals(ref))
+				return c;
 		}
 		return null;
 	}
@@ -447,14 +467,13 @@ public class UpdatesSearchCategory extends SearchCategory {
 		ArrayList selected = getSelectedCandidates();
 		ISearchQuery[] queries = new ISearchQuery[selected.size()];
 		for (int i = 0; i < selected.size(); i++) {
-			Candidate candidate = (Candidate)selected.get(i);
+			Candidate candidate = (Candidate) selected.get(i);
 			IFeature feature = candidate.getFeature(null);
 			int match = candidate.getMatch();
 			IURLEntry updateEntry = candidate.getUpdateEntry();
-			if (feature==null) {
+			if (feature == null) {
 				queries[i] = null;
-			}
-			else {
+			} else {
 				queries[i] = new UpdateQuery(feature, match, updateEntry);
 			}
 		}
@@ -483,7 +502,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		else
 			return false;
 	}
-	
+
 	private boolean isNewerVersion(
 		VersionedIdentifier fvi,
 		VersionedIdentifier cvi,
@@ -500,33 +519,34 @@ public class UpdatesSearchCategory extends SearchCategory {
 		if (mode.equals(MainPreferencePage.EQUIVALENT_VALUE))
 			userMatch = IImport.RULE_EQUIVALENT;
 		else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE))
-			userMatch = IImport.RULE_COMPATIBLE;			
+			userMatch = IImport.RULE_COMPATIBLE;
 		// By default, use match rule defined in the preferences
 		int resultingMatch = userMatch;
 		//If match has been encoded in the feature reference,
 		// pick the most conservative of the two values.
-		if (match!=IImport.RULE_PERFECT) {
-			if (match==IImport.RULE_EQUIVALENT || userMatch==IImport.RULE_EQUIVALENT)
+		if (match != IImport.RULE_PERFECT) {
+			if (match == IImport.RULE_EQUIVALENT
+				|| userMatch == IImport.RULE_EQUIVALENT)
 				resultingMatch = IImport.RULE_EQUIVALENT;
 			else
 				resultingMatch = IImport.RULE_COMPATIBLE;
 		}
-		
-		if (resultingMatch==IImport.RULE_EQUIVALENT)
+
+		if (resultingMatch == IImport.RULE_EQUIVALENT)
 			return cv.isEquivalentTo(fv);
-		else if (resultingMatch==IImport.RULE_COMPATIBLE)
+		else if (resultingMatch == IImport.RULE_COMPATIBLE)
 			return cv.isCompatibleWith(fv);
 		else
 			return false;
 	}
-	
+
 	private boolean isPatch(IFeature candidate, ISiteFeatureReference ref) {
-		if (ref.isPatch()==false) return false;
+		if (ref.isPatch() == false)
+			return false;
 		try {
 			IFeature feature = ref.getFeature(null);
 			return UpdateUI.isPatch(candidate, feature);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			return false;
 		}
 	}
@@ -571,8 +591,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 				id = token;
 				version = "0.0.0";
 			}
-			Candidate c =
-				findCandidate(new VersionedIdentifier(id, version));
+			Candidate c = findCandidate(new VersionedIdentifier(id, version));
 			if (c != null)
 				tableViewer.setChecked(c, false);
 		}
@@ -605,11 +624,11 @@ public class UpdatesSearchCategory extends SearchCategory {
 		}
 		map.put("unchecked", buf.toString());
 	}
-	
+
 	private ArrayList getAllCandidates() {
 		ArrayList selected = new ArrayList();
-		for (int i=0; i<candidates.size(); i++) {
-			Candidate c = (Candidate)candidates.get(i);
+		for (int i = 0; i < candidates.size(); i++) {
+			Candidate c = (Candidate) candidates.get(i);
 			c.addToFlatList(selected, true);
 		}
 		return selected;
@@ -619,8 +638,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 			|| tableViewer.getControl() == null
 			|| tableViewer.getControl().isDisposed()) {
 			return getAllCandidates();
-		}
-		else {
+		} else {
 			ArrayList selected = new ArrayList();
 			Object[] sel = tableViewer.getCheckedElements();
 			for (int i = 0; i < sel.length; i++)
