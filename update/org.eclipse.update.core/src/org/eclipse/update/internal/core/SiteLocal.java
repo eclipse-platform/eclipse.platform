@@ -139,30 +139,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		if (config != null) {
 			addConfigurationModel((InstallConfigurationModel) config);
 
-			// check if we have to remove a configuration
-			// the first added is #0
-			while (getConfigurationHistory().length > getMaximumHistoryCount()) {
-				InstallConfigurationModel removedConfig = getConfigurationHistoryModel()[0];
-				if (removeConfigurationModel(removedConfig)) {
-
-					// DEBUG:
-					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION) {
-						UpdateManagerPlugin.debug("Removed configuration :" + removedConfig.getLabel());
-						//$NON-NLS-1$
-					}
-
-					// notify listeners
-					Object[] siteLocalListeners = listeners.getListeners();
-					for (int i = 0; i < siteLocalListeners.length; i++) {
-						((ILocalSiteChangedListener) siteLocalListeners[i]).installConfigurationRemoved((IInstallConfiguration) removedConfig);
-					}
-
-					//remove files
-					URL url = removedConfig.getURL();
-					UpdateManagerUtils.removeFromFileSystem(new File(url.getFile()));
-				}
-
-			}
+			trimHistoryToCapacity();
 
 			// set configuration as current		
 			if (getCurrentConfigurationModel() != null)
@@ -180,6 +157,35 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			}
 		}
 
+	}
+
+	/*
+	 * 
+	 */
+	private void trimHistoryToCapacity() {
+		// check if we have to remove a configuration
+		// the first added is #0
+		while (getConfigurationHistory().length > getMaximumHistoryCount()) {
+			InstallConfigurationModel removedConfig = getConfigurationHistoryModel()[0];
+			if (removeConfigurationModel(removedConfig)) {
+
+				// DEBUG:
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION) {
+					UpdateManagerPlugin.debug("Removed configuration :" + removedConfig.getLabel());
+					//$NON-NLS-1$
+				}
+
+				// notify listeners
+				Object[] siteLocalListeners = listeners.getListeners();
+				for (int i = 0; i < siteLocalListeners.length; i++) {
+					((ILocalSiteChangedListener) siteLocalListeners[i]).installConfigurationRemoved((IInstallConfiguration) removedConfig);
+				}
+
+				//remove files
+				URL url = removedConfig.getURL();
+				UpdateManagerUtils.removeFromFileSystem(new File(url.getFile()));
+			}
+		}
 	}
 	/*
 	 * @see ILocalSite#addLocalSiteChangedListener(ILocalSiteChangedListener)
@@ -208,7 +214,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		// the other are already saved
 		// and set runtim info for next startup
 		 ((InstallConfiguration) getCurrentConfiguration()).save(isTransient());
-		 
+
 		// save the local site
 		if ("file".equalsIgnoreCase(getLocationURL().getProtocol())) { //$NON-NLS-1$
 			File file = null;
@@ -324,7 +330,6 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		return newInstallConfig;
 	}
 
-
 	/*
 	 *	creates a new InstallConfiguration or clone an installConfiguration 
 	 * @since 2.0
@@ -366,27 +371,27 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	 * @since 2.0
 	 */
 	public void revertTo(IInstallConfiguration configuration, IProgressMonitor monitor, IProblemHandler handler) throws CoreException {
-	
+
 		// create the activity 
 		//Start UOW ?
 		ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_REVERT);
 		activity.setLabel(configuration.getLabel());
 		activity.setDate(new Date());
 		IInstallConfiguration newConfiguration = null;
-	
+
 		try {
 			// create a configuration
 			newConfiguration = cloneCurrentConfiguration();
 			newConfiguration.setLabel(configuration.getLabel());
-	
+
 			// add to the stack which will set up as current
 			addConfiguration(newConfiguration);
-			
+
 			// process delta
 			// the Configured featuresConfigured are the same as the old configuration
 			// the unconfigured featuresConfigured are the rest...
 			 ((InstallConfiguration) newConfiguration).revertTo(configuration, monitor, handler);
-	
+
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);
 		} catch (CoreException e) {
@@ -400,14 +405,14 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			if (newConfiguration != null)
 				 ((InstallConfiguration) newConfiguration).addActivity(activity);
 		}
-	
+
 	}
 
 	/**
 	 * @since 2.0
 	 */
 	public IInstallConfiguration addToPreservedConfigurations(IInstallConfiguration configuration) throws CoreException {
-		InstallConfiguration newConfiguration = null;		
+		InstallConfiguration newConfiguration = null;
 		if (configuration != null) {
 
 			// create new configuration based on the one to preserve
@@ -774,4 +779,12 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	public IStatus getFeatureStatus(IFeature feature) throws CoreException {
 		return getSiteStatusAnalyzer().getFeatureStatus(feature);
 	}
+	/**
+	 * @see org.eclipse.update.internal.model.SiteLocalModel#setMaximumHistoryCount(int)
+	 */
+	public void setMaximumHistoryCount(int history) {
+		super.setMaximumHistoryCount(history);
+		trimHistoryToCapacity();
+	}
+
 }

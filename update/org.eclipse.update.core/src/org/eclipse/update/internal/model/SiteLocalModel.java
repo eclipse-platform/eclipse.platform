@@ -133,7 +133,7 @@ public class SiteLocalModel extends ModelObject {
 	 */
 	public void setMaximumHistoryCount(int history) {
 		assertIsWriteable();
-		// this.history = history;
+		this.history = history;
 	}
 
 	
