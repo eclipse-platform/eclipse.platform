@@ -80,7 +80,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return the test project
 	 */
-	protected IProject getProject() {
+	protected static IProject getProject() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(ProjectHelper.PROJECT_NAME);
 	}
 	
@@ -258,7 +258,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return launch manager
 	 */
-	protected ILaunchManager getLaunchManager() {
+	public static ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 	
@@ -267,7 +267,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return the test project
 	 */
-	protected IJavaProject getJavaProject() {
+	public static IJavaProject getJavaProject() {
 		return JavaCore.create( getProject());
 	}
 	
