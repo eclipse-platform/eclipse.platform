@@ -592,6 +592,7 @@ public class ActivityConstraints {
 		for (int i = 0; i < irefs.length; i++) {
 			IFeatureReference iref = irefs[i];
 			IFeature ifeature = iref.getFeature();
+			boolean patch = isPatch(ifeature);
 			VersionedIdentifier vid = ifeature.getVersionedIdentifier();
 			String id = vid.getIdentifier();
 			PluginVersionIdentifier version = vid.getVersion();
@@ -626,13 +627,13 @@ public class ActivityConstraints {
 				//
 				// 30849: optional feature does not need
 				// to be present.
-				if (!isPatch(ifeature) && iref.isOptional()==false) {
+				if (!patch && iref.isOptional()==false) {
 					String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
 							new String[] { ifeature.getLabel(), version.toString() });
 					status.add(createStatus(feature, msg));
 				}
 			}
-			checkUnique(ifeature, features, status);
+			if (patch) checkUnique(ifeature, features, status);
 		}
 	}
 
