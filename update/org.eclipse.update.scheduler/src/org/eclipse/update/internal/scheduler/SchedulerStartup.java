@@ -106,7 +106,7 @@ public class SchedulerStartup implements IStartup {
 			if (event.getJob() == SchedulerStartup.this.job) {
                 
                 // prompt the user
-                if (!InstallWizard.isRunning()) {
+                if (SchedulerStartup.this.job.getUpdates().size() > 0 && !InstallWizard.isRunning()) {
                     if (UpdateScheduler.getDefault().getPluginPreferences().getBoolean(UpdateScheduler.P_DOWNLOAD)) {
                         UpdateUI.getStandardDisplay().asyncExec(new Runnable() {
                             public void run() {
@@ -140,7 +140,7 @@ public class SchedulerStartup implements IStartup {
                 });
             }
             // notify the manager that the job is done
-            job.done(Status.OK_STATUS);
+//            job.done(Status.OK_STATUS);
         }
         
         private void asyncNotifyDownloadUser() {
@@ -163,7 +163,7 @@ public class SchedulerStartup implements IStartup {
                 //Utilities.flushLocalFile();
             }
             // notify the manager that the job is done
-            job.done(Status.OK_STATUS);
+//            job.done(Status.OK_STATUS);
         }
 
         private void openInstallWizard2() {
