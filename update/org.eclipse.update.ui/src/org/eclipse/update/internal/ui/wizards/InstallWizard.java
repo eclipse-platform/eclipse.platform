@@ -56,6 +56,13 @@ public class InstallWizard extends Wizard {
 			(optionalFeaturesPage == null)
 				? null
 				: optionalFeaturesPage.getOptionalElements();
+		if (job.getJobType()==PendingChange.INSTALL) {
+			ArrayList conflicts = DuplicateConflictsDialog.computeDuplicateConflicts(job, targetSite, optionalFeatures);
+			if (conflicts!=null) {
+				DuplicateConflictsDialog dialog = new DuplicateConflictsDialog(getShell(), conflicts);
+				if (dialog.open()!=0) return false;
+			}
+		}
 		IRunnableWithProgress operation = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 				throws InvocationTargetException {

@@ -105,6 +105,13 @@ public class NewUpdatesWizard extends Wizard {
 			return false;
 		}
 		
+		// Check for duplication conflicts
+		ArrayList conflicts = DuplicateConflictsDialog.computeDuplicateConflicts(selectedJobs, config);
+		if (conflicts!=null) {
+			DuplicateConflictsDialog dialog = new DuplicateConflictsDialog(getShell(), conflicts);
+			if (dialog.open()!=0) return false;
+		}
+		
 		// ok to continue		
 		IRunnableWithProgress operation = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
