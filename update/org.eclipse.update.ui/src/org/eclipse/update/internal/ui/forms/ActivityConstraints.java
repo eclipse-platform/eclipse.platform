@@ -33,6 +33,8 @@ public class ActivityConstraints {
 		"ActivityConstraints.prereqCompatible";
 	private static final String KEY_PREREQ_GREATER =
 		"ActivityConstraints.prereqGreaterOrEqual";
+	private static final String KEY_OPTIONAL_CHILD = 
+		"ActivityConstraints.optionalChild";
 	private static final String KEY_CYCLE = "ActivityConstraints.cycle";
 	private static final String KEY_CONFLICT = "ActivityConstraints.conflict";
 
@@ -172,6 +174,7 @@ public class ActivityConstraints {
 	private static void validateConfigure(IFeature feature, ArrayList status) {
 		try {
 			ArrayList features = computeFeatures();
+			checkOptionalChildConfiguring(feature, status);
 			features = computeFeaturesAfterOperation(features, feature, null);
 			checkConstraints(features, status);
 
@@ -283,7 +286,12 @@ public class ActivityConstraints {
 	 * Compute a list of configured features
 	 */
 	private static ArrayList computeFeatures() throws CoreException {
-
+		return computeFeatures(true);
+	}
+	/*
+	 * Compute a list of configured features
+	 */
+	private static ArrayList computeFeatures(boolean configuredOnly) throws CoreException {
 		ArrayList features = new ArrayList();
 		ILocalSite localSite = SiteManager.getLocalSite();
 		IInstallConfiguration config = localSite.getCurrentConfiguration();
@@ -291,7 +299,13 @@ public class ActivityConstraints {
 
 		for (int i = 0; i < csites.length; i++) {
 			IConfiguredSite csite = csites[i];
-			IFeatureReference[] crefs = csite.getConfiguredFeatures();
+			
+			IFeatureReference[] crefs;
+			
+			if (configuredOnly)
+				crefs = csite.getConfiguredFeatures();
+			else
+				crefs = csite.getSite().getFeatureReferences();
 			for (int j = 0; j < crefs.length; j++) {
 				IFeatureReference cref = crefs[j];
 				IFeature cfeature = cref.getFeature();
@@ -720,7 +734,59 @@ public class ActivityConstraints {
 				status.add(e.getStatus());
 			}
 		}
+	}
+	
+	/*
+	 * Verify that a parent of an optional child is configured
+	 * before we allow the child to be configured as well
+	 */
+	
+	private static void checkOptionalChildConfiguring(IFeature feature, ArrayList status) throws CoreException {
+		ILocalSite localSite = SiteManager.getLocalSite();
+		IInstallConfiguration config = localSite.getCurrentConfiguration();
+		IConfiguredSite[] csites = config.getConfiguredSites();
 
+		boolean included=false;
+		for (int i = 0; i < csites.length; i++) {
+			IConfiguredSite csite = csites[i];
+			IFeatureReference[] crefs = csite.getSite().getFeatureReferences();
+			for (int j = 0; j < crefs.length; j++) {
+				IFeatureReference cref = crefs[j];
+				IFeature cfeature = cref.getFeature();
+				if (isParent(cfeature, feature, true)) {
+					// Included in at least one feature as optional
+					included=true;
+					if (csite.isConfigured(cfeature)) {
+						// At least one feature parent
+						// is enabled - it is OK to
+						// configure optional child.
+						return;
+					}
+				}
+			}
+		}
+		if (included) {
+			// feature is included as optional but
+			// no parent is currently configured.
+			String msg = UpdateUIPlugin.getResourceString(KEY_OPTIONAL_CHILD);
+			status.add(createStatus(feature, msg));
+		}
+		else {
+			//feature is root - can be configured
+		}
+	}
+	
+	private static boolean isParent(IFeature candidate, IFeature feature, boolean optionalOnly) throws CoreException {
+		IFeatureReference [] refs = candidate.getIncludedFeatureReferences();
+		for (int i=0; i<refs.length; i++) {
+			IFeatureReference child = refs[i];
+			if (feature.getVersionedIdentifier().equals(child.getVersionedIdentifier())) {
+				// included; return true if optionality is not 
+				// important or it is and the inclusion is optional
+				return optionalOnly==false || child.isOptional();
+			}
+		}
+		return false;
 	}
 
 	private static IStatus createMultiStatus(
