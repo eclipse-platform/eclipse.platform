@@ -17,5 +17,9 @@ public interface ISearchQuery {
  */
 	public ISiteAdapter getSearchSite();
 	
+/**
+ * Returns an array of features that match the search query
+ * using the provided site as a source.
+ */
 	public IFeature [] getMatchingFeatures(ISite site, IProgressMonitor monitor);
 }

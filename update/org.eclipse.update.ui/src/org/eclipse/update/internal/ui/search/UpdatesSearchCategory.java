@@ -34,9 +34,13 @@ public class UpdatesSearchCategory extends SearchCategory {
 
 	class FeatureLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
-			if (obj instanceof IFeature) {
-				IFeature feature = (IFeature) obj;
-				return feature.getVersionedIdentifier().toString();
+			if (obj instanceof IFeatureReference) {
+				IFeatureReference fref = (IFeatureReference)obj;
+				try {
+					return fref.getVersionedIdentifier().toString();
+				}
+				catch (CoreException e) {
+				}
 			}
 			return obj.toString();
 		}
@@ -100,6 +104,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 	class UpdateQuery implements ISearchQuery {
 		IFeature candidate;
 		ISiteAdapter adapter;
+		int match = IImport.RULE_PERFECT;
 
 		public UpdateQuery(IFeature candidate) {
 			this.candidate = candidate;
@@ -107,6 +112,12 @@ public class UpdatesSearchCategory extends SearchCategory {
 			if (entry != null && entry.getURL() != null)
 				adapter = new SiteAdapter(entry);
 		}
+		
+		public UpdateQuery(IFeature candidate, int match) {
+			this(candidate);
+			this.match = match;
+		}
+		
 		public ISiteAdapter getSearchSite() {
 			return adapter;
 		}
@@ -163,7 +174,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 				IFeatureReference ref = refs[i];
 				try {
 					if (isNewerVersion(candidate.getVersionedIdentifier(),
-						ref.getVersionedIdentifier())) {
+						ref.getVersionedIdentifier(), match)) {
 						hits.add(new Hit(candidate, ref));
 					} else {
 						// accept the same feature if the installed
@@ -228,13 +239,19 @@ public class UpdatesSearchCategory extends SearchCategory {
 			IConfiguredSite[] isites = config.getConfiguredSites();
 			for (int i = 0; i < isites.length; i++) {
 				IFeatureReference[] refs = isites[i].getConfiguredFeatures();
+				ArrayList candidatesPerSite = new ArrayList();
 				for (int j = 0; j < refs.length; j++) {
 					IFeatureReference ref = refs[j];
-					candidates.add(ref.getFeature());
+					candidatesPerSite.add(ref);
 				}
+				// All included features must be local to the
+				// configuration site, so filter out included
+				// features here.
+				filterIncludedFeatures(candidatesPerSite);
+				// Add the remaining root candidates to 
+				// the global list of candidates.
+				candidates.addAll(candidatesPerSite);
 			}
-			filterIncludedFeatures(candidates);
-
 		} catch (CoreException e) {
 			UpdateUIPlugin.logException(e, false);
 		}
@@ -242,19 +259,22 @@ public class UpdatesSearchCategory extends SearchCategory {
 
 	private void filterIncludedFeatures(ArrayList candidates)
 		throws CoreException {
-		IFeature[] array =
-			(IFeature[]) candidates.toArray(new IFeature[candidates.size()]);
+		IFeatureReference[] array =
+			(IFeatureReference[]) candidates.toArray(new IFeatureReference[candidates.size()]);
 		// filter out included features so that only top-level features remain on the list
 		for (int i = 0; i < array.length; i++) {
-			IFeature feature = array[i];
+			IFeature feature = array[i].getFeature();
 			IFeatureReference[] included =
 				feature.getIncludedFeatureReferences();
 			for (int j = 0; j < included.length; j++) {
 				IFeatureReference fref = included[j];
-				IFeature ifeature = fref.getFeature();
-				int index = candidates.indexOf(ifeature);
-				if (index != -1)
-					candidates.remove(index);
+				int index = candidates.indexOf(fref);
+				if (index != -1) {
+					// leave it on the list only 
+					// if 'match' is not perfect.
+					if (fref.getMatch()==IImport.RULE_PERFECT)
+						candidates.remove(index);
+				}
 			}
 		}
 	}
@@ -263,7 +283,15 @@ public class UpdatesSearchCategory extends SearchCategory {
 		ArrayList selected = getSelectedCandidates();
 		ISearchQuery[] queries = new ISearchQuery[selected.size()];
 		for (int i = 0; i < selected.size(); i++) {
-			queries[i] = new UpdateQuery((IFeature) selected.get(i));
+			IFeatureReference ref = (IFeatureReference)selected.get(i);
+			try {
+				IFeature candidate = ref.getFeature();
+				queries[i] = new UpdateQuery(candidate, ref.getMatch());
+			}
+			catch (CoreException e) {
+				// cannot really be here
+				queries[i] = null;
+			}
 		}
 		return queries;
 	}
@@ -286,6 +314,42 @@ public class UpdatesSearchCategory extends SearchCategory {
 		if (mode.equals(MainPreferencePage.EQUIVALENT_VALUE))
 			return cv.isEquivalentTo(fv);
 		else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE))
+			return cv.isCompatibleWith(fv);
+		else
+			return false;
+	}
+	
+	private boolean isNewerVersion(
+		VersionedIdentifier fvi,
+		VersionedIdentifier cvi,
+		int match) {
+		if (!fvi.getIdentifier().equals(cvi.getIdentifier()))
+			return false;
+		PluginVersionIdentifier fv = fvi.getVersion();
+		PluginVersionIdentifier cv = cvi.getVersion();
+		String mode = MainPreferencePage.getUpdateVersionsMode();
+		boolean greater = cv.isGreaterThan(fv);
+		if (!greater)
+			return false;
+		int userMatch = IImport.RULE_GREATER_OR_EQUAL;
+		if (mode.equals(MainPreferencePage.EQUIVALENT_VALUE))
+			userMatch = IImport.RULE_EQUIVALENT;
+		else if (mode.equals(MainPreferencePage.COMPATIBLE_VALUE))
+			userMatch = IImport.RULE_COMPATIBLE;			
+		// By default, use match rule defined in the preferences
+		int resultingMatch = userMatch;
+		//If match has been encoded in the feature reference,
+		// pick the most conservative of the two values.
+		if (match!=IImport.RULE_PERFECT) {
+			if (match==IImport.RULE_EQUIVALENT || userMatch==IImport.RULE_EQUIVALENT)
+				resultingMatch = IImport.RULE_EQUIVALENT;
+			else
+				resultingMatch = IImport.RULE_COMPATIBLE;
+		}
+		
+		if (resultingMatch==IImport.RULE_EQUIVALENT)
+			return cv.isEquivalentTo(fv);
+		else if (resultingMatch==IImport.RULE_COMPATIBLE)
 			return cv.isCompatibleWith(fv);
 		else
 			return false;
