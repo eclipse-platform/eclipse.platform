@@ -1,4 +1,0 @@
-# Debugging options for the org.eclipse.ant.core plugin.
-
-# Turn on debugging for the org.eclipse.ant.core plugin.
-org.eclipse.ant.core/debug=true
