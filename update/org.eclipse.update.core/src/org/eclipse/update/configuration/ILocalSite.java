@@ -6,6 +6,7 @@ package org.eclipse.update.configuration;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.IFeature;
+import org.eclipse.update.core.ISite;
 
 /**
  * Local Site.
@@ -257,4 +258,21 @@ public interface ILocalSite extends IAdaptable {
 	 * </p>
 	 */
 	public IStatus getFeatureStatus(IFeature feature) throws CoreException ;	
+
+	/**
+	 * returns the <code>ISite</code> the feature was installed from
+	 * or <code>null</code>
+	 * 
+	 * @param feature the feature
+	 * @return the originiting site of the feature
+	 * @exception CoreException
+	 * @since 2.0.2
+	 * <p>
+	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to
+	 * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
+	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
+	 * (repeatedly) as the API evolves.
+	 * </p>
+	 */
+	public ISite getOriginatingSite(IFeature feature) throws CoreException;
 }

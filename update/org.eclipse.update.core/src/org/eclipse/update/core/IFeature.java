@@ -65,6 +65,14 @@ public interface IFeature extends IAdaptable {
 	
 	
 	/**
+	 * Indicates a disable feature
+	 * 
+	 * @see ILocalSite#getStatus(IFeature)
+	 * @since 2.0.2
+	 */	
+	public static final int STATUS_DISABLE = -1;
+		
+	/**
 	 * Indicates the one-click update will search the 
 	 * location of the nesting root feature.
 	 * 

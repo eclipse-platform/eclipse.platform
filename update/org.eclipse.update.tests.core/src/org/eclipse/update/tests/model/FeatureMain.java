@@ -132,8 +132,9 @@ public class FeatureMain extends UpdateManagerTestCase {
 		ImportModel[] imp = feature.getImportModels();
 		for (int i=0; i<imp.length; i++) {
 			w.println(in2+"<import");
-			w.println(in2+"   "+"plugin=\""+imp[i].getPluginIdentifier()+"\"");
-			w.println(in2+"   "+"version=\""+imp[i].getPluginVersion()+"\"");
+			w.println(in2+"   "+(imp[i].isFeatureImport()?"feature":"plugin"));
+			w.println(in2+"   "+"id=\""+imp[i].getIdentifier()+"\"");
+			w.println(in2+"   "+"version=\""+imp[i].getVersion()+"\"");
 			w.println(in2+"   "+"match=\""+imp[i].getMatchingRuleName()+"\"");
 			w.println(in2+"   "+"/>");
 		}

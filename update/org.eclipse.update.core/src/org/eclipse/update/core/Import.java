@@ -26,7 +26,7 @@ public class Import extends ImportModel implements IImport {
 	 * @see IImport#getIdentifier()
 	 */
 	public VersionedIdentifier getVersionedIdentifier() {
-		return new VersionedIdentifier(getPluginIdentifier(), getPluginVersion());
+		return new VersionedIdentifier(getIdentifier(), getVersion());
 	}
 
 	/**
@@ -35,6 +35,14 @@ public class Import extends ImportModel implements IImport {
 	 */
 	public int getRule() {
 		return UpdateManagerUtils.getMatchingRule(getMatchingRuleName());
+	}
+
+	/**
+	 * Returns the dependency kind
+	 * @see org.eclipse.update.core.IImport#getKind()
+	 */
+	public int getKind() {
+		return isFeatureImport()?KIND_FEATURE:KIND_PLUGIN;
 	}
 
 }

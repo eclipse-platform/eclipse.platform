@@ -1099,7 +1099,24 @@ public class DefaultFeatureParser extends DefaultHandler {
 	 * process import info
 	 */
 	private void processImport(Attributes attributes) {
-		String id = attributes.getValue("plugin"); //$NON-NLS-1$
+		String pluginID = attributes.getValue("plugin"); //$NON-NLS-1$
+		String featureID = attributes.getValue("feature"); //$NON-NLS-1$
+		
+		if(!(pluginID==null ^ featureID==null)) {
+			internalError(Policy.bind("DefaultFeatureParser.PluginAndFeatureId"));
+			return ;
+		}
+		
+		// since 2.0.2 , manage feature and plugin import
+		String id = null;
+		boolean plugin = false;
+		if (pluginID==null){
+			id = featureID;
+		} else {
+			id=pluginID;
+			plugin= true;
+		}
+		
 		if (id == null || id.trim().equals("")) //$NON-NLS-1$
 			internalError(
 				Policy.bind("DefaultFeatureParser.MissingId", getState(currentState)));
@@ -1118,8 +1135,9 @@ public class DefaultFeatureParser extends DefaultHandler {
 					match = "compatible";
 			}
 			
-			imp.setPluginIdentifier(id);
-			imp.setPluginVersion(ver);
+			imp.setIdentifier(id);
+			imp.setVersion(ver);
+			imp.isFeatureImport(featureID!=null);
 			imp.setMatchingRuleName(match);
 			objectStack.push(imp);
 

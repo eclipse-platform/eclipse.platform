@@ -192,6 +192,10 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);
+			// set originating site
+			String siteURL = feature.getSite().getURL().toExternalForm();
+			String featureURL = installedFeature.getURL().toExternalForm();
+			OriginatingSitesProperties.getDefault().setProperty(featureURL,siteURL);
 			// notify listeners
 			Object[] siteListeners = listeners.getListeners();
 			for (int i = 0; i < siteListeners.length; i++) {

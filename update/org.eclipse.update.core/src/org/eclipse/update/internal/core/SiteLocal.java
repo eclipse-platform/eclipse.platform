@@ -37,6 +37,9 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	 */
 	public static boolean newFeaturesFound = false;
 
+	// the map of originating sites
+	private static OriginatingSitesProperties originatingSites = null;
+	
 	/*
 	 * initialize the configurations from the persistent model.
 	 * Set the reconciliation as non optimistic
@@ -211,6 +214,9 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		// the other are already saved
 		// and set runtim info for next startup
 		 ((InstallConfiguration) getCurrentConfiguration()).save(isTransient());
+
+		// save the originating sites
+		OriginatingSitesProperties.getDefault().store();
 
 		// save the local site
 		if ("file".equalsIgnoreCase(getLocationURL().getProtocol())) { //$NON-NLS-1$
@@ -762,5 +768,31 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	 */
 	public IStatus getFeatureStatus(IFeature feature) throws CoreException {
 		return getSiteStatusAnalyzer().getFeatureStatus(feature);
+	}
+	
+	/**
+	 * Method getOriginatingSite.
+	 * @param feature
+	 * @return ISite
+	 */
+	public ISite getOriginatingSite(IFeature feature) throws CoreException {
+		if (originatingSites==null) originatingSites = OriginatingSitesProperties.getDefault();
+		if (feature==null) {
+			throw Utilities.newCoreException(Policy.bind("SiteLocal.NullFeature"),null);
+		}
+		
+		// retrieve the originatingSite
+		String featureID = feature.getURL().toExternalForm();
+		String siteString = originatingSites.getProperty(featureID);
+		if (siteString==null) return null;
+		
+		// transform in URL
+		URL siteURL;
+		try {
+			siteURL = new URL(siteString);
+		} catch (MalformedURLException e){
+			throw Utilities.newCoreException(Policy.bind("SiteLocal.WrongURL"),null);	
+		}
+		return SiteManager.getSite(siteURL);
 	}
 }

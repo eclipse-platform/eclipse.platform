@@ -152,10 +152,10 @@ public class DefaultModelWriter {
 		
 		for (int i=0; imp!=null && i<imp.length; i++) {
 			w.println(in2+"<import");
-			if (imp[i].getPluginIdentifier()!=null)
-				w.println(in2+"   "+"plugin=\""+imp[i].getPluginIdentifier()+"\"");
-			if (imp[i].getPluginVersion()!=null)
-				w.println(in2+"   "+"version=\""+imp[i].getPluginVersion()+"\"");
+			if (imp[i].getIdentifier()!=null)
+				w.println(in2+"   "+"plugin=\""+imp[i].getIdentifier()+"\"");
+			if (imp[i].getVersion()!=null)
+				w.println(in2+"   "+"version=\""+imp[i].getVersion()+"\"");
 			if (imp[i].getMatchingRuleName()!=null)
 				w.println(in2+"   "+"match=\""+imp[i].getMatchingRuleName()+"\"");
 			w.println(in2+"   "+"/>");

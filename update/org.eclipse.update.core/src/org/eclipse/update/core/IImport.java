@@ -58,6 +58,18 @@ public interface IImport extends IAdaptable {
 	 */
 	public static final int RULE_GREATER_OR_EQUAL = 4;
 
+	/**
+	 * The import relates to a plugin
+	 * @since 2.0.2
+	 */
+	public static final int KIND_PLUGIN = 0;
+	
+	/**
+	 * The import relates to a feature
+	 * @since 2.0.2
+	 */
+	public static final int KIND_FEATURE = 0;
+
 	/** 
 	 * Returns an identifier of the dependent plug-in.
 	 * 
@@ -73,4 +85,14 @@ public interface IImport extends IAdaptable {
 	 * @since 2.0 
 	 */
 	public int getRule();
+	
+	/**
+	 * Returns the dependency kind
+	 * 
+	 * @see KIND_PLUGIN
+	 * @see KIND_FEATURE
+	 * @return KIND_PLUGIN if the dependency relates to a plugin, 
+	 * KIND_FEATURE if the dependency relates to a feature.
+	 */
+	public int getKind();
 }

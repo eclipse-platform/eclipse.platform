@@ -5,6 +5,7 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
 
+import java.io.*;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
@@ -41,6 +42,7 @@ public class InternalSiteManager {
 	// true if an exception occured creating localSite
 	// so we cache it and don't attempt to create it again
 	private static CoreException exceptionOccured = null;
+
 
 	/*
 	 * @see SiteManager#getLocalSite()
