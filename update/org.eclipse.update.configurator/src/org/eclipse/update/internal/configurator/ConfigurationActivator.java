@@ -67,14 +67,19 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 		
 		//Short cut, if the configuration has not changed
 		String application = configuration.getApplicationIdentifier();
+		String product = configuration.getPrimaryFeatureIdentifier();
 		
 		if (lastTimeStamp==configuration.getChangeStamp() && System.getProperties().get("osgi.dev") == null) {		
 			Utils.debug("Same last time stamp *****");
 			if (System.getProperty("eclipse.application") == null) {
 				Utils.debug("no eclipse.application, setting it and returning");
 				System.setProperty("eclipse.application", application);
-				return;
 			}
+			if (System.getProperty("eclipse.product") == null) {
+				Utils.debug("no eclipse.product, setting it and returning");
+				System.setProperty("eclipse.product", product);
+			}
+			return;
 		}
 
 		Utils.debug("Starting update configurator...");
@@ -173,8 +178,11 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 			}
 			context.ungetService(reference);
 			refreshPackages((Bundle[]) toRefresh.toArray(new Bundle[toRefresh.size()]));
+			
 			if (System.getProperty("eclipse.application") == null)
 				System.setProperty("eclipse.application", configuration.getApplicationIdentifier());
+			if (System.getProperty("eclipse.product") == null)
+				System.setProperty("eclipse.product", configuration.getPrimaryFeatureIdentifier());
 			
 			// keep track of the last config successfully processed
 			writePlatformConfigurationTimeStamp();
