@@ -16,9 +16,9 @@ import org.eclipse.update.core.model.ModelObject;
 public class SiteLocalModel extends ModelObject {
 
 
-	public static final String SITE_LOCAL_PREFIX = "LocalSite"; //$NON-NLS-1$
-	public static final String DEFAULT_CONFIG_PREFIX = "Config"; //$NON-NLS-1$
-	public static final String DEFAULT_PRESERVED_CONFIG_PREFIX = "PreservedConfig"; //$NON-NLS-1$
+	public static final String SITE_LOCAL_PREFIX = "v2LocalSite"; //$NON-NLS-1$
+	public static final String DEFAULT_CONFIG_PREFIX = "v2Config"; //$NON-NLS-1$
+	public static final String DEFAULT_PRESERVED_CONFIG_PREFIX = "v2PreservedConfig"; //$NON-NLS-1$
 
 	public static final String SITE_LOCAL_FILE = SITE_LOCAL_PREFIX +".xml"; //$NON-NLS-1$
 	public static final String DEFAULT_CONFIG_FILE = DEFAULT_CONFIG_PREFIX+".xml"; //$NON-NLS-1$
