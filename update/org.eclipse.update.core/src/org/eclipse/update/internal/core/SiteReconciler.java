@@ -768,14 +768,18 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				VersionedIdentifier rightVid = right.getVersionedIdentifier();
 				if (leftVid.getIdentifier().equals(rightVid.getIdentifier())) {
 					// duplicate versions ... keep latest
-					if (rightVid.getVersion().isGreaterOrEqualTo(leftVid.getVersion())) {
-						result.remove(left);
-						// debug
-						if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-							UpdateManagerPlugin.debug("Removing \"duplicate\" " + left.getVersionedIdentifier().toString());
-						}
-						break;
+					IFeature oldest = null;
+					// bug 31940. If right>left remove left ELSE REMOVE RIGHT
+					if (rightVid.getVersion().isGreaterOrEqualTo(leftVid.getVersion()))
+						oldest = left;
+					else
+						oldest = right;
+					result.remove(oldest);
+					// debug
+					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+						UpdateManagerPlugin.debug("Removing \"duplicate\" " + oldest.getVersionedIdentifier().toString());
 					}
+
 				}
 			}
 		}
@@ -926,7 +930,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 						VersionedIdentifier id = element.getImports()[i].getVersionedIdentifier();
 						if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
 							UpdateManagerPlugin.debug("Found patch " + element + " for feature identifier " + id);
-						patchedFeaturesID.add(id);							
+						patchedFeaturesID.add(id);
 					}
 				}
 
