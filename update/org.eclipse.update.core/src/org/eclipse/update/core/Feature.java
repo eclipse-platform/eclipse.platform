@@ -287,6 +287,7 @@ public class Feature extends FeatureModel implements IFeature {
 		IFeatureReference alreadyInstalledFeature = null;
 		IFeatureContentConsumer consumer = null;
 		IPluginEntry[] targetSitePluginEntries = null;
+		ArrayList justInstalledPlugins = new ArrayList();
 
 		try {
 			// determine list of plugins to install
@@ -438,8 +439,10 @@ public class Feature extends FeatureModel implements IFeature {
 
 				if (monitor.isCanceled())
 					abort();
-				else
+				else {
+					justInstalledPlugins.add(pluginsToInstall[i]);
 					InstallRegistry.registerPlugin(pluginsToInstall[i]);
+				}
 			}
 
 			// check if we need to install feature files [16718]	
@@ -461,13 +464,17 @@ public class Feature extends FeatureModel implements IFeature {
 						msg + " " + references[i].getIdentifier()); //$NON-NLS-1$
 					consumer.store(references[i], subMonitor);
 				}
-				InstallRegistry.registerFeature(this);
-			} else {
-				monitor.worked(1);
-			}
 
-			if (monitor.isCanceled())
-				abort();
+				if (monitor.isCanceled())
+					abort();
+				else
+					InstallRegistry.registerFeature(this);
+			} else {
+				if (monitor.isCanceled())
+					abort();
+				else
+					monitor.worked(1);
+			}
 
 			// call handler to complete installation (eg. handle non-plugin entries)
 			handler.completeInstall(consumer);
@@ -498,6 +505,9 @@ public class Feature extends FeatureModel implements IFeature {
 						// close the log
 						recoveryLog.close(ErrorRecoveryLog.END_INSTALL_LOG);
 					} else {
+						// unregister the just installed plugins
+						for (int i=0; i<justInstalledPlugins.size(); i++)
+							InstallRegistry.unregisterPlugin(((IPluginEntry)justInstalledPlugins.get(i)));
 						consumer.abort();
 					}
 				}
