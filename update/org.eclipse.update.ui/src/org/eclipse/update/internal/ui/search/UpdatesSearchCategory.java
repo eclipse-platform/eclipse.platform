@@ -176,7 +176,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		public PendingChange getJob() {
 			try {
 				IFeature feature = ref.getFeature(null);
-				return new PendingChange(candidate, feature);
+				return new PendingChange(patch?null:candidate, feature);
 			} catch (CoreException e) {
 				return null;
 			}
@@ -521,6 +521,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 	}
 	
 	private boolean isPatch(IFeature candidate, ISiteFeatureReference ref) {
+		if (ref.isPatch()==false) return false;
 		try {
 			IFeature feature = ref.getFeature(null);
 			return UpdateUI.isPatch(candidate, feature);
