@@ -436,9 +436,10 @@ public class Feature extends FeatureModel implements IFeature {
 					pluginConsumer.store(references[j], subMonitor);
 				}
 
-				InstallRegistry.registerPlugin(pluginsToInstall[i]);
 				if (monitor.isCanceled())
 					abort();
+				else
+					InstallRegistry.registerPlugin(pluginsToInstall[i]);
 			}
 
 			// check if we need to install feature files [16718]	
