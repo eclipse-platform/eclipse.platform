@@ -29,7 +29,6 @@ public class AntUIPerformanceTests extends TestSuite {
         suite.setName("Ant UI Performance Unit Tests");
 		suite.addTest(new TestSuite(ProjectCreationDecorator.class));
 		suite.addTest(new TestSuite(OpenAntEditorTest.class));
-		//suite.addTest(new TestSuite(NonInitialTypingTest.class));
 		suite.addTest(new TestSuite(OpenLaunchConfigurationDialogTests.class));
 		suite.addTest(new TestSuite(SeparateVMTests.class));
         return suite;

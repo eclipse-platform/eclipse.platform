@@ -20,7 +20,9 @@ import org.eclipse.ant.internal.ui.model.IAntUIPreferenceConstants;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -53,31 +55,42 @@ public class ProjectCreationDecorator extends AbstractAntUITest {
 			File root = AntUITestPlugin.getDefault().getFileInPlugin(ProjectHelper.TEST_BUILDFILES_DIR);
 			ProjectHelper.importFilesFromDirectory(root, folder.getFullPath(), null);
 			
-			createLaunchConfiguration("echoing");
+			createLaunchConfigurationForBoth("echoing");
 			createLaunchConfiguration("build");
 			createLaunchConfiguration("bad");
-			createLaunchConfigurationForSeparateVM("echoingSepVM");
-			createLaunchConfigurationForSeparateVM("extensionPointSepVM");
-			createLaunchConfigurationForSeparateVM("extensionPointTaskSepVM");
-			createLaunchConfigurationForSeparateVM("extensionPointTypeSepVM");
+			createLaunchConfigurationForSeparateVM("extensionPointSepVM", null);
+			createLaunchConfigurationForSeparateVM("extensionPointTaskSepVM", null);
+			createLaunchConfigurationForSeparateVM("extensionPointTypeSepVM", null);
+			
+			createLaunchConfiguration("big", "buildfiles/performance/build.xml");
 		} finally {
 			//do not show the Ant build failed error dialog
 			AntUIPlugin.getDefault().getPreferenceStore().setValue(IAntUIPreferenceConstants.ANT_ERROR_DIALOG, false);
 		}
 	}
 	
+	private void createLaunchConfigurationForBoth(String launchConfigName) throws Exception {
+		createLaunchConfiguration(launchConfigName);
+		createLaunchConfigurationForSeparateVM(launchConfigName + "SepVM", launchConfigName);
+		
+	}
+
 	/**
 	 * Creates a shared launch configuration for launching Ant in a separate VM with the given
 	 * name.
 	 */
-	protected void createLaunchConfigurationForSeparateVM(String launchConfigName) throws Exception {
+	protected void createLaunchConfigurationForSeparateVM(String launchConfigName, String buildFileName) throws Exception {
 		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(IAntLaunchConfigurationConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
 		ILaunchConfigurationWorkingCopy config = type.newInstance(getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName);
 		
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner"); //$NON-NLS-1$
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, "org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getJavaProject().getElementName());
-		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, "${workspace_loc:/" + ProjectHelper.PROJECT_NAME + "/buildfiles/" + launchConfigName + ".xml}");
+		if (buildFileName == null) {
+			buildFileName= launchConfigName;
+		} 
+		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, "${workspace_loc:/" + ProjectHelper.PROJECT_NAME + "/buildfiles/" + buildFileName + ".xml}");
+		
 		config.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
 		config.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID, IAntUIConstants.REMOTE_ANT_PROCESS_FACTORY_ID);
 		 
@@ -91,14 +104,19 @@ public class ProjectCreationDecorator extends AbstractAntUITest {
 	 * name.
 	 */
 	protected void createLaunchConfiguration(String launchConfigName) throws Exception {
-		ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(IAntLaunchConfigurationConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+	    createLaunchConfiguration(launchConfigName, ProjectHelper.PROJECT_NAME + "/buildfiles/" + launchConfigName + ".xml");
+	}
+	
+	public static ILaunchConfiguration createLaunchConfiguration(String launchConfigName, String path) throws CoreException {
+	    ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(IAntLaunchConfigurationConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
 		ILaunchConfigurationWorkingCopy config = type.newInstance(getJavaProject().getProject().getFolder("launchConfigurations"), launchConfigName);
 	
 		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, getJavaProject().getElementName());
-		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, "${workspace_loc:/" + ProjectHelper.PROJECT_NAME + "/buildfiles/" + launchConfigName + ".xml}");
+		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, "${workspace_loc:/" + path + "}");
 		config.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
 			
 		config.doSave();
+		return config;
 	}
 
 	private void setVM(ILaunchConfigurationWorkingCopy config) {

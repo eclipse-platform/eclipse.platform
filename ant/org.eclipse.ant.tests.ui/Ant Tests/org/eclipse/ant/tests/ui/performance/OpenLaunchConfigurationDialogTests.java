@@ -11,7 +11,7 @@
 
 package org.eclipse.ant.tests.ui.performance;
 
-import org.eclipse.ant.internal.ui.IAntUIConstants;
+import org.eclipse.ant.internal.ui.model.IAntUIConstants;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
