@@ -226,6 +226,21 @@ public interface ISite extends IAdaptable {
 	public IFeatureReference install(IFeature feature, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
 
 	/**
+	 * Installs the specified feature on this site.
+	 * Only optional features passed as parameter will be installed.
+	 * 
+	 * @param feature feature to install
+	 * @param optionalfeatures list of optional features to be installed
+	 * @param verificationListener install verification listener
+	 * @param monitor install monitor, can be <code>null</code>
+	 * @exception InstallAbortedException when the user cancels the install
+	 * @exception CoreException
+	 * @since 2.0 
+	 */
+	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalfeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
+
+
+	/**
 	 * Removes (uninstalls) the specified feature from this site. This method
 	 * takes into account plug-in entries referenced by the specified fetaure
 	 * that continue to be required by other features installed on this site.

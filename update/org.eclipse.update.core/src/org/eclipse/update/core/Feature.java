@@ -319,7 +319,7 @@ public class Feature extends FeatureModel implements IFeature {
 					if (monitor != null)
 						subMonitor = new SubProgressMonitor(monitor, 5);
 					((Site) targetSite).install(// need to cast
-					childFeature, consumer, verifier, verificationListener, subMonitor);
+					childFeature, optionalfeatures, consumer, verifier, verificationListener, subMonitor);
 				}
 			}
 

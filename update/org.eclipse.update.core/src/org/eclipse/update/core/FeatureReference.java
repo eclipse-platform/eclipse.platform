@@ -204,6 +204,13 @@ public class FeatureReference
 	 * @see org.eclipse.update.core.IFeatureReference#getName()
 	 */
 	public String getName() {
+		if (getOptions()==null) {
+			try {
+				return getFeature().toString();
+			} catch (CoreException e){
+				UpdateManagerPlugin.warn("",e);
+			}
+		}
 		return getOptions().getName();
 	}
 
@@ -211,6 +218,7 @@ public class FeatureReference
 	 * @see org.eclipse.update.core.IFeatureReference#isOptional()
 	 */
 	public boolean isOptional() {
+		if (getOptions()==null) return false;
 		return getOptions().isOptional();
 	}
 

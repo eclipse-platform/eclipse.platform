@@ -363,7 +363,7 @@ public class Site extends SiteModel implements ISite {
 	}
 
 	/**
-	 * Install the specified feature on this site.
+	 * Install the specified feature and all optional features on this site.
 	 * This implementation always throws UnsupportedOperationException
 	 * because this implementation does not support the install action.
 	 * 
@@ -375,6 +375,26 @@ public class Site extends SiteModel implements ISite {
 	 */
 	public IFeatureReference install(
 		IFeature sourceFeature,
+		IVerificationListener verificationListener,
+		IProgressMonitor progress)
+		throws InstallAbortedException,CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Install the specified feature and listed optional features on this site.
+	 * This implementation always throws UnsupportedOperationException
+	 * because this implementation does not support the install action.
+	 * 
+	 * @see ISite#install(IFeature, IVerificationListener, IProgressMonitor)
+	 * @exception InstallAbortedException when the user cancels the install
+	 * @exception CoreException
+	 * @exception java.jang.UnsupportedOperationException
+	 * @since 2.0
+	 */
+	public IFeatureReference install(
+		IFeature sourceFeature,
+		IFeatureReference[] optionalFeatures,
 		IVerificationListener verificationListener,
 		IProgressMonitor progress)
 		throws InstallAbortedException,CoreException {
@@ -399,6 +419,7 @@ public class Site extends SiteModel implements ISite {
 	 */
 	 public IFeatureReference  install(
 		IFeature sourceFeature,
+		IFeatureReference[] optionalFeatures,
 		IFeatureContentConsumer parentContentConsumer,
 		IVerifier parentVerifier,
 		IVerificationListener verificationListener,

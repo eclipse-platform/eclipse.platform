@@ -16,6 +16,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.IURLEntry;
+import org.eclipse.update.core.model.InstallAbortedException;
 import org.eclipse.update.internal.core.*;
 
 public class SiteFTP implements ISite {
@@ -223,6 +224,13 @@ public class SiteFTP implements ISite {
 	 * @see ISite#addPluginEntry(IPluginEntry)
 	 */
 	public void addPluginEntry(IPluginEntry pluginEntry) {
+	}
+
+	/**
+	 * @see org.eclipse.update.core.ISite#install(IFeature, IFeatureReference[], IVerificationListener, IProgressMonitor)
+	 */
+	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalfeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException {
+		return null;
 	}
 
 }

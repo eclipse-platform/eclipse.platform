@@ -91,11 +91,28 @@ public interface IConfiguredSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public IFeatureReference install(
-		IFeature feature,
-		IVerificationListener verificationListener,
-		IProgressMonitor monitor)
-		throws CoreException;
+	public IFeatureReference install(IFeature feature, IVerificationListener verificationListener, IProgressMonitor monitor) throws CoreException;
+
+	/**
+	 * Install the specified feature on this site.
+	 * Only the specified optional features will be installed
+	 * 
+	 * @param feature feature to install
+	 * @param optionalFeatures optional features to install
+	 * @param verificationListener verification listener, or <code>null</code>
+	 * @param monitor progress monitor, or <code>null</code>
+	 * @exception InstallAbortedException when the user cancels the install
+	 * @exception CoreException
+	 * @since 2.0 
+	 * <p>
+	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to
+	 * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
+	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
+	 * (repeatedly) as the API evolves.
+	 * </p>
+	 */
+	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws CoreException;
+
 
 	/**
 	 * Remove (uninstall) the specified feature from this site
@@ -110,8 +127,7 @@ public interface IConfiguredSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public void remove(IFeature feature, IProgressMonitor monitor)
-		throws CoreException;
+	public void remove(IFeature feature, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Indicates if the specified feature is "broken". A feature is considered
@@ -240,7 +256,7 @@ public interface IConfiguredSite extends IAdaptable {
 	 * </p>
 	 */
 	public void addConfiguredSiteChangedListener(IConfiguredSiteChangedListener listener);
-	
+
 	/**
 	 * Removes a change listener from the configured site.
 	 * 
@@ -299,9 +315,9 @@ public interface IConfiguredSite extends IAdaptable {
 	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
 	 * (repeatedly) as the API evolves.
 	 * </p>
-	 */	
+	 */
 	public boolean isPrivateSite();
-	
+
 	/**
 	 * Indicates if the site has been linked by a native
 	 * installer.
@@ -315,6 +331,6 @@ public interface IConfiguredSite extends IAdaptable {
 	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
 	 * (repeatedly) as the API evolves.
 	 * </p>
-	 */	
+	 */
 	public boolean isNativelyLinked() throws CoreException;
 }
