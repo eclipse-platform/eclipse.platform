@@ -172,7 +172,6 @@ public class Main {
 	protected static final String STACK = "!STACK"; //$NON-NLS-1$
 	protected static final int ERROR = 4;
 	protected static final String PLUGIN_ID = "org.eclipse.core.launcher"; //$NON-NLS-1$
-	protected static final String logFileName = ".metadata" + File.separator + ".log";//$NON-NLS-1$ //$NON-NLS-2$
 	protected static File logFile = null;
 	protected static BufferedWriter log = null;
 	protected static String[] arguments;
@@ -522,14 +521,20 @@ private Object[] getVersionElements(String version) {
  */
 public static void main(String[] args) {
 	Object result = null;
+	arguments = args;
 	// Check to see if we are running with a compatible VM.
 	// If not, then return exit code "14" which will be recognized
 	// by the executable and an appropriate message will be displayed
 	// to the user.
 	if (!isCompatible())
 		System.exit(14);
+	// Check to see if there is already a platform running in
+	// this workspace. If there is, then return an exit code of "15" which
+	// will be recognized by the executable and an appropriate message
+	// will be displayed to the user.
+	if (isAlreadyRunning())
+		System.exit(15);
 	Main launcher = new Main();
-	arguments = args;
 	try {
 		result = launcher.run(args);
 	} catch (Throwable e) {
@@ -1280,22 +1285,36 @@ private static void write(Object obj) throws IOException {
 private static void computeLogFileLocation() {
 	if (logFile != null)
 		return;
+	// compute the base location and then append the name of the log file
+	File base = computeMetadataLocation();
+	logFile = new File(base, ".log"); //$NON-NLS-1$
+	logFile.getParentFile().mkdirs();
+}
+private static File computeLockFileLocation() {
+	// compute the base location and then append the name of the lock file
+	File base = computeMetadataLocation();
+	File result = new File(base, ".lock"); //$NON-NLS-1$
+	result.getParentFile().mkdirs();
+	return result;
+}
+private static File computeMetadataLocation() {
+
+	File result = null;
 	// check to see if the user specified a workspace location in the command-line args
-	for (int i=0; arguments != null && logFile == null && i<arguments.length; i++) {
+	for (int i=0; arguments != null && result == null && i<arguments.length; i++) {
 		if (arguments[i].equalsIgnoreCase(DATA)) {
 			// found the -data command line argument so the next argument should be the
 			// workspace location. Ensure that we have another arg to check
 			if (i+1<arguments.length)
-				logFile = new File(arguments[i+1]);
+				result = new File(arguments[i+1]);
 		}
 	}
 	// otherwise use the default location
-	if (logFile == null)
-		logFile = new File(System.getProperty("user.dir"), "workspace");//$NON-NLS-1$ //$NON-NLS-2$
+	if (result == null)
+		result = new File(System.getProperty("user.dir"), "workspace");//$NON-NLS-1$ //$NON-NLS-2$
 	
-	// append the .metadata directory and .log file name to the path
-	logFile = new File(logFile, logFileName);
-	logFile.getParentFile().mkdirs();
+	// append the .metadata directory to the path
+	return new File(result, ".metadata"); //$NON-NLS-1$
 }
 /**
  * Converts an ASCII character representing a hexadecimal
@@ -1376,6 +1395,20 @@ private static boolean isCompatible() {
 		// let things fail later on their own if necessary.
 		return true;
 	}
+}
+/**
+ * Return a boolean value indicating whether or not the platform is already
+ * running in this workspace.
+ */
+private static boolean isAlreadyRunning() {
+	// Calculate the location of the lock file
+	File lockFile = computeLockFileLocation();
+
+	// if the lock file already exists, try to delete,
+	// assume failure means another eclipse has it open
+	if (lockFile.exists())
+		lockFile.delete();
+	return lockFile.exists();
 }
 
 }
