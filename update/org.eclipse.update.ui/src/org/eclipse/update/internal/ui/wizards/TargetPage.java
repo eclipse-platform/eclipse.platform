@@ -244,15 +244,12 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 	}
 
 	private void handleJobsSelected(IStructuredSelection selection) {
-		IInstallFeatureOperation job =
-			(IInstallFeatureOperation) selection.getFirstElement();
-		if (job != null) {
-			siteViewer.setInput(job);
-			JobTargetSite jobSite = (JobTargetSite) targetSites.get(job);
-			addButton.setEnabled(jobSite.affinitySite == null);
-			if (jobSite.targetSite != null) {
-				siteViewer.setSelection(new StructuredSelection(jobSite.targetSite));
-			}
+		IInstallFeatureOperation job = (IInstallFeatureOperation) selection.getFirstElement();
+		siteViewer.setInput(job);
+		JobTargetSite jobSite = (JobTargetSite) targetSites.get(job);
+		addButton.setEnabled(jobSite.affinitySite == null);
+		if (jobSite.targetSite != null) {
+			siteViewer.setSelection(new StructuredSelection(jobSite.targetSite));
 		}
 	}
 
@@ -300,11 +297,13 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 		if (visible) {
 			targetSites.computeDefaultTargetSites();
 			jobViewer.setInput(jobs);
-			if (jobViewer.getSelection().isEmpty() && jobs.length > 0)
+		}
+		super.setVisible(visible);
+		if (visible) {
+			jobViewer.getTable().setFocus();
+			if (jobs.length > 0)
 				jobViewer.setSelection(new StructuredSelection(jobs[0]));
 		}
-		
-		super.setVisible(visible);
 	}
 
 	private void verifyNotEmpty(boolean empty) {
