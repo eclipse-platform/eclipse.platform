@@ -725,6 +725,22 @@ public class Main {
 	*/	
 	public int run(String[] args) {
 		arguments = args;
+		// TODO remove this code before M8.  It is left here until the UI guys implement 
+		// their versions of these tests.
+		if (System.getProperty("eclipse.ui.testing") == null) {
+			// Check to see if we are running with a compatible VM.
+			// If not, then return exit code "14" which will be recognized
+			// by the executable and an appropriate message will be displayed
+			// to the user.
+			if (!isCompatible())
+				return 14;
+			// Check to see if there is already a platform running in
+			// this workspace. If there is, then return an exit code of "15" which
+			// will be recognized by the executable and an appropriate message
+			// will be displayed to the user.
+			if (isAlreadyRunning())
+				return 15;
+		}
 		try {
 			basicRun(args);
 		} catch (Throwable e) {
@@ -801,7 +817,7 @@ public class Main {
 			// look for the development mode and class path entries.  
 			if (args[i - 1].equalsIgnoreCase(DEV)) {
 				inDevelopmentMode = true;
-				devClassPath = processDevArg(arg);
+				devClassPath = arg;
 				continue;
 			}
 
@@ -865,23 +881,6 @@ public class Main {
 				passThruArgs[j++] = args[i];
 		}
 		return passThruArgs;
-	}
-	
-	private String processDevArg(String arg) {
-		if (arg == null)
-			return null;
-		try {
-			URL location = new URL(arg);
-			Properties props = load(location, null);
-			String result = props.getProperty("org.eclipse.osgi");
-			return result == null ? props.getProperty("*") : result;
-		} catch (MalformedURLException e) {
-			// the arg was not a URL so use it as is.
-			return arg;
-		} catch (IOException e) {
-			// TODO consider logging here
-			return null;
-		}
 	}
 
 	private String getConfigurationLocation() {
