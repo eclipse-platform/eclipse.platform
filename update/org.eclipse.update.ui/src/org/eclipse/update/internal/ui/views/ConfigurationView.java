@@ -953,6 +953,8 @@ public class ConfigurationView
 		Object obj = ssel.getFirstElement();
 		if (obj instanceof IFeatureAdapter) {
 			try {
+				propertiesAction.setEnabled(true);
+				
 				ConfiguredFeatureAdapter adapter = (ConfiguredFeatureAdapter) obj;
 				IFeature feature = adapter.getFeature(null);
 				
