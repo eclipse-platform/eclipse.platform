@@ -93,6 +93,13 @@
             class="org.eclipse.update.internal.ui.views.DetailsView"
             id="org.eclipse.update.ui.DetailsView">
       </view>
+      <view
+            name="Feature Search Results"
+            icon="icons/full/obj16/psearch_obj.gif"
+            category="org.eclipse.update.ui"
+            class="org.eclipse.update.internal.ui.views.SearchResultView"
+            id="org.eclipse.update.ui.SearchResultsView">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
@@ -130,7 +137,7 @@
             id="org.eclipse.update.ui.folderPropertyPage">
       </page>
       <page
-            objectClass="org.eclipse.update.internal.ui.model.SearchObject"
+            objectClass="org.eclipse.update.internal.ui.search.SearchObject"
             name="%properties.search.label"
             class="org.eclipse.update.internal.ui.properties.NamedObjectPropertyPage"
             id="org.eclipse.update.ui.searchPropertyPage">

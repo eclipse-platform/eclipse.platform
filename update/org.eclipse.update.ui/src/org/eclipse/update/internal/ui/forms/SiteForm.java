@@ -139,6 +139,12 @@ public class SiteForm extends UpdateWebForm {
 		getControl().redraw();
 		currentAdapter = adapter;
 	}
+	
+	public void objectChanged(Object object, String property) {
+		if (object.equals(currentAdapter)) {
+			inputChanged(currentAdapter);
+		}
+	}
 
 	public URL getRawURL(ISite site) {
 		IURLEntry entry = site.getDescription();

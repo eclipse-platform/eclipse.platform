@@ -5,18 +5,33 @@ package org.eclipse.update.internal.ui.forms;
  */
 
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.update.internal.ui.UpdateUIPluginImages;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.update.internal.ui.*;
+import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.pages.IUpdateFormPage;
 import org.eclipse.update.ui.forms.internal.WebForm;
 
-public class UpdateWebForm extends WebForm implements IUpdateForm {
+public class UpdateWebForm extends WebForm implements IUpdateForm, IUpdateModelChangedListener {
 	private IUpdateFormPage page;
 	private Control focusControl;
 
 	public UpdateWebForm(IUpdateFormPage page) {
 		this.page = page;
+		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
+		model.addUpdateModelChangedListener(this);
+	}
+	
+	public void dispose() {
+		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
+		model.removeUpdateModelChangedListener(this);
+		super.dispose();
+	}
+
+	public void objectsAdded(Object parent, Object [] children) {
+	}
+	public void objectsRemoved(Object parent, Object [] children) {
+	}
+	public void objectChanged(Object object, String property) {
 	}
 
 	public IUpdateFormPage getPage() {

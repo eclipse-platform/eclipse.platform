@@ -16,13 +16,16 @@ import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
 import org.eclipse.ui.help.WorkbenchHelp;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.update.core.Utilities;
-import org.eclipse.update.internal.ui.UpdateUIPlugin;
+import org.eclipse.update.internal.ui.*;
+import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.model.UpdateModel;
 import org.eclipse.update.internal.ui.pages.UpdateFormPage;
 import org.eclipse.update.internal.ui.search.*;
+import org.eclipse.update.internal.ui.views.SearchResultView;
 import org.eclipse.update.ui.forms.internal.*;
 import org.eclipse.update.ui.forms.internal.engine.FormEngine;
 
@@ -64,13 +67,12 @@ public class SearchForm extends UpdateWebForm {
 	private Button bookmarkCheck;
 	private Button filterCheck;
 	private Button myComputerSettings;
-	private Button fullModeCheck;
+	//private Button fullModeCheck;
 	private Button searchButton;
 	private PageBook pagebook;
 	private SearchMonitor monitor;
 	//private UpdateSearchProgressMonitor statusMonitor;
 	//private SearchResultSection searchResultSection;
-	private SearchResultSection searchResultSection;
 	private IDialogSettings settings;
 	private SearchObject searchObject;
 	private ArrayList categories = new ArrayList();
@@ -111,7 +113,9 @@ public class SearchForm extends UpdateWebForm {
 			Date date = new Date();
 			String pattern = UpdateUIPlugin.getResourceString(KEY_LAST_SEARCH);
 			String text =
-				UpdateUIPlugin.getFormattedMessage(pattern, Utilities.format(date));
+				UpdateUIPlugin.getFormattedMessage(
+					pattern,
+					Utilities.format(date));
 			infoLabel.setText(text);
 			infoLabel.getParent().layout();
 			reflow(true);
@@ -121,6 +125,13 @@ public class SearchForm extends UpdateWebForm {
 			//				statusMonitor = null;
 			//			}
 			enableOptions(true);
+			activateSearchResultSelection();
+		}
+		
+		private void activateSearchResultSelection() {
+			SearchResultView sview = (SearchResultView)UpdateUIPlugin.getActivePage().findView(UpdatePerspective.ID_SEARCH_RESULTS);
+			if (sview!=null)
+				sview.setSelectionActive(true);
 		}
 	}
 
@@ -138,8 +149,10 @@ public class SearchForm extends UpdateWebForm {
 		if (searchObject != null) {
 			detachFrom(searchObject);
 		}
+		/*
 		if (searchResultSection != null)
 			searchResultSection.dispose();
+		*/
 		super.dispose();
 	}
 
@@ -281,8 +294,7 @@ public class SearchForm extends UpdateWebForm {
 				gd.horizontalSpan = 2;
 				bookmarkCheck.setLayoutData(gd);
 
-				filterCheck =
-					factory.createButton(expansion, null, SWT.CHECK);
+				filterCheck = factory.createButton(expansion, null, SWT.CHECK);
 				filterCheck.setText(
 					UpdateUIPlugin.getResourceString(KEY_FILTER_CHECK));
 				filterCheck.addSelectionListener(new SelectionAdapter() {
@@ -299,6 +311,7 @@ public class SearchForm extends UpdateWebForm {
 		optionsGroup.setText(UpdateUIPlugin.getResourceString(KEY_OPTIONS));
 		optionsGroup.createControl(optionContainer, factory);
 
+/*
 		fullModeCheck = factory.createButton(parent, null, SWT.CHECK);
 		fullModeCheck.setText(
 			UpdateUIPlugin.getResourceString(KEY_FULL_MODE_CHECK));
@@ -311,6 +324,7 @@ public class SearchForm extends UpdateWebForm {
 		td = new TableData();
 		td.colspan = 2;
 		fullModeCheck.setLayoutData(td);
+*/
 
 		Composite sep = factory.createCompositeSeparator(parent);
 		td = new TableData();
@@ -358,6 +372,7 @@ public class SearchForm extends UpdateWebForm {
 			// sync up with the search
 			catchUp();
 		}
+		/*
 		searchResultSection =
 			new SearchResultSection((UpdateFormPage) getPage());
 		Control control = searchResultSection.createControl(parent, factory);
@@ -367,6 +382,7 @@ public class SearchForm extends UpdateWebForm {
 		td.grabHorizontal = true;
 		control.setLayoutData(td);
 		searchResultSection.setFullMode(settings.getBoolean(S_FULL_MODE));
+		*/
 		WorkbenchHelp.setHelp(parent, "org.eclipse.update.ui.SearchForm");
 	}
 
@@ -435,8 +451,10 @@ public class SearchForm extends UpdateWebForm {
 				categoryCombo.select(i);
 				switchTo(category);
 				category.load(obj.getSettings(), !obj.isCategoryFixed());
+				/*
 				searchResultSection.setSearchString(
 					category.getCurrentSearch());
+				*/
 				categoryCombo.setEnabled(!obj.isCategoryFixed());
 				break;
 			}
@@ -444,10 +462,12 @@ public class SearchForm extends UpdateWebForm {
 	}
 
 	private void reflow(boolean searchFinished) {
+		/*
 		if (searchFinished)
 			searchResultSection.searchFinished();
 		else
 			searchResultSection.reflow();
+		*/
 		descLabel.getParent().layout(true);
 		((Composite) getControl()).layout(true);
 		updateSize();
@@ -457,6 +477,7 @@ public class SearchForm extends UpdateWebForm {
 		reflow(false);
 	}
 
+/*
 	private void toggleMode(final boolean fullMode) {
 		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
 			public void run() {
@@ -468,6 +489,7 @@ public class SearchForm extends UpdateWebForm {
 		});
 		settings.put(S_FULL_MODE, fullMode);
 	}
+*/
 
 	private void performSearch() {
 		if (searchObject != null) {
@@ -485,14 +507,19 @@ public class SearchForm extends UpdateWebForm {
 		try {
 			if (!searchObject.isCategoryFixed()) {
 				currentCategory.store(searchObject.getSettings());
-				searchObject.setCategoryId(currentCategory.getId());
+				if (!searchObject
+					.getCategoryId()
+					.equals(currentCategory.getId()))
+					searchObject.setCategoryId(currentCategory.getId());
 			}
 			searchObject.attachProgressMonitor(monitor);
 			//attachStatusLineMonitor();
 			enableOptions(false);
+			hookSearchView();
 			searchObject.startSearch(getControl().getDisplay(), getQueries());
-			searchResultSection.setSearchObject(searchObject);
-			searchResultSection.searchStarted();
+			
+			//searchResultSection.setSearchObject(searchObject);
+			//searchResultSection.searchStarted();
 		} catch (InvocationTargetException e) {
 			UpdateUIPlugin.logException(e);
 			return false;
@@ -503,10 +530,30 @@ public class SearchForm extends UpdateWebForm {
 		return true;
 	}
 
+	private void hookSearchView() {
+		try {
+			String viewId = UpdatePerspective.ID_SEARCH_RESULTS;
+			IWorkbenchPage page = UpdateUIPlugin.getActivePage();
+			SearchResultView sview = (SearchResultView)page.findView(viewId);
+
+			if (sview == null) {
+				sview = (SearchResultView)page.showView(viewId);
+				page.showView(UpdatePerspective.ID_DETAILS);
+			}
+			else {
+				sview.setSelectionActive(false);
+				page.bringToTop(sview);
+			}
+			sview.setCurrentSearch(searchObject);
+		} catch (PartInitException e) {
+			UpdateUIPlugin.logException(e);
+		}
+	}
+
 	private ISearchQuery[] getQueries() {
 		int index = categoryCombo.getSelectionIndex();
 		ISearchCategory category = (ISearchCategory) categories.get(index);
-		searchResultSection.setSearchString(category.getCurrentSearch());
+		//searchResultSection.setSearchString(category.getCurrentSearch());
 		return category.getQueries();
 	}
 
@@ -552,6 +599,8 @@ public class SearchForm extends UpdateWebForm {
 		discoveryCheck.setEnabled(enable);
 		bookmarkCheck.setEnabled(enable);
 		filterCheck.setEnabled(enable);
+		if (currentCategory.getControl()!=null)
+			currentCategory.getControl().setEnabled(enable);
 	}
 
 	private void updateButtonText() {
@@ -595,7 +644,7 @@ public class SearchForm extends UpdateWebForm {
 				updateHeadingText(searchObject);
 				selectCategory(obj);
 				updateScopeSettings(obj);
-				searchResultSection.setSearchObject(searchObject);
+				//searchResultSection.setSearchObject(searchObject);
 				if (searchObject.isSearchInProgress()) {
 					// sync up with the search
 					catchUp();
@@ -609,5 +658,12 @@ public class SearchForm extends UpdateWebForm {
 				}
 			}
 		});
+	}
+
+	public void objectChanged(Object object, String property) {
+		if (object.equals(searchObject)) {
+			if (NamedModelObject.P_NAME.equals(property))
+				updateHeadingText(searchObject);
+		}
 	}
 }

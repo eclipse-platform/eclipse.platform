@@ -23,6 +23,12 @@ public class UnknownObjectForm extends UpdateWebForm {
 		if (volumeProvider!=null) volumeProvider.dispose();
 		super.dispose();
 	}
+	
+	public void objectChanged(Object object, String property) {
+		if (object.equals(currentObj)) {
+			expandTo(object);
+		}
+	}
 
 	public void initialize(Object modelObject) {
 		setHeadingText("");

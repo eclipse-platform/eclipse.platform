@@ -138,5 +138,11 @@ public class InstallConfigurationForm extends PropertyWebForm {
 		updateSize();
 		currentConfiguration = configuration;
 	}
+	
+	public void objectChanged(Object object, String property) {
+		if (object.equals(currentConfiguration)) {
+			expandTo(object);
+		}
+	}
 
 }
