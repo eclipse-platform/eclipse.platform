@@ -11,6 +11,7 @@
     <import plugin="org.eclipse.ui"/>
     <import plugin="org.eclipse.core.resources"/>
     <import plugin="org.eclipse.ant.core"/>
+    <import plugin="org.apache.ant"/>
   </requires>
 
   <runtime>

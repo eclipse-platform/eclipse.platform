@@ -5,8 +5,11 @@ package org.eclipse.ant.internal.ui;
  * All Rights Reserved.
  */
 
-import java.net.*;
-import java.util.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -14,14 +17,13 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * The plug-in runtime class for the AntUI plug-in.
  */
-public final class AntUIPlugin extends AbstractUIPlugin{
+public final class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Unique identifier constant (value <code>"org.eclipse.ant.ui"</code>)
@@ -48,7 +50,17 @@ public final class AntUIPlugin extends AbstractUIPlugin{
 	 * The most recent debug launches
 	 */
 	private IFile[] antHistory = new IFile[MAX_HISTORY_SIZE];
+
+	//
+	protected HackUIBuildListener listener;
 	
+public void setListener(HackUIBuildListener listener) {
+	this.listener = listener;
+}
+
+public HackUIBuildListener getListener() {
+	return listener;
+}
 
 public AntUIPlugin(IPluginDescriptor desc) {
 	super(desc);

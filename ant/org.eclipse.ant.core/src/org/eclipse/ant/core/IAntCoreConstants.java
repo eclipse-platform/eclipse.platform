@@ -16,7 +16,6 @@ public interface IAntCoreConstants {
 	// error codes
 	public static final int ERROR_COULD_NOT_CONFIGURE_PROJECT = 1;
 	public static final int ERROR_RUNNING_SCRIPT = 2;
-	public static final int ERROR_PARSING_SCRIPT = 3;
 	
 	// properties
 	public static final String PROPERTY_ECLIPSE_RUNNING = "eclipseRunning";
