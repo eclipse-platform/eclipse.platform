@@ -208,12 +208,13 @@ public class NewUpdatesWizard extends Wizard {
 			reinstall=true;
 		}
 		ArrayList optionalElements = new ArrayList();
-		FeatureHierarchyElement.computeElements(
+		boolean hasOptionalFeatures = FeatureHierarchyElement.computeElements(
 			oldFeature,
 			feature,
 			oldFeature != null,
 			optionalElements);
-		optionalFeatures = computeOptionalFeatures(optionalElements, oldFeature!=null);
+		if (hasOptionalFeatures)
+			optionalFeatures = computeOptionalFeatures(optionalElements, oldFeature!=null);
 		IConfiguredSite targetSite =
 			TargetPage.getDefaultTargetSite(config, job);
 		if (optionalFeatures!=null)
@@ -239,7 +240,6 @@ public class NewUpdatesWizard extends Wizard {
 				update,
 				set);
 		}
-		if (set.isEmpty()) return null;
 		return (IFeatureReference[]) set.toArray(
 			new IFeatureReference[set.size()]);
 	}

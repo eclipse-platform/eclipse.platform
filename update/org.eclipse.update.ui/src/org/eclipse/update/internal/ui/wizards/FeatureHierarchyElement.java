@@ -38,6 +38,7 @@ public class FeatureHierarchyElement {
 	private IFeatureReference oldFeatureRef;
 	private IFeatureReference newFeatureRef;
 	private boolean checked;
+	private boolean optionalChildren;
 
 	public FeatureHierarchyElement(
 		IFeatureReference oldRef,
@@ -172,6 +173,7 @@ public class FeatureHierarchyElement {
 	}
 	/**
 	 * Computes children of this node.
+	 * @return true if some of the children are optional, false otherwise.
 	 */
 	public void computeChildren(boolean update) {
 		if (children == null) {
@@ -182,10 +184,16 @@ public class FeatureHierarchyElement {
 				newFeature = newFeatureRef.getFeature();
 				if (oldFeatureRef != null)
 					oldFeature = oldFeatureRef.getFeature();
-				computeElements(oldFeature, newFeature, update, children);
+				optionalChildren = computeElements(oldFeature, newFeature, update, children);
 			} catch (CoreException e) {
 			}
 		}
+	}
+	/**
+	 * 
+	 */
+	public boolean hasOptionalChildren() {
+		return optionalChildren;
 	}
 	/**
 	 * Adds checked optional features to the provided set.
@@ -212,13 +220,14 @@ public class FeatureHierarchyElement {
 	 * where new version is greater or equal the old version).
 	 * Old feature may be null. 
 	 */
-	public static void computeElements(
+	public static boolean computeElements(
 		IFeature oldFeature,
 		IFeature newFeature,
 		boolean update,
 		ArrayList list) {
 		Object[] oldChildren = null;
 		Object[] newChildren = getIncludedFeatures(newFeature);
+		boolean optionalChildren=false;
 
 		try {
 			if (oldFeature != null) {
@@ -278,9 +287,12 @@ public class FeatureHierarchyElement {
 					element.setChecked(true);
 				list.add(element);
 				element.computeChildren(update);
+				if (element.isOptional() || element.hasOptionalChildren())
+					optionalChildren=true;
 			}
 		} catch (CoreException e) {
 		}
+		return optionalChildren;
 	}
 	private static boolean hasOlderVersion(IFeatureReference newRef) {
 		try {

@@ -241,9 +241,15 @@ public class OptionalFeaturesPage extends BannerPage {
 		if (ref.isOptional() == false)
 			selected.add(ref);
 		else {
-			ref.setChecked(value);
-			if (value)
-				selected.add(ref);
+			if (ref.isEditable()) {
+				ref.setChecked(value);
+				if (value)
+					selected.add(ref);
+			}
+			else {
+				if (ref.isChecked())
+					selected.add(ref);
+			}
 		}
 		Object[] included =
 			ref.getChildren(pendingChange.getOldFeature() != null);
