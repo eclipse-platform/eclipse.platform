@@ -25,6 +25,7 @@ import org.eclipse.update.internal.ui.forms.ActivityConstraints;
 import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.*;
 import org.eclipse.update.internal.ui.preferences.MainPreferencePage;
+import org.eclipse.update.internal.ui.wizards.FeatureHierarchyElement;
 import org.eclipse.update.ui.forms.internal.FormWidgetFactory;
 
 public class UpdatesSearchCategory extends SearchCategory {
@@ -271,8 +272,14 @@ public class UpdatesSearchCategory extends SearchCategory {
 						// Missing child. Return true if optional,
 						// otherwise it is a broken feature that we 
 						// do not care about.
+						// Defect #38355: returning true causes
+						// problems for optional features that
+						// not installed. Should return true
+						// only if missing AND has older
+						// versions installed (for re-upgrading
+						// native install after update).
 						if (ref.isOptional()) {
-							return true;
+							return FeatureHierarchyElement.hasOlderVersion(ref);
 						}
 					}
 				}
