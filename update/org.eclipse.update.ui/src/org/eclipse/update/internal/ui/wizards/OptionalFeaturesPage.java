@@ -102,6 +102,9 @@ public class OptionalFeaturesPage extends BannerPage {
 			if (newFeatureRef.isOptional() == false)
 				return false;
 			// cannot uncheck optional feature that
+			// has already been installed
+			if (oldFeatureRef !=null)
+				return false;
 			return true;
 		}
 		public boolean isOptional() {
@@ -135,6 +138,10 @@ public class OptionalFeaturesPage extends BannerPage {
 				+ feature.getVersionedIdentifier().getVersion().toString();
 		}
 		Object[] getChildren() {
+			computeChildren();
+			return children.toArray();
+		}
+		public void computeChildren() {
 			if (children == null) {
 				children = new ArrayList();
 				try {
@@ -147,7 +154,15 @@ public class OptionalFeaturesPage extends BannerPage {
 				} catch (CoreException e) {
 				}
 			}
-			return children.toArray();
+		}
+		public void addCheckedOptionalFeatures(Set set) {
+			if (isOptional() && isChecked())
+				set.add(newFeatureRef);
+			Object [] list = getChildren();
+			for (int i=0; i<list.length; i++) {
+				FeatureElement element = (FeatureElement)list[i];
+				element.addCheckedOptionalFeatures(set);
+			}
 		}
 	}
 
@@ -236,6 +251,7 @@ public class OptionalFeaturesPage extends BannerPage {
 				handleChecked(e.getElement(), e.getChecked());
 			}
 		});
+		treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
 		/*
 		treeViewer.addFilter(new ViewerFilter() {
 			public boolean select(Viewer v, Object parent, Object element) {
@@ -272,7 +288,6 @@ public class OptionalFeaturesPage extends BannerPage {
 		Object[] newChildren = getIncludedFeatures(newFeature);
 
 		try {
-
 			if (oldFeature != null) {
 				oldChildren = getIncludedFeatures(oldFeature);
 			}
@@ -303,6 +318,7 @@ public class OptionalFeaturesPage extends BannerPage {
 				else
 					element.setChecked(true);
 				list.add(element);
+				element.computeChildren();
 			}
 		} catch (CoreException e) {
 		}
@@ -380,5 +396,14 @@ public class OptionalFeaturesPage extends BannerPage {
 			// update the result
 			fe.setChecked(checked);
 		}
+	}
+	
+	public IFeatureReference[] getCheckedOptionalFeatures() {
+		HashSet set = new HashSet();
+		for (int i=0; i<elements.length; i++) {
+			FeatureElement element = (FeatureElement)elements[i];
+			element.addCheckedOptionalFeatures(set);
+		}
+		return (IFeatureReference[])set.toArray(new IFeatureReference[set.size()]);
 	}
 }

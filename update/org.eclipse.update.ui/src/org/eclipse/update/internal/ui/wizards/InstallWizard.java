@@ -23,6 +23,7 @@ public class InstallWizard extends Wizard {
 	private static final String KEY_UNABLE = "InstallWizard.error.unable";
 	private static final String KEY_OLD = "InstallWizard.error.old";
 	private ReviewPage reviewPage;
+	private OptionalFeaturesPage optionalFeaturesPage;
 	private TargetPage targetPage;
 	private PendingChange job;
 	private boolean successfulInstall = false;
@@ -46,13 +47,16 @@ public class InstallWizard extends Wizard {
 	public boolean performFinish() {
 		final IConfiguredSite targetSite =
 			(targetPage == null) ? null : targetPage.getTargetSite();
+		final IFeatureReference [] optionalFeatures = 
+			(optionalFeaturesPage==null) ? null : 
+					optionalFeaturesPage.getCheckedOptionalFeatures();
 		IRunnableWithProgress operation = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 				throws InvocationTargetException {
 				try {
 					successfulInstall = false;
 					makeConfigurationCurrent(config);
-					execute(targetSite, monitor);
+					execute(targetSite, optionalFeatures, monitor);
 					saveLocalSite();
 					successfulInstall = true;
 				} catch (CoreException e) {
@@ -89,7 +93,8 @@ public class InstallWizard extends Wizard {
 				addPage(new LicensePage(job));
 			}
 			if (hasOptionalFeatures(job.getFeature())) {
-				addPage(new OptionalFeaturesPage(job, config));
+				optionalFeaturesPage = new OptionalFeaturesPage(job, config);
+				addPage(optionalFeaturesPage);
 			}
 			targetPage = new TargetPage(job, config);
 			addPage(targetPage);
@@ -134,7 +139,7 @@ public class InstallWizard extends Wizard {
 	/*
 	 * When we are uninstalling, there is no targetSite
 	 */
-	private void execute(IConfiguredSite targetSite, IProgressMonitor monitor)
+	private void execute(IConfiguredSite targetSite, IFeatureReference [] optionalFeatures, IProgressMonitor monitor)
 		throws CoreException {
 		IFeature feature = job.getFeature();
 		if (job.getJobType() == PendingChange.UNINSTALL) {
@@ -147,7 +152,10 @@ public class InstallWizard extends Wizard {
 				throwError(UpdateUIPlugin.getResourceString(KEY_UNABLE));
 			}
 		} else if (job.getJobType() == PendingChange.INSTALL) {
-			targetSite.install(feature, getVerificationListener(), monitor);
+			if (optionalFeatures==null)
+				targetSite.install(feature, getVerificationListener(), monitor);
+			else
+				targetSite.install(feature, optionalFeatures, getVerificationListener(), monitor);
 			IFeature oldFeature = job.getOldFeature();
 			if (oldFeature != null) {
 				boolean oldSuccess = unconfigure(oldFeature);
