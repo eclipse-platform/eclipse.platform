@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin
-  name="%pluginName"
-  id="org.eclipse.sdk"
-  version="3.0.0"
-  provider-name="%providerName">
-  
-</plugin>
