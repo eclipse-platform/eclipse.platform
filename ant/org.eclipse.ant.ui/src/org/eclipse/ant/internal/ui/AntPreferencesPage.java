@@ -1,8 +1,0 @@
-package org.eclipse.ant.internal.ui;/* * (c) Copyright IBM Corp. 2000, 2001. * All Rights Reserved. */import org.eclipse.ant.core.AntPlugin;import org.eclipse.jface.preference.*;import org.eclipse.swt.SWT;import org.eclipse.swt.layout.*;import org.eclipse.swt.widgets.*;import org.eclipse.ui.*;
-public class AntPreferencesPage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
-
-public AntPreferencesPage() {	super(GRID);	IPreferenceStore store= AntUIPlugin.getPlugin().getPreferenceStore();	setPreferenceStore(store);}public void createControl(Composite parent) {	super.createControl(parent);	// should do something here with the help..		/*	WorkbenchHelp.setHelp(		parent,		new Object[] { IAntHelpContextIds.ANT_PREFERENCE_PAGE });	*/}/** * @see FieldEditorPreferencePage#createFieldEditors */protected void createFieldEditors() {	BooleanFieldEditor autoSave = new BooleanFieldEditor(IAntPreferenceConstants.AUTO_SAVE, Policy.bind("preferences.savePriorToBuilding"), SWT.NONE, getFieldEditorParent());	RadioGroupFieldEditor outputLevel = new RadioGroupFieldEditor(												IAntPreferenceConstants.OUPUT_LEVEL, 												Policy.bind("preferences.preferedOutputLevel"),												1, 												new String[][] {													{Policy.bind("preferences.info"), IAntPreferenceConstants.INFO_LEVEL},													{Policy.bind("preferences.verbose"), IAntPreferenceConstants.VERBOSE_LEVEL},													{Policy.bind("preferences.debug"), IAntPreferenceConstants.DEBUG_LEVEL}												},												getFieldEditorParent());	addField(autoSave);	addField(outputLevel);}/** * @see IWorkbenchPreferencePage#init */public void init(IWorkbench workbench) {}
-
-}
