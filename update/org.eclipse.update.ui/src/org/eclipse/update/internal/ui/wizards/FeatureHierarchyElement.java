@@ -246,6 +246,16 @@ public class FeatureHierarchyElement {
 						}
 					}
 				}
+				// test if the old optional feature exists
+				if (oldRef!=null && oldRef.isOptional()) {
+					try {
+						oldRef.getFeature();
+					}
+					catch (CoreException e) {
+						// missing
+						oldRef = null;
+					}
+				}
 				FeatureHierarchyElement element =
 					new FeatureHierarchyElement(oldRef, newRef);
 				// If this is an update (old feature exists), 

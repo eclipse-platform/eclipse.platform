@@ -584,7 +584,7 @@ public class DetailsForm extends PropertyWebForm {
 		if (installedFeature
 			.getVersionedIdentifier()
 			.equals(currentFeature.getVersionedIdentifier())) {
-			return isBroken(currentFeature);
+			return isBroken(installedFeature);
 		}
 		return false;
 	}
