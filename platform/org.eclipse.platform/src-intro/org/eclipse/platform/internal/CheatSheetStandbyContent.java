@@ -13,7 +13,6 @@ package org.eclipse.platform.internal;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.*;
 import org.eclipse.ui.cheatsheets.*;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.intro.IIntroPart;
@@ -55,8 +54,7 @@ public final class CheatSheetStandbyContent implements IStandbyContentPart {
      * 
      * @see org.eclipse.ui.intro.internal.parts.IStandbyContentPart#init(org.eclipse.ui.intro.IIntroPart)
      */
-    public void init(IIntroPart introPart, IMemento memento) { 
-        // TODO: honor memento
+    public void init(IIntroPart introPart) {
         this.introPart = introPart;
     }
 
@@ -85,13 +83,5 @@ public final class CheatSheetStandbyContent implements IStandbyContentPart {
      */
     public void dispose() {
     	// do nothing
-    }
-
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.intro.config.IStandbyContentPart#saveState(org.eclipse.ui.IMemento)
-     */
-    public void saveState(IMemento memento) {
-        // TODO no op for now.
-        
     }
 }

@@ -484,13 +484,18 @@ public class AntModel {
 		Iterator iter= children.iterator();
 		while (iter.hasNext()) {
 			AntElementNode node = (AntElementNode) iter.next();
+			AntElementNode originalNode= node;
 			if (node instanceof AntTargetNode) {
 				String missing= ((AntTargetNode)node).checkDependencies();
 				if (missing != null) {
 					String message= MessageFormat.format(AntOutlineMessages.getString("AntModel.44"), new String[]{missing}); //$NON-NLS-1$
+					AntElementNode importNode= node.getImportNode();
+					if (importNode != null) {
+						node= importNode;
+					}
 					IProblem problem= createProblem(message, node.getOffset(), node.getSelectionLength(), XMLProblem.SEVERITY_ERROR);
 					acceptProblem(problem);
-					markHierarchy(node, XMLProblem.SEVERITY_ERROR);
+					markHierarchy(originalNode, XMLProblem.SEVERITY_ERROR);
 				}
 			}
 		}
@@ -887,6 +892,10 @@ public class AntModel {
 	}
 
 	protected void notifyProblemRequestor(Exception exception, AntElementNode element, int severity) {
+		AntElementNode importNode= element.getImportNode();
+		if (importNode != null) {
+			element= importNode;
+		}
 		IProblem problem= createProblem(exception, element.getOffset(), element.getLength(), severity);
 		acceptProblem(problem);
 		element.associatedProblem(problem);
