@@ -48,6 +48,9 @@ public class UpdatesSearchCategory extends SearchCategory {
 		public IFeatureReference getReference() {
 			return ref;
 		}
+		void setReference(IFeatureReference ref) {
+			this.ref = ref;
+		}
 		public VersionedIdentifier getVersionedIdentifier() {
 			try {
 				return ref.getVersionedIdentifier();
@@ -107,7 +110,6 @@ public class UpdatesSearchCategory extends SearchCategory {
 			}
 		}
 		public boolean isUpdatable() {
-			System.out.println("Feature "+getVersionedIdentifier()+", match="+ref.getMatch());
 			return parent==null || ref.getMatch()!=IUpdateConstants.RULE_PERFECT;
 		}
 	}
@@ -118,7 +120,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 		public Object[] getElements(Object parent) {
 			if (candidates == null)
 				return new Object[0];
-			return candidates.toArray();
+			return getAllCandidates().toArray();
 		}
 	}
 
@@ -360,6 +362,7 @@ public class UpdatesSearchCategory extends SearchCategory {
 				Candidate child = findCandidate(candidates, fref);
 				if (child!=null) {
 					parent.add(child);
+					child.setReference(fref);
 					candidates.remove(child);
 				}
 			}
