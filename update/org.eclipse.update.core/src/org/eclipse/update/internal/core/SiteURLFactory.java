@@ -44,7 +44,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 			SiteURLContentProvider contentProvider = new SiteURLContentProvider(url);
 
 			URL resolvedURL = URLEncoder.encode(url);
-			URLConnection connection = resolvedURL.openConnection();
+			URLConnection connection = openConnection(resolvedURL);
 			UpdateManagerUtils.checkConnectionResult(connection);
 			siteStream = connection.getInputStream();
 

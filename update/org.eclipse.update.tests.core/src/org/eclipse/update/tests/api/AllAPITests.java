@@ -35,6 +35,7 @@ public class AllAPITests extends UpdateManagerTestCase {
 		suite.addTest(new TestSuite(TestPluginContainerAPI.class));
 		suite.addTest(new TestSuite(TestSiteManagerAPI.class));		
 		suite.addTest(new TestSuite(TestNestedFeatureAPI.class));
+		suite.addTest(new TestSuite(TestFeatureContentProvider_FileFilterAPI.class));
 		return suite;
 	}
 }

@@ -4,8 +4,12 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
  
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
 import java.util.*;
+
+import javax.swing.plaf.SliderUI;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.model.*;
@@ -27,6 +31,10 @@ import org.eclipse.update.internal.core.URLEncoder;
  * @since 2.0
  */
 public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteFactory {
+
+	// 
+	private URLConnection connection = null;
+	private IOException exception = null;
 
 	/**
 	 * Create site. Implementation of this method must be provided by 
@@ -118,6 +126,62 @@ public abstract class BaseSiteFactory extends SiteModelFactory implements ISiteF
 	 */
 	public CategoryModel createSiteCategoryModel() {
 		return new Category();
+	}
+
+	/**
+	 * Open a stream on a URL.
+	 * manages a time out if the connection is locked or fails
+	 * 
+	 * @param resolvedURL
+	 * @return InputStream
+	 */
+	protected InputStream openStream(URL resolvedURL)  throws IOException {
+		URLConnection connection = openConnection(resolvedURL);
+		return connection.getInputStream();
+	}
+
+	/**
+	 * Opens a connection to a URL.
+	 * Manages time out
+	 * 
+	 * @param resolvedURL
+	 * @return URLConnection
+	 */
+	protected URLConnection openConnection(final URL resolvedURL) throws IOException {
+		
+	/*	int time = 100000;
+		connection = null;
+		exception = null;
+
+		Thread thread = new Thread(new Runnable() {
+			public void run() {
+				try {
+					connection = resolvedURL.openConnection();
+				} catch (IOException e){
+					exception = e;
+				}
+			}
+		});
+		
+		long start = new Date().getTime();
+		boolean timeout = false;
+		while (connection==null && !timeout){
+			try {
+				Thread.currentThread().sleep(2000);
+			} catch(InterruptedException e) {
+			}
+			if(exception!=null) throw exception;
+			if (new Date().getTime()-start>time) timeout=true;
+		}
+		
+		
+		if (timeout) {
+			thread.stop(); // better solution ?
+			throw new IOException("Unable to obtain connection to:"+resolvedURL.toExternalForm());
+		}
+		return connection;*/
+		
+		return resolvedURL.openConnection();	
 	}
 
 }

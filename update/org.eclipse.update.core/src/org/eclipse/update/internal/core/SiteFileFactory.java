@@ -92,7 +92,7 @@ public class SiteFileFactory extends BaseSiteFactory {
 				// attempt to parse the file
 				try {
 					URL resolvedURL = URLEncoder.encode(url);
-					siteStream = resolvedURL.openStream();
+					siteStream = openStream(resolvedURL);
 					site = (Site) factory.parseSite(siteStream);
 				} catch (IOException e) {
 

@@ -417,3 +417,8 @@ OLD Feature Code
 	
 	true^false
 	true^true
+
+	
+org.eclipse.core.runtime.IPath p1= (new org.eclipse.core.runtime.Path("/path1/path2/*.txt"));
+org.eclipse.core.runtime.IPath p2= (new org.eclipse.core.runtime.Path("/path1/path2/a.txt"));
+p1.equals(p2);

@@ -34,12 +34,12 @@ public class ContentReference {
 	public static final long UNKNOWN_SIZE = -1;
 
 	/**
-	 * Default permission when installing a content reference
+	 * Default executable permission when installing a content reference
 	 * Will add executable bit if necessary
 	 * 
 	 * @since 2.0.1
 	 */
-	public static final int DEFAULT_PERMISSION = -1;
+	public static final int DEFAULT_EXECUTABLE_PERMISSION = -1;
 
 	private static final String FILE_URL_PROTOCOL = "file"; //$NON-NLS-1$
 
