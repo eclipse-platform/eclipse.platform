@@ -12,6 +12,7 @@
 package org.eclipse.ant.tests.ui.performance;
 
 import org.eclipse.ant.internal.ui.model.IAntUIConstants;
+import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -73,8 +74,17 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 			dialog.setInitialStatus(status);
 			
 			dialog.open();
+            EditorTestHelper.runEventQueue(dialog.getShell());
 			dialog.close();
         }
 		stopMeasuring();
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.test.performance.PerformanceTestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+       super.setUp();
+       EditorTestHelper.runEventQueue();
     }
 }
