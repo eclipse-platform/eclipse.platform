@@ -5,12 +5,15 @@ package org.eclipse.ant.internal.ui;
  * All Rights Reserved.
  */
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tools.ant.*;
-import org.eclipse.ant.core.AntRunner;import org.eclipse.ant.core.EclipseProject;
-import org.eclipse.ant.core.IAntRunnerListener;import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.ant.core.AntRunner;
+import org.eclipse.ant.internal.core.old.EclipseProject;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 // TBD
 // * Marker mechanism doesn't work for Locations other than
@@ -18,8 +21,9 @@ import org.eclipse.swt.widgets.Display;
 //   ant tasks.
 // * incremental task shows minimal feedback
 
-public class UIBuildListener implements IAntRunnerListener {
+// public class UIBuildListener implements IAntRunnerListener { // FIXME
 	
+public class UIBuildListener implements BuildListener {
 	private AntRunner runner;
 	private IProgressMonitor fMonitor;
 	private Target fTarget;
@@ -31,8 +35,6 @@ public class UIBuildListener implements IAntRunnerListener {
 	// index of the last target end
 	private int lastTargetEndIndex = 0;
 	private boolean isTargetWithDependencies = false;
-
-
 public UIBuildListener(AntRunner runner, IProgressMonitor monitor, IFile file, AntConsole[] consoles) {
 	super();
 	this.consoles = consoles;
@@ -55,7 +57,6 @@ public UIBuildListener(AntRunner runner, IProgressMonitor monitor, IFile file) {
 	fMonitor = monitor;
 	fBuildFile = file;
 }
-
 public void buildFinished(BuildEvent be){
 	fMonitor.done();
 	if (be.getException() != null)
@@ -70,13 +71,11 @@ public void buildFinished(BuildEvent be){
 	// And finaly tell the consoles to update
 	refreshConsoleTrees();
 }
-
 private void setProjectNameForOutputStructures(String name) {
 	if (consoles != null)
 		for (int i=0; i < consoles.length; i++)
 			consoles[i].currentElement.setName(name);
 }
-
 protected void refreshConsoleTrees() {
     if (consoles != null)
     	// create a new thread for synchronizing all the refresh operations
@@ -88,10 +87,9 @@ protected void refreshConsoleTrees() {
     		}
     	});
 }
-
 public void buildStarted(BuildEvent be) {
 	fMonitor.subTask(Policy.bind("monitor.buildStarted"));
-	msgOutputLevel = runner.getOutputMessageLevel();
+//	msgOutputLevel = runner.getOutputMessageLevel(); // FIXME:
 	removeMarkers();
 	
 	// the current (first) output element is the one for the script, so we have to set the end index for it
@@ -133,7 +131,6 @@ private int getLineFromLocation(Location l) {
 }
 private void handleBuildException(Throwable t) {
 	logMessage(Policy.bind("exception.buildException", t.toString()) + "\n", Project.MSG_ERR);
-
 	if (t instanceof BuildException) {
 		BuildException bex= (BuildException)t;
 		// the build exception has a location that
@@ -168,14 +165,12 @@ public void targetStarted(BuildEvent be) {
 	checkCanceled();
 	fTarget= be.getTarget();
 	fMonitor.subTask(Policy.bind("monitor.targetColumn")+"\""+fTarget.getName()+"\" "+Policy.bind("monitor.started"));
-
 	int startIndex = logLength;
 	// the targets that need to look for the last target end index are targets that have no dependency and that
 	// are in an EclipseProject (if they are in an standard Project, this means that they were executed with the 'ant'
 	// task, and therefore have no ouput to look for)
 	if (!isTargetWithDependencies && (be.getProject() instanceof EclipseProject))
 		startIndex = lastTargetEndIndex;
-
 	createNewOutputStructureElement(fTarget.getName(), startIndex);	
 }
 public void targetFinished(BuildEvent be) {
@@ -215,7 +210,6 @@ public void executeTargetFinished(BuildEvent be){
 	checkCanceled();
 	if (be.getException() != null)
 		handleBuildException(be.getException());
-
 	if (isTargetWithDependencies) {
 		// we have the nested element to finish (the one that gathers all the target of the dependency)
 		finishCurrentOutputStructureElement();
@@ -230,7 +224,6 @@ public void taskStarted(BuildEvent be) {
 	fMonitor.subTask(Policy.bind("monitor.targetColumn")+"\""+fTarget.getName()+"\" - "+fTask.getTaskName());
 	if (be.getException() != null)
 		handleBuildException(be.getException());
-
 	createNewOutputStructureElement(fTask.getTaskName());
 }
 public void taskFinished(BuildEvent be) {
@@ -240,7 +233,6 @@ public void taskFinished(BuildEvent be) {
 	
 	refreshConsoleTrees();
 }
-
 /*
  * Used to create output structure elements for targets.
  * 
@@ -257,14 +249,12 @@ protected void createNewOutputStructureElement(String name, int index) {
 			consoles[i].currentElement = newElement;
     	}
 }
-
 /*
  * Used to create output structure elements for projects and tasks
  */
 protected void createNewOutputStructureElement(String name) {
 	createNewOutputStructureElement(name, logLength);
 }
-
 protected void finishCurrentOutputStructureElement() {
 	if (consoles != null)
     	for (int i=0; i < consoles.length; i++) {
@@ -274,5 +264,4 @@ protected void finishCurrentOutputStructureElement() {
 			consoles[i].currentElement = consoles[i].currentElement.getParent();
     	}
 }
-
 }

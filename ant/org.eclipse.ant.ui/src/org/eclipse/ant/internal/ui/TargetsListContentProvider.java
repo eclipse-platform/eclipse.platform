@@ -5,7 +5,9 @@ package org.eclipse.ant.internal.ui;
  * All Rights Reserved.
  */
 
-import java.io.File;import org.apache.tools.ant.ProjectHelper;import org.eclipse.ant.core.EclipseProject;import org.eclipse.core.resources.IFile;
+import java.io.File;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectHelper;import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;import org.eclipse.core.runtime.Status;import org.eclipse.jface.dialogs.ErrorDialog;import org.eclipse.jface.viewers.*;
 
 /**
@@ -36,7 +38,7 @@ public static TargetsListContentProvider getInstance() {
  * @return the array of the targets found
  */
 public Object[] getElements(Object inputElement) {
-	EclipseProject project = (EclipseProject)inputElement;
+	Project project = (Project)inputElement;
 	return project.getTargets().values().toArray();
 }
 

@@ -7,7 +7,6 @@ package org.eclipse.ant.internal.ui;
  
 import java.io.File;
 import org.apache.tools.ant.ProjectHelper;
-import org.eclipse.ant.core.EclipseProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.*;

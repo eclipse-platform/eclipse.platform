@@ -1,4 +1,4 @@
-package org.eclipse.ant.internal.ui;/* * (c) Copyright IBM Corp. 2000, 2001. * All Rights Reserved. */import org.eclipse.ant.core.AntPlugin;import org.eclipse.jface.preference.*;import org.eclipse.swt.SWT;import org.eclipse.swt.layout.*;import org.eclipse.swt.widgets.*;import org.eclipse.ui.*;
+package org.eclipse.ant.internal.ui;/* * (c) Copyright IBM Corp. 2000, 2001. * All Rights Reserved. */import org.eclipse.jface.preference.*;import org.eclipse.swt.SWT;import org.eclipse.swt.layout.*;import org.eclipse.swt.widgets.*;import org.eclipse.ui.*;
 public class AntPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {

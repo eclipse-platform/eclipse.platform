@@ -7,8 +7,8 @@ package org.eclipse.ant.internal.ui;
 
 import java.io.File;
 
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
-import org.eclipse.ant.core.EclipseProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.Action;
@@ -45,7 +45,7 @@ public void run() {
 		}
 	}
 	
-	EclipseProject project = extractProject(file);
+	Project project = extractProject(file);
 	if (project == null)
 		return;
 		
@@ -56,9 +56,9 @@ public void run() {
 	dialog.open();
 }
 
-protected EclipseProject extractProject(IFile sourceFile) {
+protected Project extractProject(IFile sourceFile) {
 	// create a project and initialize it
-	EclipseProject antProject = new EclipseProject();
+	Project antProject = new Project();
 	antProject.init();
 	antProject.setProperty("ant.file",sourceFile.getLocation().toOSString());
 	

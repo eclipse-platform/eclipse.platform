@@ -2,7 +2,7 @@
  * (c) Copyright 2001 MyCorporation.
  * All Rights Reserved.
  */
-package org.eclipse.ant.core;
+package org.eclipse.ant.internal.core.old;
 
 import java.util.*;
 
