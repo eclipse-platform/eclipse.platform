@@ -14,4 +14,5 @@ import org.eclipse.update.core.*;
  */
 public interface IConfiguredFeatureAdapter extends IConfiguredSiteContext {
 	public boolean isConfigured();
+	public boolean isUpdated();
 }

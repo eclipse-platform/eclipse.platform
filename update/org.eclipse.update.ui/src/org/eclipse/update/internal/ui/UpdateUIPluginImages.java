@@ -83,6 +83,7 @@ public class UpdateUIPluginImages {
 	 * OVR16
 	 */
 	public static final ImageDescriptor DESC_LINKED_CO   = create(PATH_OVR, "linked_co.gif");
+	public static final ImageDescriptor DESC_UPDATED_CO   = create(PATH_OVR, "updated_co.gif");
 	public static final ImageDescriptor DESC_INSTALLABLE_CO = create(PATH_OVR, "installable_co.gif");
 	public static final ImageDescriptor DESC_CURRENT_CO = create(PATH_OVR, "current_co.gif");
 	public static final ImageDescriptor DESC_ERROR_CO = create(PATH_OVR, "error_co.gif");
