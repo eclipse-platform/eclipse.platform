@@ -12,7 +12,6 @@ package org.eclipse.update.internal.configurator;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
-import java.text.*;
 import java.util.*;
 import javax.xml.parsers.*;
 
@@ -45,10 +44,10 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			parserFactory.setNamespaceAware(true);
 			this.parser = parserFactory.newSAXParser();
 		} catch (ParserConfigurationException e) {
-			Utils.log(e.getMessage());
+			Utils.log(Utils.newStatus("ConfigurationParser", e));
 			throw new InvocationTargetException(e);
 		} catch (SAXException e) {
-			Utils.log(e.getMessage());
+			Utils.log(Utils.newStatus("ConfigurationParser", e));
 			throw new InvocationTargetException(e);
 		}
 	}
@@ -56,15 +55,20 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 	public Configuration parse(URL url) throws Exception {
 
 		// DEBUG:		
-		//Utils.debug("Start parsing Configuration:" + (config).getURL().toExternalForm()); //$NON-NLS-1$
-		
+		//Utils.debug("Start parsing Configuration:" + (config).getURL().toExternalForm()); //$NON-NLS-1$	
 		try {
 			configURL = url;
-			input = url.openStream();
+			if ("file".equals(url.getProtocol())) {
+				File inputFile = new File(url.getFile());
+				if (!inputFile.exists() || !inputFile.canRead())
+					return null;
+				input = new FileInputStream(inputFile);
+			} else 
+				input = url.openStream();
 			parser.parse(new InputSource(input), this);
 			return config;
 		} catch (Exception e) {
-			Utils.debug("Error parsing configuration " + e.getMessage());
+			Utils.log(Utils.newStatus("ConfigurationParser.parse() error:", e));
 			throw e;
 		} finally {
 			try {
@@ -279,10 +283,13 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			if (sharedURL != null) {
 				ConfigurationParser parser = new ConfigurationParser();
 				Configuration sharedConfig = parser.parse(new URL(sharedURL));
+				if (sharedConfig == null)
+					throw new Exception();
 				config.setLinkedConfig(sharedConfig);
 			}
 		} catch (Exception e) {
 			// could not load from shared install
+			Utils.log(Utils.newStatus("Could not load from shared install", e));
 		}
 
 		String flag = attributes.getValue(CFG_TRANSIENT);

@@ -189,23 +189,8 @@ public class UpdateCore extends Plugin {
 		File updateStateLocation = null;
 
 		if ("file".equalsIgnoreCase(configLocation.getProtocol())) {
-			// ensure path exists. Handle transient configurations
-			ArrayList list = new ArrayList();
 			File path = new File(configLocation.getFile());
 			updateStateLocation = new File(path.getParentFile(), LOG_FILE);
-			while (path != null) { // walk up to first dir that exists
-				if (!path.exists()) {
-					list.add(path);
-					path = path.getParentFile();
-				} else
-					path = null;
-			}
-			for (int i = list.size() - 1; i >= 0; i--) { // walk down to create missing dirs
-				path = (File) list.get(i);
-				path.mkdir();
-				if (config.isTransient())
-					path.deleteOnExit();
-			}
 		}
 		return updateStateLocation;
 	}

@@ -394,8 +394,12 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 			}
 		} catch (IOException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
-			Utils.log(Messages.getString("InstalledSiteParser.ErrorAccessing",
-					pluginFileString)); //$NON-NLS-1$
+			if (ConfigurationActivator.DEBUG)
+				Utils.log(Utils.newStatus(Messages.getString(
+						"InstalledSiteParser.ErrorParsingFile", pluginFileString), e));//$NON-NLS-1$
+			else
+				Utils.log(Messages.getString("InstalledSiteParser.ErrorAccessing",
+						pluginFileString)); //$NON-NLS-1$
 		} catch (SAXException e) {
 			String pluginFileString = pluginFile.getAbsolutePath();
 			Utils.log(Messages.getString(
