@@ -146,8 +146,11 @@ public void createPartControl(Composite parent) {
 }
 
 public void showPageWithInput(String pageId, Object input) {
+	if (!(input instanceof org.eclipse.update.core.model.ModelObject ||
+			input instanceof org.eclipse.update.internal.ui.model.ModelObject)) return;
 	showPage(pageId, input);
-	history.add(pageId, input);
+	if (input!=null)
+		history.add(pageId, input);
    	backAction.update();
    	forwardAction.update();
    	IWorkbenchPage page = UpdateUIPlugin.getActivePage();

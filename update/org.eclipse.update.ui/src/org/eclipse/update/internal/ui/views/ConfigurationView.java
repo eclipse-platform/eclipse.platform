@@ -44,6 +44,7 @@ import org.eclipse.update.internal.ui.model.PreservedConfiguration;
 import org.eclipse.update.internal.ui.model.UpdateModel;
 import org.eclipse.update.internal.ui.parts.DefaultContentProvider;
 import org.eclipse.update.internal.ui.parts.OverlayIcon;
+import org.eclipse.update.internal.ui.model.ModelObject;
 
 /**
  * Insert the type's description here.
@@ -85,7 +86,7 @@ public class ConfigurationView
 	private static final String KEY_HISTORY_FOLDER = "ConfigurationView.historyFolder";
 	private static final String KEY_SAVED_FOLDER = "ConfigurationView.savedFolder";
 
-	abstract class ViewFolder implements IAdaptable {
+	abstract class ViewFolder extends ModelObject {
 		private String label;
 		private Image image;
 
@@ -93,10 +94,6 @@ public class ConfigurationView
 			this.label = label;
 			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
 			image = PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-		
-		public Object getAdapter(Class key) {
-			return null;
 		}
 
 		public Image getImage() {
