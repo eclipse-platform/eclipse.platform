@@ -56,10 +56,11 @@ public class UpdateManagerReconciler implements IPlatformRunnable {
 		
 		// get debug setting and process command line arguments
 		DEBUG = UpdateManagerPlugin.DEBUG_SHOW_RECONCILER;
+		processCommandLine((String[])args);		
 		
 		// obtain current platform configuration and save stamps
 		IPlatformConfiguration cfg = BootLoader.getCurrentPlatformConfiguration();
-	//	URL[] originalPluginPath = cfg.getPluginPath();
+	   // URL[] originalPluginPath = cfg.getPluginPath();
 		
 		// perform reconciliation
 		long start = 0;
