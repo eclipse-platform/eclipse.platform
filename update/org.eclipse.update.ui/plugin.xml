@@ -94,7 +94,7 @@
             id="org.eclipse.update.ui.DetailsView">
       </view>
       <view
-            name="Feature Search Results"
+            name="%views.searchResults.label"
             icon="icons/full/cview16/featuresrc_result.gif"
             category="org.eclipse.update.ui"
             class="org.eclipse.update.internal.ui.views.SearchResultView"
