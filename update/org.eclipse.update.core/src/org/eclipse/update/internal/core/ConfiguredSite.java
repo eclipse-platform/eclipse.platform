@@ -422,7 +422,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 			for (int i = 0; i < childrenRef.length; i++) {
 				try {
-					IFeature child = childrenRef[i].getFeature();
+					IFeature child = childrenRef[i].getFeature(true,null); // disable the exact feature
 					unconfigure(child, includePatches,true);
 				} catch (CoreException e) {
 					// skip any bad children
