@@ -44,6 +44,7 @@ public class ConfigurationView
 	private Image eclipseImage;
 	private Image featureImage;
 	private Image errorFeatureImage;
+	private Image optionalFeatureImage;
 	private Image warningFeatureImage;
 	private Image unconfFeatureImage;
 	private Image errorUnconfFeatureImage;
@@ -299,9 +300,7 @@ public class ConfigurationView
 						childFeature = included[i].getFeature();
 					} catch (CoreException e) {
 						childFeature =
-							new MissingFeature(
-								included[i].getSite(),
-								included[i].getURL());
+							new MissingFeature(included[i]);
 					}
 					children.add(childFeature);
 				}
@@ -357,6 +356,8 @@ public class ConfigurationView
 			if (obj instanceof IFeatureAdapter) {
 				try {
 					IFeature feature = ((IFeatureAdapter) obj).getFeature();
+					if (feature instanceof MissingFeature)
+						return feature.getLabel();
 					String version =
 						feature
 							.getVersionedIdentifier()
@@ -410,8 +411,11 @@ public class ConfigurationView
 			ILocalSite localSite = getLocalSite();
 			try {
 				IFeature feature = adapter.getFeature();
-				if (feature instanceof MissingFeature)
-					return errorFeatureImage;
+				if (feature instanceof MissingFeature) {
+					MissingFeature mfeature = (MissingFeature)feature;
+					if (mfeature.isOptional()==false) return errorFeatureImage;
+					return optionalFeatureImage;
+				}
 				IStatus status =
 					localSite.getFeatureStatus(feature);
 				int code = status.getCode();
@@ -454,6 +458,7 @@ public class ConfigurationView
 			edesc = info.getWindowImage();
 		eclipseImage = edesc.createImage();
 		featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
+		optionalFeatureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
 		edesc =
 			new OverlayIcon(
 				UpdateUIPluginImages.DESC_FEATURE_OBJ,
@@ -579,6 +584,7 @@ public class ConfigurationView
 	public void dispose() {
 		eclipseImage.dispose();
 		featureImage.dispose();
+		optionalFeatureImage.dispose();
 		unconfFeatureImage.dispose();
 		errorFeatureImage.dispose();
 		warningFeatureImage.dispose();

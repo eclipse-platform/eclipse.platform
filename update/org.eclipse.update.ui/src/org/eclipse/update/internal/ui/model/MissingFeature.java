@@ -23,9 +23,18 @@ public class MissingFeature implements IFeature {
 
 	private URL url;
 	private ISite site;
+	private IFeatureReference reference;
 	private VersionedIdentifier id = new VersionedIdentifier("unknown", "0.0.0");
 	public MissingFeature(ISite site, URL url) {
 		this.url = url;
+	}
+	public MissingFeature(IFeatureReference ref) {
+		this(ref.getSite(), ref.getURL());
+		this.reference = ref;
+	}
+	
+	public boolean isOptional() {
+		return reference!=null && reference.isOptional();
 	}
 
 	/*
@@ -46,6 +55,10 @@ public class MissingFeature implements IFeature {
 	 * @see IFeature#getLabel()
 	 */
 	public String getLabel() {
+		if (reference!=null) {
+			String name = reference.getName();
+			if (name!=null) return name;
+		}
 		return url.toString();
 	}
 

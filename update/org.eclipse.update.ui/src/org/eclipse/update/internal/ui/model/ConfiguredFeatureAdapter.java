@@ -51,7 +51,7 @@ public class ConfiguredFeatureAdapter
 				try {
 					feature = fref.getFeature();
 				} catch (CoreException e) {
-					feature = new MissingFeature(getSite(), getURL());
+					feature = new MissingFeature(fref);
 				}
 
 				result[i] =
