@@ -696,9 +696,12 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				// calculate efixes to enable
 				List efixesToEnable = getPatchesToEnable(patches, configuredFeatures);
 				// add efies to keep enable
-				for (int i = 0; i < efixesToEnable.size(); i++) {
-					IFeature feature = (IFeature) efixesToEnable.get(i);
-					configuredFeatures.add(feature);
+				//add them to the enable list
+				for (Iterator iter = efixesToEnable.iterator(); iter.hasNext();) {
+					IFeature element = (IFeature) iter.next();
+					ArrayList expandedEfix = new ArrayList();
+					expandFeature(element, expandedEfix, configuredSite);
+					configuredFeatures.addAll(expandedEfix);
 				}
 			}
 		}
