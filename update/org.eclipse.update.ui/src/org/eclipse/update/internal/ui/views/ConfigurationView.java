@@ -462,6 +462,8 @@ public class ConfigurationView
 			ILocalSite localSite = getLocalSite();
 			try {
 				IFeature feature = adapter.getFeature();
+				if (updated)
+					System.out.println("Updated: "+feature.getVersionedIdentifier());
 				if (feature instanceof MissingFeature) {
 					MissingFeature mfeature = (MissingFeature) feature;
 					if (mfeature.isOptional() == false)

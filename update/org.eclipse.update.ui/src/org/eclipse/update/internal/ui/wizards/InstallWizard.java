@@ -207,7 +207,8 @@ public class InstallWizard extends Wizard {
 				}
 			}
 		} else if (job.getJobType() == PendingChange.CONFIGURE) {
-			configure(job.getFeature());
+			configure(feature);
+			ensureUnique(config, feature, targetSite);
 		} else if (job.getJobType() == PendingChange.UNCONFIGURE) {
 			unconfigure(config, job.getFeature());
 		} else {

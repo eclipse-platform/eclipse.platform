@@ -39,6 +39,8 @@ public class ActivityConstraints {
 		"ActivityConstraints.prereqGreaterOrEqual";
 	private static final String KEY_PATCH_REGRESSION = 
 		"ActivityConstraints.patchRegression";
+	private static final String KEY_PATCH_UNCONFIGURE = 
+		"ActivityConstraints.patchUnconfigure";
 	private static final String KEY_PATCH_MISSING_TARGET = 
 		"ActivityConstraints.patchMissingTarget";
 	private static final String KEY_OPTIONAL_CHILD =
@@ -168,10 +170,14 @@ public class ActivityConstraints {
 		IFeature feature,
 		ArrayList status) {
 		try {
+			if (UpdateUIPlugin.isPatch(feature)) {
+				String msg = UpdateUIPlugin.getResourceString(KEY_PATCH_UNCONFIGURE);
+				status.add(createStatus(feature, msg));
+				return;
+			}
 			ArrayList features = computeFeatures();
 			features = computeFeaturesAfterOperation(features, null, feature);
 			checkConstraints(features, status);
-
 		} catch (CoreException e) {
 			status.add(e.getStatus());
 		}
