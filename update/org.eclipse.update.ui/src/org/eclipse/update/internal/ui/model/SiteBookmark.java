@@ -74,7 +74,11 @@ public class SiteBookmark extends NamedModelObject
 	}
 	
 	public void connect() throws CoreException {
-		site = SiteManager.getSite(url);
+		connect(true);
+	}
+	
+	public void connect(boolean useCache) throws CoreException {
+		site = SiteManager.getSite(url, useCache);
 		createCatalog();
 	}
 	

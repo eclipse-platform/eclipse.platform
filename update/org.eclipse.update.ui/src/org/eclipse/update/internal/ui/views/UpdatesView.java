@@ -661,7 +661,7 @@ public class UpdatesView
 						if (auth != null)
 							auth.reset();
 						if (obj instanceof SiteBookmark)
-							 ((SiteBookmark) obj).connect();
+							 ((SiteBookmark) obj).connect(false);
 						viewer.refresh(obj);
 					} catch (CoreException e) {
 						UpdateUIPlugin.logException(e);
