@@ -92,6 +92,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 		super();
 		this.parser = new SAXParser();
 		this.parser.setContentHandler(this);
+		this.parser.setErrorHandler(this); // 18350		
 		this.factory = factory;
 	}
 
