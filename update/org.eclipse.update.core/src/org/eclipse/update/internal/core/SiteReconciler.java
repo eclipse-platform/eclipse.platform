@@ -217,26 +217,26 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		}
 
 		for (int i = 0; i < foundFeatures.length; i++) {
-			boolean newFeatureFound = false;
+			boolean newFeatureFound = true;
 
 			// TRACE
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
 				UpdateManagerPlugin.debug("Is this feature new? :" + foundFeatures[i].getURL());
 			}
 
-			// is is a brand new feature ?	
+			// if it is an old feature, add it to the list of features to check	
 			for (int j = 0; j < oldConfiguredFeaturesRef.length; j++) {
 				IFeatureReference oldFeatureRef = oldConfiguredFeaturesRef[j];
 				if (oldFeatureRef != null && oldFeatureRef.equals(foundFeatures[i])) {
 					toCheck.add(oldFeatureRef);
-					newFeatureFound = true;
+					newFeatureFound = false;
 				}
 			}
 
 			// new feature found: add as configured if the policy is optimistic
 			// or [2.0.1] if the feature is optional by all the parents AND one exact parent 
 			// (pointing to same version) is enable
-			if (!newFeatureFound) {
+			if (newFeatureFound) {
 				configureNewFoundFeature(isOptimistic, newSitePolicy, oldSitePolicy, foundFeatures[i], oldConfiguredFeaturesRef);
 			}
 		}

@@ -189,12 +189,12 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			}
 
 			InstallConfiguration installConfig = null;
-			
+
 			// only ask for install config is activity created.
 			// prevents loops during reconciliation
-			if (activity!=null)
+			if (activity != null)
 				installConfig = ((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration());
-			
+
 			// Allow unconfigure if the feature is optional from all the parents
 			// or if the feature is mandatory and non of its parent are configured
 			if (validateNoConfiguredParents(feature)) {
@@ -484,7 +484,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	}
 
 	/*
-	 * 
+	 * since 2.0.1 we have to check that the parent doesn't consider it
+	 * as optional. 
 	 */
 	private boolean validateNoConfiguredParents(IFeature feature) throws CoreException {
 		if (feature == null) {
@@ -492,8 +493,13 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			return true;
 		}
 
-		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(),false);
+		IFeatureReference[] parents = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(), false);
 		if (parents.length == 0)
+			return true;
+
+		// if all parents consider me optional return true
+		IFeatureReference[] parentsOptional = UpdateManagerUtils.getParentFeatures(feature, getConfiguredFeatures(), true);
+		if (parents.length == parentsOptional.length)
 			return true;
 
 		String msg = Policy.bind("ConfigurationPolicy.UnableToDisable", feature.getLabel());
