@@ -140,7 +140,7 @@ public class SiteStatusAnalyzer {
 		IFeatureReference ref = cSite.getSite().getFeatureReference(feature);
 		if (ref != null) {
 			if (!cSite.getConfigurationPolicy().isConfigured(ref))
-				return createStatus(IStatus.OK, IFeature.STATUS_DISABLE, "", null);
+				return createStatus(IStatus.OK, IFeature.STATUS_DISABLED, "", null);
 		} else {
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
 				UpdateManagerPlugin.warn("Unable to find reference for feature " + feature + " in site " + cSite.getSite().getURL());
@@ -177,7 +177,7 @@ public class SiteStatusAnalyzer {
 		// consider disable
 		// check the current feature
 		String msg = Policy.bind("SiteLocal.FeatureDisable");
-		int code = IFeature.STATUS_DISABLE;
+		int code = IFeature.STATUS_DISABLED;
 		IStatus featureStatus = getStatus(feature);
 		MultiStatus multiTemp = new MultiStatus(featureStatus.getPlugin(), code, msg, null);
 		if (featureStatus.getSeverity() == IStatus.ERROR) {
@@ -192,7 +192,7 @@ public class SiteStatusAnalyzer {
 			code = featureStatus.getCode();
 
 		// do not check children if feature is disable
-		if (!(code == IFeature.STATUS_DISABLE)) {
+		if (!(code == IFeature.STATUS_DISABLED)) {
 			for (int i = 0; i < children.length; i++) {
 				if (!children[i].isOptional()) {
 					try {
@@ -205,7 +205,11 @@ public class SiteStatusAnalyzer {
 					if (childFeature == null) {
 						UpdateManagerPlugin.warn("getFeatureStatus: Feature is null for:" + children[i]);
 						// Unable to find children feature, broken
-						String msg1 = Policy.bind("SiteLocal.NestedFeatureUnavailable", new Object[] { children[i].getURL()});
+						Object featureAsPrintableObject = children[i].getURL();
+						try {
+							featureAsPrintableObject = children[i].getVersionedIdentifier();
+						} catch (CoreException e){}//may fail
+						String msg1 = Policy.bind("SiteLocal.NestedFeatureUnavailable", new Object[] { featureAsPrintableObject });
 						multiTemp.add(createStatus(IStatus.ERROR, IFeature.STATUS_UNHAPPY, msg1, null));
 						if (IFeature.STATUS_UNHAPPY > code)
 							code = IFeature.STATUS_UNHAPPY;
@@ -213,7 +217,7 @@ public class SiteStatusAnalyzer {
 						childStatus = getFeatureStatus(childFeature);
 						// do not add the status, add the children status as getFeatureStatus
 						// returns a multiStatus 
-						if (childStatus.getCode() == IFeature.STATUS_DISABLE) {
+						if (childStatus.getCode() == IFeature.STATUS_DISABLED) {
 							VersionedIdentifier versionID = childFeature.getVersionedIdentifier();
 							String featureVer = (versionID == null) ? "" : versionID.getVersion().toString();
 							String msg1 = Policy.bind("SiteLocal.NestedFeatureDisable", childFeature.getLabel(), featureVer);
@@ -245,7 +249,7 @@ public class SiteStatusAnalyzer {
 			case IFeature.STATUS_AMBIGUOUS :
 				msg = Policy.bind("SiteLocal.FeatureAmbiguous");
 				break;
-			case IFeature.STATUS_DISABLE :
+			case IFeature.STATUS_DISABLED :
 				msg = Policy.bind("SiteLocal.FeatureDisable");
 				break;
 			default :
