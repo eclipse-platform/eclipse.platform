@@ -67,8 +67,7 @@ public class FeatureCopyrightPropertyPage extends PropertyPage implements IWorkb
 					SWTUtil.setButtonDimensionHint(button);
 					button.addSelectionListener(new SelectionAdapter() {
 						public void widgetSelected(SelectionEvent e) {
-							String urlName = url.getProtocol() + ":" + url.getFile(); //$NON-NLS-1$
-							UpdateUI.showURL(urlName);
+							UpdateUI.showURL(url.toExternalForm());
 						}
 					});
 				}
