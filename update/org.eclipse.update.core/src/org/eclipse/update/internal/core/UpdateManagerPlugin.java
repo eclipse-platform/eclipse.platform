@@ -4,13 +4,24 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+
+import org.eclipse.core.boot.BootLoader;
+import org.eclipse.core.boot.IPlatformConfiguration;
+import org.eclipse.core.internal.boot.PlatformConfiguration;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.JarContentReference;
 import org.eclipse.update.core.Utilities;
+import org.eclipse.update.internal.model.ConfigurationActivityModel;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -31,6 +42,8 @@ public class UpdateManagerPlugin extends Plugin {
 	//The shared instance.
 	private static UpdateManagerPlugin plugin;
 
+	//log
+	private static UpdateManagerLogWriter log;
 
 	// web install
 	private static String appServerHost =null;
@@ -84,6 +97,15 @@ public class UpdateManagerPlugin extends Plugin {
 			DEBUG_SHOW_IHANDLER = getBooleanDebugOption("org.eclipse.update.core/debug/installhandler", false); //$NON-NLS-1$
 			DEBUG_SHOW_RECONCILER = getBooleanDebugOption("org.eclipse.update.core/debug/reconciler", false); //$NON-NLS-1$
 		}
+		
+		//
+		try {
+			File logFile = getUpdateStateLocation();
+			if (logFile!=null)
+				log = new UpdateManagerLogWriter(logFile);
+		} catch (IOException e){
+			warn("",e);
+		}
 	}
 
 	/**
@@ -94,6 +116,8 @@ public class UpdateManagerPlugin extends Plugin {
 		
 		JarContentReference.shutdown(); // make sure we are not leaving jars open
 		Utilities.shutdown(); // cleanup temp area
+		if (log!=null)
+			log.shutdown();
 	}
 
 	private boolean getBooleanDebugOption(String flag, boolean dflt) {
@@ -171,4 +195,44 @@ public class UpdateManagerPlugin extends Plugin {
 		if (status!=null)
 			log(status);
 	}		
+	/**
+	 * Method log.
+	 * @param activity
+	 */
+	public static void log(IInstallConfiguration newConfiguration) {
+		if (log!=null)
+			log.log(newConfiguration);
+	}
+
+	/*
+	 * Get update log location relative to platform configuration
+	 */
+	private static File getUpdateStateLocation() throws IOException {
+		
+		IPlatformConfiguration config = BootLoader.getPlatformConfiguration(null);		
+		URL configLocation = Platform.resolve(config.getConfigurationLocation());
+		File updateStateLocation = null;
+
+		if ("file".equalsIgnoreCase(configLocation.getProtocol())) {
+			// ensure path exists. Handle transient configurations
+			ArrayList list = new ArrayList();
+			File path = new File(configLocation.getFile());
+			updateStateLocation = path;
+			while (path != null) { // walk up to first dir that exists
+				if (!path.exists()) {
+					list.add(path);
+					path = path.getParentFile();
+				} else
+					path = null;
+			}
+			for (int i = list.size() - 1; i >= 0; i--) { // walk down to create missing dirs
+				path = (File) list.get(i);
+				path.mkdir();
+				if (config.isTransient())
+					path.deleteOnExit();
+			}
+		}
+		return updateStateLocation;
+	}
+
 }
