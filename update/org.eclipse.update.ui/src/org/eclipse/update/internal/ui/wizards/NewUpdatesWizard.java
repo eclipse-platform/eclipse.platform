@@ -5,6 +5,7 @@ package org.eclipse.update.internal.ui.wizards;
  */
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -194,12 +195,40 @@ public class NewUpdatesWizard extends Wizard {
 		throws InstallAbortedException, CoreException {
 		IFeature feature = job.getFeature();
 		IFeature oldFeature = job.getOldFeature();
+		boolean reinstall=false;
+		IFeatureReference [] optionalFeatures=null;
+		if (feature.getVersionedIdentifier().equals(oldFeature.getVersionedIdentifier())) {
+			reinstall=true;
+		}
+		optionalFeatures = computeOptionalFeatures(oldFeature, feature);
 		IConfiguredSite targetSite =
 			TargetPage.getDefaultTargetSite(config, job);
-		targetSite.install(feature, getVerificationListener(), monitor);
-		unconfigure(oldFeature);
+		if (optionalFeatures!=null)
+			targetSite.install(feature, optionalFeatures, getVerificationListener(), monitor);
+		else
+			targetSite.install(feature, getVerificationListener(), monitor);
+		if (!reinstall) unconfigure(oldFeature);
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		model.addPendingChange(job);
+	}
+
+	private IFeatureReference[] computeOptionalFeatures(IFeature oldFeature, IFeature newFeature) {
+		ArrayList elements = new ArrayList();
+		FeatureHierarchyElement.computeElements(
+			oldFeature,
+			newFeature,
+			oldFeature != null,
+			elements);
+		HashSet set = new HashSet();
+		for (int i = 0; i < elements.size(); i++) {
+			FeatureHierarchyElement element =
+				(FeatureHierarchyElement) elements.get(i);
+			element.addCheckedOptionalFeatures(
+				oldFeature != null,
+				set);
+		}
+		return (IFeatureReference[]) set.toArray(
+			new IFeatureReference[set.size()]);
 	}
 
 	private void throwError(String message) throws CoreException {
