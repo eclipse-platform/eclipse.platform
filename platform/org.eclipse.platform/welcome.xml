@@ -27,23 +27,6 @@ your perspective. To do this choose <action pluginId="org.eclipse.ui"  class="or
 additionally be converted into a Fast View by dragging it to the shortcut bar (at the 
 far left of the window). </item> 
 
-<item><b>Join a CVS team</b>
-To join a CVS development team, open the <action pluginId="org.eclipse.team.cvs.ui" class="org.eclipse.team.internal.ccvs.ui.actions.ShowCVSPerspectiveAction">CVS Repository Exploring perspective</action>. Next, specify
-the location of your CVS repository. To do this, choose <action pluginId="org.eclipse.team.cvs.ui" class="org.eclipse.team.internal.ccvs.ui.actions.NewCVSRepositoryAction">New > Repository Location...</action> from the
-CVS Repositories view popup menu. When the location wizard opens, fill in the details of your
-CVS repository and click Finish. 
-
-A repository location will appear in the CVS Repositories view. Expand the location, then expand
-the HEAD branch. You will see a list of the modules in that repository, which you can check out as
-an Eclipse project.
-
-For an anonymous connection to the Eclipse CVS repository, choose
-<action pluginId="org.eclipse.team.cvs.ui" class="org.eclipse.team.internal.ccvs.ui.actions.NewCVSAnonEclipseConnection">New > Anonymous Repository Location to dev.eclipse.org...</action>. Select the newly created location
-and expand HEAD. You will see the list of all the Eclipse modules, most of which are platform plugins.
-Select a plugin and choose <b>Checkout as Project</b> from the context menu. This will checkout
-the module from the CVS repository and create a plugin project by that name in your workspace.</item>
-
-
 <item><b>Learn more </b>
 To learn more you can browse the <topic id="/org.eclipse.platform.doc.user/toc.xml">Workbench User Guide</topic>.</item>
 
