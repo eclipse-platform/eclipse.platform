@@ -1056,9 +1056,9 @@ public class DefaultFeatureParser extends DefaultHandler {
 		String ruleName = attributes.getValue("match");
 		int rule = UpdateManagerUtils.getMatchingRule(ruleName);
 		
-		// update allowed
-		String allowed = attributes.getValue("unique");
-		boolean isUnique = "true".equalsIgnoreCase(optional);
+		// unique
+		String unique = attributes.getValue("unique");
+		boolean isUnique = "true".equalsIgnoreCase(unique);
 		
 		// search location
 		String locationName = attributes.getValue("search_location");
