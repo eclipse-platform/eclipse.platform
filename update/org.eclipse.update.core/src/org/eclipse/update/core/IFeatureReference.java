@@ -113,12 +113,12 @@ public interface IFeatureReference extends IAdaptable {
 	 * The rule will determine the ability of the included feature to move version 
 	 * without causing the overall feature to appear broken.
 	 * 
-	 * The default is <code>MATCH_PERFECT</code>
+	 * The default is <code>RULE_PERFECT</code>
 	 * 
-	 * @see IImport#RULE_PERFECT
-	 * @see IImport#RULE_EQUIVALENT
-	 * @see IImport#RULE_COMPATIBLE
-	 * @see IImport#RULE_GREATER_OR_EQUAL
+	 * @see IUpdateConstants#RULE_PERFECT
+	 * @see IUpdateConstants#RULE_EQUIVALENT
+	 * @see IUpdateConstants#RULE_COMPATIBLE
+	 * @see IUpdateConstants#RULE_GREATER_OR_EQUAL
 	 * @return int representation of feature matching rule.
 	 * @since 2.0.2
 	 */

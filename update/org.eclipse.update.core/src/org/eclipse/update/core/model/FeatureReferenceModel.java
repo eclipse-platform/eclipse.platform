@@ -301,8 +301,8 @@ public class FeatureReferenceModel extends ModelObject {
 	 * @return IncludedFeatureOptions
 	 */
 	public IncludedFeatureReference getOptions() {
-		return options;
-	}
+			return options;
+		}
 
 	/**
 	 * Sets the options.

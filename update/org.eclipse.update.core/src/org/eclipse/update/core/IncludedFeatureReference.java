@@ -29,6 +29,7 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 	 * 
 	 * @param name string representation of the feature
 	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
+	 * @deprecated use other constructor
 	 * @since 2.0.1
 	 */
 	public IncludedFeatureReference(String name, boolean isOptional) {
