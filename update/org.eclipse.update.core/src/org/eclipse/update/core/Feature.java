@@ -842,6 +842,8 @@ public class Feature extends FeatureModel implements IFeature {
 	 */
 	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
 
+		if (referenceToReinitialize==null) return;
+
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
 			UpdateManagerPlugin.debug("Re initialize feature reference:" + referenceToReinitialize);
 
@@ -850,6 +852,18 @@ public class Feature extends FeatureModel implements IFeature {
 			feature = referenceToReinitialize.getFeature();
 			if (feature != null && feature instanceof Feature) {
 				((Feature) feature).initializeIncludedReferences();
+			}
+			// bug 24981 - recursively go into hierarchy
+			// only if site if file 
+			ISite site = referenceToReinitialize.getSite();
+			if (site==null) return;
+			URL url = site.getURL();
+			if (url==null) return;
+			if ("file".equals(url.getProtocol())){
+				IFeatureReference[] included = feature.getIncludedFeatureReferences();
+				for (int i = 0; i < included.length; i++) {
+					reinitializeFeature(included[i]);
+				}
 			}
 		} catch (CoreException e) {
 			UpdateManagerPlugin.warn("", e);

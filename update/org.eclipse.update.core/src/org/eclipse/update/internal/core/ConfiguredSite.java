@@ -210,7 +210,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			((InstallConfiguration) current).addActivity(activity);
 		}
 		// call the configure task	
-		if (installedFeature != null)
+		if (installedFeature != null) 
 			configure(installedFeature, optionalFeatures, false);
 		/*callInstallHandler*/
 
@@ -340,8 +340,8 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 * @return IFeatureReference[]
 	 */
 	private IFeatureReference[] childrenToConfigure(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
-		
-		List childrenToInstall = new ArrayList();
+		 
+		List childrenToInstall = new ArrayList(); 
 		for (int i = 0; i < children.length; i++) {
 			IFeatureReference optionalFeatureToConfigure = children[i];
 			if (!optionalFeatureToConfigure.isOptional()){
@@ -352,7 +352,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 					// where children are on the local site
 					try {
 						IFeature installedChildren = optionalfeatures[j].getFeature();
-						if (installedChildren.equals(optionalFeatureToConfigure.getFeature())){
+						if (installedChildren.equals(optionalFeatureToConfigure.getFeature(true,null))){
 							childrenToInstall.add(optionalFeatureToConfigure);
 							break;
 						}
