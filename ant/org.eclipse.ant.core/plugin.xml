@@ -18,9 +18,9 @@
      </library>
    </runtime>
 
+   <extension-point id="objects" name="%objectsName"/>
    <extension-point id="tasks" name="%tasksName"/>
-   <extension-point id="antObjects" name="%objectsName"/>
-   <extension-point id="antTypes" name="%typesName"/>
+   <extension-point id="types" name="%typesName"/>
 
    <!-- Applications -->
    <extension

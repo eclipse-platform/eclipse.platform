@@ -12,20 +12,40 @@ import org.eclipse.core.runtime.Platform;
 public class AntCorePreferences {
 
 	protected Map defaultTasks;
+	protected Map defaultObjects;
+	protected Map defaultTypes;
 	protected Map tasks;
 	protected List plugins;
 
-public AntCorePreferences(Map defaultTasks) {
+public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes) {
 	this.defaultTasks = defaultTasks;
+	this.defaultObjects = defaultObjects;
+	this.defaultTypes = defaultTypes;
 	tasks = new HashMap(20);
 	plugins = new ArrayList(10);
-	for (Iterator iterator = defaultTasks.entrySet().iterator(); iterator.hasNext();) {
-		Map.Entry entry = (Map.Entry) iterator.next();
-		String taskName = (String) entry.getKey();
-		IConfigurationElement element = (IConfigurationElement) entry.getValue();
-		String className = element.getAttribute(AntCorePlugin.CLASS);
-		tasks.put(taskName, className);
-		plugins.add(element.getDeclaringExtension().getDeclaringPluginDescriptor());
+	if (defaultTasks != null) {
+		for (Iterator iterator = defaultTasks.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry entry = (Map.Entry) iterator.next();
+			String taskName = (String) entry.getKey();
+			IConfigurationElement element = (IConfigurationElement) entry.getValue();
+			String className = element.getAttribute(AntCorePlugin.CLASS);
+			tasks.put(taskName, className);
+			plugins.add(element.getDeclaringExtension().getDeclaringPluginDescriptor());
+		}
+	}
+	if (defaultObjects != null) {
+		for (Iterator iterator = defaultObjects.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry entry = (Map.Entry) iterator.next();
+			IConfigurationElement element = (IConfigurationElement) entry.getValue();
+			plugins.add(element.getDeclaringExtension().getDeclaringPluginDescriptor());
+		}
+	}
+	if (defaultTypes != null) {
+		for (Iterator iterator = defaultTypes.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry entry = (Map.Entry) iterator.next();
+			IConfigurationElement element = (IConfigurationElement) entry.getValue();
+			plugins.add(element.getDeclaringExtension().getDeclaringPluginDescriptor());
+		}
 	}
 }
 
@@ -49,8 +69,8 @@ public URL[] getURLs() {
 public ClassLoader[] getPluginClassLoaders() {
 	List result = new ArrayList(10);
 	result.add(Platform.getPlugin("org.eclipse.ant.core").getDescriptor().getPluginClassLoader());
-	// FIXME: should not add ui by default
-	result.add(Platform.getPlugin("org.eclipse.ant.ui").getDescriptor().getPluginClassLoader());
+//	// FIXME: should not add ui by default
+//	result.add(Platform.getPlugin("org.eclipse.ant.ui").getDescriptor().getPluginClassLoader());
 	for (Iterator iterator = plugins.iterator(); iterator.hasNext();) {
 		IPluginDescriptor descriptor = (IPluginDescriptor) iterator.next();
 		result.add(descriptor.getPluginClassLoader());
