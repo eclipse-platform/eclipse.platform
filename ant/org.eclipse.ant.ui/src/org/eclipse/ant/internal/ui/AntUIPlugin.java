@@ -18,7 +18,7 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	 */
 	public static final String PI_ANTUI= "org.eclipse.ant.ui";
 	
-	public static final String PROPERTIES_MESSAGES = "org.eclipse.ant.internal.ui.Messages";
+	public static final String PROPERTIES_MESSAGES = "org.eclipse.ant.internal.ui.messages";
 	/**
 	 * The single instance of this plug-in runtime class.
 	 */
