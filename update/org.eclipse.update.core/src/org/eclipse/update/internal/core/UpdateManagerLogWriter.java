@@ -32,12 +32,12 @@ public class UpdateManagerLogWriter {
 	private static final String SUCCESS = "success"; //$NON-NLS-1$
 	private static final String FAILURE = "failure"; //$NON-NLS-1$
 
-	private static final String FEATURE_INSTALL = "fetaure-install"; //$NON-NLS-1$
+	private static final String FEATURE_INSTALL = "feature-install"; //$NON-NLS-1$
 	private static final String FEATURE_REMOVE = "feature-remove"; //$NON-NLS-1$
 	private static final String SITE_INSTALL = "site-install"; //$NON-NLS-1$
 	private static final String SITE_REMOVE = "site-remove"; //$NON-NLS-1$
-	private static final String UNCONFIGURE = "disable"; //$NON-NLS-1$
-	private static final String CONFIGURE = "enable"; //$NON-NLS-1$
+	private static final String UNCONFIGURE = "feature-disable"; //$NON-NLS-1$
+	private static final String CONFIGURE = "feature-enable"; //$NON-NLS-1$
 	private static final String REVERT = "revert"; //$NON-NLS-1$
 	private static final String RECONCILIATION = "reconciliation"; //$NON-NLS-1$
 	private static final String UNKNOWN = "unknown"; //$NON-NLS-1$	
@@ -111,7 +111,7 @@ public class UpdateManagerLogWriter {
 	/*
 	 * 
 	 */
-	public synchronized void log(IActivity activity) {
+	private synchronized void log(IActivity activity) {
 		// thread safety: (Concurrency003)
 		if (logFile != null)
 			openLogFile();
@@ -221,7 +221,11 @@ public class UpdateManagerLogWriter {
 		write(CONFIGURATION);
 		writeSpace();		
 		write(installConfig.getLabel());
-		writeln();		
+		writeln();
+		IActivity[] activities = installConfig.getActivities();
+		for (int i = 0; i < activities.length; i++) {
+			write(activities[i]);
+		}				
 	}
 
 	/*

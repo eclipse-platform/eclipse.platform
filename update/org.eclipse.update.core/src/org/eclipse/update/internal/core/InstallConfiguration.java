@@ -221,7 +221,6 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 	 */
 	public void addActivity(IActivity activity) {
 		addActivityModel((ConfigurationActivityModel)activity);
-		UpdateManagerPlugin.log(activity);
 	}
 
 
@@ -368,6 +367,9 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.UnableToSavePlatformConfiguration", runtimeConfiguration.getConfigurationLocation().toExternalForm()), e);
 			//$NON-NLS-1$
 		}
+		
+		//log
+		UpdateManagerPlugin.log(this);		
 	}
 
 	/*

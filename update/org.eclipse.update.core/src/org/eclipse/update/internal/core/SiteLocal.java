@@ -179,9 +179,6 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			setCurrentConfigurationModel((InstallConfigurationModel) config);
 			((InstallConfigurationModel) config).markReadOnly();
 
-			//log
-			UpdateManagerPlugin.log(config);
-
 			// notify listeners
 			Object[] siteLocalListeners = listeners.getListeners();
 			for (int i = 0; i < siteLocalListeners.length; i++) {
@@ -217,7 +214,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		// the other are already saved
 		// and set runtim info for next startup
 		 ((InstallConfiguration) getCurrentConfiguration()).save(isTransient());
-
+		 
 		// save the originating sites
 		OriginatingSitesProperties.getDefault().store();
 

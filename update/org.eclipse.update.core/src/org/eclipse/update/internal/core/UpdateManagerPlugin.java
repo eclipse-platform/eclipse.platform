@@ -207,15 +207,6 @@ public class UpdateManagerPlugin extends Plugin {
 	}
 
 	/*
-	 * Method log.
-	 * @param activity
-	 */
-	public static void log(IActivity activity) {
-		if (log!=null)
-			log.log(activity);
-	}
-
-	/*
 	 * Get update log location relative to platform configuration
 	 */
 	private static File getUpdateStateLocation() throws IOException {
