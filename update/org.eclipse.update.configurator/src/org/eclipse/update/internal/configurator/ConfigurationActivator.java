@@ -427,6 +427,7 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 	
 	private boolean canRunWithCachedData() {
 		return  !"true".equals(System.getProperty("osgi.checkConfiguration")) && //$NON-NLS-1$ //$NON-NLS-2$
+				System.getProperties().get("osgi.dev") == null && //$NON-NLS-1$
 				lastTimeStamp==configuration.getChangeStamp() &&
 				lastStateTimeStamp==Platform.getPlatformAdmin().getState(false).getTimeStamp();
 	}

@@ -470,7 +470,9 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 			Utils.log(Messages.getString("SiteEntry.computePluginStamp", resolvedURL.toExternalForm())); //$NON-NLS-1$
 			return 0;
 		}
-
+		long start = 0;
+		if (ConfigurationActivator.DEBUG)
+			start = (new Date()).getTime();
 		// compute stamp for the plugins directory
 		File root = new File(resolvedURL.getFile().replace('/', File.separatorChar));
 		File pluginsDir = new File(root, PLUGINS);
@@ -479,7 +481,36 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 			return 0;
 		}
 
-		pluginsChangeStamp = pluginsDir.lastModified();
+		// Compute the plugins list
+		String[] plugins = null;
+		ISitePolicy policy = getSitePolicy();
+		if (policy.getType() == ISitePolicy.USER_INCLUDE)
+			plugins = policy.getList();
+		else if (policy.getType() == ISitePolicy.USER_EXCLUDE) {
+			File[] files = pluginsDir.listFiles();
+			ArrayList detectedPlugins = new ArrayList(files.length);
+			for (int i = 0; i < files.length; i++) {
+				if(files[i].isDirectory())
+					detectedPlugins.add(PLUGINS + "/" + files[i].getName() + "/"); //$NON-NLS-1$ //$NON-NLS-2$
+				else if(files[i].getName().endsWith(".jar")) //$NON-NLS-1$
+					detectedPlugins.add(PLUGINS + "/" + files[i].getName()); //$NON-NLS-1$
+			} 
+			
+			String[] excludedPlugins = policy.getList();
+			for (int i = 0; i < excludedPlugins.length; i++) {
+				if (detectedPlugins.contains(excludedPlugins[i]))
+					detectedPlugins.remove(excludedPlugins[i]);
+			}
+			plugins = (String[])detectedPlugins.toArray(new String[0]);
+		}
+
+		
+		long dirStamp = pluginsDir.lastModified();
+		pluginsChangeStamp = Math.max(dirStamp, computeStamp(plugins));
+		if (ConfigurationActivator.DEBUG) {
+			long end = (new Date()).getTime();
+			Utils.debug(resolvedURL.toString() + " plugin stamp: " + pluginsChangeStamp + " in " + (end - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+		}
 		return pluginsChangeStamp;
 	}
 

@@ -1,6 +1,0 @@
-<project name="ClasspathOrdering" default="ordered" basedir="..">
-
-	<target name="ordered">
-		<java classname= "ClasspathOrdering"/>
-	</target>
-</project>
