@@ -354,7 +354,7 @@ public class ActivityConstraints {
 						features,
 						tolerateMissingChildren);
 			} catch (CoreException e) {
-				if (!tolerateMissingChildren)
+				if (!children[i].isOptional() && !tolerateMissingChildren)
 					throw e;
 			}
 		}
