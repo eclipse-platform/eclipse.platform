@@ -51,7 +51,7 @@ public final class AntPlugin extends Plugin {
 	 * Unique identifier constant (value <code>"org.eclipse.ant.core"</code>)
 	 * for the Ant plug-in.
 	 */
-	public static final String PI_ANT_CORE = "org.eclipse.ant.core";
+	public static final String PI_ANT = "org.eclipse.ant.core";
 
 	/**
 	 * Simple identifier constant (value <code>"antTasks"</code>)

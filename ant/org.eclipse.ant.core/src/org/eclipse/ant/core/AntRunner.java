@@ -29,9 +29,9 @@ public AntRunner() {
 	buildListeners = new ArrayList(5);
 	try {
 		URL[] path = new URL[] {
-			new URL("file:c:/eclipse/workspaces/newpde/org.apache.xerces/xerces.jar"),
-			new URL("file:c:/eclipse/workspaces/newpde/org.apache.ant/ant.jar"),
-			new URL("file:c:/eclipse/workspaces/newpde/org.eclipse.ant.core/bin/"),
+			new URL("file:c:/eclipse/workspaces/newant/org.apache.xerces/xerces.jar"),
+			new URL("file:c:/eclipse/workspaces/newant/org.apache.ant/ant.jar"),
+			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.core/bin/"),
 			new URL("file:c:/ibm-jdk/lib/tools.jar")
 		};
 		loader = new URLClassLoader(path, null);

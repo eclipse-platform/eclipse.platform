@@ -1,0 +1,53 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Rodrigo Peretti">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+   <title>Improved Ant Support</title>
+</head>
+<body>
+
+<h2>
+Problem:</h2>
+&nbsp;&nbsp;&nbsp; The Ant classpath has to be extended in order to include
+user defined entries. A "classic" newbie problem is when the user tries
+to write a script to compile some Java code. Ant does not find javac on
+the class path (tools.jar is not available).
+<br>&nbsp;&nbsp;&nbsp; Currently, in order to workaround this problem the
+user has to contribute a fragment to org.eclipse.ant and include all the
+necessary jars in it.
+<h2>
+Proposed Solutions:</h2>
+<b>1) Create an extra class loader for org.eclipse.ant where extra entries
+would be added dynamically.</b>
+<br>&nbsp;&nbsp;&nbsp; The plugin class loader would not access those jars
+directly. It would have to ask this extra class loader for anything it
+wants. Extra entries would be added at runtime.
+<p><b>Problems</b>
+<br>&nbsp;&nbsp;&nbsp; Hard or impossible to be implemented with the current
+platform.
+<br>&nbsp;
+<p><b>2) Create a fragment containing all user-defined extra libraries.</b>
+<br>&nbsp;&nbsp;&nbsp; Create a UI preference where the user adds/removes
+entries to extra jars/folders to be added to the org.eclipse.ant classpath.
+Behind the scenes the user changes are added to a fragment and next time
+the user starts eclipse, the changes take effect.
+<p><b>Problems</b>
+<ul>
+<li>
+The user has to restart Eclipse.</li>
+
+<li>
+The user might not have write permission to the runtime instalation of
+Eclipse.</li>
+
+<li>
+We cannot add absolute paths to library entries on fragments.</li>
+
+<li>
+= We cannot implement this solution</li>
+</ul>
+
+</body>
+</html>
