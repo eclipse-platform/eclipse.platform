@@ -188,8 +188,13 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 				activity.setDate(new Date());
 			}
 
-			InstallConfiguration installConfig = ((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration());
-
+			InstallConfiguration installConfig = null;
+			
+			// only ask for install config is activity created.
+			// prevents loops during reconciliation
+			if (activity!=null)
+				installConfig = ((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration());
+			
 			// Allow unconfigure if the feature is optional from all the parents
 			// or if the feature is mandatory and non of its parent are configured
 			if (validateNoConfiguredParents(feature)) {
