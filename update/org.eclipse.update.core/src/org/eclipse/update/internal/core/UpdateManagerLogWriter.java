@@ -36,8 +36,8 @@ public class UpdateManagerLogWriter {
 	private static final String FEATURE_REMOVE = "feature-remove"; //$NON-NLS-1$
 	private static final String SITE_INSTALL = "site-install"; //$NON-NLS-1$
 	private static final String SITE_REMOVE = "site-remove"; //$NON-NLS-1$
-	private static final String UNCONFIGURE = "unconfigure"; //$NON-NLS-1$
-	private static final String CONFIGURE = "configure"; //$NON-NLS-1$
+	private static final String UNCONFIGURE = "disable"; //$NON-NLS-1$
+	private static final String CONFIGURE = "enable"; //$NON-NLS-1$
 	private static final String REVERT = "revert"; //$NON-NLS-1$
 	private static final String RECONCILIATION = "reconciliation"; //$NON-NLS-1$
 	private static final String UNKNOWN = "unknown"; //$NON-NLS-1$	
@@ -218,17 +218,16 @@ public class UpdateManagerLogWriter {
 	 */
 	private void write(IInstallConfiguration installConfig) throws IOException {
 		writeln();
-		writeln();
 		write(CONFIGURATION);
 		writeSpace();		
 		write(installConfig.getLabel());
+		writeln();		
 	}
 
 	/*
 	 * !ACTIVITY <date> <target> <action> <status>
 	 */
 	private void write(IActivity activity) throws IOException {
-		writeln();
 		write(ACTIVITY);
 		writeSpace();		
 		write(getFormattedDate(activity.getDate()));
@@ -238,7 +237,7 @@ public class UpdateManagerLogWriter {
 		write(getAction(activity.getAction()));
 		writeSpace();
 		write((activity.getStatus()==IActivity.STATUS_OK)?SUCCESS:FAILURE);
-		writeln();
+		writeln();		
 	}
 
 	/**
