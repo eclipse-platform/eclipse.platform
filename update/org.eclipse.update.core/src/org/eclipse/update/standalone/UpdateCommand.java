@@ -36,15 +36,35 @@ public class UpdateCommand extends ScriptedCommand {
 	private UpdateSearchRequest searchRequest;
 	private UpdateSearchResultCollector collector;
 	private String featureId;
+	private String version;
 	private IFeature currentFeature;
 
+	/**
+	 * Update command for updating a feature to a newer version.
+	 * @param featureId
+	 * @param verifyOnly
+	 * @throws Exception
+	 */
 	public UpdateCommand(String featureId, String verifyOnly)
+	throws Exception {
+		this(featureId, null, verifyOnly);
+	}
+	
+	/**
+	 * Update command for updating a feature to a specified newer version.
+	 * @param featureId
+	 * @param version
+	 * @param verifyOnly
+	 * @throws Exception
+	 */
+	public UpdateCommand(String featureId, String version, String verifyOnly)
 		throws Exception {
 
 		super(verifyOnly);
 
 		try {
 			this.featureId = featureId;
+			this.version = version;
 			if (featureId != null) {
 				this.targetSite =
 					UpdateUtils.getSiteWithFeature(
@@ -72,10 +92,15 @@ public class UpdateCommand extends ScriptedCommand {
 			}
 			if (currentFeature == null)
 				searchRequest = UpdateUtils.createNewUpdatesRequest(null);
-			else
+			else {
 				searchRequest =
 					UpdateUtils.createNewUpdatesRequest(
 						new IFeature[] { currentFeature });
+				if (version != null)
+					searchRequest.addFilter(
+						new VersionedIdentifiersFilter(
+							new VersionedIdentifier[] { new VersionedIdentifier(featureId, version) }));
+			}
 
 			collector = new UpdateSearchResultCollector();
 

@@ -118,6 +118,7 @@ public class CmdLineArgs {
 			else if (cmd.equals("update")) //$NON-NLS-1$
 				return new UpdateCommand(
 					(String) options.get("-featureId"), //$NON-NLS-1$
+					(String) options.get("-version"), //$NON-NLS-1$
 					(String) options.get("-verifyOnly")); //$NON-NLS-1$
 			else if (cmd.equals("mirror")) //$NON-NLS-1$
 				return new MirrorCommand(
