@@ -181,11 +181,10 @@ public class AntModel {
 			fTaskToNode= new HashMap();
 			fProperties= null;
 			fNodeBeingResolved= null;
-			fLastNode= null;
 		}
 	}
 
-	public AntElementNode[] getRootElements() {
+	public synchronized AntElementNode[] getRootElements() {
 		possiblyWaitForReconcile();
 		if (fProjectNode == null) {
 			return new AntElementNode[0];
@@ -866,10 +865,10 @@ public class AntModel {
 	}
 	
 	public void errorFromElementText(Exception exception, int start, int count) {
-			computeEndLocationForErrorNode(fLastNode, start, count);
+		computeEndLocationForErrorNode(fLastNode, start, count);
 		notifyProblemRequestor(exception, start, count, XMLProblem.SEVERITY_ERROR);
-			markHierarchy(fLastNode, XMLProblem.SEVERITY_ERROR);
-		} 
+		markHierarchy(fLastNode, XMLProblem.SEVERITY_ERROR);
+	}
 	
 	public void errorFromElement(Exception exception, AntElementNode node, int lineNumber, int column) {
 		if (node == null) {

@@ -16,8 +16,6 @@ import org.eclipse.update.configurator.IPlatformConfiguration.*;
  * Constants
  */
 public interface IConfigurationConstants {
-	public static final String ECLIPSE_PRODUCT = "eclipse.product";
-	public static final String ECLIPSE_APPLICATION = "eclipse.application";
 	public static final String CFG = "config"; //$NON-NLS-1$
 	public static final String CFG_BOOT_PLUGIN = "bootstrap"; //$NON-NLS-1$
 	public static final String CFG_SITE = "site"; //$NON-NLS-1$
@@ -32,6 +30,7 @@ public interface IConfigurationConstants {
 	public static final String CFG_UPDATEABLE = "updateable"; //$NON-NLS-1$
 	public static final String CFG_LINK_FILE = "linkfile"; //$NON-NLS-1$
 	public static final String CFG_FEATURE_ENTRY = "feature"; //$NON-NLS-1$
+	public static final String CFG_FEATURE_ENTRY_DEFAULT = "feature.default.id"; //$NON-NLS-1$
 	public static final String CFG_FEATURE_ENTRY_ID = "id"; //$NON-NLS-1$
 	public static final String CFG_FEATURE_ENTRY_PRIMARY = "primary"; //$NON-NLS-1$
 	public static final String CFG_FEATURE_ENTRY_VERSION = "version"; //$NON-NLS-1$

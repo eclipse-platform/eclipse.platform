@@ -28,6 +28,8 @@ public final class AboutInfo {
 	private final static String INI_FILENAME = "about.ini"; //$NON-NLS-1$
 	private final static String PROPERTIES_FILENAME = "about.properties"; //$NON-NLS-1$
 	private final static String MAPPINGS_FILENAME = "about.mappings"; //$NON-NLS-1$
+	
+	private final static int BYTE_ARRAY_SIZE = 2048;
 
 	private String featureId;
 	private String versionId = ""; //$NON-NLS-1$

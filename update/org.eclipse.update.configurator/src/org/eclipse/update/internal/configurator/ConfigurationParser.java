@@ -273,6 +273,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 			// could not load from shared install
 		}
 
+		// load simple properties
+		config.setDefaultFeature(attributes.getValue(CFG_FEATURE_ENTRY_DEFAULT));
+
 		String flag = attributes.getValue(CFG_TRANSIENT);
 		if (flag != null) {
 			config.setTransient(flag.equals("true"));

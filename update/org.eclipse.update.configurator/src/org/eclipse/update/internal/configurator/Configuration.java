@@ -23,6 +23,7 @@ public class Configuration implements IConfigurationConstants {
 	private HashMap sites = new HashMap();
 	private Date date;
 	private URL url;
+	private String defaultFeature;
 	private boolean transientConfig;
 	private boolean isDirty;
 	private Configuration linkedConfig; // shared configuration
@@ -107,6 +108,9 @@ public class Configuration implements IConfigurationConstants {
 			} else {
 				configElement.setAttribute(CFG_TRANSIENT, "true"); //$NON-NLS-1$
 			}
+
+			if (defaultFeature != null) 
+				configElement.setAttribute(CFG_FEATURE_ENTRY_DEFAULT, defaultFeature);
 						
 			if (linkedConfig != null) {
 				configElement.setAttribute(CFG_SHARED_URL, linkedConfig.getURL().toExternalForm());
@@ -126,6 +130,14 @@ public class Configuration implements IConfigurationConstants {
 		} catch (Exception e) {
 			throw Utils.newCoreException("", e);
 		} 
+	}
+	
+	public String getDefaultFeature() {
+		return defaultFeature;
+	}
+	
+	public void setDefaultFeature(String defaultFeature) {
+		this.defaultFeature = defaultFeature;
 	}
 	
 	public boolean isTransient() {
