@@ -27,7 +27,7 @@ public static String getString( String strKey )
 	{
 		try
 		{
-			_resourceBundle = ResourceBundle.getBundle( UpdateManager._strPackageName + ".UpdateManagerStrings" );
+			_resourceBundle = ResourceBundle.getBundle( UpdateManager._strPackageName + ".updatemanagerstrings" );
 		}
 		catch( MissingResourceException ex )
 		{
