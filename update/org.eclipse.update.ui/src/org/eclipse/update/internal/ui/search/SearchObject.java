@@ -287,7 +287,23 @@ public class SearchObject extends NamedModelObject {
 		monitor.subTask(text);
 		URL siteURL = siteAdapter.getURL();
 
-		ISite site = SiteManager.getSite(siteURL);
+		ISite site;
+		try {
+			site = SiteManager.getSite(siteURL);
+		}
+		catch (CoreException e) {
+			// Test the exception. If the exception is
+			// due to the site connection problems,
+			// allow the search to move on to 
+			// the next site. Otherwise,
+			// rethrow the exception, causing the search
+			// to terminate.
+			IStatus status = e.getStatus();
+			if (status==null || status.getCode()!=ISite.SITE_ACCESS_EXCEPTION)
+				throw e;
+			monitor.worked(1);
+			return;
+		}
 		monitor.getWrappedProgressMonitor().subTask(UpdateUIPlugin.getResourceString(KEY_CHECKING));
 
 		monitor.beginTask("", 2);
