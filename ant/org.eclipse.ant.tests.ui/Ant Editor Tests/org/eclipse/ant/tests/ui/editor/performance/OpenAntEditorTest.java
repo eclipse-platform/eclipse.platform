@@ -44,6 +44,7 @@ public class OpenAntEditorTest extends PerformanceTestCase {
 	public void testOpenAntEditorNoFolding() throws PartInitException {
 	    //there was no folding in 3.0.1
 		IFile file= getIFile("build.xml");
+		tagAsSummary("Open Ant Editor; No folding", Dimension.CPU_TIME);
 		measureOpenInEditor(file);
 	}
 	
