@@ -437,12 +437,16 @@ public class Feature extends FeatureModel implements IFeature {
 		if (optionalfeatures.length==0) return optionalfeatures;
 		
 		List optionalChildrenToInstall = new ArrayList();
-		for (int i = 0; i < optionalfeatures.length; i++) {
-			IFeatureReference optionalFeature = optionalfeatures[i];
-			for (int j = 0; j < children.length; j++) {
-				if (optionalFeature.equals(children[j])){
-					optionalChildrenToInstall.add(children[j]);
-					break;
+		for (int i = 0; i < children.length; i++) {
+			IFeatureReference optionalFeature = children[i];
+			if (!optionalFeature.isOptional()){
+				optionalChildrenToInstall.add(optionalFeature);
+			} else {
+				for (int j = 0; j < optionalfeatures.length; j++) {
+					if (optionalFeature.equals(optionalfeatures[j])){
+						optionalChildrenToInstall.add(optionalFeature);
+						break;
+					}
 				}
 			}
 		}

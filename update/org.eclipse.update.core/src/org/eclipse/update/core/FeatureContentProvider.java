@@ -439,6 +439,8 @@ public abstract class FeatureContentProvider
 		}
 		
 		String executables = prop.getProperty(EXECUTABLES);
+		if (executables==null) return result;
+		
 		StringTokenizer tokenizer = new StringTokenizer(executables,",");
 		Integer defaultExecutablePermission = new Integer(ContentReference.DEFAULT_EXECUTABLE_PERMISSION);
 		while (tokenizer.hasMoreTokens()){
@@ -446,6 +448,6 @@ public abstract class FeatureContentProvider
 			result.put(filter,defaultExecutablePermission);
 		}
 		
-		return prop;
+		return result;
 	}
 }

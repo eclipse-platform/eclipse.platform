@@ -19,6 +19,11 @@ import org.eclipse.update.core.model.InstallAbortedException;
  * 
  */
 public class UpdateManagerUtils {
+	
+	private static boolean OS_UNIX = BootLoader.OS_HPUX.equals(BootLoader.getOS()) ||
+										BootLoader.OS_AIX.equals(BootLoader.getOS()) ||
+										BootLoader.OS_LINUX.equals(BootLoader.getOS()) ||
+										BootLoader.OS_SOLARIS.equals(BootLoader.getOS());
 
 	/**
 	 * return the urlString if it is a absolute URL
@@ -196,16 +201,13 @@ public class UpdateManagerUtils {
 			// FIXME
 		}
 		
-		if (filePath != null
-			&& BootLoader.OS_HPUX.equals(BootLoader.getOS())
-			&& ref.getPermission()!=0) {
+		if (filePath != null && OS_UNIX && ref.getPermission()!=0) {
 			// add execute permission on shared libraries 20305
 			// do not remove write permission 20896
 			// chmod a+x *.sl
 			try {
 				Process pr =
-					Runtime.getRuntime().exec(
-						new String[] { "chmod", "a+x", filePath });
+					Runtime.getRuntime().exec(new String[] { "chmod", "a+x", filePath });
 				Thread chmodOutput = new StreamConsumer(pr.getInputStream());
 				chmodOutput.setName("chmod output reader");
 				chmodOutput.start();

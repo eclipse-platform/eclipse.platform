@@ -24,7 +24,7 @@ public class FreeFormSiteFactory extends BaseSiteFactory {
 		Site site = null;
 		InputStream is = null;
 		try {
-			is = url.openStream();
+			is = openStream(url);
 			site = (Site) parseSite(is);
 
 			URLEntryModel realSiteRef = site.getDescriptionModel();
