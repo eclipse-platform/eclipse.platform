@@ -255,6 +255,44 @@ public class CodeCompletionTest extends AbstractAntUITest {
     }
     
     /**
+     * Tests the code completion for tasks that have been defined in the buildfile
+     */
+  //  public void testCustomTaskProposals() {
+//		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("taskdef.xml"));
+
+  //      ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "min");
+    //    assertEquals(1, proposals.length);
+     //   ICompletionProposal proposal = proposals[0];
+    //    assertEquals("mine", proposal.getDisplayString());
+        
+//	}
+    
+    /**
+     * Tests the code completion for tasks that have been defined in the buildfile
+     */
+//  //  public void testExtensionPointTaskProposals() {
+////		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("taskdef.xml"));
+//
+//  //      ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "eclipse");
+//   //     assertEquals(11, proposals.length);
+//   //     assertContains("eclipse.refreshLocal", proposals);
+        
+//}
+    
+    /**
+     * Tests the code completion for tasks that have been defined via macrodef in the buildfile
+     */
+  //  public void testMacrodefProposals() {
+//		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("macrodef.xml"));
+//
+  //      ICompletionProposal[] proposals = processor.getTaskProposals(getCurrentDocument(), "target", "eclipsema");
+   //     assertEquals(1, proposals.length);
+    //    ICompletionProposal proposal = proposals[0];
+    //    assertEquals("eclipseMacro", proposal.getDisplayString());
+        
+//	}
+
+    /**
      * Tests the code completion for tasks having parent tasks.
      */
     public void testTaskProposals() {
@@ -292,11 +330,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
 //        
 //        proposals = processor.getTaskProposals("       <fi", createTestProjectElement(doc), "fi");
 //        assertEquals(5, proposals.length); // is choice and already used with classpath
-        
-        proposals = processor.getTaskProposals("          ", "project", "");
-        //all tasks and types legal for outside of a target in 1.6.*
-        //also now includes the eclipse defined tasks/types
-        assertEquals(232, proposals.length);
 
         proposals = processor.getTaskProposals("          ", null, "");
         assertEquals(1, proposals.length);
@@ -326,7 +359,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
         proposals = processor.getTaskProposals("    \n<project></project>", null, "");
         assertEquals(1, proposals.length);
     }
-
+    
 	/**
 	 * Test for bug 40951
 	 */

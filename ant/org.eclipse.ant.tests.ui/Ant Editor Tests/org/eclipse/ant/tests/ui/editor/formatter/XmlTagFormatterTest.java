@@ -81,12 +81,11 @@ public class XmlTagFormatterTest extends AbstractAntUITest {
             return new TagParser();
         }
 
-        public static void validateAttributePair(Object attributePair,
-                String attribute, String value) {
+        public static void validateAttributePair(Object attributePair, String attribute, String value) {
             XmlTagFormatter.AttributePair pair = (XmlTagFormatter.AttributePair) attributePair;
             assertEquals(attribute, pair.getAttribute());
             assertEquals(value, pair.getValue());
-        };
+        }
     }
 
     /**
