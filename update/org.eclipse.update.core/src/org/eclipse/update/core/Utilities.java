@@ -173,17 +173,18 @@ public class Utilities {
 	/**
 	 * Creates a CoreException from some other exception.
 	 * The type of the CoreException is <code>IStatus.ERROR</code>
-	 * If the exceptionpassed as a parameter is also a CoreException,
+	 * If the exception passed as a parameter is also a CoreException,
 	 * the new CoreException will contain all the status of the passed
 	 * CoreException.
 	 * 
 	 * @see IStatus#ERROR
 	 * @param s exception string
+	 * @param code the code reported
 	 * @param e actual exception being reported
 	 * @return a CoreException
 	 * @since 2.0
 	 */
-	public static CoreException newCoreException(String s, Throwable e) {
+	public static CoreException newCoreException(String s, int code, Throwable e) {
 		String id =
 			UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 	
@@ -191,7 +192,7 @@ public class Utilities {
 		IStatus status;
 		if (e instanceof CoreException){
 			if (s==null) s="";
-			status = new MultiStatus( id, IStatus.OK, s, e);
+			status = new MultiStatus( id, code, s, e);
 			IStatus childrenStatus = ((CoreException)e).getStatus();
 			((MultiStatus)status).add(childrenStatus);		
 			((MultiStatus)status).addAll(childrenStatus);		
@@ -204,9 +205,27 @@ public class Utilities {
 				completeString.append(e.toString());
 				completeString.append("]");
 			}
-			status = new Status(IStatus.ERROR, id, IStatus.OK, completeString.toString(), e);
+			status = new Status(IStatus.ERROR, id, code, completeString.toString(), e);
 		}	
 		return new CoreException(status); //$NON-NLS-1$
+	}
+
+
+	/**
+	 * Creates a CoreException from some other exception.
+	 * The type of the CoreException is <code>IStatus.ERROR</code>
+	 * If the exceptionpassed as a parameter is also a CoreException,
+	 * the new CoreException will contain all the status of the passed
+	 * CoreException.
+	 * 
+	 * @see IStatus#ERROR
+	 * @param s exception string
+	 * @param e actual exception being reported
+	 * @return a CoreException
+	 * @since 2.0
+	 */
+	public static CoreException newCoreException(String s, Throwable e) {
+		return newCoreException(s,IStatus.OK,e);
 	}
 
 	/**

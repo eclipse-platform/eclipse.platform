@@ -38,7 +38,7 @@ public class SiteFTPFactory extends SiteModelFactory implements ISiteFactory {
 		} catch (MalformedURLException e) {
 			throw Utilities.newCoreException("Unable to create URL", e);
 		} catch (IOException e) {
-			throw Utilities.newCoreException("Unable to access URL", e);
+			throw Utilities.newCoreException("Unable to access URL",ISite.SITE_ACCESS_EXCEPTION, e);
 		} finally {
 			try {
 				siteStream.close();

@@ -36,8 +36,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 	 * 
 	 * 3 open the stream	 
 	 */
-	public ISite createSite(URL url)
-		throws CoreException, InvalidSiteTypeException {
+	public ISite createSite(URL url) throws CoreException, InvalidSiteTypeException {
 		Site site = null;
 		InputStream siteStream = null;
 
@@ -57,17 +56,10 @@ public class SiteURLFactory extends BaseSiteFactory {
 			site.resolve(url, getResourceBundle(url));
 			site.markReadOnly();
 		} catch (MalformedURLException e) {
-			throw Utilities.newCoreException(
-				Policy.bind(
-					"SiteURLFactory.UnableToCreateURL",
-					url == null ? "" : url.toExternalForm()),
-				e);
+			throw Utilities.newCoreException(Policy.bind("SiteURLFactory.UnableToCreateURL", url == null ? "" : url.toExternalForm()), e);
 			//$NON-NLS-1$
 		} catch (IOException e) {
-			throw Utilities.newCoreException(
-				Policy.bind("SiteURLFactory.UnableToAccessSiteStream",
-				url == null ? "" : url.toExternalForm()),
-				e);
+			throw Utilities.newCoreException(Policy.bind("SiteURLFactory.UnableToAccessSiteStream", url == null ? "" : url.toExternalForm()), ISite.SITE_ACCESS_EXCEPTION, e);
 			//$NON-NLS-1$
 		} finally {
 			try {
@@ -82,9 +74,7 @@ public class SiteURLFactory extends BaseSiteFactory {
 	 * @see SiteModelFactory#canParseSiteType(String)
 	 */
 	public boolean canParseSiteType(String type) {
-		return (
-			super.canParseSiteType(type)
-				|| SiteURLContentProvider.SITE_TYPE.equalsIgnoreCase(type));
+		return (super.canParseSiteType(type) || SiteURLContentProvider.SITE_TYPE.equalsIgnoreCase(type));
 	}
 
 }

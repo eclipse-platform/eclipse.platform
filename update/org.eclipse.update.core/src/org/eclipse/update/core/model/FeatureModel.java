@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import org.eclipse.update.core.*;
 import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
 
@@ -49,17 +50,13 @@ public class FeatureModel extends ModelObject {
 	imports;
 	private List /*of PluginEntryModel*/
 	pluginEntries;
-	private List /*of VersionedIdentifier*/	
+	private Map /*of FeatureIdentifier, Boolean */	
 	featureIncludes;
 	private List /*of NonPluginEntryModel*/
 	nonPluginEntries;
 	private List /*of ContentGroupModel*/
 	groupEntries;
 	
-	// [2.0.1]
-	private String name;
-	private boolean isOptional = false; 
-
 	/**
 	 * Creates an uninitialized feature object.
 	 * 
@@ -348,14 +345,17 @@ public class FeatureModel extends ModelObject {
 	/**
 	 * Returns an array of feature versioned identifier referenced by this feature
 	 * 
-	 * @return an erray of feature versioned identifier, or an empty array.
+	 * @return an array of feature versioned identifier, or an empty array.
+	 * @deprecated use getFeatureIncludeIdentifier instead.
 	 * @since 2.0
 	 */
 	public VersionedIdentifier[] getFeatureIncludeVersionedIdentifier() {
 		if (featureIncludes == null)
 			return new VersionedIdentifier[0];
-
-		return (VersionedIdentifier[]) featureIncludes.toArray(arrayTypeFor(featureIncludes));
+			
+		//
+		Set versionIncluded = featureIncludes.keySet();
+		return (VersionedIdentifier[]) versionIncluded.toArray(arrayTypeFor(versionIncluded));
 	}
 
 	/**
@@ -697,13 +697,27 @@ public class FeatureModel extends ModelObject {
 	 * @param identifier feature identifer
 	 * @since 2.0
 	 */
-	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier){
-		assertIsWriteable();
-		if (this.featureIncludes == null)
-			this.featureIncludes = new ArrayList();
-		if (!this.featureIncludes.contains(identifier))
-			this.featureIncludes.add(identifier);
+	public void addIncludesFeatureIdentifier(FeatureIdentifier identifier){
+		addIncludesFeatureIdentifier(identifier,false);
 	}
+	
+	/**
+	 * Adds a feature identifier.
+	 * Throws a runtime exception if this object is marked read-only.
+	 * 
+	 * @param identifier feature identifer
+	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
+	 * @since 2.0
+	 */
+	public void addIncludesFeatureIdentifier(FeatureIdentifier identifier,boolean isOptional){
+		assertIsWriteable();
+		if (identifier==null) return;
+		if (this.featureIncludes == null)
+			this.featureIncludes = new HashMap();
+		if (!this.featureIncludes.containsKey(identifier))
+			this.featureIncludes.put(identifier,new Boolean(isOptional));
+	}
+		
 	/**
 	 * Adds a non-plug-in data reference.
 	 * Throws a runtime exception if this object is marked read-only.
@@ -817,36 +831,4 @@ public class FeatureModel extends ModelObject {
 		resolveListReference(getPluginEntryModels(), base, bundle);
 		resolveListReference(getNonPluginEntryModels(), base, bundle);
 	}
-	/**
-	 * Returns the isOptional.
-	 * @return boolean
-	 */
-	public boolean isOptional() {
-		return isOptional;
-	}
-
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the isOptional.
-	 * @param isOptional The isOptional to set
-	 */
-	public void setOptional(boolean isOptional) {
-		this.isOptional = isOptional;
-	}
-
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
 }

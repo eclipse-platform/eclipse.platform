@@ -17,6 +17,7 @@ import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.IVerificationListener;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.core.model.InstallAbortedException;
 
 public class MissingFeature implements IFeature {
 
@@ -275,7 +276,13 @@ public class MissingFeature implements IFeature {
 	public IFeatureReference install(IFeature targetFeature, IVerificationListener verificationListener, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
-
+	
+	/*
+	 * @see org.eclipse.update.core.IFeature#install(IFeature, IFeatureReference[], IVerificationListener, IProgressMonitor)
+	 */
+	public IFeatureReference install(IFeature targetFeature, IFeatureReference[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException {
+		return null;
+	}
 	/*
 	 * @see IFeature#remove(IProgressMonitor)
 	 */
@@ -315,20 +322,5 @@ public class MissingFeature implements IFeature {
 	public String getAffinityFeature() {
 		return null;
 	}
-
-	/**
-	 * @see org.eclipse.update.core.IFeature#getName()
-	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
-	 * @see org.eclipse.update.core.IFeature#isOptional()
-	 */
-	public boolean isOptional() {
-		return false;
-	}
-
 }
 

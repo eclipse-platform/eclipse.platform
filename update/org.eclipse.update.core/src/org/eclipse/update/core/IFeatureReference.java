@@ -90,5 +90,20 @@ public interface IFeatureReference extends IAdaptable {
 	 * @since 2.0 
 	 */
 	public void setSite(ISite site);
+	
+	/**
+	 * Returns true is this nested feature is optional, 
+	 * returns false otherwise.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isOptional();
 
+	/**
+	 * Returns the label to be shown if the referenced feature is missing.
+	 * If this attribute is not specified, returns the feature identifier.
+	 * 
+	 * @return String
+	 */
+	public String getName();
 }

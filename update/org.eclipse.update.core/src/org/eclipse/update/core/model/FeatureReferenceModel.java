@@ -33,6 +33,14 @@ public class FeatureReferenceModel extends ModelObject {
 	private List /* of String*/
 	categoryNames;
 
+	// [2.0.1]
+	private String name;
+	private boolean isOptional = false; 
+
+
+
+
+
 	/**
 	 * Creates an uninitialized feature reference model object.
 	 * 
@@ -215,6 +223,42 @@ public class FeatureReferenceModel extends ModelObject {
 			this.categoryNames = null;
 		else
 			this.categoryNames = new ArrayList(Arrays.asList(categoryNames));
+	}
+
+
+	/**
+	 * Returns the isOptional.
+	 * @return boolean
+	 */
+	public boolean isOptional() {
+		return isOptional;
+	}
+
+
+	/**
+	 * Returns the name.
+	 * @return String
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	/**
+	 * Sets the isOptional.
+	 * @param isOptional The isOptional to set
+	 */
+	public void setOptional(boolean isOptional) {
+		this.isOptional = isOptional;
+	}
+
+
+	/**
+	 * Sets the name.
+	 * @param name The name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

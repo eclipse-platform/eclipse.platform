@@ -270,6 +270,7 @@ public interface IFeature extends IAdaptable {
 
 	/**
 	 * Install the contents of this feature into the specified target feature.
+	 * All optional features will be installed
 	 * 
 	 * @param targetFeature
 	 * @param verificationListener
@@ -280,6 +281,25 @@ public interface IFeature extends IAdaptable {
 	 */
 	public IFeatureReference install(
 		IFeature targetFeature,
+		IVerificationListener verificationListener,
+		IProgressMonitor monitor)
+		throws InstallAbortedException,CoreException;
+
+	/**
+	 * Install the contents of this feature into the specified target feature.
+	 * Only the listed optional features will be installed.
+	 * 
+	 * @param targetFeature
+	 * @param optionalFeatures the optional features to be installed
+	 * @param verificationListener
+	 * @param monitor
+	 * @exception InstallAbortedException when the user cancels the install
+	 * @exception CoreException
+	 * @since 2.0.1
+	 */
+	public IFeatureReference install(
+		IFeature targetFeature,
+		IFeatureReference[] optionalFeatures,
 		IVerificationListener verificationListener,
 		IProgressMonitor monitor)
 		throws InstallAbortedException,CoreException;
@@ -425,21 +445,5 @@ public interface IFeature extends IAdaptable {
 	 * @since 2.0
 	 */
 	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider);
-	
-	/**
-	 * Returns true is this nested feature is optional, 
-	 * returns false otherwise.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isOptional();
-
-	/**
-	 * Returns the label to be shown if the referenced feature is missing.
-	 * If this attribute is not specified, returns the feature identifier.
-	 * 
-	 * @return String
-	 */
-	public String getName();
 
 }
