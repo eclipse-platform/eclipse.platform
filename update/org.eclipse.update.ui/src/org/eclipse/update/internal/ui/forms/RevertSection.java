@@ -21,24 +21,15 @@ import org.eclipse.update.ui.forms.internal.*;
 
 public class RevertSection extends UpdateSection {
 	// NL keys
-	private static final String KEY_TITLE =
-		"InstallConfigurationPage.RevertSection.title"; //$NON-NLS-1$
-	private static final String KEY_DESC =
-		"InstallConfigurationPage.RevertSection.desc"; //$NON-NLS-1$
-	private static final String KEY_CURRENT_TEXT =
-		"InstallConfigurationPage.RevertSection.currentText"; //$NON-NLS-1$
-	private static final String KEY_REVERT_TEXT =
-		"InstallConfigurationPage.RevertSection.revertText"; //$NON-NLS-1$
-	private static final String KEY_REVERT_BUTTON =
-		"InstallConfigurationPage.RevertSection.revertButton"; //$NON-NLS-1$
-	private static final String KEY_RESTORE_TEXT =
-		"InstallConfigurationPage.RevertSection.restoreText"; //$NON-NLS-1$
-	private static final String KEY_RESTORE_BUTTON =
-		"InstallConfigurationPage.RevertSection.restoreButton"; //$NON-NLS-1$
-	private static final String KEY_DIALOG_TITLE =
-		"InstallConfigurationPage.RevertSection.dialog.title"; //$NON-NLS-1$
-	private static final String KEY_DIALOG_MESSAGE =
-		"InstallConfigurationPage.RevertSection.dialog.message"; //$NON-NLS-1$
+	private static final String KEY_TITLE = "InstallConfigurationPage.RevertSection.title"; //$NON-NLS-1$
+	private static final String KEY_DESC = "InstallConfigurationPage.RevertSection.desc"; //$NON-NLS-1$
+	private static final String KEY_CURRENT_TEXT = "InstallConfigurationPage.RevertSection.currentText"; //$NON-NLS-1$
+	private static final String KEY_REVERT_TEXT = "InstallConfigurationPage.RevertSection.revertText"; //$NON-NLS-1$
+	private static final String KEY_REVERT_BUTTON = "InstallConfigurationPage.RevertSection.revertButton"; //$NON-NLS-1$
+	private static final String KEY_RESTORE_TEXT = "InstallConfigurationPage.RevertSection.restoreText"; //$NON-NLS-1$
+	private static final String KEY_RESTORE_BUTTON = "InstallConfigurationPage.RevertSection.restoreButton"; //$NON-NLS-1$
+	private static final String KEY_DIALOG_TITLE = "InstallConfigurationPage.RevertSection.dialog.title"; //$NON-NLS-1$
+	private static final String KEY_DIALOG_MESSAGE = "InstallConfigurationPage.RevertSection.dialog.message"; //$NON-NLS-1$
 
 	private Composite container;
 	private FormWidgetFactory factory;
@@ -136,14 +127,20 @@ public class RevertSection extends UpdateSection {
 	}
 
 	public static void performRevert(final IInstallConfiguration target) {
-		// ask the user to confirm and bail if canceled
-		String title = UpdateUIPlugin.getActivePage().getLabel();
-		if (!MessageDialog.openConfirm(
-				UpdateUIPlugin.getActiveWorkbenchShell(),
-				title,
-				UpdateUIPlugin.getResourceString("InstallConfigurationPage.RevertSection.confirm.message"))) //$NON-NLS-1$
-			return;
-				
+		performRevert(target, true, true);
+	}
+
+	public static boolean performRevert(
+		final IInstallConfiguration target,
+		boolean confirm, 
+		final boolean restart) {
+		if (confirm) {
+			// ask the user to confirm and bail if canceled
+			String title = UpdateUIPlugin.getActivePage().getLabel();
+			if (!MessageDialog.openConfirm(UpdateUIPlugin.getActiveWorkbenchShell(), title, UpdateUIPlugin.getResourceString("InstallConfigurationPage.RevertSection.confirm.message"))) //$NON-NLS-1$
+				return false;
+		}
+
 		// make sure we can actually do the revert
 		IStatus status = ActivityConstraints.validatePendingRevert(target);
 		if (status != null) {
@@ -152,10 +149,12 @@ public class RevertSection extends UpdateSection {
 				null,
 				null,
 				status);
-			return;
+			return false;
 		}
 
 		// ok to perform the operation
+		final boolean [] result = new boolean[1];
+		result[0] = false;
 		IRunnableWithProgress operation = new IRunnableWithProgress() {
 
 			public void run(IProgressMonitor monitor) {
@@ -169,7 +168,8 @@ public class RevertSection extends UpdateSection {
 					UpdateUIPlugin.logException(e);
 				} finally {
 					monitor.done();
-					if (success)
+					result[0] = success;
+					if (success && restart)
 						UpdateUIPlugin.informRestartNeeded();
 				}
 			}
@@ -183,6 +183,7 @@ public class RevertSection extends UpdateSection {
 			UpdateUIPlugin.logException(e);
 		} catch (InterruptedException e) {
 		}
+		return result[0];
 	}
 
 	private static void saveLocalSite() throws CoreException {

@@ -41,6 +41,8 @@ public class ActivityConstraints {
 		"ActivityConstraints.patchRegression";
 	private static final String KEY_PATCH_UNCONFIGURE = 
 		"ActivityConstraints.patchUnconfigure";
+	private static final String KEY_PATCH_UNCONFIGURE_BACKUP = 
+		"ActivityConstraints.patchUnconfigureBackup";
 	private static final String KEY_PATCH_MISSING_TARGET = 
 		"ActivityConstraints.patchMissingTarget";
 	private static final String KEY_OPTIONAL_CHILD =
@@ -171,7 +173,12 @@ public class ActivityConstraints {
 		ArrayList status) {
 		try {
 			if (UpdateUIPlugin.isPatch(feature)) {
-				String msg = UpdateUIPlugin.getResourceString(KEY_PATCH_UNCONFIGURE);
+				IInstallConfiguration backup = UpdateUIPlugin.getBackupConfigurationFor(feature);
+				String msg;
+				if (backup!=null)
+					msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_UNCONFIGURE_BACKUP, backup.getLabel());
+				else
+					msg = UpdateUIPlugin.getResourceString(KEY_PATCH_UNCONFIGURE);
 				status.add(createStatus(feature, msg));
 				return;
 			}

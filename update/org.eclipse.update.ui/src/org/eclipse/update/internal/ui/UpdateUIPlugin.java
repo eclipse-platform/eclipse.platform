@@ -283,6 +283,23 @@ public class UpdateUIPlugin extends AbstractUIPlugin {
 		}
 		return false;
 	}
+	
+	public static IInstallConfiguration getBackupConfigurationFor(IFeature feature) {
+		VersionedIdentifier vid = feature.getVersionedIdentifier();
+		String key = "@"+vid.getIdentifier()+"_"+vid.getVersion();
+		try {
+			ILocalSite lsite = SiteManager.getLocalSite();
+			IInstallConfiguration [] configs = lsite.getPreservedConfigurations();
+			for (int i=0; i<configs.length; i++) {
+				IInstallConfiguration config = configs[i];
+				if (config.getLabel().startsWith(key))
+					return config;
+			}
+		}
+		catch (CoreException e) {
+		}
+		return null;
+	}
 
 	/**
 	 * Gets the database.

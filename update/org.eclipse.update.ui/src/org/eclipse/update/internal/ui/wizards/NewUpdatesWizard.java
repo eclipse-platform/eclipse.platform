@@ -16,6 +16,7 @@ import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InstallAbortedException;
+import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.UpdateUIPlugin;
 import org.eclipse.update.internal.ui.UpdateUIPluginImages;
 import org.eclipse.update.internal.ui.forms.ActivityConstraints;
@@ -272,7 +273,10 @@ public class NewUpdatesWizard extends Wizard {
 	private boolean unconfigure(IFeature feature) throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
-			return site.unconfigure(feature);
+			PatchCleaner cleaner = new PatchCleaner(site, feature);
+			boolean result = site.unconfigure(feature);
+			cleaner.dispose();
+			return result;
 		}
 		return false;
 	}

@@ -85,6 +85,8 @@ public class DetailsForm extends PropertyWebForm {
 	private static final String KEY_MISSING_ABORT = "FeaturePage.missing.abort";
 	private static final String KEY_SEARCH_OBJECT_NAME =
 		"FeaturePage.missing.searchObjectName";
+	private static final String KEY_OPTIONAL_INSTALL_MESSAGE = "FeaturePage.optionalInstall.message";
+	private static final String KEY_OPTIONAL_INSTALL_TITLE = "FeaturePage.optionalInstall.title";
 	//	
 
 	private Label imageLabel;
@@ -872,12 +874,12 @@ public class DetailsForm extends PropertyWebForm {
 			executeJob(job);
 		}
 		else {
-			String message = "Feature cannot be found using "+siteURL;
+			String message = UpdateUIPlugin.getFormattedMessage(KEY_OPTIONAL_INSTALL_MESSAGE, siteURL.toString());
 			status = new Status(IStatus.ERROR, UpdateUIPlugin.PLUGIN_ID, IStatus.OK, message, null);
 		}
 		if (status!=null) {
 			// Show error dialog
-			ErrorDialog.openError(getControl().getShell(), "Optional Install", null, status);
+			ErrorDialog.openError(getControl().getShell(), UpdateUIPlugin.getResourceString(KEY_OPTIONAL_INSTALL_TITLE), null, status);
 		}
 	}
 	
@@ -935,6 +937,24 @@ public class DetailsForm extends PropertyWebForm {
 	}
 	
 	private void unconfigurePatch(IFeature feature) {
+		IInstallConfiguration config = UpdateUIPlugin.getBackupConfigurationFor(feature);
+		if (config==null) {
+			String message = "This feature is a patch and cannot be directly disabled. Locate a configuration before it was installed and revert to it instead.";
+			MessageDialog.openError(getControl().getShell(), "Disable Feature", message);
+			return;
+		}
+		try {
+			ILocalSite localSite = SiteManager.getLocalSite();
+			boolean success = RevertSection.performRevert(config, false, false);
+			if (success) {
+				localSite.removeFromPreservedConfigurations(config);
+				localSite.save();
+				UpdateUIPlugin.informRestartNeeded();
+			}
+		}
+		catch (CoreException e) {
+			UpdateUIPlugin.logException(e);
+		}
 	}
 
 	private void doButtonSelected() {

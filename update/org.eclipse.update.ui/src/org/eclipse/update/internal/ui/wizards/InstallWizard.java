@@ -15,6 +15,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InstallAbortedException;
+import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.UpdateUIPlugin;
 import org.eclipse.update.internal.ui.UpdateUIPluginImages;
 import org.eclipse.update.internal.ui.model.PendingChange;
@@ -143,7 +144,6 @@ public class InstallWizard extends Wizard {
 	public static void makeConfigurationCurrent(IInstallConfiguration config, PendingChange job)
 		throws CoreException {
 		ILocalSite localSite = SiteManager.getLocalSite();
-		/*
 		if (job!=null && job.getJobType()==PendingChange.INSTALL) {
 			if (UpdateUIPlugin.isPatch(job.getFeature())) {
 				// Installing a patch - preserve the current configuration
@@ -157,7 +157,6 @@ public class InstallWizard extends Wizard {
 				model.fireObjectChanged(savedConfig, null);
 			}
 		}
-		*/
 		localSite.addConfiguration(config);
 	}
 
@@ -297,7 +296,10 @@ public class InstallWizard extends Wizard {
 		throws CoreException {
 		IConfiguredSite site = findConfigSite(feature, config);
 		if (site != null) {
-			return site.unconfigure(feature);
+			PatchCleaner cleaner = new PatchCleaner(site, feature);
+			boolean result = site.unconfigure(feature);
+			cleaner.dispose();
+			return result;
 		}
 		return false;
 	}

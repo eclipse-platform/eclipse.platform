@@ -1,38 +1,20 @@
 package org.eclipse.update.internal.ui.wizards;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.*;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.update.configuration.IConfiguredSite;
-import org.eclipse.update.configuration.IInstallConfiguration;
-import org.eclipse.update.configuration.ILocalSite;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.core.VersionedIdentifier;
-import org.eclipse.update.internal.ui.UpdateUIPlugin;
-import org.eclipse.update.internal.ui.UpdateUIPluginImages;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.update.configuration.*;
+import org.eclipse.update.core.*;
+import org.eclipse.update.internal.ui.*;
 import org.eclipse.update.internal.ui.model.PendingChange;
-import org.eclipse.update.internal.ui.parts.DefaultContentProvider;
-import org.eclipse.update.internal.ui.parts.OverlayIcon;
+import org.eclipse.update.internal.ui.parts.*;
 
 /*
  * (c) Copyright IBM Corp. 2000, 2001.
@@ -258,7 +240,7 @@ public class DuplicateConflictsDialog extends MessageDialog {
 			IFeatureReference[] refs = csite.getConfiguredFeatures();
 			for (int j = 0; j < refs.length; j++) {
 				try {
-					addEntry(refs[j].getFeature(), null, table);
+					addEntry(refs[j].getFeature(), csite, table);
 				} catch (CoreException e) {
 					// don't let one bad feature stop the loop
 				}
