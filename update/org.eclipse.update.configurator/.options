@@ -1,5 +1,0 @@
-# Debugging options for the org.eclipse.update.configurator plugin
-
-# Turn on general debugging for the plugin.
-org.eclipse.update.configurator/debug=false
-
