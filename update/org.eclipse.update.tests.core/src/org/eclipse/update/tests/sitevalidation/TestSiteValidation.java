@@ -39,6 +39,7 @@ public class TestSiteValidation extends UpdateManagerTestCase {
 		File file = new File(remoteUrl.getFile());
 		ILocalSite local = SiteManager.getLocalSite();
 		IInstallConfiguration currentConfig = local.getCurrentConfiguration();
+		file.mkdirs();
 		IConfiguredSite configuredSite = currentConfig.createConfiguredSite(file);
 		IStatus status = configuredSite.verifyUpdatableStatus();
 

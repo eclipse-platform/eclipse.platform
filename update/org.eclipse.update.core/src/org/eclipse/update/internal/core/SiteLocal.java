@@ -371,13 +371,13 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			newConfiguration = cloneCurrentConfiguration();
 			newConfiguration.setLabel(configuration.getLabel());
 
+			// add to the stack which will set up as current
+			addConfiguration(newConfiguration);
+			
 			// process delta
 			// the Configured featuresConfigured are the same as the old configuration
 			// the unconfigured featuresConfigured are the rest...
 			 ((InstallConfiguration) newConfiguration).revertTo(configuration, monitor, handler);
-
-			// add to the stack which will set up as current
-			addConfiguration(newConfiguration);
 
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);

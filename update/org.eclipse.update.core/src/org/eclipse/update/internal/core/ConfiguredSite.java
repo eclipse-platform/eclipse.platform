@@ -351,9 +351,7 @@ public class ConfiguredSite
 		throws CoreException {
 
 		if (feature == null) {
-			UpdateManagerPlugin.warn(
-				"Attempting to configure a null feature in site:"
-				+ getSite().getURL().toExternalForm());
+			UpdateManagerPlugin.warn("Attempting to configure a null feature in site:"+ getSite().getURL().toExternalForm());
 			return;
 		}
 
@@ -370,25 +368,18 @@ public class ConfiguredSite
 				configure(child, callInstallHandler);
 			} catch(CoreException e) {
 				// will skip any bad children
-				UpdateManagerPlugin.warn(
-					"Unable to configure child feature: "
-					+ childrenRef[i] + " " + e);
+				UpdateManagerPlugin.warn("Unable to configure child feature: "+ childrenRef[i] + " " + e);
 			}
 		}
 
 		// configure root feature 	
-		IFeatureReference featureReference =
-			getSite().getFeatureReference(feature);
-		configPolicy.configure(featureReference, callInstallHandler);
+		IFeatureReference featureReference = getSite().getFeatureReference(feature);
+		configPolicy.configure(featureReference, callInstallHandler, true);
 
 		// notify listeners
 		Object[] siteListeners = listeners.getListeners();
 		for (int i = 0; i < siteListeners.length; i++) {
-			(
-				(
-					IConfiguredSiteChangedListener) siteListeners[i])
-						.featureConfigured(
-				feature);
+			((IConfiguredSiteChangedListener) siteListeners[i]).featureConfigured(feature);
 		}
 
 	}
@@ -411,7 +402,7 @@ public class ConfiguredSite
 			
 		boolean sucessfullyUnconfigured=false;
 		try {
-			sucessfullyUnconfigured = configPolicy.unconfigure(featureReference);
+			sucessfullyUnconfigured = configPolicy.unconfigure(featureReference,true, true);
 		} catch (CoreException e){
 			URL url = featureReference.getURL();
 			String urlString = (url!=null)?url.toExternalForm():"<no feature reference url>";			
@@ -501,31 +492,26 @@ public class ConfiguredSite
 	 * 
 	 * All features from currentConfiguration should be configured
 	 */
-	public void processDeltaWith(
-		IConfiguredSite currentConfiguration,
+	public void revertTo(
+		IConfiguredSite oldConfiguration,
 		IProgressMonitor monitor,
 		IProblemHandler handler)
 		throws CoreException, InterruptedException {
 
-		ConfiguredSite cSite = (ConfiguredSite) currentConfiguration;
-		ConfigurationPolicy cPolicy = cSite.getConfigurationPolicy();
-
-		// copy the unmanaged plugins from platform.cfg
-		// as they are transient
-		this.setPreviousPluginPath(cSite.getPreviousPluginPath());
+		ConfiguredSite oldConfiguredSite = (ConfiguredSite) oldConfiguration;
+		ConfigurationPolicy oldConfiguredPolicy = oldConfiguredSite.getConfigurationPolicy();
 
 		// retrieve the feature that were configured
 		IFeatureReference[] configuredFeatures =
-			verifyConfiguredFeatures(handler);
+			oldConfiguredSite.validConfiguredFeatures(handler);
 
-		// we only care about unconfigured features if the Site policy is USER_EXCLUDE
-		// otherwise we will only set the configured one
-		//if (cPolicy.getPolicy() == IPlatformConfiguration.ISitePolicy.USER_EXCLUDE) {
+		for (int i = 0; i < configuredFeatures.length; i++) {
+			getConfigurationPolicy().configure(configuredFeatures[i],true,true);
+		}
 
 		// calculate all the features we have to unconfigure from the current state to this state
 		// in the history. 				
-		List featureToUnconfigure =
-			calculateUnconfiguredFeatures(configuredFeatures);
+		List featureToUnconfigure =	oldConfiguredSite.calculateUnconfiguredFeatures(configuredFeatures);
 
 		// for each unconfigured feature check if it still exists
 		// if so add as unconfigured
@@ -533,25 +519,14 @@ public class ConfiguredSite
 		while (iter.hasNext()) {
 			IFeatureReference element = (IFeatureReference) iter.next();
 			try {
-				element.getFeature();
-				// throws CoreException if Feature does not exist
-				getConfigurationPolicy().addUnconfiguredFeatureReference(
-					(FeatureReferenceModel) element);
+				// do not og activity
+				getConfigurationPolicy().unconfigure(element, true, true);
 			} catch (CoreException e) {
 				// log no feature to unconfigure
 				String url = element.getURL().toString();
 				ISite site = element.getSite();
-				String siteString =
-					(site != null)
-						? site.getURL().toExternalForm()
-						: Policy.bind("ConfiguredSite.NoSite");
-					//$NON-NLS-1$
-				UpdateManagerPlugin.warn(
-					Policy.bind(
-						"ConfiguredSite.CannotFindFeatureToUnconfigure",
-						url,
-						siteString),e);
-				//$NON-NLS-1$ 
+				String siteString =	(site != null)? site.getURL().toExternalForm(): Policy.bind("ConfiguredSite.NoSite");//$NON-NLS-1$
+				UpdateManagerPlugin.warn(Policy.bind("ConfiguredSite.CannotFindFeatureToUnconfigure",url,siteString),e);//$NON-NLS-1$ 
 			}
 		}
 		//} // end USER_EXCLUDE
@@ -560,8 +535,9 @@ public class ConfiguredSite
 	/*
 	 * We have to keep our configured feature
 	 * check if they are all valid
+	 * Return the valid configured features
 	 */
-	private IFeatureReference[] verifyConfiguredFeatures(IProblemHandler handler)
+	private IFeatureReference[] validConfiguredFeatures(IProblemHandler handler)
 		throws InterruptedException {
 
 		IFeatureReference[] configuredFeatures = getConfiguredFeatures();

@@ -206,27 +206,22 @@ public class InstallConfiguration
 	 */
 	 private void configure(ConfiguredSite linkedSite) throws CoreException {
 		ISite site = linkedSite.getSite();
-		IFeatureReference[] newFeaturesRef =
-			site.getFeatureReferences();
+		IFeatureReference[] newFeaturesRef =site.getFeatureReferences();
 			
 		for (int i = 0; i < newFeaturesRef.length; i++) {
-			FeatureReferenceModel newFeatureRefModel =
-				(FeatureReferenceModel) newFeaturesRef[i];
-					// TRACE
+			// TRACE
 			if (UpdateManagerPlugin.DEBUG
 				&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
 				String reconciliationType = "enable (optimistic)";
 				UpdateManagerPlugin.debug(
 					"New Linked Site:New Feature: "
-						+ newFeatureRefModel.getURLString()
+						+ newFeaturesRef[i].getURL()
 						+ " as "
 						+ reconciliationType);
 			}
-			
 			ConfigurationPolicy policy = linkedSite.getConfigurationPolicy();
-			policy.addConfiguredFeatureReference(newFeatureRefModel);
+			policy.configure(newFeaturesRef[i],true,false);
 		}	 	
-		
 		SiteReconciler.checkConfiguredFeatures(linkedSite);
 	 }
 
@@ -710,8 +705,8 @@ public class InstallConfiguration
 				if (oldSite != null) {
 					// the Site existed before, calculate the delta between its current state and the
 					// state we are reverting to
-					((ConfiguredSite) oldSite).processDeltaWith(
-						nowConfigSites[i],
+					((ConfiguredSite)nowConfigSites[i]).revertTo(
+						oldSite,
 						monitor,
 						handler);
 					nowConfigSites[i] = oldSite;

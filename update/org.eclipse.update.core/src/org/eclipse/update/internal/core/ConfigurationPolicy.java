@@ -11,6 +11,7 @@ import org.eclipse.core.boot.IPlatformConfiguration;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.update.configuration.*;
 import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.*;
@@ -65,9 +66,13 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 */
 	public void configure(
 		IFeatureReference featureReference,
-		boolean callInstallHandler)
+		boolean callInstallHandler,
+		boolean createActivity)
 		throws CoreException {
 
+		if (isConfigured(featureReference)) // already configured
+			return;
+			
 		if (featureReference == null){
 			UpdateManagerPlugin.warn("The feature reference to configure is null");
 			return;
@@ -90,7 +95,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 		// Setup optional install handler
 		InstallHandlerProxy handler = null;
-		if (callInstallHandler)
+		if (callInstallHandler && feature.getInstallHandlerEntry()!=null)
 			handler =
 				new InstallHandlerProxy(
 					IInstallHandler.HANDLER_ACTION_CONFIGURE,
@@ -105,22 +110,22 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			if (handler != null)
 				handler.configureInitiated();
 
-			ConfigurationActivity activity =
-				new ConfigurationActivity(IActivity.ACTION_CONFIGURE);
-			activity.setLabel(feature.getVersionedIdentifier().toString());
-			activity.setDate(new Date());
+			ConfigurationActivity activity = null;
+			if (createActivity){
+				activity = new ConfigurationActivity(IActivity.ACTION_CONFIGURE);
+				activity.setLabel(feature.getVersionedIdentifier().toString());
+				activity.setDate(new Date());
+			}
 
 			addConfiguredFeatureReference((FeatureReferenceModel) featureReference);
 
 			// everything done ok
-			activity.setStatus(IActivity.STATUS_OK);
-			(
-				(InstallConfiguration) SiteManager
-					.getLocalSite()
-					.getCurrentConfiguration())
-					.addActivityModel(
-				(ConfigurationActivityModel) activity);
-
+			if (activity!=null){
+				InstallConfiguration installConfig = (InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration();
+				activity.setStatus(IActivity.STATUS_OK);
+				installConfig.addActivityModel((ConfigurationActivityModel) activity);
+			}
+			
 			if (handler != null)
 				handler.completeConfigure();
 
@@ -150,8 +155,11 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	 * check if the plugins to unconfigure are required by other configured feature and
 	 * adds the feature to the list of unconfigured features 
 	 */
-	public boolean unconfigure(IFeatureReference featureReference)
+	public boolean unconfigure(IFeatureReference featureReference,boolean callInstallHandler, boolean createActivity)
 		throws CoreException {
+
+		if (!isConfigured(featureReference))
+			return true;
 
 		if (featureReference == null){
 			UpdateManagerPlugin.warn("The feature reference to unconfigure is null");
@@ -176,12 +184,14 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		}
 
 		// Setup optional install handler
-		InstallHandlerProxy handler =
-			new InstallHandlerProxy(
+		InstallHandlerProxy handler = null;
+		if (callInstallHandler && feature.getInstallHandlerEntry()!=null){
+			handler = new InstallHandlerProxy(
 				IInstallHandler.HANDLER_ACTION_UNCONFIGURE,
 				feature,
 				feature.getInstallHandlerEntry(),
 				null);
+		}
 				
 		boolean success = false;
 		Throwable originalException = null;
@@ -190,35 +200,43 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		// do the unconfigure action
 		try {
 			
-			ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_UNCONFIGURE);
-			activity.setLabel(feature.getVersionedIdentifier().toString());
-			activity.setDate(new Date());
+			ConfigurationActivity activity = null;
+			if (createActivity){
+				activity = new ConfigurationActivity(IActivity.ACTION_UNCONFIGURE);
+				activity.setLabel(feature.getVersionedIdentifier().toString());
+				activity.setDate(new Date());
+			}
 
 			InstallConfiguration installConfig = ((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration());
 				
 			// Throws an exception if the feature has 
 			// a configured parent
 			if (validateNoConfiguredParents(feature)){
-				handler.unconfigureInitiated();
-
+				if (handler!=null)
+					handler.unconfigureInitiated();
 				addUnconfiguredFeatureReference((FeatureReferenceModel) featureReference);
-
-				handler.completeUnconfigure();	
+				if (handler!=null)
+					handler.completeUnconfigure();	
 				
 				// everything done ok
-				activity.setStatus(IActivity.STATUS_OK);
-				installConfig.addActivityModel((ConfigurationActivityModel) activity);
+				if (activity!=null){
+					activity.setStatus(IActivity.STATUS_OK);
+					installConfig.addActivityModel((ConfigurationActivityModel) activity);
+				}
 				success = true;
 			} else {
-				activity.setStatus(IActivity.STATUS_NOK);				
-				installConfig.addActivityModel((ConfigurationActivityModel) activity);				
+				if (activity!=null){
+					activity.setStatus(IActivity.STATUS_NOK);				
+					installConfig.addActivityModel((ConfigurationActivityModel) activity);				
+				}
 			}			
 		} catch (Throwable t) {
 			originalException = t;
 		} finally {
 			Throwable newException = null;
 			try {
-				handler.unconfigureCompleted(success);
+				if (handler!=null)
+					handler.unconfigureCompleted(success);
 			} catch (Throwable t) {
 				newException = t;
 			}
@@ -306,6 +324,53 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 	}
 
 	/**
+	 * @since 2.0
+	 */
+	public IFeatureReference[] getConfiguredFeatures() {
+		FeatureReferenceModel[] result = getConfiguredFeaturesModel();
+		if (result.length == 0)
+			return new IFeatureReference[0];
+		else
+			return (IFeatureReference[]) result;
+	}
+
+	/**
+	 * @since 2.0
+	 */
+	public IFeatureReference[] getUnconfiguredFeatures() {
+		FeatureReferenceModel[] result = getUnconfiguredFeaturesModel();
+		if (result.length == 0)
+			return new IFeatureReference[0];
+		else
+			return (IFeatureReference[]) result;
+	}
+
+	/**
+	 * Gets the configuredSite.
+	 * @return Returns a IConfiguredSite
+	 */
+	public IConfiguredSite getConfiguredSite() {
+		return configuredSite;
+	}
+
+	/**
+	 * Sets the configuredSite.
+	 * @param configuredSite The configuredSite to set
+	 */
+	public void setConfiguredSite(IConfiguredSite configuredSite) {
+		this.configuredSite = configuredSite;
+	}
+
+	/**
+	 * removes a feature reference
+	 */
+	public void removeFeatureReference(IFeatureReference featureRef) {
+		if (featureRef instanceof FeatureReferenceModel){
+			removeFeatureReference((FeatureReferenceModel) featureRef);
+		}
+	}
+
+	/**
 	 * return an array of plugin path for the array of feature reference
 	 */
 	private String[] getPluginString(
@@ -380,58 +445,6 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		return result;
 	}
 
-	/**
-	 * @since 2.0
-	 */
-	public IFeatureReference[] getConfiguredFeatures() {
-		FeatureReferenceModel[] result = getConfiguredFeaturesModel();
-		if (result.length == 0)
-			return new IFeatureReference[0];
-		else
-			return (IFeatureReference[]) result;
-	}
-
-	/**
-	 * @since 2.0
-	 */
-	public IFeatureReference[] getUnconfiguredFeatures() {
-		FeatureReferenceModel[] result = getUnconfiguredFeaturesModel();
-		if (result.length == 0)
-			return new IFeatureReference[0];
-		else
-			return (IFeatureReference[]) result;
-	}
-
-	/**
-	 * Returns and array with the union of plugins
-	*/
-	private String[] union(String[] targetArray, String[] sourceArray) {
-
-		// No string 
-		if (sourceArray == null || sourceArray.length == 0) {
-			return targetArray;
-		}
-
-		// No string
-		if (targetArray == null || targetArray.length == 0) {
-			return sourceArray;
-		}
-
-		// if a String from sourceArray is NOT in
-		// targetArray, add it to targetArray
-		List list1 = new ArrayList();
-		list1.addAll(Arrays.asList(targetArray));
-		for (int i = 0; i < sourceArray.length; i++) {
-			if (!list1.contains(sourceArray[i]))
-				list1.add(sourceArray[i]);
-		}
-
-		String[] resultEntry = new String[list1.size()];
-		if (list1.size() > 0)
-			list1.toArray(resultEntry);
-
-		return resultEntry;
-	}
 
 	/**
 	*	 we need to figure out which plugin SHOULD NOT be written and
@@ -465,49 +478,39 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		return resultEntry;
 	}
 
-	/**
-	 * Gets the configuredSite.
-	 * @return Returns a IConfiguredSite
-	 */
-	public IConfiguredSite getConfiguredSite() {
-		return configuredSite;
-	}
+
 
 	/**
-	 * Sets the configuredSite.
-	 * @param configuredSite The configuredSite to set
-	 */
-	public void setConfiguredSite(IConfiguredSite configuredSite) {
-		this.configuredSite = configuredSite;
+	 * Returns and array with the union of plugins
+	*/
+	private String[] union(String[] targetArray, String[] sourceArray) {
+
+		// No string 
+		if (sourceArray == null || sourceArray.length == 0) {
+			return targetArray;
+		}
+
+		// No string
+		if (targetArray == null || targetArray.length == 0) {
+			return sourceArray;
+		}
+
+		// if a String from sourceArray is NOT in
+		// targetArray, add it to targetArray
+		List list1 = new ArrayList();
+		list1.addAll(Arrays.asList(targetArray));
+		for (int i = 0; i < sourceArray.length; i++) {
+			if (!list1.contains(sourceArray[i]))
+				list1.add(sourceArray[i]);
+		}
+
+		String[] resultEntry = new String[list1.size()];
+		if (list1.size() > 0)
+			list1.toArray(resultEntry);
+
+		return resultEntry;
 	}
 
-	/**
-	 * removes a feature reference
-	 */
-	public void removeFeatureReference(IFeatureReference featureRef) {
-		if (featureRef instanceof FeatureReferenceModel){
-			removeFeatureReference((FeatureReferenceModel) featureRef);
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public void addConfiguredFeatureReference(IFeatureReference featureRef) {	
-		if (featureRef instanceof FeatureReferenceModel){
-			addConfiguredFeatureReference((FeatureReferenceModel) featureRef);
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	public void addUnconfiguredFeatureReference(IFeatureReference featureRef) {	
-		if (featureRef instanceof FeatureReferenceModel){
-			addUnconfiguredFeatureReference((FeatureReferenceModel) featureRef);
-		}
-	}
-	
 	/*
 	 * 
 	 */

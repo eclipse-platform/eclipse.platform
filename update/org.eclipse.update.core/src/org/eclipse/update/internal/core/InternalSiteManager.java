@@ -88,7 +88,7 @@ public class InternalSiteManager {
 		try {
 			site = attemptCreateSite(DEFAULT_SITE_TYPE, siteURL);
 		} catch (CoreException preservedException) {
-			// attempt a retry is the protocol is file
+			// attempt a retry is the protocol is file, with executbale type
 			if (!"file".equalsIgnoreCase(siteURL.getProtocol()))
 				throw preservedException;
 			try {

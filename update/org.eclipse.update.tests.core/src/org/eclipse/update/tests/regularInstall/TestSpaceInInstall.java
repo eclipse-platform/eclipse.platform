@@ -33,6 +33,8 @@ public class TestSpaceInInstall extends UpdateManagerTestCase {
 		URL newURL = new File(dataPath + "Site with space/site.xml").toURL();
 		ISite remoteSite = SiteManager.getSite(newURL);
 		IFeatureReference[] featuresRef = remoteSite.getFeatureReferences();
+		File file = new File(testURL.getFile());
+		if (!file.exists()) file.mkdirs();
 		ISite localSite = SiteManager.getSite(testURL);
 		IFeature remoteFeature = null;
 		

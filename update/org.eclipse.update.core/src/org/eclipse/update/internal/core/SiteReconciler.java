@@ -152,9 +152,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				IFeatureReference[] newFeaturesRef =
 					site.getFeatureReferences();
 				for (int i = 0; i < newFeaturesRef.length; i++) {
-					FeatureReferenceModel newFeatureRefModel =
-						(FeatureReferenceModel) newFeaturesRef[i];
-
 					// TRACE
 					if (UpdateManagerPlugin.DEBUG
 						&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
@@ -164,22 +161,16 @@ public class SiteReconciler extends ModelObject implements IWritable {
 								: "disable (pessimistic)";
 						UpdateManagerPlugin.debug(
 							"New Site:New Feature: "
-								+ newFeatureRefModel.getURLString()
+								+ newFeaturesRef[i].getURL()
 								+ " as "
 								+ reconciliationType);
 					}
 
 					if (isOptimistic) {
-						configSite
-							.getConfigurationPolicy()
-							.addConfiguredFeatureReference(
-							newFeatureRefModel);
+						configSite.getConfigurationPolicy().configure(newFeaturesRef[i],true,false);
 					} else {
-						configSite
-							.getConfigurationPolicy()
-							.addUnconfiguredFeatureReference(
-							newFeatureRefModel);
-						newFoundFeatures.add(newFeatureRefModel);
+						configSite.getConfigurationPolicy().unconfigure(newFeaturesRef[i],true,false);
+						newFoundFeatures.add(newFeaturesRef[i]);
 					}
 				}
 				newDefaultConfiguration.addConfiguredSite(configSite);
@@ -281,21 +272,17 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		for (int i = 0; i < foundFeatures.length; i++) {
 			boolean newFeatureFound = false;
-			FeatureReferenceModel currentFeatureRefModel =
-				(FeatureReferenceModel) foundFeatures[i];
 
 			// TRACE
-			if (UpdateManagerPlugin.DEBUG
-				&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-				UpdateManagerPlugin.debug(
-					"New feature? :" + currentFeatureRefModel.getURL());
+			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
+				UpdateManagerPlugin.debug("Is this feature new? :" + foundFeatures[i].getURL());
 			}
 
 			// is is a brand new feature ?	
 			for (int j = 0; j < oldConfiguredFeaturesRef.length; j++) {
 				IFeatureReference oldFeatureRef = oldConfiguredFeaturesRef[j];
 				if (oldFeatureRef != null
-					&& oldFeatureRef.equals(currentFeatureRefModel)) {
+					&& oldFeatureRef.equals(foundFeatures[i])) {
 					toCheck.add(oldFeatureRef);
 					newFeatureFound = true;
 				}
@@ -306,23 +293,14 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				// TRACE
 				if (UpdateManagerPlugin.DEBUG
 					&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-					String reconciliationType =
-						isOptimistic
-							? "enable (optimistic)"
-							: "disable (pessimistic)";
-					UpdateManagerPlugin.debug(
-						"New Feature: "
-							+ currentFeatureRefModel.getURLString()
-							+ " as "
-							+ reconciliationType);
+					String reconciliationType =	isOptimistic? "enable (optimistic)": "disable (pessimistic)";
+					UpdateManagerPlugin.debug("This feature is new: "+ foundFeatures[i].getURL()+ " reconciled as "+ reconciliationType);
 				}
 				if (isOptimistic) {
-					newSitePolicy.addConfiguredFeatureReference(
-						currentFeatureRefModel);
+					newSitePolicy.configure(foundFeatures[i],true,false);
 				} else {
-					newSitePolicy.addUnconfiguredFeatureReference(
-						currentFeatureRefModel);
-					newFoundFeatures.add(currentFeatureRefModel);
+					newSitePolicy.unconfigure(foundFeatures[i],true,false);
+					newFoundFeatures.add(foundFeatures[i]);
 				}
 			}
 		}
@@ -331,12 +309,11 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// pessimistic or optimistic
 		Iterator featureIter = toCheck.iterator();
 		while (featureIter.hasNext()) {
-			IFeatureReference oldFeatureRef =
-				(IFeatureReference) featureIter.next();
+			IFeatureReference oldFeatureRef = (IFeatureReference) featureIter.next();
 			if (oldSitePolicy.isConfigured(oldFeatureRef)) {
-				newSitePolicy.addConfiguredFeatureReference(oldFeatureRef);
+					newSitePolicy.configure(oldFeatureRef,true, false);
 			} else {
-				newSitePolicy.addUnconfiguredFeatureReference(oldFeatureRef);
+					newSitePolicy.unconfigure(oldFeatureRef,true, false);
 			}
 		}
 
@@ -408,12 +385,10 @@ public class SiteReconciler extends ModelObject implements IWritable {
 						configuredFeatures[restOfConfiguredFeatures]);
 				if (result != 0) {
 					if (result == 1) {
-						cPolicy.addUnconfiguredFeatureReference(
-							(FeatureReferenceModel) configuredFeatures[restOfConfiguredFeatures]);
+						cPolicy.unconfigure(configuredFeatures[restOfConfiguredFeatures],true,false);
 					};
 					if (result == 2) {
-						cPolicy.addUnconfiguredFeatureReference(
-							(FeatureReferenceModel) featureToCompare);
+						cPolicy.unconfigure(featureToCompare,true,false);
 					}
 				}
 			}
@@ -790,7 +765,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		for (int i=0; i<extras.size(); i++) {
 			IFeature feature = (IFeature) extras.get(i);
 			IFeatureReference ref = cSite.getSite().getFeatureReference(feature);
-			cPolicy.addUnconfiguredFeatureReference(ref);		
+			cPolicy.unconfigure(ref,true,false);		
 			// debug
 			if (UpdateManagerPlugin.DEBUG
 				&& UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {

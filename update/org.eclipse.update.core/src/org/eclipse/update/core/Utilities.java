@@ -241,11 +241,11 @@ public class Utilities {
 			if (s!=null)
 				completeString.append(s);
 			if (e1!=null){
-				completeString.append("[");
+				completeString.append(" [");
 				completeString.append(e1.toString());
 				completeString.append("]");
 			}
-			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e1));			
+			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e1)); // no exception trace			
 		}
 		
 		// check if core exception
@@ -256,11 +256,11 @@ public class Utilities {
 		} else {
 			StringBuffer completeString = new StringBuffer(s);
 			if (e2!=null){
-				completeString.append("[");
+				completeString.append(" [");
 				completeString.append(e2.toString());
 				completeString.append("]");
 			}
-			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e2));			
+			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e2)); // no exception trace			
 		}
 		return new CoreException(multi); //$NON-NLS-1$
 	}

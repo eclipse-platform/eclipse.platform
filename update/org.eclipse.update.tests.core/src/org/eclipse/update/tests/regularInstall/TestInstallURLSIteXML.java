@@ -64,7 +64,10 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 		ISite remoteSite =
 			SiteManager.getSite(new URL(SOURCE_FILE_SITE, Site.SITE_XML));
 		IFeature remoteFeature = getFeature1(remoteSite);
-		ISite localSite = SiteManager.getSite(new URL(TARGET_FILE_SITE, Site.SITE_XML));
+		URL url = new URL(TARGET_FILE_SITE, Site.SITE_XML);
+		File file = new File(TARGET_FILE_SITE.getFile());
+		if (!file.exists()) file.mkdirs();
+		ISite localSite = SiteManager.getSite(url);
 		remove(remoteFeature,localSite);
 		localSite.install(remoteFeature, null, null);
 
@@ -120,7 +123,10 @@ public class TestInstallURLSIteXML extends UpdateManagerTestCase {
 		}
 
 		assertNotNull("Cannot find feature2.jar on site", remoteFeature);
-		ISite localSite = SiteManager.getSite(new URL(TARGET_FILE_SITE, Site.SITE_XML));
+		URL url = new URL(TARGET_FILE_SITE, Site.SITE_XML);
+		File file = new File(TARGET_FILE_SITE.getFile());
+		if (!file.exists()) file.mkdirs();
+		ISite localSite = SiteManager.getSite(url);
 		localSite.install(remoteFeature, null, null);
 
 		// feature2.jar should not be in the local site
