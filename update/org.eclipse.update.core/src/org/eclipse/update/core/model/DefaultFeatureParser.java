@@ -1138,7 +1138,7 @@ public class DefaultFeatureParser extends DefaultHandler {
 			
 			imp.setIdentifier(id);
 			imp.setVersion(ver);
-			imp.isFeatureImport(featureID!=null);
+			imp.setFeatureImport(featureID!=null);
 			imp.setMatchingRuleName(match);
 			objectStack.push(imp);
 

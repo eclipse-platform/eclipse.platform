@@ -32,7 +32,7 @@ public interface IImport extends IAdaptable, IUpdateConstants {
 	 * The import relates to a feature
 	 * @since 2.0.2
 	 */
-	public static final int KIND_FEATURE = 0;
+	public static final int KIND_FEATURE = 1;
 
 	/** 
 	 * Returns an identifier of the dependent plug-in.
