@@ -357,7 +357,7 @@ public class WebBrowser implements OleListener {
 		rgdispidNamedArgs[0] = rgdispid[1]; // identifier of argument
 		Variant pVarResult =
 			aOleAutomation.invoke(dispIdMember, rgvarg, rgdispidNamedArgs);
-		if (pVarResult == null)
+		if (pVarResult == null || pVarResult.getType() == OLE.VT_EMPTY)
 			return 0;
 		return pVarResult.getInt();
 
