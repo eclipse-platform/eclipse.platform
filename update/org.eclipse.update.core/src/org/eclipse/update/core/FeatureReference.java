@@ -56,7 +56,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 *  @return the feature on the Site
 	 */
 	public IFeature getFeature() throws CoreException {
-		return getFeature(false);
+		return getFeature(false,null);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		}
 
 		// we need the exact match or we may have an infinite loop
-		return getFeature(true).getVersionedIdentifier();
+		return getFeature(true,null).getVersionedIdentifier();
 	}
 	/**
 	 * @see org.eclipse.update.core.IFeatureReference#getName()
@@ -216,10 +216,11 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 * @param options
 	 * @return Object
 	 */
-	private IFeatureReference getBestMatch() throws CoreException {
+	private IFeatureReference getBestMatch(IConfiguredSite configuredSite) throws CoreException {
 		FeatureReference newRef = null;
 
-		IFeatureReference[] enabledFeatures = retrieveEnabledFeatures(getSite());
+		if (configuredSite==null) return this;
+		IFeatureReference[] enabledFeatures = configuredSite.getConfiguredFeatures();
 
 		// find the best feature based on match from enabled features
 		for (int ref = 0; ref < enabledFeatures.length; ref++) {
@@ -297,7 +298,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 * @param site
 	 */
 	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
-		IConfiguredSite configuredSite = site.getConfiguredSite();
+		IConfiguredSite configuredSite = site.getCurrentConfiguredSite();
 		if (configuredSite == null)
 			return new IFeatureReference[0];
 		return configuredSite.getConfiguredFeatures();
@@ -305,8 +306,11 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	/**
 	 * @see org.eclipse.update.core.IFeatureReference#getFeature(boolean)
 	 */
-	public IFeature getFeature(boolean perfectMatch) throws CoreException {
+	public IFeature getFeature(boolean perfectMatch,IConfiguredSite configuredSite) throws CoreException {
 
+		if (configuredSite==null)
+			configuredSite = getSite().getCurrentConfiguredSite();
+		
 		// if perfect match is asked or if the feature is disabled
 		// we return the exact match 		
 		if (perfectMatch || getMatch() == IImport.RULE_PERFECT || isDisabled()) {
@@ -314,7 +318,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		} else {
 			if (feature == null) {
 				// find best match
-				IFeatureReference bestMatch = getBestMatch();
+				IFeatureReference bestMatch = getBestMatch(configuredSite);
 				feature = getFeature(bestMatch);
 			}
 			return feature;

@@ -268,7 +268,7 @@ public interface ISite extends IAdaptable {
 	 * 
 	 * @since 2.0.2
 	 */
-	public IConfiguredSite getConfiguredSite();
+	public IConfiguredSite getCurrentConfiguredSite();
 
 	/**
 	* Creates a new feature object. The feature must exist on this site

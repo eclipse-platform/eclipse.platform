@@ -124,7 +124,7 @@ public class SiteStatusAnalyzer {
 		}
 
 		// validate configured site		
-		ConfiguredSite cSite = (ConfiguredSite) featureSite.getConfiguredSite();
+		ConfiguredSite cSite = (ConfiguredSite) featureSite.getCurrentConfiguredSite();
 		if (cSite == null) {
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
 				UpdateManagerPlugin.warn("Cannot determine status of feature: " + feature.getLabel() + ". Configured Site is NULL.");

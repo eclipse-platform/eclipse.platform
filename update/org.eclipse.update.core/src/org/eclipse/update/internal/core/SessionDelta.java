@@ -86,7 +86,7 @@ public class SessionDelta extends ModelObject implements ISessionDelta {
 						if (pm != null)
 							pm.worked(1);
 							
-						configSite = ref.getSite().getConfiguredSite();
+						configSite = ref.getSite().getCurrentConfiguredSite();
 						try {
 							// make sure only the latest version of the configured features
 							// is configured across sites [16502]													

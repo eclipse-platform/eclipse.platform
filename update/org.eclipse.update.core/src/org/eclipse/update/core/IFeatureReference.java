@@ -8,6 +8,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.update.configuration.IConfiguredSite;
 /**
  * Feature reference.
  * A reference to a feature on a particular update site.
@@ -60,10 +61,16 @@ public interface IFeatureReference extends IAdaptable {
 	 * 
 	 * @param perfectMatch <code>true</code> if the perfect match feature feature should be returned
 	 * <code>false</code> if the best match feature should be returned.
+	 * @param configuredSite the configured site to search for the Feature. If 
+	 * the configured site is <code>null</code> the search will be done in the current configured site.
 	 * @return the referenced feature
 	 * @since 2.0.2
+	 * <b>Note:</b> This method is part of an interim API that is still under development and expected to
+	 * change significantly before reaching stability. It is being made available at this early stage to solicit feedback
+	 * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken
+	 * (repeatedly) as the API evolves.
 	 */
-	public IFeature getFeature(boolean perfectMatch) throws CoreException;
+	public IFeature getFeature(boolean perfectMatch,IConfiguredSite configuredSite) throws CoreException;
 
 	/**
 	 * Returns the feature identifier.

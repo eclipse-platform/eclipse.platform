@@ -577,7 +577,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	 */
 	private String getURLSiteString(ISite site) {
 		// since 2.0.2 ISite.getConfiguredSite();
-		ConfiguredSite cSite = (ConfiguredSite) site.getConfiguredSite();
+		ConfiguredSite cSite = (ConfiguredSite) site.getCurrentConfiguredSite();
 		if (cSite != null)
 			return cSite.getPlatformURLString();
 		return site.getURL().toExternalForm();
@@ -711,9 +711,9 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				IFeature child = null;
 				try {
 					//remove best match and exact feature
-					child = children[j].getFeature(false);
+					child = children[j].getFeature(false,null);
 					result.remove(child);
-					child = children[j].getFeature(true);
+					child = children[j].getFeature(true,null);
 					result.remove(child);
 				} catch (CoreException e) {
 					// if optional, it may not exist, do not throw error for that

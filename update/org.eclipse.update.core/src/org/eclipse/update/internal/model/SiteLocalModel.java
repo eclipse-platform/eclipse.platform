@@ -176,6 +176,12 @@ public class SiteLocalModel extends ModelObject {
 	public void setCurrentConfigurationModel(InstallConfigurationModel currentConfiguration) {
 		assertIsWriteable();
 		this.currentConfiguration = currentConfiguration;
+		
+		//2.0.2 set the configuredSite of sites
+		ConfiguredSiteModel[] confSites = currentConfiguration.getConfigurationSitesModel();
+		for (int i = 0; i < confSites.length; i++) {
+			confSites[i].getSiteModel().setConfiguredSiteModel(confSites[i]);
+		}
 	}
 
 	/*

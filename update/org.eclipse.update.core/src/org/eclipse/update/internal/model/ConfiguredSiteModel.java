@@ -44,7 +44,6 @@ public class ConfiguredSiteModel extends ModelObject {
 	public void setSiteModel(SiteModel site) {
 		assertIsWriteable();
 		this.site = site;
-		site.setConfiguredSiteModel(this);
 	}
 
 	/**

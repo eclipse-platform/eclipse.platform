@@ -433,7 +433,7 @@ public class Site extends SiteModel implements ISite {
 	/**
 	 * @see org.eclipse.update.core.model.SiteModel#getConfiguredSite()
 	 */
-	public IConfiguredSite getConfiguredSite() {
+	public IConfiguredSite getCurrentConfiguredSite() {
 		return (IConfiguredSite) getConfiguredSiteModel();
 	}
 
