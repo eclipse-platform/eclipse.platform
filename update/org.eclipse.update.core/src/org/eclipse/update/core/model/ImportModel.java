@@ -20,6 +20,7 @@ public class ImportModel extends ModelObject {
 	private String version;
 	private String matchingRuleName;
 	private boolean featureImport;
+	private boolean patch;
 
 	/**
 	 * Creates a uninitialized plug-in dependency model object.
@@ -150,7 +151,7 @@ public class ImportModel extends ModelObject {
 	public boolean isFeatureImport() {
 		return featureImport;
 	}
-
+	
 	/**
 	 * Sets the featureImport.
 	 * @param featureImport The featureImport to set
@@ -158,5 +159,18 @@ public class ImportModel extends ModelObject {
 	public void setFeatureImport(boolean featureImport) {
 		this.featureImport = featureImport;
 	}
-
+	
+	/**
+	 * Returns the patch mode.
+	 */
+	public boolean isPatch() {
+		return patch;
+	}
+	
+	/**
+	 * Sets the patch mode.
+	 */
+	public void setPatch(boolean patch) {
+		this.patch = patch;
+	}
 }

@@ -238,13 +238,4 @@ public class FeatureReference
 		if (getOptions()==null) return IUpdateConstants.SEARCH_ROOT;
 		return getOptions().getSearchLocation();
 	}
-
-	/**
-	 * @see org.eclipse.update.core.IFeatureReference#isUnique()
-	 */
-	public boolean isUnique() {
-		if (getOptions()==null) return true;
-		return getOptions().isUnique();
-	}
-
 }

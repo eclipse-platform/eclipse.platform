@@ -59,4 +59,16 @@ public interface IImport extends IAdaptable, IUpdateConstants {
 	 * KIND_FEATURE if the dependency relates to a feature.
 	 */
 	public int getKind();
+	
+	/**
+	 * Returns the patch mode. If the import is in patch mode,
+	 * the referenced feature is considered a patch target,
+	 * and the feature that owns the import is patch carrier.
+	 * Patch carrier and patched feature are linked in a
+	 * distinct way: if a patched feature is disabled,
+	 * all the patches are disabled with it.
+	 * @return true if the element represents a patch
+	 * reference, false otherwise.
+	 */
+	public boolean isPatch();
 }
