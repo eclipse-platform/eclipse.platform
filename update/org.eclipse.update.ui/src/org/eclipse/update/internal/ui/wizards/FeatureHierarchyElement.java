@@ -39,6 +39,7 @@ public class FeatureHierarchyElement {
 	private IFeatureReference newFeatureRef;
 	private boolean checked;
 	private boolean optionalChildren;
+	private boolean nativeUpgrade=false;
 
 	public FeatureHierarchyElement(
 		IFeatureReference oldRef,
@@ -95,6 +96,10 @@ public class FeatureHierarchyElement {
 	public boolean isChecked() {
 		return checked;
 	}
+	
+	void setNativeUpgrade(boolean nativeUpgrade) {
+		this.nativeUpgrade = nativeUpgrade;
+	}
 
 	/**
 	 * Returns true if this optional feature should
@@ -109,6 +114,7 @@ public class FeatureHierarchyElement {
 	 * its state.
 	 */
 	public boolean isEnabled(IInstallConfiguration config) {
+		if (nativeUpgrade) return true;
 		if (isOptional() && oldFeatureRef != null) {
 			try {
 				IFeature oldFeature = oldFeatureRef.getFeature();
@@ -280,6 +286,7 @@ public class FeatureHierarchyElement {
 						// an older version may have been
 						// installed natively from the CD-ROM.
 						if (hasOlderVersion(newRef)) {
+							element.setNativeUpgrade(true);
 							element.setChecked(true);
 						}
 					}
