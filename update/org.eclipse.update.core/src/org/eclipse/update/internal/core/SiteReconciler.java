@@ -67,11 +67,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		IPlatformConfiguration.ISiteEntry[] newSiteEntries = platformConfig.getConfiguredSites();
 		IInstallConfiguration newInstallConfiguration = siteLocal.createNewInstallConfiguration();
 
-		// bug 33493 check if we are running in a workspace<2.0.3. If so remove 2.0.2 state
-		File oldConfigFile = getOldConfigFile();
-		if (oldConfigFile != null)
-			cleanUpOldWorkspaceState(oldConfigFile);
-
 		IInstallConfiguration oldInstallConfiguration = siteLocal.getCurrentConfiguration();
 		IConfiguredSite[] oldConfiguredSites = new IConfiguredSite[0];
 		newFoundFeatures = new ArrayList();
@@ -120,7 +115,9 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 			// check if SiteEntry has been possibly modified
 			// if it was part of the previously known configuredSite; reconcile
-			// bug 33493, do not attempt to preserve old state if optimistic.Site is considered new
+			// 
+			// bug 33493, do not attempt to preserve old state if optimistic.
+			// Every Old Site is considered as New Site
 			if (!isOptimistic) {
 				for (int index = 0; index < oldConfiguredSites.length && !found; index++) {
 					currentConfigurationSite = oldConfiguredSites[index];
@@ -197,83 +194,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		siteLocal.save();
 
 		return saveNewFeatures(newInstallConfiguration);
-	}
-
-	/*
-	 * bug 33493
-	 * Remove all old site.xml, config.xml and preservedConfig.xml
-	 */
-	private void cleanUpOldWorkspaceState(File localXml) {
-
-		//delete SiteLocal.xml
-		try {
-			UpdateManagerUtils.removeFromFileSystem(localXml);
-			UpdateManagerPlugin.warn("Removed LocalSite.xml file:" + localXml);
-		} catch (Exception e) {
-			UpdateManagerPlugin.warn("Unable to remove LocalSite.xml file:" + localXml, e);
-		}
-
-		File dir = localXml.getParentFile();
-		File[] configFiles = dir.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return (name.startsWith("Config") && name.endsWith("xml") && !name.startsWith(SiteLocal.DEFAULT_CONFIG_PREFIX));
-			}
-		});
-		if (configFiles == null)
-			configFiles = new File[0];
-
-		File[] preservedFiles = dir.listFiles(new FilenameFilter() {
-			public boolean accept(File dir, String name) {
-				return (name.startsWith("PreservedConfig") && name.endsWith("xml") && !name.startsWith(SiteLocal.DEFAULT_PRESERVED_CONFIG_PREFIX));
-			}
-		});
-		if (preservedFiles == null)
-			preservedFiles = new File[0];
-
-		//delete config information
-		List validConfig = new ArrayList();
-		String newName = null;
-		for (int i = 0; i < configFiles.length; i++) {
-			try {
-				UpdateManagerUtils.removeFromFileSystem(configFiles[i]);
-				UpdateManagerPlugin.warn("Removed Configuration file:" + configFiles[i]);
-			} catch (Exception e) {
-				UpdateManagerPlugin.warn("Unable to remove Configuration file:" + configFiles[i], e);
-			}
-		}
-
-		// renname preserved configuration information
-		for (int i = 0; i < preservedFiles.length; i++) {
-			try {
-				UpdateManagerUtils.removeFromFileSystem(preservedFiles[i]);
-				UpdateManagerPlugin.warn("Removed Preserved Configuration file:" + preservedFiles[i]);
-			} catch (Exception e) {
-				UpdateManagerPlugin.warn("Unable to remove Preserved Configuration file:" + preservedFiles[i], e);
-			}
-		}
-
-	}
-
-	/*
-	 * bug 33493
-	 * retrieve the old SiteLocal.xml file. If we find it, it means the workspace is < 2.0.3
-	 */
-	private File getOldConfigFile() throws CoreException {
-		final String OLD_SITE_LOCAL_FILE = "LocalSite.xml"; //$NON-NLS-1$		
-		IPlatformConfiguration currentPlatformConfiguration = BootLoader.getCurrentPlatformConfiguration();
-		File configFile = null;
-		URL location = null;
-		try {
-			// obtain LocalSite.xml location
-			location = getUpdateStateLocation(currentPlatformConfiguration);
-
-			URL configXML = UpdateManagerUtils.getURL(location, OLD_SITE_LOCAL_FILE, null);
-			configFile = new File(configXML.getFile());
-		} catch (Exception e){
-			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS)
-				UpdateManagerPlugin.warn("Unable to retrive old LocalSite.xml in:"+location);
-		}
-		return configFile;
 	}
 
 	/*
