@@ -666,7 +666,6 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	 * 
 	 */
 	public ConfigurationPolicy getConfigurationPolicy() {
-System.out.print("\t\t\t["+super.toString()+"]");		
 		return (ConfigurationPolicy) getConfigurationPolicyModel();
 	}
 

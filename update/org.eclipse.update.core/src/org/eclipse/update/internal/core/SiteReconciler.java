@@ -197,7 +197,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		// TRACE
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER) {
-			UpdateManagerPlugin.debug("Configured Site to reconfigure:" + oldConfiguredSite.getSite().getURL());
+			UpdateManagerPlugin.debug("Configured Site to reconfigure:" + oldConfiguredSite.getSite().getURL()+(isOptimistic?" OPTIMISTIC":" PESSIMISTIC"));
 		}
 
 		ConfiguredSite newConfiguredSite = createNewConfigSite(oldConfiguredSite);
