@@ -21,7 +21,7 @@
 
   <extension point="org.eclipse.ui.popupMenus">
 	<objectContribution
-		id="org.eclipse.ant.ui.RunAnt"
+		id="org.eclipse.ant.internal.ui.RunAnt"
 		objectClass="org.eclipse.core.resources.IResource"
 		nameFilter="*.xml">
 		<action
@@ -47,34 +47,6 @@
 		category="org.eclipse.ant.ui"
 		class="org.eclipse.ant.internal.ui.AntConsole">
 	</view>
-  </extension>
-  
-  <extension point="org.eclipse.ui.preferencePages">
-  	<page 
-  		id="org.eclipse.ant.ui.AntPreferences" 
-  		name="%antPreferences"
-  		class="org.eclipse.ant.internal.ui.AntPreferencesPage">
-  	</page>
-  	<page 
-  		id="org.eclipse.ant.ui.AntConsolePreferences" 
-  		name="%antConsolePreferences"
-  		class="org.eclipse.ant.internal.ui.AntConsolePreferencePage"
-  		category="org.eclipse.ant.ui.AntPreferences">
-  	</page>
-  </extension>
-  
-  <extension point="org.eclipse.ui.actionSets">
-	<actionSet label="%antActionSetLabel" 
-		visible="true" 
-		id="org.eclipse.ant.ui.antActionSet">
-	  	<action label="%executeAntLabel" 
-	  		pulldown="true" 
-	  		icon="icons/basic/cview/ant_view.gif" 
-	  		tooltip="%executeAntTooltip" 
-	  		class="org.eclipse.ant.internal.ui.AntLaunchDropDownAction" 
-	  		toolbarPath="ant" 
-	  		id="org.eclipse.ant.ui.antDropDownAction" /> 
-	</actionSet>
   </extension>
   
 </plugin>
