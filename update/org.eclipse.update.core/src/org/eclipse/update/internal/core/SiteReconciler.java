@@ -75,7 +75,9 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		}
 
 		// 16215
-		isOptimistic = platformBaseChanged(oldConfiguredSites);
+		// 22913, if already optimistic, do not check
+		if (!isOptimistic)
+			isOptimistic = platformBaseChanged(oldConfiguredSites);
 
 		// check if sites from the platform are new sites or modified sites
 		// if they are new add them, if they are modified, compare them with the old
