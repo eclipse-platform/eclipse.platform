@@ -47,8 +47,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * A launch configuration tab which allows the user to specify
- * which resources should be refreshed when the launch
- * terminates.
+ * which resources should be built before the Ant build (a build scope)
  * <p>
  * This class may be instantiated; this class is not intended
  * to be subclassed.
@@ -187,7 +186,7 @@ public class AntBuildTab extends AbstractLaunchConfigurationTab {
 	}
 
 	/**
-	 * Prompts the user to select the projects to refresh.
+	 * Prompts the user to select the projects to build.
 	 */
 	private void selectResources() {
 		ListSelectionDialog dialog = new ListSelectionDialog(getShell(), ResourcesPlugin.getWorkspace(), new ProjectsContentProvider(), new WorkbenchLabelProvider(), AntLaunchConfigurationMessages.getString("AntBuildTab.7")); //$NON-NLS-1$
@@ -218,9 +217,6 @@ public class AntBuildTab extends AbstractLaunchConfigurationTab {
 		updateEnabledState();		
 	}
 	
-	/**
-	 * @param configuration
-	 */
 	private void updateReferencedProjects(ILaunchConfiguration configuration) {
 		boolean ref = false;
 		try {
@@ -279,10 +275,7 @@ public class AntBuildTab extends AbstractLaunchConfigurationTab {
 	}
 
 	/**
-	 * Generates a memento for the refresh scope. This is based on old refresh
-	 * variables.
-	 * 
-	 * @return a memento
+	 * Generates a memento for the build scope.
 	 */
 	private String generateScopeMemento() {
 		if (fBuildButton.getSelection()) {
