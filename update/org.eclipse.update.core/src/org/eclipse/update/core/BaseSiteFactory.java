@@ -9,12 +9,9 @@ import java.io.InputStream;
 import java.net.*;
 import java.util.*;
 
-import javax.swing.plaf.SliderUI;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.URLEncoder;
 
 /**
  * Base implementation of a site factory.

@@ -546,7 +546,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		// FEATURE REF
 		IFeatureReference[] references = getFeatureReferences();
 		String URLFeatureString = null;
-		String URLSiteString = null;
 		if (references != null) {
 			for (int index = 0; index < references.length; index++) {
 				IFeatureReference ref = references[index];

@@ -7,9 +7,8 @@ package org.eclipse.update.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**
  * Base site content provider

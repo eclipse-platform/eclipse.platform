@@ -9,13 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.xerces.parsers.SAXParser;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.PluginEntry;
 import org.eclipse.update.core.VersionedIdentifier;
-import org.eclipse.update.internal.core.PluginEntryContentConsumer;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**

@@ -4,11 +4,8 @@ package org.eclipse.update.internal.model;
  * All Rights Reserved.
  */
  
-import java.io.PrintWriter;
 import java.util.Date;
 
-import org.eclipse.update.configuration.*;
-import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.core.model.ModelObject;
 
 public class ConfigurationActivityModel extends ModelObject{

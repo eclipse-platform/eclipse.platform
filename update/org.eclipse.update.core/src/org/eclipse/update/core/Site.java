@@ -4,16 +4,14 @@ package org.eclipse.update.core;
  * All Rights Reserved.
  */
 
-import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**
  * Convenience implementation of a site.
@@ -63,6 +61,9 @@ public class Site extends SiteModel implements ISite {
 	public static final String SITE_XML = SITE_FILE + ".xml"; //$NON-NLS-1$
 
 	private ISiteContentProvider siteContentProvider;
+	
+	Map featureCache = new HashMap();
+	
 	/**
 	 * Constructor for Site
 	 */
@@ -85,7 +86,7 @@ public class Site extends SiteModel implements ISite {
 			return false;
 		ISite otherSite = (ISite) obj;
 
-		return UpdateManagerUtils.sameURL(getURL(),otherSite.getURL());	
+		return UpdateManagerUtils.sameURL(getURL(), otherSite.getURL());
 	}
 
 	/**
@@ -99,7 +100,7 @@ public class Site extends SiteModel implements ISite {
 		try {
 			url = getSiteContentProvider().getURL();
 		} catch (CoreException e) {
-			UpdateManagerPlugin.warn(null,e);
+			UpdateManagerPlugin.warn(null, e);
 		}
 		return url;
 	}
@@ -149,9 +150,8 @@ public class Site extends SiteModel implements ISite {
 
 		//DEBUG:
 		if (!found) {
-			String URLString = (this.getURL()!=null)?this.getURL().toExternalForm():"<no site url>";
-			UpdateManagerPlugin.warn(
-				Policy.bind("Site.CannotFindCategory", key, URLString));
+			String URLString = (this.getURL() != null) ? this.getURL().toExternalForm() : "<no site url>";
+			UpdateManagerPlugin.warn(Policy.bind("Site.CannotFindCategory", key, URLString));
 			//$NON-NLS-1$ //$NON-NLS-2$
 			if (getCategoryModels().length <= 0)
 				UpdateManagerPlugin.warn(Policy.bind("Site.NoCategories"));
@@ -195,8 +195,8 @@ public class Site extends SiteModel implements ISite {
 			if (UpdateManagerUtils.sameURL(feature.getURL(), currentReference.getURL()))
 				return currentReference;
 		}
-		
-		UpdateManagerPlugin.warn("Feature "+feature+" not found on site"+this.getURL());
+
+		UpdateManagerPlugin.warn("Feature " + feature + " not found on site" + this.getURL());
 		return null;
 	}
 
@@ -223,9 +223,7 @@ public class Site extends SiteModel implements ISite {
 	 */
 	public ISiteContentProvider getSiteContentProvider() throws CoreException {
 		if (siteContentProvider == null) {
-			throw Utilities.newCoreException(
-					Policy.bind("Site.NoContentProvider"),
-					null);
+			throw Utilities.newCoreException(Policy.bind("Site.NoContentProvider"), null);
 			//$NON-NLS-1$
 		}
 		return siteContentProvider;
@@ -270,8 +268,7 @@ public class Site extends SiteModel implements ISite {
 	 * @see ISite#getPluginEntriesOnlyReferencedBy(IFeature)	 * 
 	 * @since 2.0
 	 */
-	public IPluginEntry[] getPluginEntriesOnlyReferencedBy(IFeature feature)
-		throws CoreException {
+	public IPluginEntry[] getPluginEntriesOnlyReferencedBy(IFeature feature) throws CoreException {
 
 		IPluginEntry[] pluginsToRemove = new IPluginEntry[0];
 		if (feature == null)
@@ -288,16 +285,13 @@ public class Site extends SiteModel implements ISite {
 					IFeature featureToCompare = null;
 					try {
 						featureToCompare = features[indexFeatures].getFeature();
-					} catch (CoreException e){
-						UpdateManagerPlugin.warn(null,e);
+					} catch (CoreException e) {
+						UpdateManagerPlugin.warn(null, e);
 					}
 					if (!feature.equals(featureToCompare)) {
-						IPluginEntry[] pluginEntries =
-							features[indexFeatures].getFeature().getPluginEntries();
+						IPluginEntry[] pluginEntries = features[indexFeatures].getFeature().getPluginEntries();
 						if (pluginEntries != null) {
-							for (int indexEntries = 0;
-								indexEntries < pluginEntries.length;
-								indexEntries++) {
+							for (int indexEntries = 0; indexEntries < pluginEntries.length; indexEntries++) {
 								allPluginID.add(pluginEntries[indexEntries].getVersionedIdentifier());
 							}
 						}
@@ -373,11 +367,7 @@ public class Site extends SiteModel implements ISite {
 	 * @exception java.jang.UnsupportedOperationException
 	 * @since 2.0
 	 */
-	public IFeatureReference install(
-		IFeature sourceFeature,
-		IVerificationListener verificationListener,
-		IProgressMonitor progress)
-		throws InstallAbortedException,CoreException {
+	public IFeatureReference install(IFeature sourceFeature, IVerificationListener verificationListener, IProgressMonitor progress) throws InstallAbortedException, CoreException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -392,12 +382,7 @@ public class Site extends SiteModel implements ISite {
 	 * @exception java.jang.UnsupportedOperationException
 	 * @since 2.0
 	 */
-	public IFeatureReference install(
-		IFeature sourceFeature,
-		IFeatureReference[] optionalFeatures,
-		IVerificationListener verificationListener,
-		IProgressMonitor progress)
-		throws InstallAbortedException,CoreException {
+	public IFeatureReference install(IFeature sourceFeature, IFeatureReference[] optionalFeatures, IVerificationListener verificationListener, IProgressMonitor progress) throws InstallAbortedException, CoreException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -417,13 +402,7 @@ public class Site extends SiteModel implements ISite {
 	 * @exception java.jang.UnsupportedOperationException 
 	 * @since 2.0 
 	 */
-	 public IFeatureReference  install(
-		IFeature sourceFeature,
-		IFeatureReference[] optionalFeatures,
-		IFeatureContentConsumer parentContentConsumer,
-		IVerifier parentVerifier,
-		IVerificationListener verificationListener,
-		IProgressMonitor progress)
+	public IFeatureReference install(IFeature sourceFeature, IFeatureReference[] optionalFeatures, IFeatureContentConsumer parentContentConsumer, IVerifier parentVerifier, IVerificationListener verificationListener, IProgressMonitor progress)
 		throws CoreException {
 		throw new UnsupportedOperationException();
 	}
@@ -437,8 +416,7 @@ public class Site extends SiteModel implements ISite {
 	 * @exception java.jang.UnsupportedOperationException
 	 * @since 2.0
 	 */
-	public void remove(IFeature feature, IProgressMonitor progress)
-		throws CoreException {
+	public void remove(IFeature feature, IProgressMonitor progress) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -457,5 +435,37 @@ public class Site extends SiteModel implements ISite {
 	public IConfiguredSite getConfiguredSite() {
 		return (IConfiguredSite) getConfiguredSiteModel();
 	}
+
+	/**
+	 * @see org.eclipse.update.core.ISite#createFeature(VersionedIdentifier, String, URL)
+	 */
+	public IFeature createFeature(VersionedIdentifier vid, String type,URL url) throws CoreException {
+
+
+		// First check the cache
+		IFeature feature = (IFeature) featureCache.get(vid);
+		if (feature != null)
+			return feature;
+			
+		// Create a new one
+		if (type == null || type.equals("")) { //$NON-NLS-1$
+			// ask the Site for the default type 
+			type = getDefaultPackagedFeatureType();
+		}
+		
+		IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(type);
+		feature = factory.createFeature(url, this);
+		if (feature != null) {
+			VersionedIdentifier featureID = feature.getVersionedIdentifier();
+			if (!featureID.equals(vid)) {
+				UpdateManagerPlugin.warn("The versionId of the referenced feature doesn 't match the one of the feature reference : " + getURL());
+				}
+			// Add the feature to the cache
+			featureCache.put(featureID, feature);
+		}
+		
+		return feature;
+	}
+
 
 }

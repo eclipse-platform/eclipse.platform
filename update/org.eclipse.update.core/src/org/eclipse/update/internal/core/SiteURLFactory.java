@@ -6,14 +6,11 @@ package org.eclipse.update.internal.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InvalidSiteTypeException;
 import org.eclipse.update.core.model.SiteModelFactory;
-import org.xml.sax.SAXException;
 
 public class SiteURLFactory extends BaseSiteFactory {
 

@@ -7,14 +7,10 @@ package org.eclipse.update.internal.security;
 import java.security.Principal;
 import java.security.cert.*;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.update.core.*;
 import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**
  * Result of the service

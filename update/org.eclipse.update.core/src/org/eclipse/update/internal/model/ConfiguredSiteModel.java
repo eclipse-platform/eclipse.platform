@@ -3,17 +3,10 @@ package org.eclipse.update.internal.model;
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
  */
-import java.io.PrintWriter;
-import java.util.Date;
-
-import java.util.*;
-
-import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.*;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.model.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.update.core.model.ModelObject;
+import org.eclipse.update.core.model.SiteModel;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**

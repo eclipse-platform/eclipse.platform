@@ -5,7 +5,6 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
  
-import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.*;

@@ -8,15 +8,11 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.update.configuration.*;
 import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.FeatureReferenceModel;
-import org.eclipse.update.internal.model.ConfigurationActivityModel;
 import org.eclipse.update.internal.model.ConfigurationPolicyModel;
 
 /**

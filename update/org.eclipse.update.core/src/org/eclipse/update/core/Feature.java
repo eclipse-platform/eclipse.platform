@@ -9,12 +9,8 @@ import java.net.*;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.*;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.model.ConfiguredSiteModel;
 
 /**
  * Convenience implementation of a feature.
@@ -666,7 +662,6 @@ public class Feature extends FeatureModel implements IFeature {
 		if (site == null)
 			return;
 
-		IFeatureReference enabledFeatures[] = null;
 		Iterator nestedVersionedIdentifier = nestedFeatures.keySet().iterator();
 		while (nestedVersionedIdentifier.hasNext()) {
 			VersionedIdentifier identifier = (VersionedIdentifier) nestedVersionedIdentifier.next();

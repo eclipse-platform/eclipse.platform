@@ -240,4 +240,11 @@ public class SiteFTP implements ISite {
 		return null;
 	}
 
+	/**
+	 * @see org.eclipse.update.core.ISite#createFeature(VersionedIdentifier, String, URL)
+	 */
+	public IFeature createFeature(VersionedIdentifier vid, String type, URL url) throws CoreException {
+		return null;
+	}
+
 }

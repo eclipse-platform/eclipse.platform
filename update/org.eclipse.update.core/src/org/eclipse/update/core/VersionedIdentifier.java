@@ -5,9 +5,8 @@ package org.eclipse.update.core;
  */
 
 import org.eclipse.core.runtime.PluginVersionIdentifier;
-import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerUtils;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
 /**
  * Versioned Identifier. This is a utility class combining an identification

@@ -240,7 +240,6 @@ public interface ISite extends IAdaptable {
 	 */
 	public IFeatureReference install(IFeature feature, IFeatureReference[] optionalfeatures, IVerificationListener verificationListener, IProgressMonitor monitor) throws InstallAbortedException, CoreException;
 
-
 	/**
 	 * Removes (uninstalls) the specified feature from this site. This method
 	 * takes into account plug-in entries referenced by the specified fetaure
@@ -262,7 +261,7 @@ public interface ISite extends IAdaptable {
 	 * @since 2.0
 	 */
 	public void setSiteContentProvider(ISiteContentProvider siteContentProvider);
-	
+
 	/** 
 	 * Returns the <code>IConfiguredSite</code> for this site in the current 
 	 * configuration or <code>null</code> if none found.
@@ -270,4 +269,21 @@ public interface ISite extends IAdaptable {
 	 * @since 2.0.2
 	 */
 	public IConfiguredSite getConfiguredSite();
+
+	/**
+	* Creates a new feature object. The feature must exist on this site
+	* or a core exception will be thrown. Concrete implementations 
+	* may elect to cache instances, in which case subsequent calls 
+	* to create a feature with the same type, version and id will
+	* return the same instance.
+	* param vid versioned identifier of the feature to create
+	* param type the feature type that will be used to select the factory. If
+	* <code>null</code> is passed, default feature type will be used.
+	* param url URL of the feature archive as listed in the site.
+	* return newly created feature object, or a cached value if
+	* caching is implemented by this site.
+	*/
+
+	IFeature createFeature(VersionedIdentifier vid, String type, URL url) throws CoreException;
+
 }

@@ -15,10 +15,9 @@ import org.eclipse.core.boot.IPlatformConfiguration;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.*;
-import org.eclipse.update.core.model.FeatureReferenceModel;
-import org.eclipse.update.core.model.SiteModel;
-import org.eclipse.update.internal.model.*;
+import org.eclipse.update.core.model.InstallAbortedException;
+import org.eclipse.update.internal.model.ConfiguredSiteModel;
+import org.eclipse.update.internal.model.InstallConfigurationParser;
 
 /**
  * A Configured site manages the Configured and unconfigured features of a Site
@@ -157,6 +156,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		if (!isUpdatable()) {
 			String errorMessage = Policy.bind("ConfiguredSite.NonInstallableSite", getSite().getURL().toExternalForm());
 			//$NON-NLS-1$
+			throw Utilities.newCoreException(errorMessage, null);
 		}
 
 		// feature is null
@@ -226,6 +226,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		if (!isUpdatable()) {
 			String errorMessage = Policy.bind("ConfiguredSite.NonUninstallableSite", getSite().getURL().toExternalForm());
 			//$NON-NLS-1$
+			throw Utilities.newCoreException(errorMessage, null);
 		}
 
 		// create the Activity
@@ -525,7 +526,6 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 	public void revertTo(IConfiguredSite oldConfiguration, IProgressMonitor monitor, IProblemHandler handler) throws CoreException, InterruptedException {
 
 		ConfiguredSite oldConfiguredSite = (ConfiguredSite) oldConfiguration;
-		ConfigurationPolicy oldConfiguredPolicy = oldConfiguredSite.getConfigurationPolicy();
 
 		// retrieve the feature that were configured
 		IFeatureReference[] configuredFeatures = oldConfiguredSite.validConfiguredFeatures(handler);
@@ -545,7 +545,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			IFeatureReference element = (IFeatureReference) iter.next();
 			try {
 				// do not log activity
-				boolean succes = getConfigurationPolicy().unconfigure(element, true, true);
+				getConfigurationPolicy().unconfigure(element, true, true);
 			} catch (CoreException e) {
 				// log no feature to unconfigure
 				String url = element.getURL().toString();
@@ -744,7 +744,6 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 
 		// check the Plugins of all the features
 		// every plugin of the feature must be on the site
-		ISite currentSite = getSite();
 		IPluginEntry[] siteEntries = getSite().getPluginEntries();
 		IPluginEntry[] featuresEntries = feature.getPluginEntries();
 		IPluginEntry[] result = UpdateManagerUtils.diff(featuresEntries, siteEntries);

@@ -3,15 +3,11 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
 
@@ -174,7 +170,6 @@ public class SiteFile extends Site {
 					if (monitor != null)
 						monitor.worked(1);
 				} catch (IOException e) {
-					String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
 					throw Utilities.newCoreException(Policy.bind("SiteFile.CannotRemoveFeature", feature.getVersionedIdentifier().getIdentifier(), getURL().toExternalForm()), e);
 					//$NON-NLS-1$
 				}
@@ -377,7 +372,7 @@ public class SiteFile extends Site {
 	private void aboutToRemove(IFeature feature) throws CoreException {
 
 		ErrorRecoveryLog recoveryLog = ErrorRecoveryLog.getLog();
-		// if teh recovery is not turned on
+		// if the recovery is not turned on
 		if (!ErrorRecoveryLog.RECOVERY_ON)
 			return;
 
@@ -429,4 +424,5 @@ public class SiteFile extends Site {
 			aboutToRemove(childFeature);
 		}
 	}
+
 }

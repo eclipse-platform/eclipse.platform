@@ -11,7 +11,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.eclipse.update.core.model.InstallAbortedException;
-import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -90,7 +89,7 @@ public class JarContentReference extends ContentReference {
 		this.jarFile = null;
 		referenceList.add(this); // keep track of archives
 	}
-	
+
 	/**
 	 * A factory method to create a jar content reference.
 	 * 
@@ -101,8 +100,8 @@ public class JarContentReference extends ContentReference {
 	 */
 	public ContentReference createContentReference(String id, File file) {
 		return new JarContentReference(id, file);
-	}	
-		
+	}
+
 	/**
 	 * Returns the content reference as a jar file. Note, that this method
 	 * <b>does not</b> cause the file to be downloaded if it
@@ -113,12 +112,12 @@ public class JarContentReference extends ContentReference {
 	 * @since 2.0
 	 */
 	protected JarFile asJarFile() throws IOException {
-		if (this.jarFile == null){
+		if (this.jarFile == null) {
 			File file = asFile();
 			if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_INSTALL)
-				UpdateManagerPlugin.debug("asJarFile :"+file);
-			if(file!=null && !file.exists()){
-				UpdateManagerPlugin.warn("JarFile does not exits:"+file);
+				UpdateManagerPlugin.debug("asJarFile :" + file);
+			if (file != null && !file.exists()) {
+				UpdateManagerPlugin.warn("JarFile does not exits:" + file);
 				throw new FileNotFoundException(file.getAbsolutePath());
 			}
 			this.jarFile = new JarFile(file);
@@ -138,11 +137,7 @@ public class JarContentReference extends ContentReference {
 	 * @exception InstallAbortedException
 	 * @since 2.0
 	 */
-	public ContentReference[] unpack(
-		File dir,
-		ContentSelector selector,
-		InstallMonitor monitor)
-		throws IOException, InstallAbortedException {
+	public ContentReference[] unpack(File dir, ContentSelector selector, InstallMonitor monitor) throws IOException, InstallAbortedException {
 
 		// make sure we have a selector
 		if (selector == null)
@@ -215,12 +210,7 @@ public class JarContentReference extends ContentReference {
 	 * @exception InstallAbortedException
 	 * @since 2.0
 	 */
-	public ContentReference unpack(
-		File dir,
-		String entryName,
-		ContentSelector selector,
-		InstallMonitor monitor)
-		throws IOException, InstallAbortedException {
+	public ContentReference unpack(File dir, String entryName, ContentSelector selector, InstallMonitor monitor) throws IOException, InstallAbortedException {
 
 		// make sure we have a selector
 		if (selector == null)
@@ -257,8 +247,7 @@ public class JarContentReference extends ContentReference {
 			} else
 				return null; // entry was a directory
 		} else
-			throw new FileNotFoundException(
-				this.asFile().getAbsolutePath() + " " + entryName);
+			throw new FileNotFoundException(this.asFile().getAbsolutePath() + " " + entryName);
 		//$NON-NLS-1$
 	}
 
@@ -272,10 +261,7 @@ public class JarContentReference extends ContentReference {
 	 * @exception IOException
 	 * @since 2.0
 	 */
-	public ContentReference[] peek(
-		ContentSelector selector,
-		InstallMonitor monitor)
-		throws IOException {
+	public ContentReference[] peek(ContentSelector selector, InstallMonitor monitor) throws IOException {
 
 		// make sure we have a selector
 		if (selector == null)
@@ -298,7 +284,7 @@ public class JarContentReference extends ContentReference {
 		}
 		return (ContentReference[]) content.toArray(new ContentReference[0]);
 	}
-	
+
 	/**
 	 * Peeks into the referenced jar archive looking for the named entry.
 	 * Returns content reference to the jar entry within the jar file.
@@ -311,11 +297,7 @@ public class JarContentReference extends ContentReference {
 	 * @exception IOException
 	 * @since 2.0
 	 */
-	public ContentReference peek(
-		String entryName,
-		ContentSelector selector,
-		InstallMonitor monitor)
-		throws IOException {
+	public ContentReference peek(String entryName, ContentSelector selector, InstallMonitor monitor) throws IOException {
 
 		// make sure we have a selector
 		if (selector == null)
@@ -325,12 +307,13 @@ public class JarContentReference extends ContentReference {
 		JarFile jarArchive = this.asJarFile();
 		entryName = entryName.replace(File.separatorChar, '/');
 		JarEntry entry = jarArchive.getJarEntry(entryName);
-		if (entry==null) return null;
-		
+		if (entry == null)
+			return null;
+
 		String entryId = selector.defineIdentifier(entry);
 		return new JarEntryContentReference(entryId, this, entry);
 	}
-	
+
 	/**
 	 * Closes the jar archive corresponding to this reference
 	 * 
@@ -343,7 +326,7 @@ public class JarContentReference extends ContentReference {
 			this.jarFile = null;
 		}
 	}
-	
+
 	/**
 	 * Perform shutdown processing for jar archive handling.
 	 * This method is called when platform is shutting down.
@@ -354,11 +337,11 @@ public class JarContentReference extends ContentReference {
 	 * @since 2.0
 	 */
 	public static void shutdown() {
-		for (int i=0; i<referenceList.size(); i++) {
+		for (int i = 0; i < referenceList.size(); i++) {
 			JarContentReference ref = (JarContentReference) referenceList.get(i);
 			try {
 				ref.closeArchive(); // ensure we are not leaving open jars
-			} catch(IOException e) {
+			} catch (IOException e) {
 				// we tried, nothing we can do ...
 			}
 		}

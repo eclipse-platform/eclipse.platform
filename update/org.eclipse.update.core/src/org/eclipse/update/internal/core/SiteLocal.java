@@ -10,12 +10,9 @@ import java.util.*;
 import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.boot.IPlatformConfiguration;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.model.PluginDescriptorModel;
-import org.eclipse.core.runtime.model.PluginFragmentModel;
 import org.eclipse.update.configuration.*;
-import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.FeatureReferenceModel;
-import org.eclipse.update.core.model.SiteModel;
+import org.eclipse.update.core.IFeature;
+import org.eclipse.update.core.Utilities;
 import org.eclipse.update.internal.model.*;
 import org.xml.sax.SAXException;
 

@@ -15,8 +15,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.core.boot.BootLoader;
-import org.eclipse.core.runtime.*;
+
 import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IInstallConfiguration;
 /**

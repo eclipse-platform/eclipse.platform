@@ -4,24 +4,12 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.update.configuration.*;
-import org.eclipse.update.configuration.IConfiguredSite;
-import org.eclipse.update.configuration.ISessionDelta;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.core.model.FeatureReferenceModel;
 import org.eclipse.update.core.model.ModelObject;
-import org.eclipse.update.internal.model.InstallChangeParser;
 
 /**
  *

@@ -7,7 +7,6 @@ package org.eclipse.update.configuration;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.eclipse.update.core.Utilities;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.core.Volume;
  

@@ -3,17 +3,13 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved. 
  */
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.model.PluginDescriptorModel;
 import org.eclipse.core.runtime.model.PluginFragmentModel;
-import org.eclipse.update.configuration.*;
 import org.eclipse.update.configuration.IConfiguredSite;
-import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.*;
 
 /**
@@ -171,7 +167,6 @@ public class SiteStatusAnalyzer {
 		IFeature childFeature = null;
 		IStatus childStatus;
 
-		IInstallConfiguration currentConfig = siteLocal.getCurrentConfiguration();
 		IFeatureReference[] children = feature.getIncludedFeatureReferences();
 
 		// consider disable

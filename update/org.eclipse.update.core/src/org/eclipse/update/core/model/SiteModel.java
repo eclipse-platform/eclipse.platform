@@ -4,14 +4,10 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.update.configuration.IConfiguredSite;
-import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.model.ConfiguredSiteModel;
 
 /**

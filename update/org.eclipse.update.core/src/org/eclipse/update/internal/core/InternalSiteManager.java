@@ -5,15 +5,12 @@ package org.eclipse.update.internal.core;
  * All Rights Reserved.
  */
 
-import java.io.*;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
@@ -286,7 +283,6 @@ public class InternalSiteManager {
 	private static ISessionDelta[] getSessionDeltas() {
 		List sessionDeltas = new ArrayList();
 		IPath path = UpdateManagerPlugin.getPlugin().getStateLocation();
-		InputStream in;
 		InstallChangeParser parser;
 
 		File file = path.toFile();

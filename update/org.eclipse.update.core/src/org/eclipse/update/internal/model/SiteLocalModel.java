@@ -3,19 +3,11 @@ package org.eclipse.update.internal.model;
  * (c) Copyright IBM Corp. 2000, 2001.
  * All Rights Reserved.
  */
-import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.core.boot.BootLoader;
-import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.configuration.*;
-import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.ModelObject;
-import org.eclipse.update.internal.model.*;
-import org.xml.sax.SAXException;
 
 /**
  * This class manages the configurations.

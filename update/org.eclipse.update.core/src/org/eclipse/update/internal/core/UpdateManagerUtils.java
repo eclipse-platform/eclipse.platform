@@ -5,13 +5,10 @@ package org.eclipse.update.internal.core;
  */
 import java.io.*;
 import java.net.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.boot.BootLoader;
-import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.InstallAbortedException;
 
@@ -278,7 +275,6 @@ public class UpdateManagerUtils {
 		if (!file.isDirectory())
 			return;
 
-		File childDir;
 		String[] files = file.list();
 		if (files != null) { // be careful since file.list() can return null
 			for (int i = 0; i < files.length; ++i) {
@@ -415,7 +411,6 @@ public class UpdateManagerUtils {
 		if (childFeature == null)
 			return new IFeatureReference[0];
 
-		IFeature currentParent;
 		List parentList = new ArrayList();
 		IFeatureReference[] children = null;
 		IFeature compareFeature = null;

@@ -7,18 +7,13 @@ package org.eclipse.update.core.model;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Stack;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.IncludedFeatureReference;
-import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -1122,12 +1117,10 @@ public class DefaultFeatureParser extends DefaultHandler {
 		
 		// since 2.0.2 , manage feature and plugin import
 		String id = null;
-		boolean plugin = false;
 		if (pluginID==null){
 			id = featureID;
 		} else {
 			id=pluginID;
-			plugin= true;
 		}
 		
 		if (id == null || id.trim().equals("")) //$NON-NLS-1$

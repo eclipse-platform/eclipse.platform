@@ -3,16 +3,11 @@ package org.eclipse.update.internal.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.InvalidSiteTypeException;
-import org.eclipse.update.internal.core.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.update.core.IArchiveReference;
+import org.eclipse.update.core.SiteContentProvider;
 /**
  * 
  */

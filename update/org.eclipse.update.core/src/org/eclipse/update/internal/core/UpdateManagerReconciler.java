@@ -14,7 +14,6 @@ import org.eclipse.core.boot.*;
 import org.eclipse.core.internal.runtime.InternalPlatform;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.update.core.Utilities;
 
 /**
  * Update manager reconciler application.
@@ -57,7 +56,6 @@ public class UpdateManagerReconciler implements IPlatformRunnable {
 		
 		// get debug setting and process command line arguments
 		DEBUG = UpdateManagerPlugin.DEBUG_SHOW_RECONCILER;
-		String[] appArgs = processCommandLine((String[])args);
 		
 		// obtain current platform configuration and save stamps
 		IPlatformConfiguration cfg = BootLoader.getCurrentPlatformConfiguration();

@@ -11,18 +11,10 @@ import java.util.ArrayList;
 
 import org.eclipse.core.boot.BootLoader;
 import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.core.internal.boot.PlatformConfiguration;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.JarContentReference;
 import org.eclipse.update.core.Utilities;
-import org.eclipse.update.internal.model.ConfigurationActivityModel;
 
 /**
  * The main plugin class to be used in the desktop.

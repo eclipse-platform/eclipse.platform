@@ -4,11 +4,8 @@ package org.eclipse.update.configuration;
  * All Rights Reserved.
  */
 
-import java.net.URL;
-
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.ISite;
 
 /**
  * Local Site.

@@ -3,9 +3,6 @@ package org.eclipse.update.core;
  * (c) Copyright IBM Corp. 2000, 2002.
  * All Rights Reserved.
  */
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.update.core.model.ImportModel;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 

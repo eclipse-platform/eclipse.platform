@@ -7,14 +7,9 @@ package org.eclipse.update.core;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.core.*;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 
@@ -382,7 +377,6 @@ public abstract class FeatureContentProvider implements IFeatureContentProvider 
 	 * @return Object the value of the matcing rule or <code>null</code>
 	 */
 	private Object matchesOneRule(String id, Map permissions) {
-		Object result;
 
 		Set keySet = permissions.keySet();
 		Iterator iter = keySet.iterator();

@@ -10,9 +10,8 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.update.core.Utilities;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
-import org.xml.sax.SAXException;
 import org.eclipse.update.internal.core.Policy;
+import org.xml.sax.SAXException;
 
 /**
  * Default site model factory.

@@ -27,7 +27,6 @@ import org.eclipse.update.internal.core.*;
 public class FeatureReference extends FeatureReferenceModel implements IFeatureReference {
 
 	private IFeature feature; // best match
-	private IFeature featureExact; // exact match
 	private List categories;
 	private VersionedIdentifier versionId;
 
@@ -43,7 +42,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	 * @param ref the reference to copy
 	 */
 	public FeatureReference(IFeatureReference ref) {
-		super(ref);
+		super((FeatureReferenceModel)ref);
 		setSite(ref.getSite());
 		try {
 			setURL(ref.getURL());
@@ -143,22 +142,13 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 		setSiteModel((SiteModel) site);
 	}
 
-	/*
-	 * create an instance of a concrete feature corresponding to this reference
-	 */
-	private IFeature createFeature(String featureType, URL url, ISite site) throws CoreException {
-		IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(featureType);
-		IFeature result = factory.createFeature(url, site);
-		return result;
-	}
-
 	/**
-	 * Returns the feature identifier.
-	 * 
-	 * @see IFeatureReference#getVersionedIdentifier()
-	 * @exception CoreException
-	 * @since 2.0
-	 */
+	* Returns the feature identifier.
+	* 
+	* @see IFeatureReference#getVersionedIdentifier()
+	* @exception CoreException
+	* @since 2.0
+	*/
 	public VersionedIdentifier getVersionedIdentifier() throws CoreException {
 
 		if (versionId != null)
@@ -175,7 +165,8 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 			}
 		}
 
-		return getFeature().getVersionedIdentifier();
+		// we need the exact match or we may have an infinite loop
+		return getFeature(true).getVersionedIdentifier();
 	}
 	/**
 	 * @see org.eclipse.update.core.IFeatureReference#getName()
@@ -230,21 +221,19 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 
 		IFeatureReference[] enabledFeatures = retrieveEnabledFeatures(getSite());
 
-		// otherwise , find the best feature to create based on match and enabled features
-		if (enabledFeatures != null) {
-			for (int ref = 0; ref < enabledFeatures.length; ref++) {
-				if (enabledFeatures[ref] != null) {
-					VersionedIdentifier id = null;
-					try {
-						id = enabledFeatures[ref].getVersionedIdentifier();
-					} catch (CoreException e) {
-						UpdateManagerPlugin.warn(null, e);
-					};
-					if (matches(getVersionedIdentifier(), id, getOptions())) {
-						if (newRef == null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())) {
-							newRef = new FeatureReference(enabledFeatures[ref]);
-							newRef.setOptions(getOptions());
-						}
+		// find the best feature based on match from enabled features
+		for (int ref = 0; ref < enabledFeatures.length; ref++) {
+			if (enabledFeatures[ref] != null) {
+				VersionedIdentifier id = null;
+				try {
+					id = enabledFeatures[ref].getVersionedIdentifier();
+				} catch (CoreException e) {
+					UpdateManagerPlugin.warn(null, e);
+				};
+				if (matches(getVersionedIdentifier(), id, getOptions())) {
+					if (newRef == null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())) {
+						newRef = new FeatureReference(enabledFeatures[ref]);
+						newRef.setOptions(getOptions());
 					}
 				}
 			}
@@ -252,7 +241,8 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 
 		if (newRef != null)
 			return newRef;
-		return this;
+		else 
+			return this;
 	}
 
 	/**
@@ -309,7 +299,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
 		IConfiguredSite configuredSite = site.getConfiguredSite();
 		if (configuredSite == null)
-			return null;
+			return new IFeatureReference[0];
 		return configuredSite.getConfiguredFeatures();
 	}
 	/**
@@ -319,19 +309,16 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 
 		// if perfect match is asked or if the feature is disabled
 		// we return the exact match 		
-		if (perfectMatch || getMatch()==IImport.RULE_PERFECT || isDisabled()){
-			if (featureExact == null) {
-				featureExact = getFeature(this);
-			}
-			return featureExact;			
+		if (perfectMatch || getMatch() == IImport.RULE_PERFECT || isDisabled()) {
+			return getFeature(this);
 		} else {
 			if (feature == null) {
 				// find best match
 				IFeatureReference bestMatch = getBestMatch();
-				feature = getFeature(bestMatch);	
+				feature = getFeature(bestMatch);
 			}
 			return feature;
-		}	
+		}
 	}
 
 	/*
@@ -343,15 +330,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 			// ask the Site for the default type 
 			type = getSite().getDefaultPackagedFeatureType();
 		}
-		IFeature feature = createFeature(type, ref.getURL(), getSite());
-		if (feature != null) {
-			VersionedIdentifier featureID = feature.getVersionedIdentifier();
-			if (versionId != null && !versionId.equals(featureID)) {
-				UpdateManagerPlugin.warn("The versionId of the referenced feature doesn't match the one of the feature reference:" + getURL());
-			}
-			versionId = featureID;
-		}
-		return feature;
+		return getSite().createFeature(versionId, type, ref.getURL());
 	}
 
 }

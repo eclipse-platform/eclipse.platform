@@ -138,13 +138,6 @@ public class ErrorRecoveryLog {
 	}
 
 	/**
-	 * Open the log
-	 */
-	private void internalOpen(String logEntry) throws CoreException {
-
-	}
-
-	/**
 	 * Append the string to the log and flush
 	 */
 	public void append(String logEntry) throws CoreException {

@@ -5,13 +5,10 @@ package org.eclipse.update.core;
  */
 
 import java.io.*;
-import java.net.*;
 import java.net.URL;
 import java.net.URLConnection;
 
 import org.eclipse.update.internal.core.*;
-import org.eclipse.update.internal.core.Policy;
-import org.eclipse.update.internal.core.URLEncoder;
 
 /**
  * Content reference implements a general access wrapper 

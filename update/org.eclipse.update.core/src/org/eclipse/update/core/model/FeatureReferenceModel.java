@@ -51,18 +51,11 @@ public class FeatureReferenceModel extends ModelObject {
 	 * Constructor FeatureReferenceModel.
 	 * @param ref
 	 */
-	public FeatureReferenceModel(IFeatureReference ref) {
-		try {
-			setFeatureIdentifier(ref.getVersionedIdentifier().getIdentifier());
-			setFeatureVersion(ref.getVersionedIdentifier().getVersion().toString());
-		} catch (CoreException e) {
-			UpdateManagerPlugin.warn("", e);
-		}
-		if (ref instanceof FeatureReferenceModel) {
-			FeatureReferenceModel refModel = (FeatureReferenceModel) ref;
-			setType(refModel.getType());
-			setCategoryNames(refModel.getCategoryNames());
-		}
+	public FeatureReferenceModel(FeatureReferenceModel ref) {
+		setFeatureIdentifier(ref.getFeatureIdentifier());
+		setFeatureVersion(ref.getFeatureVersion());
+		setType(ref.getType());
+		setCategoryNames(ref.getCategoryNames());
 	}
 
 	/**

@@ -8,8 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.update.core.*;
-import org.eclipse.update.core.IFeatureReference;
+import org.eclipse.update.core.IncludedFeatureReference;
 import org.eclipse.update.core.VersionedIdentifier;
 
 /**

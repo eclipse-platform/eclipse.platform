@@ -4,7 +4,7 @@ package org.eclipse.update.configuration;
  * All Rights Reserved.
  */
  
-import java.io.File;
+
 
 /**
  * Local system change listener interface.

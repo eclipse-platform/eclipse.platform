@@ -5,16 +5,11 @@ package org.eclipse.update.internal.security;
  */
 
 import java.io.*;
-import java.io.File;import java.io.InputStream;
-import java.net.MalformedURLException;import java.net.URL;import java.security.KeyStore;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.Security;
-import java.util.ArrayList;import java.util.Iterator;import java.util.List;
+import java.util.*;
 
-import org.eclipse.core.runtime.Status;
-
-import org.eclipse.core.runtime.IStatus;
-
-import org.eclipse.update.core.Utilities;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
 /**
  * Class to manage the different KeyStores we should
