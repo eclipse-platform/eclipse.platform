@@ -35,5 +35,5 @@ public void propertyChange(PropertyChangeEvent event) {
 	} else if (propertyName.equals(IAntPreferenceConstants.CONSOLE_FONT)) {		FontData data= AntConsolePreferencePage.getConsoleFontData();		Font temp= AntConsole.ANT_FONT;		AntConsole.ANT_FONT = new Font(Display.getCurrent(), data);		temp.dispose();		updateFont();		} else
 		return;
 }
-/** * Clears the output of all the consoles */private void clearOutput(){	for (Iterator iterator = AntConsole.instances.iterator(); iterator.hasNext();)		((AntConsole) iterator.next()).clearOutput();}/** * Updates teh font in all the consoles */private void updateFont() {	for (Iterator iterator = AntConsole.instances.iterator(); iterator.hasNext();)		((AntConsole) iterator.next()).updateFont();	}
+/** * Clears the output of all the consoles */private void clearOutput(){	for (Iterator iterator = AntConsole.getInstances().iterator(); iterator.hasNext();)		((AntConsole) iterator.next()).clearOutput();}/** * Updates teh font in all the consoles */private void updateFont() {	for (Iterator iterator = AntConsole.getInstances().iterator(); iterator.hasNext();)		((AntConsole) iterator.next()).updateFont();	}
 }

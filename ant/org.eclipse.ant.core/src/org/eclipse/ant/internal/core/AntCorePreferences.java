@@ -15,6 +15,7 @@ public class AntCorePreferences {
 	protected Map defaultObjects;
 	protected Map defaultTypes;
 	protected Map tasks;
+	protected Map types;
 	protected List plugins;
 
 public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes) {
@@ -22,6 +23,7 @@ public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes
 	this.defaultObjects = defaultObjects;
 	this.defaultTypes = defaultTypes;
 	tasks = new HashMap(20);
+	types = new HashMap(20);
 	plugins = new ArrayList(10);
 	if (defaultTasks != null) {
 		for (Iterator iterator = defaultTasks.entrySet().iterator(); iterator.hasNext();) {
@@ -43,7 +45,10 @@ public AntCorePreferences(Map defaultTasks, Map defaultObjects, Map defaultTypes
 	if (defaultTypes != null) {
 		for (Iterator iterator = defaultTypes.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry entry = (Map.Entry) iterator.next();
+			String typeName = (String) entry.getKey();
 			IConfigurationElement element = (IConfigurationElement) entry.getValue();
+			String className = element.getAttribute(AntCorePlugin.CLASS);
+			types.put(typeName, className);
 			plugins.add(element.getDeclaringExtension().getDeclaringPluginDescriptor());
 		}
 	}
@@ -80,6 +85,10 @@ public ClassLoader[] getPluginClassLoaders() {
 
 public Map getTasks() {
 	return tasks;
+}
+
+public Map getTypes() {
+	return types;
 }
 
 }

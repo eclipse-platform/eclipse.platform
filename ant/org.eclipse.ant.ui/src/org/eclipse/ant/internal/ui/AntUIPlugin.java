@@ -26,6 +26,11 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public final class AntUIPlugin extends AbstractUIPlugin {
 
 	/**
+	 * 
+	 */
+	protected IProgressMonitor currentProgressMonitor;
+
+	/**
 	 * Unique identifier constant (value <code>"org.eclipse.ant.ui"</code>)
 	 * for the Ant UI plug-in.
 	 */
@@ -51,15 +56,14 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	 */
 	private IFile[] antHistory = new IFile[MAX_HISTORY_SIZE];
 
-	//
-	protected HackUIBuildListener listener;
-	
-public void setListener(HackUIBuildListener listener) {
-	this.listener = listener;
+
+
+public IProgressMonitor getCurrentProgressMonitor() {
+	return currentProgressMonitor;
 }
 
-public HackUIBuildListener getListener() {
-	return listener;
+public void setCurrentProgressMonitor(IProgressMonitor monitor) {
+	this.currentProgressMonitor = monitor;
 }
 
 public AntUIPlugin(IPluginDescriptor desc) {
