@@ -671,95 +671,14 @@ public class Feature extends FeatureModel implements IFeature {
 		while (nestedVersionedIdentifier.hasNext()) {
 			VersionedIdentifier identifier = (VersionedIdentifier) nestedVersionedIdentifier.next();
 			IncludedFeatureReference options = (IncludedFeatureReference) nestedFeatures.get(identifier);
-			boolean found = false;
-
-			if (options != null && options.getMatch() == IImport.RULE_PERFECT) {
-				IFeatureReference newRef = getPerfectIncludeFeature(site, identifier, options);
-				includedFeatureReferences.add(newRef);
-			} else {
-				// find best match from enabled features.
-				if (enabledFeatures==null) enabledFeatures = retrieveEnabledFeatures(site);
-				includedFeatureReferences.add(getBestMatch(enabledFeatures, identifier, options));
-			}
+			IFeatureReference newRef = getPerfectIncludeFeature(site, identifier, options);
+			includedFeatureReferences.add(newRef);
 		}
 	}
 
-
-	/**
-	 * Method getBestMatch.
-	 * @param enabledFeatures
-	 * @param identifier
-	 * @param options
-	 * @return Object
+	/*
+	 * 
 	 */
-	private Object getBestMatch(IFeatureReference[] enabledFeatures, VersionedIdentifier identifier, IncludedFeatureReference options) throws CoreException {
-		FeatureReference newRef=null;
-		if (enabledFeatures != null) {
-			for (int ref = 0; ref < enabledFeatures.length; ref++) {
-				if (enabledFeatures[ref] != null) {
-					VersionedIdentifier id = null;
-					try {
-						id = enabledFeatures[ref].getVersionedIdentifier();
-					} catch (CoreException e) {
-						UpdateManagerPlugin.warn(null, e);
-					};
-					if (matches(identifier,id,options)) {
-						if (newRef==null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())){
-							newRef = new FeatureReference(enabledFeatures[ref]);
-							newRef.setOptions(options);
-						}
-					}
-				}
-			}
-		}
-		
-		if (newRef!=null) return newRef;
-		return getPerfectIncludeFeature(getSite(),identifier, options);
-	}
-
-	/**
-	 * Method matches.
-	 * @param identifier
-	 * @param id
-	 * @param options
-	 * @return boolean
-	 */
-	private boolean matches(VersionedIdentifier baseIdentifier, VersionedIdentifier id, IncludedFeatureReference options) {
-		if (baseIdentifier==null || id ==null) return false;
-		if (!id.getIdentifier().equals(baseIdentifier.getIdentifier())) return false;
-		int match = IImport.RULE_PERFECT;
-		if (options!=null) {
-			match = options.getMatch();
-		}
-		
-		switch (match) {
-			case IImport.RULE_PERFECT :
-				return id.getVersion().isPerfect(baseIdentifier.getVersion());
-			case IImport.RULE_COMPATIBLE :
-				return id.getVersion().isCompatibleWith(baseIdentifier.getVersion());
-			case IImport.RULE_EQUIVALENT :
-				return id.getVersion().isEquivalentTo(baseIdentifier.getVersion());
-			case IImport.RULE_GREATER_OR_EQUAL :
-				return id.getVersion().isGreaterOrEqualTo(baseIdentifier.getVersion());
-		}		
-		UpdateManagerPlugin.warn("Unknown matching rule:"+match);
-		return false;
-	}
-
-
-
-
-	/**
-	 * Method retrieveEnabledFeatures.
-	 * @param site
-	 */
-	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
-		IConfiguredSite configuredSite = site.getConfiguredSite();
-		if (configuredSite==null) return null;
-		return configuredSite.getConfiguredFeatures();		
-	}
-
-
 	private IFeatureReference getPerfectIncludeFeature(ISite site, VersionedIdentifier identifier, IncludedFeatureReference options) throws CoreException {
 
 		// [20367] no site, cannot initialize nested references
@@ -803,6 +722,8 @@ public class Feature extends FeatureModel implements IFeature {
 		String featureID = Site.DEFAULT_FEATURE_PATH + identifier.toString() + ".jar";
 		URL featureURL = getSite().getSiteContentProvider().getArchiveReference(featureID);
 		newRef.setURL(featureURL);
+		newRef.setFeatureIdentifier(identifier.getIdentifier());
+		newRef.setFeatureVersion(identifier.getVersion().toString());
 		try {
 			newRef.resolve(getSite().getURL(), null); // no need to get the bundle
 			return newRef;

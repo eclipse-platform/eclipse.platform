@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.update.configuration.IConfiguredSite;
 import org.eclipse.update.core.model.FeatureReferenceModel;
 import org.eclipse.update.core.model.SiteModel;
 import org.eclipse.update.internal.core.*;
+
+import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
 /**
  * Convenience implementation of a feature reference.
@@ -61,11 +64,15 @@ public class FeatureReference
 
 		String type = getType();
 		if (feature == null) {
+			
+			// find best match
+			IFeatureReference bestMatch = getBestMatch();
+			
 			if (type == null || type.equals("")) { //$NON-NLS-1$
 				// ask the Site for the default type 
 				type = getSite().getDefaultPackagedFeatureType();
 			}
-			feature = createFeature(type, getURL(), getSite());
+			feature = createFeature(type, bestMatch.getURL(), getSite());
 			if (feature!=null){
 				VersionedIdentifier featureID = feature.getVersionedIdentifier();
 				if (versionId!=null && !versionId.equals(featureID)){
@@ -238,4 +245,84 @@ public class FeatureReference
 		if (getOptions()==null) return IUpdateConstants.SEARCH_ROOT;
 		return getOptions().getSearchLocation();
 	}
+	
+	/**
+	 * Method getBestMatch.
+	 * @param enabledFeatures
+	 * @param identifier
+	 * @param options
+	 * @return Object
+	 */
+	private IFeatureReference getBestMatch() throws CoreException {
+		FeatureReference newRef=null;
+		
+		
+		IFeatureReference[] enabledFeatures = retrieveEnabledFeatures(getSite());
+		
+		// if we need the exact feature, return the feature reference
+		if (getMatch()==IUpdateConstants.RULE_PERFECT)
+			return this;
+		
+		// otherwise , find the best feature to create based on match and enabled features
+		if (enabledFeatures != null) {
+			for (int ref = 0; ref < enabledFeatures.length; ref++) {
+				if (enabledFeatures[ref] != null) {
+					VersionedIdentifier id = null;
+					try {
+						id = enabledFeatures[ref].getVersionedIdentifier();
+					} catch (CoreException e) {
+						UpdateManagerPlugin.warn(null, e);
+					};
+					if (matches(getVersionedIdentifier(),id,getOptions())) {
+						if (newRef==null || id.getVersion().isGreaterThan(newRef.getVersionedIdentifier().getVersion())){
+							newRef = new FeatureReference(enabledFeatures[ref]);
+							newRef.setOptions(getOptions());
+						}
+					}
+				}
+			}
+		}
+		
+		if (newRef!=null) return newRef;
+		return this;
+	}
+	
+		/**
+	 * Method matches.
+	 * @param identifier
+	 * @param id
+	 * @param options
+	 * @return boolean
+	 */
+	private boolean matches(VersionedIdentifier baseIdentifier, VersionedIdentifier id, IncludedFeatureReference options) {
+		if (baseIdentifier==null || id ==null) return false;
+		if (!id.getIdentifier().equals(baseIdentifier.getIdentifier())) return false;
+		int match = IImport.RULE_PERFECT;
+		if (options!=null) {
+			match = options.getMatch();
+		}
+		
+		switch (match) {
+			case IImport.RULE_PERFECT :
+				return id.getVersion().isPerfect(baseIdentifier.getVersion());
+			case IImport.RULE_COMPATIBLE :
+				return id.getVersion().isCompatibleWith(baseIdentifier.getVersion());
+			case IImport.RULE_EQUIVALENT :
+				return id.getVersion().isEquivalentTo(baseIdentifier.getVersion());
+			case IImport.RULE_GREATER_OR_EQUAL :
+				return id.getVersion().isGreaterOrEqualTo(baseIdentifier.getVersion());
+		}		
+		UpdateManagerPlugin.warn("Unknown matching rule:"+match);
+		return false;
+	}
+	
+	/**
+	 * Method retrieveEnabledFeatures.
+	 * @param site
+	 */
+	private IFeatureReference[] retrieveEnabledFeatures(ISite site) {
+		IConfiguredSite configuredSite = site.getConfiguredSite();
+		if (configuredSite==null) return null;
+		return configuredSite.getConfiguredFeatures();		
+	}	
 }
