@@ -11,6 +11,7 @@ import java.util.*;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.eclipse.ant.internal.core.AntClassLoader;
+import org.eclipse.ant.internal.core.AntCorePreferences;
 import org.eclipse.core.runtime.*;
 /**
  * Entry point for running Ant scripts inside Eclipse.
@@ -26,12 +27,9 @@ public AntRunner() {
 }
 
 protected ClassLoader getClassLoader() {	
-	URL[] urls = AntCorePlugin.getPlugin().getPreferences().getURLs();
-	ClassLoader[] pluginLoaders = {
-		Platform.getPlugin("org.eclipse.ant.ui").getClass().getClassLoader(), // TEST: it might not work if plugin does not have a non-default Plugin class
-		Platform.getPlugin("org.eclipse.core.resources").getClass().getClassLoader(),
-		Platform.getPlugin("org.eclipse.ant.core").getClass().getClassLoader(),
-	};
+	AntCorePreferences preferences = AntCorePlugin.getPlugin().getPreferences();
+	URL[] urls = preferences.getURLs();
+	ClassLoader[] pluginLoaders = preferences.getPluginClassLoaders();
 	return new AntClassLoader(urls, pluginLoaders, null);
 }
 
