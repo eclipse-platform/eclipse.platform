@@ -3,7 +3,8 @@
    id="org.eclipse.ant.core"
    name="%pluginName"
    version="2.2.1"
-   provider-name="Object Technology International, Inc.">
+   provider-name="Object Technology International, Inc."
+   class="org.eclipse.ant.core.AntCorePlugin">
 
    <requires>
      <import plugin="org.apache.xerces"/>
@@ -17,8 +18,8 @@
      </library>
    </runtime>
 
+   <extension-point id="tasks" name="%tasksName"/>
    <extension-point id="antObjects" name="%objectsName"/>
-   <extension-point id="antTasks" name="%tasksName"/>
    <extension-point id="antTypes" name="%typesName"/>
 
    <!-- Applications -->

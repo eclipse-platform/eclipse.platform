@@ -19,27 +19,18 @@ public class AntRunner implements IAntCoreConstants {
 
 	protected String buildFileLocation = DEFAULT_BUILD_FILENAME;
 	protected List buildListeners;
+	protected Vector targets;
 
 public AntRunner() {
 	buildListeners = new ArrayList(5);
 }
 
 protected ClassLoader getClassLoader() {	
-	URL[] urls = null;
-	try {
-		urls = new URL[] {
-			new URL("file:c:/eclipse/workspaces/newant/org.apache.xerces/xerces.jar"),
-			new URL("file:c:/eclipse/workspaces/newant/org.apache.ant/ant.jar"),
-			new URL("file:c:/eclipse/workspaces/newant/org.eclipse.ant.core/bin/"),
-			new URL("file:c:/eclipse/workspaces/newant/AntUITasks/bin/"),
-			new URL("file:c:/ibm-jdk/lib/tools.jar")
-		};
-	} catch (MalformedURLException e) {
-		e.printStackTrace();
-	}
+	URL[] urls = AntCorePlugin.getPlugin().getPreferences().getURLs();
 	ClassLoader[] pluginLoaders = {
-		Platform.getPlugin("org.eclipse.ant.ui").getClass().getClassLoader(),
+		Platform.getPlugin("org.eclipse.ant.ui").getClass().getClassLoader(), // TEST: it might not work if plugin does not have a non-default Plugin class
 		Platform.getPlugin("org.eclipse.core.resources").getClass().getClassLoader(),
+		Platform.getPlugin("org.eclipse.ant.core").getClass().getClassLoader(),
 	};
 	return new AntClassLoader(urls, pluginLoaders, null);
 }
@@ -54,6 +45,16 @@ public void setBuildFileLocation(String buildFileLocation) {
 		this.buildFileLocation = DEFAULT_BUILD_FILENAME;
 	else
 		this.buildFileLocation = buildFileLocation;
+}
+
+/**
+ * Sets the executionTargets in the order they need to run.
+ * 
+ */
+public void setExecutionTargets(String[] executionTargets) {
+	targets = new Vector(10);
+	for (int i = 0; i < executionTargets.length; i++)
+		targets.add(executionTargets[i]);
 }
 
 /**
@@ -73,7 +74,7 @@ public void addBuildListener(String className) {
 public void run() throws CoreException {
 	try {
 		ClassLoader loader = getClassLoader();
-		Class classInternalAntRunner = loader.loadClass("org.eclipse.ant.internal.core.InternalAntRunner");
+		Class classInternalAntRunner = loader.loadClass("org.eclipse.ant.internal.core.ant.InternalAntRunner");
 		Object runner = classInternalAntRunner.newInstance();
 		// set build file
 		Method setBuildFileLocation = classInternalAntRunner.getMethod("setBuildFileLocation", new Class[] {String.class});
@@ -81,6 +82,11 @@ public void run() throws CoreException {
 		// add listeners
 		Method addBuildListeners = classInternalAntRunner.getMethod("addBuildListeners", new Class[] {List.class});
 		addBuildListeners.invoke(runner, new Object[] {buildListeners});
+		// set execution targets
+		if (targets != null) {
+			Method setExecutionTargets = classInternalAntRunner.getMethod("setExecutionTargets", new Class[] {Vector.class});
+			setExecutionTargets.invoke(runner, new Object[] {targets});
+		}
 		// run
 		Method run = classInternalAntRunner.getMethod("run", null);
 		run.invoke(runner, null);
