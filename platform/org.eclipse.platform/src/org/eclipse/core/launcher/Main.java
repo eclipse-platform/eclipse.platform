@@ -716,14 +716,6 @@ private String[] processConfiguration(String[] passThruArgs) throws MalformedURL
 			}
 		}
 	}
-	
-	// get default primary feature, if none was specified
-	if (feature == null)
-		feature = getFeatureIdentifier();
-		
-	// get application for selected feature, if none was specified
-	if (application == null && feature != null)
-		application = getApplicationIdentifier();
 		
 	// reconstruct command line arguments for configuration elements
 	// (-boot and -application are not passed to BootLoader)
@@ -735,11 +727,6 @@ private String[] processConfiguration(String[] passThruArgs) throws MalformedURL
 	if (configURL != null) {
 		args.add(CONFIGURATION);
 		args.add(decode(configURL.toExternalForm()));
-	}
-	
-	if (feature != null) {
-		args.add(FEATURE);
-		args.add(feature);
 	}
 	
 	if (cmdFirstUse) {
@@ -1132,17 +1119,6 @@ private String[] getFeatureRoot() {
 	if (result.size()>0)
 		return (String[])result.toArray(new String[0]);
 	else 
-		return null;
-}
-
-/*
- * Return the application id (specified or defaulted)
- */
-private String getApplicationIdentifier() {
-		
-	if (application != null) // application was specified
-		return application;
-	else // let BootLoader pick the default if we failed
 		return null;
 }
 
