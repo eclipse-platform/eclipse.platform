@@ -8,7 +8,7 @@ package org.eclipse.update.ui.forms.internal.engine;
  * @version 	1.0
  * @author
  */
-public class Locator { 
+public class Locator {
 	public int indent;
 	public int x, y;
 	public int width, height;
