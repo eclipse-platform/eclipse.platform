@@ -592,13 +592,33 @@ public class Main {
 		// TODO a little dangerous here.  Basically we have to assume that it is a file URL.
 		if (install.getProtocol().equals("file")) { //$NON-NLS-1$
 			File installDir = new File(install.getFile());
-			if (installDir.canWrite())
+			if (canWrite(installDir))
 				return installDir.getAbsolutePath() + File.separator + CONFIG_DIR;
 		}
 		// We can't write in the eclipse install dir so try for some place in the user's home dir
 		return computeDefaultUserAreaLocation(CONFIG_DIR);
 	}
 
+	private static boolean canWrite(File installDir) {
+		if (installDir.canWrite() == false)
+			return false;
+
+		if (!installDir.isDirectory())
+			return false;
+
+		File fileTest = null;
+		try {
+			fileTest = File.createTempFile("writtableArea", null, installDir); //$NON-NLS-1$
+		} catch (IOException e) {
+			//If an exception occured while trying to create the file, it means that it is not writtable
+			return false;
+		} finally {
+			if (fileTest != null)
+				fileTest.delete();
+		}
+		return true;
+	}
+	
 	/**
 	 * Returns a files system path for an area in the user.home region related to the
 	 * current product.  The given appendage is added to this base location
