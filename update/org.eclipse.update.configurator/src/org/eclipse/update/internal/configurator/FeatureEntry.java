@@ -157,7 +157,7 @@ public class FeatureEntry
 			featureElement.setAttribute(CFG_FEATURE_ENTRY_VERSION, version); 
 		if (pluginVersion != null && !pluginVersion.equals(version) && pluginVersion.length() > 0)
 			featureElement.setAttribute(CFG_FEATURE_ENTRY_PLUGIN_VERSION, pluginVersion); 
-		if (pluginIdentifier != null && pluginIdentifier.equals(id) && pluginIdentifier.length() > 0)
+		if (pluginIdentifier != null && !pluginIdentifier.equals(id) && pluginIdentifier.length() > 0)
 			featureElement.setAttribute(CFG_FEATURE_ENTRY_PLUGIN_IDENTIFIER, pluginIdentifier);
 		if (application != null)
 			featureElement.setAttribute(CFG_FEATURE_ENTRY_APPLICATION, application);
