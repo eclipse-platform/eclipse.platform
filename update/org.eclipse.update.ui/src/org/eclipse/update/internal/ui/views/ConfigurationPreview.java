@@ -139,8 +139,8 @@ public class ConfigurationPreview implements IUpdateModelChangedListener {
 					if (url == null)
 						return text;
 					else {
-						String link = " <a href=\"urlHandler\" arg=\"" + url //$NON-NLS-1$
-								+ "\">More info...</a>"; //$NON-NLS-1$ //$NON-NLS-2$
+						String link = " <a href=\"" + url //$NON-NLS-1$
+						+ "\">More info...</a>"; //$NON-NLS-1$ 
 						String fullText = "<form><p>" + text + link //$NON-NLS-1$
 								+ "</p></form>"; //$NON-NLS-1$ //$NON-NLS-2$
 						return fullText;
