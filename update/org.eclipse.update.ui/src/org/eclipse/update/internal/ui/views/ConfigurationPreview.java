@@ -140,7 +140,7 @@ public class ConfigurationPreview implements IUpdateModelChangedListener {
 						return text;
 					else {
 						String link = " <a href=\"" + url //$NON-NLS-1$
-						+ "\">More info...</a>"; //$NON-NLS-1$ 
+						+ "\">"+UpdateUI.getString("MoreInfoGenerator.moreInfo")+"</a>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						String fullText = "<form><p>" + text + link //$NON-NLS-1$
 								+ "</p></form>"; //$NON-NLS-1$ //$NON-NLS-2$
 						return fullText;
