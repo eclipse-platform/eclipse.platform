@@ -5,29 +5,15 @@ package org.eclipse.update.examples.buildzip;
  * All Rights Reserved.
  */ 
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.*;
 import java.net.URL;
 import java.util.jar.JarEntry;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.*;
-import org.eclipse.update.core.ContentReference;
-import org.eclipse.update.core.FeatureContentProvider;
-import org.eclipse.update.core.IFeatureContentProvider;
-import org.eclipse.update.core.INonPluginEntry;
-import org.eclipse.update.core.IPluginEntry;
-import org.eclipse.update.core.IVerifier;
-import org.eclipse.update.core.InstallMonitor;
-import org.eclipse.update.core.JarContentReference;
 import org.eclipse.update.core.JarContentReference.ContentSelector;
 import org.eclipse.update.core.model.FeatureModel;
 import org.eclipse.update.core.model.InstallAbortedException;
-import org.eclipse.update.internal.core.UpdateManagerUtils;
 
 /**
  * An example feature content provider. It handles features packaged as
@@ -164,7 +150,7 @@ public class BuildZipFeatureContentProvider extends FeatureContentProvider imple
 		ContentReference[] refs = baseReference.unpack(tmpDir, selector, monitor);
 		
 		// write out feature manifest (feature.xml);
-		File manifest = Utilities.createLocalFile(tmpDir, null/*key*/,"feature.xml");
+		File manifest = Utilities.createLocalFile(tmpDir,"feature.xml");
 		ContentReference manifestReference = new ContentReference("feature.xml", manifest);
 		DefaultModelWriter w = new DefaultModelWriter(feature);
 		FileOutputStream os = null;

@@ -32,7 +32,7 @@ public class SiteModel extends ModelObject {
 	categories;
 	private String locationURLString;
 	private URL locationURL;
-	public ConfiguredSiteModel configuredSiteModel;
+	private ConfiguredSiteModel configuredSiteModel;
 
 	/**
 	 * Creates an uninitialized site model object.

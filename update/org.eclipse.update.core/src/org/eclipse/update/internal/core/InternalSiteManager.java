@@ -6,7 +6,6 @@ package org.eclipse.update.internal.core;
  */
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;

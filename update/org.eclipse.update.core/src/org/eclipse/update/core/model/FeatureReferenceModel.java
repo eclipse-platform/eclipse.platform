@@ -8,10 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.IncludedFeatureReference;
-import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 
 /**
