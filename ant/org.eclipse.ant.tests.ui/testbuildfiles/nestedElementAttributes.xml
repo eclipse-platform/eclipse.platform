@@ -1,8 +1,0 @@
-<project default="go">
-	<taskdef name="nestedTest" classname="org.eclipse.ant.tests.ui.support.tasks.NestElementTask" />
-	<target name="go">
-		<nestedTest>
-			<nestedelement works="" />
-		</nestedTest>
-	</target>
-</project>

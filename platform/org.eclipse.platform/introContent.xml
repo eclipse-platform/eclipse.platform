@@ -167,10 +167,15 @@
     <group id="page-content">
       <text style-id="page-title" id="page-title">WHAT'S NEW</text>
       <anchor id="beginAnchor"/>
-      <group id="news-links">
-        <link label="New and noteworthy" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.platform.doc.user/whatsNew/platform_whatsnew.html" id="new-and-noteworthy">
+      <group id="noteworthy-links" label="New and Noteworthy">
+        <link label="Eclipse Platform" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.platform.doc.user/whatsNew/platform_whatsnew.html" id="platform-noteworthy" style-id="noteworthy-link">
           <text>Find out about the major new features in this release</text>
         </link>
+        <anchor id="jdtAnchor"/>
+        <anchor id="pdeAnchor"/>
+        <anchor id="generalAnchor"/>
+      </group>
+      <group id="news-links" label="General">
         <link label="Migration from the previous release" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.platform.doc.isv/porting/eclipse_3_0_porting_guide.html" id="migration">
           <text>Learn what you need to do to make your old code work in Eclipse 3.0</text>
         </link>
