@@ -58,6 +58,7 @@ public class TargetPage extends BannerPage {
 	private Label availableSpaceLabel;
 	private PendingChange pendingChange;
 	private IConfiguredSite defaultTargetSite;
+	private IConfiguredSite affinitySite;
 
 	class TableContentProvider
 		extends DefaultContentProvider
@@ -120,12 +121,20 @@ public class TargetPage extends BannerPage {
 		this.pendingChange = pendingChange;
 		siteImage = UpdateUIPluginImages.DESC_LSITE_OBJ.createImage();
 		configListener = new ConfigListener();
-		defaultTargetSite = getDefaultTargetSite(config, pendingChange);
+		defaultTargetSite = getDefaultTargetSite(config, pendingChange, false);
+		affinitySite = getAffinitySite(config, pendingChange.getFeature());
 	}
 
 	public static IConfiguredSite getDefaultTargetSite(
 		IInstallConfiguration config,
 		PendingChange pendingChange) {
+		return getDefaultTargetSite(config, pendingChange, true);
+	}
+
+	private static IConfiguredSite getDefaultTargetSite(
+		IInstallConfiguration config,
+		PendingChange pendingChange,
+		boolean checkAffinityFeature) {
 		IFeature oldFeature = pendingChange.getOldFeature();
 		IFeature newFeature = pendingChange.getFeature();
 		if (oldFeature != null) {
@@ -147,6 +156,15 @@ public class TargetPage extends BannerPage {
 			return sameSite;
 		}
 		
+		if (checkAffinityFeature) {
+			return getAffinitySite(config, newFeature);
+		}
+		return null;
+	}
+	
+	private static IConfiguredSite getAffinitySite(
+		IInstallConfiguration config,
+		IFeature newFeature) {
 		// check if the affinity feature is installed
 		String affinityID = newFeature.getAffinityFeature();
 		if (affinityID!=null){
@@ -154,7 +172,6 @@ public class TargetPage extends BannerPage {
 			if (affinitySite!=null)
 				return affinitySite;
 		}
-		
 		return null;
 	}
 
@@ -217,6 +234,7 @@ public class TargetPage extends BannerPage {
 				addTargetLocation();
 			}
 		});
+		button.setEnabled(affinitySite==null);
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_CENTER);
 		button.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(button);
@@ -282,6 +300,11 @@ public class TargetPage extends BannerPage {
 	}
 
 	private boolean getSiteVisibility(IConfiguredSite site) {
+		// If affinity site is known, only it should be shown
+		if (affinitySite!=null) {
+			return site.equals(affinitySite);
+		}
+			
 		// If this is the default target site, let it show
 		if (site.equals(defaultTargetSite))
 			return true;
