@@ -19,7 +19,7 @@ public class ImportModel extends ModelObject {
 	private String id;
 	private String version;
 	private String matchingRuleName;
-	private boolean isFeatureImport;
+	private boolean featureImport;
 
 	/**
 	 * Creates a uninitialized plug-in dependency model object.
@@ -148,15 +148,15 @@ public class ImportModel extends ModelObject {
 	 * @return boolean
 	 */
 	public boolean isFeatureImport() {
-		return isFeatureImport;
+		return featureImport;
 	}
 
 	/**
-	 * Sets the isFeatureImport.
-	 * @param isFeatureImport The isFeatureImport to set
+	 * Sets the featureImport.
+	 * @param featureImport The featureImport to set
 	 */
-	public void isFeatureImport(boolean isFeatureImport) {
-		this.isFeatureImport = isFeatureImport;
+	public void setFeatureImport(boolean featureImport) {
+		this.featureImport = featureImport;
 	}
 
 }
