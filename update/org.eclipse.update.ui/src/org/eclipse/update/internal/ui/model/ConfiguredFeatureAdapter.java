@@ -53,7 +53,7 @@ public class ConfiguredFeatureAdapter
 					feature = fref.getFeature();
 					childConfigured = adapter.getConfigurationSite().isConfigured(feature);
 				} catch (CoreException e) {
-					feature = new MissingFeature(fref);
+					feature = new MissingFeature(getFeature(), fref);
 					childConfigured = false;
 				}
 

@@ -528,17 +528,24 @@ public class DetailsForm extends PropertyWebForm {
 	}
 
 	private boolean getDoButtonVisibility() {
-		if (currentFeature instanceof MissingFeature)
-			return false;
+		if (currentFeature instanceof MissingFeature) {
+			MissingFeature mf = (MissingFeature) currentFeature;
+			if (mf.isOptional() && mf.getParentOriginatingSiteURL() != null)
+				return true;
+			else
+				return false;
+		}
 
 		if (currentAdapter == null)
 			return false;
-			
+
 		boolean localContext = currentAdapter instanceof IConfiguredSiteContext;
 
 		if (currentAdapter.isIncluded()) {
-			if (!localContext) return false;
-			if (!currentAdapter.isOptional()) return false;
+			if (!localContext)
+				return false;
+			if (!currentAdapter.isOptional())
+				return false;
 		}
 
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
@@ -552,8 +559,7 @@ public class DetailsForm extends PropertyWebForm {
 				return false;
 			else
 				return true;
-		}
-		else {
+		} else {
 			// found on a remote site
 			// Cannot install feature without a license
 			if (!UpdateModel.hasLicense(currentFeature))
@@ -593,32 +599,30 @@ public class DetailsForm extends PropertyWebForm {
 		}
 		return false;
 	}
-	
+
 	private boolean isOptionalFeatureInstall() {
 		return hasMissingOptionalFeatures(installedFeatures[0]);
 	}
-	
+
 	private boolean hasMissingOptionalFeatures(IFeature feature) {
 		try {
 			IFeatureReference refs[] = feature.getIncludedFeatureReferences();
-			for (int i=0; i<refs.length; i++) {
+			for (int i = 0; i < refs.length; i++) {
 				IFeatureReference ref = refs[i];
 
 				try {
 					IFeature child = ref.getFeature();
-					
+
 					// not missing - try children
 					if (hasMissingOptionalFeatures(child))
-							return true;
-				}
-				catch (CoreException e) {
+						return true;
+				} catch (CoreException e) {
 					// missing - if optional, return true
 					if (ref.isOptional())
 						return true;
 				}
 			}
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			// problem with the feature itself
 		}
 		return false;
@@ -659,6 +663,14 @@ public class DetailsForm extends PropertyWebForm {
 	}
 
 	private void updateButtonText(boolean update) {
+		if (currentFeature instanceof MissingFeature) {
+			MissingFeature mf = (MissingFeature) currentFeature;
+			if (mf.isOptional() && mf.getParentOriginatingSiteURL() != null) {
+				doButton.setText(
+					UpdateUIPlugin.getResourceString(KEY_DO_INSTALL));
+				return;
+			}
+		}
 		if (currentAdapter instanceof IConfiguredSiteContext) {
 			boolean configured = isConfigured();
 			if (configured)
@@ -684,8 +696,7 @@ public class DetailsForm extends PropertyWebForm {
 			ImageDescriptor id = ImageDescriptor.createFromURL(imageURL);
 			try {
 				image = id.createImage();
-			}
-			catch (SWTException e) {
+			} catch (SWTException e) {
 				image = null;
 			}
 			if (image != null)
@@ -817,36 +828,93 @@ public class DetailsForm extends PropertyWebForm {
 				if (testDependencies(currentFeature) == false)
 					return;
 			}
-			final PendingChange job = createPendingChange(mode);
-			IStatus validationStatus =
-				ActivityConstraints.validatePendingChange(job);
-			if (validationStatus != null) {
-				ErrorDialog.openError(
-					UpdateUIPlugin.getActiveWorkbenchShell(),
-					null,
-					null,
-					validationStatus);
-				return;
-			}
-			BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
-				public void run() {
-					InstallWizard wizard = new InstallWizard(job);
-					WizardDialog dialog =
-						new InstallWizardDialog(
-							UpdateUIPlugin.getActiveWorkbenchShell(),
-							wizard);
-					dialog.create();
-					dialog.getShell().setSize(600, 500);
-					dialog.open();
-					if (wizard.isSuccessfulInstall())
-						UpdateUIPlugin.informRestartNeeded();
-				}
-			});
+			PendingChange job = createPendingChange(mode);
+			executeJob(job);
 		}
+	}
+
+	private void executeOptionalInstall(MissingFeature mf) {
+		// Locate remote site, find the optional feature
+		// and install it
+		final VersionedIdentifier vid = mf.getVersionedIdentifier();
+		final URL siteURL = mf.getParentOriginatingSiteURL();
+		final IFeature [] result = new IFeature[1];
+		final CoreException [] exception = new CoreException [1];
+		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+			public void run() {
+				try {
+					ISite site = SiteManager.getSite(siteURL);
+					IFeatureReference[] refs = site.getFeatureReferences();
+					for (int i = 0; i < refs.length; i++) {
+						IFeatureReference ref = refs[i];
+						VersionedIdentifier refVid =
+							ref.getVersionedIdentifier();
+						if (refVid.equals(vid)) {
+							// Bingo - take this one
+							result[0] = ref.getFeature();
+							break;
+						}
+					}
+				} catch (CoreException e) {
+					exception[0] = e;
+				}
+			}
+		});
+		IStatus status = null;
+		if (exception[0]!=null) {
+			// Show error dialog
+			status = exception[0].getStatus();
+		}
+		else if (result[0]!=null) {
+			PendingChange job = new PendingChange(result[0], PendingChange.INSTALL);
+			executeJob(job);
+		}
+		else {
+			String message = "Feature does not exist on "+siteURL;
+			status = new Status(IStatus.ERROR, UpdateUIPlugin.PLUGIN_ID, IStatus.OK, message, null);
+		}
+		if (status!=null) {
+			// Show error dialog
+			ErrorDialog.openError(getControl().getShell(), "Optional Install", null, status);
+		}
+	}
+
+	private void executeJob(final PendingChange job) {
+		IStatus validationStatus =
+			ActivityConstraints.validatePendingChange(job);
+		if (validationStatus != null) {
+			ErrorDialog.openError(
+				UpdateUIPlugin.getActiveWorkbenchShell(),
+				null,
+				null,
+				validationStatus);
+			return;
+		}
+		BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+			public void run() {
+				InstallWizard wizard = new InstallWizard(job);
+				WizardDialog dialog =
+					new InstallWizardDialog(
+						UpdateUIPlugin.getActiveWorkbenchShell(),
+						wizard);
+				dialog.create();
+				dialog.getShell().setSize(600, 500);
+				dialog.open();
+				if (wizard.isSuccessfulInstall())
+					UpdateUIPlugin.informRestartNeeded();
+			}
+		});
 	}
 
 	private void doButtonSelected() {
 		if (currentFeature != null) {
+			if (currentFeature instanceof MissingFeature) {
+				MissingFeature mf = (MissingFeature) currentFeature;
+				if (mf.isOptional()
+					&& mf.getParentOriginatingSiteURL() != null) {
+					executeOptionalInstall(mf);
+				}
+			}
 			int mode;
 			if (currentAdapter instanceof IConfiguredSiteContext) {
 				boolean configured = isConfigured();
@@ -867,8 +935,7 @@ public class DetailsForm extends PropertyWebForm {
 		//       matching rules that can be specified on the dependencies.
 		if (true)
 			return true;
-		
-		
+
 		IImport[] imports = feature.getImports();
 		if (imports.length == 0)
 			return true;
@@ -971,7 +1038,10 @@ public class DetailsForm extends PropertyWebForm {
 
 	private PendingChange createPendingChange(int type) {
 		if (type == PendingChange.INSTALL && installedFeatures.length > 0) {
-			return new PendingChange(installedFeatures[0], currentFeature, alreadyInstalled);
+			return new PendingChange(
+				installedFeatures[0],
+				currentFeature,
+				alreadyInstalled);
 		} else {
 			return new PendingChange(currentFeature, type);
 		}

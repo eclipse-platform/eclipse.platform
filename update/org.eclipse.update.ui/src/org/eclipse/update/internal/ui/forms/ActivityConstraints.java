@@ -37,6 +37,10 @@ public class ActivityConstraints {
 		"ActivityConstraints.prereqCompatible";
 	private static final String KEY_PREREQ_GREATER =
 		"ActivityConstraints.prereqGreaterOrEqual";
+	private static final String KEY_PATCH_REGRESSION = 
+		"ActivityConstraints.patchRegression";
+	private static final String KEY_PATCH_MISSING_TARGET = 
+		"ActivityConstraints.patchMissingTarget";
 	private static final String KEY_OPTIONAL_CHILD =
 		"ActivityConstraints.optionalChild";
 	private static final String KEY_CYCLE = "ActivityConstraints.cycle";
@@ -390,7 +394,7 @@ public class ActivityConstraints {
 				null,
 				true /* tolerate missing children */
 		);
-		if (remove!=null) {
+		if (remove != null) {
 			// Patches to features are removed together with
 			// those features. Include them in the list.
 			contributePatchesFor(remove, features, removeTree);
@@ -563,6 +567,7 @@ public class ActivityConstraints {
 			VersionedIdentifier vid = ifeature.getVersionedIdentifier();
 			String id = vid.getIdentifier();
 			PluginVersionIdentifier version = vid.getVersion();
+			boolean found = false;
 			for (int j = 0; j < features.size(); j++) {
 				IFeature candidate = (IFeature) features.get(j);
 				VersionedIdentifier cvid = candidate.getVersionedIdentifier();
@@ -572,18 +577,22 @@ public class ActivityConstraints {
 					// The same identifier - this one will
 					// be unconfigured. Check if it is lower,
 					// otherwise flag.
+					found = true;
 					if (!version.isGreaterThan(cversion)) {
 						// Don't allow this.
-						String msg =
-							"Included feature \""
-								+ ifeature.getLabel()
-								+ "("
-								+ version.toString()
-								+ ")\" is older than the currently active feature.";
+						String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_REGRESSION,
+									new String[] { ifeature.getLabel(), version.toString() });
 						status.add(createStatus(feature, msg));
 
 					}
 				}
+			}
+			if (!found) {
+				// All the features carried in a patch must
+				// already be present.
+				String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
+							new String[] { ifeature.getLabel(), version.toString() });
+				status.add(createStatus(feature, msg));
 			}
 			checkUnique(ifeature, features, status);
 		}

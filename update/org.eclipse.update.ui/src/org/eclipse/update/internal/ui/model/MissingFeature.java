@@ -6,6 +6,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureContentConsumer;
 import org.eclipse.update.core.IFeatureContentProvider;
@@ -17,6 +18,7 @@ import org.eclipse.update.core.IPluginEntry;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.IVerificationListener;
+import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.core.model.InstallAbortedException;
 import org.eclipse.update.internal.ui.UpdateUIPlugin;
@@ -26,6 +28,7 @@ public class MissingFeature implements IFeature {
 	private URL url;
 	private ISite site;
 	private IFeatureReference reference;
+	private IFeature parent;
 	private IURLEntry desc;
 	private VersionedIdentifier id = new VersionedIdentifier(UpdateUIPlugin.getResourceString("MissingFeature.id"), "0.0.0"); //$NON-NLS-1$ //$NON-NLS-2$
 	public MissingFeature(ISite site, URL url) {
@@ -44,8 +47,13 @@ public class MissingFeature implements IFeature {
 		};
 	}
 	public MissingFeature(IFeatureReference ref) {
+		this(null, ref);
+	}
+	
+	public MissingFeature(IFeature parent, IFeatureReference ref) {
 		this(ref.getSite(), ref.getURL());
 		this.reference = ref;
+		this.parent = parent;
 		
 		if (ref.isOptional()) {
 			desc = new IURLEntry() {
@@ -65,11 +73,33 @@ public class MissingFeature implements IFeature {
 	public boolean isOptional() {
 		return reference!=null && reference.isOptional();
 	}
+	
+	public IFeature getParent() {
+		return parent;
+	}
+	
+	public URL getParentOriginatingSiteURL() {
+		if (parent==null) return null;
+		try {
+			ILocalSite localSite = SiteManager.getLocalSite();
+			return localSite.getOriginatingSiteURL(parent);
+		}
+		catch (CoreException e) {
+			return null;
+		}
+	}
 
 	/*
 	 * @see IFeature#getIdentifier()
 	 */
 	public VersionedIdentifier getVersionedIdentifier() {
+		if (reference!=null) {
+			try {
+				return reference.getVersionedIdentifier();
+			}
+			catch (CoreException e) {
+			}
+		}
 		return id;
 	}
 
