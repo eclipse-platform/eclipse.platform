@@ -90,7 +90,7 @@ public class AutomaticUpdatesJob extends Job {
 				+ " results."); //$NON-NLS-1$
 			}
 			if (updates.size() > 0) {
-				boolean download = UpdateCore.getPlugin().getPluginPreferences().getBoolean(UpdateScheduler.P_DOWNLOAD);
+				boolean download = UpdateScheduler.getDefault().getPluginPreferences().getBoolean(UpdateScheduler.P_DOWNLOAD);
 				// silently download if download enabled 
 				if (download)
 				{
