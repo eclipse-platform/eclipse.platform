@@ -26,10 +26,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -53,27 +53,25 @@ public class AntPropertiesTab extends AbstractLaunchConfigurationTab implements 
 		setControl(top);
 		WorkbenchHelp.setHelp(getControl(), IAntUIHelpContextIds.ANT_PROPERTIES_TAB);
 
-		GridLayout layout = new GridLayout();
-		layout.numColumns= 2;
-		top.setLayout(layout);
+		top.setLayout(new GridLayout());
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		top.setLayoutData(gridData);
 		
 		createChangeProperties(top);
-		antPropertiesBlock.createControl(top, AntLaunchConfigurationMessages.getString("AntPropertiesTab.&Properties__6"), AntLaunchConfigurationMessages.getString("AntPropertiesTab.Property_f&iles__7")); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		Composite propertiesBlockComposite= new Composite(top, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns= 2;
+		propertiesBlockComposite.setLayout(layout);
+		propertiesBlockComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		antPropertiesBlock.createControl(propertiesBlockComposite, AntLaunchConfigurationMessages.getString("AntPropertiesTab.&Properties__6"), AntLaunchConfigurationMessages.getString("AntPropertiesTab.Property_f&iles__7")); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		Dialog.applyDialogFont(top);
 	}
 	
 	private void createChangeProperties(Composite top) {
-		Font font= top.getFont();
-		Composite changeProperties= new Composite(top, SWT.NONE);
-		changeProperties.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
-		GridLayout layout= new GridLayout();
-		layout.marginHeight= 0;
-		layout.marginWidth= 0;
-		changeProperties.setLayout(layout);
-		changeProperties.setFont(font);
-		
-		useDefaultButton= createCheckButton(changeProperties, AntLaunchConfigurationMessages.getString("AntPropertiesTab.6")); //$NON-NLS-1$
+		useDefaultButton= createCheckButton(top, AntLaunchConfigurationMessages.getString("AntPropertiesTab.6")); //$NON-NLS-1$
 		useDefaultButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				toggleUseDefaultProperties();
