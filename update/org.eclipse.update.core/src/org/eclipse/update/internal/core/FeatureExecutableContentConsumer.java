@@ -87,7 +87,7 @@ public class FeatureExecutableContentConsumer extends FeatureContentConsumer {
 		for (int i = 0; i < children.length; i++) {
 			children[i].close();
 		}
-					
+							
 		return ref;
 	}
 

@@ -648,7 +648,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * Otherwise attempt to instanciate it using the same type as this feature and
 	 * using the default location on the site
 	 */
-	private void initializeIncludedReferences() throws CoreException {
+	public void initializeIncludedReferences() throws CoreException {
 		includedFeatureReferences = new ArrayList();
 
 		// key = versionedIdentifer, value = IncludeFeatureOptions

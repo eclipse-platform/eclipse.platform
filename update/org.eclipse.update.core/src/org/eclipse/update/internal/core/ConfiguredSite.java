@@ -305,10 +305,12 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		// bottom up approach, same configuredSite
 		//IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 		IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
-			if (optionalFeatures!=null){
-				childrenRef = optionalChildrenToInstall(childrenRef,optionalFeatures);
-			}	
-				
+		if (optionalFeatures!=null){
+// reinitialize local children as new optional features may have been installed
+//((Feature)feature).initializeIncludedReferences();
+			childrenRef = childrenToConfigure(childrenRef,optionalFeatures);
+		}	
+
 		for (int i = 0; i < childrenRef.length; i++) {
 			try {
 				IFeature child = childrenRef[i].getFeature();
@@ -331,41 +333,40 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 		}
 	}
 
-	/**
-	 * Return the optional children to install
-	 * The optional features to install may not all be direct children 
-	 * of the feature.
+	/*
+	 * Return the optional children to configure
 	 * 
 	 * @param children all the nested features
 	 * @param optionalfeatures optional features to install
 	 * @return IFeatureReference[]
 	 */
-	private IFeatureReference[] optionalChildrenToInstall(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
-		if (optionalfeatures.length==0) return optionalfeatures;
+	private IFeatureReference[] childrenToConfigure(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
 		
-		List optionalChildrenToInstall = new ArrayList();
+		List childrenToInstall = new ArrayList();
 		for (int i = 0; i < children.length; i++) {
-			IFeatureReference optionalFeature = children[i];
-			if (!optionalFeature.isOptional()){
-				optionalChildrenToInstall.add(optionalFeature);
+			IFeatureReference optionalFeatureToConfigure = children[i];
+			if (!optionalFeatureToConfigure.isOptional()){
+				childrenToInstall.add(optionalFeatureToConfigure);
 			} else {
 				for (int j = 0; j < optionalfeatures.length; j++) {
 					// must compare feature as optionalFeatures are from the install site
 					// where children are on the local site
 					try {
 						IFeature installedChildren = optionalfeatures[j].getFeature();
-						if (installedChildren.equals(optionalFeature.getFeature())){
-							optionalChildrenToInstall.add(optionalFeature);
+						if (installedChildren.equals(optionalFeatureToConfigure.getFeature())){
+							childrenToInstall.add(optionalFeatureToConfigure);
 							break;
 						}
-					} catch (CoreException e){}
+					} catch (CoreException e){
+						UpdateManagerPlugin.warn("",e);
+					}
 				}
 			}
 		}
 		
-		IFeatureReference[] result = new IFeatureReference[optionalChildrenToInstall.size()];
-		if (optionalChildrenToInstall.size()>0){
-			optionalChildrenToInstall.toArray(result);
+		IFeatureReference[] result = new IFeatureReference[childrenToInstall.size()];
+		if (childrenToInstall.size()>0){
+			childrenToInstall.toArray(result);
 		}
 		
 		return result;
