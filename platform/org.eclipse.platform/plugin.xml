@@ -11,9 +11,7 @@
    </runtime>
    <requires>
       <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="org.eclipse.ui"/>
    </requires>
-
 
 <!--
    <extension
@@ -37,146 +35,112 @@
                title="%intro.title">
             <implementation
                   style="css/shared_swt.properties"
-                  os="win32"
-                  class="org.eclipse.ui.intro.internal.presentations.FormIntroPartImplementation">
+                  class="org.eclipse.ui.intro.internal.presentations.FormIntroPartImplementation"
+                  os="win32">
             </implementation>
          </presentation>
          <page
                alt-style="css/root_swt.properties"
                id="root">
             <link
-                  url="http://org.eclipse.ui.intro/showPage?id=overview"
                   label="%root.overview.label"
+                  url="http://org.eclipse.ui.intro/showPage?id=overview"
                   id="overview">
-               <text>
-                  %root.overview.desc
-               </text>
+               <text>%root.overview.desc</text>
             </link>
             <link
-                  url="http://org.eclipse.ui.intro/showPage?id=tutorials"
                   label="%root.tutorials.label"
+                  url="http://org.eclipse.ui.intro/showPage?id=tutorials"
                   id="tutorials">
-               <text>
-                  %root.tutorials.desc
-               </text>
+               <text>%root.tutorials.desc</text>
             </link>
             <link
-                  url="http://org.eclipse.ui.intro/showPage?id=samples"
                   label="%root.samples.label"
+                  url="http://org.eclipse.ui.intro/showPage?id=samples"
                   id="samples">
-               <text>
-                  %root.samples.label
-               </text>
+               <text>%root.samples.label</text>
             </link>
             <link
-                  url="http://org.eclipse.ui.intro/showPage?id=news"
                   label="%root.news.label"
+                  url="http://org.eclipse.ui.intro/showPage?id=news"
                   id="news">
-               <text>
-                  %root.news.desc
-               </text>
+               <text>%root.news.desc</text>
             </link>
             <link
-                  label="%root.gotoworkbench.label"
                   url="http://org.eclipse.ui.intro/setStandbyMode?standby=true"
+                  label="%root.gotoworkbench.label"
                   id="workbench">
-               <text>
-                  %root.gotoworkbench.desc
-               </text>
+               <text>%root.gotoworkbench.desc</text>
             </link>
          </page>
          <page
-               alt-style="css/overview/swt.properties"
                style=""
+               alt-style="css/overview/swt.properties"
                title="%overview.title"
                id="overview">
-            <text>
-               %overview.text
-            </text>
+            <text>%overview.text</text>
             <link
-                  url="about:blank;"
                   label="%overview.basics.label"
+                  url="about:blank;"
                   id="basics">
-               <text>
-                  %overview.basics.text
-               </text>
+               <text>%overview.basics.text</text>
             </link>
             <link
-                  url="about:blank;"
                   label="%overview.team.label"
+                  url="about:blank;"
                   id="team">
-               <text>
-                  %overview.team.text
-               </text>
+               <text>%overview.team.text</text>
             </link>
          </page>
          <page
                alt-style="css/tutorials/swt.properties"
                title="%tutorials.title"
                id="tutorials">
-            <text>
-               %tutorials.text
-            </text>
+            <text>%tutorials.text</text>
          </page>
          <page
                alt-style="css/samples/swt.properties"
                title="%samples.title"
                id="samples">
-            <text>
-               %samples.text
-            </text>
+            <text>%samples.text</text>
             <div
                   label="%samples.swt.label"
                   id="swt">
-               <text>
-                  %samples.swt.text
-               </text>
+               <text>%samples.swt.text</text>
                <link
-                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.swt.examples"
                      label="%samples.swt.standalone.label"
+                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.swt.examples"
                      id="standalone">
-                  <text>
-                     %samples.swt.standalone.text
-                  </text>
+                  <text>%samples.swt.standalone.text</text>
                </link>
                <link
-                     url="about:blank;"
                      label="%samples.swt.views.label"
+                     url="about:blank;"
                      id="views">
-                  <text>
-                     %samples.swt.views.text
-                  </text>
+                  <text>%samples.swt.views.text</text>
                </link>
             </div>
             <div
                   label="%samples.workbench.label"
                   id="workbench">
-               <text>
-                  %samples.workbench.text
-               </text>
+               <text>%samples.workbench.text</text>
                <link
-                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.multipageeditor"
                      label="%samples.workbench.multipageeditor.label"
+                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.multipageeditor"
                      id="multi-page-editor">
-                  <text>
-                     %samples.workbench.multipageeditor.text
-                  </text>
+                  <text>%samples.workbench.multipageeditor.text</text>
                </link>
                <link
-                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.propertysheet"
                      label="%samples.workbench.propertysheet.label"
+                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.propertysheet"
                      id="property-sheet">
-                  <text>
-                     %samples.workbench.propertysheet.text
-                  </text>
+                  <text>%samples.workbench.propertysheet.text</text>
                </link>
                <link
-                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.readmetool"
                      label="%samples.workbench.readmetool.label"
+                     url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.pde.ui&amp;class=org.eclipse.pde.ui.internal.samples.ShowSampleAction&amp;id=com.example.xyz.readmetool"
                      id="readmetool">
-                  <text>
-                     %samples.workbench.readmetool.text
-                  </text>
+                  <text>%samples.workbench.readmetool.text</text>
                </link>
             </div>
          </page>
@@ -185,101 +149,24 @@
                title="%news.title"
                id="news">
             <link
-                  url="about:blank;"
                   label="%news.newandnoteworthy.label"
-                  id="new-and-noteworthy">
-               <text>
-                  %news.newandnoteworthy.text
-               </text>
-            </link>
-            <link
                   url="about:blank;"
-                  label="%news.migration.label"
-                  id="migration">
-               <text>
-                  %news.migration.text
-               </text>
+                  id="new-and-noteworthy">
+               <text>%news.newandnoteworthy.text</text>
             </link>
             <link
-                  url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.update.ui&amp;class=org.eclipse.update.internal.ui.InstallWizardAction"
+                  label="%news.migration.label"
+                  url="about:blank;"
+                  id="migration">
+               <text>%news.migration.text</text>
+            </link>
+            <link
                   label="%news.updates.label"
+                  url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.update.ui&amp;class=org.eclipse.update.internal.ui.InstallWizardAction"
                   id="updates">
-               <text>
-                  %news.updates.text
-               </text>
+               <text>%news.updates.text</text>
             </link>
          </page>
       </config>
-   </extension>
-   <extension
-         point="org.eclipse.ui.activities">
-      <activity
-            name="%activity.debugging"
-            description="%activity.debugging.desc"
-            id="org.eclipse.debugging">
-      </activity>
-      <activity
-            name="%activity.java"
-            description="%activity.java.desc"
-            id="org.eclipse.javaDevelopment">
-      </activity>
-      <activity
-            name="%activity.plugin"
-            description="%activity.plugin.desc"
-            id="org.eclipse.plugInDevelopment">
-      </activity>
-      <activityPatternBinding
-            activityId="org.eclipse.debugging"
-            pattern="org\.eclipse\.debug\..*/.*">
-      </activityPatternBinding>
-      <activityPatternBinding
-            activityId="org.eclipse.javaDevelopment"
-            pattern="org\.eclipse\.jdt\..*/.*">
-      </activityPatternBinding>
-      <activityPatternBinding
-            activityId="org.eclipse.plugInDevelopment"
-            pattern="org\.eclipse\.pde\..*/.*">
-      </activityPatternBinding>
-      <category
-            name="%activity.cat.java"
-            description=""
-            id="org.eclipse.categories.javaCategory">
-      </category>
-      <category
-            name="%activity.cat.plugin"
-            description=""
-            id="org.eclipse.categories.pdeCategory">
-      </category>
-      <categoryActivityBinding
-            activityId="org.eclipse.debugging"
-            categoryId="org.eclipse.categories.javaCategory">
-      </categoryActivityBinding>
-      <categoryActivityBinding
-            activityId="org.eclipse.javaDevelopment"
-            categoryId="org.eclipse.categories.javaCategory">
-      </categoryActivityBinding>
-      <categoryActivityBinding
-            activityId="org.eclipse.plugInDevelopment"
-            categoryId="org.eclipse.categories.pdeCategory">
-      </categoryActivityBinding>
-      <activityActivityBinding
-            childActivityId="org.eclipse.javaDevelopment"
-            parentActivityId="org.eclipse.plugInDevelopment">
-      </activityActivityBinding>
-      <defaultEnablement
-            id="org.eclipse.javaDevelopment">
-      </defaultEnablement>
-      <defaultEnablement
-            id="org.eclipse.debugging">
-      </defaultEnablement>
-   </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <primaryWizard
-            id="org.eclipse.jdt.ui.wizards.JavaProjectWizard">
-      </primaryWizard>
-      <primaryWizard
-            id="org.eclipse.pde.ui.NewProjectWizard">
-      </primaryWizard>
    </extension>
 </plugin>
