@@ -130,7 +130,7 @@ public class InternalAntRunner {
 	protected String loggerClassname = null;
 
 	/** Extra arguments to be parsed as command line arguments. */
-	protected String extraArguments = null;
+	protected String[] extraArguments = null;
 
 	// properties
 	private static final String PROPERTY_ECLIPSE_RUNNING = "eclipse.running"; //$NON-NLS-1$
@@ -256,8 +256,8 @@ public void run() {
 		}
 		createMonitorBuildListener(project);
         fireBuildStarted(project);
-		if (extraArguments != null && !extraArguments.trim().equals("")) //$NON-NLS-1$
-			project.log(Policy.bind("label.arguments", extraArguments)); //$NON-NLS-1$
+		if (extraArguments != null)
+			printArguments(project);
 		if (targets != null && !targets.isEmpty())
 			project.executeTargets(targets);
 		else
@@ -277,7 +277,12 @@ public void run() {
 	}
 }
 
-protected void createMonitorBuildListener(Project project) {
+protected void printArguments(Project project) {
+	StringBuffer sb = new StringBuffer();
+	for (int i = 0; i < extraArguments.length; i++)
+		sb.append(extraArguments[i]);
+	project.log(Policy.bind("label.arguments", sb.toString())); //$NON-NLS-1$
+}protected void createMonitorBuildListener(Project project) {
 	if (monitor == null)
 		return;
 	Vector chosenTargets = targets;
@@ -508,7 +513,7 @@ public void setMessageOutputLevel(int level) {
 /**
  * 
  */
-public void setArguments(String args) {
+public void setArguments(String[] args) {
 	this.extraArguments = args;
 }
 
@@ -729,42 +734,7 @@ private ArrayList getArrayList(String[] args) {
 	return result;
 }
 
-/**
- * Helper method to ensure an array is converted into an ArrayList.
- */
-private ArrayList getArrayList(String args) {
-	StringBuffer sb = new StringBuffer();
-	boolean waitingForQuote = false;
-	ArrayList result = new ArrayList();
-	for (StringTokenizer tokens = new StringTokenizer(args, ", \"", true); tokens.hasMoreTokens();) { //$NON-NLS-1$
-		String token = tokens.nextToken();
-		if (waitingForQuote) {
-			if (token.equals("\"")) { //$NON-NLS-1$
-				result.add(sb.toString());
-				sb.setLength(0);
-				waitingForQuote = false;
-			} else
-				sb.append(token);
-		} else {
-			if (token.equals("\"")) { //$NON-NLS-1$
-				// test if we have something like -Dproperty="value"
-				if (result.size() > 0) {
-					int index = result.size() - 1;
-					String last = (String) result.get(index);
-					if (last.charAt(last.length()-1) == '=') {
-						result.remove(index);
-						sb.append(last);
-					}
-				}
-				waitingForQuote = true;
-			} else {
-				if (!(token.equals(",") || token.equals(" "))) //$NON-NLS-1$ //$NON-NLS-2$
-					result.add(token);
-			}
-		}
-	}
-	return result;
-}
+
 
 /**
  * Sets the build progress monitor.

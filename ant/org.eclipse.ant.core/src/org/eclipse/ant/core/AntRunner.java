@@ -131,7 +131,9 @@ private String[] getArray(String args) {
  */
 public void setArguments(String[] arguments) {
 	this.arguments = arguments;
-} * Sets the targets and execution order.
+}
+ 
+/** Sets the targets and execution order.
  * 
  * @param executionTargets which targets should be run and in which order
  */
@@ -324,12 +326,4 @@ public TargetInfo[] getAvailableTargets() throws CoreException {
 	}
 }
 
-/**
- * Sets the arguments to be passed to the script (e.g. -Dos=win32 -Dws=win32 -verbose).
- * 
- * @param arguments the arguments to be passed to the script
- */
-public void setArguments(String[] arguments) {
-	this.arguments = arguments;
-}
 }
