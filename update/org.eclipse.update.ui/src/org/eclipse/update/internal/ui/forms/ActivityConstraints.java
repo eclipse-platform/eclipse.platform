@@ -200,8 +200,8 @@ public class ActivityConstraints {
 		ArrayList status) {
 		try {
 			ArrayList features = computeFeatures();
-			if (oldFeature == null)
-				checkPatch(newFeature, features, status);
+			if (oldFeature == null && isPatch(newFeature))
+				checkUnique(newFeature, features, status);
 			features =
 				computeFeaturesAfterOperation(features, newFeature, oldFeature);
 			checkConstraints(features, status);
@@ -543,23 +543,15 @@ public class ActivityConstraints {
 		return result;
 	}
 
-	/*
-	 * 
-	 */
-	private static void checkPatch(
-		IFeature feature,
-		ArrayList features,
-		ArrayList status)
-		throws CoreException {
+	private static boolean isPatch(IFeature feature) {
 		IImport[] imports = feature.getImports();
 		for (int i = 0; i < imports.length; i++) {
 			IImport iimport = imports[i];
 			if (iimport.isPatch()) {
-				// A patch - check unique
-				checkUnique(feature, features, status);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/*
@@ -601,10 +593,13 @@ public class ActivityConstraints {
 			}
 			if (!found) {
 				// All the features carried in a patch must
-				// already be present.
-				String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
+				// already be present, unless this feature
+				// is a patch itself
+				if (!isPatch(ifeature)) {
+					String msg = UpdateUIPlugin.getFormattedMessage(KEY_PATCH_MISSING_TARGET,
 							new String[] { ifeature.getLabel(), version.toString() });
-				status.add(createStatus(feature, msg));
+					status.add(createStatus(feature, msg));
+				}
 			}
 			checkUnique(ifeature, features, status);
 		}

@@ -42,9 +42,9 @@ public class ConfigurationView
 		"ConfigurationView.showUnconfFeatures";
 	private static final String KEY_SHOW_UNCONF_FEATURES_TOOLTIP =
 		"ConfigurationView.showUnconfFeatures.tooltip";
-	private static final String KEY_MISSING_OPTIONAL_STATUS = 
+	private static final String KEY_MISSING_OPTIONAL_STATUS =
 		"ConfigurationView.missingOptionalStatus";
-	private static final String KEY_MISSING_STATUS = 
+	private static final String KEY_MISSING_STATUS =
 		"ConfigurationView.missingStatus";
 	private Image eclipseImage;
 	private Image featureImage;
@@ -436,7 +436,7 @@ public class ConfigurationView
 					return optionalFeatureImage;
 				}
 				IStatus status = localSite.getFeatureStatus(feature);
-				int code = status.getCode();
+				int code = getStatusCode(feature, status);
 				if (configured) {
 					switch (code) {
 						case IFeature.STATUS_UNHAPPY :
@@ -444,7 +444,7 @@ public class ConfigurationView
 						case IFeature.STATUS_AMBIGUOUS :
 							return warningFeatureImage;
 						default :
-							return updated?updatedFeatureImage:featureImage;
+							return updated ? updatedFeatureImage : featureImage;
 					}
 				} else {
 					switch (code) {
@@ -829,26 +829,45 @@ public class ConfigurationView
 	private void showFeatureStatus(IFeature feature) throws CoreException {
 		IStatus status;
 		if (feature instanceof MissingFeature) {
-			MissingFeature missingFeature = (MissingFeature)feature;
+			MissingFeature missingFeature = (MissingFeature) feature;
 			String msg;
 			int severity;
-			
+
 			if (missingFeature.isOptional()) {
 				severity = IStatus.INFO;
-				msg = UpdateUIPlugin.getResourceString(KEY_MISSING_OPTIONAL_STATUS);
-			}
-			else {
+				msg =
+					UpdateUIPlugin.getResourceString(
+						KEY_MISSING_OPTIONAL_STATUS);
+			} else {
 				severity = IStatus.ERROR;
 				msg = UpdateUIPlugin.getResourceString(KEY_MISSING_STATUS);
 			}
-			status = new Status(severity, UpdateUIPlugin.PLUGIN_ID,
-					IStatus.OK, msg, null);
-		}
-		else {
+			status =
+				new Status(
+					severity,
+					UpdateUIPlugin.PLUGIN_ID,
+					IStatus.OK,
+					msg,
+					null);
+		} else {
 			status = getLocalSite().getFeatureStatus(feature);
 		}
 		String title = UpdateUIPlugin.getResourceString(KEY_STATUS_TITLE);
-		switch (status.getSeverity()) {
+		int severity = status.getSeverity();
+		String message = status.getMessage();
+		
+		if (severity==IStatus.ERROR && status.getCode()==IFeature.STATUS_UNHAPPY) {
+			//see if this is a false alarm
+			int code = getStatusCode(feature, status);
+			if (code == IFeature.STATUS_HAPPY) {
+				// This was a patch referencing a
+				// subsumed patch - change to happy.
+				severity = IStatus.INFO;
+				message = null;
+			}
+		}
+
+		switch (severity) {
 			case IStatus.ERROR :
 				ErrorDialog.openError(
 					viewer.getControl().getShell(),
@@ -864,12 +883,10 @@ public class ConfigurationView
 				break;
 			case IStatus.INFO :
 			default :
-				String message = status.getMessage();
 				if (message == null || message.length() == 0)
 					message =
-						UpdateUIPlugin.getFormattedMessage(
-							KEY_STATUS_DEFAULT,
-							feature.getLabel());
+						UpdateUIPlugin.getResourceString(
+							KEY_STATUS_DEFAULT);
 				MessageDialog.openInformation(
 					viewer.getControl().getShell(),
 					title,
@@ -974,28 +991,28 @@ public class ConfigurationView
 			UpdateUIPlugin.logException(e);
 		}
 	} /**
-																								 * @see IInstallConfigurationChangedListener#installSiteAdded(ISite)
-																								 */
+																									 * @see IInstallConfigurationChangedListener#installSiteAdded(ISite)
+																									 */
 	public void installSiteAdded(IConfiguredSite csite) {
 		asyncRefresh();
 	} /**
-																								 * @see IInstallConfigurationChangedListener#installSiteRemoved(ISite)
-																								 */
+																									 * @see IInstallConfigurationChangedListener#installSiteRemoved(ISite)
+																									 */
 	public void installSiteRemoved(IConfiguredSite site) {
 		asyncRefresh();
 	} /**
-																								 * @see IConfiguredSiteChangedListener#featureInstalled(IFeature)
-																								 */
+																									 * @see IConfiguredSiteChangedListener#featureInstalled(IFeature)
+																									 */
 	public void featureInstalled(IFeature feature) {
 		asyncRefresh();
 	} /**
-																								 * @see IConfiguredSiteChangedListener#featureUninstalled(IFeature)
-																								 */
+																									 * @see IConfiguredSiteChangedListener#featureUninstalled(IFeature)
+																									 */
 	public void featureRemoved(IFeature feature) {
 		asyncRefresh();
 	} /**
-																								 * @see IConfiguredSiteChangedListener#featureUConfigured(IFeature)
-																								 */
+																									 * @see IConfiguredSiteChangedListener#featureUConfigured(IFeature)
+																									 */
 	public void featureConfigured(IFeature feature) {
 	};
 	/**
@@ -1030,5 +1047,105 @@ public class ConfigurationView
 			invertedArray[i] = array[array.length - 1 - i];
 		}
 		return invertedArray;
+	}
+	private int getStatusCode(IFeature feature, IStatus status) {
+		int code = status.getCode();
+		if (code == IFeature.STATUS_UNHAPPY) {
+			if (status.isMultiStatus()) {
+				IStatus[] children = status.getChildren();
+				for (int i = 0; i < children.length; i++) {
+					IStatus child = children[i];
+					if (child.isMultiStatus())
+						return code;
+					if (child.getCode() != IFeature.STATUS_DISABLE)
+						return code;
+				}
+				// If we are here, global status is unhappy
+				// because one or more included features
+				// is disabled.
+				if (arePatchesObsolete(feature)) {
+					// The disabled included features
+					// are old patches that are now
+					// subsumed by better versions of
+					// the features they were designed to
+					// patch.
+					return IFeature.STATUS_HAPPY;
+				}
+			}
+		}
+		return code;
+	}
+	private boolean arePatchesObsolete(IFeature feature) {
+		// Check all the included features that
+		// are unconfigured, and see if their patch 
+		// references are better than the original.
+		try {
+			IFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+			for (int i = 0; i < irefs.length; i++) {
+				IFeatureReference iref = irefs[i];
+				IFeature ifeature = iref.getFeature();
+				IConfiguredSite csite = ifeature.getSite().getConfiguredSite();
+				if (!csite.isConfigured(ifeature)) {
+					if (!isPatchHappy(ifeature))
+						return false;
+				}
+			}
+		} catch (CoreException e) {
+			return false;
+		}
+		// All checks went well
+		return true;
+	}
+	private boolean isPatchHappy(IFeature feature) throws CoreException {
+		// If this is a patch and it includes 
+		// another patch and the included patch
+		// is disabled but the feature it was declared
+		// to patch is now newer (and is presumed to
+		// contain the now disabled patch), and
+		// the newer patched feature is enabled,
+		// a 'leap of faith' assumption can be
+		// made:
+
+		// Although the included patch is disabled,
+		// the feature it was designed to patch
+		// is now newer and most likely contains
+		// the equivalent fix and more. Consequently,
+		// we can claim that the status and the error
+		// icon overlay are misleading because
+		// all the right plug-ins are configured.
+		IImport[] imports = feature.getImports();
+		IImport patchReference = null;
+		for (int i = 0; i < imports.length; i++) {
+			IImport iimport = imports[i];
+			if (iimport.isPatch()) {
+				patchReference = iimport;
+				break;
+			}
+		}
+		if (patchReference == null)
+			return false;
+		VersionedIdentifier refVid = patchReference.getVersionedIdentifier();
+
+		// Find the patched feature and 
+		IConfiguredSite csite = feature.getSite().getConfiguredSite();
+		if (csite==null) return false;
+		
+		IFeatureReference [] crefs = csite.getConfiguredFeatures();
+		for (int i=0; i<crefs.length; i++) {
+			IFeatureReference cref = crefs[i];
+			VersionedIdentifier cvid = cref.getVersionedIdentifier();
+			if (cvid.getIdentifier().equals(refVid.getIdentifier())) {
+				// This is the one.
+				if (cvid.getVersion().isGreaterThan(refVid.getVersion())) {
+					// Bingo: we found the referenced feature
+					// and its version is greater - 
+					// we can assume that it contains better code
+					// than the patch that referenced the
+					// older version.
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
