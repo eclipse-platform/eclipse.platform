@@ -698,12 +698,13 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			for (int j = 0; j < children.length; j++) {
 				IFeature child = null;
 				try {
-					children[j].getFeature();
+					child = children[j].getFeature();
 					result.remove(child);
 				} catch (CoreException e) {
 					// if optional, it may not exist, do not throw error for that
-					if (!children[j].isOptional())
-						throw e;
+					if (!children[j].isOptional()){
+						UpdateManagerPlugin.warn(null,e);
+					}
 				}
 			}
 		}
@@ -771,12 +772,8 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			try {
 				child = children[j].getFeature();
 			} catch (CoreException e) {
-				// the child may be missing, warn and return
-				if (children[j].isOptional()) {
-					UpdateManagerPlugin.warn("", e);
-					return;
-				}
-				throw e;
+				UpdateManagerPlugin.warn("", e);
+				return;
 			}
 			expandFeature(child, features);
 		}
