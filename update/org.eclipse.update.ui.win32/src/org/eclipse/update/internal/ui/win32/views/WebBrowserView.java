@@ -20,7 +20,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.help.WorkbenchHelp;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.update.internal.ui.*;
-import org.eclipse.update.internal.ui.views.IEmbeddedWebBrowser;
 
 public class WebBrowserView extends ViewPart implements IEmbeddedWebBrowser {
 	// NL
