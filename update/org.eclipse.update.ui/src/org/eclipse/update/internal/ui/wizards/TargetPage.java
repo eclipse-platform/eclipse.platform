@@ -24,7 +24,7 @@ import org.eclipse.update.internal.ui.*;
 import java.net.URL;
 import java.io.*;
 import org.eclipse.core.boot.IPlatformConfiguration;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 
 public class TargetPage extends BannerPage {
 	// NL keys
@@ -380,7 +380,7 @@ public class TargetPage extends BannerPage {
 							KEY_ERROR_REASON,
 							status.getMessage());
 					message = message + "\r\n" + message2;
-					MessageDialog.openError(shell, title, message);
+					ErrorDialog.openError(shell,title,message,status);
 					return false;
 				}
 			}
