@@ -31,7 +31,7 @@ public class BookmarkUtil {
 		try {
 			documentBuilderFactory.setNamespaceAware(true);
 			DocumentBuilder parser = documentBuilderFactory.newDocumentBuilder();
-			Document doc = parser.parse(fileName);
+			Document doc = parser.parse(file);
 			Node root = doc.getDocumentElement();
 			processRoot(root, bookmarks);
 		} catch (ParserConfigurationException e) {
