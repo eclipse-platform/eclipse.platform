@@ -8,7 +8,7 @@ package org.eclipse.ant.core;
 
 class Policy {
 	private static ResourceBundle bundle;
-	private static final String bundleName = "org.eclipse.ant.core.Messages";
+	private static final String bundleName = "org.eclipse.ant.core.messages";
 
 	static {
 		relocalize();

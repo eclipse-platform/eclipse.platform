@@ -10,7 +10,7 @@ import java.util.*;
 
 class Policy {
 	private static ResourceBundle bundle;
-	private static String bundleName = "org.eclipse.ant.internal.ui.Messages";
+	private static String bundleName = "org.eclipse.ant.internal.ui.messages";
 
 	static {
 		relocalize();
