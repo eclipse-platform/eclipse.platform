@@ -105,18 +105,20 @@ public class AutomaticUpdatesJob
 					}
 				}
 				// prompt the user
-				if (download) {
-					getStandardDisplay().asyncExec(new Runnable() {
-						public void run() {
-							asyncNotifyDownloadUser();
-						}
-					});
-				} else {
-					getStandardDisplay().asyncExec(new Runnable() {
-						public void run() {
-							asyncNotifyUser();
-						}
-					});	
+				if (!InstallWizard.isRunning()) {
+					if (download) {
+						getStandardDisplay().asyncExec(new Runnable() {
+							public void run() {
+								asyncNotifyDownloadUser();
+							}
+						});
+					} else {
+						getStandardDisplay().asyncExec(new Runnable() {
+							public void run() {
+								asyncNotifyUser();
+							}
+						});	
+					}
 				}
 				return Job.ASYNC_FINISH;
 			}

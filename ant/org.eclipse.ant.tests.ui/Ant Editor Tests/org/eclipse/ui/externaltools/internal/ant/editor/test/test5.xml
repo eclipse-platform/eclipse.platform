@@ -1,6 +1,0 @@
-<project name="main">
-	<target name="bla" />
-	<property name="prop1" value="val1"/>
-	<property name="prop2" value="val2"/>
-	<property name="prop3" value="val3"/>
-<g
