@@ -25,8 +25,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ant.internal.ui.AntUIPlugin;
-import org.eclipse.ant.internal.ui.model.AntModel;
+import org.eclipse.ant.internal.ui.editor.outline.AntModel;
+import org.eclipse.ant.internal.ui.editor.outline.XMLCore;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.ant.internal.ui.model.AntUIPlugin;
 import org.eclipse.ant.tests.ui.editor.support.TestLocationProvider;
 import org.eclipse.ant.tests.ui.editor.support.TestProblemRequestor;
 import org.eclipse.core.resources.IFile;
@@ -40,40 +42,35 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.views.console.ConsoleDocumentPartitioner;
+import org.eclipse.debug.internal.ui.views.console.HyperlinkPosition;
+import org.eclipse.debug.internal.ui.views.console.StreamPartition;
+import org.eclipse.debug.ui.console.IConsoleColorProvider;
+import org.eclipse.debug.ui.console.IConsoleHyperlink;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
-import org.eclipse.ui.internal.console.IOConsolePartition;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public abstract class AbstractAntUITest extends TestCase {
-	
-	public static String ANT_EDITOR_ID= "org.eclipse.ant.ui.internal.editor.AntEditor";
-	
 	private IDocument currentDocument;
 
 	public AbstractAntUITest(String name) {
 		super(name);
 	}
 		
-	protected IFile getIFile(String buildFileName) {
-		return getProject().getFolder("buildfiles").getFile(buildFileName);	
-	}
-	
 	protected File getBuildFile(String buildFileName) {
-		IFile file = getIFile(buildFileName);
+		IFile file = getProject().getFolder("buildfiles").getFile(buildFileName);
 		assertTrue("Could not find build file named: " + buildFileName, file.exists());
 		return file.getLocation().toFile();
 	}
@@ -83,7 +80,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return the test project
 	 */
-	protected static IProject getProject() {
+	protected IProject getProject() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(ProjectHelper.PROJECT_NAME);
 	}
 	
@@ -134,8 +131,8 @@ public abstract class AbstractAntUITest extends TestCase {
 		
 	protected AntModel getAntModel(String fileName) {
 		currentDocument= getDocument(fileName);
-		AntModel model= new AntModel(currentDocument, new TestProblemRequestor(), new TestLocationProvider(getBuildFile(fileName)));
-		model.reconcile();
+		AntModel model= new AntModel(XMLCore.getDefault(), currentDocument, new TestProblemRequestor(), new TestLocationProvider(getBuildFile(fileName)));
+		model.reconcile(null);
 		return model;
 	}
 	
@@ -261,7 +258,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return launch manager
 	 */
-	public static ILaunchManager getLaunchManager() {
+	protected ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 	
@@ -270,7 +267,7 @@ public abstract class AbstractAntUITest extends TestCase {
 	 * 
 	 * @return the test project
 	 */
-	public static IJavaProject getJavaProject() {
+	protected IJavaProject getJavaProject() {
 		return JavaCore.create( getProject());
 	}
 	
@@ -310,11 +307,11 @@ public abstract class AbstractAntUITest extends TestCase {
 		return suspendee;		
 	}
 	
-	protected IHyperlink getHyperlink(int offset, IDocument doc) {
+	protected IConsoleHyperlink getHyperlink(int offset, IDocument doc) {
 		if (offset >= 0 && doc != null) {
 			Position[] positions = null;
 			try {
-				positions = doc.getPositions(ConsoleHyperlinkPosition.HYPER_LINK_CATEGORY);
+				positions = doc.getPositions(HyperlinkPosition.HYPER_LINK_CATEGORY);
 			} catch (BadPositionCategoryException ex) {
 				// no links have been added
 				return null;
@@ -322,7 +319,7 @@ public abstract class AbstractAntUITest extends TestCase {
 			for (int i = 0; i < positions.length; i++) {
 				Position position = positions[i];
 				if (offset >= position.getOffset() && offset <= (position.getOffset() + position.getLength())) {
-					return ((ConsoleHyperlinkPosition)position).getHyperLink();
+					return ((HyperlinkPosition)position).getHyperLink();
 				}
 			}
 		}
@@ -331,13 +328,14 @@ public abstract class AbstractAntUITest extends TestCase {
 	
 	protected Color getColorAtOffset(int offset, IDocument document) throws BadLocationException {
 		if (document != null) {
-			IDocumentPartitioner partitioner = document.getDocumentPartitioner();
+			ConsoleDocumentPartitioner partitioner = (ConsoleDocumentPartitioner)document.getDocumentPartitioner();
 			if (partitioner != null) {
+				IConsoleColorProvider colorProvider = DebugUIPlugin.getDefault().getConsoleDocumentManager().getColorProvider(IAntLaunchConfigurationConstants.ID_ANT_PROCESS_TYPE);
 				ITypedRegion[] regions= partitioner.computePartitioning(offset, document.getLineInformationOfOffset(offset).getLength());
 				
 				for (int i = 0; i < regions.length; i++) {
-					IOConsolePartition partition = (IOConsolePartition)regions[i];
-					return partition.getColor();
+					StreamPartition partition = (StreamPartition)regions[i];
+					return colorProvider.getColor(partition.getStreamIdentifier());
 				}	
 			}
 		}

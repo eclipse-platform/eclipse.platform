@@ -11,19 +11,13 @@
 
 package org.eclipse.ant.tests.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.ant.internal.ui.AntUIPlugin;
-import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
-import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.ant.internal.ui.model.AntUIPlugin;
+import org.eclipse.ant.internal.ui.model.IAntUIPreferenceConstants;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.ui.console.IConsoleHyperlink;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.ui.console.IHyperlink;
 
 
 public class BuildTests extends AbstractAntUIBuildTest {
@@ -59,7 +53,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		} catch (BadLocationException e) {
 			assertTrue("failed getting offset of line", false);
 		}
-		IHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
+		IConsoleHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
 		assertNotNull("No hyperlink found at offset " + offset, link);
 	}
   
@@ -70,7 +64,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
 	public void testLinks() throws CoreException {
 		launch("build");
 		int offset= 25; //buildfile link
-		IHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
+		IConsoleHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
 		assertNotNull("No hyperlink found at offset " + offset, link);
 		activateLink(link);
 		
@@ -102,24 +96,6 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		color= getColorAtOffset(offset, ConsoleLineTracker.getDocument());
 		assertNotNull("No color found at " + offset, color);
 		assertEquals(AntUIPlugin.getPreferenceColor(IAntUIPreferenceConstants.CONSOLE_WARNING_COLOR), color);
-	}
-	
-	/**
-	 * Tests launching Ant in a separate vm and that the
-	 * correct property substitions occur
-	 */
-	public void testPropertySubstitution() throws CoreException {
-		ILaunchConfiguration config = getLaunchConfiguration("74840");
-		assertNotNull("Could not locate launch configuration for " + "74840", config);
-		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-		Map properties= new HashMap(1);
-		properties.put("platform.location", "${workspace_loc}");
-		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
-		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
-		launchAndTerminate(copy, 20000);
-		ConsoleLineTracker.waitForConsole();
-		assertTrue("Incorrect number of messages logged for build. Should be 8. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 8);
-		assertTrue("Incorrect echo message. Should not include unsubstituted property", !ConsoleLineTracker.getMessage(4).trim().startsWith("[echo] ${workspace_loc}"));
 	}
 	
 	/**

@@ -19,13 +19,12 @@ import junit.framework.TestSuite;
 
 import org.eclipse.ant.tests.ui.BuildTests;
 import org.eclipse.ant.tests.ui.editor.AntEditorContentOutlineTests;
-import org.eclipse.ant.tests.ui.editor.AntEditorTests;
 import org.eclipse.ant.tests.ui.editor.CodeCompletionTest;
 import org.eclipse.ant.tests.ui.editor.TaskDescriptionProviderTest;
-import org.eclipse.ant.tests.ui.editor.formatter.FormattingPreferencesTest;
-import org.eclipse.ant.tests.ui.editor.formatter.XmlDocumentFormatterTest;
 import org.eclipse.ant.tests.ui.editor.formatter.XmlFormatterTest;
 import org.eclipse.ant.tests.ui.editor.formatter.XmlTagFormatterTest;
+import org.eclipse.ant.tests.ui.editor.formatter.FormattingPreferencesTest;
+import org.eclipse.ant.tests.ui.editor.formatter.XmlDocumentFormatterTest;
 import org.eclipse.ant.tests.ui.externaltools.MigrationTests;
 import org.eclipse.ant.tests.ui.separateVM.SeparateVMTests;
 
@@ -41,7 +40,6 @@ public class AntUITests extends TestSuite {
 		suite.addTest(new TestSuite(ProjectCreationDecorator.class));
 		suite.addTest(new TestSuite(BuildTests.class));
 		suite.addTest(new TestSuite(SeparateVMTests.class));
-		suite.addTest(new TestSuite(AntEditorTests.class));
         suite.addTest(new TestSuite(CodeCompletionTest.class));
         suite.addTest(new TestSuite(TaskDescriptionProviderTest.class));
         suite.addTest(new TestSuite(AntEditorContentOutlineTests.class));

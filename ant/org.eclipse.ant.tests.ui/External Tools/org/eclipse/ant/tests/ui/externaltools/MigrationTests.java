@@ -15,8 +15,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.ant.internal.ui.model.AntUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
@@ -45,7 +45,7 @@ public class MigrationTests extends TestCase {
 		assertEquals("ant tool", config.getName());
 		assertEquals("location", config.getAttribute(IExternalToolConstants.ATTR_LOCATION, ""));
 		assertEquals("refresh scope", config.getAttribute(RefreshTab.ATTR_REFRESH_SCOPE, ""));
-		String[] targets= AntUtil.getTargetNames(config);
+		String[] targets= AntUtil.getTargetsFromConfig(config);
 		assertNotNull("No targets found", targets);
 		assertEquals("Wrong number of targets", 2, targets.length);
 		assertEquals("target1", targets[0]);
@@ -142,7 +142,7 @@ public class MigrationTests extends TestCase {
 		assertEquals(true, config.getAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, false));
 		assertEquals("build kinds", config.getAttribute(IExternalToolConstants.ATTR_RUN_BUILD_KINDS, ""));
 		assertEquals("arg1 arg2", config.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, ""));
-		String[] targets= AntUtil.getTargetNames(config);
+		String[] targets= AntUtil.getTargetsFromConfig(config);
 		assertEquals("Wrong number of targets", 2, targets.length);
 		assertEquals("target1", targets[0]);
 		assertEquals("target2", targets[1]);

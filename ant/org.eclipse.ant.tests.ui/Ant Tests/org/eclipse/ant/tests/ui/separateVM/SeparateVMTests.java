@@ -11,25 +11,22 @@
 
 package org.eclipse.ant.tests.ui.separateVM;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.ant.internal.ui.AntUIPlugin;
-import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.ant.internal.ui.model.AntUIPlugin;
+import org.eclipse.ant.internal.ui.model.IAntUIPreferenceConstants;
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.ui.console.IConsoleHyperlink;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.ui.console.IHyperlink;
 
 public class SeparateVMTests extends AbstractAntUIBuildTest {
 		
@@ -95,7 +92,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 	public void testLinks() throws CoreException {
 		launch("echoingSepVM");
 		int offset= 15; //buildfile link
-		IHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
+		IConsoleHyperlink link= getHyperlink(offset, ConsoleLineTracker.getDocument());
 		assertNotNull("No hyperlink found at offset " + offset, link);
 		try {
 			offset= ConsoleLineTracker.getDocument().getLineOffset(2) + 10; //echo link
@@ -140,23 +137,6 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		ConsoleLineTracker.waitForConsole();
 		assertTrue("Incorrect number of messages logged for build. Should be 6. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 6);
 		assertTrue("Incorrect last message. Should end with " + ProjectHelper.PROJECT_NAME + ". Message: " + ConsoleLineTracker.getMessage(2), ConsoleLineTracker.getMessage(2).endsWith(ProjectHelper.PROJECT_NAME));
-	}
-	
-	/**
-	 * Tests launching Ant in a separate vm and that the
-	 * correct property substitions occur
-	 */
-	public void testPropertySubstitution() throws CoreException {
-		ILaunchConfiguration config = getLaunchConfiguration("74840SepVM");
-		assertNotNull("Could not locate launch configuration for " + "74840SepVM", config);
-		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-		Map properties= new HashMap(1);
-		properties.put("platform.location", "${workspace_loc}");
-		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
-		launchAndTerminate(copy, 20000);
-		ConsoleLineTracker.waitForConsole();
-		assertTrue("Incorrect number of messages logged for build. Should be 6. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 6);
-		assertTrue("Incorrect echo message. Should not include unsubstituted property ", !ConsoleLineTracker.getMessage(2).trim().startsWith("[echo] ${workspace_loc}"));
 	}
 	
 	 /**

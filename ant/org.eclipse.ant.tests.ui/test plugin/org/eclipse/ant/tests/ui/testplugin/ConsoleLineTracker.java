@@ -34,6 +34,8 @@ public class ConsoleLineTracker implements IConsoleLineTrackerExtension {
 	 * @see org.eclipse.debug.ui.console.IConsoleLineTracker#dispose()
 	 */
 	public void dispose() {
+		console = null;
+		lines= new ArrayList();
 	}
 
 	/**
@@ -86,23 +88,24 @@ public class ConsoleLineTracker implements IConsoleLineTrackerExtension {
 	}
 	
 	public static void waitForConsole() {
-		synchronized (lines) {
-			if (consoleClosed) {
-				return;
-			}
-			try {
+		if (consoleClosed) {
+			return;
+		}
+		try {
+			synchronized (lines) {
 				lines.wait(20000);
-			} catch (InterruptedException ie) {
 			}
-	}
+		} catch (InterruptedException ie) {
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.console.IConsoleLineTrackerExtension#consoleClosed()
 	 */
 	public void consoleClosed() {
+		consoleClosed= true;
+		
 		synchronized (lines) {
-			consoleClosed= true;
 			lines.notifyAll();
 		}
 	}

@@ -13,16 +13,16 @@ package org.eclipse.ant.tests.ui.editor.support;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import junit.framework.Assert;
 
-import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor;
-import org.eclipse.ant.internal.ui.model.AntModel;
+import org.eclipse.ant.internal.ui.editor.outline.AntModel;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.w3c.dom.Element;
 
 public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
@@ -35,16 +35,10 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 	public final static int TEST_PROPOSAL_MODE_TASK_PROPOSAL_CLOSING = AntEditorCompletionProcessor.PROPOSAL_MODE_TASK_PROPOSAL_CLOSING;
 	public final static int TEST_PROPOSAL_MODE_ATTRIBUTE_VALUE_PROPOSAL = AntEditorCompletionProcessor.PROPOSAL_MODE_ATTRIBUTE_VALUE_PROPOSAL;
 	
-	private File fEditedFile;
-	private ISourceViewer fViewer;
+	private File editedFile;
 
 	public TestTextCompletionProcessor(AntModel model) {
 		super(model);
-	}
-	
-	public TestTextCompletionProcessor(AntEditor editor) {
-		super(editor.getAntModel());
-		fViewer= editor.getViewer();
 	}
 	
 	public TestTextCompletionProcessor() {
@@ -70,6 +64,11 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
     public ICompletionProposal[] getTaskProposals(IDocument document, String parentName, String aPrefix) {
     	cursorPosition= Math.max(0, document.getLength() - 1);
     	return super.getTaskProposals(document, parentName, aPrefix);
+    }
+    
+    //TODO add template proposal testing
+    protected Collection getTemplateProposals(IDocument document, String prefix) {
+    	return new ArrayList();
     }
 
     public int determineProposalMode(String text, int theCursorPosition, String prefix) {
@@ -100,8 +99,8 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
      * @see org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor#getEditedFile()
      */
 	public File getEditedFile() {
-		if (fEditedFile != null){
-			return fEditedFile;
+		if (editedFile != null){
+			return editedFile;
 		}
 		File tempFile = null;
         try {
@@ -126,9 +125,8 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 	}
     
 	public void setEditedFile(File aFile) {
-		fEditedFile= aFile;
+		editedFile= aFile;
 	}
-	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor#getTargetAttributeValueProposals(org.eclipse.jface.text.IDocument, java.lang.String, java.lang.String, java.lang.String)
 	 */
@@ -150,7 +148,7 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
     	if (antModel != null) {
     		return super.isKnownElement(elementName);
     	} 
-    	return getDtd().getElement(elementName) != null ;
+    	return dtd.getElement(elementName) != null ;
     }
     
 	/* (non-Javadoc)
@@ -165,17 +163,5 @@ public class TestTextCompletionProcessor extends AntEditorCompletionProcessor {
 	 */
 	public ICompletionProposal[] getBuildFileProposals(String text, String prefix) {
 		return super.getBuildFileProposals(new Document(text), prefix);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor#determineTemplateProposals(org.eclipse.jface.text.ITextViewer, int)
-	 */
-	public ICompletionProposal[] determineTemplateProposals() {
-		return super.determineTemplateProposals(fViewer, cursorPosition);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
-	 */
-	public ICompletionProposal[] computeCompletionProposals(int documentOffset) {
-		return super.computeCompletionProposals(fViewer, documentOffset);
 	}
 }

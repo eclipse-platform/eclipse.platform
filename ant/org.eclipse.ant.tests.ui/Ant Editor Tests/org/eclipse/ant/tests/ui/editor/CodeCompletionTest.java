@@ -24,15 +24,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.ant.internal.ui.editor.AntEditor;
-import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.editor.support.TestTextCompletionProcessor;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.ui.PartInitException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -67,7 +62,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
         assertEquals("casesensitive - (true | false | on | off | yes | no)", proposals[0].getDisplayString());
 
         proposals = processor.getAttributeProposals("move", "");
-        assertEquals(17, proposals.length);
+        assertEquals(16, proposals.length);
         ICompletionProposal proposal = proposals[0];
         String displayString = proposal.getDisplayString();
         assertTrue(displayString.equals("id") 
@@ -85,8 +80,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
         || displayString.equals("verbose - (true | false | on | off | yes | no)")
         || displayString.equals("encoding")
         || displayString.equals("outputencoding")
-        || displayString.equals("enablemultiplemapping - (true | false | on | off | yes | no)")
-		|| displayString.equals("granularity"));
+        || displayString.equals("enablemultiplemapping - (true | false | on | off | yes | no)"));
         
         proposals = processor.getAttributeProposals("move", "to");
         assertEquals(2, proposals.length);
@@ -117,7 +111,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
     	TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml"));
 
     	int lineNumber= 7;
-    	int columnNumber= 16;
+    	int columnNumber= 17;
     	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
     	processor.setLineNumber(lineNumber);
     	processor.setColumnNumber(columnNumber);
@@ -138,29 +132,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
     }
     
     /**
-     * Tests the code completion for nested elements that no templates are presented
-     * Bug 76414
-     */
-	public void testPropertyTemplateProposals() throws BadLocationException, PartInitException {
-		try {
-			IFile file= getIFile("buildtest1.xml");
-			AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, ANT_EDITOR_ID, true);
-			TestTextCompletionProcessor processor= new TestTextCompletionProcessor(editor);
-			int lineNumber= 7;
-	    	int columnNumber= 16;
-	    	int lineOffset= editor.getDocumentProvider().getDocument(editor.getEditorInput()).getLineOffset(lineNumber);
-	    	processor.setLineNumber(lineNumber);
-	    	processor.setColumnNumber(columnNumber);
-	    	processor.setCursorPosition(lineOffset + columnNumber);
-	    	
-	    	ICompletionProposal[] proposals= processor.determineTemplateProposals();
-	    	assertTrue("No templates are relevant at the current position. Found: " + proposals.length, proposals.length == 0);
-		} finally {
-			EditorTestHelper.closeAllEditors();
-		}
-	}
-    
-    /**
      * Test the code completion for "system" properties
      */
     public void testSystemPropertyProposals() throws BadLocationException {
@@ -175,26 +146,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
     	ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber);
     	assertTrue(proposals.length >= 1);
     	assertContains("java.home", proposals);
-    }
-    
-    /**
-     * Test the code completion for "built-in" properties
-     */
-    public void testBuiltInPropertyProposals() throws BadLocationException {
-    	TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml"));
-    	
-    	int lineNumber= 18;
-    	int columnNumber= 25;
-    	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
-    	processor.setLineNumber(lineNumber);
-    	processor.setColumnNumber(columnNumber);
-    	processor.setCursorPosition(lineOffset + columnNumber);
-    	ICompletionProposal[] proposals = processor.getPropertyProposals(getCurrentDocument(), "", lineOffset + columnNumber);
-    	assertTrue(proposals.length >= 1);
-    	assertContains("ant.file", proposals);
-    	assertContains("ant.version", proposals);
-    	assertContains("ant.project.name", proposals);
-    	assertContains("basedir", proposals);
     }
     
     /**
@@ -276,7 +227,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
                 break;
             }
         }
-        assertEquals("Did not find displayString: " + displayString, true, found);
+        assertEquals(true, found);
     }        
     
     /**
@@ -293,7 +244,7 @@ public class CodeCompletionTest extends AbstractAntUITest {
                 break;
             }
         }
-        assertEquals("Found displayString: " + displayString, false, found);
+        assertEquals(false, found);
     }        
 
 	/**
@@ -368,9 +319,8 @@ public class CodeCompletionTest extends AbstractAntUITest {
     	processor.setColumnNumber(columnNumber);
     	processor.setCursorPosition(lineOffset + columnNumber);
     	ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
-    	assertTrue(proposals.length == 5);
+    	assertTrue(proposals.length == 4);
     	assertContains("description", proposals);
-    	assertContains("implicit - (true | false | on | off | yes | no)", proposals);
     	assertContains("name", proposals);
 	}
 	
@@ -435,21 +385,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
         proposal = proposals[0];
         assertEquals("mkdir", proposal.getDisplayString());
         
-    }
-    
-    /**
-     * Tests the code completion for the fail task
-     * bug 73637
-     */
-    public void testFailProposals() {
-		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest1.xml"));
-
-		ICompletionProposal[] proposals = processor.getAttributeProposals("fail", "");
-        assertEquals(6, proposals.length);
-        
-        assertContains("message", proposals);
-        assertContains("if", proposals);
-        assertContains("unless", proposals);
     }
     
 	/**
@@ -743,44 +678,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
 	}
 	
 	/**
-     * Tests the code completion for nested elements
-     */
-	public void testNestedElementProposals() throws BadLocationException {
-		TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("nestedElementAttributes.xml"));
-		int lineNumber= 4;
-    	int columnNumber= 3;
-    	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
-    	processor.setLineNumber(lineNumber);
-    	processor.setColumnNumber(columnNumber);
-    	processor.setCursorPosition(lineOffset + columnNumber);
-    	ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
-    	assertTrue(proposals.length == 1);
-    	assertContains("nestedelement", proposals);
-	}
-	
-	/**
-     * Tests the code completion for nested elements that no templates are presented
-     * Bug 76414
-     */
-	public void testNestedElementTemplateProposals() throws BadLocationException, PartInitException {
-		try {
-			IFile file= getIFile("nestedElementAttributes.xml");
-			AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, ANT_EDITOR_ID, true);
-			TestTextCompletionProcessor processor= new TestTextCompletionProcessor(editor);
-			int lineNumber= 4;
-	    	int lineOffset= editor.getDocumentProvider().getDocument(editor.getEditorInput()).getLineOffset(lineNumber);
-	    	
-	    	editor.getSelectionProvider().setSelection(new TextSelection(lineOffset, 0));
-	    	
-	    	ICompletionProposal[] proposals= processor.computeCompletionProposals(lineOffset);
-	    	
-	    	assertTrue("No templates are relevant at the current position. Found: " + proposals.length, proposals.length == 1);
-		} finally {
-			EditorTestHelper.closeAllEditors();
-		}
-	}
-	
-	/**
      * Tests the code completion for nested element attribute values of custom tasks
      */
 	public void testNestedElementAttributeValueProposals() throws BadLocationException {
@@ -847,25 +744,5 @@ public class CodeCompletionTest extends AbstractAntUITest {
     	proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
     	assertTrue(proposals.length == 6); //boolean proposals 
     	assertContains("no", proposals);
-	}
-	
-	/**
-     * Tests the code completion for an empty buildfile
-     */
-	public void testEmptyBuildfileProposals() throws PartInitException {
-		try {
-			IFile file= getIFile("empty.xml");
-			AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, ANT_EDITOR_ID, true);
-			TestTextCompletionProcessor processor= new TestTextCompletionProcessor(editor);
-			
-	    	editor.getSelectionProvider().setSelection(TextSelection.emptySelection());
-	    	
-	    	ICompletionProposal[] proposals= processor.computeCompletionProposals(0);
-	    	assertTrue("Two proposals are relevant at the current position. Found: " + proposals.length, proposals.length == 2);
-	    	assertContains("project", proposals);
-	    	assertContains("Buildfile template - simple buildfile with two targets", proposals);
-		} finally {
-			EditorTestHelper.closeAllEditors();
-		}
 	}
 }

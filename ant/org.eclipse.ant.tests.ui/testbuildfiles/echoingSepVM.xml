@@ -11,4 +11,9 @@
 	<target name="echo3" description= "An echo3!">
 		<echo message="echo3"/>
 	</target>
+	
+	<target name="Bug42984">
+		<echo message="user.dir: ${user.dir}"/>
+	</target>
+	
 </project>

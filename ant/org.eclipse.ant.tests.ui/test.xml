@@ -31,19 +31,6 @@
                 value="org.eclipse.ant.tests.ui.testplugin.AntUITests"/>
     </ant>
   </target>
-	
- <!-- This target defines the performance tests that need to be run. -->
-	  <target name="perfsuite">
-	    <property name="jdt-folder" 
-	              value="${eclipse-home}/jdt_folder"/>
-	    <delete dir="${jdt-folder}" quiet="true"/>
-	    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
-	      <property name="data-dir" value="${jdt-folder}"/>
-	      <property name="plugin-name" value="${plugin-name}"/>
-	      <property name="classname" 
-	                value="org.eclipse.ant.tests.ui.testplugin.AntUIPerformanceTests"/>
-	    </ant>
-	  </target>
 
   <!-- This target holds code to cleanup the testing environment after -->
   <!-- after all of the tests have been run. You can use this target to -->
@@ -60,12 +47,4 @@
     </ant>
   </target>
 
-  <!--This target runs the performance test suites and collects results.-->
-  <target name="performance" depends="init, perfsuite, cleanup">
-  	<ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
-		<property name="includes" value="org*.xml"/>
-		<property name="output-file" value="${plugin-name}.xml"/>
-	</ant>
-  </target>
-	
 </project>

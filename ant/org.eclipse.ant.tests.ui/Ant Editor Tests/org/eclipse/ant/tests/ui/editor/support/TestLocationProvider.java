@@ -13,7 +13,7 @@ package org.eclipse.ant.tests.ui.editor.support;
 
 import java.io.File;
 
-import org.eclipse.ant.internal.ui.model.LocationProvider;
+import org.eclipse.ant.internal.ui.editor.outline.LocationProvider;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 

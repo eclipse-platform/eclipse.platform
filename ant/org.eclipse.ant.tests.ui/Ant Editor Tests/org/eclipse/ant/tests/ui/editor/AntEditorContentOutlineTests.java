@@ -19,8 +19,8 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.ant.internal.ui.model.AntElementNode;
-import org.eclipse.ant.internal.ui.model.AntModel;
+import org.eclipse.ant.internal.ui.editor.outline.AntModel;
+import org.eclipse.ant.internal.ui.editor.model.AntElementNode;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
 import org.eclipse.jface.text.BadLocationException;
 
@@ -41,7 +41,9 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
     public void testCreationOfOutlineTree() throws BadLocationException {
 		AntModel model= getAntModel("buildtest1.xml");
         
-		AntElementNode rootProject= model.getProjectNode();
+		AntElementNode[] roots = model.getRootElements();
+		assertNotNull(roots);
+		AntElementNode rootProject= roots[0];
        
         assertNotNull(rootProject);
         
@@ -129,7 +131,9 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
     public void testParsingOfNonValidFile() throws BadLocationException {
 		AntModel model= getAntModel("buildtest2.xml");
         
-		AntElementNode root= model.getProjectNode();
+		AntElementNode[] roots = model.getRootElements();
+		assertNotNull(roots);
+		AntElementNode root= roots[0];
    		assertNotNull(root);
 
         List children = root.getChildNodes();
@@ -150,8 +154,10 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	 */
 	public void testWithProjectOnlyBuildFile() {
 		AntModel model= getAntModel("projectOnly.xml");
-		AntElementNode rootProject= model.getProjectNode();
-		assertNotNull(rootProject);
+		AntElementNode[] roots = model.getRootElements();
+		assertNotNull(roots);
+		AntElementNode root= roots[0];
+		assertNotNull(root);
 	}
 	
 	/**
@@ -159,8 +165,9 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	 */
 	public void testWithEmptyBuildFile() {
 		AntModel model= getAntModel("empty.xml");
-		AntElementNode rootProject= model.getProjectNode();
-		assertTrue(rootProject == null);
+		AntElementNode[] roots = model.getRootElements();
+		assertNotNull(roots);
+		assertTrue(roots.length == 0);
 	}		
 
 	/**
@@ -169,7 +176,9 @@ public class AntEditorContentOutlineTests extends AbstractAntUITest {
 	public void testAdvancedTaskLocation() throws BadLocationException {
 		AntModel model= getAntModel("outline_select_test_build.xml");
         
-        AntElementNode rootProject= model.getProjectNode();
+		AntElementNode[] roots = model.getRootElements();
+        assertNotNull(roots);
+        AntElementNode rootProject= roots[0];
         // Get the content as string
         String wholeDocumentString = getCurrentDocument().get();
         

@@ -16,6 +16,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.ant.tests.ui.editor.performance.OpenAntEditorTest;
 import org.eclipse.ant.tests.ui.performance.OpenLaunchConfigurationDialogTests;
+import org.eclipse.ant.tests.ui.performance.SeparateVMTests;
 
 /**
  * Performance Test suite for the Ant UI
@@ -30,6 +31,7 @@ public class AntUIPerformanceTests extends TestSuite {
 		suite.addTest(new TestSuite(OpenAntEditorTest.class));
 		//suite.addTest(new TestSuite(NonInitialTypingTest.class));
 		suite.addTest(new TestSuite(OpenLaunchConfigurationDialogTests.class));
+		suite.addTest(new TestSuite(SeparateVMTests.class));
         return suite;
     }
 }

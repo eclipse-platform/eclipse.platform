@@ -11,8 +11,8 @@
 
 package org.eclipse.ant.tests.ui.editor.support;
 
-import org.eclipse.ant.internal.ui.model.IProblem;
-import org.eclipse.ant.internal.ui.model.IProblemRequestor;
+import org.eclipse.ant.internal.ui.editor.outline.IProblem;
+import org.eclipse.ant.internal.ui.editor.outline.IProblemRequestor;
 
 public class TestProblemRequestor implements IProblemRequestor {
 
