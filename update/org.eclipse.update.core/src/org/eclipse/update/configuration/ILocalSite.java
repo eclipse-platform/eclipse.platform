@@ -4,6 +4,8 @@ package org.eclipse.update.configuration;
  * All Rights Reserved.
  */
 
+import java.net.URL;
+
 import org.eclipse.core.runtime.*;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
@@ -260,11 +262,11 @@ public interface ILocalSite extends IAdaptable {
 	public IStatus getFeatureStatus(IFeature feature) throws CoreException ;	
 
 	/**
-	 * returns the <code>ISite</code> the feature was installed from
+	 * returns the <code>URL</code> the feature was installed from
 	 * or <code>null</code>
 	 * 
 	 * @param feature the feature
-	 * @return the originiting site of the feature
+	 * @return the URL of the originiting site of the feature
 	 * @exception CoreException
 	 * @since 2.0.2
 	 * <p>
@@ -274,5 +276,5 @@ public interface ILocalSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public ISite getOriginatingSite(IFeature feature) throws CoreException;
+	public URL getOriginatingSiteURL(IFeature feature) throws CoreException;
 }

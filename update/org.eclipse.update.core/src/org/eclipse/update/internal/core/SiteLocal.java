@@ -773,9 +773,9 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	/**
 	 * Method getOriginatingSite.
 	 * @param feature
-	 * @return ISite
+	 * @return URL
 	 */
-	public ISite getOriginatingSite(IFeature feature) throws CoreException {
+	public URL getOriginatingSiteURL(IFeature feature) throws CoreException {
 		if (originatingSites==null) originatingSites = OriginatingSitesProperties.getDefault();
 		if (feature==null) {
 			throw Utilities.newCoreException(Policy.bind("SiteLocal.NullFeature"),null);
@@ -793,6 +793,6 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		} catch (MalformedURLException e){
 			throw Utilities.newCoreException(Policy.bind("SiteLocal.WrongURL"),null);	
 		}
-		return SiteManager.getSite(siteURL);
+		return siteURL;
 	}
 }
