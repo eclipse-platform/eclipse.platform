@@ -236,6 +236,9 @@ public class NewUpdatesWizard extends Wizard {
 				InstallWizard.preserveOptionalState(config, targetSite, false, optionalElements.toArray());
 			}
 			if (oldFeature!=null) unconfigure(oldFeature);
+			else {
+				MultiInstallWizard.ensureUnique(config, feature, targetSite);
+			}
 		}
 		UpdateModel model = UpdateUI.getDefault().getUpdateModel();
 		model.addPendingChange(job);
