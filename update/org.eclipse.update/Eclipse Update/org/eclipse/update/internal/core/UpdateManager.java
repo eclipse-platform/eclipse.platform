@@ -122,8 +122,8 @@ public static void cleanupDirectory(File fileDirectory) {
  */
 public UMSessionManagerSession createSession(IInstallable[] descriptors, boolean bVerifyJars) throws UpdateManagerException {
 
-	// FOR NOW DO NOT DO JAR VERIFICATION
-	//-----------------------------------
+	// WARNING! TEMPORARY OVERRIDE - DO NOT DO JAR VERIFICATION
+	//---------------------------------------------------------
 	bVerifyJars = false;
 
 	// Create a new update session
