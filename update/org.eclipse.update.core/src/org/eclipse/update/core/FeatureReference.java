@@ -15,8 +15,6 @@ import org.eclipse.update.core.model.FeatureReferenceModel;
 import org.eclipse.update.core.model.SiteModel;
 import org.eclipse.update.internal.core.*;
 
-import com.sun.corba.se.connection.GetEndPointInfoAgainException;
-
 /**
  * Convenience implementation of a feature reference.
  * <p>
