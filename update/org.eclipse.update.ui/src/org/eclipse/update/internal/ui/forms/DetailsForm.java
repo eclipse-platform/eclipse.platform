@@ -533,15 +533,19 @@ public class DetailsForm extends PropertyWebForm {
 
 		if (currentAdapter == null)
 			return false;
+			
+		boolean localContext = currentAdapter instanceof IConfiguredSiteContext;
 
-		if (currentAdapter.isIncluded() && !currentAdapter.isOptional())
-			return false;
+		if (currentAdapter.isIncluded()) {
+			if (!localContext) return false;
+			if (!currentAdapter.isOptional()) return false;
+		}
 
 		UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 		if (model.findRelatedPendingChange(currentFeature) != null)
 			return false;
-		if (currentAdapter instanceof IConfiguredSiteContext) {
-			// part of the local configuration
+
+		if (localContext) {
 			IConfiguredSiteContext context =
 				(IConfiguredSiteContext) currentAdapter;
 			if (!context.getInstallConfiguration().isCurrent())

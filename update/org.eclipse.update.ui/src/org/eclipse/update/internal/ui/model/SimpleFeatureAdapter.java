@@ -22,6 +22,7 @@ public class SimpleFeatureAdapter extends FeatureAdapter {
 		this(feature, false);
 	}
 	public SimpleFeatureAdapter(IFeature feature, boolean optional) {
+		this.feature = feature;
 		this.optional = optional;
 	}
 	

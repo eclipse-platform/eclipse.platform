@@ -42,14 +42,16 @@ public class OptionalFeaturesPage extends BannerPage {
 	private IInstallConfiguration config;
 	private PendingChange pendingChange;
 	private Image featureImage;
+	private Object[] elements;
 
 	class TreeContentProvider
 		extends DefaultContentProvider
 		implements ITreeContentProvider {
+
 		public Object[] getChildren(Object parent) {
-			if (parent instanceof IFeatureReference) {
-				IFeatureReference ref = (IFeatureReference) parent;
-				return getIncludedFeatures(ref);
+			if (parent instanceof FeatureElement) {
+				FeatureElement fe = (FeatureElement) parent;
+				return fe.getChildren();
 			}
 			return new Object[0];
 		}
@@ -63,40 +65,89 @@ public class OptionalFeaturesPage extends BannerPage {
 		}
 
 		public Object[] getElements(Object input) {
-			return getIncludedFeatures(pendingChange.getFeature());
+			if (elements == null)
+				computeElements();
+			return elements;
 		}
 	}
 
 	class TreeLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
-			if (obj instanceof IFeatureReference) {
-				IFeatureReference ref = (IFeatureReference) obj;
-				try {
-					IFeature feature = ref.getFeature();
-					return getFeatureLabel(feature);
-				} catch (CoreException e) {
-					if (ref.getName() != null)
-						return ref.getName();
-					try {
-						VersionedIdentifier vid = ref.getVersionedIdentifier();
-						return vid.toString();
-					} catch (CoreException e2) {
-					}
-				}
+			if (obj instanceof FeatureElement) {
+				FeatureElement fe = (FeatureElement) obj;
+				String name = fe.getLabel();
+				if (name!=null) return name;
 			}
 			return super.getText(obj);
 		}
-		private String getFeatureLabel(IFeature feature) {
-			return feature.getLabel()
-					+ " "
-					+ feature
-						.getVersionedIdentifier()
-						.getVersion()
-						.toString();
-		}
-
 		public Image getImage(Object obj) {
 			return featureImage;
+		}
+	}
+
+	class FeatureElement {
+		private ArrayList children;
+		private IFeatureReference oldFeatureRef;
+		private IFeatureReference newFeatureRef;
+		boolean checked;
+
+		public FeatureElement(
+			IFeatureReference oldRef,
+			IFeatureReference newRef) {
+			oldFeatureRef = oldRef;
+			newFeatureRef = newRef;
+		}
+		public boolean isEditable() {
+			// cannot uncheck non-optional features
+			if (newFeatureRef.isOptional() == false)
+				return false;
+			// cannot uncheck optional feature that
+			return true;
+		}
+		public boolean isOptional() {
+			return newFeatureRef.isOptional();
+		}
+		public boolean isChecked() {
+			return checked;
+		}
+		public void setChecked(boolean checked) {
+			this.checked = checked;
+		}
+		public String getLabel() {
+			try {
+				IFeature feature = newFeatureRef.getFeature();
+				return getFeatureLabel(feature);
+			} catch (CoreException e) {
+				if (newFeatureRef.getName() != null)
+					return newFeatureRef.getName();
+				try {
+					VersionedIdentifier vid =
+						newFeatureRef.getVersionedIdentifier();
+					return vid.toString();
+				} catch (CoreException e2) {
+				}
+			}
+			return null;
+		}
+		private String getFeatureLabel(IFeature feature) {
+			return feature.getLabel()
+				+ " "
+				+ feature.getVersionedIdentifier().getVersion().toString();
+		}
+		Object[] getChildren() {
+			if (children == null) {
+				children = new ArrayList();
+				try {
+					IFeature oldFeature = null;
+					IFeature newFeature = null;
+					newFeature = newFeatureRef.getFeature();
+					if (oldFeature != null)
+						oldFeature = oldFeatureRef.getFeature();
+					computeElements(oldFeature, newFeature, children);
+				} catch (CoreException e) {
+				}
+			}
+			return children.toArray();
 		}
 	}
 
@@ -138,19 +189,27 @@ public class OptionalFeaturesPage extends BannerPage {
 				selectAll(true);
 			}
 		});
-		selectAllButton.setText(UpdateUIPlugin.getResourceString(KEY_SELECT_ALL));
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		selectAllButton.setText(
+			UpdateUIPlugin.getResourceString(KEY_SELECT_ALL));
+		GridData gd =
+			new GridData(
+				GridData.HORIZONTAL_ALIGN_FILL
+					| GridData.VERTICAL_ALIGN_BEGINNING);
 		selectAllButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(selectAllButton);
-		
+
 		Button deselectAllButton = new Button(client, SWT.PUSH);
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				selectAll(false);
 			}
 		});
-		deselectAllButton.setText(UpdateUIPlugin.getResourceString(KEY_DESELECT_ALL));
-		gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
+		deselectAllButton.setText(
+			UpdateUIPlugin.getResourceString(KEY_DESELECT_ALL));
+		gd =
+			new GridData(
+				GridData.HORIZONTAL_ALIGN_FILL
+					| GridData.VERTICAL_ALIGN_BEGINNING);
 		deselectAllButton.setLayoutData(gd);
 		SWTUtil.setButtonDimensionHint(deselectAllButton);
 		return client;
@@ -197,6 +256,58 @@ public class OptionalFeaturesPage extends BannerPage {
 		}
 	}
 
+	private void computeElements() {
+		IFeature oldFeature = pendingChange.getOldFeature();
+		IFeature newFeature = pendingChange.getFeature();
+		ArrayList list = new ArrayList();
+		computeElements(oldFeature, newFeature, list);
+		elements = list.toArray();
+	}
+
+	private void computeElements(
+		IFeature oldFeature,
+		IFeature newFeature,
+		ArrayList list) {
+		Object[] oldChildren = null;
+		Object[] newChildren = getIncludedFeatures(newFeature);
+
+		try {
+
+			if (oldFeature != null) {
+				oldChildren = getIncludedFeatures(oldFeature);
+			}
+			for (int i = 0; i < newChildren.length; i++) {
+				IFeatureReference oldRef = null;
+				IFeatureReference newRef = (IFeatureReference) newChildren[i];
+				if (oldChildren != null) {
+					String newId =
+						newRef.getVersionedIdentifier().getIdentifier();
+					for (int j = 0; j < oldChildren.length; j++) {
+						IFeatureReference cref =
+							(IFeatureReference) oldChildren[j];
+						if (cref
+							.getVersionedIdentifier()
+							.getIdentifier()
+							.equals(newId)) {
+							oldRef = cref;
+							break;
+						}
+					}
+				}
+				FeatureElement element = new FeatureElement(oldRef, newRef);
+				// If this is an update (old feature exists), 
+				// only check the new optional feature if the old exists.
+				// Otherwise, always check.
+				if (newRef.isOptional() && pendingChange.getOldFeature()!=null)
+					element.setChecked(oldRef!=null);
+				else
+					element.setChecked(true);
+				list.add(element);
+			}
+		} catch (CoreException e) {
+		}
+	}
+
 	private Object[] getIncludedFeatures(IFeatureReference ref) {
 		try {
 			IFeature feature = ref.getFeature();
@@ -215,62 +326,59 @@ public class OptionalFeaturesPage extends BannerPage {
 	}
 
 	private void initializeStates() {
-		IFeature oldFeature = pendingChange.getOldFeature();
-		IFeature newFeature = pendingChange.getFeature();
-
-		if (oldFeature==null) {
-			// preselect all included children
-			selectAll(true);
-		}
-		else {
-			// preselect only installed children
-		}
-	}
-	
-	private void selectAll(boolean value) {
-		ArrayList selected = new ArrayList();
+		if (elements==null) computeElements();
+		ArrayList checked = new ArrayList();
 		ArrayList grayed = new ArrayList();
-		Object [] included = getIncludedFeatures(pendingChange.getFeature());
-		for (int i=0; i<included.length; i++) {
-			IFeatureReference ref = (IFeatureReference)included[i];
-			if (ref.isOptional()==false) {
-				selected.add(ref);
-				grayed.add(ref);
-			}
-			else if (value)
-				selected.add(ref);
-			selectAll(ref, selected, grayed, value);
-		}
-		treeViewer.setCheckedElements(selected.toArray());
+		initializeStates(elements, checked, grayed);
+		treeViewer.setCheckedElements(checked.toArray());
 		treeViewer.setGrayedElements(grayed.toArray());
 	}
 	
-	private void selectAll(IFeatureReference ref, ArrayList selected, ArrayList grayed, boolean value) {
-		Object [] included = getIncludedFeatures(ref);
-		for (int i=0; i<included.length; i++) {
-			IFeatureReference iref = (IFeatureReference)included[i];
-			if (iref.isOptional()==false) {
-				selected.add(iref);
-				grayed.add(iref);
-			}
-			else if (value)
-				selected.add(iref);
-			selectAll(iref, selected, grayed, value);
+	private void initializeStates(Object [] elements, ArrayList checked, ArrayList grayed) {
+		for (int i=0; i<elements.length; i++) {
+			FeatureElement element = (FeatureElement)elements[i];
+			if (element.isChecked()) checked.add(element);
+			if (!element.isEditable()) grayed.add(element);
+			Object [] children = element.getChildren();
+			initializeStates(children, checked, grayed);
 		}
 	}
-	
-	private void handleChecked(Object element, boolean checked) {
-		//see if the object is editable
-		boolean editable = true;
 
-		if (element instanceof IFeatureReference) {
-			IFeatureReference fref = (IFeatureReference)element;
-			editable = fref.isOptional();
+	private void selectAll(boolean value) {
+		ArrayList selected = new ArrayList();
+
+		for (int i = 0; i < elements.length; i++) {
+			FeatureElement element = (FeatureElement)elements[i];
+			selectAll(element, selected, value);
 		}
-		if (!editable)
+		treeViewer.setCheckedElements(selected.toArray());
+	}
+
+	private void selectAll(
+		FeatureElement ref,
+		ArrayList selected,
+		boolean value) {
+		
+		if (ref.isOptional()==false) selected.add(ref);
+		else {
+			ref.setChecked(value);
+			if (value) selected.add(ref);
+		}
+		Object[] included = ref.getChildren();
+		for (int i = 0; i < included.length; i++) {
+			FeatureElement fe = (FeatureElement) included[i];
+			selectAll(fe, selected, value);
+		}
+	}
+
+	private void handleChecked(Object element, boolean checked) {
+		FeatureElement fe = (FeatureElement)element;
+
+		if (!fe.isEditable())
 			treeViewer.setChecked(element, !checked);
 		else {
 			// update the result
+			fe.setChecked(checked);
 		}
 	}
 }
