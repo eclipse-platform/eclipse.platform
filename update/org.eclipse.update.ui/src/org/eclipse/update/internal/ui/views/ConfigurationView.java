@@ -1085,7 +1085,7 @@ public class ConfigurationView
 					IStatus child = children[i];
 					if (child.isMultiStatus())
 						return code;
-					if (child.getCode() != IFeature.STATUS_DISABLE)
+					if (child.getCode() != IFeature.STATUS_DISABLED)
 						return code;
 				}
 				// If we are here, global status is unhappy

@@ -176,9 +176,11 @@ public class UpdatesView
 			if (parent instanceof SiteBookmark) {
 				return getSiteCatalog((SiteBookmark) parent);
 			}
+			/*
 			if (parent instanceof SearchObject) {
 				return ((SearchObject) parent).getChildren(null);
 			}
+			*/
 			if (parent instanceof SearchResultSite) {
 				return ((SearchResultSite) parent).getChildren(null);
 			}
@@ -224,9 +226,11 @@ public class UpdatesView
 			if (parent instanceof BookmarkFolder) {
 				return ((BookmarkFolder) parent).hasChildren();
 			}
+			/*
 			if (parent instanceof SearchObject) {
 				return ((SearchObject) parent).hasChildren();
 			}
+			*/
 			if (parent instanceof MyComputerDirectory) {
 				return ((MyComputerDirectory) parent).hasChildren(parent);
 			}
@@ -802,9 +806,12 @@ public class UpdatesView
 		if (child instanceof PendingChange)
 			return;
 		if (child instanceof NamedModelObject
+			/*
 			|| child instanceof SearchResultSite
 			|| child instanceof IFeature
-			|| child instanceof IFeatureAdapter) {
+			|| child instanceof IFeatureAdapter 
+			*/
+			) {
 			UpdateModel model = UpdateUIPlugin.getDefault().getUpdateModel();
 			if (parent == null)
 				parent = model;
@@ -819,7 +826,7 @@ public class UpdatesView
 		if (children[0] instanceof PendingChange)
 			return;
 		if (children[0] instanceof NamedModelObject
-			|| children[0] instanceof SearchResultSite) {
+			/*|| children[0] instanceof SearchResultSite */) {
 			viewer.remove(children);
 			viewer.setSelection(new StructuredSelection());
 		}
@@ -835,7 +842,7 @@ public class UpdatesView
 					viewer.refresh(object);
 				}
 			}
-			viewer.setSelection(viewer.getSelection());
+			//viewer.setSelection(viewer.getSelection());
 		}
 	}
 
