@@ -61,19 +61,17 @@ public class Utilities {
 
 	/**
 	 * Create a new working file. The file is marked for deletion on exit.
-	 * The file is optionally associated with a lookup key.
 	 * 
 	 * @see #lookupLocalFile(String)
 	 * @param tmpDir directory location for new file. Any missing directory
 	 * levels are created (and marked for deletion on exit)
-	 * @param key optional lookup key, or <code>null</code>.
 	 * @param name optional file name, or <code>null</code>. If name is not
 	 * specified, a temporary name is generated.
 	 * @return created working file
 	 * @exception IOException
 	 * @since 2.0
 	 */
-	public static synchronized File createLocalFile(File tmpDir, String key, String name) throws IOException {
+	public static synchronized File createLocalFile(File tmpDir, String name) throws IOException {
 		// create the local file
 		File temp;
 		String filePath;
@@ -90,13 +88,22 @@ public class Utilities {
 		temp.deleteOnExit();
 		verifyPath(temp, true);
 
+		return temp;
+	}
+
+	/**
+	 * The file is associated with a lookup key.
+	 * @param key optional lookup key, or <code>null</code>.
+	 * @param temp the local working file
+	 * @since 2.0.2
+	 */
+	public synchronized static void mapLocalFile(String key, File temp) {
 		// create file association 
 		if (key != null) {
 			if (entryMap == null)
 				entryMap = new HashMap();
 			entryMap.put(key, temp);
 		}
-		return temp;
 	}
 
 	/**

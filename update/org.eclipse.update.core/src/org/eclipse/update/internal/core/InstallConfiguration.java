@@ -368,8 +368,6 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			//$NON-NLS-1$
 		}
 		
-		//log
-		UpdateManagerPlugin.log(this);		
 	}
 
 	/*
@@ -398,7 +396,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.UnableToCast"), e);
 			//$NON-NLS-1$
 		}
-
+		
 		// update runtime configuration [18520]
 		// Note: we must not blindly replace the site entries because they
 		//       contain additional runtime state that needs to be preserved.
@@ -511,6 +509,10 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		if ("file".equalsIgnoreCase(getURL().getProtocol())) { //$NON-NLS-1$
 			// the location points to a file
 			File file = new File(getURL().getFile());
+			if (!file.exists()) {
+				//log + 24642 [works for all activities]
+				UpdateManagerPlugin.log(this);	
+			}
 			if (isTransient)
 				file.deleteOnExit();
 			export(file);

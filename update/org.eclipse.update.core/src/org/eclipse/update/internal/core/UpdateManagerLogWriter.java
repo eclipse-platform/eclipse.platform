@@ -40,6 +40,7 @@ public class UpdateManagerLogWriter {
 	private static final String CONFIGURE = "feature-enable"; //$NON-NLS-1$
 	private static final String REVERT = "revert"; //$NON-NLS-1$
 	private static final String RECONCILIATION = "reconciliation"; //$NON-NLS-1$
+	private static final String PRESERVED = "preserve-configuration"; //$NON-NLS-1$	
 	private static final String UNKNOWN = "unknown"; //$NON-NLS-1$	
 
 	private static final String LINE_SEPARATOR;
@@ -265,8 +266,11 @@ public class UpdateManagerLogWriter {
 				return REVERT;
 			case IActivity.ACTION_RECONCILIATION :
 				return RECONCILIATION;
+			case IActivity.ACTION_ADD_PRESERVED :
+				return PRESERVED;
+							
 			default :
-				return UNKNOWN;
+				return UNKNOWN+" ["+i+"]";
 		}
 	}
 

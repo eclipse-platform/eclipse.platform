@@ -173,8 +173,7 @@ public class JarContentReference extends ContentReference {
 					is = null;
 					os = null;
 					entryId = selector.defineIdentifier(entry);
-					localFile = Utilities.createLocalFile(dir, null /*key*/
-					, entryId); // create temp file w/o a key map
+					localFile = Utilities.createLocalFile(dir, entryId); // create temp file 
 					if (!entry.isDirectory()) {
 						try {
 							is = jarArchive.getInputStream(entry);
@@ -236,8 +235,7 @@ public class JarContentReference extends ContentReference {
 			InputStream is = null;
 			OutputStream os = null;
 			entryId = selector.defineIdentifier(entry);
-			File localFile = Utilities.createLocalFile(dir, null /*key*/
-			, entryId); // create temp file w/o a key map
+			File localFile = Utilities.createLocalFile(dir, entryId); // create temp file
 			if (!entry.isDirectory()) {
 				try {
 					is = jarArchive.getInputStream(entry);
