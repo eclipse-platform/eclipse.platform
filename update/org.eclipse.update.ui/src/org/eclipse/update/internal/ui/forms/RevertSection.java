@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
@@ -21,23 +22,23 @@ import org.eclipse.update.ui.forms.internal.*;
 public class RevertSection extends UpdateSection {
 	// NL keys
 	private static final String KEY_TITLE =
-		"InstallConfigurationPage.RevertSection.title";
+		"InstallConfigurationPage.RevertSection.title"; //$NON-NLS-1$
 	private static final String KEY_DESC =
-		"InstallConfigurationPage.RevertSection.desc";
+		"InstallConfigurationPage.RevertSection.desc"; //$NON-NLS-1$
 	private static final String KEY_CURRENT_TEXT =
-		"InstallConfigurationPage.RevertSection.currentText";
+		"InstallConfigurationPage.RevertSection.currentText"; //$NON-NLS-1$
 	private static final String KEY_REVERT_TEXT =
-		"InstallConfigurationPage.RevertSection.revertText";
+		"InstallConfigurationPage.RevertSection.revertText"; //$NON-NLS-1$
 	private static final String KEY_REVERT_BUTTON =
-		"InstallConfigurationPage.RevertSection.revertButton";
+		"InstallConfigurationPage.RevertSection.revertButton"; //$NON-NLS-1$
 	private static final String KEY_RESTORE_TEXT =
-		"InstallConfigurationPage.RevertSection.restoreText";
+		"InstallConfigurationPage.RevertSection.restoreText"; //$NON-NLS-1$
 	private static final String KEY_RESTORE_BUTTON =
-		"InstallConfigurationPage.RevertSection.restoreButton";
+		"InstallConfigurationPage.RevertSection.restoreButton"; //$NON-NLS-1$
 	private static final String KEY_DIALOG_TITLE =
-		"InstallConfigurationPage.RevertSection.dialog.title";
+		"InstallConfigurationPage.RevertSection.dialog.title"; //$NON-NLS-1$
 	private static final String KEY_DIALOG_MESSAGE =
-		"InstallConfigurationPage.RevertSection.dialog.message";
+		"InstallConfigurationPage.RevertSection.dialog.message"; //$NON-NLS-1$
 
 	private Composite container;
 	private FormWidgetFactory factory;
@@ -65,16 +66,16 @@ public class RevertSection extends UpdateSection {
 		container = factory.createComposite(parent);
 		container.setLayout(layout);
 		layout.numColumns = 3;
-		currentTextLabel = factory.createLabel(container, "");
+		currentTextLabel = factory.createLabel(container, ""); //$NON-NLS-1$
 		currentTextLabel.setFont(JFaceResources.getBannerFont());
 		TableData td = new TableData();
 		td.valign = TableData.MIDDLE;
 		currentTextLabel.setLayoutData(td);
-		textLabel = factory.createLabel(container, "", SWT.WRAP);
+		textLabel = factory.createLabel(container, "", SWT.WRAP); //$NON-NLS-1$
 		td = new TableData();
 		td.valign = TableData.MIDDLE;
 		textLabel.setLayoutData(td);
-		revertButton = factory.createButton(container, "", SWT.PUSH);
+		revertButton = factory.createButton(container, "", SWT.PUSH); //$NON-NLS-1$
 		revertButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				performRevert();
@@ -110,7 +111,7 @@ public class RevertSection extends UpdateSection {
 			revertButton.setText(
 				UpdateUIPlugin.getResourceString(KEY_REVERT_BUTTON));
 		} else {
-			currentTextLabel.setText("");
+			currentTextLabel.setText(""); //$NON-NLS-1$
 			textLabel.setText(
 				UpdateUIPlugin.getResourceString(KEY_RESTORE_TEXT));
 			revertButton.setText(
@@ -135,6 +136,14 @@ public class RevertSection extends UpdateSection {
 	}
 
 	public static void performRevert(final IInstallConfiguration target) {
+		// ask the user to confirm and bail if canceled
+		String title = UpdateUIPlugin.getActivePage().getLabel();
+		if (!MessageDialog.openConfirm(
+				UpdateUIPlugin.getActiveWorkbenchShell(),
+				title,
+				UpdateUIPlugin.getResourceString("InstallConfigurationPage.RevertSection.confirm.message"))) //$NON-NLS-1$
+			return;
+				
 		// make sure we can actually do the revert
 		IStatus status = ActivityConstraints.validatePendingRevert(target);
 		if (status != null) {
