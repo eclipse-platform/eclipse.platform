@@ -631,9 +631,11 @@ public class UpdateManagerUtils {
 		String os = candidate.getOS();
 		String ws = candidate.getWS();
 		String arch = candidate.getOSArch();
-		if (os!=null && isMatching(os, SiteManager.getOS())==false) return false;
-		if (ws!=null && isMatching(ws, SiteManager.getWS())==false) return false;
-		if (arch!=null && isMatching(arch, SiteManager.getOSArch())==false) return false;
+		String nl = candidate.getNL();
+		if (os!=null && !isMatching(os, SiteManager.getOS())) return false;
+		if (ws!=null && !isMatching(ws, SiteManager.getWS())) return false;
+		if (arch!=null && !isMatching(arch, SiteManager.getOSArch())) return false;
+		if (nl!=null && !isMatchingLocale(nl, SiteManager.getNL())) return false;
 		return true;
 	}
 
@@ -651,6 +653,27 @@ public class UpdateManagerUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * 
+	 */	
+	private static boolean isMatchingLocale(String candidateValues, String locale) {
+		if (locale==null) return false;
+		if ("*".equalsIgnoreCase(candidateValues)) return true;
+		
+		locale = locale.toUpperCase();
+		candidateValues = candidateValues.toUpperCase();	
+		StringTokenizer stok = new StringTokenizer(candidateValues, ",");
+		while (stok.hasMoreTokens()) {
+			String candidate = stok.nextToken();
+			if (locale.indexOf(candidate) == 0)
+				return true;
+			if (candidate.indexOf(locale) == 0)
+				return true;
+		}
+		return false;
+	}
+
 	
 /**
  * write XML file
