@@ -22,7 +22,7 @@ public class Utilities {
 	private static Map entryMap;
 	private static Stack bufferPool;
 	private static final int BUFFER_SIZE = 4096;
-	private static final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());	
+	private static final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
 	private static long tmpseed = (new Date()).getTime();
 	private static String dirRoot = null;
 
@@ -36,26 +36,19 @@ public class Utilities {
 	 * @since 2.0
 	 */
 	public static synchronized File createWorkingDirectory() throws IOException {
-		
+
 		if (dirRoot == null) {
 			dirRoot = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
 			// in Linux, returns '/tmp', we must add '/'
 			if (!dirRoot.endsWith(File.separator))
 				dirRoot += File.separator;
-				
-			dirRoot += "eclipse"
-				+ File.separator
-				+ ".update"
-				+ File.separator
-				+ Long.toString(tmpseed)
-				+ File.separator;
+
+			dirRoot += "eclipse" + File.separator + ".update" + File.separator + Long.toString(tmpseed) + File.separator;
 			//$NON-NLS-1$ //$NON-NLS-2$
 		}
-		
-		String tmpName = dirRoot
-			+ Long.toString(++tmpseed)
-			+ File.separator;
-		
+
+		String tmpName = dirRoot + Long.toString(++tmpseed) + File.separator;
+
 		File tmpDir = new File(tmpName);
 		verifyPath(tmpDir, false);
 		if (!tmpDir.exists())
@@ -77,11 +70,7 @@ public class Utilities {
 	 * @exception IOException
 	 * @since 2.0
 	 */
-	public static synchronized File createLocalFile(
-		File tmpDir,
-		String key,
-		String name)
-		throws IOException {
+	public static synchronized File createLocalFile(File tmpDir, String key, String name) throws IOException {
 		// create the local file
 		File temp;
 		String filePath;
@@ -144,11 +133,7 @@ public class Utilities {
 	 * @exception InstallAbortedException
 	 * @since 2.0
 	 */
-	public static void copy(
-		InputStream is,
-		OutputStream os,
-		InstallMonitor monitor)
-		throws IOException, InstallAbortedException {
+	public static void copy(InputStream is, OutputStream os, InstallMonitor monitor) throws IOException, InstallAbortedException {
 		byte[] buf = getBuffer();
 		try {
 			long currentLen = 0;
@@ -156,11 +141,11 @@ public class Utilities {
 			while (len != -1) {
 				currentLen += len;
 				os.write(buf, 0, len);
-				if (monitor != null){
+				if (monitor != null) {
 					monitor.setCopyCount(currentLen);
 					if (monitor.isCanceled()) {
 						String msg = Policy.bind("Feature.InstallationCancelled"); //$NON-NLS-1$
-						throw new InstallAbortedException(msg,null);
+						throw new InstallAbortedException(msg, null);
 					}
 				}
 				len = is.read(buf);
@@ -185,31 +170,30 @@ public class Utilities {
 	 * @since 2.0
 	 */
 	public static CoreException newCoreException(String s, int code, Throwable e) {
-		String id =
-			UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-	
+		String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+
 		// check the case of a multistatus
 		IStatus status;
-		if (e instanceof CoreException){
-			if (s==null) s="";
-			status = new MultiStatus( id, code, s, e);
-			IStatus childrenStatus = ((CoreException)e).getStatus();
-			((MultiStatus)status).add(childrenStatus);		
-			((MultiStatus)status).addAll(childrenStatus);		
+		if (e instanceof CoreException) {
+			if (s == null)
+				s = "";
+			status = new MultiStatus(id, code, s, e);
+			IStatus childrenStatus = ((CoreException) e).getStatus();
+			((MultiStatus) status).add(childrenStatus);
+			((MultiStatus) status).addAll(childrenStatus);
 		} else {
 			StringBuffer completeString = new StringBuffer("");
-			if (s!=null)
+			if (s != null)
 				completeString.append(s);
-			if (e!=null){
+			if (e != null) {
 				completeString.append(" [");
 				completeString.append(e.toString());
 				completeString.append("]");
 			}
 			status = new Status(IStatus.ERROR, id, code, completeString.toString(), e);
-		}	
+		}
 		return new CoreException(status); //$NON-NLS-1$
 	}
-
 
 	/**
 	 * Creates a CoreException from some other exception.
@@ -225,11 +209,11 @@ public class Utilities {
 	 * @since 2.0
 	 */
 	public static CoreException newCoreException(String s, Throwable e) {
-		return newCoreException(s,IStatus.OK,e);
+		return newCoreException(s, IStatus.OK, e);
 	}
 
 	/**
-	 * Creates a CoreException from two other exception
+	 * Creates a CoreException from two other CoreException
 	 * 
 	 * @param s overall exception string
 	 * @param s1 string for first detailed exception
@@ -239,48 +223,22 @@ public class Utilities {
 	 * @return a CoreException with multi-status
 	 * @since 2.0
 	 */
-	public static CoreException newCoreException(
-		String s,
-		String s1,
-		String s2,
-		Throwable e1,
-		Throwable e2) {
-		String id =
-			UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
-		if (s==null) s="";
-		MultiStatus multi = new MultiStatus(id, IStatus.OK, s, null);
+	public static CoreException newCoreException(String s, String s1, String s2, CoreException e1, CoreException e2) {
+		String id = UpdateManagerPlugin.getPlugin().getDescriptor().getUniqueIdentifier();
+		if (s == null)
+			s = "";
+
+		IStatus childStatus1 = ((CoreException) e1).getStatus();
+		IStatus childStatus2 = ((CoreException) e2).getStatus();
+		int code = (childStatus1.getCode()==childStatus2.getCode())?childStatus1.getCode():IStatus.OK;
+		MultiStatus multi = new MultiStatus(id, code, s, null);
 		
-		// check if core exception
-		if (e1 instanceof CoreException){
-			IStatus childStatus = ((CoreException)e1).getStatus();
-			multi.add(childStatus);
-			multi.addAll(childStatus);
-		} else {
-			StringBuffer completeString = new StringBuffer();
-			if (s!=null)
-				completeString.append(s);
-			if (e1!=null){
-				completeString.append(" [");
-				completeString.append(e1.toString());
-				completeString.append("]");
-			}
-			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e1)); // no exception trace			
-		}
-		
-		// check if core exception
-		if (e2 instanceof CoreException){
-			IStatus childStatus = ((CoreException)e2).getStatus();
-			multi.add(childStatus);
-			multi.addAll(childStatus);
-		} else {
-			StringBuffer completeString = new StringBuffer(s);
-			if (e2!=null){
-				completeString.append(" [");
-				completeString.append(e2.toString());
-				completeString.append("]");
-			}
-			multi.add(new Status(IStatus.ERROR, id, 0, completeString.toString(), e2)); // no exception trace			
-		}
+						
+		multi.add(childStatus1);
+		multi.addAll(childStatus1);
+		multi.add(childStatus2);
+		multi.addAll(childStatus2);
+
 		return new CoreException(multi); //$NON-NLS-1$
 	}
 
@@ -292,11 +250,12 @@ public class Utilities {
 	 * @return the formatted Date as a String
 	 * @since 2.0
 	 */
-	public static String format(Date date){
-		if (date==null) return "";
+	public static String format(Date date) {
+		if (date == null)
+			return "";
 		return dateFormat.format(date);
 	}
-	
+
 	/**
 	 * Perform shutdown processing for temporary file handling.
 	 * This method is called when platform is shutting down.
@@ -310,21 +269,21 @@ public class Utilities {
 	public static void shutdown() {
 		if (dirRoot == null)
 			return;
-			
+
 		File temp = new File(dirRoot); // temp directory root for this run
 		cleanupTemp(temp);
 		temp.delete();
 	}
-	
+
 	private static void cleanupTemp(File root) {
 		File[] files = root.listFiles();
-		for (int i=0; files!=null && i<files.length; i++) {
+		for (int i = 0; files != null && i < files.length; i++) {
 			if (files[i].isDirectory())
 				cleanupTemp(files[i]);
-			files[i].delete();				
+			files[i].delete();
 		}
 	}
-	
+
 	private static void verifyPath(File path, boolean isFile) {
 		// if we are expecting a file back off 1 path element
 		if (isFile) {
