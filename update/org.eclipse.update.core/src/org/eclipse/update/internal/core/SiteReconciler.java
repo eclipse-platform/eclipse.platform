@@ -641,8 +641,14 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		for (int i = 0; i < list.length; i++) {
 			IFeatureReference[] children = list[i].getIncludedFeatureReferences();
 			for (int j = 0; j < children.length; j++) {
-				IFeature child = children[j].getFeature();
-				result.remove(child);
+				IFeature child = null;
+				try {
+					children[j].getFeature();
+					result.remove(child);					
+				} catch (CoreException e){
+					// if optional, it may not exist, do not throw error for that
+					if (!children[j].isOptional()) throw e;
+				}
 			}
 		}
 
@@ -708,10 +714,10 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			IFeature child = null;
 			try {
 				child = children[j].getFeature();
+				expandFeature(child, features);				
 			} catch (CoreException e){
 				if (!children[j].isOptional()) throw e;
 			}
-			expandFeature(child, features);
 		}
 	}
 

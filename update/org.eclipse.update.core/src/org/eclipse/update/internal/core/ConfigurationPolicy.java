@@ -209,8 +209,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 			InstallConfiguration installConfig = ((InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration());
 				
-			// Throws an exception if the feature has 
-			// a configured parent
+			// Allow unconfigure if the feature is optional from all the parents
+			// or if the feature is mandatory and non of its parent are configured
 			if (validateNoConfiguredParents(feature)){
 				if (handler!=null)
 					handler.unconfigureInitiated();

@@ -419,7 +419,8 @@ public class UpdateManagerUtils {
 	
 	/*
 	 * returns the list of FeatureRference that are parent of 
-	 * the Feature or an empty array if no parent found
+	 * the Feature or an empty array if no parent found.
+	 * Does not return parent that consider the childFeature as optional
 	 * @param child
 	 * @param possiblesParent
 	 */ 
@@ -441,7 +442,7 @@ public class UpdateManagerUtils {
 						try {
 							compareFeature = children[j].getFeature();
 						} catch (CoreException e){};
-						if (childFeature.equals(compareFeature)){
+						if (childFeature.equals(compareFeature) && !children[j].isOptional()){
 							parentList.add(possiblesParent[i]);
 						}
 					}
