@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="testproject" basedir="." default="main">
-	<property name="propD" value="valD" />
-	<property file="buildtest1.properties" />
-	<target name="main" depends="properties">
