@@ -78,10 +78,12 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		try {
 			feature = featureReference.getFeature();
 		} catch (CoreException e) {
-			URL url = featureReference.getURL();
-			String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
-			UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);
-			return;
+			if (!featureReference.isOptional()){			
+				URL url = featureReference.getURL();
+				String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
+				UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);
+				return;
+			}
 		}
 		if (feature == null) {
 			URL url = featureReference.getURL();
@@ -156,10 +158,12 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 		try {
 			feature = featureReference.getFeature();
 		} catch (CoreException e) {
-			URL url = featureReference.getURL();
-			String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
-			UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);
-			return false;
+			if (!featureReference.isOptional()){
+				URL url = featureReference.getURL();
+				String urlString = (url != null) ? url.toExternalForm() : "<no feature reference url>";
+				UpdateManagerPlugin.warn("Error retrieving feature:" + urlString, e);
+				return false;
+			}
 		}
 
 		if (feature == null) {
@@ -197,7 +201,8 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 
 			// Allow unconfigure if the feature is optional from all the parents
 			// or if the feature is mandatory and non of its parent are configured
-			if (validateNoConfiguredParents(feature)) {
+			// removed, not a core issue (so deep down)
+			//if (validateNoConfiguredParents(feature)) {
 				if (handler != null)
 					handler.unconfigureInitiated();
 				addUnconfiguredFeatureReference((FeatureReferenceModel) featureReference);
@@ -210,12 +215,12 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 					installConfig.addActivityModel((ConfigurationActivityModel) activity);
 				}
 				success = true;
-			} else {
-				if (activity != null) {
-					activity.setStatus(IActivity.STATUS_NOK);
-					installConfig.addActivityModel((ConfigurationActivityModel) activity);
-				}
-			}
+			//} else {
+			//	if (activity != null) {
+			//		activity.setStatus(IActivity.STATUS_NOK);
+			//		installConfig.addActivityModel((ConfigurationActivityModel) activity);
+			//	}
+			//}
 		} catch (Throwable t) {
 			originalException = t;
 		} finally {
@@ -511,7 +516,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			} catch (CoreException e) {
 			}
 			String featureLabel = (parentFeature == null) ? parents[i].getURL().toExternalForm() : parentFeature.getLabel();
-			UpdateManagerPlugin.warn(Policy.bind("ConfigurationPolicy.ParentIsEnable", featureLabel));
+			UpdateManagerPlugin.warn(Policy.bind("ConfigurationPolicy.ParentIsEnable",featureLabel));
 		}
 		return false;
 	}

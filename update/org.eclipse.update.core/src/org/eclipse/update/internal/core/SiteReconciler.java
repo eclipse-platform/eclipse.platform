@@ -796,7 +796,6 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			if (!right.contains(feature))
 				result.add(feature);
 		}
-
 		return result;
 	}
 
