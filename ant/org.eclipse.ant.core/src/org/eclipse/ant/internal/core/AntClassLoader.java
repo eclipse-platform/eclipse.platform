@@ -19,7 +19,7 @@ import org.eclipse.core.boot.BootLoader;
 public class AntClassLoader extends URLClassLoader {
 
 	protected ClassLoader[] pluginLoaders;
-	private static final String ANT_PACKAGES_PREFIX= "org.apache.tools.ant"; //$NON-NLS-1$
+	private static final String ANT_PACKAGES_PREFIX= "org.apache.tools"; //$NON-NLS-1$
 	private static final String[] ECLIPSE_ANT_PACKAGES_PREFIXES= new String[4];
 	private static final boolean devMode= BootLoader.inDevelopmentMode();
 	
