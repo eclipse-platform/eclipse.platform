@@ -303,11 +303,8 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			return;
 
 		// bottom up approach, same configuredSite
-		//IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 		IFeatureReference[] childrenRef = feature.getIncludedFeatureReferences();
 		if (optionalFeatures!=null){
-// reinitialize local children as new optional features may have been installed
-//((Feature)feature).initializeIncludedReferences();
 			childrenRef = childrenToConfigure(childrenRef,optionalFeatures);
 		}	
 

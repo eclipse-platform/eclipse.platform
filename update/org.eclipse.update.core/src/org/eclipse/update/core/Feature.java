@@ -392,8 +392,13 @@ public class Feature extends FeatureModel implements IFeature {
 				if (consumer != null) {
 					if (success) {
 						result = consumer.close();
-						if (result == null)
+						if (result == null){
 							result = alreadyInstalledFeature; // 18867
+							if (result!=null && optionalfeatures!=null && optionalfeatures.length>0){
+								// reinitialize as new optional children may have been installed
+								reinitializeFeature(result);
+							}
+						}
 						// close the log
 						recoveryLog.close(recoveryLog.END_INSTALL_LOG);
 					} else {
@@ -648,7 +653,7 @@ public class Feature extends FeatureModel implements IFeature {
 	 * Otherwise attempt to instanciate it using the same type as this feature and
 	 * using the default location on the site
 	 */
-	public void initializeIncludedReferences() throws CoreException {
+	private void initializeIncludedReferences() throws CoreException {
 		includedFeatureReferences = new ArrayList();
 
 		// key = versionedIdentifer, value = IncludeFeatureOptions
@@ -829,4 +834,24 @@ public class Feature extends FeatureModel implements IFeature {
 		UpdateManagerPlugin.warn("ValidateAlreadyInstalled:Feature " + this +" not found on site" + this.getURL());
 		return null;
 	}
+	
+	/*
+	 * re initialize children of the feature, invalidate the cache
+	 * @param result FeatureReference to reinitialize.
+	 */
+	private void reinitializeFeature(IFeatureReference referenceToReinitialize) {
+		
+		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_CONFIGURATION)
+			UpdateManagerPlugin.debug("Re initialize feature reference:"+referenceToReinitialize);
+		
+		IFeature feature = null;
+		try {
+			feature = referenceToReinitialize.getFeature();
+			if (feature!=null && feature instanceof Feature){
+				((Feature)feature).initializeIncludedReferences();
+			}
+		} catch (CoreException e) {
+			UpdateManagerPlugin.warn("",e);
+		}
+	}	
 }
