@@ -157,7 +157,7 @@ public class InstallWizard extends Wizard {
 			else
 				targetSite.install(feature, optionalFeatures, getVerificationListener(), monitor);
 			IFeature oldFeature = job.getOldFeature();
-			if (oldFeature != null) {
+			if (oldFeature != null && !job.isOptionalDelta()) {
 				boolean oldSuccess = unconfigure(oldFeature);
 				if (!oldSuccess) {
 					if (!isNestedChild(oldFeature))

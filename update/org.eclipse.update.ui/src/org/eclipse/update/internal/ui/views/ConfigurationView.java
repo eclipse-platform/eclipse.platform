@@ -461,7 +461,7 @@ public class ConfigurationView
 			edesc = info.getWindowImage();
 		eclipseImage = edesc.createImage();
 		featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
-		optionalFeatureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
+		optionalFeatureImage = UpdateUIPluginImages.DESC_NOTINST_FEATURE_OBJ.createImage();
 		edesc =
 			new OverlayIcon(
 				UpdateUIPluginImages.DESC_FEATURE_OBJ,

@@ -561,7 +561,7 @@ public class DetailsForm extends PropertyWebForm {
 		}
 		// Random site feature
 		if (alreadyInstalled) {
-			return isBrokenFeatureUpdate();
+			return isBrokenFeatureUpdate() || isOptionalFeatureInstall();
 		}
 		// Not installed - check if there are other 
 		// features with this ID that are installed
@@ -590,6 +590,36 @@ public class DetailsForm extends PropertyWebForm {
 			if (status != null && status.getSeverity() == IStatus.ERROR)
 				return true;
 		} catch (CoreException e) {
+		}
+		return false;
+	}
+	
+	private boolean isOptionalFeatureInstall() {
+		return hasMissingOptionalFeatures(installedFeatures[0]);
+	}
+	
+	private boolean hasMissingOptionalFeatures(IFeature feature) {
+		try {
+			IFeatureReference refs[] = feature.getIncludedFeatureReferences();
+			for (int i=0; i<refs.length; i++) {
+				IFeatureReference ref = refs[i];
+
+				try {
+					IFeature child = ref.getFeature();
+					
+					// not missing - try children
+					if (hasMissingOptionalFeatures(child))
+							return true;
+				}
+				catch (CoreException e) {
+					// missing - if optional, return true
+					if (ref.isOptional())
+						return true;
+				}
+			}
+		}
+		catch (CoreException e) {
+			// problem with the feature itself
 		}
 		return false;
 	}
@@ -637,7 +667,7 @@ public class DetailsForm extends PropertyWebForm {
 			else
 				doButton.setText(
 					UpdateUIPlugin.getResourceString(KEY_DO_CONFIGURE));
-		} else if (update) {
+		} else if (update && !alreadyInstalled) {
 			doButton.setText(UpdateUIPlugin.getResourceString(KEY_DO_UPDATE));
 		} else
 			doButton.setText(UpdateUIPlugin.getResourceString(KEY_DO_INSTALL));
@@ -941,7 +971,7 @@ public class DetailsForm extends PropertyWebForm {
 
 	private PendingChange createPendingChange(int type) {
 		if (type == PendingChange.INSTALL && installedFeatures.length > 0) {
-			return new PendingChange(installedFeatures[0], currentFeature);
+			return new PendingChange(installedFeatures[0], currentFeature, alreadyInstalled);
 		} else {
 			return new PendingChange(currentFeature, type);
 		}

@@ -16,6 +16,7 @@ public class PendingChange extends SimpleFeatureAdapter {
 	public static final int UNCONFIGURE = 0x4;
 	private int jobType;
 	private IFeature oldFeature;
+	private boolean optionalDelta;
 	
 	public PendingChange(IFeature feature, int jobType) {
 		super(feature);
@@ -25,6 +26,11 @@ public class PendingChange extends SimpleFeatureAdapter {
 	public PendingChange(IFeature oldFeature, IFeature newFeature) {
 		this(newFeature, INSTALL);
 		this.oldFeature = oldFeature;
+	}
+	
+	public PendingChange(IFeature oldFeature, IFeature newFeature, boolean optionalDelta) {
+		this(oldFeature, newFeature);
+		this.optionalDelta = optionalDelta;
 	}
 
 	public int getJobType() {
@@ -37,5 +43,8 @@ public class PendingChange extends SimpleFeatureAdapter {
 	
 	public IFeature getOldFeature() {
 		return oldFeature;
+	}
+	public boolean isOptionalDelta() {
+		return optionalDelta;
 	}
 }

@@ -76,7 +76,8 @@ public class OptionalFeaturesPage extends BannerPage {
 			if (obj instanceof FeatureElement) {
 				FeatureElement fe = (FeatureElement) obj;
 				String name = fe.getLabel();
-				if (name!=null) return name;
+				if (name != null)
+					return name;
 			}
 			return super.getText(obj);
 		}
@@ -103,7 +104,7 @@ public class OptionalFeaturesPage extends BannerPage {
 				return false;
 			// cannot uncheck optional feature that
 			// has already been installed
-			if (oldFeatureRef !=null)
+			if (oldFeatureRef != null)
 				return false;
 			return true;
 		}
@@ -148,7 +149,7 @@ public class OptionalFeaturesPage extends BannerPage {
 					IFeature oldFeature = null;
 					IFeature newFeature = null;
 					newFeature = newFeatureRef.getFeature();
-					if (oldFeature != null)
+					if (oldFeatureRef != null)
 						oldFeature = oldFeatureRef.getFeature();
 					computeElements(oldFeature, newFeature, children);
 				} catch (CoreException e) {
@@ -158,9 +159,9 @@ public class OptionalFeaturesPage extends BannerPage {
 		public void addCheckedOptionalFeatures(Set set) {
 			if (isOptional() && isChecked())
 				set.add(newFeatureRef);
-			Object [] list = getChildren();
-			for (int i=0; i<list.length; i++) {
-				FeatureElement element = (FeatureElement)list[i];
+			Object[] list = getChildren();
+			for (int i = 0; i < list.length; i++) {
+				FeatureElement element = (FeatureElement) list[i];
 				element.addCheckedOptionalFeatures(set);
 			}
 		}
@@ -297,15 +298,19 @@ public class OptionalFeaturesPage extends BannerPage {
 				if (oldChildren != null) {
 					String newId =
 						newRef.getVersionedIdentifier().getIdentifier();
+
 					for (int j = 0; j < oldChildren.length; j++) {
 						IFeatureReference cref =
 							(IFeatureReference) oldChildren[j];
-						if (cref
-							.getVersionedIdentifier()
-							.getIdentifier()
-							.equals(newId)) {
-							oldRef = cref;
-							break;
+						try {
+							if (cref
+								.getVersionedIdentifier()
+								.getIdentifier()
+								.equals(newId)) {
+								oldRef = cref;
+								break;
+							}
+						} catch (CoreException ex) {
 						}
 					}
 				}
@@ -313,8 +318,9 @@ public class OptionalFeaturesPage extends BannerPage {
 				// If this is an update (old feature exists), 
 				// only check the new optional feature if the old exists.
 				// Otherwise, always check.
-				if (newRef.isOptional() && pendingChange.getOldFeature()!=null)
-					element.setChecked(oldRef!=null);
+				if (newRef.isOptional()
+					&& pendingChange.getOldFeature() != null)
+					element.setChecked(oldRef != null);
 				else
 					element.setChecked(true);
 				list.add(element);
@@ -342,20 +348,26 @@ public class OptionalFeaturesPage extends BannerPage {
 	}
 
 	private void initializeStates() {
-		if (elements==null) computeElements();
+		if (elements == null)
+			computeElements();
 		ArrayList checked = new ArrayList();
 		ArrayList grayed = new ArrayList();
 		initializeStates(elements, checked, grayed);
 		treeViewer.setCheckedElements(checked.toArray());
 		treeViewer.setGrayedElements(grayed.toArray());
 	}
-	
-	private void initializeStates(Object [] elements, ArrayList checked, ArrayList grayed) {
-		for (int i=0; i<elements.length; i++) {
-			FeatureElement element = (FeatureElement)elements[i];
-			if (element.isChecked()) checked.add(element);
-			if (!element.isEditable()) grayed.add(element);
-			Object [] children = element.getChildren();
+
+	private void initializeStates(
+		Object[] elements,
+		ArrayList checked,
+		ArrayList grayed) {
+		for (int i = 0; i < elements.length; i++) {
+			FeatureElement element = (FeatureElement) elements[i];
+			if (element.isChecked())
+				checked.add(element);
+			if (!element.isEditable())
+				grayed.add(element);
+			Object[] children = element.getChildren();
 			initializeStates(children, checked, grayed);
 		}
 	}
@@ -364,7 +376,7 @@ public class OptionalFeaturesPage extends BannerPage {
 		ArrayList selected = new ArrayList();
 
 		for (int i = 0; i < elements.length; i++) {
-			FeatureElement element = (FeatureElement)elements[i];
+			FeatureElement element = (FeatureElement) elements[i];
 			selectAll(element, selected, value);
 		}
 		treeViewer.setCheckedElements(selected.toArray());
@@ -374,11 +386,13 @@ public class OptionalFeaturesPage extends BannerPage {
 		FeatureElement ref,
 		ArrayList selected,
 		boolean value) {
-		
-		if (ref.isOptional()==false) selected.add(ref);
+
+		if (ref.isOptional() == false)
+			selected.add(ref);
 		else {
 			ref.setChecked(value);
-			if (value) selected.add(ref);
+			if (value)
+				selected.add(ref);
 		}
 		Object[] included = ref.getChildren();
 		for (int i = 0; i < included.length; i++) {
@@ -388,7 +402,7 @@ public class OptionalFeaturesPage extends BannerPage {
 	}
 
 	private void handleChecked(Object element, boolean checked) {
-		FeatureElement fe = (FeatureElement)element;
+		FeatureElement fe = (FeatureElement) element;
 
 		if (!fe.isEditable())
 			treeViewer.setChecked(element, !checked);
@@ -397,13 +411,14 @@ public class OptionalFeaturesPage extends BannerPage {
 			fe.setChecked(checked);
 		}
 	}
-	
+
 	public IFeatureReference[] getCheckedOptionalFeatures() {
 		HashSet set = new HashSet();
-		for (int i=0; i<elements.length; i++) {
-			FeatureElement element = (FeatureElement)elements[i];
+		for (int i = 0; i < elements.length; i++) {
+			FeatureElement element = (FeatureElement) elements[i];
 			element.addCheckedOptionalFeatures(set);
 		}
-		return (IFeatureReference[])set.toArray(new IFeatureReference[set.size()]);
+		return (IFeatureReference[]) set.toArray(
+			new IFeatureReference[set.size()]);
 	}
 }
