@@ -305,15 +305,17 @@ public class SiteReconciler extends ModelObject implements IWritable {
 			}
 		}
 
-		// if a feature has been found in new and old state use old state (configured/unconfigured)
+		// if a feature has been found in new and old state 
+		// use old state (configured/unconfigured)
 		// pessimistic or optimistic
+		// do not call install handler as the configure/unconfigure already happened
 		Iterator featureIter = toCheck.iterator();
 		while (featureIter.hasNext()) {
 			IFeatureReference oldFeatureRef = (IFeatureReference) featureIter.next();
 			if (oldSitePolicy.isConfigured(oldFeatureRef)) {
-					newSitePolicy.configure(oldFeatureRef,true, false);
+					newSitePolicy.configure(oldFeatureRef,false, false);
 			} else {
-					newSitePolicy.unconfigure(oldFeatureRef,true, false);
+					newSitePolicy.unconfigure(oldFeatureRef,false, false);
 			}
 		}
 
