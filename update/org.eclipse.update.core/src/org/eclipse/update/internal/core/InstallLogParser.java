@@ -93,8 +93,12 @@ public class InstallLogParser {
 	
 	private void openLog() throws CoreException {
 		try {
-			buffRead = new BufferedReader(new FileReader(logPath.toOSString()));
-		} catch (FileNotFoundException e) {
+		    // throws FileNotFoundException, IOException
+		    InputStream is = new FileInputStream(logPath.toOSString());
+		    // throws UnsupportedEncodingException
+		    InputStreamReader isr = new InputStreamReader(is,"UTF-8");
+		    buffRead = new BufferedReader(isr);
+		} catch (Exception e) {
 			throwCoreException(e);
 		}
 	}
