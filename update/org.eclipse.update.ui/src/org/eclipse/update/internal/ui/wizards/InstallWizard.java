@@ -225,6 +225,8 @@ public class InstallWizard extends Wizard {
 		IConfiguredSite targetSite)
 		throws CoreException {
 		boolean patch = false;
+		if (targetSite==null)
+			targetSite = feature.getSite().getConfiguredSite();
 		IImport[] imports = feature.getImports();
 		for (int i = 0; i < imports.length; i++) {
 			IImport iimport = imports[i];
