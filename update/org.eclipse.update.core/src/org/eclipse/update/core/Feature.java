@@ -259,7 +259,12 @@ public class Feature extends FeatureModel implements IFeature {
 			}
 			IPluginEntry[] pluginsToInstall = UpdateManagerUtils.diff(sourceFeaturePluginEntries, targetSitePluginEntries);
 			INonPluginEntry[] nonPluginsToInstall = getNonPluginEntries();
-			IFeatureReference[] children = getNonOptionalIncludedFeatureReferences();
+			
+			IFeatureReference[] children = getIncludedFeatureReferences();
+			if (optionalfeatures!=null){
+				children = optionalChildrenToInstall(children,optionalfeatures);
+			}
+			
 
 			// determine number of monitor tasks
 			//   2 tasks for the feature jar (download/verify + install)
@@ -420,12 +425,34 @@ public class Feature extends FeatureModel implements IFeature {
 	}
 
 	/**
-	 * Returns the list of non optional nested features to be installed.
+	 * Return the optional children to install
+	 * The optional features to install may not all be direct children 
+	 * of the feature.
+	 * 
+	 * @param children all the nested features
+	 * @param optionalfeatures optional features to install
 	 * @return IFeatureReference[]
 	 */
-	private IFeatureReference[] getNonOptionalIncludedFeatureReferences() {
-		// TODO
-		return null;
+	private IFeatureReference[] optionalChildrenToInstall(IFeatureReference[] children, IFeatureReference[] optionalfeatures) {
+		if (optionalfeatures.length==0) return optionalfeatures;
+		
+		List optionalChildrenToInstall = new ArrayList();
+		for (int i = 0; i < optionalfeatures.length; i++) {
+			IFeatureReference optionalFeature = optionalfeatures[i];
+			for (int j = 0; j < children.length; j++) {
+				if (optionalFeature.equals(children[j])){
+					optionalChildrenToInstall.add(children[j]);
+					break;
+				}
+			}
+		}
+		
+		IFeatureReference[] result = new IFeatureReference[optionalChildrenToInstall.size()];
+		if (optionalChildrenToInstall.size()>0){
+			optionalChildrenToInstall.toArray(result);
+		}
+		
+		return result;
 	}
 
 
@@ -656,9 +683,11 @@ public class Feature extends FeatureModel implements IFeature {
 	private void initializeIncludedReferences() throws CoreException {
 		includedFeatureReferences = new ArrayList();
 
-		VersionedIdentifier[] identifiers = getFeatureIncludeVersionedIdentifier();
-		// key = featureIdentifer, value = isOptional ??? bc optional is based on the parent feature
-		//Map identifiers = getFeatureIncludeVersionedIdentifier();		
+		// key = versionedIdentifer, value = IncludeFeatureOptions
+		Map nestedFeatures = getFeatureIncludeMap();	
+		if (nestedFeatures.isEmpty())
+			return;
+		
 		ISite site = getSite();
 		if (site == null)
 			return; 
@@ -666,8 +695,10 @@ public class Feature extends FeatureModel implements IFeature {
 		// [20367] no site, cannot initialize nested references
 		IFeatureReference[] refs = site.getFeatureReferences();
 
-		for (int i = 0; i < identifiers.length; i++) {
-			VersionedIdentifier identifier = identifiers[i];
+		Iterator nestedVersionedIdentifier = nestedFeatures.keySet().iterator();
+		while (nestedVersionedIdentifier.hasNext()){
+			VersionedIdentifier identifier = (VersionedIdentifier)nestedVersionedIdentifier.next();
+			IncludedFeatureOptions options = (IncludedFeatureOptions)nestedFeatures.get(identifier);			
 			boolean found = false;
 
 			// too long to compute if not a file system
@@ -687,12 +718,10 @@ public class Feature extends FeatureModel implements IFeature {
 
 							if (feature != null) {
 								if (identifier.equals(feature.getVersionedIdentifier())) {
-									//refs[ref].isOptional(identifiers.getValue(identifiers[i]));
-									//refs[ref].setname(identifiers[i].getName());
-									
 									// included featureReferences may also be a Map then
-									//includedFeatureReferences.put(refs[ref],identifiers.getValue(identifiers[i]));
-									includedFeatureReferences.add(refs[ref]);
+									FeatureReference newRef = new FeatureReference(refs[ref]);
+									newRef.setOptions(options);
+									includedFeatureReferences.add(newRef);
 									found = true;
 								}
 							}
@@ -705,6 +734,7 @@ public class Feature extends FeatureModel implements IFeature {
 			// in future we may ask for a factory to create the feature ref
 			if (!found) {
 				FeatureReference newRef = new FeatureReference();
+				newRef.setOptions(options);
 				newRef.setSite(getSite());
 				IFeatureReference parentRef = getSite().getFeatureReference(this);
 				if (parentRef instanceof FeatureReference) {

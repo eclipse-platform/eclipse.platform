@@ -13,7 +13,7 @@ import java.util.Stack;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.eclipse.core.runtime.*;
-import org.eclipse.update.core.FeatureIdentifier;
+import org.eclipse.update.core.IncludedFeatureOptions;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.core.Policy;
 import org.eclipse.update.internal.core.UpdateManagerPlugin;
@@ -273,15 +273,15 @@ public class DefaultFeatureParser extends DefaultHandler {
 
 			case STATE_INCLUDES :
 				stateStack.pop();
-				if (objectStack.peek() instanceof FeatureIdentifier) {
-					FeatureIdentifier identifier = (FeatureIdentifier) objectStack.pop();
-					boolean isOptional = false;
-					if (objectStack.peek() instanceof Boolean){
-						isOptional = ((Boolean)objectStack.pop()).booleanValue();
+				if (objectStack.peek() instanceof VersionedIdentifier) {
+					VersionedIdentifier identifier = (VersionedIdentifier) objectStack.pop();
+					IncludedFeatureOptions options = null;
+					if (objectStack.peek() instanceof IncludedFeatureOptions){
+						options = ((IncludedFeatureOptions)objectStack.pop());
 					} 
 					if (objectStack.peek() instanceof FeatureModel) {
 						featureModel = (FeatureModel) objectStack.peek();
-						featureModel.addIncludesFeatureIdentifier(identifier,isOptional);
+						featureModel.addIncludesFeatureIdentifier(identifier,options);
 					}
 				}				
 				break;
@@ -1047,8 +1047,8 @@ public class DefaultFeatureParser extends DefaultHandler {
 		String optional = attributes.getValue("isOptional");
 		boolean isOptional = "true".equalsIgnoreCase(optional);
 		
-		objectStack.push(new Boolean(isOptional));
-		objectStack.push(new FeatureIdentifier(new VersionedIdentifier(id,ver),name));	
+		objectStack.push(new IncludedFeatureOptions(name,isOptional));
+		objectStack.push(new VersionedIdentifier(id,ver));	
 			
 		if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_PARSING) {
 			debug("End process Includes tag: id:" //$NON-NLS-1$

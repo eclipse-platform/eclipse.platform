@@ -50,7 +50,7 @@ public class FeatureModel extends ModelObject {
 	imports;
 	private List /*of PluginEntryModel*/
 	pluginEntries;
-	private Map /*of FeatureIdentifier, Boolean */	
+	private Map /*of VersionedIdentifier, IncludedFeatureOptions */	
 	featureIncludes;
 	private List /*of NonPluginEntryModel*/
 	nonPluginEntries;
@@ -343,9 +343,9 @@ public class FeatureModel extends ModelObject {
 	}
 
 	/**
-	 * Returns an array of feature versioned identifier referenced by this feature
+	 * Returns an array of versioned identifier referenced by this feature
 	 * 
-	 * @return an array of feature versioned identifier, or an empty array.
+	 * @return an array of versioned identifier, or an empty array.
 	 * @deprecated use getFeatureIncludeIdentifier instead.
 	 * @since 2.0
 	 */
@@ -354,8 +354,29 @@ public class FeatureModel extends ModelObject {
 			return new VersionedIdentifier[0];
 			
 		//
-		Set versionIncluded = featureIncludes.keySet();
-		return (VersionedIdentifier[]) versionIncluded.toArray(arrayTypeFor(versionIncluded));
+		Set featureIncluded = featureIncludes.keySet();
+		Iterator iter = featureIncluded.iterator();
+		VersionedIdentifier[] versionIncluded = new VersionedIdentifier[featureIncluded.size()];
+		int index = 0;
+		while (iter.hasNext()) {
+			versionIncluded[index]=(VersionedIdentifier) iter.next();
+			index++;
+		}
+		return versionIncluded;
+	}
+
+	/**
+	 * Returns a map of feature versioned identifier referenced by this feature.
+	 * The key is an <code>IFeatureIdentifier</code> representing the nested feature.
+	 * The value is a <code>Boolean</code>. The valuse is <code>true</code> if the nested feature is optional, otherwise <code>false</code>.
+	 * 
+	 * @return a Map of feature versioned identifier and Boolean, or an empty Map.
+	 * @since 2.0
+	 */
+	public Map getFeatureIncludeMap() {
+		if (featureIncludes == null)
+			return new HashMap();	
+		return featureIncludes;
 	}
 
 	/**
@@ -697,8 +718,8 @@ public class FeatureModel extends ModelObject {
 	 * @param identifier feature identifer
 	 * @since 2.0
 	 */
-	public void addIncludesFeatureIdentifier(FeatureIdentifier identifier){
-		addIncludesFeatureIdentifier(identifier,false);
+	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier){
+		addIncludesFeatureIdentifier(identifier,null);
 	}
 	
 	/**
@@ -706,16 +727,16 @@ public class FeatureModel extends ModelObject {
 	 * Throws a runtime exception if this object is marked read-only.
 	 * 
 	 * @param identifier feature identifer
-	 * @param isOptional <code>true</code> if the feature is optional, <code>false</code> otherwise.
+	 * @param options the options associated with the nested feature
 	 * @since 2.0
 	 */
-	public void addIncludesFeatureIdentifier(FeatureIdentifier identifier,boolean isOptional){
+	public void addIncludesFeatureIdentifier(VersionedIdentifier identifier,IncludedFeatureOptions options){
 		assertIsWriteable();
 		if (identifier==null) return;
 		if (this.featureIncludes == null)
 			this.featureIncludes = new HashMap();
 		if (!this.featureIncludes.containsKey(identifier))
-			this.featureIncludes.put(identifier,new Boolean(isOptional));
+			this.featureIncludes.put(identifier,options);
 	}
 		
 	/**

@@ -284,7 +284,7 @@ public class JarVerificationPage extends BannerPage {
 		if (_strId != null && _strId.length() > 0) {
 			keyLabel = new Label(compositeInformation, SWT.NULL);
 			keyLabel.setText(
-				UpdateUIPlugin.getResourceString("JarVerificationDialog.FeatureIdentifier"));
+				UpdateUIPlugin.getResourceString("JarVerificationDialog.IncludedFeatureOptions"));
 			//$NON-NLS-1$
 			valueLabel = new CLabel(compositeInformation, SWT.NULL);
 			valueLabel.setFont(JFaceResources.getBannerFont());

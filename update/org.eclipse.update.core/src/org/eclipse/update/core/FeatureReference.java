@@ -39,6 +39,21 @@ public class FeatureReference
 	}
 
 	/**
+	 * Constructor FeatureReference.
+	 * @param ref the reference to copy
+	 */
+	public FeatureReference(IFeatureReference ref) {
+		super(ref);
+		setSite(ref.getSite());
+		try {
+			setURL(ref.getURL());
+		} catch (CoreException e){
+			UpdateManagerPlugin.warn("",e);
+		}
+	}
+
+
+	/**
 	 * Returns the feature this reference points to
 	 *  @return the feature on the Site
 	 */

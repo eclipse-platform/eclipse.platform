@@ -4,12 +4,14 @@ package org.eclipse.update.core.model;
  * All Rights Reserved.
  */
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.update.core.IFeatureReference;
+import org.eclipse.update.core.IncludedFeatureOptions;
+import org.eclipse.update.internal.core.UpdateManagerPlugin;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 
 /**
@@ -28,18 +30,13 @@ public class FeatureReferenceModel extends ModelObject {
 	private URL url;
 	private String urlString;
 	private String featureId;
-	private String featureVersion;	
+	private String featureVersion;
 	private SiteModel site;
 	private List /* of String*/
 	categoryNames;
 
 	// [2.0.1]
-	private String name;
-	private boolean isOptional = false; 
-
-
-
-
+	private IncludedFeatureOptions options;
 
 	/**
 	 * Creates an uninitialized feature reference model object.
@@ -48,6 +45,24 @@ public class FeatureReferenceModel extends ModelObject {
 	 */
 	public FeatureReferenceModel() {
 		super();
+	}
+
+	/**
+	 * Constructor FeatureReferenceModel.
+	 * @param ref
+	 */
+	public FeatureReferenceModel(IFeatureReference ref) {
+		try {
+			setFeatureIdentifier(ref.getVersionedIdentifier().getIdentifier());
+			setFeatureVersion(ref.getVersionedIdentifier().getVersion().toString());
+		} catch (CoreException e) {
+			UpdateManagerPlugin.warn("", e);
+		}
+		if (ref instanceof FeatureReferenceModel) {
+			FeatureReferenceModel refModel = (FeatureReferenceModel) ref;
+			setType(refModel.getType());
+			setCategoryNames(refModel.getCategoryNames());
+		}
 	}
 
 	/**
@@ -70,7 +85,7 @@ public class FeatureReferenceModel extends ModelObject {
 
 		FeatureReferenceModel f = (FeatureReferenceModel) object;
 
-		return UpdateManagerUtils.sameURL(getURL(),f.getURL());
+		return UpdateManagerUtils.sameURL(getURL(), f.getURL());
 	}
 
 	/**
@@ -225,42 +240,6 @@ public class FeatureReferenceModel extends ModelObject {
 			this.categoryNames = new ArrayList(Arrays.asList(categoryNames));
 	}
 
-
-	/**
-	 * Returns the isOptional.
-	 * @return boolean
-	 */
-	public boolean isOptional() {
-		return isOptional;
-	}
-
-
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName() {
-		return name;
-	}
-
-
-	/**
-	 * Sets the isOptional.
-	 * @param isOptional The isOptional to set
-	 */
-	public void setOptional(boolean isOptional) {
-		this.isOptional = isOptional;
-	}
-
-
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	/**
 	 * Adds the name of a category this feature belongs to.
 	 * Throws a runtime exception if this object is marked read-only.
@@ -300,8 +279,7 @@ public class FeatureReferenceModel extends ModelObject {
 	 * @exception MalformedURLException
 	 * @since 2.0
 	 */
-	public void resolve(URL base, ResourceBundle bundle)
-		throws MalformedURLException {
+	public void resolve(URL base, ResourceBundle bundle) throws MalformedURLException {
 		// resolve local elements
 		url = resolveURL(base, bundle, urlString);
 	}
@@ -311,10 +289,27 @@ public class FeatureReferenceModel extends ModelObject {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(getClass().toString()+" :");
+		buffer.append(getClass().toString() + " :");
 		buffer.append(" at ");
-		if (url!=null) buffer.append(url.toExternalForm());
+		if (url != null)
+			buffer.append(url.toExternalForm());
 		return buffer.toString();
+	}
+
+	/**
+	 * Returns the options.
+	 * @return IncludedFeatureOptions
+	 */
+	public IncludedFeatureOptions getOptions() {
+		return options;
+	}
+
+	/**
+	 * Sets the options.
+	 * @param options The options to set
+	 */
+	public void setOptions(IncludedFeatureOptions options) {
+		this.options = options;
 	}
 
 }
