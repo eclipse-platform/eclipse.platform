@@ -95,7 +95,7 @@
       </view>
       <view
             name="Feature Search Results"
-            icon="icons/full/obj16/psearch_obj.gif"
+            icon="icons/full/cview16/featuresrc_result.gif"
             category="org.eclipse.update.ui"
             class="org.eclipse.update.internal.ui.views.SearchResultView"
             id="org.eclipse.update.ui.SearchResultsView">

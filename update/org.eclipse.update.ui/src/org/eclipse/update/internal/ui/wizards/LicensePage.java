@@ -27,6 +27,7 @@ public class LicensePage extends WizardPage {
 	private Text text;
 	private Table table;
 	private Image featureImage;
+	private Image efixImage;
 
 	/**
 	 * Constructor for LicensePage
@@ -38,6 +39,7 @@ public class LicensePage extends WizardPage {
 		this.multiLicenseMode = multiLicenseMode;
 		if (multiLicenseMode) {
 			featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
+			efixImage = UpdateUIPluginImages.DESC_EFIX_OBJ.createImage();
 		}
 		setDescription(
 			UpdateUIPlugin.getResourceString(
@@ -46,6 +48,8 @@ public class LicensePage extends WizardPage {
 	public void dispose() {
 		if (featureImage != null)
 			featureImage.dispose();
+		if (efixImage !=null)
+			efixImage.dispose();
 		super.dispose();
 	}
 
@@ -139,7 +143,8 @@ public class LicensePage extends WizardPage {
 					IFeature feature = jobs[i].getFeature();
 					item = new TableItem(table, SWT.NONE);
 					item.setText(feature.getLabel());
-					item.setImage(featureImage);
+					boolean efix = UpdateUIPlugin.isPatch(feature);
+					item.setImage(efix?efixImage:featureImage);
 					String license = feature.getLicense().getAnnotation();
 					// Question: Can this ever be null? What is the runtime cost?
 					item.setData(license);

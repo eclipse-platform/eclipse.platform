@@ -56,6 +56,7 @@ public class NewUpdatesWizardPage extends BannerPage {
 	private CheckboxTableViewer tableViewer;
 	private IInstallConfiguration config;
 	private Image featureImage;
+	private Image efixImage;
 	private PendingChange[] pendingChanges;
 	private Label counterLabel;
 	private Button filterCheck;
@@ -80,8 +81,16 @@ public class NewUpdatesWizardPage extends BannerPage {
 		* @see ITableLabelProvider#getColumnImage(Object, int)
 		*/
 		public Image getColumnImage(Object obj, int col) {
-			if (col == 0)
-				return featureImage;
+			if (col == 0) {
+				try {
+					IFeature feature = ((IFeatureAdapter) obj).getFeature();
+					boolean patch = UpdateUIPlugin.isPatch(feature);
+					return patch?efixImage:featureImage;
+				}
+				catch (CoreException e) {
+					return featureImage;
+				}
+			}
 			else
 				return null;
 		}
@@ -171,6 +180,7 @@ public class NewUpdatesWizardPage extends BannerPage {
 		this.config = config;
 		this.pendingChanges = changes;
 		featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
+		efixImage = UpdateUIPluginImages.DESC_EFIX_OBJ.createImage();
 		setBannerVisible(false);
 	}
 
@@ -178,6 +188,10 @@ public class NewUpdatesWizardPage extends BannerPage {
 		if (featureImage != null) {
 			featureImage.dispose();
 			featureImage = null;
+		}
+		if (efixImage != null) {
+			efixImage.dispose();
+			efixImage = null;
 		}
 		super.dispose();
 	}

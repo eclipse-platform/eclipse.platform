@@ -48,7 +48,8 @@ public class ConfigurationView
 		"ConfigurationView.missingOptionalStatus";
 	private static final String KEY_MISSING_STATUS =
 		"ConfigurationView.missingStatus";
-	private static final String STATE_SHOW_UNCONF = "ConfigurationView.showUnconf";
+	private static final String STATE_SHOW_UNCONF =
+		"ConfigurationView.showUnconf";
 	private Image eclipseImage;
 	private Image featureImage;
 	private Image updatedFeatureImage;
@@ -58,6 +59,9 @@ public class ConfigurationView
 	private Image unconfFeatureImage;
 	private Image errorUnconfFeatureImage;
 	private Image warningUnconfFeatureImage;
+	private Image efixImage;
+	private Image warningEfixImage;
+	private Image errorEfixImage;
 	private Image siteImage;
 	private Image installSiteImage;
 	private Image linkedSiteImage;
@@ -458,13 +462,18 @@ public class ConfigurationView
 				IStatus status = localSite.getFeatureStatus(feature);
 				int code = getStatusCode(feature, status);
 				if (configured) {
+					boolean efix = UpdateUIPlugin.isPatch(feature);
 					switch (code) {
 						case IFeature.STATUS_UNHAPPY :
-							return errorFeatureImage;
+							return efix ? errorEfixImage : errorFeatureImage;
 						case IFeature.STATUS_AMBIGUOUS :
-							return warningFeatureImage;
+							return efix
+								? warningEfixImage
+								: warningFeatureImage;
 						default :
-							return updated ? updatedFeatureImage : featureImage;
+							return updated
+								? updatedFeatureImage
+								: (efix ? efixImage : featureImage);
 					}
 				} else {
 					switch (code) {
@@ -547,6 +556,26 @@ public class ConfigurationView
 				UpdateUIPluginImages.DESC_WARNING_CO }
 		});
 		warningUnconfFeatureImage = edesc.createImage();
+
+		efixImage = UpdateUIPluginImages.DESC_EFIX_OBJ.createImage();
+		edesc =
+			new OverlayIcon(
+				UpdateUIPluginImages.DESC_EFIX_OBJ,
+				new ImageDescriptor[][] { {
+			}, {
+			}, {
+				UpdateUIPluginImages.DESC_ERROR_CO }
+		});
+		errorEfixImage = edesc.createImage();
+		edesc =
+			new OverlayIcon(
+				UpdateUIPluginImages.DESC_EFIX_OBJ,
+				new ImageDescriptor[][] { {
+			}, {
+			}, {
+				UpdateUIPluginImages.DESC_WARNING_CO }
+		});
+		warningEfixImage = edesc.createImage();
 
 		ImageDescriptor siteDesc = UpdateUIPluginImages.DESC_LSITE_OBJ;
 		siteImage = siteDesc.createImage();
@@ -667,6 +696,9 @@ public class ConfigurationView
 		unconfFeatureImage.dispose();
 		errorFeatureImage.dispose();
 		warningFeatureImage.dispose();
+		efixImage.dispose();
+		warningEfixImage.dispose();
+		errorEfixImage.dispose();
 		errorUnconfFeatureImage.dispose();
 		warningUnconfFeatureImage.dispose();
 		siteImage.dispose();
@@ -743,12 +775,15 @@ public class ConfigurationView
 
 	protected void makeActions() {
 		super.makeActions();
-		final IDialogSettings settings = UpdateUIPlugin.getDefault().getDialogSettings();
+		final IDialogSettings settings =
+			UpdateUIPlugin.getDefault().getDialogSettings();
 		boolean showUnconfState = settings.getBoolean(STATE_SHOW_UNCONF);
 		showUnconfFeaturesAction = new Action() {
 			public void run() {
 				viewer.refresh(getLocalSite());
-				settings.put(STATE_SHOW_UNCONF, showUnconfFeaturesAction.isChecked());
+				settings.put(
+					STATE_SHOW_UNCONF,
+					showUnconfFeaturesAction.isChecked());
 			}
 		};
 		WorkbenchHelp.setHelp(
@@ -1024,28 +1059,28 @@ public class ConfigurationView
 			UpdateUIPlugin.logException(e);
 		}
 	} /**
-																													 * @see IInstallConfigurationChangedListener#installSiteAdded(ISite)
-																													 */
+																														 * @see IInstallConfigurationChangedListener#installSiteAdded(ISite)
+																														 */
 	public void installSiteAdded(IConfiguredSite csite) {
 		asyncRefresh();
 	} /**
-																													 * @see IInstallConfigurationChangedListener#installSiteRemoved(ISite)
-																													 */
+																														 * @see IInstallConfigurationChangedListener#installSiteRemoved(ISite)
+																														 */
 	public void installSiteRemoved(IConfiguredSite site) {
 		asyncRefresh();
 	} /**
-																													 * @see IConfiguredSiteChangedListener#featureInstalled(IFeature)
-																													 */
+																														 * @see IConfiguredSiteChangedListener#featureInstalled(IFeature)
+																														 */
 	public void featureInstalled(IFeature feature) {
 		asyncRefresh();
 	} /**
-																													 * @see IConfiguredSiteChangedListener#featureUninstalled(IFeature)
-																													 */
+																														 * @see IConfiguredSiteChangedListener#featureUninstalled(IFeature)
+																														 */
 	public void featureRemoved(IFeature feature) {
 		asyncRefresh();
 	} /**
-																													 * @see IConfiguredSiteChangedListener#featureUConfigured(IFeature)
-																													 */
+																														 * @see IConfiguredSiteChangedListener#featureUConfigured(IFeature)
+																														 */
 	public void featureConfigured(IFeature feature) {
 	};
 	/**

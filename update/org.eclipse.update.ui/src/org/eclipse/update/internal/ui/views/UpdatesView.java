@@ -86,6 +86,7 @@ public class UpdatesView
 	private Image siteImage;
 	private Image installSiteImage;
 	private Image featureImage;
+	private Image efixImage;
 	private Image errorFeatureImage;
 	private Image categoryImage;
 	private Image discoveryImage;
@@ -322,14 +323,17 @@ public class UpdatesView
 			if (obj instanceof SearchObject) {
 				return getSearchObjectImage((SearchObject) obj);
 			}
-			if (obj instanceof IFeature)
-				return featureImage;
+			if (obj instanceof IFeature) {
+				boolean efix = UpdateUIPlugin.isPatch((IFeature)obj);
+				return efix?efixImage:featureImage;
+			}
 			if (obj instanceof IFeatureAdapter) {
 				IFeatureAdapter adapter = (IFeatureAdapter) obj;
 				IFeature feature = getFeature(adapter);
 				if (feature instanceof MissingFeature)
 					return errorFeatureImage;
-				return featureImage;
+				boolean efix = UpdateUIPlugin.isPatch(feature);
+				return efix?efixImage:featureImage;
 			}
 			return super.getImage(obj);
 		}
@@ -892,6 +896,7 @@ public class UpdatesView
 		siteImage = UpdateUIPluginImages.DESC_SITE_OBJ.createImage();
 		installSiteImage = UpdateUIPluginImages.DESC_LSITE_OBJ.createImage();
 		featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
+		efixImage = UpdateUIPluginImages.DESC_EFIX_OBJ.createImage();
 		discoveryImage = UpdateUIPluginImages.DESC_PLACES_OBJ.createImage();
 		bookmarkFolderImage =
 			UpdateUIPluginImages.DESC_BFOLDER_OBJ.createImage();
@@ -912,6 +917,7 @@ public class UpdatesView
 		siteImage.dispose();
 		installSiteImage.dispose();
 		featureImage.dispose();
+		efixImage.dispose();
 		errorFeatureImage.dispose();
 		discoveryImage.dispose();
 		bookmarkFolderImage.dispose();
