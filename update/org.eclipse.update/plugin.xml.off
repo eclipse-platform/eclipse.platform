@@ -5,7 +5,7 @@
 <plugin
     id          = "org.eclipse.update"
     name        = "%S_Eclipse_Update_Manager_Plugin"
-    version     = "0.9"
+    version     = "1.0"
     provider-name = "International Business Machines Corp."
     class       = "org.eclipse.update.internal.core.UpdateManagerPlugin">
 

@@ -3,7 +3,7 @@
 <plugin
    id="org.eclipse.update.examples"
    name="Update Example Plugin"
-   version="1.0.0"
+   version="1.0"
    class="org.eclipse.update.examples.ExamplesPlugin">
 <requires>
    <import plugin="org.eclipse.core.runtime"/>
