@@ -3,7 +3,7 @@
 <plugin
    id="org.eclipse.update.tests.core"
    name="%name"
-   version="3.0.0"
+   version="3.0.2"
    provider-name="%provider-name"
    class="org.eclipse.update.tests.UpdateTestsPlugin">
 

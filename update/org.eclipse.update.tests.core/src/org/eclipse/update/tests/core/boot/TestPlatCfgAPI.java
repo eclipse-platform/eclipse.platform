@@ -57,7 +57,7 @@ public class TestPlatCfgAPI extends PlatformConfigurationTestCase {
 
 		URL u4 = null;
 		try {
-			u1 = new URL("file:/d:/temp");
+			u1 = new URL("file:/d:/temp/");
 //			u2 = new URL("file://localhost/temp");
 			new URL("http://some.server/temp/");
 			u4 = new URL("http://bad.url");
