@@ -329,7 +329,7 @@
            </enablement>
            <contextLabel
          	  mode="run"
-         	  label="%ContextualAntLaunchShortcut.label"/>
+         	  label="%AntLaunchShortcut.label"/>
   		 </contextualLaunch>
       </shortcut>
       <shortcut
@@ -357,7 +357,7 @@
            </enablement>
            <contextLabel
          	  mode="run"
-         	  label="%ContextualAntLaunchShortcutWithDialog.label"/>
+         	  label="%AntLaunchShortcutWithDialog.label"/>
   		 </contextualLaunch>
       </shortcut>
    </extension>
