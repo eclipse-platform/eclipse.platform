@@ -303,12 +303,23 @@ public class InstallWizard extends Wizard {
 			if (!fe.isEnabled(config)) {
 				IFeature newFeature = fe.getFeature();
 				try {
-					targetSite.unconfigure(newFeature);
+					IFeature localFeature = findLocalFeature(targetSite, newFeature);
+					if (localFeature!=null)
+						targetSite.unconfigure(localFeature);
 				} catch (CoreException e) {
 					// Eat this - we will leave with it
 				}
 			}
-
 		}
+	}
+	private static IFeature findLocalFeature(IConfiguredSite csite, IFeature feature) throws CoreException {
+		IFeatureReference [] refs = csite.getConfiguredFeatures();
+		for (int i=0; i<refs.length; i++) {
+			IFeatureReference ref = refs[i];
+			VersionedIdentifier refVid = ref.getVersionedIdentifier();
+			if (feature.getVersionedIdentifier().equals(refVid))
+				return ref.getFeature();
+		}
+		return null;
 	}
 }
