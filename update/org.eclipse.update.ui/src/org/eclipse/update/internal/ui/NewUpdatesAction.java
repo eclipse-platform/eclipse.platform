@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -13,6 +15,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.update.core.ISite;
 import org.eclipse.update.internal.ui.search.DefaultUpdatesSearchObject;
 import org.eclipse.update.internal.ui.search.ISearchCategory;
 import org.eclipse.update.internal.ui.search.SearchCategoryDescriptor;
@@ -63,16 +66,41 @@ public class NewUpdatesAction implements IWorkbenchWindowActionDelegate {
 			new ProgressMonitorDialog(window.getShell());
 		try {
 			pmd.run(true, true, getOperation());
-			if (searchObject.hasChildren())
-				openNewUpdatesWizard();
-			else
-				showNoUpdatesMessage();
+			showResults();
 		} catch (InterruptedException e) {
 			UpdateUIPlugin.logException(e);
 		} catch (InvocationTargetException e) {
+			Throwable t = e.getTargetException();
+			if (t instanceof CoreException) {
+				CoreException ce = (CoreException)t;
+				IStatus status = ce.getStatus();
+				if (status!=null &&
+					status.getCode()==ISite.SITE_ACCESS_EXCEPTION) {
+					// Just show this but do not throw exception
+					// because there may be results anyway.
+					showConnectionErrors(status);
+					showResults();
+					return;
+				}
+			}
 			UpdateUIPlugin.logException(e);
 		}
 	}
+	
+	private void showResults() {
+		if (searchObject.hasChildren())
+			openNewUpdatesWizard();
+		else
+			showNoUpdatesMessage();
+	}
+	
+	private void showConnectionErrors(IStatus status) {
+		ErrorDialog.openError(window.getShell(),
+			UpdateUIPlugin.getResourceString(KEY_TITLE),
+			null, 
+			status);
+	}			
+			
 
 	private void showNoUpdatesMessage() {
 		MessageDialog.openInformation(

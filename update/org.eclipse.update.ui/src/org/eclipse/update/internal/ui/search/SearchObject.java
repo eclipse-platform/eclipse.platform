@@ -276,7 +276,7 @@ public class SearchObject extends NamedModelObject {
 		if (statusList.size()>0) {
 			IStatus [] children = (IStatus[])statusList.toArray(new IStatus[statusList.size()]);
 			MultiStatus multiStatus = new MultiStatus(UpdateUIPlugin.getPluginId(),
-				IStatus.OK,
+				ISite.SITE_ACCESS_EXCEPTION,
 				children,
 				UpdateUIPlugin.getResourceString("Search.networkProblems"), //$NON-NLS-1$
 				null);
