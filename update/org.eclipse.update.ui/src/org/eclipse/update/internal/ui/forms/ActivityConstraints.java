@@ -195,6 +195,7 @@ public class ActivityConstraints {
 			features =
 				computeFeaturesAfterOperation(features, newFeature, oldFeature);
 			checkConstraints(features, status);
+			checkVetos(newFeature, status);
 
 		} catch (CoreException e) {
 			status.add(e.getStatus());
@@ -734,6 +735,60 @@ public class ActivityConstraints {
 				status.add(e.getStatus());
 			}
 		}
+	}
+	
+	/*
+	 * Verify that this installation is not vetoed by
+	 * a feature that includes a previous version of
+	 * the new feature.
+	 */
+	 private static void checkVetos(IFeature newFeature,
+	 									ArrayList status) throws CoreException {
+	 	// Check vetos for each site
+		ILocalSite localSite = SiteManager.getLocalSite();
+		IInstallConfiguration config = localSite.getCurrentConfiguration();
+		IConfiguredSite[] csites = config.getConfiguredSites();
+
+		for (int i = 0; i < csites.length; i++) {
+			IConfiguredSite csite = csites[i];
+			
+			IFeatureReference[] crefs = csite.getConfiguredFeatures();
+			ArrayList visited = new ArrayList();
+			checkVetos(newFeature, crefs, visited, true, status);
+		}
+	}
+	
+	private static void checkVetos(IFeature newFeature, IFeatureReference[] crefs, ArrayList visited, boolean updateAllowed, ArrayList status) {
+		for (int i=0; i<crefs.length; i++) {
+			IFeatureReference cref = crefs[i];
+			if (visited.contains(cref)) // been there
+				continue;
+			try {
+				boolean realAllowed = updateAllowed && cref.isUpdateAllowed();
+				checkVeto(newFeature, cref, visited, realAllowed, status);
+			}
+			catch (CoreException e) {
+				// ignore and move on
+			}
+		}
+	}
+
+	private static void checkVeto(IFeature newFeature, IFeatureReference reference, ArrayList visited, boolean updateAllowed, ArrayList status) throws CoreException {
+		VersionedIdentifier newVid = newFeature.getVersionedIdentifier();
+		VersionedIdentifier vid = reference.getVersionedIdentifier();
+		if (newVid.getIdentifier().equals(vid.getIdentifier())) {
+			// The same feature.
+			if (!updateAllowed) {
+				// Test if the new feature is newer than this one
+				// and if match would allow this.
+			}
+		}
+		else {
+			IFeature ifeature = reference.getFeature();
+			IFeatureReference [] irefs = ifeature.getIncludedFeatureReferences();
+			checkVetos(newFeature, irefs, visited, updateAllowed, status);
+		}
+		visited.add(reference);
 	}
 	
 	/*
