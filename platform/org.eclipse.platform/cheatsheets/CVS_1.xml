@@ -26,13 +26,9 @@ Select the project and choose Replace With &gt; Another Branch or Version from t
 
 	<item
 		href="/org.eclipse.platform.doc.user/tasks/tasks-100b.htm" 
-		title="Merge Details" 
-		skip="true">
-		<action
-			pluginId=""
-			class=""/>
+		title="Merge Details">
 		<description>
-Select the project, choose Team &gt; Merge and complete the wizard as required. This step specifies the details of the merge. The "Merge" wizard is automatically displayed when you click the "Click to perform button".
+Select the project, choose Team &gt; Merge and complete the wizard as required. This step specifies the details of the merge.  This is a manual task, you will need to perform the work and click the "Click to complete" button to move to the next step.
 		</description>
 	</item>
 
