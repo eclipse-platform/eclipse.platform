@@ -442,7 +442,7 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 				// Check insalled features
 				IFeature patchedFeature = UpdateUtils.getPatchedFeature(feature);
 				if (patchedFeature != null  
-					&& !jobs[i].getTargetSite().equals(patchedFeature.getSite().getCurrentConfiguredSite())) {
+					&& !jobs[i].getTargetSite().equals(feature.getSite().getCurrentConfiguredSite())) {
 					String msg = UpdateUI.getFormattedMessage(
 							"InstallWizard.TargetPage.patchError", //$NON-NLS-1$
 							new String[] {

@@ -34,12 +34,14 @@ public class AntDocumentSetupParticipant  implements IDocumentSetupParticipant {
 	 * @see org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument)
 	 */
 	public void setup(IDocument document) {
-		if (document instanceof IDocumentExtension3) {
-			IDocumentExtension3 extension3= (IDocumentExtension3) document;
+		if (document != null) {
 			IDocumentPartitioner partitioner = createDocumentPartitioner();
-			extension3.setDocumentPartitioner(ANT_PARTITIONING, partitioner);
-			partitioner.connect(document);
-		} 
+			if (document instanceof IDocumentExtension3) {
+				IDocumentExtension3 extension3= (IDocumentExtension3) document;
+				extension3.setDocumentPartitioner(ANT_PARTITIONING, partitioner);
+				partitioner.connect(document);
+			} 
+		}
 	}
 	
 	private IDocumentPartitioner createDocumentPartitioner() {

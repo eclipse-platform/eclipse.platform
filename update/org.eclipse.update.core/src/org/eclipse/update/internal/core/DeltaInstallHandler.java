@@ -28,12 +28,14 @@ public class DeltaInstallHandler extends BaseInstallHandler {
 	private final static String META_MANIFEST = "META-INF/MANIFEST.MF"; //$NON-NLS-1$
 
 	protected IFeature oldFeature;
+	protected ISiteContentConsumer contentConsumer;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.update.core.IInstallHandler#completeInstall(org.eclipse.update.core.IFeatureContentConsumer)
 	 */
 	public void completeInstall(IFeatureContentConsumer consumer)
 		throws CoreException {
+
 		try {
 			if (pluginEntries == null)
 				return;
@@ -62,7 +64,7 @@ public class DeltaInstallHandler extends BaseInstallHandler {
 				if (oldPlugin == null)
 					continue;
 				try {
-					overlayPlugin(oldPlugin, newPlugin, consumer);
+					overlayPlugin(oldPlugin, newPlugin);
 				} catch (IOException e) {
 					throw new CoreException(
 						new Status(
@@ -101,8 +103,7 @@ public class DeltaInstallHandler extends BaseInstallHandler {
 
 	protected void overlayPlugin(
 		IPluginEntry oldPlugin,
-		IPluginEntry newPlugin,
-		IFeatureContentConsumer consumer)
+		IPluginEntry newPlugin)
 		throws CoreException, IOException {
 		if(newPlugin instanceof PluginEntry && !((PluginEntry)newPlugin).isUnpack()){
 			// partial plug-ins (in patches) must always be unpacked
@@ -124,9 +125,11 @@ public class DeltaInstallHandler extends BaseInstallHandler {
 				newPlugin,
 				null);
 
-		URL newURL = new URL(consumer.getFeature().getSite().getURL(),
+		URL newURL =
+			new URL(
+				oldFeature.getSite().getURL(),
 				Site.DEFAULT_PLUGIN_PATH
-						+ newPlugin.getVersionedIdentifier().toString());
+					+ newPlugin.getVersionedIdentifier().toString());
 		String pluginPath = newURL.getFile();
 		for (int i = 0; i < oldReferences.length; i++) {
 			if (isPluginManifest(oldReferences[i])
