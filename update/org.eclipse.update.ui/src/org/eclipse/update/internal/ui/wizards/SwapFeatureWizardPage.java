@@ -1,6 +1,5 @@
 package org.eclipse.update.internal.ui.wizards;
 
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -58,8 +57,7 @@ public class SwapFeatureWizardPage extends WizardPage {
 				return provider.get(UpdateUIImages.DESC_UNCONF_FEATURE_OBJ, 0);
 			}
 			public String getText(Object element) {
-				IFeature feature = (IFeature) element;
-				return feature.getLabel() + " " + feature.getVersionedIdentifier().getVersion().toString(); //$NON-NLS-1$
+				return "v" + ((IFeature)element).getVersionedIdentifier().getVersion().toString(); //$NON-NLS-1$
 			}
 		});
 		
@@ -75,9 +73,10 @@ public class SwapFeatureWizardPage extends WizardPage {
 		
 		tableViewer.setSorter(new ViewerSorter() {
 			public int compare(Viewer viewer, Object e1, Object e2) {
-				PluginVersionIdentifier v1 = ((IFeature)e1).getVersionedIdentifier().getVersion();
-				PluginVersionIdentifier v2 = ((IFeature)e2).getVersionedIdentifier().getVersion();
-				return v1.isGreaterOrEqualTo(v2) ? -1 : 1;
+				String v1 = ((IFeature)e1).getVersionedIdentifier().getVersion().toString();
+				String v2 = ((IFeature)e2).getVersionedIdentifier().getVersion().toString();
+
+				return v2.compareTo(v1);
 			}
 		});
 		

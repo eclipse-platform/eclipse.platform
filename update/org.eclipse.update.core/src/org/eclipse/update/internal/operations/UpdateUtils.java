@@ -578,8 +578,6 @@ public class UpdateUtils {
 			File[] allFiles = file.listFiles();
 			for (int i = 0; i < allFiles.length; i++) {
 				try {
-					if (!allFiles[i].getName().endsWith(".xml"))
-						continue;
 					// TRACE
 					if (UpdateCore.DEBUG && UpdateCore.DEBUG_SHOW_RECONCILER) {
 						UpdateCore.debug("Found delta change:" + allFiles[i]);
