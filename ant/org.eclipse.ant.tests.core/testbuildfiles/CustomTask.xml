@@ -1,0 +1,9 @@
+<project name="Custom Task" default="Custom Task" basedir=".">
+	<target name="init">
+		<tstamp/>
+	</target>
+
+	<target name="Custom Task" description= "Test adding a custom task" depends="init">
+		<AntTestTask/>
+	</target>
+</project>
