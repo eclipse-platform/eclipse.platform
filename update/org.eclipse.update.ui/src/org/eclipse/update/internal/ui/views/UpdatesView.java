@@ -530,7 +530,7 @@ public class UpdatesView
 			manager.add(deleteAction);
 		manager.add(new Separator());
 		super.fillContextMenu(manager);
-		if (obj instanceof SiteBookmark)
+		if (obj instanceof NamedModelObject)
 			manager.add(propertiesAction);
 	}
 
@@ -826,12 +826,14 @@ public class UpdatesView
 	}
 
 	public void objectChanged(Object object, String property) {
-		if (object instanceof SiteBookmark) {
+		if (object instanceof NamedModelObject) {
 			if (property.equals(SiteBookmark.P_NAME)) {
 				viewer.update(object, null);
 			}
-			if (property.equals(SiteBookmark.P_URL)) {
-				viewer.refresh(object);
+			if (object instanceof SiteBookmark) {
+				if (property.equals(SiteBookmark.P_URL)) {
+					viewer.refresh(object);
+				}
 			}
 			viewer.setSelection(viewer.getSelection());
 		}

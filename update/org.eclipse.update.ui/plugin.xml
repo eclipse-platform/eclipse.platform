@@ -123,6 +123,18 @@
             class="org.eclipse.update.internal.ui.properties.ConfigurationPropertyPage"
             id="org.eclipse.update.ui.configPropertyPage">
       </page>
+      <page
+            objectClass="org.eclipse.update.internal.ui.model.BookmarkFolder"
+            name="%properties.folder.label"
+            class="org.eclipse.update.internal.ui.properties.NamedObjectPropertyPage"
+            id="org.eclipse.update.ui.folderPropertyPage">
+      </page>
+      <page
+            objectClass="org.eclipse.update.internal.ui.model.SearchObject"
+            name="%properties.search.label"
+            class="org.eclipse.update.internal.ui.properties.NamedObjectPropertyPage"
+            id="org.eclipse.update.ui.searchPropertyPage">
+      </page>
    </extension>
    <extension
          point="org.eclipse.update.ui.searchCategory">
