@@ -92,6 +92,8 @@ public class VersionedIdentifier {
 	 * @since 2.0
 	 */
 	public boolean equals(Object obj) {
+//System.out.println("Compare :"+this+" and "+obj);		
+		
 		if (!(obj instanceof VersionedIdentifier))
 			return false;
 		VersionedIdentifier vid = (VersionedIdentifier) obj;

@@ -680,14 +680,27 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		}
 
 		// find "unique" top level features (latest version)
-		ArrayList topFeatures = computeTopFeatures(allPossibleConfiguredFeatures);
+		ArrayList topFeatures = computeTopFeatures(allPossibleConfiguredFeatures, configuredSite);
 
 		// expand features (compute full nesting structures).
-		ArrayList configuredFeatures = expandFeatures(topFeatures);
+		ArrayList configuredFeatures = expandFeatures(topFeatures, configuredSite);
 
 		// compute extra features
 		ArrayList extras = diff(allPossibleConfiguredFeatures, configuredFeatures);
 
+		// retrieve efixes that patch disable features
+		// efixes will show as root features.
+		Map patches = getPatches(topFeatures);
+		if (!patches.isEmpty()){
+			ArrayList disabledVersionedIdentifier  =new ArrayList();
+			Iterator iter = extras.iterator();
+			while (iter.hasNext()) {
+				IFeature element = (IFeature) iter.next();
+				disabledVersionedIdentifier.add(element.getVersionedIdentifier());
+			}
+			List efixesToDisable = getPatchesToDisable(patches,disabledVersionedIdentifier);
+			extras.addAll(efixesToDisable);
+		}
 		// unconfigure extra features
 		ConfigurationPolicy cPolicy = cSite.getConfigurationPolicy();
 		for (int i = 0; i < extras.size(); i++) {
@@ -703,12 +716,13 @@ public class SiteReconciler extends ModelObject implements IWritable {
 				UpdateManagerPlugin.warn("", e);
 			}
 		}
+		
 	}
 
 	/*
 	 * 
 	 */
-	private static ArrayList computeTopFeatures(ArrayList features) {
+	private static ArrayList computeTopFeatures(ArrayList features, IConfiguredSite configuredSite) {
 
 		// start with the features passed in
 		ArrayList result = new ArrayList();
@@ -726,19 +740,8 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 			if (children != null) {
 				for (int j = 0; j < children.length; j++) {
-					IFeature child = null;
-					try {
-						//remove best match and exact feature
-						child = children[j].getFeature(false, null);
-						result.remove(child);
-						child = children[j].getFeature(true, null);
-						result.remove(child);
-					} catch (CoreException e) {
-						// if optional, it may not exist, do not throw error for that
-						if (!children[j].isOptional()) {
-							UpdateManagerPlugin.warn(null, e);
-						}
-					}
+					// fix 71730: remove all possible matching children
+					removeMatchingFeatures(children[j], result, configuredSite);
 				}
 			}
 		}
@@ -780,12 +783,12 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	/*
 	 * 
 	 */
-	private static ArrayList expandFeatures(ArrayList features){
+	private static ArrayList expandFeatures(ArrayList features, IConfiguredSite configuredSite) {
 		ArrayList result = new ArrayList();
 
 		// expand all top level features
 		for (int i = 0; i < features.size(); i++) {
-			expandFeature((IFeature) features.get(i), result);
+			expandFeature((IFeature) features.get(i), result, configuredSite);
 		}
 
 		return result;
@@ -794,7 +797,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 	/*
 	 * 
 	 */
-	private static void expandFeature(IFeature feature, ArrayList features) {
+	private static void expandFeature(IFeature feature, ArrayList features, IConfiguredSite configuredSite) {
 
 		// add feature
 		if (!features.contains(feature)) {
@@ -809,22 +812,22 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		IFeatureReference[] children = null;
 		try {
 			children = feature.getIncludedFeatureReferences();
-		} catch(CoreException e){
-			UpdateManagerPlugin.warn("",e);
+		} catch (CoreException e) {
+			UpdateManagerPlugin.warn("", e);
 			return;
 		}
-		
+
 		for (int j = 0; j < children.length; j++) {
 			IFeature child = null;
-			try {
-				child = children[j].getFeature();
+			try { // fix 71730, expand with the best match in the configured site
+				child = children[j].getFeature(false, configuredSite);
 			} catch (CoreException e) {
 				if (!children[j].isOptional())
 					UpdateManagerPlugin.warn("", e);
 				// 25202 do not return right now, the peer children may be ok
 			}
 			if (child != null)
-				expandFeature(child, features);
+				expandFeature(child, features, configuredSite);
 		}
 	}
 
@@ -842,5 +845,126 @@ public class SiteReconciler extends ModelObject implements IWritable {
 		}
 		return result;
 	}
+
+	/*
+	 * remove all matching childrens from the list of possible parents
+	 */
+	private static void removeMatchingFeatures(IFeatureReference featureReference, ArrayList result, IConfiguredSite configuredSite) {
+		IncludedFeatureReference newRef = null;
+
+		if (configuredSite == null)
+			return;
+		IFeatureReference[] enabledFeatures = configuredSite.getConfiguredFeatures();
+
+		// find the all the matching feature reference(s) for the possible
+		// enabled features references that can be a match and remove the exact feature
+		for (int ref = 0; ref < enabledFeatures.length; ref++) {
+			try {
+				if (enabledFeatures[ref] != null) {
+					VersionedIdentifier id = enabledFeatures[ref].getVersionedIdentifier();
+					if (matches(featureReference, id)) {
+						try {
+							result.remove(enabledFeatures[ref].getFeature(true, null));
+						} catch (CoreException e) {
+							if (!enabledFeatures[ref].isOptional()) {
+								UpdateManagerPlugin.warn(null, e);
+							}
+						}
+					}
+				}
+			} catch (CoreException e) {
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_WARNINGS)
+					UpdateManagerPlugin.warn("", e);
+			}
+		}
+
+	}
+
+	/*
+	 * returns true if the VersionedIdentifier can be a best match for the
+	 * feature Reference.
+	 */
+	private static boolean matches(IFeatureReference featureReference, VersionedIdentifier id) throws CoreException {
+		VersionedIdentifier baseIdentifier = featureReference.getVersionedIdentifier();
+		if (baseIdentifier == null || id == null)
+			return false;
+		if (!id.getIdentifier().equals(baseIdentifier.getIdentifier()))
+			return false;
+
+		switch (featureReference.getMatch()) {
+			case IImport.RULE_PERFECT :
+				return id.getVersion().isPerfect(baseIdentifier.getVersion());
+			case IImport.RULE_COMPATIBLE :
+				return id.getVersion().isCompatibleWith(baseIdentifier.getVersion());
+			case IImport.RULE_EQUIVALENT :
+				return id.getVersion().isEquivalentTo(baseIdentifier.getVersion());
+			case IImport.RULE_GREATER_OR_EQUAL :
+				return id.getVersion().isGreaterOrEqualTo(baseIdentifier.getVersion());
+		}
+		UpdateManagerPlugin.warn("Unknown matching rule:" + featureReference.getMatch());
+		return false;
+	}
+
+	/*
+	 * get the list of enabled patches
+	 */
+	private static Map getPatches(ArrayList allConfiguredFeatures) {
+		// get all efixes and the associated patched features
+		Map patches = new HashMap();
+		if (allConfiguredFeatures!=null){
+			Iterator iter = allConfiguredFeatures.iterator();
+			while (iter.hasNext()) {
+				List patchedFeaturesID = new ArrayList();
+				IFeature element = (IFeature) iter.next();
+				// add the patched feature identifiers
+				for (int i = 0; i < element.getImports().length; i++) {
+					if (element.getImports()[i].isPatch()){
+						VersionedIdentifier id = element.getImports()[i].getVersionedIdentifier(); 
+						patchedFeaturesID.add(id);
+						if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+							UpdateManagerPlugin.debug("Found patch "+element+" for feature identifier "+id);
+					}
+				}
+
+				if (!patchedFeaturesID.isEmpty()){
+					patches.put(element,patchedFeaturesID);
+				} 
+			}
+		}
+		
+		return patches;
+	}
+
+	/*
+	 * retruns the list of pathes-feature who patch disabled features
+	 */
+	private static List getPatchesToDisable(Map efixes, ArrayList disabledVersionedIdentifer) {
+		List result = new ArrayList();
+		Iterator iter = efixes.keySet().iterator();
+		while (iter.hasNext()) {
+			boolean toDisable = true;
+			IFeature efixFeature = (IFeature) iter.next();
+			List patchedFeatures = (List)efixes.get(efixFeature);
+			// loop through the patched features
+			Iterator patchedFeaturesIter = patchedFeatures.iterator();
+			while (patchedFeaturesIter.hasNext() && toDisable) {
+				VersionedIdentifier patchedFeatureID = (VersionedIdentifier) patchedFeaturesIter.next();
+				if (!disabledVersionedIdentifer.contains(patchedFeatureID)){
+					if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+						UpdateManagerPlugin.debug("the patch "+efixFeature+" will not be disabled as it patches the enable feature "+patchedFeatureID);
+					toDisable = false;
+				}
+			}
+			
+			if (toDisable){
+				if (UpdateManagerPlugin.DEBUG && UpdateManagerPlugin.DEBUG_SHOW_RECONCILER)
+					UpdateManagerPlugin.debug("Found patch to disable:"+efixFeature);
+			 	result.add(efixFeature);	
+			}
+		}
+		return result;
+	}
+
+
 
 }
