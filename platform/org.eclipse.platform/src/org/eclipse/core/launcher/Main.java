@@ -178,6 +178,50 @@ public class Main {
 	protected static String[] arguments;
 	protected static boolean newSession = true;
 
+	static class Identifier {
+		private static final String SEPARATOR = "."; //$NON-NLS-1$
+		private int major, minor, service;
+		private Identifier(int major, int minor, int service) {
+			super();
+			this.major = major;
+			this.minor = minor;
+			this.service = service;
+		}
+		private Identifier(String versionString) {
+			super();
+			StringTokenizer tokenizer = new StringTokenizer(versionString, SEPARATOR);
+			
+			try {
+				// major
+				if (tokenizer.hasMoreTokens())
+					major = Integer.parseInt(tokenizer.nextToken());
+	
+				// minor
+				if (tokenizer.hasMoreTokens())
+					minor = Integer.parseInt(tokenizer.nextToken());
+	
+				// service
+				if (tokenizer.hasMoreTokens())
+					service = Integer.parseInt(tokenizer.nextToken());
+			} catch (NumberFormatException e) {
+				// if we get an exception then bail and return.
+			}
+		}
+		/**
+		 * Returns true if this id is considered to be greater than or equal to the given baseline.
+		 * e.g. 
+		 * 1.2.9 >= 1.3.1 -> false
+		 * 1.3.0 >= 1.3.1 -> false
+		 * 1.3.1 >= 1.3.1 -> true
+		 * 1.3.2 >= 1.3.1 -> true
+		 * 2.0.0 >= 1.3.1 -> true
+		 */
+		private boolean isGreaterEqualTo(Identifier minimum) {
+			return major >= minimum.major 
+				&& minor >= minimum.minor 
+				&& service >= minimum.service;
+		}
+	}
 /**
  * Executes the launch.
  * 
@@ -470,6 +514,12 @@ private Object[] getVersionElements(String version) {
  */
 public static void main(String[] args) {
 	Object result = null;
+	// Check to see if we are running with a compatible VM.
+	// If not, then return exit code "14" which will be recognized
+	// by the executable and an appropriate message will be displayed
+	// to the user.
+	if (!isCompatible())
+		System.exit(14);
 	Main launcher = new Main();
 	arguments = args;
 	try {
@@ -479,10 +529,10 @@ public static void main(String[] args) {
 		launcher.takeDownSplash();
 		log("Exception launching the Eclipse Platform:"); //$NON-NLS-1$
 		log(e);
-		// FIXME: this is where we would return a special exit code
-		// if we wanted the executable to display a message to the user
-		// saying that they should check the log and the location of
-		// the log file.
+		// Return "unlucky" 13 as the exit code. The executable will recognize
+		// this constant and display a message to the user telling them that
+		// there is information in their log file.
+		System.exit(13);
 	}
 	int exitCode = result instanceof Integer ? ((Integer) result).intValue() : 0;
 	System.exit(exitCode);
@@ -1224,7 +1274,7 @@ private static void computeLogFileLocation() {
 	if (logFile != null)
 		return;
 	// check to see if the user specified a workspace location in the command-line args
-	for (int i=0; logFile == null && i<arguments.length; i++) {
+	for (int i=0; arguments != null && logFile == null && i<arguments.length; i++) {
 		if (arguments[i].equalsIgnoreCase(DATA)) {
 			// found the -data command line argument so the next argument should be the
 			// workspace location. Ensure that we have another arg to check
@@ -1265,6 +1315,16 @@ private static void closeLogFile() throws IOException {
 	} finally {
 		log = null;
 	}
+}
+/**
+ * Return a boolean value indicating whether or not the version of the JVM is
+ * deemed to be compatible with Eclipse.
+ */
+private static boolean isCompatible() {
+	String vmVersionString = System.getProperty("java.vm.version"); //$NON-NLS-1$
+	Identifier minimum = new Identifier(1, 3, 0);
+	Identifier version = new Identifier(vmVersionString);
+	return version.isGreaterEqualTo(minimum);
 }
 
 }
