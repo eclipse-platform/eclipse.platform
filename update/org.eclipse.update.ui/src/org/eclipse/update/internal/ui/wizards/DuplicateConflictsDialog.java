@@ -44,15 +44,18 @@ import org.eclipse.update.internal.ui.parts.OverlayIcon;
  */
 public class DuplicateConflictsDialog extends MessageDialog {
 	private static final String KEY_TITLE = "DuplicateConflictsDialog.title";
-	private static final String KEY_MESSAGE = "DuplicateConflictsDialog.message";
-	private static final String KEY_TREE_LABEL = "DuplicateConflictsDialog.treeLabel";
-	private static final String KEY_CONFLICT = "DuplicateConflictsDialog.conflict";
-	
+	private static final String KEY_MESSAGE =
+		"DuplicateConflictsDialog.message";
+	private static final String KEY_TREE_LABEL =
+		"DuplicateConflictsDialog.treeLabel";
+	private static final String KEY_CONFLICT =
+		"DuplicateConflictsDialog.conflict";
+
 	private TreeViewer treeViewer;
 	private ArrayList conflicts;
 	private Image featureImage;
 	private Image warningFeatureImage;
-	
+
 	static class IdEntry {
 		IConfiguredSite csite;
 		IFeature feature;
@@ -62,57 +65,64 @@ public class DuplicateConflictsDialog extends MessageDialog {
 			this.csite = csite;
 		}
 		public boolean isInstallCandidate() {
-			return csite!=null;
+			return csite != null;
 		}
 		public IFeature getFeature() {
 			return feature;
 		}
-		
+
 		public String getIdentifier() {
 			return feature.getVersionedIdentifier().getIdentifier();
 		}
 		public IConfiguredSite getConfiguredSite() {
-			if (csite!=null) return csite;
+			if (csite != null)
+				return csite;
 			return feature.getSite().getConfiguredSite();
 		}
 		public boolean sameLevel(IdEntry entry) {
 			VersionedIdentifier vid = feature.getVersionedIdentifier();
-			VersionedIdentifier evid = entry.getFeature().getVersionedIdentifier();
+			VersionedIdentifier evid =
+				entry.getFeature().getVersionedIdentifier();
 			return vid.equals(evid);
 		}
 		public String toString() {
 			IConfiguredSite configSite = getConfiguredSite();
-			String version = feature.getVersionedIdentifier().getVersion().toString();
+			String version =
+				feature.getVersionedIdentifier().getVersion().toString();
 			String location = configSite.getSite().getURL().getFile();
-			return UpdateUIPlugin.getFormattedMessage(KEY_CONFLICT, 
-						new String [] { version, location });
+			return UpdateUIPlugin.getFormattedMessage(
+				KEY_CONFLICT,
+				new String[] { version, location });
 		}
 	}
-	
-	class ConflictContentProvider extends DefaultContentProvider implements ITreeContentProvider, IStructuredContentProvider {
-		public Object [] getElements(Object input) {
+
+	class ConflictContentProvider
+		extends DefaultContentProvider
+		implements ITreeContentProvider, IStructuredContentProvider {
+		public Object[] getElements(Object input) {
 			return getChildren(input);
 		}
 		public Object getParent(Object child) {
 			return null;
 		}
 		public boolean hasChildren(Object parent) {
-			if (parent instanceof ArrayList) return true;
+			if (parent instanceof ArrayList)
+				return true;
 			return false;
 		}
-		public Object [] getChildren(Object parent) {
+		public Object[] getChildren(Object parent) {
 			if (parent instanceof ArrayList)
-				return ((ArrayList)parent).toArray();
+				return ((ArrayList) parent).toArray();
 			return new Object[0];
 		}
 	}
-	
+
 	class ConflictLabelProvider extends LabelProvider {
 		public String getText(Object obj) {
 			if (obj instanceof ArrayList) {
-				ArrayList list = (ArrayList)obj;
-				for (int i=0; i<list.size(); i++) {
-					IdEntry entry = (IdEntry)(list).get(i);
+				ArrayList list = (ArrayList) obj;
+				for (int i = 0; i < list.size(); i++) {
+					IdEntry entry = (IdEntry) (list).get(i);
 					if (entry.isInstallCandidate())
 						return entry.getFeature().getLabel();
 				}
@@ -127,17 +137,18 @@ public class DuplicateConflictsDialog extends MessageDialog {
 			return null;
 		}
 	}
-	
+
 	public DuplicateConflictsDialog(Shell shell, ArrayList conflicts) {
-		super(shell, 
+		super(
+			shell,
 			UpdateUIPlugin.getResourceString(KEY_TITLE),
 			null,
 			UpdateUIPlugin.getResourceString(KEY_MESSAGE),
 			WARNING,
-			new String [] {
+			new String[] {
 				IDialogConstants.YES_LABEL,
-				IDialogConstants.NO_LABEL }
-			, 0);
+				IDialogConstants.NO_LABEL },
+			0);
 		this.conflicts = conflicts;
 		featureImage = UpdateUIPluginImages.DESC_FEATURE_OBJ.createImage();
 		ImageDescriptor desc =
@@ -150,22 +161,22 @@ public class DuplicateConflictsDialog extends MessageDialog {
 		});
 		warningFeatureImage = desc.createImage();
 	}
-	
+
 	public boolean close() {
 		featureImage.dispose();
 		warningFeatureImage.dispose();
 		return super.close();
 	}
-	
+
 	protected Control createCustomArea(Composite parent) {
 		Composite client = new Composite(parent, SWT.NULL);
 		client.setLayoutData(new GridData(GridData.FILL_BOTH));
 		GridLayout layout = new GridLayout();
 		client.setLayout(layout);
-		
+
 		Label label = new Label(client, SWT.NULL);
 		label.setText(UpdateUIPlugin.getResourceString(KEY_TREE_LABEL));
-		
+
 		treeViewer = new TreeViewer(client, SWT.SINGLE | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 200;
@@ -174,129 +185,118 @@ public class DuplicateConflictsDialog extends MessageDialog {
 		treeViewer.setContentProvider(new ConflictContentProvider());
 		treeViewer.setLabelProvider(new ConflictLabelProvider());
 		treeViewer.setAutoExpandLevel(10);
-		treeViewer.setSorter(new ViewerSorter() {});
+		treeViewer.setSorter(new ViewerSorter() {
+		});
 		treeViewer.setInput(conflicts);
 		return client;
 	}
-	
-	static ArrayList computeDuplicateConflicts(PendingChange job, IConfiguredSite targetSite, IFeatureReference [] optionalFeatures) {
+
+	static ArrayList computeDuplicateConflicts(
+		PendingChange job,
+		IInstallConfiguration config,
+		IConfiguredSite targetSite,
+		IFeatureReference[] optionalFeatures) {
 		Hashtable featureTable = new Hashtable();
 		try {
-			computePresentState(featureTable);
-			computeNewFeature(job.getFeature(), targetSite, featureTable, optionalFeatures); 
+			computePresentState(featureTable, config);
+			computeNewFeature(
+				job.getFeature(),
+				targetSite,
+				featureTable,
+				optionalFeatures);
 			return computeConflicts(featureTable);
-		}
-		catch (CoreException e) {
+		} catch (CoreException e) {
 			return null;
 		}
 	}
-	
-	static ArrayList computeDuplicateConflicts(PendingChange [] jobs, IInstallConfiguration config) {
+
+	static ArrayList computeDuplicateConflicts(
+		PendingChange[] jobs,
+		IInstallConfiguration config) {
 		Hashtable featureTable = new Hashtable();
-		computePresentState(featureTable);
+		computePresentState(featureTable, config);
 		computeNewFeatures(jobs, config, featureTable);
 		return computeConflicts(featureTable);
 	}
-	
+
 	private static ArrayList computeConflicts(Hashtable featureTable) {
 		ArrayList result = null;
-		for (Enumeration enum=featureTable.elements(); enum.hasMoreElements();) {
-			ArrayList candidate = (ArrayList)enum.nextElement();
-			if (candidate.size()==1) continue;
-			ArrayList conflict = computeConflict(candidate);
-			if (conflict!=null) {
-				if (result==null) result = new ArrayList();
+		for (Enumeration enum = featureTable.elements();
+			enum.hasMoreElements();
+			) {
+			ArrayList candidate = (ArrayList) enum.nextElement();
+			if (candidate.size() == 1)
+				continue;
+			ArrayList conflict = checkForConflict(candidate);
+			if (conflict != null) {
+				if (result == null)
+					result = new ArrayList();
 				result.add(conflict);
 			}
 		}
 		return result;
 	}
-	
-	private static ArrayList computeConflict(ArrayList candidate) {
-		IdEntry newEntry = null;
 
-		for (int i=0; i<candidate.size(); i++) {
-			IdEntry entry = (IdEntry)candidate.get(i);
-			if (entry.isInstallCandidate()) {
-				newEntry = entry;
-				break;
-			}
+	private static ArrayList checkForConflict(ArrayList candidate) {
+		IdEntry firstEntry = null;
+		for (int i = 0; i < candidate.size(); i++) {
+			IdEntry entry = (IdEntry) candidate.get(i);
+			if (firstEntry == null)
+				firstEntry = entry;
+			else if (!entry.sameLevel(firstEntry))
+				return candidate;
 		}
-		// Don't warn about existing conflicts in 
-		// the configuration - we cannot do anything about them.
-		if (newEntry==null) return null;
-		IConfiguredSite targetSite = newEntry.getConfiguredSite();
-		
-		ArrayList conflict = null;
-		
-		for (int i=0; i<candidate.size(); i++) {
-			IdEntry entry = (IdEntry)candidate.get(i);
-			// Skip self
-			if (entry==newEntry) continue;
-			// Don't care about duplicates within the 
-			// same target site
-			if (entry.getConfiguredSite().equals(targetSite))
-				continue;
-			// Genuine cross-site duplicate. Ignore
-			// duplicates that are the same level
-			if (entry.sameLevel(newEntry)) continue;
-			// different version of the same feature
-			// in different sites - a genuine conflict.
-			if (conflict==null) {
-				conflict=new ArrayList();
-				conflict.add(newEntry);
-			}
-			conflict.add(entry);
-		}
-		return conflict;
+		return null;
 	}
 
-	private static void computePresentState(Hashtable table) {
-		try {
-			ILocalSite localSite = SiteManager.getLocalSite();
-			IInstallConfiguration config = localSite.getCurrentConfiguration();
-			IConfiguredSite [] csites = config.getConfiguredSites();
-			for (int i=0; i<csites.length; i++) {
-				IConfiguredSite csite = csites[i];
-				IFeatureReference [] refs = csite.getConfiguredFeatures();
-				for (int j=0; j<refs.length; j++) {
-					try {
-						addEntry(refs[j].getFeature(), null, table);
-					}
-					catch (CoreException e) {
-						// don't let one bad feature stop the loop
-					}
+	private static void computePresentState(
+		Hashtable table,
+		IInstallConfiguration config) {
+		IConfiguredSite[] csites = config.getConfiguredSites();
+		for (int i = 0; i < csites.length; i++) {
+			IConfiguredSite csite = csites[i];
+			IFeatureReference[] refs = csite.getConfiguredFeatures();
+			for (int j = 0; j < refs.length; j++) {
+				try {
+					addEntry(refs[j].getFeature(), null, table);
+				} catch (CoreException e) {
+					// don't let one bad feature stop the loop
 				}
 			}
 		}
-		catch (CoreException e) {
-		}
 	}
 
-	private static void computeNewFeatures(PendingChange [] jobs, IInstallConfiguration config, Hashtable featureTable) {
-		for (int i=0; i<jobs.length; i++) {
+	private static void computeNewFeatures(
+		PendingChange[] jobs,
+		IInstallConfiguration config,
+		Hashtable featureTable) {
+		for (int i = 0; i < jobs.length; i++) {
 			PendingChange job = jobs[i];
 			IConfiguredSite targetSite =
 				TargetPage.getDefaultTargetSite(config, job);
 			IFeature newFeature = job.getFeature();
 			try {
-				computeNewFeature(newFeature, targetSite, featureTable, null); 
-			}
-			catch (CoreException e) {
+				computeNewFeature(newFeature, targetSite, featureTable, null);
+			} catch (CoreException e) {
 			}
 		}
 	}
 
-	private static void computeNewFeature(IFeature feature, IConfiguredSite csite, Hashtable table, IFeatureReference [] optionalFeatures) throws CoreException {
+	private static void computeNewFeature(
+		IFeature feature,
+		IConfiguredSite csite,
+		Hashtable table,
+		IFeatureReference[] optionalFeatures)
+		throws CoreException {
 		addEntry(feature, csite, table);
-		IFeatureReference [] irefs = feature.getIncludedFeatureReferences();
-		for (int i=0; i<irefs.length; i++) {
+		IFeatureReference[] irefs = feature.getIncludedFeatureReferences();
+		for (int i = 0; i < irefs.length; i++) {
 			IFeatureReference iref = irefs[i];
-			boolean add=true;
-			
-			if (iref.isOptional() && optionalFeatures!=null) {
+			boolean add = true;
+
+			if (iref.isOptional() && optionalFeatures != null) {
 				boolean found = false;
-				for (int j=0; j<optionalFeatures.length; j++) {
+				for (int j = 0; j < optionalFeatures.length; j++) {
 					IFeatureReference checked = optionalFeatures[j];
 					if (checked.equals(iref)) {
 						found = true;
@@ -306,18 +306,40 @@ public class DuplicateConflictsDialog extends MessageDialog {
 				add = found;
 			}
 			if (add)
-				computeNewFeature(iref.getFeature(), csite, table, optionalFeatures);
+				computeNewFeature(
+					iref.getFeature(),
+					csite,
+					table,
+					optionalFeatures);
 		}
 	}
-	
-	private static void addEntry(IFeature feature, IConfiguredSite csite, Hashtable featureTable) {
+
+	private static void addEntry(
+		IFeature feature,
+		IConfiguredSite csite,
+		Hashtable featureTable) {
 		String id = feature.getVersionedIdentifier().getIdentifier();
-		ArrayList entries = (ArrayList)featureTable.get(id);
-		if (entries==null) {
+		ArrayList entries = (ArrayList) featureTable.get(id);
+		if (entries == null) {
 			entries = new ArrayList();
 			featureTable.put(id, entries);
 		}
 		IdEntry entry = new IdEntry(feature, csite);
-		entries.add(entry);
+		boolean replaced=false;
+		for (int i=0; i<entries.size(); i++) {
+			IdEntry existingEntry = (IdEntry)entries.get(i);
+			IConfiguredSite existingSite = existingEntry.getConfiguredSite();
+			if (existingSite.equals(entry.getConfiguredSite())) {
+				// same site - replace it if not new
+				if (entry.isInstallCandidate()) {
+					entries.set(i, entry);
+					entries.remove(existingEntry);
+				}
+				replaced = true;
+				break;
+			}
+		}
+		if (!replaced)
+			entries.add(entry);
 	}
 }

@@ -247,8 +247,8 @@ public class PluginsSearchCategory extends SearchCategory {
 			String id = token.substring(0, uloc);
 			String version = token.substring(uloc + 1);
 			Import iimport = new Import();
-			iimport.setPluginIdentifier(id);
-			iimport.setPluginVersion(version);
+			iimport.setIdentifier(id);
+			iimport.setVersion(version);
 			result.add(iimport);
 		}
 	}

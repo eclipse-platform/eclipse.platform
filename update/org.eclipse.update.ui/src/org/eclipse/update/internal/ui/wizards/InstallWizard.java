@@ -57,7 +57,7 @@ public class InstallWizard extends Wizard {
 				? null
 				: optionalFeaturesPage.getOptionalElements();
 		if (job.getJobType()==PendingChange.INSTALL) {
-			ArrayList conflicts = DuplicateConflictsDialog.computeDuplicateConflicts(job, targetSite, optionalFeatures);
+			ArrayList conflicts = DuplicateConflictsDialog.computeDuplicateConflicts(job, config, targetSite, optionalFeatures);
 			if (conflicts!=null) {
 				DuplicateConflictsDialog dialog = new DuplicateConflictsDialog(getShell(), conflicts);
 				if (dialog.open()!=0) return false;

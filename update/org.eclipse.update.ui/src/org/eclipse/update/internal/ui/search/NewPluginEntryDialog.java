@@ -70,8 +70,8 @@ public class NewPluginEntryDialog extends Dialog {
 	
 	protected void okPressed() {
 		iimport = new Import();
-		iimport.setPluginIdentifier(idText.getText());
-		iimport.setPluginVersion(versionText.getText());
+		iimport.setIdentifier(idText.getText());
+		iimport.setVersion(versionText.getText());
 		super.okPressed();
 	}
 	public Import getImport() {
