@@ -312,7 +312,7 @@ public class ConfigurationView
 						(ConfiguredFeatureAdapter) list.get(i);
 					IFeature feature = cf.getFeature();
 					if (feature != null)
-						addChildFeatures(feature, children);
+						addChildFeatures(feature, children, cf.isConfigured());
 				}
 				for (int i = 0; i < list.size(); i++) {
 					ConfiguredFeatureAdapter cf =
@@ -328,14 +328,14 @@ public class ConfigurationView
 			return result.toArray();
 		}
 
-		private void addChildFeatures(IFeature feature, ArrayList children) {
+		private void addChildFeatures(IFeature feature, ArrayList children, boolean configured) {
 			try {
 				IFeatureReference[] included =
 					feature.getIncludedFeatureReferences();
 				for (int i = 0; i < included.length; i++) {
 					IFeature childFeature;
 					try {
-						childFeature = included[i].getFeature();
+						childFeature = included[i].getFeature(!configured);
 					} catch (CoreException e) {
 						childFeature = new MissingFeature(included[i]);
 					}

@@ -59,7 +59,7 @@ public class ConfiguredFeatureAdapter
 				boolean childConfigured=configured;
 				boolean updated = false;
 				try {
-					feature = fref.getFeature();
+					feature = fref.getFeature(!configured);
 					childConfigured = adapter.getConfigurationSite().isConfigured(feature);
 					///*
 					PluginVersionIdentifier refpid = fref.getVersionedIdentifier().getVersion();
