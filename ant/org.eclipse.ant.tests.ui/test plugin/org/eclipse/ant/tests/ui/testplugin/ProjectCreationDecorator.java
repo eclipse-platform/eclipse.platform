@@ -13,10 +13,10 @@ package org.eclipse.ant.tests.ui.testplugin;
 
 import java.io.File;
 
+import org.eclipse.ant.internal.ui.AntUIPlugin;
+import org.eclipse.ant.internal.ui.IAntUIConstants;
+import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
-import org.eclipse.ant.internal.ui.model.AntUIPlugin;
-import org.eclipse.ant.internal.ui.model.IAntUIConstants;
-import org.eclipse.ant.internal.ui.model.IAntUIPreferenceConstants;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -31,10 +31,6 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
-/**
- * Test to close the workbench, since debug tests do not run in the UI
- * thread.
- */
 public class ProjectCreationDecorator extends AbstractAntUITest {
 	
 	public ProjectCreationDecorator(String name) {
@@ -62,7 +58,8 @@ public class ProjectCreationDecorator extends AbstractAntUITest {
 			createLaunchConfigurationForSeparateVM("extensionPointTaskSepVM", null);
 			createLaunchConfigurationForSeparateVM("extensionPointTypeSepVM", null);
 			
-			createLaunchConfiguration("big", "buildfiles/performance/build.xml");
+			createLaunchConfiguration("big", ProjectHelper.PROJECT_NAME + "/buildfiles/performance/build.xml");
+			
 		} finally {
 			//do not show the Ant build failed error dialog
 			AntUIPlugin.getDefault().getPreferenceStore().setValue(IAntUIPreferenceConstants.ANT_ERROR_DIALOG, false);
