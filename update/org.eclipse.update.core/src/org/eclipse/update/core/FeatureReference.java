@@ -330,7 +330,7 @@ public class FeatureReference extends FeatureReferenceModel implements IFeatureR
 			// ask the Site for the default type 
 			type = getSite().getDefaultPackagedFeatureType();
 		}
-		return getSite().createFeature(versionId, type, ref.getURL());
+		return getSite().createFeature(type, ref.getURL());
 	}
 
 }

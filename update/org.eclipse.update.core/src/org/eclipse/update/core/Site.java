@@ -439,13 +439,11 @@ public class Site extends SiteModel implements ISite {
 	/**
 	 * @see org.eclipse.update.core.ISite#createFeature(VersionedIdentifier, String, URL)
 	 */
-	public IFeature createFeature(VersionedIdentifier vid, String type,URL url) throws CoreException {
-
+	public IFeature createFeature(String type, URL url) throws CoreException {
 
 		// First check the cache
-		IFeature feature = (IFeature) featureCache.get(vid);
-		if (feature != null)
-			return feature;
+		IFeature feature = (IFeature) featureCache.get(url);
+		if (feature != null) return feature;
 			
 		// Create a new one
 		if (type == null || type.equals("")) { //$NON-NLS-1$
@@ -456,14 +454,9 @@ public class Site extends SiteModel implements ISite {
 		IFeatureFactory factory = FeatureTypeFactory.getInstance().getFactory(type);
 		feature = factory.createFeature(url, this);
 		if (feature != null) {
-			VersionedIdentifier featureID = feature.getVersionedIdentifier();
-			if (!featureID.equals(vid)) {
-				UpdateManagerPlugin.warn("The versionId of the referenced feature doesn 't match the one of the feature reference : " + getURL());
-				}
-			// Add the feature to the cache
-			featureCache.put(featureID, feature);
+			// Add the feature to the cache 
+			featureCache.put(url, feature);
 		}
-		
 		return feature;
 	}
 
