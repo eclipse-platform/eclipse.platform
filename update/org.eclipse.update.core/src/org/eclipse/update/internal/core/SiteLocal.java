@@ -406,11 +406,11 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	/**
 	 * @since 2.0
 	 */
-	public void addToPreservedConfigurations(IInstallConfiguration configuration) throws CoreException {
+	public IInstallConfiguration addToPreservedConfigurations(IInstallConfiguration configuration) throws CoreException {
+		InstallConfiguration newConfiguration = null;		
 		if (configuration != null) {
 
 			// create new configuration based on the one to preserve
-			InstallConfiguration newConfiguration = null;
 			String newFileName = UpdateManagerUtils.getLocalRandomIdentifier(DEFAULT_PRESERVED_CONFIG_FILE, new Date());
 			try {
 				URL newFile = UpdateManagerUtils.getURL(getLocationURL(), newFileName, null);
@@ -437,6 +437,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			// add to the list			
 			addPreservedInstallConfigurationModel((InstallConfigurationModel) newConfiguration);
 		}
+		return newConfiguration;
 	}
 
 	/*

@@ -184,6 +184,7 @@ public interface ILocalSite extends IAdaptable {
 	 * removed.
 	 * 
 	 * @param configuration the configuration to save
+	 * @return the preserved configuration or <code>null</code> if the configuration to save is <code>null</code>
 	 * @exception CoreException
 	 * @since 2.0 
 	 * <p>
@@ -193,7 +194,7 @@ public interface ILocalSite extends IAdaptable {
 	 * (repeatedly) as the API evolves.
 	 * </p>
 	 */
-	public void addToPreservedConfigurations(IInstallConfiguration configuration)
+	public IInstallConfiguration addToPreservedConfigurations(IInstallConfiguration configuration)
 		throws CoreException;
 
 	/**

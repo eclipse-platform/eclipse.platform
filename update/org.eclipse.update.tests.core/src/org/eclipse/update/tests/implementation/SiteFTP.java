@@ -241,9 +241,9 @@ public class SiteFTP implements ISite {
 	}
 
 	/**
-	 * @see org.eclipse.update.core.ISite#createFeature(VersionedIdentifier, String, URL)
+	 * @see org.eclipse.update.core.ISite#createFeature(String, URL)
 	 */
-	public IFeature createFeature(VersionedIdentifier vid, String type, URL url) throws CoreException {
+	public IFeature createFeature(String type, URL url) throws CoreException {
 		return null;
 	}
 
