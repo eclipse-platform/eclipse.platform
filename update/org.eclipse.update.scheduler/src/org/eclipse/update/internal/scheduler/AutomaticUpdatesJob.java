@@ -51,7 +51,7 @@ public class AutomaticUpdatesJob
 
 	public void accept(IFeature feature) {
 		IInstallFeatureOperation operation =
-			(IInstallFeatureOperation) OperationsManager
+			OperationsManager
 				.getOperationFactory()
 				.createInstallOperation(null, null, feature, null, null, null);
 		updates.add(operation);

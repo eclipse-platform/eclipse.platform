@@ -223,7 +223,7 @@ public class WebForm extends AbstractSectionForm {
 		FormLabel.paintWrapText(gc, size, getHeadingText(), HMARGIN, VMARGIN);
 		if (headingUnderlineImage != null) {
 			int y =
-				getHeadingHeight((Composite) control)
+				getHeadingHeight(control)
 					- headingUnderlineImage.getBounds().height;
 			gc.drawImage(headingUnderlineImage, 0, y);
 		}
