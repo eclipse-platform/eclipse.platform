@@ -36,8 +36,8 @@ public class ReplaceFeatureVersionWizardPage extends WizardPage {
 
 	public ReplaceFeatureVersionWizardPage(IFeature currentFeature, IFeature[] features) {
 		super("SwapFeature"); //$NON-NLS-1$
-		setTitle(UpdateUI.getString("ReplaceFeatureVersionWizardPage.title")); //$NON-NLS-1$
-		setDescription(UpdateUI.getString("ReplaceFeatureVersionWizardPage.desc")); //$NON-NLS-1$
+		setTitle(UpdateUI.getString("SwapFeatureWizardPage.title")); //$NON-NLS-1$
+		setDescription(UpdateUI.getString("SwapFeatureWizardPage.desc")); //$NON-NLS-1$
 		this.currentFeature = currentFeature;
 		this.features = features;
 	}
@@ -49,7 +49,7 @@ public class ReplaceFeatureVersionWizardPage extends WizardPage {
 		tableContainer.setLayout(layout);
 
 		Label label = new Label(tableContainer, SWT.NONE);
-		label.setText(UpdateUI.getString("ReplaceFeatureVersionWizardPage.label")); //$NON-NLS-1$
+		label.setText(UpdateUI.getString("SwapFeatureWizardPage.label")); //$NON-NLS-1$
 
 		Table table = new Table(tableContainer, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));

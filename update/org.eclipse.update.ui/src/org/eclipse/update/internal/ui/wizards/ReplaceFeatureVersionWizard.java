@@ -10,7 +10,7 @@ public class ReplaceFeatureVersionWizard extends Wizard {
 	private ReplaceFeatureVersionWizardPage page;
 
 	public ReplaceFeatureVersionWizard(IFeature currentFeature, IFeature[] features) {
-		setWindowTitle(UpdateUI.getString("ReplaceFeatureVersionWizard.title")); //$NON-NLS-1$
+		setWindowTitle(UpdateUI.getString("SwapFeatureWizard.title")); //$NON-NLS-1$
 		setDefaultPageImageDescriptor(UpdateUIImages.DESC_UPDATE_WIZ);
 		page = new ReplaceFeatureVersionWizardPage(currentFeature, features);
 	}
