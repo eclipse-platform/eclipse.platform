@@ -150,7 +150,7 @@ public class SiteReconciler extends ModelObject implements IWritable {
 
 		// add Activity reconciliation
 		BaseSiteLocalFactory siteLocalFactory = new BaseSiteLocalFactory();
-		ConfigurationActivityModel activity = siteLocalFactory.createConfigurationAcivityModel();
+		ConfigurationActivityModel activity = siteLocalFactory.createConfigurationActivityModel();
 		activity.setAction(IActivity.ACTION_RECONCILIATION);
 		activity.setDate(new Date());
 		activity.setLabel(siteLocal.getLocationURLString());

@@ -111,6 +111,42 @@ public class UpdateManagerLogWriter {
 	/*
 	 * 
 	 */
+	public synchronized void log(IActivity activity) {
+		// thread safety: (Concurrency003)
+		if (logFile != null)
+			openLogFile();
+		if (log == null)
+			log = logForStream(System.err);
+		try {
+			try {
+				write(activity);
+			} finally {
+				if (logFile != null)
+					closeLogFile();
+				else
+					log.flush();
+			}
+		} catch (Exception e) {
+			System.err.println("An exception occurred while writing to the update manager log:"); //$NON-NLS-1$
+			e.printStackTrace(System.err);
+			System.err.println("Logging to the console instead."); //$NON-NLS-1$
+			//we failed to write, so dump log entry to console instead
+			try {
+				log = logForStream(System.err);
+				write(activity);
+				log.flush();
+			} catch (Exception e2) {
+				System.err.println("An exception occurred while logging to the console:"); //$NON-NLS-1$
+				e2.printStackTrace(System.err);
+			}
+		} finally {
+			log = null;
+		}
+	}	
+	
+	/*
+	 * 
+	 */
 	private void openLogFile() {
 		try {
 			log = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile.getAbsolutePath(), true), "UTF-8")); //$NON-NLS-1$
@@ -186,11 +222,6 @@ public class UpdateManagerLogWriter {
 		write(CONFIGURATION);
 		writeSpace();		
 		write(installConfig.getLabel());
-		
-		IActivity[] activities = installConfig.getActivities();
-		for (int i = 0; i < activities.length; i++) {
-			write(activities[i]);
-		}
 	}
 
 	/*

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.update.configuration.IActivity;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.JarContentReference;
 import org.eclipse.update.core.Utilities;
@@ -196,13 +197,22 @@ public class UpdateManagerPlugin extends Plugin {
 		if (status!=null)
 			log(status);
 	}		
-	/**
+	/*
 	 * Method log.
-	 * @param activity
+	 * @param newConfiguration
 	 */
 	public static void log(IInstallConfiguration newConfiguration) {
 		if (log!=null)
 			log.log(newConfiguration);
+	}
+
+	/*
+	 * Method log.
+	 * @param activity
+	 */
+	public static void log(IActivity activity) {
+		if (log!=null)
+			log.log(activity);
 	}
 
 	/*

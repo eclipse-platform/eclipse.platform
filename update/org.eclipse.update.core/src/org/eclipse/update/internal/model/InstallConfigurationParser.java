@@ -233,7 +233,7 @@ public class InstallConfigurationParser extends DefaultHandler {
 
 		// create
 		ConfigurationActivityModel activity =
-			new BaseSiteLocalFactory().createConfigurationAcivityModel();
+			new BaseSiteLocalFactory().createConfigurationActivityModel();
 		activity.setAction(action);
 
 		// label

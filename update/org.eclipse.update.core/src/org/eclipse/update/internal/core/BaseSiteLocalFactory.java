@@ -21,7 +21,7 @@ public class BaseSiteLocalFactory {
 	/*
 	 * 
 	 */
-	public ConfigurationActivityModel createConfigurationAcivityModel() {
+	public ConfigurationActivityModel createConfigurationActivityModel() {
 		return new ConfigurationActivity();
 	}
 	/*

@@ -367,24 +367,27 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 	 * @since 2.0
 	 */
 	public void revertTo(IInstallConfiguration configuration, IProgressMonitor monitor, IProblemHandler handler) throws CoreException {
-
+	
 		// create the activity 
 		//Start UOW ?
 		ConfigurationActivity activity = new ConfigurationActivity(IActivity.ACTION_REVERT);
 		activity.setLabel(configuration.getLabel());
 		activity.setDate(new Date());
 		IInstallConfiguration newConfiguration = null;
-
+	
 		try {
 			// create a configuration
 			newConfiguration = cloneCurrentConfiguration();
 			newConfiguration.setLabel(configuration.getLabel());
-
+	
+			// add to the stack which will set up as current
+			addConfiguration(newConfiguration);
+			
 			// process delta
 			// the Configured featuresConfigured are the same as the old configuration
 			// the unconfigured featuresConfigured are the rest...
 			 ((InstallConfiguration) newConfiguration).revertTo(configuration, monitor, handler);
-
+	
 			// everything done ok
 			activity.setStatus(IActivity.STATUS_OK);
 		} catch (CoreException e) {
@@ -395,13 +398,10 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			//user decided not to revert, do nothing
 			// because we didn't add the configuration to the history
 		} finally {
-			if (newConfiguration != null) {
-				((InstallConfiguration) newConfiguration).addActivityModel((ConfigurationActivityModel) activity);
-				// add to the stack which will set up as current
-				addConfiguration(newConfiguration);
-			}
+			if (newConfiguration != null)
+				 ((InstallConfiguration) newConfiguration).addActivity(activity);
 		}
-
+	
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 			activity.setLabel(configuration.getLabel());
 			activity.setDate(new Date());
 			activity.setStatus(IActivity.STATUS_OK);
-			((InstallConfiguration) newConfiguration).addActivityModel(activity);
+			((InstallConfiguration) newConfiguration).addActivity(activity);
 			((InstallConfiguration) newConfiguration).saveConfigurationFile(isTransient());
 
 			// add to the list			

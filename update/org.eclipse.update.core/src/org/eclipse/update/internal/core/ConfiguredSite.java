@@ -210,7 +210,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			throw e;
 		} finally {
 			IInstallConfiguration current = SiteManager.getLocalSite().getCurrentConfiguration();
-			((InstallConfiguration) current).addActivityModel(activity);
+			((InstallConfiguration) current).addActivity(activity);
 		}
 		// call the configure task	
 		if (installedFeature != null)
@@ -280,7 +280,7 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 			throw e;
 		} finally {
 			IInstallConfiguration current = SiteManager.getLocalSite().getCurrentConfiguration();
-			((InstallConfiguration) current).addActivityModel(activity);
+			((InstallConfiguration) current).addActivity(activity);
 		}
 	}
 

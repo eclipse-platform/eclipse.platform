@@ -212,8 +212,18 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 
 		// everything done ok
 		activity.setStatus(IActivity.STATUS_OK);
-		this.addActivityModel((ConfigurationActivityModel) activity);
+		this.addActivity(activity);
 	}
+
+	/**
+	 * Method addActivity.
+	 * @param activity
+	 */
+	public void addActivity(IActivity activity) {
+		addActivityModel((ConfigurationActivityModel)activity);
+		UpdateManagerPlugin.log(activity);
+	}
+
 
 	/*
 	 * 
@@ -233,7 +243,7 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 			activity.setLabel(site.getSite().getURL().toExternalForm());
 			activity.setDate(new Date());
 			activity.setStatus(IActivity.STATUS_OK);
-			this.addActivityModel((ConfigurationActivityModel) activity);
+			this.addActivity(activity);
 		}
 	}
 

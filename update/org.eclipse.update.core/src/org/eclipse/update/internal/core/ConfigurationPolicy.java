@@ -134,7 +134,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 			if (activity != null) {
 				InstallConfiguration installConfig = (InstallConfiguration) SiteManager.getLocalSite().getCurrentConfiguration();
 				activity.setStatus(IActivity.STATUS_OK);
-				installConfig.addActivityModel((ConfigurationActivityModel) activity);
+				installConfig.addActivity(activity);
 			}
 
 			if (handler != null)
@@ -232,7 +232,7 @@ public class ConfigurationPolicy extends ConfigurationPolicyModel {
 				// everything done ok
 				if (activity != null) {
 					activity.setStatus(IActivity.STATUS_OK);
-					installConfig.addActivityModel((ConfigurationActivityModel) activity);
+					installConfig.addActivity(activity);
 				}
 				success = true;
 			//} else {
