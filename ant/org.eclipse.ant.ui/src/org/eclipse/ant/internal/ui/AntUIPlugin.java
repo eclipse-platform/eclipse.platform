@@ -31,6 +31,11 @@ public final class AntUIPlugin extends AbstractUIPlugin {
 	protected IProgressMonitor currentProgressMonitor;
 
 	/**
+	 * 
+	 */
+	protected boolean shouldLogMessages;
+
+	/**
 	 * Unique identifier constant (value <code>"org.eclipse.ant.ui"</code>)
 	 * for the Ant UI plug-in.
 	 */
@@ -200,6 +205,14 @@ protected void initializeDefaultPreferences(IPreferenceStore prefs) {
 	PreferenceConverter.setDefault(prefs, IAntPreferenceConstants.CONSOLE_VERBOSE_RGB, new RGB(0, 200, 125));	// green
 	PreferenceConverter.setDefault(prefs, IAntPreferenceConstants.CONSOLE_DEBUG_RGB, new RGB(0, 0, 0));			// black
 	
+}
+
+public boolean getShouldLogMessages() {
+	return shouldLogMessages;
+}
+
+public void setShouldLogMessages(boolean shouldLogMessages) {
+	this.shouldLogMessages = shouldLogMessages;
 }
 
 }
