@@ -17,19 +17,19 @@ import org.eclipse.update.internal.ui.model.*;
 import org.eclipse.update.internal.ui.parts.EnvironmentUtil;
 
 public class SearchObject extends NamedModelObject {
-	public static final String P_REFRESH = "p_refresh";
-	public static final String P_CATEGORY = "p_category";
+	public static final String P_REFRESH = "p_refresh"; //$NON-NLS-1$
+	public static final String P_CATEGORY = "p_category"; //$NON-NLS-1$
 
-	private static final String KEY_NAME = "Search.name";
-	private static final String KEY_BEGIN = "Search.begin";
-	private static final String KEY_MY_COMPUTER = "Search.myComputer";
-	private static final String KEY_CONTACTING = "Search.contacting";
-	private static final String KEY_CHECKING = "Search.checking";
-	protected static final String S_MY_COMPUTER = "searchMyComputer";
-	protected static final String S_BOOKMARKS = "searchBookmarks";
-	protected static final String S_DISCOVERY = "searchDiscovery";
-	protected static final String S_FILTER = "searchFilter";
-	protected static final String S_DRIVES = "searchDrives";
+	private static final String KEY_NAME = "Search.name"; //$NON-NLS-1$
+	private static final String KEY_BEGIN = "Search.begin"; //$NON-NLS-1$
+	private static final String KEY_MY_COMPUTER = "Search.myComputer"; //$NON-NLS-1$
+	private static final String KEY_CONTACTING = "Search.contacting"; //$NON-NLS-1$
+	private static final String KEY_CHECKING = "Search.checking"; //$NON-NLS-1$
+	protected static final String S_MY_COMPUTER = "searchMyComputer"; //$NON-NLS-1$
+	protected static final String S_BOOKMARKS = "searchBookmarks"; //$NON-NLS-1$
+	protected static final String S_DISCOVERY = "searchDiscovery"; //$NON-NLS-1$
+	protected static final String S_FILTER = "searchFilter"; //$NON-NLS-1$
+	protected static final String S_DRIVES = "searchDrives"; //$NON-NLS-1$
 
 	private Vector result = new Vector();
 	private boolean searchInProgress;
@@ -49,7 +49,7 @@ public class SearchObject extends NamedModelObject {
 	}
 
 	public SearchObject() {
-		this("", null, false);
+		this("", null, false); //$NON-NLS-1$
 	}
 	public SearchObject(String name, SearchCategoryDescriptor descriptor) {
 		this(name, descriptor, false);
@@ -110,7 +110,7 @@ public class SearchObject extends NamedModelObject {
 	}
 
 	public void setSearchMyComputer(boolean value) {
-		settings.put(S_MY_COMPUTER, value ? "true" : "false");
+		settings.put(S_MY_COMPUTER, value ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void setSearchBookmarks(boolean value) {
@@ -142,12 +142,12 @@ public class SearchObject extends NamedModelObject {
 
 	private boolean getBooleanValue(String key) {
 		String value = (String) settings.get(key);
-		if (value != null && value.equals("true"))
+		if (value != null && value.equals("true")) //$NON-NLS-1$
 			return true;
 		return false;
 	}
 	private void setBooleanValue(String key, boolean value) {
-		settings.put(key, value ? "true" : "false");
+		settings.put(key, value ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -241,14 +241,18 @@ public class SearchObject extends NamedModelObject {
 		monitor.beginTask(
 			UpdateUIPlugin.getResourceString(KEY_BEGIN),
 			ntasks);
-			
+		
+		ArrayList statusList = new ArrayList();	
+							
 		for (int i = 0; i < queries.length; i++) {
 			ISearchQuery query = queries[i];
 			ISiteAdapter site = query.getSearchSite();
 			if (site != null) {
 				SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
 				UpdateUIPlugin.getResourceString(KEY_CHECKING);
-				searchOneSite(display, site, query, subMonitor);
+				IStatus status = searchOneSite(display, site, query, subMonitor);
+				if (status!=null)
+					statusList.add(status);
 				if (monitor.isCanceled())
 					break;
 			}
@@ -258,7 +262,9 @@ public class SearchObject extends NamedModelObject {
 				}
 				Object source = candidates.get(j);
 				SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
-				searchOneSite(display, (ISiteAdapter) source, query, subMonitor);
+				IStatus status = searchOneSite(display, (ISiteAdapter) source, query, subMonitor);
+				if (status!=null)
+					statusList.add(status);
 				monitor.worked(1);
 			}
 			if (monitor.isCanceled())
@@ -267,6 +273,15 @@ public class SearchObject extends NamedModelObject {
 		searchInProgress = false;
 		monitor.done();
 		asyncFireObjectChanged(display, this, P_REFRESH);
+		if (statusList.size()>0) {
+			IStatus [] children = (IStatus[])statusList.toArray(new IStatus[statusList.size()]);
+			MultiStatus multiStatus = new MultiStatus(UpdateUIPlugin.getPluginId(),
+				IStatus.OK,
+				children,
+				UpdateUIPlugin.getResourceString("Search.networkProblems"), //$NON-NLS-1$
+				null);
+			throw new CoreException(multiStatus);
+		}
 	}
 
 	public void computeSearchSources(ArrayList sources) {
@@ -275,7 +290,7 @@ public class SearchObject extends NamedModelObject {
 		addBookmarks(sources);
 	}
 
-	private void searchOneSite(
+	private IStatus searchOneSite(
 		Display display,
 		ISiteAdapter siteAdapter,
 		ISearchQuery query,
@@ -302,16 +317,16 @@ public class SearchObject extends NamedModelObject {
 			if (status==null || status.getCode()!=ISite.SITE_ACCESS_EXCEPTION)
 				throw e;
 			monitor.worked(1);
-			return;
+			return status;
 		}
 		monitor.getWrappedProgressMonitor().subTask(UpdateUIPlugin.getResourceString(KEY_CHECKING));
 
-		monitor.beginTask("", 2);
+		monitor.beginTask("", 2); //$NON-NLS-1$
 	
 		IFeature [] matches = query.getMatchingFeatures(site, new SubProgressMonitor(monitor, 1));
 
 		for (int i=0; i<matches.length; i++) {
-			if (monitor.isCanceled()) return;
+			if (monitor.isCanceled()) return null;
 			if (getFilterEnvironment() && !isValidEnvironment(matches[i]))
 				continue;
 			// bingo - add this
@@ -326,6 +341,7 @@ public class SearchObject extends NamedModelObject {
 			asyncFireObjectAdded(display, searchSite, featureAdapter);
 		}
 		monitor.worked(1);
+		return null;
 	}
 	
 	private SearchResultSite findResultSite(ISite site) {
