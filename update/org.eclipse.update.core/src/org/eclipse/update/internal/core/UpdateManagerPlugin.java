@@ -157,7 +157,7 @@ public class UpdateManagerPlugin extends Plugin {
 	public static void warn(String s, Throwable e) {
 		if (DEBUG && DEBUG_SHOW_WARNINGS){
 			if (s!=null){
-				s="WARNING: "+s;
+				s="UPDATE MANAGER INFO: "+s;
 			}
 			log(s,e);
 		}

@@ -107,7 +107,7 @@ public class SiteLocal extends SiteLocalModel implements ILocalSite, IWritable {
 		} catch (FileNotFoundException exception) {
 			// file SITE_LOCAL_FILE doesn't exist, ok, log it 
 			// and reconcile with platform configuration
-			UpdateManagerPlugin.warn(localSite.getLocationURLString() + " does not exist, there is no previous state or install history we can recover from, we shall use default from platform configuration.", exception);
+			UpdateManagerPlugin.warn(localSite.getLocationURLString() + " does not exist, there is no previous state or install history we can recover from, we shall use default from platform configuration.", null);
 			//$NON-NLS-1$
 			return false;
 		} catch (SAXException exception) {

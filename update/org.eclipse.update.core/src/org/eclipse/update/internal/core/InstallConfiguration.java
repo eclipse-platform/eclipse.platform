@@ -357,8 +357,9 @@ public class InstallConfiguration extends InstallConfigurationModel implements I
 		try {
 			runtimeConfiguration.save();
 		} catch (IOException e) {
-			throw Utilities.newCoreException(Policy.bind("InstallConfiguration.UnableToSavePlatformConfiguration", runtimeConfiguration.getConfigurationLocation().toExternalForm()), e);
+			CoreException exc = Utilities.newCoreException(Policy.bind("InstallConfiguration.UnableToSavePlatformConfiguration", runtimeConfiguration.getConfigurationLocation().toExternalForm()), e);
 			//$NON-NLS-1$
+			UpdateManagerPlugin.warn("",exc);
 		}
 		
 	}
