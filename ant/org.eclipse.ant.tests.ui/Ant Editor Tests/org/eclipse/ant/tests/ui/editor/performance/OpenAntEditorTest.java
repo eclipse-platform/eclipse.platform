@@ -41,6 +41,12 @@ public class OpenAntEditorTest extends PerformanceTestCase {
 		measureOpenInEditor(file);
 	}
 	
+	public void testOpenAntEditorNoFolding() throws PartInitException {
+	    //there was no folding in 3.0.1
+		IFile file= getIFile("build.xml");
+		measureOpenInEditor(file);
+	}
+	
 	protected IFile getIFile(String buildFileName) {
 		return getProject().getFolder("buildfiles").getFolder("performance").getFile(buildFileName);	
 	}
@@ -62,7 +68,7 @@ public class OpenAntEditorTest extends PerformanceTestCase {
 	
 	protected void measureOpenInEditor(IFile file) throws PartInitException {
 		try {
-			for (int i= 0; i < 20; i++) {
+			for (int i= 0; i < 15; i++) {
 				startMeasuring();
 				EditorTestHelper.openInEditor(file, true);
 				stopMeasuring();
