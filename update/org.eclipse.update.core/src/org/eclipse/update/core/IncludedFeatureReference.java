@@ -36,7 +36,7 @@ public class IncludedFeatureReference extends FeatureReference implements IInclu
 		this.name = name;
 		this.matchingRule = IImport.RULE_PERFECT;
 		this.updateAllowed=true;
-		this.searchLocation=IFeatureReference.SEARCH_ROOT;
+		this.searchLocation=IUpdateConstants.SEARCH_ROOT;
 	}
 
 

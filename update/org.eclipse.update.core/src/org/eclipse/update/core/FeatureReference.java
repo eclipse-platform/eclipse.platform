@@ -234,7 +234,7 @@ public class FeatureReference
 	 * @see org.eclipse.update.core.IFeatureReference#getSearchLocation()
 	 */
 	public int getSearchLocation() {
-		if (getOptions()==null) return IFeatureReference.SEARCH_ROOT;
+		if (getOptions()==null) return IUpdateConstants.SEARCH_ROOT;
 		return getOptions().getSearchLocation();
 	}
 

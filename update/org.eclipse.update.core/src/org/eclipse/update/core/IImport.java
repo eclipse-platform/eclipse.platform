@@ -20,43 +20,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * @see org.eclipse.update.core.Import
  * @since 2.0
  */
-public interface IImport extends IAdaptable {
-
-	/**
-	 * No matching rule specified 
-	 * @since 2.0
-	 */
-	public static final int RULE_NONE = 0;
-
-	/**
-	 * Dependency can be satisfied only with plug-in version matching 
-	 * exactly the specified version.
-	 * @since 2.0
-	 */
-	public static final int RULE_PERFECT = 1;
-
-	/**
-	 * Dependency can be satisfied only with plug-in version that is 
-	 * equivalent to the specified version (same major and minor version
-	 * identifier, greater than or equal service identifier).
-	 * @since 2.0
-	 */
-	public static final int RULE_EQUIVALENT = 2;
-
-	/**
-	 * Dependency can be satisfied only with plug-in version that is 
-	 * compatible with the specified version (either is equivalent,
-	 * or greater minor identifier (but same major identifier)).
-	 * @since 2.0
-	 */
-	public static final int RULE_COMPATIBLE = 3;
-
-	/**
-	 * Dependency can be satisfied only with plug-in version that is 
-	 * greater or equal to the specified version.
-	 * @since 2.0
-	 */
-	public static final int RULE_GREATER_OR_EQUAL = 4;
+public interface IImport extends IAdaptable, IUpdateConstants {
 
 	/**
 	 * The import relates to a plugin

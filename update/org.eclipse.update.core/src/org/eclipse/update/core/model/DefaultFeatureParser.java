@@ -1062,11 +1062,11 @@ public class DefaultFeatureParser extends DefaultHandler {
 		
 		// search location
 		String locationName = attributes.getValue("search_location");
-		int searchLocation = IFeatureReference.SEARCH_ROOT;
+		int searchLocation = IUpdateConstants.SEARCH_ROOT;
 		if("both".equalsIgnoreCase(locationName))
-			searchLocation = IFeatureReference.SEARCH_ROOT & IFeatureReference.SEARCH_SELF;
+			searchLocation = IUpdateConstants.SEARCH_ROOT & IUpdateConstants.SEARCH_SELF;
 		if("root".equalsIgnoreCase(locationName))
-			searchLocation = IFeatureReference.SEARCH_ROOT;
+			searchLocation = IUpdateConstants.SEARCH_ROOT;
 		
 		
 		objectStack.push(new IncludedFeatureReference(name,isOptional,rule, isUpdatable, searchLocation));

@@ -21,19 +21,6 @@ import org.eclipse.core.runtime.IAdaptable;
  */
 public interface IFeatureReference extends IAdaptable {
 
-
-	/**
-	 * The search location for updates is defined by the root feature
-	 * @since 2.0.2
-	 */
-	public static final int SEARCH_ROOT = 1<<1;
-	
-	/**
-	 * The search location for updates is defined by this feature
-	 * @since 2.0.2
-	 */
-	public static final int SEARCH_SELF = 1<<2;
-
 	/**
 	 * Returns the referenced feature URL.
 	 * 
