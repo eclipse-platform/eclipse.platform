@@ -55,6 +55,10 @@ public class FeatureModel extends ModelObject {
 	nonPluginEntries;
 	private List /*of ContentGroupModel*/
 	groupEntries;
+	
+	// [2.0.1]
+	private String name;
+	private boolean isOptional = false; 
 
 	/**
 	 * Creates an uninitialized feature object.
@@ -813,4 +817,36 @@ public class FeatureModel extends ModelObject {
 		resolveListReference(getPluginEntryModels(), base, bundle);
 		resolveListReference(getNonPluginEntryModels(), base, bundle);
 	}
+	/**
+	 * Returns the isOptional.
+	 * @return boolean
+	 */
+	public boolean isOptional() {
+		return isOptional;
+	}
+
+	/**
+	 * Returns the name.
+	 * @return String
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the isOptional.
+	 * @param isOptional The isOptional to set
+	 */
+	public void setOptional(boolean isOptional) {
+		this.isOptional = isOptional;
+	}
+
+	/**
+	 * Sets the name.
+	 * @param name The name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

@@ -491,9 +491,7 @@ public class InstallConfiguration
 		URL url = null;
 		IPluginEntry featurePlugin = null;
 		for (int k = 0; k < entries.length; k++) {
-			if (id
-				.equalsIgnoreCase(
-					entries[k].getVersionedIdentifier().getIdentifier())) {
+			if (id.equalsIgnoreCase(entries[k].getVersionedIdentifier().getIdentifier())) {
 				url = getRuntimeConfigurationURL(entries[k], cSite);
 				featurePlugin = entries[k];
 			}
@@ -795,8 +793,7 @@ public class InstallConfiguration
 		String rootString = cSite.getPlatformURLString();
 		String pluginPathID = getPathID(entry);
 		try {
-			ISiteContentProvider siteContentProvider =
-				cSite.getSite().getSiteContentProvider();
+			ISiteContentProvider siteContentProvider = cSite.getSite().getSiteContentProvider();
 			URL pluginEntryfullURL = siteContentProvider.getArchiveReference(pluginPathID);
 			
 			// 

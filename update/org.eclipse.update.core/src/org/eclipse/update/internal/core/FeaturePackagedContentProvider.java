@@ -299,11 +299,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 		List result = new ArrayList();
 
 		if (!dir.isDirectory())
-			throw new IOException(
-				Policy.bind(
-					"FeaturePackagedContentProvider.InvalidDirectory",
-					dir.getPath()));
-		//$NON-NLS-1$
+			throw new IOException(	Policy.bind("FeaturePackagedContentProvider.InvalidDirectory",dir.getPath()));//$NON-NLS-1$
 
 		File[] files = dir.listFiles();
 		if (files != null) // be careful since it can be null

@@ -282,17 +282,13 @@ public class Feature extends FeatureModel implements IFeature {
 			handler.installInitiated();
 
 			// Download and verify feature archive(s)
-			ContentReference[] references =
-				provider.getFeatureEntryArchiveReferences(monitor);
+			ContentReference[] references =	provider.getFeatureEntryArchiveReferences(monitor);
 			verifyReferences(verifier,references,monitor,verificationListener,true);				
 			monitorWork(monitor,1);
 
 			// Download and verify plugin archives
 			for (int i = 0; i < pluginsToInstall.length; i++) {
-				references =
-					provider.getPluginEntryArchiveReferences(
-						pluginsToInstall[i],
-						monitor);
+				references = provider.getPluginEntryArchiveReferences(pluginsToInstall[i],monitor);
 				verifyReferences(verifier,references,monitor,verificationListener,false);
 				monitorWork(monitor,1);
 			}
@@ -300,16 +296,10 @@ public class Feature extends FeatureModel implements IFeature {
 
 			// Download non-plugin archives. Verification handled by optional install handler
 			for (int i = 0; i < nonPluginsToInstall.length; i++) {
-				references =
-					provider.getNonPluginEntryArchiveReferences(
-						nonPluginsToInstall[i],
-						monitor);
-						
+				references = provider.getNonPluginEntryArchiveReferences(nonPluginsToInstall[i],monitor);
 				monitorWork(monitor,1);
 			}
-			handler.nonPluginDataDownloaded(
-				nonPluginsToInstall,
-				verificationListener);
+			handler.nonPluginDataDownloaded(nonPluginsToInstall,verificationListener);
 
 			// All archives are downloaded and verified. Get ready to install
 			consumer = targetFeature.getFeatureContentConsumer();
@@ -336,15 +326,9 @@ public class Feature extends FeatureModel implements IFeature {
 
 			// Install plugin files
 			for (int i = 0; i < pluginsToInstall.length; i++) {
-				
-				references =
-					provider.getPluginEntryContentReferences(
-						pluginsToInstall[i],
-						monitor);
-										
-				IContentConsumer pluginConsumer =
-					consumer.open(pluginsToInstall[i]);
-										
+				references = provider.getPluginEntryContentReferences(pluginsToInstall[i],monitor);
+				IContentConsumer pluginConsumer = consumer.open(pluginsToInstall[i]);
+						
 				String msg = "";	
 				if (monitor != null){
 					subMonitor = new SubProgressMonitor(monitor,1);						

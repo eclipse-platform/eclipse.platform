@@ -427,16 +427,6 @@ public interface IFeature extends IAdaptable {
 	public void setFeatureContentProvider(IFeatureContentProvider featureContentProvider);
 	
 	/**
-	 * Returns true if the update for this feature must be
-	 * searched independently from the root nesting feature.
-	 * returns false if the search has to be done as part of 
-	 * the root parent feature.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isNewUpdatesSearch();
-
-	/**
 	 * Returns true is this nested feature is optional, 
 	 * returns false otherwise.
 	 * 
@@ -445,30 +435,11 @@ public interface IFeature extends IAdaptable {
 	public boolean isOptional();
 
 	/**
-	 * Returns true if this feature can be updated independently from
-	 * the root parent one. Returns false if this feature cannot be
-	 * updated independently from the root parent.
-	 * 
-	 * @return boolean
-	 */
-	public boolean isUpdateAllowed();
-
-	/**
 	 * Returns the label to be shown if the referenced feature is missing.
 	 * If this attribute is not specified, returns the feature identifier.
 	 * 
 	 * @return String
 	 */
 	public String getName();
-
-	/**
-	 * Returns the searchLocation of this feature.
-	 * 
-	 * @return int
-	 * @see IFeature#SEARCH_LOCATION_DEFAULT
-	 * @see IFeature#SEARCH_LOCATION_FEATURE
-	 * @see IFeature#SEARCH_LOCATION_BOTH
-	 */
-	public int getSearchLocation();
 
 }

@@ -353,6 +353,7 @@ public abstract class FeatureContentProvider
 			UpdateManagerPlugin.warn("Unable to access .permissions",e);
 		}
 		
+		// TODO How about UTF ???
 		if (in!=null){
 			try {
 				String line = in.readLine();

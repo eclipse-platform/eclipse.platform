@@ -316,5 +316,19 @@ public class MissingFeature implements IFeature {
 		return null;
 	}
 
+	/**
+	 * @see org.eclipse.update.core.IFeature#getName()
+	 */
+	public String getName() {
+		return null;
+	}
+
+	/**
+	 * @see org.eclipse.update.core.IFeature#isOptional()
+	 */
+	public boolean isOptional() {
+		return false;
+	}
+
 }
 
