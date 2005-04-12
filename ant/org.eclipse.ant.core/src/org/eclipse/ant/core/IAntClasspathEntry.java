@@ -14,6 +14,7 @@ import java.net.URL;
 
 /**
  * Represents an Ant classpath entry.
+ * Clients may implement this interface.
  *
  * @since 3.0
  */

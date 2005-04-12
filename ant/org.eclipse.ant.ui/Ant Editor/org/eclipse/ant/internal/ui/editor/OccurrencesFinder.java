@@ -23,9 +23,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 
 public class OccurrencesFinder {
+    
 	private AntModel fAntModel;
-	private List fUsages= new ArrayList/*<AntElementNode>*/();
-
 	private AntEditor fEditor;
 	private int fOffset;
 	private IDocument fDocument;
@@ -62,16 +61,17 @@ public class OccurrencesFinder {
 		}
 		List nodes= new ArrayList(1);
 		nodes.add(fAntModel.getProjectNode());
-		scanNodesForOccurrences(nodes, fUsages, occurrencesIdentifier);
+        List usages= new ArrayList();
+		scanNodesForOccurrences(nodes, usages, occurrencesIdentifier);
 		String identifier;
 		try {
 			identifier = fDocument.get(region.getOffset(), region.getLength());
 		} catch (BadLocationException e) {
 			return null;
 		}
-		List positions= new ArrayList(fUsages.size());
+		List positions= new ArrayList(usages.size());
 		int length= identifier.length();
-		for (Iterator each= fUsages.iterator(); each.hasNext();) {
+		for (Iterator each= usages.iterator(); each.hasNext();) {
 			AntElementNode currentNode= (AntElementNode)each.next();
 			List offsets= currentNode.computeIdentifierOffsets(identifier);
 			if (offsets != null) {

@@ -15,6 +15,7 @@ import org.eclipse.core.variables.VariablesPlugin;
 
 /**
  * Represents a Ant property.
+ * Clients may instantiate this class; it is not intended to be subclassed.
  * @since 2.1
  */
 public class Property {

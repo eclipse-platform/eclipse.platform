@@ -60,9 +60,9 @@ public class SearchForBuildFilesAction extends Action {
 								// Don't parse projects that have already been added.
 								continue;
 							}
-							final AntProjectNode project= new AntProjectNodeProxy(buildFileName);
+							final AntProjectNodeProxy project= new AntProjectNodeProxy(buildFileName);
 							// Force the project to be parsed so the error state is set.
-							project.getName();
+							project.parseBuildFile();
 							monitor.worked(1);
 							if (includeErrorNodes || !(project.isErrorNode())) {
 								Display.getDefault().asyncExec(new Runnable() {

@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * Entry point for running Ant builds inside Eclipse.
+ * Clients may instantiate this class; it is not intended to be subclassed.
  */
 public class AntRunner implements IPlatformRunnable {
 

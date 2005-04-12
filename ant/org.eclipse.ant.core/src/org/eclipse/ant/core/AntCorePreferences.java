@@ -51,6 +51,7 @@ import org.osgi.framework.Constants;
 /**
  * Represents the Ant Core plug-in's preferences providing utilities for
  * extracting, changing and updating the underlying preferences.
+ * Clients may not instantiate or subclass this class.
  * @since 2.1
  */
 public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.IPropertyChangeListener {

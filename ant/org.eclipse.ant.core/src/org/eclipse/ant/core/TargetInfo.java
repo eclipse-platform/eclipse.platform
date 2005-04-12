@@ -13,6 +13,7 @@ package org.eclipse.ant.core;
 
 /**
  * Represents information about a target within an Ant build file.
+ * Clients may not instantiate or subclass this class.
  * @since 2.1
  */
 public class TargetInfo {

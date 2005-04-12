@@ -15,6 +15,7 @@ import org.eclipse.ant.internal.core.AntObject;
 
 /**
  * Represents an Ant task.
+ * Clients may instantiate this class; it is not intended to be subclassed.
  * @since 2.1
  */
 public class Task extends AntObject {

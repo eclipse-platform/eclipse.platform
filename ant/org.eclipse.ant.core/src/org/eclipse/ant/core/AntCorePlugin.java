@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The plug-in runtime class for the Ant Core plug-in.
+ * Clients may not instantiate or subclass this class.
  */
 public class AntCorePlugin extends Plugin {
 

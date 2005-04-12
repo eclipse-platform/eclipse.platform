@@ -410,10 +410,12 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 						position);
 			}
 			
-			if (isCanceled())
+			if (isCanceled()) {
 				return Status.CANCEL_STATUS;
+            }
 			
-			synchronized (((ISynchronizable)document).getLockObject()) {
+            Object lock= getLockObject(document);
+			synchronized (lock) {
 				if (annotationModel instanceof IAnnotationModelExtension) {
 					((IAnnotationModelExtension)annotationModel).replaceAnnotations(fOccurrenceAnnotations, annotationMap);
 				} else {
@@ -1170,17 +1172,17 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 		if (provider == null) {//disposed
 			return;
 		}
-		
 		if (getAntModel() == null) {
 			return;
 		}
-		ISynchronizable doc= (ISynchronizable) provider.getDocument(getEditorInput());
-		if (doc == null) {
-		    return; //disposed
-		}
+        IDocument doc= provider.getDocument(getEditorInput());
+        if (doc == null) {
+            return; //disposed
+        }
+        Object lock= getLockObject(doc);
 		//ensure to synchronize so that the AntModel is not nulled out underneath in the AntEditorDocumentProvider
 		//when the editor/doc provider are disposed
-	    synchronized (doc.getLockObject()) {
+	    synchronized (lock) {
 	    	AntModel model= getAntModel();
 	    	if (model == null) {
 	    		return;
@@ -1191,6 +1193,16 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 	    	model.updateForInitialReconcile();
 	    }
 	}
+    
+    private Object getLockObject(IDocument doc) {
+        Object lock= null;
+        if (doc instanceof ISynchronizable) {
+            lock= ((ISynchronizable) doc).getLockObject();
+        } else {
+            lock= getAntModel();
+        }
+        return lock;
+    }
 	
 	private void postImageChange(final AntElementNode node) {
 		Shell shell= getSite().getShell();
@@ -1416,7 +1428,8 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 		}
 
 		IDocument document= documentProvider.getDocument(getEditorInput());
-		synchronized (((ISynchronizable)document).getLockObject()) {
+        Object lock= getLockObject(document);
+		synchronized (lock) {
 			if (annotationModel instanceof IAnnotationModelExtension) {
 				((IAnnotationModelExtension)annotationModel).replaceAnnotations(fOccurrenceAnnotations, null);
 			} else {
