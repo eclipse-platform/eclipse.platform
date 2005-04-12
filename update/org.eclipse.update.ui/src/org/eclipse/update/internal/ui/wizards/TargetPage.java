@@ -254,13 +254,13 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 			requiredSpaceLabel.setText(UpdateUIMessages.InstallWizard_TargetPage_unknownSize); 
 		else
 			requiredSpaceLabel.setText(
-				NLS.bind(UpdateUIMessages.InstallWizard_TargetPage_size, "" + required)); //$NON-NLS-1$
+				NLS.bind("InstallWizard.TargetPage.size", "" + required)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (available == LocalSystemInfo.SIZE_UNKNOWN)
 			availableSpaceLabel.setText(UpdateUIMessages.InstallWizard_TargetPage_unknownSize); 
 		else
 			availableSpaceLabel.setText(
-				NLS.bind(UpdateUIMessages.InstallWizard_TargetPage_size, "" + available)); //$NON-NLS-1$
+				NLS.bind("InstallWizard.TargetPage.size", "" + available)); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private long computeRequiredSizeFor(IConfiguredSite site) {
@@ -294,7 +294,7 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 				if (patchedFeatureJob != null
 					&& patchedFeatureJob.getTargetSite() != null
 					&& !jobs[i].getTargetSite().equals(patchedFeatureJob.getTargetSite())) {
-					String msg = NLS.bind(UpdateUIMessages.InstallWizard_TargetPage_patchError, (new String[] {
+					String msg = NLS.bind("InstallWizard.TargetPage.patchError", (new String[] {
                     feature.getLabel(),
                     patchedFeatureJob.getFeature().getLabel()}));
 					setErrorMessage(msg);
@@ -305,7 +305,7 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 				IFeature patchedFeature = UpdateUtils.getPatchedFeature(feature);
 				if (patchedFeature != null  
 					&& !jobs[i].getTargetSite().equals(patchedFeature.getSite().getCurrentConfiguredSite())) {
-					String msg = NLS.bind(UpdateUIMessages.InstallWizard_TargetPage_patchError2, (new String[] {
+					String msg = NLS.bind("InstallWizard.TargetPage.patchError2", (new String[] {
                     feature.getLabel(),
                     patchedFeature.getLabel(),
                     patchedFeature.getSite().getCurrentConfiguredSite().getSite().getURL().getFile()}));

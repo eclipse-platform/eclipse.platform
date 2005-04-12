@@ -68,8 +68,8 @@ public class SiteStateAction extends Action {
 
 	private boolean confirm(boolean newState) {
 		String name = site.getSite().getURL().toString();
-		String enableMessage = NLS.bind(UpdateUIMessages.SiteStateAction_enableMessage, name);
-		String disableMessage = NLS.bind(UpdateUIMessages.SiteStateAction_disableMessage, name);
+		String enableMessage = NLS.bind("SiteStateAction.enableMessage", name); //$NON-NLS-1$ //$NON-NLS-2$
+		String disableMessage = NLS.bind("SiteStateAction.disableMessage", name); //$NON-NLS-1$ //$NON-NLS-2$
 
 		String message = newState ? enableMessage : disableMessage;
 		return MessageDialog.openConfirm(shell, UpdateUIMessages.SiteStateAction_dialogTitle, message); 

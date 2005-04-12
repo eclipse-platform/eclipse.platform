@@ -9,77 +9,35 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.update.internal.ui.wizards;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.operation.*;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.PropertyDialogAction;
-import org.eclipse.ui.forms.HyperlinkSettings;
-import org.eclipse.ui.forms.widgets.ScrolledFormText;
-import org.eclipse.update.core.ICategory;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.IFeatureReference;
-import org.eclipse.update.core.ISiteFeatureReference;
-import org.eclipse.update.core.IURLEntry;
-import org.eclipse.update.core.Utilities;
-import org.eclipse.update.core.VersionedIdentifier;
-import org.eclipse.update.internal.core.UpdateCore;
-import org.eclipse.update.internal.core.UpdateManagerUtils;
-import org.eclipse.update.internal.operations.FeatureStatus;
-import org.eclipse.update.internal.operations.UpdateUtils;
-import org.eclipse.update.internal.ui.UpdateUI;
-import org.eclipse.update.internal.ui.UpdateUIImages;
-import org.eclipse.update.internal.ui.UpdateUIMessages;
-import org.eclipse.update.internal.ui.model.FeatureReferenceAdapter;
-import org.eclipse.update.internal.ui.model.SimpleFeatureAdapter;
-import org.eclipse.update.internal.ui.model.SiteBookmark;
-import org.eclipse.update.internal.ui.model.SiteCategory;
-import org.eclipse.update.internal.ui.parts.DefaultContentProvider;
-import org.eclipse.update.internal.ui.parts.SWTUtil;
-import org.eclipse.update.internal.ui.parts.SharedLabelProvider;
-import org.eclipse.update.operations.IInstallFeatureOperation;
-import org.eclipse.update.operations.IUpdateModelChangedListener;
-import org.eclipse.update.operations.OperationsManager;
-import org.eclipse.update.search.IUpdateSearchSite;
-import org.eclipse.update.search.UpdateSearchRequest;
+import org.eclipse.swt.*;
+import org.eclipse.swt.custom.*;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
+import org.eclipse.ui.dialogs.*;
+import org.eclipse.ui.forms.*;
+import org.eclipse.ui.forms.widgets.*;
+import org.eclipse.update.core.*;
+import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.operations.*;
+import org.eclipse.update.internal.ui.*;
+import org.eclipse.update.internal.ui.model.*;
+import org.eclipse.update.internal.ui.parts.*;
+import org.eclipse.update.operations.*;
+import org.eclipse.update.search.*;
 
 public class ReviewPage	extends BannerPage {
 
@@ -325,7 +283,7 @@ public class ReviewPage	extends BannerPage {
 				if (cycleCandidates == null)
 					cycleCandidates = new ArrayList();
 				if (cycleCandidates.contains(feature))
-					throw Utilities.newCoreException(NLS.bind(UpdateUIMessages.InstallWizard_ReviewPage_cycle, feature.getVersionedIdentifier().toString()), null);
+					throw Utilities.newCoreException(NLS.bind("InstallWizard.ReviewPage.cycle", feature.getVersionedIdentifier().toString()), null); //$NON-NLS-1$
 				else
 					cycleCandidates.add(feature);
 				IFeatureReference[] irefs =
@@ -834,8 +792,8 @@ public class ReviewPage	extends BannerPage {
 		String total = "" + totalCount; //$NON-NLS-1$
 		String selected = "" + checkedCount; //$NON-NLS-1$
 		counterLabel.setText(
-			NLS.bind(UpdateUIMessages.InstallWizard_ReviewPage_counter, (new String[] { selected, total })));	
-        counterLabel.getParent().layout();
+			NLS.bind("InstallWizard.ReviewPage.counter", (new String[] { selected, total })));
+		counterLabel.getParent().layout();
 	}
 
 //	private void handleSelectAll(boolean select) {

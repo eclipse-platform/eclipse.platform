@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<project name="project" default="default">
-
-    <target name="default" >
-        <java classname="Test2" classpath="../bin"></java>
-    </target>
-</project>
-

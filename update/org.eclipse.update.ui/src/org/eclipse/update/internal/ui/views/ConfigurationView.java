@@ -216,7 +216,7 @@ public class ConfigurationView
 				try {
 					IFeature feature = ((IFeatureAdapter) obj).getFeature(null);
 					if (feature instanceof MissingFeature) {
-						return NLS.bind(UpdateUIMessages.ConfigurationView_missingFeature, feature.getLabel());
+						return NLS.bind("ConfigurationView.missingFeature", feature.getLabel());
 					}
 					String version =
 						feature

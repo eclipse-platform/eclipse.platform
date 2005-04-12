@@ -134,7 +134,7 @@ public class SiteBookmark extends NamedModelObject
 		try {
 			if (monitor==null) monitor = new NullProgressMonitor();
 			monitor.beginTask("", 2); //$NON-NLS-1$
-			monitor.subTask(NLS.bind(UpdateUIMessages.SiteBookmark_connecting, url.toString()));
+			monitor.subTask(NLS.bind("SiteBookmark.connecting", url.toString())); //$NON-NLS-1$
 			site = SiteManager.getSite(url, useCache, new SubProgressMonitor(monitor, 1));
 			if (site!=null) {
 				createCatalog(new SubProgressMonitor(monitor, 1));

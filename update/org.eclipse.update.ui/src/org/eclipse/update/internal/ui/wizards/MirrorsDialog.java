@@ -73,7 +73,7 @@ public class MirrorsDialog extends Dialog {
 		data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		text.setLayoutData(data);
-		text.setText(NLS.bind(UpdateUIMessages.MirrorsDialog_text, siteName));
+		text.setText(NLS.bind("MirrorsDialog.text", siteName));
 		text.setBackground(parent.getBackground());
 		text.setEditable(false);
 		// the text should not receive focus
