@@ -46,7 +46,7 @@ public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
         //warm run
         ILaunchConfiguration configuration= getLaunchConfiguration("big");
 		IStructuredSelection selection= new StructuredSelection(configuration);
-		tagAsSummary("Open LCD on Targets tab", Dimension.CPU_TIME);
+		tagAsSummary("Open LCD on Targets tab", Dimension.ELAPSED_PROCESS);
 		for (int i = 0; i < 10; i++) {
 		    openLCD(selection, fgIdentifier, 20); 
         }
