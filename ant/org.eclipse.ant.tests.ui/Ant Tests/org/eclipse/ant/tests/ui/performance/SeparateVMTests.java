@@ -34,8 +34,11 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
      * Performance test for launching Ant in a separate vm.
      */
 	public void testBuild() throws CoreException {
-    	tagAsSummary("Simple separate JRE Build", Dimension.ELAPSED_PROCESS);
+    	tagAsSummary("Separate JRE Build", Dimension.ELAPSED_PROCESS);
     	ILaunchConfiguration config= getLaunchConfiguration("echoingSepVM");
+    	//possible first time hit of the SWT pieces getting written from the JAR to the 
+    	//metadata area
+    	launchAndTerminate(config, 20000);
     	for (int i = 0; i < 10; i++) {
     		launch(config, 10);
 		}
@@ -47,18 +50,17 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
      * Performance test for launching Ant in a separate vm with no console output.
      */
 	public void testBuildNoConsole() throws CoreException {
-    	tagAsSummary("Simple separate JRE Build set to not capture output", Dimension.ELAPSED_PROCESS);
+    	tagAsSummary("Separate JRE Build; capture output off", Dimension.ELAPSED_PROCESS);
     	ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM");
 		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config);
 		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
 		copy.setAttribute(IExternalToolConstants.ATTR_CAPTURE_OUTPUT, false);
-    	for (int i = 0; i < 10; i++) {
-    	    startMeasuring();
-    		for (int j = 0; j < i; j++) {
-    		    launchAndTerminate(copy, 20000);
-    		}
-    		stopMeasuring();
-		}
+		//possible first time hit of the SWT pieces getting written from the JAR to the 
+    	//metadata area
+		launchAndTerminate(copy, 20000);
+		for (int i = 0; i < 10; i++) {
+    		launch(copy, 10);
+        }
     	commitMeasurements();
 		assertPerformance(); 	
     }
@@ -67,11 +69,14 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
      * Performance test for launching Ant in a separate vm with debug information.
      */
     public void testBuildMinusDebug() throws CoreException {
-    	tagAsSummary("Simple separate JRE Build with debug information", Dimension.ELAPSED_PROCESS);
+    	tagAsSummary("Separate JRE Build; -debug", Dimension.ELAPSED_PROCESS);
     	ILaunchConfiguration config = getLaunchConfiguration("echoingSepVM");
 		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config);
 		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
 		copy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "-debug");
+		//possible first time hit of the SWT pieces getting written from the JAR to the 
+    	//metadata area
+		launchAndTerminate(copy, 20000);
     	for (int i = 0; i < 10; i++) {
     		launch(copy, 10);
         }
