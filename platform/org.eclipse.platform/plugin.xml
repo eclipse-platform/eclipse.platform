@@ -35,7 +35,7 @@
                home-page-id="root" standby-page-id="standby">
             <implementation
                   ws="win32"
-                  style="intro/css/shared.css"
+                  style="$nl$/intro/css/shared.css"
                   kind="html"
                   os="win32">
             </implementation>

@@ -7,6 +7,7 @@
         <title style-id="intro-header">Welcome to Eclipse 3.1</title>
         <group id="links-background">
             <group id="page-links">
+				<anchor id="beginAnchor"/>
                 <link label="Overview" url="http://org.eclipse.ui.intro/showPage?id=overview" id="overview" style-id="left">
                     <img id="overview_img" style-id="content-img" src="css/graphics/icons/etool/overview72.gif" alt="Overview">
                     </img>
@@ -27,6 +28,7 @@
                     </img>
                     <text>Find out what is new in this release</text>
                 </link>
+				<anchor id="endAnchor"/>
             </group>
         </group>
         <group id="action-links">
@@ -44,6 +46,7 @@
         <title style-id="intro-header">Welcome to Eclipse 3.1</title>
         <group id="links-background">
             <group id="page-links">
+				<anchor id="beginAnchor"/>
                 <link label="Overview" url="http://org.eclipse.ui.intro/showPage?id=overview&amp;standby=false" id="overview" style-id="left">
                     <text>Find out what Eclipse is all about</text>
                 </link>
@@ -56,6 +59,7 @@
                 <link label="What&apos;s New" url="http://org.eclipse.ui.intro/showPage?id=news&amp;standby=false" id="news" style-id="right">
                     <text>Find out what is new in this release</text>
                 </link>
+				<anchor id="endAnchor"/>
             </group>
         </group>
     </page>
@@ -140,6 +144,8 @@
             <text style-id="page-title" id="page-title" filteredFrom="html">SAMPLES</text>
             <text style-id="page-description" id="page-description">Explore Eclipse by installing prefabricated samples (may require Internet connection).</text>
             <anchor id="beginAnchor"/>
+			<anchor id="jdtAnchor"/>
+            <anchor id="pdeAnchor"/>
             <anchor id="endAnchor"/>
         </group>
     </page>
