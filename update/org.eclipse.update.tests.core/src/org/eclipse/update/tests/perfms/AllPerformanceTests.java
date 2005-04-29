@@ -22,8 +22,8 @@ public static Test suite() {
 	TestSuite suite = new TestSuite();
 	suite.setName("Update Performance Tests");
 	
-	// the following will take all teh test methods in the class that start with 'test'
-	suite.addTest(new TestSuite(TestStartup.class));
+	// the following will take all the test methods in the class that start with 'test'
+	//suite.addTest(new TestSuite(TestStartup.class));
 	return suite;
 }
 }
