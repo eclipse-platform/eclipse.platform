@@ -83,4 +83,20 @@ public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
     	commitMeasurements();
 		assertPerformance();
 	}  	
+    
+     /**
+     * Performance test for launching Ant in a separate vm with lots of links
+     */
+    public void testBuildWithLotsOfLinks() throws CoreException {
+        tagAsSummary("Separate JRE Build; links", Dimension.ELAPSED_PROCESS);
+        ILaunchConfiguration config = getLaunchConfiguration("echoPropertiesSepVM");
+        //possible first time hit of the SWT pieces getting written from the JAR to the 
+        //metadata area
+        launchAndTerminate(config, 20000);
+        for (int i = 0; i < 10; i++) {
+            launch(config, 10);
+		}
+        commitMeasurements();
+        assertPerformance();
+    }   
 }
