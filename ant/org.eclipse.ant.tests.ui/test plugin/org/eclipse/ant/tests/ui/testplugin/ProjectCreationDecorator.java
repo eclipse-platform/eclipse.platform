@@ -58,6 +58,8 @@ public class ProjectCreationDecorator extends AbstractAntUITest {
 			createLaunchConfigurationForSeparateVM("extensionPointTaskSepVM", null);
 			createLaunchConfigurationForSeparateVM("extensionPointTypeSepVM", null);
 			
+			createLaunchConfigurationForSeparateVM("echoPropertiesSepVM", "echoProperties");
+			
 			createLaunchConfiguration("big", ProjectHelper.PROJECT_NAME + "/buildfiles/performance/build.xml");
 			
 		} finally {
