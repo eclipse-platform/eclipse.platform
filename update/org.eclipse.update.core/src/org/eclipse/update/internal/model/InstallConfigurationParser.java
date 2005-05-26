@@ -46,7 +46,7 @@ public class InstallConfigurationParser {
 	 */
 	public InstallConfigurationParser(
 		IPlatformConfiguration platformConfig,
-		InstallConfigurationModel config, boolean light)
+		InstallConfigurationModel config)
 		throws IOException, CoreException {
 
 		Assert.isTrue(platformConfig instanceof PlatformConfiguration);
@@ -59,14 +59,8 @@ public class InstallConfigurationParser {
 			UpdateCore.debug("Start parsing Configuration:" + (config).getURL().toExternalForm()); //$NON-NLS-1$
 		}
 		
-		if (light) {
-			processConfigurationLight(this.platformConfig);
-		} else {
-			processConfig(this.platformConfig);
-		}
+		processConfig(this.platformConfig);
 	}
-	
-	
 
 
 
@@ -189,7 +183,9 @@ public class InstallConfigurationParser {
 	private void processConfig(PlatformConfiguration platformConfig) throws IOException, CoreException {
 
 		// date
-		processConfigurationLight(platformConfig);
+		Date date = new Date(platformConfig.getChangeStamp());
+		config.setCreationDate(date);
+		config.setLabel(date.toString());
 		
 		//timeline
 //		String timelineString = attributes.getValue("timeline"); //$NON-NLS-1$
@@ -204,15 +200,4 @@ public class InstallConfigurationParser {
 			processSite(sites[i]);
 
 	}
-
-
-
-	private void processConfigurationLight(PlatformConfiguration platformConfig) {
-		Date date = new Date(platformConfig.getChangeStamp());
-		config.setCreationDate(date);
-		config.setLabel(date.toString());
-		
-		config.setCurrent( date.equals(org.eclipse.update.internal.configurator.PlatformConfiguration.getCurrent().getConfiguration().getDate()));
-	}
-	
 }

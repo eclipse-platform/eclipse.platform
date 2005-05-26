@@ -32,7 +32,7 @@ public class InstallConfigurationModel extends ModelObject {
 	private URL base;
 	private boolean resolved = false;
 
-	private boolean isCurrent = false;
+	private boolean isCurrent;
 	private URL locationURL;
 	private String locationURLString;
 	protected Date date;
@@ -41,7 +41,6 @@ public class InstallConfigurationModel extends ModelObject {
 	private List /* of configurationSiteModel */ configurationSites;
 
 	protected boolean initialized = false;
-	protected boolean lightlyInitialized = false;
 
 	/**
 	 * default constructor. Create
@@ -100,9 +99,7 @@ public class InstallConfigurationModel extends ModelObject {
 	 * @since 2.0
 	 */
 	public boolean isCurrent() {
-		if (!lightlyInitialized) 
-			doLightInitialization();
-		
+		if (!initialized) initialize();
 		return isCurrent;
 	}
 
@@ -143,7 +140,7 @@ public class InstallConfigurationModel extends ModelObject {
 	public Date getCreationDate() {
 //		if (!initialized) initialize();
 		if (date == null)
-			doLightInitialization();
+			initialize();
 		return date;
 	}
 	/**
@@ -170,7 +167,7 @@ public class InstallConfigurationModel extends ModelObject {
 	public String getLabel() {
 //		if (!initialized) initialize();
 		if (label == null)
-			doLightInitialization();
+			initialize();
 		return label;
 	}
 
@@ -238,9 +235,13 @@ public class InstallConfigurationModel extends ModelObject {
 		
 		try {
 			try {
-				IPlatformConfiguration platformConfig = getPlatformConfiguration();
+				IPlatformConfiguration platformConfig;
+				if (UpdateManagerUtils.sameURL(getURL(), ConfiguratorUtils.getCurrentPlatformConfiguration().getConfigurationLocation()))
+					platformConfig = ConfiguratorUtils.getCurrentPlatformConfiguration();
+				else 
+					platformConfig = ConfiguratorUtils.getPlatformConfiguration(getURL());
 				
-				new InstallConfigurationParser(platformConfig, this, false);
+				new InstallConfigurationParser(platformConfig, this);
 			} catch (FileNotFoundException exception) {
 				UpdateCore.warn(locationURLString + " does not exist, The local site is not in synch with the file system and is pointing to a file that doesn't exist.", exception); //$NON-NLS-1$
 				throw Utilities.newCoreException(NLS.bind(Messages.InstallConfiguration_ErrorDuringFileAccess, (new String[] { locationURLString })), exception);
@@ -261,34 +262,6 @@ public class InstallConfigurationModel extends ModelObject {
 			resolveListReference(getActivityModel(), base, bundleURL);
 			resolveListReference(getConfigurationSitesModel(), base, bundleURL);
 		} catch (MalformedURLException e){}		
-	}
-
-	private IPlatformConfiguration getPlatformConfiguration() throws IOException {
-		IPlatformConfiguration platformConfig;
-		if (UpdateManagerUtils.sameURL(getURL(), ConfiguratorUtils.getCurrentPlatformConfiguration().getConfigurationLocation()))
-			platformConfig = ConfiguratorUtils.getCurrentPlatformConfiguration();
-		else 
-			platformConfig = ConfiguratorUtils.getPlatformConfiguration(getURL());
-		return platformConfig;
-	}
-	
-	private void doLightInitialization() {
-		try {
-			try {
-				IPlatformConfiguration platformConfig = getPlatformConfiguration();
-			
-				new InstallConfigurationParser(platformConfig, this, true);
-			} catch (FileNotFoundException exception) {
-				UpdateCore.warn(locationURLString + " does not exist, The local site is not in synch with the file system and is pointing to a file that doesn't exist.", exception); //$NON-NLS-1$
-				throw Utilities.newCoreException(NLS.bind(Messages.InstallConfiguration_ErrorDuringFileAccess, (new String[] { locationURLString })), exception);
-			} catch (IOException exception) {
-				throw Utilities.newCoreException(NLS.bind(Messages.InstallConfiguration_ErrorDuringFileAccess, (new String[] { locationURLString })), exception);
-			} 
-		} catch (CoreException e) {
-			UpdateCore.warn("Error processing configuration history:" + locationURL.toExternalForm(), e); //$NON-NLS-1$
-		} finally {
-			lightlyInitialized = true;
-		}
 	}
 
 	/*
