@@ -92,7 +92,7 @@ public class WebStartMain extends Main {
 	 */
 	private String extractFileName(String url) {
 		String innerURL = extractInnerURL(url);
-		return innerURL.substring(innerURL.lastIndexOf("/") + 1); //$NON-NLS-1$
+		return innerURL.substring(innerURL.lastIndexOf("/") + 1);
 	}
 
 	/* 
@@ -140,7 +140,7 @@ public class WebStartMain extends Main {
 			System.out.println("Osgi bundles before conversion:\n" + System.getProperty(PROP_OSGI_BUNDLES)); //$NON-NLS-1$
 
 		String[] bundles = getArrayFromList(System.getProperty(PROP_OSGI_BUNDLES));
-		String result = ""; //$NON-NLS-1$
+		String result = "";
 		for (int i = 0; i < bundles.length; i++) {
 			//a entry in the bundle list is made of two parts: the bundle to install followed by an optional info. The separator for those is @
 			String bundle = bundles[i];
@@ -184,7 +184,7 @@ public class WebStartMain extends Main {
 		System.setProperty(PROP_OSGI_BUNDLES, System.getProperty(PROP_OSGI_BUNDLES) + arrayToString(result, ','));
 
 		if (debug)
-			printArray("Bundles list:\n", result); //$NON-NLS-1$
+			printArray("Bundles list:\n", result);
 	}
 
 	private void printArray(String header, String[] values) {

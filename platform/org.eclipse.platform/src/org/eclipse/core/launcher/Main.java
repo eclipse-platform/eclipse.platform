@@ -302,7 +302,7 @@ public class Main {
             if (domain != null)
             	source = Main.class.getProtectionDomain().getCodeSource();
 			if (domain == null || source == null) {
-				log("Can not automatically set the security manager. Please use a policy file."); //$NON-NLS-1$
+				log("Can not automatically set the security manager. Please use a policy file.");
 				return;
 			}
             // get the list of codesource URLs to grant AllPermission to
