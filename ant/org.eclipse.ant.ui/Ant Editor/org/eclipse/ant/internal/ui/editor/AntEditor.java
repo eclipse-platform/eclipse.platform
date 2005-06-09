@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.AntUtil;
+import org.eclipse.ant.internal.ui.ExternalHyperlink;
 import org.eclipse.ant.internal.ui.IAntUIHelpContextIds;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.internal.ui.editor.actions.FoldingActionGroup;
@@ -1023,6 +1024,12 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 				return e.getLocalizedMessage();
 			}
 		}
+        File externalFile= new File(path);
+        if (externalFile.exists()) {
+            new ExternalHyperlink(externalFile, -1).linkActivated();
+            return null;
+        }
+        
 		return ""; //$NON-NLS-1$
 	}
 	
@@ -1151,7 +1158,7 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 		}
 		
 		AntModelCore.getDefault().removeAntModelListener(fAntModelListener);
-		
+		fAntModel= null;
 		super.dispose();
 	}
 	

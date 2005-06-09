@@ -551,12 +551,10 @@ public class MirrorSite extends Site {
 					+ categoryModels[i].getLabel()
 					+ "\""); //$NON-NLS-1$
 			writer.println(">"); //$NON-NLS-1$
-			if (categoryModels[i].getDescriptionModel() != null) {
-				writeDescription(
-						indent + INDENT,
-						writer,
-						categoryModels[i].getDescriptionModel());
-			}
+			writeDescription(
+				indent + INDENT,
+				writer,
+				categoryModels[i].getDescriptionModel());
 			writer.print(indent);
 			writer.println("</category-def>"); //$NON-NLS-1$
 			writer.println();

@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceTestCase;
 import org.eclipse.ui.PartInitException;
 
@@ -41,6 +42,7 @@ public class OpenAntEditorTest extends PerformanceTestCase {
 		// warm run
 		IFile file= getIFile("build.xml");
 		tagAsGlobalSummary("Open Ant Editor", Dimension.ELAPSED_PROCESS);
+        setComment(Performance.EXPLAINS_DEGRADATION_COMMENT, "In 3.0, by default, no folding in the Ant editor. In 3.1, by default folding is on in the Ant editor. See the No folding test.");
 		measureOpenInEditor(file);
 	}
 	

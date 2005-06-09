@@ -13,6 +13,7 @@ package org.eclipse.ant.internal.ui.model;
 import java.io.File;
 
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.ant.internal.ui.editor.AntEditorCompletionProcessor;
 import org.xml.sax.Attributes;
 
@@ -38,10 +39,10 @@ public class AntAntNode extends AntTaskNode {
             fileName= "build.xml"; //$NON-NLS-1$
         }
         label.append(fileName);
-        if (fFile != null) {
-            fFile+=File.separatorChar + fileName;
-        } else {
+        if (fFile == null || FileUtils.isAbsolutePath(fileName)) {
             fFile= fileName;
+        } else {
+            fFile+=File.separatorChar + fileName;
         }
         
         String more = attributes.getValue(IAntModelConstants.ATTR_TARGET);
@@ -50,7 +51,6 @@ public class AntAntNode extends AntTaskNode {
             label.append(more);
         }
         setBaseLabel(label.toString());
-        
     }
     
     /* (non-Javadoc)
