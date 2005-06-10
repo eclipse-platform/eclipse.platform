@@ -348,30 +348,24 @@ public class ConfigurationView
 
 	public ConfigurationView(ConfigurationManagerWindow window) {
 		UpdateUI.getDefault().getLabelProvider().connect(this);
-		configurationWindow=window;
 		initializeImages();
+		configurationWindow=window;
 	}
 
 	private void initializeImages() {
+		ImageDescriptor edesc = UpdateUIImages.DESC_APP_OBJ;
 		IProduct product = Platform.getProduct();
 		if (product != null) {
-			eclipseImage = getProductImage16(product);
-		}
-		if (eclipseImage==null) {
-			ImageDescriptor edesc = UpdateUIImages.DESC_APP_OBJ;
-			eclipseImage = UpdateUI.getDefault().getLabelProvider().get(edesc);
-		}
-	}
-	
-	private Image getProductImage16(IProduct product) {
-		// We must be careful and poof up the image to test
-		// the bounds to ensure we are picking 16x16 one.
-		String windowImagesUrls = product.getProperty(IProductConstants.WINDOW_IMAGES);
-		if (windowImagesUrls != null ) {
-			StringTokenizer st = new StringTokenizer(windowImagesUrls, ","); //$NON-NLS-1$
-			while (st.hasMoreTokens()) {
-				String windowImageURL = st.nextToken();
-				ImageDescriptor edesc=null;
+			String windowImageURL = product.getProperty(IProductConstants.WINDOW_IMAGE);
+			if (windowImageURL == null) {
+				String windowImagesUrls = product.getProperty(IProductConstants.WINDOW_IMAGES);
+				if (windowImagesUrls != null ) {
+					StringTokenizer st = new StringTokenizer(windowImagesUrls, ","); //$NON-NLS-1$
+					if (st.hasMoreTokens())
+						windowImageURL = st.nextToken();
+				}
+			}
+			if (windowImageURL != null)
 				try {
 					edesc = ImageDescriptor.createFromURL(new URL(windowImageURL));
 				} catch (MalformedURLException e) {
@@ -383,22 +377,8 @@ public class ConfigurationView
 							edesc = ImageDescriptor.createFromURL(url);
 					}
 				}
-				if (edesc!=null) {
-					Image image = UpdateUI.getDefault().getLabelProvider().get(edesc);
-					if (image.getBounds().width!=16) {
-						//TODO this is just a fix to handle *.ico image.
-						//The correct approach would be to somehow get access to
-						//16x16 image in the icon.
-						ImageData scaled = image.getImageData().scaledTo(16, 16);
-						Image scaledImage = new Image(configurationWindow.getShell().getDisplay(), scaled);
-						UpdateUI.getDefault().getLabelProvider().get(scaledImage, 0);
-						return scaledImage;
-					}
-					return image;
-				}
-			}
 		}
-		return null;
+		eclipseImage = UpdateUI.getDefault().getLabelProvider().get(edesc);
 	}
 
 	public void initProviders() {
