@@ -382,7 +382,7 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 			
 			String configArea = configLocation.getURL().getFile();
 			lastTimeStamp = configuration.getChangeStamp();
-			lastStateTimeStamp = Platform.getStateStamp();
+			lastStateTimeStamp = Platform.getPlatformAdmin().getState(false).getTimeStamp();
 			stream = new DataOutputStream(new FileOutputStream(configArea +File.separator+ NAME_SPACE+ File.separator+ LAST_CONFIG_STAMP));
 			stream.writeLong(lastTimeStamp);
 			stream.writeLong(lastStateTimeStamp);
@@ -417,7 +417,7 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 	private boolean canRunWithCachedData() {
 		return  !"true".equals(System.getProperty("osgi.checkConfiguration")) && //$NON-NLS-1$ //$NON-NLS-2$
 				lastTimeStamp==configuration.getChangeStamp() &&
-				lastStateTimeStamp==Platform.getStateStamp();
+				lastStateTimeStamp==Platform.getPlatformAdmin().getState(false).getTimeStamp();
 	}
 				
 	public static BundleContext getBundleContext() {

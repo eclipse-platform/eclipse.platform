@@ -15,15 +15,12 @@ public class InstallWizardOperation {
 	private UpdateJob job;
 	private IJobChangeListener jobListener;
 	private Shell shell;
-	private Shell parentShell;
 
 	public InstallWizardOperation() {
 	}
 
 	public void run(Shell parent, UpdateJob task) {
 		shell = parent;
-		if (shell.getParent()!=null && shell.getParent() instanceof Shell)
-			parentShell = (Shell)shell.getParent();
 		// cancel any existing jobs and remove listeners
 		if (jobListener != null)
 			Platform.getJobManager().removeJobChangeListener(jobListener);
@@ -36,16 +33,9 @@ public class InstallWizardOperation {
 		Platform.getJobManager().addJobChangeListener(jobListener);
 		job.schedule();
 	}
-	
-	private Shell getValidShell() {
-		if (shell.isDisposed())
-			return parentShell;
-		return shell;
-	}
 
 	private class UpdateJobChangeListener extends JobChangeAdapter {
 		public void done(final IJobChangeEvent event) {
-			final Shell validShell = getValidShell();
 			// the job listener is triggered when the search job is done, and proceeds to next wizard
 			if (event.getJob() == job) {
 				Platform.getJobManager().removeJobChangeListener(this);
@@ -53,16 +43,16 @@ public class InstallWizardOperation {
 				if (job.getStatus() == Status.CANCEL_STATUS)
 					return;
 				if (job.getStatus() != Status.OK_STATUS)
-					getValidShell().getDisplay().syncExec(new Runnable() {
+					shell.getDisplay().syncExec(new Runnable() {
 						public void run() {
 							UpdateUI.log(job.getStatus(), true);
 						}
 					});
 
-				validShell.getDisplay().asyncExec(new Runnable() {
+				shell.getDisplay().asyncExec(new Runnable() {
 					public void run() {
-						validShell.getDisplay().beep();
-						BusyIndicator.showWhile(validShell.getDisplay(), new Runnable() {
+						shell.getDisplay().beep();
+						BusyIndicator.showWhile(shell.getDisplay(), new Runnable() {
 							public void run() {
 								openInstallWizard2();
 							}
@@ -74,18 +64,18 @@ public class InstallWizardOperation {
 
 		private void openInstallWizard2() {
 			if (InstallWizard2.isRunning()) {
-				MessageDialog.openInformation(getValidShell(), UpdateUIMessages.InstallWizard_isRunningTitle, UpdateUIMessages.InstallWizard_isRunningInfo);
+				MessageDialog.openInformation(shell, UpdateUIMessages.InstallWizard_isRunningTitle, UpdateUIMessages.InstallWizard_isRunningInfo);
 				return;
 			}
             if (job.getUpdates() == null || job.getUpdates().length == 0) {
                 if (job.isUpdate())
-                    MessageDialog.openInformation(getValidShell(), UpdateUIMessages.InstallWizard_ReviewPage_zeroUpdates, UpdateUIMessages.InstallWizard_ReviewPage_zeroUpdates); 
+                    MessageDialog.openInformation(shell, UpdateUIMessages.InstallWizard_ReviewPage_zeroUpdates, UpdateUIMessages.InstallWizard_ReviewPage_zeroUpdates); 
                 else
-                    MessageDialog.openInformation(getValidShell(), UpdateUIMessages.InstallWizard_ReviewPage_zeroFeatures, UpdateUIMessages.InstallWizard_ReviewPage_zeroFeatures); 
+                    MessageDialog.openInformation(shell, UpdateUIMessages.InstallWizard_ReviewPage_zeroFeatures, UpdateUIMessages.InstallWizard_ReviewPage_zeroFeatures); 
                 return;
             }
 			InstallWizard2 wizard = new InstallWizard2(job.getSearchRequest(), job.getUpdates(), job.isUpdate());
-			WizardDialog dialog = new ResizableInstallWizardDialog(getValidShell(), wizard, UpdateUIMessages.AutomaticUpdatesJob_Updates); 
+			WizardDialog dialog = new ResizableInstallWizardDialog(shell, wizard, UpdateUIMessages.AutomaticUpdatesJob_Updates); 
 			dialog.create();
 			dialog.open();
 		}

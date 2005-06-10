@@ -299,6 +299,12 @@ public class Utils {
 			return location;
 		if (!base.getProtocol().equals(location.getProtocol()))
 			return location;
+		if (base.getHost() == null ^ location.getHost() == null)
+			return location;
+		if (base.getHost() != null && !base.getHost().equals(location.getHost()))
+			return location;
+		if (base.getPort() != location.getPort())
+			return location;
 		IPath locationPath = new Path(location.getPath());
 		if (!locationPath.isAbsolute())
 			return location;

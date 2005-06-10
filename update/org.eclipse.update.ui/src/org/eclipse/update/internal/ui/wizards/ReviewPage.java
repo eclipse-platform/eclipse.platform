@@ -547,7 +547,6 @@ public class ReviewPage	extends BannerPage {
 				trueUpdates.add(job);
 		}
 		treeViewer.setCheckedElements(trueUpdates.toArray()); 
-		validateSelection();
 	}	
 
 	/**
