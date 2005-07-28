@@ -12,6 +12,8 @@ package org.eclipse.update.internal.ui;
 
 import java.net.*;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.*;
 
 /**
@@ -108,13 +110,8 @@ public class UpdateUIImages {
 
 
 	private static URL makeImageURL(String prefix, String name) {
-		try {
-			URL base = UpdateUI.getDefault().getBundle().getEntry(prefix);
-			return new URL(base, name);
-		}
-		catch (MalformedURLException e) {
-			return null;
-		}
+		String path = "$nl$/" + prefix + name; //$NON-NLS-1$
+		return Platform.find(UpdateUI.getDefault().getBundle(), new Path(path));
 	}
 
 }
