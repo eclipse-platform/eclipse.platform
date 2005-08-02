@@ -12,14 +12,15 @@
 package org.eclipse.ant.internal.ui;
 
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.jface.action.IAction;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.framework.Bundle;
 
 /**
  * The images provided by the external tools plugin.
@@ -36,20 +37,14 @@ public class AntUIImages {
 	 */
 	private static ImageDescriptorRegistry imageDescriptorRegistry;
 
-	/* Declare Common paths */
-	private static URL ICON_BASE_URL= null;
-
-	static {
-		String pathSuffix = "icons/full/"; //$NON-NLS-1$
-		ICON_BASE_URL= AntUIPlugin.getDefault().getBundle().getEntry(pathSuffix);
-	}
+    private static String ICONS_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
 
 	// Use IPath and toOSString to build the names to ensure they have the slashes correct
-	private final static String LOCALTOOL= "elcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
-	private final static String OBJECT= "obj16/"; //basic colors - size 16x16 //$NON-NLS-1$
-	private final static String OVR= "ovr16/"; //basic colors - size 7x8 //$NON-NLS-1$
-	private final static String WIZ= "wizban/"; //$NON-NLS-1$
-	private static final String T_ETOOL= "etool16"; 	//$NON-NLS-1$
+	private final static String LOCALTOOL= ICONS_PATH + "elcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
+	private final static String OBJECT= ICONS_PATH + "obj16/"; //basic colors - size 16x16 //$NON-NLS-1$
+	private final static String OVR= ICONS_PATH + "ovr16/"; //basic colors - size 7x8 //$NON-NLS-1$
+	private final static String WIZ= ICONS_PATH + "wizban/"; //$NON-NLS-1$
+	private static final String T_ETOOL= ICONS_PATH + "etool16"; 	//$NON-NLS-1$
 	
 	/**
 	 * Declare all images
@@ -111,13 +106,15 @@ public class AntUIImages {
 	 *				this plugin class is found (i.e. typically the packages directory)
 	 */
 	private final static void declareRegistryImage(String key, String path) {
-		ImageDescriptor desc= ImageDescriptor.getMissingImageDescriptor();
-		try {
-			desc= ImageDescriptor.createFromURL(makeIconFileURL(path));
-		} catch (MalformedURLException me) {
-		}
-		imageRegistry.put(key, desc);
-	}
+        ImageDescriptor desc = ImageDescriptor.getMissingImageDescriptor();
+        Bundle bundle = Platform.getBundle(AntUIPlugin.getUniqueIdentifier());
+        URL url = null;
+        if (bundle != null) {
+            url = Platform.find(bundle, new Path(path));
+            desc = ImageDescriptor.createFromURL(url);
+        }
+        imageRegistry.put(key, desc);
+    }
 	
 	/**
 	 * Returns the ImageRegistry.
@@ -177,63 +174,6 @@ public class AntUIImages {
 	 */
 	public static ImageDescriptor getImageDescriptor(String key) {
 		return getImageRegistry().getDescriptor(key);
-	}
-	
-	private static URL makeIconFileURL(String iconPath) throws MalformedURLException {
-		if (ICON_BASE_URL == null) {
-			throw new MalformedURLException();
-		}
-			
-		return new URL(ICON_BASE_URL, iconPath);
-	}
-	
-	/**
-	 * Sets the three image descriptors for enabled, disabled, and hovered to an action. The actions
-	 * are retrieved from the *lcl16 folders.
-	 */
-	public static void setLocalImageDescriptors(IAction action, String iconName) {
-		setImageDescriptors(action, "lcl16", iconName); //$NON-NLS-1$
-	}
-	
-	private static void setImageDescriptors(IAction action, String type, String relPath) {
-		
-		try {
-			ImageDescriptor id= ImageDescriptor.createFromURL(makeIconFileURL("d" + type, relPath)); //$NON-NLS-1$
-			if (id != null)
-				action.setDisabledImageDescriptor(id);
-		} catch (MalformedURLException e) {
-			AntUIPlugin.log(e);
-		}
-
-		try {
-			ImageDescriptor id= ImageDescriptor.createFromURL(makeIconFileURL("c" + type, relPath)); //$NON-NLS-1$
-			if (id != null)
-				action.setHoverImageDescriptor(id);
-		} catch (MalformedURLException e) {
-			AntUIPlugin.log(e);
-		}
-
-		action.setImageDescriptor(create("e" + type, relPath)); //$NON-NLS-1$
-	}
-	
-	private static URL makeIconFileURL(String prefix, String name) throws MalformedURLException {
-		if (ICON_BASE_URL == null) {
-			throw new MalformedURLException();
-		}
-		
-		StringBuffer buffer= new StringBuffer(prefix);
-		buffer.append('/');
-		buffer.append(name);
-		return new URL(ICON_BASE_URL, buffer.toString());
-	}
-	
-	private static ImageDescriptor create(String prefix, String name) {
-		try {
-			return ImageDescriptor.createFromURL(makeIconFileURL(prefix, name));
-		} catch (MalformedURLException e) {
-			AntUIPlugin.log(e);
-			return ImageDescriptor.getMissingImageDescriptor();
-		}
 	}
 	
 	/** 
