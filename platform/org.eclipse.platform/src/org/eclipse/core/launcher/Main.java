@@ -1850,7 +1850,7 @@ public class Main {
     /*
      * Entry point for logging.
      */
-    private synchronized void log(Object obj) {
+    protected synchronized void log(Object obj) {
         if (obj == null)
             return;
         try {
