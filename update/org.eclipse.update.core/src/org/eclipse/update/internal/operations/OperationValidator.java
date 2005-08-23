@@ -956,7 +956,7 @@ public class OperationValidator implements IOperationValidator {
 							msg =
 								NLS.bind(Messages.ActivityConstraints_prereqCompatible, (new String[] {
                                 target,
-                                feature.getLabel(),
+                                id,
                                 version.toString()}));
 						else if (rule == IImport.RULE_GREATER_OR_EQUAL)
 							msg =
