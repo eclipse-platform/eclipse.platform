@@ -68,6 +68,8 @@ public final class AntHandler extends DefaultHandler {
     private boolean fDefaultAttributeFound= false;
     private boolean fTargetFound = false;
 
+    private int fLevel= -1;
+
     /**
      * Creates a new SAX parser for use within this instance.
      * 
@@ -139,6 +141,7 @@ public final class AntHandler extends DefaultHandler {
      *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     public final void startElement(final String uri, final String elementName, final String qualifiedName, final Attributes attributes) throws SAXException {
+    	fLevel++;
         if (fTopElementFound == null) {
             fTopElementFound = elementName;
             if (!hasRootProjectElement()) {
@@ -151,10 +154,18 @@ public final class AntHandler extends DefaultHandler {
                 }
             }
         }
-        if (TARGET.equals(elementName)) {
+        if (fLevel == 1 && TARGET.equals(elementName)) {
             fTargetFound= true;
             throw new StopParsingException();
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+    	super.endElement(uri, localName, qName);
+    	fLevel--;
     }
 
     protected boolean hasProjectDefaultAttribute() {
