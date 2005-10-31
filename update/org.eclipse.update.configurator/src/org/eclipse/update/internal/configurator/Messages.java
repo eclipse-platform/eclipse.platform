@@ -20,10 +20,33 @@ public final class Messages extends NLS {
 		// Do not instantiate
 	}
 
+	public static String ok;
+	public static String url_badVariant;
+	public static String url_invalidURL;
+	public static String url_createConnection;
+	public static String url_noaccess;
+	public static String cfig_inUse;
+	public static String cfig_failCreateLock;
+	public static String cfig_badUrlArg;
+	public static String cfig_unableToLoad_incomplete;
 	public static String cfig_unableToLoad_noURL;
 	public static String cfig_unableToSave_noURL;
 	public static String cfig_unableToSave;
+	public static String cfig_badVersion;
+	public static String cfg_unableToCreateConfig_ini;
+	public static String platform_running;
+	public static String platform_mustNotBeRunning;
+	public static String platform_notRunning;
+	public static String ignore_plugin;
+	public static String application_notFound;
+	public static String error_fatal;
+	public static String error_boot;
+	public static String error_runtime;
+	public static String error_xerces;
+	public static String error_badNL;
+	public static String InstalledSiteParser_DirectoryDoesNotExist;
 	public static String InstalledSiteParser_UnableToCreateURL;
+	public static String InstalledSiteParser_FileDoesNotExist;
 	public static String InstalledSiteParser_UnableToCreateURLForFile;
 	public static String InstalledSiteParser_ErrorParsingFile;
 	public static String InstalledSiteParser_ErrorAccessing;
@@ -32,6 +55,7 @@ public final class Messages extends NLS {
 	public static String FeatureParser_IdOrVersionInvalid;
 	public static String BundleGroupProvider;
 	public static String ProductProvider;
+	public static String AboutInfo_notSpecified;
 	public static String ConfigurationActivator_initialize;
 	public static String ConfigurationActivator_createConfig;
 	public static String ConfigurationActivator_uninstallBundle;
@@ -58,6 +82,8 @@ public final class Messages extends NLS {
 	public static String PlatformConfiguration_cannotLoadDefaultSite;
 	public static String PlatformConfiguration_cannotFindConfigFile;
 	public static String PlatformConfiguration_cannotSaveNonExistingConfig;
+	public static String HttpResponse_rangeExpected;
+	public static String HttpResponse_wrongRange;
 	public static String PluginParser_plugin_no_id;
 	public static String PluginParser_plugin_no_version;
 

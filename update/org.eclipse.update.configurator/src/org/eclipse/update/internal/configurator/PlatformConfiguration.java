@@ -1103,8 +1103,10 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 	}
 
 	public static URL resolvePlatformURL(URL url) throws IOException {
+		// 19536
 		if (url.getProtocol().equals("platform")) { //$NON-NLS-1$
 			url = Platform.asLocalURL(url);
+			// TODO URL resolution by platform returns url file:d:/path as opposed to file:/d:/path
 			File f = new File(url.getFile());
 			url = f.toURL();
 		}
