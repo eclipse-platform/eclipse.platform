@@ -10,35 +10,13 @@
  *******************************************************************************/
 package org.eclipse.update.core;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.net.*;
+import java.util.*;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.update.core.model.ContentEntryModel;
-import org.eclipse.update.core.model.FeatureModel;
-import org.eclipse.update.core.model.FeatureReferenceModel;
-import org.eclipse.update.core.model.ImportModel;
-import org.eclipse.update.core.model.InstallAbortedException;
-import org.eclipse.update.core.model.NonPluginEntryModel;
-import org.eclipse.update.core.model.PluginEntryModel;
-import org.eclipse.update.core.model.URLEntryModel;
-import org.eclipse.update.internal.core.ErrorRecoveryLog;
-import org.eclipse.update.internal.core.InstallHandlerProxy;
-import org.eclipse.update.internal.core.InstallRegistry;
-import org.eclipse.update.internal.core.Messages;
-import org.eclipse.update.internal.core.TargetFeature;
-import org.eclipse.update.internal.core.UpdateCore;
-import org.eclipse.update.internal.core.UpdateManagerUtils;
-import org.eclipse.update.internal.core.UpdateSiteIncludedFeatureReference;
+import org.eclipse.update.core.model.*;
+import org.eclipse.update.internal.core.*;
 
 /**
  * Convenience implementation of a feature.
@@ -651,7 +629,7 @@ public class Feature extends FeatureModel implements IFeature {
 			return new IncludedFeatureReference[0];
 
 		return (IIncludedFeatureReference[]) includedFeatureReferences.toArray(
-			new IIncludedFeatureReference[includedFeatureReferences.size()]);
+			arrayTypeFor(includedFeatureReferences));
 	}
 	/**
 	 * Returns the download size of the feature, if it can be determined.

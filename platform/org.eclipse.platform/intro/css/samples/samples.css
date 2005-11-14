@@ -1,8 +1,0 @@
-body {
-	background-image : url(../graphics/contentpage/samples_wtr.jpg);
-}
-
-/* show the "selected" image for this page */
-#navigation-links a#samples img, #navigation-links a#samples:hover img { background-image : url(../graphics/icons/ctool/samples48sel.gif); }
-
-

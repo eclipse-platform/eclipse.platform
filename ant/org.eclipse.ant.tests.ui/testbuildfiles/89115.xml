@@ -1,9 +1,0 @@
-<project name= "default" default="default">
-    <target description="depends" name="default" depends="depends">
-        
-    </target>
-
-    <target name="depends">
-    </target>
-
-</project>
