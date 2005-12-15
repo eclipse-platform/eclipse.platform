@@ -629,7 +629,7 @@ public class Feature extends FeatureModel implements IFeature {
 			return new IncludedFeatureReference[0];
 
 		return (IIncludedFeatureReference[]) includedFeatureReferences.toArray(
-			arrayTypeFor(includedFeatureReferences));
+				new IIncludedFeatureReference[includedFeatureReferences.size()]);
 	}
 	/**
 	 * Returns the download size of the feature, if it can be determined.
