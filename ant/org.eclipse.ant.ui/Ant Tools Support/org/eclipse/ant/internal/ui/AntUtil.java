@@ -216,7 +216,7 @@ public final class AntUtil {
 		String[] propertyFiles= AntUtil.parseString(attribute, ","); //$NON-NLS-1$
 		for (int i = 0; i < propertyFiles.length; i++) {
 			String propertyFile = propertyFiles[i];
-			propertyFile= expandVariableString(propertyFile, AntUIModelMessages.AntUtil_6); //$NON-NLS-1$ //$NON-NLS-2$
+			propertyFile= expandVariableString(propertyFile, AntUIModelMessages.AntUtil_6);
 			propertyFiles[i]= propertyFile;
 		}
 		return propertyFiles;
@@ -413,7 +413,7 @@ public final class AntUtil {
 			try {
 				urls[i] = new URL("file:"+entry.getLocation()); //$NON-NLS-1$
 			} catch (MalformedURLException e) {
-				throw new CoreException(new Status(IStatus.ERROR, AntUIPlugin.getUniqueIdentifier(), AntUIPlugin.INTERNAL_ERROR, AntUIModelMessages.AntUtil_7, e)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, AntUIPlugin.getUniqueIdentifier(), AntUIPlugin.INTERNAL_ERROR, AntUIModelMessages.AntUtil_7, e));
 			}
 		}
 		return urls;		
@@ -482,6 +482,10 @@ public final class AntUtil {
 		}
 		// format is file:F:L: where F is file path, and L is line number
 		int index = path.lastIndexOf(':');
+		if (index == -1) {
+			//incorrect format
+			return null;
+		}
 		if (index == path.length() - 1) {
 			// remove trailing ':'
 			path = path.substring(0, index);
@@ -489,15 +493,16 @@ public final class AntUtil {
 		}
 		// split file and line number
 		String fileName = path.substring(0, index);
-		IFile file = getFileForLocation(fileName, buildFileParent);
-		if (file != null) {
-			try {
-				String lineNumber = path.substring(index + 1);
-				int line = Integer.parseInt(lineNumber);
+		try {
+			String lineNumber = path.substring(index + 1);
+			int line = Integer.parseInt(lineNumber);
+			IFile file = getFileForLocation(fileName, buildFileParent);
+			if (file != null) {
 				return new FileLink(file, null, -1, -1, line);
-			} catch (NumberFormatException e) {
 			}
+		} catch (NumberFormatException e) {
 		}
+		
 		return null;
 	}
 
@@ -647,7 +652,7 @@ public final class AntUtil {
     			editorPart= page.openEditor(new FileEditorInput(fileResource), editorDescriptor.getId());
     		}
     	} catch (PartInitException e) {
-    		AntUIPlugin.log(MessageFormat.format(AntUIModelMessages.AntUtil_0, new String[]{fileResource.getLocation().toOSString()}), e); //$NON-NLS-1$
+    		AntUIPlugin.log(MessageFormat.format(AntUIModelMessages.AntUtil_0, new String[]{fileResource.getLocation().toOSString()}), e);
     	}
     	
     	if (editorPart instanceof AntEditor) {
@@ -718,7 +723,7 @@ public final class AntUtil {
     				succeeded= Program.launch(urlString.toString());
     			}
     			if (!succeeded) {
-    				MessageDialog.openInformation(shell, errorDialogTitle, AntUIModelMessages.AntUtil_1); //$NON-NLS-1$
+    				MessageDialog.openInformation(shell, errorDialogTitle, AntUIModelMessages.AntUtil_1);
     			}
     		}
     	});
@@ -730,7 +735,7 @@ public final class AntUtil {
 			//always null for same JRE
 			separateJRE = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, (String)null) != null;
 		} catch (CoreException e) {
-			AntUIPlugin.log(AntUIModelMessages.AntUtil_2, e); //$NON-NLS-1$
+			AntUIPlugin.log(AntUIModelMessages.AntUtil_2, e);
 		}
     	
 		return separateJRE;
