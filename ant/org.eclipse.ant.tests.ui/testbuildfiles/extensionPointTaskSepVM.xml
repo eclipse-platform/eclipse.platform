@@ -1,6 +1,0 @@
-<project name="Extension Point Task" default="Extension Point Task" basedir=".">
-	<target name="Extension Point Task" description= "Ensure that an extension point defined task is present">
-		<coolUITask message="cool" reference=""/>
-		<my:coolUITask xmlns:my="testing"/>
-	</target>
-</project>

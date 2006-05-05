@@ -13,6 +13,8 @@ package org.eclipse.update.internal.configurator;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.osgi.framework.Version;
+
 public class VersionedIdentifier {
 	private String identifier = ""; //$NON-NLS-1$
 	private int major = 0;
@@ -22,31 +24,15 @@ public class VersionedIdentifier {
 	private String version;
 
 	private static final String VER_SEPARATOR = "."; //$NON-NLS-1$
-	private static final String ID_SEPARATOR = "_"; //$NON-NLS-1$
 
 	public static final int LESS_THAN = -1;
 	public static final int EQUAL = 0;
 	public static final int EQUIVALENT = 1;
 	public static final int COMPATIBLE = 2;
 	public static final int GREATER_THAN = 3;
-
-	public VersionedIdentifier(String s) {
-		if (s == null || (s = s.trim()).equals("")) //$NON-NLS-1$
-			return;
-
-		int loc = s.lastIndexOf(ID_SEPARATOR);
-		if (loc != -1) {
-			this.identifier = s.substring(0, loc);
-			version = s.substring(loc + 1);
-			if(version==null)
-				version = "0.0.0"; //$NON-NLS-1$
-			parseVersion(version);
-		} else
-			this.identifier = s;
-	}
 	
 	public VersionedIdentifier(String id, String version) {
-		this(id+ID_SEPARATOR+ (version==null?"0.0.0":version) ); //$NON-NLS-1$
+		this.identifier = id;
 		this.version = version;
 	}
 	
