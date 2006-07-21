@@ -21,6 +21,7 @@ import org.eclipse.ant.internal.ui.model.LocationProvider;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.ISynchronizable;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
@@ -28,6 +29,8 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 public class AntEditorDocumentProvider extends TextFileDocumentProvider {
+
+	private final AntDocumentSetupParticipant fAntDocumentSetupParticipant;
 
     /**
 	 * Remembers a Ant document model for each element.
@@ -43,6 +46,7 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 	public AntEditorDocumentProvider() {
 		IDocumentProvider provider= new TextFileDocumentProvider(new AntStorageDocumentProvider());
 		setParentDocumentProvider(provider);
+        fAntDocumentSetupParticipant = new AntDocumentSetupParticipant();
 	}
 
     public AntModel getAntModel(Object element) {
@@ -75,6 +79,18 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 			return null;
 		}
         
+		//This is a required workaround for the disconnect between workbench file associations
+		//and content types based document setup and creation
+		//This ensures that a workbench file association for the AntEditor will have a document
+		//that is setup with the correct document setup participant since it was "missed" by the 
+		//document setup extensions (bug 72598).
+		IDocument document= info.fTextFileBuffer.getDocument();
+		if (document instanceof IDocumentExtension3) {
+			IDocumentExtension3 extension= (IDocumentExtension3) document;
+			if (extension.getDocumentPartitioner(AntDocumentSetupParticipant.ANT_PARTITIONING) == null)
+			    fAntDocumentSetupParticipant.setup(document);
+		}
+		
 		//Check if the annotation model has been set by the annotation model factory extension for Ant UI
 		//and is an annotation model that was specified by the extension (all are IProblemRequestors).
 		//If we do not have an annotation model or not a correct annotation model, defer to the annotation model
@@ -95,7 +111,6 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
             xmlInfo.fModel= annotationModel;       
         }
 		 
-        IDocument document= info.fTextFileBuffer.getDocument();
 		AntModel antModel= createAntModel(element, document, annotationModel);
 		antModel.install();
 		xmlInfo.fAntModel= antModel;
