@@ -65,7 +65,7 @@ public class AntContext extends DocumentTemplateContext {
 	public int getEnd() {
 		int replacementOffset = getCompletionOffset();
 		int replacementLength = getCompletionLength();
-		if (replacementOffset > 0 && getDocument().get().charAt(replacementOffset - 1) == '<') {
+		if (replacementOffset > 0 && getDocument().get().charAt(replacementOffset - 1) == '<' && getDocument().getLength() > 1) {
 			replacementLength++;
 		}
 		return replacementLength + replacementOffset;
