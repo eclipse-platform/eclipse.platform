@@ -13,6 +13,7 @@ package org.eclipse.ant.internal.ui.editor.utils;
   
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -515,14 +516,16 @@ public class ProjectHelper extends ProjectHelper2 {
      * Parses the project file, configuring the project as it goes.
      *
      * @param project the current project
-     * @param source  the xml source
+     * @param source  the xml source or a java.io.File
      * @param handler the root handler to use (contains the current context)
      * @exception BuildException if the configuration is invalid or cannot
      *                           be read
      */
     public void parse(Project project, Object source, org.apache.tools.ant.helper.ProjectHelper2.RootHandler handler) throws BuildException {
     	
-    	if (!(source instanceof String)) {
+    	if (!(source instanceof String) && !(source instanceof File)) {
+    		//this should only occur with a source URL and that should not be possible currently
+    		//as Antlib hard codes using ProjectHelper2 (bug 152793)
     		super.parse(project, source, handler);
     		return;
     	}
@@ -530,15 +533,22 @@ public class ProjectHelper extends ProjectHelper2 {
     	AntXMLContext context= (AntXMLContext)project.getReference("ant.parsing.context"); //$NON-NLS-1$
 		//switch to using "our" handler so parsing will continue on hitting errors.
     	handler= new RootHandler(context, mainHandler);
-    	
-        Reader stream= new StringReader((String)source);
-             
-        InputSource inputSource = null;
+       	Reader stream= null;
         try {
+        	InputSource inputSource= null;
+        	if ((source instanceof File)) {
+        		buildFile = (File) source;
+                buildFile = getFileUtils().normalize(buildFile.getAbsolutePath());
+                stream = new FileReader(buildFile);
+                inputSource = new InputSource(stream);
+        	} else if (source instanceof String) {
+        		stream= new StringReader((String)source);
+        		inputSource = new InputSource(stream);
+        	}
+        	
             /**
              * SAX 2 style parser used to parse the given file.
              */
-            
         	//We cannot use the JAXPUtils support here as the underlying parser factory is cached and 
         	//will not reflect classpath changes that effect which XML parser will be returned.
         	//see bug 59764
@@ -552,7 +562,6 @@ public class ProjectHelper extends ProjectHelper2 {
                 uri = getFileUtils().toURI(buildFile.getAbsolutePath());
             }
 
-            inputSource = new InputSource(stream);
             if (uri != null) {
                 inputSource.setSystemId(uri);
             }
@@ -578,7 +587,9 @@ public class ProjectHelper extends ProjectHelper2 {
             throw new BuildException(exc);
         } finally {
             try {
-                stream.close();
+            	if (stream != null) {
+            		stream.close();
+            	}
             } catch (IOException ioe) {
                 // ignore this
             }
