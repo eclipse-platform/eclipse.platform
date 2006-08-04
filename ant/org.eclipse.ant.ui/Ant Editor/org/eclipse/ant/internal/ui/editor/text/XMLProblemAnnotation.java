@@ -14,7 +14,7 @@ import org.eclipse.ant.internal.ui.model.IProblem;
 import org.eclipse.jface.text.source.Annotation;
 
 /**
- * Annotation representating an <code>IProblem</code>.
+ * Annotation representing an <code>IProblem</code>.
  */
 public class XMLProblemAnnotation extends Annotation {
 	
