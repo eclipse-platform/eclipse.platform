@@ -78,7 +78,7 @@ public class AntEditorDocumentProvider extends TextFileDocumentProvider {
 		if (!(info instanceof AntFileInfo)) {
 			return null;
 		}
-        
+	
 		//This is a required workaround for the disconnect between workbench file associations
 		//and content types based document setup and creation
 		//This ensures that a workbench file association for the AntEditor will have a document
