@@ -65,6 +65,9 @@ public class UpdatePolicy {
 			this.url = url;
 		}
 		public String getLabel() {
+			if (url == null) {
+				return ""; //$NON-NLS-1$
+			}
 			return url.toString();
 		}
 		public URL getURL() {
