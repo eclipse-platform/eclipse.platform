@@ -16,7 +16,7 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public class PackUnpackStep extends PackStep {
@@ -44,9 +44,15 @@ public class PackUnpackStep extends PackStep {
 	 */
 	public File postProcess(File input, File workingDirectory) {
 		if (canPack() && packCommand != null) {
+			Properties inf = Utils.getEclipseInf(input);
+			if (inf != null && inf.containsKey(Utils.MARK_EXCLUDE_PACK) && Boolean.valueOf(inf.getProperty(Utils.MARK_EXCLUDE_PACK)).booleanValue()) {
+				if (verbose)
+					System.out.println("Excluding " + input.getName() + " from " + getStepName()); //$NON-NLS-1$ //$NON-NLS-2$
+				return null;
+			}
 			File tempFile = new File(workingDirectory, "temp_" + input.getName()); //$NON-NLS-1$
 			try {
-				String[] tmp = getCommand(input, tempFile);
+				String[] tmp = getCommand(input, tempFile, inf);
 				String[] cmd = new String[tmp.length + 1];
 				cmd[0] = tmp[0];
 				cmd[1] = "-r"; //$NON-NLS-1$

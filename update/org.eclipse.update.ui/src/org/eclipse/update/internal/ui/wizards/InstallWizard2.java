@@ -29,6 +29,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.update.configuration.IInstallConfiguration;
 import org.eclipse.update.core.IFeature;
@@ -401,19 +402,28 @@ public class InstallWizard2
 		// If download fails, the user is prompted to retry.
 		try {
 			IFeatureOperation[] ops = installOperation.getOperations();
-			monitor.beginTask(UpdateUIMessages.InstallWizard_download, 4 * ops.length);
+			monitor.beginTask(UpdateUIMessages.InstallWizard_download, 5 * ops.length);
 			for (int i = 0; i < ops.length; i++) {
 				IInstallFeatureOperation op = (IInstallFeatureOperation)ops[i];
 				
 				try {
-					monitor.worked(1);
+					String featureName = op.getFeature().getLabel();
+					if ((featureName == null ) || (featureName.trim() == "") ) { //$NON-NLS-1$
+						featureName = op.getFeature().getVersionedIdentifier().getIdentifier();
+					}
+					SubProgressMonitor featureDownloadMonitor = new SubProgressMonitor(monitor, 2);
+					
+					featureDownloadMonitor.beginTask(featureName, 2);
+					featureDownloadMonitor.subTask(NLS.bind(UpdateUIMessages.InstallWizard_downloadingFeatureJar, featureName));
+					
 					if (op.getFeature() instanceof LiteFeature) {
 						ISiteFeatureReference featureReference = getFeatureReference(op.getFeature());
-						IFeature feature = featureReference.getFeature(null);
+						IFeature feature = featureReference.getFeature(featureDownloadMonitor);
 						if (op instanceof InstallOperation) {
 							((InstallOperation)op).setFeature(feature);
 						}
-					}				
+					}
+					//featureDownloadMonitor.worked(1);
 					SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 3);
 					UpdateUtils.downloadFeatureContent(op.getTargetSite(), op.getFeature(), op.getOptionalFeatures(), subMonitor);
 				} catch (final CoreException e) {

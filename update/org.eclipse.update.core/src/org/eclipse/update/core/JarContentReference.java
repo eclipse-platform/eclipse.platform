@@ -37,7 +37,7 @@ import org.eclipse.update.internal.core.*;
  */
 public class JarContentReference extends ContentReference {
 
-	private static ArrayList referenceList = new ArrayList();
+	//private static ArrayList referenceList = new ArrayList();
 	private JarFile jarFile;
 
 	/**
@@ -85,7 +85,7 @@ public class JarContentReference extends ContentReference {
 	public JarContentReference(String id, URL url) {
 		super(id, url);
 		this.jarFile = null;
-		referenceList.add(this); // keep track of archives
+		//referenceList.add(this); // keep track of archives
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class JarContentReference extends ContentReference {
 	public JarContentReference(String id, File file) {
 		super(id, file);
 		this.jarFile = null;
-		referenceList.add(this); // keep track of archives
+		//referenceList.add(this); // keep track of archives
 	}
 
 	/**
@@ -356,13 +356,13 @@ public class JarContentReference extends ContentReference {
 	 * @since 2.0
 	 */
 	public static void shutdown() {
-		for (int i = 0; i < referenceList.size(); i++) {
+		/*for (int i = 0; i < referenceList.size(); i++) {
 			JarContentReference ref = (JarContentReference) referenceList.get(i);
 			try {
 				ref.closeArchive(); // ensure we are not leaving open jars
 			} catch (IOException e) {
 				// we tried, nothing we can do ...
 			}
-		}
+		}*/
 	}
 }

@@ -71,9 +71,15 @@ public class PackStep extends CommandStep {
 
 	public File postProcess(File input, File workingDirectory) {
 		if (canPack() && packCommand != null) {
+			Properties inf = Utils.getEclipseInf(input);
+			if (inf != null && inf.containsKey(Utils.MARK_EXCLUDE_PACK) && Boolean.valueOf(inf.getProperty(Utils.MARK_EXCLUDE_PACK)).booleanValue()) {
+				if(verbose)
+					System.out.println("Excluding " + input.getName() + " from " + getStepName()); //$NON-NLS-1$ //$NON-NLS-2$
+				return null;
+			}
 			File outputFile = new File(workingDirectory, input.getName() + Utils.PACKED_SUFFIX);
 			try {
-				String[] cmd = getCommand(input, outputFile);
+				String[] cmd = getCommand(input, outputFile, inf);
 				int result = execute(cmd, verbose);
 				if (result != 0 && verbose)
 					System.out.println("Error: " + result + " was returned from command: " + Utils.concat(cmd)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -87,10 +93,15 @@ public class PackStep extends CommandStep {
 		return null;
 	}
 
-	protected String[] getCommand(File input, File outputFile) throws IOException {
+	protected String[] getCommand(File input, File outputFile, Properties inf) throws IOException {
 		String[] cmd = null;
-		String arguments = getOptions().getProperty(input.getName() + ".pack.args"); //$NON-NLS-1$
-		if (arguments != null) {
+		String arguments = null;
+		if (inf != null && inf.containsKey(Utils.PACK_ARGS)) {
+			arguments = inf.getProperty(Utils.PACK_ARGS);
+		} else {
+			arguments = getOptions().getProperty(input.getName() + ".pack.args"); //$NON-NLS-1$
+		}
+		if (arguments != null && arguments.length() > 0) {
 			String[] args = Utils.toStringArray(arguments, ","); //$NON-NLS-1$
 			cmd = new String[3 + args.length];
 			cmd[0] = packCommand;
@@ -105,5 +116,22 @@ public class PackStep extends CommandStep {
 
 	public String getStepName() {
 		return "Pack"; //$NON-NLS-1$
+	}
+	
+	public void adjustInf(File input, Properties inf) {
+		if (input == null || inf == null)
+			return;
+
+		if (inf.containsKey(Utils.MARK_EXCLUDE_PACK) && Boolean.valueOf(inf.getProperty(Utils.MARK_EXCLUDE_PACK)).booleanValue()) {
+			return;
+		}
+
+		inf.put(Utils.MARK_PROPERTY, "true"); //$NON-NLS-1$
+		String arguments = inf.getProperty(Utils.PACK_ARGS);
+		if (arguments == null) {
+			arguments = getOptions().getProperty(input.getName() + ".pack.args"); //$NON-NLS-1$
+			if (arguments != null)
+				inf.put(Utils.PACK_ARGS, arguments);
+		}
 	}
 }

@@ -222,6 +222,8 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 				packedRef = asLocalReference(new JarContentReference(reference.getIdentifier(), packGZURL), monitor);
 			} catch (IOException e) {
 				//no pack.gz
+			} catch (CoreException e){
+				//no pack.gz
 			}
 		}
 		
@@ -230,6 +232,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 			return asLocalReference(reference, monitor);
 		}
 
+		boolean success = false;
 		synchronized (jarLock) {
 			String packed = packedRef.toString();
 			Object packedLock = LockManager.getLock(packed);
@@ -252,9 +255,12 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 					//unpacking the jar will strip the ".pack.gz" and leave us back with the original filename
 					processor.processJar(packedFile);
 	
-					tempFile.setLastModified(timeStamp);
-					Utilities.mapLocalFile(key, tempFile);
-					UpdateCore.getPlugin().getUpdateSession().markVisited(reference.asURL());
+					if(tempFile.exists() && tempFile.length() > 0){
+						success = true;
+						tempFile.setLastModified(timeStamp);
+						Utilities.mapLocalFile(key, tempFile);
+						UpdateCore.getPlugin().getUpdateSession().markVisited(reference.asURL());
+					}
 				} finally {
 					LockManager.returnLock(packed);
 					LockManager.returnLock(key);
@@ -262,6 +268,10 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 						monitor.restoreState();
 				}
 			}
+		}
+		if(!success){
+			//Something went wrong with the unpack, get the normal jar.
+			return asLocalReference(reference, monitor);
 		}
 		return packedRef;
 	}

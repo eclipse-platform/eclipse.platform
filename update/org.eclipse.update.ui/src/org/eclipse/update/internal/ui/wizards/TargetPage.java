@@ -81,7 +81,6 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 	private float featureNameColumnProcetange = 0.25f;
 	private float featureVersionColumnProcetange = 0.25f;
 	private float featureSizeColumnProcetange = 0.15f;
-	private float installationDirectoryColumnProcetange = 0.35f;
 	
 	private TableViewer jobViewer;
 	private IInstallConfiguration config;
@@ -423,7 +422,6 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 				featureNameColumnProcetange = featureNameColumn.getWidth() / (float)tableWidth;
 				featureVersionColumnProcetange = featureVersionColumn.getWidth() / (float)tableWidth;
 				featureSizeColumnProcetange = featureSizeColumn.getWidth() / (float)tableWidth;
-				installationDirectoryColumnProcetange = featureLocationColumn.getWidth() / (float)tableWidth;
 			}
 		});
 
@@ -472,7 +470,7 @@ public class TargetPage extends BannerPage implements IDynamicPage {
 			return;
 		}
 		
-		IConfiguredSite site = selectedJob.getTargetSite(); /*(IConfiguredSite) element*/;
+		IConfiguredSite site = selectedJob.getTargetSite(); /*(IConfiguredSite) element;*/
 		File file = new File(site.getSite().getURL().getFile());
 		long available = -1;
 		long required = -1;

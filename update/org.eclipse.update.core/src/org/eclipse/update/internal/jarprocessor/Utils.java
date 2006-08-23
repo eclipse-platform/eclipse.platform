@@ -15,12 +15,20 @@ import java.util.*;
 import java.util.jar.*;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public class Utils {
+	public static final String SIGN_EXCLUDES = "sign.excludes"; //$NON-NLS-1$
+	public static final String PACK_EXCLUDES = "pack.excludes"; //$NON-NLS-1$
 	public static final String MARK_FILE_NAME = "META-INF/eclipse.inf"; //$NON-NLS-1$
 	public static final String MARK_PROPERTY = "pack200.conditioned"; //$NON-NLS-1$
+	public static final String MARK_EXCLUDE = "jarprocessor.exclude"; //$NON-NLS-1$
+	public static final String MARK_EXCLUDE_PACK = "jarprocessor.exclude.pack"; //$NON-NLS-1$
+	public static final String MARK_EXCLUDE_SIGN = "jarprocessor.exclude.sign"; //$NON-NLS-1$
+	public static final String MARK_JARPROCESSOR_VERSION = "jarprocessor.version"; //$NON-NLS-1$
+	public static final String PACK_ARGS = "pack200.args"; //$NON-NLS-1$
+
 	public static final String PACK200_PROPERTY = "org.eclipse.update.jarprocessor.pack200"; //$NON-NLS-1$
 	public static final String JRE = "@jre"; //$NON-NLS-1$
 	public static final String PATH = "@path"; //$NON-NLS-1$
@@ -151,7 +159,7 @@ public class Utils {
 		if (properties == null)
 			return Collections.EMPTY_SET;
 
-		String packExcludes = properties.getProperty("pack.excludes"); //$NON-NLS-1$
+		String packExcludes = properties.getProperty(PACK_EXCLUDES);
 		if (packExcludes != null) {
 			String[] excludes = toStringArray(packExcludes, ","); //$NON-NLS-1$
 			Set packExclusions = new HashSet();
@@ -166,7 +174,7 @@ public class Utils {
 	public static Set getSignExclusions(Properties properties) {
 		if (properties == null)
 			return Collections.EMPTY_SET;
-		String signExcludes = properties.getProperty("sign.excludes"); //$NON-NLS-1$
+		String signExcludes = properties.getProperty(SIGN_EXCLUDES);
 		if (signExcludes != null) {
 			String[] excludes = toStringArray(signExcludes, ","); //$NON-NLS-1$
 			Set signExclusions = new HashSet();
@@ -193,40 +201,78 @@ public class Utils {
 		int count = tokenizer.countTokens();
 		String[] result = new String[count];
 		for (int i = 0; i < count; i++) {
-			result[i] = tokenizer.nextToken();
+			result[i] = tokenizer.nextToken().trim();
 		}
 		return result;
 	}
 
-	public static boolean isUnmarkedJar(File jarFile) {
-		if(jarFile == null || !jarFile.exists())
-			return false;
-		
-		boolean result = true;
-		JarFile jar = null;
+	/**
+	 * Get the properties from the eclipse.inf file from the given jar.  If the file is not a jar, null is returned.
+	 * If the file is a jar, but does not contain an eclipse.inf file, an empty Properties object is returned.
+	 * @param jarFile
+	 * @return
+	 */
+	public static Properties getEclipseInf(File jarFile) {
+		if (jarFile == null || !jarFile.exists())
+			return null;
 
+		JarFile jar = null;
 		try {
 			jar = new JarFile(jarFile, false);
-		} catch (IOException e1) {
-			//not a jar
-			return false;
-		}
-
-		try {
 			JarEntry mark = jar.getJarEntry(MARK_FILE_NAME);
 			if (mark != null) {
 				InputStream in = jar.getInputStream(mark);
 				Properties props = new Properties();
 				props.load(in);
 				in.close();
-				String value = props.getProperty(MARK_PROPERTY);
-				result = !Boolean.valueOf(value).booleanValue();
+				return props;
 			}
+			return new Properties();
 		} catch (IOException e) {
-			return false;
+			//not a jar
 		} finally {
 			close(jar);
 		}
-		return result;
+		return null;
+	}
+
+	public static boolean shouldSkipJar(File input, boolean processAll, boolean verbose) {
+		Properties inf = getEclipseInf(input);
+		if (inf == null) {
+			//not a jar, could be a pack.gz
+			return false;
+		}
+		String exclude = inf.getProperty(MARK_EXCLUDE);
+
+		//was marked as exclude, we should skip
+		if (exclude != null && Boolean.valueOf(exclude).booleanValue())
+			return true;
+
+		//process all was set, don't skip
+		if (processAll)
+			return false;
+
+		//otherwise, we skip if not marked marked
+		String marked = inf.getProperty(MARK_PROPERTY);
+		return !Boolean.valueOf(marked).booleanValue();
+	}
+
+	/**
+	 * Stores the given properties in the output stream.  We store the properties 
+	 * in sorted order so that the signing hash doesn't change if the properties didn't change. 
+	 * @param props
+	 * @param stream
+	 */
+	public static void storeProperties(Properties props, OutputStream stream) {
+		PrintStream printStream = new PrintStream(stream);
+		printStream.println("#Processed using Jarprocessor"); //$NON-NLS-1$
+		SortedMap sorted = new TreeMap(props);
+		for (Iterator iter = sorted.keySet().iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			printStream.print(key);
+			printStream.print(" = "); //$NON-NLS-1$
+			printStream.println(sorted.get(key));
+		}
+		printStream.flush();
 	}
 }

@@ -11,9 +11,10 @@
 package org.eclipse.update.internal.jarprocessor;
 
 import java.io.File;
+import java.util.Properties;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public interface IProcessStep {
@@ -50,4 +51,11 @@ public interface IProcessStep {
 	 * @return
 	 */
 	public String getStepName();
+
+	/**
+	 * Adjust any properties in the eclipse.inf as appropriate for this step
+	 * @param input
+	 * @param inf
+	 */
+	public void adjustInf(File input, Properties inf);
 }

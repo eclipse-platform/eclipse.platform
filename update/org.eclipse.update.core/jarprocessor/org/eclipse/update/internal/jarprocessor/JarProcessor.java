@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.jar.*;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public class JarProcessor {
@@ -24,7 +24,6 @@ public class JarProcessor {
 	private int depth = -1;
 	private boolean verbose = false;
 	private boolean processAll = false;
-	private boolean shouldMarkJars = false;
 
 	static public JarProcessor getUnpackProcessor(Properties properties) {
 		if (!canPerformUnpack())
@@ -68,13 +67,10 @@ public class JarProcessor {
 
 	public void addProcessStep(IProcessStep step) {
 		steps.add(step);
-		if(step instanceof PackUnpackStep)
-			shouldMarkJars = true;
 	}
 
 	public void clearProcessSteps() {
 		steps.clear();
-		shouldMarkJars = false;
 	}
 
 	public void process(File input, FileFilter filter) throws FileNotFoundException {
@@ -114,7 +110,7 @@ public class JarProcessor {
 	 * @param directory - location to find file for new entryName
 	 * @throws IOException
 	 */
-	private void recreateJar(JarFile jar, JarOutputStream outputJar, Map replacements, File directory) throws IOException {
+	private void recreateJar(JarFile jar, JarOutputStream outputJar, Map replacements, File directory, Properties inf) throws IOException {
 		InputStream in = null;
 		boolean marked = false;
 		try {
@@ -133,13 +129,9 @@ public class JarProcessor {
 				}
 				newEntry.setTime(entry.getTime());
 				outputJar.putNextEntry(newEntry);
-				if (shouldMarkJars && entry.getName().equals(Utils.MARK_FILE_NAME)) {
-					Properties props = new Properties();
-					props.load(in);
-					String val = props.getProperty(Utils.MARK_PROPERTY);
-					if(val == null || !Boolean.valueOf(val).booleanValue())
-						props.setProperty(Utils.MARK_PROPERTY, "true"); //$NON-NLS-1$
-					props.store(outputJar, null);
+				if (entry.getName().equals(Utils.MARK_FILE_NAME)) {
+					//The eclipse.inf file was read in earlier, don't need to reread it, just write it out now
+					Utils.storeProperties(inf, outputJar);
 					marked = true;
 				} else {
 					Utils.transferStreams(in, outputJar, false);
@@ -152,12 +144,10 @@ public class JarProcessor {
 					replacement.delete();
 				}
 			}
-			if (shouldMarkJars && !marked) {
+			if (!marked) {
 				JarEntry entry = new JarEntry(Utils.MARK_FILE_NAME);
-				Properties props = new Properties();
-				props.setProperty(Utils.MARK_PROPERTY, "true"); //$NON-NLS-1$
 				outputJar.putNextEntry(entry);
-				props.store(outputJar, null);
+				Utils.storeProperties(inf, outputJar);
 				outputJar.closeEntry();
 			}
 		} finally {
@@ -246,6 +236,13 @@ public class JarProcessor {
 		return input;
 	}
 
+	private void adjustInf(File input, Properties inf) {
+		for (Iterator iter = steps.iterator(); iter.hasNext();) {
+			IProcessStep step = (IProcessStep) iter.next();
+			step.adjustInf(input, inf);
+		}
+	}
+
 	public void processJar(File input) throws IOException {
 		++depth;
 		long lastModified = input.lastModified();
@@ -253,7 +250,7 @@ public class JarProcessor {
 		if (!workingDir.exists())
 			workingDir.mkdirs();
 
-		boolean skip = !processAll && Utils.isUnmarkedJar(input);
+		boolean skip = Utils.shouldSkipJar(input, processAll, verbose);
 		if (depth == 0 && verbose) {
 			if (skip)
 				System.out.println("Skipping " + input.getPath()); //$NON-NLS-1$
@@ -289,6 +286,10 @@ public class JarProcessor {
 		Map replacements = new HashMap();
 		extractEntries(jar, tempDir, replacements);
 
+		Properties inf = Utils.getEclipseInf(workingFile);
+		if (inf != null)
+			adjustInf(workingFile, inf);
+
 		//Recreate the jar with replacements.  This also has the effect of normalizing the jar, so we want to do this even if
 		//we aren't actually replacing anything
 		File tempJar = null;
@@ -297,7 +298,7 @@ public class JarProcessor {
 		if (!parent.exists())
 			parent.mkdirs();
 		JarOutputStream jarOut = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(tempJar)));
-		recreateJar(jar, jarOut, replacements, tempDir);
+		recreateJar(jar, jarOut, replacements, tempDir, inf);
 
 		jar.close();
 		if (tempJar != null) {

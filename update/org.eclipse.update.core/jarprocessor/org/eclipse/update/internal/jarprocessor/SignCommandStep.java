@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.jar.*;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public class SignCommandStep extends CommandStep {
@@ -52,6 +52,12 @@ public class SignCommandStep extends CommandStep {
 	 */
 	public File postProcess(File input, File workingDirectory) {
 		if (command != null) {
+			Properties inf = Utils.getEclipseInf(input);
+			if (inf != null && inf.containsKey(Utils.MARK_EXCLUDE_SIGN) && Boolean.valueOf(inf.getProperty(Utils.MARK_EXCLUDE_SIGN)).booleanValue()) {
+				if(verbose)
+					System.out.println("Excluding " + input.getName() + " from signing."); //$NON-NLS-1$ //$NON-NLS-2$
+				return null;
+			}
 			try {
 				String[] cmd = new String[] {command, input.getCanonicalPath()};
 				int result = execute(cmd, verbose);

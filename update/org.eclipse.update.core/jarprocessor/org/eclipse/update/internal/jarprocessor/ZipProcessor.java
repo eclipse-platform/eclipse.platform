@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.zip.*;
 
 /**
- * @author aniefer
+ * @author aniefer@ca.ibm.com
  *
  */
 public class ZipProcessor {
@@ -116,7 +116,7 @@ public class ZipProcessor {
 					FileOutputStream extracted = new FileOutputStream(extractedFile);
 					Utils.transferStreams(entryStream, extracted, true);
 
-					boolean skip = !processAll && Utils.isUnmarkedJar(extractedFile);
+					boolean skip = Utils.shouldSkipJar(extractedFile, processAll, verbose);
 					if (skip) {
 						//skipping this file 
 						entryStream = new FileInputStream(extractedFile);

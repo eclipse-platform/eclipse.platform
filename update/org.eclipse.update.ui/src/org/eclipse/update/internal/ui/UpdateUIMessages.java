@@ -282,6 +282,7 @@ public final class UpdateUIMessages extends NLS {
 	public static String InstallWizard_isRunningInfo;
 	public static String InstallWizard_jobName;
 	public static String InstallWizard_download;
+	public static String InstallWizard_downloadingFeatureJar;
 	public static String InstallWizard_anotherJob;
 	public static String InstallWizard_anotherJobTitle;
 	public static String InstallWizard_wtitle;

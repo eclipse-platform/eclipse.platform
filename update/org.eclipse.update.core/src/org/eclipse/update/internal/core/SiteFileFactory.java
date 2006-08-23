@@ -373,9 +373,10 @@ public class SiteFileFactory extends BaseSiteFactory {
 			ContentReference ref = null;
 			String refString = null;
 			InputStream in = null;
+			JarContentReference jarReference = null;
 			try {
 				File file = new File(pluginDir, dir[i]);
-				JarContentReference jarReference = new JarContentReference(
+				jarReference = new JarContentReference(
 						null, file);
 				ref = jarReference.peek("META-INF/MANIFEST.MF", null, null); //$NON-NLS-1$
 				if (ref != null) {
@@ -414,6 +415,14 @@ public class SiteFileFactory extends BaseSiteFactory {
 					try{
 						in.close();
 					}catch(IOException ce){
+					}
+				}
+				if (jarReference != null) {
+					try {
+						jarReference.closeArchive();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
