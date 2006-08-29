@@ -56,9 +56,14 @@ public class Main {
     protected String framework = OSGI;
 
     /**
-     * The extra development time class path entries.
+     * The extra development time class path entries for the framework.
      */
     protected String devClassPath = null;
+
+    /*
+     * The extra development time class path entries for all bundles.
+     */
+    private Properties devClassPathProps = null;
 
     /**
      * Indicates whether this instance is running in development mode.
@@ -465,7 +470,7 @@ public class Main {
     private URL[] getDevPath(URL base) throws IOException {
         ArrayList result = new ArrayList(5);
         if (inDevelopmentMode)
-            addDevEntries(base, result);
+            addDevEntries(base, result, OSGI);
         //The jars from the base always need to be added, even when running in dev mode (bug 46772)
         addBaseJars(base, result);
         return (URL[]) result.toArray(new URL[result.size()]);
@@ -537,7 +542,7 @@ public class Main {
             extensionProperties.put(PROP_CLASSPATH, qualifiedPath);
             mergeProperties(System.getProperties(), extensionProperties);
             if (inDevelopmentMode) 
-                addDevEntries(extensionURL, result);
+                addDevEntries(extensionURL, result, extensions[i]);
         }
         extensionPaths = (String[]) extensionResults.toArray(new String[extensionResults.size()]);
     }
@@ -599,8 +604,13 @@ public class Main {
             result.add(url);
     }
 
-    private void addDevEntries(URL base, List result) throws MalformedURLException {
-        String[] locations = getArrayFromList(devClassPath);
+    private void addDevEntries(URL base, List result, String symbolicName) throws MalformedURLException {
+    	if (devClassPathProps == null)
+    		return; // do nothing
+   		String devPathList = devClassPathProps.getProperty(symbolicName);
+   		if (devPathList == null)
+   			devPathList = devClassPathProps.getProperty("*"); //$NON-NLS-1$
+        String[] locations = getArrayFromList(devPathList);
         for (int i = 0; i < locations.length; i++) {
             String location = locations[i];
             File path = new File(location);
@@ -1100,7 +1110,12 @@ public class Main {
             // look for the development mode and class path entries.  
             if (args[i - 1].equalsIgnoreCase(DEV)) {
                 inDevelopmentMode = true;
-                devClassPath = processDevArg(arg);
+                devClassPathProps = processDevArg(arg);
+                if (devClassPathProps != null) {
+                	devClassPath = devClassPathProps.getProperty(OSGI);
+                	if (devClassPath == null)
+                		devClassPath = devClassPathProps.getProperty("*"); //$NON-NLS-1$
+                }
                 continue;
             }
 
@@ -1187,17 +1202,17 @@ public class Main {
         return passThruArgs;
     }
 
-    private String processDevArg(String arg) {
+    private Properties processDevArg(String arg) {
         if (arg == null)
             return null;
         try {
             URL location = new URL(arg);
-            Properties props = load(location, null);
-            String result = props.getProperty(OSGI);
-            return result == null ? props.getProperty("*") : result; //$NON-NLS-1$
+            return load(location, null);
         } catch (MalformedURLException e) {
             // the arg was not a URL so use it as is.
-            return arg;
+        	Properties result = new Properties();
+        	result.put("*", arg); //$NON-NLS-1$
+            return result;
         } catch (IOException e) {
             // TODO consider logging here
             return null;
