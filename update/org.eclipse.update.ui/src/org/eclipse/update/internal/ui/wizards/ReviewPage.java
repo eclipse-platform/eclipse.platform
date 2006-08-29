@@ -1500,13 +1500,13 @@ public class ReviewPage	extends BannerPage {
 		}
 		switch (rule) {
 		case IImport.RULE_PERFECT:
-			return vid2.getVersion().isPerfect(vid1.getVersion());
+			return vid1.getVersion().isPerfect(vid2.getVersion());
 		case IImport.RULE_EQUIVALENT:
-			return vid2.getVersion().isEquivalentTo(vid1.getVersion());
+			return vid1.getVersion().isEquivalentTo(vid2.getVersion());
 		case IImport.RULE_COMPATIBLE:
-			return vid2.getVersion().isCompatibleWith(vid1.getVersion());
+			return vid1.getVersion().isCompatibleWith(vid2.getVersion());
 		case IImport.RULE_GREATER_OR_EQUAL:
-			return vid2.getVersion().isGreaterOrEqualTo(vid1.getVersion());
+			return vid1.getVersion().isGreaterOrEqualTo(vid2.getVersion());
 		}
 		return false;
 	}
