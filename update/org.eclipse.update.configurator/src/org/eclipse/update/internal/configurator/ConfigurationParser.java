@@ -28,6 +28,8 @@ import org.xml.sax.helpers.*;
 
 public class ConfigurationParser extends DefaultHandler implements IConfigurationConstants {
 	
+	private static final String URL_PROPERTY = "org.eclipse.update.resolution_url"; //$NON-NLS-1$
+	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 	private final static SAXParserFactory parserFactory =
 		SAXParserFactory.newInstance();
 	private SAXParser parser;
@@ -152,7 +154,9 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 		}
 		
 		// when reading externalized URLs, need to convert them to absolute form
-		url = Utils.makeAbsolute(Utils.getInstallURL(), url);
+		String property = System.getProperty(URL_PROPERTY, EMPTY_STRING);
+		URL root = property == null || property.length() == 0 ? Utils.getInstallURL() : new URL(property);
+		url = Utils.makeAbsolute(root, url);
 		
 		if (!isValidSite(url))
 			return;
