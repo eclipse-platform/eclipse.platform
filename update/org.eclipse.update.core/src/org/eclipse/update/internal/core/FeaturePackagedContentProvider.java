@@ -393,7 +393,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 	 * @return NullReference if its decided not to continue
 	 * @throws CoreException
 	 */
-	private ContentReference continueOrErrorOrRethrow(String archiveID, CoreException coreException) throws CoreException {
+	/*private ContentReference continueOrErrorOrRethrow(String archiveID, CoreException coreException) throws CoreException {
 		ContentReference reference = null;
 
 		if (continueOnError) {
@@ -411,7 +411,7 @@ public class FeaturePackagedContentProvider extends FeatureContentProvider {
 			throw coreException;
 		}
 		return reference;
-	}
+	}*/
 	
 	private ContentReference continueOnErrorOrRethrow(String archiveID, Exception e) throws CoreException {
 		ContentReference reference = null;

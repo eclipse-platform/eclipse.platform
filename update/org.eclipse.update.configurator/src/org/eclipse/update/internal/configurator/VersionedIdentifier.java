@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import org.osgi.framework.Version;
+//import java.util.ArrayList;
+//import java.util.StringTokenizer;
 
 public class VersionedIdentifier {
 	private String identifier = ""; //$NON-NLS-1$
@@ -23,7 +21,7 @@ public class VersionedIdentifier {
 	private String qualifier = ""; //$NON-NLS-1$
 	private String version;
 
-	private static final String VER_SEPARATOR = "."; //$NON-NLS-1$
+	//private static final String VER_SEPARATOR = "."; //$NON-NLS-1$
 
 	public static final int LESS_THAN = -1;
 	public static final int EQUAL = 0;
@@ -85,7 +83,7 @@ public class VersionedIdentifier {
 			return EQUAL;
 	}
 
-	private void parseVersion(String v) {
+	/*private void parseVersion(String v) {
 		if (v == null || (v = v.trim()).equals("")) //$NON-NLS-1$
 			return;
 
@@ -109,9 +107,9 @@ public class VersionedIdentifier {
 		} catch (Exception e) {
 			// use what we got so far ...
 		}
-	}
+	}*/
 
-	private String removeWhiteSpace(String s) {
+	/*private String removeWhiteSpace(String s) {
 		char[] chars = s.trim().toCharArray();
 		boolean whitespace = false;
 		for (int i = 0; i < chars.length; i++) {
@@ -121,7 +119,7 @@ public class VersionedIdentifier {
 			}
 		}
 		return whitespace ? new String(chars) : s;
-	}
+	}*/
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

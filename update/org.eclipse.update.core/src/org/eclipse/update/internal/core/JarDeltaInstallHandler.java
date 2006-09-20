@@ -49,8 +49,8 @@ public class JarDeltaInstallHandler extends DeltaInstallHandler {
 				super.overlayPlugin(oldPlugin, newPlugin, consumer);
 			}
 			
-			ContentReference[] oldReferences = oldFeature.getFeatureContentProvider().getPluginEntryContentReferences(oldPlugin, null);
-			ContentReference[] newReferences = feature.getFeatureContentProvider().getPluginEntryContentReferences(newPlugin, null);
+			//ContentReference[] oldReferences = oldFeature.getFeatureContentProvider().getPluginEntryContentReferences(oldPlugin, null);
+			//ContentReference[] newReferences = feature.getFeatureContentProvider().getPluginEntryContentReferences(newPlugin, null);
 
 			URL oldURI = null;
 			try {

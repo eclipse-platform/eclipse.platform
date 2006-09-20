@@ -51,7 +51,6 @@ import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.core.model.SiteModel;
 import org.eclipse.update.internal.configurator.ConfigurationActivator;
 import org.eclipse.update.internal.configurator.FeatureEntry;
-import org.eclipse.update.internal.configurator.IConfigurationConstants;
 import org.eclipse.update.internal.configurator.PlatformConfiguration;
 import org.eclipse.update.internal.configurator.PluginEntry;
 import org.eclipse.update.internal.configurator.SiteEntry;
