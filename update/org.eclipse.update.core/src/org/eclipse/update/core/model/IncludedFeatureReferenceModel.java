@@ -13,6 +13,7 @@ package org.eclipse.update.core.model;
 import org.eclipse.update.core.FeatureReference;
 import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.IImport;
+import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.IUpdateConstants;
 import org.eclipse.update.core.Import;
 
@@ -83,7 +84,11 @@ public class IncludedFeatureReferenceModel extends FeatureReference {
 	 */
 	public IncludedFeatureReferenceModel(IFeatureReference featureReference) {
 		super((FeatureReferenceModel)featureReference);
-		isOptional(false);
+		if (featureReference instanceof IIncludedFeatureReference)
+			  isOptional( ((IIncludedFeatureReference)featureReference).isOptional() );
+			else
+			  isOptional(false);
+		
 		setSearchLocation(IUpdateConstants.SEARCH_ROOT);
 		setLabel(getLabel());		
 	}
