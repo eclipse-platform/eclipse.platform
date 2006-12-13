@@ -179,15 +179,20 @@ public class WebStartMain extends Main {
 	private void mapURLsToBundleList() {
 		String[] allJars = getAllJars();
 		for (int i = 0; i < allJars.length; i++) {
-			String bundleId = extractBundleId(allJars[i]);
-			if (bundleId == null)
+			Object[] bundleInfo = extractBundleId(allJars[i]);
+			if (bundleInfo == null)
 				continue;
-			ArrayList bundleURLs = (ArrayList) bundleList.get(bundleId);
+			String bsn = (String) bundleInfo[0];
+			if (bsn == null)
+				continue;
+			String version = (String) bundleInfo[1];
+			ArrayList bundleURLs = null;
+			if (bsn != null && version != null) {
+				bundleURLs = (ArrayList) bundleList.get(bsn+ '_' + version);
+			}
+			
 			if (bundleURLs == null) {
-				int versionIdPosition = bundleId.lastIndexOf('_');
-				if (versionIdPosition == -1)
-					continue;
-				bundleURLs = (ArrayList) bundleList.get(bundleId.substring(0, versionIdPosition));
+				bundleURLs = (ArrayList) bundleList.get(bsn);
 				if (bundleURLs == null)
 					continue;
 			}
@@ -199,14 +204,14 @@ public class WebStartMain extends Main {
 	/*
 	 * return a string of the form <bundle>_<version>
 	 */
-	private String extractBundleId(String url) {
+	private Object[] extractBundleId(String url) {
 		if (preciseIdExtraction)
 			return extractBundleIdFromManifest(url);
 		else 
 			return extractBundleIdFromBundleURL(url);
 	}
 
-	private String extractBundleIdFromManifest(String url) {
+	private Object[] extractBundleIdFromManifest(String url) {
 		final String BUNDLE_SYMBOLICNAME = "Bundle-SymbolicName"; //$NON-NLS-1$
 		final String BUNDLE_VERSION = "Bundle-Version"; //$NON-NLS-1$
 		
@@ -218,31 +223,44 @@ public class WebStartMain extends Main {
 				return null;
 			
 			String bundleVersion = mf.getMainAttributes().getValue(BUNDLE_VERSION);
-			if (bundleVersion == null)
-				bundleVersion = ""; //$NON-NLS-1$
-			else
-				bundleVersion = '_' + bundleVersion;
 			
 			int pos = symbolicNameString.lastIndexOf(';');
 			if (pos != -1)
-				return symbolicNameString.substring(0, pos) + bundleVersion;
-			return symbolicNameString + bundleVersion;
+				return new Object[] {symbolicNameString.substring(0, pos), bundleVersion};
+			return new Object[] {symbolicNameString, bundleVersion};
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
 			//Ignore
-		} catch (IOException e) {
+		} catch (IOException e) {e.printStackTrace();
 			//Ignore
 		}
 		return null;
 
 	}
 
-	private String extractBundleIdFromBundleURL(String url) {
+	private Object[] extractBundleIdFromBundleURL(String url) {
+		//First extract the relevant part of the URL
 		int lastBang = url.lastIndexOf('!');
 		if (lastBang == -1)
 			return null;
 		boolean jarSuffix = url.regionMatches(true, lastBang - 4, ".jar", 0, 4); //$NON-NLS-1$
 		int bundleIdStart = url.lastIndexOf('/', lastBang);
-		return url.substring(bundleIdStart + 3, lastBang - (jarSuffix ? 4 : 0)); // + 3 because URLs from webstart have a funny prefix
+		String fileName = url.substring(bundleIdStart + 3, lastBang - (jarSuffix ? 4 : 0)); // + 3 because URLs from webstart have a funny prefix
+		
+		//Separate the version from the bsn
+		String bsn = null;
+		String version = null;
+		int underScore = fileName.indexOf('_');
+		while (underScore >= 0) {
+			bsn = fileName.substring(0, underScore);
+			version = fileName.substring(underScore + 1);
+			if (! isValidVersion(version)) {
+				underScore = fileName.indexOf('_', underScore + 1);
+			} else {
+				break;
+			}
+		}
+		return new Object[] {bsn, version};
 	}
 	
 	private void buildOSGiBundleList() {
@@ -292,4 +310,61 @@ public class WebStartMain extends Main {
 			log(finalBundleList.toString());
 	}
 
+	private boolean isValidVersion(String version) {
+		int major = 0;
+		int minor = 0;
+		int micro = 0;
+		String qualifier = ""; //$NON-NLS-1$
+		final String SEPARATOR = ".";
+		
+		try {
+			StringTokenizer st = new StringTokenizer(version, SEPARATOR, true);
+			major = Integer.parseInt(st.nextToken());
+	
+			if (st.hasMoreTokens()) {
+				st.nextToken(); // consume delimiter
+				minor = Integer.parseInt(st.nextToken());
+	
+				if (st.hasMoreTokens()) {
+					st.nextToken(); // consume delimiter
+					micro = Integer.parseInt(st.nextToken());
+	
+					if (st.hasMoreTokens()) {
+						st.nextToken(); // consume delimiter
+						qualifier = st.nextToken();
+	
+						if (st.hasMoreTokens()) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		catch (NoSuchElementException e) {
+			return false;
+		}
+		catch (NumberFormatException e) {
+			return false;
+		}
+	
+		return isValidVersionSegment(major, minor, micro, qualifier);
+	}
+	
+	private boolean isValidVersionSegment(int major, int minor, int micro, String qualifier) {
+		if (major < 0) {
+			return false;
+		}
+		if (minor < 0) {
+			return false;
+		}
+		if (micro < 0) {
+		}
+		int length = qualifier.length();
+		for (int i = 0; i < length; i++) {
+			if ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-".indexOf(qualifier.charAt(i)) == -1) { //$NON-NLS-1$
+				return false;
+			}
+		}
+		return true;
+	}
 }
