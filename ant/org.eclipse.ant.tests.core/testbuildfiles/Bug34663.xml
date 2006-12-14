@@ -1,8 +1,0 @@
-<project name="34663.xml" default="echoP">
-
-<taskdef file="${ROOTDIR}/taskdefs.properties" />
- 
- <target name="echoP">
- 	<myEchoProperties/>
- </target>
-</project>

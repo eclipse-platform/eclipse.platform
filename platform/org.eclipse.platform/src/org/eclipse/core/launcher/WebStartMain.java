@@ -27,8 +27,8 @@ public class WebStartMain extends Main {
 	private static final String DEFAULT_OSGI_BUNDLES = "org.eclipse.equinox.common@2:start, org.eclipse.core.runtime@start"; //$NON-NLS-1$
 	private static final String PROP_OSGI_BUNDLES = "osgi.bundles"; //$NON-NLS-1$
 	private static final String PROP_WEBSTART_PRECISE_BUNDLEID = "eclipse.webstart.preciseBundleId"; //$NON-NLS-1$
-	private static final String JAVA_6 = "1.6";
 	
+
 	private String[] allJars = null; 	//List all the jars that are on the classpath
 	private Map bundleList = null; //Map an entry (the part before the @) from the osgi.bundles list to a list of URLs. Ie: org.eclipse.core.runtime --> file:c:/foo/org.eclipse.core.runtime_3.1.0/..., file:c:/bar/org.eclipse.core.runtime/... 
 	private Map bundleStartInfo = null; //Keep track of the start level info for each bundle from the osgi.bundle list.
@@ -49,8 +49,6 @@ public class WebStartMain extends Main {
 
 	protected void basicRun(String[] args) throws Exception {
 		preciseIdExtraction = Boolean.getBoolean(PROP_WEBSTART_PRECISE_BUNDLEID);
-		if (checkVersion(System.getProperty("java.version"), JAVA_6))
-			preciseIdExtraction = true;
 		setDefaultBundles();
 		addOSGiBundle();
 		initializeBundleListStructure();

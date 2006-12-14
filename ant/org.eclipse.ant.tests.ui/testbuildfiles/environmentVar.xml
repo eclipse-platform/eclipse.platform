@@ -1,5 +1,0 @@
-<project>
-	<property environment="env"/>
-	<echo>${env.ANT_HOME}</echo>
-	<echo>${ant.home}</echo>
-</project>
