@@ -6,7 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     IBM - Initial API and implementation
+ *     IBM Corporation - initial API and implementation
+ *     Chris Aniszczyk (IBM Corp.) - NL-enabled the site optimizer
  *******************************************************************************/
 package org.eclipse.update.internal.provisional;
 
@@ -538,8 +539,9 @@ public class SiteOptimizerApplication implements IPlatformRunnable {
 			if (localizedPrintStream != null) {
 				localizedPrintStream.close();
 			}
+			
 			File digest = new File(outputDirectory + File.separator + "digest" //$NON-NLS-1$
-					+ locale + ".zip"); //$NON-NLS-1$
+					+ (locale == null || locale.equals("") ? "" : "_"+locale) + ".zip"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			System.out.println(digest.getAbsolutePath());
 			System.out.println(digest.getName());
 			if (digest.exists()) {
@@ -885,11 +887,11 @@ public class SiteOptimizerApplication implements IPlatformRunnable {
 
 		public String getProperty(String key) {
 			String result = null;
-			if (properties3 != null)
+			if (properties3 != null && properties3.containsKey(key))
 				result = properties3.getProperty(key);
-			if (properties2 != null)
+			if (properties2 != null && properties2.containsKey(key))
 				result = properties2.getProperty(key);
-			if (properties1 != null)
+			if (properties1 != null && properties1.containsKey(key))
 				result = properties1.getProperty(key);
 			return result;
 		}

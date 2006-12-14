@@ -134,6 +134,7 @@ public class VersionedIdentifier {
 			this.major == other.major &&
 			this.minor == other.minor &&
 			this.service == other.service &&
+			this.version.equals(other.version) &&
 			compareQualifiers(this.qualifier, other.qualifier) == EQUAL;
 	}
 	

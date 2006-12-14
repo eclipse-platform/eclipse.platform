@@ -97,9 +97,9 @@ public class MirrorsDialog extends Dialog {
 		data.horizontalSpan = 2;
 		mirrorsList.setLayoutData(data);
 		
-		mirrorsList.add(siteName);
 		for (int i=0; i<mirrors.length; i++)
 			mirrorsList.add(mirrors[i].getAnnotation());
+		mirrorsList.add(siteName);
 
 		mirrorsList.select(0);
 		

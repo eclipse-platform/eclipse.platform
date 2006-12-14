@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2005, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Chris Aniszczyk (IBM Corp.) - Fixed NPE
  *******************************************************************************/
 package org.eclipse.update.internal.core;
 
@@ -307,7 +308,7 @@ public class UpdateManagerUtils {
 	 * used to clean up install
 	 */
 	public static void removeFromFileSystem(File file) {
-		if (!file.exists())
+		if (!file.exists() || !file.canWrite())
 			return;
 
 		if (file.isDirectory()) {
@@ -1020,6 +1021,8 @@ public static class Writer {
 	
 	public static String getWritableXMLString(String value) {
 		StringBuffer buf = new StringBuffer();
+		if(value == null)
+			return buf.toString();
 		for (int i = 0; i < value.length(); i++) {
 			char c = value.charAt(i);
 			switch (c) {

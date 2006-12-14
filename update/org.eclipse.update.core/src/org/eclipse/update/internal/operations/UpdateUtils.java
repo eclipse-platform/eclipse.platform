@@ -400,6 +400,7 @@ public class UpdateUtils {
 			category.setFeatures(features);
 		UpdateSearchRequest searchRequest = new UpdateSearchRequest(category, scope);
 		searchRequest.addFilter(new EnvironmentFilter());
+		searchRequest.addFilter(new BackLevelFilter());
 		return searchRequest;
 	}
 

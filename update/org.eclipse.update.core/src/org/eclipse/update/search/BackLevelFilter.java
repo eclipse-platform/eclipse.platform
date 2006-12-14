@@ -30,7 +30,26 @@ import org.eclipse.update.internal.operations.*;
  * @since 3.0
  */
 public class BackLevelFilter extends BaseFilter {
-	public boolean accept(IFeatureReference match) {
+	
+	public boolean accept(IFeature match) {
+		
+			PluginVersionIdentifier matchVid = match.getVersionedIdentifier().getVersion();
+			IFeature [] installed = UpdateUtils.getInstalledFeatures(match.getVersionedIdentifier(), false);
+			if (installed.length==0) return true;
+			
+			for (int i=0; i<installed.length; i++) {
+				PluginVersionIdentifier ivid = installed[i].getVersionedIdentifier().getVersion();
+				if (matchVid.isGreaterThan(ivid))
+					continue;
+				// installed version is the same or newer than
+				// the match - filter out
+				return false;
+			}
+			return true;
+		
+	}
+	
+	public boolean accept(IFeatureReference match) {		
 		try {
 			PluginVersionIdentifier matchVid = match.getVersionedIdentifier().getVersion();
 			IFeature [] installed = UpdateUtils.getInstalledFeatures(match.getVersionedIdentifier(), false);

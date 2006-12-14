@@ -7,27 +7,14 @@
  *
  * Contributors:
  *    IBM Corporation - Initial API and implementation
- *    Morten Tokle (tokle@broadpark.no) - fix for disk size under Windows 2003 bug #142815
  **********************************************************************/
 
-# include <update.h>
+# include "update.h"
 # include <windows.h>
 # include <winioctl.h> // IOCTL codes: MediaType
 
-// Windows Version
-int WIN98 = 0;
-int WINNT = 1;
-int WINME = 2;
-int WIN2000 = 3;
-int WINXP = 4;
-int WIN2003 = 5;
-
 // set to 1 for DEBUG
 int DEBUG = 0;
-
-// set to 0 to run on Windows 95 *Unsupported*
-int NOWIN95 = 1;
-
 
 // GLOBAL METHODS
 // ---------------
@@ -93,72 +80,6 @@ jstring getLabel(TCHAR driveLetter[],JNIEnv * jnienv){
  	}
 	return result;
 }
-
-/*
- * returns the Version of Windows
- * int 0 WIN98;
- * int 1 WINNT;
- * int 2 WINME;
- * int 3 WIN2000;
- * int 4 WINXP;
- * int 5 WIN2003;
- * returns -1 otherwise
- */
-int getWindowsVersion(){
-	OSVERSIONINFOEX osvi;
-	int UNKNOWN = -1;
-	
-	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	
-	if(!(GetVersionEx((OSVERSIONINFO *)&osvi))){
-		if (DEBUG)
-			printf("UNKNOWN VERSION: Cannot execute GetVersionEx\n");
-		// if OSVERSIONEX doesn't work, try OSVERSIONINFO
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);			 	
-		if(!(GetVersionEx((OSVERSIONINFO *)&osvi))){
-		if (DEBUG)
-			printf("UNKNOWN VERSION: Cannot execute GetVersionEx\n");
-			return UNKNOWN;
-		}
-	}
-	
-	switch(osvi.dwPlatformId){
-		case VER_PLATFORM_WIN32_NT:
-			if (DEBUG)
-				printf("VERSION NT: Maj %i Min %i\n",osvi.dwMajorVersion,osvi.dwMinorVersion);				 	
-			if(osvi.dwMajorVersion<=4)
-				return WINNT;
-			if(osvi.dwMajorVersion==5){
-				if (osvi.dwMinorVersion==0)
-					return WIN2000;
-				if (osvi.dwMinorVersion==1)
-					return WINXP;
-				if (osvi.dwMinorVersion==2)
-					return WIN2003;
-			} else {
-				return UNKNOWN;
-			};
-			break;
-		case VER_PLATFORM_WIN32_WINDOWS:
-			if (DEBUG)
-				printf("VERSION Non NT: Maj %i Min %i\n",osvi.dwMajorVersion,osvi.dwMinorVersion);				 	
-			if(osvi.dwMajorVersion==4){
-				if (osvi.dwMinorVersion==10)
-					return WIN98;
-				if (osvi.dwMinorVersion==90)
-					return WINME;
-			} else {
-				return UNKNOWN;
-			}
-			break;
-		default:
-			if (DEBUG)
-				printf("VERSION UNKNOWN: Maj %i Min %i\n",osvi.dwMajorVersion,osvi.dwMinorVersion);				 	
-			return UNKNOWN;
-	}
-	return UNKNOWN;
-} 
 
 /*
  * Returns the type of Removable Drive 
@@ -271,9 +192,6 @@ JNIEXPORT jlong JNICALL Java_org_eclipse_update_configuration_LocalSystemInfo_na
 	__int64 i64TotalNumberOfBytes;
 	__int64 i64TotalNumberOfFreeBytes;
 
-	// the result
-	jlong result = org_eclipse_update_configuration_LocalSystemInfo_SIZE_UNKNOWN;
-
 	// first, obtain the Path from the java.io.File parameter
 	cls = jnienv -> GetObjectClass(file);
 	id = jnienv -> GetMethodID(cls, "getAbsolutePath", "()Ljava/lang/String;");
@@ -282,24 +200,17 @@ JNIEXPORT jlong JNICALL Java_org_eclipse_update_configuration_LocalSystemInfo_na
 	if (DEBUG)
 		printf("Directory: [%s]\n",lpDirectoryName);
 
-	if (int win = (int)getWindowsVersion()<0 && NOWIN95){
-		// windows 95 or other
-		if (DEBUG)
-			printf("Unsupported Windows: %i\n",win);		
-		return result;
-	}
-
-	int err = GetDiskFreeSpaceEx(
+	int success = GetDiskFreeSpaceEx(
 				lpDirectoryName,
 				(PULARGE_INTEGER) & i64FreeBytesAvailableToCaller,
 				(PULARGE_INTEGER) & i64TotalNumberOfBytes,
 				(PULARGE_INTEGER) & i64TotalNumberOfFreeBytes);
 			
-	if (err) {
-		result = (jlong) i64FreeBytesAvailableToCaller;
+	if (success) {
+		return (jlong) i64FreeBytesAvailableToCaller;
+	} else {
+		return org_eclipse_update_configuration_LocalSystemInfo_SIZE_UNKNOWN;
 	}
-
-	return result;
 }
 
 /*
@@ -330,18 +241,10 @@ JNIEXPORT jstring JNICALL Java_org_eclipse_update_configuration_LocalSystemInfo_
 
 	//
 	jstring result = NULL;
-	int floppy;
 	
-	if (int win = (int)getWindowsVersion()<0 && NOWIN95){
-		// windows 95 or other
-		if (DEBUG)
-			printf("Unsupported Windows: %i\n",win);		
-		return result;
-	}
-		
 	// Make sure we have a String of the Form: <letter>:
 	if (':' == lpDirectoryName[1]) {
-		TCHAR driveLetter[4]; // i.e. -> C:\\
+		TCHAR driveLetter[4]; // C:\\ for example
 		memcpy(driveLetter, lpDirectoryName, 2);
 		strcpy(driveLetter + 2, "\\");
 		switch (GetDriveType(driveLetter)) {
@@ -389,16 +292,10 @@ JNIEXPORT jint JNICALL Java_org_eclipse_update_configuration_LocalSystemInfo_nat
 		printf("Directory: [%s]\n",lpDirectoryName);
 
 	int result = org_eclipse_update_configuration_LocalSystemInfo_VOLUME_UNKNOWN;
-	if (int win = (int)getWindowsVersion()<0 && NOWIN95){
-		// windows 95 or other
-		if (DEBUG)
-			printf("Unsupported Windows: %i\n",win);		
-		return result;
-	}
 	
 	// Make sure we have a String of the Form: <letter>:
 	if (':' == lpDirectoryName[1]) {
-		TCHAR driveLetter[4]; //C:\\
+		TCHAR driveLetter[4]; //C:\\ for example
 		memcpy(driveLetter, lpDirectoryName, 2);
 		strcpy(driveLetter + 2, "\\");
 
@@ -471,13 +368,6 @@ JNIEXPORT jobjectArray JNICALL Java_org_eclipse_update_configuration_LocalSystem
 	empty = jnienv -> NewStringUTF("");
 	returnArray = jnienv -> NewObjectArray(nDrive, stringClass, empty);
 
-	if (int win = (int)getWindowsVersion()<0 && NOWIN95){
-		// windows 95 or other
-		if (DEBUG)
-			printf("Unsupported Windows: %i\n",win);	
-		return NULL;
-	}
-
 	for (drive = 0; drive < 32; drive++) {
 		if (logDrives & (1 << drive)) {
 			sprintf(driveName, "%c:\\", drive + 'A');
@@ -489,4 +379,3 @@ JNIEXPORT jobjectArray JNICALL Java_org_eclipse_update_configuration_LocalSystem
 
 	return returnArray;
 }
-
