@@ -123,8 +123,8 @@ public class MirrorsDialog extends Dialog {
 	protected void okPressed() {
 		int i = mirrorsList.getSelectionIndex();
 		// first entry is the site itself
-		if (i > 0)
-			mirrorSelected = mirrors[i-1];
+		if (i <mirrors.length)
+			mirrorSelected = mirrors[i];
 		super.okPressed();
 	}
 	
