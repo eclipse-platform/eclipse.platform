@@ -271,7 +271,8 @@ public class Utils {
 			String key = (String) iter.next();
 			printStream.print(key);
 			printStream.print(" = "); //$NON-NLS-1$
-			printStream.println(sorted.get(key));
+			printStream.print(sorted.get(key));
+			printStream.print("\n");
 		}
 		printStream.flush();
 	}
