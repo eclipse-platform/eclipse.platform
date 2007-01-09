@@ -1218,9 +1218,11 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		long lastChange = config.getDate().getTime();
 		SiteEntry[] sites = config.getSites();
 		for (int s=0; s<sites.length; s++) {
-			long siteTimestamp = sites[s].getChangeStamp();
-			if (siteTimestamp > lastChange)
-				sites[s].loadFromDisk(lastChange);
+			if (sites[s].isUpdateable()) {
+				long siteTimestamp = sites[s].getChangeStamp();
+				if (siteTimestamp > lastChange)
+					sites[s].loadFromDisk(lastChange);
+			}
 		}
 		config.setDirty(true);
 	}
