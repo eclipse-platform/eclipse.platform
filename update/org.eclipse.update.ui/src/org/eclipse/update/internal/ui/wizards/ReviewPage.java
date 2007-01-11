@@ -70,6 +70,7 @@ import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.Utilities;
 import org.eclipse.update.core.VersionedIdentifier;
+import org.eclipse.update.internal.core.ExtendedSite;
 import org.eclipse.update.internal.core.UpdateCore;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 import org.eclipse.update.internal.operations.FeatureStatus;
@@ -173,8 +174,19 @@ public class ReviewPage	extends BannerPage {
                 SiteBookmark[] sites = (SiteBookmark[])((ITreeContentProvider)treeViewer.getContentProvider()).getElements(null);
                 for (int i=0; i<sites.length; i++) {
                 	try {
-                		if (sites[i].getSite(false, null).getURL() != f.getSite().getSiteContentProvider().getURL())
-                			continue;
+                		if (sites[i].getSite(false, null).getURL() != f.getSite().getSiteContentProvider().getURL()) {
+                		    // if the site has mirrors check if this is from the mirror that user selected
+                			if (sites[i].getSite(false, null) instanceof ExtendedSite) {
+                				ExtendedSite site = (ExtendedSite)sites[i].getSite(false, null);
+                				if (site.getSelectedMirror().getURL().toExternalForm().equals(f.getSite().getSiteContentProvider().getURL().toExternalForm())) { 
+                					// this is the site so proceed with the loop
+                				} else {
+                					continue;
+                				}
+                			} else {
+                				continue;
+                			}
+                		}
                 	} catch (CoreException ce) {
                 		return null;
                 	}

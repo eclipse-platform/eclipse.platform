@@ -463,6 +463,9 @@ public class UpdateSearchRequest {
 				IURLEntry mirror = null;
 				try {
 					mirror = ((IUpdateSearchResultCollectorFromMirror)collector).getMirror((ISiteWithMirrors)site, siteAdapter.getLabel());
+					if (site instanceof ExtendedSite) {
+						((ExtendedSite)site).setSelectedMirror(mirror);
+					}
 				}
 				catch (OperationCanceledException e) {
 					monitor.setCanceled(true);

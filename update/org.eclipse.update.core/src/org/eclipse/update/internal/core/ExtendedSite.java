@@ -26,6 +26,7 @@ public class ExtendedSite extends SiteWithTimestamp /*Site*/ {
 	private LiteFeature[] allLiteFeatures;
 	private IURLEntry[] associateSites;
 	private boolean pack200 = false;
+	private IURLEntry selectedMirror;
 	
 	
 	public String getDigestURL() {
@@ -141,6 +142,14 @@ public class ExtendedSite extends SiteWithTimestamp /*Site*/ {
 	}
 	public void setAssociateSites(IURLEntry[] associateSites) {
 		this.associateSites = associateSites;
+	}
+	
+	public IURLEntry getSelectedMirror() {
+		return selectedMirror;
+	}
+	
+	public void setSelectedMirror(IURLEntry selectedMirror) {
+		this.selectedMirror = selectedMirror;
 	}
 
 }
