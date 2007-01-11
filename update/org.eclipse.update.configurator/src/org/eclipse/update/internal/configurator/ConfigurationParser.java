@@ -71,6 +71,7 @@ public class ConfigurationParser extends DefaultHandler implements IConfiguratio
 				input = new FileInputStream(inputFile);
 			} else 
 				input = url.openStream();
+			input = new BufferedInputStream(input);
 			parser.parse(new InputSource(input), this);
 			return config;
 		} catch (Exception e) {

@@ -57,7 +57,7 @@ public class FeatureParser extends DefaultHandler {
 		InputStream in = null;
 		try {
 			this.url = featureURL;
-			in = featureURL.openStream();
+			in = new BufferedInputStream(featureURL.openStream());
 			parser.parse(new InputSource(in), this);
 		} catch (SAXException e) {
 		} catch (IOException e) {
