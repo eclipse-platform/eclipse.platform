@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,10 @@
 package org.eclipse.core.launcher;
 
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -29,12 +31,12 @@ public class WebStartMain extends Main {
 	private static final String PROP_WEBSTART_PRECISE_BUNDLEID = "eclipse.webstart.preciseBundleId"; //$NON-NLS-1$
 	private static final String JAVA_6 = "1.6";
 
-	private String[] allJars = null; 	//List all the jars that are on the classpath
+	private URL[] allJars = null; //List all the jars that are on the classpath
 	private Map bundleList = null; //Map an entry (the part before the @) from the osgi.bundles list to a list of URLs. Ie: org.eclipse.core.runtime --> file:c:/foo/org.eclipse.core.runtime_3.1.0/..., file:c:/bar/org.eclipse.core.runtime/... 
 	private Map bundleStartInfo = null; //Keep track of the start level info for each bundle from the osgi.bundle list.
-	
+
 	private boolean preciseIdExtraction = false; //Flag indicating if the extraction of the id must be done by looking at bundle ids.
-	
+
 	public static void main(String[] args) {
 		System.setSecurityManager(null); //TODO Hack so that when the classloader loading the fwk is created we don't have funny permissions. This should be revisited. 
 		int result = new WebStartMain().run(args);
@@ -90,18 +92,30 @@ public class WebStartMain extends Main {
 		ArrayList matches = (ArrayList) bundleList.get(target);
 		int numberOfURLs = matches.size();
 		if (numberOfURLs == 1) {
-			return extractInnerURL((String) matches.get(0));
+			return extractInnerURL((URL) matches.get(0));
 		}
 		if (numberOfURLs == 0)
 			return null;
-		String urls[] = new String[numberOfURLs];
-		return extractInnerURL(urls[findMax((String[]) matches.toArray(urls))]);
+
+		String urls[] = urlsToString((URL[]) matches.toArray(new URL[matches.size()]));
+		int idx = findMax(urls);
+		if (idx == -1)
+			return null;
+		return extractInnerURL((URL) matches.get(idx));
 	}
 
+	private String[] urlsToString(URL[] urls) {
+		String[] result = new String[urls.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = urls[i].toExternalForm();
+		}
+		return result;
+	}
+	
 	/* 
 	 * Get all the jars available on the webstart classpath
 	 */
-	private String[] getAllJars() {
+	private URL[] getAllJars() {
 		if (allJars != null)
 			return allJars;
 
@@ -109,12 +123,12 @@ public class WebStartMain extends Main {
 		try {
 			Enumeration resources = WebStartMain.class.getClassLoader().getResources(JarFile.MANIFEST_NAME);
 			while (resources.hasMoreElements()) {
-				collector.add(((URL) resources.nextElement()).toExternalForm());
+				collector.add(((URL) resources.nextElement()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		allJars = new String[collector.size()];
+		allJars = new URL[collector.size()];
 		collector.toArray(allJars);
 		if (debug)
 			printArray("Jars found on the webstart path:\n", allJars); //$NON-//$NON-NLS-1$
@@ -125,24 +139,30 @@ public class WebStartMain extends Main {
 	/*
 	 * Extract the inner URL from a string representing a JAR url string.
 	 */
-	private String extractInnerURL(String url) {
-		if (url.startsWith(JAR_SCHEME)) {
-			url = url.substring(url.indexOf(JAR_SCHEME) + 4);
+	private String extractInnerURL(URL url) {
+		try {
+			URLConnection connection = null;
+			try {
+				connection = url.openConnection();
+				if (connection instanceof JarURLConnection) {
+					return "file:" + ((JarURLConnection) connection).getJarFile().getName();
+				}
+			} finally {
+				if (connection != null)
+					connection.getInputStream().close();
+			}
+		} catch (IOException e) {
+			//Ignore and return the external form
 		}
-		int lastBang = url.lastIndexOf('!');
-		if (lastBang != -1) {
-			url = url.substring(0, lastBang);
-		}
-		return decode(url);
+		return url.toExternalForm();
 	}
 
-	private void printArray(String header, String[] values) {
+	private void printArray(String header, Object[] values) {
 		System.err.println(header);
 		for (int i = 0; i < values.length; i++) {
-			System.err.println("\t" + values[i]); //$NON-NLS-1$
+			System.err.println("\t" + values[i].toString()); //$NON-NLS-1$
 		}
 	}
-
 
 	/*
 	 * Initialize the data structure corresponding to the osgi.bundles list
@@ -172,14 +192,13 @@ public class WebStartMain extends Main {
 			}
 			bundleList.put(bundleId, new ArrayList(1)); // put a list with one element as it is likely that the element will be present
 		}
-		
 	}
 
 	/*
 	 * Associate urls from the list of jars with a bundle from the bundle list
 	 */
 	private void mapURLsToBundleList() {
-		String[] allJars = getAllJars();
+		URL[] allJars = getAllJars();
 		for (int i = 0; i < allJars.length; i++) {
 			Object[] bundleInfo = extractBundleId(allJars[i]);
 			if (bundleInfo == null)
@@ -190,9 +209,9 @@ public class WebStartMain extends Main {
 			String version = (String) bundleInfo[1];
 			ArrayList bundleURLs = null;
 			if (bsn != null && version != null) {
-				bundleURLs = (ArrayList) bundleList.get(bsn+ '_' + version);
+				bundleURLs = (ArrayList) bundleList.get(bsn + '_' + version);
 			}
-			
+
 			if (bundleURLs == null) {
 				bundleURLs = (ArrayList) bundleList.get(bsn);
 				if (bundleURLs == null)
@@ -206,41 +225,40 @@ public class WebStartMain extends Main {
 	/*
 	 * return a string of the form <bundle>_<version>
 	 */
-	private Object[] extractBundleId(String url) {
+	private Object[] extractBundleId(URL url) {
 		if (preciseIdExtraction)
 			return extractBundleIdFromManifest(url);
-		else 
+		else
 			return extractBundleIdFromBundleURL(url);
 	}
 
-	private Object[] extractBundleIdFromManifest(String url) {
+	private Object[] extractBundleIdFromManifest(URL url) {
 		final String BUNDLE_SYMBOLICNAME = "Bundle-SymbolicName"; //$NON-NLS-1$
 		final String BUNDLE_VERSION = "Bundle-Version"; //$NON-NLS-1$
-		
+
 		Manifest mf;
 		try {
-			mf = new Manifest(new URL(url).openStream()); 
+			mf = new Manifest(url.openStream());
 			String symbolicNameString = mf.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
-			if (symbolicNameString==null)
+			if (symbolicNameString == null)
 				return null;
-			
+
 			String bundleVersion = mf.getMainAttributes().getValue(BUNDLE_VERSION);
-			
+
 			int pos = symbolicNameString.lastIndexOf(';');
 			if (pos != -1)
 				return new Object[] {symbolicNameString.substring(0, pos), bundleVersion};
 			return new Object[] {symbolicNameString, bundleVersion};
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-			//Ignore
-		} catch (IOException e) {e.printStackTrace();
 			//Ignore
 		}
 		return null;
 
 	}
 
-	private Object[] extractBundleIdFromBundleURL(String url) {
+	private Object[] extractBundleIdFromBundleURL(URL urls) {
+		String url = urls.toExternalForm();
 		//First extract the relevant part of the URL
 		int lastBang = url.lastIndexOf('!');
 		if (lastBang == -1)
@@ -248,7 +266,7 @@ public class WebStartMain extends Main {
 		boolean jarSuffix = url.regionMatches(true, lastBang - 4, ".jar", 0, 4); //$NON-NLS-1$
 		int bundleIdStart = url.lastIndexOf('/', lastBang);
 		String fileName = url.substring(bundleIdStart + 3, lastBang - (jarSuffix ? 4 : 0)); // + 3 because URLs from webstart have a funny prefix
-		
+
 		//Separate the version from the bsn
 		String bsn = null;
 		String version = null;
@@ -264,47 +282,46 @@ public class WebStartMain extends Main {
 		}
 		return new Object[] {bsn, version};
 	}
-	
+
 	private void buildOSGiBundleList() {
 		//Remove the framework from the bundle list because it does not need to be installed. See addOSGiBundle
 		bundleList.remove(framework);
 
-		String[] jarsOnClasspath = getAllJars();
+		URL[] jarsOnClasspath = getAllJars();
 		StringBuffer finalBundleList = new StringBuffer(jarsOnClasspath.length * 25);
-		
+
 		//Add the bundles from the bundle list.
 		Collection allSelectedBundles = bundleList.entrySet();
 		for (Iterator iter = allSelectedBundles.iterator(); iter.hasNext();) {
 			Map.Entry entry = (Map.Entry) iter.next();
 			ArrayList matches = (ArrayList) entry.getValue();
 			int numberOfURLs = matches.size();
-			
+
 			//Get the start info
 			String startInfo = (String) bundleStartInfo.get(entry.getKey());
 			if (startInfo == null)
 				startInfo = ""; //$NON-NLS-1$
-			
+
 			if (numberOfURLs == 1) {
-				finalBundleList.append(REFERENCE_SCHEME).append(extractInnerURL((String) matches.get(0))).append(startInfo).append(',');
+				finalBundleList.append(REFERENCE_SCHEME).append(extractInnerURL((URL) matches.get(0))).append(startInfo).append(',');
 				continue;
 			}
 			if (numberOfURLs == 0)
 				continue;
-			String urls[] = new String[numberOfURLs];
-			int found = findMax((String[]) matches.toArray(urls));
-			for (int i = 0; i < urls.length; i++) {
-				if (i != found)
-					continue;
-				finalBundleList.append(REFERENCE_SCHEME).append(extractInnerURL((String) urls[found])).append(startInfo).append(',');
-			}
+			
+			String urls[] = urlsToString((URL[]) matches.toArray(new URL[matches.size()]));
+			int idx = findMax(urls);
+			if (idx == -1)
+				continue;
+			finalBundleList.append(extractInnerURL((URL) matches.get(idx)));
 		}
-		
+
 		//Add all the other bundles if required - the common case is to add those
-		if (! Boolean.FALSE.toString().equalsIgnoreCase(System.getProperties().getProperty(PROP_WEBSTART_AUTOMATIC_INSTALLATION))) {
+		if (!Boolean.FALSE.toString().equalsIgnoreCase(System.getProperties().getProperty(PROP_WEBSTART_AUTOMATIC_INSTALLATION))) {
 			for (int i = 0; i < jarsOnClasspath.length; i++) {
 				if (jarsOnClasspath[i] != null)
 					finalBundleList.append(REFERENCE_SCHEME).append(extractInnerURL(jarsOnClasspath[i])).append(',');
-			}			
+			}
 		}
 
 		System.getProperties().put(PROP_OSGI_BUNDLES, finalBundleList.toString());
@@ -318,40 +335,38 @@ public class WebStartMain extends Main {
 		int micro = 0;
 		String qualifier = ""; //$NON-NLS-1$
 		final String SEPARATOR = ".";
-		
+
 		try {
 			StringTokenizer st = new StringTokenizer(version, SEPARATOR, true);
 			major = Integer.parseInt(st.nextToken());
-	
+
 			if (st.hasMoreTokens()) {
 				st.nextToken(); // consume delimiter
 				minor = Integer.parseInt(st.nextToken());
-	
+
 				if (st.hasMoreTokens()) {
 					st.nextToken(); // consume delimiter
 					micro = Integer.parseInt(st.nextToken());
-	
+
 					if (st.hasMoreTokens()) {
 						st.nextToken(); // consume delimiter
 						qualifier = st.nextToken();
-	
+
 						if (st.hasMoreTokens()) {
 							return false;
 						}
 					}
 				}
 			}
-		}
-		catch (NoSuchElementException e) {
+		} catch (NoSuchElementException e) {
+			return false;
+		} catch (NumberFormatException e) {
 			return false;
 		}
-		catch (NumberFormatException e) {
-			return false;
-		}
-	
+
 		return isValidVersionSegment(major, minor, micro, qualifier);
 	}
-	
+
 	private boolean isValidVersionSegment(int major, int minor, int micro, String qualifier) {
 		if (major < 0) {
 			return false;
