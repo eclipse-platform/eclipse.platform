@@ -26,6 +26,7 @@ import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.internal.core.ExtendedSite;
 import org.eclipse.update.internal.core.LiteFeature;
+import org.eclipse.update.internal.core.UpdateCore;
 import org.eclipse.update.search.IQueryUpdateSiteAdapter;
 import org.eclipse.update.search.IUpdateSearchFilter;
 import org.eclipse.update.search.IUpdateSearchQuery;
@@ -233,7 +234,7 @@ public class SiteSearchCategory extends BaseSearchCategory {
 							}
 						}
 					} catch (CoreException e) {
-						System.out.println(e);
+						UpdateCore.log(e);
 					} finally {
 						monitor.worked(1);
 					}

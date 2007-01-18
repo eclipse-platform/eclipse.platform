@@ -109,7 +109,7 @@ public class SiteStatusAnalyzer {
 
 		// check ambiguous against registry [17015]
 		IPluginEntry[] featuresEntries = feature.getPluginEntries();
-		return status(featuresEntries);
+		return status( feature, featuresEntries);
 	}
 
 	/*
@@ -215,7 +215,7 @@ public class SiteStatusAnalyzer {
 	/*
 	 * compute the status based on getStatus() rules 
 	 */
-	private IStatus status(IPluginEntry[] featurePlugins) {
+	private IStatus status(IFeature pluginsOriginatorFeature, IPluginEntry[] featurePlugins) {
 		VersionedIdentifier featurePluginID;
 
 		String happyMSG = Messages.SiteLocal_FeatureHappy; 
@@ -241,22 +241,27 @@ public class SiteStatusAnalyzer {
 			// Check if there is another feature with this plugin (but different version)
 			// log it
 			bundles = pkgAdmin.getBundles(featurePluginID.getIdentifier(), null);
-			for (int j=0; bundles != null && j<bundles.length; j++ ) {
+			for (int j = 0; bundles != null && j < bundles.length && !found; j++ ) {
 				String bundleVersion = (String)bundles[j].getHeaders().get(Constants.BUNDLE_VERSION);
 				IFeature feature = getFeatureForId(new VersionedIdentifier(bundles[j].getSymbolicName(), bundleVersion ));
-				String msg = null;
-				if (feature == null) {
-					Object[] values = new Object[] {bundles[j].getSymbolicName(), featurePluginID.getVersion(), bundleVersion};
-					msg = NLS.bind(Messages.SiteLocal_TwoVersionSamePlugin1, values);
+				if ((feature != null) && (!isFeaturePatchOfThisFeature(pluginsOriginatorFeature, feature))) {
+					String msg = null;
+					if (feature == null) {
+						Object[] values = new Object[] {bundles[j].getSymbolicName(), featurePluginID.getVersion(), bundleVersion};
+						msg = NLS.bind(Messages.SiteLocal_TwoVersionSamePlugin1, values);
+					} else {
+						String label = feature.getLabel();
+						String featureVersion = feature.getVersionedIdentifier().getVersion().toString();
+						Object[] values = new Object[] { bundles[j].getSymbolicName(), featurePluginID.getVersion(), bundleVersion, label, featureVersion };
+						msg = NLS.bind(Messages.SiteLocal_TwoVersionSamePlugin2, values);
+					}
+	
+					UpdateCore.warn("Found another version of the same plugin on the path:" + bundles[j].getSymbolicName() + " " + bundleVersion); //$NON-NLS-1$ //$NON-NLS-2$
+					tempmulti.add(createStatus(IStatus.ERROR, IFeature.STATUS_AMBIGUOUS, msg, null));
 				} else {
-					String label = feature.getLabel();
-					String featureVersion = feature.getVersionedIdentifier().getVersion().toString();
-					Object[] values = new Object[] { bundles[j].getSymbolicName(), featurePluginID.getVersion(), bundleVersion, label, featureVersion };
-					msg = NLS.bind(Messages.SiteLocal_TwoVersionSamePlugin2, values);
+					found = true;
 				}
-
-				UpdateCore.warn("Found another version of the same plugin on the path:" + bundles[j].getSymbolicName() + " " + bundleVersion); //$NON-NLS-1$ //$NON-NLS-2$
-				tempmulti.add(createStatus(IStatus.ERROR, IFeature.STATUS_AMBIGUOUS, msg, null));
+			
 			}
 	
 
@@ -285,6 +290,25 @@ public class SiteStatusAnalyzer {
 		// we return happy as we consider the isBroken verification has been done
 		return createStatus(IStatus.OK, IFeature.STATUS_HAPPY, happyMSG, null);
 	}
+	private boolean isFeaturePatchOfThisFeature(IFeature pluginsOriginatorFeature, IFeature feature) {
+		
+		if (!feature.isPatch())
+			return false;
+		
+		IImport[] featureImports = feature.getImports();
+
+		if (featureImports == null) {
+			return false;
+		}
+		
+		for(int i = 0; i < featureImports.length; i++) {
+			if (featureImports[i].isPatch() && featureImports[i].getVersionedIdentifier().equals(pluginsOriginatorFeature.getVersionedIdentifier())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/*
 	 * creates a Status
 	 */
