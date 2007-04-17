@@ -26,9 +26,11 @@ import org.eclipse.update.configurator.IPlatformConfiguration;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IImport;
 import org.eclipse.update.core.JarContentReference;
+import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.Utilities;
 import org.eclipse.update.internal.core.connection.ConnectionThreadManagerFactory;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 

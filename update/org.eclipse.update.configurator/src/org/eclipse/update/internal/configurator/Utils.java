@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,6 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     James D Miles (IBM Corp.) - bug 176250, Configurator needs to handle more platform urls 
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
@@ -115,6 +114,28 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * Returns the url as a platform:/ url, if possible, else leaves it unchanged
+	 * @param url
+	 * @return
+	 */
+	public static URL asPlatformURL(URL url) {
+		try {
+			URL platformURL = new URL("platform:/base/"); //$NON-NLS-1$  // try using platform-relative URL
+			URL resolvedPlatformURL = FileLocator.toFileURL(platformURL);
+			// TODO workaround bug in platform url resolution
+			if (resolvedPlatformURL.getProtocol().equals("file")) //$NON-NLS-1$
+				resolvedPlatformURL = new File(resolvedPlatformURL.getFile()).toURL();
+			String platformURLAsString = resolvedPlatformURL.toExternalForm();
+			String urlAsString = url.toExternalForm();
+			if (urlAsString.startsWith(platformURLAsString))
+				return new URL(platformURL.toExternalForm() + urlAsString.substring(platformURLAsString.length()) );
+			return url;
+		} catch (Exception e) {
+			return url;
+		}
+	}
+		
 	/**
 	 * Close the services that we were listening to.
 	 */

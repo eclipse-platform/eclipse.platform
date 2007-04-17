@@ -52,6 +52,7 @@ import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.Utilities;
 import org.eclipse.update.core.model.InstallAbortedException;
 import org.eclipse.update.internal.core.connection.ConnectionFactory;
+import org.eclipse.update.internal.core.connection.HttpResponse;
 import org.eclipse.update.internal.core.connection.IResponse;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;

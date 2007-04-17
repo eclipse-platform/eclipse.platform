@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2004 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,12 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     James D Miles (IBM Corp.) - bug 176250, Configurator needs to handle more platform urls 
  *******************************************************************************/
 package org.eclipse.update.internal.configurator;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +23,6 @@ import org.w3c.dom.*;
 public class Configuration implements IConfigurationConstants {
 	
 	private HashMap sites = new HashMap();
-	private HashMap platformURLs = new HashMap();
 	private Date date;
 	private long lastModified; // needed to account for file system limitations
 	private URL url;
@@ -80,34 +76,12 @@ public class Configuration implements IConfigurationConstants {
 		if (sites.get(url) == null && (linkedConfig == null || linkedConfig.sites.get(url) == null)) {
 			site.setConfig(this);
 			sites.put(url, site);
-			if(url.startsWith("platform:")){//$NON-NLS-1$
-				URL pURL;
-				try {
-					pURL = new URL(url);
-					URL rURL = PlatformConfiguration.resolvePlatformURL(pURL);
-					String resolvedURL = rURL.toExternalForm();
-					platformURLs.put(resolvedURL, pURL);
-				} catch (IOException e) {
-					// can't resolve so can't have look up.
-				}
-			}
 		}
 	}
 	
 	public void removeSiteEntry(String url) {
 		url =Utils.canonicalizeURL(url);		
 		sites.remove(url);
-		if(url.startsWith("platform:")){ //$NON-NLS-1$
-			URL pURL;
-			try {
-				pURL = new URL(url);
-				URL rURL = PlatformConfiguration.resolvePlatformURL(pURL);
-				String resolvedURL = rURL.toExternalForm();
-				platformURLs.remove(resolvedURL);
-			} catch (IOException e) {
-				// can't resolve so can't have look up.
-			}
-		}
 	}
 	
 	public SiteEntry getSiteEntry(String url) {
@@ -187,25 +161,4 @@ public class Configuration implements IConfigurationConstants {
 	public long lastModified() {
 		return (lastModified != 0) ? lastModified : date.getTime();
 	}
-	
-	/**
-	 * Returns the url as a platform:/ url, if possible, else leaves it unchanged
-	 * @param url
-	 * @return
-	 */
-	public URL asPlatformURL(URL url) {
-		try {
-			if (url.getProtocol().equals("file")) {//$NON-NLS-1$
-				String rUrl = url.toExternalForm();
-				URL pUrl = (URL)platformURLs.get(rUrl);
-				if(pUrl == null)
-					return url;
-				return pUrl;
-			}
-			return url;
-		} catch (Exception e) {
-			return url;
-		}
-	}
-	
 }
