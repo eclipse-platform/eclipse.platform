@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -228,7 +228,7 @@ public class EclipseRSSViewer implements IIntroContentProvider {
 					doNavigate((String) e.getHref());
 				}
 			});
-			bulletImage = createImage(new Path("intro/css/graphics/arrow.gif")); //$NON-NLS-1$
+			bulletImage = createImage(new Path("images/topiclabel/arrow.gif")); //$NON-NLS-1$
 			if (bulletImage!=null)
 				formText.setImage(HREF_BULLET, bulletImage);
 			this.parent = parent;
