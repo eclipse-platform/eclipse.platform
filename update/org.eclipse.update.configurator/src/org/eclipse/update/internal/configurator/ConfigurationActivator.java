@@ -77,7 +77,9 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 
 		Utils.debug("Starting update configurator..."); //$NON-NLS-1$
 
-		installBundles();
+		String reconcile = System.getProperty("org.eclipse.update.reconcile"); //$NON-NLS-1$
+		if (reconcile == null || reconcile.equalsIgnoreCase("true")) //$NON-NLS-1$
+			installBundles();
 		registerBundleGroupProvider();
 	}
 
