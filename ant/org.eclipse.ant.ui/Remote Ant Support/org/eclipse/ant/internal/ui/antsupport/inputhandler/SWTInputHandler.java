@@ -148,6 +148,12 @@ public class SWTInputHandler extends DefaultInputHandler {
 			//pre Ant 1.7.0
 		}
 		
+		fErrorMessageText = new Text(fDialog, SWT.READ_ONLY);
+        fErrorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        fErrorMessageText.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        
+		createButtonBar(fDialog, result);
+		
 		if (value != null) {
 			if (fCombo != null) {
 				fCombo.select(fCombo.indexOf(value));
@@ -156,12 +162,6 @@ public class SWTInputHandler extends DefaultInputHandler {
 				fText.selectAll();
 			}
 		}
-		
-		fErrorMessageText = new Text(fDialog, SWT.READ_ONLY);
-        fErrorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        fErrorMessageText.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        
-		createButtonBar(fDialog, result);
 		fDialog.pack();
     }
 
