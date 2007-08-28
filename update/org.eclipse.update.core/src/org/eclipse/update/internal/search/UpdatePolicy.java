@@ -7,12 +7,12 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     James D Miles (IBM Corp.) - bug 191368, Policy URL doesn't support UTF-8 characters
  *******************************************************************************/
 package org.eclipse.update.internal.search;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.Utilities;
-import org.eclipse.update.internal.configurator.UpdateURLDecoder;
 import org.eclipse.update.internal.core.Messages;
+import org.eclipse.update.internal.core.URLEncoder;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 import org.eclipse.update.internal.core.connection.ConnectionFactory;
 import org.eclipse.update.internal.core.connection.IResponse;
@@ -263,14 +263,12 @@ public class UpdatePolicy {
 		}
 
 		try {
-			//PAL foundation
-			String decodedValue = UpdateURLDecoder.decode(urlName, "UTF-8"); //$NON-NLS-1$
-			URL url = new URL(decodedValue);
-			addUpdateEntry(pattern, url, type);
+			URL url = new URL(urlName);
+			URL resolvedURL = URLEncoder.encode(url);
+			addUpdateEntry(pattern, resolvedURL, type);
 		} catch (MalformedURLException e) {
 			throwCoreException(Messages.UpdatePolicy_invalidURL+urlName, null); 
-		} catch (UnsupportedEncodingException e) {
-		}
+		} 
 	}
 	
 	private void assertNotNull(String name, String value) throws CoreException {

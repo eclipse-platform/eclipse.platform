@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     James D Miles (IBM Corp.) - bug 191368, Policy URL doesn't support UTF-8 characters
  *******************************************************************************/
 package org.eclipse.update.internal.core;
 
@@ -82,12 +83,13 @@ public final class URLEncoder {
 		String auth = url.getAuthority();
 		String host = url.getHost();
 		int port = url.getPort();
+		String userinfo = url.getUserInfo();
 
 		// do not encode if there is an authority, such as in
 		// ftp://user:password@host:port/path 
 		// because the URL constructor does not allow it
 		URL result = url;
-		if (auth == null || auth.equals("") || auth.equals(host+":"+ port)) // $NON-NLS-1$ $NON-NLS-2$  //$NON-NLS-1$//$NON-NLS-2$
+		if (auth == null || auth.equals("") || userinfo == null) // $NON-NLS-1$ $NON-NLS-2$  //$NON-NLS-1$//$NON-NLS-2$
 			result =  new URL(url.getProtocol(), host, port, encode(file, query, ref));
 		return result;
 	}
@@ -119,6 +121,7 @@ public final class URLEncoder {
 
 		return result.toString();
 	}
+	
 	private static boolean mustEncode(char c) {
 		if (c >= 'a' && c <= 'z') {
 			return false;
@@ -136,7 +139,7 @@ public final class URLEncoder {
 			return false;
 		}
 
-		if (c == '!' || c == '$' || c == '_') {
+		if (c == '!' || c == '$' || c == '_' || c == '[' || c == ']') {
 			return false;
 		}
 

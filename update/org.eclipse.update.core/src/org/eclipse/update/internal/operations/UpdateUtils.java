@@ -7,10 +7,10 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     James D Miles (IBM Corp.) - bug 191368, Policy URL doesn't support UTF-8 characters
  *******************************************************************************/
 package org.eclipse.update.internal.operations;
 
-import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.update.configuration.*;
 import org.eclipse.update.core.*;
 import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.configurator.UpdateURLDecoder;
 import org.eclipse.update.internal.core.*;
+import org.eclipse.update.internal.core.URLEncoder;
 import org.eclipse.update.internal.search.*;
 import org.eclipse.update.operations.*;
 import org.eclipse.update.search.*;
@@ -514,13 +514,12 @@ public class UpdateUtils {
 		String mapFile = pref.getString(UpdateUtils.P_UPDATE_POLICY_URL);
 		if (mapFile!=null && mapFile.length()>0) {
 			try {
-				//PAL foundation
-				String decodedFile = UpdateURLDecoder.decode(mapFile, "UTF-8"); //$NON-NLS-1$
-				return new URL(decodedFile);
+				URL url = new URL(mapFile);
+				URL resolvedURL = URLEncoder.encode(url);
+				return resolvedURL;
 			}
 			catch (MalformedURLException e) {
-			}
-			catch(UnsupportedEncodingException e) {
+				UpdateUtils.logException(e);
 			}
 		}
 		return null;
