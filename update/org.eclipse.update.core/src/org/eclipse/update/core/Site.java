@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     James D Miles (IBM Corp.) - bug 191783, NullPointerException in FeatureDownloader
  *******************************************************************************/
 package org.eclipse.update.core;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +80,7 @@ public class Site extends SiteModel implements ISiteWithMirrors {
 
 	private ISiteContentProvider siteContentProvider;
 	
-	private Map featureCache = new HashMap(); // key=URLKey value=IFeature
+	private Map featureCache = Collections.synchronizedMap(new HashMap()); // key=URLKey value=IFeature
 	
 	/**
 	 * Constructor for Site

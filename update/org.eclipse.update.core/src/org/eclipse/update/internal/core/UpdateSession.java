@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,18 +7,20 @@
  * 
  * Contributors:
  *     IBM - Initial API and implementation
+ *     James D Miles (IBM Corp.) - bug 191783, NullPointerException in FeatureDownloader
  *******************************************************************************/
 
 package org.eclipse.update.internal.core;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class UpdateSession {
 	
 	private boolean enabled = false;
-	private Set visitedURLs = new HashSet();
+	private Set visitedURLs = Collections.synchronizedSet(new HashSet());
 	
 	UpdateSession() {
 	}

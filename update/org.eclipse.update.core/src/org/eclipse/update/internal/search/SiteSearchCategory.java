@@ -8,7 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     James D Miles (IBM Corp.) - bug 181375, ArrayIndexOutOfBoundsException in SiteSearchCategory$Query
-*******************************************************************************/
+ *     James D Miles (IBM Corp.) - bug 191783, NullPointerException in FeatureDownloader
+ *******************************************************************************/
 package org.eclipse.update.internal.search;
 
 
@@ -188,10 +189,11 @@ public class SiteSearchCategory extends BaseSearchCategory {
 			while (siteFeatureReferences.size() != 0) {
 				
 				synchronized(siteFeatureReferences) { 
-					if (siteFeatureReferences.size() != 0) {
+					try{
 						siteFeatureReference = (ISiteFeatureReference)siteFeatureReferences.remove(0);
-					} else {
+					}catch(IndexOutOfBoundsException e){
 						siteFeatureReference = null;
+						break;
 					}
 				}
 				if (siteFeatureReference != null) {
