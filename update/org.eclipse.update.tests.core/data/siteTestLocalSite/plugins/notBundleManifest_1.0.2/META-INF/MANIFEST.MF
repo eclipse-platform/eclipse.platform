@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Generated-from: 1077062603708
-Bundle-Name: Not Valid Bundle Manifest
-Bundle-Version: 1.0.2
-Bundle-Vendor: Eclipse.org
-Bundle-ClassPath: plugin.jar
-Require-Bundle: 
- org.eclipse.core.runtime,
- org.eclipse.ui
