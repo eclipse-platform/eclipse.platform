@@ -94,7 +94,7 @@ public class ErrorRecoveryLog {
 		File file = new File(path);
 		String newName =
 			UpdateManagerUtils.getLocalRandomIdentifier(file.getName(), new Date());
-		while (new File(newName).exists()) {
+		while (new File(file.getParentFile(), newName).exists()) {
 			newName =
 				UpdateManagerUtils.getLocalRandomIdentifier(file.getName(), new Date());
 		}
