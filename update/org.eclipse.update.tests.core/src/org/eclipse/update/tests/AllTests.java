@@ -12,9 +12,11 @@ package org.eclipse.update.tests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.eclipse.update.tests.api.AllAPITests;
 import org.eclipse.update.tests.branding.*;
 //import org.eclipse.update.tests.configurations.AllConfigurationsTests;
+import org.eclipse.update.tests.core.TestErrorRecoveryLog;
 import org.eclipse.update.tests.core.boot.AllPlatformConfigurationTests;
 import org.eclipse.update.tests.mirror.*;
 import org.eclipse.update.tests.model.AllModelTests;
@@ -36,6 +38,7 @@ public class AllTests extends TestSuite {
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.setName("All Update Manager Tests");
+		suite.addTest(new TestSuite(TestErrorRecoveryLog.class));
 		suite.addTest(AllMirrorTests.suite());	
 		suite.addTest(AllSiteValidationTests.suite());
 		suite.addTest(AllPlatformConfigurationTests.suite());
