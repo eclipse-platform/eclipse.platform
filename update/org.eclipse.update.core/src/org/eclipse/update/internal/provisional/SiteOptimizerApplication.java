@@ -49,6 +49,7 @@ import org.eclipse.update.core.model.SiteModel;
 import org.eclipse.update.core.model.URLEntryModel;
 import org.eclipse.update.internal.core.ExtendedSiteURLFactory;
 import org.eclipse.update.internal.core.Messages;
+import org.eclipse.update.internal.core.UpdateCore;
 import org.eclipse.update.internal.core.UpdateManagerUtils;
 import org.eclipse.update.internal.jarprocessor.JarProcessor;
 import org.eclipse.update.internal.jarprocessor.JarProcessorExecutor;
@@ -302,7 +303,7 @@ public class SiteOptimizerApplication implements IPlatformRunnable {
 						continue;
 					System.out.println("Error while extracting locales from included feature " + featureURL);//$NON-NLS-1$	
 					e.printStackTrace();
-					throw new CoreException( new Status( IStatus.ERROR, "", IStatus.OK, "Error while extracting locales from included feature " + featureURL, e)); //$NON-NLS-1$ //$NON-NLS-2$
+					throw new CoreException( new Status( IStatus.ERROR, UpdateCore.getPlugin().getBundle().getSymbolicName(), IStatus.OK, "Error while extracting locales from included feature " + featureURL, e)); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 				featureList.add(featureURL);
 			}
