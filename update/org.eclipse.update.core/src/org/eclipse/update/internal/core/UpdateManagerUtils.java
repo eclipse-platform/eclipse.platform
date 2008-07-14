@@ -1044,6 +1044,9 @@ public static class Writer {
 				case '\"' :
 					buf.append("&quot;"); //$NON-NLS-1$
 					break;
+				case 0x00 :
+					buf.append(" "); //$NON-NLS-1$
+					break;						
 				default :
 					buf.append(c);
 					break;

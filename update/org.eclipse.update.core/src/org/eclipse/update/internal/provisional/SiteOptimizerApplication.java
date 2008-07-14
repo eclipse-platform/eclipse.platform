@@ -681,6 +681,7 @@ public class SiteOptimizerApplication implements IPlatformRunnable {
 		}
 		if ((featureProperties != null)
 				&& (featureModel.getDescriptionModel() != null)
+				&& (featureModel.getDescriptionModel().getAnnotation() != null)
 				&& featureModel.getDescriptionModel().getAnnotation()
 				.startsWith("%")) { //$NON-NLS-1$
 			// System.out.println(featureProperties.getProperty(featureModel.getDescriptionModel().getAnnotation().substring(1)));
@@ -728,7 +729,7 @@ public class SiteOptimizerApplication implements IPlatformRunnable {
 
 		digest.print("<feature "); //$NON-NLS-1$
 		digest.print("label=\"" + getUTF8String(label) + "\" ");  //$NON-NLS-1$//$NON-NLS-2$
-		digest.print("provider-name=\"" + provider + "\" "); //$NON-NLS-1$ //$NON-NLS-2$
+		digest.print("provider-name=\"" + getUTF8String(provider) + "\" "); //$NON-NLS-1$ //$NON-NLS-2$
 		digest.print("id=\"" + featureModel.getFeatureIdentifier() + "\" ");  //$NON-NLS-1$//$NON-NLS-2$
 		digest.print("version=\"" + featureModel.getFeatureVersion() + "\" "); //$NON-NLS-1$ //$NON-NLS-2$
 		if (featureModel.getOS() != null)
