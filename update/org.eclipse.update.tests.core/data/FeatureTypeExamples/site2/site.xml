@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site type="org.eclipse.update.core.file">
-  <feature url="features/feature3/features2.jarfile" type="org.eclipse.update.core.packaged"/>
-</site>

@@ -1,6 +1,0 @@
-<project name="Echoing properties" default="echo1" basedir="..">
-	<target name="echo1">
-		<echo message="about to echo properties"/>
-		<echoproperties/>
-	</target>
-</project>
