@@ -532,7 +532,7 @@ public class SiteEntry implements IPlatformConfiguration.ISiteEntry, IConfigurat
 		File root = new File(resolvedURL.getFile().replace('/', File.separatorChar));
 		File pluginsDir = new File(root, PLUGINS);
 		if (!pluginsDir.exists() || !pluginsDir.isDirectory()) {
-			Utils.log(NLS.bind(Messages.SiteEntry_pluginsDir, (new String[] { pluginsDir.getAbsolutePath() })));
+			Utils.debug(NLS.bind(Messages.SiteEntry_pluginsDir, (new String[] { pluginsDir.getAbsolutePath() })));
 			return 0;
 		}
 
