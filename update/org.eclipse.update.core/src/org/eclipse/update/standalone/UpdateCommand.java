@@ -142,7 +142,7 @@ public class UpdateCommand extends ScriptedCommand {
 			if (conflicts != null) {
 				StandaloneUpdateApplication.exceptionLogged();
 				UpdateCore.log(Utilities.newCoreException(Messages.Standalone_duplicate, null)); 
-				return false;
+				System.out.println(Messages.Standalone_duplicate);
 			}
 			
 			if (isVerifyOnly()) {

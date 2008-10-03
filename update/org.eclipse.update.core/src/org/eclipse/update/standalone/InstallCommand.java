@@ -161,7 +161,9 @@ public class InstallCommand extends ScriptedCommand {
 					operations,
 					getConfiguration());
 			if (conflicts != null) {
-				throw Utilities.newCoreException(Messages.Standalone_duplicate, null); 
+				StandaloneUpdateApplication.exceptionLogged();
+				UpdateCore.log(Utilities.newCoreException(Messages.Standalone_duplicate, null));
+				System.out.println(Messages.Standalone_duplicate); 
 			}
 
 			if (isVerifyOnly()) {
