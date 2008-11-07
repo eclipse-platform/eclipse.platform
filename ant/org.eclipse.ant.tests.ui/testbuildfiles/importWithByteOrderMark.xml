@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." name="dist" default="dist">
-	<import file="toBeImportedWithByteOrderMark.xml" />
-
-	<target name="dist" depends="build">
-		<echo message="echo - dist" />
-	</target>
-</project>

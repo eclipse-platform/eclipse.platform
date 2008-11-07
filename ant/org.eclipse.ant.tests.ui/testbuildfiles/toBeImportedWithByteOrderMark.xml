@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
-	bug 195840 Import a XML file with BOM character in ant editor fails
-	this file starts with Byte Order Mark EF BB BF - utf8
--->
-<project basedir="." default="build" name="Test">
-	<target name="build" />
-</project>
