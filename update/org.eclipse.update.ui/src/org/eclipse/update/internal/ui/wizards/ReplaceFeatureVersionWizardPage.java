@@ -153,8 +153,6 @@ public class ReplaceFeatureVersionWizardPage extends WizardPage {
 					UpdateUI.requestRestart(restartNeeded);
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
 				}
 			}
 		};
