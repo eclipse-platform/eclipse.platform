@@ -288,9 +288,10 @@ public class ConfiguredSite extends ConfiguredSiteModel implements IConfiguredSi
 				configure(child, optionalFeatures, callInstallHandler);
 			} catch (CoreException e) {
 				// if not an optional feature, throw exception
-				if (!childrenRef[i].isOptional())
+				if (!childrenRef[i].isOptional()) {
 					UpdateCore.warn("Unable to configure child feature: " + childrenRef[i] + " " + e); //$NON-NLS-1$ //$NON-NLS-2$
-				throw e;
+					throw e;
+				}
 			}
 		}
 
