@@ -450,6 +450,13 @@ M4 = Platform-specific fourth key -->
             adaptableType="org.eclipse.ui.IPathEditorInput">
             <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
          </factory>
+      <factory
+            adaptableType="org.eclipse.ant.internal.ui.model.IAntElement"
+            class="org.eclipse.ant.internal.ui.model.AntElementAdapterFactory">
+         <adapter
+               type="org.eclipse.core.resources.IResource">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
@@ -512,7 +519,7 @@ M4 = Platform-specific fourth key -->
          	  label="%AntLaunchShortcutWithDialog.label"/>
   		 </contextualLaunch>
         <configurationType
-              id="org.eclipse.ant.AntBuilderLaunchConfigurationType">
+              id="org.eclipse.ant.AntLaunchConfigurationType">
         </configurationType>
       </shortcut>
    </extension>

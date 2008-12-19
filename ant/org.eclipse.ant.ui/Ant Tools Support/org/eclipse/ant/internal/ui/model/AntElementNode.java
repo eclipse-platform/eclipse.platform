@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2006 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2008 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH, 
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  * All rights reserved. This program and the accompanying materials 
@@ -39,7 +39,7 @@ import org.eclipse.swt.graphics.Image;
  * General representation of an Ant buildfile element.
  * 
  */
-public class AntElementNode implements IAdaptable {
+public class AntElementNode implements IAdaptable, IAntElement {
     
 	/**
 	 * The offset of the corresponding source.
