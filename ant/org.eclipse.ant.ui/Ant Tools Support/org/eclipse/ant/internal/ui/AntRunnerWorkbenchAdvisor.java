@@ -13,7 +13,6 @@ package org.eclipse.ant.internal.ui;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
