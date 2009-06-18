@@ -804,5 +804,14 @@ M4 = Platform-specific fourth key -->
          </enablement>
       </renameParticipant>
    </extension>
+     <extension
+           id="antRunner"
+           point="org.eclipse.core.runtime.applications">
+        <application>
+           <run
+                 class="org.eclipse.ant.internal.ui.WorkbenchAntRunner">
+           </run>
+        </application>
+     </extension>
 
 </plugin>
