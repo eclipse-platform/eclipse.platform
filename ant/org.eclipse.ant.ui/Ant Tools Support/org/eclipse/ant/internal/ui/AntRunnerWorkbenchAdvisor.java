@@ -43,12 +43,12 @@ public class AntRunnerWorkbenchAdvisor extends WorkbenchAdvisor {
 		try {
 			new AntRunner().run(fContext);
 		} catch (Exception e) {
-			e.printStackTrace();
+			AntUIPlugin.log(e);
 		}
 		try {
 			ResourcesPlugin.getWorkspace().save(true, null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			AntUIPlugin.log(e);
 		}
 	}
 
