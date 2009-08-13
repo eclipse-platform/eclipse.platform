@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,21 @@
  *******************************************************************************/
 package org.eclipse.update.internal.ui.properties;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.*;
-import org.eclipse.ui.dialogs.*;
-import org.eclipse.update.core.*;
-import org.eclipse.update.core.model.*;
-import org.eclipse.update.internal.ui.model.*;
-import org.eclipse.update.internal.ui.UpdateUI;
-import org.eclipse.update.internal.ui.UpdateUIImages;
-import org.eclipse.update.internal.ui.UpdateUIMessages;
+import org.eclipse.ui.IWorkbenchPropertyPage;
+import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.update.core.IFeature;
+import org.eclipse.update.core.IURLEntry;
+import org.eclipse.update.core.model.ContentEntryModel;
+import org.eclipse.update.internal.ui.*;
+import org.eclipse.update.internal.ui.model.IFeatureAdapter;
 
 public class FeatureGeneralPropertyPage
 	extends PropertyPage
@@ -109,16 +110,16 @@ public class FeatureGeneralPropertyPage
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label label = new Label(group, SWT.NONE);
-		label.setText(UpdateUIMessages.FeatureGeneralPropertyPage_os + extractValue(feature.getOS())); 
+		label.setText(NLS.bind(UpdateUIMessages.FeatureGeneralPropertyPage_os,extractValue(feature.getOS()))); 
 
 		label = new Label(group, SWT.NONE);
-		label.setText(UpdateUIMessages.FeatureGeneralPropertyPage_ws + extractValue(feature.getWS())); 
+		label.setText(NLS.bind(UpdateUIMessages.FeatureGeneralPropertyPage_ws, extractValue(feature.getWS()))); 
 
 		label = new Label(group, SWT.NONE);
-		label.setText(UpdateUIMessages.FeatureGeneralPropertyPage_arch + extractValue(feature.getOSArch())); 
+		label.setText(NLS.bind(UpdateUIMessages.FeatureGeneralPropertyPage_arch, extractValue(feature.getOSArch()))); 
 
 		label = new Label(group, SWT.NONE);
-		label.setText(UpdateUIMessages.FeatureGeneralPropertyPage_nl + extractValue(feature.getNL())); 
+		label.setText(NLS.bind(UpdateUIMessages.FeatureGeneralPropertyPage_nl, extractValue(feature.getNL()))); 
 	}
 
 	private void addField(Composite parent, String property, String value) {
