@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -427,7 +428,7 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 	 *
 	 * @return the default set of classpath entries defining the Ant classpath
 	 */
-	public IAntClasspathEntry[] getDefaultAntHomeEntries() {
+	public synchronized IAntClasspathEntry[] getDefaultAntHomeEntries() {
 		if (defaultAntHomeEntries == null) {
 			ServiceTracker tracker = new ServiceTracker(AntCorePlugin.getPlugin().getBundle().getBundleContext(), PackageAdmin.class.getName(), null);
 			tracker.open();
@@ -435,23 +436,32 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 				List result = new ArrayList(29);
 				PackageAdmin packageAdmin = (PackageAdmin) tracker.getService();
 				if (packageAdmin != null) {
-					ExportedPackage[] exportedPackage = packageAdmin.getExportedPackages("org.apache.tools.ant"); //$NON-NLS-1$
-					Bundle bundle = null;
-					for (int i = 0; i < exportedPackage.length; i++) {
-						bundle = exportedPackage[i].getExportingBundle();
-						if(bundle == null) {
-							continue;
-						}
-						try {
-							addLibraries(bundle, result);
-							if(result.size() > 0) {
-								break;
+					ExportedPackage[] packages = packageAdmin.getExportedPackages("org.apache.tools.ant"); //$NON-NLS-1$
+					Bundle bundle = findHighestAntVersion(packages);
+					if(bundle == null) {
+						for (int i = 0; i < packages.length; i++) {
+							bundle = packages[i].getExportingBundle();
+							if(bundle == null) {
+								continue;
+							}
+							try {
+								addLibraries(bundle, result);
+								if(result.size() > 0) {
+									break;
+								}
+							}
+							catch(IOException ioe) {
+								AntCorePlugin.log(ioe); // maintain logging
+								result.clear();
+								/*continue to try other providers if an exception occurs*/
 							}
 						}
-						catch(IOException ioe) {
+					}
+					else {
+						try {
+							addLibraries(bundle, result);
+						} catch (IOException ioe) {
 							AntCorePlugin.log(ioe); // maintain logging
-							result.clear();
-							/*continue to try other providers if an exception occurs*/
 						}
 					}
 				}
@@ -461,6 +471,49 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 			}
 		}
 		return defaultAntHomeEntries;
+	}
+	
+	/**
+	 * Simple algorithm to find the highest version of <code>org.apache.ant</code> 
+	 * available. If there are other providers that are not <code>org.apache.ant</code>
+	 * <code>null</code> is returned so that all bundles will be inspected 
+	 * for contributed libraries.
+	 * <p>
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=282851
+	 * </p>
+	 * @param packages the live list of {@link ExportedPackage}s to inspect
+	 * @return the bundle that represents the highest version of <code>org.apache.ant</code> or <code>null</code>
+	 * if there are other providers for the <code>org.apache.ant.tools</code> packages.
+	 */
+	Bundle findHighestAntVersion(ExportedPackage[] packages) {
+		Bundle bundle = null;
+		HashSet bundles = new HashSet();
+		for (int i = 0; i < packages.length; i++) {
+			bundle = packages[i].getExportingBundle();
+			if(bundle == null) {
+				continue;
+			}
+			if("org.apache.ant".equals(bundle.getSymbolicName())) { //$NON-NLS-1$
+				bundles.add(bundle);
+			}
+			else {
+				return null;
+			}
+		}
+		Bundle highest = null;
+		Bundle temp = null;
+		for (Iterator iter = bundles.iterator(); iter.hasNext();) {
+			temp = (Bundle)iter.next();
+			if(highest == null) {
+				highest = temp;
+			}
+			else {
+				if(highest.getVersion().compareTo(temp.getVersion()) < 0) {
+					highest = temp;
+				}
+			}
+		}
+		return highest;
 	}
 	
 	/**
