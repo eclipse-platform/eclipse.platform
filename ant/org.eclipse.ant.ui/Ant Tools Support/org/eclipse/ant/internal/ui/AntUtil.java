@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import com.ibm.icu.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -22,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Target;
@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -84,6 +85,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * General utility class dealing with Ant build files
@@ -231,8 +234,10 @@ public final class AntUtil {
 		URL[] urls= getCustomClasspath(config);
 		//no lexical, no position, no task
 		IAntModel model= getAntModel(buildfile, urls, false, false, false);
-		
-		model.setProperties(getAllProperties(config));
+		try {
+			model.setProperties(getAllProperties(config));
+		} catch (CoreException ex){
+		}
 		model.setPropertyFiles(getPropertyFiles(config));
 		AntProjectNode project= model.getProjectNode(); //forces a reconcile
 		model.dispose();
@@ -240,10 +245,23 @@ public final class AntUtil {
 	}
 	
     private static Map getAllProperties(ILaunchConfiguration config) throws CoreException {
-        String[] arguments = ExternalToolsUtil.getArguments(config);
+        String allArgs = config.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String) null);
 		Map properties= new HashMap();
-		if (arguments != null) {
-		    AntCoreUtil.processMinusDProperties(AntCoreUtil.getArrayList(arguments), properties);
+		if (allArgs != null) {
+			String[] arguments = ExternalToolsUtil.parseStringIntoList(allArgs);
+			// filter arguments to avoid resolving variables that will prompt the user
+			List filtered = new ArrayList();
+			Pattern pattern = Pattern.compile("\\$\\{.*_prompt.*\\}"); //$NON-NLS-1$
+			IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
+			for (int i = 0; i < arguments.length; i++) {
+				String arg = arguments[i];
+				if (arg.startsWith("-D")) { //$NON-NLS-1$
+					if (!pattern.matcher(arg).find()) {
+						filtered.add(manager.performStringSubstitution(arg, false));
+					}
+				}
+			}
+		    AntCoreUtil.processMinusDProperties(filtered, properties);
 		}
 		Map configProperties= getProperties(config);
 		if (configProperties != null) {

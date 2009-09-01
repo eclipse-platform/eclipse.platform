@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import org.apache.tools.ant.AntTypeDefinition;
 import org.apache.tools.ant.BuildException;
@@ -60,6 +61,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -409,13 +411,18 @@ public class AntModel implements IAntModel {
 
     private void setExtraProperties(Project project) {
         if (fProperties != null) {
+        	Pattern pattern = Pattern.compile("\\$\\{.*_prompt.*\\}"); //$NON-NLS-1$
+ 			IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
             for (Iterator iter = fProperties.keySet().iterator(); iter.hasNext();) {
                 String name = (String) iter.next();
                 String value= (String) fProperties.get(name);
-                try {
-                    value= VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(value);
-                } catch (CoreException e) {
-                }
+               
+				if (!pattern.matcher(value).find()) {
+					try {
+						value = manager.performStringSubstitution(value);
+					} catch (CoreException e) {
+					}
+				}
                 if (value != null) {
                     project.setUserProperty(name, value);
                 }
