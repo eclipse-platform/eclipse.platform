@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,15 @@
 
 package org.eclipse.ant.internal.ui.launchConfigurations;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.internal.ui.IAntUIHelpContextIds;
 import org.eclipse.ant.ui.launching.IAntLaunchConfigurationConstants;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -31,6 +35,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 public class AntJRETab extends JavaJRETab {
 
@@ -150,16 +155,27 @@ public class AntJRETab extends JavaJRETab {
 		//has not set to use a logger...bug 84608
         boolean userLogger= false;
         try {
-            String[] arguments = ExternalToolsUtil.getArguments(configuration);
-            if (arguments != null) {
-                for (int i = 0; i < arguments.length; i++) {
-                    String arg = arguments[i];
-                    if (arg.equals("-logger")) { //$NON-NLS-1$
-                        userLogger= true;
-                        break;
+    		String args = configuration.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, (String) null);
+    		if (args != null) {
+    			Pattern pattern = Pattern.compile("\\$\\{.*_prompt.*\\}"); //$NON-NLS-1$
+    			IStringVariableManager manager = VariablesPlugin.getDefault().getStringVariableManager();
+    			String[] arguments = ExternalToolsUtil.parseStringIntoList(args);
+    			if (arguments != null) {
+                    for (int i = 0; i < arguments.length; i++) {
+                        String arg = arguments[i];
+                        if (arg.equals("-logger")) { //$NON-NLS-1$
+                            userLogger= true;
+                            break;
+                        } else if (!pattern.matcher(arg).find()) {
+    						String resolved = manager.performStringSubstitution(arg, false);
+    						if (resolved.equals("-logger")) { //$NON-NLS-1$
+                                userLogger= true;
+                                break;
+                            }
+    					}
                     }
                 }
-            }
+    		}
         } catch (CoreException e) {
         }
         if (userLogger) {
