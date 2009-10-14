@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@ package org.eclipse.ant.tests.ui.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ant.internal.launching.debug.model.AntDebugTarget;
-import org.eclipse.ant.internal.launching.debug.model.AntThread;
-import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.internal.ui.debug.model.AntDebugTarget;
+import org.eclipse.ant.internal.ui.debug.model.AntThread;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
@@ -116,7 +116,7 @@ public class BreakpointTests extends AbstractAntDebugTest {
 			}
             ILaunchConfiguration config= getLaunchConfiguration(fileName);
             ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-            copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, "entry1,entry2");
+            copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, "entry1,entry2");
 			thread= launchToLineBreakpoint(copy, bp);
 			bp.setEnabled(false);
             if (sepVM) {
@@ -200,7 +200,7 @@ public class BreakpointTests extends AbstractAntDebugTest {
 			}
 			ILaunchConfiguration config= getLaunchConfiguration(fileName);
 			ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-			copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, defaultTargetName);
+			copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, defaultTargetName);
             if (!sepVM) {
                 Thread.sleep(3000); //TODO bug 121207: wait for previous launch to fully terminate
             }

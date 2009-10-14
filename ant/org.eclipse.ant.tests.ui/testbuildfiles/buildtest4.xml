@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="task3">
-    <target name="task" description=""/>
-    <target name="task2">
-        <antcall target=""></antcall>
-	</target>
-    <target name="task3" depends=""/>
-</project>

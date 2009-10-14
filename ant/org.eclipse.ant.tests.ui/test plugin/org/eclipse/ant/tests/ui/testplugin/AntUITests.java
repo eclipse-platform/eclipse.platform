@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2005 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH, 
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  * All rights reserved. This program and the accompanying materials 
@@ -45,6 +45,7 @@ public class AntUITests extends TestSuite {
 
         TestSuite suite= new AntUITests();
         suite.setName("Ant UI Unit Tests");
+		suite.addTest(new TestSuite(ProjectCreationDecorator.class));
 		suite.addTest(new TestSuite(BuildTests.class));
 		suite.addTest(new TestSuite(SeparateVMTests.class));
 		suite.addTest(new TestSuite(AntEditorTests.class));

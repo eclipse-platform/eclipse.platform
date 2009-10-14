@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import org.eclipse.ant.internal.launching.debug.model.AntProperty;
-import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
-import org.eclipse.ant.internal.launching.debug.model.AntThread;
-import org.eclipse.ant.internal.launching.debug.model.AntValue;
-import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.internal.ui.debug.model.AntProperty;
+import org.eclipse.ant.internal.ui.debug.model.AntStackFrame;
+import org.eclipse.ant.internal.ui.debug.model.AntThread;
+import org.eclipse.ant.internal.ui.debug.model.AntValue;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -24,7 +24,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class PropertyTests extends AbstractAntDebugTest {
 	
-	private static final String ANT_VERSION = "Apache Ant version 1.7.1 compiled on June 27 2008";
+	private static final String ANT_VERSION = "Apache Ant version 1.7.0 compiled on December 13 2006";
 
     public PropertyTests(String name) {
 		super(name);
@@ -48,7 +48,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 			}
 			ILaunchConfiguration config= getLaunchConfiguration(fileName);
 			ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-			copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, "properties");
+			copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, "properties");
 			thread= launchToLineBreakpoint(copy, bp);
 
 			AntStackFrame frame = (AntStackFrame)thread.getTopStackFrame();
@@ -82,7 +82,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 			}
 			ILaunchConfiguration config= getLaunchConfiguration(fileName);
 			ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-			copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, "properties");
+			copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, "properties");
 			thread= launchToLineBreakpoint(copy, bp);
 
 			AntStackFrame frame = (AntStackFrame)thread.getTopStackFrame();
@@ -118,7 +118,7 @@ public class PropertyTests extends AbstractAntDebugTest {
 			}
 			ILaunchConfiguration config= getLaunchConfiguration(fileName);
 			ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
-			copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, "properties");
+			copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, "properties");
 			thread= launchToLineBreakpoint(copy, bp);
 
 			AntStackFrame frame = (AntStackFrame)thread.getTopStackFrame();
