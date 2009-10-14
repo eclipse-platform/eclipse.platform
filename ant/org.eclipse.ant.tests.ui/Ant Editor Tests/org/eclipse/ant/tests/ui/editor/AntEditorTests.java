@@ -7,7 +7,6 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     Martin Karpisek - bug 195840
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.editor;
 
@@ -17,7 +16,6 @@ import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.internal.ui.editor.text.XMLTextHover;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.ant.tests.ui.testplugin.ProjectCreationDecorator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -236,19 +234,8 @@ public class AntEditorTests extends AbstractAntUITest {
     	IDocument doc= editor.getDocumentProvider().getDocument(editor.getEditorInput());
     	
     	assertNotNull("Should have a document", doc);            
-    } 
-    
-    /**
-     * bug 195840 Import a XML file with BOM character in ant editor fails
-     * Runs on 1.5 vms or newer.
-     */
-    public void testOpenImportWithByteOrderMark() throws PartInitException {
-    	if (ProjectCreationDecorator.isJ2SE15Compatible()) {
-    		IFile file= getIFile("importWithByteOrderMark.xml");
-    		AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true); 
-    		assertNotNull("Should have imported target", editor.getAntModel().getTargetNode("build"));
-    	}
-    }       
+    }
+
     
 	private int getOffsetWithinLine(AntEditor editor, int lineNumber, int offsetInLine) throws BadLocationException {
 		IDocument document= editor.getDocumentProvider().getDocument(editor.getEditorInput());

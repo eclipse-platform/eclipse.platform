@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin name="JUnit Test Framework" id="org.eclipse.update.core.tests.feature1.plugin2" version="5.0.0" vendor-name="junit.org">
-  <runtime>
-    <library name="junit.jar">
-      <export name="*"/>
-    </library>
-  </runtime>
-</plugin>

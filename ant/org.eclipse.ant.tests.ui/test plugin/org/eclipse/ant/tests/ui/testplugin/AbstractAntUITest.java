@@ -1,11 +1,11 @@
 /*******************************************************************************
- *  Copyright (c) 2003, 2009 IBM Corporation and others.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  * 
- *  Contributors:
+ * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.testplugin;
@@ -26,13 +26,10 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.TestCase;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
-import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
 import org.eclipse.ant.internal.ui.model.AntModel;
 import org.eclipse.ant.tests.ui.editor.support.TestLocationProvider;
 import org.eclipse.ant.tests.ui.editor.support.TestProblemRequestor;
-import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -54,100 +51,33 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.console.IHyperlink;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.eclipse.ui.internal.console.ConsoleHyperlinkPosition;
 import org.eclipse.ui.internal.console.IOConsolePartition;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
- * Abstract Ant UI test class
- */
 public abstract class AbstractAntUITest extends TestCase {
     
     public static String ANT_EDITOR_ID= "org.eclipse.ant.ui.internal.editor.AntEditor";
     
     private IDocument currentDocument;
 
-    /**
-     * Constructor
-     * @param name
-     */
     public AbstractAntUITest(String name) {
         super(name);
     }
         
-    /**
-     * Returns the {@link IFile} for the given build file name
-     * @param buildFileName
-     * @return the associated {@link IFile} for the given build file name
-     */
     protected IFile getIFile(String buildFileName) {
         return getProject().getFolder("buildfiles").getFile(buildFileName); 
     }
     
-    /**
-     * Returns the {@link File} for the given build file name
-     * @param buildFileName
-     * @return the {@link File} for the given build file name
-     */
     protected File getBuildFile(String buildFileName) {
         IFile file = getIFile(buildFileName);
         assertTrue("Could not find build file named: " + buildFileName, file.exists());
         return file.getLocation().toFile();
     }
     
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-    	super.setUp();
-    	assertProject();
-    }
-    
-    /**
-     * Asserts that the testing project has been setup in the test workspace
-     * @throws Exception
-     * 
-     * @since 3.5
-     */
-    public static void assertProject() throws Exception {
-		IProject pro = ResourcesPlugin.getWorkspace().getRoot().getProject(ProjectHelper.PROJECT_NAME);
-		if (!pro.exists()) {
-			// create project and import build files and support files
-			IProject project = ProjectHelper.createProject(ProjectHelper.PROJECT_NAME);
-			IFolder folder = ProjectHelper.addFolder(project, "buildfiles");
-			ProjectHelper.addFolder(project, "launchConfigurations");
-			File root = AntUITestPlugin.getDefault().getFileInPlugin(ProjectHelper.TEST_BUILDFILES_DIR);
-			ProjectHelper.importFilesFromDirectory(root, folder.getFullPath(), null);
-			
-			ProjectHelper.createLaunchConfigurationForBoth("echoing");
-			ProjectHelper.createLaunchConfigurationForBoth("102282");
-			ProjectHelper.createLaunchConfigurationForBoth("74840");
-            ProjectHelper.createLaunchConfigurationForBoth("failingTarget");
-			ProjectHelper.createLaunchConfiguration("build");
-			ProjectHelper.createLaunchConfiguration("bad");
-			ProjectHelper.createLaunchConfiguration("importRequiringUserProp");
-            ProjectHelper.createLaunchConfigurationForSeparateVM("echoPropertiesSepVM", "echoProperties");
-			ProjectHelper.createLaunchConfigurationForSeparateVM("extensionPointSepVM", null);
-			ProjectHelper.createLaunchConfigurationForSeparateVM("extensionPointTaskSepVM", null);
-			ProjectHelper.createLaunchConfigurationForSeparateVM("extensionPointTypeSepVM", null);
-			ProjectHelper.createLaunchConfigurationForSeparateVM("input", null);
-			ProjectHelper.createLaunchConfigurationForSeparateVM("environmentVar", null);
-            
-            ProjectHelper.createLaunchConfigurationForBoth("breakpoints");
-            ProjectHelper.createLaunchConfigurationForBoth("debugAntCall");
-            ProjectHelper.createLaunchConfigurationForBoth("96022");
-            ProjectHelper.createLaunchConfigurationForBoth("macrodef");
-            ProjectHelper.createLaunchConfigurationForBoth("85769");
-			
-			ProjectHelper.createLaunchConfiguration("big", ProjectHelper.PROJECT_NAME + "/buildfiles/performance/build.xml");
-			
-			//do not show the Ant build failed error dialog
-			AntUIPlugin.getDefault().getPreferenceStore().setValue(IAntUIPreferenceConstants.ANT_ERROR_DIALOG, false);
-		}
-    }
-
     /**
      * Returns the 'AntUITests' project.
      * 
@@ -157,11 +87,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return ResourcesPlugin.getWorkspace().getRoot().getProject(ProjectHelper.PROJECT_NAME);
     }
     
-    /**
-     * Returns the underlying {@link IDocument} for the given file name
-     * @param fileName
-     * @return the underlying {@link IDocument} for the given file name
-     */
     protected IDocument getDocument(String fileName) {
         File file = getBuildFile(fileName);
         InputStream in;
@@ -174,11 +99,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return new Document(initialContent);
     }
 
-    /**
-     * Returns the contents of the given {@link InputStream} as a {@link String}
-     * @param inputStream
-     * @return the {@link InputStream} as a {@link String}
-     */
     protected String getStreamContentAsString(InputStream inputStream) {
         InputStreamReader reader;
         try {
@@ -192,11 +112,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return getReaderContentAsString(tempBufferedReader);
     }
     
-    /**
-     * Returns the contents of the given {@link BufferedReader} as a {@link String}
-     * @param bufferedReader
-     * @return the contents of the given {@link BufferedReader} as a {@link String}
-     */
     protected String getReaderContentAsStringNew(BufferedReader bufferedReader) {
         StringBuffer result = new StringBuffer();
         try {
@@ -214,11 +129,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return result.toString();
     }
     
-    /**
-     * Returns the contents of the given {@link BufferedReader} as a {@link String}
-     * @param bufferedReader
-     * @return the contents of the given {@link BufferedReader} as a {@link String}
-     */
     protected String getReaderContentAsString(BufferedReader bufferedReader) {
         StringBuffer result = new StringBuffer();
         try {
@@ -239,11 +149,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return result.toString();
     }
         
-    /**
-     * Returns the {@link AntModel} for the given file name
-     * @param fileName
-     * @return the {@link AntModel} for the given file name
-     */
     protected AntModel getAntModel(String fileName) {
         currentDocument= getDocument(fileName);
         AntModel model= new AntModel(currentDocument, new TestProblemRequestor(), new TestLocationProvider(getBuildFile(fileName)));
@@ -252,14 +157,13 @@ public abstract class AbstractAntUITest extends TestCase {
     }
     
     /**
-     * @return the current {@link IDocument} context
+     * @return
      */
     public IDocument getCurrentDocument() {
         return currentDocument;
     }
 
     /**
-     * Allows the current {@link IDocument} context to be set. This method accepts <code>null</code>
      * @param currentDocument
      */
     public void setCurrentDocument(IDocument currentDocument) {
@@ -267,9 +171,9 @@ public abstract class AbstractAntUITest extends TestCase {
     }
     
     /**
-     * Launches the Ant build with the build file name (no extension).
+     * Launches the Ant build with the buildfile name (no extension).
      * 
-     * @param buildFileName the ant build file name
+     * @param buildFileName the ant buildfile name
      */
     protected void launch(String buildFileName) throws CoreException {
         ILaunchConfiguration config = getLaunchConfiguration(buildFileName);
@@ -278,9 +182,9 @@ public abstract class AbstractAntUITest extends TestCase {
     }
     
     /**
-     * Launches the Ant build with the build file name (no extension).
+     * Launches the Ant build with the buildfile name (no extension).
      * 
-     * @param buildFileName the build file
+     * @param buildFileName the buildfile
      * @param arguments the ant arguments
      */
     protected void launch(String buildFileName, String arguments) throws CoreException {
@@ -292,7 +196,7 @@ public abstract class AbstractAntUITest extends TestCase {
     }
     
     /**
-    * Launches the Ant build in debug output mode with the build file name (no extension).
+    * Launches the Ant build in debug output mode with the buildfile name (no extension).
     * 
     * @param mainTypeName the program to launch
     * @return thread in which the first suspend event occurred
@@ -306,9 +210,9 @@ public abstract class AbstractAntUITest extends TestCase {
     }
     
     /**
-     * Returns the launch configuration for the given build file
+     * Returns the launch configuration for the given buildfile
      * 
-     * @param buildFileName build file to launch
+     * @param buildFileName buildfile to launch
      * @see ProjectCreationDecorator
      */
     protected ILaunchConfiguration getLaunchConfiguration(String buildFileName) {
@@ -329,9 +233,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return getReaderContentAsString(bufferedReader);
     }
     
-    /**
-     * @return a new SAX parser instrance
-     */
     protected SAXParser getSAXParser() {
         SAXParser parser = null;
         try {
@@ -345,13 +246,6 @@ public abstract class AbstractAntUITest extends TestCase {
     }
 
     
-    /**
-     * Parses the given input stream with the given parser using the given handler
-     * @param stream
-     * @param parser
-     * @param handler
-     * @param editedFile
-     */
     protected void parse(InputStream stream, SAXParser parser, DefaultHandler handler, File editedFile) {
         InputSource inputSource= new InputSource(stream);
         if (editedFile != null) {
@@ -384,13 +278,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return JavaCore.create( getProject());
     }
     
-    /**
-     * Launches the given configuration and waits for the terminated event or the length of the given timeout, 
-     * whichever comes first 
-     * @param config
-     * @param timeout
-     * @throws CoreException
-     */
     protected void launchAndTerminate(ILaunchConfiguration config, int timeout) throws CoreException {
         DebugEventWaiter waiter= new DebugElementKindEventWaiter(DebugEvent.TERMINATE, IProcess.class);
         waiter.setTimeout(timeout);
@@ -434,13 +321,6 @@ public abstract class AbstractAntUITest extends TestCase {
         return suspendee;       
     }
     
-    /**
-     * Returns the {@link IHyperlink} at the given offset on the given document,
-     * or <code>null</code> if there is no {@link IHyperlink} at that offset on the document.
-     * @param offset
-     * @param doc
-     * @return the {@link IHyperlink} at the given offset on the given document or <code>null</code>
-     */
     protected IHyperlink getHyperlink(int offset, IDocument doc) {
         if (offset >= 0 && doc != null) {
             Position[] positions = null;
@@ -460,20 +340,14 @@ public abstract class AbstractAntUITest extends TestCase {
         return null;
     }
     
-    /**
-     * Returns the {@link Color} at the given offset on the given document,
-     * or <code>null</code> if there is no {@link Color} at that offset on the document.
-     * @param offset
-     * @param doc
-     * @return the {@link Color} at the given offset on the given document or <code>null</code>
-     */
     protected Color getColorAtOffset(int offset, IDocument document) throws BadLocationException {
         if (document != null) {
             IDocumentPartitioner partitioner = document.getDocumentPartitioner();
             if (partitioner != null) {
                 ITypedRegion[] regions= partitioner.computePartitioning(offset, document.getLineInformationOfOffset(offset).getLength());
-                if (regions.length > 0) {
-                    IOConsolePartition partition = (IOConsolePartition)regions[0];
+                
+                for (int i = 0; i < regions.length; i++) {
+                    IOConsolePartition partition = (IOConsolePartition)regions[i];
                     return partition.getColor();
                 }   
             }

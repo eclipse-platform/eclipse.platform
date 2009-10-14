@@ -15,16 +15,16 @@ import java.io.File;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
-import org.eclipse.ant.tests.ui.performance.AbstractAntPerformanceTest;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.PerformanceTestCase;
 import org.eclipse.ui.PartInitException;
 
-public class OpenAntEditorTest extends AbstractAntPerformanceTest {
+public class OpenAntEditorTest extends PerformanceTestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
