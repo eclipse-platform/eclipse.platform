@@ -18,10 +18,10 @@ import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.ant.internal.ui.model.AntTargetNode;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
+import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 public class AntUtilTests extends AbstractAntUITest {
 

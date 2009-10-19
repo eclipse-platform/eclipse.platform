@@ -13,8 +13,8 @@ package org.eclipse.ant.tests.ui.debug;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ant.internal.ui.debug.model.AntDebugTarget;
-import org.eclipse.ant.internal.ui.debug.model.AntThread;
+import org.eclipse.ant.internal.launching.debug.model.AntDebugTarget;
+import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import org.eclipse.ant.internal.ui.debug.model.AntProperty;
-import org.eclipse.ant.internal.ui.debug.model.AntStackFrame;
-import org.eclipse.ant.internal.ui.debug.model.AntThread;
-import org.eclipse.ant.internal.ui.debug.model.AntValue;
+import org.eclipse.ant.internal.launching.debug.model.AntProperty;
+import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
+import org.eclipse.ant.internal.launching.debug.model.AntThread;
+import org.eclipse.ant.internal.launching.debug.model.AntValue;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;

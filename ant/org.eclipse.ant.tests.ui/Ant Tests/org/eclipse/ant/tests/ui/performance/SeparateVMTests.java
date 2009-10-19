@@ -13,14 +13,15 @@ package org.eclipse.ant.tests.ui.performance;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildPerformanceTest;
+import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.test.performance.Dimension;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 public class SeparateVMTests extends AbstractAntUIBuildPerformanceTest {
 		

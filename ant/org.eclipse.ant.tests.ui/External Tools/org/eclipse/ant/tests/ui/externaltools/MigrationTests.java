@@ -17,13 +17,13 @@ import junit.framework.TestCase;
 
 import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.core.externaltools.internal.IExternalToolConstants;
+import org.eclipse.core.externaltools.internal.registry.ExternalToolMigration;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.RefreshTab;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.eclipse.ui.externaltools.internal.registry.ExternalToolMigration;
 
 /**
  * Tests migration of Ant and External Tool configurations from old

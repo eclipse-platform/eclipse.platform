@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import org.eclipse.ant.internal.ui.debug.model.AntThread;
+import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.ILineBreakpoint;

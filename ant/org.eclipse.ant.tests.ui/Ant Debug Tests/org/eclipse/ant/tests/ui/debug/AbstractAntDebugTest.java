@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
 
-import org.eclipse.ant.internal.ui.debug.model.AntDebugTarget;
-import org.eclipse.ant.internal.ui.debug.model.AntLineBreakpoint;
-import org.eclipse.ant.internal.ui.debug.model.AntStackFrame;
-import org.eclipse.ant.internal.ui.debug.model.AntThread;
+import org.eclipse.ant.internal.launching.debug.model.AntDebugTarget;
+import org.eclipse.ant.internal.launching.debug.model.AntLineBreakpoint;
+import org.eclipse.ant.internal.launching.debug.model.AntStackFrame;
+import org.eclipse.ant.internal.launching.debug.model.AntThread;
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.DebugElementKindEventWaiter;
 import org.eclipse.ant.tests.ui.testplugin.DebugEventWaiter;
