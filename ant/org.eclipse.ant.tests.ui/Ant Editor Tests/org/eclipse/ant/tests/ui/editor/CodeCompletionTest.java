@@ -10,7 +10,6 @@
  * Contributors:
  *     GEBIT Gesellschaft fuer EDV-Beratung und Informatik-Technologien mbH - initial implementation
  * 	   IBM Corporation - additional tests
- *     Remy Chi Jian Suen - bug 277587
  *******************************************************************************/
 
 package org.eclipse.ant.tests.ui.editor;
@@ -28,8 +27,6 @@ import junit.framework.TestSuite;
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntCorePreferences;
 import org.eclipse.ant.core.Property;
-import org.eclipse.ant.internal.ui.AntUIImages;
-import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.internal.ui.editor.AntEditor;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.editor.support.TestTextCompletionProcessor;
@@ -263,98 +260,6 @@ public class CodeCompletionTest extends AbstractAntUITest {
     	assertContains("main", proposals);
     	assertDoesNotContain("pretest", proposals);
     	
-    }
-    
-    /**
-     * Test the image for a code completion proposal for the depend attribute of a target.
-     */
-    public void testTargetDependProposalImages() throws BadLocationException {
-    	TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest3.xml"));
-    	//simple depends
-    	int lineNumber= 5;
-    	int columnNumber= 34;
-    	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
-    	processor.setLineNumber(lineNumber);
-    	processor.setColumnNumber(columnNumber);
-    	processor.setCursorPosition(lineOffset + columnNumber);
-    	ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
-    	assertEquals(3, proposals.length);
-    	assertContains("main", proposals);
-    	assertContains("pretest", proposals);
-    	assertContains("test2", proposals);
-    	
-    	for (int i = 0; i <	 proposals.length; i++) {
-    		String displayString = proposals[i].getDisplayString();
-			if (displayString.equals("main")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET), proposals[i].getImage());
-			} else if (displayString.equals("pretest")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET), proposals[i].getImage());
-			} else if (displayString.equals("test2")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET_INTERNAL), proposals[i].getImage());				
-			} else {
-				fail("Unknown completion proposal detected: " + displayString);
-			}
-		}
-    }
-    
-    /**
-     * Test the image for a code completion proposal for the default attribute of a project.
-     */
-    public void testProjectDefaultProposalImages() throws BadLocationException {
-    	TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest4.xml"));
-    	//simple depends
-    	int lineNumber= 1;
-    	int columnNumber= 18;
-    	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
-    	processor.setLineNumber(lineNumber);
-    	processor.setColumnNumber(columnNumber);
-    	processor.setCursorPosition(lineOffset + columnNumber);
-    	ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
-    	assertEquals(3, proposals.length);
-    	assertContains("task", proposals);
-    	assertContains("task2", proposals);
-    	assertContains("task3", proposals);
-    	
-    	for (int i = 0; i <	 proposals.length; i++) {
-    		String displayString = proposals[i].getDisplayString();
-			if (displayString.equals("task3")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET), proposals[i].getImage());
-			} else if (displayString.equals("task")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET), proposals[i].getImage());
-			} else if (displayString.equals("task2")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET_INTERNAL), proposals[i].getImage());				
-			} else {
-				fail("Unknown completion proposal detected: " + displayString);
-			}
-		}
-    }
-    
-    /**
-     * Test the image for a code completion proposal for the target attribute of an antcall task.
-     */
-    public void testAntcallTargetProposalImages() throws BadLocationException {
-    	TestTextCompletionProcessor processor = new TestTextCompletionProcessor(getAntModel("buildtest4.xml"));
-    	int lineNumber= 4;
-    	int columnNumber= 25;
-    	int lineOffset= getCurrentDocument().getLineOffset(lineNumber);
-    	processor.setLineNumber(lineNumber);
-    	processor.setColumnNumber(columnNumber);
-    	processor.setCursorPosition(lineOffset + columnNumber);
-    	ICompletionProposal[] proposals = processor.getProposalsFromDocument(getCurrentDocument(), "");
-    	assertEquals(2, proposals.length);
-    	assertContains("task", proposals);
-    	assertContains("task3", proposals);
-    	
-    	for (int i = 0; i <	 proposals.length; i++) {
-    		String displayString = proposals[i].getDisplayString();
-			if (displayString.equals("task3")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET), proposals[i].getImage());
-			} else if (displayString.equals("task")) {
-				assertEquals(AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET), proposals[i].getImage());				
-			} else {
-				fail("Unknown completion proposal detected: " + displayString);
-			}
-		}
     }
     
     /**

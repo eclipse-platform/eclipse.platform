@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,11 @@ import java.io.Reader;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.core.internal.content.XMLContentDescriber;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.core.runtime.content.XMLContentDescriber;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component id="org.eclipse.ant.ui" version="2">
+    <resource path="Ant Tools Support/org/eclipse/ant/ui/launching/IAntLaunchConfigurationConstants.java" type="org.eclipse.ant.ui.launching.IAntLaunchConfigurationConstants">
+        <filter id="1108344834">
+            <message_arguments>
+                <message_argument value="3.4"/>
+                <message_argument value="3.3"/>
+                <message_argument value="org.eclipse.ant.ui.launching.IAntLaunchConfigurationConstants"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

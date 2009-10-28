@@ -14,7 +14,6 @@ package org.eclipse.ant.tests.ui.performance;
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.tests.ui.editor.performance.EditorTestHelper;
 import org.eclipse.ant.tests.ui.testplugin.AbstractAntUITest;
-import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 
 public class OpenLaunchConfigurationDialogTests extends PerformanceTestCase {
 

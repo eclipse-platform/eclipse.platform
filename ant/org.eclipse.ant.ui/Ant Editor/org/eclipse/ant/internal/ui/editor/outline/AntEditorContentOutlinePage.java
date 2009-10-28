@@ -17,7 +17,6 @@ package org.eclipse.ant.internal.ui.editor.outline;
 
 import java.util.List;
 
-import org.apache.tools.ant.Target;
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIConstants;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
@@ -109,11 +108,7 @@ public class AntEditorContentOutlinePage extends ContentOutlinePage implements I
 					return false;
 				}
 			    if (fFilterInternalTargets && node instanceof AntTargetNode) {
-					Target target= ((AntTargetNode)node).getTarget();
-					if (target.getDescription() == null && !((AntTargetNode)node).isDefaultTarget()) {
-					    return false;
-					}
-					return true;
+					return !((AntTargetNode)node).isInternal();
 				} 
 			    if (fFilterProperties && node instanceof AntPropertyNode) {
 					return false;

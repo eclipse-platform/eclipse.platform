@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ant.internal.launching.AntLaunchingUtil;
-import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.internal.ui.AntUtil;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.externaltools.internal.registry.ExternalToolMigration;
 import org.eclipse.core.runtime.CoreException;
@@ -42,11 +42,11 @@ public class MigrationTests extends TestCase {
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);
 		assertNotNull("Migration failed", config);
 		
-		assertEquals("Wrong configuration type", IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE, config.getType().getIdentifier());
+		assertEquals("Wrong configuration type", IAntLaunchConfigurationConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE, config.getType().getIdentifier());
 		assertEquals("ant tool", config.getName());
 		assertEquals("location", config.getAttribute(IExternalToolConstants.ATTR_LOCATION, ""));
 		assertEquals("refresh scope", config.getAttribute(RefreshTab.ATTR_REFRESH_SCOPE, ""));
-		String[] targets= AntLaunchingUtil.getTargetNames(config);
+		String[] targets= AntUtil.getTargetNames(config);
 		assertNotNull("No targets found", targets);
 		assertEquals("Wrong number of targets", 2, targets.length);
 		assertEquals("target1", targets[0]);
@@ -131,7 +131,7 @@ public class MigrationTests extends TestCase {
 		ILaunchConfigurationWorkingCopy config = ExternalToolMigration.configFromArgumentMap(argumentMap);
 		assertNotNull("Migration failed", config);
 		
-		assertEquals("Wrong config type", IAntLaunchConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE, config.getType().getIdentifier());
+		assertEquals("Wrong config type", IAntLaunchConfigurationConstants.ID_ANT_BUILDER_LAUNCH_CONFIGURATION_TYPE, config.getType().getIdentifier());
 		assertEquals("ant config", config.getName());
 		assertEquals("location", config.getAttribute(IExternalToolConstants.ATTR_LOCATION, ""));
 		assertEquals("working directory", config.getAttribute(IExternalToolConstants.ATTR_WORKING_DIRECTORY, ""));
@@ -143,7 +143,7 @@ public class MigrationTests extends TestCase {
 		assertEquals(true, config.getAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, false));
 		assertEquals("build kinds", config.getAttribute(IExternalToolConstants.ATTR_RUN_BUILD_KINDS, ""));
 		assertEquals("arg1 arg2", config.getAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, ""));
-		String[] targets= AntLaunchingUtil.getTargetNames(config);
+		String[] targets= AntUtil.getTargetNames(config);
 		assertEquals("Wrong number of targets", 2, targets.length);
 		assertEquals("target1", targets[0]);
 		assertEquals("target2", targets[1]);

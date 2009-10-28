@@ -1,11 +1,11 @@
 /*******************************************************************************
- *  Copyright (c) 2004, 2009 IBM Corporation and others.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
- * 
- *  Contributors:
+ * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
@@ -15,13 +15,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
-import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.ant.tests.ui.AbstractAntUIBuildTest;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.ant.tests.ui.testplugin.ProjectHelper;
@@ -37,7 +35,7 @@ import org.eclipse.ui.console.IHyperlink;
 
 public class SeparateVMTests extends AbstractAntUIBuildTest {
 	
-	protected static final String PLUGIN_VERSION= "org.apache.ant_1.7.1";
+	protected static final String PLUGIN_VERSION= "org.apache.ant_1.7.0";
 		
     public SeparateVMTests(String name) {
         super(name);
@@ -158,7 +156,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		assertNotNull("Could not locate launch configuration for " + "echoingSepVM", config);
 		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
 		copy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, getJavaProject().getProject().getLocation().toOSString());
-		copy.setAttribute(IAntLaunchConstants.ATTR_ANT_TARGETS, "Bug42984");
+		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_TARGETS, "Bug42984");
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
 		assertTrue("Incorrect number of messages logged for build. Should be 6. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 6);
@@ -175,7 +173,7 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
 		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
 		Map properties= new HashMap(1);
 		properties.put("platform.location", "${workspace_loc}");
-		copy.setAttribute(IAntLaunchConstants.ATTR_ANT_PROPERTIES, properties);
+		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
 		assertTrue("Incorrect number of messages logged for build. Should be 6. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 6);
@@ -221,24 +219,21 @@ public class SeparateVMTests extends AbstractAntUIBuildTest {
       	String message= ConsoleLineTracker.getMessage(1);
       	assertTrue("Incorrect message. Should end with org.apache.ant. Message: " + message, checkAntHomeMessage(message));
       	message= ConsoleLineTracker.getMessage(2);
-		assertTrue("Incorrect message. Should end with org.apache.ant. Message: " + message, checkAntHomeMessage(message));		
+		assertTrue("Incorrect message. Should end with org.apache.ant. Message: " + message, checkAntHomeMessage(message));
+		
     }
 
 	private boolean checkAntHomeMessage(String message) {
-		String msg = message;
-		if (msg.endsWith("org.apache.ant")) {
+		if (message.endsWith("org.apache.ant")) {
 			return true;
 		}
 		
-		if (msg.endsWith(PLUGIN_VERSION)) {
-			return true;
+		int index = message.lastIndexOf(PLUGIN_VERSION);
+		if (index == -1) {
+			return false;
 		}
-		
-		//org.apache.ant_1.7.1.v200704241635
-		int index = msg.lastIndexOf('.');
-		if (index > 0) {
-			msg = msg.substring(0, index);
-		}
-		return msg.endsWith(PLUGIN_VERSION);
+		//org.apache.ant_1.7.0.v200704241635
+		int result = message.length() - (index + PLUGIN_VERSION.length());
+		return  result == 14;
 	}
 }

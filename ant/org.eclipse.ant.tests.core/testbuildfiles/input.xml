@@ -1,7 +1,0 @@
-<project name="input testing" default= "input test">
-	<target name="input test">
-		<input message="Enter for echo" addproperty= "inputTest">
-		</input>
-		<echo message="${inputTest}"/>
-	</target>	
-</project>

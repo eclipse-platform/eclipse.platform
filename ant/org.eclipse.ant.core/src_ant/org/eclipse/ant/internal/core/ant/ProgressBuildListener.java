@@ -1,11 +1,11 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2009 IBM Corporation and others.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  * 
- *  Contributors:
+ * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.internal.core.ant;
@@ -299,7 +299,7 @@ public class ProgressBuildListener implements BuildListener {
 		ProjectMonitors monitors = (ProjectMonitors) projects.get(mainProject);
 		if (monitors.getMainMonitor().isCanceled()) {
 			currentTaskThread= null;
-			throw new OperationCanceledException(InternalAntMessages.ProgressBuildListener_Build_cancelled);
+			throw new OperationCanceledException(InternalAntMessages.ProgressBuildListener_Build_cancelled__5);
 		}
 	}
 

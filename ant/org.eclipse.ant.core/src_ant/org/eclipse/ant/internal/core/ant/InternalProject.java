@@ -1,11 +1,12 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2009 IBM Corporation and others.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  which accompanies this distribution, and is available at
- *  http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Portions Copyright  2000-2004 The Apache Software Foundation
+ * All rights reserved.  This program and the accompanying materials are made 
+ * available under the terms of the Apache Software License v2.0 which 
+ * accompanies this distribution and is available at 
+ * http://www.apache.org/licenses/LICENSE-2.0.
  * 
- *  Contributors:
+ * Contributors:
  *     IBM Corporation - derived implementation
  *******************************************************************************/
 
@@ -117,7 +118,7 @@ public class InternalProject extends Project {
 			thrown = ncdfe;
 		}
 		if (thrown != null) {
-			String message= MessageFormat.format(InternalAntMessages.InternalProject_could_not_create_type, new String[]{typeName, thrown.toString()});
+			String message= MessageFormat.format(InternalAntMessages.InternalProject_0, new String[]{typeName, thrown.toString()});
 			throw new BuildException(message, thrown);
 		}
 		// this line is actually unreachable

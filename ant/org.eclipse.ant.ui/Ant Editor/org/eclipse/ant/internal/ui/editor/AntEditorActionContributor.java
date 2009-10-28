@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 GEBIT Gesellschaft fuer EDV-Beratung
- * und Informatik-Technologien mbH,
+ * Copyright (c) 2002, 2005 GEBIT Gesellschaft fuer EDV-Beratung
+ * und Informatik-Technologien mbH, 
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
- * All rights reserved. This program and the accompanying materials
+ * All rights reserved. This program and the accompanying materials 
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -23,23 +23,16 @@ import org.eclipse.ant.internal.ui.editor.actions.OpenExternalDocAction;
 import org.eclipse.ant.internal.ui.editor.actions.ToggleAutoReconcileAction;
 import org.eclipse.ant.internal.ui.editor.actions.ToggleMarkOccurrencesAction;
 import org.eclipse.ant.internal.ui.editor.actions.TogglePresentationAction;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
-
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
-
+import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
-
-import org.eclipse.ui.editors.text.TextEditorActionContributor;
-
-import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 
 /**
  * Contributes interesting Ant Editor actions to the desktop's Edit menu and the toolbar.
@@ -60,16 +53,14 @@ public class AntEditorActionContributor extends TextEditorActionContributor {
 		super();
 		ResourceBundle bundle = AntEditorMessages.getResourceBundle();
 		fContentAssistProposal = new RetargetTextEditorAction(bundle, "ContentAssistProposal."); //$NON-NLS-1$
-		fContentAssistProposal.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		fContentFormat = new RetargetTextEditorAction(bundle, "ContentFormat."); //$NON-NLS-1$
-		fContentFormat.setActionDefinitionId(IJavaEditorActionDefinitionIds.FORMAT);
 		fTogglePresentation= new TogglePresentationAction();
 		fToggleMarkOccurrencesAction= new ToggleMarkOccurrencesAction();
         fToggleAutoReconcileAction= new ToggleAutoReconcileAction();
 		
 	}
 	
-	protected void initializeActions(AntEditor editor) {
+	protected void initializeActions(AntEditor editor) {	 
 		fOpenDeclarationAction= new OpenDeclarationAction(editor);
 		fOpenExternalDocAction= new OpenExternalDocAction(editor);
 	}
@@ -82,7 +73,7 @@ public class AntEditorActionContributor extends TextEditorActionContributor {
 			editor= (ITextEditor) part;
 		}
 
-		fContentAssistProposal.setAction(getAction(editor, ITextEditorActionConstants.CONTENT_ASSIST));
+		fContentAssistProposal.setAction(getAction(editor, "ContentAssistProposal")); //$NON-NLS-1$
 		fContentFormat.setAction(getAction(editor, "ContentFormat")); //$NON-NLS-1$
 		
 		if (editor instanceof AntEditor) {
@@ -97,10 +88,10 @@ public class AntEditorActionContributor extends TextEditorActionContributor {
 				foldingActions.updateActionBars();
 			}
 			if (fOpenDeclarationAction != null) {
-				fOpenDeclarationAction.setEditor(antEditor);
+				fOpenDeclarationAction.setEditor(antEditor);		
 			}
 			if (fOpenExternalDocAction != null) {
-				fOpenExternalDocAction.setActiveEditor(null, antEditor);
+				fOpenExternalDocAction.setActiveEditor(null, antEditor);		
 			}
 		}
 		

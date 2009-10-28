@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2005 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	 * @throws Exception
 	 */
 	protected void setUp() throws Exception {
-		super.setUp();
 		Performance performance= Performance.getDefault();
 		fPerformanceMeter= performance.createPerformanceMeter(performance.getDefaultScenarioId(this));
 	}
@@ -64,7 +63,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	 * to be included into the performance summary. The summary shows
 	 * the given dimension of the scenario and labels the scenario with the short name.
 	 * 
-	 * @param shortName a short (shorter than 40 characters) descriptive name of the scenario
+	 * @param shortName a short (shorter than 40 characters) descritive name of the scenario
 	 * @param dimension the dimension to show in the summary
 	 */
 	public void tagAsSummary(String shortName, Dimension dimension) {
@@ -77,7 +76,7 @@ public class AbstractAntUIBuildPerformanceTest extends AbstractAntUIBuildTest {
 	 * to be included into the global performance summary. The summary shows
 	 * the given dimensions of the scenario and labels the scenario with the short name.
 	 * 
-	 * @param shortName a short (shorter than 40 characters) descriptive name of the scenario
+	 * @param shortName a short (shorter than 40 characters) descritive name of the scenario
 	 * @param dimensions an array of dimensions to show in the summary
 	 */
 	public void tagAsGlobalSummary(String shortName, Dimension[] dimensions) {

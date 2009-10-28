@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.ant.internal.ui.IAntUIPreferenceConstants;
-import org.eclipse.ant.launching.IAntLaunchConstants;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.ant.tests.ui.testplugin.ConsoleLineTracker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -41,7 +41,7 @@ public class BuildTests extends AbstractAntUIBuildTest {
    */
   public void testOutput() throws CoreException {
 	  launch("echoing");
-	  assertTrue("Incorrect number of messages logged for build. Should be 8. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 8); 
+	  assertTrue("Incorrect number of messages logged for build. Should be 8. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 8);
 	  String message= ConsoleLineTracker.getMessage(6);
 	  assertTrue("Incorrect last message. Should start with Total time:. Message: " + message, message.startsWith("Total time:"));
   }
@@ -52,8 +52,8 @@ public class BuildTests extends AbstractAntUIBuildTest {
    */
   public void testVerboseStackTrace() throws CoreException {      
 	  launch("failingTarget", "-k -verbose");
-      assertEquals("Incorrect message", "BUILD FAILED", ConsoleLineTracker.getMessage(19));
-      assertTrue("Incorrect message" + ConsoleLineTracker.getMessage(22), ConsoleLineTracker.getMessage(22).startsWith("\tat org.apache.tools.ant.taskdefs.Zip"));
+      assertEquals("Incorrect message", "BUILD FAILED", ConsoleLineTracker.getMessage(17));
+      assertTrue("Incorrect message" + ConsoleLineTracker.getMessage(20), ConsoleLineTracker.getMessage(20).startsWith("\tat org.apache.tools.ant.taskdefs.Zip"));
   }
   
   /**
@@ -143,8 +143,8 @@ public class BuildTests extends AbstractAntUIBuildTest {
 		ILaunchConfigurationWorkingCopy copy= config.getWorkingCopy();
 		Map properties= new HashMap(1);
 		properties.put("platform.location", "${workspace_loc}");
-		copy.setAttribute(IAntLaunchConstants.ATTR_ANT_PROPERTIES, properties);
-		copy.setAttribute(IAntLaunchConstants.ATTR_ANT_PROPERTIES, properties);
+		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
+		copy.setAttribute(IAntLaunchConfigurationConstants.ATTR_ANT_PROPERTIES, properties);
 		launchAndTerminate(copy, 20000);
 		ConsoleLineTracker.waitForConsole();
 		assertTrue("Incorrect number of messages logged for build. Should be 8. Was " + ConsoleLineTracker.getNumberOfMessages(), ConsoleLineTracker.getNumberOfMessages() == 8);
