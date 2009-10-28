@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,8 @@ import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
+import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -41,6 +43,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -521,7 +524,8 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 					}
 				}
 				debugTarget.terminate();
-				waiter.waitForEvent();
+				Object event = waiter.waitForEvent();
+				assertNotNull("No terminate event was recieved", event);
                 getLaunchManager().removeLaunch(debugTarget.getLaunch());
 			} catch (CoreException e) {
 			}
@@ -530,7 +534,8 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
         // ensure event queue is flushed
         DebugEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.MODEL_SPECIFIC, this);
         DebugPlugin.getDefault().fireDebugEventSet(new DebugEvent[]{new DebugEvent(this, DebugEvent.MODEL_SPECIFIC)});
-        waiter.waitForEvent();
+        Object event = waiter.waitForEvent();
+        assertNotNull("The model specific event was never recieved", event);
 	}
 	
 	/**
@@ -722,11 +727,41 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		IResource r = p.getFolder(root);
 		return project.getPackageFragmentRoot(r).getPackageFragment(pkg).getCompilationUnit(name);
 	}
-        
+       
+	/**
+	 * Sets the current set of Debug / Other preferences to use during each test
+	 * 
+	 * @since 3.5
+	 */
+	protected void setPreferences() {
+		 IPreferenceStore debugUIPreferences = DebugUIPlugin.getDefault().getPreferenceStore();
+		 String property = System.getProperty("debug.workbenchActivation");
+		 boolean activate = property != null && property.equals("on"); 
+		 debugUIPreferences.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR, activate);
+         debugUIPreferences.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, activate);
+         debugUIPreferences.setValue(IInternalDebugUIConstants.PREF_ACTIVATE_DEBUG_VIEW, activate);
+         debugUIPreferences.setValue(IDebugUIConstants.PREF_ACTIVATE_WORKBENCH, activate);
+	}
+	
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		//reset the options
+		IPreferenceStore debugUIPreferences = DebugUIPlugin.getDefault().getPreferenceStore(); 
+		debugUIPreferences.setToDefault(IDebugPreferenceConstants.CONSOLE_OPEN_ON_ERR);
+        debugUIPreferences.setToDefault(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT);
+        debugUIPreferences.setToDefault(IInternalDebugUIConstants.PREF_ACTIVATE_DEBUG_VIEW);
+        debugUIPreferences.setToDefault(IDebugUIConstants.PREF_ACTIVATE_WORKBENCH);
+		super.tearDown();
+	}
+	
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
+    	super.setUp();
+    	setPreferences();
         DebugUIPlugin.getStandardDisplay().syncExec(new Runnable() {
             public void run() {
                 IWorkbench workbench = PlatformUI.getWorkbench();

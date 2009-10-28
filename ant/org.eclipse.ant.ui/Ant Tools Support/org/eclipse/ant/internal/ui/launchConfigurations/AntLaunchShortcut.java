@@ -297,7 +297,7 @@ public class AntLaunchShortcut implements ILaunchShortcut2 {
 			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
 			    groupId= IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP;
 			} else {
-			    groupId= IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP;
+			    groupId= org.eclipse.ui.externaltools.internal.model.IExternalToolConstants.ID_EXTERNAL_TOOLS_LAUNCH_GROUP;
 			}
 			DebugUITools.openLaunchConfigurationDialog(AntUIPlugin.getActiveWorkbenchWindow().getShell(), configuration, groupId, status);
 		} else {

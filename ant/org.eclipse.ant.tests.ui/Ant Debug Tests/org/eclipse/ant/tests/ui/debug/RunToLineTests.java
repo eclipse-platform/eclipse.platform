@@ -1,11 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ *  Copyright (c) 2005, 2009 IBM Corporation and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
  * 
- * Contributors:
+ *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.ant.tests.ui.debug;
@@ -201,8 +201,10 @@ public class RunToLineTests extends AbstractAntDebugTest {
             };
             DebugElementEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.SUSPEND, thread);
             DebugUIPlugin.getStandardDisplay().syncExec(r);
-            waiter.waitForEvent();
+            Object event = waiter.waitForEvent();
+            assertNotNull("no suspend event was recieved", event);
             IStackFrame topStackFrame = thread.getTopStackFrame();
+            assertNotNull("There must be a top stack frame", topStackFrame);
             assertEquals("wrong line", expectedLineNumber, topStackFrame.getLineNumber());
 		} finally {
 			terminateAndRemove(thread);
