@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2009 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH, 
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  * All rights reserved. This program and the accompanying materials 
@@ -12,7 +12,6 @@
  * 	   IBM Corporation - bug fixes
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 49383, 56299, 59024
  *     Brock Janiczak (brockj_eclipse@ihug.com.au ) - bug 78028, 78030 
- *     Remy Chi Jian Suen - bug 277587
  *******************************************************************************/
 
 package org.eclipse.ant.internal.ui.editor;
@@ -80,6 +79,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ICompletionListener;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -109,7 +109,7 @@ import com.ibm.icu.text.MessageFormat;
 /**
  * The completion processor for the Ant Editor.
  */
-public class AntEditorCompletionProcessor  extends TemplateCompletionProcessor implements ICompletionListener  {       
+public class AntEditorCompletionProcessor  extends TemplateCompletionProcessor implements IContentAssistProcessor, ICompletionListener  {       
  
 	private static final class ProposalComparator implements Comparator {
 		public int compare(Object o1, Object o2) {
@@ -513,7 +513,7 @@ public class AntEditorCompletionProcessor  extends TemplateCompletionProcessor i
 			target = (Target) itr.next();
 			targetName= target.getName();
 			if (targetName.toLowerCase().startsWith(prefix) && targetName.length() > 0) {
-				defaultProposals.add(new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), getTargetImage(targetName), targetName, target.getDescription(), AntCompletionProposal.TASK_PROPOSAL));
+				defaultProposals.add(new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), null, targetName, target.getDescription(), AntCompletionProposal.TASK_PROPOSAL));
 			}
 		}
 
@@ -592,33 +592,12 @@ public class AntEditorCompletionProcessor  extends TemplateCompletionProcessor i
                 continue;
             }
             if (targetName.toLowerCase().startsWith(prefix) && targetName.length() > 0){
-                ICompletionProposal proposal = new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), getTargetImage(targetName), targetName, ((Target)targets.get(targetName)).getDescription(), AntCompletionProposal.TASK_PROPOSAL);
+                ICompletionProposal proposal = new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), null, targetName, ((Target)targets.get(targetName)).getDescription(), AntCompletionProposal.TASK_PROPOSAL);
                 proposals.add(proposal);
                 index++;
             }
         }
         return (ICompletionProposal[])proposals.toArray(new ICompletionProposal[proposals.size()]);      
-    }
-    
-    /**
-     * Retrieves the representative image of a target of the given name. If the
-     * target cannot be found, <code>null</code> will be returned. 
-     * 
-     * @param targetName the target's name
-     * @return an image suitable for representating the target, or <code>null</code> if the target cannot be found
-     * @since 3.6
-     */
-    private Image getTargetImage(String targetName) {
-		AntTargetNode targetNode = antModel.getTargetNode(targetName);
-		if (targetNode == null) {
-			return null;
-		} else if (targetNode.isInternal()) {
-			return AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET_INTERNAL);
-		} else if (targetNode.isDefaultTarget()) {
-			return AntUIImages.getImage(IAntUIConstants.IMG_ANT_DEFAULT_TARGET);
-		} else {
-			return AntUIImages.getImage(IAntUIConstants.IMG_ANT_TARGET);
-		}
     }
 
 	private ICompletionProposal[] getDependsValueProposals(IDocument document, String prefix) {
@@ -654,7 +633,7 @@ public class AntEditorCompletionProcessor  extends TemplateCompletionProcessor i
 		int i= 0;
 		for (Iterator iter = possibleDependencies.iterator(); iter.hasNext(); i++) {
 			String targetName = (String) iter.next();
-			ICompletionProposal proposal = new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), getTargetImage(targetName), targetName, ((Target)targets.get(targetName)).getDescription(), AntCompletionProposal.TASK_PROPOSAL);
+			ICompletionProposal proposal = new AntCompletionProposal(targetName, cursorPosition - prefix.length(), prefix.length(), targetName.length(), null, targetName, ((Target)targets.get(targetName)).getDescription(), AntCompletionProposal.TASK_PROPOSAL);
 			proposals[i]= proposal;
 		}
 		return proposals;

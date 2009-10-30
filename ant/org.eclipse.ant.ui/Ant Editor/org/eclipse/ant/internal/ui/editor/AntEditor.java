@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2009 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH,
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  * All rights reserved. This program and the accompanying materials
@@ -45,35 +45,21 @@ import org.eclipse.ant.internal.ui.model.AntModelCore;
 import org.eclipse.ant.internal.ui.model.AntProjectNode;
 import org.eclipse.ant.internal.ui.model.IAntModelListener;
 import org.eclipse.ant.internal.ui.preferences.AntEditorPreferenceConstants;
-
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-
-import org.eclipse.core.resources.IFile;
-
+import org.eclipse.debug.ui.actions.IRunToLineTarget;
+import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.IPostSelectionProvider;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -94,12 +80,25 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.ISourceViewerExtension4;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.IProjectionListener;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
-
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.IPostSelectionProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartService;
@@ -107,24 +106,19 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IShowInTargetList;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.KeyBindingSupportForAssistant;
 import org.eclipse.ui.texteditor.TextOperationAction;
-
-import org.eclipse.ui.editors.text.TextEditor;
-
-import org.eclipse.debug.ui.actions.IRunToLineTarget;
-import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
-
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
+import org.eclipse.ui.views.contentoutline.ContentOutline;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * The actual editor implementation for Eclipse's Ant integration.
@@ -494,6 +488,11 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
     
     private AntModel fAntModel;
     
+	/**
+	 * Key binding support for the content assistant.
+	 * @since 3.4
+	 */
+	private KeyBindingSupportForAssistant fKeyBindingSupportForAssistant;
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.texteditor.AbstractTextEditor#createActions()
@@ -502,8 +501,18 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
         super.createActions();
 
         ResourceBundle bundle = ResourceBundle.getBundle("org.eclipse.ant.internal.ui.editor.AntEditorMessages"); //$NON-NLS-1$
+        IAction action = new ContentAssistAction(bundle, "ContentAssistProposal.", this); //$NON-NLS-1$
         
-		IAction action= new TextOperationAction(bundle, "ContentFormat.", this, ISourceViewer.FORMAT); //$NON-NLS-1$
+        ISourceViewer sourceViewer = getSourceViewer();
+        if (sourceViewer instanceof ISourceViewerExtension4) {
+        	fKeyBindingSupportForAssistant= new KeyBindingSupportForAssistant(((ISourceViewerExtension4) sourceViewer).getContentAssistantFacade());
+        }
+
+        // This action definition is associated with the accelerator Ctrl+Space
+        action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+        setAction("ContentAssistProposal", action); //$NON-NLS-1$
+        
+		action = new TextOperationAction(bundle, "ContentFormat.", this, ISourceViewer.FORMAT); //$NON-NLS-1$
         action.setActionDefinitionId(IJavaEditorActionDefinitionIds.FORMAT);
         setAction("ContentFormat", action); //$NON-NLS-1$
         
@@ -873,7 +882,6 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 						if (node == null) {
 							String path= model.getPath(text, region.getOffset());
 							if (path != null) {
-								path = model.getProjectNode().getProject().replaceProperties(path);
 								return path;
 							}
                             
@@ -1025,7 +1033,12 @@ public class AntEditor extends TextEditor implements IReconcilingParticipant, IP
 		
 		AntModelCore.getDefault().removeAntModelListener(fAntModelListener);
 		fAntModel= null;
-
+		
+		if (fKeyBindingSupportForAssistant != null) {
+			fKeyBindingSupportForAssistant.dispose();
+			fKeyBindingSupportForAssistant = null;
+		}
+		
 		super.dispose();
 	}
 	
