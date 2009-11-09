@@ -50,6 +50,8 @@ public class InternalAntMessages extends NLS {
 	public static String InternalAntRunner_ANT_HOME_must_be_set_to_use_Ant_diagnostics_2;
 	public static String InternalAntRunner_Buildfile___0__is_not_a_file_1;
 	public static String InternalAntRunner__find_not_supported;
+
+	public static String InternalAntRunner_0;
 	public static String InternalAntRunner_Error_setting_Ant_task;
 	public static String InternalAntRunner_Missing_Class;
 	public static String InternalAntRunner_157;

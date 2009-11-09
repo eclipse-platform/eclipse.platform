@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * Portions Copyright  2000-2007 The Apache Software Foundation
  * All rights reserved. This program and the accompanying materials are made 
  * available under the terms of the Apache Software License v2.0 which 
@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.tools.ant.AntTypeDefinition;
@@ -1068,12 +1071,45 @@ public class InternalAntRunner {
 		if (!commands.isEmpty()) {
 			processUnrecognizedCommands(commands);
 		}
-
+		
+		if (!commands.isEmpty()) {
+			processUnrecognizedTargets(commands);
+		}
+		
 		if (!commands.isEmpty()) {
 			processTargets(commands);
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Checks for unrecognized targets on the command line and
+	 * removes them.
+	 */
+	private void processUnrecognizedTargets(List commands) {
+		List list = getTargets();
+		Set names = new HashSet();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			Object element = it.next();
+			if (element instanceof List) {
+				List target = (List)element;
+				if (!target.isEmpty()) {
+					names.add(target.get(0));
+				}
+			}
+		}
+		ListIterator iterator = commands.listIterator();
+		
+		while (iterator.hasNext()) {
+			String target = (String) iterator.next();
+			if (!names.contains(target)) {
+				iterator.remove();
+				String message = MessageFormat.format(InternalAntMessages.InternalAntRunner_0, new Object[]{target});
+				logMessage(currentProject, message, Project.MSG_WARN); 
+			}
+		}
 	}
 	
 	/*
@@ -1091,7 +1127,7 @@ public class InternalAntRunner {
 
 		// find the last arg that begins with '-'
 		for (int i = commands.size() - 1; i >= 0; i--) {
-			if (((String) commands.get(0)).startsWith("-")) { //$NON-NLS-1$
+			if (((String) commands.get(i)).startsWith("-")) { //$NON-NLS-1$
 				p = i;
 				break;
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -288,14 +288,14 @@ public class OptionTests extends AbstractAntTest {
 	
 	/**
 	 * Tests specifying a target at the command line that does not exist.
+	 * 
+	 * This will no longer fail - the default target will be run instead
 	 */
-	public void testSpecifyBadTargetAsArg() {
-		try {
-			run("TestForEcho.xml", new String[]{"echo2"}, false);
-		} catch (CoreException ce) {
-			return;
-		}
-		assertTrue("A core exception should have occurred as the target does not exist", false);
+	public void testSpecifyBadTargetAsArg() throws CoreException {
+		run("TestForEcho.xml", new String[]{"echo2"}, false);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("Unknown target") >= 0);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("echo2") >= 0);
+		assertEquals("Should have run the default target & dependents", 5, AntTestChecker.getDefault().getTargetsStartedCount());
 	}
 	
 	/**
