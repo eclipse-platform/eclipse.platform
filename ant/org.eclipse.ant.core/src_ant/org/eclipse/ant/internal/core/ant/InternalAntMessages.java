@@ -53,6 +53,8 @@ public class InternalAntMessages extends NLS {
 	public static String InternalAntRunner_Error_setting_Ant_task;
 	public static String InternalAntRunner_Missing_Class;
 	public static String InternalAntRunner_157;
+
+	public static String InternalAntRunner_unknown_target;
 	
 	public static String ProgressBuildListener_Build_cancelled;
 

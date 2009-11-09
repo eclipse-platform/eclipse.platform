@@ -19,15 +19,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URL;
-import java.text.MessageFormat; // don't use ICU in ant builder
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.tools.ant.AntTypeDefinition;
@@ -1068,6 +1071,10 @@ public class InternalAntRunner {
 			processUnrecognizedCommands(commands);
 		}
 
+		if(!commands.isEmpty()) {
+			processUnrecognizedTargets(commands);
+		}
+		
 		if (!commands.isEmpty()) {
 			processTargets(commands);
 		}
@@ -1075,9 +1082,41 @@ public class InternalAntRunner {
 		return true;
 	}
 	
+	/**
+	 * Checks for unrecognized targets on the command line and
+	 * removes them.
+	 * 
+	 * @since 3.6
+	 */
+	private void processUnrecognizedTargets(List commands) {
+		List list = getTargets();
+		Set names = new HashSet();
+		Iterator it = list.iterator();
+		while (it.hasNext()) {
+			Object element = it.next();
+			if (element instanceof List) {
+				List target = (List)element;
+				if (!target.isEmpty()) {
+					names.add(target.get(0));
+				}
+			}
+		}
+		ListIterator iterator = commands.listIterator();
+		
+		while (iterator.hasNext()) {
+			String target = (String) iterator.next();
+			if (!names.contains(target)) {
+				iterator.remove();
+				String message = MessageFormat.format(InternalAntMessages.InternalAntRunner_unknown_target, new Object[]{target});
+				logMessage(currentProject, message, Project.MSG_WARN); 
+			}
+		}
+	}
+
+	
 	/*
 	 * Checks for unrecognized arguments on the command line.
-	 * Since there is no syntactic way to distingush between
+	 * Since there is no syntactic way to distinguish between
 	 * ant -foo target1 target2
 	 * ant -foo fooarg target
 	 * we remove everything up to the last argument that
@@ -1090,7 +1129,7 @@ public class InternalAntRunner {
 
 		// find the last arg that begins with '-'
 		for (int i = commands.size() - 1; i >= 0; i--) {
-			if (((String) commands.get(0)).startsWith("-")) { //$NON-NLS-1$
+			if (((String) commands.get(i)).startsWith("-")) { //$NON-NLS-1$
 				p = i;
 				break;
 			}

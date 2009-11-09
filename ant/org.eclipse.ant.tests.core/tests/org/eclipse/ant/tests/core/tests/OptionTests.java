@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.tests.core.AbstractAntTest;
 import org.eclipse.ant.tests.core.testplugin.AntTestChecker;
@@ -288,14 +289,14 @@ public class OptionTests extends AbstractAntTest {
 	
 	/**
 	 * Tests specifying a target at the command line that does not exist.
+	 * 
+	 * @since 3.6  this will no longer fail - the default target will be run instead
 	 */
-	public void testSpecifyBadTargetAsArg() {
-		try {
-			run("TestForEcho.xml", new String[]{"echo2"}, false);
-		} catch (CoreException ce) {
-			return;
-		}
-		assertTrue("A core exception should have occurred as the target does not exist", false);
+	public void testSpecifyBadTargetAsArg() throws CoreException {
+		run("TestForEcho.xml", new String[]{"echo2"}, false);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("Unknown target") >= 0);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("echo2") >= 0);
+		assertEquals("Should have run the default target & dependents", 5, AntTestChecker.getDefault().getTargetsStartedCount());
 	}
 	
 	/**
