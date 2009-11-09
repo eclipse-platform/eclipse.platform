@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.ant.internal.ui;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
@@ -41,7 +40,6 @@ public class AntRunnerWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see org.eclipse.ui.application.WorkbenchAdvisor#preStartup()
 	 */
 	public void preStartup() {
-		Job.getJobManager().suspend();
 		try {
 			new AntRunner().run(fContext);
 		} catch (Exception e) {
