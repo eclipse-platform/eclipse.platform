@@ -290,7 +290,7 @@ public class OptionTests extends AbstractAntTest {
 	/**
 	 * Tests specifying a target at the command line that does not exist.
 	 * 
-	 * @since 3.6  this will no longer fail - the default target will be run instead
+	 * this will no longer fail - the default target will be run instead
 	 */
 	public void testSpecifyBadTargetAsArg() throws CoreException {
 		run("TestForEcho.xml", new String[]{"echo2"}, false);
