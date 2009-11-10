@@ -125,6 +125,17 @@ public class FrameworkTests extends AbstractAntTest {
         run("NoDefault.xml");
         assertSuccessful();
     }
+    
+    /**
+     * Regression test for running a specific target from a script that has no default target.
+     * Associated with bug 294502.
+     * 
+     * @throws CoreException
+     */
+    public void testSpecificTargetWithNoDefaultTarget() throws CoreException {
+    	run("NoDefault.xml", new String[]{"test"});
+    	assertSuccessful();
+    }
 	
 	/**
 	 * Ensures that tasks like javac work when includeAntRuntime is specified
