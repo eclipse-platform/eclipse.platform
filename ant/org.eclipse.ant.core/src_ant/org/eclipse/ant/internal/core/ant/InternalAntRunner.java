@@ -24,13 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.Vector;
 
 import org.apache.tools.ant.AntTypeDefinition;
@@ -426,6 +424,45 @@ public class InternalAntRunner {
 			processAntHome(true);
 		}
 	}
+	
+	/**
+	 * Returns a list of target names in the build script.
+	 * 
+	 * @return a list of target names
+	 */
+	private List getTargetNames() {
+		try {
+		    setJavaClassPath();
+			Project antProject;
+		
+			antProject = getProject();
+			processAntHome(false);
+			antProject.init();
+			setTypes(antProject);
+			processProperties(AntCoreUtil.getArrayList(extraArguments));
+			
+			setProperties(antProject, false);
+			if (isVersionCompatible("1.5")) { //$NON-NLS-1$
+				new InputHandlerSetter().setInputHandler(antProject, "org.eclipse.ant.internal.core.ant.NullInputHandler"); //$NON-NLS-1$
+			}
+			parseBuildFile(antProject);
+			Enumeration projectTargets = antProject.getTargets().elements();
+			List names = new ArrayList();
+			Target target;
+			while (projectTargets.hasMoreElements()) {
+				target = (Target) projectTargets.nextElement();
+				String name= target.getName();
+				if (name.length() == 0) {
+					//"no name" implicit target of Ant 1.6
+					continue;
+				}
+				names.add(name);
+			}
+			return names;
+		} finally {
+			processAntHome(true);
+		}
+	}	
 
 	private Project getProject() {
 		Project antProject;
@@ -1089,18 +1126,7 @@ public class InternalAntRunner {
 	 * @since 3.6
 	 */
 	private void processUnrecognizedTargets(List commands) {
-		List list = getTargets();
-		Set names = new HashSet();
-		Iterator it = list.iterator();
-		while (it.hasNext()) {
-			Object element = it.next();
-			if (element instanceof List) {
-				List target = (List)element;
-				if (!target.isEmpty()) {
-					names.add(target.get(0));
-				}
-			}
-		}
+		List names = getTargetNames();
 		ListIterator iterator = commands.listIterator();
 		
 		while (iterator.hasNext()) {

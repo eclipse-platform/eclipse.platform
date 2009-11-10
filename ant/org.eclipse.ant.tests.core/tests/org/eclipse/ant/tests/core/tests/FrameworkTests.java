@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,6 +125,17 @@ public class FrameworkTests extends AbstractAntTest {
     public void testNoDefaultTarget() throws CoreException {
         run("NoDefault.xml");
         assertSuccessful();
+    }
+    
+    /**
+     * Regression test for running a specific target from a script that has no default target.
+     * Associated with bug 294502.
+     * 
+     * @throws CoreException
+     */
+    public void testSpecificTargetWithNoDefaultTarget() throws CoreException {
+    	run("NoDefault.xml", new String[]{"test"});
+    	assertSuccessful();
     }
 	
 	/**
