@@ -88,19 +88,27 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate  {
 	private static final String BASE_DIR_PREFIX = "-Dbasedir="; //$NON-NLS-1$
 	private static final String INPUT_HANDLER_CLASS = "org.eclipse.ant.internal.ui.antsupport.inputhandler.AntInputHandler"; //$NON-NLS-1$
 	private static final String REMOTE_INPUT_HANDLER_CLASS = "org.eclipse.ant.internal.ui.antsupport.inputhandler.ProxyInputHandler"; //$NON-NLS-1$
-	
-	private static final IProject[] NO_PROJECTS = new IProject[0];
     
 	/**
 	 * String attribute identifying the build scope for a launch configuration.
 	 * <code>null</code> indicates the default workspace build.
+	 * 
+	 * Note: this attribute was used with the old 'AntBuildTab' which has been replaced by
+	 *  the 'ExternalToolsBuildTab'. The 'ExternalToolsBuildTab' uses a different
+	 *  attribute key, so use the external tools attribute when present: 
+	 *  IExternalToolConstants.ATTR_BUILD_SCOPE
 	 */
 	private static final String ATTR_BUILD_SCOPE = AntUIPlugin.getUniqueIdentifier() + ".ATTR_BUILD_SCOPE"; //$NON-NLS-1$
 
 	/**
-	 * Attribute identifier specifying whether referenced projects should be 
+	 * Attribute identifier specifying whether referenced projects should be
 	 * considered when computing the projects to build. Default value is
 	 * <code>true</code>.
+	 * 
+	 * Note: this attribute was used with the old 'AntBuildTab' which has been replaced by
+	 *  the 'ExternalToolsBuildTab'. The 'ExternalToolsBuildTab' uses a different
+	 *  attribute key, so use the external tools attribute when present: 
+	 *  IExternalToolConstants.ATTR_INCLUDE_REFERENCED_PROJECTS
 	 */
 	private static final String ATTR_INCLUDE_REFERENCED_PROJECTS = AntUIPlugin.getUniqueIdentifier() + ".ATTR_INCLUDE_REFERENCED_PROJECTS"; //$NON-NLS-1$
 
@@ -688,11 +696,19 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate  {
 	 * @see org.eclipse.debug.core.model.LaunchConfigurationDelegate#getBuildOrder(org.eclipse.debug.core.ILaunchConfiguration, java.lang.String)
 	 */
 	protected IProject[] getBuildOrder(ILaunchConfiguration configuration, String mode) throws CoreException {
-		IProject[] projects = ExternalToolsBuildTab.getBuildProjects(configuration, ATTR_BUILD_SCOPE);
-		if (projects == null) {
-			return NO_PROJECTS;
+		String scopeKey = ATTR_BUILD_SCOPE;
+		String refKey = ATTR_INCLUDE_REFERENCED_PROJECTS;
+		if (configuration.hasAttribute(IExternalToolConstants.ATTR_BUILD_SCOPE) ||
+			configuration.hasAttribute(IExternalToolConstants.ATTR_INCLUDE_REFERENCED_PROJECTS)) {
+				// use new attributes when present - see bug 282581
+				scopeKey = IExternalToolConstants.ATTR_BUILD_SCOPE;
+				refKey = IExternalToolConstants.ATTR_INCLUDE_REFERENCED_PROJECTS;
 		}
-		boolean isRef = ExternalToolsBuildTab.isIncludeReferencedProjects(configuration, ATTR_INCLUDE_REFERENCED_PROJECTS);
+		IProject[] projects = ExternalToolsBuildTab.getBuildProjects(configuration, scopeKey);
+		if (projects == null) {
+			return null; // null scope indicates workspace build, vs. empty projects == empty scope
+		}
+		boolean isRef = ExternalToolsBuildTab.isIncludeReferencedProjects(configuration, refKey);
 		if (isRef) {
 			return computeReferencedBuildOrder(projects);
 		}
