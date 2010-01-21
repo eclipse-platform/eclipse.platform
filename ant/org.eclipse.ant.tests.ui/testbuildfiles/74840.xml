@@ -1,5 +1,0 @@
-<project name="project" default="default">
-	<target name="default">
-		<echo>${platform.location}</echo>
-	</target>
-</project>
