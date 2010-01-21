@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site url="Info.html" type="org.eclipse.update.core.file">
-  <feature url="features/feature1"/>
-  <archive path="org.eclipse.update.plugin1" url="plugins/plugin1"/>
-  <archive path="org.eclipse.update.archive2" url="plugins/plugin2"/>
-</site>

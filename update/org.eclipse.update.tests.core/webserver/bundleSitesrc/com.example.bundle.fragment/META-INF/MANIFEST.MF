@@ -1,8 +1,0 @@
-Generated-from: 1077062909487
-Bundle-Name: Fragment Fragment
-Bundle-Version: 1.0.0
-Bundle-SymbolicName: com.example.bundle.fragment
-Bundle-Vendor: Eclipse.org
-Bundle-ClassPath: fragment.jar
-Legacy: true
-Fragment-Host: com.example.bundle.plugin; bundle-version=1.0.0
