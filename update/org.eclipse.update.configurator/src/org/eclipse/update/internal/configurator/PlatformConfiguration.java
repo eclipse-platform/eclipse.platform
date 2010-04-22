@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,13 +108,15 @@ public class PlatformConfiguration implements IPlatformConfiguration, IConfigura
 		// Detect external links. These are "soft link" to additional sites. The link
 		// files are usually provided by external installation programs. They are located
 		// relative to this configuration URL.
-		// Note: don't do it for self hosting
-		if (!isTransient())
-			configureExternalLinks();
+		// Note: don't do it for self hosting or if update reconciler is disabled
+		if (ConfigurationActivator.isReconciling()) {
+			if (!isTransient())
+				configureExternalLinks();
 
-		// Validate sites in the configuration. Causes any sites that do not exist to
-		// be removed from the configuration
-		validateSites();
+			// Validate sites in the configuration. Causes any sites that do not exist to
+			// be removed from the configuration
+			validateSites();
+		}
 
 		// compute differences between configuration and actual content of the sites
 		// (base sites and link sites)

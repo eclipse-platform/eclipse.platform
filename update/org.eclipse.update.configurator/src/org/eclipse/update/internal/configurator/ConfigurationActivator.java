@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,10 +76,17 @@ public class ConfigurationActivator implements BundleActivator, IBundleGroupProv
 
 		Utils.debug("Starting update configurator..."); //$NON-NLS-1$
 
-		String reconcile = ctx.getProperty("org.eclipse.update.reconcile"); //$NON-NLS-1$
-		if (reconcile == null || reconcile.equalsIgnoreCase("true")) //$NON-NLS-1$
+		if (isReconciling())
 			installBundles();
 		registerBundleGroupProvider();
+	}
+	
+	/**
+	 * Returns whether the update configurator should be doing its own reconciling work
+	 */
+	public static boolean isReconciling() {
+		String reconcile = context.getProperty("org.eclipse.update.reconcile"); //$NON-NLS-1$
+		return reconcile == null || reconcile.equalsIgnoreCase("true"); //$NON-NLS-1$
 	}
 
 	private void registerBundleGroupProvider() {
