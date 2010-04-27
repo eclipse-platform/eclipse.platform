@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-  <feature url="features/rootfeature.jar"/>
-  
-  <archive path="features/org.eclipse.update.core.tests.childrenfeature_2.1.0.jar" url="features/childrenfeature.jar"/>  
-</site>
