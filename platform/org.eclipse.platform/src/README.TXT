@@ -1,1 +1,0 @@
-As of 3.3, the launcher code has been moved to the org.eclipse.equinox.launcher project.
