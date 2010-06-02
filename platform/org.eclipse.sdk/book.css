@@ -73,7 +73,7 @@ body, html { border: 0px }
 /* following font face declarations need to be removed for DBCS */
 
 body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt {font-family: Arial, Helvetica, sans-serif; color: #000000}
-pre, code, tt	{ font-family: "Courier New", Courier, monospace;}
+pre, code		{ font-family: "Courier New", Courier, monospace;}
 
 /* end font face declarations */
 
@@ -88,7 +88,7 @@ h3           { font-size: 110%; margin-top: 20px; margin-bottom: 3px }
 h4           { font-size: 100%; margin-top: 20px; margin-bottom: 3px; font-style: italic }
 p            { margin-top: 10px; margin-bottom: 10px }
 pre          { font-size: 93%; margin-left: 6; color: #4444CC }
-code, tt     { font-size: 93%; } 
+code         { font-size: 93%; } 
 table        { font-size: 100% } /* needed for quirks mode */
 a:link	     { color: #0000FF }
 a:hover	     { color: #000080 }
