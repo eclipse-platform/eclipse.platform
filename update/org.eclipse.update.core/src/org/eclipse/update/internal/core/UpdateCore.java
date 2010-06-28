@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public class UpdateCore extends Plugin {
 	public static boolean DEBUG_SHOW_WEB;
 	public static boolean DEBUG_SHOW_IHANDLER;
 	public static boolean DEBUG_SHOW_RECONCILER;
+	public static boolean DEBUG_VERIFIER;
 		
 	private static final String PREFIX = "org.eclipse.update.core"; //$NON-NLS-1$
 	public static final String P_HISTORY_SIZE = PREFIX + ".historySize"; //$NON-NLS-1$
@@ -239,6 +240,7 @@ public class UpdateCore extends Plugin {
 			DEBUG_SHOW_WEB = getBooleanDebugOption("org.eclipse.update.core/debug/web", false); //$NON-NLS-1$
 			DEBUG_SHOW_IHANDLER = getBooleanDebugOption("org.eclipse.update.core/debug/installhandler", false); //$NON-NLS-1$
 			DEBUG_SHOW_RECONCILER = getBooleanDebugOption("org.eclipse.update.core/debug/reconciler", false); //$NON-NLS-1$
+			DEBUG_VERIFIER = getBooleanDebugOption("org.eclipse.equinox.p2.core/debug/verifier", false); // $NON-NLS-1$
 		}
 		
 		//

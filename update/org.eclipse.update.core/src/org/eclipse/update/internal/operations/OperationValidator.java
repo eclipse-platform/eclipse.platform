@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,7 @@
  *******************************************************************************/
 package org.eclipse.update.internal.operations;
 
-//import java.io.*;
-//import java.net.*;
-//import java.nio.channels.*;
-import org.eclipse.update.core.IUpdateConstants;
-
-import org.eclipse.osgi.service.resolver.PlatformAdmin;
+import org.osgi.framework.BundleContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +27,7 @@ import org.eclipse.update.core.*;
 import org.eclipse.update.internal.configurator.PlatformConfiguration;
 import org.eclipse.update.internal.core.Messages;
 import org.eclipse.update.internal.core.UpdateCore;
+import org.eclipse.update.internal.verifier.PlanVerifier;
 import org.eclipse.update.operations.IInstallFeatureOperation;
 import org.eclipse.update.operations.IOperationValidator;
 import org.osgi.framework.*;
@@ -40,6 +36,9 @@ import org.osgi.framework.*;
  *  
  */
 public class OperationValidator implements IOperationValidator {
+
+	private static ServiceReference verifierServiceReference = null;
+
 	/**
 	 * Checks if the platform configuration has been modified outside this program.
 	 * @return the error status, or null if no errors
@@ -47,22 +46,20 @@ public class OperationValidator implements IOperationValidator {
 	public IStatus validatePlatformConfigValid() {
 		ArrayList status = new ArrayList(1);
 		checkPlatformWasModified(status);
-		
+
 		// report status
 		if (status.size() > 0)
 			return createMultiStatus(Messages.ActivityConstraints_rootMessage, status, IStatus.ERROR);
 		return null;
 	}
-	
+
 	/*
 	 * Called by UI before performing operation. Returns null if no errors, a
 	 * status with IStatus.WARNING code when the initial configuration is
 	 * broken, or a status with IStatus.ERROR when there the operation
 	 * introduces new errors
 	 */
-	public IStatus validatePendingInstall(
-		IFeature oldFeature,
-		IFeature newFeature) {
+	public IStatus validatePendingInstall(IFeature oldFeature, IFeature newFeature) {
 		// check initial state
 		ArrayList beforeStatus = new ArrayList();
 		validateInitialState(beforeStatus);
@@ -113,9 +110,7 @@ public class OperationValidator implements IOperationValidator {
 	/**
 	 * Called before performing operation.
 	 */
-	public IStatus validatePendingReplaceVersion(
-		IFeature feature,
-		IFeature anotherFeature) {
+	public IStatus validatePendingReplaceVersion(IFeature feature, IFeature anotherFeature) {
 		// check initial state
 		ArrayList beforeStatus = new ArrayList();
 		validateInitialState(beforeStatus);
@@ -128,7 +123,6 @@ public class OperationValidator implements IOperationValidator {
 		// report status
 		return createCombinedReportStatus(beforeStatus, status);
 	}
-
 
 	/*
 	 * Called by the UI before doing a revert/ restore operation
@@ -164,13 +158,13 @@ public class OperationValidator implements IOperationValidator {
 		// report status
 		return createCombinedReportStatus(beforeStatus, status);
 	}
-	
+
 	/*
 	 * Called by the UI before doing a batched processing of several pending
 	 * changes.
 	 */
 	public RequiredFeaturesResult getRequiredFeatures(IInstallFeatureOperation[] jobs) {
-		
+
 		RequiredFeaturesResult requiredFeaturesResult = new RequiredFeaturesResult();
 		// check initial state
 		ArrayList beforeStatus = new ArrayList();
@@ -220,11 +214,9 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * handle unconfigure
 	 */
-	private static void validateUnconfigure(
-		IFeature feature,
-		ArrayList status) {
+	private static void validateUnconfigure(IFeature feature, ArrayList status) {
 		try {
-			checkSiteReadOnly(feature,status);
+			checkSiteReadOnly(feature, status);
 			ArrayList features = computeFeatures();
 			features = computeFeaturesAfterOperation(features, null, feature);
 			checkConstraints(features, status);
@@ -233,13 +225,12 @@ public class OperationValidator implements IOperationValidator {
 		}
 	}
 
-
 	/*
 	 * handle configure
 	 */
 	private static void validateConfigure(IFeature feature, ArrayList status) {
 		try {
-			checkSiteReadOnly(feature,status);
+			checkSiteReadOnly(feature, status);
 			ArrayList features = computeFeatures();
 			checkOptionalChildConfiguring(feature, status);
 			checkForCycles(feature, null, features);
@@ -254,19 +245,12 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * handle replace version
 	 */
-	private static void validateReplaceVersion(
-		IFeature feature,
-		IFeature anotherFeature,
-		ArrayList status) {
+	private static void validateReplaceVersion(IFeature feature, IFeature anotherFeature, ArrayList status) {
 		try {
-			checkSiteReadOnly(feature,status);
+			checkSiteReadOnly(feature, status);
 			ArrayList features = computeFeatures();
 			checkForCycles(feature, null, features);
-			features =
-				computeFeaturesAfterOperation(
-					features,
-					anotherFeature,
-					feature);
+			features = computeFeaturesAfterOperation(features, anotherFeature, feature);
 			checkConstraints(features, status);
 		} catch (CoreException e) {
 			status.add(e.getStatus());
@@ -276,16 +260,12 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * handle install and update
 	 */
-	private static void validateInstall(
-		IFeature oldFeature,
-		IFeature newFeature,
-		ArrayList status) {
+	private static void validateInstall(IFeature oldFeature, IFeature newFeature, ArrayList status) {
 		try {
-			checkSiteReadOnly(oldFeature,status);
+			checkSiteReadOnly(oldFeature, status);
 			ArrayList features = computeFeatures();
 			checkForCycles(newFeature, null, features);
-			features =
-				computeFeaturesAfterOperation(features, newFeature, oldFeature);
+			features = computeFeaturesAfterOperation(features, newFeature, oldFeature);
 			checkConstraints(features, status);
 			checkLicense(newFeature, status);
 		} catch (CoreException e) {
@@ -296,14 +276,12 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * handle revert and restore
 	 */
-	private static void validateRevert(
-		IInstallConfiguration config,
-		ArrayList status) {
+	private static void validateRevert(IInstallConfiguration config, ArrayList status) {
 		try {
-//			// check the timeline and don't bother
-//			// to check anything else if negative
-//			if (!checkTimeline(config, status))
-//				return;
+			//			// check the timeline and don't bother
+			//			// to check anything else if negative
+			//			if (!checkTimeline(config, status))
+			//				return;
 			ArrayList features = computeFeaturesAfterRevert(config);
 			checkConstraints(features, status);
 			checkRevertConstraints(features, status);
@@ -313,17 +291,14 @@ public class OperationValidator implements IOperationValidator {
 		}
 	}
 
-
 	/*
 	 * Handle one-click changes as a batch
 	 */
-	private static Set validatePendingChanges(
-		IInstallFeatureOperation[] jobs,
-		ArrayList status,
-		ArrayList beforeStatus) {
+	private static Set validatePendingChanges(IInstallFeatureOperation[] jobs, ArrayList status, ArrayList beforeStatus) {
 		try {
 			ArrayList features = computeFeatures();
-			ArrayList savedFeatures = features;
+			ArrayList savedFeatures = (ArrayList) features.clone();
+
 			int nexclusives = 0;
 
 			// pass 1: see if we can process the entire "batch"
@@ -336,19 +311,13 @@ public class OperationValidator implements IOperationValidator {
 				checkLicense(newFeature, status);
 				if (jobs.length > 1 && newFeature.isExclusive()) {
 					nexclusives++;
-					status.add(
-						createStatus(
-							newFeature,
-							FeatureStatus.CODE_EXCLUSIVE,
-							Messages.ActivityConstraints_exclusive));
+					status.add(createStatus(newFeature, FeatureStatus.CODE_EXCLUSIVE, Messages.ActivityConstraints_exclusive));
 					continue;
 				}
 				checkForCycles(newFeature, null, features);
-				features =
-					computeFeaturesAfterOperation(
-						features,
-						newFeature,
-						oldFeature);
+				features = computeFeaturesAfterOperation(features, newFeature, oldFeature);
+				// give clients the opportunity to veto the plan
+				verifyPlan(job, savedFeatures, features, status);
 			}
 			if (nexclusives > 0)
 				return Collections.EMPTY_SET;
@@ -357,48 +326,111 @@ public class OperationValidator implements IOperationValidator {
 				return Collections.EMPTY_SET;
 
 			// pass 2: we have conflicts
-			features = savedFeatures;
+			features = (ArrayList) savedFeatures.clone();
 			for (int i = 0; i < jobs.length; i++) {
 				IInstallFeatureOperation job = jobs[i];
 				IFeature newFeature = job.getFeature();
 				IFeature oldFeature = job.getOldFeature();
 
-				features =
-					computeFeaturesAfterOperation(
-						features,
-						newFeature,
-						oldFeature);
+				features = computeFeaturesAfterOperation(features, newFeature, oldFeature);
 
 				Set result = checkConstraints(features, status);
-				if (status.size() > 0
-					&& !isBetterStatus(beforeStatus, status)) {
-// bug 75613
-//					IStatus conflict =
-//						createStatus(
-//							newFeature,
-//							FeatureStatus.CODE_OTHER,
-//							Policy.bind(KEY_CONFLICT));
-//					status.add(0, conflict);
+
+				// give clients the opportunity to veto the plan
+				verifyPlan(job, savedFeatures, features, status);
+
+				if (status.size() > 0 && !isBetterStatus(beforeStatus, status)) {
+					// bug 75613
+					//					IStatus conflict =
+					//						createStatus(
+					//							newFeature,
+					//							FeatureStatus.CODE_OTHER,
+					//							Policy.bind(KEY_CONFLICT));
+					//					status.add(0, conflict);
 					return result;
 				}
 			}
 		} catch (CoreException e) {
 			status.add(e.getStatus());
+		} finally {
+			if (verifierServiceReference != null) {
+				BundleContext context = UpdateCore.getPlugin().getBundleContext();
+				if (context != null)
+					context.ungetService(verifierServiceReference);
+			}
 		}
-		
+
 		return Collections.EMPTY_SET;
 	}
-	
+
+	/*
+	 * Load and return the plan verifier if there is one registered and we don't have verification disabled.
+	 */
+	private static ServiceReference loadVerifier() {
+		final BundleContext context = UpdateCore.getPlugin().getBundleContext();
+		if (context == null)
+			return null;
+		String value = context.getProperty("eclipse.p2.verifyPlan"); //$NON-NLS-1$
+		if ("false".equalsIgnoreCase(value)) { //$NON-NLS-1$
+			if (UpdateCore.DEBUG_VERIFIER)
+				UpdateCore.debug("Plan verification disabled by user."); //$NON-NLS-1$
+			return null;
+		}
+		verifierServiceReference = context.getServiceReference(PlanVerifier.class.getName());
+		return verifierServiceReference;
+	}
+
+	/*
+	 * Give clients the opportunity to veto install/update changes. 
+	 */
+	private static void verifyPlan(final IInstallFeatureOperation installOperation, final ArrayList currentFeatures, final ArrayList featuresAfterOperation, final ArrayList status) {
+		ServiceReference ref = loadVerifier();
+		BundleContext context = UpdateCore.getPlugin().getBundleContext();
+		final PlanVerifier verifier;
+		if (context == null || ref == null)
+			verifier = null;
+		else
+			verifier = (PlanVerifier) context.getService(ref);
+		if (verifier == null) {
+			if (UpdateCore.DEBUG_VERIFIER)
+				UpdateCore.debug("No plan verifier available. Skipping plan verification."); //$NON-NLS-1$
+			return;
+		}
+		ISafeRunnable job = new ISafeRunnable() {
+			public void handleException(Throwable exception) {
+				if (UpdateCore.DEBUG_VERIFIER)
+					UpdateCore.debug("Exception while running verifier. Check log for details."); //$NON-NLS-1$
+				// log the exception 
+				UpdateCore.log("Exception while running plan verifier.", exception); //$NON-NLS-1$
+				// don't let a bad verifier prevent the operation. fall through and return OK so execution of the plan continues
+			}
+
+			public void run() throws Exception {
+				if (UpdateCore.DEBUG_VERIFIER)
+					UpdateCore.debug("Running plan verifier."); //$NON-NLS-1$
+				long start = System.currentTimeMillis();
+				verifier.verify(installOperation, currentFeatures, featuresAfterOperation, status);
+				if (UpdateCore.DEBUG_VERIFIER)
+					UpdateCore.debug("Verification complete in " + (System.currentTimeMillis() - start) + "ms."); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		};
+		try {
+			SafeRunner.run(job);
+		} finally {
+			context.ungetService(ref);
+		}
+	}
+
 	private static void checkPlatformWasModified(ArrayList status) {
 		try {
 			// checks if the platform has been modified outside this eclipse instance
 			IPlatformConfiguration platformConfig = ConfiguratorUtils.getCurrentPlatformConfiguration();
-			
+
 			long currentTimeStamp = platformConfig.getChangeStamp();
 			// get the last modified value for this config, from this process point of view
-			if (platformConfig instanceof PlatformConfiguration) 
-				currentTimeStamp = ((PlatformConfiguration)platformConfig).getConfiguration().lastModified();
-				
+			if (platformConfig instanceof PlatformConfiguration)
+				currentTimeStamp = ((PlatformConfiguration) platformConfig).getConfiguration().lastModified();
+
 			// get the real last modified value
 			URL platformXML = platformConfig.getConfigurationLocation();
 			long actualTimeStamp = currentTimeStamp;
@@ -409,23 +441,19 @@ public class OperationValidator implements IOperationValidator {
 				actualTimeStamp = connection.getLastModified();
 			}
 			if (currentTimeStamp != actualTimeStamp)
-				status.add(createStatus(
-								null,
-								FeatureStatus.CODE_OTHER,
-								Messages.ActivityConstraints_platformModified)); 
+				status.add(createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_platformModified));
 		} catch (IOException e) {
 			// ignore
 		}
 	}
-	
+
 	private static void checkSiteReadOnly(IFeature feature, ArrayList status) {
-		if(feature == null){
+		if (feature == null) {
 			return;
 		}
 		IConfiguredSite csite = feature.getSite().getCurrentConfiguredSite();
 		if (csite != null && !csite.isUpdatable())
-			status.add(createStatus(feature, FeatureStatus.CODE_OTHER,
-					NLS.bind(Messages.ActivityConstraints_readOnly, (new String[] { csite.getSite().getURL().toExternalForm() }))));
+			status.add(createStatus(feature, FeatureStatus.CODE_OTHER, NLS.bind(Messages.ActivityConstraints_readOnly, (new String[] {csite.getSite().getURL().toExternalForm()}))));
 	}
 
 	/*
@@ -434,11 +462,11 @@ public class OperationValidator implements IOperationValidator {
 	private static ArrayList computeFeatures() throws CoreException {
 		return computeFeatures(true);
 	}
+
 	/*
 	 * Compute a list of configured features
 	 */
-	private static ArrayList computeFeatures(boolean configuredOnly)
-		throws CoreException {
+	private static ArrayList computeFeatures(boolean configuredOnly) throws CoreException {
 		ArrayList features = new ArrayList();
 		ILocalSite localSite = SiteManager.getLocalSite();
 		IInstallConfiguration config = localSite.getCurrentConfiguration();
@@ -467,14 +495,7 @@ public class OperationValidator implements IOperationValidator {
 	 * Compute the nested feature subtree starting at the specified base
 	 * feature
 	 */
-	public static ArrayList computeFeatureSubtree(
-			IFeature top,
-			IFeature feature,
-			ArrayList features,
-			boolean tolerateMissingChildren,
-			ArrayList configuredFeatures,
-			ArrayList visitedFeatures)
-	throws CoreException {
+	public static ArrayList computeFeatureSubtree(IFeature top, IFeature feature, ArrayList features, boolean tolerateMissingChildren, ArrayList configuredFeatures, ArrayList visitedFeatures) throws CoreException {
 
 		// check arguments
 		if (top == null)
@@ -488,8 +509,7 @@ public class OperationValidator implements IOperationValidator {
 
 		// check for <includes> cycle
 		if (visitedFeatures.contains(feature)) {
-			IStatus status =
-			createStatus(top, FeatureStatus.CODE_CYCLE, Messages.ActivityConstraints_cycle);
+			IStatus status = createStatus(top, FeatureStatus.CODE_CYCLE, Messages.ActivityConstraints_cycle);
 			throw new CoreException(status);
 		} else {
 			// keep track of visited features so we can detect cycles
@@ -499,19 +519,11 @@ public class OperationValidator implements IOperationValidator {
 		// return specified base feature and all its children
 		if (!features.contains(feature))
 			features.add(feature);
-		IIncludedFeatureReference[] children =
-		feature.getIncludedFeatureReferences();
+		IIncludedFeatureReference[] children = feature.getIncludedFeatureReferences();
 		for (int i = 0; i < children.length; i++) {
 			try {
 				IFeature child = UpdateUtils.getIncludedFeature(feature, children[i]);
-				features =
-				computeFeatureSubtree(
-						top,
-						child,
-						features,
-						tolerateMissingChildren,
-						null,
-						visitedFeatures);
+				features = computeFeatureSubtree(top, child, features, tolerateMissingChildren, null, visitedFeatures);
 			} catch (CoreException e) {
 				if (!children[i].isOptional() && !tolerateMissingChildren)
 					throw e;
@@ -529,31 +541,18 @@ public class OperationValidator implements IOperationValidator {
 			if (license != null && license.trim().length() > 0)
 				return;
 		}
-		status.add(
-			createStatus(feature, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_noLicense));
+		status.add(createStatus(feature, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_noLicense));
 	}
 
 	/*
 	 * Compute a list of features that will be configured after the operation
 	 */
-	private static ArrayList computeFeaturesAfterOperation(
-		ArrayList features,
-		IFeature add,
-		IFeature remove)
-		throws CoreException {
+	private static ArrayList computeFeaturesAfterOperation(ArrayList features, IFeature add, IFeature remove) throws CoreException {
 
 		ArrayList addTree = computeFeatureSubtree(add, null, null, false,
 		/* do not tolerate missing children */
 		features, null);
-		ArrayList removeTree =
-			computeFeatureSubtree(
-				remove,
-				null,
-				null,
-				true /* tolerate missing children */,
-				null,
-				null
-		);
+		ArrayList removeTree = computeFeatureSubtree(remove, null, null, true /* tolerate missing children */, null, null);
 		if (remove != null) {
 			// Patches to features are removed together with
 			// those features. Include them in the list.
@@ -569,11 +568,7 @@ public class OperationValidator implements IOperationValidator {
 		return features;
 	}
 
-	private static void contributePatchesFor(
-		ArrayList removeTree,
-		ArrayList features,
-		ArrayList result)
-		throws CoreException {
+	private static void contributePatchesFor(ArrayList removeTree, ArrayList features, ArrayList result) throws CoreException {
 
 		for (int i = 0; i < removeTree.size(); i++) {
 			IFeature feature = (IFeature) removeTree.get(i);
@@ -581,16 +576,11 @@ public class OperationValidator implements IOperationValidator {
 		}
 	}
 
-	private static void contributePatchesFor(
-		IFeature feature,
-		ArrayList features,
-		ArrayList result)
-		throws CoreException {
+	private static void contributePatchesFor(IFeature feature, ArrayList features, ArrayList result) throws CoreException {
 		for (int i = 0; i < features.size(); i++) {
 			IFeature candidate = (IFeature) features.get(i);
 			if (UpdateUtils.isPatch(feature, candidate)) {
-				ArrayList removeTree =
-					computeFeatureSubtree(candidate, null, null, true,null,null);
+				ArrayList removeTree = computeFeatureSubtree(candidate, null, null, true, null, null);
 				result.addAll(removeTree);
 			}
 		}
@@ -600,8 +590,7 @@ public class OperationValidator implements IOperationValidator {
 	 * Compute a list of features that will be configured after performing the
 	 * revert
 	 */
-	private static ArrayList computeFeaturesAfterRevert(IInstallConfiguration config)
-		throws CoreException {
+	private static ArrayList computeFeaturesAfterRevert(IInstallConfiguration config) throws CoreException {
 
 		ArrayList list = new ArrayList();
 		IConfiguredSite[] csites = config.getConfiguredSites();
@@ -615,13 +604,10 @@ public class OperationValidator implements IOperationValidator {
 		return list;
 	}
 
-
-
 	/*
 	 * Compute a list of plugin entries for the specified features.
 	 */
-	private static ArrayList computePluginsForFeatures(ArrayList features)
-		throws CoreException {
+	private static ArrayList computePluginsForFeatures(ArrayList features) throws CoreException {
 		if (features == null)
 			return new ArrayList();
 
@@ -639,7 +625,6 @@ public class OperationValidator implements IOperationValidator {
 		return result;
 	}
 
-
 	/**
 	 * Check for feature cycles:
 	 * - visit feature
@@ -647,11 +632,7 @@ public class OperationValidator implements IOperationValidator {
 	 * - DFS children 
 	 * - when return from DFS remove the feature from the candidates list
 	 */
-	private static void checkForCycles(
-			IFeature feature,
-			ArrayList candidates,
-			ArrayList configuredFeatures)
-	throws CoreException {
+	private static void checkForCycles(IFeature feature, ArrayList candidates, ArrayList configuredFeatures) throws CoreException {
 
 		// check arguments
 		if (feature == null)
@@ -660,21 +641,19 @@ public class OperationValidator implements IOperationValidator {
 			configuredFeatures = new ArrayList();
 		if (candidates == null)
 			candidates = new ArrayList();
-		
+
 		// check for <includes> cycle
 		if (candidates.contains(feature)) {
-			String msg = NLS.bind(Messages.ActivityConstraints_cycle, (new String[] {feature.getLabel(), 
-            feature.getVersionedIdentifier().toString()}));
+			String msg = NLS.bind(Messages.ActivityConstraints_cycle, (new String[] {feature.getLabel(), feature.getVersionedIdentifier().toString()}));
 			IStatus status = createStatus(feature, FeatureStatus.CODE_CYCLE, msg);
 			throw new CoreException(status);
 		}
 
 		// potential candidate
 		candidates.add(feature);
-		
+
 		// recursively, check cycles with children
-		IIncludedFeatureReference[] children =
-		feature.getIncludedFeatureReferences();
+		IIncludedFeatureReference[] children = feature.getIncludedFeatureReferences();
 		for (int i = 0; i < children.length; i++) {
 			try {
 				IFeature child = UpdateUtils.getIncludedFeature(feature, children[i]);
@@ -687,12 +666,11 @@ public class OperationValidator implements IOperationValidator {
 		// no longer a candidate, because no cycles with children
 		candidates.remove(feature);
 	}
-	
+
 	/*
 	 * validate constraints
 	 */
-	private static Set  checkConstraints(ArrayList features, ArrayList status)
-		throws CoreException {
+	private static Set checkConstraints(ArrayList features, ArrayList status) throws CoreException {
 		if (features == null)
 			return Collections.EMPTY_SET;
 
@@ -708,9 +686,7 @@ public class OperationValidator implements IOperationValidator {
 	 * Verify all features are either portable, or match the current
 	 * environment
 	 */
-	private static void checkEnvironment(
-		ArrayList features,
-		ArrayList status) {
+	private static void checkEnvironment(ArrayList features, ArrayList status) {
 
 		String os = Platform.getOS();
 		String ws = Platform.getWS();
@@ -724,8 +700,7 @@ public class OperationValidator implements IOperationValidator {
 
 			if (fos.size() > 0) {
 				if (!fos.contains(os)) {
-					IStatus s =
-						createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_os);
+					IStatus s = createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_os);
 					if (!status.contains(s))
 						status.add(s);
 					continue;
@@ -734,8 +709,7 @@ public class OperationValidator implements IOperationValidator {
 
 			if (fws.size() > 0) {
 				if (!fws.contains(ws)) {
-					IStatus s =
-						createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_ws);
+					IStatus s = createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_ws);
 					if (!status.contains(s))
 						status.add(s);
 					continue;
@@ -744,8 +718,7 @@ public class OperationValidator implements IOperationValidator {
 
 			if (farch.size() > 0) {
 				if (!farch.contains(arch)) {
-					IStatus s =
-						createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_arch);
+					IStatus s = createStatus(feature, FeatureStatus.CODE_ENVIRONMENT, Messages.ActivityConstraints_arch);
 					if (!status.contains(s))
 						status.add(s);
 					continue;
@@ -757,10 +730,7 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * Verify we end up with a version of platform configured
 	 */
-	private static void checkPlatformFeature(
-		ArrayList features,
-		ArrayList plugins,
-		ArrayList status) {
+	private static void checkPlatformFeature(ArrayList features, ArrayList plugins, ArrayList status) {
 
 		// find the plugin that defines the product
 		IProduct product = Platform.getProduct();
@@ -776,10 +746,9 @@ public class OperationValidator implements IOperationValidator {
 				break;
 			}
 		}
-		
+
 		if (!found) {
-			IStatus s =
-				createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_platform);
+			IStatus s = createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_platform);
 			if (!status.contains(s))
 				status.add(s);
 		}
@@ -788,25 +757,18 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * Verify we end up with a version of primary feature configured
 	 */
-	private static void checkPrimaryFeature(
-		ArrayList features,
-		ArrayList plugins,
-		ArrayList status) {
+	private static void checkPrimaryFeature(ArrayList features, ArrayList plugins, ArrayList status) {
 
-		String featureId =
-			ConfiguratorUtils
-				.getCurrentPlatformConfiguration()
-				.getPrimaryFeatureIdentifier();
-		
+		String featureId = ConfiguratorUtils.getCurrentPlatformConfiguration().getPrimaryFeatureIdentifier();
+
 		if (featureId != null) {
 			// primary feature is defined
 			for (int i = 0; i < features.size(); i++) {
 				IFeature feature = (IFeature) features.get(i);
-				if (featureId
-					.equals(feature.getVersionedIdentifier().getIdentifier()))
+				if (featureId.equals(feature.getVersionedIdentifier().getIdentifier()))
 					return;
 			}
-	
+
 			IStatus s = createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_primary);
 			if (!status.contains(s))
 				status.add(s);
@@ -825,8 +787,7 @@ public class OperationValidator implements IOperationValidator {
 					return; // product found
 				}
 			}
-			IStatus s =
-				createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_primary);
+			IStatus s = createStatus(null, FeatureStatus.CODE_OTHER, Messages.ActivityConstraints_primary);
 			if (!status.contains(s))
 				status.add(s);
 		}
@@ -835,11 +796,8 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * Verify we do not break prereqs
 	 */
-	private static Set checkPrereqs(
-		ArrayList features,
-		ArrayList plugins,
-		ArrayList status) {
-		
+	private static Set checkPrereqs(ArrayList features, ArrayList plugins, ArrayList status) {
+
 		HashSet result = new HashSet();
 
 		for (int i = 0; i < features.size(); i++) {
@@ -853,12 +811,8 @@ public class OperationValidator implements IOperationValidator {
 				VersionedIdentifier iid = iimport.getVersionedIdentifier();
 				String id = iid.getIdentifier();
 				PluginVersionIdentifier version = iid.getVersion();
-				boolean featurePrereq =
-					iimport.getKind() == IImport.KIND_FEATURE;
-				boolean ignoreVersion =
-					version.getMajorComponent() == 0
-						&& version.getMinorComponent() == 0
-						&& version.getServiceComponent() == 0;
+				boolean featurePrereq = iimport.getKind() == IImport.KIND_FEATURE;
+				boolean ignoreVersion = version.getMajorComponent() == 0 && version.getMinorComponent() == 0 && version.getServiceComponent() == 0;
 				int rule = iimport.getRule();
 				if (rule == IUpdateConstants.RULE_NONE)
 					rule = IUpdateConstants.RULE_COMPATIBLE;
@@ -890,27 +844,19 @@ public class OperationValidator implements IOperationValidator {
 						// have a candidate
 						if (ignoreVersion)
 							found = true;
-						else if (
-							rule == IUpdateConstants.RULE_PERFECT
-								&& cversion.isPerfect(version))
+						else if (rule == IUpdateConstants.RULE_PERFECT && cversion.isPerfect(version))
 							found = true;
-						else if (
-							rule == IUpdateConstants.RULE_EQUIVALENT
-								&& cversion.isEquivalentTo(version))
+						else if (rule == IUpdateConstants.RULE_EQUIVALENT && cversion.isEquivalentTo(version))
 							found = true;
-						else if (
-							rule == IUpdateConstants.RULE_COMPATIBLE
-								&& cversion.isCompatibleWith(version))
+						else if (rule == IUpdateConstants.RULE_COMPATIBLE && cversion.isCompatibleWith(version))
 							found = true;
-						else if (
-							rule == IUpdateConstants.RULE_GREATER_OR_EQUAL
-								&& cversion.isGreaterOrEqualTo(version))
+						else if (rule == IUpdateConstants.RULE_GREATER_OR_EQUAL && cversion.isGreaterOrEqualTo(version))
 							found = true;
 					}
 					if (found)
 						break;
 				}
-				
+
 				// perhaps the bundle that we are looking for was installed
 				// but isn't a part of a feature
 				if (!found && !featurePrereq)
@@ -918,41 +864,19 @@ public class OperationValidator implements IOperationValidator {
 
 				if (!found) {
 					// report status
-					String target =
-						featurePrereq
-							? Messages.ActivityConstaints_prereq_feature
-							: Messages.ActivityConstaints_prereq_plugin;
-					int errorCode = featurePrereq
-							? FeatureStatus.CODE_PREREQ_FEATURE
-							: FeatureStatus.CODE_PREREQ_PLUGIN;
-					String msg =
-						NLS.bind(Messages.ActivityConstraints_prereq, (new String[] { target, id }));
+					String target = featurePrereq ? Messages.ActivityConstaints_prereq_feature : Messages.ActivityConstaints_prereq_plugin;
+					int errorCode = featurePrereq ? FeatureStatus.CODE_PREREQ_FEATURE : FeatureStatus.CODE_PREREQ_PLUGIN;
+					String msg = NLS.bind(Messages.ActivityConstraints_prereq, (new String[] {target, id}));
 
 					if (!ignoreVersion) {
 						if (rule == IUpdateConstants.RULE_PERFECT)
-							msg =
-								NLS.bind(Messages.ActivityConstraints_prereqPerfect, (new String[] {
-                                target,
-                                id,
-                                version.toString()}));
+							msg = NLS.bind(Messages.ActivityConstraints_prereqPerfect, (new String[] {target, id, version.toString()}));
 						else if (rule == IUpdateConstants.RULE_EQUIVALENT)
-							msg =
-								NLS.bind(Messages.ActivityConstraints_prereqEquivalent, (new String[] {
-                                target,
-                                id,
-                                version.toString()}));
+							msg = NLS.bind(Messages.ActivityConstraints_prereqEquivalent, (new String[] {target, id, version.toString()}));
 						else if (rule == IUpdateConstants.RULE_COMPATIBLE)
-							msg =
-								NLS.bind(Messages.ActivityConstraints_prereqCompatible, (new String[] {
-                                target,
-                                id,
-                                version.toString()}));
+							msg = NLS.bind(Messages.ActivityConstraints_prereqCompatible, (new String[] {target, id, version.toString()}));
 						else if (rule == IUpdateConstants.RULE_GREATER_OR_EQUAL)
-							msg =
-								NLS.bind(Messages.ActivityConstraints_prereqGreaterOrEqual, (new String[] {
-                                target,
-                                id,
-                                version.toString()}));
+							msg = NLS.bind(Messages.ActivityConstraints_prereqGreaterOrEqual, (new String[] {target, id, version.toString()}));
 					}
 					IStatus s = createStatus(feature, errorCode, msg);
 					result.add(new InternalImport(iimport));
@@ -961,10 +885,10 @@ public class OperationValidator implements IOperationValidator {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/*
 	 * Return a boolean value indicating whether or not the bundle with the given id and version
 	 * is installed in the system.
@@ -984,7 +908,7 @@ public class OperationValidator implements IOperationValidator {
 			BundleDescription[] bundles = state.getBundles(id);
 			if (bundles == null || bundles.length == 0)
 				return false;
-			for (int i=0; i<bundles.length; i++) {
+			for (int i = 0; i < bundles.length; i++) {
 				BundleDescription bundle = bundles[i];
 				PluginVersionIdentifier cversion = new PluginVersionIdentifier(bundle.getVersion().toString());
 				// have a candidate
@@ -1008,21 +932,12 @@ public class OperationValidator implements IOperationValidator {
 	/*
 	 * Verify we end up with valid nested features after revert
 	 */
-	private static void checkRevertConstraints(
-		ArrayList features,
-		ArrayList status) {
+	private static void checkRevertConstraints(ArrayList features, ArrayList status) {
 
 		for (int i = 0; i < features.size(); i++) {
 			IFeature feature = (IFeature) features.get(i);
 			try {
-				computeFeatureSubtree(
-					feature,
-					null,
-					null,
-					false /* do not tolerate missing children */,
-					null,
-					null
-				);
+				computeFeatureSubtree(feature, null, null, false /* do not tolerate missing children */, null, null);
 			} catch (CoreException e) {
 				status.add(e.getStatus());
 			}
@@ -1034,10 +949,7 @@ public class OperationValidator implements IOperationValidator {
 	 * the child to be configured as well
 	 */
 
-	private static void checkOptionalChildConfiguring(
-		IFeature feature,
-		ArrayList status)
-		throws CoreException {
+	private static void checkOptionalChildConfiguring(IFeature feature, ArrayList status) throws CoreException {
 		ILocalSite localSite = SiteManager.getLocalSite();
 		IInstallConfiguration config = localSite.getCurrentConfiguration();
 		IConfiguredSite[] csites = config.getConfiguredSites();
@@ -1045,8 +957,7 @@ public class OperationValidator implements IOperationValidator {
 		boolean included = false;
 		for (int i = 0; i < csites.length; i++) {
 			IConfiguredSite csite = csites[i];
-			ISiteFeatureReference[] crefs =
-				csite.getSite().getFeatureReferences();
+			ISiteFeatureReference[] crefs = csite.getSite().getFeatureReferences();
 			for (int j = 0; j < crefs.length; j++) {
 				IFeatureReference cref = crefs[j];
 				IFeature cfeature = null;
@@ -1081,68 +992,64 @@ public class OperationValidator implements IOperationValidator {
 			//feature is root - can be configured
 		}
 	}
-//
-//	/**
-//	 * Checks if the configuration is locked by other instances
-//	 * 
-//	 * @param status
-//	 */
-//	private static void checkConfigurationLock(ArrayList status) {
-//		IPlatformConfiguration config =
-//			BootLoader.getCurrentPlatformConfiguration();
-//		URL configURL = config.getConfigurationLocation();
-//		if (!"file".equals(configURL.getProtocol())) {
-//			status.add(
-//				createStatus(
-//					null,
-//					"Configuration location is not writable:" + configURL));
-//			return;
-//		}
-//		String locationString = configURL.getFile();
-//		File configDir = new File(locationString);
-//		if (!configDir.isDirectory())
-//			configDir = configDir.getParentFile();
-//		if (!configDir.exists()) {
-//			status.add(
-//				createStatus(null, "Configuration location does not exist"));
-//			return;
-//		}
-//		File locksDir = new File(configDir, "locks");
-//		// check all the possible lock files
-//		File[] lockFiles = locksDir.listFiles();
-//		File configLock = BootLoader.getCurrentPlatformConfiguration().getLockFile();
-//		for (int i = 0; i < lockFiles.length; i++) {
-//			if (lockFiles[i].equals(configLock))
-//				continue;
-//			try {
-//				RandomAccessFile raf = new RandomAccessFile(lockFiles[i], "rw");
-//				FileChannel channel = raf.getChannel();
-//				System.out.println(channel.isOpen());
-//				FileLock lock = channel.tryLock();
-//				if (lock == null){
-//					// there is another eclipse instance running
-//					raf.close();
-//					status.add(
-//						createStatus(
-//							null,
-//							"Another instance is running, please close it before performing any configuration operations"));
-//					return;
-//				}
-//
-//			} catch (Exception e) {
-//				status.add(createStatus(null, "Failed to create lock:"+lockFiles[i]));
-//				return;
-//			} 
-//		}
-//	}
 
-	private static boolean isParent(
-		IFeature candidate,
-		IFeature feature,
-		boolean optionalOnly)
-		throws CoreException {
-		IIncludedFeatureReference[] refs =
-			candidate.getIncludedFeatureReferences();
+	//
+	//	/**
+	//	 * Checks if the configuration is locked by other instances
+	//	 * 
+	//	 * @param status
+	//	 */
+	//	private static void checkConfigurationLock(ArrayList status) {
+	//		IPlatformConfiguration config =
+	//			BootLoader.getCurrentPlatformConfiguration();
+	//		URL configURL = config.getConfigurationLocation();
+	//		if (!"file".equals(configURL.getProtocol())) {
+	//			status.add(
+	//				createStatus(
+	//					null,
+	//					"Configuration location is not writable:" + configURL));
+	//			return;
+	//		}
+	//		String locationString = configURL.getFile();
+	//		File configDir = new File(locationString);
+	//		if (!configDir.isDirectory())
+	//			configDir = configDir.getParentFile();
+	//		if (!configDir.exists()) {
+	//			status.add(
+	//				createStatus(null, "Configuration location does not exist"));
+	//			return;
+	//		}
+	//		File locksDir = new File(configDir, "locks");
+	//		// check all the possible lock files
+	//		File[] lockFiles = locksDir.listFiles();
+	//		File configLock = BootLoader.getCurrentPlatformConfiguration().getLockFile();
+	//		for (int i = 0; i < lockFiles.length; i++) {
+	//			if (lockFiles[i].equals(configLock))
+	//				continue;
+	//			try {
+	//				RandomAccessFile raf = new RandomAccessFile(lockFiles[i], "rw");
+	//				FileChannel channel = raf.getChannel();
+	//				System.out.println(channel.isOpen());
+	//				FileLock lock = channel.tryLock();
+	//				if (lock == null){
+	//					// there is another eclipse instance running
+	//					raf.close();
+	//					status.add(
+	//						createStatus(
+	//							null,
+	//							"Another instance is running, please close it before performing any configuration operations"));
+	//					return;
+	//				}
+	//
+	//			} catch (Exception e) {
+	//				status.add(createStatus(null, "Failed to create lock:"+lockFiles[i]));
+	//				return;
+	//			} 
+	//		}
+	//	}
+
+	private static boolean isParent(IFeature candidate, IFeature feature, boolean optionalOnly) throws CoreException {
+		IIncludedFeatureReference[] refs = candidate.getIncludedFeatureReferences();
 		for (int i = 0; i < refs.length; i++) {
 			IIncludedFeatureReference child = refs[i];
 			VersionedIdentifier fvid = feature.getVersionedIdentifier();
@@ -1163,39 +1070,30 @@ public class OperationValidator implements IOperationValidator {
 		return false;
 	}
 
-//	private static boolean checkTimeline(
-//		IInstallConfiguration config,
-//		ArrayList status) {
-//		try {
-//			ILocalSite lsite = SiteManager.getLocalSite();
-//			IInstallConfiguration cconfig = lsite.getCurrentConfiguration();
-//			if (cconfig.getTimeline() != config.getTimeline()) {
-//				// Not the same timeline - cannot revert
-//				String msg =
-//					UpdateUtils.getFormattedMessage(
-//						KEY_WRONG_TIMELINE,
-//						config.getLabel());
-//				status.add(createStatus(null, FeatureStatus.CODE_OTHER, msg));
-//				return false;
-//			}
-//		} catch (CoreException e) {
-//			status.add(e.getStatus());
-//		}
-//		return true;
-//	}
+	//	private static boolean checkTimeline(
+	//		IInstallConfiguration config,
+	//		ArrayList status) {
+	//		try {
+	//			ILocalSite lsite = SiteManager.getLocalSite();
+	//			IInstallConfiguration cconfig = lsite.getCurrentConfiguration();
+	//			if (cconfig.getTimeline() != config.getTimeline()) {
+	//				// Not the same timeline - cannot revert
+	//				String msg =
+	//					UpdateUtils.getFormattedMessage(
+	//						KEY_WRONG_TIMELINE,
+	//						config.getLabel());
+	//				status.add(createStatus(null, FeatureStatus.CODE_OTHER, msg));
+	//				return false;
+	//			}
+	//		} catch (CoreException e) {
+	//			status.add(e.getStatus());
+	//		}
+	//		return true;
+	//	}
 
-	private static IStatus createMultiStatus(
-		String message,
-		ArrayList children,
-		int code) {
-		IStatus[] carray =
-			(IStatus[]) children.toArray(new IStatus[children.size()]);
-		return new MultiStatus(
-			UpdateCore.getPlugin().getBundle().getSymbolicName(),
-			code,
-			carray,
-			message,
-			null);
+	private static IStatus createMultiStatus(String message, ArrayList children, int code) {
+		IStatus[] carray = (IStatus[]) children.toArray(new IStatus[children.size()]);
+		return new MultiStatus(UpdateCore.getPlugin().getBundle().getSymbolicName(), code, carray, message, null);
 	}
 
 	private static IStatus createStatus(IFeature feature, int errorCode, String message) {
@@ -1204,22 +1102,11 @@ public class OperationValidator implements IOperationValidator {
 		if (feature == null)
 			fullMessage = message;
 		else {
-			PluginVersionIdentifier version =
-				feature.getVersionedIdentifier().getVersion();
-			fullMessage =
-				NLS.bind(Messages.ActivityConstraints_childMessage, (new String[] {
-                feature.getLabel(),
-                version.toString(),
-                message }));
+			PluginVersionIdentifier version = feature.getVersionedIdentifier().getVersion();
+			fullMessage = NLS.bind(Messages.ActivityConstraints_childMessage, (new String[] {feature.getLabel(), version.toString(), message}));
 		}
 
-		return new FeatureStatus(
-			feature,
-			IStatus.ERROR,
-			UpdateCore.getPlugin().getBundle().getSymbolicName(),
-			errorCode,
-			fullMessage,
-			null);
+		return new FeatureStatus(feature, IStatus.ERROR, UpdateCore.getPlugin().getBundle().getSymbolicName(), errorCode, fullMessage, null);
 	}
 
 	//	private static IStatus createReportStatus(ArrayList beforeStatus,
@@ -1235,16 +1122,12 @@ public class OperationValidator implements IOperationValidator {
 	//		return null;
 	//	}
 
-	private static IStatus createCombinedReportStatus(
-		ArrayList beforeStatus,
-		ArrayList status) {
+	private static IStatus createCombinedReportStatus(ArrayList beforeStatus, ArrayList status) {
 		if (beforeStatus.size() == 0) { // good initial config
 			if (status.size() == 0) {
 				return null; // all fine
 			} else {
-				return createMultiStatus(Messages.ActivityConstraints_rootMessage,
-					status,
-					IStatus.ERROR);
+				return createMultiStatus(Messages.ActivityConstraints_rootMessage, status, IStatus.ERROR);
 				// error after operation
 			}
 		} else { // beforeStatus.size() > 0 : initial config errors
@@ -1252,27 +1135,13 @@ public class OperationValidator implements IOperationValidator {
 				return null; // errors will be fixed
 			} else {
 				if (isBetterStatus(beforeStatus, status)) {
-					return createMultiStatus(
-						Messages.ActivityConstraints_warning,
-						beforeStatus,
-						IStatus.WARNING);
+					return createMultiStatus(Messages.ActivityConstraints_warning, beforeStatus, IStatus.WARNING);
 					// errors may be fixed
 				} else {
 					ArrayList combined = new ArrayList();
-					combined.add(
-						createMultiStatus(
-							Messages.ActivityConstraints_beforeMessage,
-							beforeStatus,
-							IStatus.ERROR));
-					combined.add(
-						createMultiStatus(
-							Messages.ActivityConstraints_afterMessage,
-							status,
-							IStatus.ERROR));
-					return createMultiStatus(
-						Messages.ActivityConstraints_rootMessageInitial,
-						combined,
-						IStatus.ERROR);
+					combined.add(createMultiStatus(Messages.ActivityConstraints_beforeMessage, beforeStatus, IStatus.ERROR));
+					combined.add(createMultiStatus(Messages.ActivityConstraints_afterMessage, status, IStatus.ERROR));
+					return createMultiStatus(Messages.ActivityConstraints_rootMessageInitial, combined, IStatus.ERROR);
 				}
 			}
 		}
@@ -1281,8 +1150,7 @@ public class OperationValidator implements IOperationValidator {
 	private static ArrayList createList(String commaSeparatedList) {
 		ArrayList list = new ArrayList();
 		if (commaSeparatedList != null) {
-			StringTokenizer t =
-				new StringTokenizer(commaSeparatedList.trim(), ","); //$NON-NLS-1$
+			StringTokenizer t = new StringTokenizer(commaSeparatedList.trim(), ","); //$NON-NLS-1$
 			while (t.hasMoreTokens()) {
 				String token = t.nextToken().trim();
 				if (!token.equals("")) //$NON-NLS-1$
@@ -1299,9 +1167,7 @@ public class OperationValidator implements IOperationValidator {
 	 * @param status
 	 * @return
 	 */
-	private static boolean isBetterStatus(
-		ArrayList beforeStatus,
-		ArrayList status) {
+	private static boolean isBetterStatus(ArrayList beforeStatus, ArrayList status) {
 		// if no status at all, then it's a subset
 		if (status == null || status.size() == 0)
 			return true;
@@ -1332,42 +1198,45 @@ public class OperationValidator implements IOperationValidator {
 		}
 		return true;
 	}
-	
+
 	public class RequiredFeaturesResult {
-		
+
 		private IStatus status;
 		private Set requiredFeatures;
-		
+
 		public Set getRequiredFeatures() {
 			return requiredFeatures;
 		}
+
 		public void setRequiredFeatures(Set requiredFeatures) {
 			this.requiredFeatures = requiredFeatures;
 		}
+
 		public void addRequiredFeatures(Set requiredFeatures) {
 			if (requiredFeatures == null) {
 				requiredFeatures = new HashSet();
 			}
 			this.requiredFeatures.addAll(requiredFeatures);
 		}
+
 		public IStatus getStatus() {
 			return status;
 		}
+
 		public void setStatus(IStatus status) {
 			this.status = status;
 		}
-		
-		
+
 	}
-	
+
 	public static class InternalImport {
-		
+
 		private IImport iimport;
 
 		public InternalImport(IImport iimport) {
 			this.iimport = iimport;
 		}
-		
+
 		public IImport getImport() {
 			return iimport;
 		}
@@ -1375,23 +1244,23 @@ public class OperationValidator implements IOperationValidator {
 		public void setImport(IImport iimport) {
 			this.iimport = iimport;
 		}
-		
+
 		public boolean equals(Object object) {
 
-			if ( ( object == null) || !(object instanceof InternalImport))
+			if ((object == null) || !(object instanceof InternalImport))
 				return false;
-			
-			if ( object == this)
+
+			if (object == this)
 				return true;
-			
-			return iimport.getVersionedIdentifier().equals( ((InternalImport)object).getImport().getVersionedIdentifier()) && (getImport().getRule() == ((InternalImport)object).getImport().getRule());
+
+			return iimport.getVersionedIdentifier().equals(((InternalImport) object).getImport().getVersionedIdentifier()) && (getImport().getRule() == ((InternalImport) object).getImport().getRule());
 
 		}
 
 		public int hashCode() {
 			return iimport.getVersionedIdentifier().hashCode() * iimport.getRule();
 		}
-		
+
 	}
 
 }
