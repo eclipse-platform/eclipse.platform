@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -476,11 +476,14 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 	/**
 	 * Simple algorithm to find the highest version of <code>org.apache.ant</code> 
 	 * available. If there are other providers that are not <code>org.apache.ant</code>
-	 * <code>null</code> is returned so that all bundles will be inspected 
-	 * for contributed libraries.
-	 * <p>
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=282851
-	 * </p>
+	 * they are ignored and all versions of <code>org.apache.ant</code> are considered.
+	 * <br><br>
+	 * See the following bugs for related history:
+	 * <ul>
+	 * <li><a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=282851">https://bugs.eclipse.org/bugs/show_bug.cgi?id=282851</a></li>
+	 * <li><a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=325125">https://bugs.eclipse.org/bugs/show_bug.cgi?id=325125</a></li>
+	 * </ul>
+	 * 
 	 * @param packages the live list of {@link ExportedPackage}s to inspect
 	 * @return the bundle that represents the highest version of <code>org.apache.ant</code> or <code>null</code>
 	 * if there are other providers for the <code>org.apache.ant.tools</code> packages.
@@ -495,9 +498,6 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 			}
 			if("org.apache.ant".equals(bundle.getSymbolicName())) { //$NON-NLS-1$
 				bundles.add(bundle);
-			}
-			else {
-				return null;
 			}
 		}
 		Bundle highest = null;
