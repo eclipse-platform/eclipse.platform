@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package org.eclipse.ant.internal.ui.launchConfigurations;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.ant.internal.ui.AntUIImages;
@@ -293,19 +295,27 @@ public class AntBuilderTargetsTab extends AbstractLaunchConfigurationTab {
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-        StringBuffer buffer= new StringBuffer();
+        HashSet kinds = new HashSet(4);
         if (!fAfterCleanTargetText.getText().equals(NOT_ENABLED)) {
-            buffer.append(IExternalToolConstants.BUILD_TYPE_FULL).append(',');
+            kinds.add(IExternalToolConstants.BUILD_TYPE_FULL);
         } 
         if (!fManualBuildTargetText.getText().equals(NOT_ENABLED)){
-            buffer.append(IExternalToolConstants.BUILD_TYPE_INCREMENTAL).append(','); 
+        	kinds.add(IExternalToolConstants.BUILD_TYPE_FULL);
+            kinds.add(IExternalToolConstants.BUILD_TYPE_INCREMENTAL); 
         } 
         if (!fAutoBuildTargetText.getText().equals(NOT_ENABLED)) {
-            buffer.append(IExternalToolConstants.BUILD_TYPE_AUTO).append(',');
+            kinds.add(IExternalToolConstants.BUILD_TYPE_AUTO);
         }
         if (!fDuringCleanTargetText.getText().equals(NOT_ENABLED)) {
-            buffer.append(IExternalToolConstants.BUILD_TYPE_CLEAN);
+            kinds.add(IExternalToolConstants.BUILD_TYPE_CLEAN);
         }
+        StringBuffer buffer= new StringBuffer();
+		for(Iterator i = kinds.iterator(); i.hasNext();) {
+			buffer.append(i.next());
+			if(i.hasNext()) {
+				buffer.append(',');
+			}
+		}
         configuration.setAttribute(IExternalToolConstants.ATTR_RUN_BUILD_KINDS, buffer.toString());
         
         String targets= (String) fAttributeToTargets.get(org.eclipse.ant.ui.launching.IAntLaunchConfigurationConstants.ATTR_ANT_AFTER_CLEAN_TARGETS);
