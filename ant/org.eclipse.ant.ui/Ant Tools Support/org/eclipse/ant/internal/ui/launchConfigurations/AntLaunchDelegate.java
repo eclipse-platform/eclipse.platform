@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -537,14 +537,15 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate  {
 	
 	private void runInSeparateVM(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor, String idStamp, String antHome, int port, int requestPort, StringBuffer commandLine, boolean captureOutput, boolean setInputHandler) throws CoreException {
         boolean debug= fMode.equals(ILaunchManager.DEBUG_MODE);
+        String encoding = DebugPlugin.getDefault().getLaunchManager().getEncoding(configuration);
 		if (captureOutput) {
 			if (debug) {
-				RemoteAntDebugBuildListener listener= new RemoteAntDebugBuildListener(launch);
+				RemoteAntDebugBuildListener listener= new RemoteAntDebugBuildListener(launch, encoding);
 				if (requestPort != -1) {
 					listener.startListening(port, requestPort);
 				}
 			} else if (!fUserSpecifiedLogger) {
-				RemoteAntBuildListener client= new RemoteAntBuildListener(launch);
+				RemoteAntBuildListener client= new RemoteAntBuildListener(launch, encoding);
 				if (port != -1) {
 					client.startListening(port);
 				}

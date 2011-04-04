@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,8 +69,14 @@ public class RemoteAntDebugBuildListener extends RemoteAntBuildListener implemen
 		}
 	}	
 	
-	public RemoteAntDebugBuildListener(ILaunch launch) {
-		super(launch);
+	/**
+	 * Constructor
+	 * 
+	 * @param launch the backing launch to listen to
+	 * @param encoding the encoding to use for communications
+	 */
+	public RemoteAntDebugBuildListener(ILaunch launch, String encoding) {
+		super(launch, encoding);
 		//fDebug= true;
 	}
 	
@@ -130,7 +136,7 @@ public class RemoteAntDebugBuildListener extends RemoteAntBuildListener implemen
     		try {
     			fRequestSocket = new Socket("localhost", fRequestPort); //$NON-NLS-1$
     			fRequestWriter = new PrintWriter(fRequestSocket.getOutputStream(), true);
-    			fResponseReader = new BufferedReader(new InputStreamReader(fRequestSocket.getInputStream()));
+    			fResponseReader = new BufferedReader(new InputStreamReader(fRequestSocket.getInputStream(), getEncoding()));
     			
     			fReaderThread= new ReaderThread();
     			fReaderThread.start();
