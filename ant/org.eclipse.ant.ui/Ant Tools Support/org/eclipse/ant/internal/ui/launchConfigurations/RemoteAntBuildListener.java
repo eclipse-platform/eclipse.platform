@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ public class RemoteAntBuildListener implements ILaunchesListener {
     private String fLastFileName= null;
     private String fLastTaskName= null;
     private boolean fBuildFailed= false;
+    /**
+	 * The encoding to use
+	 * @since 3.4.2+
+	 */
+    private String fEncoding;
     
     /**
      * Reads the message stream from the RemoteAntBuildLogger
@@ -93,7 +98,7 @@ public class RemoteAntBuildListener implements ILaunchesListener {
                 int socketTimeout= prefs.getInt(IAntUIPreferenceConstants.ANT_COMMUNICATION_TIMEOUT);
                 fServerSocket.setSoTimeout(socketTimeout);
                 fSocket= fServerSocket.accept();
-                fBufferedReader= new BufferedReader(new InputStreamReader(fSocket.getInputStream()));
+                fBufferedReader= new BufferedReader(new InputStreamReader(fSocket.getInputStream(), fEncoding));
                 String message;
                 while(fBufferedReader != null && (message= fBufferedReader.readLine()) != null) {
                     receiveMessage(message);
@@ -112,12 +117,29 @@ public class RemoteAntBuildListener implements ILaunchesListener {
         }
     }
     
-    public RemoteAntBuildListener(ILaunch launch) {
-        super();
-        fLaunch= launch;
-        DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
+    /**
+	 * Constructor
+	 * 
+	 * @param launch the backing launch to listen to
+	 * @param encoding the encoding to use for communications
+     */
+	public RemoteAntBuildListener(ILaunch launch, String encoding) {
+	    super();
+	    fLaunch= launch;
+	    fEncoding = encoding;
+	    DebugPlugin.getDefault().getLaunchManager().addLaunchListener(this);
     }
 
+	/**
+	 * Returns the encoding set on the listener
+	 * 
+	 * @return the encoding set on the listener
+	 * @since 3.4.2+
+	 */
+	protected String getEncoding() {
+		return fEncoding;
+	}
+	
     /**
      * Start listening to an Ant build. Start a server connection that
      * the RemoteAntBuildLogger can connect to.
