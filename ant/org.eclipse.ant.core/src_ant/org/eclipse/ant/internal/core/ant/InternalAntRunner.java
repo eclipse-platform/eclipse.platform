@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2009 IBM Corporation and others.
+ *  Copyright (c) 2000, 2011 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -150,6 +150,8 @@ public class InternalAntRunner {
     private boolean allowInput = true;
     
     private String fEarlyErrorMessage= null;
+
+	private boolean unknownTargetsFound = false;
     
 	/**
 	 * Adds a build listener.
@@ -1116,6 +1118,12 @@ public class InternalAntRunner {
 			processTargets(commands);
 		}
 		
+		if (unknownTargetsFound && (targets == null  || targets.isEmpty())) {
+			// Some targets are specified but none of them are good. Hence quit
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=352536
+			logMessage(currentProject, InternalAntMessages.InternalAntRunner_no_known_target, Project.MSG_ERR);
+			return false;
+		}
 		return true;
 	}
 	
@@ -1134,7 +1142,8 @@ public class InternalAntRunner {
 			if (!names.contains(target)) {
 				iterator.remove();
 				String message = MessageFormat.format(InternalAntMessages.InternalAntRunner_unknown_target, new Object[]{target});
-				logMessage(currentProject, message, Project.MSG_WARN); 
+				logMessage(currentProject, message, Project.MSG_WARN);
+				unknownTargetsFound = true;
 			}
 		}
 	}
