@@ -129,67 +129,67 @@
       <theme
             basestylesheeturi="css/e4_default.css"
             id="org.eclipse.e4.ui.css.theme.e4_default.noos"
-            label="Default Theme">
+            label="%theme.default">
       </theme>
       <theme
             basestylesheeturi="css/e4_classic_winxp.css"
             id="org.eclipse.e4.ui.css.theme.e4_classic"
-            label="Classic">
+            label="%theme.classic">
       </theme>
       <theme
             basestylesheeturi="css/e4_default_gtk.css"
             id="org.eclipse.e4.ui.css.theme.e4_default"
-            label="GTK"
+            label="%theme.gtk"
             os="linux">
       </theme>
       <theme
             basestylesheeturi="css/e4_default_mac.css"
             id="org.eclipse.e4.ui.css.theme.e4_default"
-            label="Mac"
+            label="%theme.mac"
             os="macosx">
       </theme>
       <theme
             basestylesheeturi="css/e4_default_win7.css"
             id="org.eclipse.e4.ui.css.theme.e4_default"
-            label="Win7"
+            label="%theme.win7"
             os="win32"
             os_version="6.1">
       </theme>
             <theme
                   basestylesheeturi="css/e4_default_winxp_blu.css"
                   id="org.eclipse.e4.ui.css.theme.e4_default"
-                  label="Win XP Blue"
+                  label="%theme.winxpBlue"
                   os="win32">
       </theme>
 	  <theme
             basestylesheeturi="css/e4_default_winxp_olv.css"
             id="org.eclipse.e4.ui.css.theme.e4_default.xpolive"
-            label="Win XP Olive"
+            label="%theme.winxpOlive"
             os="win32">
       </theme>
    <theme
          basestylesheeturi="css/e4_classic_win7.css"
          id="org.eclipse.e4.ui.css.theme.e4_classic"
-         label="Win 7 Classic"
+         label="%theme.win7Classic"
          os="win32"
          os_version="6.1">
    </theme>
    <theme
          basestylesheeturi="css/e4_default_gtk.css"
          id="org.eclipse.e4.ui.css.theme.e4_default"
-         label="Solaris"
+         label="%theme.solaris"
          os="solaris">
    </theme>
    <theme
          basestylesheeturi="css/e4_default_gtk.css"
          id="org.eclipse.e4.ui.css.theme.e4_default"
-         label="AIX"
+         label="%theme.aix"
          os="aix">
    </theme>
    <theme
          basestylesheeturi="css/e4_classic_winxp.css"
          id="org.eclipse.e4.ui.css.theme.e4_default"
-         label="HPUX"
+         label="%theme.hpux"
          os="hpux">
    </theme>
       </extension>
