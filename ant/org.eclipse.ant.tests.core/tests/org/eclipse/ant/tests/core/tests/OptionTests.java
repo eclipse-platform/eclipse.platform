@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2009 IBM Corporation and others.
+ *  Copyright (c) 2000, 2011 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -289,14 +289,24 @@ public class OptionTests extends AbstractAntTest {
 	
 	/**
 	 * Tests specifying a target at the command line that does not exist.
-	 * 
-	 * @since 3.6  this will no longer fail - the default target will be run instead
 	 */
 	public void testSpecifyBadTargetAsArg() throws CoreException {
 		run("TestForEcho.xml", new String[]{"echo2"}, false);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(1).indexOf("Unknown target") >= 0);
+		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(1).indexOf("echo2") >= 0);
+		assertTrue("Should be a no known target message", AntTestChecker.getDefault().getLoggedMessage(0).indexOf("No known target specified.") >= 0);
+		assertEquals("Should not have run any targets", 0, AntTestChecker.getDefault().getTargetsStartedCount());
+	}
+	
+	/**
+	 * Tests specifying both a non-existent target and an existent target in the command line 
+	 * 
+	 */
+	public void testSpecifyBothBadAndGoodTargetsAsArg() throws CoreException {
+		run("TestForEcho.xml", new String[]{"echo2", "Test for Echo"}, false);
 		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("Unknown target") >= 0);
 		assertTrue("Should be an unknown target message", AntTestChecker.getDefault().getLoggedMessage(5).indexOf("echo2") >= 0);
-		assertEquals("Should have run the default target & dependents", 5, AntTestChecker.getDefault().getTargetsStartedCount());
+		assertEquals("Should have run the Test for Echo target", 5, AntTestChecker.getDefault().getTargetsStartedCount());
 	}
 	
 	/**
