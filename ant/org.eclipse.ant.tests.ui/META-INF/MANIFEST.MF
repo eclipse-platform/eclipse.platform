@@ -40,3 +40,4 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.core.externaltools
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Eclipse-BundleShape: dir
