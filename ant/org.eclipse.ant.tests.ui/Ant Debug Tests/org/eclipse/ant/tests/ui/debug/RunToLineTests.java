@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2005, 2009 IBM Corporation and others.
+ *  Copyright (c) 2005, 2012 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -202,7 +202,9 @@ public class RunToLineTests extends AbstractAntDebugTest {
             DebugElementEventWaiter waiter = new DebugElementEventWaiter(DebugEvent.SUSPEND, thread);
             DebugUIPlugin.getStandardDisplay().syncExec(r);
             Object event = waiter.waitForEvent();
-            assertNotNull("no suspend event was recieved", event);
+            if (event == null) {
+    			throw new TestAgainException("Retest - no suspend event was recieved");
+    		}
             IStackFrame topStackFrame = thread.getTopStackFrame();
             assertNotNull("There must be a top stack frame", topStackFrame);
             assertEquals("wrong line", expectedLineNumber, topStackFrame.getLineNumber());

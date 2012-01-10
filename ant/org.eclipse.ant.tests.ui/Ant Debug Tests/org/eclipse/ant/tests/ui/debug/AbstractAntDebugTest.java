@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -170,7 +170,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 			}
 		}
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend, launch terminated.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend, launch terminated");
+		}
 		return suspendee;		
 	}	
 	
@@ -389,7 +391,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread)suspendee;
 	}	
 	
@@ -409,7 +413,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		assertTrue("suspendee was not an AntThread", suspendee instanceof AntThread);
 		AntThread thread = (AntThread) suspendee;
 		IBreakpoint hit = getBreakpoint(thread);
@@ -579,7 +585,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;
 	}
 	
@@ -598,7 +606,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;
 	}
 
@@ -615,7 +625,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;		
 	}
 	
@@ -632,7 +644,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;
 	}	
 	
@@ -658,7 +672,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;		
 	}	
 
@@ -684,7 +700,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;		
 	}	
 	
@@ -710,7 +728,9 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
 		
 		Object suspendee= waiter.waitForEvent();
 		setEventSet(waiter.getEventSet());
-		assertNotNull("Program did not suspend.", suspendee);
+		if (suspendee == null) {
+			throw new TestAgainException("Retest - Program did not suspend");
+		}
 		return (AntThread) suspendee;		
 	}	
     
@@ -742,6 +762,28 @@ public abstract class AbstractAntDebugTest extends AbstractAntUIBuildTest {
          debugUIPreferences.setValue(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT, activate);
          debugUIPreferences.setValue(IInternalDebugUIConstants.PREF_ACTIVATE_DEBUG_VIEW, activate);
          debugUIPreferences.setValue(IDebugUIConstants.PREF_ACTIVATE_WORKBENCH, activate);
+	}
+	
+	/**
+	 * When a test throws the 'try again' exception, try it again.
+	 * @see junit.framework.TestCase#runBare()
+	 */
+	public void runBare() throws Throwable {
+		boolean tryAgain = true;
+		int attempts = 0;
+		while (tryAgain) {
+			try {
+				attempts++;
+				super.runBare();
+				tryAgain = false;
+			} catch (TestAgainException e) {
+				System.err.println("Test failed attempt " + attempts + ". Re-testing: " + this.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				e.printStackTrace();
+				if (attempts > 5) {
+					tryAgain = false;
+				}
+			}
+		}
 	}
 	
 	/* (non-Javadoc)
