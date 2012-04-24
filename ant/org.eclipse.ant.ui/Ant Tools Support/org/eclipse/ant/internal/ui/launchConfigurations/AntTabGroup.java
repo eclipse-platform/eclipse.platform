@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ant.internal.ui.launchConfigurations;
 
+import org.eclipse.ant.internal.ui.AntUtil;
 import org.eclipse.ant.internal.ui.IAntUIHelpContextIds;
 import org.eclipse.core.externaltools.internal.IExternalToolConstants;
 import org.eclipse.core.resources.IFile;
@@ -87,8 +88,7 @@ public class AntTabGroup extends AbstractLaunchConfigurationTabGroup {
 		IResource resource = DebugUITools.getSelectedResource();
 		if (resource != null && resource instanceof IFile) {
 			IFile file = (IFile)resource;
-			String extension = file.getFileExtension();
-			if (extension != null && extension.equalsIgnoreCase("xml")) { //$NON-NLS-1$
+			if (AntUtil.isKnownAntFile(file)) {
 				String projectName= file.getProject().getName();
 				StringBuffer buffer = new StringBuffer(projectName);
 				buffer.append(' ');

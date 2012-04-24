@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class AddBuildFilesAction extends Action {
 	public void run() {
 		String title= AntViewActionMessages.AddBuildFilesAction_2;
 		String message= AntViewActionMessages.AddBuildFilesAction_4;
-		String filterExtension= "xml"; //$NON-NLS-1$
+		String filterExtension= AntUtil.getKnownBuildFileExtensionsAsPattern();
 		String filterMessage= AntViewActionMessages.AddBuildFilesAction_5;
 		
 		FileSelectionDialog dialog = new FileSelectionDialog(Display.getCurrent().getActiveShell(), getBuildFiles(), title, message, filterExtension, filterMessage);

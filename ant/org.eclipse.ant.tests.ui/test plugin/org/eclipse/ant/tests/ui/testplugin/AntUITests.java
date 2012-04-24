@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 GEBIT Gesellschaft fuer EDV-Beratung
+ * Copyright (c) 2002, 2012 GEBIT Gesellschaft fuer EDV-Beratung
  * und Informatik-Technologien mbH, 
  * Berlin, Duesseldorf, Frankfurt (Germany) and others.
  * All rights reserved. This program and the accompanying materials 
@@ -18,6 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.ant.tests.ui.AntUtilTests;
+import org.eclipse.ant.tests.ui.AntViewTests;
 import org.eclipse.ant.tests.ui.BuildTests;
 import org.eclipse.ant.tests.ui.ModelProjectTests;
 import org.eclipse.ant.tests.ui.debug.BreakpointTests;
@@ -61,6 +62,7 @@ public class AntUITests extends TestSuite {
         suite.addTest(new TestSuite(XmlTagFormatterTest.class));
         suite.addTest(new TestSuite(XmlFormatterTest.class));
         suite.addTest(new TestSuite(AntUtilTests.class));
+        suite.addTest(new TestSuite(AntViewTests.class));
 		suite.addTest(new TestSuite(BreakpointTests.class));
 		suite.addTest(new TestSuite(RunToLineTests.class));
         suite.addTest(new TestSuite(SteppingTests.class));

@@ -124,5 +124,14 @@ public class AntUtilTests extends AbstractAntUITest {
             }
         }
         assertEquals("Did not find target: " + targetName, true, found);
-    }        
+    }      
+    
+    public void testIsKnownAntFileName() throws Exception {
+    	assertTrue("The file name 'foo.xml' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.xml"));
+    	assertTrue("The file name 'foo.ant' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.ant"));
+    	assertTrue("The file name 'foo.ent' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.ent"));
+    	assertTrue("The file name 'foo.macrodef' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.macrodef"));
+    	assertFalse("The file name 'foo.xsi' is not a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.xsi"));
+    	assertFalse("The file name 'foo.txt' is a valid name", AntUtil.isKnownAntFileName("a/b/c/d/foo.txt"));
+    }
 }

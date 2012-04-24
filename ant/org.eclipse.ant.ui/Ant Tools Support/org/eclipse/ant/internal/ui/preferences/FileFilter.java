@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2006 IBM Corporation and others.
+ * Copyright (c) 2003, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.ant.internal.ui.preferences;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.ant.internal.ui.AntUIPlugin;
 import org.eclipse.core.resources.IContainer;
@@ -38,6 +39,8 @@ public class FileFilter extends ViewerFilter {
 	private Set fFiles;
 	
 	private String fExtension;
+	
+	private Pattern fExtnPattern;
 
     private boolean fConsiderExtension= true;
 
@@ -48,7 +51,13 @@ public class FileFilter extends ViewerFilter {
 	 */
 	public FileFilter(List objects, String extension) {
 		fFilter = objects;
-		fExtension= extension;
+		fExtension = extension;
+		if (extension.indexOf('|') > 0) { // Shouldn't be the first char!
+			// This is a pattern; compile and cache it for better performance
+			fExtnPattern = Pattern.compile(fExtension, Pattern.CASE_INSENSITIVE);
+		} else {
+			fExtnPattern = null;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -83,7 +92,7 @@ public class FileFilter extends ViewerFilter {
 				if (resource instanceof IFile) {
 					IFile file = (IFile) resource;
 					String ext = file.getFileExtension();
-					if (!fConsiderExtension || (ext != null && ext.equalsIgnoreCase(fExtension))) {
+					if (!fConsiderExtension || canAccept(ext)) {
 						set.add(file);
 						added = true;
 					}
@@ -97,6 +106,19 @@ public class FileFilter extends ViewerFilter {
 		} catch (CoreException e) {
 		}
 		return added;
+	}
+
+	private boolean canAccept(String ext) {
+		if (ext != null) {
+			if (fExtnPattern == null) {
+				// Accepting only a single extension
+				return fExtension.equalsIgnoreCase(ext);
+			}
+			// Accepting multiple extensions
+			// eg: "xml|ant|ent|macrodef"
+			return fExtnPattern.matcher(ext).matches();		
+		}
+		return false;
 	}
 	
 	/**

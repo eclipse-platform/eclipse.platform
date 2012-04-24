@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.tools.ant.Target;
 import org.eclipse.ant.core.AntCorePlugin;
@@ -379,6 +380,7 @@ public final class AntUtil {
 	 * Returns the list of Strings that were delimiter separated.
 	 * 
 	 * @param delimString the String to be tokenized based on the delimiter
+	 * @param delim the delimiter
 	 * @return a list of Strings
 	 */
 	public static String[] parseString(String delimString, String delim) {
@@ -388,6 +390,8 @@ public final class AntUtil {
 	/**
 	 * Returns an IFile with the given fully qualified path (relative to the workspace root).
 	 * The returned IFile may or may not exist.
+	 * @param fullPath the path to look up
+	 * @return the {@link IFile} which may or may not exist
 	 */
 	public static IFile getFile(String fullPath) {
 		return AntLaunchingUtil.getFile(fullPath);
@@ -622,10 +626,12 @@ public final class AntUtil {
     		IContentType type = Platform.getContentTypeManager().findContentTypeFor(filename);
     		if(type != null) {
     			IContentType antType = Platform.getContentTypeManager().getContentType(AntCorePlugin.ANT_BUILDFILE_CONTENT_TYPE);
-    			return type.isKindOf(antType);
+    			if(antType != null) {
+    				return type.isKindOf(antType);
+    			}
     		}
 			String[] names = getKnownBuildfileNames();
-			for (int i = 0; i < names.length; i++) {
+			for (int i = 0; names != null && i < names.length; i++) { // names can be null!
 				if(filename.endsWith(names[i])) {
 					return true;
 				}
@@ -658,11 +664,72 @@ public final class AntUtil {
 	 */
 	public static boolean isKnownBuildfileName(String filename) {
 		String[] names = getKnownBuildfileNames();
-		for (int i = 0; i < names.length; i++) {
+		for (int i = 0; names != null && i < names.length; i++) { // names can be null!
 			if(names[i].equalsIgnoreCase(filename)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * A helper method to extract the build filename extensions as defined in the extender of the 
+	 * content-types extension-point.
+	 * 
+	 * @return An empty array or list of filename extensions as specified in the content-types extension
+	 * @since 3.8
+	 */
+	public static String[] getKnownBuildFileExtensions() {
+		IContentType antType = null;
+		String[] result = null;
+		try {
+			antType = Platform.getContentTypeManager().getContentType(AntCorePlugin.ANT_BUILDFILE_CONTENT_TYPE);
+			if(antType != null) {
+				result = antType.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
+			}
+		} catch (Exception e) {
+			// Empty block and fall-thru is intentional!
+		}
+		return result == null ? new String[0] : result;
+	}
+
+	/**
+	 * A helper method to construct a RegEx pattern out of the extensions
+	 * 
+	 * @return A String that is a RegEx pattern representing the extensions
+	 * @since 3.8
+	 */
+	public static String getKnownBuildFileExtensionsAsPattern() {
+		String[] extns = AntUtil.getKnownBuildFileExtensions();
+		if (extns.length == 0) {
+			return IAntCoreConstants.XML_EXTENSION;
+		}
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < extns.length; i++) {
+			if (i > 0) sb.append('|');
+			sb.append(extns[i]);
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Returns if the given file name is known as a build file. This method consults
+	 * all of the known file extensions from the Ant-defined content types
+	 * 
+	 * @param name
+	 * @return <code>true</code> if the file name matches an Ant build file pattern <code>false</code> otherwise
+	 * @since 3.8
+	 */
+	public static boolean isKnownAntFileName(String name) {
+		StringBuffer buf = new StringBuffer(".*.("); //$NON-NLS-1$
+		buf.append(getKnownBuildFileExtensionsAsPattern());
+		buf.append(")"); //$NON-NLS-1$
+		try {
+			Pattern p = Pattern.compile(buf.toString());
+			return p.matcher(name).matches();
+		}
+		catch(PatternSyntaxException pse) {
+			return false;
+		}
 	}
 }

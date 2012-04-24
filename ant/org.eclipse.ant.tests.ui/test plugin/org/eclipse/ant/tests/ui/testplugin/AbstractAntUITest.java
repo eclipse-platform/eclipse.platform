@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2003, 2009 IBM Corporation and others.
+ *  Copyright (c) 2003, 2012 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -35,6 +37,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -480,4 +483,60 @@ public abstract class AbstractAntUITest extends TestCase {
         }
         return null;
     }
+	
+	/**
+	 * This is to help in increasing the test coverage by enabling access to fields and
+	 * execution of methods irrespective of their Java language access permissions.
+	 * 
+	 * More accessor methods can be added to this on a need basis
+	 */
+	protected static abstract class TypeProxy {
+
+		Object master = null;
+		
+		protected TypeProxy(Object obj) {
+			master = obj;
+		}
+		
+		/**
+		 * Gets the method with the given method name and argument types.
+		 *
+		 * @param methodName the method name
+		 * @param types the argument types
+		 * @return the method
+		 */
+		protected Method get(String methodName, Class[] types) {
+			Method method = null;
+			try {
+				method = master.getClass().getDeclaredMethod(methodName, types);
+			} catch (SecurityException e) {
+				fail();
+			} catch (NoSuchMethodException ex) {
+				fail();
+			}
+			Assert.isNotNull(method);
+			method.setAccessible(true);
+			return method;
+		}
+
+		/**
+		 * Invokes the given method with the given arguments.
+		 *
+		 * @param method the given method
+		 * @param arguments the method arguments
+		 * @return the method return value
+		 */
+		protected Object invoke(Method method, Object[] arguments) {
+			try {
+				return method.invoke(master, arguments);
+			} catch (IllegalArgumentException e) {
+				fail();
+			} catch (InvocationTargetException e) {
+				fail();
+			} catch (IllegalAccessException e) {
+				fail();
+			}
+			return null;
+		}
+	}
 }

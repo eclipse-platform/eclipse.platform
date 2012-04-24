@@ -124,4 +124,12 @@ public interface IAntCoreConstants {
 	 * @since org.eclipse.ant.core 3.3.0
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
+
+	/**
+	 * The name of the XML build file extension.
+	 * <br><br>
+	 * Value is: <code>xml</code>
+	 * @since 3.8
+	 */
+	public static final String XML_EXTENSION = "xml"; //$NON-NLS-1$
 }
