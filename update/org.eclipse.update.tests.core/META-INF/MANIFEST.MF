@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %name
 Bundle-SymbolicName: org.eclipse.update.tests.core; singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-ClassPath: updatetests.jar
 Bundle-Activator: org.eclipse.update.tests.UpdateTestsPlugin
 Bundle-Vendor: %provider-name
