@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %name
 Bundle-SymbolicName: org.eclipse.update.examples; singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.100.qualifier
 Bundle-ClassPath: updateexamples.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: %provider-name
