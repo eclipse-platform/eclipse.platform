@@ -22,6 +22,6 @@
   </parent>
   <groupId>org.eclipse.platform</groupId>
   <artifactId>org.eclipse.update.core</artifactId>
-  <version>3.2.500-SNAPSHOT</version>
+  <version>3.2.600-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

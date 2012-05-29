@@ -21,6 +21,6 @@
   </parent>
   <groupId>org.eclipse.platform</groupId>
   <artifactId>org.eclipse.ant.launching</artifactId>
-  <version>1.0.100-SNAPSHOT</version>
+  <version>1.0.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
