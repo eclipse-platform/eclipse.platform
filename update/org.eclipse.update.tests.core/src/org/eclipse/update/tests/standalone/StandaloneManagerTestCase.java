@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,17 +11,28 @@
 
 package org.eclipse.update.tests.standalone;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
+import org.eclipse.update.configuration.IConfiguredSite;
+import org.eclipse.update.configuration.IInstallConfiguration;
+import org.eclipse.update.configuration.ILocalSite;
+import org.eclipse.update.configurator.ConfiguratorUtils;
+import org.eclipse.update.core.ISite;
+import org.eclipse.update.core.SiteManager;
+import org.eclipse.update.internal.core.InternalSiteManager;
+import org.eclipse.update.internal.core.UpdateCore;
+import org.eclipse.update.tests.UpdateManagerTestCase;
 
-import org.eclipse.core.runtime.*;
-import org.eclipse.update.configuration.*;
-import org.eclipse.update.configurator.*;
-import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.*;
-import org.eclipse.update.tests.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 
 public class StandaloneManagerTestCase extends UpdateManagerTestCase {
 	public static StringBuffer errOutput;
@@ -277,33 +288,39 @@ public class StandaloneManagerTestCase extends UpdateManagerTestCase {
 	}
 	
 	public File getLatestConfigurationFile(File localFile) {
-
+		BufferedReader breader = null;
 		try {
 			System.out.println("reading from : " + localFile.getAbsolutePath());
-				FileReader freader = new FileReader(localFile);
-				BufferedReader breader = new BufferedReader(freader);
-				while (breader.ready()) {
-					breader.readLine();
+			breader = new BufferedReader(new FileReader(localFile));
+			while (breader.ready()) {
+				breader.readLine();
 //					System.out.println(line);
+			}
+			// read config file
+			File parent = new File(localFile.getParent());
+			System.out.println("parent: " + parent.getAbsolutePath());
+			String[] parList= parent.list();
+			int latest= 0;
+			for (int i = parList.length - 1; i >= 0; i--) {
+				System.out.println("parList[" + i + "]: " + parList[i]);
+				if (parList[i].startsWith("platform")) {
+					latest= i;
+					break;
 				}
-				// read config file
-				File parent = new File(localFile.getParent());
-				System.out.println("parent: " + parent.getAbsolutePath());
-				String[] parList = parent.list();
-				int latest = 0; 
-				for (int i = parList.length-1; i>=0; i--){
-					System.out.println("parList[" + i + "]: " + parList[i]);
-					if (parList[i].startsWith("platform")){
-						latest = i;
-						break;
-					}
-				}
-				File configFile = new File(parent.getAbsolutePath() + File.separator + parList[latest]);
-				return configFile;
-				// end of config file read
+			}
+			File configFile = new File(parent.getAbsolutePath() + File.separator + parList[latest]);
+			return configFile;
+			// end of config file read
 		} catch (Exception e) {
-			System.err.println(e);
 			e.printStackTrace();
+		} finally {
+			if (breader != null) {
+				try {
+					breader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return localFile;
 	}

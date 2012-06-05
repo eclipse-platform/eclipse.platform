@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,13 +11,17 @@
 
 package org.eclipse.update.tests.standalone;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.eclipse.update.core.SiteManager;
+import org.eclipse.update.internal.core.LocalSite;
+import org.eclipse.update.standalone.StandaloneUpdateApplication;
 
 import org.eclipse.core.runtime.IPlatformRunnable;
-import org.eclipse.update.core.*;
-import org.eclipse.update.internal.core.*;
-import org.eclipse.update.standalone.*;
 
 public class TestFeatureDisable extends StandaloneManagerTestCase {
 	public static boolean isDisabled;
@@ -76,27 +80,35 @@ public class TestFeatureDisable extends StandaloneManagerTestCase {
 	}
 
 	public boolean checkFeaturesDisabled(ArrayList featureNames, File configFile, String siteLocation){
+		BufferedReader breader = null;
 		try {
-			FileReader freader = new FileReader(configFile);
-			BufferedReader breader = new BufferedReader(freader);
+			breader = new BufferedReader(new FileReader(configFile));
 			String line;
 			System.out.println("now reading..." + configFile.getAbsolutePath());
 			boolean isSiteToCheck = false;
 			while (breader.ready()) {
 				line = breader.readLine();
-				if (line.trim().startsWith("<site url")){
-					isSiteToCheck = line.trim().split("\"")[1].replaceFirst("file:","").equals(siteLocation);
-				} else if (isSiteToCheck && line.trim().startsWith("<feature configured")){
+				if (line.trim().startsWith("<site url")) {
+					isSiteToCheck = line.trim().split("\"")[1].replaceFirst("file:", "").equals(siteLocation);
+				} else if (isSiteToCheck && line.trim().startsWith("<feature configured")) {
 					System.err.println(line);
 					String[] configLine = line.split("\"");
-					if (featureNames.contains(configLine[3]) && configLine[1].equals("true")){
+					if (featureNames.contains(configLine[3]) && configLine[1].equals("true")) {
 						fail(configLine[3] + " has not been disabled.");
 					}
 				}
 			}
 		} catch (Exception e) {
 			System.err.println(e);
-		} 
+		} finally {
+			if (breader != null) {
+				try {
+					breader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return true;
 	}
 

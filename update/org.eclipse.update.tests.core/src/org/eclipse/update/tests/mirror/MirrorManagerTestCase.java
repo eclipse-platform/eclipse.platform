@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,16 +11,25 @@
 
 package org.eclipse.update.tests.mirror;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
+
+import org.osgi.framework.Bundle;
+
 import org.eclipse.update.configurator.ConfiguratorUtils;
 import org.eclipse.update.internal.core.UpdateCore;
 import org.eclipse.update.tests.UpdateManagerTestCase;
-import org.osgi.framework.Bundle;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 
 
 public class MirrorManagerTestCase extends UpdateManagerTestCase{
@@ -293,32 +302,27 @@ public class MirrorManagerTestCase extends UpdateManagerTestCase{
 	public boolean doesCategoryDefinitionExist(String url) {
 		File site = new File(url + "/site.xml");
 		assertTrue(site.exists());
-		BufferedReader breader;
-		FileReader freader;
+		BufferedReader breader = null;
 		String text = new String();
 
 		try {
-			freader = new FileReader(site);
-			breader = new BufferedReader(freader);
-		} catch (FileNotFoundException e) {
-			// would have been caught by assert above
-			return false;
-		}
-
-		try {
+			breader = new BufferedReader(new FileReader(site));
 			while ((text = breader.readLine()) != null) {
-				if (text.indexOf("category-def")!=-1)
+				if (text.indexOf("category-def") != -1)
 					return true;
 			}
-
-			breader.close();
-			freader.close();
 			return false;
 		} catch (IOException e) {
-			e.printStackTrace();
 			return false;
+		} finally {
+			if (breader != null) {
+				try {
+					breader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-
 	}
 	
 	public String getEclipseRoot() {
