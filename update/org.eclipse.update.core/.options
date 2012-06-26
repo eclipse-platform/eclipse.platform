@@ -1,0 +1,9 @@
+org.eclipse.update.core/debug=true
+org.eclipse.update.core/debug/warning=false
+org.eclipse.update.core/debug/parsing=false
+org.eclipse.update.core/debug/install=false
+org.eclipse.update.core/debug/configuration=false
+org.eclipse.update.core/debug/type=false
+org.eclipse.update.core/debug/web=false
+org.eclipse.update.core/debug/installhandler=false
+org.eclipse.update.core/debug/reconciler=false

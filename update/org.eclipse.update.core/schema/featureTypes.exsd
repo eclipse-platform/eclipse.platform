@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.update.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.update.core" id="featureTypes" name="Feature Type Factory"/>
+      </appInfo>
+      <documentation>
+         The platform update mechanism supports pluggable feature type
+implementations. A new feature type can be registered in order
+to support
+alternate packaging and verification schemes.
+&lt;p&gt;
+The &lt;code&gt;featureTypes&lt;/code&gt;
+extension point allows alternate feature implementations to be
+registered using a symbolic type identifier. Whenever the 
+type is referenced using this identifier, the supplied factory
+is used to create the correct concrete feature implementation.
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="feature-factory" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  must be specified as &lt;b&gt;org.eclipse.update.core.featureTypes&lt;/b&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  must be specified. Identifies the new feature type
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  optional displayable label for the new feature type
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="feature-factory">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of the factory class for the identified feature type
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.update.configuration.IInstallDeltaHandler"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of new feature type registration:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension
+      id=&quot;custom&quot;
+      point=&quot;org.eclipse.update.core.featureTypes&quot;
+      name=&quot;Custom packaged feature&quot;&gt;
+      &lt;feature-factory
+          class=&quot;com.xyz.update.CustomFeatureFactory&quot;&gt;
+      &lt;/feature-factory&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Registered factory classes must implement 
+&lt;code&gt;&lt;b&gt;org.eclipse.update.core.IFeatureFactory&lt;/b&gt;&lt;/code&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The platform supplies two standard implementations of feature
+types. One representing the default packaged feature type, and
+the other representing an installed feature type.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2004 IBM Corporation and others.
+All rights reserved.   This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;.
+      </documentation>
+   </annotation>
+
+</schema>

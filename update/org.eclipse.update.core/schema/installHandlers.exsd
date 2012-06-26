@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.update.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.update.core" id="installHandlers" name="Global Install Handlers"/>
+      </appInfo>
+      <documentation>
+         Extension point for registering global install handlers. Global
+install handlers can be referenced by features 
+(using the &lt;code&gt;&amp;lt;feature&amp;gt; &amp;lt;install-handler&amp;gt;&lt;/code&gt;
+tags) without having to include a copy of the handler code as
+part of the downloadable feature.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <complexType>
+         <sequence>
+            <element ref="install-handler" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  must be specified as &lt;b&gt;org.eclipse.update.core.installHandlers&lt;/b&gt;
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  must be specified. Identifies the new install handler
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  optional displayable label for the new install handler
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="install-handler">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  fully qualified name of the handler implementation class for the identified
+install handler
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of new global install handler registration:
+&lt;p&gt;
+&lt;pre&gt;
+   &lt;extension
+        id=&quot;custom&quot;
+        point=&quot;org.eclipse.update.core.installHandlers&quot;
+        name=&quot;Custom install handler&quot;&gt;
+     &lt;install-handler
+        class=&quot;com.xyz.update.CustomInstallHandler&quot;&gt;
+     &lt;/install-handler&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Registered install handler classes must implement 
+&lt;code&gt;org.eclipse.update.core.IInstallHandler&lt;/code&gt; interface.
+Implementers should extend base class &lt;code&gt;org.eclipse.update.core.BaseInstallHandler&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The platform supplies a simple install handler that is registered as &lt;code&gt;org.eclipse.update.core.DefaultInstallHandler&lt;/code&gt;. If used, it will copy any non-plug-in data entries provided with the feature into the feature installation directory.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2004 IBM Corporation and others.
+All rights reserved.   This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;.
+      </documentation>
+   </annotation>
+
+</schema>
