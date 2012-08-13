@@ -23,14 +23,16 @@
   <artifactId>org.eclipse.update.scheduler</artifactId>
   <version>3.2.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-
   <build>
     <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
-          <executionEnvironment>J2SE-1.5</executionEnvironment>
+          <!--
+            dependency on org.eclipse.equinox.security requires at least J2SE-1.4
+           -->
+          <executionEnvironment>J2SE-1.4</executionEnvironment>
         </configuration>
       </plugin>
     </plugins>
