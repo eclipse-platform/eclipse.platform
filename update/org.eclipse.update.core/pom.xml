@@ -10,9 +10,8 @@
      Igor Fedorenko - initial implementation
 -->
 
-<project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>eclipse.platform</artifactId>
@@ -24,4 +23,19 @@
   <artifactId>org.eclipse.update.core</artifactId>
   <version>3.2.600-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <!--
+            dependency on org.eclipse.equinox.security requires at least J2SE-1.4
+           -->
+          <executionEnvironment>J2SE-1.4</executionEnvironment>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

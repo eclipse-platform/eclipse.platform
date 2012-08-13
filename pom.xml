@@ -30,12 +30,6 @@
   <modules>
     <module>update/org.eclipse.update.configurator</module>
     <module>update/org.eclipse.update.core</module>
-    <module>update/org.eclipse.update.core.linux</module>
-    <module>update/org.eclipse.update.core.win32</module>
-    <module>update/org.eclipse.update.examples</module>
-    <module>update/org.eclipse.update.tests.core</module>
-    <module>update/org.eclipse.update.scheduler</module>
-    <module>update/org.eclipse.update.ui</module>
     <module>ant/org.eclipse.ant.core</module>
     <module>ant/org.eclipse.ant.launching</module>
     <module>ant/org.eclipse.ant.ui</module>

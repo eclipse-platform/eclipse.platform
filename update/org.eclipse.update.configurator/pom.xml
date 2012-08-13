@@ -24,4 +24,16 @@
   <artifactId>org.eclipse.update.configurator</artifactId>
   <version>3.3.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <!-- observed BREE as of Juno -->
+          <executionEnvironment>J2SE-1.4</executionEnvironment>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
