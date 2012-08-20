@@ -21,6 +21,6 @@
   </parent>
   <groupId>org.eclipse.platform</groupId>
   <artifactId>org.eclipse.sdk</artifactId>
-  <version>4.2.0-SNAPSHOT</version>
+  <version>4.2.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
