@@ -26,3 +26,11 @@
 	handle-image:  url(./winClassicHandle.png);
 	frame-cuts: 5px 1px 5px 16px;
 }
+
+.MToolBar.Draggable {
+	handle-image:  url(./dragHandle.png);
+}
+
+.MToolControl.Draggable {
+	handle-image:  url(./dragHandle.png);
+}
