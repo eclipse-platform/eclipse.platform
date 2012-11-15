@@ -271,7 +271,7 @@ public class AntEditorTests extends AbstractAntUITest {
 		assertNotNull("The selected region for the augmented element cannot be null", region);
 		String text = hover.getHoverInfo(editor.getViewer(), region);
 		assertNotNull("The hover text for the path element must not be null", text);
-		assertTrue("The hover text must contain the augmented element '/foo'", text.indexOf("/foo") > -1);
+		assertTrue("The hover text must contain the augmented element 'foo'", text.indexOf("foo") > -1);
     }
     
     public void testHoverRegionWithSpaces() throws PartInitException, BadLocationException {
