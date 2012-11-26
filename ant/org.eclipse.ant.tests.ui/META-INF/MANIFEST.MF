@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.ant.tests.ui; singleton:=true
-Bundle-Version: 3.5.101.qualifier
+Bundle-Version: 3.5.102.qualifier
 Bundle-ClassPath: anttestsui.jar
 Bundle-Activator: org.eclipse.ant.tests.ui.testplugin.AntUITestPlugin
 Bundle-Vendor: %providerName
