@@ -211,17 +211,6 @@ public class AntEditorTests extends AbstractAntUITest {
 		assertEquals("Selection is not correct", "target", selection.getText());
     }
     
-    public void testExtensionPointOpenDeclaration() throws PartInitException, BadLocationException {
-    	IFile file= getIFile("antextpoint.xml");
-		AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
-		int offset = getOffsetWithinLine(editor, 0, 18);
-		editor.selectAndReveal(offset, 4);
-		
-		editor.openReferenceElement();
-		ITextSelection selection= (ITextSelection) editor.getSelectionProvider().getSelection();
-		assertEquals("Selection is not correct", "extension-point", selection.getText());
-    }
-    
     /**
      * Tests that the augment task can open in the Ant editor
      * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
