@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,8 +175,6 @@ public class ProjectHelper extends ProjectHelper2 {
             task.setLocation(location);
             task.setOwningTarget(currentTarget);
 
-            context.configureId(task, attrs);
-
             if (parent != null) {
                 // Nested element
                 ((UnknownElement) parent).addChild(task);
@@ -185,6 +183,12 @@ public class ProjectHelper extends ProjectHelper2 {
                 currentTarget.addTask(task);
             }
 
+            //do not configure the id of an augment node, it is resolved
+            //when it is configured
+            if(!IAntCoreConstants.AUGMENT.equals(task.getQName())) {
+            	context.configureId(task, attrs);
+            }
+            
             // container.addTask(task);
             // This is a nop in UE: task.init();
 

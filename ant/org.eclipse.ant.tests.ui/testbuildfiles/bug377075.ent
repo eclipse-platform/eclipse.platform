@@ -1,0 +1,10 @@
+<project>
+	<path id="path1"/>
+	<resource id="resource1"/>
+	<propertyset id="property1"/>
+	<target name="augment">
+		<augment id="path1">
+			<pathelement location="/foo"/>
+		</augment>
+	</target>
+</project>
