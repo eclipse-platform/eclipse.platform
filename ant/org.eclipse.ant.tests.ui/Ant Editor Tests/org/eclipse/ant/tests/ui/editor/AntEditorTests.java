@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 
 public class AntEditorTests extends AbstractAntUITest {
@@ -208,6 +209,69 @@ public class AntEditorTests extends AbstractAntUITest {
 		editor.openReferenceElement();
 		ITextSelection selection= (ITextSelection) editor.getSelectionProvider().getSelection();
 		assertEquals("Selection is not correct", "target", selection.getText());
+    }
+    
+    public void testExtensionPointOpenDeclaration() throws PartInitException, BadLocationException {
+    	IFile file= getIFile("antextpoint.xml");
+		AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
+		int offset = getOffsetWithinLine(editor, 0, 18);
+		editor.selectAndReveal(offset, 4);
+		
+		editor.openReferenceElement();
+		ITextSelection selection= (ITextSelection) editor.getSelectionProvider().getSelection();
+		assertEquals("Selection is not correct", "extension-point", selection.getText());
+    }
+    
+    /**
+     * Tests that the augment task can open in the Ant editor
+     * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
+     * @throws Exception
+     */
+    public void testAugmentOpenInEditor() throws Exception {
+    	IFile file = getIFile("bug377075.ent");
+		IEditorPart part = EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
+		assertTrue("The opened editor must be the AntEditor", part instanceof AntEditor);
+    }
+    
+    /**
+     * Tests that the augment task can be shown and has the correct additions
+     * 
+     * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
+     * @throws Exception
+     */
+    public void testAugmentOpenAndSelect() throws Exception {
+    	IFile file = getIFile("bug377075.ent");
+		IEditorPart part = EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
+		assertTrue("The opened editor must be the AntEditor", part instanceof AntEditor);
+		AntEditor editor = (AntEditor) part;
+		int offset = getOffsetWithinLine(editor, 5, 3);
+		editor.selectAndReveal(offset, 7); //should have 'augment' selected
+		ITextSelection selection = (ITextSelection) editor.getSelectionProvider().getSelection();
+		assertEquals("Selection is not correct", "augment", selection.getText());
+    }
+    
+    /**
+     * Tests that the element augmented by the augment task properly displays the augmented
+     * elements when hovering
+     * 
+     * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=377075
+     * @throws Exception
+     */
+    public void testAugmentOpenSelectHover() throws Exception {
+    	IFile file = getIFile("bug377075.ent");
+		IEditorPart part = EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
+		assertTrue("The opened editor must be the AntEditor", part instanceof AntEditor);
+		AntEditor editor = (AntEditor) part;
+		int offset = getOffsetWithinLine(editor, 1, 11);
+		editor.selectAndReveal(offset, 5); //select the 'path1' id for the path element
+		ITextSelection selection = (ITextSelection) editor.getSelectionProvider().getSelection();
+		assertEquals("Selection is not correct", "path1", selection.getText());
+		XMLTextHover hover = new XMLTextHover(editor);
+		IRegion region = hover.getHoverRegion(editor.getViewer(), offset);
+		assertNotNull("The selected region for the augmented element cannot be null", region);
+		String text = hover.getHoverInfo(editor.getViewer(), region);
+		assertNotNull("The hover text for the path element must not be null", text);
+		assertTrue("The hover text must contain the augmented element '/foo'", text.indexOf("/foo") > -1);
     }
     
     public void testHoverRegionWithSpaces() throws PartInitException, BadLocationException {

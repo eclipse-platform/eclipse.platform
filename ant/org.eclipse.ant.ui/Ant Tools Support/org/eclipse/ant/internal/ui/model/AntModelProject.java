@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * Portions Copyright  2000-2004 The Apache Software Foundation
  * All rights reserved. This program and the accompanying materials are made 
  * available under the terms of the Apache Software License v2.0 which 
@@ -65,7 +65,6 @@ public class AntModelProject extends Project {
 	private Map idrefs = Collections.synchronizedMap(new HashMap());
 	private static Object loaderLock = new Object();
 	private Hashtable loaders = null;
-	private AntRefTable references = new AntRefTable();
 	
 	/**
 	 * Constructor
@@ -153,7 +152,7 @@ public class AntModelProject extends Project {
 	 * @see org.apache.tools.ant.Project#getReference(java.lang.String)
 	 */
 	public Object getReference(String key) {
-		Object ref = references.get(key);
+		Object ref = super.getReference(key);/*references.get(key);*/
 		if(ref == null) {
 			ref = idrefs.get(key);
 			if(ref instanceof UnknownElement) {
@@ -215,33 +214,5 @@ public class AntModelProject extends Project {
     		}
     		return loader;
 		}
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.tools.ant.Project#addReference(java.lang.String, java.lang.Object)
-     */
-    public void addReference(String referenceName, Object value) {
-    	references.put(referenceName, value);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.tools.ant.Project#getReferences()
-     */
-    public Hashtable getReferences() {
-    	return references;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.tools.ant.Project#getCopyOfReferences()
-     */
-    public Map getCopyOfReferences() {
-    	return new Hashtable(references);
-    }
-    
-    /* (non-Javadoc)
-     * @see org.apache.tools.ant.Project#hasReference(java.lang.String)
-     */
-    public boolean hasReference(String key) {
-    	return references.contains(key);
     }
 }
