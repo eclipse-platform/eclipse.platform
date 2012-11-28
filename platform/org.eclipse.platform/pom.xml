@@ -23,4 +23,44 @@
   <artifactId>org.eclipse.platform</artifactId>
   <version>3.8.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <format>'v${maven.build.timestamp}'</format>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>update-branding-plugins</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <replace file="about.mappings" 
+                             token="@build@" value="${buildId}" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
