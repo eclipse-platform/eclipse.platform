@@ -19,6 +19,7 @@
    <extension-point id="structureMergeViewers" name="%structureMergeViewers" schema="schema/structureMergeViewers.exsd"/>
    <extension-point id="contentMergeViewers" name="%contentMergeViewers" schema="schema/contentMergeViewers.exsd"/>
    <extension-point id="contentViewers" name="%contentViewers" schema="schema/contentViewers.exsd"/>
+   <extension-point id="compareFilters" name="%compareFilters" schema="schema/compareFilters.exsd"/>
 
 <!-- Extensions -->
    <extension

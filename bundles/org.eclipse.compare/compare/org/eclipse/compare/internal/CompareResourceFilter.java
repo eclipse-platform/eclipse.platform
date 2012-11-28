@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,24 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import com.ibm.icu.text.MessageFormat;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 
+import com.ibm.icu.text.MessageFormat;
 
-public class CompareFilter {
+
+public class CompareResourceFilter {
 	private static final char[][] NO_CHAR_CHAR= new char[0][];
 	
 	private char[][] fExtraResourceFileFilters;
 	private String[] fExtraResourceFolderFilters;
 
 	
-	public CompareFilter() {
+	public CompareResourceFilter() {
 		// nothing to do
 	}
 

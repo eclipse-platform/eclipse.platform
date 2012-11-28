@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.compare.structuremergeviewer;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ISharedDocumentAdapter;
@@ -22,6 +26,7 @@ import org.eclipse.compare.SharedDocumentAdapter;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.Utilities;
+import org.eclipse.compare.internal.patch.LineReader;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -429,5 +434,91 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			return getDisposable(node.getParentNode());
 		}
 		return null;
+	}
+
+	/**
+	 * Returns true if the two nodes are equal for comparison purposes. If
+	 * <code>compareFilters</code> is not empty, the filters are applied to each
+	 * line of each node's text representation.
+	 * 
+	 * @param node1
+	 * @param contributor1
+	 *            either 'A', 'L', or 'R' for ancestor, left or right
+	 *            contributor
+	 * @param node2
+	 * @param contributor2
+	 *            either 'A', 'L', or 'R' for ancestor, left or right
+	 *            contributor
+	 * @param ignoreWhitespace
+	 *            if <code>true</code> whitespace characters will be ignored
+	 *            when determining equality. Note: Will bypass any custom ignore
+	 *            whitespace behaviors contributed through implementations of
+	 *            <code>org.eclipse.compare.structuremergeviewer.IStructureCreator.getContents()</code>
+	 * @param compareFilters
+	 *            the filters used to customize the comparison of lines of text.
+	 * @return whether the two nodes are equal for comparison purposes
+	 * @noreference This method is not intended to be referenced by clients.
+	 * @since 3.6
+	 */
+	public boolean contentsEquals(Object node1, char contributor1,
+			Object node2, char contributor2, boolean ignoreWhitespace,
+			ICompareFilter[] compareFilters) {
+
+		List lines1 = LineReader.readLines(new BufferedReader(new StringReader(
+				getContents(node1, false))));
+		List lines2 = LineReader.readLines(new BufferedReader(new StringReader(
+				getContents(node2, false))));
+
+		StringBuffer buffer1 = new StringBuffer();
+		StringBuffer buffer2 = new StringBuffer();
+
+		int maxLines = Math.max(lines1.size(), lines2.size());
+		for (int i = 0; i < maxLines; i++) {
+			String s1 = lines1.size() > i ? (String) lines1.get(i) : ""; //$NON-NLS-1$
+			String s2 = lines2.size() > i ? (String) lines2.get(i) : ""; //$NON-NLS-1$
+
+			if (compareFilters != null && compareFilters.length > 0) {
+				s1 = Utilities.applyCompareFilters(s1, contributor1, s2,
+						contributor2, compareFilters);
+				s2 = Utilities.applyCompareFilters(s2, contributor2, s1,
+						contributor1, compareFilters);
+			}
+			buffer1.append(s1);
+			buffer2.append(s2);
+		}
+		if (ignoreWhitespace) {
+			int l1 = buffer1.length();
+			int l2 = buffer2.length();
+			int c1 = 0, c2 = 0;
+			int i1 = 0, i2 = 0;
+
+			while (c1 != -1) {
+
+				c1 = -1;
+				while (i1 < l1) {
+					char c = buffer1.charAt(i1++);
+					if (!Character.isWhitespace(c)) {
+						c1 = c;
+						break;
+					}
+				}
+
+				c2 = -1;
+				while (i2 < l2) {
+					char c = buffer2.charAt(i2++);
+					if (!Character.isWhitespace(c)) {
+						c2 = c;
+						break;
+					}
+				}
+
+				if (c1 != c2)
+					return false;
+			}
+		} else if (!buffer1.toString().equals(buffer2.toString())) {
+			return false;
+		}
+
+		return true;
 	}
 }

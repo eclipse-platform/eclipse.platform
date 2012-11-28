@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -360,7 +361,7 @@ public class Differencer {
 						description= LEFT | ADDITION;
 					} else {
 						description= CONFLICTING | ADDITION;
-						if (contentsEqual(left, right))
+						if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
 							description|= PSEUDO_CONFLICT;
 					}
 				}
@@ -369,20 +370,20 @@ public class Differencer {
 					if (right == null) {
 						description= CONFLICTING | DELETION | PSEUDO_CONFLICT;
 					} else {
-						if (contentsEqual(ancestor, right))		
+						if (contentsEqual(ancestor,	MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
 							description= LEFT | DELETION;
 						else
 							description= CONFLICTING | CHANGE;	
 					}
 				} else {
 					if (right == null) {
-						if (contentsEqual(ancestor, left))	
+						if (contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, left, MergeViewerContentProvider.LEFT_CONTRIBUTOR))
 							description= RIGHT | DELETION;
 						else
 							description= CONFLICTING | CHANGE;	
 					} else {
-						boolean ay= contentsEqual(ancestor, left);
-						boolean am= contentsEqual(ancestor, right);
+						boolean ay= contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, left, MergeViewerContentProvider.LEFT_CONTRIBUTOR);
+						boolean am= contentsEqual(ancestor, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
 						
 						if (ay && am) {
 							// empty
@@ -392,7 +393,7 @@ public class Differencer {
 							description= LEFT | CHANGE;
 						} else {
 							description= CONFLICTING | CHANGE;
-							if (contentsEqual(left, right))
+							if (contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
 								description|= PSEUDO_CONFLICT;
 						}
 					}
@@ -410,7 +411,7 @@ public class Differencer {
 				if (right == null) {
 					description= DELETION;
 				} else {
-					if (! contentsEqual(left, right))
+					if (! contentsEqual(left, MergeViewerContentProvider.LEFT_CONTRIBUTOR, right, MergeViewerContentProvider.RIGHT_CONTRIBUTOR))
 						description= CHANGE;
 				}
 			}
@@ -418,7 +419,32 @@ public class Differencer {
 							
 		return description;
 	}
-		
+
+	/**
+	 * Performs a content compare on the two given inputs.
+	 * <p>
+	 * The <code>Differencer</code> implementation returns
+	 * <code>contentsEqual(Object input1, Object input2)</code>. Subclasses may
+	 * override to implement a different content compare on the given inputs.
+	 * </p>
+	 * 
+	 * @param input1
+	 *            first input to contents compare
+	 * @param contributor1
+	 *            the contributor of input1
+	 * @param input2
+	 *            second input to contents compare
+	 * @param contributor2
+	 *            the contributor of input2
+	 * @return <code>true</code> if content is equal
+	 * @noreference This method is not intended to be referenced by clients.
+	 * @since 3.6
+	 */
+	protected boolean contentsEqual(Object input1, char contributor1,
+			Object input2, char contributor2) {
+		return contentsEqual(input1, input2);
+	}
+
 	/**
 	 * Performs a content compare on the two given inputs.
 	 * <p>
