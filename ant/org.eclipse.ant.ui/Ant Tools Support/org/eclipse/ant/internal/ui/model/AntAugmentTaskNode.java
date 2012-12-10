@@ -55,6 +55,11 @@ public class AntAugmentTaskNode extends AntTaskNode {
 			//either a system exit or setting of system property was attempted
 			handleBuildException(new BuildException(AntModelMessages.AntTaskNode_0), AntEditorPreferenceConstants.PROBLEM_SECURITY);
 		}
+		catch(IllegalStateException ise) {
+			//this is thrown when the id to augment does not exist
+			//https://bugs.eclipse.org/bugs/show_bug.cgi?id=396219
+			handleBuildException(new BuildException(ise), AntEditorPreferenceConstants.PROBLEM_TASKS);
+		}
 		return false;
 	}
 	
