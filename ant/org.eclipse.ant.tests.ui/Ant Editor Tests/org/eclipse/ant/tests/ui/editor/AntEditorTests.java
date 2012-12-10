@@ -263,6 +263,18 @@ public class AntEditorTests extends AbstractAntUITest {
 		assertTrue("The hover text must contain the augmented element 'foo'", text.indexOf("foo") > -1);
     }
     
+    /**
+     * Tests that the Ant editor is resilient to using an Augment task that references an unknown id
+     * 
+     * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=396219
+     * @throws Exception
+     */
+    public void testAugmentMissingId() throws Exception {
+    	IFile file = getIFile("bug396219.ent");
+		IEditorPart part = EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
+		assertTrue("The opened editor must be the AntEditor", part instanceof AntEditor);
+    }
+    
     public void testHoverRegionWithSpaces() throws PartInitException, BadLocationException {
     	IFile file= getIFile("refid.xml");
     	AntEditor editor= (AntEditor)EditorTestHelper.openInEditor(file, "org.eclipse.ant.ui.internal.editor.AntEditor", true);
