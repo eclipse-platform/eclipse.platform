@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@
  *     Matt McCutchen (hashproduct+eclipse@gmail.com) - Bug 191524 [Viewers] Synchronize horizontal scrolling by # characters, not % of longest line
  *     Stephan Herrmann (stephan@cs.tu-berlin.de) - Bug 291695: Element compare fails to use source range
  *     Robin Stocker (robin@nibor.org) - Bug 398594: [Edit] Enable center arrow buttons when editable and for both sides
+ *     Robin Stocker (robin@nibor.org) - Bug 399960: [Edit] Make merge arrow buttons easier to hit
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
@@ -2163,13 +2164,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (Math.min(ly, ry) >= visibleHeight)
 					break;
 
-				int cx= (w-RESOLVE_SIZE)/2;
-				int cy= ((ly+lh/2) + (ry+rh/2) - RESOLVE_SIZE)/2;
-				if (my >= cy && my < cy+RESOLVE_SIZE && mx >= cx && mx < cx+RESOLVE_SIZE) {
+				int SIZE= fIsCarbon ? 30 : 20;
+				int cx= (w-SIZE)/2;
+				int cy= ((ly+lh/2) + (ry+rh/2) - SIZE)/2;
+				if (my >= cy && my < cy+SIZE && mx >= cx && mx < cx+SIZE) {
 					if (r != null) {
-						int SIZE= fIsCarbon ? 30 : 20;
-						r.x= cx+(RESOLVE_SIZE-SIZE)/2;
-						r.y= cy+(RESOLVE_SIZE-SIZE)/2;
+						r.x= cx;
+						r.y= cy;
 						r.width= SIZE;
 						r.height= SIZE;
 					}
