@@ -9,9 +9,7 @@
   Contributors:
      Igor Fedorenko - initial implementation
 -->
-
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>eclipse.platform</artifactId>
@@ -23,7 +21,6 @@
   <artifactId>org.eclipse.platform</artifactId>
   <version>3.8.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-
   <build>
     <plugins>
       <plugin>
@@ -36,7 +33,6 @@
       </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>update-branding-plugins</id>
@@ -49,8 +45,7 @@
                 <phase>process-resources</phase>
                 <configuration>
                   <tasks>
-                    <replace file="about.mappings" 
-                             token="@build@" value="${buildId}" />
+                    <replace file="about.mappings" token="@build@" value="${buildId}"/>
                   </tasks>
                 </configuration>
                 <goals>
