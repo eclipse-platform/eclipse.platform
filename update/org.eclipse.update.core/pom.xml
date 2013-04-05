@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>eclipse.platform</artifactId>
-    <groupId>org.eclipse.platform</groupId>
+    <groupId>eclipse.platform</groupId>
     <version>4.2.2-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
