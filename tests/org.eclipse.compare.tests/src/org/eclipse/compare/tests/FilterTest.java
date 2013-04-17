@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,42 +10,42 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import org.eclipse.compare.internal.CompareFilter;
+import org.eclipse.compare.internal.CompareResourceFilter;
 
 import junit.framework.*;
 import junit.framework.TestCase;
 
 public class FilterTest extends TestCase {
 	
-	CompareFilter fFilter;
+	CompareResourceFilter fFilter;
 	
 	public FilterTest(String name) {
 		super(name);
 	}
 		
 	public void testFilterFile() {
-		CompareFilter f= new CompareFilter();
+		CompareResourceFilter f= new CompareResourceFilter();
 		f.setFilters("*.class"); //$NON-NLS-1$
 		Assert.assertTrue("file foo.class should be filtered", f.filter("foo.class", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertFalse("file foo.java shouldn't be filtered", f.filter("foo.java", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public void testFilterDotFile() {
-		CompareFilter f= new CompareFilter();
+		CompareResourceFilter f= new CompareResourceFilter();
 		f.setFilters(".cvsignore"); //$NON-NLS-1$
 		Assert.assertTrue("file .cvsignore should be filtered", f.filter(".cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertFalse("file foo.cvsignore shouldn't be filtered", f.filter("foo.cvsignore", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public void testFilterFolder() {
-		CompareFilter f= new CompareFilter();
+		CompareResourceFilter f= new CompareResourceFilter();
 		f.setFilters("bin/"); //$NON-NLS-1$
 		Assert.assertTrue("folder bin should be filtered", f.filter("bin", true, false)); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertFalse("file bin shouldn't be filtered", f.filter("bin", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public void testMultiFilter() {
-		CompareFilter f= new CompareFilter();
+		CompareResourceFilter f= new CompareResourceFilter();
 		f.setFilters("*.class, .cvsignore, bin/, src/"); //$NON-NLS-1$
 		Assert.assertTrue("file foo.class should be filtered", f.filter("foo.class", false, false)); //$NON-NLS-1$ //$NON-NLS-2$
 		Assert.assertFalse("file foo.java shouldn't be filtered", f.filter("foo.java", false, false)); //$NON-NLS-1$ //$NON-NLS-2$

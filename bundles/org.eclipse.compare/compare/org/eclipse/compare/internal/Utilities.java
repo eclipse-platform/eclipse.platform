@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
@@ -71,6 +72,7 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -140,6 +142,25 @@ public class Utilities {
 		return dflt;
 	}
 	
+	/**
+	 * Returns the active compare filters for the compare configuration
+	 * 
+	 * @param cc
+	 * @return the active compare filters
+	 */
+	public static ICompareFilter[] getCompareFilters(CompareConfiguration cc) {
+		if (cc != null) {
+			Object value = cc
+					.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS);
+			if (value instanceof Map) {
+				Map filtersMap = (Map) value;
+				return (ICompareFilter[]) filtersMap.values().toArray(
+						new ICompareFilter[filtersMap.size()]);
+			}
+		}
+		return new ICompareFilter[0];
+	}
+
 	public static void firePropertyChange(ListenerList listenerList, Object source, String property, Object old, Object newValue) {
 		PropertyChangeEvent event= new PropertyChangeEvent(source, property, old, newValue);
 		firePropertyChange(listenerList, event);
@@ -911,5 +932,54 @@ public class Utilities {
 			}
 		});
 		return result[0];
+	}
+
+	/**
+	 * Applies the compare filters to the lines of text taken from the specified
+	 * contributors
+	 * 
+	 * @param thisLine
+	 * @param thisContributor
+	 * @param otherLine
+	 * @param otherContributor
+	 * @param filters
+	 *            may be null
+	 * @return returns the result of applying the filters to the line from the
+	 *         contributor
+	 */
+	public static String applyCompareFilters(String thisLine,
+			char thisContributor, String otherLine, char otherContributor,
+			ICompareFilter[] filters) {
+		IRegion[][] ignoredRegions = new IRegion[filters.length][];
+
+		HashMap input = new HashMap(4);
+		input.put(ICompareFilter.THIS_LINE, thisLine);
+		input.put(ICompareFilter.THIS_CONTRIBUTOR, new Character(
+				thisContributor));
+		input.put(ICompareFilter.OTHER_LINE, otherLine);
+		input.put(ICompareFilter.OTHER_CONTRIBUTOR, new Character(
+				otherContributor));
+		for (int i = 0; i < filters.length; i++) {
+			ignoredRegions[i] = filters[i].getFilteredRegions(input);
+		}
+
+		boolean[] ignored = new boolean[thisLine.length()];
+		for (int j = 0; j < ignoredRegions.length; j++) {
+			if (ignoredRegions[j] != null) {
+				for (int k = 0; k < ignoredRegions[j].length; k++) {
+					if (ignoredRegions[j][k] != null)
+						for (int l = 0; l < ignoredRegions[j][k].getLength(); l++) {
+							ignored[ignoredRegions[j][k].getOffset() + l] = true;
+						}
+				}
+			}
+		}
+		StringBuffer buffer = new StringBuffer(thisLine.length());
+		for (int i = 0; i < ignored.length; i++) {
+			if (!ignored[i]) {
+				buffer.append(thisLine.charAt(i));
+			}
+		}
+		return buffer.toString();
 	}
 }

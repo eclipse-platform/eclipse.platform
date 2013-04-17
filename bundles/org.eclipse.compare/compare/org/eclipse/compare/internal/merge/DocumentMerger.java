@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
 import org.eclipse.compare.internal.CompareContentViewerSwitchingPane;
 import org.eclipse.compare.internal.CompareMessages;
@@ -422,12 +423,19 @@ public class DocumentMerger {
 		resetPositions(aDoc);
 		
 		boolean ignoreWhiteSpace= isIgnoreWhitespace();		
-		
-		DocLineComparator sright= new DocLineComparator(rDoc, toRegion(rRegion), ignoreWhiteSpace);
-		DocLineComparator sleft= new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace);
-		DocLineComparator sancestor= null;
+		ICompareFilter[] compareFilters = getCompareFilters();
+
+		DocLineComparator sright = new DocLineComparator(rDoc,
+				toRegion(rRegion), ignoreWhiteSpace, compareFilters,
+				MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
+		DocLineComparator sleft = new DocLineComparator(lDoc,
+				toRegion(lRegion), ignoreWhiteSpace, compareFilters,
+				MergeViewerContentProvider.LEFT_CONTRIBUTOR);
+		DocLineComparator sancestor = null;
 		if (aDoc != null) {
-			sancestor= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace);
+			sancestor = new DocLineComparator(aDoc, toRegion(aRegion),
+					ignoreWhiteSpace, compareFilters,
+					MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
 			/*if (isPatchHunk()) {
 				if (isHunkOnLeft()) {
 					sright= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace);
@@ -594,12 +602,13 @@ public class DocumentMerger {
 			aDoc= getDocument(MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
 
 		boolean ignoreWhiteSpace= isIgnoreWhitespace();
-		
-		DocLineComparator sright= new DocLineComparator(rDoc, toRegion(rRegion), ignoreWhiteSpace);
-		DocLineComparator sleft= new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace);
+		ICompareFilter[] compareFilters = getCompareFilters();
+
+		DocLineComparator sright= new DocLineComparator(rDoc, toRegion(rRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.RIGHT_CONTRIBUTOR);		
+		DocLineComparator sleft= new DocLineComparator(lDoc, toRegion(lRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		DocLineComparator sancestor= null;
 		if (aDoc != null)
-			sancestor= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace);
+			sancestor= new DocLineComparator(aDoc, toRegion(aRegion), ignoreWhiteSpace, compareFilters, MergeViewerContentProvider.ANCESTOR_CONTRIBUTOR);
 			
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
@@ -681,7 +690,11 @@ public class DocumentMerger {
 	private boolean isIgnoreWhitespace() {
 		return Utilities.getBoolean(getCompareConfiguration(), CompareConfiguration.IGNORE_WHITESPACE, false);
 	}
-	
+
+	private ICompareFilter[] getCompareFilters() {
+		return Utilities.getCompareFilters(getCompareConfiguration());
+	}
+
 	private boolean isCappingDisabled() {
 		return CompareUIPlugin.getDefault().getPreferenceStore().getBoolean(ComparePreferencePage.CAPPING_DISABLED);
 	}
