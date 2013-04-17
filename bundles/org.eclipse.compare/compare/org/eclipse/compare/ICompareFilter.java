@@ -20,9 +20,7 @@ import org.eclipse.jface.text.IRegion;
  * used to customize the detection of text differences via the compareFilter
  * extension point. Filters are exposed as toggle actions in the compare viewer.
  * 
- * @noimplement This interface is not intended to be implemented by clients.
- *              This is an interface for org.eclipse.compare.compareFilters
- *              extension point which is internal.
+ * @noreference This interface is not intended to be referenced by clients
  * @since 3.6
  */
 public interface ICompareFilter {
