@@ -1028,6 +1028,9 @@
          <showInPart
                id="org.eclipse.team.ui.GenericHistoryView">
          </showInPart>
+         <showInPart
+               id="org.eclipse.ui.navigator.ProjectExplorer">
+         </showInPart>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.team.ui.TeamSynchronizingPerspective">
