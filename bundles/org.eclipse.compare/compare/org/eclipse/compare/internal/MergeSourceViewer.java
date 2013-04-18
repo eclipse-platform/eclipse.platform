@@ -135,7 +135,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		}
 		
 		public void update() {
-			this.setEnabled(isEnabled());
+			super.setEnabled(isEnabled());
 		}
 	}
 
