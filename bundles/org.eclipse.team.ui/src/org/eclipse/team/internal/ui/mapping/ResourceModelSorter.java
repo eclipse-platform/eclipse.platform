@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.team.internal.ui.IPreferenceIds;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.ui.views.navigator.ResourceComparator;
+import org.eclipse.ui.views.navigator.ResourceSorter;
 
 /**
  * Sorter for use by Common Navigator
  */
-public class ResourceModelSorter extends ResourceComparator {
+public class ResourceModelSorter extends ResourceSorter {
 
 	public ResourceModelSorter() {
 		super(NAME);
@@ -29,7 +29,7 @@ public class ResourceModelSorter extends ResourceComparator {
 		if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 				&& r1 instanceof IFolder
 				&& r2 instanceof IFolder) {	
-			return r1.getProjectRelativePath().toString().compareTo(r2.getProjectRelativePath().toString());
+			return collator.compare(r1.getProjectRelativePath().toString(), r2.getProjectRelativePath().toString());
 		}
 		return super.compareNames(r1, r2);
 	}
