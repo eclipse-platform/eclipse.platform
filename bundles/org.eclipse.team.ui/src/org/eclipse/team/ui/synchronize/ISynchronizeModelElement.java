@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,9 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 /**
  * These are elements created to display synchronization state to the user. These elements are found in
  * the generated diff tree viewer created by a {@link SubscriberParticipant}. Since it implements
- * {@link org.eclipse.compare.ITypedElement} and {@link org.eclipse.compare.structuremergeviewer.ICompareInput}
- * they can be used as input to compare components.
+ * {@link ITypedElement} and {@link ICompareInput} they can be used as input to compare components.
   * <p>
- * Clients typically use this class as is, but may subclass if required.
+ * Clients typically use this interface as is, but may implement it if required.
  * </p>
  * @since 3.0
  */
