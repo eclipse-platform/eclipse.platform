@@ -2998,7 +2998,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	private void documentChanged(DocumentEvent e, boolean dirty) {
 		
-		IDocument doc= e.getDocument();
+		final IDocument doc= e.getDocument();
 		
 		if (doc == fLeft.getSourceViewer().getDocument()) {
 			setLeftDirty(dirty);
@@ -3007,8 +3007,19 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		if (!isLeftDirty() && !isRightDirty()) {
 			fRedoDiff = false;
+			new UIJob(CompareMessages.DocumentMerger_0) {
+				public IStatus runInUIThread(IProgressMonitor monitor) {
+					if (!getControl().isDisposed()) {
+						doDiff();
+						invalidateLines();
+						updateLines(doc);
+					}
+					return Status.OK_STATUS;
+				}
+			}.schedule();
+		} else {
+			updateLines(doc);
 		}
-		updateLines(doc);
 	}
 	
 	/*
