@@ -1,0 +1,9 @@
+/.project
+/*/*/bin/
+*~
+*.rej
+*.bak
+javacore.*
+heapdump.*
+core.*
+Snap.*
