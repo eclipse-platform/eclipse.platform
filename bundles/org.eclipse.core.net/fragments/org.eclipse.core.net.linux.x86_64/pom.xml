@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.core</groupId>
   <artifactId>org.eclipse.core.net.linux.x86_64</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.100-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
 
@@ -40,4 +40,66 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>build-natives</id>
+      <activation>
+        <property>
+          <!-- This has to be hardcoded. Profiles are not allowed to use pom defined properties :-( -->
+          <name>native</name>
+          <value>gtk.linux.x86_64</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+              <execution>
+                <id>natives</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <target>
+                    <exec executable="make" newenvironment="false" dir="../../natives/unix/linux/x86_64/"/>
+           <copy todir="." >
+           <fileset dir="../../natives/unix/linux/x86_64/">
+               <include name="libgnomeproxy-*.so"/>
+           </fileset>
+           </copy>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>bsf</groupId>
+                <artifactId>bsf</artifactId>
+                <version>2.4.0</version>
+              </dependency>
+              <dependency>
+                <groupId>rhino</groupId>
+                <artifactId>js</artifactId>
+                <version>1.7R2</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-apache-bsf</artifactId>
+                <version>1.8.3</version>
+              </dependency>
+              <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-nodeps</artifactId>
+                <version>1.8.1</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
