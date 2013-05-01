@@ -351,8 +351,9 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 		IResource[] members = project.members();
 		for (int i = 0; i < members.length; i++) {
 			IResource resource = members[i];
-			if (resource.getName().equals(".project")) continue;
-			resource.delete(true, DEFAULT_MONITOR);
+			if (resource.getName().equals(".project"))
+				continue;
+			delete(resource, IResource.FORCE, DEFAULT_MONITOR);
 		}
 		
 		// update
@@ -435,7 +436,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 						SyncInfo.OUTGOING | SyncInfo.DELETION});
 		
 		IFolder f = project.getFolder("folder1");
-		f.delete(true, null);
+		delete(f, IResource.FORCE, null);
 		
 		assertSyncEquals("testBug53129 - 3", getWorkspaceSubscriber(), project, 
 				new String[]{"file1.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"}, true, 

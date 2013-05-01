@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,27 +30,10 @@ import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.tests.resources.ResourceTest;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
+import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSStatus;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
@@ -93,6 +76,30 @@ import org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.WorkspaceResourceMapper;
 import org.eclipse.team.internal.core.subscribers.SubscriberSyncInfoCollector;
 import org.eclipse.team.ui.TeamOperation;
+
+import org.eclipse.swt.widgets.Display;
+
+import org.eclipse.core.tests.resources.ResourceTest;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 
@@ -105,10 +112,48 @@ public class EclipseTest extends ResourceTest {
 	protected static final int RANDOM_CONTENT_SIZE = 3876;
 	protected static String eol = System.getProperty("line.separator");
 	private static boolean modelSync = true;
-    private static final long LOCK_EXPIRATION_THRESHOLD = 1000 * 60 * 10; // 10 minutes
-    private static final int MAX_LOCK_ATTEMPTS = 60 * 30; // 30 minutes
-    private String lockId;
-	
+	private static final long LOCK_EXPIRATION_THRESHOLD = 1000 * 60 * 10; // 10 minutes
+	private static final int MAX_LOCK_ATTEMPTS = 60 * 30; // 30 minutes
+
+	private static final int MAX_RETRY_DELETE= 5;
+
+
+	private String lockId;
+
+
+	/**
+	 * Removes a resource. Retries if deletion failed (e.g. because something still locks the
+	 * resource).
+	 * 
+	 * @param resource the resource to delete
+	 * @param updateFlags bit-wise or of update flag constants ( {@link #FORCE},
+	 *            {@link #KEEP_HISTORY}, {@link #ALWAYS_DELETE_PROJECT_CONTENT}, and
+	 *            {@link #NEVER_DELETE_PROJECT_CONTENT})
+	 * @param progressMonitor the progress monitor
+	 * @throws CoreException if operation failed
+	 */
+	public static void delete(IResource resource, int updateFlags, IProgressMonitor progressMonitor) throws CoreException {
+		for (int i= 0; i < MAX_RETRY_DELETE; i++) {
+			try {
+				resource.delete(updateFlags, progressMonitor);
+				i= MAX_RETRY_DELETE;
+			} catch (CoreException e) {
+				if (i == MAX_RETRY_DELETE - 1) {
+					CVSProviderPlugin.log(e);
+					throw e;
+				}
+				try {
+					IStatus status= new Status(IStatus.ERROR, CVSProviderPlugin.ID, 0, "Error deleting resource", new IllegalStateException("sleep before retrying delete() for "
+							+ resource.getLocationURI()));
+					CVSProviderPlugin.log(status);
+					Thread.sleep(1000); // give other threads time to close the file
+				} catch (InterruptedException e1) {
+				}
+			}
+		}
+	}
+
+
 	public static Test suite(Class c) {
 		String testName = System.getProperty("eclipse.cvs.testName");
 		if (testName == null) {
@@ -272,7 +317,7 @@ public class EclipseTest extends ResourceTest {
 		if (resources.length == 0) return;
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			resource.delete(false, DEFAULT_MONITOR);
+			delete(resource, IResource.NONE, DEFAULT_MONITOR);
 		}
 	}
 	/**
