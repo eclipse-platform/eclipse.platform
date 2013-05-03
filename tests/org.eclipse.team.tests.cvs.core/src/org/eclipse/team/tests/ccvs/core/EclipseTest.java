@@ -1384,7 +1384,7 @@ public class EclipseTest extends ResourceTest {
 				}
 				for (int i = 0; i < allJobs.length; i++) {
 					Job job = allJobs[i];
-					System.out.println(job.getName());
+					System.out.println(job.getName() + ": " + job.getState());
 				}
 				if (CVSTestSetup.FAIL_IF_EXCEPTION_LOGGED) {
 					throw e;
