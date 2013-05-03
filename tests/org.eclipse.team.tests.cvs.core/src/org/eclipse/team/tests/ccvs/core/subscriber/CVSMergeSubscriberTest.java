@@ -311,10 +311,13 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	public void testLocalScrub() throws IOException, TeamException, CoreException, InvocationTargetException, InterruptedException {
+
+		dumpProperties();
+
 		// Create a test project
-		IProject project = createProject("testLocalScrub", new String[] { "delete.txt", "file1.txt", "file2.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
+		IProject project = createProject("testLocalScrub", new String[] { "delete.txt", "file1.txt", "works.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
 		setContentsAndEnsureModified(project.getFile("file1.txt"), "some text\nwith several lines\n");
-		setContentsAndEnsureModified(project.getFile("file2.txt"), "some text\nwith several lines\n");
+		setContentsAndEnsureModified(project.getFile("works.txt"), "some text\nwith several lines\n");
 		commitProject(project);
 		
 		// Checkout and branch a copy
@@ -324,7 +327,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 		
 		// modify the branch
 		appendText(branchedProject.getFile("file1.txt"), "first line\n", true);
-		appendText(branchedProject.getFile("file2.txt"), "last line\n", false);
+		appendText(branchedProject.getFile("works.txt"), "last line\n", false);
 		addResources(branchedProject, new String[] {"addition.txt"}, false);
 		deleteResources(branchedProject, new String[] {"delete.txt", "folder1/a.txt"}, false);
 		setContentsAndEnsureModified(branchedProject.getFile("folder1/b.txt"));
@@ -335,7 +338,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 		
 		// check the sync states
 		assertSyncEquals("testLocalScrub", subscriber, project, 
-				new String[] { "delete.txt", "file1.txt", "file2.txt", "addition.txt", "folder1/a.txt", "folder1/b.txt"}, 
+				new String[] { "delete.txt", "file1.txt", "works.txt", "addition.txt", "folder1/a.txt", "folder1/b.txt"}, 
 				true, new int[] {
 							  SyncInfo.INCOMING | SyncInfo.DELETION,
 							  		SyncInfo.INCOMING | SyncInfo.CHANGE, 
@@ -357,20 +360,37 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 		}
 		
 		// update
-		mergeResources(subscriber, project, 
-				new String[] { 
-						   "delete.txt", 
-						   		"file1.txt", 
-						   		"file2.txt", 
-						   		"addition.txt", 
-						   		"folder1/a.txt",
-		"folder1/b.txt"}, 
-		true /* allow overwrite */);
-		
+		mergeResources(
+				subscriber,
+				project,
+				new String[] {
+					"delete.txt",
+					"file1.txt",
+					"works.txt",
+					"addition.txt",
+					"folder1/a.txt",
+					"folder1/b.txt"},
+				true /* allow overwrite */
+		);
+
 		// commit
 		commitProject(project);
 	}
-	
+
+	private static void dumpProperties() {
+		System.out.println("eclipse.cvs.repository: " + CVSTestSetup.REPOSITORY_LOCATION);
+		System.out.println("eclipse.cvs.initrepo: " + CVSTestSetup.INITIALIZE_REPO);
+		System.out.println("eclipse.cvs.debug: " + CVSTestSetup.DEBUG);
+		System.out.println("eclipse.cvs.rsh: " + CVSTestSetup.RSH);
+		System.out.println("eclipse.cvs.localRepo: " + CVSTestSetup.LOCAL_REPO);
+		System.out.println("eclipse.cvs.waitFactor: " + CVSTestSetup.WAIT_FACTOR);
+		System.out.println("eclipse.cvs.compressionLevel: " + CVSTestSetup.COMPRESSION_LEVEL);
+		System.out.println("eclipse.cvs.failLog: " + CVSTestSetup.FAIL_IF_EXCEPTION_LOGGED);
+		System.out.println("eclipse.cvs.recordProtocolTraffic: " + CVSTestSetup.RECORD_PROTOCOL_TRAFFIC);
+		System.out.println("eclipse.cvs.sequentialAccess: " + CVSTestSetup.ENSURE_SEQUENTIAL_ACCESS);
+		System.out.println("eclipse.cvs.failOnBadDiff: " + CVSTestSetup.FAIL_ON_BAD_DIFF);
+	}
+
 	public void testBug37546MergeWantsToDeleteNewDirectories() throws CVSException, CoreException {		
 		IProject project = createProject("testBug37546", new String[]{"file1.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
 		setContentsAndEnsureModified(project.getFile("file1.txt"), "some text\nwith several lines\n");
