@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse Team Core Tests
+Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.tests.core; singleton:=true
-Bundle-Version: 3.7.0.qualifier
+Bundle-Version: 3.7.100.qualifier
 Bundle-ClassPath: teamtests.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.tests.core,
  org.eclipse.team.tests.core.mapping,
@@ -33,3 +33,4 @@ Require-Bundle: org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.compare.tests
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
+Bundle-RequiredExecutionEnvironment: J2SE-1.4

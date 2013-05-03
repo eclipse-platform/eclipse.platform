@@ -1,16 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclipse CVS Tests Core
+Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.tests.cvs.core; singleton:=true
 Bundle-Version: 3.3.400.qualifier
 Bundle-ClassPath: cvstests.jar
 Bundle-Activator: org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.tests.ccvs.core,
  org.eclipse.team.tests.ccvs.core.compatible,
  org.eclipse.team.tests.ccvs.core.cvsresources,
+ org.eclipse.team.tests.ccvs.core.jsch,
  org.eclipse.team.tests.ccvs.core.mappings,
+ org.eclipse.team.tests.ccvs.core.mappings.model,
+ org.eclipse.team.tests.ccvs.core.mappings.model.mapping,
  org.eclipse.team.tests.ccvs.core.provider,
  org.eclipse.team.tests.ccvs.core.subscriber,
  org.eclipse.team.tests.ccvs.ui,
