@@ -115,7 +115,7 @@ public class EclipseTest extends ResourceTest {
 	private static final long LOCK_EXPIRATION_THRESHOLD = 1000 * 60 * 10; // 10 minutes
 	private static final int MAX_LOCK_ATTEMPTS = 60 * 30; // 30 minutes
 
-	private static final int MAX_RETRY_DELETE= 5;
+	private static final int MAX_RETRY_DELETE= 120;
 
 
 	private String lockId;
