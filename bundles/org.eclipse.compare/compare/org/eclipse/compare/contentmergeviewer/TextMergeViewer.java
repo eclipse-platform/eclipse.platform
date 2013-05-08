@@ -3011,8 +3011,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				public IStatus runInUIThread(IProgressMonitor monitor) {
 					if (!getControl().isDisposed()) {
 						doDiff();
-						invalidateLines();
-						updateLines(doc);
+						if (!getControl().isDisposed()) { // doDiff() might have closed the editor
+							invalidateLines();
+							updateLines(doc);
+						}
 					}
 					return Status.OK_STATUS;
 				}
