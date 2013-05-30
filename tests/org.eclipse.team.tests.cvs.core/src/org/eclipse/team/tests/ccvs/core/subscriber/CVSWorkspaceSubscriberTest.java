@@ -1277,6 +1277,10 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	public void testNestedMarkAsMerged() throws CoreException, InvocationTargetException, InterruptedException {
+		if (Util.isMac()) {
+			return; //TODO Disable test for Mac because of intermittent test failures, see https://bugs.eclipse.org/408932
+		}
+
 		// Create a project and checkout a copy
 		IProject project = createProject(new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
 		IProject copy = checkoutCopy(project, "-copy");
@@ -1302,8 +1306,9 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	
 	public void testMarkAsMergedOnBinaryFile() throws TeamException, CoreException, InvocationTargetException, InterruptedException {
 		if(Util.isMac()){
-			return; //TODO Disable test for Mac because of intermittent test failures, see bug 399509
+			return; //TODO Disable test for Mac because of intermittent test failures, see https://bugs.eclipse.org/399509
 		}
+
 		// Create a project and checkout a copy
 		IProject project = createProject(new String[] { "file1.txt"});
 		IProject copy = checkoutCopy(project, "-copy");
