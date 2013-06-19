@@ -14,7 +14,7 @@
   <parent>
     <artifactId>eclipse.platform.team</artifactId>
     <groupId>eclipse.platform.team</groupId>
-    <version>4.3.0-SNAPSHOT</version>
+    <version>4.4.0-SNAPSHOT</version>
     <relativePath>../../../../</relativePath>
   </parent>
   <groupId>org.eclipse.core</groupId>
@@ -62,7 +62,7 @@
                 <configuration>
                   <target>
                     <exec executable="make" newenvironment="false" dir="../../natives/unix/linux/"/>
-           <copy todir="." >
+           <copy todir=".">
            <fileset dir="../../natives/unix/linux/">
                <include name="libgnomeproxy-*.so"/>
            </fileset>
