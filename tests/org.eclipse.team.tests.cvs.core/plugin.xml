@@ -44,10 +44,10 @@
    </extension>
    <extension
          id="modelProvider"
+         name="CVS Test Model"
          point="org.eclipse.core.resources.modelProviders">
       <modelProvider
-            class="org.eclipse.team.tests.ccvs.core.mappings.TestModelProvider"
-            name="CVS Test Model"/>
+            class="org.eclipse.team.tests.ccvs.core.mappings.TestModelProvider"/>
    </extension>
    <extension
          point="org.eclipse.ui.editors">

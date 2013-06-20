@@ -51,12 +51,6 @@
             name="Team Test Views"
             id="org.eclipse.team.tests.core">
       </category>
-      <view
-            name="Content Provider Test View"
-            category="org.eclipse.team.tests.core"
-            class="org.eclipse.team.tests.ui.views.ContentProviderTestView"
-            id="org.eclipse.team.tests.ui.views.ContentProviderTestView">
-      </view>
    </extension>
    <extension
          point="org.eclipse.team.core.storageMergers">
