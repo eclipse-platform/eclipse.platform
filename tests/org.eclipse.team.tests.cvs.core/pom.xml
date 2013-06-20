@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.tests.cvs.core</artifactId>
-  <version>3.3.400-SNAPSHOT</version>
+  <version>3.3.500-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
