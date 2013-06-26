@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.eclipse.compare" version="2">
+    <resource path="META-INF/MANIFEST.MF">
+        <filter comment="Workaround for bug 411257: .api_description files in Kepler release do not contain @noreference restrictions" id="923795461">
+            <message_arguments>
+                <message_argument value="3.5.400"/>
+                <message_argument value="3.5.400"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="compare/org/eclipse/compare/ICompareFilter.java" type="org.eclipse.compare.ICompareFilter">
+        <filter comment="Workaround for bug 411257: .api_description files in Kepler release do not contain @noreference restrictions" id="406052990">
+            <message_arguments>
+                <message_argument value="org.eclipse.compare.ICompareFilter"/>
+                <message_argument value="canCacheFilteredRegions()"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Workaround for bug 411257: .api_description files in Kepler release do not contain @noreference restrictions" id="406052990">
+            <message_arguments>
+                <message_argument value="org.eclipse.compare.ICompareFilter"/>
+                <message_argument value="getFilteredRegions(HashMap)"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Workaround for bug 411257: .api_description files in Kepler release do not contain @noreference restrictions" id="406052990">
+            <message_arguments>
+                <message_argument value="org.eclipse.compare.ICompareFilter"/>
+                <message_argument value="isEnabledInitially()"/>
+            </message_arguments>
+        </filter>
+        <filter comment="Workaround for bug 411257: .api_description files in Kepler release do not contain @noreference restrictions" id="406052990">
+            <message_arguments>
+                <message_argument value="org.eclipse.compare.ICompareFilter"/>
+                <message_argument value="setInput(Object, Object, Object, Object)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
