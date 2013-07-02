@@ -433,6 +433,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private DocumentMerger fMerger;
 	/** The current diff */
 	private Diff fCurrentDiff;
+	private Diff fSavedDiff;
 
 	// Bug 259362 - Update diffs after undo
 	private boolean copyOperationInProgress = false;
@@ -3007,11 +3008,17 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		if (!isLeftDirty() && !isRightDirty()) {
 			fRedoDiff = false;
+			final Diff oldDiff = getLastDiff();
 			new UIJob(CompareMessages.DocumentMerger_0) {
 				public IStatus runInUIThread(IProgressMonitor monitor) {
 					if (!getControl().isDisposed()) {
 						doDiff();
-						if (!getControl().isDisposed()) { // doDiff() might have closed the editor
+						if (!getControl().isDisposed()) {
+							Diff newDiff = findNewDiff(oldDiff);
+							if (newDiff != null) {
+								updateStatus(newDiff);
+								setCurrentDiff(newDiff, true);
+							}
 							invalidateLines();
 							updateLines(doc);
 						}
@@ -3022,6 +3029,43 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		} else {
 			updateLines(doc);
 		}
+	}
+	
+	
+	private void saveDiff() {
+			fSavedDiff = fCurrentDiff;
+	}
+
+	private Diff getLastDiff() {
+		if (fCurrentDiff != null) {
+			return fCurrentDiff;
+		}
+		return fSavedDiff;
+	}
+	
+	
+	private Diff findNewDiff(Diff oldDiff) {
+		if (oldDiff == null)
+			return null;
+		Diff newDiff = findNewDiff(oldDiff, LEFT_CONTRIBUTOR);
+		if (newDiff == null) {
+			newDiff = findNewDiff(oldDiff, RIGHT_CONTRIBUTOR);
+		}
+		return newDiff;
+	}
+
+	private Diff findNewDiff(Diff oldDiff, char type) {
+		int offset = oldDiff.getPosition(type).offset;
+		int length = oldDiff.getPosition(type).length;
+
+		// DocumentMerger.findDiff method doesn't really work well with 0-length
+		// diffs
+		if (length == 0) {
+			if (offset > 0)
+				offset--;
+			length = 1;
+		}
+		return fMerger.findDiff(type, offset, offset + length);
 	}
 	
 	/*
@@ -3336,7 +3380,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fAncestor.resetLineBackground();
 		fLeft.resetLineBackground();
 		fRight.resetLineBackground();
-		
+		saveDiff();
 		fCurrentDiff= null;
 		try {
 			fMerger.doDiff();
@@ -4637,9 +4681,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			}
 			
 			// now switch diffs
+			saveDiff();
 			fCurrentDiff= d;
 			revealDiff(d, d.isToken());
 		} else {
+			saveDiff();
 			fCurrentDiff= d;
 		}
 
@@ -4890,7 +4936,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	private boolean copy(Diff diff, boolean leftToRight) {
 		
-		if (diff != null && !diff.isResolved()) {
+		if (diff != null) {
 			if (!validateChange(!leftToRight))
 				return false;
 			if (leftToRight) {
@@ -5222,6 +5268,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private void resetDiffs() {
 		// clear stuff
+		saveDiff();
 		fCurrentDiff= null;
 		fMerger.reset();
 		resetPositions(fLeft.getSourceViewer().getDocument());

@@ -1258,7 +1258,7 @@ public class DocumentMerger {
 	 */
 	public boolean copy(Diff diff, boolean leftToRight) {
 		
-		if (diff != null && !diff.isResolved()) {
+		if (diff != null) {
 			Position fromPos= null;
 			Position toPos= null;
 			IDocument fromDoc= null;
