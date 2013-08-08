@@ -25,6 +25,7 @@ import java.util.Set;
 import junit.framework.Test;
 
 import org.eclipse.core.internal.resources.mapping.SimpleResourceMapping;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -33,10 +34,14 @@ import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
+
+import org.eclipse.jface.util.Util;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
@@ -184,7 +189,7 @@ public class ResourceMapperTests extends EclipseTest {
      * Need to ensure that only the resources contained in the mapping
      * have the branch tag associated with them.
      */
-    private void assertBranched(ResourceMapping mapping, CVSTag branch) throws CoreException, IOException {
+	private void assertBranched(ResourceMapping mapping, CVSTag branch) throws CoreException {
         // First, make sure the proper resources are tagged in the repo
         assertTagged(mapping, branch);
         // Now make sure the proper local files are tagged
@@ -580,6 +585,9 @@ public class ResourceMapperTests extends EclipseTest {
     }
 
     public void testCommit() throws Exception {
+		if (IS_UNSTABLE && Util.isMac())
+			return;
+
         // Create a test project, import it into cvs and check it out
         IProject project = createProject("testCommit", new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt", "folder1/b.txt", "folder1/subfolder1/c.txt" });
         
