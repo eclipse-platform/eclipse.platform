@@ -20,18 +20,6 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.util.Util;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.ISubscriberChangeEvent;
@@ -50,9 +38,25 @@ import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
+import org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin;
 import org.eclipse.team.tests.ccvs.core.mappings.model.ModelProject;
 import org.eclipse.team.tests.ccvs.core.mappings.model.mapping.ModelResourceMapping;
 import org.eclipse.team.tests.ccvs.ui.ModelParticipantSyncInfoSource;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+
+import org.eclipse.jface.util.Util;
 
 /**
  * This class tests the CVSWorkspaceSubscriber
@@ -1277,9 +1281,8 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	public void testNestedMarkAsMerged() throws CoreException, InvocationTargetException, InterruptedException {
-		if (Util.isMac()) {
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST && Util.isMac())
 			return; //TODO Disable test for Mac because of intermittent test failures, see https://bugs.eclipse.org/408932
-		}
 
 		// Create a project and checkout a copy
 		IProject project = createProject(new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
@@ -1305,9 +1308,8 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	public void testMarkAsMergedOnBinaryFile() throws TeamException, CoreException, InvocationTargetException, InterruptedException {
-		if(Util.isMac()){
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST && Util.isMac())
 			return; //TODO Disable test for Mac because of intermittent test failures, see https://bugs.eclipse.org/399509
-		}
 
 		// Create a project and checkout a copy
 		IProject project = createProject(new String[] { "file1.txt"});

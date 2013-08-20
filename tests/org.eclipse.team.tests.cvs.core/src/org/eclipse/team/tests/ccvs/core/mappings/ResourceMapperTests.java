@@ -24,24 +24,6 @@ import java.util.Set;
 
 import junit.framework.Test;
 
-import org.eclipse.core.internal.resources.mapping.SimpleResourceMapping;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
-import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.resources.mapping.ResourceTraversal;
-
-import org.eclipse.jface.util.Util;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
@@ -73,14 +55,30 @@ import org.eclipse.team.internal.core.ResourceVariantCache;
 import org.eclipse.team.internal.core.ResourceVariantCacheEntry;
 import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+import org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin;
+
+import org.eclipse.core.internal.resources.mapping.SimpleResourceMapping;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
+
+import org.eclipse.jface.util.Util;
 
 /**
  * Tests for using CVS operations with deep and shallow resource mappings.
  */
 public class ResourceMapperTests extends EclipseTest {
-
-
-	private static final boolean IS_UNSTABLE= true;
 
 
     public ResourceMapperTests() {
@@ -585,7 +583,7 @@ public class ResourceMapperTests extends EclipseTest {
     }
 
     public void testCommit() throws Exception {
-		if (IS_UNSTABLE && Util.isMac())
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST && Util.isMac())
 			return;
 
         // Create a test project, import it into cvs and check it out
@@ -627,7 +625,7 @@ public class ResourceMapperTests extends EclipseTest {
     
     public void testBranch() throws Exception {
 
-		if (IS_UNSTABLE)
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST)
 			return;
 
         // Create a test project, import it into cvs and check it out

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,6 @@ import java.util.Set;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.ICVSFile;
@@ -40,6 +32,19 @@ import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.util.ResourceStateChangeListeners;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+import org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+
+import org.eclipse.jface.util.Util;
 
 /**
  * Test isModified on file, folders and projects.
@@ -251,6 +256,9 @@ public class IsModifiedTests extends EclipseTest {
 	}
 
 	public void testFileDeletions() throws CoreException, TeamException {
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST && Util.isMac())
+			return;
+
 		IProject project = createProject("testFileDeletions", new String[] { "changed.txt", "folder1/", "folder1/deleted.txt", "folder1/a.txt" });
 		// delete and commit a file
 		project.getFile("folder1/deleted.txt").delete(false, DEFAULT_MONITOR);

@@ -14,6 +14,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+import org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin;
 
 public class AllTestsProvider extends EclipseTest {
 
@@ -37,7 +38,8 @@ public class AllTestsProvider extends EclipseTest {
 		suite.addTest(IsModifiedTests.suite());
 
 		// Disabled since they are unstable, see https://bugs.eclipse.org/409126
-//		suite.addTest(RepositoryRootTest.suite());
+		if (!TeamCVSTestPlugin.IS_UNSTABLE_TEST)
+			suite.addTest(RepositoryRootTest.suite());
 
 		return new CVSTestSetup(suite);
 	}
