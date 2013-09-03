@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.compare</groupId>
   <artifactId>org.eclipse.compare.core</artifactId>
-  <version>3.5.300-SNAPSHOT</version>
+  <version>3.5.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
