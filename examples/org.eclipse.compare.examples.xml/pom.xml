@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.compare</groupId>
   <artifactId>org.eclipse.compare.examples.xml</artifactId>
-  <version>3.3.300-SNAPSHOT</version>
+  <version>3.3.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
