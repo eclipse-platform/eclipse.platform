@@ -650,6 +650,9 @@ public class ResourceMapperTests extends EclipseTest {
     }
 
     public void testCacheBase() throws TeamException, CoreException {
+		if (TeamCVSTestPlugin.IS_UNSTABLE_TEST && Util.isMac())
+			return;
+
     	IProject project = createProject("testCacheBase", new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt", "folder1/b.txt", "folder1/subfolder1/c.txt"  });
     	IProject copy = checkoutCopy(project, "-copy");
 
