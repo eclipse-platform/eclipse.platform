@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -226,17 +227,25 @@ public class Utils{
   }
   
   public static void migrateSSH2Preferences(org.osgi.service.prefs.Preferences node) {
-    org.osgi.service.prefs.Preferences jschPrefs=node.node(JSchCorePlugin.ID);
-    org.osgi.service.prefs.Preferences ssh2Prefs=node.node("org.eclipse.team.cvs.ssh2"); //$NON-NLS-1$
-    String oldHome = ssh2Prefs.get(IConstants.KEY_OLD_SSH2HOME, null);
-    String oldKey = ssh2Prefs.get(IConstants.KEY_OLD_PRIVATEKEY, null);
-    if (oldHome != null) {
-      jschPrefs.put(IConstants.KEY_SSH2HOME, oldHome);
-      ssh2Prefs.remove(IConstants.KEY_OLD_SSH2HOME);
+    try{
+      if(node.nodeExists("org.eclipse.team.cvs.ssh2")){ //$NON-NLS-1$
+        org.osgi.service.prefs.Preferences ssh2Prefs=node.node("org.eclipse.team.cvs.ssh2"); //$NON-NLS-1$
+        String oldHome=ssh2Prefs.get(IConstants.KEY_OLD_SSH2HOME, null);
+        String oldKey=ssh2Prefs.get(IConstants.KEY_OLD_PRIVATEKEY, null);
+        if(oldHome!=null){
+          org.osgi.service.prefs.Preferences jschPrefs=node.node(JSchCorePlugin.ID);
+          jschPrefs.put(IConstants.KEY_SSH2HOME, oldHome);
+          ssh2Prefs.remove(IConstants.KEY_OLD_SSH2HOME);
+        }
+        if(oldKey!=null){
+          org.osgi.service.prefs.Preferences jschPrefs=node.node(JSchCorePlugin.ID);
+          jschPrefs.put(IConstants.KEY_PRIVATEKEY, oldKey);
+          ssh2Prefs.remove(IConstants.KEY_OLD_PRIVATEKEY);
+        }
+      }
     }
-    if (oldKey != null) {
-      jschPrefs.put(IConstants.KEY_PRIVATEKEY, oldKey);
-      ssh2Prefs.remove(IConstants.KEY_OLD_PRIVATEKEY);
+    catch(BackingStoreException e){
+      // do nothing
     }
   }
   
