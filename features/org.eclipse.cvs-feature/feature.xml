@@ -19,10 +19,6 @@
       %license
    </license>
 
-   <requires>
-      <import feature="org.eclipse.platform" version="3.7.0" match="greaterOrEqual"/>
-   </requires>
-
    <plugin
          id="org.eclipse.cvs"
          download-size="0"
