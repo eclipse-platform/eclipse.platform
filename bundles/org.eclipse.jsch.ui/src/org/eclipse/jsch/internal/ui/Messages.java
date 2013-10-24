@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,6 +88,12 @@ public class Messages extends NLS{
   public static String CVSSSH2PreferencePage_137;
   public static String CVSSSH2PreferencePage_138;
   public static String CVSSSH2PreferencePage_139;
+  public static String CVSSSH2PreferencePage_140;
+  public static String CVSSSH2PreferencePage_141;
+  public static String CVSSSH2PreferencePage_142;
+  public static String CVSSSH2PreferencePage_143;
+  public static String CVSSSH2PreferencePage_144;
+  public static String CVSSSH2PreferencePage_145;
   public static String KeyboardInteractiveDialog_0;
   public static String KeyboardInteractiveDialog_1;
   public static String KeyboardInteractiveDialog_2;

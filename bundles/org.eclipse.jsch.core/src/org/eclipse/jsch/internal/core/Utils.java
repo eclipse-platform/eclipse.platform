@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,36 @@ public class Utils{
       "gssapi-with-mic", "publickey", "password", "keyboard-interactive"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
   public static String getDefaultAuthMethods(){
-    String defaultValue = PREFERRED_AUTH_METHODS[0];
-    for(int i = 1; i < PREFERRED_AUTH_METHODS.length; i++){
-      defaultValue += "," + PREFERRED_AUTH_METHODS[i]; //$NON-NLS-1$
+    return getDefaultMethods(PREFERRED_AUTH_METHODS);
+  }
+  
+  private static final String[] PREFERRED_KEX_METHODS=new String[] {
+    "diffie-hellman-group1-sha1",          //$NON-NLS-1$
+    "diffie-hellman-group14-sha1",         //$NON-NLS-1$
+    "diffie-hellman-group-exchange-sha1",  //$NON-NLS-1$
+    "diffie-hellman-group-exchange-sha256" //$NON-NLS-1$
+  };
+
+  public static String getDefaultKEXMethods(){
+    return getDefaultMethods(PREFERRED_KEX_METHODS);
+  }
+  
+  private static final String[] PREFERRED_MAC_METHODS=new String[] {
+    "hmac-md5",      //$NON-NLS-1$
+    "hmac-sha1",     //$NON-NLS-1$
+    "hmac-sha2-256", //$NON-NLS-1$
+    "hmac-sha1-96",  //$NON-NLS-1$
+    "hmac-md5-96"    //$NON-NLS-1$
+  };
+
+  public static String getDefaultMACMethods(){
+    return getDefaultMethods(PREFERRED_MAC_METHODS);
+  }
+  
+  private static String getDefaultMethods(String[] methods){
+    String defaultValue = methods[0];
+    for(int i = 1; i < methods.length; i++){
+      defaultValue += "," + methods[i]; //$NON-NLS-1$
     }
     return defaultValue;
   }
@@ -97,7 +124,13 @@ public class Utils{
     setProxy(session);
     Hashtable config=new Hashtable();
     config.put("PreferredAuthentications", //$NON-NLS-1$ 
-        getEnabledPreferredAuthMethods()); 
+        getEnabledPreferredAuthMethods());
+    config.put("kex", //$NON-NLS-1$ 
+        getEnabledPreferredKEXMethods());
+    config.put("mac.c2s", //$NON-NLS-1$ 
+        getEnabledPreferredMACMethods());
+    config.put("mac.s2c", //$NON-NLS-1$ 
+        getEnabledPreferredMACMethods());
     session.setConfig(config);
     return session;
   }
@@ -226,5 +259,43 @@ public class Utils{
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
         IConstants.PREF_PREFERRED_AUTHENTICATION_METHODS_ORDER, order);}
   
-
+  public static String getEnabledPreferredKEXMethods(){
+    IPreferencesService service = Platform.getPreferencesService();
+    return service.getString(JSchCorePlugin.ID,
+        IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS, getDefaultKEXMethods(), null);
+  }
+  
+  public static String getKEXMethodsOrder(){
+    IPreferencesService service = Platform.getPreferencesService();
+    return service.getString(JSchCorePlugin.ID,
+        IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER, getDefaultKEXMethods(), null);
+  }
+  
+  public static void setEnabledPreferredKEXMethods(String methods, String order){
+    IPreferencesService service=Platform.getPreferencesService();
+    service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
+        IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS, methods);
+    service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
+        IConstants.PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER, order);
+  }
+  
+  public static String getEnabledPreferredMACMethods(){
+    IPreferencesService service = Platform.getPreferencesService();
+    return service.getString(JSchCorePlugin.ID,
+        IConstants.PREF_PREFERRED_MAC_METHODS, getDefaultMACMethods(), null);
+  }
+  
+  public static String getMACMethodsOrder(){
+    IPreferencesService service = Platform.getPreferencesService();
+    return service.getString(JSchCorePlugin.ID,
+        IConstants.PREF_PREFERRED_MAC_METHODS_ORDER, getDefaultMACMethods(), null);
+  }
+  
+  public static void setEnabledPreferredMACMethods(String methods, String order){
+    IPreferencesService service=Platform.getPreferencesService();
+    service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
+        IConstants.PREF_PREFERRED_MAC_METHODS, methods);
+    service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
+        IConstants.PREF_PREFERRED_MAC_METHODS_ORDER, order);
+  }
 }
