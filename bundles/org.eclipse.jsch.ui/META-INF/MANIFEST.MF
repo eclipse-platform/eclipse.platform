@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: org.eclipse.jsch.internal.ui;x-internal:=true,
+ org.eclipse.jsch.internal.ui.authenticator;x-internal:=true,
  org.eclipse.jsch.internal.ui.preference;x-internal:=true,
  org.eclipse.jsch.ui
