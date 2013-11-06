@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Carsten Pfeiffer <carsten.pfeiffer@gebit.de> - CompareUIPlugin.getCommonType() returns null if left or right side is not available - https://bugs.eclipse.org/311843
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -53,6 +54,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -1198,13 +1200,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	    type= getContentType(left);
 		if (type != null)
 			types[n++]= type;
-		else
-			return null;
 		type= getContentType(right);
 		if (type != null)
 			types[n++]= type;
-		else
-			return null;
 				
 		IContentType result= null;
 		IContentType[] s0, s1, s2;
