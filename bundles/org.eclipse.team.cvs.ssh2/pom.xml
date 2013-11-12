@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.cvs.ssh2</artifactId>
-  <version>3.2.300-SNAPSHOT</version>
+  <version>3.2.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

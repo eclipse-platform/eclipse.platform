@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.jsch</groupId>
   <artifactId>org.eclipse.jsch.core</artifactId>
-  <version>1.1.400-SNAPSHOT</version>
+  <version>1.1.500-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
