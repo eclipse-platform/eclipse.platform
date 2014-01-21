@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.compare.examples.xml; singleton:=true
 Bundle-Version: 3.3.400.qualifier
-Bundle-ClassPath: xmlcompareexamples.jar
 Bundle-Activator: org.eclipse.compare.examples.xml.XMLPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin

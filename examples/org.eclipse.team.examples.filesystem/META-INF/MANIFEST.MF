@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.examples.filesystem; singleton:=true
 Bundle-Version: 3.4.300.qualifier
-Bundle-ClassPath: teamfilesystem.jar
 Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
