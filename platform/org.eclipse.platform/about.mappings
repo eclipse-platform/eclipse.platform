@@ -5,3 +5,4 @@
 
 0=${buildId}
 1=${releaseName}
+2=${releaseNumberPlatform}
