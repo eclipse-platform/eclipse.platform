@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -378,13 +378,10 @@ public class AntCorePreferences implements org.eclipse.core.runtime.Preferences.
 		Property[] result = new Property[properties.length];
 		for (int i = 0; i < properties.length; i++) {
 			String propertyName = properties[i];
-			String[] values = getArrayFromString(prefs.getString(IAntCoreConstants.PREFIX_PROPERTY + propertyName));
-			if (values.length < 1) {
-				continue;
-			}
+			String value = prefs.getString(IAntCoreConstants.PREFIX_PROPERTY + propertyName);
 			Property property = new Property();
 			property.setName(propertyName);
-			property.setValue(values[0]);
+			property.setValue(value);
 			result[i]= property;
 		}
 		return result;

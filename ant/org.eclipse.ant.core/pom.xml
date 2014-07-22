@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.ant</groupId>
   <artifactId>org.eclipse.ant.core</artifactId>
-  <version>3.2.401-SNAPSHOT</version>
+  <version>3.2.402-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
