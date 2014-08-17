@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,13 +31,18 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.osgi.framework.BundleContext;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.IResourceProvider;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.IStreamMerger;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.compare.structuremergeviewer.IStructureCreator;
+import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -53,10 +58,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -64,7 +65,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorRegistry;
@@ -77,17 +81,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.IStreamContentAccessor;
-import org.eclipse.compare.IStreamMerger;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.ResourceNode;
-import org.eclipse.compare.internal.core.ComparePlugin;
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.compare.structuremergeviewer.IStructureCreator;
-import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
+import org.osgi.framework.BundleContext;
 
 /**
  * The Compare UI plug-in defines the entry point to initiate a configurable
@@ -1146,8 +1140,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			return null;
 		String name= element.getName();
 		IContentType ct= null;
-		if (element instanceof ResourceNode) {
-			IResource resource= ((ResourceNode)element).getResource();
+		if (element instanceof IResourceProvider) {
+			IResource resource= ((IResourceProvider)element).getResource();
 			if (resource instanceof IFile) {
 				try {
 					IContentDescription contentDesc= ((IFile)resource).getContentDescription();
