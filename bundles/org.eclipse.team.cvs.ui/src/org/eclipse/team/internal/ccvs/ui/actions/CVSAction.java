@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -177,7 +177,8 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 			// Since we have a text selection, we will assume that the target is the active editor.
 			// Look for the active editor and see it adapts to ResourceMapping or IResource.
 			// See bug 132176
-			IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			IWorkbenchPage activePage= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IEditorPart part= activePage != null ? activePage.getActiveEditor() : null;
 			if (part != null) {
 				IEditorInput input = part.getEditorInput();
 				ResourceMapping mapping = Utils.getResourceMapping(input);
