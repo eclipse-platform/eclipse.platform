@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.sdk</groupId>
   <artifactId>org.eclipse.sdk</artifactId>
-  <version>4.4.0-SNAPSHOT</version>
+  <version>4.4.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
