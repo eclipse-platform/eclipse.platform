@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.SubMonitor;
 
 /* Used to determine the change set responsible for each line */
 public abstract class LCS {
-	public static final double TOO_LONG = 10000000.0; // the value of N*M when
+	public static final double TOO_LONG = 100000000.0;	// 10^8, the value of N*M when
 														// to start binding the
 														// run time
 
