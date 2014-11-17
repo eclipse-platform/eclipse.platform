@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %PLUGIN_NAME
 Bundle-SymbolicName: org.eclipse.core.net;singleton:=true
-Bundle-Version: 1.2.200.qualifier
+Bundle-Version: 1.2.300.qualifier
 Bundle-Activator: org.eclipse.core.internal.net.Activator
 Bundle-Vendor: %PLUGIN_PROVIDER
 Bundle-Localization: plugin
