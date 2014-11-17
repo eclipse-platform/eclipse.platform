@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
-
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.*;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.team.internal.core.InfiniteSubProgressMonitor;
 
 public class Policy {
@@ -28,11 +25,13 @@ public class Policy {
 	public static boolean DEBUG_CONSOLE_BUFFERING = false;
 	public static boolean DEBUG_HISTORY = false;
 
-	static {
-		//init debug options
-		DEBUG_CONSOLE_BUFFERING= "true".equalsIgnoreCase(Platform.getDebugOption(CVSUIPlugin.ID + "/consolebuffering")); //$NON-NLS-1$ //$NON-NLS-2$
-		DEBUG_HISTORY= "true".equalsIgnoreCase(Platform.getDebugOption(CVSUIPlugin.ID + "/history")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		public void optionsChanged(DebugOptions options) {
+			boolean DEBUG = options.getBooleanOption(CVSUIPlugin.ID + "/debug", false); //$NON-NLS-1$
+			DEBUG_CONSOLE_BUFFERING = DEBUG && options.getBooleanOption(CVSUIPlugin.ID + "/consolebuffering", false); //$NON-NLS-1$
+			DEBUG_HISTORY = DEBUG && options.getBooleanOption(CVSUIPlugin.ID + "/history", false); //$NON-NLS-1$
+		}
+	};
 
 	/**
 	 * Progress monitor helpers

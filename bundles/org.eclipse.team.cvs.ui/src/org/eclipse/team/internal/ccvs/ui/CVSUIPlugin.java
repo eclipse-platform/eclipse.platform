@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -47,6 +49,7 @@ import org.eclipse.team.internal.ui.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * UI Plugin for CVS provider-specific workbench functionality.
@@ -62,7 +65,8 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	 * Property constant indicating the decorator configuration has changed. 
 	 */
 	public static final String P_DECORATORS_CHANGED = CVSUIPlugin.ID  + ".P_DECORATORS_CHANGED";	 //$NON-NLS-1$
-	
+
+	private ServiceRegistration debugRegistration;
 	private Hashtable imageDescriptors = new Hashtable(20);
 	private static List propertyChangeListeners = new ArrayList(5);
 	
@@ -679,7 +683,12 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
+
+		// register debug options listener
+		Hashtable properties = new Hashtable(2);
+		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
+
 		initializeImages();
 		
 		CVSAdapterFactory factory = new CVSAdapterFactory();
@@ -714,6 +723,10 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		try {
+			// unregister debug options listener
+			debugRegistration.unregister();
+			debugRegistration = null;
+
 			try {
 				if (repositoryManager != null)
 					repositoryManager.shutdown();
