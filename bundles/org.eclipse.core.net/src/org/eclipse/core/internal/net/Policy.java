@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package org.eclipse.core.internal.net;
 
 import java.util.Date;
 
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
+
 public class Policy {
 	
 	// general debug flag
@@ -19,13 +22,12 @@ public class Policy {
 
 	public static boolean DEBUG_SYSTEM_PROVIDERS = false;
 
-	static {
-		// init debug options
-		if (Activator.getInstance().isDebugging()) {
-			DEBUG = true;
-			DEBUG_SYSTEM_PROVIDERS = "true".equalsIgnoreCase(Activator.getInstance().getDebugOption(Activator.ID + "/systemproviders")); //$NON-NLS-1$ //$NON-NLS-2$
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		public void optionsChanged(DebugOptions options) {
+			DEBUG = options.getBooleanOption(Activator.ID + "/debug", false); //$NON-NLS-1$
+			DEBUG_SYSTEM_PROVIDERS = DEBUG && options.getBooleanOption(Activator.ID + "/systemproviders", false); //$NON-NLS-1$
 		}
-	}
+	};
 
 	/**
 	 * Print a debug message to the console. Pre-pend the message with the
