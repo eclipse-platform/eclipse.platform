@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,6 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  * handler's thread.
  */
 public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implements IResourceChangeListener, ISyncInfoSetChangeListener {
-    
-    private static final boolean DEBUG = Policy.DEBUG_SYNC_MODELS;
-    
     private static final IWorkspaceRoot ROOT = ResourcesPlugin.getWorkspace().getRoot();
     
     // Event that indicates that the markers for a set of elements has changed
@@ -212,7 +209,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				propagateProblemMarkers(element);
 				updateParentLabels(element);
 			}
-			if (DEBUG) {
+			if (Policy.DEBUG_SYNC_MODELS) {
 				long time = System.currentTimeMillis() - start;
 				DateFormat TIME_FORMAT = new SimpleDateFormat("m:ss.SSS"); //$NON-NLS-1$
 				String took = TIME_FORMAT.format(new Date(time));
@@ -419,7 +416,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     public void nodeAdded(ISynchronizeModelElement element, AbstractSynchronizeModelProvider provider) {
         element.addPropertyChangeListener(listener);
         this.provider.nodeAdded(element, provider);
-        if (DEBUG) {
+        if (Policy.DEBUG_SYNC_MODELS) {
             System.out.println("Node added: " + getDebugDisplayLabel(element) + " -> " + getDebugDisplayLabel((ISynchronizeModelElement)element.getParent()) + " : " + getDebugDisplayLabel(provider)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
@@ -436,7 +433,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     public void nodeRemoved(ISynchronizeModelElement element, AbstractSynchronizeModelProvider provider) {
         element.removePropertyChangeListener(listener);
         this.provider.nodeRemoved(element, provider);
-        if (DEBUG) {
+        if (Policy.DEBUG_SYNC_MODELS) {
             System.out.println("Node removed: " + getDebugDisplayLabel(element) + " -> " + getDebugDisplayLabel((ISynchronizeModelElement)element.getParent()) + " : " + getDebugDisplayLabel(provider)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
@@ -450,7 +447,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     public void modelObjectCleared(ISynchronizeModelElement node) {
         node.removePropertyChangeListener(listener);
         this.provider.modelObjectCleared(node);
-        if (DEBUG) {
+        if (Policy.DEBUG_SYNC_MODELS) {
             System.out.println("Node cleared: " + getDebugDisplayLabel(node)); //$NON-NLS-1$
         }
     }
@@ -579,7 +576,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
                     if (additionsMap != null && !additionsMap.isEmpty() && Utils.canUpdateViewer(viewer)) {
                         for (Iterator iter = additionsMap.keySet().iterator(); iter.hasNext();) {
                             ISynchronizeModelElement parent = (ISynchronizeModelElement) iter.next();
-                            if (DEBUG) {
+                            if (Policy.DEBUG_SYNC_MODELS) {
                                 System.out.println("Adding child view items of " + parent.getName()); //$NON-NLS-1$
                             }
                             Set toAdd = (Set)additionsMap.get(parent);
@@ -716,14 +713,14 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
      */
     protected void doAdd(ISynchronizeModelElement parent, ISynchronizeModelElement element) {
         if (additionsMap == null) {
-            if (DEBUG) {
+            if (Policy.DEBUG_SYNC_MODELS) {
                 System.out.println("Added view item " + element.getName()); //$NON-NLS-1$
             }
             AbstractTreeViewer viewer = (AbstractTreeViewer)getViewer();
             viewer.add(parent, element);
         } else {
             // Accumulate the additions
-            if (DEBUG) {
+            if (Policy.DEBUG_SYNC_MODELS) {
                 System.out.println("Queueing view item for addition " + element.getName()); //$NON-NLS-1$
             }
             Set toAdd = (Set)additionsMap.get(parent);

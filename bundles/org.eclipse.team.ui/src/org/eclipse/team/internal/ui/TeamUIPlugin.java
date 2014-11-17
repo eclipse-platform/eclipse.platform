@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.internal.ui;
-
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
@@ -24,6 +23,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -39,8 +40,7 @@ import org.eclipse.team.ui.mapping.ITeamStateProvider;
 import org.eclipse.team.ui.synchronize.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.*;
 
 /**
  * TeamUIPlugin is the plugin for generic, non-provider specific,
@@ -70,6 +70,8 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	
 	// manages synchronize participants
 	private SynchronizeManager synchronizeManager;
+
+	private ServiceRegistration debugRegistration;
 
 	/**
 	 * ID of the 'Remove from View' action.
@@ -212,7 +214,12 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
+
+		// register debug options listener
+		Hashtable properties = new Hashtable(2);
+		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
+
 		initializeImages(this);
 
 		// This is a backwards compatibility check to ensure that repository
@@ -246,6 +253,10 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		try {
+			// unregister debug options listener
+			debugRegistration.unregister();
+			debugRegistration = null;
+
 			if (synchronizeManager != null)
 				synchronizeManager.dispose();
 		} finally {

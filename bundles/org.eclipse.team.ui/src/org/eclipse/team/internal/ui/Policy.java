@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,8 @@ package org.eclipse.team.internal.ui;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.*;
-
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 /**
  * Policy implements NLS convenience methods for the plugin and
@@ -38,16 +39,16 @@ public class Policy {
             return tmpBundle;
         return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
     }
-    
-	static {
-		//init debug options
-		if (TeamUIPlugin.getPlugin().isDebugging()) {
-			DEBUG_SYNC_MODELS = "true".equalsIgnoreCase(Platform.getDebugOption(TeamUIPlugin.ID + "/syncmodels"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_HISTORY = "true".equalsIgnoreCase(Platform.getDebugOption(TeamUIPlugin.ID + "/history"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_DND = "true".equalsIgnoreCase(Platform.getDebugOption(TeamUIPlugin.ID + "/dnd"));//$NON-NLS-1$ //$NON-NLS-2$
+
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		public void optionsChanged(DebugOptions options) {
+			boolean DEBUG = options.getBooleanOption(TeamUIPlugin.ID + "/debug", false); //$NON-NLS-1$
+			DEBUG_SYNC_MODELS = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/syncmodels", false); //$NON-NLS-1$
+			DEBUG_HISTORY = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/history", false); //$NON-NLS-1$
+			DEBUG_DND = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/dnd", false); //$NON-NLS-1$
 		}
-	}
-	
+	};
+
 	/**
 	 * Checks if the progress monitor is canceled.
 	 * 
