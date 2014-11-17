@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jsch.core.IJSchService;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.Team;
 import org.eclipse.team.core.TeamException;
@@ -32,6 +34,7 @@ import org.eclipse.team.internal.ccvs.core.resources.FileModificationManager;
 import org.eclipse.team.internal.ccvs.core.util.*;
 import org.eclipse.team.internal.core.subscribers.ActiveChangeSetManager;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class CVSProviderPlugin extends Plugin {
@@ -123,6 +126,7 @@ public class CVSProviderPlugin extends Plugin {
     private boolean useProxyAuth;
     
     private CVSActiveChangeSetCollector changeSetManager;
+	private ServiceRegistration debugRegistration;
 	private ServiceTracker tracker;
 
     private static final String INFO_PROXY_USER = "org.eclipse.team.cvs.core.proxy.user"; //$NON-NLS-1$ 
@@ -284,6 +288,11 @@ public class CVSProviderPlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
+		// register debug options listener
+		Hashtable properties = new Hashtable(2);
+		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
+
 		// load the state which includes the known repositories
 		loadOldState();
 		crash = createCrashFile();
@@ -311,6 +320,10 @@ public class CVSProviderPlugin extends Plugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		try {
+			// unregister debug options listener
+			debugRegistration.unregister();
+			debugRegistration = null;
+
 			savePluginPreferences();
 			
 			// remove listeners

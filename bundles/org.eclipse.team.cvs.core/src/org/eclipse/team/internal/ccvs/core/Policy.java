@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,28 +15,31 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.team.internal.core.InfiniteSubProgressMonitor;
 
 public class Policy {
 	public static PrintStream recorder;
 	
 	//debug constants
+	public static boolean DEBUG = false;
 	public static boolean DEBUG_METAFILE_CHANGES = false;
 	public static boolean DEBUG_CVS_PROTOCOL = false;
 	public static boolean DEBUG_THREADING = false;
 	public static boolean DEBUG_DIRTY_CACHING = false;
 	public static boolean DEBUG_SYNC_CHANGE_EVENTS = false;
 
-	static {
-		//init debug options
-		if (CVSProviderPlugin.getPlugin().isDebugging()) {
-			DEBUG_METAFILE_CHANGES = "true".equalsIgnoreCase(Platform.getDebugOption(CVSProviderPlugin.ID + "/metafiles"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_CVS_PROTOCOL = "true".equalsIgnoreCase(Platform.getDebugOption(CVSProviderPlugin.ID + "/cvsprotocol"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_THREADING = "true".equalsIgnoreCase(Platform.getDebugOption(CVSProviderPlugin.ID + "/threading"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_DIRTY_CACHING = "true".equalsIgnoreCase(Platform.getDebugOption(CVSProviderPlugin.ID + "/dirtycaching"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_SYNC_CHANGE_EVENTS = "true".equalsIgnoreCase(Platform.getDebugOption(CVSProviderPlugin.ID + "/syncchangeevents"));//$NON-NLS-1$ //$NON-NLS-2$
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		public void optionsChanged(DebugOptions options) {
+			DEBUG = options.getBooleanOption(CVSProviderPlugin.ID + "/debug", false); //$NON-NLS-1$
+			DEBUG_METAFILE_CHANGES = DEBUG && options.getBooleanOption(CVSProviderPlugin.ID + "/metafiles", false); //$NON-NLS-1$
+			DEBUG_CVS_PROTOCOL = DEBUG && options.getBooleanOption(CVSProviderPlugin.ID + "/cvsprotocol", false); //$NON-NLS-1$
+			DEBUG_THREADING = DEBUG && options.getBooleanOption(CVSProviderPlugin.ID + "/threading", false); //$NON-NLS-1$
+			DEBUG_DIRTY_CACHING = DEBUG && options.getBooleanOption(CVSProviderPlugin.ID + "/dirtycaching", false); //$NON-NLS-1$
+			DEBUG_SYNC_CHANGE_EVENTS = DEBUG && options.getBooleanOption(CVSProviderPlugin.ID + "/syncchangeevents", false); //$NON-NLS-1$
 		}
-	}
+	};
 
 	/**
 	 * Progress monitor helpers

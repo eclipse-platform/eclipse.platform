@@ -7,7 +7,7 @@ org.eclipse.team.cvs.core/debug=false
 org.eclipse.team.cvs.core/metafiles=false
 
 # Shows cvs client/server protocol
-org.eclipse.team.cvs.core/cvsprotocol=true
+org.eclipse.team.cvs.core/cvsprotocol=false
 # Shows stream debugging information
 org.eclipse.team.cvs.core/threading=false
 
