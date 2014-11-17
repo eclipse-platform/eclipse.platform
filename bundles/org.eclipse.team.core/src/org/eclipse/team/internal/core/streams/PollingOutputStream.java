@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.eclipse.team.internal.core.Policy;
  * much of the operation completed; conversely, at what point to resume.
  */
 public class PollingOutputStream extends FilterOutputStream {
-	private static final boolean DEBUG = Policy.DEBUG_STREAMS;
 	private int numAttempts;
 	private IProgressMonitor monitor;
 	private boolean cancellable;
@@ -66,7 +65,7 @@ public class PollingOutputStream extends FilterOutputStream {
 			} catch (InterruptedIOException e) {
 				if (++attempts == numAttempts)
 					throw new InterruptedIOException(Messages.PollingOutputStream_writeTimeout); 
-				if (DEBUG) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
@@ -100,7 +99,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					e.bytesTransferred = count;
 					throw e;
 				}
-				if (DEBUG) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
@@ -131,7 +130,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					e.bytesTransferred = count;
 					throw e;
 				}
-				if (DEBUG) System.out.println("write retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
@@ -158,7 +157,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					if (checkCancellation()) throw new OperationCanceledException();
 					if (++attempts == numAttempts)
 						throw new InterruptedIOException(Messages.PollingOutputStream_closeTimeout); 
-					if (DEBUG) System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
 				}
 			}
  		}

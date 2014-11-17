@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * much of the operation completed; conversely, at what point to resume.
  */
 public class PollingInputStream extends FilterInputStream {
-	private static final boolean DEBUG = Policy.DEBUG_STREAMS;
 	private int numAttempts;
 	private IProgressMonitor monitor;
 	private boolean cancellable;
@@ -79,7 +78,7 @@ public class PollingInputStream extends FilterInputStream {
 					if (checkCancellation()) throw new OperationCanceledException();
 					if (++attempts == numAttempts)
 						throw new InterruptedIOException(Messages.PollingInputStream_closeTimeout); 
-					if (DEBUG) System.out.println("close retry=" + attempts); //$NON-NLS-1$
+					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
 				} catch (IOException e) {
 					// ignore it - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=203423#c10
 				}
@@ -104,7 +103,7 @@ public class PollingInputStream extends FilterInputStream {
 			} catch (InterruptedIOException e) {
 				if (++attempts == numAttempts)
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
-				if (DEBUG) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
@@ -130,7 +129,7 @@ public class PollingInputStream extends FilterInputStream {
 				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
 				if (++attempts == numAttempts)
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
-				if (DEBUG) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
@@ -154,7 +153,7 @@ public class PollingInputStream extends FilterInputStream {
 				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
 				if (++attempts == numAttempts)
 					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
-				if (DEBUG) System.out.println("read retry=" + attempts); //$NON-NLS-1$
+				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}

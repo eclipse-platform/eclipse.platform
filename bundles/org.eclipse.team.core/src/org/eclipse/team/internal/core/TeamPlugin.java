@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,13 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.team.core.*;
 import org.eclipse.team.core.mapping.DelegatingStorageMerger;
 import org.eclipse.team.internal.core.mapping.IStreamMergerDelegate;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * <code>TeamPlugin</code> is the plug-in runtime class for the Team 
@@ -61,7 +64,8 @@ final public class TeamPlugin extends Plugin {
 
 	// The one and only plug-in instance
 	private static TeamPlugin plugin;	
-	
+
+	private ServiceRegistration debugRegistration;
 	private IStreamMergerDelegate mergerDelegate;
 
 	/** 
@@ -77,6 +81,12 @@ final public class TeamPlugin extends Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+
+		// register debug options listener
+		Hashtable properties = new Hashtable(2);
+		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
+
 		Team.startup();
 	}
 	
@@ -85,6 +95,10 @@ final public class TeamPlugin extends Plugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		try {
+			// unregister debug options listener
+			debugRegistration.unregister();
+			debugRegistration = null;
+
 			Team.shutdown();
 			ResourceVariantCache.shutdown();
 		} finally {

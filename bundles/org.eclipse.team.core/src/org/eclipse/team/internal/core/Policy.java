@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,25 +11,28 @@
 package org.eclipse.team.internal.core;
 
 import org.eclipse.core.runtime.*;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 public class Policy {
 
 	//debug constants
+	public static boolean DEBUG = false;
 	public static boolean DEBUG_STREAMS = false;
 	public static boolean DEBUG_REFRESH_JOB = true;
 	public static boolean DEBUG_BACKGROUND_EVENTS = false;
 	public static boolean DEBUG_THREADING = false;
 
-	static {
-		//init debug options
-		if (TeamPlugin.getPlugin().isDebugging()) {
-			DEBUG_STREAMS = "true".equalsIgnoreCase(Platform.getDebugOption(TeamPlugin.ID + "/streams"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_REFRESH_JOB = "true".equalsIgnoreCase(Platform.getDebugOption(TeamPlugin.ID + "/refreshjob"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_BACKGROUND_EVENTS = "true".equalsIgnoreCase(Platform.getDebugOption(TeamPlugin.ID + "/backgroundevents"));//$NON-NLS-1$ //$NON-NLS-2$
-			DEBUG_THREADING = "true".equalsIgnoreCase(Platform.getDebugOption(TeamPlugin.ID + "/threading"));//$NON-NLS-1$ //$NON-NLS-2$
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		public void optionsChanged(DebugOptions options) {
+			DEBUG = options.getBooleanOption(TeamPlugin.ID + "/debug", false); //$NON-NLS-1$
+			DEBUG_STREAMS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/streams", false); //$NON-NLS-1$
+			DEBUG_REFRESH_JOB = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/refreshjob", false); //$NON-NLS-1$
+			DEBUG_BACKGROUND_EVENTS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/backgroundevents", false); //$NON-NLS-1$
+			DEBUG_THREADING = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/threading", false); //$NON-NLS-1$
 		}
-	}
-	
+	};
+
 	/**
 	 * Progress monitor helpers.
 	 * 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-    Copyright (c) 2001, 2011 IBM Corporation and others.
+    Copyright (c) 2001, 2014 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -179,5 +179,16 @@
       <contentTypeBinding
             contentTypeId="org.eclipse.core.runtime.text"
             storageMergerId="org.eclipse.team.ui.textStorageMerger"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.trace.traceComponents">
+      <component
+            id="org.eclipse.team.core.trace"
+            label="%TraceComponentLabel">
+         <bundle
+               consumed="false"
+               name="org.eclipse.team.core">
+         </bundle>
+      </component>
    </extension>
 </plugin>
