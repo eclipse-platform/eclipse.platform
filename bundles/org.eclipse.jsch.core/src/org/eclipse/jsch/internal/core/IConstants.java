@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,8 @@ public interface IConstants{
   public static final String PREF_PREFERRED_AUTHENTICATION_METHODS="CVSSSH2PreferencePage.PREF_AUTH_METHODS"; //$NON-NLS-1$
   public static final String PREF_PREFERRED_AUTHENTICATION_METHODS_ORDER="CVSSSH2PreferencePage.PREF_AUTH_METHODS_ORDER"; //$NON-NLS-1$
   
+  public static final String PREF_PREFERRED_SSHAGENT="CVSSSH2PreferencePage.PREF_SSHAGENT"; //$NON-NLS-1$
+
   public static final String PREF_PREFERRED_KEYEXCHANGE_METHODS="CVSSSH2PreferencePage.PREF_KEX_METHODS"; //$NON-NLS-1$
   public static final String PREF_PREFERRED_KEYEXCHANGE_METHODS_ORDER="CVSSSH2PreferencePage.PREF_KEX_METHODS_ORDER"; //$NON-NLS-1$
   

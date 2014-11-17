@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,18 @@
 package org.eclipse.jsch.internal.core;
 
 import java.util.Hashtable;
+import java.util.ArrayList;
 
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.*;
+import org.eclipse.jsch.core.AbstractIdentityRepositoryFactory;
 import org.eclipse.jsch.core.IJSchService;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
@@ -39,6 +42,7 @@ public class JSchCorePlugin extends Plugin{
   private String current_pkeys=""; //$NON-NLS-1$
 
   public static final String PT_AUTHENTICATOR="authenticator"; //$NON-NLS-1$
+  public static final String PT_IDENTITYREPOSITORY="identityrepository"; //$NON-NLS-1$
 
   private static JSchCorePlugin plugin;
   private ServiceTracker tracker;
@@ -100,9 +104,84 @@ public class JSchCorePlugin extends Plugin{
   }
 
   public synchronized JSch getJSch(){
-    if(jsch==null)
+    if(jsch==null){
       jsch=new JSch();
+      setIdentityRepository();
+    }
     return jsch;
+  }
+
+  public synchronized void setIdentityRepository(){
+
+    IdentityRepository[] repositories = getPluggedInIdentityRepositries();
+    String[] selected = Utils.getSelectedSSHAgent().split(","); //$NON-NLS-1$
+    IdentityRepository irepo = null;
+
+    for(int i=0; i<selected.length; i++){
+      for(int j=0; j<repositories.length; j++){
+        IdentityRepository _irepo = repositories[j];
+        if(selected[i].equals(_irepo.getName()) &&
+           _irepo.getStatus()==IdentityRepository.RUNNING){
+          irepo = _irepo;
+          break;
+        }
+      }
+      if(irepo!=null)
+        break;
+    }
+
+    if(irepo!=null){
+      jsch.setIdentityRepository(irepo);
+    }
+    else{
+      // set the internal default IdentityRepository
+      jsch.setIdentityRepository(null);
+    }
+
+  }
+
+  public IdentityRepository[] getPluggedInIdentityRepositries(){
+
+    IExtension[] extensions=Platform.getExtensionRegistry().getExtensionPoint(
+        JSchCorePlugin.ID, JSchCorePlugin.PT_IDENTITYREPOSITORY).getExtensions();
+
+    if(extensions.length==0)
+      return new IdentityRepository[0];
+
+    ArrayList tmp = new ArrayList();
+    for(int i=0; i<extensions.length; i++){
+      IExtension extension=extensions[i];
+      IConfigurationElement[] configs=extension.getConfigurationElements();
+      if(configs.length==0){
+        JSchCorePlugin
+            .log(
+                IStatus.ERROR,
+                NLS
+                    .bind(
+                        "IdentityRepository {0} is missing required fields", (new Object[] {extension.getUniqueIdentifier()})), null);//$NON-NLS-1$
+        continue;
+      }
+      try{
+        IConfigurationElement config=configs[0];
+        AbstractIdentityRepositoryFactory iirf =
+            (AbstractIdentityRepositoryFactory)config.createExecutableExtension("run");//$NON-NLS-1$
+        tmp.add(iirf.create());
+      }
+      catch(CoreException ex){
+        JSchCorePlugin
+            .log(
+                IStatus.ERROR,
+                NLS
+                    .bind(
+                        "Unable to instantiate identity repository {0}", (new Object[] {extension.getUniqueIdentifier()})), ex);//$NON-NLS-1$
+      }
+    }
+
+    IdentityRepository[] repositories = new IdentityRepository[tmp.size()];
+    for(int i=0; i<tmp.size(); i++){
+      repositories[i]=(IdentityRepository)tmp.get(i);
+    }
+    return repositories;
   }
 
   public void loadKnownHosts(){

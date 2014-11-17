@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,6 +154,10 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     tabItem=new TabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_145);
     tabItem.setControl(createPreferredMACPage(tabFolder));
+
+    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem.setText(Messages.CVSSSH2PreferencePage_146);
+    tabItem.setControl(createPreferredSSHAgentPage(tabFolder));
 
     initControls();
 
@@ -815,6 +819,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
   private Button removeHostKeyButton;
 
   Table preferedAuthMethodTable;
+  Table preferedSSHAgentTable;
   Table preferedKeyExchangeMethodTable;
   Table preferedMACMethodTable;
 
@@ -1313,6 +1318,51 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     return root;
   }
 
+  private Control createPreferredSSHAgentPage(Composite parent){
+    Composite root = new Composite(parent, SWT.NONE);
+    GridLayout layout=new GridLayout();
+    layout.marginHeight=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+    layout.marginWidth=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+    layout.verticalSpacing=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+    layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+    layout.numColumns = 2;
+    root.setLayout(layout);
+
+    Label label=new Label(root, SWT.NONE);
+    GridData textLayoutData=new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
+    textLayoutData.horizontalSpan = 2;
+    label.setLayoutData(textLayoutData);
+    label.setText(Messages.CVSSSH2PreferencePage_147);
+
+    preferedSSHAgentTable=new Table(root, SWT.CHECK | SWT.BORDER);
+    GridData layoutData=new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+    layoutData.verticalSpan = 3;
+    preferedSSHAgentTable.setLayoutData(layoutData);
+    layoutData.minimumHeight = 150;
+    layoutData.minimumWidth = 200;
+    populateSSHAgents();
+    return root;
+  }
+
+  private void populateSSHAgents(){
+    preferedSSHAgentTable.removeAll();
+    String[] methods = Utils.getAvailableSSHAgents().split(","); //$NON-NLS-1$
+    String[] selected = Utils.getSelectedSSHAgent().split(","); //$NON-NLS-1$
+
+    for(int i=0; i<methods.length; i++){
+      if(methods[i].length()==0)
+        continue;
+      TableItem tableItem= new TableItem(preferedSSHAgentTable, SWT.NONE);
+      tableItem.setText(0, methods[i]);
+      for(int j=0; j<selected.length; j++){
+        if(selected[j].equals(methods[i])){
+          tableItem.setChecked(true);
+          break;
+        }
+      }
+    }
+  }
+
   private void populateMACMethods(){
     preferedMACMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredMACMethods().split(","); //$NON-NLS-1$
@@ -1328,7 +1378,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
       }
     }
   }
-  
+
   void handleSelection(){
     boolean empty=viewer.getSelection().isEmpty();
     removeHostKeyButton.setEnabled(!empty);
@@ -1473,8 +1523,10 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
   public boolean performOk(){
     boolean result=super.performOk();
     storeAuthenticationMethodSettings();
+    storeSSHAgentSettings();
     storeKeyExchangeMethodSettings();
     storeMACMethodSettings();
+
     if(result){
       setErrorMessage(null);
       String home=ssh2HomeText.getText();
@@ -1499,6 +1551,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     }
     JSchCorePlugin.getPlugin().setNeedToLoadKnownHosts(true);
     JSchCorePlugin.getPlugin().setNeedToLoadKeys(true);
+    JSchCorePlugin.getPlugin().setIdentityRepository();
     JSchCorePlugin.getPlugin().savePluginPreferences();
     return result;
   }
@@ -1525,6 +1578,22 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     Utils.setEnabledPreferredAuthMethods(selected, order);
   }
   
+  private void storeSSHAgentSettings(){
+    String selected = ""; //$NON-NLS-1$
+    for(int i = 0; i < preferedSSHAgentTable.getItemCount(); i++){
+      TableItem item=preferedSSHAgentTable.getItem(i);
+      if(item.getChecked()){
+        if(selected.length()==0){
+          selected=item.getText();
+        }
+        else{
+          selected+=","+item.getText(); //$NON-NLS-1$
+        }
+      }
+    }
+    Utils.setSelectedSSHAgents(selected);
+  }
+
   private void storeKeyExchangeMethodSettings(){
     String selected = null;
     String order = null;

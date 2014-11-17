@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.jsch.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.jsch.core" id="identityrepository" name="identityrepository"/>
+      </appInfo>
+      <documentation>
+         This extension point allows a plug-in to register an identity repository factory.
+This factory is expected to create an instance of &lt;samp&gt;com.jcraft.jsch.IdentityRepository&lt;/samp&gt;, which abstracts communications with ssh-agent and Pageant.  This extension point must implement the abstract class &lt;samp&gt;org.eclipse.jsch.core.AbstractIdentityRepositoryFactory&lt;/samp&gt;.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="identityrepository"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified identifier of the target extension point
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="identityrepository">
+      <complexType>
+         <sequence>
+            <element ref="run"/>
+         </sequence>
+      </complexType>
+   </element>
+
+   <element name="run">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  a fully qualified name of a class that implements &lt;code&gt;org.eclipse.jsch.core.AbstractIdentityRepositoryFactory&lt;/code&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jsch.core.AbstractIdentityRepositoryFactory:"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         1.2
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         The following is an example of an identity repository factory for ssh-agent:
+&lt;p&gt;
+&lt;pre&gt;
+&lt;extension point = &quot;org.eclipse.jsch.core.identityrepository&quot;&gt;
+     &lt;identityrepository&gt;
+       &lt;run
+         class=&quot;com.jcraft.jsch.agentproxy.eclipse.sshagent.IdentityRepositoryFactory&quot;&gt;
+       &lt;/run&gt;
+     &lt;/identityrepository&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
+&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiinfo"/>
+      </appInfo>
+      <documentation>
+         The contributed class must implement &lt;code&gt;org.eclipse.jsch.core.AbstractIdentityRepositoryFactory&lt;/code&gt;.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         The Eclipse jsch-agent-proxy plugin defines identity repository factories.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         Copyright (c) 2014 IBM Corporation and others.&lt;br&gt;
+All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at &lt;a href=&quot;http://www.eclipse.org/legal/epl-v10.html&quot;&gt;http://www.eclipse.org/legal/epl-v10.html&lt;/a&gt;
+      </documentation>
+   </annotation>
+
+</schema>

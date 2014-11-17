@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,12 +21,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Proxy;
 import com.jcraft.jsch.ProxyHTTP;
 import com.jcraft.jsch.ProxySOCKS5;
 import com.jcraft.jsch.Session;
+
 
 /**
  * 
@@ -255,6 +257,18 @@ public class Utils{
         IConstants.PREF_PREFERRED_AUTHENTICATION_METHODS, getDefaultAuthMethods(), null);
   }
 
+  public static String getAvailableSSHAgents(){
+    IdentityRepository[] repositories = JSchCorePlugin.getPlugin().getPluggedInIdentityRepositries();
+    String s=""; //$NON-NLS-1$
+    for(int i=0; i<repositories.length; i++){
+      IdentityRepository c = repositories[i];
+      s+=c.getName();
+      if(i+1<repositories.length)
+        s+=","; //$NON-NLS-1$
+    }
+    return s;
+  }
+
   public static String getMethodsOrder(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
@@ -267,7 +281,19 @@ public class Utils{
         IConstants.PREF_PREFERRED_AUTHENTICATION_METHODS, methods);
     service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
         IConstants.PREF_PREFERRED_AUTHENTICATION_METHODS_ORDER, order);}
-  
+
+  public static String getSelectedSSHAgent(){
+    IPreferencesService service = Platform.getPreferencesService();
+    return service.getString(JSchCorePlugin.ID,
+        IConstants.PREF_PREFERRED_SSHAGENT, "", null); //$NON-NLS-1$
+  }
+
+  public static void setSelectedSSHAgents(String methods){
+    IPreferencesService service=Platform.getPreferencesService();
+    service.getRootNode().node(InstanceScope.SCOPE).node(JSchCorePlugin.ID).put(
+        IConstants.PREF_PREFERRED_SSHAGENT, methods);
+  }
+
   public static String getEnabledPreferredKEXMethods(){
     IPreferencesService service = Platform.getPreferencesService();
     return service.getString(JSchCorePlugin.ID,
