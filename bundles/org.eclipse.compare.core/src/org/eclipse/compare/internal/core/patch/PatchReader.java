@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,9 +66,6 @@ public class PatchReader {
 	public static final String MULTIPROJECTPATCH_PROJECT= "#P"; //$NON-NLS-1$
 
 	private static final Pattern GIT_PATCH_PATTERN= Pattern.compile("^diff --git a/.+ b/.+[\r\n]+$"); //$NON-NLS-1$
-
-	private static final Pattern GIT_VERSION_PATTERN= Pattern.compile("^\\d+\\.\\d*.*$"); //$NON-NLS-1$
-
 
 	/**
 	 * Create a patch reader for the default date formats.
@@ -258,6 +255,8 @@ public class PatchReader {
 				   
 		int[] oldRange= new int[2];
 		int[] newRange= new int[2];
+		int remainingOld= -1; // remaining old lines for current hunk
+		int remainingNew= -1; // remaining new lines for current hunk
 		List lines= new ArrayList();
 
 		boolean encounteredPlus = false;
@@ -279,6 +278,10 @@ public class PatchReader {
 				}
 
 				char c= line.charAt(0);
+				if (remainingOld == 0 && remainingNew == 0 && c != '@' && c != '\\') {
+					return line;
+				}
+
 				switch (c) {
 					case '@':
 						if (line.startsWith("@@ ")) { //$NON-NLS-1$
@@ -291,19 +294,25 @@ public class PatchReader {
 							// format: @@ -oldStart,oldLength +newStart,newLength @@
 							extractPair(line, '-', oldRange);
 							extractPair(line, '+', newRange);
+							remainingOld= oldRange[1];
+							remainingNew= newRange[1];
 							continue;
 						}
 						break;
 					case ' ':
 						encounteredSpace= true;
+						remainingOld--;
+						remainingNew--;
 						lines.add(line);
 						continue;
 					case '+':
 						encounteredPlus= true;
+						remainingNew--;
 						lines.add(line);
 						continue;
 					case '-':
 						encounteredMinus= true;
+						remainingOld--;
 						lines.add(line);
 						continue;
 					case '\\':
@@ -341,8 +350,7 @@ public class PatchReader {
 							break;
 						//$FALL-THROUGH$
 					default:
-						if (!isGitPatch() || !GIT_VERSION_PATTERN.matcher(line.trim()).matches())
-							throw new IOException("Invalid patch"); //$NON-NLS-1$
+						break;
 				}
 				return line;
 			}
