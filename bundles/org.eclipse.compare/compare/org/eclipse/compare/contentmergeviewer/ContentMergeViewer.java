@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.compare.internal.ChangePropertyAction;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.compare.internal.CompareHandlerService;
 import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.IFlushable2;
 import org.eclipse.compare.internal.ISavingSaveable;
@@ -74,6 +75,7 @@ import org.eclipse.ui.ISaveablesSource;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.Saveable;
 
+
 /**
  * An abstract compare and merge viewer with two side-by-side content areas
  * and an optional content area for the ancestor. The implementation makes no
@@ -117,6 +119,19 @@ public abstract class ContentMergeViewer extends ContentViewer
 		
 		public void layout(Composite composite, boolean force) {
 			
+			if (fLeftLabel == null) {
+				// Help to find out the cause for bug 449558
+				NullPointerException npe= new NullPointerException("fLeftLabel is 'null';fLeftLabelSet is " + fLeftLabelSet + ";fComposite.isDisposed() is " + fComposite.isDisposed());
+
+				// Allow to test whether doing nothing helps
+				if (Boolean.getBoolean("ContentMergeViewer.DEBUG")) {
+					CompareUIPlugin.log(npe);
+					return;
+				}
+
+				throw npe;
+			}
+
 			// determine some derived sizes
 			int headerHeight= fLeftLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y;
 			Rectangle r= composite.getClientArea();
@@ -300,6 +315,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 	/* package */ Composite fComposite;
 	private CLabel fAncestorLabel;
 	private CLabel fLeftLabel;
+
+	private boolean fLeftLabelSet= false; // needed for debug output for bug 449558  
 	private CLabel fRightLabel;
 	/* package */ CLabel fDirectionLabel;
 	/* package */ Control fCenter;
@@ -785,6 +802,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fAncestorLabel= new CLabel(fComposite, style | Window.getDefaultOrientation());
 		
 		fLeftLabel= new CLabel(fComposite, style | Window.getDefaultOrientation());
+		fLeftLabelSet= true;
 		new Resizer(fLeftLabel, VERTICAL);
 		
 		fDirectionLabel= new CLabel(fComposite, style);
