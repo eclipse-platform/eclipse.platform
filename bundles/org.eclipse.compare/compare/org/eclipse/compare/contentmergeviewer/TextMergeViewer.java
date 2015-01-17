@@ -1622,6 +1622,16 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		updateFont();
 	}
 	
+	private static class LineNumberRulerToggleAction extends TextEditorPropertyAction {
+		public LineNumberRulerToggleAction(String label, MergeSourceViewer[] viewers, String preferenceKey) {
+			super(label, viewers, preferenceKey);
+		}
+
+		protected boolean toggleState(boolean checked) {
+			return true;
+		}
+	}
+
 	private ChainedPreferenceStore createChainedPreferenceStore() {
     	ArrayList stores= new ArrayList(2);
 		stores.add(getCompareConfiguration().getPreferenceStore());
@@ -3872,9 +3882,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				new boolean[] {needsLeftPainter, needsRightPainter, needsAncestorPainter });
 		fHandlerService.registerAction(showWhitespaceAction, ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS);
 		
-		toggleLineNumbersAction = new TextEditorPropertyAction(CompareMessages.TextMergeViewer_16, new MergeSourceViewer[] {
-				fLeft, fRight, fAncestor
-		}, AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER);
+		toggleLineNumbersAction = new LineNumberRulerToggleAction(CompareMessages.TextMergeViewer_16,
+				new MergeSourceViewer[] { fLeft, fRight, fAncestor },
+				AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER);
 		fHandlerService.registerAction(toggleLineNumbersAction, ITextEditorActionDefinitionIds.LINENUMBER_TOGGLE);
 	}
 	
