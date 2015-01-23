@@ -603,6 +603,7 @@ public class AntRunner implements IApplication {
 	 */
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
+		context.applicationRunning();
 		Map<String, Object> contextArguments = context.getArguments();
 		return run(contextArguments.get(IApplicationContext.APPLICATION_ARGS));
 	}
