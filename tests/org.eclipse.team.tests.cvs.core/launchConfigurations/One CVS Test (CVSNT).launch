@@ -22,7 +22,6 @@
 <mapEntry key="org.eclipse.core.resources/build/needbuild" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/graphics" value="false"/>
 <mapEntry key="org.eclipse.jdt.core/debug/resolution" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/ssh_protocol" value="false"/>
 <mapEntry key="org.eclipse.update.configurator/debug" value="false"/>
 <mapEntry key="org.eclipse.core.resources/perf/snapshot" value="1000"/>
 <mapEntry key="org.eclipse.osgi/monitor/activation" value="false"/>
@@ -136,7 +135,6 @@
 <mapEntry key="org.eclipse.osgi/profile/startup" value="false"/>
 <mapEntry key="org.eclipse.team.ftp/list" value="true"/>
 <mapEntry key="org.eclipse.osgi/debug/services" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/debug" value="false"/>
 <mapEntry key="org.eclipse.jface/debug/dialog/noparent" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/handlers.verbose" value="false"/>
 <mapEntry key="org.eclipse.core.resources/save/markers" value="false"/>

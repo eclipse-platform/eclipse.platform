@@ -3,7 +3,6 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.eclipse.team.tests.ccvs.core.AllCoreTests"/>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
 <mapAttribute key="tracingOptions">
-<mapEntry key="org.eclipse.team.cvs.ssh/debug" value="false"/>
 <mapEntry key="org.eclipse.ui/debug/internalerror/openDialog" value="false"/>
 <mapEntry key="org.eclipse.help/debug/context" value="false"/>
 <mapEntry key="org.eclipse.team.cvs.core/threading" value="false"/>
@@ -75,7 +74,6 @@
 <mapEntry key="org.eclipse.debug.core/debug" value="true"/>
 <mapEntry key="org.eclipse.jdt.core/debug/search" value="false"/>
 <mapEntry key="org.eclipse.jdt.core/debug/selection" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/ssh_protocol" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/part.create" value="false"/>
 <mapEntry key="org.eclipse.jdt.core/debug/cpresolution" value="false"/>
 <mapEntry key="org.eclipse.core.boot/monitor/bundles" value="false"/>

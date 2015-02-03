@@ -31,9 +31,7 @@
 <mapEntry key="org.eclipse.core.resources/build/needbuild" value="false"/>
 <mapEntry key="org.eclipse.team.ftp/list" value="true"/>
 <mapEntry key="org.eclipse.core.runtime/loader/debug/activateplugin" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/debug" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/graphics" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/ssh_protocol" value="false"/>
 <mapEntry key="org.eclipse.core.resources/monitor/builders" value="false"/>
 <mapEntry key="org.eclipse.core.resources/save/markers" value="false"/>
 <mapEntry key="org.eclipse.update.core/debug/installhandler" value="false"/>

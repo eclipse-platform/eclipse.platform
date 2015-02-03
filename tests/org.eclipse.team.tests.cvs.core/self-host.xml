@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2002, 2011 IBM Corporation and others.
+    Copyright (c) 2002, 2015 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@
     <antcall target="org.eclipse.team.ui"/>
     <antcall target="org.eclipse.team.cvs.core"/>
     <antcall target="org.eclipse.team.cvs.ui"/>
-    <antcall target="org.eclipse.team.cvs.ssh"/>
     <antcall target="org.eclipse.releng.tools"/>
     <zip zipfile="${basedir}/selfhost${DSTAMP}.zip"
        basedir="${temp}"
@@ -72,13 +71,6 @@
     </antcall>
   </target>
 
-  <target name="org.eclipse.team.cvs.ssh">
-    <antcall target="buildPlugin">
-      <param name="pluginName" value="org.eclipse.team.cvs.ssh" />
-      <param name="jarName" value="teamcvsssh.jar" />
-    </antcall>
-  </target>
-          
   <target name="buildPlugin">
     <copy todir="${plugins}/${pluginName}${versionSuffix}">
       <fileset dir="${root}/${pluginName}"/>

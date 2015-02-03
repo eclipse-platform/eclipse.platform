@@ -208,8 +208,6 @@
 <mapEntry key="org.eclipse.team.cvs.core/metafiles" value="false"/>
 <mapEntry key="org.eclipse.team.cvs.core/syncchangeevents" value="false"/>
 <mapEntry key="org.eclipse.team.cvs.core/threading" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/debug" value="false"/>
-<mapEntry key="org.eclipse.team.cvs.ssh/ssh_protocol" value="false"/>
 <mapEntry key="org.eclipse.team.cvs.ui/consolebuffering" value="false"/>
 <mapEntry key="org.eclipse.team.cvs.ui/debug" value="false"/>
 <mapEntry key="org.eclipse.team.ftp/debug" value="false"/>
