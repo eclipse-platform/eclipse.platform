@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IPluginRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.team.core.TeamException;
@@ -33,8 +32,8 @@ import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
 import org.eclipse.team.internal.ccvs.core.ICVSResource;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteModule;
@@ -94,11 +93,9 @@ public class ModuleTest extends EclipseTest {
 	
 	protected void uploadProject(String projectName) throws TeamException, IOException, CoreException {
 		// locate the test case contents in the plugin resources
-		IPluginRegistry registry = Platform.getPluginRegistry();
-		IPluginDescriptor descriptor = registry.getPluginDescriptor("org.eclipse.team.tests.cvs.core");
-		URL baseURL = descriptor.getInstallURL();
-		URL url = new URL(baseURL, RESOURCE_PATH + projectName);
-		url = Platform.resolve(url);
+		Bundle bundle = Platform.getBundle("org.eclipse.team.tests.cvs.core");
+		URL url = bundle.getEntry(RESOURCE_PATH + projectName);
+		url = FileLocator.resolve(url);
 		Assert.assertTrue(url.getProtocol().equals("file"));
 		IPath path = new Path(url.getPath());
 		

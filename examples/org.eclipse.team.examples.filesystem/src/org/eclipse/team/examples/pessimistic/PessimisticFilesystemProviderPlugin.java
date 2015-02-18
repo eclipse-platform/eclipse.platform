@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The plugin for the <code>PessimisticFilesystemProvider</code>.
@@ -52,8 +50,8 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 	/**
 	 * Constructor required by plugin lifecycle.
 	 */
-	public PessimisticFilesystemProviderPlugin(IPluginDescriptor pluginDescriptor) {
-		super(pluginDescriptor);
+	public PessimisticFilesystemProviderPlugin() {
+		super();
 		instance = this;
 		fListeners= new ArrayList(1);
 		//setDebugging(true);
@@ -103,25 +101,21 @@ public class PessimisticFilesystemProviderPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Starts the resource listener.
-	 * 
-	 * @see Plugin#startup()
 	 */
-	public void startup() throws CoreException {
+	public void start(BundleContext context) throws Exception {
 		fListener= new ResourceChangeListener();
 		fListener.startup();
 		initializeDefaultPreferences();
-		super.startup();
+		super.start(context);
 	}
 
 	/**
 	 * Stops the resource listener.
-	 * 
-	 * @see Plugin#startup()
 	 */
-	public void shutdown() throws CoreException {
+	public void stop(BundleContext context) throws Exception {
 		fListener.shutdown();
 		fListener= null;
-		super.shutdown();
+		super.stop(context);
 	}
 	
 	/**

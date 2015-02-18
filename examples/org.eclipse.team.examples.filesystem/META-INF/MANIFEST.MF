@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.examples.filesystem; singleton:=true
 Bundle-Version: 3.4.300.qualifier
-Bundle-Activator: org.eclipse.core.internal.compatibility.PluginActivator
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.examples.filesystem,
@@ -17,7 +16,7 @@ Export-Package: org.eclipse.team.examples.filesystem,
  org.eclipse.team.examples.model.ui.mapping,
  org.eclipse.team.examples.pessimistic,
  org.eclipse.team.examples.pessimistic.ui
-Require-Bundle: org.eclipse.core.runtime.compatibility,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide;resolution:=optional,
  org.eclipse.ui.views;resolution:=optional,
  org.eclipse.jface.text;resolution:=optional,
@@ -31,5 +30,5 @@ Require-Bundle: org.eclipse.core.runtime.compatibility,
  org.eclipse.core.filesystem,
  org.eclipse.ui.navigator
 Bundle-ActivationPolicy: lazy
-Plugin-Class: org.eclipse.team.examples.filesystem.FileSystemPlugin
+Bundle-Activator: org.eclipse.team.examples.filesystem.FileSystemPlugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.4

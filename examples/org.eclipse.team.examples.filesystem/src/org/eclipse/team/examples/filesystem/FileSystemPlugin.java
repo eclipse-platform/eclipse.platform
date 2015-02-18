@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,15 +51,13 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 	
 	/**
 	 * Override the standard plugin constructor.
-	 * 
-	 * @param descriptor the plugin descriptor
 	 */
-	public FileSystemPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public FileSystemPlugin() {
+		super();
 		// record this instance as the singleton
 		plugin = this;
 		// Instanctiate pessimistic provider
-		pessPlugin = new PessimisticFilesystemProviderPlugin(descriptor);
+		pessPlugin = new PessimisticFilesystemProviderPlugin();
 	}
 	
 	/**
@@ -120,7 +118,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		//Call startup on the Pessimistic Plugin
-		pessPlugin.startup();
+		pessPlugin.start(context);
 		tracker = new PluginManifestChangeTracker();
 		tracker.start();
 	}
@@ -128,7 +126,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		try {
 			if (pessPlugin != null)
-				pessPlugin.shutdown();
+				pessPlugin.stop(context);
 		} finally {
 			super.stop(context);
 		}
