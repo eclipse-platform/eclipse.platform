@@ -1,7 +1,0 @@
-# Debugging options for the org.eclipse.team.cvs.ssh plugin.
-
-# Turn on debugging for the plugin.
-org.eclipse.team.cvs.ssh/debug=false
-
-# Shows ssh protocol messages
-org.eclipse.team.cvs.ssh/ssh_protocol=false
