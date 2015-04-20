@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.CompareViewerSwitchingPane;
-import org.eclipse.compare.Splitter;
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
@@ -39,17 +34,30 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.Viewer;
+
 import org.eclipse.ui.PlatformUI;
+
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.Splitter;
+import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
 
 public class CompareContentViewerSwitchingPane extends
 		CompareViewerSwitchingPane {
 
 	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.gif"; //$NON-NLS-1$
 	public static final String OPTIMIZED_ALGORITHM_USED = "OPTIMIZED_ALGORITHM_USED"; //$NON-NLS-1$
+	public static final String DISABLE_CAPPING_TEMPORARILY = "DISABLE_CAPPING_TEMPORARILY"; //$NON-NLS-1$
 
 	private CompareEditorInput fCompareEditorInput;
 
@@ -57,6 +65,7 @@ public class CompareContentViewerSwitchingPane extends
 
 	private ToolBar toolBar;
 	private CLabel clOptimized;
+	private Link recomputeLink;
 
 	private boolean menuShowing;
 
@@ -106,6 +115,8 @@ public class CompareContentViewerSwitchingPane extends
 
 		RowLayout layout = new RowLayout();
 		layout.marginTop = 0;
+		layout.center = true;
+		layout.wrap = false;
 		composite.setLayout(layout);
 
 		CLabel cl = new CLabel(composite, SWT.NONE);
@@ -130,10 +141,7 @@ public class CompareContentViewerSwitchingPane extends
 		});
 
 		clOptimized = new CLabel(composite, SWT.NONE);
-		clOptimized
-				.setText(CompareMessages.CompareContentViewerSwitchingPane_optimized);
-		clOptimized
-				.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
+		clOptimized.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
 		clOptimized.setImage(CompareUIPlugin.getImageDescriptor(
 				OPTIMIZED_INFO_IMAGE_NAME).createImage());
 		clOptimized.setVisible(false); // hide by default
@@ -146,9 +154,34 @@ public class CompareContentViewerSwitchingPane extends
 			}
 		});
 
+		recomputeLink = new Link(composite, SWT.NONE);
+		recomputeLink.setText(CompareMessages.CompareContentViewerSwitchingPane_optimizedLinkLabel);
+		recomputeLink.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
+		recomputeLink.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				/*
+				 * Disable capping temporarily, refresh, restore global state.
+				 * The global state is bad, but fixing that would require lots of changes and new APIs.
+				 */
+				IPreferenceStore preferenceStore = CompareUIPlugin.getDefault().getPreferenceStore();
+				boolean wasDisabled = preferenceStore.getBoolean(ComparePreferencePage.CAPPING_DISABLED);
+				ComparePlugin.getDefault().setCappingDisabled(true);
+				preferenceStore.setValue(ComparePreferencePage.CAPPING_DISABLED, true);
+				try {
+					getCompareConfiguration().setProperty(DISABLE_CAPPING_TEMPORARILY, Boolean.TRUE);
+				} finally {
+					if (!wasDisabled) {
+						ComparePlugin.getDefault().setCappingDisabled(false);
+						preferenceStore.setValue(ComparePreferencePage.CAPPING_DISABLED, false);
+					}
+				}
+			}
+		});
+		recomputeLink.setVisible(false);
+
 		return composite;
 	}
-	
+
 	protected boolean inputChanged(Object input) {
 		return getInput() != input
 				|| fCompareEditorInput.getContentViewerDescriptor() != fSelectedViewerDescriptor;
@@ -164,7 +197,9 @@ public class CompareContentViewerSwitchingPane extends
 		toolBar.setVisible(vd != null && vd.length > 1);
 		CompareConfiguration cc = getCompareConfiguration();
 		Boolean isOptimized = (Boolean) cc.getProperty(OPTIMIZED_ALGORITHM_USED);
-		clOptimized.setVisible(isOptimized != null && isOptimized.booleanValue());
+		boolean optimizedVisible = isOptimized != null && isOptimized.booleanValue();
+		clOptimized.setVisible(optimizedVisible);
+		recomputeLink.setVisible(optimizedVisible);
 	}
 
 	private void showMenu() {

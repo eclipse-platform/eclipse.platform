@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,7 +121,7 @@ public final class CompareMessages extends NLS {
 	public static String CompareContentViewerSwitchingPane_defaultViewer;
 	public static String CompareContentViewerSwitchingPane_switchButtonTooltip;
 	public static String CompareContentViewerSwitchingPane_discoveredLabel;
-	public static String CompareContentViewerSwitchingPane_optimized;
+	public static String CompareContentViewerSwitchingPane_optimizedLinkLabel;
 	public static String CompareContentViewerSwitchingPane_optimizedTooltip;
 	public static String CompareStructureViewerSwitchingPane_defaultViewer;
 	public static String CompareStructureViewerSwitchingPane_switchButtonTooltip;

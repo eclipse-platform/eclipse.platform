@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.IEncodedStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
+import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.structuremergeviewer.DiffNode;
+import org.eclipse.compare.structuremergeviewer.Differencer;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -34,27 +47,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.preference.RadioGroupFieldEditor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.IEncodedStreamContentAccessor;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.internal.core.ComparePlugin;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
-import org.eclipse.compare.structuremergeviewer.Differencer;
 
 
 public class ComparePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
@@ -133,6 +130,8 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL),
 	};
 	private RadioGroupFieldEditor editor;
+	private TabItem fTextCompareTab;
+	private Button fDisableCappingCheckBox;
 	
 	
 	public static void initDefaults(IPreferenceStore store) {
@@ -260,6 +259,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		item.setText(Utilities.getString("ComparePreferencePage.textCompareTab.label"));	//$NON-NLS-1$
 		//item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CFILE));
 		item.setControl(createTextComparePage(folder));
+		fTextCompareTab = item;
 		
 		initializeFields();
 		Dialog.applyDialogFont(folder);
@@ -354,7 +354,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		addCheckBox(composite, "ComparePreferencePage.useSingleLine.label", USE_SINGLE_LINE, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.highlightTokenChanges.label", HIGHLIGHT_TOKEN_CHANGES, 0);	//$NON-NLS-1$
 		//addCheckBox(composite, "ComparePreferencePage.useResolveUI.label", USE_RESOLVE_UI, 0);	//$NON-NLS-1$
-		addCheckBox(composite, "ComparePreferencePage.disableCapping.label", CAPPING_DISABLED, 0);	//$NON-NLS-1$
+		fDisableCappingCheckBox = addCheckBox(composite, "ComparePreferencePage.disableCapping.label", CAPPING_DISABLED, 0);	//$NON-NLS-1$
 		
 		Composite radioGroup = new Composite(composite, SWT.NULL);
 		radioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -485,5 +485,12 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 				buffer.append(c);
 		}
 		return buffer.toString();
+	}
+
+	public void applyData(Object data) {
+		if (ComparePreferencePage.CAPPING_DISABLED.equals(data)) {
+			fTextCompareTab.getParent().setSelection(fTextCompareTab);
+			fDisableCappingCheckBox.setFocus();
+		}
 	}
 }

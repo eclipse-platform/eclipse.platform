@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,14 @@ import org.eclipse.compare.SharedDocumentAdapter;
 import org.eclipse.compare.internal.BufferedCanvas;
 import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
 import org.eclipse.compare.internal.ChangePropertyAction;
+import org.eclipse.compare.internal.CompareContentViewerSwitchingPane;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.compare.internal.CompareEditorContributor;
 import org.eclipse.compare.internal.CompareEditorSelectionProvider;
+import org.eclipse.compare.internal.CompareFilterDescriptor;
 import org.eclipse.compare.internal.CompareHandlerService;
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareFilterDescriptor;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.DocumentManager;
 import org.eclipse.compare.internal.ICompareContextIds;
@@ -3993,6 +3994,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			}
 		} else if (key.equals(ICompareUIConstants.PREF_NAVIGATION_END_ACTION)) {
 			updateControls();
+		} else if (key.equals(CompareContentViewerSwitchingPane.DISABLE_CAPPING_TEMPORARILY)) {
+			if (Boolean.TRUE.equals(event.getNewValue())) {
+				getCompareConfiguration().setProperty(CompareContentViewerSwitchingPane.DISABLE_CAPPING_TEMPORARILY, null);
+				handleCompareInputChange();
+			}
 		} else {
 			super.handlePropertyChangeEvent(event);
 			
