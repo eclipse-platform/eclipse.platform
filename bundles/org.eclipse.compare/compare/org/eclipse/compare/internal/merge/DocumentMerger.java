@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.compare.internal.merge;
 
@@ -492,11 +493,11 @@ public class DocumentMerger {
 		if (isCapped(sa, sl, sr))
 			fInput.getCompareConfiguration().setProperty(
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
-					new Boolean(true));
+					Boolean.TRUE);
 		else
 			fInput.getCompareConfiguration().setProperty(
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
-					new Boolean(false));
+					Boolean.FALSE);
 
 		ArrayList newAllDiffs = new ArrayList();
 		for (int i= 0; i < e.length; i++) {

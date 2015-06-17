@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Matt McCutchen (hashproduct+eclipse@gmail.com) - Bug 35390 Three-way compare cannot select (mis-selects) )ancestor resource
  *     Aleksandra Wozniak (aleksandra.k.wozniak@gmail.com) - Bug 239959
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -48,10 +49,10 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 			CompareConfiguration cc= new CompareConfiguration();
 			// buffered merge mode: don't ask for confirmation
 			// when switching between modified resources
-			cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, new Boolean(false));
+			cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, Boolean.FALSE);
 			
 			// uncomment following line to have separate outline view
-			//cc.setProperty(CompareConfiguration.USE_OUTLINE_VIEW, new Boolean(true));
+			//cc.setProperty(CompareConfiguration.USE_OUTLINE_VIEW, Boolean.TRUE);
 						
 			fInput= new ResourceCompareInput(cc);
 		}

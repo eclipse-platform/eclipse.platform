@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -167,7 +168,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 				if (key.equals(INITIALLY_SHOW_ANCESTOR_PANE)) {
 					boolean b= fOverlayStore.getBoolean(INITIALLY_SHOW_ANCESTOR_PANE);
 					if (fCompareConfiguration != null) {
-						fCompareConfiguration.setProperty(INITIALLY_SHOW_ANCESTOR_PANE, new Boolean(b));
+						fCompareConfiguration.setProperty(INITIALLY_SHOW_ANCESTOR_PANE, Boolean.valueOf(b));
 					}
 				}
 			}

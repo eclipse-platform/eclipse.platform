@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
+ * Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
@@ -33,11 +34,11 @@ public class IEditorInputTester extends PropertyTester {
 				ICVSResource cvsResource = CVSWorkspaceRoot
 						.getCVSResourceFor(file);
 				try {
-					actual = new Boolean((cvsResource != null
+					actual = Boolean.valueOf((cvsResource != null
 							&& !cvsResource.isFolder() && cvsResource
 							.isManaged()));
 				} catch (CVSException e) {
-					actual = new Boolean(isEnabledForException(e));
+					actual = Boolean.valueOf(isEnabledForException(e));
 				}
 				return (actual.equals(expectedValue));
 			}

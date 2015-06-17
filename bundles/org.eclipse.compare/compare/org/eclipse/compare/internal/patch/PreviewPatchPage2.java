@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 IBM Corporation and others.
+ * Copyright (c) 2005, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.compare.internal.patch;
 
@@ -295,7 +296,7 @@ public class PreviewPatchPage2 extends WizardPage {
 							if (isChecked() != getPatcher().isIgnoreWhitespace()) {
 								if (promptToRebuild(PatchMessages.PreviewPatchPage2_2)) {
 									if (getPatcher().setIgnoreWhitespace(isChecked())){
-										getCompareConfiguration().setProperty(CompareConfiguration.IGNORE_WHITESPACE, new Boolean(isChecked()));
+										getCompareConfiguration().setProperty(CompareConfiguration.IGNORE_WHITESPACE, Boolean.valueOf(isChecked()));
 									}
 								} else {
 									fIgnoreWhiteSpace.setChecked(!isChecked());

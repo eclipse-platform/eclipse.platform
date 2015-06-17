@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.ui;
 
@@ -341,7 +342,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				Method method = clazz.getMethod("setEnablement", partypes);
 				method.setAccessible(true);
 				Object arglist[] = new Object[3];
-				arglist[0] = new Boolean(enabled);
+				arglist[0] = Boolean.valueOf(enabled);
 				arglist[1] = buttonsToChange;
 				arglist[2] = new Integer(defaultSelection);
 				method.invoke(groupObject, arglist);
@@ -366,7 +367,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				Method method = clazz.getMethod("setEnablement", partypes);
 				method.setAccessible(true);
 				Object arglist[] = new Object[2];
-				arglist[0] = new Boolean(enabled);
+				arglist[0] = Boolean.valueOf(enabled);
 				arglist[1] = buttonsToChange;
 				method.invoke(groupObject, arglist);
 			} catch (SecurityException e) {

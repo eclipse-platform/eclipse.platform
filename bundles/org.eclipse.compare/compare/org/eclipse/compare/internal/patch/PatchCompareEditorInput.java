@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2011 IBM Corporation and others.
+ * Copyright (c) 2005, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.compare.internal.patch;
 
@@ -196,7 +197,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		// set left editable so that unmatched hunks can be edited
 		cc.setLeftEditable(true);
 		cc.setRightEditable(false);
-		//cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, new Boolean(false));
+		//cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, Boolean.FALSE);
 		cc.setLeftLabel(getCompareConfiguration().getLeftLabel(root));
 		cc.setLeftImage(getCompareConfiguration().getLeftImage(root));
 		cc.setRightLabel(getCompareConfiguration().getRightLabel(root));

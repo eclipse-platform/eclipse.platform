@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 package org.eclipse.team.internal.ui.mapping;
 
@@ -35,7 +36,7 @@ public class GererateRejFileAction extends Action {
 		boolean oldValue = subscriber.getPatcher().isGenerateRejectFile();
 		subscriber.getPatcher().setGenerateRejectFile(!oldValue);
 
-		firePropertyChange(CHECKED, new Boolean(oldValue), new Boolean(
+		firePropertyChange(CHECKED, Boolean.valueOf(oldValue), Boolean.valueOf(
 				!oldValue));
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *******************************************************************************/
 
 package org.eclipse.compare.contentmergeviewer;
@@ -600,7 +601,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 				action.setEnabled(enabled);
 			}
 		}
-		getCompareConfiguration().setProperty(ICompareUIConstants.PROP_ANCESTOR_VISIBLE, new Boolean(visible));
+		getCompareConfiguration().setProperty(ICompareUIConstants.PROP_ANCESTOR_VISIBLE, Boolean.valueOf(visible));
 	}
 
 	//---- input
@@ -1125,7 +1126,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	}
 	
 	private void fireDirtyState(boolean state) {
-		Utilities.firePropertyChange(fListenerList, this, CompareEditorInput.DIRTY_STATE, null, new Boolean(state));
+		Utilities.firePropertyChange(fListenerList, this, CompareEditorInput.DIRTY_STATE, null, Boolean.valueOf(state));
 	}
 	
 	/**
