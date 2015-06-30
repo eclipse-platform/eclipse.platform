@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-     Copyright (c) 2005, 2012 IBM Corporation and others.
+     Copyright (c) 2005, 2015 IBM Corporation and others.
      All rights reserved. This program and the accompanying materials
      are made available under the terms of the Eclipse Public License v1.0
      which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
     
      Contributors:
          IBM Corporation - initial API and implementation
+         Kaloyan Raev <kaloyan.r@zend.com> - Bug 471433
  -->
 
 <plugin>
@@ -894,5 +895,13 @@ M4 = Platform-specific fourth key -->
               </with>
            </activeWhen>
         </handler>
-     </extension>	
+     </extension>
+     
+     <!-- dark theme defaults -->
+     <extension
+           point="org.eclipse.e4.ui.css.swt.theme">
+        <stylesheet uri="css/e4-dark_ant_prefstyle.css"> 
+           <themeid refid="org.eclipse.e4.ui.css.theme.e4_dark"></themeid>
+        </stylesheet>
+    </extension>
 </plugin>
