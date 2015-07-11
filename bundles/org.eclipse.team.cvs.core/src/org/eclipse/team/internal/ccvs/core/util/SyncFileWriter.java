@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Matt McCutchen (hashproduct+eclipse@gmail.com) - Bug 189304 [Sync Info] cvsignore lines should be split on whitespace
+ *	   Sergey Prigogin (Google) - [464072] Refresh on Access ignored during text search
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.core.util;
 
@@ -566,10 +567,14 @@ public class SyncFileWriter {
 		} catch (CoreException e) {
 			// If the IFile doesn't exist or the underlying File doesn't exist,
 			// just return null to indicate the absence of the file
-			if (e.getStatus().getCode() == IResourceStatus.RESOURCE_NOT_FOUND
-					|| e.getStatus().getCode() == IResourceStatus.FAILED_READ_LOCAL)
+			switch (e.getStatus().getCode()) {
+			case IResourceStatus.RESOURCE_NOT_FOUND:
+			case IResourceStatus.NOT_FOUND_LOCAL:
+			case IResourceStatus.FAILED_READ_LOCAL:
 				return null;
-			throw CVSException.wrapException(e);
+			default:
+				throw CVSException.wrapException(e);
+			}
 		}
 	}
 	
