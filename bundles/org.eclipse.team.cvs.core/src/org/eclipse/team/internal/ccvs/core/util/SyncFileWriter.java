@@ -510,10 +510,14 @@ public class SyncFileWriter {
 		} catch (CoreException e) {
 			// If the IFile doesn't exist or the underlying File doesn't exist,
 			// just return null to indicate the absence of the file
-			if (e.getStatus().getCode() == IResourceStatus.RESOURCE_NOT_FOUND
-					|| e.getStatus().getCode() == IResourceStatus.FAILED_READ_LOCAL)
+			switch (e.getStatus().getCode()) {
+			case IResourceStatus.RESOURCE_NOT_FOUND:
+			case IResourceStatus.NOT_FOUND_LOCAL:
+			case IResourceStatus.FAILED_READ_LOCAL:
 				return null;
-			throw CVSException.wrapException(e);
+			default:
+				throw CVSException.wrapException(e);
+			}
 		}
 	}
 
