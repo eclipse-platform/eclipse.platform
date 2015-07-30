@@ -1,8 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009, 2017 IBM Corporation and others.
- *
- * This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
  *
@@ -10,6 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.PlatformUI;
 
 public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPane {
 	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.png"; //$NON-NLS-1$
@@ -122,8 +121,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		toolBar = new ToolBar(composite, SWT.FLAT);
 		toolBar.setVisible(false); // hide by default
 		final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH, 0);
-		toolItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
-				/* IWorkbenchGraphicConstants */"IMG_LCL_VIEW_MENU")); //$NON-NLS-1$
+		Utilities.setMenuImage(toolItem);
 		toolItem.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_switchButtonTooltip);
 		toolItem.addSelectionListener(new SelectionAdapter() {
 			@Override

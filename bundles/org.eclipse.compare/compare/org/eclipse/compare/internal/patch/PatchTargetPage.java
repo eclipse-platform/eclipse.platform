@@ -88,7 +88,9 @@ public class PatchTargetPage extends WizardPage {
 		updateWidgetEnablements();
 
 		Dialog.applyDialogFont(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
+		if (PlatformUI.isWorkbenchRunning()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
+		}
 
 		useWorkspaceAsTarget.addListener(SWT.Selection, event -> {
 			fShowError = true;

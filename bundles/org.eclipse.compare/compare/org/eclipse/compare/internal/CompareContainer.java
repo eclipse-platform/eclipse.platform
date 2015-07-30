@@ -24,7 +24,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class CompareContainer implements ICompareContainer {
@@ -68,7 +67,7 @@ public class CompareContainer implements ICompareContainer {
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable)
 			throws InvocationTargetException, InterruptedException {
-		PlatformUI.getWorkbench().getProgressService().run(fork, cancelable, runnable);
+		Utilities.executeRunnable(runnable, fork, cancelable);
 	}
 
 	@Override

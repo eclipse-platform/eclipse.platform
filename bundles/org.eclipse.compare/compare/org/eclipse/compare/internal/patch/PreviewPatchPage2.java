@@ -58,7 +58,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -651,9 +650,8 @@ public class PreviewPatchPage2 extends WizardPage {
 	private int guessFuzzFactor(final WorkspacePatcher patcher) {
 		final int[] result= new int[] { -1 };
 		try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true,
-					monitor -> result[0]= patcher.guessFuzzFactor(monitor)
-			);
+			org.eclipse.compare.internal.Utilities
+					.executeRunnable(monitor -> result[0] = patcher.guessFuzzFactor(monitor));
 		} catch (InvocationTargetException | InterruptedException ex) {
 			// NeedWork
 		}

@@ -51,7 +51,9 @@ public class BinaryCompareViewer extends AbstractViewer {
 
 	public BinaryCompareViewer(Composite parent, final CompareConfiguration cc) {
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.BINARY_COMPARE_VIEW);
+		if(PlatformUI.isWorkbenchRunning()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.BINARY_COMPARE_VIEW);
+		}
 
 		fBundle= ResourceBundle.getBundle(BUNDLE_NAME);
 

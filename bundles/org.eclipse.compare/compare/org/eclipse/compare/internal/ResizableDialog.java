@@ -61,7 +61,7 @@ public abstract class ResizableDialog extends Dialog {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		if (fContextId != null)
+		if (fContextId != null && PlatformUI.isWorkbenchRunning())
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
 	}
 

@@ -12,6 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *     Max Weninger (max.weninger@windriver.com) - Bug 131895 [Edit] Undo in compare
  *     Max Weninger (max.weninger@windriver.com) - Bug 72936 [Viewers] Show line numbers in comparision
+ *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -1040,7 +1041,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 
 	private IOperationHistory getHistory() {
-		if (PlatformUI.getWorkbench() == null) {
+		if (!PlatformUI.isWorkbenchRunning()) {
 			return null;
 		}
 		return PlatformUI.getWorkbench().getOperationSupport()

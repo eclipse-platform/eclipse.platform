@@ -249,8 +249,9 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 	@Override
 	protected Control createContents(Composite parent) {
-
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.COMPARE_PREFERENCE_PAGE);
+		if (PlatformUI.isWorkbenchRunning()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.COMPARE_PREFERENCE_PAGE);
+		}
 
 		fOverlayStore.load();
 		fOverlayStore.start();

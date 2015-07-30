@@ -44,7 +44,9 @@ public class ImageMergeViewer extends ContentMergeViewer {
 	public ImageMergeViewer(Composite parent, int styles, CompareConfiguration mp) {
 		super(styles, ResourceBundle.getBundle(BUNDLE_NAME), mp);
 
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.IMAGE_COMPARE_VIEW);
+		if (PlatformUI.isWorkbenchRunning()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.IMAGE_COMPARE_VIEW);
+		}
 
 		buildControl(parent);
 		String title= Utilities.getString(getResourceBundle(), "title"); //$NON-NLS-1$

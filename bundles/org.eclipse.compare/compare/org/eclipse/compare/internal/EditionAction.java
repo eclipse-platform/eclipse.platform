@@ -24,6 +24,10 @@ import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.ResourceNode;
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.runtime.CoreException;
@@ -218,6 +222,24 @@ public class EditionAction extends BaseCompareAction {
 	}
 
 	private IDocument getDocument(IFile file) {
+		if (file == null) {
+			return null;
+		}
+
+		// first try FileBuffer API
+		ITextFileBufferManager bufferManager = FileBuffers.getTextFileBufferManager();
+		ITextFileBuffer buffer = bufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE);
+		if (buffer != null) {
+			IDocument document = buffer.getDocument();
+			if (document != null) {
+				return document;
+			}
+		}
+
+		// if unsuccessful, try open editors
+		if (!PlatformUI.isWorkbenchRunning()) {
+			return null;
+		}
 		IWorkbench wb= PlatformUI.getWorkbench();
 		if (wb == null)
 			return null;

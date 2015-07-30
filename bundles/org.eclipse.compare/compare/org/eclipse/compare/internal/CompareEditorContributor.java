@@ -53,22 +53,20 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	public CompareEditorContributor() {
 		ResourceBundle bundle= CompareUI.getResourceBundle();
 
-		IWorkbenchHelpSystem helpSystem= PlatformUI.getWorkbench().getHelpSystem();
-
 		fIgnoreWhitespace= ChangePropertyAction.createIgnoreWhiteSpaceAction(bundle, null);
-		helpSystem.setHelp(fIgnoreWhitespace, ICompareContextIds.IGNORE_WHITESPACE_ACTION);
-
 		fNext= new NavigationAction(bundle, true);
-		helpSystem.setHelp(fNext, ICompareContextIds.GLOBAL_NEXT_DIFF_ACTION);
-
 		fPrevious= new NavigationAction(bundle, false);
-		helpSystem.setHelp(fPrevious, ICompareContextIds.GLOBAL_PREVIOUS_DIFF_ACTION);
-
 		fToolbarNext= new NavigationAction(bundle, true);
-		helpSystem.setHelp(fToolbarNext, ICompareContextIds.NEXT_DIFF_ACTION);
-
 		fToolbarPrevious= new NavigationAction(bundle, false);
-		helpSystem.setHelp(fToolbarPrevious, ICompareContextIds.PREVIOUS_DIFF_ACTION);
+
+		if (PlatformUI.isWorkbenchRunning()) {
+			IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
+			helpSystem.setHelp(fIgnoreWhitespace, ICompareContextIds.IGNORE_WHITESPACE_ACTION);
+			helpSystem.setHelp(fNext, ICompareContextIds.GLOBAL_NEXT_DIFF_ACTION);
+			helpSystem.setHelp(fPrevious, ICompareContextIds.GLOBAL_PREVIOUS_DIFF_ACTION);
+			helpSystem.setHelp(fToolbarNext, ICompareContextIds.NEXT_DIFF_ACTION);
+			helpSystem.setHelp(fToolbarPrevious, ICompareContextIds.PREVIOUS_DIFF_ACTION);
+		}
 	}
 
 	@Override

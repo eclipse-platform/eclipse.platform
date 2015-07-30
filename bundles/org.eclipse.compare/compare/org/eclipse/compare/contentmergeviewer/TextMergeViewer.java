@@ -20,6 +20,7 @@
  *     Robin Stocker (robin@nibor.org) - Bug 398594: [Edit] Enable center arrow buttons when editable and for both sides
  *     Robin Stocker (robin@nibor.org) - Bug 399960: [Edit] Make merge arrow buttons easier to hit
  *     John Hendrikx (hjohn@xs4all.nl) - Bug 541401 - [regression] Vertical scrollbar thumb size is wrong in compare view
+ *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
@@ -2036,7 +2037,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	@Override
 	protected void createControls(Composite composite) {
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.TEXT_MERGE_VIEW);
+		if (PlatformUI.isWorkbenchRunning()) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.TEXT_MERGE_VIEW);
+		}
 
 		// 1st row
 		if (fMarginWidth > 0) {

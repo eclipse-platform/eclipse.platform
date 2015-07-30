@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
  *******************************************************************************/
 package org.eclipse.compare;
 
@@ -562,7 +563,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			}
 			control.addDisposeListener(ev -> handleDispose());
 		});
-		if (fHelpContextId != null)
+		if (fHelpContextId != null && PlatformUI.isWorkbenchRunning())
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fComposite, fHelpContextId);
 		contentsCreated();
 		return fComposite;
@@ -1459,7 +1460,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private boolean saveChanges() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+			Utilities.executeRunnable(monitor -> {
 				try {
 					saveChanges(monitor);
 				} catch (CoreException e) {

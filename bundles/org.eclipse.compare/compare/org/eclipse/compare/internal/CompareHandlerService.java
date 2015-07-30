@@ -10,6 +10,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Stefan Dirix (sdirix@eclipsesource.com) - Bug 473847: Minimum E4 Compatibility of Compare
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -43,6 +44,10 @@ public class CompareHandlerService {
 			IHandlerService service = serviceLocator.getService(IHandlerService.class);
 			if (service != null)
 				return new CompareHandlerService(container, null);
+		}
+		if (!PlatformUI.isWorkbenchRunning() && shell != null) {
+			Expression e = new ActiveShellExpression(shell);
+			return new CompareHandlerService(container, e);
 		}
 		if (container.getWorkbenchPart() == null && shell != null) {
 			// We're in a dialog so we can use an active shell expression
@@ -92,7 +97,7 @@ public class CompareHandlerService {
 				if (service != null)
 					fHandlerService = service;
 			}
-			if (fHandlerService == null && fContainer.getWorkbenchPart() == null && fExpression != null) {
+			if (PlatformUI.isWorkbenchRunning() && fHandlerService == null && fContainer.getWorkbenchPart() == null && fExpression != null) {
 				// We're in a dialog so we can use an active shell expression
 				IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
 				if (service != null) {
