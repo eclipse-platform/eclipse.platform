@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2003, 2013 IBM Corporation and others.
+ *  Copyright (c) 2003, 2015 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -90,13 +90,9 @@ public class RemoteAntBuildListener implements ILaunchesListener {
 				fBufferedReader = new BufferedReader(new InputStreamReader(fSocket.getInputStream(), fEncoding));
 				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=414516
 				// the launch can be terminated but we haven't been notified yet
-				while (fLaunch != null && !fLaunch.isTerminated() && fBufferedReader != null) {
-					if (fBufferedReader.ready()) {
-						String message = fBufferedReader.readLine();
-						if (message != null) {
-							receiveMessage(message);
-						}
-					}
+				String message;
+				while (fLaunch != null && !fLaunch.isTerminated() && fBufferedReader != null && (message = fBufferedReader.readLine()) != null) {
+					receiveMessage(message);
 				}
 			}
 			catch (SocketException e) {
