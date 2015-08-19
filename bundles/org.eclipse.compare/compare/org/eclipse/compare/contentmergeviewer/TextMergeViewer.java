@@ -684,6 +684,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			} else if (fElement instanceof IDocument) {
 				newDocument= (IDocument) fElement;
+				setupDocument(newDocument);
 				
 			} else if (fElement instanceof IStreamContentAccessor) {
 				newDocument= DocumentManager.get(fElement);

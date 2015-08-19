@@ -33,8 +33,12 @@ import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -460,5 +464,108 @@ public class TextMergeViewerTest extends TestCase {
 				}
 			}
 		}, cc);
+	}
+	
+	
+	public void testDocumentAsTypedElement() throws Exception {
+		class DocumentAsTypedElement extends Document implements ITypedElement {
+
+			public String getName() {
+				return "file";
+			}
+
+			public Image getImage() {
+				return null;
+			}
+
+			public String getType() {
+				return ITypedElement.UNKNOWN_TYPE;
+			}
+		}
+		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
+		DocumentAsTypedElement leftDoc = new DocumentAsTypedElement();
+		DocumentAsTypedElement rightDoc = new DocumentAsTypedElement();
+		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, leftDoc, rightDoc);
+		runInDialogWithPartioner(testNode, new Runnable() {
+			public void run() {
+				//Not needed
+			}
+		}, new CompareConfiguration());
+		assertNotNull(leftDoc.getDocumentPartitioner());
+		assertNotNull(rightDoc.getDocumentPartitioner());
+	}
+
+
+	private void runInDialogWithPartioner(Object input, Runnable runnable, final CompareConfiguration cc) throws Exception {
+		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		Dialog dialog = new Dialog(shell) {
+			protected Control createDialogArea(Composite parent) {
+				Composite composite = (Composite) super.createDialogArea(parent);
+				viewer = new TestMergeViewerWithPartitioner(composite, cc);
+				return composite;
+			}
+		};
+		dialog.setBlockOnOpen(false);
+		dialog.open();
+		viewer.setInput(input);
+		try {
+			runnable.run();
+		} catch (WrappedException e) {
+			e.throwException();
+		}
+		dialog.close();
+		viewer = null;
+	}
+	
+	//This viewer is used to provide a dummy partitioner
+	public static class TestMergeViewerWithPartitioner extends TestMergeViewer {
+		public class DummyPartitioner implements IDocumentPartitioner {
+			public void connect(IDocument document) {
+				//Nothing to do
+			}
+
+			public void disconnect() {
+				//Nothing to do
+			}
+
+			public void documentAboutToBeChanged(DocumentEvent event) {
+				//Nothing to do
+			}
+
+			public boolean documentChanged(DocumentEvent event) {
+				return false;
+			}
+
+			public String[] getLegalContentTypes() {
+				return null;
+			}
+
+			public String getContentType(int offset) {
+				return null;
+			}
+
+			public ITypedRegion[] computePartitioning(int offset, int length) {
+				return null;
+			}
+
+			public ITypedRegion getPartition(int offset) {
+				return null;
+			}
+			
+		}
+		public TestMergeViewerWithPartitioner(Composite parent) {
+			super(parent, new CompareConfiguration());
+		}
+
+		public TestMergeViewerWithPartitioner(Composite parent, CompareConfiguration cc) {
+			super(parent, cc);
+		}
+
+		public void copy(boolean leftToRight) {
+			super.copy(leftToRight);
+		}
+		protected IDocumentPartitioner getDocumentPartitioner() {
+			return new DummyPartitioner();
+		}
 	}
 }
