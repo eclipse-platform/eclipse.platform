@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Ericsson AB, Hamdan Msheik - Bug 389564
+ *     Ericsson AB, Julian Enoch - Bug 470390
  *******************************************************************************/
 package org.eclipse.ant.internal.launching.launchConfigurations;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -192,13 +194,18 @@ public class ContributedClasspathEntriesEntry extends AbstractRuntimeClasspathEn
 				if (urlFileName.startsWith(IAntCoreConstants.FILE_PROTOCOL)) {
 					try {
 						try {
-							urlFileName = URIUtil.toURL(URIUtil.toURI(new URL(urlFileName))).getFile();
+							URI uri = URIUtil.toURI(new URL(urlFileName));
+							// fix bug 470390 using toFile() instead of toURL()
+							urlFileName = URIUtil.toFile(uri).getAbsolutePath();
 						}
 						catch (URISyntaxException e) {
 							AntLaunching.log(e);
 						}
-						if (urlFileName.endsWith("!/")) { //$NON-NLS-1$
+						if (urlFileName.endsWith("!/") || urlFileName.endsWith("!\\")) { //$NON-NLS-1$ //$NON-NLS-2$
 							urlFileName = urlFileName.substring(0, urlFileName.length() - 2);
+						}
+						if (urlFileName.endsWith("!")) { //$NON-NLS-1$
+							urlFileName = urlFileName.substring(0, urlFileName.length() - 1);
 						}
 					}
 					catch (MalformedURLException e) {
