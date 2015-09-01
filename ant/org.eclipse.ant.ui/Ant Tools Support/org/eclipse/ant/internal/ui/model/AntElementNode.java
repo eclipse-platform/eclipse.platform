@@ -13,6 +13,7 @@
  *     John-Mason P. Shackelford (john-mason.shackelford@pearson.com) - bug 49445
  *     Ericsson AB, Hamdan Msheik - Bug 389564
  *     Ericsson AB, Julian Enoch - Bug 389564
+ *     David North - Bug 475839
  *******************************************************************************/
 
 package org.eclipse.ant.internal.ui.model;
@@ -241,7 +242,10 @@ public class AntElementNode implements IAdaptable, IAntElement {
 
 		try {
 			URL fileURL = FileLocator.toFileURL(url);
-			fFilePath = new Path((URIUtil.toFile(URIUtil.toURI(fileURL))).getAbsolutePath()).toString();
+			// Bug 475839 - This is a quick fix for regression in 4.5.1, needs to be worked on in 4.6 via 476266
+			if (IAntCoreConstants.FILE.equals(fileURL.getProtocol())) {
+				fFilePath = new Path((URIUtil.toFile(URIUtil.toURI(fileURL))).getAbsolutePath()).toString();
+			}
 		}
 		catch (URISyntaxException e) {
 			AntUIPlugin.log(e);
