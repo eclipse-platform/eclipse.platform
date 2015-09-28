@@ -107,6 +107,8 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.IFindReplaceTarget;
+import org.eclipse.jface.text.IFindReplaceTargetExtension;
+import org.eclipse.jface.text.IFindReplaceTargetExtension3;
 import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.IRewriteTarget;
@@ -198,6 +200,7 @@ import org.eclipse.ui.texteditor.GotoLineAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProviderExtension;
 import org.eclipse.ui.texteditor.IElementStateListener;
+import org.eclipse.ui.texteditor.IFindReplaceTargetExtension2;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
@@ -1338,7 +1341,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		
 	}
 	
-	private class FindReplaceTarget implements IFindReplaceTarget {
+	private class FindReplaceTarget implements IFindReplaceTarget, IFindReplaceTargetExtension, IFindReplaceTargetExtension2, IFindReplaceTargetExtension3 {
 
 		public boolean canPerformFind() {
 			return fFocusPart != null;
@@ -1363,6 +1366,96 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		public void replaceSelection(String text) {
 			fFocusPart.getSourceViewer().getFindReplaceTarget().replaceSelection(text);
+		}
+
+		public int findAndSelect(int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension3) {
+				return ((IFindReplaceTargetExtension3) findReplaceTarget).findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
+			}
+			
+			// fallback like in org.eclipse.ui.texteditor.FindReplaceTarget
+			if (!regExSearch && findReplaceTarget != null)
+				return findReplaceTarget.findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord);
+			return -1;
+		}
+
+		public void replaceSelection(String text, boolean regExReplace) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension3) {
+				((IFindReplaceTargetExtension3) findReplaceTarget).replaceSelection(text, regExReplace);
+				return;
+			}
+			
+			// fallback like in org.eclipse.ui.texteditor.FindReplaceTarget
+			if (!regExReplace && findReplaceTarget != null)
+				findReplaceTarget.replaceSelection(text);
+		}
+
+		public boolean validateTargetState() {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension2) {
+				return ((IFindReplaceTargetExtension2) findReplaceTarget).validateTargetState();
+			}
+			return true;
+		}
+
+		public void beginSession() {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).beginSession();
+			}
+		}
+
+		public void endSession() {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).endSession();
+			}
+		}
+
+		public IRegion getScope() {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				return ((IFindReplaceTargetExtension) findReplaceTarget).getScope();
+			}
+			return null;
+		}
+
+		public void setScope(IRegion scope) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).setScope(scope);
+			}
+		}
+
+		public Point getLineSelection() {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				return ((IFindReplaceTargetExtension) findReplaceTarget).getLineSelection();
+			}
+			return null;
+		}
+
+		public void setSelection(int offset, int length) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).setSelection(offset, length);
+			}
+		}
+
+		public void setScopeHighlightColor(Color color) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).setScopeHighlightColor(color);
+			}
+		}
+
+		public void setReplaceAllMode(boolean replaceAll) {
+			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
+				((IFindReplaceTargetExtension) findReplaceTarget).setReplaceAllMode(replaceAll);
+			}
 		}
 		
 	}
