@@ -13,7 +13,7 @@
 
 <plugin>
 
-     <extension-point id="configurationWizards" name="%configurationWizards" schema="schema/configurationWizards.exsd"/>
+   <extension-point id="configurationWizards" name="%configurationWizards" schema="schema/configurationWizards.exsd"/>
    <extension-point id="synchronizeParticipants" name="%synchronizeParticipants" schema="schema/synchronizeParticipants.exsd"/>
    <extension-point id="synchronizeWizards" name="%synchronizeWizards" schema="schema/synchronizeWizards.exsd"/>
    <extension-point id="teamContentProviders" name="%TeamContentProvider" schema="schema/teamContentProviders.exsd"/>
@@ -208,6 +208,76 @@
                tooltip="%ApplyPatch.tooltip">
          </action>
       </objectContribution>
+   </extension>
+<!-- ****************** Menus *************** -->
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="team.main"
+               label="%TeamGroupMenu.label">
+            <separator
+                  name="group1"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group2"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group3"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group4"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group5"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group6"
+                  visible="true">
+            </separator>
+            <separator
+                  name="applyPatchGroup"
+                  visible="false">
+            </separator>
+            <separator
+                  name="group7"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group8"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group9"
+                  visible="true">
+            </separator>
+            <separator
+                  name="showAnnotationsGroup"
+                  visible="false">
+            </separator>
+            <separator
+                  name="group10"
+                  visible="true">
+            </separator>
+            <separator
+                  name="targetGroup"
+                  visible="true">
+            </separator>
+            <separator
+                  name="projectGroup"
+                  visible="true">
+            </separator>
+            <separator
+                  name="group11"
+                  visible="true">
+            </separator>
+         </menu>
+      </menuContribution>
    </extension>
 <!-- ************** Views ********************** -->
    <extension
