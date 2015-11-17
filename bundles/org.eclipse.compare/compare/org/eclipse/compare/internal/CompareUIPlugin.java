@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Carsten Pfeiffer <carsten.pfeiffer@gebit.de> - CompareUIPlugin.getCommonType() returns null if left or right side is not available - https://bugs.eclipse.org/311843
+ *     Stefan Xenos <sxenos@gmail.com> (Google) - bug 448968 - Add diagnostic logging
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
@@ -65,6 +66,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.service.debug.DebugOptions;
+import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -82,6 +85,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * The Compare UI plug-in defines the entry point to initiate a configurable
@@ -253,6 +257,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	private CompareResourceFilter fFilter;
 	private IPropertyChangeListener fPropertyChangeListener;
 
+	private ServiceRegistration debugRegistration;
+
 	/**
 	 * Creates the <code>CompareUIPlugin</code> object and registers all
 	 * structure creators, content merge viewers, and structure merge viewers
@@ -269,6 +275,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+
+		Hashtable properties = new Hashtable(2);
+		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, PLUGIN_ID);
+		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER,
+				properties);
 
 		ComparePlugin.getDefault().setCappingDisabled(
 				getPreferenceStore().getBoolean(
@@ -294,6 +305,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 					img.dispose();
 			}
 			fgImages= null;
+		}
+		
+		if (debugRegistration != null) {
+			debugRegistration.unregister();
+			debugRegistration = null;
 		}
 	}
 		

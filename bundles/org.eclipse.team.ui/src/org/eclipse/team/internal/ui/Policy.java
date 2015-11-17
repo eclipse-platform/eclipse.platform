@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Stefan Xenos <sxenos@gmail.com> (Google) - bug 448968 - Add diagnostic logging
  *******************************************************************************/
 package org.eclipse.team.internal.ui;
 
@@ -25,6 +26,7 @@ public class Policy {
 	public static boolean DEBUG_SYNC_MODELS = false;
 	public static boolean DEBUG_HISTORY = false;
 	public static boolean DEBUG_DND = false;
+	public static boolean DEBUG_COMPARE_EDITOR_INPUT = false;
     
     private static String ACTION_BUNDLE = "org.eclipse.team.internal.ui.actions.actions"; //$NON-NLS-1$
     private static ResourceBundle actionBundle = null;
@@ -46,6 +48,7 @@ public class Policy {
 			DEBUG_SYNC_MODELS = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/syncmodels", false); //$NON-NLS-1$
 			DEBUG_HISTORY = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/history", false); //$NON-NLS-1$
 			DEBUG_DND = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/dnd", false); //$NON-NLS-1$
+			DEBUG_COMPARE_EDITOR_INPUT = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/compare_editor_input", false); //$NON-NLS-1$
 		}
 	};
 

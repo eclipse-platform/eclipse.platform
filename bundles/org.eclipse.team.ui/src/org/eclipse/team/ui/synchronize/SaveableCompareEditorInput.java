@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
+ *     Stefan Xenos <sxenos@gmail.com> (Google) - bug 448968 - Add diagnostic logging
  *******************************************************************************/
 package org.eclipse.team.ui.synchronize;
 
@@ -152,6 +153,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public SaveableCompareEditorInput(CompareConfiguration configuration, IWorkbenchPage page) {
 		super(configuration);
 		this.page = page;
+		if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+			logTrace("constructed"); //$NON-NLS-1$
+		}
 	}
 
 	/* (non-Javadoc)
@@ -159,6 +163,10 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 */
 	protected void contentsCreated() {
 		super.contentsCreated();
+		if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+			logTrace("compareInputChangeListener assigned"); //$NON-NLS-1$
+			logStackTrace();
+		}
 		compareInputChangeListener = new ICompareInputChangeListener() {
 			public void compareInputChanged(ICompareInput source) {
 				if (source == getCompareResult()) {
@@ -203,10 +211,24 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
 	protected void handleDispose() {
+		if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+			logTrace("handleDispose()"); //$NON-NLS-1$
+			logStackTrace();
+		}
 		super.handleDispose();
 		ICompareInput compareInput = getCompareInput();
-		if (compareInput != null)
+		if (compareInput != null) {
+			if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+				if (compareInputChangeListener == null) {
+					logTrace("null change listener detected!"); //$NON-NLS-1$
+					logStackTrace();
+				}
+			}
 			compareInput.removeCompareInputChangeListener(compareInputChangeListener);
+		}
+		if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+			logTrace("compareInputChangeListener = null"); //$NON-NLS-1$
+		}
 		compareInputChangeListener = null;
 		if (saveable instanceof SaveableComparison && propertyListener != null) {
 			SaveableComparison scm = (SaveableComparison) saveable;
@@ -222,6 +244,14 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		}
 	}
 	
+	private void logStackTrace() {
+		new Exception("<Fake exception> in " + getClass().getName()).printStackTrace(System.out); //$NON-NLS-1$
+	}
+
+	private void logTrace(String string) {
+		System.out.println("SaveableCompareEditorInput " + System.identityHashCode(this) + ": " + string);  //$NON-NLS-1$//$NON-NLS-2$
+	}
+
 	/**
 	 * Prepare the compare input of this editor input. This method is not intended to be overridden of
 	 * extended by subclasses (but is not final for backwards compatibility reasons).
