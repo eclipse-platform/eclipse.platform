@@ -124,11 +124,14 @@ public abstract class ContentMergeViewer extends ContentViewer
 			
 			if (fLeftLabel == null) {
 				if (composite.isDisposed()) {
-					CompareUIPlugin.log(new IllegalArgumentException("Attempted to perform a layout on a disposed composite")); //$NON-NLS-1$
+					CompareUIPlugin
+							.log(new IllegalArgumentException("Attempted to perform a layout on a disposed composite")); //$NON-NLS-1$
 				}
 				if (Policy.debugContentMergeViewer) {
-					logTrace("found bad label. fComposite.isDisposed() = " + fComposite.isDisposed() //$NON-NLS-1$//$NON-NLS-2$
-							+ composite.isDisposed());
+					logTrace("found bad label. Layout = " + System.identityHashCode(this) + ". composite = "  //$NON-NLS-1$//$NON-NLS-2$
+							+ System.identityHashCode(composite) + ". fComposite = " //$NON-NLS-1$
+							+ System.identityHashCode(fComposite) + ". fComposite.isDisposed() = " //$NON-NLS-1$
+							+ fComposite.isDisposed()); //$NON-NLS-2$
 					logStackTrace();
 				}
 				// Help to find out the cause for bug 449558
@@ -822,6 +825,11 @@ public abstract class ContentMergeViewer extends ContentViewer
 		hookControl(fComposite);	// hook help & dispose listener
 		
 		fComposite.setLayout(new ContentMergeViewerLayout());
+		if (Policy.debugContentMergeViewer) {
+			logTrace("Created composite " + System.identityHashCode(fComposite) + " with layout "  //$NON-NLS-1$//$NON-NLS-2$
+					+ System.identityHashCode(fComposite.getLayout()));
+			logStackTrace();
+		}
 		
 		int style= SWT.SHADOW_OUT;
 		fAncestorLabel= new CLabel(fComposite, style | Window.getDefaultOrientation());
