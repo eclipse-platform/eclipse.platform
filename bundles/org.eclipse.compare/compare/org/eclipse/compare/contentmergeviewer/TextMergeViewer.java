@@ -904,14 +904,17 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				provider.removeElementStateListener(this);
 			}
 			// If we have a listener registered with the widget, remove it
-			if (fSourceViewer != null && !fSourceViewer.getSourceViewer().getTextWidget().isDisposed()) {
-				if (fNeedsValidation) {
-					fSourceViewer.getSourceViewer().getTextWidget().removeVerifyListener(this);
-					fNeedsValidation = false;
-				}
-				IDocument oldDoc= internalGetDocument(fSourceViewer);
-				if (oldDoc != null) {
-					oldDoc.removeDocumentListener(this);
+			if (fSourceViewer != null) {
+				StyledText textWidget = fSourceViewer.getSourceViewer().getTextWidget();
+				if (textWidget != null && !textWidget.isDisposed()) {
+					if (fNeedsValidation) {
+						fSourceViewer.getSourceViewer().getTextWidget().removeVerifyListener(this);
+						fNeedsValidation = false;
+					}
+					IDocument oldDoc= internalGetDocument(fSourceViewer);
+					if (oldDoc != null) {
+						oldDoc.removeDocumentListener(this);
+					}
 				}
 			}
 			clearCachedDocument();

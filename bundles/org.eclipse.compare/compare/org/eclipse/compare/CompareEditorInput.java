@@ -564,7 +564,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				 * input is disposed at the end making it possible to refer
 				 * during widgets disposal.
 				 */
-				Composite composite = fComposite;
+				Composite composite = (Composite)e.widget;
 				Control control = composite;
 				while (composite.getChildren().length > 0) {
 					control = composite.getChildren()[composite.getChildren().length - 1];
