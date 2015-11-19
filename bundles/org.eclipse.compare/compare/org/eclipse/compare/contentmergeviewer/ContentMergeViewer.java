@@ -799,6 +799,13 @@ public abstract class ContentMergeViewer extends ContentViewer
 		}
 	}
 	
+	protected void hookControl(Control control) {
+		if (Policy.debugContentMergeViewer) {
+			logTrace("Attached dispose listener to control " + System.identityHashCode(control)); //$NON-NLS-1$
+		}
+		super.hookControl(control);
+	}
+	
 	//---- layout & SWT control creation
 		
 	/**
@@ -836,7 +843,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		fLeftLabel= new CLabel(fComposite, style | Window.getDefaultOrientation());
 		if (Policy.debugContentMergeViewer) {
-			logTrace("fLeftLabel initialized");
+			logTrace("fLeftLabel initialized"); //$NON-NLS-1$
 			logStackTrace();
 		}
 		
@@ -1020,7 +1027,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fAncestorLabel= null;
 		fLeftLabel= null;
 		if (Policy.debugContentMergeViewer) {
-			logTrace("handleDispose(...) - fLeftLabel = null");
+			logTrace("handleDispose(...) - fLeftLabel = null. event.widget = " + System.identityHashCode(event.widget)); //$NON-NLS-1$
 			logStackTrace();
 		}
 		fDirectionLabel= null;
