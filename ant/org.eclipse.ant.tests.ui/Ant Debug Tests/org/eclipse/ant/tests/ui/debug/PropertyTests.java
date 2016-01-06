@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2014 IBM Corporation and others.
+ * Copyright (c) 2005, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import org.eclipse.debug.core.model.IVariable;
 
 public class PropertyTests extends AbstractAntDebugTest {
 
-	private static final String ANT_VERSION = "Apache Ant(TM) version 1.9.4"; //$NON-NLS-1$
+	private static final String ANT_VERSION = "Apache Ant(TM) version 1.9.6"; //$NON-NLS-1$
 
 	public PropertyTests(String name) {
 		super(name);
