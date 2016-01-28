@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.ant</groupId>
   <artifactId>org.eclipse.ant.tests.ui</artifactId>
-  <version>3.9.100-SNAPSHOT</version>
+  <version>3.9.1-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <code.ignoredWarnings>${tests.ignoredWarnings}</code.ignoredWarnings>
