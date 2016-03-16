@@ -1,5 +1,6 @@
 /.project
 /*/*/bin/
+/bundles/*/fragments/*/bin/
 *~
 *.rej
 *.bak
