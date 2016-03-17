@@ -26,6 +26,7 @@
 
   <properties>
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/platform/eclipse.platform.team.git</tycho.scmUrl>
+    <code.ignoredWarnings>-warn:-deprecation,raw,unchecked</code.ignoredWarnings>
   </properties>
 
   <!-- 

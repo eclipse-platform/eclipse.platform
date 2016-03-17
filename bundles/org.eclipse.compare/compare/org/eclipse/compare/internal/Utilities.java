@@ -845,7 +845,7 @@ public class Utilities {
 	
 	public static void schedule(Job job, IWorkbenchSite site) {
 		if (site != null) {
-			IWorkbenchSiteProgressService siteProgress = (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
+			IWorkbenchSiteProgressService siteProgress = site.getAdapter(IWorkbenchSiteProgressService.class);
 			if (siteProgress != null) {
 				siteProgress.schedule(job, 0, true /* use half-busy cursor */);
 				return;

@@ -2162,7 +2162,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		IWorkbenchPart workbenchPart = getCompareConfiguration().getContainer().getWorkbenchPart();
 		if (workbenchPart != null) {
-			IContextService service = (IContextService)workbenchPart.getSite().getService(IContextService.class);
+			IContextService service = workbenchPart.getSite().getService(IContextService.class);
 			if (service != null) {
 				service.activateContext("org.eclipse.ui.textEditorScope"); //$NON-NLS-1$
 			}
