@@ -40,58 +40,6 @@
     <description>Platform Team</description>
   </setupTask>
   <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.compare/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.compare.core/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.compare.win32/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.core.net/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.core/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.cvs.core/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.cvs.ssh2/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.cvs.ui/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.ui/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.ui.net/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.core.tests.net/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.tests.core/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
-      xsi:type="setup:PreferenceTask"
-      key="/project/org.eclipse.team.tests.cvs.core/org.eclipse.jdt.launching/org.eclipse.jdt.launching.PREF_STRICTLY_COMPATIBLE_JRE_NOT_AVAILABLE"
-      value="warning"/>
-  <setupTask
       xsi:type="setup.targlets:TargletTask">
     <targlet
         name="Platform Team"
@@ -114,7 +62,7 @@
             project="org.eclipse.team.core"/>
         <operand
             xsi:type="workingsets:ExclusionPredicate"
-            excludedWorkingSet="//@setupTasks.16/@workingSets.1 //@setupTasks.16/@workingSets.2"/>
+            excludedWorkingSet="//@setupTasks.3/@workingSets.1 //@setupTasks.3/@workingSets.2"/>
       </predicate>
     </workingSet>
     <workingSet
