@@ -35,13 +35,13 @@ public class CompareHandlerService {
 	public static CompareHandlerService createFor(ICompareContainer container, Shell shell) {
 		IServiceLocator serviceLocator = container.getServiceLocator();
 		if (serviceLocator != null) {
-			IHandlerService service = (IHandlerService)serviceLocator.getService(IHandlerService.class);
+			IHandlerService service = serviceLocator.getService(IHandlerService.class);
 			if (service != null)
 				return new CompareHandlerService(container, null);
 		}
 		if (container.getWorkbenchPart() == null && shell != null) {
 			// We're in a dialog so we can use an active shell expression
-			IHandlerService service = (IHandlerService)PlatformUI.getWorkbench().getService(IHandlerService.class);
+			IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
 			if (service != null) {
 				Expression e = new ActiveShellExpression(shell);
 				return new CompareHandlerService(container, e);
@@ -83,13 +83,13 @@ public class CompareHandlerService {
 		if (fHandlerService == null) {
 			IServiceLocator serviceLocator = fContainer.getServiceLocator();
 			if (serviceLocator != null) {
-				IHandlerService service = (IHandlerService)serviceLocator.getService(IHandlerService.class);
+				IHandlerService service = serviceLocator.getService(IHandlerService.class);
 				if (service != null)
 					fHandlerService = service;
 			}
 			if (fHandlerService == null && fContainer.getWorkbenchPart() == null && fExpression != null) {
 				// We're in a dialog so we can use an active shell expression
-				IHandlerService service = (IHandlerService)PlatformUI.getWorkbench().getService(IHandlerService.class);
+				IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
 				if (service != null) {
 					fHandlerService = service;
 				}

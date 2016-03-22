@@ -396,10 +396,10 @@ class ResourceCompareInput extends CompareEditorInput {
 			if (fThreeWay) {			
 				String format= Utilities.getString("ResourceCompare.threeWay.title"); //$NON-NLS-1$
 				String ancestorLabel= fAncestorResource.getName();
-				title= MessageFormat.format(format, new String[] {ancestorLabel, leftLabel, rightLabel});	
+				title= MessageFormat.format(format, ancestorLabel, leftLabel, rightLabel);	
 			} else {
 				String format= Utilities.getString("ResourceCompare.twoWay.title"); //$NON-NLS-1$
-				title= MessageFormat.format(format, new String[] {leftLabel, rightLabel});
+				title= MessageFormat.format(format, leftLabel, rightLabel);
 			}
 			setTitle(title);
 			
@@ -426,10 +426,10 @@ class ResourceCompareInput extends CompareEditorInput {
 			if (fThreeWay) {			
 				String format= Utilities.getString("ResourceCompare.threeWay.tooltip"); //$NON-NLS-1$
 				String ancestorLabel= fAncestorResource.getFullPath().makeRelative().toString();
-				return MessageFormat.format(format, new String[] {ancestorLabel, leftLabel, rightLabel});
+				return MessageFormat.format(format, ancestorLabel, leftLabel, rightLabel);
 			}
 			String format= Utilities.getString("ResourceCompare.twoWay.tooltip"); //$NON-NLS-1$
-			return MessageFormat.format(format, new String[] {leftLabel, rightLabel});
+			return MessageFormat.format(format, leftLabel, rightLabel);
 		}
 		// fall back
 		return super.getToolTipText();

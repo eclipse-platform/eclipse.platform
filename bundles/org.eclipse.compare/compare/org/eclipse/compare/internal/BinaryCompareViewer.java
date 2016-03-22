@@ -92,7 +92,7 @@ public class BinaryCompareViewer extends AbstractViewer {
 						int r= right.read();
 						if (l != r) {
 							String format= Utilities.getString(fBundle, "diffMessageFormat"); //$NON-NLS-1$
-							message= MessageFormat.format(format, new String[] { Integer.toString(pos) } );
+							message= MessageFormat.format(format, Integer.toString(pos) );
 							break;
 						}
 						if (l == EOF)

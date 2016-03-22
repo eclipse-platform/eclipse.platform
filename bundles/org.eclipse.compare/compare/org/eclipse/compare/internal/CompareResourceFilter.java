@@ -63,7 +63,7 @@ public class CompareResourceFilter {
 			IStatus status= workspace.validateName(fileName, resourceType);
 			if (status.matches(IStatus.ERROR)) {		
 				String format= Utilities.getString("ComparePreferencePage.filter.invalidsegment.error"); //$NON-NLS-1$
-				return MessageFormat.format(format, new String[] { status.getMessage() } );
+				return MessageFormat.format(format, status.getMessage());
 			}
 		}
 		return null;

@@ -319,7 +319,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		if (fTitle != null) {
 			if (fTitleArgument != null) {
 				String format= CompareMessages.CompareViewerSwitchingPane_Titleformat;	
-				String t= MessageFormat.format(format, new String[] { fTitle, fTitleArgument } );
+				String t= MessageFormat.format(format, fTitle, fTitleArgument);
 				setText(t);
 			} else
 				setText(fTitle);			

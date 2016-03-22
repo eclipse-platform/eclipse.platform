@@ -57,35 +57,21 @@ public class FileDiffOperation extends DiffOperation {
 	}
 	
 	protected void copyFile() throws CVSException {
-		FileChannel tempFileChannel=null;
-		FileChannel fileChannel=null;
-		try {
-		    tempFileChannel = new FileInputStream(tempFile).getChannel();
-		    fileChannel = new FileOutputStream(file).getChannel();
-		
-		    long size= tempFileChannel.size();
+		try (FileInputStream tempFileStream = new FileInputStream(tempFile);
+				FileOutputStream fileStream = new FileOutputStream(file)) {
+
+			FileChannel tempFileChannel = tempFileStream.getChannel();
+			FileChannel fileChannel = fileStream.getChannel();
+
+			long size = tempFileChannel.size();
 			long bytesTransferred = fileChannel.transferFrom(tempFileChannel, 0, size);
-		    while (bytesTransferred != size){
-		    	//Transfer from point left off until the end of the file
-		    	bytesTransferred += fileChannel.transferFrom(tempFileChannel, bytesTransferred, size);
-		    }
+			while (bytesTransferred != size) {
+				// Transfer from point left off until the end of the file
+				bytesTransferred += fileChannel.transferFrom(tempFileChannel, bytesTransferred, size);
+			}
 		} catch (IOException e) {
-			throw CVSException.wrapException(e); 
+			throw CVSException.wrapException(e);
 		} finally {
-			if (tempFileChannel!=null)
-				try {
-					tempFileChannel.close();
-				} catch (IOException e) {
-					throw CVSException.wrapException(e); 
-				}
-			
-			if (fileChannel!=null)
-				try {
-					fileChannel.close();
-				} catch (IOException e) {
-					throw CVSException.wrapException(e); 
-				}
-				
 			if (tempFile != null)
 				tempFile.delete();
 		}

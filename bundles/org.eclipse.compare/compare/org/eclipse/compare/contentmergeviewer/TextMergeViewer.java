@@ -2162,7 +2162,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		IWorkbenchPart workbenchPart = getCompareConfiguration().getContainer().getWorkbenchPart();
 		if (workbenchPart != null) {
-			IContextService service = (IContextService)workbenchPart.getSite().getService(IContextService.class);
+			IContextService service = workbenchPart.getSite().getService(IContextService.class);
 			if (service != null) {
 				service.activateContext("org.eclipse.ui.textEditorScope"); //$NON-NLS-1$
 			}
@@ -3649,22 +3649,18 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		
 			String format= CompareMessages.TextMergeViewer_diffDescription_diff_format;
 			diffDescription= MessageFormat.format(format,
-				new String[] {
-					getDiffType(diff),						// 0: diff type
-					getDiffNumber(diff),					// 1: diff number
-					getDiffRange(fLeft, diff.getPosition(LEFT_CONTRIBUTOR)),		// 2: left start line
-					getDiffRange(fRight, diff.getPosition(RIGHT_CONTRIBUTOR))	// 3: left end line
-				}
+				getDiffType(diff),						// 0: diff type
+				getDiffNumber(diff),					// 1: diff number
+				getDiffRange(fLeft, diff.getPosition(LEFT_CONTRIBUTOR)),		// 2: left start line
+				getDiffRange(fRight, diff.getPosition(RIGHT_CONTRIBUTOR))	// 3: left end line
 			);
 		}
 		
 		String format= CompareMessages.TextMergeViewer_statusLine_format;
 		String s= MessageFormat.format(format,
-			new String[] {
-				getCursorPosition(fLeft),	// 0: left column
-				getCursorPosition(fRight),	// 1: right column
-				diffDescription				// 2: diff description
-			}
+			getCursorPosition(fLeft),	// 0: left column
+			getCursorPosition(fRight),	// 1: right column
+			diffDescription				// 2: diff description
 		);
 	
 		getCompareConfiguration().getContainer().setStatusMessage(s);
@@ -3684,7 +3680,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			break;
 		}
 		String format= CompareMessages.TextMergeViewer_diffType_format;
-		return MessageFormat.format(format, new String[] { s, diff.changeType() } );
+		return MessageFormat.format(format, s, diff.changeType());
 	}
 	
 	private String getDiffNumber(Diff diff) {
@@ -3711,9 +3707,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			format= CompareMessages.TextMergeViewer_beforeLine_format;
 		else
 			format= CompareMessages.TextMergeViewer_range_format;
-		return MessageFormat.format(format,
-					new String[] { Integer.toString(startLine),
-									Integer.toString(endLine) } );
+		return MessageFormat.format(format, Integer.toString(startLine), Integer.toString(endLine));
 	}
 	
 	/*
@@ -3745,7 +3739,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					
 					String format= CompareMessages.TextMergeViewer_cursorPosition_format;
 					return MessageFormat.format(format,
-						new String[] { Integer.toString(line + 1), Integer.toString(column + 1) } );
+						Integer.toString(line + 1), Integer.toString(column + 1) );
 					
 				} catch (BadLocationException x) {
 					// silently ignored

@@ -781,6 +781,11 @@ public class Session {
 			try {
 				in = new GZIPInputStream(in);
 			} catch (IOException e) {
+				try {
+					in.close();
+				} catch (IOException e2) {
+					// Don't care. We're right about to report this IOException
+				}
 				throw CVSException.wrapException(e);
 			}
 		}

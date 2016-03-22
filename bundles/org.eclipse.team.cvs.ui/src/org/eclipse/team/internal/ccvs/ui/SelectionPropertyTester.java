@@ -74,7 +74,7 @@ public class SelectionPropertyTester extends PropertyTester {
 
 			Method method = findMethod(clazz, property);
 			if (method != null) {
-				invoke = method.invoke(instance, null);
+				invoke = method.invoke(instance, (Object[])null);
 				return ((Boolean) invoke).booleanValue();
 			}
 		} catch (IllegalArgumentException e) {

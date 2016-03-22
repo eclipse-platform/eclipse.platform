@@ -216,7 +216,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		}
 		
 		String fmt= Utilities.getString("DiffNode.nameFormat"); //$NON-NLS-1$
-		return MessageFormat.format(fmt, new String[] { s1, s2 });
+		return MessageFormat.format(fmt, s1, s2);
 	}
 	
 	void swapSides(boolean swap) {

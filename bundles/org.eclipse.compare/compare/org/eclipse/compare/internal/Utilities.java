@@ -374,7 +374,7 @@ public class Utilities {
 		
 		if (bundle != null) {
 			try {
-				return MessageFormat.format(bundle.getString(key), new String[] { arg });
+				return MessageFormat.format(bundle.getString(key), arg);
 			} catch (MissingResourceException x) {
 				CompareUIPlugin.log(x);
 			}
@@ -392,7 +392,7 @@ public class Utilities {
 	
 	public static String getFormattedString(String key, String arg) {
 		try {
-			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), new String[] { arg });
+			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg);
 		} catch (MissingResourceException e) {
 			return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
 		}	
@@ -400,7 +400,7 @@ public class Utilities {
 
 	public static String getFormattedString(String key, String arg0, String arg1) {
 		try {
-			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), new String[] { arg0, arg1 });
+			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg0, arg1);
 		} catch (MissingResourceException e) {
 			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
 		}	
@@ -845,7 +845,7 @@ public class Utilities {
 	
 	public static void schedule(Job job, IWorkbenchSite site) {
 		if (site != null) {
-			IWorkbenchSiteProgressService siteProgress = (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
+			IWorkbenchSiteProgressService siteProgress = site.getAdapter(IWorkbenchSiteProgressService.class);
 			if (siteProgress != null) {
 				siteProgress.schedule(job, 0, true /* use half-busy cursor */);
 				return;

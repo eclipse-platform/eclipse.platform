@@ -100,21 +100,22 @@ class LineComparator implements IRangeComparator {
 
 		TrailingLineFeedDetector trailingLineFeedDetector = new TrailingLineFeedDetector(
 				is);
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				trailingLineFeedDetector, encoding));
-		String line;
-		ArrayList ar = new ArrayList();
-		while ((line = br.readLine()) != null) {
-			ar.add(line);
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(
+				trailingLineFeedDetector, encoding))) {
+			String line;
+			ArrayList ar = new ArrayList();
+			while ((line = br.readLine()) != null) {
+				ar.add(line);
+			}
+			// Add a trailing line if the last character in the file was a line
+			// feed.
+			// We do this because a BufferedReader doesn't distinguish the case
+			// where the last line has or doesn't have a trailing line separator
+			if (trailingLineFeedDetector.hadTrailingLineFeed()) {
+				ar.add(""); //$NON-NLS-1$
+			}
+			fLines = (String[]) ar.toArray(new String[ar.size()]);
 		}
-		// Add a trailing line if the last character in the file was a line
-		// feed.
-		// We do this because a BufferedReader doesn't distinguish the case
-		// where the last line has or doesn't have a trailing line separator
-		if (trailingLineFeedDetector.hadTrailingLineFeed()) {
-			ar.add(""); //$NON-NLS-1$
-		}
-		fLines = (String[]) ar.toArray(new String[ar.size()]);
 	}
 
 	String getLine(int ix) {

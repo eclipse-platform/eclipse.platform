@@ -152,7 +152,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		create();	// create widgets
 		
 		String format= Utilities.getString(fBundle, "memberPaneTitle");	//$NON-NLS-1$
-		String title= MessageFormat.format(format, new Object[] { root.getName() });
+		String title= MessageFormat.format(format, root.getName());
 		fMemberPane.setImage(CompareUI.getImage(root));
 		fMemberPane.setText(title);
 		
@@ -313,7 +313,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			
 			fEditionPane.setImage(CompareUI.getImage(file));
 			String pattern= Utilities.getString(fBundle, "treeTitleFormat"); //$NON-NLS-1$
-			String title= MessageFormat.format(pattern, new Object[] { file.getName() });
+			String title= MessageFormat.format(pattern, file.getName());
 			fEditionPane.setText(title);
 			
 			if (fEditionTree != null) {
@@ -362,7 +362,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 				formatKey= "dayFormat"; //$NON-NLS-1$
 			String pattern= Utilities.getString(fBundle, formatKey);
 			if (pattern != null)
-				df= MessageFormat.format(pattern, new String[] { df });
+				df= MessageFormat.format(pattern, df);
 			lastDay.setText(df);
 			lastDay.setData(date);
 		}
@@ -421,7 +421,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		long modDate= input.getModificationDate();
 		String date= DateFormat.getDateTimeInstance().format(new Date(modDate));
 		
-		return MessageFormat.format(format, new Object[] { date });
+		return MessageFormat.format(format, date);
 	}
 			
 	/* (non-Javadoc)

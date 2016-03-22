@@ -551,7 +551,7 @@ public class Differencer {
 		if (node instanceof ITypedElement) {
 			String name= ((ITypedElement)node).getName();
 			String fmt= Utilities.getString("Differencer.progressFormat"); //$NON-NLS-1$
-			String msg= MessageFormat.format(fmt, new String[] { name });
+			String msg= MessageFormat.format(fmt, name );
 			progressMonitor.subTask(msg);
 			//progressMonitor.worked(1);
 		}

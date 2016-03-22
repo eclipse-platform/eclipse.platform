@@ -240,7 +240,7 @@ public class InputPatchPage extends WizardPage {
 		IFilePatch2[] diffs= patcher.getDiffs();
 		if (diffs == null || diffs.length == 0) {
 			String format= PatchMessages.InputPatchPage_NoDiffsFound_format;
-			String message= MessageFormat.format(format, new String[] { fPatchSource });
+			String message= MessageFormat.format(format, fPatchSource);
 			MessageDialog.openInformation(null, PatchMessages.InputPatchPage_PatchErrorDialog_title, message);
 			return false;
 		}

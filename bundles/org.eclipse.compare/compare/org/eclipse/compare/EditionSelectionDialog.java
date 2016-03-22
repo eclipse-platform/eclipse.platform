@@ -630,7 +630,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	private String formatString(String string, String variable) {
 		// Only process the string if it contains a variable or an escaped quote (see bug 190023)
 		if (hasVariable(string) || hasDoubleQuotes(string))
-			return MessageFormat.format(string, new Object[] { variable });
+			return MessageFormat.format(string, variable);
 		return string;
 	}
 	
@@ -833,7 +833,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			if (fTitleArg == null)
 				fTitleArg= fTargetPair.getItem().getName();
 			String titleFormat= Utilities.getString(fBundle, "treeTitleFormat"); //$NON-NLS-1$
-			String title= MessageFormat.format(titleFormat, new String[] { fTitleArg });
+			String title= MessageFormat.format(titleFormat, fTitleArg );
 			fEditionPane.setText(title);
 			if (fTitleImage != null)
 				fEditionPane.setImage(fTitleImage);
@@ -1062,7 +1062,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				formatKey= "dayFormat"; //$NON-NLS-1$
 			String pattern= Utilities.getString(fBundle, formatKey);
 			if (pattern != null)
-				df= MessageFormat.format(pattern, new String[] { df });
+				df= MessageFormat.format(pattern, df);
 			lastDay.setText(df);
 			lastDay.setData(date);
 		}
@@ -1072,7 +1072,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 		String s= getShortEditionLabel(edition, item, date);
 		if (pair.fHasError) {
 			String pattern= Utilities.getString(fBundle, "parseErrorFormat"); //$NON-NLS-1$
-			s= MessageFormat.format(pattern, new String[] { s } );
+			s= MessageFormat.format(pattern, s);
 		}
 		ti.setText(s);
 		

@@ -64,7 +64,7 @@ public class SWTUtils {
 		if (node == null) {
 			return NLS.bind(TeamUIMessages.NotFound, pageId);
 		} else {
-			return MessageFormat.format(message, new String[] { node.getLabelText() });
+			return MessageFormat.format(message, node.getLabelText());
 		}
 	}
 	

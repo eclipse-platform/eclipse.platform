@@ -149,7 +149,7 @@ public class PatchTargetPage extends WizardPage {
 					break;
 			}
 			String format = PatchMessages.InputPatchPage_SingleFileError_format;
-			String message = MessageFormat.format(format, new String[] {source});
+			String message = MessageFormat.format(format, source);
 			MessageDialog.openInformation(null, PatchMessages.InputPatchPage_PatchErrorDialog_title, message);
 			return this;
 		}
