@@ -319,7 +319,7 @@ public class CompareEditor extends EditorPart implements IReusableEditor, ISavea
 	}
 
 	private void registerSaveable() {
-		ISaveablesLifecycleListener lifecycleListener= getSite().getService(ISaveablesLifecycleListener.class);
+		ISaveablesLifecycleListener lifecycleListener= (ISaveablesLifecycleListener) getSite().getService(ISaveablesLifecycleListener.class);
 		lifecycleListener.handleLifecycleEvent(
 			new SaveablesLifecycleEvent(this, SaveablesLifecycleEvent.POST_OPEN, internalGetSaveables(true), false));
 	}
@@ -332,7 +332,7 @@ public class CompareEditor extends EditorPart implements IReusableEditor, ISavea
 			
 			// Let the workbench know that the old input's saveables are no longer needed
 			if (knownSaveables != null && !knownSaveables.isEmpty()) {
-				ISaveablesLifecycleListener lifecycleListener= getSite().getService(ISaveablesLifecycleListener.class);
+				ISaveablesLifecycleListener lifecycleListener= (ISaveablesLifecycleListener) getSite().getService(ISaveablesLifecycleListener.class);
 				lifecycleListener.handleLifecycleEvent(
 						new SaveablesLifecycleEvent(this, SaveablesLifecycleEvent.POST_CLOSE, (Saveable[]) knownSaveables.toArray(new Saveable[knownSaveables.size()]), false));
 				knownSaveables.clear();
@@ -412,7 +412,7 @@ public class CompareEditor extends EditorPart implements IReusableEditor, ISavea
 		parent.setData(this);
 		fPageBook = new PageBook(parent, SWT.NONE);
 		createCompareControl();
-		IContextService service = getSite().getService(IContextService.class);
+		IContextService service = (IContextService)getSite().getService(IContextService.class);
 		if (service != null) {
 			service.activateContext("org.eclipse.compare.compareEditorScope"); //$NON-NLS-1$
 			service.activateContext("org.eclipse.ui.textEditorScope"); //$NON-NLS-1$
@@ -741,7 +741,7 @@ public class CompareEditor extends EditorPart implements IReusableEditor, ISavea
 	}
 
 	public void handleLifecycleEvent(SaveablesLifecycleEvent event) {
-		ISaveablesLifecycleListener lifecycleListener= getSite().getService(ISaveablesLifecycleListener.class);
+		ISaveablesLifecycleListener lifecycleListener= (ISaveablesLifecycleListener) getSite().getService(ISaveablesLifecycleListener.class);
 		if (event.getEventType() == SaveablesLifecycleEvent.POST_CLOSE) {
 			// We may get a post close for a saveable that is not known to the workbench.
 			// Only pass on the event for known saveables

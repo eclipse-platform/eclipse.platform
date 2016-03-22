@@ -839,7 +839,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 	
 	private void addSave(IMenuManager menu) {
-		ICommandService commandService = fContainer.getWorkbenchPart().getSite().getService(ICommandService.class);
+		ICommandService commandService = (ICommandService) fContainer.getWorkbenchPart().getSite().getService(ICommandService.class);
 		final Command command= commandService.getCommand(IWorkbenchCommandConstants.FILE_SAVE);
 		
 		final IHandler handler = command.getHandler();
