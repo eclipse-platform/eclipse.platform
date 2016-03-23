@@ -125,7 +125,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 			if (newText.indexOf(".") > -1) //$NON-NLS-1$
 				status.setError(XMLCompareMessages.XMLCompareAddIdMapDialog_error_extfullstop); 
 			else if (fIdExtensionToName.containsKey(newText) && !fIdExtensionToName.get(newText).equals(fIdMap.getName()))
-				status.setError(MessageFormat.format("{0} {1}",new String[] {XMLCompareMessages.XMLCompareAddIdMapDialog_error_extExists,(String)fIdExtensionToName.get(newText)}));  //$NON-NLS-1$
+				status.setError(MessageFormat.format("{0} {1}", XMLCompareMessages.XMLCompareAddIdMapDialog_error_extExists,fIdExtensionToName.get(newText)));  //$NON-NLS-1$
 		}
 		updateStatus(status);
 	}

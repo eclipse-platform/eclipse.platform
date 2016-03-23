@@ -323,7 +323,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 										.ID_TYPE_BODY))
 										.toString()))
 								oldId= oldId.substring(1);
-							action.setText(MessageFormat.format("{0} {1}", new String[] { XMLCompareMessages.XMLStructureViewer_action_setId_text2, oldId }));  //$NON-NLS-1$
+							action.setText(MessageFormat.format("{0} {1}", XMLCompareMessages.XMLStructureViewer_action_setId_text2, oldId));  //$NON-NLS-1$
 							action.setEnabled(true);
 						}
 					} else {

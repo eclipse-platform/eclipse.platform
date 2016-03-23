@@ -164,7 +164,7 @@ public class XMLStructureCreator implements IStructureCreator {
                         currentParent.childElements.put(raw, new Integer(((Integer) currentParent.childElements.get(raw)).intValue() + 1));
                     }
                     elementId= raw + new Character(ID_SEPARATOR) + "[" + currentParent.childElements.get(raw) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
-                    elementName= MessageFormat.format("{0} [{1}]", new String[] { raw, currentParent.childElements.get(raw).toString()}); //$NON-NLS-1$
+                    elementName= MessageFormat.format("{0} [{1}]", raw, currentParent.childElements.get(raw).toString()); //$NON-NLS-1$
                 }
                 int start= r.getOffset() + prevlocator.getColumnNumber() - 1;
                 if (start < 0)
@@ -334,7 +334,7 @@ public class XMLStructureCreator implements IStructureCreator {
                             body_value= removeWhiteSpace(body_value);
                         }
                         XMLNode bodynode= new XMLNode(TYPE_TEXT, "body_(" + fcurrentParent.bodies + ")", body_value, (fsignature + SIGN_TEXT), fdoc, offset, length); //$NON-NLS-2$ //$NON-NLS-1$
-                        bodynode.setName(MessageFormat.format("{0} ({1})", new String[] { XMLCompareMessages.XMLStructureCreator_body, Integer.toString(fcurrentParent.bodies)}));  //$NON-NLS-1$
+                        bodynode.setName(MessageFormat.format("{0} ({1})", XMLCompareMessages.XMLStructureCreator_body, Integer.toString(fcurrentParent.bodies)));  //$NON-NLS-1$
                         fcurrentParent.addChild(bodynode);
                         bodynode.setParent(fcurrentParent);
                         if (XMLStructureCreator.DEBUG_MODE)
@@ -354,7 +354,7 @@ public class XMLStructureCreator implements IStructureCreator {
                                 String popelementname= popid.substring(0, popid.indexOf("<")); //$NON-NLS-1$
                                 pop.setId(popelementname + "<" + body_value); //$NON-NLS-1$
                                 pop.setOrigId(popelementname + "<" + body_value); //$NON-NLS-1$
-                                pop.setName(MessageFormat.format("{0} [{1}={2}]", new String[] { popelementname, pelementname, body_value})); //$NON-NLS-1$
+                                pop.setName(MessageFormat.format("{0} [{1}={2}]", popelementname, pelementname, body_value)); //$NON-NLS-1$
                                 pop.setUsesIDMAP(true);
                             }
                         }
