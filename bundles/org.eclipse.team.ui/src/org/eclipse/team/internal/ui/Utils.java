@@ -669,28 +669,8 @@ public class Utils {
         return getResources(elements, null, true /* isContributed */, true /* isIncudeMappings */);
     }
 	
-	public static Object getAdapter(Object element, Class adapterType, boolean load) {
-		if (adapterType.isInstance(element))
-			return element;
-		if (element instanceof IAdaptable) {
-			Object adapted = ((IAdaptable) element).getAdapter(adapterType);
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		}
-		if (load) {
-			Object adapted = Platform.getAdapterManager().loadAdapter(element, adapterType.getName());
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		} else {
-			Object adapted = Platform.getAdapterManager().getAdapter(element, adapterType);
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		}
-		return null;
-	}
-	
-	public static Object getAdapter(Object element, Class adapterType) {
-		return getAdapter(element, adapterType, false);
+	public static <T> T getAdapter(Object element, Class<T> adapterType) {
+		return Adapters.adapt(element, adapterType, false);
 	}
 	
 	/**

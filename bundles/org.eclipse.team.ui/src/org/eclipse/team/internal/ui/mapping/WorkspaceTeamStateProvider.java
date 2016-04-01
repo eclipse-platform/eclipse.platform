@@ -16,8 +16,7 @@ import java.util.Map;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.internal.core.*;
@@ -119,16 +118,14 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	private ITeamStateProvider getDecoratedStateProvider(Object element) {
 		RepositoryProviderType type = getProviderType(element);
 		if (type != null)
-			return (ITeamStateProvider) Utils.getAdapter(type,
-					ITeamStateProvider.class);
+			return Utils.getAdapter(type, ITeamStateProvider.class);
 		return null;
 	}
 
 	private ITeamStateProvider getDecoratedStateProviderForId(String id) {
 		RepositoryProviderType type = getProviderTypeForId(id);
 		if (type != null)
-			return (ITeamStateProvider) Utils.getAdapter(type,
-					ITeamStateProvider.class, true);
+			return Adapters.adapt(type, ITeamStateProvider.class);
 		return null;
 	}
 

@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -594,11 +595,11 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			} else {
 				IFileHistoryProvider fileHistory = teamProvider.getFileHistoryProvider();
 				if (fileHistory != null) {
-					IHistoryPageSource source = (IHistoryPageSource)Utils.getAdapter(fileHistory, IHistoryPageSource.class,true);
+					IHistoryPageSource source = Adapters.adapt(fileHistory, IHistoryPageSource.class);
 					if (source != null)
 						return source;
 				}
-				return (IHistoryPageSource)Utils.getAdapter(teamProvider, IHistoryPageSource.class,true);
+				return Adapters.adapt(teamProvider, IHistoryPageSource.class);
 			}
 		}
 	}
