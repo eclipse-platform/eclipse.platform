@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Sergey Prigogin (Google) - [490835] Local history page is sticky
  *******************************************************************************/
 package org.eclipse.team.internal.ui.history;
 
@@ -44,16 +45,24 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 	private static final int MAX_NAVIGATION_HISTORY_ENTRIES = 15;
 
 	static boolean sameSource(IHistoryPageSource source1, IHistoryPageSource source2) {
-		return source1 == source2 || (source1 != null && source2 != null && source1.equals(source2));
+		return Objects.equals(source1, source2);
 	}
 
 	private boolean matches(IPage page, Object object, IHistoryPageSource pageSource) {
 		if (page instanceof IHistoryPage) {
 			Object input = ((IHistoryPage)page).getInput();
 			if (input != null)
-				return input.equals(object) && sameSource(getPageSourceFor(object, pageSource), getPageSourceFor(input, null));
+				return input.equals(object) && sameSource(getPageSourceFor(object, pageSource), getCurrentPageSource());
 		}
 		return false;
+	}
+
+	private IHistoryPageSource getCurrentPageSource() {
+		IWorkbenchPart part = getCurrentContributingPart();
+		if (part instanceof HistoryPageSourceWorkbenchPart) {
+			return ((HistoryPageSourceWorkbenchPart) part).getSource();
+		}
+		return null;
 	}
 
 	/*
