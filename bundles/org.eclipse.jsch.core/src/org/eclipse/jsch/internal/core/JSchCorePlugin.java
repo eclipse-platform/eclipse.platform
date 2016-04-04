@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.jsch.internal.core;
 
+import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.ArrayList;
 
@@ -196,9 +197,11 @@ public class JSchCorePlugin extends Plugin{
       getJSch().setKnownHosts(file.getPath());
     }
     catch(JSchException e){
-      JSchCorePlugin.log(IStatus.ERROR, NLS.bind(
-          "An error occurred while loading the know hosts file {0}", file //$NON-NLS-1$
-              .getAbsolutePath()), e);
+      if (!(e.getCause() instanceof FileNotFoundException)) {
+        JSchCorePlugin.log(IStatus.ERROR, NLS.bind(
+            "An error occurred while loading the know hosts file {0}", file //$NON-NLS-1$
+                .getAbsolutePath()), e);
+      }
     }
     needToLoadKnownHosts=false;
   }
