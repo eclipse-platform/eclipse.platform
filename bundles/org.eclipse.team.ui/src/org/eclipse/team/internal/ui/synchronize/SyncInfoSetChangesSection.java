@@ -45,6 +45,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * change notification so that we can update message to user and totals.
 	 */
 	private SynchronizePageActionGroup changedListener = new SynchronizePageActionGroup() {
+		@Override
 		public void modelChanged(ISynchronizeModelElement root) {
 			calculateDescription();
 		}
@@ -55,12 +56,15 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * all out-of-sync resources for the subscriber.
 	 */
 	private ISyncInfoSetChangeListener subscriberListener = new ISyncInfoSetChangeListener() {
+		@Override
 		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 			// Handled by output set listener
 		}
+		@Override
 		public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 			calculateDescription();
 		}
+		@Override
 		public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 			// Handled by output set listener
 		}
@@ -71,13 +75,16 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * only the visible sync info. 
 	 */
 	private ISyncInfoSetChangeListener outputSetListener = new ISyncInfoSetChangeListener() {
+		@Override
 		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 			calculateDescription();
 		}
+		@Override
 		public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 			// Input changed listener will call calculateDescription()
 			// The input will then react to output set changes
 		}
+		@Override
 		public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 			calculateDescription();
 		}
@@ -97,6 +104,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ChangesSection#initializeChangesViewer()
 	 */
+	@Override
 	protected void initializeChangesViewer() {
 		super.initializeChangesViewer();
 		getConfiguration().addActionContribution(changedListener);
@@ -104,11 +112,13 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		getVisibleSyncInfoSet().addSyncSetChangedListener(outputSetListener);
 	}
 	
+	@Override
 	protected void calculateDescription() {
 		SyncInfoTree syncInfoTree = getVisibleSyncInfoSet();
 		if (syncInfoTree.getErrors().length > 0) {
 			if (!showingError) {
 				TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						updatePage(getErrorComposite(getContainer()));
 						showingError = true;
@@ -122,6 +132,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		super.calculateDescription();
 	}
 
+	@Override
 	protected long getChangesInMode(int candidateMode) {
 		SyncInfoSet participantSet = getParticipantSyncInfoSet();
 		long numChanges;
@@ -147,6 +158,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 	 * Return the candidate mode based on the presence of unfiltered changes
 	 * and the modes supported by the page.
 	 */
+	@Override
 	protected int getCandidateMode() {
 		SyncInfoSet participantSet = getParticipantSyncInfoSet();
 		SynchronizePageConfiguration configuration = (SynchronizePageConfiguration)getConfiguration();
@@ -171,6 +183,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		return configuration.getMode();
 	}
 	
+	@Override
 	public void dispose() {
 		super.dispose();
 		getConfiguration().removeActionContribution(changedListener);
@@ -191,6 +204,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		Hyperlink link = new Hyperlink(composite, SWT.WRAP);
 		link.setText(TeamUIMessages.ChangesSection_8); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				showErrors();
 			}
@@ -201,6 +215,7 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		link = new Hyperlink(composite, SWT.WRAP);
 		link.setText(TeamUIMessages.ChangesSection_9); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				getPage().reset();
 			}
@@ -224,10 +239,12 @@ public class SyncInfoSetChangesSection extends ForwardingChangesSection {
 		}
 	}
 	
+	@Override
 	protected int getChangesCount() {
 		return getParticipantSyncInfoSet().size();
 	}
 	
+	@Override
 	protected long getVisibleChangesCount() {
 		return getVisibleSyncInfoSet().size();
 	}

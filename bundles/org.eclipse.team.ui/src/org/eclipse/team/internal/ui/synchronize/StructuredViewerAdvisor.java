@@ -66,6 +66,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	//    - working set selection by the user
 	//    - decorator format change selected by the user
 	private IPropertyChangeListener propertyListener = new IPropertyChangeListener() {
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			// Change to showing of sync state in text labels preference
 			if(event.getProperty().equals(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL)) {
@@ -95,6 +96,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * can be shown to the user. 
 	 * @param viewer the viewer being installed
 	 */
+	@Override
 	public void initializeViewer(final StructuredViewer viewer) {
 		super.initializeViewer(viewer);
 		initializeListeners(viewer);
@@ -121,6 +123,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 */
 	protected void initializeListeners(final StructuredViewer viewer) {
 		viewer.getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				StructuredViewerAdvisor.this.dispose();
 			}
@@ -128,6 +131,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 
 		new OpenAndLinkWithEditorHelper(viewer) {
 
+			@Override
 			protected void activate(ISelection selection) {
 				final int currentMode= OpenStrategy.getOpenMethod();
 				try {
@@ -138,10 +142,12 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 				}
 			}
 
+			@Override
 			protected void linkToEditor(ISelection selection) {
 				// not supported by this part
 			}
 
+			@Override
 			protected void open(ISelection selection, boolean activate) {
 				handleOpen();
 			}
@@ -149,12 +155,14 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		};
 
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				handleDoubleClick(viewer, event);
 			}
 		});
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				// Update the action bars enablement for any contributed action groups
 				updateActionBars((IStructuredSelection)viewer.getSelection());
@@ -197,6 +205,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * action groups registered with the configuration to fill the action bars.
 	 * @param actionBars the Action bars for the page
 	 */
+	@Override
 	public final void setActionBars(IActionBars actionBars) {
 		if(actionBars != null) {
 			IToolBarManager manager = actionBars.getToolBarManager();
@@ -263,6 +272,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				fillContextMenu(viewer, manager);
 			}
@@ -270,6 +280,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		menu.addMenuListener(new MenuListener() {
 	
+			@Override
 			public void menuHidden(MenuEvent e) {
 			}
 	
@@ -278,6 +289,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			// the state of the selection changes and the contributions
 			// need to update enablement based on this.
 			// TODO: Is this hack still needed
+			@Override
 			public void menuShown(MenuEvent e) {
 				IContributionItem[] items = menuMgr.getItems();
 				for (int i = 0; i < items.length; i++) {

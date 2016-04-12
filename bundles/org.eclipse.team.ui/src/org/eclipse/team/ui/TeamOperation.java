@@ -66,6 +66,7 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 	        this.operation = operation;
 	    }
 	    
+		@Override
 		protected void configureJob(Job job) {
 		    super.configureJob(job);
 		    if (operation.isKeepOneProgressServiceEntry())
@@ -83,7 +84,8 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 		/* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#belongsTo(org.eclipse.team.internal.ui.actions.JobRunnableContext.IContextJob, java.lang.Object)
          */
-        protected boolean belongsTo(IContextJob job, Object family) {
+        @Override
+		protected boolean belongsTo(IContextJob job, Object family) {
             if (family instanceof IContextJob) {
                 IContextJob otherJob = (IContextJob)family;
                 IRunnableWithProgress runnable = otherJob.getRunnable();
@@ -97,7 +99,8 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#getCompletionStatus()
          */
-        protected IStatus getCompletionStatus() {
+        @Override
+		protected IStatus getCompletionStatus() {
             if (gotoAction != null) {
                 return new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, gotoAction.getText(), null);
             }
@@ -107,7 +110,8 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#isUser()
          */
-        protected boolean isUser() {
+        @Override
+		protected boolean isUser() {
             return operation.isUserInitiated();
         }
 	}
@@ -327,6 +331,7 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 		final Shell[] shell = new Shell[] { null };
 		if (Display.getCurrent() == null) {
 			Display.getDefault().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					shell[0] = Utils.getShell(getSite());
 				}

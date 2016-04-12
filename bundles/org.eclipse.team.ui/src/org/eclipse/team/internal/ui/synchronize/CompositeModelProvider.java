@@ -54,14 +54,16 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getProvider(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
-    protected ISynchronizeModelProvider getProvider(ISynchronizeModelElement element) {
+    @Override
+	protected ISynchronizeModelProvider getProvider(ISynchronizeModelElement element) {
         return (ISynchronizeModelProvider)elementToProvider.get(element);
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getClosestExistingParents(org.eclipse.core.resources.IResource)
      */
-    public ISynchronizeModelElement[] getClosestExistingParents(IResource resource) {
+    @Override
+	public ISynchronizeModelElement[] getClosestExistingParents(IResource resource) {
         ISynchronizeModelProvider[] providers = getProviders();
         if (providers.length == 0) {
             return new ISynchronizeModelElement[0];
@@ -112,7 +114,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceAdditions(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected final void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
+    @Override
+	protected final void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
         handleAdditions(event.getAddedResources());
     }
     
@@ -137,7 +140,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected final void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
+    @Override
+	protected final void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
         SyncInfo[] infos = event.getChangedResources();
         for (int i = 0; i < infos.length; i++) {
             SyncInfo info = infos[i];
@@ -158,7 +162,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceRemovals(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected final void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
+    @Override
+	protected final void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
         IResource[] resources = event.getRemovedResources();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
@@ -194,6 +199,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#nodeAdded(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
+	@Override
 	protected void nodeAdded(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
 		// Update the resource-to-element map and the element-to-provider map
 		IResource r = node.getResource();
@@ -212,7 +218,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#modelObjectCleared(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
-    public void modelObjectCleared(ISynchronizeModelElement node) {
+    @Override
+	public void modelObjectCleared(ISynchronizeModelElement node) {
         super.modelObjectCleared(node);
 	    IResource r = node.getResource();
 		if(r != null) {
@@ -230,7 +237,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
-    protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
+    @Override
+	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
         super.recursiveClearModelObjects(node);
         if (node == getModelRoot()) {
             clearProviders();
@@ -266,7 +274,8 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#dispose()
      */
-    public void dispose() {
+    @Override
+	public void dispose() {
         clearProviders();
         super.dispose();
     }
@@ -274,14 +283,16 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#hasViewerState()
      */
-    protected boolean hasViewerState() {
+    @Override
+	protected boolean hasViewerState() {
         return resourceToElements != null && !resourceToElements.isEmpty();
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getModelObjects(org.eclipse.core.resources.IResource)
      */
-    protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
+    @Override
+	protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
         List elements = (List)resourceToElements.get(resource);
         if (elements == null) {
             return new ISynchronizeModelElement[0];

@@ -109,6 +109,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			/*
 			 * Override to ensure that the diff viewer will appear in CompareEditorInputs
 			 */
+			@Override
 			public boolean hasChildren() {
 				return true;
 			}
@@ -157,6 +158,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * @return the set that contains the elements this provider is
 	 * using as a basis for creating a presentation model.
 	 */
+	@Override
 	public SyncInfoSet getSyncInfoSet() {
 		return set;
 	}
@@ -167,6 +169,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * 
 	 * @return the input created by this provider.
 	 */
+	@Override
 	public ISynchronizeModelElement getModelRoot() {
 		return root;
 	}
@@ -185,6 +188,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * provider or <code>null</code> if the viewer is not of the proper type.
 	 * @return the structured viewer that is displaying the model managed by this provider
 	 */
+	@Override
 	public StructuredViewer getViewer() {
 		ISynchronizePage page = configuration.getPage();
 		if (page == null) return null;
@@ -198,6 +202,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	/**
 	 * Builds the viewer model based on the contents of the sync set.
 	 */
+	@Override
 	public ISynchronizeModelElement prepareInput(IProgressMonitor monitor) {
 		// Connect to the sync set which will register us as a listener and give us a reset event
 		// in a background thread
@@ -330,6 +335,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    // progress. If there is, the background update will refresh
 		    if (!updateHandler.isPerformingBackgroundUpdate()) {
 				Utils.asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						refreshModelRoot();
 					}
@@ -515,6 +521,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			final IResource[][] selectedResources = new IResource[1][0];
 			final IResource[][] checkedResources = new IResource[1][0];
 			viewer.getControl().getDisplay().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (viewer != null && !viewer.getControl().isDisposed()) {
 					    expandedResources[0] = getExpandedResources();
@@ -626,14 +633,16 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.TreeListener#treeCollapsed(org.eclipse.swt.events.TreeEvent)
      */
-    public void treeCollapsed(TreeEvent e) {
+    @Override
+	public void treeCollapsed(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.TreeListener#treeExpanded(org.eclipse.swt.events.TreeEvent)
      */
-    public void treeExpanded(TreeEvent e) {
+    @Override
+	public void treeExpanded(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
     }
     
@@ -647,6 +656,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#saveState()
 	 */
+	@Override
 	public void saveState() {
 		saveViewerState();
 	}
@@ -680,6 +690,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	/**
 	 * Dispose of the provider
 	 */
+	@Override
 	public void dispose() {
 	    // Only dispose the update handler if it is
 	    // directly associated with this provider
@@ -691,7 +702,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	    }
 	    if (actionGroup != null) {
 	        Utils.syncExec(new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     actionGroup.dispose();
                 }
             }, getViewer());
@@ -762,12 +774,14 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
-    public void syncInfoChanged(final ISyncInfoSetChangeEvent event, final IProgressMonitor monitor) {
+    @Override
+	public void syncInfoChanged(final ISyncInfoSetChangeEvent event, final IProgressMonitor monitor) {
 		if (! (event instanceof ISyncInfoTreeChangeEvent)) {
 			reset();
 		} else {
 		    updateHandler.runViewUpdate(new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     handleChanges((ISyncInfoTreeChangeEvent)event, monitor);
                 }
             }, true /* preserve expansion */);
@@ -777,7 +791,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
+    @Override
+	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
         // Not handled
 
     }
@@ -785,7 +800,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
+    @Override
+	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
         reset();
     }
     
@@ -1007,7 +1023,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         // Default is to do nothing
     }
     
-    public void addPropertyChangeListener(IPropertyChangeListener listener) {
+    @Override
+	public void addPropertyChangeListener(IPropertyChangeListener listener) {
         synchronized (this) {
             if (listeners == null) {
                 listeners = new ListenerList(ListenerList.IDENTITY);
@@ -1016,7 +1033,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         }
 
     }
-    public void removePropertyChangeListener(IPropertyChangeListener listener) {
+    @Override
+	public void removePropertyChangeListener(IPropertyChangeListener listener) {
         if (listeners != null) {
             synchronized (this) {
                 listeners.remove(listener);
@@ -1036,9 +1054,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		for (int i = 0; i < allListeners.length; i++) {
 			final IPropertyChangeListener listener = (IPropertyChangeListener)allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
 					// Error is logged by platform
 				}
+				@Override
 				public void run() throws Exception {
 					listener.propertyChange(event);
 				}
@@ -1069,7 +1089,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
-    public String toString() {
+    @Override
+	public String toString() {
         ISynchronizeModelElement element = getModelRoot();
         String name = getClass().getName();
         int index = name.lastIndexOf("."); //$NON-NLS-1$

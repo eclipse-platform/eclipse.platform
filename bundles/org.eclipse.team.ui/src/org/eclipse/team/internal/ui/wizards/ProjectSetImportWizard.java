@@ -32,11 +32,13 @@ public class ProjectSetImportWizard extends Wizard implements IImportWizard {
 		setWindowTitle(TeamUIMessages.ProjectSetImportWizard_Project_Set_1); 
 	}
 	
+	@Override
 	public void addPages() {
 		mainPage = new ImportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetImportWizard_Import_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER)); //$NON-NLS-1$ 
 		addPage(mainPage);
 	}
 
+	@Override
 	public boolean performFinish() {
 		final boolean[] result = new boolean[] {false};
 		try {
@@ -79,6 +81,7 @@ public class ProjectSetImportWizard extends Wizard implements IImportWizard {
 		return result[0];
 	}
 		
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// The code that finds "selection" is broken (it is always empty), so we
 		// must dig for the selection in the workbench.

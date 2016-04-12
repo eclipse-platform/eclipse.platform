@@ -50,6 +50,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 			configuration.addPropertyChangeListener(this);
 		}
 
+		@Override
 		public void run() {
 			if (!getSelectedProviderId().equals(descriptor.getId())) {
 				setInput(descriptor.getId(), null);
@@ -63,6 +64,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 		 */
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			if (event.getProperty().equals(SynchronizePageConfiguration.P_MODEL)) {
 				update();
@@ -178,21 +180,29 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	public ISynchronizeModelElement getModelRoot() {
 		if (modelProvider != null && modelProvider instanceof SynchronizeModelProvider) {
 			((SynchronizeModelProvider)modelProvider).waitUntilDone(new IProgressMonitor() {
+				@Override
 				public void beginTask(String name, int totalWork) {
 				}
+				@Override
 				public void done() {
 				}
+				@Override
 				public void internalWorked(double work) {
 				}
+				@Override
 				public boolean isCanceled() {
 					return false;
 				}
+				@Override
 				public void setCanceled(boolean value) {
 				}
+				@Override
 				public void setTaskName(String name) {
 				}
+				@Override
 				public void subTask(String name) {
 				}
+				@Override
 				public void worked(int work) {
 					while (Display.getCurrent().readAndDispatch()) {}
 				}
@@ -206,6 +216,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		ISynchronizeModelProviderDescriptor[] providers = getSupportedModelProviders();
@@ -234,6 +245,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#setActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		if (toggleModelProviderActions == null) return;
 		IToolBarManager toolbar = actionBars.getToolBarManager();
@@ -264,6 +276,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if(modelProvider != null) {
 			modelProvider.dispose();
@@ -275,6 +288,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	 * Returns the configuration
 	 * @return the configuration.
 	 */
+	@Override
 	public ISynchronizePageConfiguration getConfiguration() {
 		return configuration;
 	}

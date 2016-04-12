@@ -100,26 +100,30 @@ public abstract class RefreshParticipantJob extends Job {
 	private final class GotoActionWrapper extends WorkbenchAction {
         private ActionFactory.IWorkbenchAction gotoAction;
         private IStatus status;
-        public void run() {
+        @Override
+		public void run() {
             if (status != null && !status.isOK()) {
                 ErrorDialog.openError(Utils.getShell(null), null, TeamUIMessages.RefreshSubscriberJob_3, status); 
             } else if(gotoAction != null) {
         		gotoAction.run();
         	}
         }
-        public boolean isEnabled() {
+        @Override
+		public boolean isEnabled() {
         	if(gotoAction != null) {
         		return gotoAction.isEnabled();
         	}
         	return true;
         }
-        public String getText() {
+        @Override
+		public String getText() {
         	if(gotoAction != null) {
         		return gotoAction.getText();
         	}
         	return null;
         }
-        public String getToolTipText() {
+        @Override
+		public String getToolTipText() {
             if (status != null && !status.isOK()) {
                 return status.getMessage();
             }
@@ -128,7 +132,8 @@ public abstract class RefreshParticipantJob extends Job {
         	}
         	return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, RefreshParticipantJob.this.getName());
         }
-        public void dispose() {
+        @Override
+		public void dispose() {
         	super.dispose();
         	if(gotoAction != null) {
         		gotoAction.dispose();
@@ -139,6 +144,7 @@ public abstract class RefreshParticipantJob extends Job {
 			setEnabled(isEnabled());
 			setToolTipText(getToolTipText());
 			gotoAction.addPropertyChangeListener(new IPropertyChangeListener() {
+				@Override
 				public void propertyChange(PropertyChangeEvent event) {
 					if(event.getProperty().equals(IAction.ENABLED)) {
 						Boolean bool = (Boolean) event.getNewValue();
@@ -157,6 +163,7 @@ public abstract class RefreshParticipantJob extends Job {
 	 */
 	private abstract class Notification implements ISafeRunnable {
 		private IRefreshSubscriberListener listener;
+		@Override
 		public void handleException(Throwable exception) {
 			// don't log the exception....it is already being logged in Platform#run
 		}
@@ -164,6 +171,7 @@ public abstract class RefreshParticipantJob extends Job {
 			this.listener = listener;
 			SafeRunner.run(this);
 		}
+		@Override
 		public void run() throws Exception {
 			notify(listener);
 		}
@@ -187,6 +195,7 @@ public abstract class RefreshParticipantJob extends Job {
 			super(monitor);
 			this.job = job;
 		}
+		@Override
 		public boolean isCanceled() {
 			if (super.isCanceled()) {
 				return true;
@@ -232,6 +241,7 @@ public abstract class RefreshParticipantJob extends Job {
 		
 		// Handle restarting of job if it is configured as a scheduled refresh job.
 		addJobChangeListener(new JobChangeAdapter() {
+			@Override
 			public void done(IJobChangeEvent event) {
 				if(shouldReschedule()) {
 					IStatus result = event.getResult();
@@ -252,6 +262,7 @@ public abstract class RefreshParticipantJob extends Job {
 			initialize(listener);
 	}
 
+	@Override
 	public boolean belongsTo(Object family) {	
 		if (family instanceof SubscriberParticipant) {
 			return family == participant;
@@ -268,6 +279,7 @@ public abstract class RefreshParticipantJob extends Job {
 	 * This is run by the job scheduler. A list of subscribers will be refreshed, errors will not stop the job 
 	 * and it will continue to refresh the other subscribers.
 	 */
+	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		// Perform a pre-check for auto-build or manual build jobs
 		// when auto-refreshing
@@ -441,11 +453,13 @@ public abstract class RefreshParticipantJob extends Job {
 		setProperty(IProgressConstants.KEEPONE_PROPERTY, Boolean.valueOf(! isJobModal()));
 		// Listener delegate
 		IRefreshSubscriberListener autoListener = new IRefreshSubscriberListener() {
+			@Override
 			public void refreshStarted(IRefreshEvent event) {
 				if(listener != null) {
 					listener.refreshStarted(event);
 				}
 			}
+			@Override
 			public ActionFactory.IWorkbenchAction refreshDone(IRefreshEvent event) {
 				if(listener != null) {
 					boolean isModal = isJobModal();
@@ -456,6 +470,7 @@ public abstract class RefreshParticipantJob extends Job {
 						if(isModal) {
 							if(runnable != null) {
 								Job update = new UIJob("") { //$NON-NLS-1$
+									@Override
 									public IStatus runInUIThread(IProgressMonitor monitor) {
 									    runnable.run();
 										return Status.OK_STATUS;
@@ -556,6 +571,7 @@ public abstract class RefreshParticipantJob extends Job {
 		for (int i = 0; i < listenerArray.length; i++) {
 			IRefreshSubscriberListener listener = listenerArray[i];
 			Notification notification = new Notification() {
+				@Override
 				protected void notify(IRefreshSubscriberListener listener) {
 					switch (state) {
 						case STARTED:

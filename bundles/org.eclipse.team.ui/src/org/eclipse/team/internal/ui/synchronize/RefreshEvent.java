@@ -34,10 +34,12 @@ public class RefreshEvent implements IRefreshEvent {
 		this.description = description;
 	}
 	
+	@Override
 	public int getRefreshType() {
 		return type;
 	}
 	
+	@Override
 	public long getStartTime() {
 		return startTime;
 	}
@@ -46,6 +48,7 @@ public class RefreshEvent implements IRefreshEvent {
 		this.startTime = startTime;
 	}
 
+	@Override
 	public long getStopTime() {
 		return stopTime;
 	}
@@ -54,6 +57,7 @@ public class RefreshEvent implements IRefreshEvent {
 		this.stopTime = stopTime;
 	}
 
+	@Override
 	public IStatus getStatus() {
 		return status;
 	}
@@ -62,18 +66,22 @@ public class RefreshEvent implements IRefreshEvent {
 		this.status = status;
 	}
 
+	@Override
 	public ISynchronizeParticipant getParticipant() {
 		return participant;
 	}
 
+	@Override
 	public IChangeDescription getChangeDescription() {
 		return description;
 	}
 
+	@Override
 	public boolean isLink() {
 		return isLink;
 	}
 
+	@Override
 	public void setIsLink(boolean isLink) {
 		this.isLink = isLink;
 	}

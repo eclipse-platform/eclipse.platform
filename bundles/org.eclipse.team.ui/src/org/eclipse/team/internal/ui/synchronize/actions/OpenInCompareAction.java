@@ -49,6 +49,7 @@ public class OpenInCompareAction extends Action {
 		Utils.initAction(this, "action.openInCompareEditor."); //$NON-NLS-1$
 	}
 
+	@Override
 	public void run() {
 		ISelection selection = configuration.getSite().getSelectionProvider().getSelection();
 		if(selection instanceof IStructuredSelection) {
@@ -134,6 +135,7 @@ public class OpenInCompareAction extends Action {
 			final boolean[] result = new boolean[] { false };
 			try {
 				PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {

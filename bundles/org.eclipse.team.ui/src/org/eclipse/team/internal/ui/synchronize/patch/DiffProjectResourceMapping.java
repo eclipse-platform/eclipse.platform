@@ -24,20 +24,24 @@ public class DiffProjectResourceMapping extends ResourceMapping {
 		object = adaptableObject;
 	}
 
+	@Override
 	public Object getModelObject() {
 		return object;
 	}
 
+	@Override
 	public String getModelProviderId() {
 		return PatchModelProvider.ID;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
 				object.getName());
 		return new IProject[] { p };
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
 		return new ResourceTraversal[] { new ResourceTraversal(
@@ -49,6 +53,7 @@ public class DiffProjectResourceMapping extends ResourceMapping {
 		return getProjects()[0];
 	}
 
+	@Override
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping instanceof DiffProjectResourceMapping) {
 			DiffProject diffProject = (DiffProject) mapping.getModelObject();

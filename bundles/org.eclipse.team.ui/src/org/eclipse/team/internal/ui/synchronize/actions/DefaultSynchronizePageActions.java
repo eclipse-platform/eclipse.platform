@@ -35,6 +35,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		final ISynchronizePageSite site = configuration.getSite();
@@ -43,6 +44,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 			openWithActions = new OpenWithActionGroup(configuration, true);
 			refactorActions = new RefactorActionGroup(site);
 			configuration.setProperty(SynchronizePageConfiguration.P_OPEN_ACTION, new Action() {
+				@Override
 				public void run() {
 					openWithActions.openInCompareEditor();
 				}
@@ -56,7 +58,8 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
      */
-    public void fillActionBars(IActionBars actionBars) {
+    @Override
+	public void fillActionBars(IActionBars actionBars) {
         if (openWithActions != null) openWithActions.fillActionBars(actionBars);
         if (refactorActions != null) refactorActions.fillActionBars(actionBars);
         if (actionBars != null && showPreferences != null) {
@@ -68,7 +71,8 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#updateActionBars()
      */
-    public void updateActionBars() {
+    @Override
+	public void updateActionBars() {
         if (openWithActions != null) openWithActions.updateActionBars();
         if (refactorActions != null) refactorActions.updateActionBars();
     }
@@ -76,6 +80,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager manager) {
 	    
         final IContributionItem fileGroup = findGroup(manager, ISynchronizePageConfiguration.FILE_GROUP);
@@ -92,6 +97,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (refactorActions != null) refactorActions.dispose();
@@ -101,7 +107,8 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#setContext(org.eclipse.ui.actions.ActionContext)
      */
-    public void setContext(ActionContext context) {
+    @Override
+	public void setContext(ActionContext context) {
         if (openWithActions != null) openWithActions.setContext(context);
         if (refactorActions != null) refactorActions.setContext(context);
     }

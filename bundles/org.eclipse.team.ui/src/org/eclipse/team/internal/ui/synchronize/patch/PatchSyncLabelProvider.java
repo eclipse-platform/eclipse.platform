@@ -27,21 +27,25 @@ public class PatchSyncLabelProvider extends SynchronizationLabelProvider {
 		super();
 	}
 
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		delegate = new PatchWorkbenchLabelProvider();
 	}
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (delegate != null)
 			delegate.dispose();
 	}
 
+	@Override
 	protected ILabelProvider getDelegateLabelProvider() {
 		return delegate;
 	}
 
+	@Override
 	protected IDiff getDiff(Object element) {
 		if (element instanceof PatchDiffNode) {
 			IResource resource = PatchModelProvider
@@ -51,6 +55,7 @@ public class PatchSyncLabelProvider extends SynchronizationLabelProvider {
 		return super.getDiff(element);
 	}
 
+	@Override
 	protected Image getCompareImage(Image base, int kind) {
 		/*
 		 * Need to swap left and right for PatchDiffNodes as done in Apply Patch

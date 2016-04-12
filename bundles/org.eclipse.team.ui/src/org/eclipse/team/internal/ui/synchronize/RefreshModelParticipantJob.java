@@ -33,10 +33,12 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 	public class ChangeDescription implements IChangeDescription, IDiffChangeListener {
 		Map changes = new HashMap();
 		
+		@Override
 		public int getChangeCount() {
 			return changes.size();
 		}
 
+		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 			IDiff[] additions = event.getAdditions();
 			for (int i = 0; i < additions.length; i++) {
@@ -50,6 +52,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 			}
 		}
 		
+		@Override
 		public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 			// Do nothing
 		}
@@ -60,6 +63,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 		this.mappings = mappings;
 	}
 
+	@Override
 	protected void doRefresh(IChangeDescription changeListener,
 			IProgressMonitor monitor) throws CoreException {
 		ISynchronizationContext context = ((ModelSynchronizeParticipant)getParticipant()).getContext();
@@ -78,29 +82,35 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 		}
 	}
 
+	@Override
 	protected int getChangeCount() {
 		return ((ModelSynchronizeParticipant)getParticipant()).getContext().getDiffTree().size();
 	}
 
-    protected int getIncomingChangeCount() {
+    @Override
+	protected int getIncomingChangeCount() {
       IResourceDiffTree diffTree = ((ModelSynchronizeParticipant)getParticipant()).getContext().getDiffTree();
       return (int) diffTree.countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK);
     }
     
-    protected int getOutgoingChangeCount() {
+    @Override
+	protected int getOutgoingChangeCount() {
       IResourceDiffTree diffTree = ((ModelSynchronizeParticipant)getParticipant()).getContext().getDiffTree();
       return (int) diffTree.countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK);
     }
     
+	@Override
 	protected void handleProgressGroupSet(IProgressMonitor group, int ticks) {
 		this.group = group;
 		this.groupTicks = ticks;
 	}
 
+	@Override
 	protected IChangeDescription createChangeDescription() {
 		return new ChangeDescription();
 	}
 	
+	@Override
 	public boolean belongsTo(Object family) {
 		if (family instanceof RefreshModelParticipantJob) {
 			RefreshModelParticipantJob rmpj = (RefreshModelParticipantJob) family;
@@ -111,6 +121,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 		return super.belongsTo(family);
 	}
 	
+	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		if (group != null)
 			monitor = wrapMonitorWithGroup(monitor);

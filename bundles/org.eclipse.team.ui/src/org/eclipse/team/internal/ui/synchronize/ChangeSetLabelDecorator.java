@@ -36,7 +36,8 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
         }
     }
     
-    public String decorateText(String input, Object element) {
+    @Override
+	public String decorateText(String input, Object element) {
 		String text = input;
 		if (element instanceof ChangeSetDiffNode) {
 		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
@@ -47,12 +48,14 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 		return text;
 	}
 
+	@Override
 	public void dispose() {
 		if(boldFont != null) {
 			boldFont.dispose();
 		}
 	}
 
+	@Override
 	public Font decorateFont(Object element) {
 		if (element instanceof ChangeSetDiffNode) {
 		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
@@ -78,7 +81,8 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
     /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(org.eclipse.swt.graphics.Image, java.lang.Object)
      */
-    public Image decorateImage(Image image, Object element) {
+    @Override
+	public Image decorateImage(Image image, Object element) {
         return image;
     }
 	

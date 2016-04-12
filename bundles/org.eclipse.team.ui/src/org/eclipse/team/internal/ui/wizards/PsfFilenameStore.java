@@ -81,6 +81,7 @@ public class PsfFilenameStore extends PsfStore {
 		_selectedFilename = path.toOSString();
 	}
 
+	@Override
 	public String getSuggestedDefault() {
 		if (_selectedFilename != null) {
 			return _selectedFilename;
@@ -88,10 +89,12 @@ public class PsfFilenameStore extends PsfStore {
 		return getPrevious();
 	}
 
+	@Override
 	protected String getPreviousTag() {
 		return PREVIOUS;
 	}
 
+	@Override
 	protected String getListTag() {
 		return FILENAMES;
 	}

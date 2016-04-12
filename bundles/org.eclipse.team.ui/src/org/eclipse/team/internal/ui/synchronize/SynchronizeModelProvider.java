@@ -61,6 +61,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/**
 	 * Dispose of the builder
 	 */
+	@Override
 	public void dispose() {
 		resourceMap.clear();
 		super.dispose();
@@ -71,6 +72,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 * 
 	 * @return the sorter for this model provider. 
 	 */
+	@Override
 	public abstract ViewerSorter getViewerSorter();
 
 	/**
@@ -87,7 +89,8 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getModelObjects(org.eclipse.core.resources.IResource)
      */
-    protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
+    @Override
+	protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
         ISynchronizeModelElement element = getModelObject(resource);
         if (element == null) {
             return new ISynchronizeModelElement[0];
@@ -140,6 +143,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
 	 */
+	@Override
 	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
 		super.recursiveClearModelObjects(node);
 		if (node == getModelRoot()) {
@@ -159,6 +163,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#addToViewer(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
 	 */
+	@Override
 	protected void addToViewer(ISynchronizeModelElement node) {
 		associateDiffNode(node);
 		super.addToViewer(node);
@@ -167,10 +172,12 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#hasViewerState()
      */
-    protected boolean hasViewerState() {
+    @Override
+	protected boolean hasViewerState() {
         return ! resourceMap.isEmpty();
     }
 
+	@Override
 	public ISynchronizeModelElement[] getClosestExistingParents(IResource resource) {
 		ISynchronizeModelElement element = getModelObject(resource);
 		if(element == null) {
@@ -188,13 +195,15 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected final void handleChanges(ISyncInfoTreeChangeEvent event, IProgressMonitor monitor) {
+    @Override
+	protected final void handleChanges(ISyncInfoTreeChangeEvent event, IProgressMonitor monitor) {
         super.handleChanges(event, monitor);
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
+	@Override
 	protected void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
 		// Refresh the viewer for each changed resource
 		SyncInfo[] infos = event.getChangedResources();

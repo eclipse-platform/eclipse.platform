@@ -34,6 +34,7 @@ public class SynchronizeAndRefreshAction extends Action {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
+	@Override
 	public void run() {
 		ISynchronizeParticipant current = fView.getParticipant();
 		if(current != null) {

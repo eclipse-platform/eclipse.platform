@@ -45,6 +45,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		}
 	}
 
+	@Override
 	protected void initializeConfiguration(
 			final ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
@@ -54,12 +55,14 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		configuration.setMode(ISynchronizePageConfiguration.INCOMING_MODE);
 	}
 
+	@Override
 	protected ModelSynchronizeParticipantActionGroup createMergeActionGroup() {
 		return new ApplyPatchModelSynchronizeParticipantActionGroup();
 	}
 
 	public class ApplyPatchModelSynchronizeParticipantActionGroup extends
 			ModelSynchronizeParticipantActionGroup {
+		@Override
 		protected void addToContextMenu(String mergeActionId, Action action,
 				IMenuManager manager) {
 			if (mergeActionId == SynchronizationActionProvider.OVERWRITE_ACTION_ID) {
@@ -69,6 +72,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 			super.addToContextMenu(mergeActionId, action, manager);
 		}
 
+		@Override
 		public void fillActionBars(IActionBars actionBars) {
 			if (actionBars != null) {
 				IMenuManager menu = actionBars.getMenuManager();
@@ -105,6 +109,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		}
 	};
 
+	@Override
 	public ModelProvider[] getEnabledModelProviders() {
 		ModelProvider[] enabledProviders = super.getEnabledModelProviders();
 		// add Patch model provider if it's not there
@@ -124,6 +129,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		return extended;
 	}
 
+	@Override
 	public ICompareInput asCompareInput(Object object) {
 		// consult adapter first
 		ISynchronizationCompareAdapter adapter = Utils
@@ -136,6 +142,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		return null;
 	}
 	
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class) {
 			return null;

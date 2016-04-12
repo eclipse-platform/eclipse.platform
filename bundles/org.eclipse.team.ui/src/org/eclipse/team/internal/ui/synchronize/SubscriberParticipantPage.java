@@ -71,6 +71,7 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 		return participant;
 	}
 
+	@Override
 	protected AbstractViewerAdvisor createViewerAdvisor(Composite parent) {
 		return new TreeViewerAdvisor(parent, getConfiguration());
 	}
@@ -83,6 +84,7 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 	 * <code>OUTGOING_MODE_FILTER</code>, <code>CONFLICTING_MODE_FILTER</code>
 	 * or <code>BOTH_MODE_FILTER</code>)
 	 */
+	@Override
 	protected void updateMode(int mode) {
 		if(collector != null && isThreeWay()) {	
 		
@@ -125,6 +127,7 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.SyncInfoSetSynchronizePage#reset()
 	 */
+	@Override
 	public void reset() {
 		getParticipant().reset();
 	}
@@ -137,6 +140,7 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 		return collector;
 	}
 	
+	@Override
 	public void dispose() {
 		super.dispose();
 		collector.dispose();
@@ -145,6 +149,7 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#createChangesSection(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected ChangesSection createChangesSection(Composite parent) {
 		return new SyncInfoSetChangesSection(parent, this, getConfiguration());
 	}

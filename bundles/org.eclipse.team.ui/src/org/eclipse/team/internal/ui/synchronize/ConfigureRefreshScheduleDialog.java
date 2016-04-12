@@ -35,8 +35,10 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		IPageValidator validator = new IPageValidator() {
+			@Override
 			public void setComplete(String errorMessage) {
 				setPageComplete(errorMessage == null);
 				setErrorMessage(errorMessage);
@@ -49,6 +51,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
+	@Override
 	protected void okPressed() {
 		scheduleComposite.saveValues();
 		super.okPressed();
@@ -57,6 +60,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeDetailsButton()
 	 */
+	@Override
 	protected boolean includeDetailsButton() {
 		return false;
 	}
@@ -64,6 +68,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		return null;
 	}
@@ -71,10 +76,12 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
 	 */
+	@Override
 	protected void updateEnablements() {
 	}
     
-    protected String getHelpContextId() {
+    @Override
+	protected String getHelpContextId() {
         return IHelpContextIds.CONFIGURE_REFRESH_SCHEDULE_DIALOG;
     }
 }

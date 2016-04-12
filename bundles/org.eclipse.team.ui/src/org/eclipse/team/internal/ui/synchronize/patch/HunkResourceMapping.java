@@ -24,14 +24,17 @@ public class HunkResourceMapping extends ResourceMapping {
 		this.object = hunkResult;
 	}
 
+	@Override
 	public Object getModelObject() {
 		return object;
 	}
 
+	@Override
 	public String getModelProviderId() {
 		return PatchModelProvider.ID;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		DiffProject dp = (DiffProject) object.getHunk().getParent()
 				.getProject();
@@ -45,6 +48,7 @@ public class HunkResourceMapping extends ResourceMapping {
 		return getProjects()[0].getFile(path);
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
 		return new ResourceTraversal[] { new ResourceTraversal(

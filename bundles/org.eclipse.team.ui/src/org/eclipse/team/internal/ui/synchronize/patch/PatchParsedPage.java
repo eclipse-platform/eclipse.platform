@@ -29,6 +29,7 @@ public class PatchParsedPage extends WizardPage {
 		setDescription(TeamUIMessages.PatchParsedPage_description);
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());

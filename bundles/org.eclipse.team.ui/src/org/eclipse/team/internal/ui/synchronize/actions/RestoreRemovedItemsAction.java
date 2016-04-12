@@ -26,12 +26,15 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 		Utils.initAction(this, "action.restoreRemovedFromView."); //$NON-NLS-1$
 	}
 	
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(
 			ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new SynchronizeModelOperation(configuration, elements) {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				restoreRemovedItems();
 			}
+			@Override
 			protected boolean canRunAsJob() {
 				return false;
 			}
@@ -49,6 +52,7 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 		};
 	}
 	
+	@Override
 	public boolean isEnabled(){
 		return true;
 	}
@@ -56,6 +60,7 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
 	 */
+	@Override
 	protected boolean needsToSaveDirtyEditors() {
 		return false;
 	}

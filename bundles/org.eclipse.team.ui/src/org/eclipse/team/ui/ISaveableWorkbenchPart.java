@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @deprecated Clients should use a subclass of {@link CompareEditorInput}
  *      and {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}
  */
+@Deprecated
 public interface ISaveableWorkbenchPart extends ISaveablePart, IWorkbenchPart {
 	
 	/**

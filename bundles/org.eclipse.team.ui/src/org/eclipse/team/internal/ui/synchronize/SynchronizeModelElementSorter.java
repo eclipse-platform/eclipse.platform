@@ -28,6 +28,7 @@ public class SynchronizeModelElementSorter extends ResourceSorter {
 	/* (non-Javadoc)
 	 * Method declared on ViewerSorter.
 	 */
+	@Override
 	public int compare(Viewer viewer, Object o1, Object o2) {
 		IResource resource1 = getResource(o1);
 		IResource resource2 = getResource(o2);

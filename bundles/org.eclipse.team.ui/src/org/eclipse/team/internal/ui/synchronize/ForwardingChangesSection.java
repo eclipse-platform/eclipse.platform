@@ -41,6 +41,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ChangesSection#initializeChangesViewer()
 	 */
+	@Override
 	protected void initializeChangesViewer() {
 		calculateDescription();
 	}
@@ -50,6 +51,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			return;
 		if(getVisibleChangesCount() == 0) {
 			TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!getContainer().isDisposed())
 						updatePage(getEmptyChangesComposite(getContainer()));
@@ -57,6 +59,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			});
 		} else {
 			TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					updatePage(null);
 				}
@@ -118,6 +121,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 					
 					Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.ChangesSection_filterChange, new String[] { Utils.modeToString(candidateMode) }), SWT.WRAP); 
 					link.addHyperlinkListener(new HyperlinkAdapter() {
+						@Override
 						public void linkActivated(HyperlinkEvent e) {
 							getConfiguration().setMode(candidateMode);
 						}

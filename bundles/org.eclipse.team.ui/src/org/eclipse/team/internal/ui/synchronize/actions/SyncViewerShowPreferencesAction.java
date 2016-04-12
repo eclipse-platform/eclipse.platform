@@ -24,6 +24,7 @@ public class SyncViewerShowPreferencesAction extends Action {
 		Utils.initAction(this, "action.syncViewPreferences."); //$NON-NLS-1$
 	}
 
+	@Override
 	public void run() {
 	    PreferencePage[] pages = configuration.getParticipant().getPreferencePages();
         PreferencePageContainerDialog dialog = new PreferencePageContainerDialog(configuration.getSite().getShell(), pages);

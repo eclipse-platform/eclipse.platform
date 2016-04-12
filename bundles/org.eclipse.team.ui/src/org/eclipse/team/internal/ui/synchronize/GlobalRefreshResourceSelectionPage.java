@@ -46,6 +46,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 	 * returns the participants root resources.
 	 */
 	class MyContentProvider extends BaseWorkbenchContentProvider {
+		@Override
 		public Object[] getChildren(Object element) {
 			if(element instanceof List) {
 				return ((List)element).toArray(new IResource[((List)element).size()]);
@@ -60,6 +61,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 	 */
 	class MyLabelProvider extends LabelProvider {
 		private LabelProvider workbenchProvider = new WorkbenchLabelProvider();
+		@Override
 		public String getText(Object element) {
 			if(element instanceof IContainer) {
 				IContainer c = (IContainer)element;
@@ -69,6 +71,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 			}
 			return workbenchProvider.getText(element);
 		}	
+		@Override
 		public Image getImage(Object element) {
 			return workbenchProvider.getImage(element);
 		}
@@ -87,6 +90,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		setTitle(TeamUIMessages.GlobalRefreshResourceSelectionPage_3); 
 	}
 	
+	@Override
 	protected ContainerCheckedTreeViewer createViewer(Composite top) {
 		GridData data;
 		ContainerCheckedTreeViewer fViewer = new ContainerCheckedTreeViewer(top, SWT.BORDER);
@@ -98,6 +102,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		fViewer.setLabelProvider(new DecoratingLabelProvider(new MyLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
 		fViewer.addCheckStateListener(new ICheckStateListener() {
 
+			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				updateOKStatus();
 			}
@@ -107,10 +112,12 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		return fViewer;
 	}
 	
+	@Override
 	protected void checkAll() {
 		getViewer().setCheckedElements(resources.toArray());
 	}
 	
+	@Override
 	protected boolean checkWorkingSetElements() {
 		List allWorkingSetResources = new ArrayList();
 		IWorkingSet[] workingSets = getWorkingSets();

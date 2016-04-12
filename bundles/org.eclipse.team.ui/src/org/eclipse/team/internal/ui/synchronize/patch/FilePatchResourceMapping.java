@@ -26,14 +26,17 @@ public class FilePatchResourceMapping extends ResourceMapping {
 		object = fileDiffResult;
 	}
 
+	@Override
 	public Object getModelObject() {
 		return object;
 	}
 
+	@Override
 	public String getModelProviderId() {
 		return PatchModelProvider.ID;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		DiffProject dp = (DiffProject) object.getDiff().getProject();
 		IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(
@@ -41,6 +44,7 @@ public class FilePatchResourceMapping extends ResourceMapping {
 		return new IProject[] { p };
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
 		return new ResourceTraversal[] { new ResourceTraversal(

@@ -31,6 +31,7 @@ public class RefreshChangeListener implements ISubscriberChangeListener, IChange
 		this.resources = resources;
 		this.collector = collector;
 	}
+	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 		for (int i = 0; i < deltas.length; i++) {
 			ISubscriberChangeEvent delta = deltas[i];
@@ -65,6 +66,7 @@ public class RefreshChangeListener implements ISubscriberChangeListener, IChange
 	private boolean isThreeWay() {
 		return collector.getSubscriber().getResourceComparator().isThreeWay();
 	}
+	@Override
 	public int getChangeCount() {
 		return getChanges().length;
 	}

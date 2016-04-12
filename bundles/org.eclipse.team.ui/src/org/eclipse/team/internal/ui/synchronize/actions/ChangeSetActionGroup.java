@@ -62,6 +62,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
 		 */
+		@Override
 		protected boolean needsToSaveDirtyEditors() {
 			return false;
 		}
@@ -69,18 +70,22 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
          */
-        protected FastSyncInfoFilter getSyncInfoFilter() {
+        @Override
+		protected FastSyncInfoFilter getSyncInfoFilter() {
             return OUTGOING_RESOURCE_FILTER;
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
          */
-        protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
+        @Override
+		protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
             return new SynchronizeModelOperation(configuration, elements) {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                @Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     syncExec(new Runnable() {
-                        public void run() {
+                        @Override
+						public void run() {
 		                    ActiveChangeSet set = createChangeSet(getDiffs(getSyncInfoSet().getResources()));
 		                    if (set != null) {
 		                        getActiveChangeSetManager().add(set);
@@ -101,7 +106,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         /* (non-Javadoc)
          * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
          */
-        protected boolean updateSelection(IStructuredSelection selection) {
+        @Override
+		protected boolean updateSelection(IStructuredSelection selection) {
             return getSelectedSet() != null;
         }
 
@@ -126,7 +132,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
             super(TeamUIMessages.ChangeLogModelProvider_6, configuration); 
         }
         
-        public void run() {
+        @Override
+		public void run() {
             ActiveChangeSet set = getSelectedSet();
             if (set == null) return;
     		editChangeSet(set);
@@ -139,7 +146,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
             super(TeamUIMessages.ChangeLogModelProvider_7, configuration);
         }
         
-        public void run() {
+        @Override
+		public void run() {
             ActiveChangeSet set = getSelectedSet();
             if (set == null) return;
             if (MessageDialog.openConfirm(getConfiguration().getSite().getShell(), TeamUIMessages.ChangeSetActionGroup_0, NLS.bind(TeamUIMessages.ChangeSetActionGroup_1, new String[] { LegacyActionTools.escapeMnemonics(set.getTitle()) }))) { // 
@@ -155,6 +163,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			super(TeamUIMessages.ChangeLogModelProvider_9, configuration);
 		}
 
+		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (getSelectedSet() != null) {
 				setText(TeamUIMessages.ChangeLogModelProvider_9);
@@ -167,6 +176,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			return true;
 		}
 
+		@Override
 		public void run() {
 			getActiveChangeSetManager().makeDefault(
 					isChecked() ? getSelectedSet() : null);
@@ -190,10 +200,12 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
          */
-        protected FastSyncInfoFilter getSyncInfoFilter() {
+        @Override
+		protected FastSyncInfoFilter getSyncInfoFilter() {
             return OUTGOING_RESOURCE_FILTER;
         }
         
+		@Override
 		protected boolean needsToSaveDirtyEditors() {
 			return false;
 		}
@@ -201,9 +213,11 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
          */
-        protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
+        @Override
+		protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
             return new SynchronizeModelOperation(configuration, elements) {
-                public void run(IProgressMonitor monitor)
+                @Override
+				public void run(IProgressMonitor monitor)
                         throws InvocationTargetException, InterruptedException {
                 	IResource[] resources = getSyncInfoSet().getResources();
                     if (set != null) {
@@ -232,6 +246,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			update();		
 		}
 
+		@Override
 		public void run() {
 			if (isChecked() && sortCriteria != criteria) {
 			    sortCriteria = criteria;
@@ -302,6 +317,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         this.provider = provider;
     }
     
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		
@@ -317,7 +333,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			addToChangeSet = new MenuManager(TeamUIMessages.ChangeLogModelProvider_12); 
 			addToChangeSet.setRemoveAllWhenShown(true);
 			addToChangeSet.addMenuListener(new IMenuListener() {
-	            public void menuAboutToShow(IMenuManager manager) {
+	            @Override
+				public void menuAboutToShow(IMenuManager manager) {
 	                addChangeSets(manager);
 	            }
 	        });
@@ -338,7 +355,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
      */
-    public void fillContextMenu(IMenuManager menu) {
+    @Override
+	public void fillContextMenu(IMenuManager menu) {
         if (getChangeSetCapability().enableCheckedInChangeSetsFor(getConfiguration())) {
             appendToGroup(menu, ISynchronizePageConfiguration.SORT_GROUP, sortByComment);
         }
@@ -369,7 +387,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         ChangeSet[] sets = getActiveChangeSetManager().getSets();
         Arrays.sort(sets, new Comparator() {
         	private Collator collator = Collator.getInstance();
-        	public int compare(Object o1, Object o2) {
+        	@Override
+			public int compare(Object o1, Object o2) {
         		return collator.compare(((ChangeSet) o1).getName(), ((ChangeSet) o2).getName());
         	}
         });
@@ -398,6 +417,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 	    if (addToChangeSet != null) {
 			addToChangeSet.dispose();
@@ -414,7 +434,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	}
 	
 	
-    public void updateActionBars() {
+    @Override
+	public void updateActionBars() {
         if (editChangeSet != null)
 	        editChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
         if (removeChangeSet != null)
@@ -428,6 +449,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		final Control ctrl = getConfiguration().getPage().getViewer().getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 					    runnable.run();

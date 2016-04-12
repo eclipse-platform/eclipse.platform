@@ -39,6 +39,7 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#run()
 	 */
+	@Override
 	public void run() {
 		if (confirmRemove()) {
 			super.run();
@@ -48,12 +49,15 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
 	 */
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new SynchronizeModelOperation(configuration, elements) {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				SyncInfoSet set = getSyncInfoSet();
 				removeFromView(set);
 			}
+			@Override
 			protected boolean canRunAsJob() {
 				return false;
 			}
@@ -66,6 +70,7 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 				if (page instanceof SubscriberParticipantPage) {
 					final WorkingSetFilteredSyncInfoCollector collector = ((SubscriberParticipantPage)page).getCollector();
 					collector.run(new IWorkspaceRunnable() {
+						@Override
 						public void run(IProgressMonitor monitor) throws CoreException {
 							collector.getWorkingSetSyncInfoSet().removeAll(set.getResources());
 						}
@@ -78,6 +83,7 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
 	 */
+	@Override
 	protected boolean needsToSaveDirtyEditors() {
 		return false;
 	}

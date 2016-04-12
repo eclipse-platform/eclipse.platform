@@ -49,10 +49,12 @@ public class PinParticipantAction extends Action implements IPropertyChangeListe
 		setChecked(participant != null && participant.isPinned());
 	}
 
+	@Override
 	public void run() {
 		if (participant != null) {
 			try {
 				PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
+					@Override
 					public void run(IProgressMonitor monitor)
 							throws InvocationTargetException, InterruptedException {
 						participant.setPinned(!participant.isPinned());
@@ -70,6 +72,7 @@ public class PinParticipantAction extends Action implements IPropertyChangeListe
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getSource() == participant) {
 			updateState();

@@ -50,6 +50,7 @@ public class NavigateAction extends Action {
 	 * Two types of navigation is supported: navigation that is specific to coordinating between a view
 	 * and a compare editor and navigation simply using the configured navigator.
  	 */
+	@Override
 	public void run() {
 		ICompareNavigator nav = (ICompareNavigator)configuration.getProperty(SynchronizePageConfiguration.P_NAVIGATOR);
 		nav.selectChange(next);

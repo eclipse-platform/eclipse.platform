@@ -64,13 +64,15 @@ public class RefactorActionGroup extends ActionGroup {
 		parentMenu.appendToGroup(groupId, renameAction);
 	}
 
- 	public void fillActionBars(IActionBars actionBars) {
+ 	@Override
+	public void fillActionBars(IActionBars actionBars) {
     	actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
     	actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
     	actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), renameAction);
     	actionBars.setGlobalActionHandler(ActionFactory.MOVE.getId(), moveAction);
     }
 
+	@Override
 	public void updateActionBars() {
 		copyAction.selectionChanged(getObjectSelection());
 		deleteAction.selectionChanged(getObjectSelection());
@@ -91,10 +93,12 @@ public class RefactorActionGroup extends ActionGroup {
 				.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));
 
 		deleteAction = new DeleteResourceAction(shell) {
+			@Override
 			protected List getSelectedResources() {
 				return getSelection().toList();// Arrays.asList(Utils.getResources(getSelection().toArray()));
 			}
 
+			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
 				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
@@ -110,6 +114,7 @@ public class RefactorActionGroup extends ActionGroup {
 				.getImageDescriptor(ISharedImages.IMG_TOOL_DELETE_DISABLED));
 
 		moveAction = new MoveResourceAction(shell) {
+			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
 				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
@@ -120,6 +125,7 @@ public class RefactorActionGroup extends ActionGroup {
 		moveAction.setActionDefinitionId(IWorkbenchCommandConstants.FILE_MOVE);
 
 		renameAction = new RenameResourceAction(shell) {
+			@Override
 			protected boolean updateSelection(IStructuredSelection selection) {
 				// TODO Auto-generated method stub
 				return super.updateSelection(selection)
@@ -176,6 +182,7 @@ public class RefactorActionGroup extends ActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		copyAction.dispose();

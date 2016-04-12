@@ -49,6 +49,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		setDescription(TeamUIMessages.ExportProjectSetMainPage_description);
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 1);
 		initializeDialogUnits(composite);
@@ -75,6 +76,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		fileRadio = new Button(composite, SWT.RADIO);
 		fileRadio.setText(TeamUIMessages.ExportProjectSetMainPage_FileButton);
 		fileRadio.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				saveToFileSystem = true;
 				file = fileCombo.getText();
@@ -95,6 +97,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		fileCombo.setItems(PsfFilenameStore.getInstance().getHistory());
 		fileCombo.setText(file);
 		fileCombo.addListener(SWT.Modify, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				file = fileCombo.getText();
 				updateEnablement();
@@ -109,6 +112,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
 		browseButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				if (!isSaveToFileSystem())
 					saveToFileSystem = true;
@@ -138,6 +142,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		workspaceRadio = new Button(composite, SWT.RADIO);
 		workspaceRadio.setText(TeamUIMessages.ExportProjectSetMainPage_WorkspaceButton);
 		workspaceRadio.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				saveToFileSystem = false;
 				updateEnablement();
@@ -155,6 +160,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		workspaceText = createTextField(nameGroup);
 		workspaceText.setEditable(false);
 		workspaceText.addListener(SWT.Modify, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				file = workspaceFile.getLocation().toString();
 				updateEnablement();
@@ -168,6 +174,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		wsBrowseButton.setLayoutData(gd);
 		wsBrowseButton.setText(TeamUIMessages.ExportProjectSetMainPage_Browse);
 		wsBrowseButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				if (isSaveToFileSystem())
 					saveToFileSystem = false;
@@ -213,6 +220,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		setPageComplete(complete);
 	}
 	
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
@@ -252,6 +260,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			super(shell);
 		}
 
+		@Override
 		protected Control createContents(Composite parent) {
 			Control control = super.createContents(parent);
 			setTitle(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogTitle);
@@ -260,6 +269,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			return control;
 		}
 
+		@Override
 		protected Control createDialogArea(Composite parent) {
 			Composite composite = (Composite) super.createDialogArea(parent);
 
@@ -300,11 +310,13 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			return parent;
 		}
 		
+		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
 			super.createButtonsForButtonBar(parent);
 			okButton = getButton(IDialogConstants.OK_ID);
 		}
 
+		@Override
 		protected void okPressed() {
 			//Make sure that a container has been selected
 			if (wsContainer == null) {
@@ -331,12 +343,14 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			}
 		}
 
+		@Override
 		protected void cancelPressed() {
 			//this.page.validatePage();
 			getSelectedContainer();
 			super.cancelPressed();
 		}
 
+		@Override
 		public boolean close() {
 			/*     if (dlgTitleImage != null)
 			 dlgTitleImage.dispose();*/
@@ -345,6 +359,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 		void setupListeners() {
 			wsTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					IStructuredSelection s = (IStructuredSelection) event.getSelection();
 					Object obj = s.getFirstElement();
@@ -362,6 +377,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			});
 
 			wsTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
+				@Override
 				public void doubleClick(DoubleClickEvent event) {
 					ISelection s = event.getSelection();
 					if (s instanceof IStructuredSelection) {
@@ -375,6 +391,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			});
 
 			wsFilenameText.addModifyListener(new ModifyListener() {
+				@Override
 				public void modifyText(ModifyEvent e) {
 					String patchName = wsFilenameText.getText();
 					if (patchName.trim().equals("")) { //$NON-NLS-1$
@@ -398,6 +415,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		//Never show closed projects
 		boolean showClosedProjects = false;
 
+		@Override
 		public Object[] getChildren(Object element) {
 			if (element instanceof IWorkspace) {
 				// check if closed projects should be shown

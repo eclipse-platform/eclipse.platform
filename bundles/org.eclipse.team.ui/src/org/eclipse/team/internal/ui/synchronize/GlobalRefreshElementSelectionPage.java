@@ -67,6 +67,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent2) {
 		Composite top = new Composite(parent2, SWT.NULL);
 		top.setLayout(new GridLayout());
@@ -99,6 +100,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		selectAll.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_12); 
 		selectAll.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				participantScope.setSelection(true);
 				selectedResourcesScope.setSelection(false);
@@ -115,6 +117,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		deSelectAll.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_13); 
 		deSelectAll.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				fViewer.setCheckedElements(new Object[0]);
 				updateOKStatus();
@@ -137,6 +140,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		participantScope.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_7); 
 		participantScope.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateParticipantScope();
 			}
@@ -146,6 +150,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		selectedResourcesScope.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_8); 
 		selectedResourcesScope.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateSelectedResourcesScope();
 			}
@@ -158,6 +163,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		workingSetScope.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_10); 
 		workingSetScope.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (isWorkingSetSelected()) {
 					updateWorkingSetScope();
@@ -174,6 +180,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		selectWorkingSetButton.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_11); 
 		selectWorkingSetButton.addSelectionListener(new SelectionAdapter() {
 
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectWorkingSetAction();
 			}
@@ -270,6 +277,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if(workingSets != null && isWorkingSetSelected()) {
 			String concatsWorkingSets = makeWorkingSetLabel();

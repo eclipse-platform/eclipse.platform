@@ -33,12 +33,15 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 
 	public static class FlatModelProviderDescriptor implements ISynchronizeModelProviderDescriptor {
 		public static final String ID = TeamUIPlugin.ID + ".modelprovider_flat"; //$NON-NLS-1$
+		@Override
 		public String getId() {
 			return ID;
 		}		
+		@Override
 		public String getName() {
 			return TeamUIMessages.FlatModelProvider_0; 
 		}		
+		@Override
 		public ImageDescriptor getImageDescriptor() {
 			return TeamImages.getImageDescriptor(ITeamUIImages.IMG_FLAT);
 		}
@@ -57,6 +60,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		public FullPathSyncInfoElement(IDiffContainer parent, SyncInfo info) {
 			super(parent, info);
 		}
+		@Override
 		public String getName() {
 			IResource resource = getResource();
 			return resource.getName() + " - " + resource.getFullPath().toString(); //$NON-NLS-1$
@@ -98,6 +102,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		/* (non-Javadoc)
 		 * Method declared on ViewerSorter.
 		 */
+		@Override
 		public int compare(Viewer viewer, Object o1, Object o2) {
 
 			if (o1 instanceof FullPathSyncInfoElement && o2 instanceof FullPathSyncInfoElement) {
@@ -134,6 +139,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			update();	
 		}
 
+		@Override
 		public void run() {
 			if (isChecked() && sortCriteria != criteria) {
 			    sortCriteria = criteria;
@@ -161,6 +167,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	 */
 	public class FlatActionGroup extends SynchronizePageActionGroup {
 		private MenuManager sortByResource;
+		@Override
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			sortByResource = new MenuManager(TeamUIMessages.FlatModelProvider_6);	 
@@ -181,6 +188,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
         /* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 		 */
+		@Override
 		public void dispose() {
 			sortByResource.dispose();
 			sortByResource.removeAll();
@@ -221,21 +229,24 @@ public class FlatModelProvider extends SynchronizeModelProvider {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#createActionGroup()
      */
-    protected SynchronizePageActionGroup createActionGroup() {
+    @Override
+	protected SynchronizePageActionGroup createActionGroup() {
         return new FlatActionGroup();
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getViewerSorter()
      */
-    public ViewerSorter getViewerSorter() {
+    @Override
+	public ViewerSorter getViewerSorter() {
 		return new FlatSorter(sortCriteria);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#buildModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
-    protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
+    @Override
+	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
         if (node == getModelRoot());
         SyncInfo[] infos = getSyncInfoSet().getSyncInfos();
         List result = new ArrayList();
@@ -249,14 +260,16 @@ public class FlatModelProvider extends SynchronizeModelProvider {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceAdditions(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
+    @Override
+	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
         addResources(event.getAddedResources());
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceRemovals(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
      */
-    protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
+    @Override
+	protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
         IResource[] resources = event.getRemovedResources();
         removeFromViewer(resources);
     }
@@ -264,10 +277,12 @@ public class FlatModelProvider extends SynchronizeModelProvider {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getDescriptor()
      */
-    public ISynchronizeModelProviderDescriptor getDescriptor() {
+    @Override
+	public ISynchronizeModelProviderDescriptor getDescriptor() {
         return flatDescriptor;
     }
 
+	@Override
 	protected void addResource(SyncInfo info) {
 		// Add the node to the root
         ISynchronizeModelElement node = getModelObject(info.getLocal());
@@ -279,6 +294,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		createModelObject(getModelRoot(), info);
 	}
 	
+	@Override
 	protected ISynchronizeModelElement createModelObject(ISynchronizeModelElement parent, SyncInfo info) {
 	    SynchronizeModelElement newNode = new FullPathSyncInfoElement(parent, info);
 		addToViewer(newNode);

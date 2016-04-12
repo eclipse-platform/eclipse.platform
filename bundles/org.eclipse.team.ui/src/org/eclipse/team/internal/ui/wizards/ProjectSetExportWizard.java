@@ -40,6 +40,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 		setWindowTitle(TeamUIMessages.ProjectSetExportWizard_Project_Set_1); 
 	}
 	
+	@Override
 	public void addPages() {
 		mainPage = new ExportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetExportWizard_Export_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER)); //$NON-NLS-1$ 
 		IProject[] projects = (IProject[])selection.toList().toArray(new IProject[0]);
@@ -49,10 +50,12 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 		addPage(locationPage);
 	}
 	
+	@Override
 	public boolean performFinish() {
 		final boolean[] result = new boolean[] {false};
 		try {
 			getContainer().run(false, false, new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					String filename = locationPage.getFileName();
 					Path path = new Path(filename);
@@ -98,6 +101,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							Set list = (Set)map.get(id);
 							if (list == null) {
 								list = new TreeSet(new Comparator() {
+									@Override
 									public int compare(Object o1, Object o2) {
 										return ((IProject) o1).getName().toLowerCase().compareTo(((IProject) o2).getName().toLowerCase());
 									}
@@ -217,6 +221,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 		return result[0];
 	}
 
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}

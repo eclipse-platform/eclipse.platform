@@ -32,6 +32,7 @@ public class RegexDiffComparator extends RangeDifferenceComparator {
 		this.pattern = pattern;
 	}
 
+	@Override
 	protected boolean compareRangeDifferences(RangeDifference[] ranges,
 			IDocument lDoc, IDocument rDoc) {
 		try {

@@ -51,9 +51,11 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		}
 	}
 
+	@Override
 	public void run() {
 		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					if (removeAll) {
 						removeAll();
@@ -76,6 +78,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 			if (participant.isPinned() || !dirtyModels.isEmpty()) {
 				final boolean[] keepGoing = new boolean[] { false };
 				Display.getDefault().syncExec(new Runnable() {
+					@Override
 					public void run() {
 						if (!dirtyModels.isEmpty()) {
 							keepGoing[0] = promptToSave(dirtyModels);
@@ -116,6 +119,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		if (!dirtyModels.isEmpty()) {
 			final boolean[] keepGoing = new boolean[] { false };
 			Display.getDefault().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!dirtyModels.isEmpty()) {
 						keepGoing[0] = promptToSave(dirtyModels);
@@ -176,6 +180,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		// Create save block.
 	    final List finalModels = dirtyModels;
 		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) {
 				monitor.beginTask(null, finalModels.size());
 				for (Iterator i = finalModels.iterator(); i.hasNext();) {

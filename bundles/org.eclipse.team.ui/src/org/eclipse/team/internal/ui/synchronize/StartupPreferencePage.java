@@ -34,6 +34,7 @@ public class StartupPreferencePage extends FieldEditorPreferencePage implements
 		setPreferenceStore(store);
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 		// Nothing to do
 	}
@@ -41,12 +42,14 @@ public class StartupPreferencePage extends FieldEditorPreferencePage implements
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
         // set F1 help
         PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_STARTUP_PREFERENCE_PAGE);
 	}
 
+	@Override
 	protected void createFieldEditors() {
 	    addField(new RadioGroupFieldEditor(PROP_STARTUP_ACTION, 
 	            TeamUIMessages.StartupPreferencePage_2, 1,  

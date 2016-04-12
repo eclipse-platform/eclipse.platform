@@ -38,6 +38,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 		 */
+		@Override
 		public String getName() {
 			IResource resource = getResource();
 			return resource.getProjectRelativePath().toString();
@@ -46,6 +47,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#getImageDescriptor(java.lang.Object)
 		 */
+		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER);
 		}
@@ -63,6 +65,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 		 */
+		@Override
 		public String getName() {
 			IResource resource = getResource();
 			return resource.getProjectRelativePath().toString();
@@ -71,6 +74,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#getImageDescriptor(java.lang.Object)
 		 */
+		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER);
 		}
@@ -78,12 +82,15 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	
 	public static class CompressedFolderModelProviderDescriptor implements ISynchronizeModelProviderDescriptor {
 		public static final String ID = TeamUIPlugin.ID + ".modelprovider_compressedfolders"; //$NON-NLS-1$
+		@Override
 		public String getId() {
 			return ID;
 		}		
+		@Override
 		public String getName() {
 			return TeamUIMessages.CompressedFoldersModelProvider_0; 
 		}		
+		@Override
 		public ImageDescriptor getImageDescriptor() {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER);
 		}
@@ -104,6 +111,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.HierarchicalModelProvider#getDescriptor()
 	 */
+	@Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
 		return compressedDescriptor;
 	}
@@ -111,8 +119,10 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SyncInfoDiffNodeRoot#getSorter()
 	 */
+	@Override
 	public ViewerSorter getViewerSorter() {
 		return new SynchronizeModelElementSorter() {
+			@Override
 			protected int compareNames(IResource resource1, IResource resource2) {
 				if (resource1.getType() == IResource.FOLDER && resource2.getType() == IResource.FOLDER) {
 					return collator.compare(resource1.getProjectRelativePath().toString(), resource2.getProjectRelativePath().toString());
@@ -125,6 +135,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.viewers.HierarchicalModelProvider#createModelObjects(org.eclipse.compare.structuremergeviewer.DiffNode)
 	 */	
+	@Override
 	protected IDiffElement[] createModelObjects(ISynchronizeModelElement container) {
 		IResource resource = null;
 		if (container == getModelRoot()) {
@@ -190,6 +201,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.viewers.HierarchicalModelProvider#createModelObject(org.eclipse.compare.structuremergeviewer.DiffNode, org.eclipse.core.resources.IResource)
 	 */
+	@Override
 	protected ISynchronizeModelElement createModelObject(ISynchronizeModelElement parent, IResource resource) {
 		if (resource.getType() == IResource.FOLDER) {
 			SyncInfo info = getSyncInfoTree().getSyncInfo(resource);
@@ -211,6 +223,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	 * Subclasses may override.
 	 * @param event
 	 */
+	@Override
 	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
 		SyncInfo[] infos = event.getAddedResources();
 		for (int i = 0; i < infos.length; i++) {
@@ -219,6 +232,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		}
 	}
 	
+	@Override
 	protected void addResource(SyncInfo info) {
 		IResource local = info.getLocal();
 		ISynchronizeModelElement existingNode = getModelObject(local);
@@ -256,6 +270,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetContentProvider#handleResourceRemovals(org.eclipse.team.internal.ui.sync.views.SyncSetChangedEvent)
 	 */
+	@Override
 	protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
 		IResource[] roots = event.getRemovedSubtreeRoots();
 		
@@ -298,7 +313,8 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		}
 	}
 
-    protected int getLogicalModelDepth(IResource resource) {
+    @Override
+	protected int getLogicalModelDepth(IResource resource) {
 		if(resource.getType() == IResource.PROJECT) {
 			return IResource.DEPTH_INFINITE;
 		} else {

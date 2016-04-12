@@ -17,6 +17,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class PatchWorkbenchAdapter implements IWorkbenchAdapter {
 
+	@Override
 	public Object[] getChildren(Object o) {
 		if (o instanceof DiffNode) {
 			return ((DiffNode) o).getChildren();
@@ -24,6 +25,7 @@ public class PatchWorkbenchAdapter implements IWorkbenchAdapter {
 		return null;
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		if (object instanceof DiffNode) {
 			Image image = ((DiffNode) object).getImage();
@@ -32,6 +34,7 @@ public class PatchWorkbenchAdapter implements IWorkbenchAdapter {
 		return null;
 	}
 
+	@Override
 	public String getLabel(Object o) {
 		if (o instanceof DiffNode) {
 			return ((DiffNode) o).getName();
@@ -39,6 +42,7 @@ public class PatchWorkbenchAdapter implements IWorkbenchAdapter {
 		return null;
 	}
 
+	@Override
 	public Object getParent(Object o) {
 		if (o instanceof DiffNode) {
 			return ((DiffNode) o).getParent();

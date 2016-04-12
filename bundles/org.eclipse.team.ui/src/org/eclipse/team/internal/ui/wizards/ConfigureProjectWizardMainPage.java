@@ -92,12 +92,14 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	/*
 	 * @see WizardPage#canFlipToNextPage
 	 */
+	@Override
 	public boolean canFlipToNextPage() {		
 		return selectedWizard != null && selectedWizard.getPageCount() > 0;
 	}
 	/*
 	 * @see WizardPage#createControl
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
@@ -122,6 +124,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				// Initialize the wizard so we can tell whether to enable the Next button
 				ISelection selection = event.getSelection();
@@ -152,11 +155,13 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			}
 		});
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				getWizard().getContainer().showPage(getNextPage());
 			}
 		});
 		viewer.setComparator(new ViewerComparator() {
+			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				if (e1 instanceof ConfigurationWizardElement && e2 instanceof ConfigurationWizardElement) {
 					ConfigurationWizardElement wizard1 = (ConfigurationWizardElement) e1;
@@ -171,6 +176,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			showAllToggle = new Button(composite, SWT.CHECK);
 			showAllToggle.setText(TeamUIMessages.ConfigureProjectWizard_showAll); 
 			showAllToggle.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					ArrayList all = new ArrayList(Arrays.asList(wizards.getChildren()));
 					if(showAllToggle.getSelection()) {
@@ -210,6 +216,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	 * 
 	 * @see WizardPage#getNextPage
 	 */
+	@Override
 	public IWizardPage getNextPage() {
 		if (selectedWizard == null) return null;
 		if(! WorkbenchActivityHelper.allowUseOf(getTriggerPoint(), ((IStructuredSelection)viewer.getSelection()).getFirstElement())) return null;
@@ -226,6 +233,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		this.projects = projects;
 	}
 	
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {

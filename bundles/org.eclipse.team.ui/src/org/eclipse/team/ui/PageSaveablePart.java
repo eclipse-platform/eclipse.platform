@@ -50,6 +50,7 @@ import org.eclipse.ui.progress.IProgressService;
  * @deprecated Clients should use a subclass of {@link CompareEditorInput}
  *      and {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}
  */
+@Deprecated
 public abstract class PageSaveablePart extends SaveablePartAdapter implements IContentChangeListener{
 	
 	private CompareConfiguration cc;
@@ -79,6 +80,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		this.cc = compareConfiguration;
 		
 		fDirtyStateListener= new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				String propertyName= e.getProperty();
 				if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
@@ -95,6 +97,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#isDirty()
 	 */
+	@Override
 	public boolean isDirty() {
 		return fDirty || fDirtyViewers.size() > 0;
 	}
@@ -102,6 +105,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -121,6 +125,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		Splitter hsplitter = new Splitter(vsplitter, SWT.HORIZONTAL);
 		fEditionPane = new CompareViewerPane(hsplitter, SWT.BORDER | SWT.FLAT);
 		fStructuredComparePane = new CompareViewerSwitchingPane(hsplitter, SWT.BORDER | SWT.FLAT, true) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				if (input instanceof ICompareInput)
 					return findStructureViewer(this, oldViewer, (ICompareInput)input);
@@ -128,12 +133,14 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			}
 		};
 		fStructuredComparePane.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent e) {
 				feedInput2(e.getSelection());
 			}
 		});
 		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0); 
 		fContentPane = new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				if (!(input instanceof ICompareInput))
 					return null;
@@ -145,6 +152,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 					Control c= newViewer.getControl();
 					c.addDisposeListener(
 						new DisposeListener() {
+							@Override
 							public void widgetDisposed(DisposeEvent e) {
 								dsp.removePropertyChangeListener(fDirtyStateListener);
 							}
@@ -168,6 +176,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		}
 		
 		getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ICompareInput input = getCompareInput(event.getSelection());
 				if (input != null)
@@ -268,6 +277,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		try {
 			// TODO: we need a better progress story here (i.e. support for cancellation) bug 127075
 			manager.busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			        prepareInput(input, getCompareConfiguration(), monitor);
 			        hookContentChangeListener(input);
@@ -408,6 +418,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param monitor
 	 *            a progress monitor
 	 */
+	@Override
 	public void doSave(IProgressMonitor monitor) {
 		flushViewers(monitor);
 	}

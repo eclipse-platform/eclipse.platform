@@ -40,6 +40,7 @@ public class ImageManager {
 			if (v != null) {
 				// It is best to dispose the images when the view is disposed (see bug 198383)
 				v.getControl().addDisposeListener(new DisposeListener() {
+					@Override
 					public void widgetDisposed(DisposeEvent e) {
 						newRegistry.dispose();
 					}
@@ -47,6 +48,7 @@ public class ImageManager {
 			} else {
 				// The viewer wasn't available so we'll dispose when the context is disposed
 				context.getCache().addCacheListener(new ICacheListener() {
+					@Override
 					public void cacheDisposed(ICache cache) {
 						newRegistry.dispose();
 					}

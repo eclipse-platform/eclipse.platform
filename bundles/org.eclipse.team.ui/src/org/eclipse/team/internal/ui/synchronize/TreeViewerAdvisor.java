@@ -70,10 +70,12 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 			setUseHashlookup(true);
 		}
 
+		@Override
 		public void createChildren(TreeItem item) {	
 			super.createChildren(item);
 		}
 
+		@Override
 		public void openSelection() {
 			fireOpen(new OpenEvent(this, getSelection()));
 		}
@@ -89,10 +91,12 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 			setUseHashlookup(true);
 		}
 
+		@Override
 		public void createChildren(TreeItem item) {	
 			super.createChildren(item);
 		}
 
+		@Override
 		public void openSelection() {
 			fireOpen(new OpenEvent(this, getSelection()));
 		}
@@ -138,6 +142,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		initializeViewer(viewer);		
 	}
 	
+	@Override
 	public void setInitialInput() {
 		// The input will be set later
 	}
@@ -171,6 +176,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.viewers.StructuredViewerAdvisor#initializeViewer(org.eclipse.jface.viewers.StructuredViewer)
 	 */
+	@Override
 	public boolean validateViewer(StructuredViewer viewer) {
 		return viewer instanceof AbstractTreeViewer;
 	}
@@ -178,9 +184,11 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.viewers.StructuredViewerAdvisor#initializeListeners(org.eclipse.jface.viewers.StructuredViewer)
 	 */
+	@Override
 	protected void initializeListeners(final StructuredViewer viewer) {
 		super.initializeListeners(viewer);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateStatusLine((IStructuredSelection) event.getSelection());
 			}
@@ -224,6 +232,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		final ISynchronizeModelElement modelRoot = modelProvider.getModelRoot();
 		getActionGroup().modelChanged(modelRoot);
 		modelRoot.addCompareInputChangeListener(new ICompareInputChangeListener() {
+			@Override
 			public void compareInputChanged(ICompareInput source) {
 				getActionGroup().modelChanged(modelRoot);
 			}
@@ -233,11 +242,13 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 			viewer.setSorter(modelProvider.getViewerSorter());
 			viewer.setInput(modelRoot);
 			modelProvider.addPropertyChangeListener(new IPropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent event) {
+                @Override
+				public void propertyChange(PropertyChangeEvent event) {
                     if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
                         if (viewer != null && !viewer.getControl().isDisposed()) {
                             viewer.getControl().getDisplay().syncExec(new Runnable() {
-                                public void run() {
+                                @Override
+								public void run() {
         	                        if (viewer != null && !viewer.getControl().isDisposed()) {
         	                            ViewerSorter newSorter = modelProvider.getViewerSorter();
                                         ViewerSorter oldSorter = viewer.getSorter();
@@ -262,18 +273,21 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	 * can be shown to the user. 
 	 * @param viewer the viewer being installed
 	 */
+	@Override
 	public final void initializeViewer(final StructuredViewer viewer) {
 		super.initializeViewer(viewer);
 		
 		final DragSourceListener listener = new DragSourceListener() {
 
-            public void dragStart(DragSourceEvent event) {
+            @Override
+			public void dragStart(DragSourceEvent event) {
 				final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object [] array= selection.toArray();
                 event.doit= Utils.getResources(array).length > 0;
 			}
 
-            public void dragSetData(DragSourceEvent event) {
+            @Override
+			public void dragSetData(DragSourceEvent event) {
                 
                 if (ResourceTransfer.getInstance().isSupportedType(event.dataType)) {
                     final IStructuredSelection selection= (IStructuredSelection)viewer.getSelection();
@@ -282,7 +296,8 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
                 }
             }
 
-            public void dragFinished(DragSourceEvent event) {}
+            @Override
+			public void dragFinished(DragSourceEvent event) {}
 		};
 		
 		final int ops = DND.DROP_COPY | DND.DROP_LINK;
@@ -322,6 +337,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (statusLine != null) {
 			statusLine.dispose();
@@ -332,6 +348,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#initializeStatusLine(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	protected void initializeStatusLine(IActionBars actionBars) {
 		statusLine = new SyncInfoSetStatusLineContributionGroup(
 				getConfiguration().getSite().getShell(), 

@@ -87,6 +87,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 	/*
 	 * @see IDialogPage#createControl(Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 1);
 		initializeDialogUnits(composite);
@@ -107,6 +108,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 				.setText(TeamUIMessages.ImportProjectSetMainPage_Project_Set_File);
 		fileInputButton.setEnabled(true);
 		fileInputButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setInputType(InputType_file);
 			}
@@ -117,6 +119,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		fileCombo.setItems(psfFilenameStore.getHistory());
 		fileCombo.setText(file);
 		fileCombo.addListener(SWT.Modify, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				file = fileCombo.getText();				
 				updateFileEnablement();
@@ -130,6 +133,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		urlInputButton
 				.setText(TeamUIMessages.ImportProjectSetMainPage_Project_Set_Url);
 		urlInputButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setInputType(InputType_URL);
 			}
@@ -142,6 +146,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		gd.horizontalSpan = 2;
 		urlCombo.setLayoutData(gd);
 		urlCombo.addListener(SWT.Modify, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				urlString = urlCombo.getText();
 				updateUrlEnablement();
@@ -154,6 +159,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
 		browseButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				FileDialog d = new FileDialog(getShell());
 				d.setFilterExtensions(new String[] {"*.psf", "*"}); //$NON-NLS-1$ //$NON-NLS-2$
@@ -182,6 +188,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		
 		runInBackgroundCheckbox.setSelection(isRunInBackgroundPreferenceOn());
 		runInBackgroundCheckbox.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				runInBackground = !runInBackground;
 			}
@@ -301,6 +308,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		return urlString;
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {

@@ -66,6 +66,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.BufferedContent#setContent(byte[])
 	 */
+	@Override
 	public void setContent(byte[] contents) {
 		fDirty = true;
 		super.setContent(contents);
@@ -114,6 +115,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ResourceNode#getContents()
 	 */
+	@Override
 	public InputStream getContents() throws CoreException {
 		if (exists)
 			return super.getContents();
@@ -123,6 +125,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
 			if (isSharedDocumentsEnable())
@@ -140,26 +143,31 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	private synchronized ISharedDocumentAdapter getSharedDocumentAdapter() {
 		if (sharedDocumentAdapter == null)
 			sharedDocumentAdapter = new EditableSharedDocumentAdapter(new EditableSharedDocumentAdapter.ISharedDocumentAdapterListener() {
+				@Override
 				public void handleDocumentConnected() {
 					LocalResourceTypedElement.this.updateTimestamp();
 					if (sharedDocumentListener != null)
 						sharedDocumentListener.handleDocumentConnected();
 				}
+				@Override
 				public void handleDocumentFlushed() {
 					LocalResourceTypedElement.this.fireContentChanged();
 					if (sharedDocumentListener != null)
 						sharedDocumentListener.handleDocumentFlushed();
 				}
+				@Override
 				public void handleDocumentDeleted() {
 					LocalResourceTypedElement.this.update();
 					if (sharedDocumentListener != null)
 						sharedDocumentListener.handleDocumentDeleted();
 				}
+				@Override
 				public void handleDocumentSaved() {
 					LocalResourceTypedElement.this.updateTimestamp();
 					if (sharedDocumentListener != null)
 						sharedDocumentListener.handleDocumentSaved();
 				}
+				@Override
 				public void handleDocumentDisconnected() {
 					if (sharedDocumentListener != null)
 						sharedDocumentListener.handleDocumentDisconnected();
@@ -171,6 +179,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ResourceNode#isEditable()
 	 */
+	@Override
 	public boolean isEditable() {
 		// Do not allow non-existent files to be edited
 		IResource resource = getResource();
@@ -211,6 +220,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ResourceNode#createStream()
 	 */
+	@Override
 	protected InputStream createStream() throws CoreException {
 		InputStream inputStream = super.createStream();
 		updateTimestamp();
@@ -238,6 +248,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ResourceNode#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return getResource().hashCode();
 	}
@@ -247,6 +258,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * <code>LocalResourceTypedElement</code> and their corresponding resources
 	 * are identical. The content is not considered.
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -294,6 +306,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.BufferedContent#fireContentChanged()
 	 */
+	@Override
 	protected void fireContentChanged() {
 		super.fireContentChanged();
 	}
@@ -306,6 +319,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 	 * buffer will remain.
 	 * #see {@link #isDirty()}
 	 */
+	@Override
 	public void discardBuffer() {
 		if (sharedDocumentAdapter != null)
 			sharedDocumentAdapter.releaseBuffer();

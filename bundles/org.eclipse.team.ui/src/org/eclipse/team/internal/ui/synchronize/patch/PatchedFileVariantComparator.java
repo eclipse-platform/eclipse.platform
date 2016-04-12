@@ -17,6 +17,7 @@ import org.eclipse.team.internal.core.mapping.LocalResourceVariant;
 
 public class PatchedFileVariantComparator implements IResourceVariantComparator {
 
+	@Override
 	public boolean compare(IResource local, IResourceVariant remote) {
 		if (remote instanceof LocalResourceVariant)
 			// return true when matching with base
@@ -24,10 +25,12 @@ public class PatchedFileVariantComparator implements IResourceVariantComparator 
 		return false;
 	}
 
+	@Override
 	public boolean compare(IResourceVariant base, IResourceVariant remote) {
 		return false;
 	}
 
+	@Override
 	public boolean isThreeWay() {
 		return true;
 	}

@@ -33,6 +33,7 @@ public class ConfigureMultipleProjectsWizard extends Wizard {
 	}
 
 	
+	@Override
 	public void addPages() {
 		projectSelectionPage = new ProjectSelectionPage(projects, element);
 		addPage(projectSelectionPage);
@@ -41,6 +42,7 @@ public class ConfigureMultipleProjectsWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		// Prompt if there are still unshared projects
 		if (projectSelectionPage.hasUnsharedProjects()) {

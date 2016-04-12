@@ -63,8 +63,10 @@ public class SubscriberRefreshSchedule {
 	private static final String CTX_REFRESHSCHEDULE_RUNONCE = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_RUNONCE"; //$NON-NLS-1$
 		
 	private IRefreshSubscriberListener refreshSubscriberListener = new IRefreshSubscriberListener() {
+		@Override
 		public void refreshStarted(IRefreshEvent event) {
 		}
+		@Override
 		public ActionFactory.IWorkbenchAction refreshDone(final IRefreshEvent event) {
 			if (getRefreshable(event.getParticipant()) == refreshable) {
 				lastRefreshEvent = event;

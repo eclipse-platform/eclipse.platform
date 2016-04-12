@@ -41,6 +41,7 @@ public class StatusLineCLabelContribution extends ContributionItem {
 		setVisible(false); // no text to start with
 	}
 	
+	@Override
 	public void fill(Composite parent) {	
 		Label sep = new Label(parent, SWT.SEPARATOR);
 		label = new CLabel(parent, SWT.SHADOW_NONE);

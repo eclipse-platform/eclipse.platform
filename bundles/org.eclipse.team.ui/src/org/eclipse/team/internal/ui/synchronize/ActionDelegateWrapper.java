@@ -60,6 +60,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	protected void initialize(final ISynchronizePageConfiguration configuration) {
 		configuration.getSite().getSelectionProvider().addSelectionChangedListener(this);
 		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				configuration.getSite().getSelectionProvider().removeSelectionChangedListener(ActionDelegateWrapper.this);
 			}
@@ -69,6 +70,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		getDelegate().selectionChanged(this, event.getSelection());
 	}
@@ -76,6 +78,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
+	@Override
 	public void run() {
 		getDelegate().run(this);
 	}

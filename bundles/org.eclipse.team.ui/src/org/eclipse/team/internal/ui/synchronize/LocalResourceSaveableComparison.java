@@ -82,6 +82,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		if (te instanceof IContentChangeNotifier) {
 			if (contentChangeListener == null) {
 				contentChangeListener = new IContentChangeListener() {
+					@Override
 					public void contentChanged(IContentChangeNotifier source) {
 						try {
 							if(! isSaving) {
@@ -121,6 +122,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#performSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void performSave(IProgressMonitor monitor) throws CoreException {
 		if (checkForUpdateConflicts()) {
 			return;
@@ -210,6 +212,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#isDirty()
 	 */
+	@Override
 	public boolean isDirty() {
 		// We need to get the dirty state from the compare editor input
 		// since it is our only connection to the merge viewer
@@ -222,6 +225,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#setDirty(boolean)
 	 */
+	@Override
 	protected void setDirty(boolean dirty) {
 		if (editorInput instanceof SaveablesCompareEditorInput) {
 			((SaveablesCompareEditorInput) editorInput).setDirty(dirty,
@@ -236,6 +240,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#performRevert(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void performRevert(IProgressMonitor monitor) {
 		// Only the left is ever editable
 		ITypedElement left = getFileElement();
@@ -246,6 +251,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.Saveable#getName()
 	 */
+	@Override
 	public String getName() {
 		// Return the name of the file element as held in the compare input
 		if (input.getLeft() != null && input.getLeft().equals(fileElement)) {
@@ -262,6 +268,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.Saveable#getToolTipText()
 	 */
+	@Override
 	public String getToolTipText() {
 		return editorInput.getToolTipText();
 	}
@@ -269,6 +276,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.Saveable#getImageDescriptor()
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		Image image = input.getImage();
 		if (image != null)
@@ -279,6 +287,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		String propertyName= e.getProperty();
 		if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
@@ -315,6 +324,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/*
 	 * @see org.eclipse.ui.Saveable#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		if (document != null) {
 			return document.hashCode();
@@ -325,6 +335,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	/*
 	 * @see org.eclipse.ui.Saveable#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -348,6 +359,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return false;
 	}
 	
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IDocument.class) {
 			if (document != null)
@@ -392,6 +404,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return false;
 	}
 
+	@Override
 	public boolean isSaving() {
 		return isSaving;
 	}

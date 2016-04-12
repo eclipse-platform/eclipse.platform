@@ -33,6 +33,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public void initialize(final ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		final SubscriberParticipant participant = (SubscriberParticipant)configuration.getParticipant();
@@ -41,6 +42,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 		if(participant.doesSupportSynchronize()) {
 
 			refreshSelectionAction = new Action() {
+				@Override
 				public void run() {
 					IStructuredSelection selection = (IStructuredSelection)site.getSelectionProvider().getSelection();
 					IResource[] resources = Utils.getResources(selection.toArray());
@@ -56,6 +58,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 			refreshSelectionAction.setId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
 		
 			configureSchedule = new Action() {
+				@Override
 				public void run() {
 					ConfigureRefreshScheduleDialog d = new ConfigureRefreshScheduleDialog(
 							site.getShell(), participant.getRefreshSchedule());
@@ -74,6 +77,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager manager) {
 		if (findGroup(manager, ISynchronizePageConfiguration.SYNCHRONIZE_GROUP) != null
 			&& findGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP) != null) {
@@ -89,6 +93,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#setActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if(actionBars != null) {

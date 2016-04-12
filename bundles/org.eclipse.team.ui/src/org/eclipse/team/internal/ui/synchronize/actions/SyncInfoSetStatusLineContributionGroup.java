@@ -27,6 +27,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 		set.addSyncSetChangedListener(this);
 	}
 	
+	@Override
 	public void dispose() {
 		getSyncInfoSet().removeSyncSetChangedListener(this);
 		super.dispose();
@@ -36,6 +37,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 	 * 
 	 * @see org.eclipse.team.internal.ui.sync.sets.ISyncSetChangedListener#syncSetChanged(org.eclipse.team.internal.ui.sync.sets.SyncSetChangedEvent)
 	 */
+	@Override
 	public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 		updateCounts();
 	}
@@ -43,6 +45,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.subscribers.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 		updateCounts();
 	}
@@ -50,6 +53,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.ISyncInfoSetChangeListener#syncInfoSetError(org.eclipse.team.core.subscribers.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		// Nothing to do for errors
 	}
@@ -58,10 +62,12 @@ public class SyncInfoSetStatusLineContributionGroup extends
 		return (SyncInfoSet)getConfiguration().getProperty(SynchronizePageConfiguration.P_WORKING_SET_SYNC_INFO_SET);
 	}
 
+	@Override
 	protected int getChangeCount() {
 		return getSyncInfoSet().size();
 	}
 
+	@Override
 	protected int countFor(int state) {
 		return (int)getSyncInfoSet().countFor(state, SyncInfo.DIRECTION_MASK);
 	}

@@ -37,11 +37,13 @@ public class ApplyPatchSubscriberMergeContext extends SubscriberMergeContext {
 		return mergeContext;
 	}
 
+	@Override
 	protected void makeInSync(IDiff diff, IProgressMonitor monitor)
 			throws CoreException {
 		markAsMerged(diff, true, monitor);
 	}
 
+	@Override
 	public void markAsMerged(IDiff node, boolean inSyncHint,
 			IProgressMonitor monitor) throws CoreException {
 		IResource resource = getDiffTree().getResource(node);
@@ -69,6 +71,7 @@ public class ApplyPatchSubscriberMergeContext extends SubscriberMergeContext {
 		// see ApplyPatchSubscriber.ApplyPatchSyncInfo.calculateKind()
 	}
 
+	@Override
 	protected IStatus performThreeWayMerge(IThreeWayDiff diff,
 			IProgressMonitor monitor) throws CoreException {
 		IStatus status = super.performThreeWayMerge(diff, monitor);
@@ -94,6 +97,7 @@ public class ApplyPatchSubscriberMergeContext extends SubscriberMergeContext {
 		return status;
 	}
 
+	@Override
 	public void reject(IDiff diff, IProgressMonitor monitor)
 			throws CoreException {
 		// do nothing

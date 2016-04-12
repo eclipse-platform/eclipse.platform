@@ -24,6 +24,7 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 		this.viewer = viewer;
 		viewer.addSelectionChangedListener(this);
 	}
+	@Override
 	public void run() {
 		expandAllFromSelection();
 	}
@@ -48,6 +49,7 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		ISelection selection = event.getSelection();
 		if (selection instanceof IStructuredSelection) {

@@ -23,6 +23,7 @@ public class WorkbenchAction extends Action implements IWorkbenchAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionFactory.IWorkbenchAction#dispose()
 	 */
+	@Override
 	public void dispose() {
 	}
 }

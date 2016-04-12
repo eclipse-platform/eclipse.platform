@@ -49,21 +49,24 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
         /* (non-Javadoc)
          * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
          */
-        public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
+        @Override
+		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
             handleChangeEvent(set);
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
          */
-        public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
+        @Override
+		public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
             handleChangeEvent(event.getSet());
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
          */
-        public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
+        @Override
+		public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
             // TODO Auto-generated method stub
         }
         
@@ -247,12 +250,14 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
         // Do nothing, by default
     }
     
-    protected void handleSetAdded(ChangeSet set) {
+    @Override
+	protected void handleSetAdded(ChangeSet set) {
     	((CheckedInChangeSet)set).getSyncInfoSet().addSyncSetChangedListener(getChangeSetChangeListener());
     	super.handleSetAdded(set);
     }
     
-    protected void handleSetRemoved(ChangeSet set) {
+    @Override
+	protected void handleSetRemoved(ChangeSet set) {
     	((CheckedInChangeSet)set).getSyncInfoSet().removeSyncSetChangedListener(getChangeSetChangeListener());
     	super.handleSetRemoved(set);
     }

@@ -32,7 +32,8 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.ISynchronizeModelElement#getResource()
      */
-    public IResource getResource() {
+    @Override
+	public IResource getResource() {
         return null;
     }
 
@@ -43,6 +44,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_CHANGE_SET);
 	}
@@ -50,6 +52,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 	 */
+	@Override
 	public String getName() {
 		return set.getName();
 	}
@@ -57,6 +60,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#toString()
 	 */
+	@Override
 	public String toString() {
 		return getName();
 	}
@@ -64,14 +68,16 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#hashCode()
      */
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return set.hashCode();
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#equals(java.lang.Object)
      */
-    public boolean equals(Object object) {
+    @Override
+	public boolean equals(Object object) {
         if (object instanceof ChangeSetDiffNode) {
             return((ChangeSetDiffNode)object).getSet() == set;
         }
@@ -81,7 +87,8 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#getAdapter(java.lang.Class)
      */
-    public Object getAdapter(Class adapter) {
+    @Override
+	public Object getAdapter(Class adapter) {
         if (adapter.equals(ChangeSet.class)) {
             return set;
         }

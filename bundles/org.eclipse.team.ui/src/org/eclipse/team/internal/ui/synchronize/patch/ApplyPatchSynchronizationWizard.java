@@ -43,6 +43,7 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		setNeedsProgressMonitor(true);
 	}
 
+	@Override
 	public boolean performFinish() {
 		if (fPatchInaccessibleProjectsPage != null) {
 			IProject[] projects = fPatchInaccessibleProjectsPage
@@ -81,15 +82,18 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		return true;
 	}
 
+	@Override
 	public void init(IWorkbench workbench, IProject project) {
 		// nothing to do here
 	}
 
+	@Override
 	public void addPages() {
 		if (getPatch() == null)
 			addPage(fPatchWizardPage = new InputPatchPage(this));
 		if (getPatch() == null || !getPatcher().isWorkspacePatch())
 			addPage(fPatchTargetPage = new PatchTargetPage(getPatcher()) {
+				@Override
 				public IWizardPage getNextPage() {
 					IWizardPage nextPage = super.getNextPage();
 					if (!isTargetingInaccessibleProjects() && nextPage != this)
@@ -123,6 +127,7 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		return false;
 	}
 
+	@Override
 	public boolean canFinish() {
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage.getName().equals(
@@ -136,6 +141,7 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 		return super.canFinish();
 	}
 
+	@Override
 	public WorkspacePatcher getPatcher() {
 		// make the patcher available to other classes in the package
 		return super.getPatcher();
@@ -144,6 +150,7 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 	private void openSelectedProjects(final IProject projects[]) {
 		Job openProjectsJob = new Job(
 				TeamUIMessages.PatchInaccessibleProjectsPage_openingProjects) {
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				monitor.beginTask(
 						TeamUIMessages.PatchInaccessibleProjectsPage_openingProjects,

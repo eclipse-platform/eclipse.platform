@@ -59,6 +59,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 	private StatusLineCLabelContribution createStatusLineContribution(String id, final int mode, String label, Image image) {
 		StatusLineCLabelContribution item = new StatusLineCLabelContribution(id, 15);
 		item.addListener(SWT.MouseDown, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				configuration.setMode(mode);
 			}
@@ -68,6 +69,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 		return item;
 	}
 
+	@Override
 	public void dispose() {
 		if (isThreeWay()) {
 			incomingImage.dispose();
@@ -85,6 +87,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 		final int workspaceIncoming = ((supportedModes & ISynchronizePageConfiguration.INCOMING_MODE) != 0) ? countFor(SyncInfo.INCOMING) : 0; 
 
 		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (isThreeWay()) {
 					conflicting.setText(new Integer(workspaceConflicting).toString()); 
@@ -114,6 +117,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 	 * 
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		IStatusLineManager mgr = actionBars.getStatusLineManager();
 		if (isThreeWay()) {

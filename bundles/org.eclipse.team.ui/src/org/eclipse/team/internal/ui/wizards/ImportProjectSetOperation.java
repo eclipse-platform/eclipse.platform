@@ -91,6 +91,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	 * 
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void run(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException{
 		if (psfFileContents != null) {
@@ -105,6 +106,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	 * 
 	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
 	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
@@ -114,6 +116,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	 * 
 	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
 	 */
+	@Override
 	protected String getJobName() {
 		return TeamUIMessages.ImportProjectSetMainPage_jobName;
 	}

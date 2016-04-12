@@ -22,6 +22,7 @@ public class AdapterFactory implements IAdapterFactory {
 	private IWorkbenchAdapter modelAdapter = new PatchWorkbenchAdapter();
 	private ISynchronizationCompareAdapter compareAdapter;
 
+	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adapterType == ResourceMapping.class) {
 			if (adaptableObject instanceof PatchProjectDiffNode) {
@@ -55,6 +56,7 @@ public class AdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { ResourceMapping.class, IWorkbenchAdapter.class,
 				IResource.class };

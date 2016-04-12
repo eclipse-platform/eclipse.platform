@@ -113,9 +113,11 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		enableBackgroundRefresh.setLayoutData(gridData);
 		enableBackgroundRefresh.setText(TeamUIMessages.ConfigureRefreshScheduleDialog_3); 
 		enableBackgroundRefresh.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateEnablements();
 			}
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
@@ -129,9 +131,11 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 				
 		repeatEvery = createIndentedButton(area, TeamUIMessages.ConfigureRefreshScheduleDialog_4, 20);
 		repeatEvery.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateEnablements();
 			}
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
@@ -141,11 +145,13 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		gridData.widthHint = 35;
 		timeInterval.setLayoutData(gridData);
 		timeInterval.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				updateEnablements();
 			}
 		});
 		timeInterval.addVerifyListener(new VerifyListener() {
+			@Override
 			public void verifyText(VerifyEvent e) {
 				String string = e.text;
 				char[] chars = new char[string.length()];

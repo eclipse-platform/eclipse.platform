@@ -29,6 +29,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
     private ISynchronizeParticipantReference fPage;
 	private ISynchronizeView fView;
 	
+	@Override
 	public void run() {
 		try {
 			if (!fPage.equals(fView.getParticipant())) {
@@ -59,6 +60,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
         }
 	}
     
+	@Override
 	public void propertyChange( PropertyChangeEvent event) {
       String property = event.getProperty();
       if( AbstractSynchronizeParticipant.P_PINNED.equals( property) ||
@@ -84,6 +86,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 			}
 		}
 
+		@Override
 		protected void drawCompositeImage(int width, int height) {
 			drawImage(this.imageData, 0, 0);
 			if (this.participant.isPinned()) {
@@ -103,6 +106,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
             }
 		}
 
+		@Override
 		protected Point getSize() {
 			return new Point(this.imageData.width, this.imageData.height);
 		}

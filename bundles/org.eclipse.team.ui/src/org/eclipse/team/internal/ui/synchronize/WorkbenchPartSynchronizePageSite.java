@@ -34,6 +34,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPart()
 	 */
+	@Override
 	public IWorkbenchPart getPart() {
 		return part;
 	}
@@ -41,6 +42,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getShell()
 	 */
+	@Override
 	public Shell getShell() {
 		return part.getSite().getShell();
 	}
@@ -48,6 +50,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getSelectionProvider()
 	 */
+	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
@@ -55,6 +58,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setSelectionProvider(org.eclipse.jface.viewers.ISelectionProvider)
 	 */
+	@Override
 	public void setSelectionProvider(ISelectionProvider provider) {
 		site.setSelectionProvider(provider);
 	}
@@ -62,6 +66,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getWorkbenchSite()
 	 */
+	@Override
 	public IWorkbenchSite getWorkbenchSite() {
 		return part.getSite();
 	}
@@ -69,6 +74,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getKeyBindingService()
 	 */
+	@Override
 	public IKeyBindingService getKeyBindingService() {
 		return part.getSite().getKeyBindingService();
 	}
@@ -76,6 +82,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		part.getSite().getPage().activate(part);
 	}
@@ -83,6 +90,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPageSettings()
 	 */
+	@Override
 	public IDialogSettings getPageSettings() {
 		return settings;
 	}
@@ -90,6 +98,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getActionBars()
 	 */
+	@Override
 	public IActionBars getActionBars() {
 		return site.getActionBars();
 	}
@@ -97,6 +106,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#isModal()
 	 */
+	@Override
 	public boolean isModal() {
 		return false;
 	}

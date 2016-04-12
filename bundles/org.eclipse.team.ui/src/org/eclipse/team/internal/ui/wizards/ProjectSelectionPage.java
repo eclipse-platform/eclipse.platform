@@ -51,6 +51,7 @@ public class ProjectSelectionPage extends WizardPage {
 		this.element = element;
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = SWTUtils.createHVFillComposite(parent, SWTUtils.MARGINS_DIALOG, 2);
 		createProjectList(composite);
@@ -69,6 +70,7 @@ public class ProjectSelectionPage extends WizardPage {
 		projectViewer.setInput(projectList);
 		projectViewer.getTable().select(0);
 		projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				updateEnablements();
 			}
@@ -83,9 +85,11 @@ public class ProjectSelectionPage extends WizardPage {
 		shareButton.setLayoutData(gridData);
 		shareButton.setText(TeamUIMessages.ProjectSelectionPage_2);
 		shareButton.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				shareSelectedProject();
 			}
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// Ignore
 			}

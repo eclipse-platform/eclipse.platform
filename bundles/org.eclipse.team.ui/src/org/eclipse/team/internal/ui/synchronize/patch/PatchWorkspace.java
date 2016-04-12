@@ -41,14 +41,17 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 
+	@Override
 	public String getName() {
 		return "Patch Root Workspace"; //$NON-NLS-1$
 	}
 
+	@Override
 	public IDiffContainer getParent() {
 		return null;
 	}
 
+	@Override
 	public IDiffElement[] getChildren() {
 		/*
 		 * Create a complete tree of patch model objects - elements of the
@@ -107,6 +110,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 	
 	private static ITypedElement getLeftElement(final FileDiffResult result) {
 		return new LocalResourceTypedElement(((WorkspaceFileDiffResult)result).getTargetFile()) {
+			@Override
 			public String getName() {
 				// as in org.eclipse.compare.internal.patch.PatchFileTypedElement
 				return result.getTargetPath().toString();
@@ -116,6 +120,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 
 	private static ITypedElement getLeftElement(final HunkResult result) {
 		return new LocalResourceTypedElement(((WorkspaceFileDiffResult)result.getDiffResult()).getTargetFile()) {
+			@Override
 			public String getName() {
 				// as in org.eclipse.compare.internal.patch.HunkTypedElement
 				return result.getHunk().getLabel();
@@ -125,6 +130,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 
 	// cannot extend PlatformObject (already extends DiffNode) so implement
 	// IAdaptable
+	@Override
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}

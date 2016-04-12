@@ -53,6 +53,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	class RefreshParticipantAction extends Action {
 		private ISynchronizeParticipantReference participant;
 
+		@Override
 		public void run() {
 			TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT, participant.getId());
 			TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, participant.getSecondaryId());
@@ -74,6 +75,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if(menuManager != null) {
 			menuManager.dispose();
@@ -98,6 +100,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
 	 */
+	@Override
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
@@ -106,6 +109,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
 	 */
+	@Override
 	public Menu getMenu(Control parent) {
 		Menu fMenu = null;
 		if (menuManager == null) {
@@ -131,10 +135,12 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
 
 		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) { 
+			@Override
 			public void run() {
 				IWizard wizard = new GlobalSynchronizeWizard();
 				WizardDialog dialog = new WizardDialog(GlobalRefreshAction.this.window.getShell(), wizard);
@@ -148,6 +154,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		if (hs != null) {
 			// hook up actions to the commands
 			IHandler handler = new AbstractHandler() {
+				@Override
 				public Object execute(ExecutionEvent event)
 						throws ExecutionException {
 					synchronizeAction.run();
@@ -157,6 +164,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			syncAll = hs.activateHandler("org.eclipse.team.ui.synchronizeAll", handler); //$NON-NLS-1$
 					
 			handler = new AbstractHandler() {
+				@Override
 				public Object execute(ExecutionEvent event)
 						throws ExecutionException {
 					run();
@@ -169,6 +177,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		TeamUI.getSynchronizeManager().addSynchronizeParticipantListener(this);
 	}
 
+	@Override
 	public void run() {
 		String id = TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT);
 		String secondaryId = TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID);
@@ -184,6 +193,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		run();
 		actionProxy = action;
@@ -205,9 +215,11 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsAdded(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public void participantsAdded(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		display.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if(menuManager != null) {
 					menuManager.dispose();
@@ -221,9 +233,11 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsRemoved(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public void participantsRemoved(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		display.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if(menuManager != null) {
 					menuManager.dispose();
@@ -239,6 +253,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
 	 *           org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		actionProxy = action;
 	}

@@ -86,6 +86,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	/*
 	 * Method declared on IAdaptable.
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IWorkbenchAdapter.class) {
 			return this;
@@ -106,6 +107,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	 * @param element  the element to get the image for
 	 * @return the image for the given element
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor(Object element) {
 		return imageDescriptor;
 	}
@@ -115,6 +117,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	 * @param element  the element to get the label for
 	 * @return the label for the given element
 	 */
+	@Override
 	public String getLabel(Object element) {
 		return name;
 	}
@@ -170,6 +173,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPluginContribution#getLocalId()
 	 */
+	@Override
 	public String getLocalId() {
 		return configurationElement.getAttribute(ConfigureProjectWizard.ATT_ID);
 	}
@@ -177,6 +181,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPluginContribution#getPluginId()
 	 */
+	@Override
 	public String getPluginId() {
 		return configurationElement.getNamespaceIdentifier();
 	}

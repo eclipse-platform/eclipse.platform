@@ -55,28 +55,34 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
      */
     private IChangeSetChangeListener activeChangeSetListener = new IChangeSetChangeListener() {
 
-        public void setAdded(final ChangeSet set) {
+        @Override
+		public void setAdded(final ChangeSet set) {
             // Remove any resources that are in the new set
             provider.performUpdate(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) {
+                @Override
+				public void run(IProgressMonitor monitor) {
 		            remove(set.getResources());
 		            createSyncInfoSet(set);
                 }
             }, true, true);
         }
         
-        public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
+        @Override
+		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
             provider.performUpdate(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) {
+                @Override
+				public void run(IProgressMonitor monitor) {
                     if (listener != null)
                         listener.defaultSetChanged(previousDefault, set);
                 }
             }, true, true);
         }
         
-        public void setRemoved(final ChangeSet set) {
+        @Override
+		public void setRemoved(final ChangeSet set) {
             provider.performUpdate(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) {
+                @Override
+				public void run(IProgressMonitor monitor) {
                     remove(set);
                     if (!set.isEmpty()) {
                         add(getSyncInfos(set).getSyncInfos());
@@ -85,16 +91,19 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
             }, true, true);
         }
 
-        public void nameChanged(final ChangeSet set) {
+        @Override
+		public void nameChanged(final ChangeSet set) {
             provider.performUpdate(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) {
+                @Override
+				public void run(IProgressMonitor monitor) {
                     if (listener != null)
                         listener.nameChanged(set);
                 }
             }, true, true);
         }
 
-        public void resourcesChanged(final ChangeSet set, final IPath[] paths) {
+        @Override
+		public void resourcesChanged(final ChangeSet set, final IPath[] paths) {
             // Look for any resources that were removed from the set but are still out-of sync.
             // Re-add those resources
             final List outOfSync = new ArrayList();
@@ -109,7 +118,8 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
             }
             if (!outOfSync.isEmpty()) {
                 provider.performUpdate(new IWorkspaceRunnable() {
-                    public void run(IProgressMonitor monitor) {
+                    @Override
+					public void run(IProgressMonitor monitor) {
                         add((SyncInfo[]) outOfSync.toArray(new SyncInfo[outOfSync.size()]));
                     }
                 }, true, true);
@@ -452,9 +462,11 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
         }
     }
 	
+	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
         provider.performUpdate(new IWorkspaceRunnable() {
-            public void run(IProgressMonitor monitor) {
+            @Override
+			public void run(IProgressMonitor monitor) {
                 ChangeSet changeSet = getChangeSet(event.getTree());
                 if (changeSet != null) {
 	                SyncInfoSet targetSet = getSyncInfoSet(changeSet);
@@ -470,6 +482,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
         }, true /* preserver expansion */, true /* run in UI thread */);
 	}
 
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}

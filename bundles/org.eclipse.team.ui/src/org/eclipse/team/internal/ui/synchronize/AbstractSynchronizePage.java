@@ -50,12 +50,14 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 */
 	class ModeFilterActions extends SynchronizePageActionGroup {
 		private DirectionFilterActionGroup modes;
+		@Override
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			if (isThreeWay()) {
 				modes = new DirectionFilterActionGroup(configuration);
 			}
 		}
+		@Override
 		public void fillActionBars(IActionBars actionBars) {
 			super.fillActionBars(actionBars);
 			if (modes == null) return;
@@ -95,6 +97,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		composite = new Composite(parent, SWT.NONE); 
 		//sc.setContent(composite);
@@ -141,6 +144,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#setActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void setActionBars(IActionBars actionBars) {
 		// Delegate menu creation to the advisor
 		viewerAdvisor.setActionBars(actionBars);		
@@ -149,6 +153,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#getControl()
 	 */
+	@Override
 	public Control getControl() {
 		return composite;
 	}
@@ -156,6 +161,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 		changesSection.setFocus();
 	}
@@ -163,6 +169,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#init(org.eclipse.team.ui.synchronize.ISynchronizePageSite)
 	 */
+	@Override
 	public void init(ISynchronizePageSite site) {
 		this.site = site;
 		IDialogSettings settings = getSettings();
@@ -184,6 +191,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.Page#dispose()
 	 */
+	@Override
 	public void dispose() {
 		changesSection.dispose();
 		composite.dispose();
@@ -193,6 +201,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#getViewer()
 	 */
+	@Override
 	public Viewer getViewer() {
 		return changesViewer;
 	}
@@ -200,6 +209,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#aboutToChangeProperty(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public boolean aboutToChangeProperty(
 			ISynchronizePageConfiguration configuration, String key,
 			Object newValue) {
@@ -224,11 +234,13 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class key) {
 		if (key.equals(ISelectionProvider.class))
 			return changesViewer;
 		if (key == IShowInSource.class) {
 			return new IShowInSource() {
+				@Override
 				public ShowInContext getShowInContext() {					
 					StructuredViewer v = (StructuredViewer)changesViewer;
 					if (v == null) return null;
@@ -243,6 +255,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		}
 		if (key == IShowInTargetList.class) {
 			return new IShowInTargetList() {
+				@Override
 				public String[] getShowInTargetIds() {
 					return new String[] { IPageLayout.ID_RES_NAV };
 				}

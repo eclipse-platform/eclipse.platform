@@ -103,6 +103,7 @@ public class ChangesSection extends Composite {
 	/* (non-Javadoc)
 	 * @see org.eclipse.swt.widgets.Widget#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		forms.dispose();
@@ -115,6 +116,7 @@ public class ChangesSection extends Composite {
 
 	protected void initializeChangesViewer() {
 		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				Control control = ChangesSection.this.getChangesViewer().getControl();
 				if (!getContainer().isDisposed() && !control.isDisposed()) {

@@ -104,6 +104,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffElement#getKind()
 	 */
+	@Override
 	public int getKind() {
 		SyncInfo info = getSyncInfo();
 		if (info != null) {
@@ -118,6 +119,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	 * setter. See:
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=52261
 	 */
+	@Override
 	public void setAncestor(ITypedElement ancestor) {
 		this.ancestor = ancestor;
 	}
@@ -125,6 +127,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getAncestor()
 	 */
+	@Override
 	public ITypedElement getAncestor() {
 		return this.ancestor;
 	}
@@ -132,6 +135,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 	 */
+	@Override
 	public String getName() {
 		IResource resource = getResource();
 		if(resource != null) {
@@ -144,6 +148,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if(adapter == SyncInfo.class) {
 			return getSyncInfo();
@@ -157,6 +162,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	 * @return the resource associated with this node or <code>null</code> if the local
 	 * contributor is not a resource.
 	 */
+	@Override
 	public IResource getResource() {
 		return info.getLocal();
 	}
@@ -164,6 +170,7 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return getResource().getFullPath().toString();
 	}

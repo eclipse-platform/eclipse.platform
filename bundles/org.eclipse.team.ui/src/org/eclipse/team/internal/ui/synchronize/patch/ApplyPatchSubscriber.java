@@ -36,6 +36,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 			super(local, base, remote, comparator);
 		}
 
+		@Override
 		protected int calculateKind() throws TeamException {
 			// TODO: this works only for files, see bug 300214
 			if (!getPatcher().isEnabled(PatchModelProvider.getPatchObject(getLocal(), patcher)))
@@ -79,14 +80,17 @@ public class ApplyPatchSubscriber extends Subscriber {
 		getPatcher().refresh();
 	}
 
+	@Override
 	public String getName() {
 		return "Apply Patch Subscriber"; //$NON-NLS-1$
 	}
 
+	@Override
 	public IResourceVariantComparator getResourceComparator() {
 		return comparator;
 	}
 
+	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
 		if (!isSupervised(resource)) return null;
 		// TODO: called too many times, optimize
@@ -108,11 +112,13 @@ public class ApplyPatchSubscriber extends Subscriber {
 		}
 	}
 
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		return resource.getType() == IResource.FILE
 				&& PatchModelProvider.getPatchObject(resource, getPatcher()) != null;
 	}
 
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		//XXX: what if there is an addition in the patch that needs to add 3 subfolders?
 		try {
@@ -144,6 +150,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 		}
 	}
 
+	@Override
 	public void refresh(IResource[] resources, int depth,
 			IProgressMonitor monitor) throws TeamException {
 		Set /* <FilePatch> */diffs = new HashSet();
@@ -158,6 +165,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 		getPatcher().refresh((FilePatch2[]) diffs.toArray(new FilePatch2[0]));
 	}
 
+	@Override
 	public IResource[] roots() {
 		Set roots = new HashSet();
 		if (getPatcher().isWorkspacePatch()) {

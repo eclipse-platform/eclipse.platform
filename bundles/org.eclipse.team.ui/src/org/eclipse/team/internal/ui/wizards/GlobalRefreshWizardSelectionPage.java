@@ -48,6 +48,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	private List createdImages;
 
 	class MyContentProvider extends BaseWorkbenchContentProvider {
+		@Override
 		public Object[] getChildren(Object element) {
 			if(element instanceof SynchronizeManager) {
 				SynchronizeManager manager = (SynchronizeManager)element;
@@ -58,6 +59,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	}
 	
 	class MyLabelProvider extends LabelProvider {
+		@Override
 		public String getText(Object element) {
 			if(element instanceof SynchronizeWizardDescription) {
 				SynchronizeWizardDescription descriptor = (SynchronizeWizardDescription)element;
@@ -66,6 +68,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 			return null;
 		}	
 		
+		@Override
 		public Image getImage(Object element) {
 			if(element instanceof SynchronizeWizardDescription) {
 				SynchronizeWizardDescription descriptor = (SynchronizeWizardDescription)element;
@@ -90,6 +93,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (createdImages != null) {
 			for (Iterator it = createdImages.iterator(); it.hasNext();) {
@@ -116,6 +120,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
     /* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent2) {
 		Composite top = new Composite(parent2, SWT.NULL);
 		top.setLayout(new GridLayout());
@@ -164,7 +169,8 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
         return null;
     }
 
-    public void doubleClick(DoubleClickEvent event) {
+    @Override
+	public void doubleClick(DoubleClickEvent event) {
 		selectionChanged(
 			new SelectionChangedEvent(
 				event.getViewer(),
@@ -172,6 +178,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		getContainer().showPage(getNextPage());
 	}
 	
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		// Initialize the wizard so we can tell whether to enable the
 		// Next button
@@ -204,11 +211,13 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		return this.wizard;
 	}
 	
+	@Override
 	public IWizardPage getNextPage() {
 		if (wizard == null) return null;
 		return wizard.getStartingPage();
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {

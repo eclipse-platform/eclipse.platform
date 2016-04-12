@@ -22,6 +22,7 @@ import org.eclipse.ui.IMemento;
 public class PatchCompareAdapter extends SynchronizationCompareAdapter
 		implements ITraversalFactory {
 
+	@Override
 	public ICompareInput asCompareInput(ISynchronizationContext context,
 			Object o) {
 		// PatchFileDiffNode can adapt to IFile
@@ -33,15 +34,18 @@ public class PatchCompareAdapter extends SynchronizationCompareAdapter
 		return super.asCompareInput(context, o);
 	}
 
+	@Override
 	public void save(ResourceMapping[] mappings, IMemento memento) {
 		// Don't save
 	}
 
+	@Override
 	public ResourceMapping[] restore(IMemento memento) {
 		// Don't restore
 		return null;
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ISynchronizationScope scope) {
 		return scope.getTraversals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID);
 	}

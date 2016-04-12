@@ -37,7 +37,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
             setToolTipText(TeamUIMessages.ChangeLogModelManager_0); 
             update();
         }
-        public void run() {
+        @Override
+		public void run() {
             setCommitSetsEnabled(!enabled);
             update();
         }
@@ -50,7 +51,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	
 	private class CommitSetActionContribution extends SynchronizePageActionGroup {
 
-        public void initialize(ISynchronizePageConfiguration configuration) {
+        @Override
+		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			
 			toggleCommitSetAction = new ToggleCommitSetAction();
@@ -72,7 +74,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 		    configuration.addLabelDecorator(new ChangeSetLabelDecorator(configuration));
 		}
 		configuration.addPropertyChangeListener(new IPropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
+            @Override
+			public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)) {
                     updateEnablement();
                 }
@@ -104,6 +107,7 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#dispose()
 	 */
+	@Override
 	public void dispose() {
 		getConfiguration().removePropertyChangeListener(this);
 		super.dispose();
@@ -112,6 +116,7 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#createModelProvider(java.lang.String)
 	 */
+	@Override
 	protected ISynchronizeModelProvider createModelProvider(String id) {
 	    if (enabled) {
 	        return new ChangeSetModelProvider(getConfiguration(), getSyncInfoSet(), id);
@@ -123,7 +128,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#getSelectedProviderId()
      */
-    protected String getSelectedProviderId() {
+    @Override
+	protected String getSelectedProviderId() {
         String id = super.getSelectedProviderId();
         if (id.equals(ChangeSetModelProvider.ChangeSetModelProviderDescriptor.ID)) {
             return ((ChangeSetModelProvider)getActiveModelProvider()).getSubproviderId();
@@ -135,13 +141,15 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 	}
 	
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#saveProviderSettings(java.lang.String)
      */
-    protected void saveProviderSettings(String id) {
+    @Override
+	protected void saveProviderSettings(String id) {
         super.saveProviderSettings(id);
         IDialogSettings pageSettings = getConfiguration().getSite().getPageSettings();
 		if(pageSettings != null) {
@@ -152,7 +160,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
      */
-    public void initialize(ISynchronizePageConfiguration configuration) {
+    @Override
+	public void initialize(ISynchronizePageConfiguration configuration) {
         // Load our setting before invoking super since the inherited
         // initialize will create the provider
         IDialogSettings pageSettings = getConfiguration().getSite().getPageSettings();
@@ -177,7 +186,8 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
     /* (non-Javadoc)
      * This method is public so it can be invoked from test cases
      */
-    public ISynchronizeModelProvider getActiveModelProvider() {
+    @Override
+	public ISynchronizeModelProvider getActiveModelProvider() {
         return super.getActiveModelProvider();
     }
 }

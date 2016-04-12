@@ -45,6 +45,7 @@ public abstract class RangeDifferenceComparator extends
 	abstract protected boolean compareRangeDifferences(RangeDifference[] ranges,
 			IDocument lDoc, IDocument rDoc);
 
+	@Override
 	protected boolean contentsEqual(IProgressMonitor monitor, InputStream is1,
 			InputStream is2, boolean ignoreWhitespace) {
 		try {

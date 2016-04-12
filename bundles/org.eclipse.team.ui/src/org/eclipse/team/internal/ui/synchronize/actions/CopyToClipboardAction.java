@@ -58,7 +58,8 @@ class CopyToClipboardAction extends SelectionListenerAction {
         setId(ID);
     }
     
-    public void run() {
+    @Override
+	public void run() {
 		copyResources(getSelectedResources(), getTextualClipboardContents());
 	}
     
@@ -191,7 +192,8 @@ class CopyToClipboardAction extends SelectionListenerAction {
         }
     }
     
-    protected boolean updateSelection(IStructuredSelection selection) {
+    @Override
+	protected boolean updateSelection(IStructuredSelection selection) {
 		if (!super.updateSelection(selection))
 			return false;
 		// Calling our own selection utility because the elements in the
@@ -227,10 +229,12 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		return false;
 	}
      
+	@Override
 	protected List getSelectedNonResources() {
 		return Arrays.asList(Utils.getNonResources(getStructuredSelection().toArray()));
 	}
 	
+	@Override
 	protected List getSelectedResources() {
     	// Calling our own selection utility because the elements in the
 		// synchronize view can't adapt to IResource because we don't want the usual object

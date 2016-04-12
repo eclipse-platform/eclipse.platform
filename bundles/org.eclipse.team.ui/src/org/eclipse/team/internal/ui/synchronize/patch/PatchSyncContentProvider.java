@@ -33,25 +33,30 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 
 	private BaseWorkbenchContentProvider delegate;
 
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		delegate = new BaseWorkbenchContentProvider();
 	}
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (delegate != null)
 			delegate.dispose();
 	}
 
+	@Override
 	protected ITreeContentProvider getDelegateContentProvider() {
 		return delegate;
 	}
 
+	@Override
 	protected String getModelProviderId() {
 		return PatchModelProvider.ID;
 	}
 
+	@Override
 	protected Object getModelRoot() {
 		if (getContext() instanceof ApplyPatchSubscriberMergeContext) {
 			ApplyPatchSubscriberMergeContext context = (ApplyPatchSubscriberMergeContext) getContext();
@@ -66,6 +71,7 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 	 * org.eclipse.team.examples.model.ui.mapping.ModelSyncContentProvider
 	 * .getTraversals(ISynchronizationContext, Object)
 	 */
+	@Override
 	protected ResourceTraversal[] getTraversals(
 			ISynchronizationContext context, Object object) {
 		if (object instanceof IDiffElement) {
@@ -81,6 +87,7 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 		return new ResourceTraversal[0];
 	}
 
+	@Override
 	protected boolean isInScope(ISynchronizationScope scope, Object parent,
 			Object element) {
 		if (element instanceof PatchDiffNode) {
@@ -94,12 +101,14 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 		return false;
 	}
 
+	@Override
 	public boolean hasChildren(final Object element) {
 		if (element instanceof HunkDiffNode)
 			return false;
 		return super.hasChildren(element);
 	}
 
+	@Override
 	public Object[] getChildren(Object parent) {
 		Object[] children = super.getChildren(parent);
 		List result = new ArrayList();

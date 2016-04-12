@@ -24,12 +24,14 @@ public class ApplyPatchSynchronizationActionProvider extends
 		super();
 	}
 
+	@Override
 	protected void initialize() {
 		super.initialize();
 		final ISynchronizePageConfiguration configuration = getSynchronizePageConfiguration();
 		// Use custom handlers, disabled for hunks.
 		registerHandler(MERGE_ACTION_ID, new ResourceMergeHandler(
 				configuration, false) {
+			@Override
 			public void updateEnablement(IStructuredSelection selection) {
 				super.updateEnablement(selection);
 				// disable merge for hunks
@@ -44,6 +46,7 @@ public class ApplyPatchSynchronizationActionProvider extends
 		});
 		registerHandler(MARK_AS_MERGE_ACTION_ID,
 				new ResourceMarkAsMergedHandler(configuration) {
+			@Override
 			public void updateEnablement(IStructuredSelection selection) {
 				super.updateEnablement(selection);
 				// disable mark as merged for hunks

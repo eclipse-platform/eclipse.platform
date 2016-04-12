@@ -51,10 +51,12 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public synchronized void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (listeners == null) {
 			listeners = new ListenerList(ListenerList.IDENTITY);
@@ -62,6 +64,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		listeners.add(listener);
 	}
 	
+	@Override
 	public synchronized void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (listeners != null) {
 			listeners.remove(listener);
@@ -74,6 +77,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.IDiffElement#setParent(org.eclipse.compare.structuremergeviewer.IDiffContainer)
 	 */
+	@Override
 	public void setParent(IDiffContainer parent) {
 		super.setParent(parent);
 		internalSetParent(parent);
@@ -84,6 +88,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	 * @param propertyName the flag to test
 	 * @return <code>true</code> if the property is set
 	 */
+	@Override
 	public boolean getProperty(String propertyName) {
 		return (getFlags() & getFlag(propertyName)) > 0;
 	}
@@ -92,6 +97,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	 * Add the flag to the flags for this node
 	 * @param propertyName the flag to add
 	 */
+	@Override
 	public void setProperty(String propertyName, boolean value) {
 		if (value) {
 			if (!getProperty(propertyName)) {
@@ -108,6 +114,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		}
 	}
 	
+	@Override
 	public void setPropertyToRoot(String propertyName, boolean value) {
 		if (value) {
 			addToRoot(propertyName);
@@ -120,6 +127,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		fireChange();
 	}
 	
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		IResource resource = getResource();
 		if(resource != null) {
@@ -129,6 +137,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		return null;
 	}
 	
+	@Override
 	public abstract IResource getResource();
 
 	private void addToRoot(String flag) {
@@ -152,9 +161,11 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 			if (object instanceof IPropertyChangeListener) {
 				final IPropertyChangeListener listener = (IPropertyChangeListener)object;
 				SafeRunner.run(new ISafeRunnable() {
+					@Override
 					public void handleException(Throwable exception) {
 						// Exceptions logged by the platform
 					}
+					@Override
 					public void run() throws Exception {
 						listener.propertyChange(event);
 					}
@@ -218,6 +229,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	 * @param object The object to test
 	 * @return true if the objects are identical
 	 */
+	@Override
 	public boolean equals(Object object) {
 		return this==object;
 	}
@@ -225,6 +237,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		// Use the name to get the hashCode to ensure that we can find equal elements.
 		// (The inherited hashCode uses the path which can change when items are removed) 

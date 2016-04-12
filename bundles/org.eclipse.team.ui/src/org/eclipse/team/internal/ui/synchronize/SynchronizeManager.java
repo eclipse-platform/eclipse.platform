@@ -98,10 +98,12 @@ public class SynchronizeManager implements ISynchronizeManager {
 		private int fType;
 		private ISynchronizeParticipant[] fChanged;
 
+		@Override
 		public void handleException(Throwable exception) {
 			TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.SynchronizeManager_7, exception); 
 		}
 
+		@Override
 		public void run() throws Exception {
 			switch (fType) {
 				case ADDED :
@@ -165,6 +167,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 			}
 		}
 		
+		@Override
 		public boolean equals(Object other) {
 			if(other == this) return true;
 			if (! (other instanceof ISynchronizeParticipantReference)) return false;
@@ -176,6 +179,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference#getId()
 		 */
+		@Override
 		public String getId() {
 			return descriptor.getId();
 		}
@@ -183,6 +187,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference#getSecondaryId()
 		 */
+		@Override
 		public String getSecondaryId() {
 			return secondaryId;
 		}	
@@ -191,6 +196,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference#getDisplayName()
 		 */
+		@Override
 		public String getDisplayName() {
 			String key = Utils.getKey(descriptor.getId(), getSecondaryId());
 			ISynchronizeParticipant participant = (ISynchronizeParticipant) participants.get(key);
@@ -208,6 +214,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference#createParticipant()
 		 */
+		@Override
 		public ISynchronizeParticipant getParticipant() throws TeamException {
 			if (dead) return null;
 			String key = Utils.getKey(descriptor.getId(), getSecondaryId());
@@ -234,6 +241,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference#getDescriptor()
 		 */
+		@Override
 		public ISynchronizeParticipantDescriptor getDescriptor() {
 			return descriptor;
 		}
@@ -279,6 +287,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * 
 	 * @see org.eclipse.team.ui.sync.ISynchronizeManager#addSynchronizeParticipantListener(org.eclipse.team.ui.sync.ISynchronizeParticipantListener)
 	 */
+	@Override
 	public void addSynchronizeParticipantListener(ISynchronizeParticipantListener listener) {
 		if (fListeners == null) {
 			fListeners = new ListenerList(ListenerList.IDENTITY);
@@ -291,6 +300,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * 
 	 * @see org.eclipse.team.ui.sync.ISynchronizeManager#removeSynchronizeParticipantListener(org.eclipse.team.ui.sync.ISynchronizeParticipantListener)
 	 */
+	@Override
 	public void removeSynchronizeParticipantListener(ISynchronizeParticipantListener listener) {
 		if (fListeners != null) {
 			fListeners.remove(listener);
@@ -334,6 +344,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * 
 	 * @see org.eclipse.team.ui.sync.ISynchronizeManager#addSynchronizeParticipants(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public synchronized void addSynchronizeParticipants(ISynchronizeParticipant[] participants) {
 		// renamed to createSynchronizeParticipant(id)
 		List added = new ArrayList(participants.length);
@@ -395,6 +406,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * 
 	 * @see org.eclipse.team.ui.sync.ISynchronizeManager#removeSynchronizeParticipants(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public synchronized void removeSynchronizeParticipants(ISynchronizeParticipant[] participants) {
 		List removed = new ArrayList(participants.length);
 		for (int i = 0; i < participants.length; i++) {
@@ -417,6 +429,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeManager#get(java.lang.String)
 	 */
+	@Override
 	public ISynchronizeParticipantReference get(String id, String secondaryId) {
 		String key = Utils.getKey(id, secondaryId);
 		return (ISynchronizeParticipantReference) participantReferences.get(key);
@@ -425,6 +438,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeManager#get(java.lang.String)
 	 */
+	@Override
 	public ISynchronizeParticipantReference[] get(String id) {
 		ISynchronizeParticipantReference[] refs = getSynchronizeParticipants();
 		ArrayList refsForId = new ArrayList();
@@ -442,6 +456,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 * 
 	 * @see org.eclipse.team.ui.sync.ISynchronizeManager#getSynchronizeParticipants()
 	 */
+	@Override
 	public synchronized ISynchronizeParticipantReference[] getSynchronizeParticipants() {
 		return (ISynchronizeParticipantReference[]) participantReferences.values().toArray(new ISynchronizeParticipantReference[participantReferences.values().size()]);
 	}
@@ -449,6 +464,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeManager#showSynchronizeViewInActivePage()
 	 */
+	@Override
 	public ISynchronizeView showSynchronizeViewInActivePage() {
 		IWorkbench workbench = TeamUIPlugin.getPlugin().getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
@@ -666,6 +682,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeManager#getDescriptor()
 	 */
+	@Override
 	public ISynchronizeParticipantDescriptor getParticipantDescriptor(String id) {
 		return participantRegistry.find(id);
 	}

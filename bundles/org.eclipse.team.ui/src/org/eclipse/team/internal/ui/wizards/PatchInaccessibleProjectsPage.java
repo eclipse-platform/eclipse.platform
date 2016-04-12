@@ -50,6 +50,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		fPatcher = patcher;
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		initializeDialogUnits(parent);
 
@@ -64,6 +65,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 				| SWT.V_SCROLL | SWT.BORDER);
 		checkList.setContentProvider(new ArrayContentProvider());
 		checkList.setLabelProvider(new WorkbenchLabelProvider() {
+			@Override
 			public Color getForeground(Object element) {
 				if (element instanceof IProject
 						&& !((IProject) element).exists())
@@ -72,6 +74,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 				return super.getForeground(element);
 			}
 
+			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IProject
 						&& !((IProject) element).exists())
@@ -83,6 +86,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 			}
 		});
 		checkList.addCheckStateListener(new ICheckStateListener() {
+			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				IProject project = (IProject) event.getElement();
 				if (event.getChecked() && !project.exists())
@@ -104,6 +108,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		checkAllButton
 				.setText(TeamUIMessages.PatchInaccessibleProjectsPage_selectExisting);
 		checkAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setAllChecked(true);
 			}
@@ -115,6 +120,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		uncheckAllButton
 				.setText(TeamUIMessages.PatchInaccessibleProjectsPage_deselectAll);
 		uncheckAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setAllChecked(false);
 			}
@@ -139,12 +145,14 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		checkList.setInput(projects.toArray(new IProject[] {}));
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible)
 			updateControls();
 	}
 
+	@Override
 	public IWizardPage getNextPage() {
 		// Skipping the patch parsed page in case this one is displayed
 		Control control = getControl();

@@ -20,6 +20,7 @@ public class DiffNodeWorkbenchAdapter implements IWorkbenchAdapter {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
 	 */
+	@Override
 	public Object[] getChildren(Object o) {
 		DiffNode node = getDiffNode(o);
 		return node != null ? node.getChildren() : new Object[0];
@@ -28,6 +29,7 @@ public class DiffNodeWorkbenchAdapter implements IWorkbenchAdapter {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor(Object o) {
 		DiffNode node = getDiffNode(o);
 		if(node instanceof ISynchronizeModelElement) {
@@ -39,6 +41,7 @@ public class DiffNodeWorkbenchAdapter implements IWorkbenchAdapter {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
 	 */
+	@Override
 	public String getLabel(Object o) {
 		DiffNode node = getDiffNode(o);
 		return node != null ? node.getName() : ""; //$NON-NLS-1$
@@ -47,6 +50,7 @@ public class DiffNodeWorkbenchAdapter implements IWorkbenchAdapter {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
 	 */
+	@Override
 	public Object getParent(Object o) {
 		DiffNode node = getDiffNode(o);
 		return node != null ? node.getParent() : null;

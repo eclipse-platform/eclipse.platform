@@ -32,6 +32,7 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 	private NavigateAction gotoNext;
 	private NavigateAction gotoPrevious;
 	
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		final Viewer viewer = configuration.getPage().getViewer();
@@ -41,6 +42,7 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 			Utils.initAction(expandAllAction, "action.expandAll."); //$NON-NLS-1$
 			
 			collapseAll = new Action() {
+				@Override
 				public void run() {
 					if (viewer.getControl().isDisposed() || !(viewer instanceof AbstractTreeViewer))
 						return;
@@ -58,6 +60,7 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 			}
 		}
 	}
+	@Override
 	public void fillContextMenu(IMenuManager manager) {
 		if (manager == null || expandAllAction == null)
 			return;
@@ -67,6 +70,7 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 		else
 			appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, expandAllAction);
 	}
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		IToolBarManager manager = actionBars.getToolBarManager();
 		appendToGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP, collapseAll);

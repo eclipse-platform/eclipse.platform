@@ -30,38 +30,47 @@ public class PatchedFileVariant implements IResourceVariant {
 		this.patcher = patcher;
 	}
 
+	@Override
 	public byte[] asBytes() {
 		// We don't persist the variant between sessions.
 		return null;
 	}
 
+	@Override
 	public String getContentIdentifier() {
 		return "(After Patch)"; //$NON-NLS-1$
 	}
 
+	@Override
 	public String getName() {
 		return diff.getPath(patcher.isReversed()).lastSegment();
 	}
 
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
 		return new IStorage() {
 
+			@Override
 			public Object getAdapter(Class adapter) {
 				return null;
 			}
 
+			@Override
 			public boolean isReadOnly() {
 				return true;
 			}
 
+			@Override
 			public String getName() {
 				return PatchedFileVariant.this.getName();
 			}
 
+			@Override
 			public IPath getFullPath() {
 				return null;
 			}
 
+			@Override
 			public InputStream getContents() throws CoreException {
 				FileDiffResult diffResult = patcher.getDiffResult(diff);
 				return diffResult.getPatchedContents();
@@ -69,6 +78,7 @@ public class PatchedFileVariant implements IResourceVariant {
 		};
 	}
 
+	@Override
 	public boolean isContainer() {
 		return false;
 	}

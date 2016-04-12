@@ -52,6 +52,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			this.modeId = modeId;
 			Utils.initAction(this, prefix);
 		}
+		@Override
 		public void run() {
 			if(isChecked()) {
 				configuration.setMode(modeId);
@@ -178,6 +179,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if(event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)) {
 			Integer mode = (Integer)event.getNewValue();
@@ -188,6 +190,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 	}

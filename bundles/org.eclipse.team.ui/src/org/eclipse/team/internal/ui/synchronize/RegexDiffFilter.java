@@ -50,6 +50,7 @@ public class RegexDiffFilter extends DiffFilter {
 				Pattern.DOTALL), ignoreWhitespace);
 	}
 
+	@Override
 	public boolean select(IDiff diff, IProgressMonitor monitor) {
 		IFileRevision remote = SyncInfoToDiffConverter.getRemote(diff);
 		IResource local = ResourceDiffTree.getResourceFor(diff);

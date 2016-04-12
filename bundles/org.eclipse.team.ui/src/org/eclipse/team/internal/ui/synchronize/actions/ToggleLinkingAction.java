@@ -30,6 +30,7 @@ public class ToggleLinkingAction extends Action {
 		setChecked(view.isLinkingEnabled());
 	}
 
+	@Override
 	public void run() {
 		view.setLinkingEnabled(isChecked());
 	}

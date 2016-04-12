@@ -34,6 +34,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		Utils.initAction(this, "action.refreshSubscriber."); //$NON-NLS-1$
 		
 		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) { 
+			@Override
 			public void run() {
 				IWizard wizard = new GlobalSynchronizeWizard();
 				WizardDialog dialog = new WizardDialog(fView.getViewSite().getShell(), wizard);
@@ -53,6 +54,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if(menuManager != null) {
 			menuManager.dispose();
@@ -64,6 +66,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
 	 */
+	@Override
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
@@ -71,6 +74,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
 	 */
+	@Override
 	public Menu getMenu(Control parent) {
 		Menu fMenu = null;
 		if (menuManager == null) {
@@ -106,6 +110,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
+	@Override
 	public void run() {
 		ISynchronizeParticipant current = fView.getParticipant();
 		if(current != null) {
@@ -119,9 +124,11 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsAdded(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public void participantsAdded(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		display.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if(menuManager != null) {
 					menuManager.dispose();
@@ -135,9 +142,11 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsRemoved(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
+	@Override
 	public void participantsRemoved(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		display.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if(menuManager != null) {
 					menuManager.dispose();

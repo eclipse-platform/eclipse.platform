@@ -30,6 +30,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public void initialize(final ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		final ISynchronizePageSite site = configuration.getSite();
@@ -37,6 +38,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 		// toolbar
 		if (participant.doesSupportSynchronize()) {
 			refreshSelectionAction = new Action() {
+				@Override
 				public void run() {
 					IStructuredSelection selection = (IStructuredSelection)site.getSelectionProvider().getSelection();
 					ResourceMapping[] mappings = Utils.getResourceMappings(selection.toArray());
@@ -51,6 +53,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 			if (o instanceof IRefreshable) {
 				final IRefreshable refreshable = (IRefreshable) o;		
 				configureSchedule = new Action() {
+					@Override
 					public void run() {
 						ConfigureRefreshScheduleDialog d = new ConfigureRefreshScheduleDialog(
 								site.getShell(), refreshable.getRefreshSchedule());
@@ -69,6 +72,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager manager) {
 		if (findGroup(manager, ISynchronizePageConfiguration.SYNCHRONIZE_GROUP) != null
 			&& findGroup(manager, ISynchronizePageConfiguration.NAVIGATE_GROUP) != null) {
@@ -84,6 +88,7 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#setActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if(actionBars != null) {

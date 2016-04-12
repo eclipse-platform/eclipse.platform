@@ -51,8 +51,10 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#createStructureInputPane(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected CompareViewerPane createStructureInputPane(Composite parent) {
 		pagePane = new CompareViewerPane(parent, SWT.BORDER | SWT.FLAT) {
+			@Override
 			public void selectionChanged(SelectionChangedEvent ev) {
 				ISelection selection = ev.getSelection();
 				StructuredSelection newSelection = convertSelection(selection, false);
@@ -71,23 +73,28 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 				}
 				return newSelection;
 			}
+			@Override
 			public ISelection getSelection() {
 				return convertSelection(getSelectionProvider().getSelection(), false);
 			}
+			@Override
 			public Object getInput() {
 				return PageCompareEditorInput.this.getCompareResult();
 			}
+			@Override
 			public void open(OpenEvent event) {
 				ISelection selection = event.getSelection();
 				StructuredSelection newSelection = convertSelection(selection, true);
 				super.open(new OpenEvent((Viewer)event.getSource(), newSelection));
 			}
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection selection = event.getSelection();
 				StructuredSelection newSelection = convertSelection(selection, true);
 				super.doubleClick(new DoubleClickEvent((Viewer)event.getSource(), newSelection));
 			}
 			
+			@Override
 			public void setInput(Object input) {
 				super.setInput(input);
 				Composite c = getParent();
@@ -134,6 +141,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
+	@Override
 	protected void handleDispose() {
 		super.handleDispose();
 		cleanupListeners();
@@ -230,6 +238,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		try {
 			// TODO: we need a better progress story here (i.e. support for cancellation) bug 127075
 			manager.busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 			        prepareInput(input, getCompareConfiguration(), monitor);
 			        hookContentChangeListener(input);
@@ -245,6 +254,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
 	 */
+	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		setDirty(true);
 	}
@@ -252,6 +262,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
 	 */
+	@Override
 	public boolean canRunAsJob() {
 		return true;
 	}

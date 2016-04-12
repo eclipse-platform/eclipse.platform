@@ -44,6 +44,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.CompareNavigator#getNavigatables()
 		 */
+		@Override
 		protected INavigatable[] getNavigatables() {
 			INavigatable navigatable = getNavigatable();
 			return new INavigatable[] { navigatable };
@@ -52,6 +53,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.CompareNavigator#selectChange(boolean)
 		 */
+		@Override
 		public boolean selectChange(boolean next) {
 			if (getSubNavigator() != null) {
 				if (getSubNavigator().hasChange(next)) {
@@ -95,6 +97,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.CompareNavigator#hasChange(boolean)
 		 */
+		@Override
 		public boolean hasChange(boolean next) {
 			if (getSubNavigator() != null) {
 				if (getSubNavigator().hasChange(next)) {
@@ -350,6 +353,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
  	 * navigation between several objects.
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if(adapter == ICompareNavigator.class) {
 			if(nav == null) {
@@ -366,6 +370,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	private synchronized INavigatable getNavigatable() {
 		if(navigatable == null) {
 			navigatable = new INavigatable() {
+				@Override
 				public boolean selectChange(int flag) {
 					if (flag == INavigatable.FIRST_CHANGE) {
 						getViewer().setSelection(StructuredSelection.EMPTY);
@@ -377,6 +382,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 					return navigate((TreeViewer)getViewer(), flag == INavigatable.NEXT_CHANGE, true, false);
 				}
 			
+				@Override
 				public boolean openSelectedChange() {
 					Viewer v = getViewer();
 					if (v instanceof ITreeViewerAccessor && !v.getControl().isDisposed()) {
@@ -386,9 +392,11 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 					}
 					return false;
 				}
+				@Override
 				public boolean hasChange(int changeFlag) {
 					return AbstractTreeViewerAdvisor.this.hasChange(changeFlag == INavigatable.NEXT_CHANGE);
 				}
+				@Override
 				public Object getInput() {
 					return getViewer().getInput();
 				}
@@ -404,6 +412,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 	 * @param viewer the viewer
 	 * @param event the double-click event
 	 */
+	@Override
 	protected boolean handleDoubleClick(StructuredViewer viewer, DoubleClickEvent event) {
 		if (super.handleDoubleClick(viewer, event)) return true;
 		IStructuredSelection selection = (IStructuredSelection) event.getSelection();

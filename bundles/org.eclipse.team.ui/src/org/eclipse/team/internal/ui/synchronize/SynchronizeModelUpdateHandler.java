@@ -108,6 +108,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	}
 	
 	private IPropertyChangeListener listener = new IPropertyChangeListener() {
+		@Override
 		public void propertyChange(final PropertyChangeEvent event) {
 			if (event.getProperty() == ISynchronizeModelElement.BUSY_PROPERTY) {
 				Object source = event.getSource();
@@ -154,6 +155,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 			String[] markerTypes = getMarkerTypes();
 			Set handledResources = new HashSet();
@@ -195,7 +197,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#processEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
+    @Override
+	protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
         switch (event.getType()) {
 		case BackgroundEventHandler.RUNNABLE_EVENT :
 			executeRunnable(event, monitor);
@@ -247,13 +250,15 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
+    @Override
+	protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
 		// Fire label changed
         dispatchEarly = false;
         if (pendingLabelUpdates.isEmpty()) {
             return false;
         } else {
 			Utils.asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					firePendingLabelUpdates();
 				}
@@ -397,7 +402,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#getShortDispatchDelay()
      */
-    protected long getShortDispatchDelay() {
+    @Override
+	protected long getShortDispatchDelay() {
         if (dispatchEarly) {
             dispatchEarly = false;
             return EARLY_DISPATCH_INCREMENT;
@@ -469,7 +475,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
+    @Override
+	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 		if(provider.isDisposed()) {
 			set.removeSyncSetChangedListener(this);
 		} else {
@@ -480,7 +487,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void syncInfoChanged(final ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
+    @Override
+	public void syncInfoChanged(final ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 		if (! (event instanceof ISyncInfoTreeChangeEvent)) {
 			reset();
 		} else {
@@ -493,7 +501,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
      */
     private void handleChanges(final ISyncInfoSetChangeEvent event, final IProgressMonitor monitor) {
         runViewUpdate(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
 				provider.handleChanges((ISyncInfoTreeChangeEvent)event, monitor);
 				firePendingLabelUpdates();
             }
@@ -503,7 +512,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
+    @Override
+	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		// When errors occur we currently don't process them. It may be possible to decorate
 		// elements in the model with errors, but currently we prefer to let ignore and except
 		// another listener to display them. 
@@ -530,10 +540,12 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	        final Control ctrl = getViewer().getControl();
 	        if (ctrl != null && !ctrl.isDisposed()) {
 	        	ctrl.getDisplay().syncExec(new Runnable() {
-	        		public void run() {
+	        		@Override
+					public void run() {
 	        			if (!ctrl.isDisposed()) {
 	        				BusyIndicator.showWhile(ctrl.getDisplay(), new Runnable() {
-	        					public void run() {
+	        					@Override
+								public void run() {
 	    						    internalRunViewUpdate(runnable, preserveExpansion);
 	        					}
 	        				});
@@ -624,10 +636,12 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
      */
     private IWorkspaceRunnable getUIUpdateRunnable(final IWorkspaceRunnable runnable, final boolean preserveExpansion) {
         return new IWorkspaceRunnable() {
-            public void run(final IProgressMonitor monitor) throws CoreException {
+            @Override
+			public void run(final IProgressMonitor monitor) throws CoreException {
                 final CoreException[] exception = new CoreException[] { null };
                 runViewUpdate(new Runnable() {
-                    public void run() {
+                    @Override
+					public void run() {
     	                try {
     		                runnable.run(monitor);
     	                } catch (CoreException e) {
@@ -649,7 +663,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         return new IWorkspaceRunnable() {
             IResource[] expanded;
             IResource[] selected;
-            public void run(IProgressMonitor monitor) throws CoreException {
+            @Override
+			public void run(IProgressMonitor monitor) throws CoreException {
                 if (preserveExpansion)
                     recordExpandedResources();
                 try {
@@ -665,7 +680,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         	    final StructuredViewer viewer = getViewer();
         		if (viewer != null && !viewer.getControl().isDisposed() && viewer instanceof AbstractTreeViewer) {
         			viewer.getControl().getDisplay().syncExec(new Runnable() {
-        				public void run() {
+        				@Override
+						public void run() {
         					if (viewer != null && !viewer.getControl().isDisposed()) {
         					    expanded = provider.getExpandedResources();
         					    selected = provider.getSelectedResources();
@@ -677,7 +693,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             private void updateView() {
                 // Refresh the view and then set the expansion
                 runViewUpdate(new Runnable() {
-                    public void run() {
+                    @Override
+					public void run() {
                         provider.getViewer().refresh();
                         if (expanded != null)
                             provider.expandResources(expanded);

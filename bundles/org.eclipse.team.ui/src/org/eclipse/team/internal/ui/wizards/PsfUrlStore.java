@@ -32,14 +32,17 @@ public class PsfUrlStore extends PsfStore {
 		// Singleton
 	}
 
+	@Override
 	protected String getPreviousTag() {
 		return PREVIOUS;
 	}
 
+	@Override
 	protected String getListTag() {
 		return URLS;
 	}
 
+	@Override
 	public String getSuggestedDefault() {
 		return getPrevious();
 	}

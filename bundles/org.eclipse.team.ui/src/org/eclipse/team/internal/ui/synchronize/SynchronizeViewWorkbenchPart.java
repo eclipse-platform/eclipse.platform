@@ -30,6 +30,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof SynchronizeViewWorkbenchPart) &&
 		    participant.equals(((SynchronizeViewWorkbenchPart)obj).getParticipant());
@@ -38,6 +39,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return participant.hashCode();
 	}
@@ -54,24 +56,28 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#addPropertyListener(org.eclipse.ui.IPropertyListener)
 	 */
+	@Override
 	public void addPropertyListener(IPropertyListener listener) {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createPartControl(Composite parent) {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
 	 */
+	@Override
 	public void dispose() {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getSite()
 	 */
+	@Override
 	public IWorkbenchPartSite getSite() {
 		return site;
 	}
@@ -79,6 +85,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitle()
 	 */
+	@Override
 	public String getTitle() {
 		return ""; //$NON-NLS-1$
 	}
@@ -86,6 +93,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
 	 */
+	@Override
 	public Image getTitleImage() {
 		return null;
 	}
@@ -93,6 +101,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitleToolTip()
 	 */
+	@Override
 	public String getTitleToolTip() {
 		return ""; //$NON-NLS-1$
 	}
@@ -100,18 +109,21 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#removePropertyListener(org.eclipse.ui.IPropertyListener)
 	 */
+	@Override
 	public void removePropertyListener(IPropertyListener listener) {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
 	 */
+	@Override
 	public void setFocus() {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

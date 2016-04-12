@@ -35,11 +35,13 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 		super(participant, input, page, synchronizeConfiguration);
 	}
 
+	@Override
 	protected void handleMenuAboutToShow(IMenuManager manager) {
 		StructuredSelection selection = new StructuredSelection(((IResourceProvider)getCompareInput()).getResource());
 		final ResourceMarkAsMergedHandler markAsMergedHandler = new ResourceMarkAsMergedHandler(getSynchronizeConfiguration());
 		markAsMergedHandler.updateEnablement(selection);
 		Action markAsMergedAction = new Action(TeamUIMessages.ModelCompareEditorInput_0) {
+			@Override
 			public void run() {
 				try {
 					markAsMergedHandler.execute(new ExecutionEvent());
@@ -55,6 +57,7 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 		final ResourceMergeHandler mergeHandler = new ResourceMergeHandler(getSynchronizeConfiguration(), false);
 		mergeHandler.updateEnablement(selection);
 		Action mergeAction = new Action(TeamUIMessages.ModelCompareEditorInput_1) {
+			@Override
 			public void run() {
 				try {
 					mergeHandler.execute(new ExecutionEvent());
@@ -71,6 +74,7 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 		manager.insertAfter("merge", mergeAction); //$NON-NLS-1$
 	}
 
+	@Override
 	protected void contentsCreated() {
 		super.contentsCreated();
 		ICompareNavigator nav = getNavigator();
@@ -81,6 +85,7 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 				CompareViewerPane cvp = (CompareViewerPane) pane;
 				cvp.setSelection(StructuredSelection.EMPTY);
 				cvp.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
 					public void selectionChanged(SelectionChangedEvent e) {
 						feed1(cein);
 					}

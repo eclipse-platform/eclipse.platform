@@ -46,6 +46,7 @@ public class PasteAction extends SelectionListenerAction {
 		setId(ID);
 	}
 
+	@Override
 	public void run() {
 		IStorage patchStorage = getPatchStorage();
 		if (patchStorage != null) {
@@ -59,6 +60,7 @@ public class PasteAction extends SelectionListenerAction {
 			// https://bugs.eclipse.org/309803
 			ApplyPatchOperation operation = new ApplyPatchOperation(null,
 					patchStorage, resource, new CompareConfiguration()) {
+				@Override
 				protected boolean isApplyPatchInSynchronizeView() {
 					// ignore the preference, apply in the sync view
 					return true;
@@ -77,22 +79,27 @@ public class PasteAction extends SelectionListenerAction {
 			return null;
 
 		IStorage storage = new IEncodedStorage() {
+			@Override
 			public Object getAdapter(Class adapter) {
 				return null;
 			}
 
+			@Override
 			public boolean isReadOnly() {
 				return false;
 			}
 
+			@Override
 			public String getName() {
 				return null;
 			}
 
+			@Override
 			public IPath getFullPath() {
 				return null;
 			}
 
+			@Override
 			public InputStream getContents() throws CoreException {
 				try {
 					return new ByteArrayInputStream(text.getBytes(getCharset()));
@@ -102,6 +109,7 @@ public class PasteAction extends SelectionListenerAction {
 				}
 			}
 
+			@Override
 			public String getCharset() throws CoreException {
 				return "UTF-8"; //$NON-NLS-1$
 			}
@@ -139,6 +147,7 @@ public class PasteAction extends SelectionListenerAction {
 		// see bug 33028 for explanation why we need this
 		final Object[] result = new Object[1];
 		shell.getDisplay().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				result[0] = clipboard.getContents(transfer);
 			}

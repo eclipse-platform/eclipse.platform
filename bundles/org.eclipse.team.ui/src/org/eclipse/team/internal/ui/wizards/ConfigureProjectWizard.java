@@ -45,6 +45,7 @@ public class ConfigureProjectWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		AdaptableList disabledWizards = new AdaptableList();
 		AdaptableList wizards = getAvailableWizards(disabledWizards);
@@ -57,6 +58,7 @@ public class ConfigureProjectWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		// If we are on the first page, never allow finish unless the selected wizard has no pages.
 		if (getContainer().getCurrentPage() == mainPage) {
@@ -71,6 +73,7 @@ public class ConfigureProjectWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		// If we are on the first page and the selected wizard has no pages then
 		// allow it to finish.

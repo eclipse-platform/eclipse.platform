@@ -54,6 +54,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 	 */
+	@Override
 	public Color getForeground(Object element) {
 		return null;
 	}
@@ -62,6 +63,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 	 */
+	@Override
 	public Color getBackground(Object element) {
 		return null;
 	}
@@ -69,6 +71,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
 	 */
+	@Override
 	public Font getFont(Object element) {
 		if (element instanceof ISynchronizeModelElement) {
 			ISynchronizeModelElement node = (ISynchronizeModelElement)element;
@@ -91,6 +94,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
 	 */
+	@Override
 	public Image getImage(Object element) {
 		Image base = workbenchLabelProvider.getImage(element);
 		if (base != null) {
@@ -112,6 +116,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 	 */
+	@Override
 	public String getText(Object element) {
 		String base = workbenchLabelProvider.getText(element);
 		if (element instanceof DiffNode) {
@@ -211,6 +216,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
         workbenchLabelProvider.dispose();
 		if(busyFont != null) {

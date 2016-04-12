@@ -213,6 +213,7 @@ public class ApplyPatchOperation implements Runnable {
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run() {
 		openWizard();
 	}
@@ -222,6 +223,7 @@ public class ApplyPatchOperation implements Runnable {
 		BufferedReader reader = Utilities.createReader(storage);
 		try {
 			PatchReader patchReader = new PatchReader() {
+				@Override
 				protected FilePatch2 createFileDiff(IPath oldPath, long oldDate,
 						IPath newPath, long newDate) {
 					return new FilePatch(oldPath, oldDate, newPath,

@@ -21,6 +21,7 @@ public class TeamSynchronizingPerspective implements IPerspectiveFactory {
 	/* (Non-javadoc)
 	 * Method declared on IPerpsectiveFactory
 	 */
+	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		defineActions(layout);
 		defineLayout(layout);
