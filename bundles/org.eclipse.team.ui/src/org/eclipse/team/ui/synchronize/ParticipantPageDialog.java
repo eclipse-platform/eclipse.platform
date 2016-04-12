@@ -29,6 +29,7 @@ import org.eclipse.team.ui.*;
  * @deprecated Clients should use {@link ParticipantPageCompareEditorInput} 
  *      and {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}
  */
+@Deprecated
 public class ParticipantPageDialog extends SaveablePartDialog {
 		
 	private ISynchronizeParticipant participant;
@@ -50,6 +51,7 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent2) {
 		Composite parent = (Composite) super.createDialogArea(parent2);	
 		if (isOfferToRememberParticipant() && participant != null && ! particantRegisteredWithSynchronizeManager(participant)) {
@@ -63,6 +65,7 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if(buttonId == IDialogConstants.OK_ID && isRememberParticipant()) {
 			rememberParticipant();

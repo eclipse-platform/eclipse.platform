@@ -39,6 +39,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#getWindowTitle()
 	 */
+	@Override
 	public String getWindowTitle() {
 		return TeamUIMessages.GlobalRefreshSubscriberPage_0; 
 	}
@@ -46,6 +47,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		if (getRootResources().length == 0) {
 			importWizard = getImportWizard();
@@ -69,6 +71,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		if (importWizard != null) {
 			return importWizard.performFinish();
@@ -81,6 +84,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
 	 */
+	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		if(importWizard != null ) {
 			return importWizard.getNextPage(page);
@@ -91,6 +95,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performCancel()
 	 */
+	@Override
 	public boolean performCancel() {
 		if(importWizard != null) {
 			return importWizard.performCancel();
@@ -101,6 +106,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		if(importWizard != null) {
 			return importWizard.canFinish();
@@ -111,6 +117,7 @@ public abstract class ParticipantSynchronizeWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#getStartingPage()
 	 */
+	@Override
 	public IWizardPage getStartingPage() {
 		if(importWizard != null) {
 			return importWizard.getStartingPage();

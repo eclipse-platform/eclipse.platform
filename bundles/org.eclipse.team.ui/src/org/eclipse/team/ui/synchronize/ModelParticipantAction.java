@@ -52,6 +52,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	private void initialize(ISynchronizePageConfiguration configuration) {
 		configuration.getSite().getSelectionProvider().addSelectionChangedListener(this);
 		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(ModelParticipantAction.this);
 			}
@@ -83,6 +84,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		super.updateSelection(selection);
 		return isEnabledForSelection(selection);
@@ -153,6 +155,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 		final SaveableComparison  activeSaveable = getActiveSaveable();
 		if (activeSaveable != null && activeSaveable.isDirty()) {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {	
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					try {
@@ -200,6 +203,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	public static boolean promptToSaveChanges(final Shell shell, final SaveableComparison saveable, final boolean allowCancel) throws InterruptedException {
 		final int[] result = new int[] { 0 };
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				String[] options;
 				if (allowCancel) {

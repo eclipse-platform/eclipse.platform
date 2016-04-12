@@ -60,6 +60,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#initializeContext(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void initializeContext(IProgressMonitor monitor) throws CoreException {
 		if (participant == null) {
 			participant = createParticipant();
@@ -83,6 +84,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			super.execute(monitor);
@@ -95,6 +97,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ModelMergeOperation#executeMerge(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void executeMerge(IProgressMonitor monitor) throws CoreException {
 		if (!sentToSyncView)
 			super.executeMerge(monitor);
@@ -103,8 +106,10 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#handlePreviewRequest()
 	 */
+	@Override
 	protected void handlePreviewRequest() {
 		Job job = new WorkbenchJob(getJobName()) {
+			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				if (isPreviewInDialog()) {
 					CompareConfiguration cc = new CompareConfiguration();
@@ -131,6 +136,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 			}
 		};
 		job.addJobChangeListener(new JobChangeAdapter() {
+			@Override
 			public void done(IJobChangeEvent event) {
 				// Ensure that the participant is disposed it it didn't go to the sync view
 				if (TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()) == null)
@@ -142,6 +148,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		job.schedule();
 	}
 
+	@Override
 	public boolean belongsTo(Object family) {
 		if (family == PARTICIPANT_MERGE_FAMILY) {
 			return true;
@@ -162,6 +169,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#getContext()
 	 */
+	@Override
 	protected ISynchronizationContext getContext() {
 		if (participant != null)
 			return participant.getContext();
@@ -171,6 +179,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#getPreviewRequestMessage()
 	 */
+	@Override
 	protected String getPreviewRequestMessage() {
 		if (!isPreviewRequested()) {
 			return TeamUIMessages.ResourceMappingMergeOperation_4; 

@@ -45,6 +45,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
+	@Override
 	public Image getImage(Object element) {
 		Image base = getDelegateImage(element);
 		if (isDecorationEnabled() && base != null) {
@@ -136,6 +137,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 	 */
+	@Override
 	public String getText(Object element) {
 		String base = getDelegateText(element);
 		if (isSyncInfoInTextEnabled()) {
@@ -184,6 +186,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
 	 */
+	@Override
 	public void addListener(ILabelProviderListener listener) {
 		getDelegateLabelProvider().addListener(listener);
 	}
@@ -191,6 +194,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (localImageManager != null)
 			localImageManager.dispose();
@@ -199,6 +203,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
 	 */
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		return getDelegateLabelProvider().isLabelProperty(internalGetElement(element), property);
 	}
@@ -206,6 +211,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
 	 */
+	@Override
 	public void removeListener(ILabelProviderListener listener) {
 		getDelegateLabelProvider().removeListener(listener);
 	}

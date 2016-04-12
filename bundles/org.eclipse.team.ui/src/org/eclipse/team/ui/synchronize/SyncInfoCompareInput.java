@@ -61,6 +61,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		public MyDiffNode(IDiffContainer parent, SyncInfo info) {
 			super(parent, info);
 		}
+		@Override
 		public void fireChange() {
 			super.fireChange();
 		}
@@ -107,12 +108,14 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
      * @see org.eclipse.compare.CompareEditorInput#handleDispose()
      */
-    protected void handleDispose() {
+    @Override
+	protected void handleDispose() {
     	super.handleDispose();
     	if (synchronizeConfiguration != null) {
 	    	ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
 	    	if (navigator != null && navigator == super.getNavigator()) {
 	    		synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
+					@Override
 					protected INavigatable[] getNavigatables() {
 						return new INavigatable[0];
 					}
@@ -123,6 +126,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (IFile.class.equals(adapter) && resource.getType() == IResource.FILE) {
 			return resource;
@@ -140,12 +144,14 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 * Note that until the compare editor inputs can be part of the compare editors lifecycle we
 	 * can't register as a listener because there is no dispose() method to remove the listener.
 	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
 		if (delta != null) {
 			IResourceDelta resourceDelta = delta.findMember(resource.getFullPath());
 			if (resourceDelta != null) {
 				UIJob job = new UIJob("") { //$NON-NLS-1$
+					@Override
 					public IStatus runInUIThread(IProgressMonitor monitor) {
 						if (!isSaveNeeded()) {
 							//updateNode();
@@ -162,6 +168,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#internalPrepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		// update the title now that the remote revision number as been fetched
@@ -188,6 +195,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
 	 */
+	@Override
 	public String getToolTipText() {
 		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() }); 
 	}
@@ -196,6 +204,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 * (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object other) {
 		if (other == this)
 			return true;
@@ -215,6 +224,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return getSyncInfo().hashCode();
 	}
@@ -226,6 +236,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
 	 */
+	@Override
 	public boolean canRunAsJob() {
 		return true;
 	}
@@ -233,6 +244,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getNavigator()
 	 */
+	@Override
 	public synchronized ICompareNavigator getNavigator() {
 		if (synchronizeConfiguration != null && isSelectedInSynchronizeView()) {
 			ICompareNavigator nav = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_NAVIGATOR);
@@ -260,6 +272,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#fireInputChange()
 	 */
+	@Override
 	protected void fireInputChange() {
 		node.fireChange();
 	}

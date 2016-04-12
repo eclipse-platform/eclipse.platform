@@ -42,6 +42,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	private final Object object;
 	private final IHistoryPageSource pageSource;
 	private final IPropertyChangeListener changeListener = new IPropertyChangeListener() {
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			handlePropertyChange(event);
 		}
@@ -63,6 +64,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected Object prepareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		return object;
@@ -71,6 +73,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
+	@Override
 	protected void handleDispose() {
 		super.handleDispose();
 		if (historyPage != null) {
@@ -82,6 +85,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#createPage(org.eclipse.compare.CompareViewerPane, org.eclipse.jface.action.IToolBarManager)
 	 */
+	@Override
 	protected IPage createPage(CompareViewerPane parent, IToolBarManager toolBarManager) {
 		site = new DialogHistoryPageSite(parent.getShell());
 		historyPage = (IHistoryPage)pageSource.createPage(object);
@@ -102,6 +106,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#asCompareInput(org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	protected ICompareInput asCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.asCompareInput(selection);
 		if (compareInput != null)
@@ -122,6 +127,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#getSelectionProvider()
 	 */
+	@Override
 	protected ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
@@ -129,6 +135,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void prepareInput(ICompareInput input,
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
@@ -155,12 +162,14 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		if (event.getSource() == historyPage) {
 			if (event.getProperty().equals(IHistoryPage.P_NAME)) {
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						setTitle(historyPage.getName());
 					}
 				});
 			} else if (event.getProperty().equals(IHistoryPage.P_DESCRIPTION)) {
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						setPageDescription(historyPage.getDescription());
 					}
@@ -172,6 +181,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#isEditionSelectionDialog()
 	 */
+	@Override
 	public boolean isEditionSelectionDialog() {
 		return isReplaceDialog();
 	}
@@ -199,6 +209,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getOKButtonLabel()
 	 */
+	@Override
 	public String getOKButtonLabel() {
 		if (isReplaceDialog())
 			return TeamUIMessages.HistoryPageCompareEditorInput_0;
@@ -208,6 +219,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#okPressed()
 	 */
+	@Override
 	public boolean okPressed() {
 		if (!isReplaceDialog())
 			return super.okPressed();

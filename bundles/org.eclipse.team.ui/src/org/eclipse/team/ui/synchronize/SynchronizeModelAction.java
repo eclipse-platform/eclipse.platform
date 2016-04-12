@@ -77,6 +77,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	protected void initialize(final ISynchronizePageConfiguration configuration, final ISelectionProvider selectionProvider) {
 		selectionProvider.addSelectionChangedListener(this);
 		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				selectionProvider.removeSelectionChangedListener(SynchronizeModelAction.this);
 			}
@@ -86,6 +87,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
+	@Override
 	public void run() {
 		if(needsToSaveDirtyEditors()) {
 			if(!saveAllEditors(confirmSaveOfDirtyEditor())) {
@@ -162,6 +164,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		super.updateSelection(selection);
 		return isEnabledForSelection(selection);

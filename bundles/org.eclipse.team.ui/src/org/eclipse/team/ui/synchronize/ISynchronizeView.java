@@ -38,6 +38,7 @@ public interface ISynchronizeView extends IViewPart {
 	 * This id is no longer used.
 	 * @deprecated not used, please use {@link #VIEW_ID} instead.
 	 */
+	@Deprecated
 	public static final String COMPARE_VIEW_ID = "org.eclipse.team.sync.views.CompareView"; //$NON-NLS-1$
 	
 	/**

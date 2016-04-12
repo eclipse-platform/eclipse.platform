@@ -75,6 +75,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		
@@ -99,6 +100,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			showPreferences = new SyncViewerShowPreferencesAction(configuration);
 			openInCompareAction = new OpenInCompareAction(configuration);
 			configuration.setProperty(SynchronizePageConfiguration.P_OPEN_ACTION, new Action() {
+				@Override
 				public void run() {
 					openInCompareAction.run();
 				}
@@ -106,6 +108,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 		}
 	}
 	
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
         if (actionBars != null && showPreferences != null) {
@@ -117,6 +120,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		if (menu instanceof CommonMenuManager) {
@@ -270,6 +274,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (modelPicker != null)
 			modelPicker.dispose();

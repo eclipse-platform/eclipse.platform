@@ -40,6 +40,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  * @deprecated Clients should use a subclass of {@link PageCompareEditorInput}
  *      and {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}
  */
+@Deprecated
 public class ParticipantPageSaveablePart extends PageSaveablePart implements IContentChangeListener {
 
 	private ISynchronizeParticipant participant;
@@ -73,6 +74,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.SaveablePartAdapter#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if(titleImage != null) {
 			titleImage.dispose();
@@ -88,6 +90,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
 	 */
+	@Override
 	public Image getTitleImage() {
 		if(titleImage == null) {
 			titleImage = participant.getImageDescriptor().createImage();
@@ -98,6 +101,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitle()
 	 */
+	@Override
 	public String getTitle() {
 		return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName());
 	}
@@ -105,6 +109,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#isDirty()
 	 */
+	@Override
 	public boolean isDirty() {
 		if (participant instanceof ModelSynchronizeParticipant) {
 			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;		
@@ -119,6 +124,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
 	 */
+	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		try {
 			if (source instanceof DiffNode) {
@@ -134,6 +140,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void doSave(IProgressMonitor pm) {
 		// TODO needs to work for models
 		super.doSave(pm);
@@ -155,8 +162,10 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#createPage(org.eclipse.swt.widgets.Composite, org.eclipse.jface.action.ToolBarManager)
 	 */
+	@Override
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
 		listener = new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION)) {
 					updateDescription();
@@ -190,6 +199,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#getPageSelectionProvider()
 	 */
+	@Override
 	protected final ISelectionProvider getSelectionProvider() {
 		return ((ISynchronizePage)page).getViewer();
 	}
@@ -211,6 +221,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	private void initializeDiffViewer(Viewer viewer) {
 		if (viewer instanceof StructuredViewer) {
 			((StructuredViewer) viewer).addOpenListener(new IOpenListener() {
+				@Override
 				public void open(OpenEvent event) {
 					ISelection s = event.getSelection();
 					final SyncInfoModelElement node = getElement(s);
@@ -231,6 +242,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 * {@inheritDoc}
 	 * @since 3.2
 	 */
+	@Override
 	protected void prepareInput(final ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException {
 		monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
         monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
@@ -316,6 +328,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 * {@inheritDoc}
 	 * @since 3.2
 	 */
+	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
 		if (compareInput != null)

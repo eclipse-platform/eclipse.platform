@@ -77,6 +77,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected Object prepareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		setTitle(Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()));
@@ -86,6 +87,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getTitleImage()
 	 */
+	@Override
 	public Image getTitleImage() {
 		if(titleImage == null) {
 			titleImage = participant.getImageDescriptor().createImage();
@@ -96,6 +98,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#handleDispose()
 	 */
+	@Override
 	protected void handleDispose() {
 		if(titleImage != null) {
 			titleImage.dispose();
@@ -111,9 +114,11 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#createPage(org.eclipse.compare.CompareViewerPane, org.eclipse.jface.action.IToolBarManager)
 	 */
+	@Override
 	protected IPage createPage(CompareViewerPane parent,
 			IToolBarManager toolBarManager) {
 		listener = new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION)) {
 					updateDescription();
@@ -149,10 +154,12 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#getSelectionProvider()
 	 */
+	@Override
 	protected ISelectionProvider getSelectionProvider() {
 		return ((ISynchronizePage)page).getViewer();
 	}
 
+	@Override
 	protected ICompareInput asCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.asCompareInput(selection);
 		if (compareInput != null)
@@ -174,6 +181,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void prepareInput(ICompareInput input,
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
@@ -219,6 +227,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#isSaveNeeded()
 	 */
+	@Override
 	public boolean isSaveNeeded() {
 		if (participant instanceof ModelSynchronizeParticipant) {
 			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;		
@@ -233,6 +242,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#saveChanges(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void saveChanges(IProgressMonitor monitor) throws CoreException {
 		super.saveChanges(monitor);
 		Object input = ((ISynchronizePage)page).getViewer().getInput();
@@ -268,6 +278,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#contentChanged(org.eclipse.compare.IContentChangeNotifier)
 	 */
+	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		super.contentChanged(source);
 		try {
@@ -302,6 +313,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#createContents(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Control createContents(Composite parent) {
 		if (shouldCreateRememberButton()) {
 			Composite composite = new Composite(parent, SWT.NONE);
@@ -351,6 +363,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#okPressed()
 	 */
+	@Override
 	public boolean okPressed() {
 		if (isEditable()) {
 			// If the CompareConfiguration is editable, then OK is Save and we want to leave the dialog open
@@ -366,6 +379,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#cancelPressed()
 	 */
+	@Override
 	public void cancelPressed() {
 		// If the CompareConfiguration is editable, then the CANCEL button is the done button
 		if (isEditable() && isRememberParticipant())
@@ -376,6 +390,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getOKButtonLabel()
 	 */
+	@Override
 	public String getOKButtonLabel() {
 		if (isEditable())
 			return TeamUIMessages.ParticipantPageCompareEditorInput_0;
@@ -390,6 +405,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getCancelButtonLabel()
 	 */
+	@Override
 	public String getCancelButtonLabel() {
 		return TeamUIMessages.ResourceMappingMergeOperation_2;
 	}

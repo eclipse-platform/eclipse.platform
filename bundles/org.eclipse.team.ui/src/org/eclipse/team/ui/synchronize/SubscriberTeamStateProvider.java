@@ -50,6 +50,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorated(java.lang.Object)
 	 */
+	@Override
 	public boolean hasDecoratedState(Object element) throws CoreException {
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		if (mapping != null) {
@@ -116,6 +117,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getStateDescription(java.lang.Object, int, java.lang.String[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
@@ -127,6 +129,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getResourceMappingContext(java.lang.Object)
 	 */
+	@Override
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		return new SubscriberResourceMappingContext(subscriber, false);
 	}
@@ -152,6 +155,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.ISubscriberChangeListener#subscriberResourceChanged(org.eclipse.team.core.subscribers.ISubscriberChangeEvent[])
 	 */
+	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 		fireStateChangeEvent(new TeamStateChangeEvent(deltas));
 	}
@@ -159,6 +163,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedProperties(java.lang.Object)
 	 */
+	@Override
 	public String[] getDecoratedProperties(Object element) {
 		return new String[0];
 	}

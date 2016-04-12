@@ -35,6 +35,7 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
 	 */
+	@Override
 	protected final void createParticipant() {
 		ISynchronizeParticipant participant = createParticipant(selectionPage.getSelectedMappings());
 		TeamUI.getSynchronizeManager().addSynchronizeParticipants(new ISynchronizeParticipant[]{participant});
@@ -45,6 +46,7 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
 	 */
+	@Override
 	protected final WizardPage createScopeSelectionPage() {
 		selectionPage = new ModelElementSelectionPage(getRootResources());
 		return selectionPage;

@@ -37,6 +37,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	private boolean enabled = false;
 	private IStructuredSelection selection;
 	private ISelectionChangedListener listener = new ISelectionChangedListener() {
+		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			updatedEnablement(event);
 		}
@@ -81,6 +82,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	/**
 	 * Deregister this handler from selection change events. 
 	 */
+	@Override
 	public void dispose() {
 		getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(listener);
 	}
@@ -124,6 +126,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -142,6 +145,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
 	 */
+	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		try {
 			SynchronizationOperation operation = getOperation();

@@ -87,18 +87,22 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 
 	private IRefreshable createRefreshable() {
 		return new IRefreshable() {
+			@Override
 			public RefreshParticipantJob createJob(String interval) {
 				return new RefreshSubscriberParticipantJob(SubscriberParticipant.this, 
 						TeamUIMessages.RefreshSchedule_14, 
 						NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { SubscriberParticipant.this.getName(), interval }), getResources(), 
 						new RefreshUserNotificationPolicy(SubscriberParticipant.this));
 			}
+			@Override
 			public ISynchronizeParticipant getParticipant() {
 				return SubscriberParticipant.this;
 			}
+			@Override
 			public void setRefreshSchedule(SubscriberRefreshSchedule schedule) {
 				SubscriberParticipant.this.setRefreshSchedule(schedule);
 			}
+			@Override
 			public SubscriberRefreshSchedule getRefreshSchedule() {
 				return SubscriberParticipant.this.getRefreshSchedule();
 			}
@@ -121,6 +125,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeViewPage#createPage(org.eclipse.team.ui.sync.ISynchronizeView)
 	 */
+	@Override
 	public final IPageBookViewPage createPage(ISynchronizePageConfiguration configuration) {
 		validateConfiguration(configuration);
 		return new SubscriberParticipantPage(configuration, getSubscriberSyncInfoCollector());
@@ -200,6 +205,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.AbstractSynchronizeViewPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 		Job.getJobManager().cancel(this);
 		refreshSchedule.dispose();				
@@ -211,6 +217,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getName()
 	 */
+	@Override
 	public String getName() {
 		String name = super.getName();
 		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, scope.getName() }); 
@@ -282,6 +289,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(TeamUI.GLOBAL_IGNORES_CHANGED)) {
 			collector.reset();
@@ -299,6 +307,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
 		if(memento != null) {
@@ -315,6 +324,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		IMemento settings = memento.createChild(CTX_SUBSCRIBER_PARTICIPANT_SETTINGS);
@@ -369,6 +379,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(SynchronizePageConfiguration.P_PARTICIPANT_SYNC_INFO_SET, collector.getSyncInfoSet());
 	}
@@ -376,6 +387,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)
 	 */
+	@Override
 	public void run(IWorkbenchPart part) {
 		refresh(getResources(), null, null, part != null ? part.getSite() : null);
 	}
@@ -399,6 +411,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @return the long task name
 	 * @deprecated use <code>getLongTaskName(IResource[]) instead</code>
 	 */
+	@Deprecated
 	protected String getLongTaskName() {
 		return TeamUIMessages.Participant_synchronizing; 
 	}
@@ -521,6 +534,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
 			return refreshSchedule.getRefreshable();

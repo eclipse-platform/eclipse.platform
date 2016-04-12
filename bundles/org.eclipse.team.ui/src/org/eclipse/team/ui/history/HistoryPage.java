@@ -32,6 +32,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#setSite(org.eclipse.team.ui.history.IHistoryPageSite)
 	 */
+	@Override
 	public void setSite(IHistoryPageSite site) {
 		this.site = site;
 	}
@@ -39,6 +40,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getHistoryPageSite()
 	 */
+	@Override
 	public IHistoryPageSite getHistoryPageSite() {
 		return site;
 	}
@@ -47,6 +49,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getInput()
 	 */
+	@Override
 	public Object getInput() {
 		return input;
 	}
@@ -54,6 +57,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#setInput(java.lang.Object, boolean)
 	 */
+	@Override
 	public boolean setInput(Object object) {
 		this.input = object;
 		return inputSet();
@@ -75,6 +79,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getHistoryView()
 	 */
+	@Override
 	public IHistoryView getHistoryView() {
 		if (historyView != null)
 			return historyView;
@@ -85,6 +90,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
+	@Override
 	public synchronized void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler == null) {
 			fChangeHandler = new PropertyChangeHandler();
@@ -95,6 +101,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
+	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler != null) {
 			fChangeHandler.removePropertyChangeListener(listener);

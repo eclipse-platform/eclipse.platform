@@ -86,6 +86,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#scheduled(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 	 */
+	@Override
 	public void scheduled(IJobChangeEvent event) {
 		super.scheduled(event);
 		markBusy(elements, true);
@@ -94,6 +95,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 	 */
+	@Override
 	public void done(IJobChangeEvent event) {
 		markBusy(elements, false);
 		super.done(event);

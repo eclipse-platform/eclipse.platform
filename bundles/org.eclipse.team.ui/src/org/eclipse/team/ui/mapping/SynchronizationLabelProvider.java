@@ -43,6 +43,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.ICommonLabelProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
 	 */
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		this.site = site;
 		contentProvider = site.getExtension().getContentProvider();
@@ -73,6 +74,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void restoreState(IMemento aMemento) {
 		ILabelProvider provider = getDelegateLabelProvider();
 		if (provider instanceof ICommonLabelProvider) {
@@ -83,6 +85,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IMementoAware#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento aMemento) {
 		ILabelProvider provider = getDelegateLabelProvider();
 		if (provider instanceof ICommonLabelProvider) {
@@ -93,6 +96,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IDescriptionProvider#getDescription(java.lang.Object)
 	 */
+	@Override
 	public String getDescription(Object anElement) {
 		ILabelProvider provider = getDelegateLabelProvider();
 		if (provider instanceof IDescriptionProvider) {
@@ -104,6 +108,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.SynchronizationStateLabelProvider#isDecorationEnabled()
 	 */
+	@Override
 	protected boolean isDecorationEnabled() {
 		return getContext() != null;
 	}
@@ -111,6 +116,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.SynchronizationStateLabelProvider#getImage(java.lang.Object)
 	 */
+	@Override
 	public Image getImage(Object element) {
 		Image image = super.getImage(element);
 		if (image == null && internalGetElement(element) instanceof ModelProvider) {
@@ -132,6 +138,7 @@ public abstract class SynchronizationLabelProvider extends AbstractSynchronizeLa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#getText(java.lang.Object)
 	 */
+	@Override
 	public String getText(Object element) {
 		String text = super.getText(element);
 		if (contentProvider instanceof SynchronizationContentProvider) {

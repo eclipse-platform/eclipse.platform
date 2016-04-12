@@ -118,6 +118,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 * 
 	 * @param monitor a progress monitor
 	 */
+	@Override
 	protected void execute(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
 		try {
@@ -193,8 +194,10 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	protected void handleValidationFailure(final IStatus status) {
     	final boolean[] result = new boolean[] { false };
     	Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
+					@Override
 					protected void createButtonsForButtonBar(Composite parent) {
 				        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
 				                false);
@@ -205,6 +208,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 					/* (non-Javadoc)
 					 * @see org.eclipse.jface.dialogs.ErrorDialog#buttonPressed(int)
 					 */
+					@Override
 					protected void buttonPressed(int id) {
 						if (id == IDialogConstants.YES_ID)
 							super.buttonPressed(IDialogConstants.OK_ID);
@@ -230,6 +234,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	protected void handleMergeFailure(final IStatus status) {
 		Display.getDefault().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				MessageDialog.openInformation(getShell(), TeamUIMessages.MergeIncomingChangesAction_0, status.getMessage());
 			};
@@ -244,6 +249,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	protected void handleNoChanges() {
 		Display.getDefault().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				NoChangesDialog.open(getShell(), TeamUIMessages.ResourceMappingMergeOperation_0, TeamUIMessages.ResourceMappingMergeOperation_1, TeamUIMessages.ModelMergeOperation_3, getScope().asInputScope());
 			};
@@ -273,6 +279,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			final ModelProvider[] providers = sortByExtension(context.getScope().getModelProviders());
 			final IStatus[] result = new IStatus[] { Status.OK_STATUS };
 			context.run(new IWorkspaceRunnable() {
+				@Override
 				public void run(IProgressMonitor monitor) throws CoreException {
 					try {
 						int ticks = 100;
@@ -355,6 +362,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	
 	private boolean hasIncomingChanges(IDiffTree tree) {
 		return tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff node) {
 				if (node instanceof IThreeWayDiff) {
 					IThreeWayDiff twd = (IThreeWayDiff) node;

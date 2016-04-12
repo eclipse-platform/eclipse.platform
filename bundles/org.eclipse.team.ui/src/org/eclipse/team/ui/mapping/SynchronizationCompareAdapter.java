@@ -42,6 +42,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	 * available for other types of model elements.
 	 * @see ISynchronizationCompareAdapter#asCompareInput(ISynchronizationContext, Object)
 	 */
+	@Override
 	public ICompareInput asCompareInput(ISynchronizationContext context, Object o) {
 		IResource resource = Utils.getResource(o);
 		if (resource != null) {
@@ -57,6 +58,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ICompareAdapter#hasCompareInput(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
 	 */
+	@Override
 	public boolean hasCompareInput(ISynchronizationContext context, Object object) {
 		return asCompareInput(context, object) != null;
 	}
@@ -64,6 +66,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IResourceMappingPersistenceAdapter#getName(org.eclipse.core.resources.mapping.ResourceMapping)
 	 */
+	@Override
 	public String getName(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
 		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Utils.getAdapter(
@@ -89,6 +92,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IResourceMappingPersistenceAdapter#getFullPath(org.eclipse.core.resources.mapping.ResourceMapping)
 	 */
+	@Override
 	public String getPathString(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
 		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Utils.getAdapter(
@@ -117,6 +121,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter#getImageDescriptor(org.eclipse.core.resources.mapping.ResourceMapping)
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
 		ImageDescriptor image = getImageDescriptorFromWorkbenchAdapter(object);
@@ -166,6 +171,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	 * 
 	 * @since 3.3
 	 */
+	@Override
 	public int getSynchronizationState(ITeamStateProvider provider, ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
 		return -1;
 	}

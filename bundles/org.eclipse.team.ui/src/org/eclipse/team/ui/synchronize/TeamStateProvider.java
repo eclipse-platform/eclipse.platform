@@ -48,6 +48,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	 * 
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#isDecorationEnabled(java.lang.Object)
 	 */
+	@Override
 	public boolean isDecorationEnabled(Object element) {
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		if (mapping != null) {
@@ -65,6 +66,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	 * 
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedStateMask(java.lang.Object)
 	 */
+	@Override
 	public int getDecoratedStateMask(Object element) {
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		if (mapping != null) {
@@ -77,6 +79,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#addDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
 	 */
+	@Override
 	public void addDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.add(listener);
 	}
@@ -84,6 +87,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#removeDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
 	 */
+	@Override
 	public void removeDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.remove(listener);
 	}
@@ -97,9 +101,11 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 		for (int i = 0; i < allListeners.length; i++) {
 			final ITeamStateChangeListener listener = (ITeamStateChangeListener)allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					listener.teamStateChanged(event);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// Logged by the runner
 				}

@@ -109,12 +109,14 @@ public class ModelSynchronizeParticipant extends
 	private String description;
 	private SaveableComparison activeSaveable;
 	private PreferenceStore preferences = new PreferenceStore() {
+		@Override
 		public void save() throws IOException {
 			// Nothing to do. Preference will be saved with participant.
 		}
 	};
 
 	private IPropertyListener dirtyListener = new IPropertyListener() {
+		@Override
 		public void propertyChanged(Object source, int propId) {
 			if (source instanceof SaveableComparison && propId == SaveableComparison.PROP_DIRTY) {
 				SaveableComparison scm = (SaveableComparison) source;
@@ -169,6 +171,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getName()
 	 */
+	@Override
 	public String getName() {
 		String name = super.getName();
 		if (description == null)
@@ -190,6 +193,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(
 			ISynchronizePageConfiguration configuration) {
 		if (isMergingEnabled()) {
@@ -219,6 +223,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#createPage(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	public final IPageBookViewPage createPage(
 			ISynchronizePageConfiguration configuration) {
 		return new ModelSynchronizePage(configuration);
@@ -227,6 +232,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)
 	 */
+	@Override
 	public void run(IWorkbenchPart part) {
 		refresh(part != null ? part.getSite() : null, context.getScope().getMappings());
 	}
@@ -249,6 +255,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#dispose()
 	 */
+	@Override
 	public void dispose() {
 		context.dispose();
 		Job.getJobManager().cancel(this);
@@ -400,6 +407,7 @@ public class ModelSynchronizeParticipant extends
 	private IRefreshable createRefreshable() {
 		return new IRefreshable() {
 		
+			@Override
 			public RefreshParticipantJob createJob(String interval) {
 				String jobName = NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { ModelSynchronizeParticipant.this.getName(), interval });
 				return new RefreshModelParticipantJob(ModelSynchronizeParticipant.this, 
@@ -408,12 +416,15 @@ public class ModelSynchronizeParticipant extends
 						context.getScope().getMappings(),
 						new RefreshUserNotificationPolicy(ModelSynchronizeParticipant.this));
 			}
+			@Override
 			public ISynchronizeParticipant getParticipant() {
 				return ModelSynchronizeParticipant.this;
 			}
+			@Override
 			public void setRefreshSchedule(SubscriberRefreshSchedule schedule) {
 				ModelSynchronizeParticipant.this.setRefreshSchedule(schedule);
 			}
+			@Override
 			public SubscriberRefreshSchedule getRefreshSchedule() {
 				return refreshSchedule;
 			}
@@ -424,6 +435,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
 			return refreshSchedule.getRefreshable();
@@ -438,6 +450,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		IMemento settings = memento.createChild(CTX_PARTICIPANT_SETTINGS);
@@ -466,6 +479,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
 		if(memento != null) {
@@ -632,6 +646,7 @@ public class ModelSynchronizeParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
 	 */
+	@Override
 	public PreferencePage[] getPreferencePages() {
 		List pages = new ArrayList();
 		SyncViewerPreferencePage syncViewerPreferencePage = new SyncViewerPreferencePage();

@@ -98,6 +98,7 @@ public abstract class ModelOperation extends TeamOperation {
 	 * @param monitor a progress monitor
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
 		try {
@@ -385,7 +386,8 @@ public abstract class ModelOperation extends TeamOperation {
         final boolean[] canceled = new boolean[] { false };
         final boolean[] forcePreview = new boolean[] { false };
         Display.getDefault().syncExec(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 AdditionalMappingsDialog dialog = new AdditionalMappingsDialog(getShell(), TeamUIMessages.ResourceMappingOperation_0, getScope(), getContext());
                 dialog.setPreviewMessage(requestPreviewMessage);
                 int result = dialog.open();

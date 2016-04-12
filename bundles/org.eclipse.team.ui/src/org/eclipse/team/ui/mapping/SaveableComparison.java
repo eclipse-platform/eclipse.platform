@@ -36,6 +36,7 @@ public abstract class SaveableComparison extends Saveable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -43,6 +44,7 @@ public abstract class SaveableComparison extends Saveable {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void doSave(IProgressMonitor monitor) throws CoreException {
 		if (!isDirty())
 			return;
@@ -102,9 +104,11 @@ public abstract class SaveableComparison extends Saveable {
 		for (int i = 0; i < allListeners.length; i++) {
 			final Object object = allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					((IPropertyListener)object).propertyChanged(SaveableComparison.this, property);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// handled by platform
 				}

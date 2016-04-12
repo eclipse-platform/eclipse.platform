@@ -95,6 +95,7 @@ public abstract class SynchronizationOperation extends TeamOperation {
 	 * Make <code>shouldRun</code> public so the result
 	 * can be used to provide handler enablement
 	 */
+	@Override
 	public boolean shouldRun() {
 		return super.shouldRun();
 	}
@@ -114,6 +115,7 @@ public abstract class SynchronizationOperation extends TeamOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			monitor.beginTask(null, 100);
@@ -130,6 +132,7 @@ public abstract class SynchronizationOperation extends TeamOperation {
 		// when there are no more jobs related to the context running
 		final IJobManager jobManager = Job.getJobManager();
 		final IJobChangeListener listener = new JobChangeAdapter() {
+			@Override
 			public void done(IJobChangeEvent event) {
 				Job[] jobs = jobManager.find(getContext());
 				if (jobs.length == 0) {

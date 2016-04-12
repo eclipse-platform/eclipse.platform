@@ -85,6 +85,7 @@ public interface ITeamStateDescription {
 	 * @param object the object
 	 * @return whether this state description is equal the to given object
 	 */
+	@Override
 	public boolean equals(Object object);
 
 }

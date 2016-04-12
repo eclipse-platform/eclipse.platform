@@ -66,6 +66,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	private Map handlers = new HashMap();
 	private OpenWithActionGroup openWithActions;
 
+	@Override
 	public void init(ICommonActionExtensionSite site) {
 		super.init(site);
 		initialize();
@@ -149,6 +150,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		if (menu instanceof CommonMenuManager) {
@@ -167,16 +169,19 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if (openWithActions != null) openWithActions.fillActionBars(actionBars);
 	}
 	
+	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
 		if (openWithActions != null) openWithActions.updateActionBars();
 	}
 	
+	@Override
 	public void setContext(ActionContext context) {
 		super.setContext(context);
 		if (openWithActions != null) openWithActions.setContext(context);
@@ -185,6 +190,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (openWithActions != null) openWithActions.dispose();

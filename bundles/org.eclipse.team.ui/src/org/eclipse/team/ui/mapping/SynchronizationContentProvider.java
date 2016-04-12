@@ -45,6 +45,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
+	@Override
 	public Object[] getChildren(Object parent) {
 		return internalGetChildren(parent, false);
 	}
@@ -52,6 +53,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
+	@Override
 	public Object[] getElements(Object parent) {
 		return internalGetChildren(parent, true);
 	}
@@ -59,6 +61,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
+	@Override
 	public Object getParent(Object element) {
 		element = internalGetElement(element);
 		if (element instanceof ModelProvider)
@@ -74,6 +77,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
+	@Override
 	public boolean hasChildren(Object element) {
 		return internalHasChildren(element);
 	}
@@ -252,6 +256,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		ICommonContentExtensionSite extensionSite = getExtensionSite();
 		if (extensionSite != null) {
@@ -268,6 +273,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.viewer = viewer;
 		getDelegateContentProvider().inputChanged(viewer, oldInput, newInput);
@@ -276,6 +282,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.ICommonContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
 	 */
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		// Set the site
 		this.site = site;
@@ -296,6 +303,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		// TODO: this could happen at the root as well
 		if (event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)) {
@@ -377,6 +385,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void restoreState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
@@ -387,6 +396,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IMementoAware#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
@@ -397,6 +407,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeListener#syncDeltaTreeChanged(org.eclipse.team.core.delta.ISyncDeltaChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		refresh();
 	}
@@ -404,6 +415,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Property changes only affect labels
 	}
@@ -413,6 +425,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected void refresh() {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				TreeViewer treeViewer = ((TreeViewer)getViewer());
 				// TODO: Need to know if the model root is present in order to refresh properly

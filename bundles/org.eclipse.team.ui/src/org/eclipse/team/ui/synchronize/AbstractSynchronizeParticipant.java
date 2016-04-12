@@ -75,6 +75,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getName()
 	 */
+	@Override
 	public String getName() {
 		return fName;
 	}
@@ -82,6 +83,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getImageDescriptor()
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return fImageDescriptor;
 	}
@@ -90,6 +92,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getId()
 	 */
+	@Override
 	public String getId() {
 		return fId;
 	}
@@ -97,6 +100,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getSecondaryId()
 	 */
+	@Override
 	public String getSecondaryId() {
 		return fSecondaryId;
 	}
@@ -112,6 +116,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * @nooverride This method is not intended to be re-implemented or extended
 	 *             by clients.
 	 */
+	@Override
 	public String getHelpContextId() {
 		return fHelpContextId == null ? IHelpContextIds.SYNC_VIEW
 				: fHelpContextId;
@@ -120,6 +125,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#setPinned(boolean)
 	 */
+	@Override
 	public final void setPinned(boolean pinned) {
 		this.pinned = pinned;
 		pinned(pinned);
@@ -129,6 +135,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#isPinned()
 	 */
+	@Override
 	public final boolean isPinned() {
 		return pinned;
 	}
@@ -145,6 +152,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
 		if( ! (obj instanceof ISynchronizeParticipant)) return false;
@@ -155,6 +163,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return Utils.getKey(getId(), getSecondaryId()).hashCode();
 	}
@@ -174,6 +183,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
+	@Override
 	public synchronized void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler == null) {
 			fChangeHandler = new PropertyChangeHandler();
@@ -184,6 +194,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
+	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler != null) {
 			fChangeHandler.removePropertyChangeListener(listener);
@@ -208,6 +219,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		//	Save config element.
 		configElement = config;
@@ -289,6 +301,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * </p>
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(String, org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		setSecondaryId(secondaryId);
 		pinned = Boolean.valueOf(memento.getString(CTX_PINNED)).booleanValue();
@@ -297,6 +310,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento memento) {
 		memento.putString(CTX_PINNED, Boolean.toString(pinned));
 	}
@@ -304,6 +318,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#createPageConfiguration()
 	 */
+	@Override
 	public final ISynchronizePageConfiguration createPageConfiguration() {
 		SynchronizePageConfiguration configuration = new SynchronizePageConfiguration(this);
 		if (isViewerContributionsSupported()) {
@@ -337,6 +352,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * @since 3.1
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#prepareCompareInput(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
 	    SyncInfo sync = getSyncInfo(element);
 	    if (sync != null)
@@ -363,7 +379,8 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getPreferencePages()
      */
-    public PreferencePage[] getPreferencePages() {
+    @Override
+	public PreferencePage[] getPreferencePages() {
         return new PreferencePage[] { new SyncViewerPreferencePage() };
     }
     

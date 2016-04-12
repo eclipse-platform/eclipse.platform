@@ -81,6 +81,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#modelChanged(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
 		 */
+		@Override
 		public void modelChanged(ISynchronizeModelElement root) {
 			if (root == null) {
 				setSelection(StructuredSelection.EMPTY);
@@ -92,6 +93,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
+		@Override
 		public void addSelectionChangedListener(ISelectionChangedListener listener) {
 			selectionChangedListeners.add(listener);	
 		}
@@ -99,6 +101,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
+		@Override
 		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 			selectionChangedListeners.remove(listener);
 		}
@@ -106,6 +109,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
+		@Override
 		public ISelection getSelection() {
 			return selection;
 		}
@@ -113,6 +117,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
+		@Override
 		public void setSelection(ISelection selection) {
 			this.selection = selection;
 			selectionChanged(new SelectionChangedEvent(this, getSelection()));
@@ -124,6 +129,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			for (int i = 0; i < listeners.length; ++i) {
 				final ISelectionChangedListener l = (ISelectionChangedListener)listeners[i];
 				SafeRunner.run(new SafeRunnable() {
+					@Override
 					public void run() {
 						l.selectionChanged(event);
 					}
@@ -166,6 +172,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * Dispose of the action group. Subclasses may override but must
 	 * invoke the overridden method.
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (configuration != null) {
@@ -318,6 +325,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		fillMenu(menu, ISynchronizePageConfiguration.P_CONTEXT_MENU);
@@ -326,6 +334,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if (actionBars != null) {

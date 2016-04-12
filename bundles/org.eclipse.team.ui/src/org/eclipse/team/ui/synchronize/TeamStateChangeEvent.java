@@ -83,6 +83,7 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getAddedRoots()
 	 */
+	@Override
 	public IResource[] getAddedRoots() {
 		return (IResource[]) addedRoots.toArray(new IResource[addedRoots.size()]);
 	}
@@ -90,6 +91,7 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getRemovedRoots()
 	 */
+	@Override
 	public IResource[] getRemovedRoots() {
 		return (IResource[]) removedRoots.toArray(new IResource[removedRoots.size()]);
 	}
@@ -97,6 +99,7 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getChangedResources()
 	 */
+	@Override
 	public IResource[] getChangedResources() {
 		return (IResource[]) changes.toArray(new IResource[changes.size()]);
 	}
@@ -104,6 +107,7 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#hasChange(org.eclipse.core.resources.IResource)
 	 */
+	@Override
 	public boolean hasChange(IResource resource) {
 		if (changes.contains(resource))
 			return true;

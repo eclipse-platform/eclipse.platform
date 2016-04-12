@@ -70,6 +70,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getName()
 	 */
+	@Override
 	public String getName() {
 		if (sets.length == 0) {
 			return TeamUIMessages.WorkingSetScope_0; 
@@ -88,6 +89,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getRoots()
 	 */
+	@Override
 	public IResource[] getRoots() {
 		if (sets.length == 0) {
 			return null;
@@ -131,6 +133,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE) {
 			IWorkingSet newSet = (IWorkingSet) event.getNewValue();
@@ -149,6 +152,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (PlatformUI.isWorkbenchRunning())
@@ -158,6 +162,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		for (int i = 0; i < sets.length; i++) {
@@ -171,6 +176,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	 * (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#init(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	protected void init(IMemento memento) {
 		super.init(memento);
 		IMemento[] rootNodes = memento.getChildren(CTX_SETS);

@@ -29,6 +29,7 @@ public abstract class SubscriberParticipantWizard extends ParticipantSynchronize
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
 	 */
+	@Override
 	protected final WizardPage createScopeSelectionPage() {
 		selectionPage = new GlobalRefreshResourceSelectionPage(getRootResources());
 		return selectionPage;
@@ -37,6 +38,7 @@ public abstract class SubscriberParticipantWizard extends ParticipantSynchronize
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
 	 */
+	@Override
 	protected final void createParticipant() {
 		IResource[] resources = selectionPage.getRootResources();
 		if (resources != null && resources.length > 0) {

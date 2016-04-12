@@ -70,6 +70,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getName()
 	 */
+	@Override
 	public String getName() {
 		return Utils.convertSelection(resources);
 	}
@@ -77,6 +78,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getRoots()
 	 */
+	@Override
 	public IResource[] getRoots() {
 		return resources;
 	}
@@ -84,6 +86,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#dispose()
 	 */
+	@Override
 	public void dispose() {
 		// Nothing to dispose
 	}
@@ -91,6 +94,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#saveState(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void saveState(IMemento memento) {
 		if (resources != null) {
 			for (int i = 0; i < resources.length; i++) {
@@ -104,6 +108,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#init(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	protected void init(IMemento memento) {
 		IMemento[] rootNodes = memento.getChildren(CTX_ROOT);
 		if(rootNodes != null) {

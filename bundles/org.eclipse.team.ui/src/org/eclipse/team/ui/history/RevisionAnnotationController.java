@@ -48,6 +48,7 @@ public abstract class RevisionAnnotationController {
 	private ISelectionProvider fRulerSelectionProvider;
 	private ISelectionProvider fHistoryListSelectionProvider;
 	private ISelectionChangedListener rulerListener = new ISelectionChangedListener() {
+		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection= event.getSelection();
 			Revision selected= null;
@@ -61,6 +62,7 @@ public abstract class RevisionAnnotationController {
 		}
 	};
 	private ISelectionChangedListener historyListListener = new ISelectionChangedListener() {
+		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection= event.getSelection();
 			if (selection instanceof IStructuredSelection) {
@@ -293,6 +295,7 @@ public abstract class RevisionAnnotationController {
 		fHistoryListSelectionProvider.addSelectionChangedListener(historyListListener);
 		
 		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				dispose();
 			}
