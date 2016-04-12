@@ -43,6 +43,7 @@ public class Policy {
     }
 
 	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		@Override
 		public void optionsChanged(DebugOptions options) {
 			boolean DEBUG = options.getBooleanOption(TeamUIPlugin.ID + "/debug", false); //$NON-NLS-1$
 			DEBUG_SYNC_MODELS = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/syncmodels", false); //$NON-NLS-1$

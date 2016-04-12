@@ -24,6 +24,7 @@ public class RestoreRemovedItemsAction extends ResourceModelParticipantAction {
 		Utils.initAction(this, "action.restoreRemovedFromView."); //$NON-NLS-1$
 	}
 
+	@Override
 	public void run() {
 		ISynchronizationContext context = getSynchronizationContext();
 		if(context instanceof SubscriberMergeContext){
@@ -34,6 +35,7 @@ public class RestoreRemovedItemsAction extends ResourceModelParticipantAction {
 		super.run();
 	}
 
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return true;
 	}

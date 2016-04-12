@@ -41,12 +41,14 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
 	 */
+	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = new ResourceModelProviderOperation(getConfiguration(), getStructuredSelection()) {
 				/* (non-Javadoc)
 				 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 				 */
+				@Override
 				public void execute(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					try {
@@ -65,8 +67,10 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 				/* (non-Javadoc)
 				 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
 				 */
+				@Override
 				protected FastDiffFilter getDiffFilter() {
 					return new FastDiffFilter() {
+						@Override
 						public boolean select(IDiff node) {
 							if (node instanceof IThreeWayDiff) {
 								IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -80,6 +84,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 						}
 					};
 				}
+				@Override
 				protected String getJobName() {
 					IDiff[] diffs = getTargetDiffs();
 					if (overwrite) {
@@ -100,6 +105,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	public void updateEnablement(IStructuredSelection selection) {
 		synchronized (this) {
 			operation = null;
@@ -112,6 +118,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		}
 	}
 	
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (saveDirtyEditors() && (!overwrite || promptToConfirm()))
 			return super.execute(event);
@@ -125,6 +132,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		Shell shell = getConfiguration().getSite().getShell();
 		if (!shell.isDisposed()) {
 			Utils.syncExec(new Runnable() {
+				@Override
 				public void run() {
 					confirmed[0] = promptToConfirm();
 				}
@@ -140,6 +148,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 
 	protected void promptForNoChanges() {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				MessageDialog.openInformation(getConfiguration().getSite().getShell(), TeamUIMessages.ResourceMergeHandler_6, TeamUIMessages.ResourceMergeHandler_7);
 			}

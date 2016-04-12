@@ -34,6 +34,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationActionProvider#initialize()
 	 */
+	@Override
 	protected void initialize() {
 		super.initialize();
 		// Register the merge, overwrite and mark-as-merged handlers
@@ -72,6 +73,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationActionProvider#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
 		if (refactorActions != null) refactorActions.fillActionBars(actionBars);
@@ -80,6 +82,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationActionProvider#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		IContributionItem editGroup = menu.find(ISynchronizePageConfiguration.EDIT_GROUP);
@@ -91,6 +94,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#updateActionBars()
 	 */
+	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
 		 if (refactorActions != null) refactorActions.updateActionBars();
@@ -99,6 +103,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (refactorActions != null) refactorActions.dispose();
@@ -107,7 +112,8 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	/* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#setContext(org.eclipse.ui.actions.ActionContext)
      */
-    public void setContext(ActionContext context) {
+    @Override
+	public void setContext(ActionContext context) {
         super.setContext(context);
         if (refactorActions != null) refactorActions.setContext(context);
     }

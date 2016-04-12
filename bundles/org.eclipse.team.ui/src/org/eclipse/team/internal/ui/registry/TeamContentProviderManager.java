@@ -42,6 +42,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptors()
 	 */
+	@Override
 	public ITeamContentProviderDescriptor[] getDescriptors() {
 		lazyInitialize();
 		return (ITeamContentProviderDescriptor[]) descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
@@ -50,6 +51,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderManager#getContentProviderIds(org.eclipse.team.core.mapping.ISynchronizationScope)
 	 */
+	@Override
 	public String[] getContentProviderIds(ISynchronizationScope scope) {
 		List result = new ArrayList();
 		ITeamContentProviderDescriptor[] descriptors = getDescriptors();
@@ -64,6 +66,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptor(java.lang.String)
 	 */
+	@Override
 	public ITeamContentProviderDescriptor getDescriptor(String modelProviderId) {
 		lazyInitialize();
 		return (ITeamContentProviderDescriptor)descriptors.get(modelProviderId);
@@ -87,10 +90,12 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		}
 	}
 
+	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.add(listener);
 	}
 
+	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
@@ -100,9 +105,11 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		for (int i = 0; i < allListeners.length; i++) {
 			final IPropertyChangeListener listener = (IPropertyChangeListener)allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					listener.propertyChange(event);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// handler by runner
 				}
@@ -114,6 +121,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		firePropertyChange(new PropertyChangeEvent(this, PROP_ENABLED_MODEL_PROVIDERS, oldEnabled, newEnabled));
 	}
 	
+	@Override
 	public void setEnabledDescriptors(ITeamContentProviderDescriptor[] descriptors) {
 		List previouslyEnabled = new ArrayList();
 		for (Iterator iter = this.descriptors.values().iterator(); iter.hasNext();) {

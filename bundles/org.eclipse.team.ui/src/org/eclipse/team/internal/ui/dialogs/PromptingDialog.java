@@ -39,6 +39,7 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	
 	public PromptingDialog(final Shell shell, IResource[] resources, IPromptCondition condition, String title, boolean allOrNothing) {
 		super(new IShellProvider() {	
+			@Override
 			public Shell getShell() {
 				return shell;
 			}	

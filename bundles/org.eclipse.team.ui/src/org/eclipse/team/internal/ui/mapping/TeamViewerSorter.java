@@ -28,6 +28,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 		this.resourceComparator = new ResourceComparator(ResourceComparator.NAME);
 	}
 
+	@Override
 	public int category(Object element) {
 		if (element instanceof ModelProvider) {
 			return 2;
@@ -40,6 +41,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 		return super.category(element);
 	}
 	
+	@Override
 	public int compare(Viewer viewer, TreePath parentPath, Object e1, Object e2) {
 		if (parentPath == null || parentPath.getSegmentCount() == 0) {
 			// We need to handle the sorting at the top level

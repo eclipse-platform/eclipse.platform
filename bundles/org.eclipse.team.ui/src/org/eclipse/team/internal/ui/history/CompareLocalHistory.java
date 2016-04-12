@@ -14,10 +14,12 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 
 public class CompareLocalHistory extends ShowLocalHistory {
 
+	@Override
 	protected boolean isCompare() {
 		return true;
 	}
 	
+	@Override
 	protected String getPromptTitle() {
 		return TeamUIMessages.CompareLocalHistory_0;
 	}

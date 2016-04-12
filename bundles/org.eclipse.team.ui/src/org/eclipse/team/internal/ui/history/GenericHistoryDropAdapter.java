@@ -30,6 +30,7 @@ public class GenericHistoryDropAdapter extends PluginDropAdapter {
 	 * want to really execute a DROP_MOVE, although we want to respond
 	 * to it.
 	 */
+	@Override
 	public void dragOver(DropTargetEvent event) {
 		if ((event.operations & DND.DROP_LINK) == DND.DROP_LINK) {
 			event.detail = DND.DROP_LINK;
@@ -42,11 +43,13 @@ public class GenericHistoryDropAdapter extends PluginDropAdapter {
 	 * want to really execute a DROP_MOVE, although we want to respond
 	 * to it.
 	 */
+	@Override
 	public void drop(DropTargetEvent event) {
 		super.drop(event);
 		event.detail = DND.DROP_LINK;
 	}
 
+	@Override
 	public boolean performDrop(Object data) {
 		if (data == null)
 			return false;
@@ -64,6 +67,7 @@ public class GenericHistoryDropAdapter extends PluginDropAdapter {
 		return false;
 	}
 
+	@Override
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
 		if (transferType != null && ResourceTransfer.getInstance().isSupportedType(transferType)) {
 			return true;
@@ -72,6 +76,7 @@ public class GenericHistoryDropAdapter extends PluginDropAdapter {
 		return super.validateDrop(target, operation, transferType);
 	}
 
+	@Override
 	protected Object getCurrentTarget() {
 		return view;
 	}

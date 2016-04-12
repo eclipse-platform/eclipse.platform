@@ -164,6 +164,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	 * This method is public so that the change can be fired 
 	 * by the containing editor input on a save.
 	 */
+	@Override
 	public void fireChange() {
 		super.fireChange();
 	}
@@ -171,6 +172,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#prepareInput(org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void prepareInput(CompareConfiguration configuration, IProgressMonitor monitor) throws CoreException {
 		configuration.setLabelProvider(this, ((ResourceCompareInputChangeNotifier)getChangeNotifier()).getLabelProvider());
 		ensureContentsCached(getAncestor(), getRight(), monitor);
@@ -179,6 +181,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#getSaveable()
 	 */
+	@Override
 	public SaveableComparison getSaveable() {
 		return null;
 	}
@@ -186,6 +189,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IFile.class || adapter == IResource.class) {
 			return ResourceDiffTree.getResourceFor(node);
@@ -200,6 +204,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#getFullPath()
 	 */
+	@Override
 	public String getFullPath() {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
 		if (resource != null)
@@ -210,6 +215,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#isCompareInputFor(java.lang.Object)
 	 */
+	@Override
 	public boolean isCompareInputFor(Object object) {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
 		IResource other = Utils.getResource(object);
@@ -221,6 +227,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IResourceProvider#getResource()
 	 */
+	@Override
 	public IResource getResource() {
 		return ResourceDiffTree.getResourceFor(node);
 	}
@@ -230,6 +237,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	 * translate them into compare input change events by calling {@link #update()}.
 	 * @return a compare input change notifier
 	 */
+	@Override
 	public CompareInputChangeNotifier getChangeNotifier() {
 		return ResourceCompareInputChangeNotifier.getChangeNotifier(context);
 	}
@@ -237,6 +245,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object other) {
 		if (other == this)
 			return true;
@@ -261,6 +270,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return getResource().hashCode();
 	}
@@ -269,6 +279,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	 * Re-obtain the diff for this compare input and update the kind and 3
 	 * contributor appropriately.
 	 */
+	@Override
 	public void update() {
 		IDiff newNode = context.getDiffTree().getDiff(getResource());
 		if (newNode == null) {
@@ -319,6 +330,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 	 * Return whether the diff associated with this input has changed.
 	 * @return whether the diff associated with this input has changed
 	 */
+	@Override
 	public boolean needsUpdate() {
 		IDiff newNode= context.getDiffTree().getDiff(getResource());
 		return newNode == null || !newNode.equals(node);

@@ -27,26 +27,32 @@ public class DialogHistoryPageSite implements IHistoryPageSite {
 		this.shell = shell;
 	}
 	
+	@Override
 	public IPageSite getWorkbenchPageSite() {
 		return null;
 	}
 
+	@Override
 	public IWorkbenchPart getPart() {
 		return null;
 	}
 
+	@Override
 	public Shell getShell() {
 		return shell;
 	}
 
+	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return selectionProvider;
 	}
 
+	@Override
 	public void setSelectionProvider(ISelectionProvider provider) {
 		this.selectionProvider = provider;
 	}
 
+	@Override
 	public void setFocus() {
 		// Nothing to do
 	}
@@ -55,10 +61,12 @@ public class DialogHistoryPageSite implements IHistoryPageSite {
 		this.toolBarManager = toolBarManager;
 	}
 
+	@Override
 	public boolean isModal() {
 		return true;
 	}
 
+	@Override
 	public IToolBarManager getToolBarManager() {
 		return toolBarManager;
 	}

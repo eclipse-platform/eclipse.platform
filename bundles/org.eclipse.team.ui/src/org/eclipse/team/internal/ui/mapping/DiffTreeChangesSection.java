@@ -60,6 +60,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		context.getDiffTree().addDiffChangeListener(this);
 		getConfiguration().addPropertyChangeListener(this);
 		jobChangeListener = new JobChangeAdapter() {
+			@Override
 			public void running(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
 					if (context.getDiffTree().isEmpty())
@@ -74,6 +75,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 					return true;
 				return false;
 			}
+			@Override
 			public void done(IJobChangeEvent event) {
 				if (isJobOfInterest(event.getJob())) {
 					if (context.getDiffTree().isEmpty())
@@ -84,6 +86,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		Job.getJobManager().addJobChangeListener(jobChangeListener);
 	}
 
+	@Override
 	public void dispose() {
 		context.getDiffTree().removeDiffChangeListener(this);
 		getConfiguration().removePropertyChangeListener(this);
@@ -91,10 +94,12 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		super.dispose();
 	}
 	
+	@Override
 	protected int getChangesCount() {
 		return context.getDiffTree().size();
 	}
 
+	@Override
 	protected long getChangesInMode(int candidateMode) {
 		long numChanges;
 		long numConflicts = context.getDiffTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK);
@@ -144,6 +149,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		return (context.getDiffTree().hasMatchingDiffs(traversals, FastDiffFilter.getStateFilter(states, mask)));
 	}
 
+	@Override
 	protected long getVisibleChangesCount() {
 		ISynchronizePageConfiguration configuration = getConfiguration();
 		if (configuration.getComparisonType() == ISynchronizePageConfiguration.TWO_WAY) {
@@ -167,6 +173,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		return getChangesInMode(currentMode);
 	}
 
+	@Override
 	protected int getCandidateMode() {
 		SynchronizePageConfiguration configuration = (SynchronizePageConfiguration)getConfiguration();
 		long outgoingChanges = context.getDiffTree().countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK);
@@ -190,6 +197,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		return configuration.getMode();
 	}
 
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		IStatus[] errors = event.getErrors();
 		if (errors.length > 0) {
@@ -201,10 +209,12 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Do nothing
 	}
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)
 				|| event.getProperty().equals(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER)) {
@@ -212,6 +222,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		}
 	}
 	
+	@Override
 	protected Composite getEmptyChangesComposite(Composite parent) {
 		if (context.getDiffTree().isEmpty()) {
 			SubscriberDiffTreeEventHandler handler = getHandler();
@@ -322,6 +333,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		
 		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_12, SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)getConfiguration().getParticipant();
 				ModelProvider[] providers = participant.getEnabledModelProviders();
@@ -376,6 +388,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			.getProperty(StartupPreferencePage.STARTUP_PREFERENCES);
 		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_4, SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				if (remember[0] && store != null) {
 					store.putValue(StartupPreferencePage.PROP_STARTUP_ACTION, StartupPreferencePage.STARTUP_ACTION_POPULATE);
@@ -387,6 +400,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		
 		link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_5, SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				if (remember[0] && store != null) {
 					store.putValue(StartupPreferencePage.PROP_STARTUP_ACTION, StartupPreferencePage.STARTUP_ACTION_SYNCHRONIZE);
@@ -406,9 +420,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			data.widthHint = 100;
 			rememberButton.setLayoutData(data);
 			rememberButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					remember[0] = rememberButton.getSelection();
 				}
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					// Do nothing
 				}
@@ -468,6 +484,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		
 		Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, new String[] { provider.getDescriptor().getLabel() }), SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				getConfiguration().setProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER, provider.getDescriptor().getId() );
 			}
@@ -477,6 +494,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		new Label(composite, SWT.NONE);
 		Hyperlink link2 = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_13, SWT.WRAP); 
 		link2.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				getConfiguration().setProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER, ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE );
 			}
@@ -486,6 +504,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		return composite;
 	}
 
+	@Override
 	public void treeEmpty(TreeViewer viewer) {
 		handleEmptyViewer();
 	}
@@ -493,6 +512,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private void handleEmptyViewer() {
 		// Override stand behavior to do our best to show something
 		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (!getContainer().isDisposed())
 					updatePage(getEmptyChangesComposite(getContainer()));
@@ -500,10 +520,12 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		});
 	}
 	
+	@Override
 	protected void calculateDescription() {
 		if (errors != null && errors.length > 0) {
 			if (!showingError) {
 				TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						updatePage(getErrorComposite(getContainer()));
 						showingError = true;
@@ -529,6 +551,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		return false;
 	}
 
+	@Override
 	public void notEmpty(TreeViewer viewer) {
 		calculateDescription();
 	}
@@ -547,6 +570,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 
 		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_8, SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				showErrors();
 			}
@@ -555,6 +579,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		
 		link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_9, SWT.WRAP); 
 		link.addHyperlinkListener(new HyperlinkAdapter() {
+			@Override
 			public void linkActivated(HyperlinkEvent e) {
 				errors = null;
 				calculateDescription();

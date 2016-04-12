@@ -47,6 +47,7 @@ public final class SynchronizationResourceMappingContext extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#isThreeWay()
 	 */
+	@Override
 	public boolean isThreeWay() {
 		return context.getType() == ISynchronizationContext.THREE_WAY;
 	}
@@ -54,6 +55,7 @@ public final class SynchronizationResourceMappingContext extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#hasRemoteChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public boolean hasRemoteChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
 		if (diff instanceof IThreeWayDiff) {
@@ -67,6 +69,7 @@ public final class SynchronizationResourceMappingContext extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#hasLocalChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
 		if (diff instanceof IThreeWayDiff) {
@@ -80,6 +83,7 @@ public final class SynchronizationResourceMappingContext extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#fetchRemoteContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
 		if (diff instanceof IThreeWayDiff) {
@@ -99,6 +103,7 @@ public final class SynchronizationResourceMappingContext extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#fetchBaseContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
 		if (diff instanceof IThreeWayDiff) {
@@ -117,6 +122,7 @@ public final class SynchronizationResourceMappingContext extends
 		return null;
 	}
 
+	@Override
 	public IResource[] fetchMembers(IContainer container, IProgressMonitor monitor) throws CoreException {
 		Set result = new HashSet();
 		IResource[] children = container.members();
@@ -144,6 +150,7 @@ public final class SynchronizationResourceMappingContext extends
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
 
+	@Override
 	public void refresh(ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
 		//context.refresh(traversals, flags, monitor);
 	}
@@ -152,6 +159,7 @@ public final class SynchronizationResourceMappingContext extends
 		return context;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		Set projects = new HashSet();
 		IResource[] roots = context.getScope().getRoots();

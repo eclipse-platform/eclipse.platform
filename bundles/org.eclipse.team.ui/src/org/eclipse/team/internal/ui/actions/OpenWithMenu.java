@@ -76,6 +76,7 @@ public class OpenWithMenu extends ContributionItem {
 	private static final Comparator comparer = new Comparator() {
 		private Collator collator = Collator.getInstance();
 
+		@Override
 		public int compare(Object arg0, Object arg1) {
 			String s1 = ((IEditorDescriptor) arg0).getLabel();
 			String s2 = ((IEditorDescriptor) arg1).getLabel();
@@ -164,6 +165,7 @@ public class OpenWithMenu extends ContributionItem {
 			menuItem.setImage(image);
 		}
 		Listener listener = new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				switch (event.type) {
 				case SWT.Selection:
@@ -193,6 +195,7 @@ public class OpenWithMenu extends ContributionItem {
 		final MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
 		menuItem.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_Other);
 		Listener listener = new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				switch (event.type) {
 				case SWT.Selection:
@@ -216,6 +219,7 @@ public class OpenWithMenu extends ContributionItem {
 		menuItem.addListener(SWT.Selection, listener);
 	}
 
+	@Override
 	public void fill(Menu menu, int index) {
 		final IFileRevision fileRevision = getFileRevision();
 		if (fileRevision == null) {
@@ -310,6 +314,7 @@ public class OpenWithMenu extends ContributionItem {
 				.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_DefaultEditorDescription);
 
 		Listener listener = new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				switch (event.type) {
 				case SWT.Selection:
@@ -395,6 +400,7 @@ public class OpenWithMenu extends ContributionItem {
 	/*
 	 * (non-Javadoc) Returns whether this menu is dynamic.
 	 */
+	@Override
 	public boolean isDynamic() {
 		return true;
 	}

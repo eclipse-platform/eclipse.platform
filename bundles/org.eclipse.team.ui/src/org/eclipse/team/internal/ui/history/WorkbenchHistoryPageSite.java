@@ -27,34 +27,42 @@ public class WorkbenchHistoryPageSite implements IHistoryPageSite {
 		this.site = site;
 	}
 
+	@Override
 	public IPageSite getWorkbenchPageSite() {
 		return site;
 	}
 
+	@Override
 	public IWorkbenchPart getPart() {
 		return part;
 	}
 
+	@Override
 	public Shell getShell() {
 		return site.getShell();
 	}
 
+	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
 
+	@Override
 	public void setSelectionProvider(ISelectionProvider provider) {
 		site.setSelectionProvider(provider);
 	}
 
+	@Override
 	public void setFocus() {
 //		 Nothing to do
 	}
 
+	@Override
 	public boolean isModal() {
 		return false;
 	}
 
+	@Override
 	public IToolBarManager getToolBarManager() {
 		return site.getActionBars().getToolBarManager();
 	}

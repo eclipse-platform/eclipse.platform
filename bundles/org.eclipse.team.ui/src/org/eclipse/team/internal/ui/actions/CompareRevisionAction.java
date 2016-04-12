@@ -44,6 +44,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		this(TeamUIMessages.LocalHistoryPage_CompareAction, page);
 	}
 
+	@Override
 	public void run() {
 		IStructuredSelection structSel = selection;
 		
@@ -175,11 +176,13 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link Utils#findReusableCompareEditor(CompareEditorInput, IWorkbenchPage, Class[])}
 	 */
+	@Deprecated
 	public static IEditorPart findReusableCompareEditor(IWorkbenchPage workbenchPage) {
 		return Utils.findReusableCompareEditor(null, workbenchPage,
 				new Class[] { CompareFileRevisionEditorInput.class });
 	}
 	
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		this.selection = selection;
 		if (selection.size() == 1){

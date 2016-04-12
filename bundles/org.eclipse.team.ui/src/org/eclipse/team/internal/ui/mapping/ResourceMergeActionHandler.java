@@ -115,12 +115,15 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 		return (ISynchronizationContext)getConfiguration().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
 	}
 	
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}
 	
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				updateEnablement(getStructuredSelection());
 			}
@@ -128,9 +131,11 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 		
 	}
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == ISynchronizePageConfiguration.P_MODE) {
 			Utils.syncExec(new Runnable() {
+				@Override
 				public void run() {
 					updateEnablement(getStructuredSelection());
 				}

@@ -41,6 +41,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#addCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
+	@Override
 	public void addCompareInputChangeListener(
 			ICompareInputChangeListener listener) {
 		if (!containsListener(listener)) {
@@ -52,6 +53,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
+	@Override
 	public void removeCompareInputChangeListener(
 			ICompareInputChangeListener listener) {
 		if (containsListener(listener)) {
@@ -70,9 +72,11 @@ public abstract class AbstractCompareInput implements ICompareInput {
 			for (int i = 0; i < allListeners.length; i++) {
 				final ICompareInputChangeListener listener = (ICompareInputChangeListener)allListeners[i];
 				SafeRunner.run(new ISafeRunnable() {
+					@Override
 					public void run() throws Exception {
 						listener.compareInputChanged(AbstractCompareInput.this);
 					}
+					@Override
 					public void handleException(Throwable exception) {
 						// Logged by the safe runner
 					}
@@ -96,6 +100,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#copy(boolean)
 	 */
+	@Override
 	public void copy(boolean leftToRight) {
 		Assert.isTrue(false, "Copy is not support by this type of compare input"); //$NON-NLS-1$
 	}
@@ -103,6 +108,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getAncestor()
 	 */
+	@Override
 	public ITypedElement getAncestor() {
 		return ancestor;
 	}
@@ -110,6 +116,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getImage()
 	 */
+	@Override
 	public Image getImage() {
 		return getMainElement().getImage();
 	}
@@ -133,6 +140,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getKind()
 	 */
+	@Override
 	public int getKind() {
 		return kind;
 	}
@@ -148,6 +156,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getLeft()
 	 */
+	@Override
 	public ITypedElement getLeft() {
 		return left;
 	}
@@ -155,6 +164,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getName()
 	 */
+	@Override
 	public String getName() {
 		return getMainElement().getName();
 	}
@@ -162,6 +172,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.ICompareInput#getRight()
 	 */
+	@Override
 	public ITypedElement getRight() {
 		return right;
 	}

@@ -25,6 +25,7 @@ public class ResourceModelScopeParticipantFactory implements
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeParticipantFactory#createParticipant(org.eclipse.core.resources.mapping.ModelProvider, org.eclipse.team.core.mapping.provider.ResourceMappingScopeManager)
 	 */
+	@Override
 	public ISynchronizationScopeParticipant createParticipant(
 			ModelProvider provider, ISynchronizationScope scope) {
 		return new ResourceModelScopeParticipant(this.provider, scope);

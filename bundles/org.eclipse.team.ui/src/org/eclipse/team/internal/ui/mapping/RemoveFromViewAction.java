@@ -42,10 +42,12 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
+	@Override
 	public void run() {
 		if (confirmRemove()) {
 			try {
 				PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException,
 							InterruptedException {
 						try {
@@ -113,6 +115,7 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ModelParticipantAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		// Only enable if the selected elements adapt to IResource
 		if (selection.isEmpty())

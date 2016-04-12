@@ -48,6 +48,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getDelegateContentProvider()
 	 */
+	@Override
 	protected ITreeContentProvider getDelegateContentProvider() {
 		if (provider == null)
 			provider = new WorkbenchContentProvider();
@@ -57,6 +58,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelProviderId()
 	 */
+	@Override
 	protected String getModelProviderId() {
 		return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 	}
@@ -64,6 +66,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelRoot()
 	 */
+	@Override
 	protected Object getModelRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
@@ -71,6 +74,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#isInScope(org.eclipse.team.core.mapping.IResourceMappingScope, java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	protected boolean isInScope(ISynchronizationScope scope, Object parent, Object elementOrPath) {
 		Object object = internalGetElement(elementOrPath);
 		if (object instanceof IResource) {
@@ -101,6 +105,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
 	 */
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(this);
@@ -109,6 +114,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (provider != null)
 			provider.dispose();
@@ -116,6 +122,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		TeamUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(this);
 	}
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT)) {
 			refresh();
@@ -126,6 +133,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getChildrenInContext(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object, java.lang.Object[])
 	 */
+	@Override
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parentOrPath, Object[] children) {
 		Object parent = internalGetElement(parentOrPath);
 		if (parent instanceof IResource) {
@@ -161,6 +169,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return result.toArray(new Object[result.size()]);
 	}
 	
+	@Override
 	protected ResourceTraversal[] getTraversals(ISynchronizationContext context, Object elementOrPath) {
 		Object object = internalGetElement(elementOrPath);
 		ISynchronizationScope scope = context.getScope();
@@ -242,6 +251,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#hasChildrenInContext(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
 	 */
+	@Override
 	protected boolean hasChildrenInContext(ISynchronizationContext context, Object elementOrPath) {
 		return getTraversalCalculator().hasChildren(context, elementOrPath);
 	}
@@ -249,8 +259,10 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, final int property, final IPath[] paths) {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				ISynchronizationContext context = getContext();
 				if (context != null) {
@@ -301,6 +313,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return (StructuredViewer)getViewer();
 	}
 	
+	@Override
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
 			// Put the resource projects directly under the context
@@ -309,6 +322,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return super.getChildren(parent);
 	}
 	
+	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof ISynchronizationContext) {
 			// Put the resource projects directly under the context
@@ -317,6 +331,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return super.hasChildren(element);
 	}
 	
+	@Override
 	public Object[] getElements(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
 			// Put the resource projects directly under the context
@@ -325,6 +340,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return super.getElements(parent);
 	}
 	
+	@Override
 	public Object getParent(Object elementOrPath) {
 		Object element = internalGetElement(elementOrPath);
 		if (element instanceof IProject) {
@@ -335,8 +351,10 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return super.getParent(elementOrPath);
 	}
 	
+	@Override
 	protected void refresh() {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				TreeViewer treeViewer = ((TreeViewer)getViewer());
 				treeViewer.refresh();
@@ -355,18 +373,22 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return ResourceModelTraversalCalculator.getTraversalCalculator(getConfiguration());
 	}
 	
+	@Override
 	protected boolean isVisible(IDiff diff) {
 		return super.isVisible(diff);
 	}
 
+	@Override
 	public Object[] getChildren(TreePath parentPath) {
 		return getChildren((Object)parentPath);
 	}
 
+	@Override
 	public boolean hasChildren(TreePath path) {
 		return hasChildren((Object)path);
 	}
 
+	@Override
 	public TreePath[] getParents(Object element) {
 		TreePath path = getTraversalCalculator().getParentPath(getContext(), getModelProvider(), element);
 		if (path != null) {
@@ -390,8 +412,10 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return null;
 	}
 	
+	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
 		Utils.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				handleChange(event);
 			}
@@ -467,6 +491,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	private boolean hasVisibleChanges(IDiffTree tree, IResource resource) {
 		return tree.hasMatchingDiffs(resource.getFullPath(), new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				return isVisible(diff);
 			}

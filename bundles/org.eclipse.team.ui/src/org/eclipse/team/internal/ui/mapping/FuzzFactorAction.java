@@ -32,6 +32,7 @@ public class FuzzFactorAction extends Action {
 		subscriber = (ApplyPatchSubscriber) context.getSubscriber();
 	}
 
+	@Override
 	public void run() {
 		FuzzFactorDialog dialog = new FuzzFactorDialog(Display.getCurrent()
 				.getActiveShell(), subscriber.getPatcher());

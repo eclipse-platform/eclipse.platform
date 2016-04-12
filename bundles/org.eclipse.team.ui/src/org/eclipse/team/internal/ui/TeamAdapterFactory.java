@@ -33,6 +33,7 @@ public class TeamAdapterFactory implements IAdapterFactory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if(adaptableObject instanceof DiffNode && adapterType == IWorkbenchAdapter.class) {
 			return diffNodeAdapter;
@@ -65,6 +66,7 @@ public class TeamAdapterFactory implements IAdapterFactory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
+	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { 
 				IWorkbenchAdapter.class,

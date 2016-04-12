@@ -18,6 +18,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 public class ResourceMappingLabelProvider extends LabelProvider {
 	WorkbenchLabelProvider provider = new WorkbenchLabelProvider();
+	@Override
 	public String getText(Object element) {
 		if (element instanceof ResourceMapping) {
 			ResourceMapping mapping = (ResourceMapping) element;
@@ -35,6 +36,7 @@ public class ResourceMappingLabelProvider extends LabelProvider {
             return text;
         return super.getText(element);
 	}
+	@Override
 	public Image getImage(Object element) {
         Image image = provider.getImage(element);
         if (image != null)
@@ -47,7 +49,8 @@ public class ResourceMappingLabelProvider extends LabelProvider {
 		}
 		return super.getImage(element);
 	}
-    public void dispose() {
+    @Override
+	public void dispose() {
         provider.dispose();
         super.dispose();
     }

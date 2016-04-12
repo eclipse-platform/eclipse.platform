@@ -158,6 +158,7 @@ public class ProjectSetImporter {
 									MessageDialog.QUESTION, buttons, 0);
 							
 							shell.getDisplay().syncExec(new Runnable() {
+								@Override
 								public void run() {
 									 dialog.open();
 								}
@@ -280,10 +281,12 @@ public class ProjectSetImporter {
 		public AdviceDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
 			super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, defaultIndex);
 		}
+		@Override
 		protected Control createCustomArea(Composite parent) {
 			final Button checkBox = new Button(parent, SWT.CHECK);
 			checkBox.setText(TeamUIMessages.ImportProjectSetDialog_duplicatedWorkingSet_applyToAll);
 			checkBox.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					applyToAll = checkBox.getSelection();
 				}

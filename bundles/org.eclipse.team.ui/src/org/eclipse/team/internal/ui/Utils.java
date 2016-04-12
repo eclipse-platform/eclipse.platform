@@ -144,9 +144,11 @@ public class Utils {
 	}
 
 	public static final Comparator resourceComparator = new Comparator() {
+		@Override
 		public boolean equals(Object obj) {
 			return false;
 		}
+		@Override
 		public int compare(Object o1, Object o2) {
 				IResource resource0 = (IResource) o1;
 				IResource resource1 = (IResource) o2;
@@ -238,6 +240,7 @@ public class Utils {
 			final Exception[] holder = new Exception[1];
 			BusyIndicator.showWhile(parent.getDisplay(), new Runnable() {
 
+				@Override
 				public void run() {
 					try {
 						runnable.run(new NullProgressMonitor());
@@ -288,6 +291,7 @@ public class Utils {
 			if (syncIfNecessary) {
 				final Shell[] result = new Shell[] { null };
 				Runnable r = new Runnable() {
+					@Override
 					public void run() {
 						result[0] = new Shell(Display.getDefault());
 					}
@@ -305,6 +309,7 @@ public class Utils {
 	 */
 	public static void handle(final Throwable exception) {
 		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				IStatus error = null;
 				Throwable t = exception;
@@ -410,6 +415,7 @@ public class Utils {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link #updateLabels(SyncInfo, CompareConfiguration, IProgressMonitor)}
 	 */
+	@Deprecated
 	public static void updateLabels(SyncInfo sync, CompareConfiguration config) {
 		updateLabels(sync, config, null);
 	}
@@ -851,6 +857,7 @@ public class Utils {
 		final Control ctrl = v.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 						BusyIndicator.showWhile(ctrl.getDisplay(), r);
@@ -869,6 +876,7 @@ public class Utils {
 	public static void syncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 						BusyIndicator.showWhile(ctrl.getDisplay(), r);
@@ -881,6 +889,7 @@ public class Utils {
 	public static void asyncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 						BusyIndicator.showWhile(ctrl.getDisplay(), r);

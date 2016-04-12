@@ -52,14 +52,16 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createMainDialogArea(org.eclipse.swt.widgets.Composite)
          */
-        protected void createMainDialogArea(Composite parent) {
+        @Override
+		protected void createMainDialogArea(Composite parent) {
 			createWrappingLabel(parent, TeamUIMessages.DefaultUIFileModificationValidator_1); 
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
          */
-        protected Composite createDropDownDialogArea(Composite parent) {
+        @Override
+		protected Composite createDropDownDialogArea(Composite parent) {
 			Composite composite = createComposite(parent);
 			createWrappingLabel(composite, TeamUIMessages.DefaultUIFileModificationValidator_2); 
 			org.eclipse.swt.widgets.List fileList = new org.eclipse.swt.widgets.List(composite, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);	 
@@ -78,28 +80,32 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
          */
-        protected void updateEnablements() {
+        @Override
+		protected void updateEnablements() {
             // Nothing to do
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeCancelButton()
          */
-        protected boolean includeCancelButton() {
+        @Override
+		protected boolean includeCancelButton() {
             return false;
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeOkButton()
          */
-        protected boolean includeOkButton() {
+        @Override
+		protected boolean includeOkButton() {
             return false;
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
          */
-        protected void createButtonsForButtonBar(Composite parent) {
+        @Override
+		protected void createButtonsForButtonBar(Composite parent) {
             createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
             createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
             super.createButtonsForButtonBar(parent);
@@ -108,7 +114,8 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#buttonPressed(int)
          */
-        protected void buttonPressed(int id) {
+        @Override
+		protected void buttonPressed(int id) {
             if (IDialogConstants.YES_ID == id)
                 okPressed();
             else if (IDialogConstants.NO_ID == id)
@@ -121,20 +128,23 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.DefaultFileModificationValidator#validateEdit(org.eclipse.core.resources.IFile[], org.eclipse.core.resources.team.FileModificationValidationContext)
      */
-    public IStatus validateEdit(final IFile[] allFiles, FileModificationValidationContext context) {
+    @Override
+	public IStatus validateEdit(final IFile[] allFiles, FileModificationValidationContext context) {
     	final IFile[] readOnlyFiles = getReadOnlyFiles(allFiles);
         if (readOnlyFiles.length > 0 && context != null) {
             final Shell shell = getShell(context);
             final boolean[] ok = new boolean[] { false };
             if (readOnlyFiles.length == 1) {
                 shell.getDisplay().syncExec(new Runnable() {
-                    public void run() {
+                    @Override
+					public void run() {
                         ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })); // 
                     }
                 });
             } else {
                 shell.getDisplay().syncExec(new Runnable() {
-                    public void run() {
+                    @Override
+					public void run() {
                         ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles);
                     }
                 });
@@ -156,6 +166,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 		return Utils.getShell(null, true);
 	}
 
+	@Override
 	public IStatus validateSave(IFile file) {
     	if (file.isReadOnly() && isMakeWrittableWhenContextNotProvided()) {
     		IFile[] readOnlyFiles = new IFile[] { file };

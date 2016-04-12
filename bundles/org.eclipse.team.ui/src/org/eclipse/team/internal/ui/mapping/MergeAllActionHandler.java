@@ -38,6 +38,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
 	 */
+	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = createOperation();
@@ -60,6 +61,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		synchronized (this) {
 			operation = null;
@@ -71,6 +73,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
 	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}
@@ -78,11 +81,13 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#dispose()
 	 */
+	@Override
 	public void dispose() {
 		getContext().getDiffTree().removeDiffChangeListener(this);
 		super.dispose();
 	}
 
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (saveDirtyEditors() && promptToUpdate())
 			return super.execute(event);
@@ -156,6 +161,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 			return false;
 		final boolean[] result = new boolean[] {true};
 		TeamUIPlugin.getStandardDisplay().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				String sizeString = Long.toString(count);
 				String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) : 

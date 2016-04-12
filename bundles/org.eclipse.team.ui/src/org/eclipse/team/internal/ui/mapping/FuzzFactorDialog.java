@@ -44,6 +44,7 @@ public class FuzzFactorDialog extends Dialog {
 		return fuzzFactor;
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
@@ -68,6 +69,7 @@ public class FuzzFactorDialog extends Dialog {
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		valueText.setLayoutData(data);
 		valueText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				validateInput();
 			}
@@ -84,6 +86,7 @@ public class FuzzFactorDialog extends Dialog {
         data.widthHint = Math.max(widthHint, minSize.x);
 		guessButton.setLayoutData(data);
 		guessButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				patcher.setFuzz(-1);
 				int fuzz = guessFuzzFactor();
@@ -136,6 +139,7 @@ public class FuzzFactorDialog extends Dialog {
 		}
 	}
 
+	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(TeamUIMessages.FuzzFactorDialog_title);
@@ -146,6 +150,7 @@ public class FuzzFactorDialog extends Dialog {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true,
 					new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) {
 							result[0] = patcher.guessFuzzFactor(monitor);
 						}

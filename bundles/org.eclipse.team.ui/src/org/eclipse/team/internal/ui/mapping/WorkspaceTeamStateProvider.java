@@ -56,6 +56,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorationEnabled(java.lang.Object)
 	 */
+	@Override
 	public final boolean isDecorationEnabled(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
 		if (provider != null)
@@ -66,6 +67,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorated(java.lang.Object)
 	 */
+	@Override
 	public boolean hasDecoratedState(Object element) throws CoreException {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
 		if (provider != null)
@@ -76,6 +78,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#getDecoratedStateMask(java.lang.Object)
 	 */
+	@Override
 	public final int getDecoratedStateMask(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
 		if (provider != null)
@@ -86,6 +89,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedProperties(java.lang.Object)
 	 */
+	@Override
 	public String[] getDecoratedProperties(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
 		if (provider != null)
@@ -97,6 +101,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#getState(java.lang.Object, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -108,6 +113,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getResourceMappingContext(java.lang.Object)
 	 */
+	@Override
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
 		if (provider != null)
@@ -190,6 +196,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeListener#decoratedStateChanged(org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent)
 	 */
+	@Override
 	public void teamStateChanged(ITeamStateChangeEvent event) {
 		fireStateChangeEvent(event);
 	}
@@ -197,6 +204,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerUnmapped(org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public void providerUnmapped(IProject project) {
 		// We don't need to worry about this
 	}
@@ -204,6 +212,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerMapped(org.eclipse.team.core.RepositoryProvider)
 	 */
+	@Override
 	public void providerMapped(RepositoryProvider provider) {
 		String id = provider.getID();
 		listenerForStateChangesForId(id);
@@ -212,6 +221,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
 		IResourceDelta[] projectDeltas = delta

@@ -35,12 +35,14 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	private Action showAllFlatAction;
 	
 	private class MenuCreator implements IMenuCreator {
+		@Override
 		public void dispose() {
 			if(menuManager != null) {
 				menuManager.dispose();
 				menuManager = null;
 			}
 		}
+		@Override
 		public Menu getMenu(Control parent) {
 			Menu fMenu = null;
 			if (menuManager == null) {
@@ -63,6 +65,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 			return fMenu;
 		}
 
+		@Override
 		public Menu getMenu(Menu parent) {
 			return null;
 		}
@@ -72,6 +75,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		Utils.initAction(this, "action.pickModels."); //$NON-NLS-1$
 		this.configuration = configuration;
 		listener = new org.eclipse.jface.util.IPropertyChangeListener() {
+			@Override
 			public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
 				if (event.getProperty() == ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER) {
 					update();
@@ -85,6 +89,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		TeamUI.getTeamContentProviderManager().addPropertyChangeListener(listener);
 		getSynchronizationContext().getScope().addScopeChangeListener(this);
 		showAllAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_0, IAction.AS_RADIO_BUTTON) { 
+			@Override
 			public void run() {
 				ModelSelectionDropDownAction.this.configuration.setProperty(
 						ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER,
@@ -94,6 +99,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		//showAllAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_HIERARCHICAL));
 		//showAllAction.setActionDefinitionId("org.eclipse.team.ui.showAllModels"); //$NON-NLS-1$
 		showAllFlatAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_2, IAction.AS_CHECK_BOX) { 
+			@Override
 			public void run() {
 				boolean checked = showAllFlatAction.isChecked();
 				ModelSelectionDropDownAction.this.configuration.setProperty(
@@ -205,6 +211,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
+	@Override
 	public void run() {
 		ModelProvider next = getNextProvider();
 		if (next == null) return;
@@ -215,6 +222,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ISynchronizationScopeChangeListener#scopeChanged(org.eclipse.team.core.mapping.ISynchronizationScope, org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.core.resources.mapping.ResourceTraversal[])
 	 */
+	@Override
 	public void scopeChanged(ISynchronizationScope scope, ResourceMapping[] newMappings, ResourceTraversal[] newTraversals) {
 		if (newMappings.length > 0) {
 			rebuildMenu();
@@ -224,6 +232,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	private void rebuildMenu() {
 		Display display = TeamUIPlugin.getStandardDisplay();
 		display.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if(menuManager != null) {
 					menuManager.dispose();

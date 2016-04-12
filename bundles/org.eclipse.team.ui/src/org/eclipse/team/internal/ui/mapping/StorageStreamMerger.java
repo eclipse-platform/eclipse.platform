@@ -32,6 +32,7 @@ public class StorageStreamMerger implements IStorageMerger {
 		this.merger = merger;
 	}
 	
+	@Override
 	public IStatus merge(OutputStream output, String outputEncoding, IStorage ancestorStorage, IStorage targetStorage, IStorage otherStorage, IProgressMonitor monitor) throws CoreException {
 		InputStream ancestorStream = null;
 		InputStream remoteStream = null;
@@ -89,6 +90,7 @@ public class StorageStreamMerger implements IStorageMerger {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IStorageMerger#canMergeWithoutAncestor()
 	 */
+	@Override
 	public boolean canMergeWithoutAncestor() {
 		return false;
 	}

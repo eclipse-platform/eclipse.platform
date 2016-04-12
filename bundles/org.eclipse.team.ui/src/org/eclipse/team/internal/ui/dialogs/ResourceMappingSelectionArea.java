@@ -60,7 +60,8 @@ public class ResourceMappingSelectionArea extends DialogArea {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
      */
-    public void createArea(Composite parent) {
+    @Override
+	public void createArea(Composite parent) {
         Composite composite = createComposite(parent, 1, true);
         GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 0;
@@ -82,7 +83,8 @@ public class ResourceMappingSelectionArea extends DialogArea {
         viewer.setInput(new AdaptableList(mappings));
         if (isSupportsSelection()) {
 	        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-	            public void selectionChanged(SelectionChangedEvent event) {
+	            @Override
+				public void selectionChanged(SelectionChangedEvent event) {
 	                ResourceMapping oldSelection = selectedMapping;
 	                selectedMapping = internalGetSelectedMapping();
 	                if (oldSelection != selectedMapping)
@@ -97,7 +99,8 @@ public class ResourceMappingSelectionArea extends DialogArea {
 	private void initializeCheckboxViewer(Composite composite) {
 		final CheckboxTableViewer checkboxViewer = getCheckboxTableViewer();
 		checkboxViewer.addCheckStateListener(new ICheckStateListener() {
-        	public void checkStateChanged(CheckStateChangedEvent event) {
+        	@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
         		ResourceMapping[] oldMappings = checkedMappings;
         		checkedMappings = internalGetCheckedMappings();
         		if (oldMappings != checkedMappings)
@@ -113,7 +116,8 @@ public class ResourceMappingSelectionArea extends DialogArea {
         selectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_0); 
         selectAll.setLayoutData(new GridData(GridData.FILL_BOTH));
         selectAll.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
             	checkboxViewer.setAllChecked(true);
             }
         });
@@ -122,7 +126,8 @@ public class ResourceMappingSelectionArea extends DialogArea {
         deselectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_1); 
         deselectAll.setLayoutData(new GridData(GridData.FILL_BOTH));
         deselectAll.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
             	checkboxViewer.setAllChecked(false);
             }
         });

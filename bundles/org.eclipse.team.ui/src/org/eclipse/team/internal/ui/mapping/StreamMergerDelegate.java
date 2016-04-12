@@ -27,6 +27,7 @@ public class StreamMergerDelegate implements IStreamMergerDelegate {
 		TeamPlugin.getPlugin().setMergerDelegate(new StreamMergerDelegate());
 	}
 	
+	@Override
 	public IStorageMerger findMerger(IStorage target) {
 		try {
 			IContentType type = DelegatingStorageMerger.getContentType(target);

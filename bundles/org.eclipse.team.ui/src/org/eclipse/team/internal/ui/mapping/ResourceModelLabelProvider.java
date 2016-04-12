@@ -35,6 +35,7 @@ public class ResourceModelLabelProvider extends
 		SynchronizationLabelProvider implements IFontProvider, IResourceChangeListener, ITreePathLabelProvider {
 
 	public static final FastDiffFilter CONFLICT_FILTER = new FastDiffFilter() {
+		@Override
 		public boolean select(IDiff diff) {
 			if (diff instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) diff;
@@ -48,6 +49,7 @@ public class ResourceModelLabelProvider extends
 	private ResourceModelContentProvider contentProvider;
 	private ImageManager localImageManager;
 
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		ITreeContentProvider aContentProvider = site.getExtension().getContentProvider();
 		if (aContentProvider instanceof ResourceModelContentProvider) {
@@ -57,6 +59,7 @@ public class ResourceModelLabelProvider extends
 		super.init(site);
 	}
 	
+	@Override
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (localImageManager != null)
@@ -69,6 +72,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.SynchronizationOperationLabelProvider#getBaseLabelProvider()
 	 */
+	@Override
 	protected ILabelProvider getDelegateLabelProvider() {
 		if (provider == null)
 			provider = new WorkbenchLabelProvider();
@@ -78,6 +82,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.AbstractSynchronizationLabelProvider#getSyncDelta(java.lang.Object)
 	 */
+	@Override
 	protected IDiff getDiff(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
 		IResourceDiffTree tree = getDiffTree(elementOrPath);
@@ -99,6 +104,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isIncludeOverlays()
 	 */
+	@Override
 	protected boolean isIncludeOverlays() {
 		return true;
 	}
@@ -106,6 +112,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isBusy(java.lang.Object)
 	 */
+	@Override
 	protected boolean isBusy(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
 		IResourceDiffTree tree = getDiffTree(elementOrPath);
@@ -125,6 +132,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#hasDecendantConflicts(java.lang.Object)
 	 */
+	@Override
 	protected boolean hasDecendantConflicts(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
 		IResourceDiffTree tree = getDiffTree(elementOrPath);
@@ -147,6 +155,7 @@ public class ResourceModelLabelProvider extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		String[] markerTypes = new String[] {IMarker.PROBLEM};
 		final Set handledResources = new HashSet();
@@ -173,6 +182,7 @@ public class ResourceModelLabelProvider extends
 
 	protected void updateLabels(final Object[] resources) {
 		Utils.asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				contentProvider.getStructuredViewer().update(
 						resources, null);
@@ -180,6 +190,7 @@ public class ResourceModelLabelProvider extends
 		}, contentProvider.getStructuredViewer());
 	}
 	
+	@Override
 	protected String getDelegateText(Object elementOrPath) {
 		if (getConfiguration() != null) {
 			String label = getTraversalCalculator().getLabel(elementOrPath);
@@ -189,6 +200,7 @@ public class ResourceModelLabelProvider extends
 		return super.getDelegateText(internalGetElement(elementOrPath));
 	}
 	
+	@Override
 	protected Image getDelegateImage(Object elementOrPath) {
 		if (getConfiguration() != null && getTraversalCalculator().isCompressedFolder(elementOrPath)) {
 			return getImageManager().getImage(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER));
@@ -212,6 +224,7 @@ public class ResourceModelLabelProvider extends
 		return (ISynchronizePageConfiguration)getExtensionSite().getExtensionStateModel().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_PAGE_CONFIGURATION);
 	}
 	
+	@Override
 	public void updateLabel(ViewerLabel label, TreePath elementPath) {
 		label.setImage(getImage(elementPath));
 		label.setText(getText(elementPath));

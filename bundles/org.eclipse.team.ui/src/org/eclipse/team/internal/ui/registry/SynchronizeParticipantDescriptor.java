@@ -55,14 +55,17 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	 * 
 	 * @return the description
 	 */
+	@Override
 	public String getDescription() {
 		return description;
 	}
 	
+	@Override
 	public String getId() {
 		return id;
 	}
 	
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		if (imageDescriptor != null)
 			return imageDescriptor;
@@ -73,6 +76,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 		return imageDescriptor;
 	}
 
+	@Override
 	public String getName() {
 		return label;
 	}
@@ -80,6 +84,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantDescriptor#isPersistent()
 	 */
+	@Override
 	public boolean isPersistent() {
 		return persistent;
 	}
@@ -114,6 +119,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	 * Returns a string representation of this descriptor. For debugging
 	 * purposes only.
 	 */
+	@Override
 	public String toString() {
 		return "Synchronize Participant(" + getId() + ")"; //$NON-NLS-2$//$NON-NLS-1$
 	}

@@ -108,6 +108,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			final Object [] ret = new Object[1];
 			final CoreException [] exc = new CoreException[1];
 			BusyIndicator.showWhile(null, new Runnable() {
+				@Override
 				public void run() {
 					try {
 						ret[0] = element.createExecutableExtension(classAttribute);
@@ -148,6 +149,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	/**
 	 * Initializes the preferences for this plugin if necessary.
 	 */
+	@Override
 	protected void initializeDefaultPluginPreferences() {
 		IPreferenceStore store = getPreferenceStore();
 		store.setDefault(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL, false);
@@ -212,6 +214,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	/**
 	 * @see Plugin#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
@@ -230,11 +233,13 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		IPreferenceStore store = getPreferenceStore();
 		if (store.getBoolean(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME)) {
 			Job capabilityInitializer = new Job("") { //$NON-NLS-1$
+				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					TeamCapabilityHelper.getInstance();
 					getPreferenceStore().setValue(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME, false);
 					return Status.OK_STATUS;
 				}
+				@Override
 				public boolean shouldRun() {
 				    // Only initialize the capability helper if the UI is running (bug 76348)
 				    return PlatformUI.isWorkbenchRunning();
@@ -251,6 +256,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	/* (non-Javadoc)
 	 * @see Plugin#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			// unregister debug options listener

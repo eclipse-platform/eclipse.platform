@@ -38,6 +38,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#save(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void save(ResourceMapping[] mappings, IMemento memento) {
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -62,6 +63,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#restore(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public ResourceMapping[] restore(IMemento memento) {
 		IMemento[] children = memento.getChildren(RESOURCES);
 		List result = new ArrayList();

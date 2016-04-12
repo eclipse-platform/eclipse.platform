@@ -82,7 +82,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
          */
-        public Object[] getChildren(Object o) {
+        @Override
+		public Object[] getChildren(Object o) {
             ResourceTraversal[] traversals = getTraversals();
             List result = new ArrayList();
             for (int i = 0; i < traversals.length; i++) {
@@ -104,7 +105,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
          */
-        public ImageDescriptor getImageDescriptor(Object o) {
+        @Override
+		public ImageDescriptor getImageDescriptor(Object o) {
             o = mapping;
             IWorkbenchAdapter workbenchAdapter = getWorkbenchAdapter((IAdaptable)o);
             if (workbenchAdapter == null) {
@@ -123,21 +125,24 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
          */
-        public String getLabel(Object o) {
+        @Override
+		public String getLabel(Object o) {
             return ResourceMappingResourceDisplayArea.getLabel(mapping);  
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
          */
-        public Object getParent(Object o) {
+        @Override
+		public Object getParent(Object o) {
             return null;
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
          */
-        public Object getAdapter(Class adapter) {
+        @Override
+		public Object getAdapter(Class adapter) {
             if (adapter == IWorkbenchAdapter.class)
                 return this;
             return null;
@@ -163,7 +168,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
          */
-        public Object[] getChildren(Object o) {
+        @Override
+		public Object[] getChildren(Object o) {
             if (traversal.getDepth() == IResource.DEPTH_INFINITE) {
                 return getChildren(true);
             } else if (traversal.getDepth() == IResource.DEPTH_ONE && isTraversalRoot(resource)) {
@@ -202,7 +208,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
          */
-        public ImageDescriptor getImageDescriptor(Object object) {
+        @Override
+		public ImageDescriptor getImageDescriptor(Object object) {
             IWorkbenchAdapter workbenchAdapter = getWorkbenchAdapter(resource);
             if (workbenchAdapter == null)
                 return null;
@@ -212,7 +219,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
          */
-        public String getLabel(Object o) {
+        @Override
+		public String getLabel(Object o) {
             if (resource.getType() != IResource.PROJECT && isTraversalRoot(resource))
                 return resource.getFullPath().toString();
             IWorkbenchAdapter workbenchAdapter = getWorkbenchAdapter(resource);
@@ -228,14 +236,16 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
          */
-        public Object getParent(Object o) {
+        @Override
+		public Object getParent(Object o) {
             return parent;
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
          */
-        public Object getAdapter(Class adapter) {
+        @Override
+		public Object getAdapter(Class adapter) {
             if (adapter == IWorkbenchAdapter.class)
                 return this;
             return null;
@@ -261,7 +271,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
      */
-    public void createArea(Composite parent) {
+    @Override
+	public void createArea(Composite parent) {
         Composite composite = createComposite(parent, 1, true);
         
         label = createWrappingLabel(composite, message, 1);
@@ -272,7 +283,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         viewer.setContentProvider(new WorkbenchContentProvider());
         viewer.setLabelProvider(new WorkbenchLabelProvider());
         viewer.setComparator(new ResourceComparator(ResourceComparator.NAME) {
-            public int compare(Viewer viewer, Object o1, Object o2) {
+            @Override
+			public int compare(Viewer viewer, Object o1, Object o2) {
                 if (o1 instanceof ResourceTraversalElement && o2 instanceof ResourceTraversalElement) {
                     ResourceTraversalElement e1 = (ResourceTraversalElement) o1;
                     ResourceTraversalElement e2 = (ResourceTraversalElement) o2;
@@ -318,7 +330,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         final Map result = new HashMap();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                @Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         monitor.beginTask(null, IProgressMonitor.UNKNOWN);
                         ResourceTraversal[] traversals = mapping.getTraversals(context, Policy.subMonitorFor(monitor, IProgressMonitor.UNKNOWN));
@@ -335,7 +348,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
                 private void buildFilteredResourceMap(final ResourceMapping mapping, final ResourceTraversal traversal, IProgressMonitor monitor, final Map result) throws CoreException {
                     traversal.accept(new IResourceVisitor() {
-                        public boolean visit(IResource resource) throws CoreException {
+                        @Override
+						public boolean visit(IResource resource) throws CoreException {
                             if (filter.select(resource, mapping, traversal)) {
                                 // Add the resource to the result
                                 result.put(resource, new ArrayList());
@@ -370,7 +384,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         final List traversals = new ArrayList();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                @Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         traversals.add(mapping.getTraversals(context, monitor));
                     } catch (CoreException e) {
@@ -391,7 +406,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         final List members = new ArrayList();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                @Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         members.add(context.fetchMembers(container, monitor));
                     } catch (CoreException e) {

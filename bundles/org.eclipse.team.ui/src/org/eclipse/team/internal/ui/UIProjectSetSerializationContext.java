@@ -57,6 +57,7 @@ public class UIProjectSetSerializationContext extends ProjectSetSerializationCon
 	 * 
 	 * @return the shell (not <code>null</code>)
 	 */
+	@Override
 	public Object getShell() {
 		return shell;
 	}
@@ -79,9 +80,11 @@ public class UIProjectSetSerializationContext extends ProjectSetSerializationCon
 	 * 
 	 * @see org.eclipse.team.core.ProjectSetSerializationContext#confirmOverwrite(org.eclipse.core.resources.IProject[])
 	 */
+	@Override
 	public IProject[] confirmOverwrite(final IProject[] projects) throws TeamException {
 		IPromptCondition prompt = new IPromptCondition() {
 			List resources = Arrays.asList(projects);
+			@Override
 			public boolean needsPrompt(IResource resource) {
                 if (resource instanceof IProject) {
                     IProject project = (IProject) resource;
@@ -89,6 +92,7 @@ public class UIProjectSetSerializationContext extends ProjectSetSerializationCon
                 }
 				return false;
 			}
+			@Override
 			public String promptMessage(IResource resource) {
                 if (resource.exists())
                     return NLS.bind(TeamUIMessages.UIProjectSetSerializationContext_0, new String[] { resource.getName() }); 

@@ -48,6 +48,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		    return 2;
 		}
 
+		@Override
 		public int compare(Viewer viewer,Object e1,Object e2) {
 			final int compare= getCategory(e1) - getCategory(e2);
 			if (compare != 0) 
@@ -67,6 +68,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
         /* (non-Javadoc)
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
+		@Override
 		public int compareTo(Object o) {
 			return name.compareTo(((Item)o).name);
 		}
@@ -168,7 +170,8 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 	}
 	
 
-    public Object getValue(Object element, String property) {
+    @Override
+	public Object getValue(Object element, String property) {
         
         final Item item= (Item)element;
         
@@ -185,11 +188,13 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
         return null;
     }
 
-    public boolean canModify(Object element, String property) {
+    @Override
+	public boolean canModify(Object element, String property) {
     	return PROPERTY_MODE.equals(property) || (fShowSaveColumn && PROPERTY_SAVE.equals(property));
     }
 
-    public void modify(Object element, String property, Object value) {
+    @Override
+	public void modify(Object element, String property, Object value) {
         
         final IStructuredSelection selection = (IStructuredSelection)fTableViewer.getSelection();
         final Item item= (Item)selection.getFirstElement();
@@ -211,11 +216,13 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
         fTableViewer.refresh(item);
     }
 
-    public Image getColumnImage(Object element, int columnIndex) {
+    @Override
+	public Image getColumnImage(Object element, int columnIndex) {
     	return null;
     }
 
-    public String getColumnText(Object element, int columnIndex) {
+    @Override
+	public String getColumnText(Object element, int columnIndex) {
 
         final Item item= (Item) element;
         
@@ -240,21 +247,27 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
     	return null;
     }
 
-    public void addListener(ILabelProviderListener listener) {}
+    @Override
+	public void addListener(ILabelProviderListener listener) {}
 
-    public void dispose() {}
+    @Override
+	public void dispose() {}
 
-    public boolean isLabelProperty(Object element, String property) {
+    @Override
+	public boolean isLabelProperty(Object element, String property) {
         return false;
     }
 
-    public void removeListener(ILabelProviderListener listener) {}
+    @Override
+	public void removeListener(ILabelProviderListener listener) {}
 
-    public Object[] getElements(Object inputElement) {	
+    @Override
+	public Object[] getElements(Object inputElement) {	
     	return ((Collection)inputElement).toArray();
     }
 
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
+    @Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
     
     public IStructuredSelection getSelection() {
         return (IStructuredSelection)fTableViewer.getSelection();

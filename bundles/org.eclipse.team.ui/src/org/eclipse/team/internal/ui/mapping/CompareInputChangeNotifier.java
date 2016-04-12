@@ -81,6 +81,7 @@ public abstract class CompareInputChangeNotifier implements
 			super(TeamUIMessages.CompareInputChangeNotifier_0, TeamUIMessages.CompareInputChangeNotifier_1);
 		}
 
+		@Override
 		protected boolean doDispatchEvents(IProgressMonitor monitor)
 				throws TeamException {
 			ICompareInput[] toDispatch;
@@ -103,6 +104,7 @@ public abstract class CompareInputChangeNotifier implements
 			return true;
 		}
 
+		@Override
 		protected void processEvent(Event event, IProgressMonitor monitor)
 				throws CoreException {
 			int type = event.getType();
@@ -153,11 +155,13 @@ public abstract class CompareInputChangeNotifier implements
 			super.queueEvent(event, false);
 		}
 		
+		@Override
 		protected long getShortDispatchDelay() {
 			// Only wait 250 for additional changes to come in
 			return 250;
 		}
 		
+		@Override
 		protected boolean belongsTo(Object family) {
 			return CompareInputChangeNotifier.this.belongsTo(family);
 		}
@@ -249,6 +253,7 @@ public abstract class CompareInputChangeNotifier implements
 	protected void dispatchChanges(final ICompareInput[] inputs, IProgressMonitor monitor) {
 		prepareInputs(inputs, monitor);
 		Display.getDefault().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				fireChanges(inputs);
 			}
@@ -307,6 +312,7 @@ public abstract class CompareInputChangeNotifier implements
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		List changedInputs = new ArrayList();
 		ICompareInput[] inputs = getConnectedInputs();

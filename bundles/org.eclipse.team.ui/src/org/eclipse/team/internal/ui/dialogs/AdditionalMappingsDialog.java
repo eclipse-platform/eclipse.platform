@@ -36,6 +36,7 @@ public class AdditionalMappingsDialog extends DetailsDialog {
 		this.context = context;
     }
 
+	@Override
 	protected void createMainDialogArea(Composite parent) {
         createWrappingLabel(parent, TeamUIMessages.AdditionalMappingsDialog_0);
         createSelectedMappingsArea(parent);
@@ -80,9 +81,11 @@ public class AdditionalMappingsDialog extends DetailsDialog {
     		final Button forcePreviewButton = SWTUtils.createCheckBox(parent, previewMessage);
     		forcePreviewButton.setSelection(forcePreview);
     		forcePreviewButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					// Ignore
 				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					forcePreview  = forcePreviewButton.getSelection();
 				}
@@ -90,17 +93,20 @@ public class AdditionalMappingsDialog extends DetailsDialog {
     	}
 	}
     
-    protected Composite createDropDownDialogArea(Composite parent) {
+    @Override
+	protected Composite createDropDownDialogArea(Composite parent) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    protected void updateEnablements() {
+    @Override
+	protected void updateEnablements() {
         // TODO Auto-generated method stub
 
     }
     
-    protected boolean includeDetailsButton() {
+    @Override
+	protected boolean includeDetailsButton() {
         return false;
     }
 

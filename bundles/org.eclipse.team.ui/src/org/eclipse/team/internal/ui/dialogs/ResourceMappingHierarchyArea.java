@@ -44,6 +44,7 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 		this.context = context;
 	}
 
+	@Override
 	public void createArea(Composite parent) {
         Composite composite = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout(1, false);
@@ -96,6 +97,7 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.internal.extensions.INavigatorContentServiceListener#onLoad(org.eclipse.ui.navigator.internal.extensions.NavigatorContentExtension)
 	 */
+	@Override
 	public void onLoad(INavigatorContentExtension anExtension) {
 		anExtension.getStateModel().setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE, scope);
 		if (context != null) {

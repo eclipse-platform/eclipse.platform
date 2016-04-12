@@ -37,6 +37,7 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 		this.page = page;
 	}
 
+	@Override
 	public void run() {
 		IStructuredSelection structSel = selection;
 
@@ -56,6 +57,7 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 				MessageDialog.openError(page.getSite().getShell(), TeamUIMessages.OpenRevisionAction_DeletedRevTitle, TeamUIMessages.OpenRevisionAction_DeletedRevMessage);
 			} else {
 				IRunnableWithProgress runnable = new IRunnableWithProgress() {
+					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						try {
 							Utils.openEditor(page.getSite().getPage(), revision, monitor);
@@ -78,6 +80,7 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 		}
 	}
 	
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		this.selection = selection;
 		return shouldShow();

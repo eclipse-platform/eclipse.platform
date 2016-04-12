@@ -32,10 +32,12 @@ public class ReversePatchAction extends Action {
 		subscriber = (ApplyPatchSubscriber) context.getSubscriber();
 	}
 
+	@Override
 	public boolean isChecked() {
 		return subscriber.getPatcher().isReversed();
 	}
 
+	@Override
 	public void run() {
 		boolean oldValue = subscriber.getPatcher().isReversed();
 		subscriber.getPatcher().setReversed(!oldValue);

@@ -33,10 +33,12 @@ public class ImportProjectSetAction extends ActionDelegate implements IObjectAct
 
 	private IStructuredSelection fSelection;
 
+	@Override
 	public void run(IAction action) {
 		final Shell shell= Display.getDefault().getActiveShell();
 		try {
 			new ProgressMonitorDialog(shell).run(true, true, new WorkspaceModifyOperation(null) {
+				@Override
 				protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
 					Iterator iterator= fSelection.iterator();
 					while (iterator.hasNext()) {
@@ -61,12 +63,14 @@ public class ImportProjectSetAction extends ActionDelegate implements IObjectAct
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		if (sel instanceof IStructuredSelection) {
 			fSelection= (IStructuredSelection) sel;
 		}
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 	}
 

@@ -30,6 +30,7 @@ public class SynchronizeParticipantRegistry extends RegistryReader {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.RegistryReader#readElement(org.eclipse.core.runtime.IConfigurationElement)
 	 */
+	@Override
 	protected boolean readElement(IConfigurationElement element) {
 		if (element.getName().equals(TAG_SYNCPARTICIPANT)) {
 			String descText = getDescription(element);

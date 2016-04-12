@@ -29,6 +29,7 @@ public class DefaultResourceMappingMerger extends ResourceMappingMerger {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#getModelProvider()
 	 */
+	@Override
 	protected ModelProvider getModelProvider() {
 		return provider;
 	}

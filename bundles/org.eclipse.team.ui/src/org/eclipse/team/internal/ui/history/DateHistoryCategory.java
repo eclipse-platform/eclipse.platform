@@ -40,6 +40,7 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#getName()
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -47,6 +48,7 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#collectFileRevisions(org.eclipse.team.core.history.IFileRevision[], boolean)
 	 */
+	@Override
 	public boolean collectFileRevisions(IFileRevision[] fileRevisions, boolean shouldRemove) {
 		
 		ArrayList pertinentRevisions = new ArrayList();
@@ -111,6 +113,7 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#getRevisions()
 	 */
+	@Override
 	public IFileRevision[] getRevisions() {
 		return revisions;
 	}
@@ -118,6 +121,7 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#hasRevisions()
 	 */
+	@Override
 	public boolean hasRevisions() {
 		if (revisions != null && revisions.length > 0)
 			return true;

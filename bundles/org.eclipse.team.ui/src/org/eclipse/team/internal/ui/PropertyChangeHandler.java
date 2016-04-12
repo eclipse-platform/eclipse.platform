@@ -32,6 +32,7 @@ public class PropertyChangeHandler {
 		/**
 		 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
 		 */
+		@Override
 		public void handleException(Throwable exception) {
 			TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.AbstractSynchronizeParticipant_5, exception); 
 		}
@@ -39,6 +40,7 @@ public class PropertyChangeHandler {
 		/**
 		 * @see org.eclipse.core.runtime.ISafeRunnable#run()
 		 */
+		@Override
 		public void run() throws Exception {
 			fListener.propertyChange(fEvent);
 		}

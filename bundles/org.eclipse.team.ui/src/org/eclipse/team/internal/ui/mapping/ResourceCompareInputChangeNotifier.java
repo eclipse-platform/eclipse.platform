@@ -44,11 +44,13 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	
 	private class CompareInputLabelProvider extends BaseLabelProvider implements ICompareInputLabelProvider {
 
+		@Override
 		public Image getAncestorImage(Object input) {
 			// No image desired
 			return null;
 		}
 
+		@Override
 		public String getAncestorLabel(Object input) {
 			if (input instanceof ResourceDiffCompareInput) {
 				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
@@ -73,11 +75,13 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return null;
 		}
 
+		@Override
 		public Image getLeftImage(Object input) {
 			// No image desired
 			return null;
 		}
 
+		@Override
 		public String getLeftLabel(Object input) {
 			if (input instanceof ResourceDiffCompareInput) {
 				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
@@ -102,11 +106,13 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return null;
 		}
 
+		@Override
 		public Image getRightImage(Object input) {
 			// No image desired
 			return null;
 		}
 
+		@Override
 		public String getRightLabel(Object input) {
 			if (input instanceof ResourceDiffCompareInput) {
 				ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
@@ -131,6 +137,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return null;
 		}
 
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof ICompareInput) {
 				ICompareInput ci = (ICompareInput) element;
@@ -139,6 +146,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return null;
 		}
 
+		@Override
 		public String getText(Object element) {
 			if (element instanceof ICompareInput) {
 				ICompareInput ci = (ICompareInput) element;
@@ -149,6 +157,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		
 		public void fireChangeEvent(final Object element) {
 			Display.getDefault().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					fireLabelProviderChanged(new LabelProviderChangedEvent(CompareInputLabelProvider.this, element));
 				}
@@ -187,9 +196,11 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		initialize();
 	}
 	
+	@Override
 	public void initialize() {
 		context.getDiffTree().addDiffChangeListener(this);
 		context.getCache().addCacheListener(new ICacheListener() {
+			@Override
 			public void cacheDisposed(ICache cache) {
 				dispose();
 			}
@@ -200,6 +211,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		context.getDiffTree().removeDiffChangeListener(this);
@@ -209,6 +221,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		Set changedInputs = new HashSet();
 		IDiff[] added = event.getAdditions();
@@ -240,6 +253,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
 	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Property changes are not interesting w.r.t. state changes
 	}
@@ -247,6 +261,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#getResources(org.eclipse.compare.structuremergeviewer.ICompareInput)
 	 */
+	@Override
 	protected IResource[] getResources(ICompareInput input) {
 		IResource resource = getResource(input);
 		if (resource == null)
@@ -289,6 +304,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void prepareInput(ICompareInput input, IProgressMonitor monitor) {
 		if (input instanceof ResourceDiffCompareInput) {
 			ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
@@ -317,6 +333,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return;
 		fetchingInput= input;
 		runInBackground(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				fetchAuthors(input, monitor);
 			}
@@ -340,6 +357,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		return context;
 	}
 	
+	@Override
 	protected boolean belongsTo(Object family) {
 		return family == getContext();
 	}

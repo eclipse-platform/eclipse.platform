@@ -52,6 +52,7 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createMainDialogArea(Composite)
 	 */
+	@Override
 	protected void createMainDialogArea(Composite composite) {
 		Label label = new Label(composite, SWT.WRAP);
 		label.setText(message); 
@@ -64,6 +65,7 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createDropDownDialogArea(Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		// create a composite with standard margins and spacing
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -96,6 +98,7 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#updateEnablements()
 	 */
+	@Override
 	protected void updateEnablements() {
 		setPageComplete(true);
 	}
@@ -103,6 +106,7 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#includeCancelButton()
 	 */
+	@Override
 	protected boolean includeCancelButton() {
 		return includeCancelButton;
 	}
@@ -111,7 +115,8 @@ public class DetailsDialogWithProjects extends DetailsDialog {
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
      * @since 3.4
      */
-    protected boolean isMainGrabVertical() {
+    @Override
+	protected boolean isMainGrabVertical() {
         return false;
     }
 

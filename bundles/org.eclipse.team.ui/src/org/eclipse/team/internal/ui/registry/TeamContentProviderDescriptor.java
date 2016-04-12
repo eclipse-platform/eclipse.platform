@@ -99,6 +99,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getContentExtensionId()
 	 */
+	@Override
 	public String getContentExtensionId() {
 		return contentExtensionId;
 	}
@@ -106,6 +107,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getModelProviderId()
 	 */
+	@Override
 	public String getModelProviderId() {
 		return modelProviderId;
 	}
@@ -113,6 +115,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getImageDescriptor()
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		if (imageDescriptor != null)
 			return imageDescriptor;
@@ -126,6 +129,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#createPreferencePage()
 	 */
+	@Override
 	public IPreferencePage createPreferencePage() throws CoreException {
 		if (configElement.getAttribute(ATT_PREFERENCE_PAGE) == null)
 			return null;
@@ -136,6 +140,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		if (!hasPreferences()) {
 			return true;
@@ -207,6 +212,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		}
 	}
 
+	@Override
 	public String getName() {
 		if (contentProviderName != null)
 			return contentProviderName;
@@ -217,6 +223,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor#isFlatLayoutSupported()
 	 */
+	@Override
 	public boolean isFlatLayoutSupported() {
 		return supportsFlatLayout;
 	}

@@ -73,6 +73,7 @@ public class ResourceModelScopeParticipant implements
 		return false;
 	}
 
+	@Override
 	public ResourceMapping[] handleContextChange(
 			ISynchronizationScope scope, IResource[] resources,
 			IProject[] projects) {
@@ -131,6 +132,7 @@ public class ResourceModelScopeParticipant implements
 		}
 	}
 
+	@Override
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (PlatformUI.isWorkbenchRunning())
@@ -140,6 +142,7 @@ public class ResourceModelScopeParticipant implements
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		// Only interested in project additions and removals
 		Set result = new HashSet();
@@ -175,6 +178,7 @@ public class ResourceModelScopeParticipant implements
 		scope.refresh(mappings);
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE) {
 			IWorkingSet newSet = (IWorkingSet) event.getNewValue();

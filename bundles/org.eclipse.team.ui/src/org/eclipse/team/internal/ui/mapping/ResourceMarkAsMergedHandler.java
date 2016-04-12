@@ -40,6 +40,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
 	 */
+	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = new ResourceModelProviderOperation(getConfiguration(),
@@ -47,6 +48,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 				/* (non-Javadoc)
 				 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 				 */
+				@Override
 				public void execute(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
 					try {
@@ -54,6 +56,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 						final IDiff[] deltas = getTargetDiffs();
 						ISchedulingRule rule = getMergeRule(context, deltas);
 						context.run(new IWorkspaceRunnable() {
+							@Override
 							public void run(IProgressMonitor monitor)
 									throws CoreException {
 								markAsMerged(deltas, context, monitor);
@@ -90,8 +93,10 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 				/* (non-Javadoc)
 				 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
 				 */
+				@Override
 				protected FastDiffFilter getDiffFilter() {
 					return new FastDiffFilter() {
+						@Override
 						public boolean select(IDiff node) {
 							if (node instanceof IThreeWayDiff) {
 								IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -104,6 +109,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 						}
 					};
 				}
+				@Override
 				protected String getJobName() {
 					IDiff[] diffs = getTargetDiffs();
 					if (diffs.length == 1)
@@ -119,6 +125,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	public void updateEnablement(IStructuredSelection selection) {
 		synchronized (this) {
 			operation = null;
@@ -134,6 +141,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 		}
 	}
 	
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (saveDirtyEditors())
 			return super.execute(event);

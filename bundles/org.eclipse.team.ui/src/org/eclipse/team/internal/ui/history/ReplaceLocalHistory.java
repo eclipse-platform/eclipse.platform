@@ -24,12 +24,14 @@ import org.eclipse.team.ui.history.IHistoryPageSource;
 
 public class ReplaceLocalHistory extends ShowLocalHistory {
 	
+	@Override
 	public void run(IAction action) {
 		final IFile file = (IFile) getSelection().getFirstElement();
 		IFileState states[]= getLocalHistory();
 		if (states == null || states.length == 0)
 			return;
 		Runnable r = new Runnable() {
+			@Override
 			public void run() {
 				showCompareInDialog(getShell(), file);
 			}
@@ -44,12 +46,15 @@ public class ReplaceLocalHistory extends ShowLocalHistory {
 			cc.setLeftEditable(false);
 			cc.setRightEditable(false);
 			HistoryPageCompareEditorInput input = new HistoryPageCompareEditorInput(cc, pageSource, object) {
+				@Override
 				public boolean isEditionSelectionDialog() {
 					return true;
 				}
+				@Override
 				public String getOKButtonLabel() {
 					return TeamUIMessages.ReplaceLocalHistory_0;
 				}
+				@Override
 				public boolean okPressed() {
 					try {
 						Object o = getSelectedEdition();
@@ -67,6 +72,7 @@ public class ReplaceLocalHistory extends ShowLocalHistory {
 		}
 	}
 	
+	@Override
 	protected String getPromptTitle() {
 		return TeamUIMessages.ReplaceLocalHistory_1;
 	}

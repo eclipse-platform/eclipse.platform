@@ -46,6 +46,7 @@ public class MergeAction extends Action {
 		this.configuration = configuration;
 	}
 	
+	@Override
 	public void runWithEvent(Event event) {
 		IHandler handler = getHandler();
 		if (handler != null && handler.isEnabled()) {
@@ -59,6 +60,7 @@ public class MergeAction extends Action {
 				final SaveableComparison target = targetBuffer;
 				try {
 					PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) throws InvocationTargetException,
 								InterruptedException {
 							try {

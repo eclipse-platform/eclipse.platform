@@ -28,9 +28,11 @@ import org.eclipse.team.internal.ui.wizards.ConfigureProjectWizard;
  */
 public class ConfigureProjectAction extends TeamAction {
 	
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException,
 			InterruptedException {
 		run(new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
 					if (!isEnabled()) 
@@ -47,6 +49,7 @@ public class ConfigureProjectAction extends TeamAction {
 	/**
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		IProject[] selectedProjects = getSelectedProjects();
 		for (int i = 0; i < selectedProjects.length; i++) {

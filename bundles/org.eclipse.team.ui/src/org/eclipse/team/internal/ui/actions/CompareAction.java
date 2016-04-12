@@ -32,6 +32,7 @@ import org.eclipse.ui.*;
 
 public class CompareAction extends TeamAction {
 
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException,
 			InterruptedException {
 
@@ -89,6 +90,7 @@ public class CompareAction extends TeamAction {
 		}
 	}
 
+	@Override
 	public boolean isEnabled() {
 		int l = getSelectedResources().length;
 		return l == 2 || l == 3;
@@ -117,6 +119,7 @@ public class CompareAction extends TeamAction {
 			this.theResources = theResources;
 		}
 
+		@Override
 		protected Control createCustomArea(Composite parent) {
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout());
@@ -142,6 +145,7 @@ public class CompareAction extends TeamAction {
 		}
 
 		private SelectionListener selectionListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selectedButton = (Button) e.widget;
 				if (!selectedButton.getSelection())

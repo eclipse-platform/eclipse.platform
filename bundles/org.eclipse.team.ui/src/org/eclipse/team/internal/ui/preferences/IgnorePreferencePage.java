@@ -30,6 +30,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 	private Table ignoreTable;
 	private Button addButton;
 	private Button removeButton;
+	@Override
 	public void init(IWorkbench workbench) {
 		setDescription(TeamUIMessages.IgnorePreferencePage_description); 
 	}
@@ -39,6 +40,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 	 *
 	 * @param ancestor  the parent for the preference page
 	 */
+	@Override
 	protected Control createContents(Composite ancestor) {
 		
 		Composite parent = new Composite(ancestor, SWT.NULL);
@@ -64,6 +66,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		gd.heightHint = 300;
 		ignoreTable.setLayoutData(gd);
 		ignoreTable.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				handleSelection();
 			}
@@ -79,6 +82,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		addButton = new Button(buttons, SWT.PUSH);
 		addButton.setText(TeamUIMessages.IgnorePreferencePage_add); 
 		addButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				addIgnore();
 			}
@@ -88,6 +92,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		removeButton.setText(TeamUIMessages.IgnorePreferencePage_remove); 
 		removeButton.setEnabled(false);
 		removeButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				removeIgnore();
 			}
@@ -107,6 +112,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 	 *
 	 * @return whether it is okay to close the preference page
 	 */
+	@Override
 	public boolean performOk() {
 		int count = ignoreTable.getItemCount();
 		String[] patterns = new String[count];
@@ -121,6 +127,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		return true;
 	}
 	
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		ignoreTable.removeAll();
@@ -143,6 +150,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 	private void addIgnore() {
 		
 		InputDialog dialog = new InputDialog(getShell(), TeamUIMessages.IgnorePreferencePage_enterPatternShort, TeamUIMessages.IgnorePreferencePage_enterPatternLong, null, null) {
+			@Override
 			protected Control createDialogArea(Composite parent) {
 				Control control = super.createDialogArea(parent);
 				PlatformUI.getWorkbench().getHelpSystem().setHelp(control, IHelpContextIds.IGNORE_PREFERENCE_PAGE);

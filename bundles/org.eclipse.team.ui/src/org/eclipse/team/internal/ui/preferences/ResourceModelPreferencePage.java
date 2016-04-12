@@ -30,6 +30,7 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
         // set F1 help
@@ -39,6 +40,7 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
+	@Override
 	protected void createFieldEditors() {
 	    defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT, 
 	    		TeamUIMessages.SyncViewerPreferencePage_0, 3,  
@@ -54,6 +56,7 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		// Nothing to do
 	}
@@ -61,6 +64,7 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 	 */
+	@Override
 	public boolean performOk() {
 		TeamUIPlugin.getPlugin().savePluginPreferences();
 		return super.performOk();

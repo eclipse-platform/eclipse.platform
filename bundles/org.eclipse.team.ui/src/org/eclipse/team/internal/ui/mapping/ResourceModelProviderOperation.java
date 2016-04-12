@@ -148,6 +148,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ModelProviderOperation#shouldRun()
 	 */
+	@Override
 	public boolean shouldRun() {
 		Object[] elements = getElements();
 		for (int i = 0; i < elements.length; i++) {
@@ -174,6 +175,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
 	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
@@ -190,6 +192,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 		return elementOrPath;
 	}
 	
+	@Override
 	public boolean belongsTo(Object family) {
 		if (family == getContext()) {
 			return true;

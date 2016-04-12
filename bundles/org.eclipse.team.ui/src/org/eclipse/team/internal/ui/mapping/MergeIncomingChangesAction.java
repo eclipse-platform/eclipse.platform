@@ -42,6 +42,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		handler.addHandlerListener(this);
 	}
 	
+	@Override
 	public void runWithEvent(Event event) {
 		if (handler == null || !handler.isEnabled())
 			return;
@@ -74,6 +75,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return handler.isEnabled();
 	}
@@ -83,6 +85,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 	 */
 	protected FastDiffFilter getDiffFilter() {
 		return new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff node) {
 				if (node instanceof IThreeWayDiff) {
 					IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -95,10 +98,12 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		};
 	}
 	
+	@Override
 	protected void handleTargetSaveableChange() throws InvocationTargetException, InterruptedException {
 		final SaveableComparison currentBuffer = getActiveSaveable();
 		if (currentBuffer != null && currentBuffer.isDirty()) {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {	
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					try {
@@ -119,6 +124,7 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 	/**
 	 * @param handlerEvent
 	 */
+	@Override
 	public void handlerChanged(HandlerEvent handlerEvent) {
 		setEnabled(handler.isEnabled());
 	}

@@ -40,6 +40,7 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 		/*
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
+		@Override
 		public int compare(Object o1, Object o2) {
 			if (o1 instanceof IPerspectiveDescriptor && o2 instanceof IPerspectiveDescriptor) {
 				String id1= ((IPerspectiveDescriptor)o1).getLabel();
@@ -60,6 +61,7 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
         // set F1 help
@@ -69,6 +71,7 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
+	@Override
 	public void createFieldEditors() {
 		showSyncInLabels = new BooleanFieldEditor(SYNCVIEW_VIEW_SYNCINFO_IN_LABEL, TeamUIMessages.SyncViewerPreferencePage_19, SWT.NONE, getFieldEditorParent()); 
 		addField(showSyncInLabels);
@@ -183,12 +186,14 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 		
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		//if(event.getSource() == bkgScheduledRefresh || event.getSource() == scheduledDelay) {			
 	//		updateEnablements();	
@@ -199,6 +204,7 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
 	 */
+	@Override
 	public boolean performOk() {
 		TeamUIPlugin.getPlugin().savePluginPreferences();
 		return super.performOk();
@@ -207,6 +213,7 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#checkState()
 	 */
+	@Override
 	protected void initialize() {
 		super.initialize();		
 		updateEnablements();

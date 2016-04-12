@@ -40,6 +40,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 
 	private CheckboxTableViewer tableViewer;
 
+	@Override
 	protected Control createContents(Composite parent) {
 		
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -52,12 +53,15 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
 		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
+			@Override
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				// noting to do
 			}
+			@Override
 			public void dispose() {
 				// nothing to do
 			}
+			@Override
 			public Object[] getElements(Object element) {
 				if (element instanceof ITeamContentProviderManager) {
 					ITeamContentProviderManager manager = (ITeamContentProviderManager) element;
@@ -68,6 +72,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		});
 		tableViewer.setLabelProvider(new LabelProvider() {
 			Map images = new HashMap();
+			@Override
 			public String getText(Object element) {
 				if (element instanceof ITeamContentProviderDescriptor) {
 					ITeamContentProviderDescriptor desc = (ITeamContentProviderDescriptor) element;
@@ -88,6 +93,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 				}
 				return modelProviderID;
 			}
+			@Override
 			public Image getImage(Object element) {
 				if (element instanceof ITeamContentProviderDescriptor) {
 					ITeamContentProviderDescriptor desc = (ITeamContentProviderDescriptor) element;
@@ -105,6 +111,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 				}
 				return super.getImage(element);
 			}
+			@Override
 			public void dispose() {
 				for (Iterator iter = images.values().iterator(); iter.hasNext();) {
 					Image image = (Image) iter.next();
@@ -114,6 +121,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 		});
 		tableViewer.setComparator(new ViewerComparator() {
+			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				if (e1 instanceof ITeamContentProviderDescriptor && e2 instanceof ITeamContentProviderDescriptor) {
 					ITeamContentProviderDescriptor d1 = (ITeamContentProviderDescriptor) e1;
@@ -147,6 +155,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer.setCheckedElements(previosulyEnabled.toArray());
 	}
 	
+	@Override
 	public boolean performOk() {
 		Object[] checked = tableViewer.getCheckedElements();
 		Set nowEnabled = new HashSet();
@@ -178,10 +187,12 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		return false;
 	}
 	
+	@Override
 	protected void performDefaults() {
 		tableViewer.setCheckedElements(TeamUI.getTeamContentProviderManager().getDescriptors());
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 		// ignore
 	}

@@ -81,6 +81,7 @@ public class SynchronizeWizardDescription {
 		return label;
 	}
 	
+	@Override
 	public String toString() {
 		return "Synchronize Participant Creation Wizard(" + getId() + ")"; //$NON-NLS-2$//$NON-NLS-1$
 	}

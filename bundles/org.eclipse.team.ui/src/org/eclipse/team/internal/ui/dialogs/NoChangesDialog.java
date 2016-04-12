@@ -34,10 +34,12 @@ public class NoChangesDialog extends DetailsDialog {
 		this.scope = scope;
 	}
 
+	@Override
 	protected void initializeStyle() {
 		// Use the default dialog style
 	}
 	
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -53,6 +55,7 @@ public class NoChangesDialog extends DetailsDialog {
         return composite;
 	}
 
+	@Override
 	protected void createMainDialogArea(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -63,6 +66,7 @@ public class NoChangesDialog extends DetailsDialog {
 		createMessageArea(composite);
 	}
 
+	@Override
 	protected void updateEnablements() {
 		// Nothing to do
 	}
@@ -112,7 +116,8 @@ public class NoChangesDialog extends DetailsDialog {
 
         final Image[] image = new Image[1];
         display.syncExec(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 image[0] = display.getSystemImage(imageID);
             }
         });
@@ -120,11 +125,13 @@ public class NoChangesDialog extends DetailsDialog {
         return image[0];
     }
 
-    public boolean isHelpAvailable() {
+    @Override
+	public boolean isHelpAvailable() {
     	return false;
     }
     
-    protected boolean includeCancelButton() {
+    @Override
+	protected boolean includeCancelButton() {
     	return false;
     }
     

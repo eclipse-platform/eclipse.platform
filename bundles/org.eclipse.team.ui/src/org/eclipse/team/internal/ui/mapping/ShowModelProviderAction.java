@@ -39,6 +39,7 @@ public class ShowModelProviderAction extends Action {
 		return desc.getImageDescriptor();
 	}
 
+	@Override
 	public void run() {
 		configuration.setProperty(
 				ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER,

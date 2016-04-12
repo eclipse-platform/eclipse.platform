@@ -95,9 +95,11 @@ public class TeamCapabilityHelper {
 							continue;
 						}
 						providerIdToPluginId.put(id, new IPluginContribution() {
+							@Override
 							public String getLocalId() {
 								return id;
 							}
+							@Override
 							public String getPluginId() {
 								return pluginId;
 							}

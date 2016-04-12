@@ -53,6 +53,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.StorageTypedElement#getName()
 	 */
+	@Override
 	public String getName() {
 		return fileRevision.getName();
 	}
@@ -60,6 +61,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.StorageTypedElement#getElementStorage(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected IStorage fetchContents(IProgressMonitor monitor) throws CoreException {
 		return fileRevision.getStorage(monitor);
 	
@@ -105,6 +107,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
 	 */
+	@Override
 	public IEditorInput getDocumentKey(Object element) {
 		if (element == this && getBufferedStorage() != null) {
 			return new FileRevisionEditorInput(fileRevision, getBufferedStorage(), getLocalEncoding());
@@ -115,10 +118,12 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return fileRevision.hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

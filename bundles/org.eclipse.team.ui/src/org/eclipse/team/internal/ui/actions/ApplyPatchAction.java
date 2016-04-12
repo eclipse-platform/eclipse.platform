@@ -24,10 +24,12 @@ import org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchOperation;
 
 public class ApplyPatchAction extends TeamAction {
 
+	@Override
 	public boolean isEnabled() {
 		return true;
 	}
 	
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException,
 			InterruptedException {
 		IResource[] resources = getSelectedResources();

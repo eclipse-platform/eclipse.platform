@@ -32,6 +32,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 		this.localEncoding = localEncoding;
 	}
 	
+	@Override
 	public InputStream getContents() throws CoreException {
 		if (bufferedContents == null) {
 			cacheContents(new NullProgressMonitor());
@@ -72,6 +73,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ITypedElement#getImage()
 	 */
+	@Override
 	public Image getImage() {
 		return CompareUI.getImage(getType());
 	}
@@ -79,6 +81,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ITypedElement#getType()
 	 */
+	@Override
 	public String getType() {
 		String name = getName();
 		if (name != null) {
@@ -95,6 +98,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
 	 */
+	@Override
 	public String getCharset() throws CoreException {
 		if (localEncoding != null)
 			return localEncoding;
@@ -111,14 +115,17 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
 			synchronized (this) {
 				if (sharedDocumentAdapter == null)
 					sharedDocumentAdapter = new SharedDocumentAdapter() {
+						@Override
 						public IEditorInput getDocumentKey(Object element) {
 							return StorageTypedElement.this.getDocumentKey(element);
 						}
+						@Override
 						public void flushDocument(IDocumentProvider provider,
 								IEditorInput documentKey, IDocument document,
 								boolean overwrite)

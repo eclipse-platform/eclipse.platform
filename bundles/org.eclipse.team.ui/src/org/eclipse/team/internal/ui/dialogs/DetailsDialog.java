@@ -87,6 +87,7 @@ abstract public class DetailsDialog extends TrayDialog {
 	 * Note that the Details button will only be visible if the error being
 	 * displayed specifies child details.
 	 */
+	@Override
 	protected void buttonPressed(int id) {
 		if (id == IDialogConstants.DETAILS_ID) {  // was the details button pressed?
 			toggleDetailsArea();
@@ -98,6 +99,7 @@ abstract public class DetailsDialog extends TrayDialog {
 	/* (non-Javadoc)
 	 * Method declared in Window.
 	 */
+	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(title);
@@ -110,6 +112,7 @@ abstract public class DetailsDialog extends TrayDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Details buttons
 		if(includeOkButton()) {
@@ -137,6 +140,7 @@ abstract public class DetailsDialog extends TrayDialog {
 	 * Creates and returns the contents of the upper part 
 	 * of the dialog (above the button bar).
 	 */
+	@Override
 	final protected Control createDialogArea(Composite parent) {
 		
 		applyDialogFont(parent);

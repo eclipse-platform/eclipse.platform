@@ -28,10 +28,12 @@ public class GererateRejFileAction extends Action {
 		subscriber = (ApplyPatchSubscriber) context.getSubscriber();
 	}
 
+	@Override
 	public boolean isChecked() {
 		return subscriber.getPatcher().isGenerateRejectFile();
 	}
 
+	@Override
 	public void run() {
 		boolean oldValue = subscriber.getPatcher().isGenerateRejectFile();
 		subscriber.getPatcher().setGenerateRejectFile(!oldValue);

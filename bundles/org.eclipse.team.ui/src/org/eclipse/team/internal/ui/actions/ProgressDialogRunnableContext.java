@@ -65,6 +65,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.actions.ITeamRunnableContext#run(org.eclipse.jface.operation.IRunnableWithProgress)
 	 */
+	@Override
 	public void run(IRunnableWithProgress runnable) throws InvocationTargetException, InterruptedException {
 		getRunnableContext().run(true /* fork */, true /* cancelable */, wrapRunnable(runnable));
 	}
@@ -72,6 +73,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	private IRunnableContext getRunnableContext() {
 		if (runnableContext == null) {
 			return new IRunnableContext() {
+				@Override
 				public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable)
 						throws InvocationTargetException, InterruptedException {
 					IProgressService manager = PlatformUI.getWorkbench().getProgressService();
@@ -88,6 +90,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	 */
 	private IRunnableWithProgress wrapRunnable(final IRunnableWithProgress runnable) {
 		return new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				try {
 					if (schedulingRule == null && !postponeBuild) {
@@ -95,6 +98,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 					} else {
 						final Exception[] exception = new Exception[] { null };
 						ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+							@Override
 							public void run(IProgressMonitor pm) throws CoreException {
 								try {
 									runnable.run(pm);

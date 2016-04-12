@@ -29,6 +29,7 @@ public class OpenLocalFileAction extends BaseSelectionListenerAction {
 		super(text);
 	}
 
+	@Override
 	public void run() {
 		try {
 			IStructuredSelection structSel = getStructuredSelection();

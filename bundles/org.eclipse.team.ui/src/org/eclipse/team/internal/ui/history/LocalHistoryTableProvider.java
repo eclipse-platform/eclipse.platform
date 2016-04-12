@@ -49,6 +49,7 @@ public class LocalHistoryTableProvider {
 		private Font currentRevisionFont = null;
 		
 		private IPropertyChangeListener themeListener = new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				LocalHistoryTableProvider.this.viewer.refresh();
 			}
@@ -58,6 +59,7 @@ public class LocalHistoryTableProvider {
 				PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);
 		}
 		
+		@Override
 		public void dispose() {
 			if (dateImage != null){
 				dateImage.dispose();
@@ -78,6 +80,7 @@ public class LocalHistoryTableProvider {
 			}
 		}
 		
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			if (columnIndex == COL_DATE) {
 				if (element instanceof DateHistoryCategory) {
@@ -96,6 +99,7 @@ public class LocalHistoryTableProvider {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			if (columnIndex == COL_DATE) {
 				if (element instanceof AbstractHistoryCategory){
@@ -114,6 +118,7 @@ public class LocalHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 		 */
+		@Override
 		public Color getForeground(Object element) {
 			if (element instanceof AbstractHistoryCategory){
 				// TODO: We should have a Team theme for this
@@ -131,6 +136,7 @@ public class LocalHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 		 */
+		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
@@ -139,6 +145,7 @@ public class LocalHistoryTableProvider {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
 		 */
+		@Override
 		public Font getFont(Object element) {
 			if (element instanceof AbstractHistoryCategory) {
 				return getCurrentRevisionFont();
@@ -186,6 +193,7 @@ public class LocalHistoryTableProvider {
 		 * Compares two log entries, sorting first by the main column of this sorter,
 		 * then by subsequent columns, depending on the column sort order.
 		 */
+		@Override
 		public int compare(Viewer compareViewer, Object o1, Object o2) {
 			/*if (o1 instanceof AbstractCVSHistoryCategory || o2 instanceof AbstractCVSHistoryCategory)
 				return 0;*/
@@ -255,6 +263,7 @@ public class LocalHistoryTableProvider {
 	 */
 	private void createColumns(Tree tree, TableLayout layout) {
 		SelectionListener headerListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = viewer.getTree().indexOf((TreeColumn) e.widget);

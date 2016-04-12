@@ -52,6 +52,7 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#reset()
 	 */
+	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
 
@@ -60,6 +61,7 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#updateMode(int)
 	 */
+	@Override
 	protected void updateMode(int mode) {
 		// Nothing to do
 	}
@@ -75,6 +77,7 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#createViewerAdvisor(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected AbstractViewerAdvisor createViewerAdvisor(Composite parent) {
 		CommonViewerAdvisor commonViewerAdvisor = new CommonViewerAdvisor(parent, getConfiguration());
 		commonViewerAdvisor.addEmptyTreeListener((DiffTreeChangesSection)getChangesSection());
@@ -85,10 +88,12 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#createChangesSection()
 	 */
+	@Override
 	protected ChangesSection createChangesSection(Composite parent) {
 		return new DiffTreeChangesSection(parent, this, getConfiguration());
 	}
 	
+	@Override
 	public void init(ISynchronizePageSite site) {
 		super.init(site);
 		IDialogSettings pageSettings = site.getPageSettings();
@@ -104,6 +109,7 @@ public class ModelSynchronizePage extends AbstractSynchronizePage {
 		}
 	}
 	
+	@Override
 	public boolean aboutToChangeProperty(ISynchronizePageConfiguration configuration, String key, Object newValue) {
 		if (key.equals(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER)) {
 			if (!(newValue instanceof String)) {

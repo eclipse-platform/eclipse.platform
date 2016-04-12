@@ -51,6 +51,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		this.participant = participant;
 		this.input = input;
 		contextListener = new ICacheListener() {
+			@Override
 			public void cacheDisposed(ICache cache) {
 				closeEditor(true);
 			}
@@ -71,6 +72,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#contentsCreated()
 	 */
+	@Override
 	protected void contentsCreated() {
 		super.contentsCreated();
 		participant.getContext().getCache().addCacheListener(contextListener);
@@ -79,6 +81,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
+	@Override
 	protected void handleDispose() {
 		super.handleDispose();
 		participant.getContext().getCache().removeCacheListener(contextListener);
@@ -86,6 +89,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
     	ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
     	if (navigator != null && navigator == super.getNavigator()) {
     		synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
+				@Override
 				protected INavigatable[] getNavigatables() {
 					return new INavigatable[0];
 				}
@@ -96,6 +100,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#createSaveable()
 	 */
+	@Override
 	protected Saveable createSaveable() {
 		if (input instanceof ISynchronizationCompareInput) {
 			ISynchronizationCompareInput mci = (ISynchronizationCompareInput) input;
@@ -109,6 +114,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
         monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
@@ -152,6 +158,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
 	 */
+	@Override
 	public String getToolTipText() {
 		String fullPath;
 		ISynchronizationCompareInput adapter = asModelCompareInput(input);
@@ -166,6 +173,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#fireInputChange()
 	 */
+	@Override
 	protected void fireInputChange() {
 		if (input instanceof ResourceDiffCompareInput) {
 			ResourceDiffCompareInput rdci = (ResourceDiffCompareInput) input;
@@ -176,11 +184,13 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#registerContextMenu(org.eclipse.jface.action.MenuManager)
 	 */
+	@Override
 	public void registerContextMenu(MenuManager menu, ISelectionProvider provider) {
 		super.registerContextMenu(menu, provider);
 		Saveable saveable = getSaveable();
 		if (saveable instanceof LocalResourceSaveableComparison) {
 			menu.addMenuListener(new IMenuListener() {
+				@Override
 				public void menuAboutToShow(IMenuManager manager) {
 					handleMenuAboutToShow(manager);
 				}
@@ -193,6 +203,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		final ResourceMarkAsMergedHandler markAsMergedHandler = new ResourceMarkAsMergedHandler(getSynchronizeConfiguration());
 		markAsMergedHandler.updateEnablement(selection);
 		Action markAsMergedAction = new Action(TeamUIMessages.ModelCompareEditorInput_0) {
+			@Override
 			public void run() {
 				try {
 					markAsMergedHandler.execute(new ExecutionEvent());
@@ -208,6 +219,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		final ResourceMergeHandler mergeHandler = new ResourceMergeHandler(getSynchronizeConfiguration(), false);
 		mergeHandler.updateEnablement(selection);
 		Action mergeAction = new Action(TeamUIMessages.ModelCompareEditorInput_1) {
+			@Override
 			public void run() {
 				try {
 					mergeHandler.execute(new ExecutionEvent());
@@ -223,6 +235,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		final ResourceMergeHandler overwriteHandler = new ResourceMergeHandler(getSynchronizeConfiguration(), true);
 		overwriteHandler.updateEnablement(selection);
 		Action overwriteAction = new Action(TeamUIMessages.ModelCompareEditorInput_2) {
+			@Override
 			public void run() {
 				try {
 					overwriteHandler.execute(new ExecutionEvent());
@@ -246,6 +259,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return synchronizeConfiguration;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(CompareConfiguration.IGNORE_WHITESPACE)) {
 			synchronizeConfiguration.setProperty(IGNORE_WHITSPACE_PAGE_PROPERTY, event.getNewValue());
@@ -255,10 +269,12 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#belongsTo(java.lang.Object)
 	 */
+	@Override
 	public boolean belongsTo(Object family) {
 		return super.belongsTo(family) || family == participant;
 	}
 	
+	@Override
 	public synchronized ICompareNavigator getNavigator() {
 		if (isSelectedInSynchronizeView()) {
 			ICompareNavigator nav = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_NAVIGATOR);
@@ -282,6 +298,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -295,6 +312,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return input.hashCode();
 	}

@@ -57,9 +57,11 @@ public class GenericHistoryTableProvider {
 	 */
 	class HistoryLabelProvider extends LabelProvider implements ITableLabelProvider, IColorProvider, IFontProvider {
 		private DateFormat dateFormat;
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			IFileRevision entry = adaptToFileRevision(element);
 			if (entry == null) return ""; //$NON-NLS-1$
@@ -89,6 +91,7 @@ public class GenericHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 		 */
+		@Override
 		public Color getForeground(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
 			if (!entry.exists())  {
@@ -100,6 +103,7 @@ public class GenericHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 		 */
+		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
@@ -107,6 +111,7 @@ public class GenericHistoryTableProvider {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
 		 */
+		@Override
 		public Font getFont(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
 			if (entry == null)
@@ -154,6 +159,7 @@ public class GenericHistoryTableProvider {
 		 * Compares two log entries, sorting first by the main column of this sorter,
 		 * then by subsequent columns, depending on the column sort order.
 		 */
+		@Override
 		public int compare(Viewer viewer, Object o1, Object o2) {
 			IFileRevision e1 = adaptToFileRevision(o1);
 			IFileRevision e2 = adaptToFileRevision(o2);
@@ -255,6 +261,7 @@ public class GenericHistoryTableProvider {
 		viewer.setComparator(sorter);
 		
 		table.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if(currentRevisionFont != null) {
 					currentRevisionFont.dispose();
@@ -322,6 +329,7 @@ public class GenericHistoryTableProvider {
 			 * presses on the same column header will
 			 * toggle sorting order (ascending/descending).
 			 */
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = tableViewer.getTable().indexOf((TableColumn) e.widget);

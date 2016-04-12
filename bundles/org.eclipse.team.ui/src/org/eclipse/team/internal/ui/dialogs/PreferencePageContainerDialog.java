@@ -81,6 +81,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see Dialog#okPressed()
 	 */
+	@Override
 	protected void okPressed() {
 		for (int i = 0; i < pages.length; i++) {
             PreferencePage page = pages[i];
@@ -106,6 +107,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see Dialog#createDialogArea(Composite)
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {		
 		Composite composite = (Composite)super.createDialogArea(parent);
 		((GridLayout) composite.getLayout()).numColumns = 1;
@@ -128,6 +130,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		applyDialogFont(parent);
 		
 		composite.addHelpListener(new HelpListener(){
+			@Override
 			public void helpRequested(HelpEvent e) {
 				currentPage.performHelp();
 			}
@@ -152,7 +155,8 @@ public class PreferencePageContainerDialog extends TrayDialog
         }
 		
 		tabFolder.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
                 updatePageSelection();
             }
         });
@@ -245,6 +249,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		fMessageLabel.setFont(JFaceResources.getBannerFont());
 		
 		final IPropertyChangeListener fontListener = new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if(JFaceResources.BANNER_FONT.equals(event.getProperty()) ||
 					JFaceResources.DIALOG_FONT.equals(event.getProperty())) {
@@ -254,6 +259,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		};
 		
 		fMessageLabel.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent event) {
 				JFaceResources.getFontRegistry().removeListener(fontListener);
 			}
@@ -356,6 +362,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see IPreferencePageContainer#updateMessage()
 	 */
+	@Override
 	public void updateMessage() {
 	    if (currentPage != null) {
 			String pageMessage = currentPage.getMessage();
@@ -387,6 +394,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see IPreferencePageContainer#getPreferenceStore()
 	 */
+	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return null;
 	}
@@ -394,6 +402,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see IPreferencePageContainer#updateButtons()
 	 */
+	@Override
 	public void updateButtons() {
 		if (fOkButton != null) {
 		    boolean isValid = true;
@@ -411,6 +420,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see IPreferencePageContainer#updateTitle()
 	 */
+	@Override
 	public void updateTitle() {
 		updateMessage();
 	}
@@ -418,6 +428,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	/**
 	 * @see Dialog#createButtonsForButtonBar(Composite)
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		fOkButton= createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
@@ -452,14 +463,17 @@ public class PreferencePageContainerDialog extends TrayDialog
 	}
 
     
-    public void addPageChangedListener(final IPageChangedListener listener) {
+    @Override
+	public void addPageChangedListener(final IPageChangedListener listener) {
     	pageChangedListeners.add(listener);
 	}
 
+	@Override
 	public Object getSelectedPage() {
 		return currentPage;
 	}
 
+	@Override
 	public void removePageChangedListener(IPageChangedListener listener) {
 		pageChangedListeners.remove(listener);
 	}
@@ -469,7 +483,8 @@ public class PreferencePageContainerDialog extends TrayDialog
         for (int i = 0; i < listeners.length; i++) {
             final IPageChangedListener l = (IPageChangedListener) listeners[i];
             SafeRunnable.run(new SafeRunnable() {
-                public void run() {
+                @Override
+				public void run() {
                     l.pageChanged(event);
                 }
             });

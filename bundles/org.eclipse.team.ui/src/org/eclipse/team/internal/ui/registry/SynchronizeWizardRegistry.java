@@ -26,6 +26,7 @@ public class SynchronizeWizardRegistry extends RegistryReader {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.RegistryReader#readElement(org.eclipse.core.runtime.IConfigurationElement)
 	 */
+	@Override
 	protected boolean readElement(IConfigurationElement element) {
 		if (element.getName().equals(TAG_SYNCHRONIZE_WIZARD)) {
 			String descText = getDescription(element);

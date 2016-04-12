@@ -25,6 +25,7 @@ public class ResourceModelSorter extends ResourceSorter {
 		super(NAME);
 	}
 	
+	@Override
 	protected int compareNames(IResource r1, IResource r2) {
 		if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 				&& r1 instanceof IFolder

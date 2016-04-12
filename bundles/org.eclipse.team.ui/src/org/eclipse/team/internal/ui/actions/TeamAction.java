@@ -59,35 +59,44 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	private IWorkbenchPart targetPart;
 	private IWorkbenchWindow window;
 	private IPartListener2 targetPartListener = new IPartListener2() {
+		@Override
 		public void partActivated(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partBroughtToTop(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
 			if (targetPart == partRef.getPart(false)) {
 				targetPart = null;
 			}
 		}
 
+		@Override
 		public void partDeactivated(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partHidden(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partInputChanged(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partOpened(IWorkbenchPartReference partRef) {
 		}
 
+		@Override
 		public void partVisible(IWorkbenchPartReference partRef) {
 		}
 	};
 	
 	private ISelectionListener selectionListener = new ISelectionListener() {
+		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 			if(selection instanceof IStructuredSelection)
 				TeamAction.this.selection = (IStructuredSelection)selection; 
@@ -261,6 +270,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		switch (progressKind) {
 			case PROGRESS_BUSYCURSOR :
 				BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
+					@Override
 					public void run() {
 						try {
 							runnable.run(new NullProgressMonitor());
@@ -291,6 +301,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	/*
 	 * Method declared on IActionDelegate.
 	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			this.selection = (IStructuredSelection) selection;
@@ -332,6 +343,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	/*
 	 * Method declared on IObjectActionDelegate.
 	 */
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		if(targetPart != null) {
 			this.shell = targetPart.getSite().getShell();
@@ -411,6 +423,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
 	 */
+	@Override
 	public void init(IViewPart view) {
 		if(view != null) {
 			this.shell = view.getSite().getShell();
@@ -418,6 +431,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		}
 	}
 	
+	@Override
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
 		this.shell = window.getShell();	
@@ -429,6 +443,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		return window;
 	}
 	
+	@Override
 	public void dispose() {
 		super.dispose();
 		if(window != null) {
@@ -464,6 +479,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * </p>
 	 * @throws ExecutionException
 	 */
+	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow activeWorkbenchWindow = HandlerUtil.getActiveWorkbenchWindow(event);
 		if (activeWorkbenchWindow != null) {
@@ -510,6 +526,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	/**
 	 * Common run method for all Team actions.
 	 */
+	@Override
 	public void run(IAction action) {
 		try {
 			execute(action);
@@ -537,7 +554,8 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
      * <code>IActionDelegate2</code> method does nothing. Subclasses may
      * reimplement.
      */
-    public void init(IAction action) {
+    @Override
+	public void init(IAction action) {
     }
 
     /**
@@ -545,13 +563,15 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
      * <code>IActionDelegate2</code> method redirects to the <code>run</code>
      * method. Subclasses may reimplement.
      */
-    final public void runWithEvent(IAction action, Event event) {
+    @Override
+	final public void runWithEvent(IAction action, Event event) {
         run(action);
     }
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.AbstractHandler#setEnabled(java.lang.Object)
 	 */
+	@Override
 	public void setEnabled(Object evaluationContext) {
 		IWorkbenchWindow activeWorkbenchWindow = (IWorkbenchWindow) HandlerUtil
 				.getVariable(evaluationContext,

@@ -34,15 +34,18 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 	private IStructuredSelection fSelection;
 	private IWorkbenchPart targetPart;
 	
+	@Override
 	public void run(IAction action) {
 		IFileState states[]= getLocalHistory();
 		if (states == null || states.length == 0)
 			return;
 		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					final IResource resource = (IResource) fSelection.getFirstElement();
 					Runnable r = new Runnable() {
+						@Override
 						public void run() {
 							IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource,  LocalHistoryPageSource.getInstance());
 							IHistoryPage page = view.getHistoryPage();
@@ -61,11 +64,13 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 		}
 	}
 	
+	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		if (sel instanceof IStructuredSelection) {
 			fSelection= (IStructuredSelection) sel;
 		}
 	}
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = targetPart;
 	}

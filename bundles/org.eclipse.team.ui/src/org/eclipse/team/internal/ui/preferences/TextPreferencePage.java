@@ -38,6 +38,7 @@ import org.eclipse.ui.*;
 public class TextPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 	
 	private static final class ExtensionValidator implements IInputValidator {
+		@Override
 		public String isValid(String newText) {
 			if (newText.trim().length() == 0)
 				return ""; //$NON-NLS-1$
@@ -78,6 +79,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	}
 	
 	private static final class FilenameValidator implements IInputValidator {
+		@Override
 		public String isValid(String newText) {
 			if (newText.trim().length() == 0)
 				return ""; //$NON-NLS-1$
@@ -140,12 +142,14 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		
 		initializeDialogUnits(parent);	
@@ -157,12 +161,14 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		fTable= new FileTypeTable(composite, fItems, false);
 
 		fTable.getViewer().getControl().addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				handleSelection();
 			}
 		});
 
 		fTable.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				final ISelection selection = event.getSelection();
 				if (selection == null || !(selection instanceof IStructuredSelection)) {
@@ -198,11 +204,13 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		fRemoveButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 		
 		addExtensionButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				addExtension();
 			}
 		});
 		addNameButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				addName();
 			}
@@ -210,6 +218,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		fChangeButton.setEnabled(false);
 		fChangeButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				changePattern();
 			}
@@ -217,6 +226,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		
 		fRemoveButton.setEnabled(false);
 		fRemoveButton.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				removePattern();
 			}
@@ -230,6 +240,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		return composite;
 	}
 	
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		initializeItems();
@@ -242,6 +253,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	 *
 	 * @return whether it is okay to close the preference page
 	 */
+	@Override
 	public boolean performOk() {
 	    final ArrayList extensionsList= new ArrayList();
 	    final ArrayList extensionsModesList= new ArrayList();

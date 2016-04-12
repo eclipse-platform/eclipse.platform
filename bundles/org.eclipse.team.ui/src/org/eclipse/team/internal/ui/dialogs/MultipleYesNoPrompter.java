@@ -111,6 +111,7 @@ public class MultipleYesNoPrompter {
 		// which is probably not running in the UI thread.
 		shell.getDisplay().syncExec(
 			new Runnable() {
+				@Override
 				public void run() {
 					dialog.open();
 				}

@@ -22,44 +22,54 @@ public class GenericHistoryViewDefaultPage extends HistoryPage {
 
 	private Composite pgComp;
 
+	@Override
 	public void createControl(Composite parent) {
 		pgComp = new Composite(parent, SWT.NULL);
 		pgComp.setLayout(new FillLayout());
 		pgComp.setBackground(JFaceColors.getBannerBackground(pgComp.getDisplay()));
 	}
 
+	@Override
 	public Control getControl() {
 		return pgComp;
 	}
 
+	@Override
 	public void setFocus() {
 		pgComp.setFocus();
 	}
 
+	@Override
 	public boolean isValidInput(Object object) {
 		return false;
 	}
 
+	@Override
 	public void refresh() {
 		//nothing to refresh
 	}
 
+	@Override
 	public String getName() {
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
 
+	@Override
 	public String getDescription() {
 		return null;
 	}
 
+	@Override
 	public Object getInput() {
 		return null;
 	}
 
+	@Override
 	public boolean inputSet() {
 		//no history to show
 		return false;

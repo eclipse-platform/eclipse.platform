@@ -46,7 +46,8 @@ public abstract class RegistryReader {
             final Object[] ret = new Object[1];
             final CoreException[] exc = new CoreException[1];
             BusyIndicator.showWhile(null, new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     try {
                         ret[0] = element
                                 .createExecutableExtension(classAttribute);
@@ -134,6 +135,7 @@ public abstract class RegistryReader {
 		// more than one extension for an extension point is
 		// dependent in the order listed in the XML file.
 		Sorter sorter = new Sorter() {
+			@Override
 			public boolean compare(Object extension1, Object extension2) {
 				String s1 = ((IExtension) extension1).getNamespaceIdentifier();
 				String s2 = ((IExtension) extension2).getNamespaceIdentifier();

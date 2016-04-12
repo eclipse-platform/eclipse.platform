@@ -51,6 +51,7 @@ public class SWTUtils {
 		Link link = new Link(parent, SWT.NONE);
 		link.setText(getLinkLabel(pageId, message));
 		link.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PreferenceDialog prefDialog = PreferencesUtil.createPreferenceDialogOn(shell, pageId, displayIds, null);
 				prefDialog.open();

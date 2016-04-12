@@ -39,10 +39,12 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 		subscriber = (ApplyPatchSubscriber) context.getSubscriber();
 	}
 
+	@Override
 	public boolean isEnabled() {
 		return !subscriber.getPatcher().isWorkspacePatch();
 	}
 
+	@Override
 	public void run() {
 		int oldValue = subscriber.getPatcher().getStripPrefixSegments();
 		maxValue = subscriber.getPatcher().calculatePrefixSegmentCount() - 1;
@@ -53,6 +55,7 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 						TeamUIMessages.IgnoreLeadingPathSegmentsDialog_message,
 						new Integer(maxValue)), new Integer(oldValue)
 						.toString(), new IInputValidator() {
+					@Override
 					public String isValid(String input) {
 						try {
 							int i = Integer.parseInt(input);
