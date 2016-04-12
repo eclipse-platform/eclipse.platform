@@ -41,17 +41,17 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 public class ExportProjectSetMainPage extends TeamWizardPage {
-	
+
 	PageBook book;
 	ProjectPage projectPage;
 	WorkingSetPage workingSetPage;
-	
+
 	IExportProjectSetPage selectedPage;
-	
+
 	Button exportWorkingSets;
-	
+
 	ArrayList passedInSelectedProjects = new ArrayList();
-	
+
 	class ProjectContentProvider implements ITreePathContentProvider{
 
 		@Override
@@ -87,7 +87,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			Object obj = path.getLastSegment();
 			if (obj instanceof IWorkingSet)
 				return true;
-			
+
 			return false;
 		}
 
@@ -107,10 +107,10 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				IWorkingSetManager manager = (IWorkingSetManager) inputElement;
 				IWorkingSet[] allSets = manager.getAllWorkingSets();
 				ArrayList resourceSets = new ArrayList();
-				for (int i = 0; i < allSets.length; i++) 
+				for (int i = 0; i < allSets.length; i++)
 					if (isWorkingSetSupported(allSets[i]))
 						resourceSets.add(allSets[i]);
-				
+
 				return resourceSets.toArray(new IWorkingSet[resourceSets.size()]);
 			} else if (inputElement instanceof IAdaptable){
 				IProject[] tempProjects = getProjectsForObject(inputElement);
@@ -128,25 +128,25 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 					if (projects != null)
 						tempList.addAll(Arrays.asList(projects));
 				}
-				
+
 				return (IProject[]) tempList.toArray(new IProject[tempList.size()]);
 			}
-			
+
 			return null;
 		}
 
 		@Override
 		public void dispose() {
-			
+
 		}
 
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			
+
 		}
-	
+
 	};
-	
+
 	private class ExportProjectSetLabelProvider extends WorkbenchLabelProvider {
 
 		@Override
@@ -159,7 +159,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			return super.getForeground(element);
 		}
 	}
-	
+
 	private IProject[] getProjectsForObject(Object object) {
 		ResourceMapping resourceMapping = Utils.getResourceMapping(object);
 		if (resourceMapping != null) {
@@ -171,7 +171,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		}
 		return null;
 	}
-	
+
 	private IProject[] getProjectsForAdaptables(IAdaptable[] adaptable) {
 		Set projectSet = new HashSet();
 		for (int i = 0; i < adaptable.length; i++) {
@@ -184,7 +184,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		return null;
 	}
-	
+
 	private static boolean isWorkingSetSupported(IWorkingSet workingSet) {
 		if (!workingSet.isEmpty() && !workingSet.isAggregateWorkingSet()) {
 			IAdaptable[] elements = workingSet.getElements();
@@ -197,11 +197,11 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		}
 		return false;
 	}
-	
+
 	private boolean isProjectExportable(IProject project) {
 		return RepositoryProvider.getProvider(project) != null;
-	} 
-	
+	}
+
 	public ExportProjectSetMainPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 		setDescription(TeamUIMessages.ExportProjectSetMainPage_Initial_description);
@@ -213,20 +213,20 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 	@Override
 	public void createControl(Composite parent) {
 		Composite c = SWTUtils.createHVFillComposite(parent, 0);
-		
+
 		//Add the export working set section
 		exportWorkingSets(c);
-		
+
 		book = new PageBook(c, SWT.NONE);
 		book.setLayoutData(SWTUtils.createHVFillGridData());
 		// set F1 help
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(book, IHelpContextIds.EXPORT_PROJECT_SET_PAGE);
-		
+
 		workingSetPage = new WorkingSetPage();
 		workingSetPage.createControl(book);
-		
+
 		projectPage = new ProjectPage();
-		
+
 		// filter out unexportable projects
 		List passedInExportableProjects = new ArrayList();
 		for (Iterator iterator = passedInSelectedProjects.iterator(); iterator.hasNext();) {
@@ -237,21 +237,21 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		// pass in selected, exportable projects
 		projectPage.getSelectedProjects().addAll(passedInExportableProjects);
 		projectPage.getReferenceCountProjects().addAll(passedInExportableProjects);
-		
+
 		projectPage.createControl(book);
 
 		setControl(c);
 		book.showPage(projectPage.getControl());
-		
+
 		selectedPage = projectPage;
-		
+
 		Dialog.applyDialogFont(parent);
 	}
 
 	private void exportWorkingSets(Composite composite) {
 		exportWorkingSets = new Button(composite, SWT.CHECK | SWT.LEFT);
 		exportWorkingSets.setText(TeamUIMessages.ExportProjectSetMainPage_ExportWorkingSets);
-	
+
 		exportWorkingSets.setSelection(false);
 		exportWorkingSets.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -269,15 +269,15 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			}
 		});
 	}
-	
+
 	public IWorkingSet[] getSelectedWorkingSets(){
 		return (IWorkingSet[]) selectedPage.getWorkingSet().toArray(new IWorkingSet[selectedPage.getWorkingSet().size()]);
 	}
-	
+
 	public IProject[] getSelectedProjects() {
 		return (IProject[]) selectedPage.getSelectedProjects().toArray(new IProject[selectedPage.getSelectedProjects().size()]);
 	}
-	
+
 	public IProject[] getReferenceCountProjects() {
 		return (IProject[]) selectedPage.getReferenceCountProjects().toArray(new IProject[selectedPage.getReferenceCountProjects().size()]);
 	}
@@ -285,7 +285,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 	public void setSelectedProjects(IProject[] selectedProjects) {
 		passedInSelectedProjects.addAll(Arrays.asList(selectedProjects));
 	}
-	
+
 	private interface IExportProjectSetPage {
 		HashSet getSelectedProjects();
 
@@ -293,23 +293,23 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		ArrayList getWorkingSet();
 	}
-	
+
 	private class ProjectPage extends Page implements IExportProjectSetPage {
 		private Composite projectComposite;
 
 		private CheckboxTableViewer tableViewer;
 		private Table table;
-		
+
 		HashSet selectedProjects = new HashSet();
 		ArrayList referenceCountProjects = new ArrayList();
 		ArrayList selectedWorkingSet = new ArrayList();
 
 		@Override
 		public void createControl(Composite parent) {
-			
-			projectComposite = SWTUtils.createHVFillComposite(parent, 1);			
+
+			projectComposite = SWTUtils.createHVFillComposite(parent, 1);
 			initializeDialogUnits(projectComposite);
-			
+
 			//Adds the project table
 			addProjectSection(projectComposite);
 			initializeProjects();
@@ -326,9 +326,9 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		public void setFocus() {
 			projectComposite.setFocus();
 		}
-		
+
 		private void addProjectSection(Composite composite) {
-			
+
 			createLabel(composite, TeamUIMessages.ExportProjectSetMainPage_Select_the_projects_to_include_in_the_project_set__2);
 
 			table = new Table(composite, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -417,19 +417,19 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				}
 			});
 		}
-		
+
 		private void initializeProjects() {
 			tableViewer.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		
+
 			// Check any necessary projects
 			if (selectedProjects != null) {
 				tableViewer.setCheckedElements(selectedProjects.toArray(new IProject[selectedProjects.size()]));
 			}
 		}
-		
+
 		private void updateEnablement() {
 			boolean complete = selectedProjects.size() > 0;
-			
+
 			if (complete) {
 				setErrorMessage(null);
 				setDescription(TeamUIMessages.ExportProjectSetMainPage_description);
@@ -461,31 +461,31 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		private Composite projectComposite;
 		private Table wsTable;
 		private CheckboxTableViewer wsTableViewer;
-		
+
 		private Table table;
 		private TableViewer tableViewer;
-		
+
 
 		HashSet selectedProjects = new HashSet();
 		ArrayList referenceCountProjects = new ArrayList();
 		ArrayList selectedWorkingSet = new ArrayList();
-		
+
 		/**
 		 * Indicates whether the page has been displayed. If this is the first
 		 * time don't show an error until the user made the first modification.
 		 */
 		private boolean pageShown = false;
-		
+
 		@Override
 		public void createControl(Composite parent) {
-		   
-			projectComposite = SWTUtils.createHVFillComposite(parent, 1);			
+
+			projectComposite = SWTUtils.createHVFillComposite(parent, 1);
 			initializeDialogUnits(projectComposite);
 
 			Label label = createLabel (projectComposite, TeamUIMessages.ExportProjectSetMainPage_SelectButton);
 			GridData grid = (GridData) label.getLayoutData();
 			label.setData(grid);
-			
+
 			SashForm form = new SashForm(projectComposite, SWT.HORIZONTAL);
 			form.setLayout(new FillLayout());
 			GridData data = new GridData(GridData.FILL_BOTH);
@@ -501,7 +501,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			addButtons(projectComposite);
 			setPageComplete(false);
 		}
-		
+
 		private void addProjectSection(Composite composite) {
 			table = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 			tableViewer = new TableViewer(table);
@@ -513,7 +513,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			tableViewer.setLabelProvider(new ExportProjectSetLabelProvider());
 			tableViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		}
-		
+
 		private void addWorkingSetSection(Composite projectComposite) {
 
 			wsTable = new Table(projectComposite, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -548,7 +548,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		}
 
 		private void addButtons(Composite projectComposite){
-		
+
 			Composite buttonComposite = new Composite(projectComposite, SWT.NONE);
 			GridLayout layout = new GridLayout();
 			layout.numColumns = 3;
@@ -556,7 +556,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			buttonComposite.setLayout(layout);
 			GridData data = new GridData(SWT.FILL, SWT.FILL, false, false);
 			buttonComposite.setLayoutData(data);
-			 
+
 			Button selectAll = new Button(buttonComposite, SWT.PUSH);
 			data = new GridData();
 			data.verticalAlignment = GridData.FILL;
@@ -569,7 +569,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				@Override
 				public void handleEvent(Event event) {
 					wsTableViewer.setAllChecked(true);
-					
+
 					selectedProjects.removeAll(selectedProjects);
 					selectedWorkingSet.removeAll(selectedWorkingSet);
 					Object[] checked = wsTableViewer.getCheckedElements();
@@ -605,7 +605,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 					updateEnablement();
 				}
 			});
-			
+
 			Button newWorkingSet = new Button(buttonComposite, SWT.PUSH);
 			data = new GridData();
 			data.verticalAlignment = GridData.FILL;
@@ -626,9 +626,9 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 							propListener = new  IPropertyChangeListener() {
 								@Override
 								public void propertyChange(PropertyChangeEvent event) {
-									
+
 								}};
-								
+
 							workingSetManager.addPropertyChangeListener(propListener);
 							wsWizard.open();
 							//recalculate working sets
@@ -645,7 +645,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 									addProjects(elements);
 								}
 							}
-						
+
 							wsTableViewer.setInput(workingSetManager);
 							tableViewer.setInput(selectedProjects);
 						} finally {
@@ -656,7 +656,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				}
 			});
 		}
-		
+
 		@Override
 		public Control getControl() {
 			return projectComposite;
@@ -670,13 +670,13 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		public void refresh(){
 			wsTableViewer.setInput(TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager());
 		}
-		
+
 		private void updateEnablement() {
 			boolean complete = selectedProjects.size() > 0
 					&& selectedWorkingSet.size() > 0;
 			boolean allExportable = complete;
 
-			// check if there is at least one exportable project selected 
+			// check if there is at least one exportable project selected
 			if (complete || !pageShown) {
 				complete = false;
 				for (Iterator iterator = selectedProjects.iterator(); iterator
@@ -688,7 +688,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 						allExportable = false;
 					}
 				}
-				
+
 				if (!complete && !pageShown) {
 					setErrorMessage(null);
 					setMessage(TeamUIMessages.ExportProjectSetMainPage_Initial_description);
@@ -706,7 +706,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			} else {
 				setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_A_working_set_must_be_selected);
 			}
-			
+
 			setPageComplete(complete);
 			pageShown = true;
 		}
@@ -735,14 +735,14 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		private void workingSetRemoved(IWorkingSet workingSet) {
 			IAdaptable[] elements = workingSet.getElements();
 			selectedWorkingSet.remove(workingSet);
-			
+
 			Set tempSet = new HashSet();
 			for (int i = 0; i < elements.length; i++) {
 				IProject[] projects = getProjectsForObject(elements[i]);
 				if (projects != null)
 					tempSet.addAll(Arrays.asList(projects));
 			}
-			
+
 			if (!tempSet.isEmpty()) {
 				selectedProjects.removeAll(tempSet);
 				for (Iterator iterator = tempSet.iterator(); iterator.hasNext();) {
@@ -752,7 +752,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				selectedProjects.addAll(referenceCountProjects);
 			}
 		}
-		
+
 		private void addProjects(IAdaptable[] elements) {
 			Set tempSet = new HashSet();
 			for (int j = 0; j < elements.length; j++) {

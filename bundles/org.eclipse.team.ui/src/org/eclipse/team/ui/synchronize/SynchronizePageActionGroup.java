@@ -23,15 +23,15 @@ import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.actions.ActionGroup;
 
 /**
- * Used to add one or more actions to the context menu, toolbar or view menu 
+ * Used to add one or more actions to the context menu, toolbar or view menu
  * of an {@link ISynchronizePage}. An action group is added to a synchronize
  * page by adding the group to the {@link ISynchronizePageConfiguration} after
- * configuration has been created by the page but before the page is created. 
+ * configuration has been created by the page but before the page is created.
  * <p>
  * The life cycle of an action group is:
  * <ul>
  * <li>the <code>initialize(ISynchronizePageConfiguration}</code> method is
- * invoked before the methods to populate menus. This is done to give clients 
+ * invoked before the methods to populate menus. This is done to give clients
  * a change to create and initialize the actions of the action group.
  * <li>The <code>fillActionBars(IActionBars)</code> method is invoked
  * to populate the page's action bars (view menu and toolbar). It is
@@ -39,12 +39,12 @@ import org.eclipse.ui.actions.ActionGroup;
  * so clients are expected to check for <code>null</code> when accessing
  * the menus from the action bars.
  * <li>The <code>fillContextMenu(IMenuManager)</code> method is invoked each time
- * the context menu is shown. Before this method is called, the 
+ * the context menu is shown. Before this method is called, the
  * action group will be provided with an <code>ActionContext</code>
  * containing the view selection. Clients can access the context using
  * <code>getContext()</code>.
  * <li>The <code>updateActionBars()</code> method is invoked whenever the
- * page's selection changes. Before this method is called, the 
+ * page's selection changes. Before this method is called, the
  * action group will be provided with an <code>ActionContext</code>
  * containing the view selection. Clients can access the context using
  * <code>getContext()</code>.
@@ -59,9 +59,9 @@ import org.eclipse.ui.actions.ActionGroup;
 public abstract class SynchronizePageActionGroup extends ActionGroup {
 
 	private ISynchronizePageConfiguration configuration;
-	
+
 	private Map menuContributions = new HashMap();
-	
+
 	private VisibleRootsSelectionProvider visibleRootSelectionProvider;
 
 	/*
@@ -77,7 +77,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		protected VisibleRootsSelectionProvider(ISynchronizeModelElement element) {
 			modelChanged(element);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#modelChanged(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
 		 */
@@ -89,15 +89,15 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 				setSelection(new StructuredSelection(root));
 			}
 		}
-		
+
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
 		@Override
 		public void addSelectionChangedListener(ISelectionChangedListener listener) {
-			selectionChangedListeners.add(listener);	
+			selectionChangedListeners.add(listener);
 		}
-		
+
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
@@ -105,7 +105,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 			selectionChangedListeners.remove(listener);
 		}
-		
+
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
@@ -113,7 +113,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		public ISelection getSelection() {
 			return selection;
 		}
-		
+
 		/* (non-Javadoc)
 		 * Method declared on ISelectionProvider.
 		 */
@@ -122,7 +122,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			this.selection = selection;
 			selectionChanged(new SelectionChangedEvent(this, getSelection()));
 		}
-		
+
 		private void selectionChanged(final SelectionChangedEvent event) {
 			// pass on the notification to listeners
 			Object[] listeners = selectionChangedListeners.getListeners();
@@ -133,11 +133,11 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 					public void run() {
 						l.selectionChanged(event);
 					}
-				});		
+				});
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialize the actions of this contribution. This method will be invoked
 	 * once before any calls are made to <code>filleContextMenu</code> or
@@ -145,7 +145,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * created. As a result of this, the site of the configuration can be
 	 * accessed. Subclasses may override this method but must invoke the
 	 * overridden method.
-	 * 
+	 *
 	 * @param configuration the configuration for the part to which the
 	 * contribution is associated
 	 */
@@ -155,20 +155,20 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			configuration.addActionContribution(visibleRootSelectionProvider);
 		}
 	}
-	
+
 	/**
 	 * This method is invoked whenever the model being displayed in the view
 	 * changes. This includes when the input to the view changes and when the
 	 * children of the input change. The default implementation of this method
 	 * does nothing. Subclasses may override.
-	 * 
+	 *
 	 * @param root the root of the model being viewed
 	 */
 	public void modelChanged(ISynchronizeModelElement root) {
 		// Do nothing by default
 	}
-	
-	/** 
+
+	/**
 	 * Dispose of the action group. Subclasses may override but must
 	 * invoke the overridden method.
 	 */
@@ -185,7 +185,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * with the configuration of this action group. The id of the returned group
 	 * will not match that of the provided id since the group must be modified
 	 * to ensure that groups are unique across pages.
-	 * 
+	 *
 	 * @param menu the menu
 	 * @param groupId the id of the group being searched for
 	 * @return the group for the given id or <code>null</code>
@@ -199,12 +199,12 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		return item;
 	}
-	
+
 	/**
 	 * Helper method to add an action to a group in a menu. The action is only
 	 * added to the menu if the group exists in the menu. Calling this method
 	 * also has no effect if either the menu or action are <code>null</code>.
-	 * 
+	 *
 	 * @param manager the menu manager
 	 * @param groupId the group to append the action to
 	 * @param action the action to add
@@ -218,7 +218,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		return false;
 	}
-	
+
 	private boolean internalAppendToGroup(IContributionManager manager, String groupId, IAction action) {
 		if (manager == null || action == null) return false;
 		IContributionItem group = findGroup(manager, groupId);
@@ -228,13 +228,13 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Helper method to add a contribution item to a group in a menu. The item
 	 * is only added to the menu if the group exists in the menu. Calling this
 	 * method also has no effect if either the menu or item are
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @param manager the menu manager
 	 * @param groupId the group to append the action to
 	 * @param item the item to add
@@ -250,13 +250,13 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Helper method that can be invoked during initialization to add an action
 	 * to a particular menu (one of P_TOOLBAR_MENU, P_VIEW_MENU, P_CONTEXT_MENU
 	 * from ISynchronizePageConfiguration). The action is added to the given
 	 * group if it is present. Otherwise the action is not added to the menu.
-	 * 
+	 *
 	 * @param menuId the menu id (one of P_TOOLBAR_MENU, P_VIEW_MENU,
 	 * P_CONTEXT_MENU from ISynchronizePageConfiguration)
 	 * @param groupId the group id in the menu to which the action is to be
@@ -267,11 +267,11 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		registerActionWithWorkbench(action);
 		internalAppendToGroup(menuId, groupId, action);
 	}
-	
+
 	/**
 	 * Register this action with the workbench so that it can participate in keybindings and
 	 * retargetable actions.
-	 * 
+	 *
 	 * @param action the action to register
 	 */
 	private void registerActionWithWorkbench(IAction action) {
@@ -290,7 +290,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * a particular menu (one of P_TOOLBAR_MENU, P_VIEW_MENU, P_CONTEXT_MENU
 	 * from ISynchronizePageConfiguration). The item is added to the given group
 	 * if it is present. Otherwise the item is not added to the menu.
-	 * 
+	 *
 	 * @param menuId the menu id (one of P_TOOLBAR_MENU, P_VIEW_MENU,
 	 * P_CONTEXT_MENU from ISynchronizePageConfiguration)
 	 * @param groupId the group id in the menu to which the item is to be added
@@ -299,12 +299,12 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	protected void appendToGroup(String menuId, String groupId, IContributionItem item) {
 		internalAppendToGroup(menuId, groupId, item);
 	}
-	
+
 	/**
 	 * Return a selection provider whose selection includes all roots of the
 	 * elements visible in the page. Selection change events are fired when the
 	 * elements visible in the view change.
-	 * 
+	 *
 	 * @return a selection provider whose selection is the roots of all
 	 * elements visible in the page
 	 */
@@ -321,7 +321,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		return visibleRootSelectionProvider;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
@@ -330,7 +330,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		super.fillContextMenu(menu);
 		fillMenu(menu, ISynchronizePageConfiguration.P_CONTEXT_MENU);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
@@ -342,7 +342,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			fillMenu(actionBars.getToolBarManager(), ISynchronizePageConfiguration.P_TOOLBAR_MENU);
 		}
 	}
-	
+
 	private void fillMenu(IContributionManager menu, String menuId) {
 		Map groups = (Map)menuContributions.get(menuId);
 		if (menu != null && groups != null) {
@@ -379,13 +379,13 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		}
 		actions.add(action);
 	}
-	
+
 	/**
 	 * Return the configuration for the page to which the action group
 	 * is associated.
 	 * @return the configuration for the page to which the action group
 	 * is associated
-	 * 
+	 *
 	 * @since 3.1
 	 */
     public ISynchronizePageConfiguration getConfiguration() {

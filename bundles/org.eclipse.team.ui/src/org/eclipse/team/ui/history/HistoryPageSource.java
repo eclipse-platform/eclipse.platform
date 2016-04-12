@@ -49,5 +49,5 @@ public abstract class HistoryPageSource implements IHistoryPageSource {
 		IHistoryPageSource pageSource = (IHistoryPageSource)Utils.getAdapter(object, IHistoryPageSource.class);
 		return pageSource;
 	}
-	
+
 }

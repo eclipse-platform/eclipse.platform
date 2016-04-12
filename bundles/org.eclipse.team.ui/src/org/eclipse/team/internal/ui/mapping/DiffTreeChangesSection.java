@@ -49,7 +49,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private IStatus[] errors;
 	private boolean showingError;
 	private JobChangeAdapter jobChangeListener;
-	
+
 	public interface ITraversalFactory {
 		ResourceTraversal[] getTraversals(ISynchronizationScope scope);
 	}
@@ -93,7 +93,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		Job.getJobManager().removeJobChangeListener(jobChangeListener);
 		super.dispose();
 	}
-	
+
 	@Override
 	protected int getChangesCount() {
 		return context.getDiffTree().size();
@@ -114,7 +114,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			numChanges = numConflicts + context.getDiffTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK);
 			break;
 		case ISynchronizePageConfiguration.BOTH_MODE:
-			numChanges = numConflicts + context.getDiffTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) 
+			numChanges = numConflicts + context.getDiffTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK)
 				+ context.getDiffTree().countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK);
 			break;
 		default:
@@ -123,7 +123,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		}
 		return numChanges;
 	}
-	
+
 	protected boolean hasChangesInMode(String id, ISynchronizationCompareAdapter adapter, int candidateMode) {
 		switch (candidateMode) {
 		case ISynchronizePageConfiguration.CONFLICTING_MODE:
@@ -213,7 +213,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Do nothing
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)
@@ -221,7 +221,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			calculateDescription();
 		}
 	}
-	
+
 	@Override
 	protected Composite getEmptyChangesComposite(Composite parent) {
 		if (context.getDiffTree().isEmpty()) {
@@ -269,7 +269,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		}
 		return super.getEmptyChangesComposite(parent);
 	}
-	
+
 	private boolean isAtLeastOneProviderDisabled() {
 		ModelProvider[] providers =findModelsWithChangesInMode(getConfiguration().getMode());
 		for (int i = 0; i < providers.length; i++) {
@@ -325,13 +325,13 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_10, message);
 		else
 			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_11, message);
-		
+
 		createDescriptionLabel(composite, message);
-		
+
 		Label warning = new Label(composite, SWT.NONE);
 		warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
-		
-		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_12, SWT.WRAP); 
+
+		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_12, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -354,7 +354,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
+
 		return composite;
 	}
 
@@ -379,14 +379,14 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessVerticalSpace = true;
-		composite.setLayoutData(data);	
+		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) })); 
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_3, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
 
 		final boolean[] remember = new boolean[] { false };
 		final PreferenceStore store = (PreferenceStore) getConfiguration()
 			.getProperty(StartupPreferencePage.STARTUP_PREFERENCES);
-		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_4, SWT.WRAP); 
+		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_4, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -397,8 +397,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
-		link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_5, SWT.WRAP); 
+
+		link = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_5, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -409,7 +409,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
+
 		if (store != null) {
 			final Button rememberButton = getForms().createButton(composite, TeamUIMessages.DiffTreeChangesSection_14, SWT.CHECK);
 			rememberButton.setToolTipText(TeamUIMessages.DiffTreeChangesSection_14);
@@ -430,7 +430,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				}
 			});
 		}
-		
+
 		return composite;
 	}
 
@@ -473,16 +473,16 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		String message;
 		String modeToString = Utils.modeToString(getConfiguration().getMode());
         message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0, new String[] {
-            		provider.getDescriptor().getLabel(), 
+            		provider.getDescriptor().getLabel(),
             		modeToString });
 		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, new String[] { modeToString, oldDesc.getLabel(), message });
-		
+
 		createDescriptionLabel(composite, message);
-		
+
 		Label warning = new Label(composite, SWT.NONE);
 		warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
-		
-		Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, new String[] { provider.getDescriptor().getLabel() }), SWT.WRAP); 
+
+		Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.DiffTreeChangesSection_2, new String[] { provider.getDescriptor().getLabel() }), SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -490,9 +490,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
+
 		new Label(composite, SWT.NONE);
-		Hyperlink link2 = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_13, SWT.WRAP); 
+		Hyperlink link2 = getForms().createHyperlink(composite, TeamUIMessages.DiffTreeChangesSection_13, SWT.WRAP);
 		link2.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -500,7 +500,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link2);
-		
+
 		return composite;
 	}
 
@@ -519,7 +519,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 	}
-	
+
 	@Override
 	protected void calculateDescription() {
 		if (errors != null && errors.length > 0) {
@@ -555,7 +555,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	public void notEmpty(TreeViewer viewer) {
 		calculateDescription();
 	}
-	
+
 	private Composite getErrorComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setBackground(getListBackgroundColor());
@@ -564,11 +564,11 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessVerticalSpace = true;
-		composite.setLayoutData(data);	
+		composite.setLayoutData(data);
 
-		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) })); 
+		createDescriptionLabel(composite, NLS.bind(TeamUIMessages.ChangesSection_10, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
 
-		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_8, SWT.WRAP); 
+		Hyperlink link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_8, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -576,8 +576,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
-		link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_9, SWT.WRAP); 
+
+		link = getForms().createHyperlink(composite, TeamUIMessages.ChangesSection_9, SWT.WRAP);
 		link.addHyperlinkListener(new HyperlinkAdapter() {
 			@Override
 			public void linkActivated(HyperlinkEvent e) {
@@ -586,23 +586,23 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				SubscriberDiffTreeEventHandler handler = getHandler();
 				if (handler != null)
 					handler.initializeIfNeeded();
-				else 
+				else
 					getConfiguration().getParticipant().run(getConfiguration().getSite().getPart());
 			}
 		});
 		getForms().getHyperlinkGroup().add(link);
-		
+
 		return composite;
 	}
 
 	/* private */ void showErrors() {
 		if (errors != null) {
 			IStatus[] status = errors;
-			String title = TeamUIMessages.ChangesSection_11; 
+			String title = TeamUIMessages.ChangesSection_11;
 			if (status.length == 1) {
 				ErrorDialog.openError(getShell(), title, status[0].getMessage(), status[0]);
 			} else {
-				MultiStatus multi = new MultiStatus(TeamUIPlugin.ID, 0, status, TeamUIMessages.ChangesSection_12, null); 
+				MultiStatus multi = new MultiStatus(TeamUIPlugin.ID, 0, status, TeamUIMessages.ChangesSection_12, null);
 				ErrorDialog.openError(getShell(), title, null, multi);
 			}
 		}

@@ -28,7 +28,7 @@ public class TeamSynchronizingPerspective implements IPerspectiveFactory {
 	}
 
 	/**
-	 * Defines the initial actions for a page.  
+	 * Defines the initial actions for a page.
 	 * @param layout the page layout
 	 */
 	public void defineActions(IPageLayout layout) {
@@ -44,16 +44,16 @@ public class TeamSynchronizingPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
-		
+
 		// Add "action sets"
 		layout.addActionSet("org.eclipse.team.ui.actionSet"); //$NON-NLS-1$
-		
+
 		// Add "perspective short cuts"
 		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective"); //$NON-NLS-1$
 	}
 
 	/**
-	 * Defines the initial layout for a page.  
+	 * Defines the initial layout for a page.
 	 * @param layout the page layout
 	 */
 	public void defineLayout(IPageLayout layout) {

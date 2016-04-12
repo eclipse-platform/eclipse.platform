@@ -38,7 +38,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 	Combo fileCombo;
 	String file = ""; //$NON-NLS-1$
 	Button browseButton;
-	
+
 	String urlString = ""; //$NON-NLS-1$
 	Combo urlCombo;
 
@@ -54,8 +54,8 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 	private boolean runInBackground = isRunInBackgroundPreferenceOn();
 	// a wizard shouldn't be in an error state until the state has been modified by the user
 	private int messageType = NONE;
-	private WorkingSetGroup workingSetGroup; 
-	
+	private WorkingSetGroup workingSetGroup;
+
 	private PsfFilenameStore psfFilenameStore = PsfFilenameStore.getInstance();
 	private PsfUrlStore psfUrlStore = PsfUrlStore.getInstance();
 
@@ -94,7 +94,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 
 		// set F1 help
         PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.IMPORT_PROJECT_SET_PAGE);
-				
+
 		Composite inner = new Composite(composite, SWT.NULL);
 		inner.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		GridLayout layout = new GridLayout();
@@ -102,7 +102,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		inner.setLayout(layout);
-		
+
 		fileInputButton = new Button(inner, SWT.RADIO);
 		fileInputButton
 				.setText(TeamUIMessages.ImportProjectSetMainPage_Project_Set_File);
@@ -121,13 +121,13 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		fileCombo.addListener(SWT.Modify, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				file = fileCombo.getText();				
+				file = fileCombo.getText();
 				updateFileEnablement();
 			}
 		});
 
 		browseButton = new Button(inner, SWT.PUSH);
-		browseButton.setText(TeamUIMessages.ImportProjectSetMainPage_Browse_3); 
+		browseButton.setText(TeamUIMessages.ImportProjectSetMainPage_Browse_3);
 
 		urlInputButton = new Button(inner, SWT.RADIO);
 		urlInputButton
@@ -183,9 +183,9 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		});
 
 		addWorkingSetSection(composite);
-		
+
 		Button runInBackgroundCheckbox = SWTUtils.createCheckBox(composite, TeamUIMessages.ImportProjectSetMainPage_runInBackground, 3);
-		
+
 		runInBackgroundCheckbox.setSelection(isRunInBackgroundPreferenceOn());
 		runInBackgroundCheckbox.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -193,7 +193,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 				runInBackground = !runInBackground;
 			}
 		});
-		
+
 		setControl(composite);
 		setDefaultInputType();
 		Dialog.applyDialogFont(parent);
@@ -229,7 +229,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 				new String[] { "org.eclipse.ui.resourceWorkingSetPage", //$NON-NLS-1$
 						"org.eclipse.jdt.ui.JavaWorkingSetPage" /* JavaWorkingSetUpdater.ID */}); //$NON-NLS-1$
 	}
-	
+
 	private void updateUrlEnablement() {
 		boolean complete = false;
 		setMessage(null);
@@ -265,7 +265,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		boolean complete = false;
 		setMessage(null);
 		setErrorMessage(null);
-		
+
 		if (file.length() == 0) {
 			setMessage(TeamUIMessages.ImportProjectSetMainPage_specifyFile, messageType);
 			setPageComplete(false);
@@ -275,12 +275,12 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 			File f = new File(file);
 			if (!f.exists()) {
 				messageType = ERROR;
-				setMessage(TeamUIMessages.ImportProjectSetMainPage_The_specified_file_does_not_exist_4, messageType); 
+				setMessage(TeamUIMessages.ImportProjectSetMainPage_The_specified_file_does_not_exist_4, messageType);
 				setPageComplete(false);
 				return;
 			} else if (f.isDirectory()) {
 				messageType = ERROR;
-				setMessage(TeamUIMessages.ImportProjectSetMainPage_You_have_specified_a_folder_5, messageType); 
+				setMessage(TeamUIMessages.ImportProjectSetMainPage_You_have_specified_a_folder_5, messageType);
 				setPageComplete(false);
 				return;
 			} else if (!ProjectSetImporter.isValidProjectSetFile(file)) {
@@ -291,12 +291,12 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 			}
 			complete = true;
 		}
-		
+
 		if (complete) {
 			setErrorMessage(null);
 			setDescription(TeamUIMessages.ImportProjectSetMainPage_description);
 		}
-			
+
 		setPageComplete(complete);
 	}
 
@@ -315,22 +315,22 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 			fileCombo.setFocus();
 		}
 	}
-	
+
 	/**
 	 * Return the working sets selected on the page or an empty array if none
 	 * were selected.
-	 * 
+	 *
 	 * @return the selected working sets or an empty array
 	 */
 	public IWorkingSet[] getWorkingSets() {
 		return workingSetGroup.getSelectedWorkingSets();
 	}
-	
+
 	private static boolean isRunInBackgroundPreferenceOn() {
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getBoolean(
 				IPreferenceIds.RUN_IMPORT_IN_BACKGROUND);
 	}
-	
+
 	public boolean isRunInBackgroundOn() {
 		return runInBackground;
 	}

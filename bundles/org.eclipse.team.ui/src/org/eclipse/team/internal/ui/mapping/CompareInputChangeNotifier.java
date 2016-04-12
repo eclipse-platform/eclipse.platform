@@ -25,7 +25,7 @@ import org.eclipse.team.internal.ui.Policy;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 
 /**
- * An abstract class that 
+ * An abstract class that
  * listens to resource changes and synchronization context changes.
  * <p>
  * This class can be subclassed by clients.
@@ -51,32 +51,32 @@ public abstract class CompareInputChangeNotifier implements
 		public void decrement() {
 			if (connections > 0)
 				connections--;
-			
+
 		}
 		public boolean isDisconnected() {
 			return connections == 0;
 		}
 	}
-	
+
 	private static final int COMPARE_INPUT_CHANGE = 1;
-	
+
 	private static class InputChangeEvent extends Event {
 		private final ICompareInput[] inputs;
 		public InputChangeEvent(ICompareInput[] inputs) {
 			super(COMPARE_INPUT_CHANGE);
 			this.inputs = inputs;
-			
+
 		}
 		public ICompareInput[] getChangedInputs() {
 			return inputs;
 		}
 	}
-	
+
 	private class InputChangeEventHandler extends BackgroundEventHandler {
 
 		private final Set changedInputs = new HashSet();
 		private final List pendingRunnables = new ArrayList();
-		
+
 		protected InputChangeEventHandler() {
 			super(TeamUIMessages.CompareInputChangeNotifier_0, TeamUIMessages.CompareInputChangeNotifier_1);
 		}
@@ -130,7 +130,7 @@ public abstract class CompareInputChangeNotifier implements
 					break;
 			}
 		}
-		
+
 		private void executeRunnableDuringDispatch(Event event) {
 			synchronized (pendingRunnables) {
 				pendingRunnables.add(event);
@@ -150,23 +150,23 @@ public abstract class CompareInputChangeNotifier implements
 				handleException(e);
 			}
 		}
-		
+
 		protected synchronized void queueEvent(Event event) {
 			super.queueEvent(event, false);
 		}
-		
+
 		@Override
 		protected long getShortDispatchDelay() {
 			// Only wait 250 for additional changes to come in
 			return 250;
 		}
-		
+
 		@Override
 		protected boolean belongsTo(Object family) {
 			return CompareInputChangeNotifier.this.belongsTo(family);
 		}
 	}
-	
+
 	/**
 	 * Create a change notifier for the given synchronization context.
 	 */
@@ -185,7 +185,7 @@ public abstract class CompareInputChangeNotifier implements
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		eventHandler = new InputChangeEventHandler();
 	}
-	
+
 	/**
 	 * Dispose of the change notifier. This method is invoked when the context
 	 * to which the change notifier is associated is disposed.
@@ -198,8 +198,8 @@ public abstract class CompareInputChangeNotifier implements
 	}
 
 	/**
-	 * Connect the input to this change notifier. Once connected, the change notifier will issue 
-	 * change events for the given input. When change notification is no longer desired, the 
+	 * Connect the input to this change notifier. Once connected, the change notifier will issue
+	 * change events for the given input. When change notification is no longer desired, the
 	 * input should be disconnected. The number of calls to {@link #connect(ICompareInput)} needs to
 	 * be matched by the same number of calls to {@link #disconnect(ICompareInput)}.
 	 * @param input the compare input
@@ -227,7 +227,7 @@ public abstract class CompareInputChangeNotifier implements
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the array of inputs that have connections.
 	 * @return the array of inputs that have connections
@@ -235,7 +235,7 @@ public abstract class CompareInputChangeNotifier implements
 	protected ICompareInput[] getConnectedInputs() {
 		return (ICompareInput[])inputs.keySet().toArray(new ICompareInput[inputs.size()]);
 	}
-	
+
 	/**
 	 * Send out notification that the given compare inputs have changed.
 	 * @param inputs the changed inputs
@@ -244,7 +244,7 @@ public abstract class CompareInputChangeNotifier implements
 		InputChangeEvent event = new InputChangeEvent(inputs);
 		eventHandler.queueEvent(event);
 	}
-	
+
 	/**
 	 * Dispatch the changes to the given inputs.
 	 * @param inputs the changed compare inputs
@@ -286,7 +286,7 @@ public abstract class CompareInputChangeNotifier implements
 	protected void prepareInput(ICompareInput input, IProgressMonitor monitor) {
 		// Default is to do nothing
 	}
-	
+
 	/**
 	 * Update the compare inputs and fire the change events.
 	 * This method is called from the UI thread after the inputs have
@@ -300,7 +300,7 @@ public abstract class CompareInputChangeNotifier implements
 			fireChange(input);
 		}
 	}
-	
+
 	/**
 	 * Run the given runnable in the background.
 	 * @param runnable the runnable
@@ -308,7 +308,7 @@ public abstract class CompareInputChangeNotifier implements
 	protected void runInBackground(IWorkspaceRunnable runnable) {
 		eventHandler.queueEvent(new BackgroundEventHandler.RunnableEvent(runnable, false));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
@@ -325,7 +325,7 @@ public abstract class CompareInputChangeNotifier implements
 					IResourceDelta delta = event.getDelta().findMember(resource.getFullPath());
 					if (delta != null) {
 						if ((delta.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) > 0
-								|| (delta.getKind() & (IResourceDelta.CHANGED)) > 0 
+								|| (delta.getKind() & (IResourceDelta.CHANGED)) > 0
 								&& (delta.getFlags() & (IResourceDelta.CONTENT | IResourceDelta.REPLACED)) > 0) {
 							changedInputs.add(input);
 							break;
@@ -337,7 +337,7 @@ public abstract class CompareInputChangeNotifier implements
 		if (!changedInputs.isEmpty())
 			handleInputChanges((ICompareInput[]) changedInputs.toArray(new ICompareInput[changedInputs.size()]), true);
 	}
-	
+
 	/**
 	 * Return the resources covered by the given compare input.
 	 * This method is used by the {@link #resourceChanged(IResourceChangeEvent)}
@@ -368,7 +368,7 @@ public abstract class CompareInputChangeNotifier implements
 		if (realChanges.length > 0)
 			inputsChanged(realChanges);
 	}
-	
+
 	/**
 	 * Return whether the given compare input has changed and requires
 	 * a compare input change event to be fired.
@@ -382,7 +382,7 @@ public abstract class CompareInputChangeNotifier implements
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Update the compare input and fire the change event.
 	 * This method is called from {@link #fireChanges(ICompareInput[])}
@@ -395,7 +395,7 @@ public abstract class CompareInputChangeNotifier implements
 			ci.update();
 		}
 	}
-	
+
 	/**
 	 * Return whether the background handler for this notifier belongs to the
 	 * given job family.

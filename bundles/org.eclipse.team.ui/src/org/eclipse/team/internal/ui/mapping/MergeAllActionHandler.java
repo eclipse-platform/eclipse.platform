@@ -66,7 +66,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		synchronized (this) {
 			operation = null;
 		}
-		setEnabled(event.getTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) > 0 
+		setEnabled(event.getTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) > 0
 				|| event.getTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) > 0);
 	}
 
@@ -77,7 +77,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#dispose()
 	 */
@@ -93,7 +93,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 			return super.execute(event);
 		return null;
 	}
-	
+
 	/**
 	 * Prompt to save all dirty editors and return whether to proceed
 	 * or not.
@@ -108,7 +108,7 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		}
 		return true;
 	}
-	
+
 	private IResource[] getTargetResources() {
 		return getContext().getDiffTree().getAffectedResources();
 	}
@@ -129,28 +129,28 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 	/**
 	 * Return whether dirty editor should be saved before this action is run.
 	 * Default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether dirty editor should be saved before this action is run
 	 */
 	protected boolean needsToSaveDirtyEditors() {
 		return true;
 	}
-	
+
 	/**
 	 * Returns whether the user should be prompted to save dirty editors. The
 	 * default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether the user should be prompted to save dirty editors
 	 */
 	protected boolean confirmSaveOfDirtyEditor() {
 		return true;
 	}
-	
+
 	protected String getJobName() {
 		String name = getConfiguration().getParticipant().getName();
 		return NLS.bind(TeamUIMessages.MergeAllActionHandler_0, Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, name));
 	}
-	
+
 	protected boolean promptToUpdate() {
 		final IResourceDiffTree tree = getContext().getDiffTree();
 		if (tree.isEmpty()) {
@@ -164,10 +164,10 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 			@Override
 			public void run() {
 				String sizeString = Long.toString(count);
-				String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) : 
+				String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) :
 					NLS.bind(TeamUIMessages.MergeAllActionHandler_2, new String[] { sizeString });
-				result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(), 
-						NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message); 					 
+				result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
+						NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message);
 			}
 		});
 		return result[0];

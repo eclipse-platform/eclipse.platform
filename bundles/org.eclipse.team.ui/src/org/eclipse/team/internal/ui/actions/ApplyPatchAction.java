@@ -28,7 +28,7 @@ public class ApplyPatchAction extends TeamAction {
 	public boolean isEnabled() {
 		return true;
 	}
-	
+
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException,
 			InterruptedException {
@@ -45,14 +45,14 @@ public class ApplyPatchAction extends TeamAction {
 				TeamUIPlugin.log(e);
 			}
 		}
-		
+
 		final ApplyPatchOperation op;
 		if (isPatch) {
 			op= new ApplyPatchOperation(getTargetPart(), (IFile)resource, null, new CompareConfiguration());
 		} else {
 			op= new ApplyPatchOperation(getTargetPart(), resource);
 		}
-		BusyIndicator.showWhile(Display.getDefault(), op); 
+		BusyIndicator.showWhile(Display.getDefault(), op);
 	}
 
 }

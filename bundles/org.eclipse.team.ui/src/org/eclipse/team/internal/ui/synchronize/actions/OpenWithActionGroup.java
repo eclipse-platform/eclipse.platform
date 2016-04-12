@@ -25,7 +25,7 @@ import org.eclipse.ui.keys.IBindingService;
 
 /**
  * This is the action group for the open actions. It contains open
- * actions for 
+ * actions for
  */
 public class OpenWithActionGroup extends ActionGroup {
 
@@ -71,7 +71,7 @@ public class OpenWithActionGroup extends ActionGroup {
 
 	/**
 	 * Adds the OpenWith submenu to the context menu.
-	 * 
+	 *
 	 * @param menu the context menu
 	 * @param selection the current selection
 	 */
@@ -81,7 +81,7 @@ public class OpenWithActionGroup extends ActionGroup {
         if (selection == null || selection.size() < 1)
             return;
         Object[] elements = selection.toArray();
-        IResource resources[] = Utils.getResources(elements);       
+        IResource resources[] = Utils.getResources(elements);
 		if (resources.length == 0) {
 			if (openInCompareAction != null) {
 				// We can still show the compare editor open if the element has
@@ -119,7 +119,7 @@ public class OpenWithActionGroup extends ActionGroup {
 				break;
 			}
 		}
-		
+
 		if (allFiles) {
 			if (openInCompareAction != null) {
 				menu.appendToGroup(groupId, openInCompareAction);
@@ -133,7 +133,7 @@ public class OpenWithActionGroup extends ActionGroup {
 			}
 		}
 
-		if (allFiles) {	
+		if (allFiles) {
 			if (openFileAction != null) {
 				openFileAction.selectionChanged(selection);
 				menu.appendToGroup(groupId, openFileAction);
@@ -144,7 +144,7 @@ public class OpenWithActionGroup extends ActionGroup {
 				IWorkbenchSite ws = getSite().getWorkbenchSite();
 				if (ws != null) {
 					MenuManager openWithSubmenu =
-						new MenuManager(TeamUIMessages.OpenWithActionGroup_0); 
+						new MenuManager(TeamUIMessages.OpenWithActionGroup_0);
 					openWithSubmenu.add(new OpenWithMenu(ws.getPage(), resources[0]));
 					menu.appendToGroup(groupId, openWithSubmenu);
 				}
@@ -165,7 +165,7 @@ public class OpenWithActionGroup extends ActionGroup {
 
 	/**
 	 * {@link SaveablesCompareEditorInput#getShowInMenuLabel}
-	 * 
+	 *
 	 * @return label for "Show In" menu
 	 */
 	private static String getShowInMenuLabel() {

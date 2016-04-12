@@ -70,7 +70,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 	}
 
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processDiffs(FilePatch2[])
-	private IDiffElement[] processDiffs(FilePatch2[] diffs) { 
+	private IDiffElement[] processDiffs(FilePatch2[] diffs) {
 		List result = new ArrayList();
 		for (int i = 0; i < diffs.length; i++) {
 			result.addAll(processDiff(diffs[i], this));
@@ -107,7 +107,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 		}
 		return result;
 	}
-	
+
 	private static ITypedElement getLeftElement(final FileDiffResult result) {
 		return new LocalResourceTypedElement(((WorkspaceFileDiffResult)result).getTargetFile()) {
 			@Override

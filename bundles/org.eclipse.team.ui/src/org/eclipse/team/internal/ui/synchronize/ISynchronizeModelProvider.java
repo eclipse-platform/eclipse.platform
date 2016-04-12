@@ -25,7 +25,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  * times without warning.
  */
 public interface ISynchronizeModelProvider {
-	
+
     /**
      * Property constant used to indicate that the viewer sorter has changed.
      * Property change notifications for the viewer sorter change do not include
@@ -33,7 +33,7 @@ public interface ISynchronizeModelProvider {
      * from the provider.
      */
     public static final String P_VIEWER_SORTER = TeamUIPlugin.ID  + ".P_VIEWER_SORTER"; //$NON-NLS-1$
-    
+
 	/**
 	 * Returns the sync set this model provider is showing.
 	 * @return the sync set this model provider is showing.
@@ -45,7 +45,7 @@ public interface ISynchronizeModelProvider {
 	 * @return the description for this model provider.
 	 */
 	public ISynchronizeModelProviderDescriptor getDescriptor();
-	
+
 	/**
 	 * Return the <code>AbstractTreeViewer</code> associated with this content
 	 * provider or <code>null</code> if the viewer is not of the proper type.
@@ -66,7 +66,7 @@ public interface ISynchronizeModelProvider {
 	public abstract void dispose();
 
 	/**
-	 * Returns the input created by this controller or <code>null</code> if 
+	 * Returns the input created by this controller or <code>null</code> if
 	 * {@link #prepareInput(IProgressMonitor)} hasn't been called on this object yet.
 	 * @return the model element
 	 */
@@ -83,13 +83,13 @@ public interface ISynchronizeModelProvider {
 	 * is safe to access the viewer.
 	 */
 	public abstract void saveState();
-	
+
 	/**
 	 * Register a property change listener with this provider.
 	 * @param listener the property change listener
 	 */
 	public abstract void addPropertyChangeListener(IPropertyChangeListener listener);
-	
+
 	/**
 	 * Remove a property change listener from this provider.
 	 * @param listener the property change listener

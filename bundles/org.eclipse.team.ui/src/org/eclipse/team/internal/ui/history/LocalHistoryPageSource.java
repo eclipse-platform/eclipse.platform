@@ -28,7 +28,7 @@ public class LocalHistoryPageSource extends HistoryPageSource {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean canShowHistoryFor(Object object) {
 		return getFile(object) != null;

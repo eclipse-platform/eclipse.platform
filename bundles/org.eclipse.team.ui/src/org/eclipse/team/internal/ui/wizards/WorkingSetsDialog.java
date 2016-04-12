@@ -35,9 +35,9 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 	protected Image dlgTitleImage;
 
 	private String selectedWorkingSet;
-	
+
 	public static final String resourceWorkingSetId = "org.eclipse.ui.resourceWorkingSetPage"; //$NON-NLS-1$
-	
+
 	public WorkingSetsDialog(Shell shell) {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -129,10 +129,10 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 			}
 		});
 	}
-	
+
 	class WorkingSetLabelProvider extends LabelProvider {
 		  private Map icons;
-		  
+
 		    public WorkingSetLabelProvider() {
 		        icons = new Hashtable();
 		    }
@@ -165,7 +165,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 		        }
 		        return icon;
 		    }
-			    
+
 		    @Override
 			public String getText(Object object) {
 		        Assert.isTrue(object instanceof IWorkingSet);
@@ -173,7 +173,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 		        return workingSet.getLabel();
 		    }
 		}
-	
+
 	public String getSelectedWorkingSet(){
 		return selectedWorkingSet;
 	}

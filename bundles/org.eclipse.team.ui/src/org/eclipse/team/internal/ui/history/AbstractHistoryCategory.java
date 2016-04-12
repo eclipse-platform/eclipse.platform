@@ -15,10 +15,10 @@ import org.eclipse.team.core.history.IFileRevision;
 
 
 public abstract class AbstractHistoryCategory {
-	
+
 	/**
-	 * Returns the name of this category. 
-	 * @return a string 
+	 * Returns the name of this category.
+	 * @return a string
 	 */
 	abstract public String getName();
 
@@ -30,7 +30,7 @@ public abstract class AbstractHistoryCategory {
 	public Image getImage() {
 		return null;
 	}
-	
+
 	/**
 	 * Returns whether this category currently has any revisions associated with it.
 	 * @return <code>true</code> if there are any revisions, <code>false</code> otherwise.
@@ -46,7 +46,7 @@ public abstract class AbstractHistoryCategory {
 	 * @return	<code>true</code> if any revisions match this category, <code>false</code> otherwise
 	 */
 	abstract public boolean collectFileRevisions(IFileRevision[] fileRevisions, boolean shouldRemove);
-	
+
 	/**
 	 * Returns the file revisions that are currently associated with this category or <code>null</code> if
 	 * there are no file revisions associated with this category.

@@ -32,7 +32,7 @@ import org.eclipse.ui.part.Page;
 /**
  * Displays a history page combined with the compare/merge infrastructure. This only works properly if the
  * history page adapts to an {@link IHistoryCompareAdapter}.
- * 
+ *
  * @since 3.3
  */
 public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
@@ -48,7 +48,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		}
 	};
 	private boolean isReplace;
-	
+
 	/**
 	 * Create a history page compare editor input for the given page and object.
 	 * @param configuration the compare configuration
@@ -60,7 +60,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		this.pageSource = pageSource;
 		this.object = object;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -69,7 +69,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 			throws InvocationTargetException, InterruptedException {
 		return object;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
@@ -81,7 +81,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 			historyPage.dispose();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#createPage(org.eclipse.compare.CompareViewerPane, org.eclipse.jface.action.IToolBarManager)
 	 */
@@ -102,7 +102,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		historyPage.addPropertyChangeListener(changeListener);
 		return (IPage)historyPage;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageCompareEditorInput#asCompareInput(org.eclipse.jface.viewers.ISelection)
 	 */
@@ -177,7 +177,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#isEditionSelectionDialog()
 	 */
@@ -205,7 +205,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	public void setReplace(boolean isReplace) {
 		this.isReplace = isReplace;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getOKButtonLabel()
 	 */
@@ -215,7 +215,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 			return TeamUIMessages.HistoryPageCompareEditorInput_0;
 		return super.getOKButtonLabel();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#okPressed()
 	 */
@@ -232,11 +232,11 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * A replace has been requested. This method will be
 	 * invoked if {@link #isReplaceDialog()} is <code>true</code>
-	 * and the user has clicked the "Replace" button. 
+	 * and the user has clicked the "Replace" button.
 	 * By default, this method does nothing.
 	 * Subclasses may override.
 	 * @param selectedObject the selected object
@@ -245,5 +245,5 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	protected void performReplace(Object selectedObject) throws CoreException {
 		// By default, do nothing
 	}
-	
+
 }

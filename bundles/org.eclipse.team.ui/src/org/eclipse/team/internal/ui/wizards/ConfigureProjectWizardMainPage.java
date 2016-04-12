@@ -49,16 +49,16 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	private AdaptableList disabledWizards;
 	private IProject[] projects;
 	private String description;
-	
+
 	private IWizard selectedWizard;
-	
+
 	private IDialogSettings settings;
 	private final static String SELECTED_WIZARD_ID = "selectedWizardId"; //$NON-NLS-1$
 	private String selectedWizardId;
-	
+
 	/**
 	 * Create a new ConfigureProjectWizardMainPage
-	 * 
+	 *
 	 * @param pageName  the name of the page
 	 * @param title  the title of the page
 	 * @param titleImage  the image for the page title
@@ -66,12 +66,12 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	 * @param disabledWizards the list of wizards that are disabled via capabilities
 	 */
 	public ConfigureProjectWizardMainPage(String pageName, String title, ImageDescriptor titleImage, AdaptableList wizards, AdaptableList disabledWizards) {
-		this(pageName,title,titleImage,wizards,disabledWizards, TeamUIMessages.ConfigureProjectWizardMainPage_selectRepository); 
+		this(pageName,title,titleImage,wizards,disabledWizards, TeamUIMessages.ConfigureProjectWizardMainPage_selectRepository);
 	}
-	
+
 	/**
 	 * Create a new ConfigureProjectWizardMainPage
-	 * 
+	 *
 	 * @param pageName  the name of the page
 	 * @param title  the title of the page
 	 * @param titleImage  the image for the page title
@@ -85,7 +85,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		this.disabledWizards = disabledWizards;
 		this.description = description;
 	}
-	
+
 	public IWizard getSelectedWizard() {
 		return selectedWizard;
 	}
@@ -93,7 +93,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	 * @see WizardPage#canFlipToNextPage
 	 */
 	@Override
-	public boolean canFlipToNextPage() {		
+	public boolean canFlipToNextPage() {
 		return selectedWizard != null && selectedWizard.getPageCount() > 0;
 	}
 	/*
@@ -104,18 +104,18 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		setControl(composite);
 
 		// set F1 help
         PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARE_PROJECT_PAGE);
-				
+
 		Label label = new Label(composite, SWT.LEFT);
 		label.setText(description);
 		GridData data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		label.setLayoutData(data);
-	
+
 		table = new Table(composite, SWT.SINGLE | SWT.BORDER);
 		data = new GridData(GridData.FILL_BOTH);
 		data.heightHint = table.getItemHeight() * 7;
@@ -145,11 +145,11 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 				try {
 					selectedWizard = (IWizard)selectedElement.createExecutableExtension(getUnsharedProjects());
 					selectedWizardId = selectedElement.getID();
-				} catch (CoreException e) {					
+				} catch (CoreException e) {
 					return;
 				}
 				selectedWizard.addPages();
-				
+
 				// Ask the container to update button enablement
 				setPageComplete(true);
 			}
@@ -171,10 +171,10 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 				return super.compare(viewer, e1, e2);
 			}
 		});
-		
+
 		if(disabledWizards.size() > 0) {
 			showAllToggle = new Button(composite, SWT.CHECK);
-			showAllToggle.setText(TeamUIMessages.ConfigureProjectWizard_showAll); 
+			showAllToggle.setText(TeamUIMessages.ConfigureProjectWizard_showAll);
 			showAllToggle.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
@@ -186,7 +186,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 				}
 			});
 		}
-		
+
 		if(wizards.size() == 0 && showAllToggle != null) {
 			showAllToggle.setSelection(true);
 			ArrayList all = new ArrayList(Arrays.asList(wizards.getChildren()));
@@ -198,22 +198,22 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		initializeWizardSelection();
         Dialog.applyDialogFont(parent);
 	}
-	
+
 	/* package */ IProject[] getUnsharedProjects() {
 		java.util.List unshared = new ArrayList();
 		for (int i = 0; i < projects.length; i++) {
 			IProject project = projects[i];
-			if (!RepositoryProvider.isShared(project)) 
+			if (!RepositoryProvider.isShared(project))
 				unshared.add(project);
 		}
 		return (IProject[]) unshared.toArray(new IProject[unshared.size()]);
 	}
 
 	/**
-	 * The <code>WizardSelectionPage</code> implementation of 
-	 * this <code>IWizardPage</code> method returns the first page 
+	 * The <code>WizardSelectionPage</code> implementation of
+	 * this <code>IWizardPage</code> method returns the first page
 	 * of the currently selected wizard if there is one.
-	 * 
+	 *
 	 * @see WizardPage#getNextPage
 	 */
 	@Override
@@ -222,17 +222,17 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		if(! WorkbenchActivityHelper.allowUseOf(getTriggerPoint(), ((IStructuredSelection)viewer.getSelection()).getFirstElement())) return null;
 		return selectedWizard.getStartingPage();
 	}
-	
+
 	private ITriggerPoint getTriggerPoint() {
 		return PlatformUI.getWorkbench()
 			.getActivitySupport().getTriggerPointManager()
 			.getTriggerPoint(TeamUIPlugin.TRIGGER_POINT_ID);
 	}
-	
+
 	public void setProjects(IProject[] projects) {
 		this.projects = projects;
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -240,10 +240,10 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			table.setFocus();
 		}
 	}
-	
+
 	private void initializeWizardSelection() {
 		String selectedWizardId = null;
-		
+
 		IDialogSettings dialogSettings = TeamUIPlugin.getPlugin().getDialogSettings();
 		this.settings = dialogSettings.getSection("ConfigureProjectWizard"); //$NON-NLS-1$
 		if (this.settings == null) {
@@ -251,13 +251,13 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		}
 		if (settings != null)
 			selectedWizardId = settings.get(SELECTED_WIZARD_ID);
-		
+
 		if (selectedWizardId==null)
 			return;
-		
+
 		// TODO: any checks here?
 		Object[] children = ((AdaptableList) viewer.getInput()).getChildren();
-		
+
 		for (int i = 0; i < children.length; i++) {
 			try {
 				ConfigurationWizardElement element = (ConfigurationWizardElement)children[i];
@@ -270,7 +270,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			}
 		}
 	}
-	
+
 	/*package*/ void performFinish() {
 		settings.put(SELECTED_WIZARD_ID, selectedWizardId);
 	}

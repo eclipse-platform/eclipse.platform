@@ -55,7 +55,7 @@ public class DiffNodeWorkbenchAdapter implements IWorkbenchAdapter {
 		DiffNode node = getDiffNode(o);
 		return node != null ? node.getParent() : null;
 	}
-	
+
 	/*
 	 * Return a diff node if the input object is a diff node or null otherwise.
 	 */

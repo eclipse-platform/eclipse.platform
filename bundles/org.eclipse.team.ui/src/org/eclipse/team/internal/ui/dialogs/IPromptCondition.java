@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 
 /**
  * Input to a confirm prompt
- * 
+ *
  * @see PromptingDialog
  */
 public interface IPromptCondition {
@@ -23,7 +23,7 @@ public interface IPromptCondition {
 	 * false otherwise.
 	 */
 	public boolean needsPrompt(IResource resource);
-	
+
 	/**
 	 * Answers the message to include in the prompt.
 	 */

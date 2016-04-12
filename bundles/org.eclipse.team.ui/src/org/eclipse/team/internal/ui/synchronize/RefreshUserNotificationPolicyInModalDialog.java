@@ -45,15 +45,15 @@ public class RefreshUserNotificationPolicyInModalDialog implements IRefreshSubsc
 			return null;
 		//	 If the event is for a cancelled operation, there's nothing to do
 		int severity = event.getStatus().getSeverity();
-		if(severity == IStatus.CANCEL || severity == IStatus.ERROR) 
+		if(severity == IStatus.CANCEL || severity == IStatus.ERROR)
 			return null;
-		
+
 		return new WorkbenchAction() {
 			@Override
-			public void run() {		
+			public void run() {
 					// If there are no changes
 					if (event.getStatus().getCode() == IRefreshEvent.STATUS_NO_CHANGES) {
-						MessageDialog.openInformation(shell, TeamUIMessages.OpenComparedDialog_noChangeTitle, TeamUIMessages.OpenComparedDialog_noChangesMessage); // 
+						MessageDialog.openInformation(shell, TeamUIMessages.OpenComparedDialog_noChangeTitle, TeamUIMessages.OpenComparedDialog_noChangesMessage); //
 						return;
 					}
 					compareAndOpenDialog(event, participant);

@@ -32,19 +32,19 @@ public abstract class DialogArea {
 
 	private FontMetrics fontMetrics;
 	private List listeners;
-	
+
 	/**
 	 * Create a dialog area
 	 */
 	protected DialogArea() {
 		this.listeners = new ArrayList();
 	}
-	
+
 	/**
 	 * Listener for property change events. The only event of interest is for
 	 * property SELECTED_WORKING_SET which contains the selected working set or
 	 * <code>null</code> if none is selected.
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
@@ -53,7 +53,7 @@ public abstract class DialogArea {
 	}
 	/**
 	 * Remove the provided listener from the receiver.
-	 * 
+	 *
 	 * @param listener
 	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
@@ -67,13 +67,13 @@ public abstract class DialogArea {
 			listener.propertyChange(event);
 		}
 	}
-	
+
 	/**
 	 * Code copied from <code>org.eclipse.jface.dialogs.Dialog</code> to obtain
 	 * a FontMetrics.
 	 *
 	 * @param control a control from which to obtain the current font
-	 * 
+	 *
 	 * @see org.eclipse.jface.dialogs.Dialog
 	 */
 	protected void initializeDialogUnits(Control control) {
@@ -89,7 +89,7 @@ public abstract class DialogArea {
 	 * @param parent
 	 */
 	public abstract void createArea(Composite parent);
-	
+
 	protected Button createCheckbox(Composite parent, String label, int span) {
 		Button button = new Button(parent, SWT.CHECK | SWT.LEFT);
 		button.setText(label);
@@ -99,7 +99,7 @@ public abstract class DialogArea {
 		button.setLayoutData(data);
 		return button;
 	}
-	
+
 	protected Button createButton(Composite parent, String label, int style) {
 		Button button = new Button(parent, SWT.PUSH);
 		button.setText(label);
@@ -153,13 +153,13 @@ public abstract class DialogArea {
 		final Composite composite = new Composite(parent, SWT.NULL);
 		final Font font = parent.getFont();
 		composite.setFont(font);
-		
+
 		composite.setLayout(new GridLayout(numColumns, false));
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, grab, grab));
-		
+
 		return composite;
 	}
-	
+
 	/**
 	 * Creates composite control and sets the default layout data.
 	 *
@@ -171,7 +171,7 @@ public abstract class DialogArea {
 		Composite composite = new Composite(parent, SWT.NULL);
 		Font font = parent.getFont();
 		composite.setFont(font);
-		
+
 		// GridLayout
 		GridLayout layout = new GridLayout();
 		layout.numColumns = numColumns;
@@ -188,11 +188,11 @@ public abstract class DialogArea {
 		composite.setLayoutData(data);
 		return composite;
 	}
-	
+
 	protected int convertVerticalDLUsToPixels(int dlus) {
 	    return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
 	}
-	
+
 	protected int convertHorizontalDLUsToPixels(int dlus) {
 	    return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
 	}

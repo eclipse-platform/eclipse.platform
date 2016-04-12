@@ -24,12 +24,12 @@ public class ResourceModelSorter extends ResourceSorter {
 	public ResourceModelSorter() {
 		super(NAME);
 	}
-	
+
 	@Override
 	protected int compareNames(IResource r1, IResource r2) {
 		if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 				&& r1 instanceof IFolder
-				&& r2 instanceof IFolder) {	
+				&& r2 instanceof IFolder) {
 			return collator.compare(r1.getProjectRelativePath().toString(), r2.getProjectRelativePath().toString());
 		}
 		return super.compareNames(r1, r2);

@@ -26,7 +26,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	private ISynchronizeParticipant participant;
 	private IWorkbenchPartSite site;
 	private ISynchronizePageConfiguration configuration;
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -130,7 +130,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 
 	/**
 	 * Returns the participant associated with this part.
-	 * 
+	 *
 	 * @return participant associated with this part
 	 */
 	public ISynchronizeParticipant getParticipant() {

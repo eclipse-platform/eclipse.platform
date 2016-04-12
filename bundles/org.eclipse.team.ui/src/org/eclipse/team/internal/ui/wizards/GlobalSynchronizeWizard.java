@@ -22,11 +22,11 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * The wizard for synchronizing a synchronize participant.
- * 
+ *
  * @since 3.0
  */
 public class GlobalSynchronizeWizard extends Wizard {
-    
+
     private final static String DIALOG_SETTINGS_SECTION= "SynchronizeWizard"; //$NON-NLS-1$
 
 	protected IWorkbench workbench;
@@ -34,11 +34,11 @@ public class GlobalSynchronizeWizard extends Wizard {
 	protected ISynchronizeParticipantReference participant;
 
 	public GlobalSynchronizeWizard() {
-		setWindowTitle(TeamUIMessages.GlobalSynchronizeWizard_11); 
+		setWindowTitle(TeamUIMessages.GlobalSynchronizeWizard_11);
 		setDefaultPageImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_WIZBAN_SHARE));
 		setForcePreviousAndNextButtons(true);
 		setNeedsProgressMonitor(false);
-		
+
 		final IDialogSettings pluginSettings= TeamUIPlugin.getPlugin().getDialogSettings();
 		IDialogSettings wizardSettings= pluginSettings.getSection(DIALOG_SETTINGS_SECTION);
 		if (wizardSettings == null) {
@@ -47,7 +47,7 @@ public class GlobalSynchronizeWizard extends Wizard {
 		}
 		setDialogSettings(wizardSettings);
 	}
-	
+
 	/*
 	 * @see Wizard#addPages
 	 */
@@ -55,8 +55,8 @@ public class GlobalSynchronizeWizard extends Wizard {
 	public void addPages() {
 		mainPage = new GlobalRefreshWizardSelectionPage();
 		addPage(mainPage);
-	}	
-	
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
 	 */

@@ -34,7 +34,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.progress.IProgressConstants2;
 
 /**
- * A synchronize participant that displays synchronization information for local resources that are 
+ * A synchronize participant that displays synchronization information for local resources that are
  * managed via a {@link Subscriber}. It maintains a dynamic collection of all out-of-sync resources
  * by listening to workspace resource changes and remote changes thus creating a live view of
  * changes in the workspace.
@@ -47,32 +47,32 @@ import org.eclipse.ui.progress.IProgressConstants2;
  * <li>initializeConfiguration: participants can add toolbar actions, configure the context menu, decorator.
  * <li>saveState and init: persist settings between sessions.
  * </ul>
- * This class is intended to be subclassed. 
+ * This class is intended to be subclassed.
  * </p>
  * @since 3.0
  */
 public abstract class SubscriberParticipant extends AbstractSynchronizeParticipant implements IPropertyChangeListener {
-	
+
 	/*
 	 * Collects and maintains set of all out-of-sync resources of the subscriber
 	 */
 	private SubscriberSyncInfoCollector collector;
-	
+
 	/*
 	 * Controls the automatic synchronization of this participant
 	 */
 	private SubscriberRefreshSchedule refreshSchedule;
-	
+
 	/*
 	 * Provides the resource scope for this participant
 	 */
 	private ISynchronizeScope scope;
-	
+
 	/*
 	 * Key for settings in memento
 	 */
 	private static final String CTX_SUBSCRIBER_PARTICIPANT_SETTINGS = TeamUIPlugin.ID + ".TEAMSUBSRCIBERSETTINGS"; //$NON-NLS-1$
-	
+
 	/*
 	 * Key for schedule in memento
 	 */
@@ -89,9 +89,9 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return new IRefreshable() {
 			@Override
 			public RefreshParticipantJob createJob(String interval) {
-				return new RefreshSubscriberParticipantJob(SubscriberParticipant.this, 
-						TeamUIMessages.RefreshSchedule_14, 
-						NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { SubscriberParticipant.this.getName(), interval }), getResources(), 
+				return new RefreshSubscriberParticipantJob(SubscriberParticipant.this,
+						TeamUIMessages.RefreshSchedule_14,
+						NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { SubscriberParticipant.this.getName(), interval }), getResources(),
 						new RefreshUserNotificationPolicy(SubscriberParticipant.this));
 			}
 			@Override
@@ -106,14 +106,14 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			public SubscriberRefreshSchedule getRefreshSchedule() {
 				return SubscriberParticipant.this.getRefreshSchedule();
 			}
-		
+
 		};
 	}
-	
+
 	/**
 	 * Constructor which should be called when creating a participant whose resources
 	 * are to be scoped.
-	 * 
+	 *
 	 * @param scope a synchronize scope
 	 */
 	public SubscriberParticipant(ISynchronizeScope scope) {
@@ -121,7 +121,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		this.scope = scope;
 		scope.addPropertyChangeListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeViewPage#createPage(org.eclipse.team.ui.sync.ISynchronizeView)
 	 */
@@ -130,37 +130,37 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		validateConfiguration(configuration);
 		return new SubscriberParticipantPage(configuration, getSubscriberSyncInfoCollector());
 	}
-	
+
 	/**
 	 * Returns the resources supervised by this participant. It will
 	 * either be the roots of the subscriber or the resource scope
 	 * provided when the subscriber was set.
-	 * 
+	 *
 	 * @return the resources supervised by this participant.
 	 */
 	public IResource[] getResources() {
 		return collector.getRoots();
 	}
-	
+
 	/*
 	 * Set the resources supervised by this participant. If <code>null</code>,
 	 * the participant will include all roots of its subscriber
-	 * 
+	 *
 	 * @param roots the root resources to consider or <code>null</code>
 	 * to consider all roots of the subscriber
 	 */
 	private void setResources(IResource[] roots) {
 		collector.setRoots(roots);
 	}
-	
+
 	/**
-	 * Refresh this participants synchronization state and displays the result in a model dialog. 
-	 * @param shell 
-	 * 
+	 * Refresh this participants synchronization state and displays the result in a model dialog.
+	 * @param shell
+	 *
 	 * @param resources
-	 * @param jobName 
+	 * @param jobName
 	 * @param taskName
-	 * @param configuration 
+	 * @param configuration
 	 * @param site
 	 */
 	public final void refreshInDialog(Shell shell, IResource[] resources, String jobName, String taskName, ISynchronizePageConfiguration configuration, IWorkbenchSite site) {
@@ -169,13 +169,13 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	}
 
 	/**
-	 * Refresh a participant in the background the result of the refresh are shown in the progress view. Refreshing 
+	 * Refresh a participant in the background the result of the refresh are shown in the progress view. Refreshing
 	 * can also be considered synchronizing, or refreshing the synchronization state. Basically this is a long
 	 * running operation that will update the participants sync info sets with new changes detected on the
 	 * server. Either or both of the <code>shortTaskName</code> and <code>longTaskName</code> can be <code>null</code>
 	 * in which case, the default values for these are returned by the methods <code>getShortTaskName()</code> and
 	 * <code>getLongTaskName(IResource[])</code> will be used.
-	 * 
+	 *
 	 * @param resources the resources to be refreshed.
 	 * @param shortTaskName the taskName of the background job that will run the synchronize or <code>null</code>
 	 * if the default job name is desired.
@@ -191,9 +191,9 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 
     /**
 	 * Refresh a participant. The returned status describes the result of the refresh.
-     * @param resources 
-     * @param taskName 
-     * @param monitor 
+     * @param resources
+     * @param taskName
+     * @param monitor
      * @return a status
 	 */
 	public final IStatus refreshNow(IResource[] resources, String taskName, IProgressMonitor monitor) {
@@ -201,30 +201,30 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		RefreshParticipantJob job = new RefreshSubscriberParticipantJob(this, taskName, taskName, resources, null);
 		return job.run(monitor);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.AbstractSynchronizeViewPage#dispose()
 	 */
 	@Override
 	public void dispose() {
 		Job.getJobManager().cancel(this);
-		refreshSchedule.dispose();				
+		refreshSchedule.dispose();
 		TeamUI.removePropertyChangeListener(this);
 		collector.dispose();
 		scope.dispose();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getName()
 	 */
 	@Override
 	public String getName() {
 		String name = super.getName();
-		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, scope.getName() }); 
+		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, scope.getName() });
 	}
-	
+
 	/**
-	 * Return the name of the participant as specified in the plugin manifest file. 
+	 * Return the name of the participant as specified in the plugin manifest file.
 	 * This method is provided to give access to this name since it is masked by
 	 * the <code>getName()</code> method defined in this class.
 	 * @return the name of the participant as specified in the plugin manifest file
@@ -233,33 +233,33 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	protected final String getShortName() {
 	    return super.getName();
 	}
-	
+
 	/**
 	 * Returns the <code>SyncInfoTree</code> for this participant. This set
-	 * contains the out-of-sync resources supervised by this participant. 
-	 * 
+	 * contains the out-of-sync resources supervised by this participant.
+	 *
 	 * @return the sync info set that contains the out-of-sync resources
 	 * for this participant.
 	 */
 	public SyncInfoTree getSyncInfoSet() {
 		return getSubscriberSyncInfoCollector().getSyncInfoSet();
 	}
-	
+
 	/**
 	 * Return the <code>Subscriber</code> associated with this this participant. This
 	 * method will only return <code>null</code> if the participant has not been initialized
-	 * yet. 
-	 * 
+	 * yet.
+	 *
 	 * @return the <code>Subscriber</code> associated with this this participant.
 	 */
 	public Subscriber getSubscriber() {
 		if (collector == null) return null;
 		return collector.getSubscriber();
 	}
-	
+
 	/**
 	 * Returns a participant that matches the given resource scoping
-	 * 
+	 *
 	 * @param ID the type id of participants to match
 	 * @param resources the resources to match in the scope
 	 * @return  a participant that matches the given resource scoping
@@ -285,7 +285,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		}
 		return null;
 	}
-		
+
 	/* (non-Javadoc)
 	 * @see IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
@@ -303,7 +303,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			firePropertyChange(this, IBasicPropertyConstants.P_TEXT, null, getName());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
 	 */
@@ -338,12 +338,12 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	public void reset() {
 		getSubscriberSyncInfoCollector().reset();
 	}
-	
+
 	/**
 	 * Return the <code>SubscriberSyncInfoCollector</code> for the participant.
 	 * This collector maintains the set of all out-of-sync resources for the
 	 * subscriber.
-	 * 
+	 *
 	 * @return the <code>SubscriberSyncInfoCollector</code> for this participant
 	 * @noreference This method is not intended to be referenced by clients.
 	 * @nooverride This method is not intended to be re-implemented or extended
@@ -352,7 +352,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	public SubscriberSyncInfoCollector getSubscriberSyncInfoCollector() {
 		return collector;
 	}
-	
+
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 * @nooverride This method is not intended to be re-implemented or extended by clients.
@@ -367,7 +367,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		// Always fir the event since the schedule may have been changed
         firePropertyChange(this, AbstractSynchronizeParticipant.P_SCHEDULED, schedule, schedule);
 	}
-	
+
 	/**
 	 * @noreference This method is not intended to be referenced by clients.
 	 * @nooverride This method is not intended to be re-implemented or extended by clients.
@@ -375,7 +375,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	public SubscriberRefreshSchedule getRefreshSchedule() {
 		return refreshSchedule;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
@@ -383,7 +383,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(SynchronizePageConfiguration.P_PARTICIPANT_SYNC_INFO_SET, collector.getSyncInfoSet());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)
 	 */
@@ -391,31 +391,31 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	public void run(IWorkbenchPart part) {
 		refresh(getResources(), null, null, part != null ? part.getSite() : null);
 	}
-	
+
 	/**
 	 * Returns the short task name (e.g. no more than 25 characters) to describe the behavior of the
 	 * refresh operation to the user. This is typically shown in the status line when this subscriber is refreshed
 	 * in the background. When refreshed in the foreground, only the long task name is shown.
-	 * 
+	 *
 	 * @return the short task name to show in the status line.
 	 */
 	protected String getShortTaskName() {
-		return TeamUIMessages.Participant_synchronizing; 
+		return TeamUIMessages.Participant_synchronizing;
 	}
-	
+
 	/**
 	 * Returns the long task name to describe the behavior of the
 	 * refresh operation to the user. This is typically shown in the status line when this subscriber is refreshed
 	 * in the background.
-	 * 
+	 *
 	 * @return the long task name
 	 * @deprecated use <code>getLongTaskName(IResource[]) instead</code>
 	 */
 	@Deprecated
 	protected String getLongTaskName() {
-		return TeamUIMessages.Participant_synchronizing; 
+		return TeamUIMessages.Participant_synchronizing;
 	}
-	
+
 	/**
 	 * Returns the long task name to describe the behavior of the
 	 * refresh operation to the user. This is typically shown in the status line when this subscriber is refreshed
@@ -437,33 +437,33 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
             resourceCount = resources.length;
         }
         if (resourceCount == 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), resources[0].getFullPath().toString() }); 
+            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), resources[0].getFullPath().toString() });
         } else if (resourceCount > 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(resourceCount) }); 
+            return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(resourceCount) });
         }
         // A resource count of zero means that it is a non-resource scope so we can print the scope name
-        return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, new String[] { getName() }); 
+        return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, new String[] { getName() });
     }
 
     /**
 	 * This method is invoked before the given configuration is used to
 	 * create the page (see <code>createPage(ISynchronizePageConfiguration)</code>).
-	 * The configuration would have been initialized by 
+	 * The configuration would have been initialized by
 	 * <code>initializeConfiguration(ISynchronizePageConfiguration)</code>
-	 * but may have also been tailored further. This method gives the participant 
+	 * but may have also been tailored further. This method gives the participant
 	 * a chance to validate those changes before the page is created.
-	 * 
+	 *
 	 * @param configuration the page configuration that is about to be used to create a page.
 	 */
 	protected void validateConfiguration(ISynchronizePageConfiguration configuration) {
 		// Do nothing by default
 	}
-	
+
 	/**
 	 * Subclasses must call this method to initialize the participant. Typically this
 	 * method is called in {@link #init(String, IMemento)}. This method will initialize
 	 * the sync info collector.
-	 * 
+	 *
 	 * @param subscriber the subscriber to associate with this participant.
 	 */
 	protected void setSubscriber(Subscriber subscriber) {
@@ -471,20 +471,20 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			scope = new WorkspaceScope();
 		}
 		collector = new SubscriberSyncInfoCollector(subscriber, scope.getRoots());
-		
+
 		// listen for global ignore changes
 		TeamUI.addPropertyChangeListener(this);
-		
+
 		// Start collecting changes
 		collector.start();
-		
+
 		// Start the refresh now that a subscriber has been added
 		SubscriberRefreshSchedule schedule = getRefreshSchedule();
 		if(schedule.isEnabled()) {
 			getRefreshSchedule().startJob();
 		}
 	}
-	
+
 	/**
 	 * Provide a filter that is used to filter the contents of the sync info set for the participant. Normally, all out-of-sync
 	 * resources from the subscriber will be included in the participant's set. However, a filter can be used to exclude
@@ -497,10 +497,10 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	protected void setSyncInfoFilter(SyncInfoFilter filter) {
 		collector.setFilter(filter);
 	}
-	
+
 	/*
-	 * Create and schedule a subscriber refresh job. 
-	 * 
+	 * Create and schedule a subscriber refresh job.
+	 *
 	 * @param resources resources to be synchronized
 	 * @param taskName the task name to be shown to the user
 	 * @param site the site in which to run the refresh
@@ -516,21 +516,21 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		job.setUser(true);
 		job.setProperty(IProgressConstants2.SHOW_IN_TASKBAR_ICON_PROPERTY, Boolean.TRUE);
 		Utils.schedule(job, site);
-		
+
 		// Remember the last participant synchronized
 		TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT, getId());
 		TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, getSecondaryId());
 	}
-	
+
 	/**
 	 * Return the scope that defines the resources displayed by this participant.
-	 * 
+	 *
 	 * @return Returns the scope.
 	 */
 	public ISynchronizeScope getScope() {
 		return scope;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
 	 */
@@ -538,7 +538,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
 			return refreshSchedule.getRefreshable();
-			
+
 		}
 		return super.getAdapter(adapter);
 	}

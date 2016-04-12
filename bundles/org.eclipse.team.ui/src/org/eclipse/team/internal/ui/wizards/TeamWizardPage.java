@@ -40,12 +40,12 @@ public abstract class TeamWizardPage extends WizardPage {
 	 */
 	protected Composite createComposite(Composite parent, int numColumns) {
 		Composite composite = new Composite(parent, SWT.NULL);
-	
+
 		// GridLayout
 		GridLayout layout = new GridLayout();
 		layout.numColumns = numColumns;
 		composite.setLayout(layout);
-	
+
 		// GridData
 		GridData data = new GridData();
 		data.verticalAlignment = GridData.FILL;
@@ -101,7 +101,7 @@ public abstract class TeamWizardPage extends WizardPage {
 
 	/**
 	 * Create a drop-down combo box specific for this application
-	 * 
+	 *
 	 * @param parent  the parent of the new combo box
 	 * @return the new combo box
 	 */

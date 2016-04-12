@@ -42,9 +42,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
             int code = dialog.open();
             return code == OK;
         }
-        
+
         public FileListDialog(Shell parentShell, IFile[] files) {
-            super(parentShell, TeamUIMessages.DefaultUIFileModificationValidator_0); 
+            super(parentShell, TeamUIMessages.DefaultUIFileModificationValidator_0);
             this.files = files;
 			setImageKey(DLG_IMG_WARNING);
         }
@@ -54,7 +54,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
          */
         @Override
 		protected void createMainDialogArea(Composite parent) {
-			createWrappingLabel(parent, TeamUIMessages.DefaultUIFileModificationValidator_1); 
+			createWrappingLabel(parent, TeamUIMessages.DefaultUIFileModificationValidator_1);
         }
 
         /* (non-Javadoc)
@@ -63,9 +63,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
         @Override
 		protected Composite createDropDownDialogArea(Composite parent) {
 			Composite composite = createComposite(parent);
-			createWrappingLabel(composite, TeamUIMessages.DefaultUIFileModificationValidator_2); 
-			org.eclipse.swt.widgets.List fileList = new org.eclipse.swt.widgets.List(composite, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);	 
-			GridData data = new GridData ();		
+			createWrappingLabel(composite, TeamUIMessages.DefaultUIFileModificationValidator_2);
+			org.eclipse.swt.widgets.List fileList = new org.eclipse.swt.widgets.List(composite, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+			GridData data = new GridData ();
 			data.heightHint = 75;
 			data.horizontalAlignment = GridData.FILL;
 			data.grabExcessHorizontalSpace = true;
@@ -73,7 +73,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			fileList.setFont(parent.getFont());
 			for (int i = 0; i < files.length; i++) {
 				fileList.add(files[i].getFullPath().toString());
-			}			
+			}
 			return composite;
         }
 
@@ -84,7 +84,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 		protected void updateEnablements() {
             // Nothing to do
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeCancelButton()
          */
@@ -92,7 +92,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 		protected boolean includeCancelButton() {
             return false;
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeOkButton()
          */
@@ -100,7 +100,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 		protected boolean includeOkButton() {
             return false;
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
          */
@@ -110,7 +110,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
             createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
             super.createButtonsForButtonBar(parent);
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#buttonPressed(int)
          */
@@ -124,7 +124,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
                 super.buttonPressed(id);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.DefaultFileModificationValidator#validateEdit(org.eclipse.core.resources.IFile[], org.eclipse.core.resources.team.FileModificationValidationContext)
      */
@@ -138,7 +138,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
                 shell.getDisplay().syncExec(new Runnable() {
                     @Override
 					public void run() {
-                        ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })); // 
+                        ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })); //
                     }
                 });
             } else {
@@ -159,7 +159,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
         }
         return getStatus(readOnlyFiles);
     }
-    
+
     private Shell getShell(FileModificationValidationContext context) {
 		if (context.getShell() != null)
 			return (Shell)context.getShell();
@@ -176,7 +176,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
     		return getDefaultStatus(file);
     	}
     }
-    
+
 	private boolean isMakeWrittableWhenContextNotProvided() {
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getBoolean(IPreferenceIds.MAKE_FILE_WRITTABLE_IF_CONTEXT_MISSING);
 	}

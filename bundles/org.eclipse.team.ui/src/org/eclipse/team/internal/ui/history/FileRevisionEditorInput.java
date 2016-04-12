@@ -31,19 +31,19 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	private final Object fileRevision;
 	private final IStorage storage;
-	
+
 	/**
 	 * Creates FileRevisionEditorInput on the given revision.
 	 * @param revision the file revision
-	 * @param monitor 
+	 * @param monitor
 	 * @return a file revision editor input
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	public static FileRevisionEditorInput createEditorInputFor(IFileRevision revision, IProgressMonitor monitor) throws CoreException {
 		IStorage storage = revision.getStorage(monitor);
 		return new FileRevisionEditorInput(revision, storage);
 	}
-	
+
 	private static IStorage wrapStorage(final IStorage storage,
 			final String charset) {
 		if (charset == null)
@@ -124,7 +124,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 			}
 		};
 	}
-	
+
 	/**
 	 * Creates FileRevisionEditorInput on the given revision.
 	 * @param revision the file revision
@@ -136,11 +136,11 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		this.fileRevision = revision;
 		this.storage = storage;
 	}
-	
+
 	public FileRevisionEditorInput(IFileState state) {
 		this(state, state);
 	}
-	
+
 	public FileRevisionEditorInput(Object revision, IStorage storage, String charset) {
 		this(revision, wrapStorage(storage, charset));
 	}
@@ -169,7 +169,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		if (state != null)
 			return state.getName() +  " " + DateFormat.getInstance().format(new Date(state.getModificationTime())) ; //$NON-NLS-1$
 		return storage.getName();
-		
+
 	}
 
 	@Override
@@ -217,7 +217,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	public Object getParent(Object o) {
 		return null;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof FileRevisionEditorInput) {
@@ -226,7 +226,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return fileRevision.hashCode();

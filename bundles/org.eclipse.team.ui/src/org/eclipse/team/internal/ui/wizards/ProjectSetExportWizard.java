@@ -34,22 +34,22 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 	ExportProjectSetMainPage mainPage;
 	ExportProjectSetLocationPage locationPage;
 	IStructuredSelection selection;
-	
+
 	public ProjectSetExportWizard() {
 		setNeedsProgressMonitor(true);
-		setWindowTitle(TeamUIMessages.ProjectSetExportWizard_Project_Set_1); 
+		setWindowTitle(TeamUIMessages.ProjectSetExportWizard_Project_Set_1);
 	}
-	
+
 	@Override
 	public void addPages() {
-		mainPage = new ExportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetExportWizard_Export_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER)); //$NON-NLS-1$ 
+		mainPage = new ExportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetExportWizard_Export_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER)); //$NON-NLS-1$
 		IProject[] projects = (IProject[])selection.toList().toArray(new IProject[0]);
 		addPage(mainPage);
 		mainPage.setSelectedProjects(projects);
 		locationPage = new ExportProjectSetLocationPage("projectSetLocationPage", TeamUIMessages.ProjectSetExportWizard_Export_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER)); //$NON-NLS-1$
 		addPage(locationPage);
 	}
-	
+
 	@Override
 	public boolean performFinish() {
 		final boolean[] result = new boolean[] {false};
@@ -66,20 +66,20 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 					File file = new File(filename);
 					File parentFile = file.getParentFile();
 					if (parentFile != null && !parentFile.exists()) {
-						boolean r = MessageDialog.openQuestion(getShell(), TeamUIMessages.ProjectSetExportWizard_Question_4, TeamUIMessages.ProjectSetExportWizard_Target_directory_does_not_exist__Would_you_like_to_create_it__5); // 
+						boolean r = MessageDialog.openQuestion(getShell(), TeamUIMessages.ProjectSetExportWizard_Question_4, TeamUIMessages.ProjectSetExportWizard_Target_directory_does_not_exist__Would_you_like_to_create_it__5); //
 						if (!r) {
 							result[0] = false;
 							return;
 						}
 						r = parentFile.mkdirs();
 						if (!r) {
-							MessageDialog.openError(getShell(), TeamUIMessages.ProjectSetExportWizard_Export_Problems_6, TeamUIMessages.ProjectSetExportWizard_An_error_occurred_creating_the_target_directory_7); // 
+							MessageDialog.openError(getShell(), TeamUIMessages.ProjectSetExportWizard_Export_Problems_6, TeamUIMessages.ProjectSetExportWizard_An_error_occurred_creating_the_target_directory_7); //
 							result[0] = false;
 							return;
 						}
 					}
 					if (file.exists() && file.isFile()) {
-						boolean r = MessageDialog.openQuestion(getShell(), TeamUIMessages.ProjectSetExportWizard_Question_8, TeamUIMessages.ProjectSetExportWizard_Target_already_exists__Would_you_like_to_overwrite_it__9); // 
+						boolean r = MessageDialog.openQuestion(getShell(), TeamUIMessages.ProjectSetExportWizard_Question_8, TeamUIMessages.ProjectSetExportWizard_Target_already_exists__Would_you_like_to_overwrite_it__9); //
 						if (!r) {
 							result[0] = false;
 							return;
@@ -111,17 +111,17 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							list.add(project);
 						}
 					}
-					
-						
+
+
 					UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(getShell(), filename);
-					
+
 					BufferedWriter writer = null;
 					try {
 						// if file was written to the workspace, perform the validateEdit
 						if (!locationPage.isSaveToFileSystem())
 							locationPage.validateEditWorkspaceFile(getShell());
 						writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); //$NON-NLS-1$
-						
+
 						//
 						XMLMemento xmlMemento = getXMLMementoRoot();
 						Iterator it = map.keySet().iterator();
@@ -149,7 +149,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 								workingSets[i].saveState(memento);
 							}
 						}
-						xmlMemento.save(writer);						
+						xmlMemento.save(writer);
 						result[0] = true;
 					} catch (IOException e) {
 						throw new InvocationTargetException(e);
@@ -164,7 +164,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							}
 						}
 					}
-					
+
 					// if file was written to the workspace, refresh it
 					if (!locationPage.isSaveToFileSystem())
 						try {
@@ -172,7 +172,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 						} catch (CoreException e) {
 							//throw away
 						}
-						
+
 					// notify provider types of the project set write
 					for (Iterator iter = map.keySet().iterator();iter.hasNext();) {
 						String id = (String) iter.next();
@@ -184,7 +184,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							}
 						}
 					}
-					
+
 					monitor.done();
 				}
 

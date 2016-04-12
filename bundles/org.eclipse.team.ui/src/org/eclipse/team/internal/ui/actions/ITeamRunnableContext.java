@@ -22,7 +22,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  * 3) what shell the operation should use to display info to the user
  */
 public interface ITeamRunnableContext {
-	
+
 	/**
 	 * Run the given runnable in the context of the receiver. By default, the
 	 * progress is provided by the active workbench windows but subclasses may

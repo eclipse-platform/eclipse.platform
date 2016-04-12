@@ -27,7 +27,7 @@ import org.eclipse.ui.model.AdaptableList;
 public class ConfigureProjectWizard extends Wizard {
 	protected IProject[] projects;
 	protected ConfigureProjectWizardMainPage mainPage;
-	
+
 	protected final static String PT_CONFIGURATION ="configurationWizards"; //$NON-NLS-1$
 	protected final static String TAG_WIZARD = "wizard"; //$NON-NLS-1$
 	protected final static String TAG_DESCRIPTION = "description"; //$NON-NLS-1$
@@ -35,13 +35,13 @@ public class ConfigureProjectWizard extends Wizard {
 	protected final static String ATT_CLASS = "class"; //$NON-NLS-1$
 	protected final static String ATT_ICON = "icon"; //$NON-NLS-1$
 	protected final static String ATT_ID = "id"; //$NON-NLS-1$
-	
+
 	private ConfigureProjectWizard(IProject[] projects) {
 		this.projects = projects;
 		setNeedsProgressMonitor(true);
-		setWindowTitle(TeamUIMessages.ConfigureProjectWizard_title); 
+		setWindowTitle(TeamUIMessages.ConfigureProjectWizard_title);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
@@ -69,7 +69,7 @@ public class ConfigureProjectWizard extends Wizard {
 		}
 		return super.canFinish();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
@@ -77,38 +77,38 @@ public class ConfigureProjectWizard extends Wizard {
 	public boolean performFinish() {
 		// If we are on the first page and the selected wizard has no pages then
 		// allow it to finish.
-		
+
 		// save dialog settings
 		mainPage.performFinish();
-		
+
 		if (getContainer().getCurrentPage() == mainPage) {
 			IWizard noPageWizard = mainPage.getSelectedWizard();
 			if (noPageWizard != null) {
-				if (noPageWizard.canFinish()) 
+				if (noPageWizard.canFinish())
 				{
 					return noPageWizard.performFinish();
 				}
 			}
-		}		
+		}
 		// If the wizard has pages and there are several
 		// wizards registered then the registered wizard
-		// will call it's own performFinish().		
+		// will call it's own performFinish().
 		return true;
 	}
-	
+
 	private static class ResizeWizardDialog extends WizardDialog {
 		public ResizeWizardDialog(Shell parentShell, IWizard newWizard) {
 			super(parentShell, newWizard);
 			setShellStyle(getShellStyle() | SWT.RESIZE);
-		}		
+		}
 	}
-	
+
 	public static void shareProjects(Shell shell, IProject[] projects) {
 		IWizard wizard = null;
 		// If we only have one wizard registered, we'll just use that wizard
 		// unless it doesn't have any pages
 		AdaptableList disabledWizards = new AdaptableList();
-		AdaptableList wizards = getAvailableWizards(disabledWizards);	
+		AdaptableList wizards = getAvailableWizards(disabledWizards);
 		if (wizards.size() == 1 && disabledWizards.size() == 0) {
 			ConfigurationWizardElement element = (ConfigurationWizardElement)wizards.getChildren()[0];
 			if (element.wizardHasPages(projects)) {
@@ -126,10 +126,10 @@ public class ConfigureProjectWizard extends Wizard {
 		}
 		openWizard(shell, wizard);
 	}
-	
+
 	/**
 	 * Returns the configuration wizards that are available for invocation.
-	 * 
+	 *
 	 * @return the available wizards
 	 */
 	private static AdaptableList getAvailableWizards(AdaptableList disabledWizards) {
@@ -155,7 +155,7 @@ public class ConfigureProjectWizard extends Wizard {
 		}
 		return result;
 	}
-	
+
 	private static boolean filterItem(IConfigurationElement element) {
 		String extensionId = element.getAttribute(ATT_ID);
 		String extensionPluginId = element.getNamespaceIdentifier();
@@ -163,14 +163,14 @@ public class ConfigureProjectWizard extends Wizard {
 	    IIdentifier id = activityMgr.getIdentifier(extensionPluginId + "/" +  extensionId); //$NON-NLS-1$
 	    return (!id.isEnabled());
 	}
-	
+
 	/**
 	 * Returns a new ConfigurationWizardElement configured according to the parameters
-	 * contained in the passed Registry.  
+	 * contained in the passed Registry.
 	 *
-	 * May answer null if there was not enough information in the Extension to create 
+	 * May answer null if there was not enough information in the Extension to create
 	 * an adequate wizard
-	 * 
+	 *
 	 * @param element  the element for which to create a wizard element
 	 * @return the wizard element for the given element
 	 */
@@ -206,8 +206,8 @@ public class ConfigureProjectWizard extends Wizard {
 		}
 
 		element.setDescription(description);
-	
-		// apply CLASS and ICON properties	
+
+		// apply CLASS and ICON properties
 		element.setConfigurationElement(config);
 		String iconName = config.getAttribute(ATT_ICON);
 		if (iconName != null) {
@@ -219,7 +219,7 @@ public class ConfigureProjectWizard extends Wizard {
 			// Missing attribute
 			return false;
 		}
-		return true;	
+		return true;
 	}
 
 	public static void openWizard(Shell shell, IWizard wizard) {

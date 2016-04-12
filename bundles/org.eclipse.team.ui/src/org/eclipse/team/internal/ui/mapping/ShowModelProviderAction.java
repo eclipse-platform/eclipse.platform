@@ -32,7 +32,7 @@ public class ShowModelProviderAction extends Action {
 		this.provider = provider;
 		setImageDescriptor(getImageDescriptor(provider));
 	}
-	
+
 	private ImageDescriptor getImageDescriptor(ModelProvider provider) {
 		ITeamContentProviderManager manager = TeamUI.getTeamContentProviderManager();
 		ITeamContentProviderDescriptor desc = manager.getDescriptor(provider.getId());

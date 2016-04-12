@@ -33,11 +33,11 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 	private StatusLineCLabelContribution outgoing;
 	private StatusLineCLabelContribution conflicting;
 	private StatusLineCLabelContribution totalChanges;
-	
+
 	private Image incomingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_INCOMING).createImage();
 	private Image outgoingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_OUTGOING).createImage();
 	private Image conflictingImage = TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DLG_SYNC_CONFLICTING).createImage();
-	
+
 	private ISynchronizePageConfiguration configuration;
 
 	public StatusLineContributionGroup(final Shell shell, ISynchronizePageConfiguration configuration) {
@@ -64,7 +64,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 				configuration.setMode(mode);
 			}
 		});
-		item.setText(label); 
+		item.setText(label);
 		item.setImage(image);
 		return item;
 	}
@@ -84,24 +84,24 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 		// count changes only if the given mode is supported
 		final int workspaceConflicting = ((supportedModes & ISynchronizePageConfiguration.CONFLICTING_MODE) != 0) ? countFor(SyncInfo.CONFLICTING) : 0;
 		final int workspaceOutgoing = ((supportedModes & ISynchronizePageConfiguration.OUTGOING_MODE) != 0) ? countFor(SyncInfo.OUTGOING) : 0;
-		final int workspaceIncoming = ((supportedModes & ISynchronizePageConfiguration.INCOMING_MODE) != 0) ? countFor(SyncInfo.INCOMING) : 0; 
+		final int workspaceIncoming = ((supportedModes & ISynchronizePageConfiguration.INCOMING_MODE) != 0) ? countFor(SyncInfo.INCOMING) : 0;
 
 		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				if (isThreeWay()) {
-					conflicting.setText(new Integer(workspaceConflicting).toString()); 
-					incoming.setText(new Integer(workspaceIncoming).toString()); 
-					outgoing.setText(new Integer(workspaceOutgoing).toString()); 
+					conflicting.setText(new Integer(workspaceConflicting).toString());
+					incoming.setText(new Integer(workspaceIncoming).toString());
+					outgoing.setText(new Integer(workspaceOutgoing).toString());
 
 					conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_conflicting }));
 					outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_outgoing }));
-					incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_incoming })); 
+					incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_incoming }));
 				} else {
 					if (total == 1) {
-						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, new String[] { Integer.toString(total) })); 
+						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, new String[] { Integer.toString(total) }));
 					} else {
-						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, new String[] { Integer.toString(total) })); 
+						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, new String[] { Integer.toString(total) }));
 					}
 				}
 			}
@@ -111,10 +111,10 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 	protected abstract int getChangeCount();
 
 	protected abstract int countFor(int state);
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
 	@Override

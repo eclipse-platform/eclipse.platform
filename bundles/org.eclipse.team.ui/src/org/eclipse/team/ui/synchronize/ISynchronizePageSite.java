@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbenchSite;
  * A site which provides access to the context in which this page
  * is being displayed. Instances of this interface serve a similar purpose
  * to <code>IWorkbenchSite</code> instances but is provided as a separate
- * objects to allow clients to access the different site types 
+ * objects to allow clients to access the different site types
  * (view, editor, dialog) using a common interface. This interface also provides
  * access to the part for the site because this is required by some UI
  * components. Clients should not need to access the part.
@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbenchSite;
  * <code>instanceof</code> checks can be done with the part.
  * <p>
  * Clients are not intended to implement this interface
- * 
+ *
  * @since 3.0
  */
 public interface ISynchronizePageSite {
@@ -40,19 +40,19 @@ public interface ISynchronizePageSite {
 	/**
 	 * Return the workbench site for the page
 	 * or <code>null</code> if a workbench site is not available (e.g. if
-	 * the page is being shown in a dialog). 
+	 * the page is being shown in a dialog).
 	 * @return the workbench site for the page or <code>null</code>
 	 */
 	IWorkbenchSite getWorkbenchSite();
-	
+
 	/**
 	 * Return the workbench part for the page
 	 * or <code>null</code> if a workbench part is not available (e.g. if
-	 * the page is being shown in a dialog). 
+	 * the page is being shown in a dialog).
 	 * @return the workbench part for the page or <code>null</code>
 	 */
 	IWorkbenchPart getPart();
-	
+
 	/**
 	 * Returns the shell for this site.
 	 * @return the shell for this site
@@ -84,7 +84,7 @@ public interface ISynchronizePageSite {
 	 * Give the page focus.
 	 */
 	void setFocus();
-	
+
 	/**
 	 * Return a settings node that can be used by the
 	 * page to save state. A <code>null</code> value
@@ -93,7 +93,7 @@ public interface ISynchronizePageSite {
 	 * @return a settings node or <code>null</code>
 	 */
 	IDialogSettings getPageSettings();
-	
+
 	/**
 	 * Returns the action bars for this synchronize page site.
 	 *

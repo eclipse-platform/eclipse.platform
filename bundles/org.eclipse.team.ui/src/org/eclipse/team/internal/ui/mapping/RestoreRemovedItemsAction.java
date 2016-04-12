@@ -18,7 +18,7 @@ import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class RestoreRemovedItemsAction extends ResourceModelParticipantAction {
-	
+
 	public RestoreRemovedItemsAction(ISynchronizePageConfiguration configuration) {
 		super(null, configuration);
 		Utils.initAction(this, "action.restoreRemovedFromView."); //$NON-NLS-1$

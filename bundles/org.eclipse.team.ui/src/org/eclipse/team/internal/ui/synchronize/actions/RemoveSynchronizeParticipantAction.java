@@ -34,7 +34,7 @@ import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 
 /**
  * Action to remove the given participant from the synchronize manager.
- * @since 3.0 
+ * @since 3.0
  */
 public class RemoveSynchronizeParticipantAction extends Action {
 
@@ -84,9 +84,9 @@ public class RemoveSynchronizeParticipantAction extends Action {
 							keepGoing[0] = promptToSave(dirtyModels);
 						} else {
 							keepGoing[0] = MessageDialog.openQuestion(
-									view.getSite().getShell(), 
-									TeamUIMessages.RemoveSynchronizeParticipantAction_0,  
-									TeamUIMessages.RemoveSynchronizeParticipantAction_1); 
+									view.getSite().getShell(),
+									TeamUIMessages.RemoveSynchronizeParticipantAction_0,
+									TeamUIMessages.RemoveSynchronizeParticipantAction_1);
 						}
 
 					}
@@ -136,13 +136,13 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	private boolean promptToSave(List dirtyModels) {
         if (dirtyModels.size() == 1) {
         	Saveable model = (Saveable) dirtyModels.get(0);
-			String message = NLS.bind(TeamUIMessages.RemoveSynchronizeParticipantAction_2, model.getName()); 
+			String message = NLS.bind(TeamUIMessages.RemoveSynchronizeParticipantAction_2, model.getName());
 			// Show a dialog.
 			String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
 			MessageDialog d = new MessageDialog(
 					view.getSite().getShell(), TeamUIMessages.RemoveSynchronizeParticipantAction_3,
 				null, message, MessageDialog.QUESTION, buttons, 0);
-			
+
 			int choice = d.open();
 
 			// Branch on the user choice.
@@ -176,7 +176,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	    // If the editor list is empty return.
 	    if (dirtyModels.isEmpty())
 	        return true;
-		
+
 		// Create save block.
 	    final List finalModels = dirtyModels;
 		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
@@ -209,7 +209,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		// TODO: How do we handle a cancel during save?
 		return true;
 	}
-	
+
 	private List getDirtyModels(ISynchronizeParticipant[] participants) {
 		List result = new ArrayList();
 		for (int i = 0; i < participants.length; i++) {

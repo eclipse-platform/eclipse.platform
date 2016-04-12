@@ -32,7 +32,7 @@ import org.eclipse.ui.progress.IProgressService;
  * of feeding compare viewers.
  * <p>
  * This class is not intended to be subclassed by clients outside of the Team framework.
- * 
+ *
  * @since 3.3
  */
 public abstract class PageCompareEditorInput extends CompareEditorInput implements IContentChangeListener {
@@ -47,7 +47,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	protected PageCompareEditorInput(CompareConfiguration configuration) {
 		super(configuration);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#createStructureInputPane(org.eclipse.swt.widgets.Composite)
 	 */
@@ -93,7 +93,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 				StructuredSelection newSelection = convertSelection(selection, true);
 				super.doubleClick(new DoubleClickEvent((Viewer)event.getSource(), newSelection));
 			}
-			
+
 			@Override
 			public void setInput(Object input) {
 				super.setInput(input);
@@ -111,16 +111,16 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		hookupListeners();
 		return pagePane;
 	}
-	
+
 	/**
-	 * Create the page for this part and return the top level control 
+	 * Create the page for this part and return the top level control
 	 * for the page.
 	 * @param parent the parent composite
 	 * @param toolBarManager the toolbar manager for the page
 	 * @return the top-level control for the page
 	 */
 	protected abstract IPage createPage(CompareViewerPane parent, IToolBarManager toolBarManager);
-	
+
 	/**
 	 * Return the selection provider for the page. This method is
 	 * called after the page is created in order to register a
@@ -128,7 +128,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	 * @return the selection provider for the page
 	 */
 	protected abstract ISelectionProvider getSelectionProvider();
-	
+
 	/**
 	 * Set the title of the page's page to the given text. The title
 	 * will appear in the header of the pane containing the page.
@@ -137,7 +137,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	protected void setPageDescription(String title) {
 		pagePane.setText(title);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
@@ -147,7 +147,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		cleanupListeners();
 		unhookContentChangeListener();
 	}
-	
+
 	private void hookupListeners() {
 		ISelectionProvider selectionProvider = getSelectionProvider();
 		if (selectionProvider != null)
@@ -158,7 +158,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 			sv.addDoubleClickListener(pagePane);
 		}
 	}
-	
+
 	private void cleanupListeners() {
 		ISelectionProvider selectionProvider = getSelectionProvider();
 		if (selectionProvider != null)
@@ -169,7 +169,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 			sv.removeDoubleClickListener(pagePane);
 		}
 	}
-	
+
 	private void hookContentChangeListener(ICompareInput node) {
 		if (hookedInput == node)
 			return;
@@ -184,7 +184,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 			((IContentChangeNotifier)right).addContentChangeListener(this);
 		}
 	}
-	
+
 	private void unhookContentChangeListener() {
 		if (hookedInput != null) {
 			ITypedElement left = hookedInput.getLeft();
@@ -219,7 +219,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Convenience method that calls {@link #prepareInput(ICompareInput, CompareConfiguration, IProgressMonitor)}
 	 * with a progress monitor.
@@ -250,7 +250,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 			// Ignore
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
 	 */
@@ -258,7 +258,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	public void contentChanged(IContentChangeNotifier source) {
 		setDirty(true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
 	 */
@@ -266,7 +266,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	public boolean canRunAsJob() {
 		return true;
 	}
-	
+
 	/**
 	 * Prepare the compare input for display in a content viewer. This method is
 	 * called from {@link #prepareCompareInput(ICompareInput)} and may be called

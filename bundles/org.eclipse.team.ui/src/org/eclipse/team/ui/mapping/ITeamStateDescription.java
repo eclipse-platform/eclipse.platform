@@ -22,7 +22,7 @@ import org.eclipse.team.ui.synchronize.TeamStateProvider;
  * <p>
  * This interface is not intended to be implemented by clients. Clients that wish
  * to create a description should use {@link TeamStateDescription}.
- * 
+ *
  * @see TeamStateProvider
  * @since 3.2
  */
@@ -33,7 +33,7 @@ public interface ITeamStateDescription {
 	 * state description was generated. Only the portion of the synchronization
 	 * state covered by <code>stateMask</code> used when obtaining this
 	 * description is returned.
-	 * 
+	 *
 	 * @return the synchronization state of the given element
 	 * @see IDiff
 	 * @see IThreeWayDiff
@@ -45,7 +45,7 @@ public interface ITeamStateDescription {
 	 * Return the portion of the state flags that represent the kind associated
 	 * with the element for which this description was generated. See
 	 * {@link IDiff#getKind()} for a description of what this value represents.
-	 * 
+	 *
 	 * @return the kind associated with the element for which this description
 	 *         was generated
 	 */
@@ -56,7 +56,7 @@ public interface ITeamStateDescription {
 	 * associated with the element for which this description was generated. See
 	 * {@link IThreeWayDiff#getDirection()} for a description of what this value
 	 * represents.
-	 * 
+	 *
 	 * @return the direction associated with the element for which this
 	 *         description was generated
 	 */
@@ -65,7 +65,7 @@ public interface ITeamStateDescription {
 	/**
 	 * Return the properties names for all decorated properties associated with
 	 * the element for which this description was generated.
-	 * 
+	 *
 	 * @return the properties names for all decorated properties
 	 */
 	public abstract String[] getPropertyNames();
@@ -77,9 +77,9 @@ public interface ITeamStateDescription {
 	 * @return the value associated with the given property or <code>null</code>
 	 */
 	public abstract Object getProperty(String property);
-	
+
 	/**
-	 * Return whether this state description is equal the to given object. 
+	 * Return whether this state description is equal the to given object.
 	 * Clients should use this method to test whether two state
 	 * descriptions are equal.
 	 * @param object the object

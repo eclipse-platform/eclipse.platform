@@ -28,7 +28,7 @@ import org.eclipse.team.ui.mapping.SynchronizationContentProvider;
  * This is used by the {@link SynchronizationContentProvider} to get the traversals
  * for resource mappings. Since it is used to provide content, it avoids long running
  * operations if possible.
- * 
+ *
  * @since 3.2
  */
 public final class SynchronizationResourceMappingContext extends

@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * A dialog that displays a {@link org.eclipse.team.ui.ISaveableWorkbenchPart} and
  * ensures that changes made to the input are saved when the dialog is closed.
- * 
+ *
  * @see ISaveableWorkbenchPart
  * @see SaveablePartAdapter
  * @since 3.0
@@ -35,7 +35,7 @@ import org.eclipse.ui.PlatformUI;
  */
 @Deprecated
 public class SaveablePartDialog extends TrayDialog {
-		
+
 	private ISaveableWorkbenchPart input;
 	private String fContextId;
 	private boolean hasSettings = true;
@@ -43,8 +43,8 @@ public class SaveablePartDialog extends TrayDialog {
 	/**
 	 * Creates a dialog with the given title and input. The input is not created until the dialog
 	 * is opened.
-	 * 
-	 * @param shell the parent shell or <code>null</code> to create a top level shell. 
+	 *
+	 * @param shell the parent shell or <code>null</code> to create a top level shell.
 	 * @param input the part to show in the dialog.
 	 */
 	public SaveablePartDialog(Shell shell, ISaveableWorkbenchPart input) {
@@ -52,7 +52,7 @@ public class SaveablePartDialog extends TrayDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
 		this.input = input;
 	}
-	
+
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
@@ -60,7 +60,7 @@ public class SaveablePartDialog extends TrayDialog {
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
@@ -74,7 +74,7 @@ public class SaveablePartDialog extends TrayDialog {
 		Dialog.applyDialogFont(parent2);
 		return parent;
 	}
-		
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.ResizableDialog#close()
 	 */
@@ -83,23 +83,23 @@ public class SaveablePartDialog extends TrayDialog {
 		saveChanges();
 		return super.close();
 	}
-	
+
 	/**
 	 * Save any changes to the compare editor.
 	 */
 	private void saveChanges() {
 		MessageDialog dialog = new MessageDialog(
-				getShell(), TeamUIMessages.ParticipantCompareDialog_2, null,  
-				TeamUIMessages.ParticipantCompareDialog_3, MessageDialog.QUESTION, new String[]{IDialogConstants.YES_LABEL, 
+				getShell(), TeamUIMessages.ParticipantCompareDialog_2, null,
+				TeamUIMessages.ParticipantCompareDialog_3, MessageDialog.QUESTION, new String[]{IDialogConstants.YES_LABEL,
 				IDialogConstants.NO_LABEL}, 0); // YES is the default
-			
+
 		if (input.isDirty() && dialog.open() == IDialogConstants.OK_ID) {
 			BusyIndicator.showWhile(null, new Runnable() {
 				@Override
 				public void run() {
 					input.doSave(new NullProgressMonitor());
 				}
-			});		
+			});
 		}
 	}
 
@@ -111,7 +111,7 @@ public class SaveablePartDialog extends TrayDialog {
 	protected ISaveableWorkbenchPart getInput() {
 		return input;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
 	 */
@@ -126,7 +126,7 @@ public class SaveablePartDialog extends TrayDialog {
 		}
 		return dialogSettings;
 	}
-	
+
 	/**
 	 * Set the help content id of this dialog.
 	 * @param contextId the help context id
@@ -134,7 +134,7 @@ public class SaveablePartDialog extends TrayDialog {
 	public void setHelpContextId(String contextId) {
 		fContextId= contextId;
 	}
-	
+
 	/*
 	 * @see org.eclipse.jface.window.Window#configureShell(Shell)
 	 */
@@ -144,7 +144,7 @@ public class SaveablePartDialog extends TrayDialog {
 		if (fContextId != null)
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#getInitialSize()
 	 */

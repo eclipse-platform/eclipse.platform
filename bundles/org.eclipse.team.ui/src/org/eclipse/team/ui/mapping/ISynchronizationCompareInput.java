@@ -17,18 +17,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * This interface defines extensions to the {@link ICompareInput}
- * interface that are used for compare inputs that are returned from the 
+ * interface that are used for compare inputs that are returned from the
  * {@link ISynchronizationCompareAdapter#asCompareInput(org.eclipse.team.core.mapping.ISynchronizationContext, Object)}
  * method.
  * <p>
  * Clients may implement this interface.
- * 
+ *
  * @see ISynchronizationCompareAdapter#asCompareInput(org.eclipse.team.core.mapping.ISynchronizationContext, Object)
- * 
+ *
  * @since 3.2
  */
 public interface ISynchronizationCompareInput extends ICompareInput {
-	
+
 	/**
 	 * Return the saveable for this compare input or
 	 * <code>null</code> if the input is saved directly to disk when the
@@ -36,16 +36,16 @@ public interface ISynchronizationCompareInput extends ICompareInput {
 	 * @return the saveable for this compare input
 	 */
 	SaveableComparison getSaveable();
-	
+
 	/**
-	 * Prepare the compare input associated with a model element for display using 
-	 * the compare configuration. 
+	 * Prepare the compare input associated with a model element for display using
+	 * the compare configuration.
 	 * @param configuration the compare configuration for the editor that will display the input
 	 * @param monitor a progress monitor
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	void prepareInput(CompareConfiguration configuration, IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
 	 * Return a human readable path for the compare input that can be
 	 * used in a tooltip or other displays that can show more detailed information.

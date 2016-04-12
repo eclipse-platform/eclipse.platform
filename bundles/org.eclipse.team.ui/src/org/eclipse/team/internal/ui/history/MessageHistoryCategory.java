@@ -14,7 +14,7 @@ import org.eclipse.team.core.history.IFileRevision;
 
 public class MessageHistoryCategory extends AbstractHistoryCategory {
 	private String message;
-	
+
 	public MessageHistoryCategory(String message){
 		this.message = message;
 	}

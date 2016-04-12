@@ -34,15 +34,15 @@ import org.eclipse.ui.part.ResourceTransfer;
  * Based on org.eclipse.ui.views.navigator.CopyAction with the additional support for
  * copying any non-resource object in the selection and putting the toString() as
  * a text transfer.
- * 
+ *
  * @since 3.1
  */
 class CopyToClipboardAction extends SelectionListenerAction {
-    
+
     private static final String EOL = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-    
+
     private final static String ID= TeamUIPlugin.PLUGIN_ID + ".synchronize.action.copy";  //$NON-NLS-1$
-    
+
     private final Shell fShell;
     private final Clipboard fClipboard;
 
@@ -50,19 +50,19 @@ class CopyToClipboardAction extends SelectionListenerAction {
 
     protected CopyToClipboardAction(Shell shell, INavigatorContentService navigatorContentService) {
         super(TeamUIMessages.CopyToClipboardAction_1);
-		this.navigatorContentService = navigatorContentService; 
+		this.navigatorContentService = navigatorContentService;
         Assert.isNotNull(shell);
         fShell= shell;
         fClipboard= new Clipboard(shell.getDisplay());
-        setToolTipText(TeamUIMessages.CopyToClipboardAction_2); 
+        setToolTipText(TeamUIMessages.CopyToClipboardAction_2);
         setId(ID);
     }
-    
+
     @Override
 	public void run() {
 		copyResources(getSelectedResources(), getTextualClipboardContents());
 	}
-    
+
     /*
      * Return a text representation of all selected elements.
      * Use the name from the tree node so what is copied
@@ -158,7 +158,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 
 	/**
 	 * Set the clipboard contents. Prompt to retry if clipboard is busy.
-	 * 
+	 *
 	 * @param resources the resources to copy to the clipboard
 	 * @param fileNames file names of the resources to copy to the clipboard
 	 * @param names string representation of all names
@@ -182,16 +182,16 @@ class CopyToClipboardAction extends SelectionListenerAction {
             }
             if (!data.isEmpty())
                 fClipboard.setContents(
-                		data.toArray(), 
+                		data.toArray(),
                 		(Transfer[]) dataTypes.toArray(new Transfer[dataTypes.size()]));
         } catch (SWTError e) {
             if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
                 throw e;
-            if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4))  
+            if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4))
                 setClipboard(resources, fileNames, names);
         }
     }
-    
+
     @Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (!super.updateSelection(selection))
@@ -228,12 +228,12 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		}
 		return false;
 	}
-     
+
 	@Override
 	protected List getSelectedNonResources() {
 		return Arrays.asList(Utils.getNonResources(getStructuredSelection().toArray()));
 	}
-	
+
 	@Override
 	protected List getSelectedResources() {
     	// Calling our own selection utility because the elements in the
@@ -241,7 +241,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		// contribution/ on them.
 		return Arrays.asList(Utils.getResources(getStructuredSelection().toArray()));
 	}
-    
+
 	public void dispose() {
 		fClipboard.dispose();
 	}

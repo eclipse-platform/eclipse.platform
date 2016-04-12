@@ -22,11 +22,11 @@ public class DialogHistoryPageSite implements IHistoryPageSite {
 	private ISelectionProvider selectionProvider;
 	private final Shell shell;
 	private IToolBarManager toolBarManager;
-	
+
 	public DialogHistoryPageSite(Shell shell) {
 		this.shell = shell;
 	}
-	
+
 	@Override
 	public IPageSite getWorkbenchPageSite() {
 		return null;

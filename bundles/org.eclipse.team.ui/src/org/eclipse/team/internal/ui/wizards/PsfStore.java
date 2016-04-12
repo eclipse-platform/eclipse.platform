@@ -22,14 +22,14 @@ public abstract class PsfStore {
 	private static final int HISTORY_LENGTH = 10;
 
 	private static final String STORE_SECTION = "ImportPSFDialog"; //$NON-NLS-1$
-	
+
 	private static IDialogSettings _section;
-	
+
 	protected abstract String getPreviousTag();
 	protected abstract String getListTag();
-	
+
 	public abstract String getSuggestedDefault();
-	
+
 	protected String getPrevious() {
 		IDialogSettings section = getSettingsSection();
 		String retval = section.get(getPreviousTag());

@@ -32,8 +32,8 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 
 /**
  * A saveable that wraps a compare input in which the left side is a {@link LocalResourceTypedElement}
- * and saves changes made to the file in compare when the viewers are flushed. 
- * 
+ * and saves changes made to the file in compare when the viewers are flushed.
+ *
  * @see LocalResourceTypedElement
  * @since 3.3
  */
@@ -45,7 +45,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	private IContentChangeListener contentChangeListener;
     private ITypedElement fileElement;
 	private IDocument document;
-	
+
 	/**
 	 * Create the resource-based saveable comparison.
 	 * @param input the compare input to be save
@@ -54,7 +54,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	public LocalResourceSaveableComparison(ICompareInput input, CompareEditorInput editorInput) {
 		this(input, editorInput, input.getLeft());
 	}
-	
+
 	/**
 	 * Create the resource-based saveable comparison.
 	 * @param input the compare input to be save
@@ -67,7 +67,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		this.fileElement = fileElement;
 		initializeContentChangeListeners();
 	}
-	
+
 	protected void initializeHashing() {
 		Object document= getAdapter(IDocument.class);
 		if (document != null) {
@@ -97,7 +97,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 			((IContentChangeNotifier) te).addContentChangeListener(contentChangeListener);
 		}
 	}
-	
+
 	/**
 	 * Dispose of the saveable.
 	 */
@@ -118,7 +118,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	private ITypedElement getFileElement() {
 		return fileElement;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#performSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -163,7 +163,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	}
 
 	/**
-	 * Fire an input change for the compare input after it has been 
+	 * Fire an input change for the compare input after it has been
 	 * saved.
 	 */
 	protected abstract void fireInputChange();
@@ -176,21 +176,21 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		if(hasSaveConflict()) {
 			if (Utils.RUNNING_TESTS)
 				return !Utils.TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE;
-			final MessageDialog dialog = 
-				new MessageDialog(TeamUIPlugin.getStandardDisplay().getActiveShell(), 
-						TeamUIMessages.SyncInfoCompareInput_0,  
-						null, 
-						TeamUIMessages.SyncInfoCompareInput_1,  
+			final MessageDialog dialog =
+				new MessageDialog(TeamUIPlugin.getStandardDisplay().getActiveShell(),
+						TeamUIMessages.SyncInfoCompareInput_0,
+						null,
+						TeamUIMessages.SyncInfoCompareInput_1,
 						MessageDialog.QUESTION,
 					new String[] {
-						TeamUIMessages.SyncInfoCompareInput_2, 
-						IDialogConstants.CANCEL_LABEL}, 
+						TeamUIMessages.SyncInfoCompareInput_2,
+						IDialogConstants.CANCEL_LABEL},
 					0);
-			
+
 			int retval = dialog.open();
 			switch(retval) {
 				// save
-				case 0: 
+				case 0:
 					return false;
 				// cancel
 				case 1:
@@ -221,7 +221,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		}
 		return editorInput.isSaveNeeded();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#setDirty(boolean)
 	 */
@@ -318,9 +318,9 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 			} else {
 				setDirty(changed);
 			}
-		}			
+		}
 	}
-	
+
 	/*
 	 * @see org.eclipse.ui.Saveable#hashCode()
 	 */
@@ -339,26 +339,26 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		
+
 		if (!(obj instanceof Saveable))
 			return false;
-		
+
 		if (document != null) {
 			Object otherDocument= ((Saveable)obj).getAdapter(IDocument.class);
-			
+
 			if (document == null && otherDocument == null)
 				return false;
-			
+
 			return document != null && document.equals(otherDocument);
 		}
-		
+
 		if (obj instanceof LocalResourceSaveableComparison) {
 			LocalResourceSaveableComparison rscm = (LocalResourceSaveableComparison) obj;
 			return rscm.input.equals(input);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IDocument.class) {

@@ -55,7 +55,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	private final ListenerList inputChangeListeners = new ListenerList(ListenerList.IDENTITY);
 	private Saveable saveable;
 	private IPropertyListener propertyListener;
-	
+
 	/**
 	 * Return a typed element that represents a local file. If the element
 	 * returned from this method is used as the left contributor of the compare
@@ -67,7 +67,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public static ITypedElement createFileElement(IFile file) {
 		return new LocalResourceTypedElement(file);
 	}
-	
+
 	private static ITypedElement getFileElement(ICompareInput input,
 			CompareEditorInput editorInput) {
 		if (input.getLeft() instanceof LocalResourceTypedElement) {
@@ -78,7 +78,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		}
 		return null;
 	}
-	
+
 	private class InternalResourceSaveableComparison extends LocalResourceSaveableComparison implements ISharedDocumentAdapterListener {
 		private LocalResourceTypedElement lrte;
 		private boolean connected = false;
@@ -114,7 +114,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			if (lrte != null)
 				lrte.setSharedDocumentListener(null);
 		}
-		
+
 		private void registerSaveable(boolean init) {
 			ICompareContainer container = getContainer();
 			IWorkbenchPart part = container.getWorkbenchPart();
@@ -148,7 +148,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			// Ignore
 		}
 	}
-	
+
 	/**
 	 * Creates a <code>LocalResourceCompareEditorInput</code> which is initialized with the given
 	 * compare configuration.
@@ -193,7 +193,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			}
 		};
 		getCompareInput().addCompareInputChangeListener(compareInputChangeListener);
-		
+
 		if (getSaveable() instanceof SaveableComparison) {
 			SaveableComparison scm = (SaveableComparison) saveable;
 			propertyListener = new IPropertyListener() {
@@ -216,7 +216,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			listener = (ISaveablesLifecycleListener) part.getSite().getService(ISaveablesLifecycleListener.class);
 		return listener;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
@@ -254,7 +254,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			((IDisposable) getCompareResult()).dispose();
 		}
 	}
-	
+
 	private void logStackTrace() {
 		new Exception("<Fake exception> in " + getClass().getName()).printStackTrace(System.out); //$NON-NLS-1$
 	}
@@ -283,7 +283,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	/**
 	 * Method called from {@link #prepareInput(IProgressMonitor)} to obtain the input. Its purpose
 	 * is to ensure that the input is an instance of {@link ICompareInput}.
-	 * 
+	 *
 	 * @param monitor a progress monitor
 	 * @return the compare input
 	 * @throws InvocationTargetException
@@ -291,7 +291,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 */
 	protected abstract ICompareInput prepareCompareInput(IProgressMonitor monitor)
 		throws InvocationTargetException, InterruptedException;
-	
+
 	/**
 	 * Return the compare input of this editor input.
 	 * @return the compare input of this editor input
@@ -299,7 +299,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	protected final ICompareInput getCompareInput() {
 		return (ICompareInput)getCompareResult();
 	}
-	
+
 	/**
 	 * Callback from the resource saveable that is invoked when the resource is
 	 * saved so that this input can fire a change event for its input. Subclasses
@@ -307,7 +307,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 * an element returned from {@link #createFileElement(IFile)}.
 	 */
 	protected abstract void fireInputChange();
-	
+
 	/**
 	 * Close the editor if it is not dirty. If it is still dirty, let the
 	 * content merge viewer handle the compare input change.
@@ -346,13 +346,13 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			return true;
 		}
 	}
-	
+
 	private IWorkbenchPage getPage() {
 		if (page == null)
 			return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		return page;
 	}
-	
+
 	/* package */ void propogateInputChange() {
 		if (!inputChangeListeners.isEmpty()) {
 			Object[] allListeners = inputChangeListeners.getListeners();
@@ -386,7 +386,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		}
 		return saveable;
 	}
-	
+
 	/**
 	 * Create the saveable that provides the save behavior for this compare editor input.
 	 * By default, a saveable that handles local files is returned
@@ -415,7 +415,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public Saveable[] getSaveables() {
 		return getActiveSaveables();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#addCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
@@ -428,7 +428,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			super.addCompareInputChangeListener(input, listener);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
@@ -441,7 +441,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			super.removeCompareInputChangeListener(input, listener);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getAdapter(java.lang.Class)
 	 */
@@ -455,7 +455,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getTitleImage()
@@ -479,7 +479,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public ImageDescriptor getImageDescriptor() {
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#findContentViewer(org.eclipse.jface.viewers.Viewer, org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.swt.widgets.Composite)
 	 */
@@ -512,14 +512,14 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	public boolean canRunAsJob() {
 		return true;
 	}
-	
+
 	@Override
 	public boolean isDirty() {
 		if (saveable != null)
 			return saveable.isDirty();
 		return super.isDirty();
 	}
-	
+
 	@Override
 	public void registerContextMenu(final MenuManager menu,
 			final ISelectionProvider selectionProvider) {
@@ -535,5 +535,5 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			});
 		}
 	}
-	
+
 }

@@ -44,7 +44,7 @@ public class PinParticipantAction extends Action implements IPropertyChangeListe
 		}
 		updateState();
 	}
-	
+
 	private void updateState() {
 		setChecked(participant != null && participant.isPinned());
 	}

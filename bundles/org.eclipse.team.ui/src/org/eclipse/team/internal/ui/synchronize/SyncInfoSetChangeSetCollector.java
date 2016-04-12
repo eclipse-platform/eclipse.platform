@@ -30,14 +30,14 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  * <p>
  * This class does not register as a change listener with the seed set. It
  * is up to clients to invoke either the <code>reset</code> or <code>handleChange</code>
- * methods in response to seed set changes. 
+ * methods in response to seed set changes.
  * @since 3.1
  */
 public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
-    
+
     private final ISynchronizePageConfiguration configuration;
     private ChangeSetModelProvider provider;
-    
+
     /*
      * Listener that will remove sets when they become empty.
      * The sets in this collector are only modified from either the
@@ -45,7 +45,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      * done by this listener will update the view properly.
      */
     ISyncInfoSetChangeListener changeSetListener = new ISyncInfoSetChangeListener() {
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
          */
@@ -69,7 +69,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 		public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
             // TODO Auto-generated method stub
         }
-        
+
         /*
          * The collector removes change sets once they are empty
          */
@@ -95,11 +95,11 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
     /**
      * Add the given resource sync info nodes to the appropriate
      * change sets, adding them if necessary.
-     * This method is invoked by the <code>handleChanges</code> 
-     * and <code>reset</code> methods 
+     * This method is invoked by the <code>handleChanges</code>
+     * and <code>reset</code> methods
      * when the model provider changes state. Updates done to the collector
      * from within this thread will be thread-safe and update the view
-     * properly. Updates done from other threads should perform adds 
+     * properly. Updates done from other threads should perform adds
      * within a runnable passed to the
      * <code>performUpdate</code> method to ensure the view is
      * updated properly.
@@ -115,8 +115,8 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      * when the model provider changes state. It should not
      * be invoked by other clients. The model provider
      * will invoke this method from a particular thread (which may
-     * or may not be the UI thread). 
-     * Updates done from other threads should perform removes 
+     * or may not be the UI thread).
+     * Updates done from other threads should perform removes
      * within a runnable passed to the
      * <code>performUpdate</code> method to ensure the view is
      * updated properly.
@@ -138,7 +138,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
     protected ISyncInfoSetChangeListener getChangeSetChangeListener() {
         return changeSetListener;
     }
-    
+
     /**
      * Re-populate the change sets from the seed set.
      * If <code>null</code> is passed, clear any state
@@ -150,12 +150,12 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      * will invoke this method from a particular thread (which may
      * or may not be the UI thread). Updates done to the collector
      * from within this thread will be thread-safe and update the view
-     * properly. Updates done from other threads should use the 
+     * properly. Updates done from other threads should use the
      * <code>performUpdate</code> method to ensure the view is
      * updated properly.
      * <p>
      * Subclasses may override this method.
-     * @param seedSet 
+     * @param seedSet
      */
     public void reset(SyncInfoSet seedSet) {
         // First, remove all the sets
@@ -176,7 +176,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      * will invoke this method from a particular thread (which may
      * or may not be the UI thread). Updates done to the collector
      * from within this thread will be thread-safe and update the view
-     * properly. Updates done from other threads should use the 
+     * properly. Updates done from other threads should use the
      * <code>performUpdate</code> method to ensure the view is
      * updated properly.
      * <p>
@@ -201,24 +201,24 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
             add((SyncInfo[]) additions.toArray(new SyncInfo[additions.size()]));
         }
     }
-    
+
     /**
-     * Return the configuration for the page that is displaying the model created 
+     * Return the configuration for the page that is displaying the model created
      * using this collector.
-     * @return the configuration for the page that is displaying the model created 
+     * @return the configuration for the page that is displaying the model created
      * using this collector
      */
     public final ISynchronizePageConfiguration getConfiguration() {
         return configuration;
     }
-    
+
     /**
      * Execute the given runnable which updates the sync sets contained
-     * in this collector. This method should be used by subclasses when they 
+     * in this collector. This method should be used by subclasses when they
      * are populating or modifying sets from another thread. In other words,
      * if the sets of this collector are updated directly in the <code>add</code>
      * method then this method is not required. However, if sets are created
-     * or modified by another thread, that thread must use this method to ensure 
+     * or modified by another thread, that thread must use this method to ensure
      * the updates occur in the proper thread in order to ensure thread safety.
      * <p>
      * The update may be run in a different thread then the caller.
@@ -232,7 +232,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
     protected final void performUpdate(IWorkspaceRunnable runnable, boolean preserveExpansion, IProgressMonitor monitor) {
         provider.performUpdate(runnable, preserveExpansion, false /* run in the handler thread and refresh at the end */);
     }
-    
+
     /* (non-javadoc)
      * Sets the provider for this collector. This method is for internal use only.
      */
@@ -249,19 +249,19 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
     public void waitUntilDone(IProgressMonitor monitor) {
         // Do nothing, by default
     }
-    
+
     @Override
 	protected void handleSetAdded(ChangeSet set) {
     	((CheckedInChangeSet)set).getSyncInfoSet().addSyncSetChangedListener(getChangeSetChangeListener());
     	super.handleSetAdded(set);
     }
-    
+
     @Override
 	protected void handleSetRemoved(ChangeSet set) {
     	((CheckedInChangeSet)set).getSyncInfoSet().removeSyncSetChangedListener(getChangeSetChangeListener());
     	super.handleSetRemoved(set);
     }
-    
+
     /**
      * Return the Change Set whose sync info set is the
      * one given.

@@ -28,7 +28,7 @@ public abstract class ChangeSetCapability {
      * Return whether the associated participant supports
      * the display of checked-in change sets. The default is
      * unsupported (<code>false</code>). If subclasses support
-     * checked-in change sets, they must override the 
+     * checked-in change sets, they must override the
      * <code>createCheckedInChangeSetCollector</code>
      * method to return an appropriate values.
      * @return whether the associated participant supports
@@ -37,12 +37,12 @@ public abstract class ChangeSetCapability {
     public boolean supportsCheckedInChangeSets() {
         return false;
     }
-    
+
     /**
      * Return whether the associated participant supports
      * the use of active change sets. The default is unsupported
      * (<code>false</code>). If a subclass overrides this method in
-     * order to support active change sets, they must also override the methods 
+     * order to support active change sets, they must also override the methods
      * <code>getActiveChangeSetManager</code>,
      * <code>createChangeSet</code> and <code>editChangeSet</code>.
      * @return whether the associated participant supports
@@ -51,11 +51,11 @@ public abstract class ChangeSetCapability {
     public boolean supportsActiveChangeSets() {
         return false;
     }
-    
+
     /**
      * Return the change set collector that manages the active change
      * set for the participant associated with this capability. A <code>null</code>
-     * is returned if active change sets are not supported. The default is to 
+     * is returned if active change sets are not supported. The default is to
      * return <code>null</code>.  This method must be
      * overridden by subclasses that support active change sets.
      * @return the change set collector that manages the active change
@@ -65,11 +65,11 @@ public abstract class ChangeSetCapability {
     public ActiveChangeSetManager getActiveChangeSetManager() {
         return null;
     }
-    
+
     /**
      * Create a change set from the given manager that contains the given sync info.
      * This method is invoked from the UI thread. A <code>null</code>
-     * is returned if active change sets are not supported. The default is to 
+     * is returned if active change sets are not supported. The default is to
      * return <code>null</code>.  This method must be
      * overridden by subclasses that support active change sets.
      * @param configuration the configuration of the page displaying the change sets
@@ -79,7 +79,7 @@ public abstract class ChangeSetCapability {
     public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] diffs) {
         return null;
     }
-    
+
     /**
      * Edit the title and comment of the given change set. This method must be
      * overridden by subclasses that support active change sets.
@@ -90,7 +90,7 @@ public abstract class ChangeSetCapability {
     public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
         // Default is to do nothing
     }
-    
+
     /**
      * Return a collector that can be used to group a set of checked-in changes
      * into a set of checked-in change sets.  This method must be
@@ -101,7 +101,7 @@ public abstract class ChangeSetCapability {
     public SyncInfoSetChangeSetCollector createSyncInfoSetChangeSetCollector(ISynchronizePageConfiguration configuration) {
         return null;
     }
-    
+
     /**
      * Return an action group for contributing context menu items
      * to the synchronize page while change sets are enabled.
@@ -115,30 +115,30 @@ public abstract class ChangeSetCapability {
     public SynchronizePageActionGroup getActionGroup() {
         return null;
     }
-    
+
     /**
-     * Returns whether checked-in change sets should be enabled for the given state 
-     * in the configuration. The default is to enable for three-way incoming mode and 
+     * Returns whether checked-in change sets should be enabled for the given state
+     * in the configuration. The default is to enable for three-way incoming mode and
      * two-way.
      * @param configuration the configuration for a synchronize page
-     * @return whether checked-in change sets should be enabled for the given state 
+     * @return whether checked-in change sets should be enabled for the given state
      * in the configuration
      */
     public boolean enableCheckedInChangeSetsFor(ISynchronizePageConfiguration configuration) {
-        return supportsCheckedInChangeSets() && 
+        return supportsCheckedInChangeSets() &&
         	(configuration.getMode() == ISynchronizePageConfiguration.INCOMING_MODE ||
         	        configuration.getComparisonType() == ISynchronizePageConfiguration.TWO_WAY);
     }
-    
+
     /**
-     * Returns whether active change sets should be enabled for the given state 
+     * Returns whether active change sets should be enabled for the given state
      * in the configuration. The default is to enable for three-way outgoing mode.
      * @param configuration the configuration for a synchronize page
-     * @return whether active change sets should be enabled for the given state 
+     * @return whether active change sets should be enabled for the given state
      * in the configuration
      */
     public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
-        return supportsActiveChangeSets() && 
+        return supportsActiveChangeSets() &&
         	configuration.getMode() == ISynchronizePageConfiguration.OUTGOING_MODE;
     }
 
@@ -151,5 +151,5 @@ public abstract class ChangeSetCapability {
     public boolean enableChangeSetsByDefault() {
         return false;
     }
-    
+
 }

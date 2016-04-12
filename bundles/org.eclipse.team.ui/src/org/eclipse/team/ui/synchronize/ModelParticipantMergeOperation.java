@@ -29,11 +29,11 @@ import org.eclipse.ui.progress.WorkbenchJob;
 /**
  * A model merge operation that uses a participant to preview the changes
  * in either a dialog or the Synchronize view.
- * 
+ *
  * @since 3.2
  */
 public abstract class ModelParticipantMergeOperation extends ModelMergeOperation {
-	
+
 	/**
 	 * Status code that can be returned from the {@link #performMerge(IProgressMonitor)}
 	 * method to indicate that a subclass would like to force a preview of the merge.
@@ -45,9 +45,9 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	private boolean ownsParticipant = true;
 
 	private boolean sentToSyncView;
-	
+
 	private static final Object PARTICIPANT_MERGE_FAMILY = new Object();
-	
+
 	/**
 	 * Create a merge participant operation for the scope of the given manager.
 	 * @param part the workbench part from which the merge was launched or <code>null</code>
@@ -69,7 +69,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 				handlePreviewRequest();
 				sentToSyncView = true;
 			}
-			participant.getContext().refresh(getScope().getTraversals(), 
+			participant.getContext().refresh(getScope().getTraversals(),
 					RemoteResourceMappingContext.FILE_CONTENTS_REQUIRED, monitor);
 			// Only wait if we are not going to preview or we are previewing in a dialog
 			if (!sentToSyncView)
@@ -80,7 +80,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 				}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -93,7 +93,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 				participant.dispose();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ModelMergeOperation#executeMerge(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -102,7 +102,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		if (!sentToSyncView)
 			super.executeMerge(monitor);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#handlePreviewRequest()
 	 */
@@ -121,7 +121,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 					}
 					ParticipantPageCompareEditorInput input = new ParticipantPageCompareEditorInput(cc, pageConfiguration, participant);
 					CompareUI.openCompareDialog(input);
-				} else {				
+				} else {
 					ISynchronizeManager mgr = TeamUI.getSynchronizeManager();
 					ISynchronizeView view = mgr.showSynchronizeViewInActivePage();
 					mgr.addSynchronizeParticipants(new ISynchronizeParticipant[] {participant});
@@ -142,7 +142,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 				if (TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()) == null)
 					participant.dispose();
 			}
-			
+
 		});
 		ownsParticipant = false;
 		job.schedule();
@@ -157,7 +157,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 			return true;
 		return super.belongsTo(family);
 	}
-	
+
 	/**
 	 * Return whether previews should occur in a dialog or in the synchronize view.
 	 * @return whether previews should occur in a dialog or in the synchronize view
@@ -175,14 +175,14 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 			return participant.getContext();
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#getPreviewRequestMessage()
 	 */
 	@Override
 	protected String getPreviewRequestMessage() {
 		if (!isPreviewRequested()) {
-			return TeamUIMessages.ResourceMappingMergeOperation_4; 
+			return TeamUIMessages.ResourceMappingMergeOperation_4;
 		}
 		return super.getPreviewRequestMessage();
 	}
@@ -190,12 +190,12 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 	/**
 	 * Create the synchronize participant to be used by this operation
 	 * to preview changes. By default, a {@link ModelSynchronizeParticipant}
-	 * is created using the scope manager ({@link #getScopeManager()}) context 
+	 * is created using the scope manager ({@link #getScopeManager()}) context
 	 * from ({@link #createMergeContext()}) and job name ({@link #getJobName()})
 	 * of this operation. Subclasses may override this method.
 	 * <p>
-	 * Once created, it is the responsibility of the participant to dispose of the 
-	 * synchronization context when it is no longer needed. 
+	 * Once created, it is the responsibility of the participant to dispose of the
+	 * synchronization context when it is no longer needed.
 	 * @return a newly created synchronize participant to be used by this operation
 	 */
 	protected ModelSynchronizeParticipant createParticipant() {
@@ -204,7 +204,7 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 
 	/**
 	 * Create a merge context for use by this operation. This method
-	 * is not long running so the operation should not refresh the 
+	 * is not long running so the operation should not refresh the
 	 * context or perform other long running operations in this thread.
 	 * However the context may start initializing in another thread as long
 	 * as the job used to perform the initialization belongs to the

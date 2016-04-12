@@ -42,7 +42,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 			if (!getPatcher().isEnabled(PatchModelProvider.getPatchObject(getLocal(), patcher)))
 				return IN_SYNC;
 
-			// same story here, one merged hunk is enough to consider the file as merged 
+			// same story here, one merged hunk is enough to consider the file as merged
 			if (getRemote() != null) {
 				FilePatch2 filePatch2 = ((PatchedFileVariant)getRemote()).getDiff();
 				IHunk[] hunks = filePatch2.getHunks();
@@ -63,8 +63,8 @@ public class ApplyPatchSubscriber extends Subscriber {
 				}
 			}
 			int kind = super.calculateKind();
-			// mark diffs with problems as conflicts 
-			if (getRemote() != null 
+			// mark diffs with problems as conflicts
+			if (getRemote() != null
 					&& getPatcher().getDiffResult(((PatchedFileVariant)getRemote()).getDiff()).containsProblems())
 				kind |= CONFLICTING;
 			return kind;
@@ -126,7 +126,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 				// file has no IResource members
 				return new IResource[0];
 			IContainer container = (IContainer) resource;
-			
+
 			// workspace container members
 			List existingChildren = new ArrayList();
 

@@ -13,13 +13,13 @@ package org.eclipse.team.internal.ui.synchronize;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
 
 public interface IRefreshable {
-	
+
 	public SubscriberRefreshSchedule getRefreshSchedule();
-	
+
 	public void setRefreshSchedule(SubscriberRefreshSchedule schedule);
-	
+
 	public ISynchronizeParticipant getParticipant();
-	
+
 	public RefreshParticipantJob createJob(String refreshInterval);
 
 }

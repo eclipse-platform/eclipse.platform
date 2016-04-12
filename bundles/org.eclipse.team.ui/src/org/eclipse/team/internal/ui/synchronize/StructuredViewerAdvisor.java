@@ -27,11 +27,11 @@ import org.eclipse.ui.actions.ActionGroup;
 
 /**
  * A <code>StructuredViewerAdvisor</code> controls various UI
- * aspects of viewers that show {@link SyncInfoSet} like the context menu, toolbar, 
- * content provider, label provider, navigation, and model provider. The 
+ * aspects of viewers that show {@link SyncInfoSet} like the context menu, toolbar,
+ * content provider, label provider, navigation, and model provider. The
  * advisor allows decoupling viewer behavior from the viewers presentation. This
  * allows viewers that aren't in the same class hierarchy to re-use basic
- * behavior. 
+ * behavior.
  * <p>
  * This advisor allows viewer contributions made in a plug-in manifest to
  * be scoped to a particular unique id. As a result the context menu for the
@@ -42,26 +42,26 @@ import org.eclipse.ui.actions.ActionGroup;
  * <li>Create a viewer contribution with a <code>targetID</code> that groups
  * sets of actions that are related. A common practice for synchronize view
  * configurations is to use the participant id as the targetID.
- * 
+ *
  * <pre>
  *  &lt;viewerContribution
  *  id=&quot;org.eclipse.team.ccvs.ui.CVSCompareSubscriberContributions&quot;
  *  targetID=&quot;org.eclipse.team.cvs.ui.compare-participant&quot;&gt;
  *  ...
  * </pre>
- * 
+ *
  * <li>Create a configuration instance with a <code>menuID</code> that
  * matches the targetID in the viewer contribution.
  * </ul>
  * </p><p>
  * Clients may subclass to add behavior for concrete structured viewers.
  * </p>
- * 
+ *
  * @see TreeViewerAdvisor
  * @since 3.0
  */
 public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
-	
+
 	// Property change listener which responds to:
 	//    - working set selection by the user
 	//    - decorator format change selected by the user
@@ -83,17 +83,17 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * Create an advisor that will allow viewer contributions with the given <code>targetID</code>. This
 	 * advisor will provide a presentation model based on the given sync info set. The model is disposed
 	 * when the viewer is disposed.
-	 * 
+	 *
 	 * @param configuration
 	 */
 	public StructuredViewerAdvisor(ISynchronizePageConfiguration configuration) {
 		super(configuration);
 	}
-	
+
 	/**
 	 * Install a viewer to be configured with this advisor. An advisor can only be installed with
 	 * one viewer at a time. When this method completes the viewer is considered initialized and
-	 * can be shown to the user. 
+	 * can be shown to the user.
 	 * @param viewer the viewer being installed
 	 */
 	@Override
@@ -102,7 +102,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		initializeListeners(viewer);
 		hookContextMenu(viewer);
 	}
-	
+
 	/**
 	 * Must be called when an advisor is no longer needed.
 	 */
@@ -114,7 +114,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			statusLine.dispose();
 		TeamUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(propertyListener);
 	}
-	
+
 	/**
 	 * Method invoked from <code>initializeViewer(Composite, StructuredViewer)</code>
 	 * in order to initialize any listeners for the viewer.
@@ -170,7 +170,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		});
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(propertyListener);
 	}
-	
+
 	/**
 	 * Handles a double-click event. If <code>false</code> is returned,
 	 * subclasses may handle the double click.
@@ -189,7 +189,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		}
 		return false;
 	}
-	
+
 	private void handleOpen() {
 		Object o = getConfiguration().getProperty(SynchronizePageConfiguration.P_OPEN_ACTION);
 		if (o instanceof IAction) {
@@ -197,7 +197,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			action.run();
 		}
 	}
-	
+
 	/**
 	 * Method invoked from the synchronize page when the action
 	 * bars are set. The advisor uses the configuration to determine
@@ -209,7 +209,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	public final void setActionBars(IActionBars actionBars) {
 		if(actionBars != null) {
 			IToolBarManager manager = actionBars.getToolBarManager();
-			
+
 			// Populate the toolbar menu with the configured groups
 			Object o = getConfiguration().getProperty(ISynchronizePageConfiguration.P_TOOLBAR_MENU);
 			if (!(o instanceof String[])) {
@@ -239,18 +239,18 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 					menu.add(new Separator(getGroupId(group)));
 				}
 			}
-			
+
 			fillActionBars(actionBars);
-		}		
+		}
 	}
-	
+
 	/**
 	 * Initialize the status line
 	 * @param actionBars the action bars
 	 */
 	protected void initializeStatusLine(IActionBars actionBars) {
 		statusLine = new DiffTreeStatusLineContributionGroup(
-				getConfiguration().getSite().getShell(), 
+				getConfiguration().getSite().getShell(),
 				getConfiguration());
 		IStatusLineManager statusLineMgr = actionBars.getStatusLineManager();
 		if (statusLineMgr != null && statusLine != null) {
@@ -262,14 +262,14 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * Method invoked from <code>initializeViewer(StructuredViewer)</code>
 	 * in order to configure the viewer to call <code>fillContextMenu(StructuredViewer, IMenuManager)</code>
 	 * when a context menu is being displayed in viewer.
-	 * 
+	 *
 	 * @param viewer the viewer being initialized
 	 * @see fillContextMenu(StructuredViewer, IMenuManager)
 	 */
 	private void hookContextMenu(final StructuredViewer viewer) {
 		String targetID = getContextMenuId(viewer);
-		final MenuManager menuMgr = createContextMenuManager(targetID); 
-		
+		final MenuManager menuMgr = createContextMenuManager(targetID);
+
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			@Override
@@ -279,11 +279,11 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		menu.addMenuListener(new MenuListener() {
-	
+
 			@Override
 			public void menuHidden(MenuEvent e) {
 			}
-	
+
 			// Hack to allow action contributions to update their
 			// state before the menu is shown. This is required when
 			// the state of the selection changes and the contributions
@@ -351,13 +351,13 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		}
 		return targetID;
 	}
-	
+
 	/**
 	 * Callback that is invoked when a context menu is about to be shown in the
 	 * viewer. Subclasses must implement to contribute menus. Also, menus can
-	 * contributed by creating a viewer contribution with a <code>targetID</code> 
+	 * contributed by creating a viewer contribution with a <code>targetID</code>
 	 * that groups sets of actions that are related.
-	 * 
+	 *
 	 * @param viewer the viewer in which the context menu is being shown.
 	 * @param manager the menu manager to which actions can be added.
 	 */
@@ -384,7 +384,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			manager.add(new Separator(group));
 		}
 	}
-	
+
 	/**
 	 * Invoked once when the action bars are set.
 	 * @param actionBars the action bars
@@ -397,7 +397,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			getActionGroup().modelChanged((ISynchronizeModelElement) input);
 		}
 	}
-	
+
 	/**
 	 * Invoked each time the selection in the view changes in order
 	 * to update the action bars.
@@ -410,11 +410,11 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			group.updateActionBars();
 		}
 	}
-	
+
 	protected SynchronizePageActionGroup getActionGroup() {
 		return (SynchronizePageActionGroup)getConfiguration();
 	}
-	
+
 	private String getGroupId(String group) {
 		return ((SynchronizePageConfiguration)getConfiguration()).getGroupId(group);
 	}

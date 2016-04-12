@@ -43,25 +43,25 @@ import org.eclipse.ui.part.*;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
- * Implements a Synchronize View that contains multiple synchronize participants. 
+ * Implements a Synchronize View that contains multiple synchronize participants.
  */
 public class SynchronizeView extends PageBookView implements ISynchronizeView, ISynchronizeParticipantListener, IPropertyChangeListener, ISaveablesSource, ISaveablePart, IShowInTarget {
-	
+
 	/**
 	 * Suggested maximum length of participant names when shown in certain menus and dialog.
 	 */
 	public final static int MAX_NAME_LENGTH = 100;
-	
+
 	/**
 	 * The participant being displayed, or <code>null</code> if none
 	 */
 	private ISynchronizeParticipant activeParticipantRef = null;
-	
+
 	/**
 	 * Map of participants to dummy participant parts (used to close pages)
 	 */
 	private Map fParticipantToPart;
-	
+
 	/**
 	 * Map of parts to participants
 	 */
@@ -71,22 +71,22 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * Drop down action to switch between participants
 	 */
 	private SynchronizePageDropDownAction fPageDropDown;
-	
+
 	/**
 	 * Action to remove the selected participant
 	 */
 	private PinParticipantAction fPinAction;
-	
+
 	/**
 	 * Action to remove the currently shown participant
 	 */
 	private RemoveSynchronizeParticipantAction fRemoveCurrentAction;
-	
+
 	/**
 	 * Action to remove all non-pinned participants
 	 */
 	private RemoveSynchronizeParticipantAction fRemoveAllAction;
-	
+
 	private ToggleLinkingAction fToggleLinkingAction;
 
 	/**
@@ -164,7 +164,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
 	 */
@@ -180,7 +180,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	public ISynchronizeParticipant getParticipant() {
 		return activeParticipantRef;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.PageBookView#showPageRec(org.eclipse.ui.part.PageBookView.PageRec)
 	 */
@@ -189,7 +189,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		super.showPageRec(pageRec);
 		activeParticipantRef = (ISynchronizeParticipant)fPartToParticipant.get(pageRec.part);
 		updateActionEnablements();
-		updateTitle();		
+		updateTitle();
 	}
 
 	/*
@@ -207,11 +207,11 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				description = part.getParticipant().getName();
 			// TODO: Get the description from the configuration
 			// TODO: listen to the configuration for description changes
-			setContentDescription(Utils.shortenText(MAX_NAME_LENGTH, description)); 
+			setContentDescription(Utils.shortenText(MAX_NAME_LENGTH, description));
 			setStatusLineMessage(description, configuration.getMode());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec)
 	 */
@@ -228,7 +228,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	private void clearCrossReferenceCache(IWorkbenchPart part, ISynchronizeParticipant participant) {
 		participant.removePropertyChangeListener(this);
 		if (part == null)
-			return;	
+			return;
 		ISynchronizePageConfiguration configuration = ((SynchronizeViewWorkbenchPart)part).getConfiguration();
 		if (configuration != null)
 			configuration.removePropertyChangeListener(this);
@@ -242,7 +242,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	@Override
 	protected PageRec doCreatePage(IWorkbenchPart dummyPart) {
 		SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart)dummyPart;
-		ISynchronizeParticipant participant = part.getParticipant();	
+		ISynchronizeParticipant participant = part.getParticipant();
 		participant.addPropertyChangeListener(this);
 		ISynchronizePageConfiguration configuration = participant.createPageConfiguration();
 		part.setConfiguration(configuration);
@@ -297,7 +297,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		// Remember the last active participant
 		if(activeParticipantRef != null) {
 			rememberCurrentParticipant();
-		}			
+		}
 		fParticipantToPart = null;
 		fPartToParticipant = null;
 		// Remove 'Link with Editor' listener when closing the view
@@ -305,7 +305,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	}
 
     /**
-     * 
+     *
      */
     private void rememberCurrentParticipant() {
         IDialogSettings section = getDialogSettings();
@@ -400,7 +400,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		fPartToParticipant = new HashMap();
 		updateTitle();
 	}
-	
+
 	/**
 	 * Create the default actions for the view. These will be shown regardless of the
 	 * participant being displayed.
@@ -431,13 +431,13 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		}
 		if (fPastePatchAction != null) {
 			// The action is always enabled
-			fPastePatchAction.setEnabled(true); 
+			fPastePatchAction.setEnabled(true);
 		}
 	}
 
 	/**
 	 * Add the actions to the toolbar
-	 * 
+	 *
 	 * @param bars the action bars
 	 */
 	protected void configureToolBar(IActionBars bars) {
@@ -469,7 +469,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(getPageBook().getParent(), participant.getHelpContextId());
 		}
 	}
-	
+
 	private void createOpenAndLinkWithEditorHelper(StructuredViewer viewer) {
 		if (fOpenAndLinkWithEditorHelper != null)
 			fOpenAndLinkWithEditorHelper.dispose();
@@ -507,7 +507,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	protected IWorkbenchPart getBootstrapPart() {
 		return null;
 	}
-	
+
 	/**
 	 * Registers the given runnable with the display
 	 * associated with this view's control, if any.
@@ -518,7 +518,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			getPageBook().getDisplay().asyncExec(runnable);
 		}
 	}
-	
+
 	/**
 	 * Creates this view's underlying viewer and actions.
 	 * Hooks a pop-up menu to the underlying viewer's control,
@@ -544,15 +544,15 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		updateForExistingParticipants();
 		getViewSite().getActionBars().updateActionBars();
 		updateTitle();
-		
+
 		IWorkbenchSiteProgressService progress = (IWorkbenchSiteProgressService)getSite().getAdapter(IWorkbenchSiteProgressService.class);
 		if(progress != null) {
 			progress.showBusyForFamily(ISynchronizeManager.FAMILY_SYNCHRONIZE_OPERATION);
 		}
-		
+
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IHelpContextIds.SYNC_VIEW);
 	}
-	
+
 	/**
 	 * Initialize for existing participants
 	 */
@@ -568,7 +568,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				errorOccurred = true;
 				continue;
 			}
-			
+
 		}
 		if (errorOccurred) {
 			participants = Arrays.asList(getParticipants());
@@ -588,14 +588,14 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				}
 				display(participantToSelect.getParticipant());
 			}
-			
+
 			// add as a listener to update when new participants are added
 			manager.addSynchronizeParticipantListener(this);
 		} catch (TeamException e) {
 			Utils.handle(e);
 		}
 	}
-	
+
 	private ISynchronizeParticipantReference[] getParticipants() {
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		// create pages
@@ -609,11 +609,11 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		}
 		return (ISynchronizeParticipantReference[]) participants.toArray(new ISynchronizeParticipantReference[participants.size()]);
 	}
-	
+
 	private boolean isAvailable() {
 		return getPageBook() != null && !getPageBook().isDisposed();
 	}
-	
+
 	/*
 	 * Method used by test cases to access the page for a participant
 	 */
@@ -628,29 +628,29 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			return null;
 		}
 	}
-	
+
 	protected boolean select(ISynchronizeParticipantReference ref) {
 		return true;
 	}
-	
+
 	/*
 	 * Return the dialog settings for the view
 	 */
 	private IDialogSettings getDialogSettings() {
 		IDialogSettings workbenchSettings = TeamUIPlugin.getPlugin().getDialogSettings();
-		IDialogSettings syncViewSettings = workbenchSettings.getSection(KEY_SETTINGS_SECTION); 
+		IDialogSettings syncViewSettings = workbenchSettings.getSection(KEY_SETTINGS_SECTION);
 		if (syncViewSettings == null) {
 			syncViewSettings = workbenchSettings.addNewSection(KEY_SETTINGS_SECTION);
 		}
 		return syncViewSettings;
 	}
-	
+
 	private String getSettingsKey(ISynchronizeParticipant participant) {
 		String id = participant.getId();
 		String secondaryId = participant.getSecondaryId();
 	    return secondaryId == null ? id : id + '.' + secondaryId;
 	}
-	
+
 	private IDialogSettings getDialogSettings(ISynchronizeParticipant participant) {
 		String key = getSettingsKey(participant);
 		IDialogSettings viewsSettings = getDialogSettings();
@@ -660,7 +660,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		}
 		return settings;
 	}
-	
+
 	private void removeDialogSettings(ISynchronizeParticipant participant) {
 		String key = getSettingsKey(participant);
 		IDialogSettings settings = getDialogSettings();
@@ -670,7 +670,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			getDialogSettings().addSection(new DialogSettings(key));
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablesSource#getSaveables()
 	 */
@@ -766,7 +766,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	public boolean isSaveOnCloseNeeded() {
 		return true;
 	}
-	
+
 	private void setStatusLineMessage(String description, int mode) {
 		String syncMode = null;
 		ResourceBundle bundle = Policy.getActionBundle();
@@ -782,9 +782,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			break;
 		case ISynchronizePageConfiguration.CONFLICTING_MODE:
 			syncMode = Utils.getString("action.directionFilterConflicts.tooltip", bundle); //$NON-NLS-1$
-			break;			
+			break;
 		}
-		
+
 		IViewSite viewSite = getViewSite();
 		if (viewSite != null && syncMode != null) {
 			viewSite.getActionBars().getStatusLineManager().setMessage(
@@ -829,7 +829,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	}
 
 	private static IElementComparer COMPARER = new IElementComparer() {
-		
+
 		private Object getContributedResourceOrResourceVariant(Object o) {
 			IResource[] resources = Utils.getContributedResources(new Object[] {o});
 			if (resources.length > 0)
@@ -840,7 +840,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			}
 			return null;
 		}
-		
+
 		@Override
 		public int hashCode(Object element) {
 			Object r = getContributedResourceOrResourceVariant(element);
@@ -878,7 +878,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			page.removePartListener(fLinkWithEditorListener);
 		}
 		fOpenAndLinkWithEditorHelper.setLinkWithEditor(enabled);
-		
+
 	}
 
 	private void restoreLinkingEnabled() {

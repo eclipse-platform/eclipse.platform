@@ -79,7 +79,7 @@ public class Utils {
 	 * org.eclipse.compare.internal.Utilities
 	 */
 	public static boolean TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE = false;
-	
+
 	/**
 	 * The SortOperation takes a collection of objects and returns a sorted
 	 * collection of these objects. Concrete instances of this class provide
@@ -155,7 +155,7 @@ public class Utils {
 				return resource0.getFullPath().toString().compareTo(resource1.getFullPath().toString());
 		}
 	};
-	
+
 	/**
 	 * Shows the given errors to the user.
 	 * @param shell
@@ -269,7 +269,7 @@ public class Utils {
 	public static Shell getShell(IWorkbenchSite site) {
 		return getShell(site, false);
 	}
-	
+
 	public static Shell getShell(IWorkbenchSite site, boolean syncIfNecessary) {
 		if(site != null) {
 			Shell shell = site.getShell();
@@ -350,11 +350,11 @@ public class Utils {
 	public static void initAction(IAction a, String prefix) {
 		Utils.initAction(a, prefix, Policy.getActionBundle());
 	}
-	
+
 	public static void initAction(IAction a, String prefix, ResourceBundle bundle) {
 		Utils.initAction(a, prefix, bundle, null);
 	}
-	
+
 	public static void updateLabels(SyncInfo sync, CompareConfiguration config, IProgressMonitor monitor) {
 		final IResourceVariant remote = sync.getRemote();
 		final IResourceVariant base = sync.getBase();
@@ -411,7 +411,7 @@ public class Utils {
 
 	/**
 	 * DO NOT REMOVE, used in a product.
-	 * 
+	 *
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link #updateLabels(SyncInfo, CompareConfiguration, IProgressMonitor)}
 	 */
@@ -563,7 +563,7 @@ public class Utils {
 				a.setImageDescriptor(id);
 		}
 	}
-    
+
     public static String getString(String key, ResourceBundle b) {
         try {
             return b.getString(key);
@@ -660,25 +660,25 @@ public class Utils {
             TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, "Error traversing resource mapping", e)); //$NON-NLS-1$
         }
     }
-	
+
 	public static Object[] getNonResources(Object[] elements) {
 		List nonResources = new ArrayList();
 		getResources(elements, nonResources, false, false);
 		return nonResources.toArray();
 	}
-	
+
 	public static IResource[] getResources(Object[] element) {
 		return getResources(element, null, false /* isContributed */, false /* includeMappingResources */);
 	}
-    
+
     public static IResource[] getContributedResources(Object[] elements) {
         return getResources(elements, null, true /* isContributed */, true /* isIncudeMappings */);
     }
-	
+
 	public static <T> T getAdapter(Object element, Class<T> adapterType) {
 		return Adapters.adapt(element, adapterType, false);
 	}
-	
+
 	/**
 	 * Return whether any sync nodes in the given selection or their
 	 * descendants match the given filter.
@@ -698,7 +698,7 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	private static boolean hasMatchingDescendant(ISynchronizeModelElement element, FastSyncInfoFilter filter) {
 		if (element.getKind() != SyncInfo.IN_SYNC && element instanceof SyncInfoModelElement) {
 			SyncInfo info = ((SyncInfoModelElement) element).getSyncInfo();
@@ -722,7 +722,7 @@ public class Utils {
 	 * This method returns all out-of-sync SyncInfos that are in the current
 	 * selection.
 	 * @param selected the selected objects
-	 * 
+	 *
 	 * @return the list of selected sync infos
 	 */
 	public static IDiffElement[] getDiffNodes(Object[] selected) {
@@ -735,7 +735,7 @@ public class Utils {
 		}
 		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
 	}
-	
+
 	private static void collectAllNodes(IDiffElement element, Set nodes) {
 		if(element.getKind() != SyncInfo.IN_SYNC) {
 			nodes.add(element);
@@ -747,7 +747,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	public static void schedule(Job job, IWorkbenchSite site) {
 		if (site != null) {
 			IWorkbenchSiteProgressService siteProgress = (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
@@ -758,7 +758,7 @@ public class Utils {
 		}
 		job.schedule();
 	}
-	
+
 	public static byte[] readBytes(InputStream in) {
 		ByteArrayOutputStream bos= new ByteArrayOutputStream();
 		try {
@@ -768,10 +768,10 @@ public class Utils {
 					break;
 				bos.write(c);
 			}
-					
+
 		} catch (IOException ex) {
 			return null;
-		
+
 		} finally {
 			if (in != null) {
 				try {
@@ -788,7 +788,7 @@ public class Utils {
 		}
 		return bos.toByteArray();
 	}
-	
+
 	public static boolean equalObject(Object o1, Object o2) {
 		if (o1 == null && o2 == null) return true;
 		if (o1 == null || o2 == null) return false;
@@ -798,7 +798,7 @@ public class Utils {
 	public static String getKey(String id, String secondaryId) {
 	    return secondaryId == null ? id : id + '/' + secondaryId;
 	}
-	
+
 	public static String convertSelection(IResource[] resources) {
 		StringBuffer  buffer = new StringBuffer();
 		for (int i = 0; i < resources.length; i++) {
@@ -808,7 +808,7 @@ public class Utils {
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Shorten the given text <code>t</code> so that its length
 	 * doesn't exceed the given width. This implementation
@@ -832,7 +832,7 @@ public class Utils {
 		sb.append(textValue.substring(length - subStrLen - addtl));
 		return sb.toString();
 	}
-	
+
 	public static String getTypeName(ISynchronizeParticipant participant) {
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		return manager.getParticipantDescriptor(participant.getId()).getName();
@@ -851,7 +851,7 @@ public class Utils {
 		if (display.getThread() != Thread.currentThread ()) return false;
 		return true;
     }
-    
+
     public static void asyncExec(final Runnable r, StructuredViewer v) {
 		if(v == null) return;
 		final Control ctrl = v.getControl();
@@ -885,7 +885,7 @@ public class Utils {
 			});
 		}
 	}
-	
+
 	public static void asyncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
 			ctrl.getDisplay().asyncExec(new Runnable() {
@@ -926,7 +926,7 @@ public class Utils {
 			return mapping.getModelProvider();
 		return null;
 	}
-	
+
 	public static IResource getResource(Object o) {
 		IResource resource = null;
 		if (o instanceof IResource) {
@@ -942,8 +942,8 @@ public class Utils {
 		}
 		return resource;
 	}
-	
-	
+
+
 	public static ResourceMapping getResourceMapping(Object o) {
 		if (o instanceof ResourceMapping) {
 			return (ResourceMapping) o;
@@ -989,7 +989,7 @@ public class Utils {
 			return adapter.getName(mapping);
 		return pathString;
 	}
-	
+
 	public static String getLabel(ModelProvider provider) {
 		ResourceMapping mapping = Utils.getResourceMapping(provider);
 		if (mapping != null) {
@@ -1014,7 +1014,7 @@ public class Utils {
 			return shortenText(30, desc);
 		return NLS.bind(TeamUIMessages.Utils_18, new Integer(mappings.length));
 	}
-	
+
 	public static String convertSelection(ResourceMapping[] mappings) {
 		StringBuffer  buffer = new StringBuffer();
 		boolean hadOne = false;
@@ -1087,7 +1087,7 @@ public class Utils {
 			return part;
 		}
 	}
-	
+
 	public static IEditorPart openEditor(IWorkbenchPage page,
 			FileRevisionEditorInput editorInput) throws PartInitException {
 		String id = getEditorId(editorInput);
@@ -1119,7 +1119,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	public static IEditorDescriptor[] getEditors(IFileRevision revision) {
 		String name= revision.getName();
 		IEditorRegistry registry = PlatformUI.getWorkbench()
@@ -1128,7 +1128,7 @@ public class Utils {
 		IEditorDescriptor[] editorDescs= registry.getEditors(name/* , getContentType(revision) */);
 		return IDE.overrideEditorAssociations(name, null, editorDescs);
 	}
-	
+
 	public static IEditorDescriptor getDefaultEditor(IFileRevision revision) {
 		String name= revision.getName();
 		// so far only the revision name is used to find the default editor
@@ -1164,7 +1164,7 @@ public class Utils {
 		}
 		return type;
 	}
-	
+
 	private static IContentType getContentType(String fileName, InputStream contents) {
 		IContentType type = null;
 		if (contents != null) {
@@ -1193,15 +1193,15 @@ public class Utils {
 		}
 		return id;
 	}
-	
+
 	/**
 	 * Returns an editor that can be re-used. An open compare editor that has
 	 * un-saved changes cannot be re-used.
-	 * 
+	 *
 	 * @param input
 	 *            the input being opened
 	 * @param page
-	 * @param editorInputClasses 
+	 * @param editorInputClasses
 	 * @return an EditorPart or <code>null</code> if none can be found
 	 */
 	public static IEditorPart findReusableCompareEditor(
@@ -1213,7 +1213,7 @@ public class Utils {
 			IEditorPart part = editorRefs[i].getEditor(false);
 			if (part != null && part instanceof IReusableEditor) {
 				for (int j = 0; j < editorInputClasses.length; j++) {
-					// check if the editor input type 
+					// check if the editor input type
 					// complies with the types given by the caller
 					if (editorInputClasses[j].isInstance(part.getEditorInput())
 							&& part.getEditorInput().equals(input))
@@ -1238,5 +1238,5 @@ public class Utils {
 		// no re-usable editor found
 		return null;
 	}
-	
+
 }

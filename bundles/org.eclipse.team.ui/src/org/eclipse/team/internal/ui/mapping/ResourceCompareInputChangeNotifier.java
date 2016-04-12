@@ -41,7 +41,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	static final String RESOURCE_CHANGE_NOTIFIER_PROPERTY = "org.eclipse.team.ui.ResourceChangeNotifier"; //$NON-NLS-1$
 
 	private ISynchronizationContext context;
-	
+
 	private class CompareInputLabelProvider extends BaseLabelProvider implements ICompareInputLabelProvider {
 
 		@Override
@@ -66,9 +66,9 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 								fetchAuthors(rdci);
 							}
 						}
-						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists, new String[] { revision.getContentIdentifier() }); 
+						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_baseLabelExists, new String[] { revision.getContentIdentifier() });
 					} else {
-						return TeamUIMessages.SyncInfoCompareInput_baseLabel; 
+						return TeamUIMessages.SyncInfoCompareInput_baseLabel;
 					}
 				}
 			}
@@ -98,9 +98,9 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 							}
 						}
 					}
-					return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, new String[] { localContentId }); 
+					return NLS.bind(TeamUIMessages.SyncInfoCompareInput_localLabelExists, new String[] { localContentId });
 				} else {
-					return TeamUIMessages.SyncInfoCompareInput_localLabel; 
+					return TeamUIMessages.SyncInfoCompareInput_localLabel;
 				}
 			}
 			return null;
@@ -128,9 +128,9 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 								fetchAuthors(rdci);
 							}
 						}
-						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists, new String[] { revision.getContentIdentifier() }); 
+						return NLS.bind(TeamUIMessages.SyncInfoCompareInput_remoteLabelExists, new String[] { revision.getContentIdentifier() });
 					} else {
-						return TeamUIMessages.SyncInfoCompareInput_remoteLabel; 
+						return TeamUIMessages.SyncInfoCompareInput_remoteLabel;
 					}
 				}
 			}
@@ -154,18 +154,18 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			}
 			return null;
 		}
-		
+
 		public void fireChangeEvent(final Object element) {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					fireLabelProviderChanged(new LabelProviderChangedEvent(CompareInputLabelProvider.this, element));
 				}
-			
+
 			});
 		}
 	}
-	
+
 	/**
 	 * Return a compare input change notifier that will detect changes in the synchronization context and
 	 * translate them into compare input change events by calling {@link ResourceDiffCompareInput#update()}.
@@ -184,7 +184,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	private final CompareInputLabelProvider labelProvider = new CompareInputLabelProvider();
 
 	private Object fetchingInput;
-	
+
 	/**
 	 * Create a notifier
 	 * @param context a synchronization context
@@ -195,7 +195,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		// We can initialize in the constructor since the context will allow us to dispose
 		initialize();
 	}
-	
+
 	@Override
 	public void initialize() {
 		context.getDiffTree().addDiffChangeListener(this);
@@ -207,7 +207,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		});
 		super.initialize();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#dispose()
 	 */
@@ -245,11 +245,11 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			if (input != null)
 				changedInputs.add(input);
 		}
-		
+
 		if (!changedInputs.isEmpty())
 			handleInputChanges((ICompareInput[]) changedInputs.toArray(new ICompareInput[changedInputs.size()]), false);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
 	 */
@@ -257,7 +257,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Property changes are not interesting w.r.t. state changes
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#getResources(org.eclipse.compare.structuremergeviewer.ICompareInput)
 	 */
@@ -268,7 +268,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 			return new IResource[0];
 		return new IResource[] { resource };
 	}
-	
+
 	private IResource getResource(ICompareInput input) {
 		if (input instanceof IResourceProvider) {
 			IResourceProvider rp = (IResourceProvider) input;
@@ -276,7 +276,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		}
 		return Utils.getResource(input);
 	}
-	
+
 	private ICompareInput findInput(IPath path) {
 		ICompareInput[] inputs = getConnectedInputs();
 		for (int i = 0; i < inputs.length; i++) {
@@ -300,7 +300,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		}
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -348,7 +348,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	private void fireLabelProviderChange(Object input) {
 		labelProvider.fireChangeEvent(input);
 	}
-	
+
 	/**
 	 * Return the synchronization context to which this notifier is associated.
 	 * @return the synchronization context to which this notifier is associated
@@ -356,7 +356,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	public final ISynchronizationContext getContext() {
 		return context;
 	}
-	
+
 	@Override
 	protected boolean belongsTo(Object family) {
 		return family == getContext();

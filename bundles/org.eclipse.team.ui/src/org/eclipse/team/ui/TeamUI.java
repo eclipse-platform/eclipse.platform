@@ -30,21 +30,21 @@ import org.eclipse.ui.*;
  * This class is not intended to be subclassed or instantiated by clients
  */
 public class TeamUI {
-	
+
 	/**
-	 * Property constant indicating the global ignores list has changed. 
+	 * Property constant indicating the global ignores list has changed.
 	 */
 	public static final String GLOBAL_IGNORES_CHANGED = TeamUIPlugin.ID + "global_ignores_changed"; //$NON-NLS-1$
-	
+
     /**
      * Property constant indicating the global file types list has changed.
      * @since 3.1
      */
 	public static final String GLOBAL_FILE_TYPES_CHANGED = TeamUIPlugin.ID + "global_file_types_changed"; //$NON-NLS-1$
-	
+
 	/**
 	 * Return the synchronize manager.
-	 * 
+	 *
 	 * @return the synchronize manager
 	 * @since 3.0
 	 */
@@ -54,7 +54,7 @@ public class TeamUI {
 
 	/**
 	 * Register for changes made to Team properties.
-	 * 
+	 *
 	 * @param listener the listener to add
 	 */
 	public static void addPropertyChangeListener(IPropertyChangeListener listener) {
@@ -63,17 +63,17 @@ public class TeamUI {
 
 	/**
 	 * Remove the listener from Team property change listener list.
-	 * 
+	 *
 	 * @param listener the listener to remove
 	 */
 	public static void removePropertyChangeListener(IPropertyChangeListener listener) {
 		TeamUIPlugin.removePropertyChangeListener(listener);
 	}
-	
+
 	/**
 	 * Shows the history view and returns a handle to it. Note that in the case of many
 	 * history views, the main history view is the one returned here.
-	 * 
+	 *
 	 * @return an IHistoryView which is the main history view if it is found or null if it can't be found
 	 * @since 3.2
 	 */
@@ -86,7 +86,7 @@ public class TeamUI {
 
 		return null;
 	}
-	
+
 	/**
 	 * Shows a history view containing the given input and returns a handle to the view
 	 * or <code>null</code> if no history was available for the given input. If an appropriate
@@ -94,9 +94,9 @@ public class TeamUI {
 	 * be activated. Otherwise a new view will be opened.
 	 * @param page the workbench page containing the history view
 	 * @param input the input whose history is to be displayed
-	 * @param pageSource the history page source from which to obtain the page or <code>null</code> 
+	 * @param pageSource the history page source from which to obtain the page or <code>null</code>
 	 * 	if the page source should be determined using the Adapter manager.
-	 * 
+	 *
 	 * @return an IHistoryView which is the main history view if it is found or null if it can't be found
 	 * @since 3.3
 	 */
@@ -128,30 +128,30 @@ public class TeamUI {
 		((GenericHistoryView)view).showHistoryPageFor(input, true, false, pageSource);
 		return view;
 	}
-	
+
 	/**
 	 * Return the team content provider manager which gives access to the team
 	 * content providers registered with the
 	 * <code>org.eclipse.team.ui.teamContentProviders</code> extension point.
-	 * 
+	 *
 	 * @return the team content provider manager
 	 * @since 3.2
 	 */
 	public static ITeamContentProviderManager getTeamContentProviderManager() {
 		return TeamContentProviderManager.getInstance();
 	}
-	
+
 	/**
 	 * Return a set of wizard pages for the given importer ID. If no wizard page
 	 * is registered for the importer then a page will not be created. If an
 	 * extension exits, a page will be created, but it's up to the caller to
 	 * initialize the page with a set of corresponding descriptions.
-	 * 
+	 *
 	 * <strong>EXPERIMENTAL</strong>. This class has been added as part of a
 	 * work in progress. There is no guarantee that this API will work or that
 	 * it will remain the same. Please do not use this API without consulting
 	 * with the Team team.
-	 * 
+	 *
 	 * @param importerId
 	 *            the importer ID
 	 * @return wizard pages

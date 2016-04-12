@@ -22,7 +22,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	public  static final String ATT_CLASS = "class"; //$NON-NLS-1$
 	private static final String ATT_PERSISTENT = "persistent"; //$NON-NLS-1$
 	public static final String ATT_HELP_CONTEXT_ID = "helpContextId"; //$NON-NLS-1$
-	
+
 	private String label;
 	private String className;
 	private String id;
@@ -30,7 +30,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	private ImageDescriptor imageDescriptor;
 	private String description;
 	private String helpContextId;
-	
+
 	private IConfigurationElement configElement;
 
 	/**
@@ -52,19 +52,19 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	/**
 	 * Returns this view's description. This is the value of its <code>"description"</code>
 	 * attribute.
-	 * 
+	 *
 	 * @return the description
 	 */
 	@Override
 	public String getDescription() {
 		return description;
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;
 	}
-	
+
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		if (imageDescriptor != null)
@@ -80,7 +80,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	public String getName() {
 		return label;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantDescriptor#isPersistent()
 	 */
@@ -88,11 +88,11 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 	public boolean isPersistent() {
 		return persistent;
 	}
-	
+
 	public String getHelpContextId() {
 		return helpContextId;
 	}
-	
+
 	/**
 	 * Loads a view descriptor from the registry.
 	 */

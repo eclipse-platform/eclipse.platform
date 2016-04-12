@@ -25,10 +25,10 @@ import org.eclipse.team.internal.ui.synchronize.SynchronizeView;
 import org.eclipse.team.ui.synchronize.*;
 
 public class ShowSynchronizeParticipantAction extends Action implements IPropertyChangeListener {
-	
+
     private ISynchronizeParticipantReference fPage;
 	private ISynchronizeView fView;
-	
+
 	@Override
 	public void run() {
 		try {
@@ -39,11 +39,11 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 			Utils.handle(e);
 		}
 	}
-	
+
 	/**
 	 * Constructs an action to display the given synchronize participant in the
 	 * synchronize view.
-	 * 
+	 *
 	 * @param view the synchronize view in which the given page is contained
 	 * @param ref the participant to show
 	 */
@@ -52,14 +52,14 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 		fPage = ref;
 		fView = view;
         setImageDescriptor( new ParticipantOverlay( ref));
-        
+
         try {
           fPage.getParticipant().addPropertyChangeListener( this);
         } catch( TeamException e) {
           Utils.handle(e);
         }
 	}
-    
+
 	@Override
 	public void propertyChange( PropertyChangeEvent event) {
       String property = event.getProperty();
@@ -69,7 +69,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
       }
 	}
 
-    
+
 	private static final class ParticipantOverlay extends CompositeImageDescriptor {
 
 		private ImageData pinnedData = TeamUIPlugin.getImageDescriptor("ovr/pinned_ovr.gif").getImageData(); //$NON-NLS-1$

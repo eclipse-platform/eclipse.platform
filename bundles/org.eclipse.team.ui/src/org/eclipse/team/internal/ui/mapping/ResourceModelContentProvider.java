@@ -31,7 +31,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 
 /**
- * This content provider displays the mappings as a flat list 
+ * This content provider displays the mappings as a flat list
  * of elements.
  * <p>
  * There are three use-cases we need to consider. The first is when there
@@ -89,7 +89,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return false;
 	}
-	
+
 	private boolean hasChildrenInScope(ISynchronizationScope scope, Object object, IResource resource) {
 		if (!resource.isAccessible())
 			return false;
@@ -101,7 +101,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
 	 */
@@ -110,7 +110,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		super.init(site);
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#dispose()
 	 */
@@ -121,7 +121,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		super.dispose();
 		TeamUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(this);
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT)) {
@@ -168,7 +168,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return result.toArray(new Object[result.size()]);
 	}
-	
+
 	@Override
 	protected ResourceTraversal[] getTraversals(ISynchronizationContext context, Object elementOrPath) {
 		Object object = internalGetElement(elementOrPath);
@@ -240,7 +240,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return new ResourceTraversal[0];
 	}
-	
+
 	private IResource getResource(Object element) {
 		if (element instanceof IResource) {
 			return (IResource) element;
@@ -255,7 +255,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	protected boolean hasChildrenInContext(ISynchronizationContext context, Object elementOrPath) {
 		return getTraversalCalculator().hasChildren(context, elementOrPath);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */
@@ -308,11 +308,11 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return null;
 	}
-	
+
 	protected StructuredViewer getStructuredViewer() {
 		return (StructuredViewer)getViewer();
 	}
-	
+
 	@Override
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
@@ -321,7 +321,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return super.getChildren(parent);
 	}
-	
+
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof ISynchronizationContext) {
@@ -330,7 +330,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return super.hasChildren(element);
 	}
-	
+
 	@Override
 	public Object[] getElements(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
@@ -339,7 +339,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return super.getElements(parent);
 	}
-	
+
 	@Override
 	public Object getParent(Object elementOrPath) {
 		Object element = internalGetElement(elementOrPath);
@@ -350,7 +350,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return super.getParent(elementOrPath);
 	}
-	
+
 	@Override
 	protected void refresh() {
 		Utils.syncExec(new Runnable() {
@@ -359,7 +359,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 				TreeViewer treeViewer = ((TreeViewer)getViewer());
 				treeViewer.refresh();
 			}
-		
+
 		}, getViewer().getControl());
 	}
 
@@ -368,11 +368,11 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		if (resources.length > 0)
 			((AbstractTreeViewer)getViewer()).update(resources, null);
 	}
-	
+
 	protected ResourceModelTraversalCalculator getTraversalCalculator() {
 		return ResourceModelTraversalCalculator.getTraversalCalculator(getConfiguration());
 	}
-	
+
 	@Override
 	protected boolean isVisible(IDiff diff) {
 		return super.isVisible(diff);
@@ -404,14 +404,14 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return elementOrPath;
 	}
-	
+
 	private TreePath internalGetPath(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			return (TreePath) elementOrPath;
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
 		Utils.syncExec(new Runnable() {
@@ -439,7 +439,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 					}
 				} else if (existingResources.contains(resource)) {
 					removals.add(resource);
-					
+
 				}
 			}
 		} else {
@@ -455,7 +455,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 					}
 				} else if (existingProjects.contains(project)) {
 					removals.add(project);
-					
+
 				}
 			}
 		}
@@ -542,7 +542,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return result;
 	}
-	
+
 	private Set getVisibleResources() {
 		TreeViewer viewer = (TreeViewer)getViewer();
 		Tree tree = viewer.getTree();
@@ -558,7 +558,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		}
 		return result;
 	}
-	
+
 	private IResource[] getChangedResources(IDiffChangeEvent event, Set existingResources) {
 		Set result = new HashSet();
 		IDiff[] changes = event.getChanges();

@@ -42,11 +42,11 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
     private IResourceMappingResourceFilter filter;
     private Map cachedFiltering = new HashMap(); // String(mapping)-> Map: Resource -> List(IResource)
     private String message;
-    
+
     private static IWorkbenchAdapter getWorkbenchAdapter(IAdaptable o) {
         return (IWorkbenchAdapter)o.getAdapter(IWorkbenchAdapter.class);
     }
-    
+
     /**
      * Return the label that should be used for the given mapping
      * as determined using the IWorkbnchAdaptable for the mapping
@@ -69,7 +69,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         }
         return workbenchAdapter.getLabel(o);
     }
-    
+
     public class ResourceMappingElement implements IWorkbenchAdapter, IAdaptable {
         private ResourceMapping mapping;
         private ResourceMappingContext context;
@@ -78,7 +78,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             this.mapping = mapping;
             this.context = context;
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
          */
@@ -127,7 +127,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
          */
         @Override
 		public String getLabel(Object o) {
-            return ResourceMappingResourceDisplayArea.getLabel(mapping);  
+            return ResourceMappingResourceDisplayArea.getLabel(mapping);
         }
 
         /* (non-Javadoc)
@@ -148,7 +148,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             return null;
         }
     }
-    
+
     /**
      * The model element for resources that are obtained from a traversal.
      */
@@ -157,7 +157,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         private ResourceMappingContext context;
         private IResource resource;
         private Object parent;
-        
+
         public ResourceTraversalElement(Object parent, ResourceTraversal traversal, IResource resource, ResourceMappingContext context) {
             this.parent = parent;
             this.traversal = traversal;
@@ -185,7 +185,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                     List result = new ArrayList();
                     for (int i = 0; i < members.length; i++) {
                         IResource child = members[i];
-                        if ((includeFolders || child.getType() == IResource.FILE) 
+                        if ((includeFolders || child.getType() == IResource.FILE)
                                 && isIncludedInFilter(child, traversal))
                             result.add(new ResourceTraversalElement(this, traversal, child, context));
                     }
@@ -199,12 +199,12 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
         private IResource[] members(IContainer container) throws CoreException {
             if (context instanceof RemoteResourceMappingContext) {
-                RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;  
+                RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;
                 return ResourceMappingResourceDisplayArea.members(container, remoteContext);
             }
             return container.members();
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
          */
@@ -228,7 +228,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                 return resource.getName();
             return workbenchAdapter.getLabel(resource);
         }
-        
+
         private boolean isTraversalRoot(IResource resource) {
             return ResourceMappingResourceDisplayArea.isTraversalRoot(traversal, resource);
         }
@@ -240,7 +240,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		public Object getParent(Object o) {
             return parent;
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
          */
@@ -254,27 +254,27 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             return resource;
         }
     }
-    
+
     /**
-     * Create a dialog area that will display the resources contained in the 
+     * Create a dialog area that will display the resources contained in the
      * given mapping
      * @param mapping the mapping
-     * @param filter the filter 
-     * @param string the message to display 
+     * @param filter the filter
+     * @param string the message to display
      */
     public ResourceMappingResourceDisplayArea(ResourceMapping mapping, String string, IResourceMappingResourceFilter filter) {
         this.mapping = mapping;
         this.filter = filter;
         this.message = string;
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
      */
     @Override
 	public void createArea(Composite parent) {
         Composite composite = createComposite(parent, 1, true);
-        
+
         label = createWrappingLabel(composite, message, 1);
         viewer = new TreeViewer(composite);
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -314,7 +314,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         this.mapping = mapping;
         setInput(labelText);
     }
-    
+
     private boolean isIncludedInFilter(IResource resource, ResourceTraversal traversal) {
         if (filter == null)
             return true;
@@ -369,7 +369,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                             return true;
                         }
                     });
-                    
+
                 }
             });
         } catch (InvocationTargetException e) {
@@ -379,7 +379,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         }
         return result;
     }
-    
+
     /* private */ static ResourceTraversal[] getTraversals(final ResourceMapping mapping, final ResourceMappingContext context) {
         final List traversals = new ArrayList();
         try {
@@ -401,7 +401,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         }
         return new ResourceTraversal[0];
     }
-    
+
     /* private */ static IResource[] members(final IContainer container, final RemoteResourceMappingContext context) {
         final List members = new ArrayList();
         try {
@@ -423,7 +423,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         }
         return new IResource[0];
     }
-    
+
     /* private */ static boolean isTraversalRoot(ResourceTraversal traversal, IResource resource) {
         IResource[] resources = traversal.getResources();
         for (int i = 0; i < resources.length; i++) {

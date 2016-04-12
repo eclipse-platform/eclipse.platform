@@ -20,7 +20,7 @@ import org.eclipse.ui.*;
  * container in order to determine when a save is required.
  * <p>
  * Clients may subclass this class.
- * 
+ *
  * @since 3.2
  */
 public abstract class SaveableComparison extends Saveable {
@@ -29,7 +29,7 @@ public abstract class SaveableComparison extends Saveable {
      * The property id for <code>isDirty</code>.
      */
     public static final int PROP_DIRTY = IWorkbenchPartConstants.PROP_DIRTY;
-    
+
 	private boolean dirty;
 	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
 
@@ -115,7 +115,7 @@ public abstract class SaveableComparison extends Saveable {
 			});
 		}
 	}
-	
+
 	/**
 	 * Method invoked from {@link #doSave(IProgressMonitor)} to write
 	 * out the buffer. By default, this method invokes <code>doSave</code>
@@ -124,9 +124,9 @@ public abstract class SaveableComparison extends Saveable {
 	 * @throws CoreException if errors occur
 	 */
 	protected abstract void performSave(IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
-	 * Method invoked from {@link #doRevert(IProgressMonitor)} to discard the 
+	 * Method invoked from {@link #doRevert(IProgressMonitor)} to discard the
 	 * changes in the buffer.
 	 * @param monitor a progress monitor
 	 */

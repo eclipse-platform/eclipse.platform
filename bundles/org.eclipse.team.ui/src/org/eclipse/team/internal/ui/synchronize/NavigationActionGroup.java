@@ -31,31 +31,31 @@ public class NavigationActionGroup extends SynchronizePageActionGroup {
 	private Action collapseAll;
 	private NavigateAction gotoNext;
 	private NavigateAction gotoPrevious;
-	
+
 	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		final Viewer viewer = configuration.getPage().getViewer();
 		if (viewer instanceof AbstractTreeViewer) {
-			
+
 			expandAllAction = new ExpandAllAction((AbstractTreeViewer) viewer);
 			Utils.initAction(expandAllAction, "action.expandAll."); //$NON-NLS-1$
-			
+
 			collapseAll = new Action() {
 				@Override
 				public void run() {
 					if (viewer.getControl().isDisposed() || !(viewer instanceof AbstractTreeViewer))
 						return;
-					viewer.getControl().setRedraw(false);		
+					viewer.getControl().setRedraw(false);
 					((AbstractTreeViewer)viewer).collapseToLevel(viewer.getInput(), AbstractTreeViewer.ALL_LEVELS);
 					viewer.getControl().setRedraw(true);
 				}
 			};
 			Utils.initAction(collapseAll, "action.collapseAll."); //$NON-NLS-1$
-			
+
 			ICompareNavigator nav = (ICompareNavigator)configuration.getProperty(SynchronizePageConfiguration.P_NAVIGATOR);
 			if (nav != null) {
-				gotoNext = new NavigateAction(configuration, true /*next*/);		
+				gotoNext = new NavigateAction(configuration, true /*next*/);
 				gotoPrevious = new NavigateAction(configuration, false /*previous*/);
 			}
 		}

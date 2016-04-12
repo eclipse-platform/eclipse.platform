@@ -32,9 +32,9 @@ import org.eclipse.ui.*;
 public class ModelEnablementPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private Set previosulyEnabled = new HashSet();
-	
+
 	public ModelEnablementPreferencePage() {
-		setTitle(TeamUIMessages.ModelEnablementPreferencePage_0); 
+		setTitle(TeamUIMessages.ModelEnablementPreferencePage_0);
 		setPreferenceStore(TeamUIPlugin.getPlugin().getPreferenceStore());
 	}
 
@@ -42,14 +42,14 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 
 	@Override
 	protected Control createContents(Composite parent) {
-		
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		Label l = SWTUtils.createLabel(composite, TeamUIMessages.ModelEnablementPreferencePage_1);
 		l.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		tableViewer = CheckboxTableViewer.newCheckList(composite, SWT.BORDER);
 		tableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
@@ -82,10 +82,10 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 			private String getTextFor(ITeamContentProviderDescriptor teamContentDescriptor) {
 				String name = teamContentDescriptor.getName();
-				
+
 				if (name != null && !name.equals(""))  //$NON-NLS-1$
 					return name;
-				
+
 				String modelProviderID = teamContentDescriptor.getModelProviderId();
 				IModelProviderDescriptor desc = ModelProvider.getModelProviderDescriptor(modelProviderID);
 				if (desc != null) {
@@ -137,10 +137,10 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer.setInput(TeamUI.getTeamContentProviderManager());
 		updateChecks();
 		applyDialogFont(composite);
-		
+
 		//F1
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.MODEL_PREFERENCE_PAGE);
-		
+
 		return composite;
 	}
 
@@ -154,7 +154,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		}
 		tableViewer.setCheckedElements(previosulyEnabled.toArray());
 	}
-	
+
 	@Override
 	public boolean performOk() {
 		Object[] checked = tableViewer.getCheckedElements();
@@ -186,7 +186,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		}
 		return false;
 	}
-	
+
 	@Override
 	protected void performDefaults() {
 		tableViewer.setCheckedElements(TeamUI.getTeamContentProviderManager().getDescriptors());
@@ -198,7 +198,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 	}
 
 	private String getLabel(IModelProviderDescriptor desc) {
-		// Only do this for the resource model since we don;t want to 
+		// Only do this for the resource model since we don;t want to
 		// load all model providers (see bug 133604)
 		if (desc.getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID))
 			try {

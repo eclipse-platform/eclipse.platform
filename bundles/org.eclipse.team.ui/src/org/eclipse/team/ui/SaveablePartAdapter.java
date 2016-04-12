@@ -16,7 +16,7 @@ import org.eclipse.ui.*;
 
 /**
  * This adapter provides default implementations for methods on {@link ISaveableWorkbenchPart} and
- * {@link IWorkbenchPart}. 
+ * {@link IWorkbenchPart}.
  * <p>
  * Classes that want to implement a saveable part can simply implement the methods that
  * they need while accepting the provided defaults for most of the methods.

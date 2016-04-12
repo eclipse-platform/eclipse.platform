@@ -51,7 +51,7 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 		}
 		return true;
 	}
-	
+
 	private IResource[] getTargetResources() {
 		IStructuredSelection selection = getStructuredSelection();
 		Object[] objects = selection.toArray();
@@ -94,32 +94,32 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 	/**
 	 * Return whether dirty editor should be saved before this action is run.
 	 * Default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether dirty editor should be saved before this action is run
 	 */
 	protected boolean needsToSaveDirtyEditors() {
 		return true;
 	}
-	
+
 	/**
 	 * Returns whether the user should be prompted to save dirty editors. The
 	 * default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether the user should be prompted to save dirty editors
 	 */
 	protected boolean confirmSaveOfDirtyEditor() {
 		return true;
 	}
-	
+
 	protected ISynchronizationContext getSynchronizationContext() {
 		return (ISynchronizationContext)getConfiguration().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
 	}
-	
+
 	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}
-	
+
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		Utils.syncExec(new Runnable() {
@@ -128,9 +128,9 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 				updateEnablement(getStructuredSelection());
 			}
 		}, (StructuredViewer)getConfiguration().getPage().getViewer());
-		
+
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == ISynchronizePageConfiguration.P_MODE) {

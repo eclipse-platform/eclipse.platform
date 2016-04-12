@@ -30,7 +30,7 @@ import org.eclipse.ui.part.Page;
 /**
  * Displays a history page combined with the compare/merge infrastructure. This only works properly if the
  * history page adapts to an {@link IHistoryCompareAdapter}.
- * 
+ *
  * @deprecated use {@link HistoryPageCompareEditorInput}
  * @since 3.2
  */
@@ -41,7 +41,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	private DialogHistoryPageSite site;
 	private final Object object;
 	private final IHistoryPageSource pageSource;
-	
+
 	/**
 	 * Show the history for the object in a dialog. The history will only be
 	 * shown if an {@link IHistoryPageSource} can be found for the object.
@@ -72,7 +72,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		IResource resource = Utils.getResource(object);
 		return (resource != null && resource.getType() == IResource.FILE);
 	}
-	
+
 	/**
 	 * Create a history page part for the given page and object.
 	 * @param shell the parent shell
@@ -107,7 +107,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#createPage(org.eclipse.swt.widgets.Composite, org.eclipse.jface.action.ToolBarManager)
 	 */
@@ -125,7 +125,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		setPageDescription(description);
 		return ((Page) historyPage).getControl();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#getPageSelectionProvider()
 	 */
@@ -133,7 +133,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	protected final ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#getCompareInput(org.eclipse.jface.viewers.ISelection)
 	 */
@@ -154,7 +154,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		}
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.PageSaveablePart#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -165,7 +165,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 			compareAdapter.prepareInput(input, configuration, monitor);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.SaveablePartAdapter#dispose()
 	 */

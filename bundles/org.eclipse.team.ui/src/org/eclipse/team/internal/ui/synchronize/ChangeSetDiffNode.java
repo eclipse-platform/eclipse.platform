@@ -40,7 +40,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
     public ChangeSet getSet() {
         return set;
     }
-    
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
 	 */
@@ -56,7 +56,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	public String getName() {
 		return set.getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#toString()
 	 */
@@ -64,7 +64,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	public String toString() {
 		return getName();
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#hashCode()
      */
@@ -72,7 +72,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 	public int hashCode() {
         return set.hashCode();
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#equals(java.lang.Object)
      */
@@ -83,7 +83,7 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
         }
         return super.equals(object);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#getAdapter(java.lang.Class)
      */

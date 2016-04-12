@@ -31,10 +31,10 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	private IRunnableContext runnableContext;
 	private ISchedulingRule schedulingRule;
 	private boolean postponeBuild;
-	
+
 	public ProgressDialogRunnableContext() {
 	}
-	
+
 	/**
 	 * Set whether the auto-build will be postponed while this
 	 * context is executing a runnable.
@@ -43,7 +43,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	public void setPostponeBuild(boolean postponeBuild) {
 		this.postponeBuild = postponeBuild;
 	}
-	
+
 	/**
 	 * Set the scheduling rule that will be obtained before the context
 	 * executes a runnable or <code>null</code> if no scheduling rule is to be onbtained.
@@ -61,7 +61,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	public void setRunnableContext(IRunnableContext runnableContext) {
 		this.runnableContext = runnableContext;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.actions.ITeamRunnableContext#run(org.eclipse.jface.operation.IRunnableWithProgress)
 	 */
@@ -113,7 +113,7 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 							if (exception[0] instanceof InvocationTargetException) {
 								throw (InvocationTargetException)exception[0];
 							} else if (exception[0] instanceof InterruptedException) {
-								throw (InterruptedException)exception[0];	
+								throw (InterruptedException)exception[0];
 							}
 						}
 					}

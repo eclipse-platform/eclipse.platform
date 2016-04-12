@@ -27,7 +27,7 @@ import org.eclipse.ui.*;
  * synchronize participant. The groups adds the following:
  * <ul>
  * <li>A toolbar action for attempting an auto-merge
- * <li>Context menu merge actions that delegate to the 
+ * <li>Context menu merge actions that delegate to the
  * model's merge action handlers.
  * <li>TODO a merge all and overwrite all menu item?
  * </ul>
@@ -36,7 +36,7 @@ import org.eclipse.ui.*;
  * by overriding {@link #configureMergeAction(String, Action)} and can
  * configure where in the context menu the actions appear by overriding
  * {@link #addToContextMenu(String, Action, IMenuManager)}.
- * 
+ *
  * @since 3.2
  **/
 public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActionGroup {
@@ -52,12 +52,12 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	 * actions (e.g. mark-as-merged) appear in the context menu.
 	 */
 	public static final String OTHER_ACTION_GROUP = "other"; //$NON-NLS-1$
-	
+
 	/**
 	 * The id used to identify the Merge All action.
 	 */
 	protected static final String MERGE_ALL_ACTION_ID = "org.eclipse.team.ui.mergeAll"; //$NON-NLS-1$
-	
+
 	/**
 	 * Create a merge action group.
 	 */
@@ -71,14 +71,14 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	private MergeAction merge;
 	private MergeAction overwrite;
 	private MergeAction markAsMerged;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
 	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
-		
+
 		ModelSynchronizeParticipant participant = ((ModelSynchronizeParticipant)configuration.getParticipant());
 		if (participant.isMergingEnabled()) {
 			updateToolbarAction = new MergeIncomingChangesAction(configuration);
@@ -107,7 +107,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			});
 		}
 	}
-	
+
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
@@ -116,7 +116,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
         	appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
         }
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
@@ -140,18 +140,18 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
     				}
     			}
     			if (allElementsHaveCompareInput) {
-    				menu.appendToGroup(fileGroup.getId(), openInCompareAction);	
+    				menu.appendToGroup(fileGroup.getId(), openInCompareAction);
     			}
     		}
     	}
 	}
-	
+
 	/*
 	 * Method to add the merge actions to the context menu. This method
 	 * is called by the internal synchronization framework and should not
 	 * to be invoked by other clients. Subclasses can configure the
 	 * merge actions by overriding {@link #configureMergeAction(String, Action)}
-	 * and can control where in the context menu the action appears by 
+	 * and can control where in the context menu the action appears by
 	 * overriding {@link #addToContextMenu(String, Action, IMenuManager)}.
 	 * @param cmm the menu manager
 	 */
@@ -163,7 +163,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 					merge = new MergeAction(SynchronizationActionProvider.MERGE_ACTION_ID, cmm, getConfiguration());
 					configureMergeAction(SynchronizationActionProvider.MERGE_ACTION_ID, merge);
 					registerActionWithWorkbench(merge);
-					
+
 				}
 				merge.update();
 				addToContextMenu(SynchronizationActionProvider.MERGE_ACTION_ID, merge, cmm);
@@ -186,11 +186,11 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			}
 		}
 	}
-	
+
 	/**
 	 * Register this action with the workbench so that it can participate in keybindings and
 	 * retargetable actions.
-	 * 
+	 *
 	 * @param action the action to register
 	 */
 	private void registerActionWithWorkbench(IAction action) {
@@ -203,12 +203,12 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 				keyBindingService.registerAction(action);
 		}
 	}
-	
+
 	/**
 	 * Configure the merge action to have appropriate label, image, etc.
 	 * Subclasses may override but should invoke the overridden
 	 * method for unrecognized ids in order to support future additions.
-	 * @param mergeActionId the id of the merge action (one of 
+	 * @param mergeActionId the id of the merge action (one of
 	 * {@link SynchronizationActionProvider#MERGE_ACTION_ID},
 	 * {@link SynchronizationActionProvider#OVERWRITE_ACTION_ID} or
 	 * {@link SynchronizationActionProvider#MARK_AS_MERGE_ACTION_ID})
@@ -233,7 +233,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			}
 		}
 	}
-	
+
 	private boolean isTwoWayMerge() {
 		ModelSynchronizeParticipant participant = ((ModelSynchronizeParticipant)getConfiguration().getParticipant());
 		ISynchronizationContext context = participant.getContext();
@@ -243,12 +243,12 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Add the merge action to the context menu manager. 
+	 * Add the merge action to the context menu manager.
 	 * Subclasses may override but should invoke the overridden
 	 * method for unrecognized ids in order to support future additions.
-	 * @param mergeActionId the id of the merge action (one of 
+	 * @param mergeActionId the id of the merge action (one of
 	 * {@link SynchronizationActionProvider#MERGE_ACTION_ID},
 	 * {@link SynchronizationActionProvider#OVERWRITE_ACTION_ID} or
 	 * {@link SynchronizationActionProvider#MARK_AS_MERGE_ACTION_ID})
@@ -270,7 +270,7 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			manager.add(action);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */

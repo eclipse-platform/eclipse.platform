@@ -32,18 +32,18 @@ import org.eclipse.team.ui.synchronize.*;
 public class ChangeSetModelProvider extends CompositeModelProvider {
 
     private ViewerSorter viewerSorter;
-	
+
 	// The id of the sub-provider
     private final String subProvierId;
-	
+
 	private Map rootToProvider = new HashMap(); // Maps ISynchronizeModelElement -> AbstractSynchronizeModelProvider
-	
+
 	private ViewerSorter embeddedSorter;
-	
+
 	private SyncInfoSetChangeSetCollector checkedInCollector;
-	
+
 	private IChangeSetChangeListener changeSetListener = new IChangeSetChangeListener() {
-	    
+
         /* (non-Javadoc)
          * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#setAdded(org.eclipse.team.core.subscribers.ChangeSet)
          */
@@ -94,9 +94,9 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
             // There is no global action to be taken for such changes
         }
     };
-	
+
     private ActiveChangeSetCollector activeCollector;
-    
+
 	/* *****************************************************************************
 	 * Descriptor for this model provider
 	 */
@@ -105,18 +105,18 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 		@Override
 		public String getId() {
 			return ID;
-		}		
+		}
 		@Override
 		public String getName() {
-			return TeamUIMessages.ChangeLogModelProvider_5; 
-		}		
+			return TeamUIMessages.ChangeLogModelProvider_5;
+		}
 		@Override
 		public ImageDescriptor getImageDescriptor() {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_CHANGE_SET);
 		}
 	};
 	private static final ChangeSetModelProviderDescriptor descriptor = new ChangeSetModelProviderDescriptor();
-	
+
     protected ChangeSetModelProvider(ISynchronizePageConfiguration configuration, SyncInfoSet set, String subProvierId) {
         super(configuration, set);
         this.subProvierId = subProvierId;
@@ -171,7 +171,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
             }
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.CompositeModelProvider#handleAddition(org.eclipse.team.core.synchronize.SyncInfo)
      */
@@ -187,9 +187,9 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
         // This method is invoked on a reset after the provider state has been cleared.
         // Resetting the collector will rebuild the model
-        
+
 		if (node == getModelRoot()) {
-		    
+
 	        // First, disable the collectors
 		    if (checkedInCollector != null) {
 		        checkedInCollector.reset(null);
@@ -199,7 +199,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 		        activeCollector.setChangeSetChangeListener(null);
 		        activeCollector.reset(null);
 		    }
-	        
+
             // Then, re-enable the proper collection method
 	        boolean handled = false;
 		    if (checkedInCollector != null && getChangeSetCapability().enableCheckedInChangeSetsFor(getConfiguration())) {
@@ -257,7 +257,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	protected SynchronizePageActionGroup createActionGroup() {
         return new ChangeSetActionGroup(this);
     }
-    
+
     private ISynchronizeModelProvider createProviderRootedAt(ISynchronizeModelElement parent, SyncInfoTree set) {
         ISynchronizeModelProvider provider = createModelProvider(parent, getSubproviderId(), set);
         addProvider(provider);
@@ -268,7 +268,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
     private ISynchronizeModelProvider getProviderRootedAt(ISynchronizeModelElement parent) {
         return (ISynchronizeModelProvider)rootToProvider.get(parent);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.CompositeModelProvider#removeProvider(org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider)
      */
@@ -277,7 +277,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         rootToProvider.remove(provider.getModelRoot());
         super.removeProvider(provider);
     }
-    
+
     /**
      * Return the id of the sub-provider used by the commit set provider.
      * @return the id of the sub-provider used by the commit set provider
@@ -293,7 +293,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
     public ViewerSorter getEmbeddedSorter() {
         return embeddedSorter;
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.CompositeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
@@ -311,8 +311,8 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
     /*
      * Create the root subprovider which is used to display resources
      * that are not in a commit set. This provider is created even if
-     * it is empty so we can have access to the appropriate sorter 
-     * and action group 
+     * it is empty so we can have access to the appropriate sorter
+     * and action group
      */
     private void createRootProvider() {
         // Recreate the sub-provider at the root and use it's viewer sorter and action group
@@ -342,7 +342,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
             }
         }
     }
-    
+
     /*
      * Find the root element for the given change set.
      * A linear search is used.
@@ -369,7 +369,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         }
         return null;
     }
-    
+
     @Override
 	public void dispose() {
         if (checkedInCollector != null) {
@@ -382,8 +382,8 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         }
         super.dispose();
     }
-    
-    
+
+
     @Override
 	public void waitUntilDone(IProgressMonitor monitor) {
         super.waitUntilDone(monitor);
@@ -393,7 +393,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
             super.waitUntilDone(monitor);
         }
     }
-    
+
     void removeModelElementForSet(final ChangeSet set) {
         ISynchronizeModelElement node = getModelElement(set);
         if (node != null) {
@@ -415,7 +415,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	        provider.prepareInput(null);
         }
     }
-    
+
     private ISynchronizeModelProvider createProvider(ChangeSet set, SyncInfoTree tree) {
         ChangeSetDiffNode node = new ChangeSetDiffNode(getModelRoot(), set);
         addToViewer(node);

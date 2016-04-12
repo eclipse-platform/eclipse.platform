@@ -27,11 +27,11 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 public class StorageStreamMerger implements IStorageMerger {
 
 	private IStreamMerger merger;
-	
+
 	public StorageStreamMerger(IStreamMerger merger) {
 		this.merger = merger;
 	}
-	
+
 	@Override
 	public IStatus merge(OutputStream output, String outputEncoding, IStorage ancestorStorage, IStorage targetStorage, IStorage otherStorage, IProgressMonitor monitor) throws CoreException {
 		InputStream ancestorStream = null;
@@ -41,10 +41,10 @@ public class StorageStreamMerger implements IStorageMerger {
 			ancestorStream = new BufferedInputStream(ancestorStorage.getContents());
 			remoteStream = new BufferedInputStream(otherStorage.getContents());
 			targetStream = new BufferedInputStream(targetStorage.getContents());
-			IStatus status = merger.merge(output, outputEncoding, 
-					ancestorStream, getEncoding(ancestorStorage, outputEncoding), 
-					targetStream, getEncoding(targetStorage, outputEncoding), 
-					remoteStream, getEncoding(otherStorage, outputEncoding), 
+			IStatus status = merger.merge(output, outputEncoding,
+					ancestorStream, getEncoding(ancestorStorage, outputEncoding),
+					targetStream, getEncoding(targetStorage, outputEncoding),
+					remoteStream, getEncoding(otherStorage, outputEncoding),
 					monitor);
 			if (status.isOK())
 				return status;

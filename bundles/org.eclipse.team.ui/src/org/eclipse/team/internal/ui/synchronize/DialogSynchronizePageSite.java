@@ -35,7 +35,7 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 	// Keybindings enabled in the dialog, these should be removed
 	// when the dialog is closed.
 	private List actionHandlers = new ArrayList(2);
-	
+
 	/**
 	 * Create a site for use in a dialog
 	 * @param shell the shell
@@ -114,7 +114,7 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 	public boolean isModal() {
 		return isModal;
 	}
-	
+
 	/**
 	 * Create the action-bars for this site.
 	 * @param toolbar the toolbar for the action bar
@@ -161,7 +161,7 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 			};
 		}
 	}
-	
+
 	/**
 	 * Cleanup when the dialog is closed
 	 */

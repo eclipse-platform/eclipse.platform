@@ -40,7 +40,7 @@ import org.eclipse.ui.navigator.*;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage implements INavigatorContentServiceListener {
-	
+
 	private INavigatorContentService service;
 	private ISynchronizationScopeManager manager;
 	private ContainerCheckedTreeViewer fViewer;
@@ -48,14 +48,14 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 	public ModelElementSelectionPage(IResource[] roots) {
 		super("elementSelection"); //$NON-NLS-1$
-		setDescription(TeamUIMessages.GlobalRefreshResourceSelectionPage_2); 
+		setDescription(TeamUIMessages.GlobalRefreshResourceSelectionPage_2);
 		setTitle(TeamUIMessages.GlobalRefreshResourceSelectionPage_3);
 		List result = new ArrayList();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			result.add(Utils.getResourceMapping(resource));
 		}
-		manager = new SynchronizationScopeManager(TeamUIMessages.ModelElementSelectionPage_0, (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]), 
+		manager = new SynchronizationScopeManager(TeamUIMessages.ModelElementSelectionPage_0, (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]),
 						ResourceMappingContext.LOCAL_CONTEXT, true);
 	}
 
@@ -110,7 +110,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 		fViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		return fViewer;
 	}
-	
+
 	public ResourceMapping[] getSelectedMappings() {
 		if (isWorkingSetSelected()) {
 			List result = new ArrayList();
@@ -146,7 +146,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 		}
 		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
 	}
-	
+
 	@Override
 	public void dispose() {
 		service.dispose();
@@ -197,7 +197,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 	public void onLoad(INavigatorContentExtension anExtension) {
 		anExtension.getStateModel().setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE, manager.getScope());
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -214,13 +214,13 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 						break;
 					}
 				}
-				
+
 				if (!foundEnabledModelProvider){
 					if (MessageDialog.openConfirm(getShell(), TeamUIMessages.ModelElementSelectionPage_AllModelsDisabledTitle, TeamUIMessages.ModelElementSelectionPage_AllModelsDisabledMessage)) {
 						ArrayList teamProviderDescriptors = new ArrayList();
 						for (int i = 0; i < providers.length; i++)
 							teamProviderDescriptors.add(TeamUI.getTeamContentProviderManager().getDescriptor(providers[i].getId()));
-						
+
 						ITeamContentProviderDescriptor[] desc = (ITeamContentProviderDescriptor[]) teamProviderDescriptors.toArray(new ITeamContentProviderDescriptor[teamProviderDescriptors.size()]);
 						TeamUI.getTeamContentProviderManager().setEnabledDescriptors(desc);
 					}
@@ -246,7 +246,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 						throw new InvocationTargetException(e);
 					}
 				}
-			
+
 			});
 		} catch (InvocationTargetException e) {
 			Utils.handleError(getShell(), e, null, null);
@@ -254,14 +254,14 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 			// ignore
 		}
 	}
-	
+
 	private boolean isEnabled(ModelProvider provider) {
 		ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 		return (desc != null && desc.isEnabled());
 	}
-	
+
 	private void uncheckOtherModels(String modelProviderId) {
-		
+
 		if (!isSelectedResourcesSelected()) {
 			ModelProvider[] providers = manager.getScope().getModelProviders();
 			ArrayList disabledProviders = new ArrayList();
@@ -276,8 +276,8 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 				fViewer.setChecked(disable, false);
 			}
 		}
-			
-		
+
+
 	}
 
 }

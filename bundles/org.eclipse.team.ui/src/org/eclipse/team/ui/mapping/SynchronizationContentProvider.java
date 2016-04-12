@@ -33,7 +33,7 @@ import org.eclipse.ui.navigator.*;
 
 /**
  * Abstract team aware content provider that delegates to another content provider.
- * 
+ *
  * @since 3.2
  */
 public abstract class SynchronizationContentProvider implements ICommonContentProvider, IDiffChangeListener, IPropertyChangeListener {
@@ -41,7 +41,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	private Viewer viewer;
 	private boolean empty;
 	private ICommonContentExtensionSite site;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
@@ -57,7 +57,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public Object[] getElements(Object parent) {
 		return internalGetChildren(parent, true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
@@ -81,7 +81,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public boolean hasChildren(Object element) {
 		return internalHasChildren(element);
 	}
-	
+
 	private Object[] internalGetChildren(Object parent, boolean isElement) {
 		Object element = internalGetElement(parent);
 		if (element instanceof ISynchronizationScope) {
@@ -139,9 +139,9 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/**
 	 * Return whether the content provider has been initialized and is ready to
 	 * provide content in the given context. By default, <code>true</code> is returned. Subclasses
-	 * that need to perform extra processing to prepare should override this method and 
+	 * that need to perform extra processing to prepare should override this method and
 	 * also override {@link #requestInitialization(ISynchronizationContext)}.
-	 * 
+	 *
 	 * @param context the context
 	 * @return whether the content provider has been initialized and is ready to
 	 * provide content in he given context.
@@ -149,14 +149,14 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	protected boolean isInitialized(ISynchronizationContext context) {
 		return true;
 	}
-	
+
 	/**
 	 * Subclasses that need to perform extra processing to prepare their model
 	 * to be displayed by this content provider should override this method and
 	 * launch a background task to prepare what is required to display their
 	 * model for the given context. An appropriate viewer refresh on the model
 	 * provider should be issued when the model is prepared.
-	 * 
+	 *
 	 * @param context
 	 *            the context
 	 */
@@ -210,7 +210,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	/**
 	 * Return whether the given element has children in the given scope.
 	 * By default, true is returned if the given element contains any elements
-	 * in the scope or if any of the elements in the scope contain the given 
+	 * in the scope or if any of the elements in the scope contain the given
 	 * element and the delegate provider returns children for the element.
 	 * The {@link ResourceMapping#contains(ResourceMapping)} is used to test
 	 * for containment.
@@ -240,7 +240,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * Return whether the given element has children in the given
 	 * context. The children may or may not exist locally.
 	 * By default, this method returns true if the traversals for
-	 * the element contain any diffs. This could result in false 
+	 * the element contain any diffs. This could result in false
 	 * positives. Subclasses can override to provide a more
 	 * efficient or precise answer.
 	 * @param element a model element.
@@ -293,7 +293,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			configuration.addPropertyChangeListener(this);
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
-			((ICommonContentProvider) provider).init(site);	
+			((ICommonContentProvider) provider).init(site);
 		}
 		ISynchronizationContext context = getContext();
 		if (context != null)
@@ -310,7 +310,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			refresh();
 		}
 	}
-	
+
 	/**
 	 * Return whether elements with the given direction should be included in
 	 * the contents. The direction is one of {@link IThreeWayDiff#INCOMING},
@@ -321,7 +321,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * {@link #getChildren(Object) } is called. It accessing the
 	 * <code>ISynchronizePageConfiguration.P_MODE</code> property on the state
 	 * model provided by the view to determine what kinds should be included.
-	 * 
+	 *
 	 * @param direction
 	 *            the synchronization direction
 	 * @return whether elements with the given synchronization kind should be
@@ -333,7 +333,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			return ((SynchronizePageConfiguration)configuration).includeDirection(direction);
 		return true;
 	}
-	
+
 	/**
 	 * Return the synchronization context associated with the view to which
 	 * this content provider applies. A <code>null</code> is returned if
@@ -365,7 +365,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 							ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE);
 		return null;
 	}
-	
+
 	/**
 	 * Return the synchronization page configuration associated with the view to which
 	 * this content provider applies. A <code>null</code> is returned if
@@ -381,7 +381,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 							ITeamContentProviderManager.P_SYNCHRONIZATION_PAGE_CONFIGURATION);
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
 	 */
@@ -389,7 +389,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public void restoreState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
-			((ICommonContentProvider) provider).restoreState(aMemento);	
+			((ICommonContentProvider) provider).restoreState(aMemento);
 		}
 	}
 
@@ -400,10 +400,10 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public void saveState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
 		if (provider instanceof ICommonContentProvider) {
-			((ICommonContentProvider) provider).saveState(aMemento);	
+			((ICommonContentProvider) provider).saveState(aMemento);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeListener#syncDeltaTreeChanged(org.eclipse.team.core.delta.ISyncDeltaChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -411,7 +411,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		refresh();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */
@@ -434,7 +434,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 				else
 					treeViewer.refresh(getModelProvider());
 			}
-		
+
 		}, getViewer().getControl());
 	}
 
@@ -444,7 +444,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * @return the model content provider
 	 */
 	protected abstract ITreeContentProvider getDelegateContentProvider();
-	
+
 	/**
 	 * Return the model provider for this content provider.
 	 * @return the model provider for this content provider
@@ -457,13 +457,13 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			throw new IllegalStateException();
 		}
 	}
-	
+
 	/**
 	 * Return the id of model provider for this content provider.
 	 * @return the model provider for this content provider
 	 */
 	protected abstract String getModelProviderId();
-	
+
 	/**
 	 * Return the object that acts as the model root. It is used when getting the children
 	 * for a model provider.
@@ -478,7 +478,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	protected final Viewer getViewer() {
 		return viewer;
 	}
-	
+
 	/**
 	 * Return the subset of the given children that are in the
 	 * given scope or are parents of elements that are in scope.
@@ -498,7 +498,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		}
 		return result.toArray(new Object[result.size()]);
 	}
-	
+
 	/**
 	 * Return the subset of children that are of interest from the given context.
 	 * By default, this method returns those children whose traversals contain
@@ -563,7 +563,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * calling {@link #getTraversals(ISynchronizationContext, Object)} to get
 	 * the traversals, then obtaining the diffs from the context's diff tree and
 	 * then calling {@link #isVisible(IDiff)} for each diff.
-	 * 
+	 *
 	 * @param context
 	 *            the synchronization context
 	 * @param object
@@ -592,14 +592,14 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Return whether the given diff should be visible based on the
 	 * configuration of the synchronization page showing this content. An
 	 * {@link IThreeWayDiff} is visible if the direction of the change matches
 	 * the mode of the synchronization page. An {@link ITwoWayDiff} is visible
 	 * if it has a kind that represents a change.
-	 * 
+	 *
 	 * @param diff
 	 *            the diff
 	 * @return whether the diff should be visible
@@ -613,17 +613,17 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	}
 
 	/**
-	 * Return the traversals for the given object in the given context. This 
+	 * Return the traversals for the given object in the given context. This
 	 * method must not be long running. If a long running calculation is required
 	 * to calculate the traversals, an empty traversal should be returned and the
-	 * content provider should initiate a background task to calculate the 
+	 * content provider should initiate a background task to calculate the
 	 * required traversals and update the view according when the task completes.
 	 * @param context the synchronization context
 	 * @param object the object
 	 * @return the traversals for the given object in the given context
 	 */
 	protected abstract ResourceTraversal[] getTraversals(ISynchronizationContext context, Object object);
-	
+
 	/**
 	 * Handle the given exception that occurred while calculating the
 	 * children for an element.
@@ -674,7 +674,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	public ICommonContentExtensionSite getExtensionSite() {
 		return site;
 	}
-	
+
 	private Object internalGetElement(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			TreePath tp = (TreePath) elementOrPath;
@@ -682,7 +682,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		}
 		return elementOrPath;
 	}
-	
+
 	/**
 	 * Return whether the page has been set to use a flat layout.
 	 * @return whether the page has been set to use a flat layout

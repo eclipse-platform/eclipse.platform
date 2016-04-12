@@ -29,14 +29,14 @@ import org.eclipse.team.ui.synchronize.SubscriberTeamStateProvider;
  * This interface is not intended to be implemented by clients. Clients should
  * instead subclass {@link TeamStateProvider} or
  * {@link SubscriberTeamStateProvider}.
- * 
+ *
  * @see IAdapterManager
  * @see RepositoryProviderType
  * @see RepositoryProviderType#getSubscriber()
  * @see TeamStateProvider
  * @see SubscriberTeamStateProvider
  * @see SynchronizationStateTester
- * 
+ *
  * @since 3.2
  */
 public interface ITeamStateProvider {
@@ -47,12 +47,12 @@ public interface ITeamStateProvider {
 	 * passing he mask returned from {@link #getDecoratedStateMask(Object)};
 	 */
 	public static final int USE_DECORATED_STATE_MASK = -1;
-	
+
 	/**
 	 * Return whether decoration is enabled for the given model element. If
 	 * decoration is not enabled, the model does not need to fire label change
 	 * events when the team state of the element changes.
-	 * 
+	 *
 	 * @param element
 	 *            the model element
 	 * @return whether decoration is enabled for the given model element
@@ -61,7 +61,7 @@ public interface ITeamStateProvider {
 
 	/**
 	 * Return whether the given element has any decorated state.
-	 * 
+	 *
 	 * @param element
 	 *            the element being decorated
 	 * @return whether the given element has any decorated state
@@ -75,7 +75,7 @@ public interface ITeamStateProvider {
 	 * decorated state from
 	 * {@link #getStateDescription(Object, int, String[], IProgressMonitor)} in
 	 * order to determine if the decorated state has changed.
-	 * 
+	 *
 	 * <p>
 	 * The state mask can consist of the following standard flags:
 	 * <ul>
@@ -89,7 +89,7 @@ public interface ITeamStateProvider {
 	 * <p>
 	 * The mask can also consist of flag bits that are unique to the repository
 	 * provider associated with the resources that the element maps to.
-	 * 
+	 *
 	 * @param element
 	 *            the model element to be decorated
 	 * @return the mask that indicates what state the appropriate team decorator
@@ -103,7 +103,7 @@ public interface ITeamStateProvider {
 	 * Return the set of property identifiers that represent the set of
 	 * properties that the team decorator would decorate for the given model
 	 * element.
-	 * 
+	 *
 	 * @param element
 	 *            the model element to be decorated
 	 * @return the set of decorated properties
@@ -120,7 +120,7 @@ public interface ITeamStateProvider {
 	 * should be <code>null</code> or the value returned from
 	 * {@link #getDecoratedProperties(Object)} if the client wishes to obtain
 	 * the current decorated state.
-	 * 
+	 *
 	 * @param element
 	 *            the model element
 	 * @param stateMask
@@ -143,10 +143,10 @@ public interface ITeamStateProvider {
 	 * of the resources associated with the provider. If a
 	 * {@link RemoteResourceMappingContext} is returned, then the client may
 	 * access the remote state.
-	 * 
+	 *
 	 * @param element
 	 *            the element for which remote contents are desired
-	 * 
+	 *
 	 * @return a resource mapping context that gives access to the remote state
 	 *         of the resources associated with the provider
 	 */
@@ -155,7 +155,7 @@ public interface ITeamStateProvider {
 	/**
 	 * Add a decorated state change listener to the provider.
 	 * Adding the same listener more than once has no effect.
-	 * 
+	 *
 	 * @param listener
 	 *            the listener
 	 */
@@ -165,7 +165,7 @@ public interface ITeamStateProvider {
 	/**
 	 * Remove the decorated state change listener to the provider.
 	 * Removing a listener that is not registered has no effect.
-	 * 
+	 *
 	 * @param listener
 	 *            the listener
 	 */

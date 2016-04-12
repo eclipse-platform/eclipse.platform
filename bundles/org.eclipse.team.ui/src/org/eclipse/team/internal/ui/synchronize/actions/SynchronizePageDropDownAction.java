@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -32,8 +32,8 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 	public SynchronizePageDropDownAction(ISynchronizeView view) {
 		fView= view;
 		Utils.initAction(this, "action.refreshSubscriber."); //$NON-NLS-1$
-		
-		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) { 
+
+		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) {
 			@Override
 			public void run() {
 				IWizard wizard = new GlobalSynchronizeWizard();
@@ -43,9 +43,9 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		};
 		synchronizeAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW));
 		synchronizeAction.setActionDefinitionId("org.eclipse.team.ui.synchronizeAll"); //$NON-NLS-1$
-		setMenuCreator(this);		
+		setMenuCreator(this);
 		TeamUI.getSynchronizeManager().addSynchronizeParticipantListener(this);
-		update();			
+		update();
 		fView.getSite().getKeyBindingService().registerAction(synchronizeAction);
 		setActionDefinitionId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
 		fView.getSite().getKeyBindingService().registerAction(this);
@@ -60,7 +60,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 			menuManager.dispose();
 			menuManager = null;
 		}
-		TeamUI.getSynchronizeManager().removeSynchronizeParticipantListener(this);	
+		TeamUI.getSynchronizeManager().removeSynchronizeParticipantListener(this);
 	}
 
 	/* (non-Javadoc)
@@ -96,7 +96,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		ISynchronizeParticipant current = fView.getParticipant();
 		for (int i = 0; i < refs.length; i++) {
 			ISynchronizeParticipantReference page = refs[i];
-			Action action = new ShowSynchronizeParticipantAction(fView, page);  
+			Action action = new ShowSynchronizeParticipantAction(fView, page);
 			try {
 				boolean isCurrent = page.getParticipant().equals(current);
 				action.setChecked(isCurrent);
@@ -156,17 +156,17 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 			}
 		});
 	}
-	
+
 	public void update() {
 		ISynchronizeParticipant current = fView.getParticipant();
 		ISynchronizeParticipantReference[] refs = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
 		String text = null;
 		if(current != null && refs.length > 0) {
-			text = NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, current.getName()) }); 
+			text = NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, current.getName()) });
 			setToolTipText(text);
 			setText(text);
 		} else {
-			text = TeamUIMessages.GlobalRefreshAction_4; 
+			text = TeamUIMessages.GlobalRefreshAction_4;
 			setToolTipText(text);
 			setText(text);
 		}

@@ -23,7 +23,7 @@ import org.eclipse.ui.*;
  * in toolbars, etc.
  */
 public class ActionDelegateWrapper extends Action implements ISelectionChangedListener {
-	
+
 	private IActionDelegate delegate;
 
 	public ActionDelegateWrapper(IActionDelegate delegate, ISynchronizePageConfiguration configuration) {
@@ -33,18 +33,18 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 			if (delegate instanceof IObjectActionDelegate) {
 				((IObjectActionDelegate)delegate).setActivePart(this, part);
 			}
-			if (part instanceof IViewPart 
+			if (part instanceof IViewPart
 					&& delegate instanceof IViewActionDelegate) {
 				((IViewActionDelegate)delegate).init((IViewPart)part);
 			}
-			if (part instanceof IEditorPart 
+			if (part instanceof IEditorPart
 					&& delegate instanceof IEditorActionDelegate) {
 				((IEditorActionDelegate)delegate).setActiveEditor(this, (IEditorPart)part);
 			}
 		}
 		initialize(configuration);
 	}
-	
+
 	public ActionDelegateWrapper(IActionDelegate delegate, ISynchronizePageConfiguration configuration, String id) {
 		this(delegate, configuration);
 		setId(id);
@@ -66,7 +66,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 			}
 		});
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
@@ -74,7 +74,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	public void selectionChanged(SelectionChangedEvent event) {
 		getDelegate().selectionChanged(this, event.getSelection());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.IAction#run()
 	 */
@@ -82,7 +82,7 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	public void run() {
 		getDelegate().run(this);
 	}
-	
+
 	/**
 	 * Return the delegate associated with this action.
 	 * @return the delegate associated with this action

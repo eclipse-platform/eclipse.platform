@@ -44,7 +44,7 @@ public class ResourceModelLabelProvider extends
 			return false;
 		}
 	};
-	
+
 	private ILabelProvider provider;
 	private ResourceModelContentProvider contentProvider;
 	private ImageManager localImageManager;
@@ -58,7 +58,7 @@ public class ResourceModelLabelProvider extends
 		}
 		super.init(site);
 	}
-	
+
 	@Override
 	public void dispose() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
@@ -78,7 +78,7 @@ public class ResourceModelLabelProvider extends
 			provider = new WorkbenchLabelProvider();
 		return provider ;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.AbstractSynchronizationLabelProvider#getSyncDelta(java.lang.Object)
 	 */
@@ -89,7 +89,7 @@ public class ResourceModelLabelProvider extends
 		if (tree != null && resource != null) {
 			IDiff delta = tree.getDiff(resource.getFullPath());
 			return delta;
-		}		
+		}
 		return null;
 	}
 
@@ -100,7 +100,7 @@ public class ResourceModelLabelProvider extends
 		}
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isIncludeOverlays()
 	 */
@@ -108,7 +108,7 @@ public class ResourceModelLabelProvider extends
 	protected boolean isIncludeOverlays() {
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isBusy(java.lang.Object)
 	 */
@@ -121,7 +121,7 @@ public class ResourceModelLabelProvider extends
 		}
 		return super.isBusy(elementOrPath);
 	}
-	
+
 	private TreePath internalGetPath(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			return (TreePath) elementOrPath;
@@ -159,7 +159,7 @@ public class ResourceModelLabelProvider extends
 	public void resourceChanged(IResourceChangeEvent event) {
 		String[] markerTypes = new String[] {IMarker.PROBLEM};
 		final Set handledResources = new HashSet();
-		
+
 		// Accumulate all distinct resources that have had problem marker
 		// changes
 		for (int idx = 0; idx < markerTypes.length; idx++) {
@@ -173,7 +173,7 @@ public class ResourceModelLabelProvider extends
 					}
 				}
 			}
-		
+
 		if (!handledResources.isEmpty()) {
 			final IResource[] resources = (IResource[]) handledResources.toArray(new IResource[handledResources.size()]);
 		    updateLabels(resources);
@@ -189,7 +189,7 @@ public class ResourceModelLabelProvider extends
 			}
 		}, contentProvider.getStructuredViewer());
 	}
-	
+
 	@Override
 	protected String getDelegateText(Object elementOrPath) {
 		if (getConfiguration() != null) {
@@ -199,7 +199,7 @@ public class ResourceModelLabelProvider extends
 		}
 		return super.getDelegateText(internalGetElement(elementOrPath));
 	}
-	
+
 	@Override
 	protected Image getDelegateImage(Object elementOrPath) {
 		if (getConfiguration() != null && getTraversalCalculator().isCompressedFolder(elementOrPath)) {
@@ -207,7 +207,7 @@ public class ResourceModelLabelProvider extends
 		}
 		return super.getDelegateImage(internalGetElement(elementOrPath));
 	}
-	
+
 	private Object internalGetElement(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			TreePath tp = (TreePath) elementOrPath;
@@ -215,7 +215,7 @@ public class ResourceModelLabelProvider extends
 		}
 		return elementOrPath;
 	}
-	
+
 	protected ResourceModelTraversalCalculator getTraversalCalculator() {
 		return ResourceModelTraversalCalculator.getTraversalCalculator(getConfiguration());
 	}
@@ -223,7 +223,7 @@ public class ResourceModelLabelProvider extends
 	private ISynchronizePageConfiguration getConfiguration() {
 		return (ISynchronizePageConfiguration)getExtensionSite().getExtensionStateModel().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_PAGE_CONFIGURATION);
 	}
-	
+
 	@Override
 	public void updateLabel(ViewerLabel label, TreePath elementPath) {
 		label.setImage(getImage(elementPath));
@@ -232,7 +232,7 @@ public class ResourceModelLabelProvider extends
 		if (f != null)
 			label.setFont(f);
 	}
-	
+
 	protected ImageManager getImageManager() {
 		ISynchronizationContext context = getContext();
 		if (context != null) {

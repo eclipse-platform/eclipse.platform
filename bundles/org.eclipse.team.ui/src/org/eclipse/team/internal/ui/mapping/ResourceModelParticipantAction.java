@@ -63,9 +63,9 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 			monitor.done();
 		}
 	}
-	
+
 	/**
-	 * Return a traversal that includes the resources that are visible 
+	 * Return a traversal that includes the resources that are visible
 	 * in the sync view.
 	 * @param element the selected element
 	 * @return a set of traversals that cover the visible resources.
@@ -80,13 +80,13 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 	protected ResourceMappingContext getResourceMappingContext() {
 		return new SynchronizationResourceMappingContext(getSynchronizationContext());
 	}
-	
+
 	protected ResourceModelTraversalCalculator getTraversalCalculator() {
 		return ResourceModelTraversalCalculator.getTraversalCalculator(getConfiguration());
 	}
 
 	/**
-	 * Return a traversal that includes the resources that are visible 
+	 * Return a traversal that includes the resources that are visible
 	 * in the sync view.
 	 * @param element the selected element
 	 * @return a set of traversals that cover the visible resources.
@@ -112,7 +112,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 					}
 					return new ResourceTraversal[] { new ResourceTraversal((IResource[]) resources.toArray(new IResource[resources.size()]), IResource.DEPTH_ZERO, IResource.NONE) };
 				}
-			} 
+			}
 			if (getTraversalCalculator().isResourcePath(path)) {
 				IResource resource = (IResource) o;
 				return getTraversalCalculator().getTraversals(resource, path);
@@ -121,7 +121,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 		}
 		return null;
 	}
-	
+
 	private DiffChangeSet getChangeSet(TreePath path) {
 		Object o = path.getFirstSegment();
 		if (o instanceof DiffChangeSet) {

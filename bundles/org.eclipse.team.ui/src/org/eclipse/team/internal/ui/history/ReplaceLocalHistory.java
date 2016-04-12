@@ -23,7 +23,7 @@ import org.eclipse.team.ui.history.HistoryPageCompareEditorInput;
 import org.eclipse.team.ui.history.IHistoryPageSource;
 
 public class ReplaceLocalHistory extends ShowLocalHistory {
-	
+
 	@Override
 	public void run(IAction action) {
 		final IFile file = (IFile) getSelection().getFirstElement();
@@ -36,9 +36,9 @@ public class ReplaceLocalHistory extends ShowLocalHistory {
 				showCompareInDialog(getShell(), file);
 			}
 		};
-		TeamUIPlugin.getStandardDisplay().asyncExec(r);	
+		TeamUIPlugin.getStandardDisplay().asyncExec(r);
 	}
-	
+
 	private void showCompareInDialog(Shell shell, Object object){
 		IHistoryPageSource pageSource = LocalHistoryPageSource.getInstance();
 		if (pageSource != null && pageSource.canShowHistoryFor(object)) {
@@ -71,7 +71,7 @@ public class ReplaceLocalHistory extends ShowLocalHistory {
 			CompareUI.openCompareDialog(input);
 		}
 	}
-	
+
 	@Override
 	protected String getPromptTitle() {
 		return TeamUIMessages.ReplaceLocalHistory_1;

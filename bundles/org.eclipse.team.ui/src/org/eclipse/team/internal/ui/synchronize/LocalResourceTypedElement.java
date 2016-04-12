@@ -40,7 +40,7 @@ import org.eclipse.ui.IEditorInput;
  * <p>
  * This class may be instantiated.
  * </p>
- * 
+ *
  * @since 3.3
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -74,11 +74,11 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 
 	/**
 	 * Commits buffered contents to the underlying resource. Note that if the
-	 * element has a shared document, the commit will not succeed since the 
+	 * element has a shared document, the commit will not succeed since the
 	 * contents will be buffered in the shared document and will not be pushed
 	 * to this element using {@link #setContent(byte[])}. Clients should check
 	 * whether the element {@link #isConnected()} and, if it is, they should call
-	 * {@link #saveDocument(boolean, IProgressMonitor)} to save the buffered contents to 
+	 * {@link #saveDocument(boolean, IProgressMonitor)} to save the buffered contents to
 	 * the underlying resource.
 	 * @param monitor a progress monitor
 	 * @throws CoreException
@@ -363,7 +363,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 
 	/**
 	 * Returns the author of the workspace file revision if any.
-	 * 
+	 *
 	 * @return the author or <code>null</code> if the author has not been fetched or is not
 	 *         available
 	 * @since 3.7
@@ -375,7 +375,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 
 	/**
 	 * Fetches the author from the repository.
-	 * 
+	 *
 	 * @param monitor the progress monitor
 	 * @throws CoreException if fetching the revision properties fails
 	 * @since 3.7
@@ -401,7 +401,7 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 
 	/**
 	 * Sets the author.
-	 * 
+	 *
 	 * @param author the author
 	 * @since 3.7
 	 */

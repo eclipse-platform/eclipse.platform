@@ -13,9 +13,9 @@ package org.eclipse.team.ui.synchronize;
 import org.eclipse.team.core.TeamException;
 
 /**
- * A reference is a light weight handle used by the {@link ISynchronizeManager} 
+ * A reference is a light weight handle used by the {@link ISynchronizeManager}
  * to manage registered participants. It is used to reference information
- * about a particular participant instance without requiring the participant 
+ * about a particular participant instance without requiring the participant
  * to be instantiated. Calling the {@link #getParticipant()} method will
  * cause the participant to be instantiated.
  * <p>
@@ -27,44 +27,44 @@ import org.eclipse.team.core.TeamException;
 public interface ISynchronizeParticipantReference {
 	/**
 	 * Returns the id of the participant type referenced by this handle.
-	 * 
+	 *
 	 * @return the id of the participant type references by this handle.
 	 */
 	public String getId();
-	
+
 	/**
 	 * Returns the secondary id (e.g. instance id) of the participant type referenced
 	 * by this handle or <code>null</code> if the participant doesn't support
 	 * multiple instances.
-	 * 
+	 *
 	 * @return the secondary id of the participant type referenced
 	 * by this handle or <code>null</code> if the participant doesn't support
 	 * multiple instances.
 	 */
 	public String getSecondaryId();
-	
+
 	/**
 	 * Returns the fully qualified name of this participant reference. This includes the
 	 * secondaryId if available. This can be displayed in the user interface to allow
 	 * the user to distinguish between multiple instances of a participant.
-	 * 
+	 *
 	 * @return the fully qualified name of this participant reference
 	 */
 	public String getDisplayName();
-	
+
 	/**
 	 * Returns the participant referenced by this handle. This may trigger loading of the
 	 * participant and and a result may be long running. The method may return <code>null</code>
 	 * if the participant cannot be de-referenced.
-	 * 
+	 *
 	 * @return the participant referenced by this handle.
 	 * @throws TeamException if an error occurs
 	 */
 	public ISynchronizeParticipant getParticipant() throws TeamException;
-	
+
 	/**
 	 * Returns the descriptor for this participant type.
-	 * 
+	 *
 	 * @return the descriptor for this participant type.
 	 */
 	public ISynchronizeParticipantDescriptor getDescriptor();

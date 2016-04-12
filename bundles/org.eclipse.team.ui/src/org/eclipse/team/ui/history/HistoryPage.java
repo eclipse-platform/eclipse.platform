@@ -23,12 +23,12 @@ import org.eclipse.ui.part.Page;
  * @since 3.2
  */
 public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptable {
-	
+
 	private IHistoryPageSite site;
 	private Object input;
 	private IHistoryView historyView;
 	private PropertyChangeHandler fChangeHandler;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#setSite(org.eclipse.team.ui.history.IHistoryPageSite)
 	 */
@@ -36,7 +36,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	public void setSite(IHistoryPageSite site) {
 		this.site = site;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getHistoryPageSite()
 	 */
@@ -45,7 +45,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 		return site;
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getInput()
 	 */
@@ -53,7 +53,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	public Object getInput() {
 		return input;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#setInput(java.lang.Object, boolean)
 	 */
@@ -66,16 +66,16 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	/**
 	 * Called by HistoryPage after {@link #setInput(Object)}. Clients can
 	 * gain access to the input by using {@link #getInput()}.
-	 * 
+	 *
 	 * @return <code>true</code> if the page was able to display the contents, <code>false</code> otherwise
 	 */
 	public abstract boolean inputSet();
-	
-	
+
+
 	public void setHistoryView(IHistoryView historyView) {
 		this.historyView = historyView;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#getHistoryView()
 	 */
@@ -83,10 +83,10 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 	public IHistoryView getHistoryView() {
 		if (historyView != null)
 			return historyView;
-		
+
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
@@ -97,7 +97,7 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 		}
 		fChangeHandler.addPropertyChangeListener(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPage#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
@@ -107,10 +107,10 @@ public abstract class HistoryPage extends Page implements IHistoryPage, IAdaptab
 			fChangeHandler.removePropertyChangeListener(listener);
 		}
 	}
-	
+
 	/**
 	 * Notify all listeners that the given property has changed.
-	 * 
+	 *
 	 * @param source the object on which a property has changed
 	 * @param property identifier of the property that has changed
 	 * @param oldValue the old value of the property, or <code>null</code>

@@ -17,20 +17,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * An adaptation for a history page for displaying comparisons
  * triggered by history page selections.
- * 
+ *
  * @since 3.2
  * @see HistoryPageSaveablePart
  * @see IHistoryPage
  */
 public interface IHistoryCompareAdapter {
-	
+
 	/**
 	 * Returns an ICompareInput for the passed in object.
 	 * @param object the object
 	 * @return returns an ICompareInput
 	 */
 	public ICompareInput getCompareInput(Object object);
-	
+
 	/**
 	 * Prepare the compare input for display. Clients can perform
 	 * any long running preparations and assign labels to the
@@ -40,5 +40,5 @@ public interface IHistoryCompareAdapter {
 	 * @param monitor a progress monitor
 	 */
 	public void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor);
-	
+
 }

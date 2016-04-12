@@ -27,7 +27,7 @@ public class Policy {
 	public static boolean DEBUG_HISTORY = false;
 	public static boolean DEBUG_DND = false;
 	public static boolean DEBUG_COMPARE_EDITOR_INPUT = false;
-    
+
     private static String ACTION_BUNDLE = "org.eclipse.team.internal.ui.actions.actions"; //$NON-NLS-1$
     private static ResourceBundle actionBundle = null;
 
@@ -55,7 +55,7 @@ public class Policy {
 
 	/**
 	 * Checks if the progress monitor is canceled.
-	 * 
+	 *
 	 * @param monitor  the onitor to check for cancellation
 	 * @throws OperationCanceledException if the monitor is canceled
 	 */
@@ -64,7 +64,7 @@ public class Policy {
 			throw new OperationCanceledException();
 		}
 	}
-	
+
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
 		if (monitor == null)
 			return new NullProgressMonitor();

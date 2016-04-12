@@ -34,13 +34,13 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
 /**
  * Page that allows the user to select a set of resources that are managed
  * by a synchronize participant.
- * 
+ *
  * Remembers last participant
- * 
+ *
  * @since 3.0
  */
 public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDoubleClickListener, ISelectionChangedListener {
-    
+
     private final static String DEFAULT_SELECTION= TeamUIPlugin.ID + "GlobalRefreshWizardSelectionPage.default_selection"; //$NON-NLS-1$
 
 	private TableViewer fViewer;
@@ -57,7 +57,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 			return super.getChildren(element);
 		}
 	}
-	
+
 	class MyLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
@@ -66,8 +66,8 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 				return descriptor.getName();
 			}
 			return null;
-		}	
-		
+		}
+
 		@Override
 		public Image getImage(Object element) {
 			if(element instanceof SynchronizeWizardDescription) {
@@ -83,11 +83,11 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 			return null;
 		}
 	}
-		
+
 	public GlobalRefreshWizardSelectionPage() {
-		super(TeamUIMessages.GlobalRefreshParticipantSelectionPage_0); 
-		setDescription(TeamUIMessages.GlobalRefreshParticipantSelectionPage_1); 
-		setTitle(TeamUIMessages.GlobalRefreshParticipantSelectionPage_2); 
+		super(TeamUIMessages.GlobalRefreshParticipantSelectionPage_0);
+		setDescription(TeamUIMessages.GlobalRefreshParticipantSelectionPage_1);
+		setTitle(TeamUIMessages.GlobalRefreshParticipantSelectionPage_2);
 	}
 
 	/* (non-Javadoc)
@@ -102,14 +102,14 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 			}
 		}
 	}
-	
+
 	/**
      * Save the page settings into the dialog settings
      */
     public void savePageSettings() {
-        if (fViewer.getControl().isDisposed()) 
+        if (fViewer.getControl().isDisposed())
 	        return;
-	    
+
 	    final IStructuredSelection selection= (IStructuredSelection)fViewer.getSelection();
 	    final Object selected= selection.getFirstElement();
 	    if (!(selected instanceof SynchronizeWizardDescription))
@@ -126,9 +126,9 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		top.setLayout(new GridLayout());
 		setControl(top);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(top, IHelpContextIds.REFRESH_WIZARD_SELECTION_PAGE);
-		
+
 		Label l = new Label(top, SWT.NULL);
-		l.setText(TeamUIMessages.GlobalRefreshParticipantSelectionPage_3); 
+		l.setText(TeamUIMessages.GlobalRefreshParticipantSelectionPage_3);
 		fViewer = new TableViewer(top, SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_BOTH);
 		fViewer.getControl().setLayoutData(data);
@@ -138,28 +138,28 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		fViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		fViewer.setInput(TeamUI.getSynchronizeManager());
 		fViewer.addSelectionChangedListener(this);
-		
+
 		Object toSelect= getDefaultSelection();
 		if (toSelect == null) {
 		    toSelect= fViewer.getElementAt(0);
 		}
 		if (toSelect != null) {
-		    fViewer.setSelection(new StructuredSelection(toSelect), true); 
+		    fViewer.setSelection(new StructuredSelection(toSelect), true);
 		}
 		fViewer.getTable().setFocus();
 		Dialog.applyDialogFont(parent2);
 	}
-	
+
 	private SynchronizeWizardDescription getDefaultSelection() {
-	    
+
         if (!(TeamUI.getSynchronizeManager() instanceof SynchronizeManager))
             return null;
 
         final String defaultSelection= getDialogSettings().get(DEFAULT_SELECTION);
-        if (defaultSelection == null) 
+        if (defaultSelection == null)
             return null;
-        
-        final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager(); 
+
+        final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager();
         final SynchronizeWizardDescription [] wizards= syncManager.getWizardDescriptors();
         for (int i = 0; i < wizards.length; i++) {
             if (defaultSelection.equals(wizards[i].getId())) {
@@ -177,7 +177,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 				event.getViewer().getSelection()));
 		getContainer().showPage(getNextPage());
 	}
-	
+
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		// Initialize the wizard so we can tell whether to enable the
@@ -197,7 +197,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 		SynchronizeWizardDescription selectedDescriptor = (SynchronizeWizardDescription)ss.getFirstElement();
 		try {
 			wizard = selectedDescriptor.createWizard();
-			wizard.addPages();		
+			wizard.addPages();
 			// Ask the container to update button enablement
 			setPageComplete(true);
 			setDescription(selectedDescriptor.getDescription());
@@ -206,11 +206,11 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 			setPageComplete(false);
 		}
 	}
-	
+
 	public IWizard getSelectedWizard() {
 		return this.wizard;
 	}
-	
+
 	@Override
 	public IWizardPage getNextPage() {
 		if (wizard == null) return null;

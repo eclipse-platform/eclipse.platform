@@ -35,13 +35,13 @@ import org.eclipse.team.ui.mapping.*;
 /**
  * A label provider wrapper that adds synchronization image and/or text decorations
  * to the image and label obtained from the delegate provider.
- * 
+ *
  * @since 3.2
  */
 public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider {
-	
+
 	private ImageManager localImageManager;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
@@ -50,7 +50,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		Image base = getDelegateImage(element);
 		if (isDecorationEnabled() && base != null) {
 			Image decorateImage = decorateImage(base, element);
-			base = decorateImage;				
+			base = decorateImage;
 		}
 		if (isIncludeOverlays() && base != null) {
 			base = addOverlays(base, element);
@@ -75,7 +75,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		Image decoratedImage;
 		if (element instanceof ICompareInput) {
 			ICompareInput ci = (ICompareInput) element;
-			decoratedImage = getCompareImage(base, ci.getKind());	
+			decoratedImage = getCompareImage(base, ci.getKind());
 		} else {
 			IDiff node = getDiff(element);
 			decoratedImage = getCompareImage(base, node);
@@ -106,7 +106,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		ITeamContentProviderDescriptor desc = manager.getDescriptor(provider.getId());
 		return desc.getImageDescriptor();
 	}
-	
+
 	private Object internalGetElement(Object element) {
 		if (element instanceof TreePath) {
 			TreePath tp = (TreePath) element;
@@ -116,13 +116,13 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	}
 
 	private Image getCompareImage(Image base, IDiff node) {
-		int compareKind = getCompareKind(node);	
+		int compareKind = getCompareKind(node);
 		return getCompareImage(base, compareKind);
 	}
 
 	/**
 	 * Returns an image showing the specified change kind applied to a given base image.
-	 * 
+	 *
 	 * @nooverride This method is not intended to be re-implemented or extended by clients.
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
@@ -133,7 +133,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	private int getCompareKind(IDiff node) {
 		return ResourceDiffCompareInput.getCompareKind(node);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 	 */
@@ -163,7 +163,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		}
 		return base;
 	}
-	
+
 	/**
 	 * Decorate the text with the appropriate diff decorations.
 	 * By default, this method uses the diff associated with
@@ -176,13 +176,13 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	 */
 	protected String decorateText(String base, Object element) {
 		IDiff node = getDiff(element);
-		if (node != null && node.getKind() != IDiff.NO_CHANGE) {			
+		if (node != null && node.getKind() != IDiff.NO_CHANGE) {
 			String syncKindString = node.toDiffString();
-			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, new String[] { base, syncKindString }); 
+			return NLS.bind(TeamUIMessages.AbstractSynchronizationLabelProvider_0, new String[] { base, syncKindString });
 		}
 		return base;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
 	 */
@@ -215,7 +215,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	public void removeListener(ILabelProviderListener listener) {
 		getDelegateLabelProvider().removeListener(listener);
 	}
-	
+
 	/**
 	 * Returns whether the synchronization state should be included in the
 	 * text of the label. By default, the Team preference is used to determine
@@ -226,22 +226,22 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	protected boolean isSyncInfoInTextEnabled() {
 		return isDecorationEnabled() && TeamUIPlugin.getPlugin().getPreferenceStore().getBoolean(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL);
 	}
-	
+
 	/**
-	 * Return the label provider that will return the text and image 
+	 * Return the label provider that will return the text and image
 	 * appropriate for the given model element. Subclasses are responsible for
 	 * disposing of the label provider.
-	 * @return the label provider that will return the text and image 
+	 * @return the label provider that will return the text and image
 	 * appropriate for the given model element
 	 */
 	protected abstract ILabelProvider getDelegateLabelProvider();
-	
+
 	/**
 	 * Return whether the label provider should decorate with the synchronization state.
 	 * @return whether the label provider should decorate with the synchronization state
 	 */
 	protected abstract boolean isDecorationEnabled();
-	
+
 	/**
 	 * Return the sync kind of the given element. This is used
 	 * to determine how to decorate the image and label of the
@@ -253,14 +253,14 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	protected IDiff getDiff(Object element) {
 		return null;
 	}
-	
+
 	private Image addOverlays(Image base, Object element) {
 		if (!isIncludeOverlays())
 			return base;
-		
+
 		ImageDescriptor[] overlayImages = new ImageDescriptor[4];
 		boolean hasOverlay = false;
-		
+
 		// Decorate with the busy indicator
 		if (isBusy(element)) {
 			overlayImages[IDecoration.TOP_LEFT] = TeamUIPlugin.getImageDescriptor(ISharedImages.IMG_HOURGLASS_OVR);
@@ -288,13 +288,13 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		}
 		return base;
 	}
-	
+
 	/**
 	 * Indicate whether the overlays provided by this class should be applied.
 	 * By default, <code>false</code> is returned. Subclasses may override
 	 * and control individual overlays by overriding the appropriate
 	 * query methods. Overlays provided by this class include problem marker
-	 * severity ({@link #getMarkerSeverity(Object)}), propagated conflicts 
+	 * severity ({@link #getMarkerSeverity(Object)}), propagated conflicts
 	 * ({@link #hasDecendantConflicts(Object)} and busy state ({@link #isBusy(Object)}).
 	 * @return whether the overlays provided by this class should be applied
 	 */
@@ -308,10 +308,10 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	 * there are no markers. By Default, the element is adapted to resource
 	 * mapping in order to look for markers.
 	 * <p>
-	 * Although this class handles providing the overlays, it does not react 
-	 * to marker changes. Subclasses must issue label updates when the markers on 
+	 * Although this class handles providing the overlays, it does not react
+	 * to marker changes. Subclasses must issue label updates when the markers on
 	 * a logical model element change.
-	 * 
+	 *
 	 * @param element
 	 *            the element
 	 * @return the marker severity
@@ -342,7 +342,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 
 	/**
 	 * Return whether the given element has descendant conflicts.
-	 * By default, <code>false</code> is returned. Subclasses 
+	 * By default, <code>false</code> is returned. Subclasses
 	 * may override.
 	 * @param element the element
 	 * @return whether the given element has descendant conflicts
@@ -376,7 +376,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 	/**
 	 * Method that provides a custom font for elements that are
 	 * busy. Although this label provider does not implement
-	 * {@link IFontProvider}, subclasses that wish to get 
+	 * {@link IFontProvider}, subclasses that wish to get
 	 * busy indication using a font can do so.
 	 * @param element the element
 	 * @return the font to indicate that the element is busy
@@ -387,7 +387,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		}
 		return null;
 	}
-	
+
 	private ImageManager getImageManager() {
 		ISynchronizationContext context = getContext();
 		if (context != null) {
@@ -414,5 +414,5 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		}
 		return null;
 	}
-	
+
 }

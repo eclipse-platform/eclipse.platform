@@ -19,7 +19,7 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 	public MultiLabelDecorator(ILabelDecorator[] decorators) {
 		this.decorators = decorators;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(org.eclipse.swt.graphics.Image, java.lang.Object)
 	 */
@@ -34,7 +34,7 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		}
 		return image;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(java.lang.String, java.lang.Object)
 	 */
@@ -49,7 +49,7 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		}
 		return text;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */

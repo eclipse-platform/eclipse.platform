@@ -29,7 +29,7 @@ import org.eclipse.team.ui.synchronize.*;
  * Remove the selected elements from the page
  */
 public class RemoveFromViewAction extends SynchronizeModelAction {
-	
+
 	public RemoveFromViewAction(ISynchronizePageConfiguration configuration) {
 		super(null, configuration);
 		Utils.initAction(this, "action.removeFromView."); //$NON-NLS-1$
@@ -87,7 +87,7 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 	protected boolean needsToSaveDirtyEditors() {
 		return false;
 	}
-	
+
 	private boolean confirmRemove() {
 		IPreferenceStore store = TeamUIPlugin.getPlugin().getPreferenceStore();
 		if (store.getBoolean(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT)) {
@@ -95,9 +95,9 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 		} else {
 			MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
 					getConfiguration().getSite().getShell(),
-					TeamUIMessages.RemoveFromView_warningTitle, 
-					TeamUIMessages.RemoveFromView_warningMessage, 
-					TeamUIMessages.RemoveFromView_warningDontShow, 
+					TeamUIMessages.RemoveFromView_warningTitle,
+					TeamUIMessages.RemoveFromView_warningMessage,
+					TeamUIMessages.RemoveFromView_warningDontShow,
 					false,
 					null,
 					null);

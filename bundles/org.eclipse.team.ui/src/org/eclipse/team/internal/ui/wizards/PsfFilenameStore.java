@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -28,7 +28,7 @@ public class PsfFilenameStore extends PsfStore {
 	private static String _selectedFilename = null;
 
 	private static PsfFilenameStore instance;
-	
+
 	public static PsfFilenameStore getInstance(){
 		if(instance==null){
 			instance = new PsfFilenameStore();
@@ -99,5 +99,5 @@ public class PsfFilenameStore extends PsfStore {
 		return FILENAMES;
 	}
 
-	
+
 }

@@ -19,19 +19,19 @@ import org.eclipse.team.ui.TeamUI;
  * This is a convenience class for creating wizards for use with the
  * <code>org.eclipse.team.ui.synchronizeWizard</code> extension point
  * that create a {@link ModelSynchronizeParticipant}.
- * 
+ *
  * @since 3.2
  */
 public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizard {
 
 
 	private ModelElementSelectionPage selectionPage;
-	
+
 	public ModelParticipantWizard() {
 		super();
 		setNeedsProgressMonitor(true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
 	 */
@@ -42,7 +42,7 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 		// We don't know in which site to show progress because a participant could actually be shown in multiple sites.
 		participant.run(null /* no site */);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
 	 */
@@ -55,7 +55,7 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 	/**
 	 * Method called from {@link #createParticipant()} to create a
 	 * {@link ModelSynchronizeParticipant} for the given resource mappings.
-	 * 
+	 *
 	 * @param selectedMappings
 	 *            the selected mappings that define the scope
 	 * @return a synchronize participant that will be added to the Synchronize

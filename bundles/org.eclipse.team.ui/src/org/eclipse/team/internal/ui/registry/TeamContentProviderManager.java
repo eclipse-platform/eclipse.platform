@@ -24,21 +24,21 @@ import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
  * Manages the team content provider extension point
  */
 public class TeamContentProviderManager implements ITeamContentProviderManager {
-	
+
 	public static final String PT_TEAM_CONTENT_PROVIDERS = "teamContentProviders"; //$NON-NLS-1$
 
 	private static ITeamContentProviderManager instance;
-	
+
 	Map descriptors;
-	
+
 	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
-	
+
 	public static ITeamContentProviderManager getInstance() {
 		if (instance == null)
 			instance = new TeamContentProviderManager();
 		return instance;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptors()
 	 */
@@ -47,7 +47,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		lazyInitialize();
 		return (ITeamContentProviderDescriptor[]) descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderManager#getContentProviderIds(org.eclipse.team.core.mapping.ISynchronizationScope)
 	 */
@@ -62,7 +62,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		}
 		return (String[]) result.toArray(new String[result.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptor(java.lang.String)
 	 */
@@ -71,7 +71,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		lazyInitialize();
 		return (ITeamContentProviderDescriptor)descriptors.get(modelProviderId);
 	}
-	
+
 	protected void lazyInitialize() {
 		if (descriptors != null)
 			return;
@@ -99,7 +99,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	private void firePropertyChange(final PropertyChangeEvent event) {
 		Object[] allListeners = listeners.getListeners();
 		for (int i = 0; i < allListeners.length; i++) {
@@ -116,11 +116,11 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 			});
 		}
 	}
-	
+
 	public void enablementChanged(ITeamContentProviderDescriptor[] oldEnabled, ITeamContentProviderDescriptor[] newEnabled) {
 		firePropertyChange(new PropertyChangeEvent(this, PROP_ENABLED_MODEL_PROVIDERS, oldEnabled, newEnabled));
 	}
-	
+
 	@Override
 	public void setEnabledDescriptors(ITeamContentProviderDescriptor[] descriptors) {
 		List previouslyEnabled = new ArrayList();

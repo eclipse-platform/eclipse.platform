@@ -33,12 +33,12 @@ public class PasteAction extends SelectionListenerAction {
 
 	public PasteAction(IWorkbenchPart part) {
 		super(TeamUIMessages.PasteAction_1);
-		
+
 		final ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
 		setActionDefinitionId(IWorkbenchCommandConstants.EDIT_PASTE);
 		setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
 		setDisabledImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
-		
+
 		fShell = part.getSite().getShell();
 		Assert.isNotNull(fShell);
 		fClipboard = new Clipboard(fShell.getDisplay());

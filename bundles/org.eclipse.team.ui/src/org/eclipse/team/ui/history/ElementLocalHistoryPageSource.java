@@ -23,7 +23,7 @@ import org.eclipse.ui.part.Page;
 public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 
 	/**
-	 * Return the previous edition from the local history of the given element located in the given 
+	 * Return the previous edition from the local history of the given element located in the given
 	 * file. A <code>null</code> is returned if a previous edition could not be found.
 	 * @param file the file containing the element
 	 * @param element the element
@@ -33,7 +33,7 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	public static ITypedElement getPreviousEdition(IFile file, Object element) throws TeamException {
 		return EditionHistoryPage.getPreviousState(file, element);
 	}
-	
+
 	/**
 	 * Create an instance of the page source.
 	 */
@@ -48,7 +48,7 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	public final boolean canShowHistoryFor(Object object) {
 		return getFile(object) != null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.history.IHistoryPageSource#createPage(java.lang.Object)
 	 */
@@ -56,7 +56,7 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	public final Page createPage(Object object) {
 		return new EditionHistoryPage(getFile(object), object);
 	}
-	
+
 	/**
 	 * Return the file that contains the given element of <code>null</code>
 	 * if this page source can not show history for the given element.
@@ -68,7 +68,7 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	/**
 	 * Return the file that contains the given element of <code>null</code> if this page source can
 	 * not show history for the given element.
-	 * 
+	 *
 	 * @param element the element
 	 * @return the file that contains the given element of <code>null</code>
 	 * @noreference This method is not intended to be referenced by clients.
@@ -76,5 +76,5 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	final public IFile internalGetFile(Object element) {
 		return getFile(element);
 	}
-	
+
 }

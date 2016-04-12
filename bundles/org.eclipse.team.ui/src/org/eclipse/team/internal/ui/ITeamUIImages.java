@@ -12,7 +12,7 @@ package org.eclipse.team.internal.ui;
 
 /**
  * Internal images for team ui.
- * 
+ *
  * @since 3.0
  */
 public interface ITeamUIImages {
@@ -171,19 +171,19 @@ public interface ITeamUIImages {
 	 */
 	public final String IMG_PINNED = "elcl16/pin.gif";  //$NON-NLS-1$
 	/**
-	 * Previous history 
+	 * Previous history
 	 */
 	public final String IMG_PREVIOUS = "elcl16/prev_nav.gif"; //$NON-NLS-1$
-	
+
 	//objects
 	public final String IMG_SITE_ELEMENT = "elcl16/site_element.gif"; //$NON-NLS-1$
-	public final String IMG_CHANGE_FILTER = "elcl16/change_filter.gif"; //$NON-NLS-1$	 
+	public final String IMG_CHANGE_FILTER = "elcl16/change_filter.gif"; //$NON-NLS-1$
 	public final String IMG_COMPRESSED_FOLDER = "obj/compressed_folder_obj.gif"; //$NON-NLS-1$
 	public final String IMG_HIERARCHICAL = "elcl16/hierarchicalLayout.gif"; //$NON-NLS-1$
 	public final String IMG_FLAT = "elcl16/flatLayout.gif"; //$NON-NLS-1$
 	public final String IMG_SYNC_VIEW = "eview16/synch_synch.gif"; //$NON-NLS-1$
 	public final String IMG_CHANGE_SET = "obj/changeset_obj.gif"; //$NON-NLS-1$
-	
+
 	/**
 	 * Images used by the Local History Page
 	 */

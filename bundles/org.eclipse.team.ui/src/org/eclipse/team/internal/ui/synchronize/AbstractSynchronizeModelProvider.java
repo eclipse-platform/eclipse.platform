@@ -35,41 +35,41 @@ import org.eclipse.team.ui.synchronize.*;
  * is based on the synchronization information contained in the provided {@link SyncInfoSet}.
  */
 public abstract class AbstractSynchronizeModelProvider implements ISynchronizeModelProvider, ISyncInfoSetChangeListener, TreeListener {
-	
+
 	/**
 	 * Property constant for the expansion state for the elements displayed by the page. The
 	 * expansion state is a List of resource paths.
 	 */
 	public static final String P_VIEWER_EXPANSION_STATE = TeamUIPlugin.ID  + ".P_VIEWER_EXPANSION_STATE"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant for the selection state for the elements displayed by the page. The
 	 * selection state is a List of resource paths.
 	 */
 	public static final String P_VIEWER_SELECTION_STATE = TeamUIPlugin.ID  + ".P_VIEWER_SELECTION_STATE"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant for the checked state for the elements displayed by the page. The
 	 * checked state is a List of resource paths.
 	 */
 	public static final String P_VIEWER_CHECKED_STATE = TeamUIPlugin.ID  + ".P_VIEWER_CHECKED_STATE"; //$NON-NLS-1$
-	
+
 	private ISynchronizeModelElement root;
-	
+
 	private ISynchronizePageConfiguration configuration;
-	
+
 	private SyncInfoSet set;
-	
+
 	private SynchronizeModelUpdateHandler updateHandler;
-	
+
 	private boolean disposed = false;
 
     private SynchronizePageActionGroup actionGroup;
 
     private ListenerList listeners;
-    
+
     private static final boolean DEBUG = false;
-	
+
 	/**
 	 * Constructor for creating a sub-provider
 	 * @param parentProvider the parent provider
@@ -94,7 +94,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    set.addSyncSetChangedListener(this);
 		}
 	}
-	
+
 	private Tree getTree() {
         return ((Tree)((AbstractTreeViewer)getViewer()).getControl());
     }
@@ -120,7 +120,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    configuration.addActionContribution(actionGroup);
 		}
 	}
-	
+
 	/**
 	 * Return the action group for this provider or <code>null</code>
      * if there are no actions associated with this provider. The action
@@ -150,11 +150,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     protected SynchronizePageActionGroup createActionGroup() {
         return null;
     }
-    
+
     /**
 	 * Return the set that contains the elements this provider is using as
 	 * a basis for creating a presentation model. This cannot be null.
-	 * 
+	 *
 	 * @return the set that contains the elements this provider is
 	 * using as a basis for creating a presentation model.
 	 */
@@ -162,27 +162,27 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public SyncInfoSet getSyncInfoSet() {
 		return set;
 	}
-	
+
 	/**
 	 * Returns the input created by this provider or <code>null</code> if
 	 * {@link #prepareInput(IProgressMonitor)} hasn't been called on this object yet.
-	 * 
+	 *
 	 * @return the input created by this provider.
 	 */
 	@Override
 	public ISynchronizeModelElement getModelRoot() {
 		return root;
 	}
-	
+
 	/**
 	 * Return the page configuration for this provider.
-	 * 
+	 *
 	 * @return the page configuration for this provider.
 	 */
 	public ISynchronizePageConfiguration getConfiguration() {
 		return configuration;
 	}
-	
+
 	/**
 	 * Return the <code>AbstractTreeViewer</code> associated with this
 	 * provider or <code>null</code> if the viewer is not of the proper type.
@@ -213,7 +213,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	    }
 		return getModelRoot();
 	}
-	
+
 	/**
 	 * Calculate the problem marker that should be shown on the given
 	 * element. The returned property can be either
@@ -278,13 +278,13 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 						property = ISynchronizeModelElement.PROPAGATED_WARNING_MARKER_PROPERTY;
 						// Keep going because there may be errors on other resources
 					}
-                    
+
                 }
             }
 		}
 		return property;
 	}
-    
+
 	/**
 	 * Return the logical model depth used for marker propagation
 	 * @param resource the resource
@@ -293,7 +293,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected int getLogicalModelDepth(IResource resource) {
 		return IResource.DEPTH_INFINITE;
 	}
-	
+
 	/**
 	 * Update the label of the given diff node. The label for nodes queued
 	 * using this method will not be updated until <code>firePendingLabelUpdates</code>
@@ -303,7 +303,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void queueForLabelUpdate(ISynchronizeModelElement diffNode) {
 		updateHandler.queueForLabelUpdate(diffNode);
 	}
-    
+
     /**
      * Throw away any old state associated with this provider and
      * rebuild the model from scratch.
@@ -313,19 +313,19 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		if(isRootProvider() && hasViewerState()) {
 			saveViewerState();
 		}
-		
+
 		// Clear existing model, but keep the root node
 		clearModelObjects(getModelRoot());
-		
+
 		// Rebuild the model
 		buildModelObjects(getModelRoot());
-		
+
 		// Notify listeners that model has changed
 		ISynchronizeModelElement root = getModelRoot();
 		if(root instanceof SynchronizeModelElement) {
 			((SynchronizeModelElement)root).fireChanges();
 		}
-		
+
 		if (Utils.canUpdateViewer(getViewer())) {
 		    // If we can update the viewer, that means that the view was updated
 		    // when the model was rebuilt.
@@ -343,7 +343,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    }
 		}
 	}
-	
+
     private void refreshModelRoot() {
         StructuredViewer viewer = getViewer();
 		if (viewer != null && !viewer.getControl().isDisposed()) {
@@ -366,14 +366,14 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			}
 		}
     }
-    
+
 	/**
 	 * For each node create children based on the contents of
 	 * @param node
 	 * @return the diff elements
 	 */
 	protected abstract IDiffElement[] buildModelObjects(ISynchronizeModelElement node);
-	
+
 	/**
 	 * Returns whether the viewer has state to be saved.
      * @return whether the viewer has state to be saved
@@ -401,7 +401,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         }
         return (IResource[]) expanded.toArray(new IResource[expanded.size()]);
     }
-    
+
     /*
      * Return all the resources that are selected in the page.
      * This method should only be called in the UI thread
@@ -411,7 +411,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         StructuredViewer viewer = getViewer();
         return getResources(((IStructuredSelection) viewer.getSelection()).toArray());
     }
-    
+
     /*
      * Return all the resources that are checked in the page.
      * This method should only be called in the UI thread
@@ -422,10 +422,10 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         if (viewer instanceof CheckboxTreeViewer){
         	return getResources(((CheckboxTreeViewer)viewer).getCheckedElements());
         }
-        
+
         return new IResource[0];
     }
-    
+
     /*
      * Expand the resources if they appear in the page.
      * This method should only be called in the UI thread
@@ -452,7 +452,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         if (!expandedElements.isEmpty())
             ((AbstractTreeViewer) viewer).setExpandedElements(expandedElements.toArray());
     }
-    
+
     protected IResource[] getResources(Object[] objects) {
         Set result = new HashSet();
 		if (objects.length > 0) {
@@ -466,11 +466,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);
     }
-    
+
     private void clearResourceCache(String configProperty) {
         getConfiguration().setProperty(configProperty, null);
     }
-    
+
     private void cacheResources(IResource[] resources, String configProperty) {
 		if (resources.length > 0) {
 			ISynchronizePageConfiguration config = getConfiguration();
@@ -490,7 +490,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    clearResourceCache(configProperty);
 		}
     }
-    
+
     private IResource[] getCachedResources(String configProperty) {
         List paths = (List)getConfiguration().getProperty(configProperty);
         if (paths == null)
@@ -506,7 +506,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		}
 		return (IResource[]) resources.toArray(new IResource[resources.size()]);
     }
-    
+
     /**
      * Save the viewer state (expansion and selection)
      */
@@ -515,7 +515,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	    final StructuredViewer viewer = getViewer();
 		if (viewer != null && !viewer.getControl().isDisposed() && viewer instanceof AbstractTreeViewer) {
 			//check to see if we should store the checked states of the tree
-			
+
 			final boolean storeChecks = ((SynchronizePageConfiguration)configuration).getViewerStyle() == SynchronizePageConfiguration.CHECKBOX;
 			final IResource[][] expandedResources = new IResource[1][0];
 			final IResource[][] selectedResources = new IResource[1][0];
@@ -531,7 +531,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 					}
 				}
 			});
-			
+
 			// Save expansion and selection
 			cacheResources(expandedResources[0], P_VIEWER_EXPANSION_STATE);
 			cacheResources(selectedResources[0], P_VIEWER_SELECTION_STATE);
@@ -587,12 +587,12 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
          StructuredViewer viewer = getViewer();
          if (!(viewer instanceof CheckboxTreeViewer))
         	 return;
-         
+
          for (int j = 0; j < resourcesToCheck.length; j++) {
              IResource resource = resourcesToCheck[j];
              if (resource.getType() != IResource.FILE)
             	 continue;
-             
+
  			 ISynchronizeModelElement[] elements = getModelObjects(resource);
              // Only expand when there is one element per resource
              if (elements.length == 1) {
@@ -605,7 +605,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
          if (!checkedElements.isEmpty())
              ((CheckboxTreeViewer) viewer).setCheckedElements(checkedElements.toArray());
     }
-    
+
     /*
      * Convert a path to a resource by first looking in the resource
      * tree and, if that fails, by using the path format to create
@@ -637,7 +637,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public void treeCollapsed(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.swt.events.TreeListener#treeExpanded(org.eclipse.swt.events.TreeEvent)
      */
@@ -645,7 +645,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public void treeExpanded(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
     }
-    
+
     /**
 	 * Return all the model objects in this provider that represent the given resource
      * @param resource the resource
@@ -660,7 +660,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public void saveState() {
 		saveViewerState();
 	}
-	
+
     /**
 	 * Method invoked when a sync element is added or removed or its state changes.
 	 * This method can be invoked from the UI thread or a background thread.
@@ -677,7 +677,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			updateHandler.updateParentLabels(element);
 		}
 	}
-	
+
 	/**
 	 * Return whether the given model element represents a conflict.
 	 * @param element the element being tested
@@ -686,7 +686,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected boolean isConflicting(ISynchronizeModelElement element) {
 		return (element.getKind() & SyncInfo.DIRECTION_MASK) == SyncInfo.CONFLICTING;
 	}
-	
+
 	/**
 	 * Dispose of the provider
 	 */
@@ -710,7 +710,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	    }
 		this.disposed = true;
 	}
-	
+
     private boolean isRootProvider() {
         return updateHandler.getProvider() == this;
     }
@@ -732,7 +732,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
      * @return one or more lowest level parents that could contain the resource
      */
     public abstract ISynchronizeModelElement[] getClosestExistingParents(IResource resource);
-    
+
 	/**
 	 * Handle the changes made to the viewer's <code>SyncInfoSet</code>.
 	 * This method delegates the changes to the three methods <code>handleResourceChanges(ISyncInfoSetChangeEvent)</code>,
@@ -770,7 +770,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * @param event
 	 */
 	protected abstract void handleResourceRemovals(ISyncInfoTreeChangeEvent event);
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -787,7 +787,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
             }, true /* preserve expansion */);
 		}
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -796,7 +796,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         // Not handled
 
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -804,7 +804,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
         reset();
     }
-    
+
 	protected void addToViewer(ISynchronizeModelElement node) {
 	    if (DEBUG) {
 	        System.out.println("Adding model element " + node.getName()); //$NON-NLS-1$
@@ -825,7 +825,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		}
 		updateHandler.nodeAdded(node, this);
 	}
-	
+
 	/*
      * Propagate the marker property to the parent if it is not already there.
      * Only propagate warnings if the parent isn't an error already.
@@ -872,7 +872,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			updateHandler.nodeRemoved(element, this);
         }
 	}
-	
+
 	/**
 	 * Clear the model objects from the diff tree, cleaning up any cached state
 	 * (such as resource to model object map). This method recurses deeply on
@@ -898,7 +898,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    if (parent != null) parent.remove(node);
 	    }
 	}
-	
+
 	/**
 	 * Method that subclasses can override when clearing model objects.
      * @param node the node to be cleared recursively
@@ -948,7 +948,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         SyncInfo info = getSyncInfoSet().getSyncInfo(resource);
         return (info != null && info.getKind() != SyncInfo.IN_SYNC);
     }
-    
+
     /**
 	 * Return the provider that created and manages the given
 	 * model element. The default is to return the receiver.
@@ -968,7 +968,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void doAdd(ISynchronizeModelElement parent, ISynchronizeModelElement element) {
         updateHandler.doAdd(parent, element);
 	}
-	
+
 	/**
 	 * Remove the element from the viewer
 	 * @param elements the elements to be removed
@@ -988,7 +988,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
             }
 	    }
 	}
-	
+
 	/**
 	 * This is a callback from the model update handler that gets invoked
 	 * when a node is added to the viewer. It is only invoked for the
@@ -999,7 +999,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void nodeAdded(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
 	    // Default is to do nothing
 	}
-	
+
 	/**
 	 * This is a callback from the model update handler that gets invoked
 	 * when a node is removed from the viewer. It is only invoked for the
@@ -1011,7 +1011,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void nodeRemoved(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
 	    // Default is to do nothing
 	}
-	
+
     /**
 	 * This is a callback from the model update handler that gets invoked
 	 * when a node is cleared from the model. It is only invoked for the
@@ -1022,7 +1022,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     public void modelObjectCleared(ISynchronizeModelElement node) {
         // Default is to do nothing
     }
-    
+
     @Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
         synchronized (this) {
@@ -1044,7 +1044,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
             }
         }
     }
-    
+
 	protected void firePropertyChange(String key, Object oldValue, Object newValue) {
 		Object[] allListeners;
 		synchronized(this) {
@@ -1065,7 +1065,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			});
 		}
 	}
-	
+
     /**
      * Wait until the provider is done processing any events and
      * the page content are up-to-date.
@@ -1085,7 +1085,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		}
 		monitor.worked(1);
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -1103,7 +1103,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         }
         return name + ": " + name2; //$NON-NLS-1$
     }
-    
+
     /**
      * Execute a runnable which performs an update of the model being displayed
      * by this provider. The runnable should be executed in a thread-safe manner

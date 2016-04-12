@@ -27,9 +27,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 public class TeamAdapterFactory implements IAdapterFactory {
 
 	private DiffNodeWorkbenchAdapter diffNodeAdapter = new DiffNodeWorkbenchAdapter();
-	
+
 	private static final ISynchronizationCompareAdapter COMPARE_ADAPTER = new ResourceModelPersistenceAdapter();
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
 	 */
@@ -56,7 +56,7 @@ public class TeamAdapterFactory implements IAdapterFactory {
 			RepositoryProviderType rpt = (RepositoryProviderType) adaptableObject;
 			return TeamUIPlugin.getPlugin().getDecoratedStateProvider(rpt);
 		}
-		
+
 		if (IFileRevision.class == adapterType && adaptableObject instanceof FileRevisionEditorInput) {
 			return ((FileRevisionEditorInput)adaptableObject).getFileRevision();
 		}
@@ -68,9 +68,9 @@ public class TeamAdapterFactory implements IAdapterFactory {
 	 */
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { 
+		return new Class[] {
 				IWorkbenchAdapter.class,
-				IResourceMappingMerger.class, 
+				IResourceMappingMerger.class,
 				ISynchronizationCompareAdapter.class,
 				ISynchronizationScopeParticipantFactory.class,
 				ITeamStateProvider.class ,

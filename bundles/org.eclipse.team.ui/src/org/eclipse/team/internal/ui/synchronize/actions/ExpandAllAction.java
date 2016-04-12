@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.*;
 
 
 public class ExpandAllAction extends Action implements ISelectionChangedListener {
-	
+
 	private final AbstractTreeViewer viewer;
-	
+
 	public ExpandAllAction(AbstractTreeViewer viewer) {
 		this.viewer = viewer;
 		viewer.addSelectionChangedListener(this);
@@ -28,7 +28,7 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 	public void run() {
 		expandAllFromSelection();
 	}
-	
+
 	protected void expandAllFromSelection() {
 		AbstractTreeViewer tree = viewer;
 		if (tree == null) return;

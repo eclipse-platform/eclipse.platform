@@ -46,7 +46,7 @@ public class ImportProjectSetAction extends ActionDelegate implements IObjectAct
 						if (isRunInBackgroundPreferenceOn()) {
 							ImportProjectSetOperation op = new ImportProjectSetOperation(null, file.getLocation().toString(), new IWorkingSet[0]);
 							op.run();
-						} else { 
+						} else {
 							ProjectSetImporter.importProjectSet(file.getLocation().toString(), shell, monitor);
 						}
 					}
@@ -78,5 +78,5 @@ public class ImportProjectSetAction extends ActionDelegate implements IObjectAct
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getBoolean(
 				IPreferenceIds.RUN_IMPORT_IN_BACKGROUND);
 	}
-	
+
 }

@@ -24,11 +24,11 @@ public class TeamDecoratorDescription {
 	private static final String ATT_DECORATED_DIRECTION_ID = "decoratedDirection"; //$NON-NLS-1$
 	private static final String OUTGOING_FLAG = "OUTGOING"; //$NON-NLS-1$
 	private static final String INCOMING_FLAG = "INCOMING"; //$NON-NLS-1$
-	
+
 	private String repositoryId;
 	private String decoratorId;
 	private int decoratedDirection;
-	
+
 	public TeamDecoratorDescription(IExtension extension) throws CoreException {
 		readExtension(extension);
 	}
@@ -68,7 +68,7 @@ public class TeamDecoratorDescription {
 		if (repositoryId == null)
 			fail(NLS.bind(TeamUIMessages.TeamContentProviderDescriptor_1, new String[] { ATT_DECORATOR_ID, TAG_TEAM_DECORATOR, id == null ? "" : id})); //$NON-NLS-1$
 	}
-	
+
 	protected void fail(String reason) throws CoreException {
 		throw new CoreException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, reason, null));
 	}

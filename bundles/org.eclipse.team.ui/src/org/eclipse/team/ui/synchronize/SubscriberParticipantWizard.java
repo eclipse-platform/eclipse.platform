@@ -19,13 +19,13 @@ import org.eclipse.team.ui.TeamUI;
  * This is a convenience class for creating wizards for use with the
  * <code>org.eclipse.team.ui.synchronizeWizard</code> extension point
  * that create a {@link SubscriberParticipant}.
- * 
+ *
  * @since 3.2
  */
 public abstract class SubscriberParticipantWizard extends ParticipantSynchronizeWizard {
 
 	private GlobalRefreshResourceSelectionPage selectionPage;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
 	 */
@@ -34,7 +34,7 @@ public abstract class SubscriberParticipantWizard extends ParticipantSynchronize
 		selectionPage = new GlobalRefreshResourceSelectionPage(getRootResources());
 		return selectionPage;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
 	 */
@@ -48,11 +48,11 @@ public abstract class SubscriberParticipantWizard extends ParticipantSynchronize
 			participant.run(null /* no site */);
 		}
 	}
-	
+
 	/**
 	 * Method called from {@link #createParticipant()} to create a
 	 * {@link SubscriberParticipant} for the given scope.
-	 * 
+	 *
 	 * @param scope the selected scope
 	 * @return a synchronize participant that will be added to the Synchronize
 	 *         view

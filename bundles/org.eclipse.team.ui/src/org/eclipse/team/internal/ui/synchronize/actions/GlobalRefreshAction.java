@@ -30,8 +30,8 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 
 /**
- * A global refresh action that allows the user to select the participant to refresh 
- * or the default action is to refresh the last selected participant. Participants are 
+ * A global refresh action that allows the user to select the participant to refresh
+ * or the default action is to refresh the last selected participant. Participants are
  * only listed if they support
  * <p>
  * This action is normally associated with the Team action set and is enabled by default
@@ -42,7 +42,7 @@ import org.eclipse.ui.handlers.IHandlerService;
 public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbenchWindowPulldownDelegate, ISynchronizeParticipantListener {
 
 	public final static String NO_DEFAULT_PARTICPANT = "none"; //$NON-NLS-1$
-	
+
 	private MenuManager menuManager;
 	private Action synchronizeAction;
 	private IWorkbenchWindow window;
@@ -80,10 +80,10 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		if(menuManager != null) {
 			menuManager.dispose();
 		}
-		
+
 		// participant listener
 		TeamUI.getSynchronizeManager().removeSynchronizeParticipantListener(this);
-		
+
 		// handlers
 		if (window != null) {
 			IHandlerService hs = (IHandlerService)window.getService(IHandlerService.class);
@@ -139,7 +139,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
 
-		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) { 
+		synchronizeAction = new Action(TeamUIMessages.GlobalRefreshAction_4) {
 			@Override
 			public void run() {
 				IWizard wizard = new GlobalSynchronizeWizard();
@@ -149,7 +149,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		};
 		synchronizeAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW));
 		synchronizeAction.setActionDefinitionId("org.eclipse.team.ui.synchronizeAll"); //$NON-NLS-1$
-		
+
 		IHandlerService hs = (IHandlerService)window.getService(IHandlerService.class);
 		if (hs != null) {
 			// hook up actions to the commands
@@ -162,7 +162,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 				}
 			};
 			syncAll = hs.activateHandler("org.eclipse.team.ui.synchronizeAll", handler); //$NON-NLS-1$
-					
+
 			handler = new AbstractHandler() {
 				@Override
 				public Object execute(ExecutionEvent event)
@@ -188,7 +188,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			synchronizeAction.run();
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
@@ -199,7 +199,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		actionProxy = action;
 		updateTooltipText();
 	}
-		
+
 	private void run(ISynchronizeParticipantReference participant) {
 		ISynchronizeParticipant p;
 		try {
@@ -210,8 +210,8 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			Utils.handle(e);
 		}
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsAdded(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
 	 */
@@ -247,7 +247,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			}
 		});
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
@@ -257,7 +257,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 	public void selectionChanged(IAction action, ISelection selection) {
 		actionProxy = action;
 	}
-	
+
 	protected void updateTooltipText() {
 		if (actionProxy != null) {
 			String id = TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT);
@@ -265,11 +265,11 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 			if (!id.equals(NO_DEFAULT_PARTICPANT)) {
 				ISynchronizeParticipantReference ref = TeamUI.getSynchronizeManager().get(id, secondaryId);
 				if (ref != null) {
-					actionProxy.setToolTipText(NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { ref.getDisplayName() })); 
+					actionProxy.setToolTipText(NLS.bind(TeamUIMessages.GlobalRefreshAction_5, new String[] { ref.getDisplayName() }));
 					return;
 				}
 			}
-			actionProxy.setToolTipText(TeamUIMessages.GlobalRefreshAction_4); 
+			actionProxy.setToolTipText(TeamUIMessages.GlobalRefreshAction_4);
 		}
 	}
 }

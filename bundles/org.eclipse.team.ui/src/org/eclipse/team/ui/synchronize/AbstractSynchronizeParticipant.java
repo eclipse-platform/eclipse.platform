@@ -37,23 +37,23 @@ import org.eclipse.ui.PartInitException;
  * @since 3.0
  */
 public abstract class AbstractSynchronizeParticipant extends PlatformObject implements ISynchronizeParticipant {
-	
+
 	/**
 	 * Property key used in the property change event fired when the pinned
 	 * state of a participant changes.
 	 */
 	public static final String P_PINNED = "org.eclipse.team.pinned"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property key used in the property change event fired when the
 	 * participants refresh schedule changes.
 	 * @since 3.2
 	 */
 	public static final String P_SCHEDULED = "org.eclipse.team.schedule"; //$NON-NLS-1$
-    
+
 	// key for persisting the pinned state of a participant
 	private final static String CTX_PINNED = "root"; //$NON-NLS-1$
-	
+
 	// property listeners
 	private PropertyChangeHandler fChangeHandler;
 
@@ -67,7 +67,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 
 	/**
 	 * Default constructor is a no-op. Subclasses that are persistable must support a no-arg constructor
-	 * and 
+	 * and
 	 */
 	public AbstractSynchronizeParticipant() {
 	}
@@ -96,7 +96,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public String getId() {
 		return fId;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getSecondaryId()
 	 */
@@ -109,7 +109,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * Returns the help context id of this participant or value of
 	 * <code>IHelpContextIds.SYNC_VIEW</code> when no specific id has been
 	 * provided.
-	 * 
+	 *
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getHelpContextId()
 	 * @see org.eclipse.team.internal.ui.IHelpContextIds#SYNC_VIEW
 	 * @since 3.5
@@ -139,16 +139,16 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public final boolean isPinned() {
 		return pinned;
 	}
-	
+
 	/**
 	 * Called when the pinned state is changed. Allows subclasses to react to pin state changes.
-	 *  
+	 *
 	 * @param pinned whether the participant is pinned.
 	 */
 	protected void pinned(boolean pinned) {
 		// Subclasses can re-act to changes in the pinned state
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -159,7 +159,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		ISynchronizeParticipant other = (ISynchronizeParticipant)obj;
 		return getId().equals(other.getId()) && Utils.equalObject(getSecondaryId(), other.getSecondaryId());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -167,11 +167,11 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public int hashCode() {
 		return Utils.getKey(getId(), getSecondaryId()).hashCode();
 	}
-	
+
 	/**
 	 * Return whether this participant can be refreshed. Participants that can
 	 * be refreshed may have a Synchronize menu item contributed to their context menu
-	 * and can also be refreshed from the Synchronize drop-down toolbar item. 
+	 * and can also be refreshed from the Synchronize drop-down toolbar item.
 	 * When refreshed from the toolbar item, the {@link ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)}
 	 * method is called.
 	 * @return whether this participant can be refreshed
@@ -179,7 +179,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public boolean doesSupportSynchronize() {
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
 	 */
@@ -203,7 +203,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 
 	/**
 	 * Notify all listeners that the given property has changed.
-	 * 
+	 *
 	 * @param source the object on which a property has changed
 	 * @param property identifier of the property that has changed
 	 * @param oldValue the old value of the property, or <code>null</code>
@@ -226,7 +226,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 
 		// Id
 		fId = config.getAttribute("id"); //$NON-NLS-1$
-		
+
 		// Title.
 		fName = config.getAttribute("name"); //$NON-NLS-1$
 		if (fName == null) {
@@ -248,14 +248,14 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		if(descriptor instanceof SynchronizeParticipantDescriptor) {
 			setInitializationData(((SynchronizeParticipantDescriptor)descriptor).getConfigurationElement(), null, null);
 		} else {
-			throw new TeamException(TeamUIMessages.AbstractSynchronizeParticipant_4); 
+			throw new TeamException(TeamUIMessages.AbstractSynchronizeParticipant_4);
 		}
 	}
 
 	/**
 	 * Sets the name of this participant to the specified value and notifies
 	 * property listeners of the change.
-	 * 
+	 *
 	 * @param name the new name
 	 */
 	protected void setName(String name) {
@@ -263,11 +263,11 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		fName = name;
 		firePropertyChange(this, IBasicPropertyConstants.P_TEXT, old, name);
 	}
-	
+
 	/**
 	 * Sets the image descriptor for this participant to the specified value and
 	 * notifies property listeners of the change.
-	 * 
+	 *
 	 * @param imageDescriptor the new image descriptor
 	 */
 	protected void setImageDescriptor(ImageDescriptor imageDescriptor) {
@@ -275,16 +275,16 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		fImageDescriptor = imageDescriptor;
 		firePropertyChange(this, IBasicPropertyConstants.P_IMAGE, old, imageDescriptor);
 	}
-	
+
 	/**
 	 * Sets the secondary id for this participant.
-	 * 
+	 *
 	 * @param secondaryId the secondary id for this participant.
 	 */
 	protected void setSecondaryId(String secondaryId) {
-		this.fSecondaryId = secondaryId; 
+		this.fSecondaryId = secondaryId;
 	}
-	
+
 	/**
 	 * Classes that are persisted must override this method and perform
 	 * the following initialization.
@@ -329,16 +329,16 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	}
 
     /**
-	 * This method is invoked after a page configuration is created but before it is returned by the 
+	 * This method is invoked after a page configuration is created but before it is returned by the
 	 * <code>createPageConfiguration</code> method. Subclasses can implement this method to
 	 * tailor the configuration in ways appropriate to the participant.
-	 * 
+	 *
 	 * @param configuration the newly create page configuration
 	 */
 	protected abstract void initializeConfiguration(ISynchronizePageConfiguration configuration);
-	
+
 	/**
-	 * Default implementation will update the labels in the given configuration using 
+	 * Default implementation will update the labels in the given configuration using
 	 * information from the provided element if it adapts to <code>SyncInfo</code>.
 	 * It will also cache the contents for the remote and base if the element is
 	 * sync info based.
@@ -348,7 +348,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * @param monitor a progress monitor that can be used if contacting a server to prepare the element and configuration
 	 * @throws TeamException if an error occurred that should prevent the display of the compare editor containing
 	 * the element
-	 * 
+	 *
 	 * @since 3.1
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#prepareCompareInput(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -362,7 +362,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
             (node).cacheContents(monitor);
 	    }
 	}
-	
+
 	/*
 	 * Get the sync info node from the element using the adaptable mechanism.
 	 * A <code>null</code> is returned if the element doesn't have a sync info
@@ -375,7 +375,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	    }
 	    return null;
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getPreferencePages()
      */
@@ -383,7 +383,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public PreferencePage[] getPreferencePages() {
         return new PreferencePage[] { new SyncViewerPreferencePage() };
     }
-    
+
 	/**
 	 * Return whether this participant supports the contribution of actions to
 	 * the context menu by contributing a <code>viewerContribution</code>
@@ -392,9 +392,9 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * the <code>id</code> of the participant is used as the <code>targetId</code>. Here is
 	 * an extension that could be added to the plugin manifest to contribute an action to
 	 * the context menu for a participant
-	 * 
+	 *
 	 * <pre>
-	 *    &lt;extension point="org.eclipse.ui.popupMenus"&gt;          
+	 *    &lt;extension point="org.eclipse.ui.popupMenus"&gt;
 	 * 		&lt;viewerContribution
 	 *             id="org.eclipse.team.cvs.ui.viewContributionId"
 	 *             targetID="org.eclipse.team.cvs.ui.cvsworkspace-participant"&gt;
@@ -409,8 +409,8 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * 		&lt;/viewerContribution&gt;
 	 *   &lt;/extension&gt;
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
      * @return whether this participant supports the contribution of actions to
 	 * the context menu using the <code>org.eclipse.ui.popupMenus</code> extension point
      * @since 3.1

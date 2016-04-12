@@ -28,15 +28,15 @@ import org.eclipse.ui.IWorkbenchPart;
  * the operation is run in the background the elements the operation is created
  * with will be updated to show that they are busy while the operation is
  * running and will be marked un-busy after the operation completes.
- * 
+ *
  * @see SyncInfoSet
  * @see SynchronizeModelAction
  * @since 3.0
  */
 public abstract class SynchronizeModelOperation extends TeamOperation {
-	
+
 	private IDiffElement[] elements;
-	
+
 	/*
 	 * Helper method for extracting the part safely from a configuration
 	 */
@@ -49,7 +49,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Helper method for extracting the runnable context safely from a configuration
 	 */
@@ -59,10 +59,10 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Create an operation that will operate on the given diff elements.
-	 * 
+	 *
 	 * @param configuration the participant configuration in which this
 	 * operation is run
 	 * @param elements the model elements this operation will run with
@@ -75,7 +75,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	/**
 	 * Returns a sync info set that contains the {@link SyncInfo}for the
 	 * elements of this operations.
-	 * 
+	 *
 	 * @return the sync info set that contains the elements this operation is
 	 * operating on.
 	 */
@@ -91,7 +91,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		super.scheduled(event);
 		markBusy(elements, true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 	 */
@@ -100,7 +100,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		markBusy(elements, false);
 		super.done(event);
 	}
-	
+
 	private void markBusy(IDiffElement[] elements, boolean isBusy) {
 		for (int i = 0; i < elements.length; i++) {
 			IDiffElement element = elements[i];
@@ -109,10 +109,10 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 			}
 		}
 	}
-	
+
 	/*
 	 * Return the selected SyncInfo for which this action is enabled.
-	 * 
+	 *
 	 * @return the selected SyncInfo for which this action is enabled.
 	 */
 	private SyncInfo[] getSyncInfos() {
@@ -125,11 +125,11 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		}
 		return (SyncInfo[]) filtered.toArray(new SyncInfo[filtered.size()]);
 	}
-	
+
 	/*
 	 * Return a sync info set that contains the given sync info
 	 */
 	private SyncInfoSet makeSyncInfoSetFromSelection(SyncInfo[] infos) {
-		return new SyncInfoSet(infos);		
+		return new SyncInfoSet(infos);
 	}
 }

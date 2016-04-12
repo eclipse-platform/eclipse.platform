@@ -15,26 +15,26 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 
 /**
  * A synchronize scope whose roots are the workspace.
- * 
+ *
  * @since 3.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class WorkspaceScope extends AbstractSynchronizeScope  {
-	
+
 	/**
 	 * Create the resource scope that indicates that the subscriber roots should be used
 	 */
 	public WorkspaceScope() {
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getName()
 	 */
 	@Override
 	public String getName() {
-		return TeamUIMessages.WorkspaceScope_0; 
+		return TeamUIMessages.WorkspaceScope_0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getRoots()
 	 */

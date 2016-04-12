@@ -49,7 +49,7 @@ public class ApplyPatchModelCompareEditorInput extends ModelCompareEditorInput {
 					TeamUIPlugin.log(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
-			
+
 		};
 		Utils.initAction(markAsMergedAction, "action.markAsMerged."); //$NON-NLS-1$
 		markAsMergedAction.setEnabled(markAsMergedAction.isEnabled());

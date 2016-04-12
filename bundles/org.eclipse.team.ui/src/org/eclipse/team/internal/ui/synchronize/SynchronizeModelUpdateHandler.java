@@ -42,23 +42,23 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  */
 public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implements IResourceChangeListener, ISyncInfoSetChangeListener {
     private static final IWorkspaceRoot ROOT = ResourcesPlugin.getWorkspace().getRoot();
-    
+
     // Event that indicates that the markers for a set of elements has changed
 	private static final int MARKERS_CHANGED = 1;
 	private static final int BUSY_STATE_CHANGED = 2;
 	private static final int RESET = 3;
 	private static final int SYNC_INFO_SET_CHANGED = 4;
-	
+
 	private AbstractSynchronizeModelProvider provider;
-	
+
 	private Set pendingLabelUpdates = Collections.synchronizedSet(new HashSet());
-	
+
 	// Flag to indicate the need for an early dispath in order to show
 	// busy for elements involved in an operation
 	private boolean dispatchEarly = false;
-	
+
 	private static final int EARLY_DISPATCH_INCREMENT = 100;
-	
+
 	/**
 	 * Custom event for posting marker changes
 	 */
@@ -72,12 +72,12 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             return elements;
         }
 	}
-	
+
 	/**
 	 * Custom event for posting busy state changes
 	 */
 	class BusyStateChangeEvent extends Event {
-        
+
         private final ISynchronizeModelElement element;
         private final boolean isBusy;
         public BusyStateChangeEvent(ISynchronizeModelElement element, boolean isBusy) {
@@ -92,7 +92,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             return isBusy;
         }
 	}
-	
+
 	/**
 	 * Custom event for posting sync info set changes
 	 */
@@ -106,7 +106,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             return event;
         }
 	}
-	
+
 	private IPropertyChangeListener listener = new IPropertyChangeListener() {
 		@Override
 		public void propertyChange(final PropertyChangeEvent event) {
@@ -119,22 +119,22 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	};
 
     private boolean performingBackgroundUpdate;
-    
+
     /*
      * Map used to keep track of additions so they can be added in batch at the end of the update
      */
     private Map additionsMap;
-    
+
 	/**
      * Create the marker update handler.
      */
     public SynchronizeModelUpdateHandler(AbstractSynchronizeModelProvider provider) {
-        super(TeamUIMessages.SynchronizeModelProvider_0, TeamUIMessages.SynchronizeModelUpdateHandler_0); // 
+        super(TeamUIMessages.SynchronizeModelProvider_0, TeamUIMessages.SynchronizeModelUpdateHandler_0); //
         this.provider = provider;
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         provider.getSyncInfoSet().addSyncSetChangedListener(this);
     }
-	
+
     /**
      * Return the marker types that are of interest to this handler.
      * @return the marker types that are of interest to this handler
@@ -142,7 +142,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     protected String[] getMarkerTypes() {
 		return new String[] {IMarker.PROBLEM};
 	}
-    
+
 	/**
 	 * Return the <code>AbstractTreeViewer</code> associated with this
 	 * provider or <code>null</code> if the viewer is not of the proper type.
@@ -151,7 +151,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	public StructuredViewer getViewer() {
 		return provider.getViewer();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
@@ -160,7 +160,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			String[] markerTypes = getMarkerTypes();
 			Set handledResources = new HashSet();
 			Set changes = new HashSet();
-			
+
 			// Accumulate all distinct resources that have had problem marker
 			// changes
 			for (int idx = 0; idx < markerTypes.length; idx++) {
@@ -180,16 +180,16 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 						}
 					}
 				}
-			
+
 			if (!changes.isEmpty()) {
 			    updateMarkersFor((ISynchronizeModelElement[]) changes.toArray(new ISynchronizeModelElement[changes.size()]));
 		}
 	}
-	
+
     private void updateMarkersFor(ISynchronizeModelElement[] elements) {
         queueEvent(new MarkerChangeEvent(elements), false /* not on front of queue */);
     }
-    
+
     protected void updateBusyState(ISynchronizeModelElement element, boolean isBusy) {
         queueEvent(new BusyStateChangeEvent(element, isBusy), false /* not on front of queue */);
     }
@@ -266,7 +266,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			return true;
         }
     }
-    
+
 	/**
 	 * Forces the viewer to update the labels for queued elemens
 	 * whose label has changed during this round of changes. This method
@@ -281,17 +281,17 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			pendingLabelUpdates.clear();
 		}
 	}
-	
+
 	/*
 	 * Forces the viewer to update the labels for the given elements
 	 */
 	private void updateLabels(Object[] elements) {
 	    StructuredViewer tree = getViewer();
-		if (Utils.canUpdateViewer(tree)) {	
+		if (Utils.canUpdateViewer(tree)) {
 			tree.update(elements, null);
 		}
 	}
-	
+
 	/**
 	 * Queue all the parent elements for a label update.
 	 * @param element the element whose label and parent labels need to be updated
@@ -303,7 +303,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			queueForLabelUpdate(element);
 		}
 	}
-	
+
 	/**
 	 * Update the label of the given diff node. Diff nodes
 	 * are accumulated and updated in a single call.
@@ -312,7 +312,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	protected void queueForLabelUpdate(ISynchronizeModelElement diffNode) {
 		pendingLabelUpdates.add(diffNode);
 	}
-	
+
 	/**
 	 * Calculate and propagate problem markers in the element model
 	 * @param element the ssynchronize element
@@ -331,7 +331,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			}
 		}
 	}
-	
+
 	// none -> error
 	// error -> none
 	// none -> warning
@@ -341,13 +341,13 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	private boolean hadProblemProperty(ISynchronizeModelElement element, String property) {
 		boolean hadError = element.getProperty(ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY);
 		boolean hadWarning = element.getProperty(ISynchronizeModelElement.PROPAGATED_WARNING_MARKER_PROPERTY);
-		
+
 		// Force recalculation of parents of phantom resources
 		IResource resource = element.getResource();
 		if(resource != null && resource.isPhantom()) {
 			return true;
 		}
-		
+
 		if(hadError) {
 			if(! (property == ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY)) {
 				element.setPropertyToRoot(ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY, false);
@@ -358,7 +358,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				// error -> none
 				// recalculate parents
 				return true;
-			}	
+			}
 			return false;
 		} else if(hadWarning) {
 			if(! (property == ISynchronizeModelElement.PROPAGATED_WARNING_MARKER_PROPERTY)) {
@@ -370,8 +370,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				}
 				// warning ->  none
 				return true;
-			}	
-			return false;		
+			}
+			return false;
 		} else {
 			if(property == ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY) {
 				// none -> error
@@ -381,7 +381,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				// none -> warning
 				element.setPropertyToRoot(property, true);
 				return true;
-			}	
+			}
 			return false;
 		}
 	}
@@ -392,13 +392,13 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     private void reset() {
         queueEvent(new ResourceEvent(ROOT, RESET, IResource.DEPTH_INFINITE), false);
     }
-    
+
     public void dispose() {
         shutdown();
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         provider.getSyncInfoSet().removeSyncSetChangedListener(this);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#getShortDispatchDelay()
      */
@@ -414,7 +414,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /**
      * This method is invoked whenever a node is added to the viewer
      * by the provider or a sub-provider. The handler adds an update
-     * listener to the node and notifies the root provider that 
+     * listener to the node and notifies the root provider that
      * a node was added.
      * @param element the added element
      * @param provider the provider that added the element
@@ -430,8 +430,8 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /**
      * This method is invoked whenever a node is removed the viewer
      * by the provider or a sub-provider. The handler removes any
-     * listener and notifies the root provider that 
-     * a node was removed. The node removed may have children for which 
+     * listener and notifies the root provider that
+     * a node was removed. The node removed may have children for which
      * a nodeRemoved callback was not invoked (see modelObjectCleared).
      * @param element the removed element
      * @param provider the provider that added the element
@@ -457,7 +457,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             System.out.println("Node cleared: " + getDebugDisplayLabel(node)); //$NON-NLS-1$
         }
     }
-    
+
     private String getDebugDisplayLabel(ISynchronizeModelElement node) {
         if (node == null) {
             return "ROOT"; //$NON-NLS-1$
@@ -471,7 +471,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     private String getDebugDisplayLabel(AbstractSynchronizeModelProvider provider2) {
         return provider2.toString();
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -516,9 +516,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		// When errors occur we currently don't process them. It may be possible to decorate
 		// elements in the model with errors, but currently we prefer to let ignore and except
-		// another listener to display them. 
+		// another listener to display them.
     }
-    
+
     public ISynchronizeModelProvider getProvider() {
         return provider;
     }
@@ -526,14 +526,14 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     public void connect(IProgressMonitor monitor) {
         getProvider().getSyncInfoSet().connect(this, monitor);
     }
-    
+
     public void runViewUpdate(final Runnable runnable, final boolean preserveExpansion) {
         if (Utils.canUpdateViewer(getViewer()) || isPerformingBackgroundUpdate()) {
             internalRunViewUpdate(runnable, preserveExpansion);
         } else {
             if (Thread.currentThread() != getEventHandlerJob().getThread()) {
                 // Run view update should only be called from the UI thread or
-                // the update handler thread. 
+                // the update handler thread.
                 // We will log the problem for now and make it an assert later
                 TeamUIPlugin.log(IStatus.WARNING, "View update invoked from invalid thread", new TeamException("View update invoked from invalid thread")); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -555,7 +555,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	        }
         }
     }
-    
+
     /*
      * Return whether the event handler is performing a background view update.
      * In other words, a client has invoked <code>performUpdate</code>.
@@ -674,7 +674,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
                     performingBackgroundUpdate = false;
                 }
                 updateView();
-                
+
             }
             private void recordExpandedResources() {
         	    final StructuredViewer viewer = getViewer();
@@ -705,7 +705,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             }
         };
     }
-    
+
 	/*
 	 * Execute the RunnableEvent
 	 */
@@ -722,7 +722,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			handleException(e);
 		}
 	}
-    
+
     /**
      * Add the element to the viewer.
      * @param parent the parent of the element which is already added to the viewer

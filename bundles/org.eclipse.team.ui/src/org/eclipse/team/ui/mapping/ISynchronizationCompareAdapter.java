@@ -24,11 +24,11 @@ import org.eclipse.ui.IMemento;
  * <p>
  * Clients should not implement this interface but should subclass {@link SynchronizationCompareAdapter}
  * instead.
- * 
+ *
  * @since 3.2
  */
 public interface ISynchronizationCompareAdapter {
-	
+
 	/**
 	 * Return whether their is a compare input associated with the given object.
 	 * In other words, return <code>true</code> if {@link #asCompareInput(ISynchronizationContext, Object) }
@@ -38,7 +38,7 @@ public interface ISynchronizationCompareAdapter {
 	 * @return whether their is a compare input associated with the given object
 	 */
 	boolean hasCompareInput(ISynchronizationContext context, Object object);
-	
+
 	/**
 	 * Return a compare input for the given model object. Creation of the input
 	 * should be fast. Synchronization information calculations that are longer
@@ -52,14 +52,14 @@ public interface ISynchronizationCompareAdapter {
 	 * if they wish to tailor the compare editor used to show the compare input
 	 * of provide an {@link SaveableComparison} in order to have more control
 	 * over the save lifecycle during a merge.
-	 * 
+	 *
 	 * @param context the synchronization context
 	 * @param o the model object
 	 * @return a compare input or <code>null</code> if the model object is
 	 *         in-sync or otherwise cannot be compared.
 	 */
 	ICompareInput asCompareInput(ISynchronizationContext context, Object o);
-	
+
 	/**
 	 * Get the name associated with the model object of the given mapping.
 	 * This name should be suitable for display to the user.
@@ -67,7 +67,7 @@ public interface ISynchronizationCompareAdapter {
 	 * @return the name of the mapping's model object
 	 */
 	public String getName(ResourceMapping mapping);
-	
+
 	/**
 	 * Get the path associated with the model object
 	 * of the given mapping.
@@ -76,7 +76,7 @@ public interface ISynchronizationCompareAdapter {
 	 * @return the path of the model object of the mapping
 	 */
 	public String getPathString(ResourceMapping mapping);
-	
+
 	/**
 	 * Return an image descriptor that can be displayed as an icon for the
 	 * model object of the given resource mapping.
@@ -86,16 +86,16 @@ public interface ISynchronizationCompareAdapter {
 	 * @since 3.3
 	 */
 	public ImageDescriptor getImageDescriptor(ResourceMapping mapping);
-	
+
 	/**
-	 * Save the given resource mappings from this adapters 
+	 * Save the given resource mappings from this adapters
 	 * model provider into the given memento in a form
 	 * that can be restored at a future time.
 	 * @param mappings the resource mappings to save
 	 * @param memento the memento where the mappings should be saved
 	 */
 	public void save(ResourceMapping[] mappings, IMemento memento);
-	
+
 	/**
 	 * Restore the previously saved resource mappings.
 	 * @param memento a memento
@@ -107,9 +107,9 @@ public interface ISynchronizationCompareAdapter {
 	 * Return the synchronization state of the resource mapping with respect to
 	 * the given team state provider. This method is invoked from instances of
 	 * {@link ITeamStateProvider} when the synchronization state description for
-	 * an element is requested. This method can return -1 to indicate that the state 
+	 * an element is requested. This method can return -1 to indicate that the state
 	 * calculation should be performed using the resources that the element maps to.
-	 * 
+	 *
 	 * @param provider
 	 *            the team state provider
 	 * @param mapping
@@ -121,9 +121,9 @@ public interface ISynchronizationCompareAdapter {
 	 * @return the synchronization state of the element or -1 if the calculation
 	 *         of the state should be done using the resources of the mapping.
 	 * @throws CoreException
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public int getSynchronizationState(ITeamStateProvider provider, ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException;
-	
+
 }

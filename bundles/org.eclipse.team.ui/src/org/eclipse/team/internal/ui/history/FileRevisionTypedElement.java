@@ -30,7 +30,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 
 	private IFileRevision fileRevision;
 	private String author;
-	
+
 	/**
 	 * Create a typed element that wraps the given file revision.
 	 * @param fileRevision the file revision
@@ -38,7 +38,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	public FileRevisionTypedElement(IFileRevision fileRevision){
 		this(fileRevision, null);
 	}
-	
+
 	/**
 	 * Create a typed element that wraps the given file revision.
 	 * @param fileRevision the file revision
@@ -49,7 +49,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 		Assert.isNotNull(fileRevision);
 		this.fileRevision = fileRevision;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.StorageTypedElement#getName()
 	 */
@@ -64,7 +64,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	@Override
 	protected IStorage fetchContents(IProgressMonitor monitor) throws CoreException {
 		return fileRevision.getStorage(monitor);
-	
+
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	public String getContentIdentifier() {
 		return fileRevision.getContentIdentifier();
 	}
-	
+
 	/**
 	 * Return the human readable timestamp of this element.
 	 * @return the human readable timestamp of this element
@@ -84,7 +84,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 		Date dateFromLong = new Date(date);
 		return DateFormat.getDateTimeInstance().format(dateFromLong);
 	}
-	
+
 	/**
 	 * Return the file revision of this element.
 	 * @return the file revision of this element
@@ -92,7 +92,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	public IFileRevision getFileRevision(){
 		return fileRevision;
 	}
-	
+
 	/**
 	 * Return the human readable path of this element.
 	 * @return the human readable path of this element
@@ -103,7 +103,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 			return uri.getPath();
 		return getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
 	 */
@@ -114,7 +114,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 		}
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -122,7 +122,7 @@ public class FileRevisionTypedElement extends StorageTypedElement {
 	public int hashCode() {
 		return fileRevision.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)

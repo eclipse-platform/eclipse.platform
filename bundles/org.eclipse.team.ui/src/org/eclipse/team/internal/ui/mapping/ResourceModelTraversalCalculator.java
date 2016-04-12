@@ -50,7 +50,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		if (resource.getType() == IResource.PROJECT)
 			return IResource.DEPTH_INFINITE;
-		if (resource.getType() == IResource.FILE) 
+		if (resource.getType() == IResource.FILE)
 			return IResource.DEPTH_ZERO;
 		if (path != null && hasNonResource(path))
 			return IResource.DEPTH_INFINITE;
@@ -61,11 +61,11 @@ public class ResourceModelTraversalCalculator {
 		}
 		return IResource.DEPTH_INFINITE;
 	}
-	
+
 	public String getLayout() {
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT);
 	}
-	
+
 	public Object[] filterChildren(IResourceDiffTree diffTree, IResource resource, Object parentOrPath, Object[] children) {
 		if (parentOrPath instanceof TreePath) {
 			TreePath tp = (TreePath) parentOrPath;
@@ -88,7 +88,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		return getTreeChildren(diffTree, resource, children);
 	}
-	
+
 	private boolean hasNonResource(TreePath parentPath) {
 		for (int i = 0; i < parentPath.getSegmentCount(); i++) {
 			Object o = parentPath.getSegment(i);
@@ -98,7 +98,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		return false;
 	}
-	
+
 	private Object[] getCompressedChildren(IResourceDiffTree diffTree, IProject project, Object[] children) {
 		Set result = new HashSet();
 		IDiff[] diffs = diffTree.getDiffs(project, IResource.DEPTH_INFINITE);
@@ -109,7 +109,7 @@ public class ResourceModelTraversalCalculator {
 				IContainer parent = resource.getParent();
 				if (parent.getType() == IResource.FOLDER)
 					result.add(parent);
-				else 
+				else
 					result.add(resource);
 			} else if (resource.getType() == IResource.FOLDER)
 				result.add(resource);
@@ -227,7 +227,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		return true;
 	}
-	
+
 	public String getLabel(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath && hasNonResource((TreePath)elementOrPath)) {
 			return null;
@@ -241,12 +241,12 @@ public class ResourceModelTraversalCalculator {
 				if (!path.isEmpty())
 					return NLS.bind(TeamUIMessages.ResourceModelLabelProvider_0, resource.getName(), path.toString());
 			}
-			if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT) 
+			if (getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 					&& resource.getType() == IResource.FOLDER
 					&& (parent == null || parent instanceof IProject)) {
 				return resource.getProjectRelativePath().toString();
 			}
-			if (getLayout().equals(IPreferenceIds.FLAT_LAYOUT) 
+			if (getLayout().equals(IPreferenceIds.FLAT_LAYOUT)
 					&& resource.getType() == IResource.FILE
 					&& (parent == null || parent instanceof IProject)) {
 				IPath parentPath = resource.getProjectRelativePath().removeLastSegments(1);
@@ -256,7 +256,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		return null;
 	}
-	
+
 	public boolean isCompressedFolder(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath && hasNonResource((TreePath)elementOrPath)) {
 			return false;
@@ -267,20 +267,20 @@ public class ResourceModelTraversalCalculator {
 			IResource resource = (IResource) element;
 			// Only use the compressed folder icon if the parent is not known
 			// or the parent is a project
-			return getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT) 
+			return getLayout().equals(IPreferenceIds.COMPRESSED_LAYOUT)
 				&& resource.getType() == IResource.FOLDER
 				&& (parent == null || parent instanceof IProject);
 		}
 		return false;
 	}
-	
+
 	private TreePath internalGetPath(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			return (TreePath) elementOrPath;
 		}
 		return null;
 	}
-	
+
 	private Object internalGetElement(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			TreePath tp = (TreePath) elementOrPath;
@@ -288,14 +288,14 @@ public class ResourceModelTraversalCalculator {
 		}
 		return elementOrPath;
 	}
-	
+
 	private Object internalGetElementParent(Object elementOrPath) {
 		if (elementOrPath instanceof TreePath) {
 			TreePath tp = (TreePath) elementOrPath;
 			if (tp.getSegmentCount() > 1) {
 				return tp.getSegment(tp.getSegmentCount() - 2);
 			}
-			
+
 		}
 		return null;
 	}
@@ -324,7 +324,7 @@ public class ResourceModelTraversalCalculator {
 		}
 		return false;
 	}
-	
+
 	public TreePath getParentPath(ISynchronizationContext context, ModelProvider provider, Object element) {
 		if (element instanceof IResource) {
 			IResource resource = (IResource) element;
@@ -358,13 +358,13 @@ public class ResourceModelTraversalCalculator {
 		}
 		return null;
 	}
-	
+
 	private TreePath getProviderRootPath(ISynchronizationContext context, ModelProvider provider) {
 		if (context == null)
 			return TreePath.EMPTY.createChildPath(provider);
 		return TreePath.EMPTY;
 	}
-	
+
 	private boolean isFlatPageLayout() {
 		if (configuration != null) {
 			String p = (String)configuration.getProperty(ITeamContentProviderManager.PROP_PAGE_LAYOUT);
@@ -378,7 +378,7 @@ public class ResourceModelTraversalCalculator {
 			instance = new ResourceModelTraversalCalculator();
 		return instance;
 	}
-	
+
 	public synchronized static ResourceModelTraversalCalculator getTraversalCalculator(ISynchronizePageConfiguration configuration) {
 		if (configuration == null)
 			return ResourceModelTraversalCalculator.getDefault();
@@ -389,5 +389,5 @@ public class ResourceModelTraversalCalculator {
 		}
 		return tc;
 	}
-	
+
 }

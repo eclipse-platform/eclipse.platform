@@ -25,7 +25,7 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 		super(null, configuration);
 		Utils.initAction(this, "action.restoreRemovedFromView."); //$NON-NLS-1$
 	}
-	
+
 	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(
 			ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
@@ -51,12 +51,12 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 			}
 		};
 	}
-	
+
 	@Override
 	public boolean isEnabled(){
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
 	 */

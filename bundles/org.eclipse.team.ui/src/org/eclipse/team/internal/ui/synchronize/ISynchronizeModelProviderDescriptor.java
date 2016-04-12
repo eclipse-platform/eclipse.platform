@@ -24,7 +24,7 @@ public interface ISynchronizeModelProviderDescriptor {
 	 * @return the unique identifier for this model provider.
 	 */
 	public String getId();
-	
+
 	/**
 	 * Returns the image that represents this model provider. This image
 	 * will be shown to the user.

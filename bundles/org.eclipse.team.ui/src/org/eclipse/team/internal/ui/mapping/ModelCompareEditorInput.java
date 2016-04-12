@@ -37,7 +37,7 @@ import org.eclipse.ui.*;
 public class ModelCompareEditorInput extends SaveableCompareEditorInput implements IPropertyChangeListener {
 
 	private static final String IGNORE_WHITSPACE_PAGE_PROPERTY = "org.eclipse.compare." + CompareConfiguration.IGNORE_WHITESPACE; //$NON-NLS-1$
-	
+
 	private final ModelSynchronizeParticipant participant;
 	private final ICompareInput input;
 	private final ICacheListener contextListener;
@@ -77,7 +77,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		super.contentsCreated();
 		participant.getContext().getCache().addCacheListener(contextListener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
@@ -96,7 +96,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 			});
     	}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#createSaveable()
 	 */
@@ -153,7 +153,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		}
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
@@ -180,7 +180,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 			rdci.fireChange();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#registerContextMenu(org.eclipse.jface.action.MenuManager)
 	 */
@@ -211,11 +211,11 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 					TeamUIPlugin.log(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
-			
+
 		};
 		Utils.initAction(markAsMergedAction, "action.markAsMerged."); //$NON-NLS-1$
 		markAsMergedAction.setEnabled(markAsMergedAction.isEnabled());
-		
+
 		final ResourceMergeHandler mergeHandler = new ResourceMergeHandler(getSynchronizeConfiguration(), false);
 		mergeHandler.updateEnablement(selection);
 		Action mergeAction = new Action(TeamUIMessages.ModelCompareEditorInput_1) {
@@ -227,11 +227,11 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 					TeamUIPlugin.log(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
-			
+
 		};
 		Utils.initAction(mergeAction, "action.merge."); //$NON-NLS-1$
 		mergeAction.setEnabled(mergeAction.isEnabled());
-		
+
 		final ResourceMergeHandler overwriteHandler = new ResourceMergeHandler(getSynchronizeConfiguration(), true);
 		overwriteHandler.updateEnablement(selection);
 		Action overwriteAction = new Action(TeamUIMessages.ModelCompareEditorInput_2) {
@@ -243,11 +243,11 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 					TeamUIPlugin.log(IStatus.ERROR, e.getMessage(), e);
 				}
 			}
-			
+
 		};
 		Utils.initAction(overwriteAction, "action.overwrite."); //$NON-NLS-1$
 		overwriteAction.setEnabled(overwriteAction.isEnabled());
-		
+
 		manager.insertAfter(IWorkbenchActionConstants.MB_ADDITIONS, new Separator("merge")); //$NON-NLS-1$
 		manager.insertAfter("merge", new Separator("overwrite")); //$NON-NLS-1$ //$NON-NLS-2$
 		manager.insertAfter("merge", markAsMergedAction); //$NON-NLS-1$
@@ -265,7 +265,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 			synchronizeConfiguration.setProperty(IGNORE_WHITSPACE_PAGE_PROPERTY, event.getNewValue());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#belongsTo(java.lang.Object)
 	 */
@@ -273,7 +273,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	public boolean belongsTo(Object family) {
 		return super.belongsTo(family) || family == participant;
 	}
-	
+
 	@Override
 	public synchronized ICompareNavigator getNavigator() {
 		if (isSelectedInSynchronizeView()) {
@@ -294,7 +294,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -308,7 +308,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

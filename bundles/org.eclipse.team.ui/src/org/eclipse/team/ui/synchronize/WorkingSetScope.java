@@ -21,59 +21,59 @@ import org.eclipse.ui.*;
 
 /**
  * A synchronize scope whose roots are defined by a working set.
- * 
+ *
  * @since 3.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class WorkingSetScope extends AbstractSynchronizeScope implements IPropertyChangeListener {
-	
+
 	/*
 	 * Constants used to save and restore this scope
 	 */
 	private final static String CTX_SETS = "workingset_scope_sets"; //$NON-NLS-1$
 	private final static String CTX_SET_NAME = "workingset_scope_name"; //$NON-NLS-1$
-	
+
 	/*
 	 * The working sets associated with this scope
 	 */
 	private IWorkingSet[] sets;
-	
+
 	/**
 	 * Create the scope for the working sets
-	 * 
+	 *
 	 * @param sets the working sets that defines this scope
 	 */
 	public WorkingSetScope(IWorkingSet[] sets) {
 		setWorkingSets(sets);
 	}
-	
+
 	/**
 	 * Create this scope from it's previously saved state
-	 * 
+	 *
 	 * @param memento the memento containing a previous scope information
 	 * that is used to initialize this scope.
 	 */
 	protected WorkingSetScope(IMemento memento) {
 		super(memento);
 	}
-	
+
 	/**
 	 * Initialize this working set scope with the provided working sets.
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	protected void setWorkingSets(IWorkingSet[] sets) {
 		this.sets = sets;
 		PlatformUI.getWorkbench().getWorkingSetManager().addPropertyChangeListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getName()
 	 */
 	@Override
 	public String getName() {
 		if (sets.length == 0) {
-			return TeamUIMessages.WorkingSetScope_0; 
+			return TeamUIMessages.WorkingSetScope_0;
 		}
 		StringBuffer name = new StringBuffer();
 		for (int i = 0; i < sets.length; i++) {
@@ -85,7 +85,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		}
 		return name.toString();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getRoots()
 	 */
@@ -102,7 +102,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	}
 		return (IResource[]) roots.toArray(new IResource[roots.size()]);
 	}
-	
+
 	private void addNonOverlapping(HashSet roots, IResource[] resources) {
 		for (int i = 0; i < resources.length; i++) {
 			IResource newResource = resources[i];
@@ -127,7 +127,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 			if (add) {
 				roots.add(newResource);
 			}
-		}	
+		}
 	}
 
 	/* (non-Javadoc)
@@ -148,7 +148,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 			firePropertyChangedEvent(new PropertyChangeEvent(this, NAME, null, event.getNewValue()));
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#dispose()
 	 */
@@ -158,7 +158,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		if (PlatformUI.isWorkbenchRunning())
 			PlatformUI.getWorkbench().getWorkingSetManager().removePropertyChangeListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#saveState(org.eclipse.ui.IMemento)
 	 */
@@ -171,7 +171,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 			rootNode.putString(CTX_SET_NAME, set.getName());
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#init(org.eclipse.ui.IMemento)

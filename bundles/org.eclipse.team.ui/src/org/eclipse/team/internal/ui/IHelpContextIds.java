@@ -15,7 +15,7 @@ public interface IHelpContextIds {
 
     // Dialogs
     public static final String CONFIGURE_REFRESH_SCHEDULE_DIALOG = PREFIX + "configre_refresh_schedule_dialog_context"; //$NON-NLS-1$
-    
+
 	// Preference Pages
 	public static final String IGNORE_PREFERENCE_PAGE = PREFIX + "ignore_preference_page_context"; //$NON-NLS-1$
 	public static final String MODEL_PREFERENCE_PAGE = PREFIX + "model_preference_page_context"; //$NON-NLS-1$

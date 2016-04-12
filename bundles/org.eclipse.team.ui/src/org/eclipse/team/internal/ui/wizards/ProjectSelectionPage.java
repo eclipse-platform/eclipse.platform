@@ -44,7 +44,7 @@ public class ProjectSelectionPage extends WizardPage {
 
 	protected ProjectSelectionPage(IProject[] projects, ConfigurationWizardElement element) {
 		super("projectSelectionPage", //$NON-NLS-1$
-				NLS.bind(TeamUIMessages.ProjectSelectionPage_1, element.getLabel(null)), 
+				NLS.bind(TeamUIMessages.ProjectSelectionPage_1, element.getLabel(null)),
 				TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_WIZBAN_SHARE));
 		setDescription(NLS.bind(TeamUIMessages.ProjectSelectionPage_0, element.getLabel(null)));
 		this.projects = projects;
@@ -112,7 +112,7 @@ public class ProjectSelectionPage extends WizardPage {
 			}
 		}
 	}
-	
+
 	private void updateProjectList(IProject project) {
 		if (RepositoryProvider.isShared(project)) {
 			projectList.remove(project);

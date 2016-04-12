@@ -16,13 +16,13 @@ import org.eclipse.ui.IWorkbench;
 
 /**
  * Extends {@link IConfigurationWizard} to support the sharing of multiple projects.
- * The Share Project wizard uses the "adaptable" mechanism (see {@link IAdapterManager} to obtain an 
+ * The Share Project wizard uses the "adaptable" mechanism (see {@link IAdapterManager} to obtain an
  * <code>IConfigurationWizardExtension</code> for an <code>IConfigurationWizard</code>
  * class so clients may choose to have their <code>IConfigurationWizard</code> class implement this
  * interface as well or may choose to use the adaptable mechanism to provide the extension.
  * <p>
  * Clients may implement this interface.
- * 
+ *
  * @see IConfigurationWizard
  * @since 3.4
  */
@@ -36,7 +36,7 @@ public interface IConfigurationWizardExtension {
 	 * before other methods are called.
 	 * </p>
 	 *
-	 * @param workbench the current workbench 
+	 * @param workbench the current workbench
 	 * @param projects the selected projects
 	 */
 	void init(IWorkbench workbench, IProject[] projects);

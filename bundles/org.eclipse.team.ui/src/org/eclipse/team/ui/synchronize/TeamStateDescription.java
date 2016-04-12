@@ -67,7 +67,7 @@ public class TeamStateDescription implements ITeamStateDescription {
 	public String[] getPropertyNames() {
 		return (String[]) properties.keySet().toArray(new String[properties.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateDescription#getProperty(java.lang.String)
 	 */
@@ -75,7 +75,7 @@ public class TeamStateDescription implements ITeamStateDescription {
 	public Object getProperty(String property) {
 		return properties.get(property);
 	}
-	
+
 	/**
 	 * Set the given property to the given value
 	 * @param property the property
@@ -84,7 +84,7 @@ public class TeamStateDescription implements ITeamStateDescription {
 	public void setProperty(String property, Object value) {
 		properties.put(property, value);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

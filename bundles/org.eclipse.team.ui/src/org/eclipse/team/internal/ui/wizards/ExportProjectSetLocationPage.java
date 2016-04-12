@@ -37,13 +37,13 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	protected IFile workspaceFile;
 	protected String file = ""; //$NON-NLS-1$
 	Button browseButton;
-	
+
 	private boolean saveToFileSystem;
 	private Button fileRadio;
 	private Button workspaceRadio;
-	
+
 	protected Text workspaceText;
-	
+
 	public ExportProjectSetLocationPage(String pageName, String title, ImageDescriptor titleImage) {
 		super(pageName, title, titleImage);
 		setDescription(TeamUIMessages.ExportProjectSetMainPage_description);
@@ -53,7 +53,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 1);
 		initializeDialogUnits(composite);
-		
+
 		Group locationGroup = new Group(composite, SWT.None);
 		GridLayout layout = new GridLayout();
 		locationGroup.setLayout(layout);
@@ -64,14 +64,14 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		createExportToFile(locationGroup);
 
 		createExportToWorkspace(locationGroup);
-		
+
 		saveToFileSystem = true;
-		
+
 		setControl(composite);
 		updateEnablement();
 		Dialog.applyDialogFont(parent);
 	}
-	
+
 	private void createExportToFile(Composite composite) {
 		fileRadio = new Button(composite, SWT.RADIO);
 		fileRadio.setText(TeamUIMessages.ExportProjectSetMainPage_FileButton);
@@ -184,7 +184,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			}
 		});
 	}
-	
+
 	private void updateEnablement() {
 		boolean complete;
 		//update radio buttons
@@ -208,18 +208,18 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 				}
 			}
 		}
-		
+
 		if (!isSaveToFileSystem() && workspaceFile != null) {
 			complete = true;
 		}
-		
+
 		if (complete) {
 			setErrorMessage(null);
 			setDescription(TeamUIMessages.ExportProjectSetMainPage_description);
 		}
 		setPageComplete(complete);
 	}
-	
+
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
@@ -236,7 +236,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		if (workspaceFile != null)
 			workspaceFile.refreshLocal(IResource.DEPTH_ONE, monitor);
 	}
-	
+
 	public String getFileName() {
 		return file;
 	}
@@ -246,14 +246,14 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			this.file = file;
 		}
 	}
-	
+
 	class WorkspaceDialog extends TitleAreaDialog {
 
 		protected TreeViewer wsTreeViewer;
 		protected Text wsFilenameText;
 		protected IContainer wsContainer;
 		protected Image dlgTitleImage;
-		
+
 		private Button okButton;
 
 		public WorkspaceDialog(Shell shell) {
@@ -309,7 +309,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 			return parent;
 		}
-		
+
 		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
 			super.createButtonsForButtonBar(parent);
@@ -403,14 +403,14 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 						setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorFilenameSegments);
 					} else {
 						okButton.setEnabled(true);
-						setErrorMessage(null);	
+						setErrorMessage(null);
 					}
 				}
 			});
 		}
 	}
 
-	
+
 	class LocationPageContentProvider extends BaseWorkbenchContentProvider {
 		//Never show closed projects
 		boolean showClosedProjects = false;

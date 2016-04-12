@@ -150,7 +150,7 @@ public class ResourceModelScopeParticipant implements
 		for (int i = 0; i < children.length; i++) {
 			IResourceDelta delta = children[i];
 			IResource resource = delta.getResource();
-			if (resource.getType() == IResource.PROJECT 
+			if (resource.getType() == IResource.PROJECT
 					&& ((delta.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0
 						|| (delta.getFlags() & IResourceDelta.OPEN) != 0)) {
 				if (isInContext(resource))
@@ -159,8 +159,8 @@ public class ResourceModelScopeParticipant implements
 		}
 		if (!result.isEmpty())
 			fireChange((ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]));
-			
-			
+
+
 	}
 
 	private boolean isInContext(IResource resource) {

@@ -34,7 +34,7 @@ import com.ibm.icu.util.Calendar;
 /**
  * A composite that allows editing a subscriber refresh schedule. A validator can be used to allow
  * containers to show page completion.
- * 
+ *
  * @since 3.0
  */
 public class ConfigureSynchronizeScheduleComposite extends Composite {
@@ -47,7 +47,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 	private DateTime startTime;
 	private Button repeatEvery;
 	private Label synchronizeAt;
-	
+
 	public ConfigureSynchronizeScheduleComposite(Composite parent, SubscriberRefreshSchedule schedule, IPageValidator validator) {
 		super(parent, SWT.NONE);
 		this.schedule = schedule;
@@ -58,24 +58,24 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 	private void initializeValues() {
 		boolean enableBackground = schedule.isEnabled();
 		boolean hours = false;
-		
+
 		enableBackgroundRefresh.setSelection(enableBackground);
-		
+
 		long seconds = schedule.getRefreshInterval();
 		if(seconds <= 60) {
 			seconds = 60;
 		}
 
 		long minutes = seconds / 60;
-		
+
 		if(minutes >= 60) {
 			minutes = minutes / 60;
 			hours = true;
-		}		
+		}
 		hoursOrMinutes.select(hours ? 0 : 1);
 		timeInterval.setText(Long.toString(minutes));
 		repeatEvery.setSelection(!schedule.getRunOnce());
-		
+
 		Date start = schedule.getRefreshStartTime();
 		Calendar cal = Calendar.getInstance();
 		if (start != null) {
@@ -105,13 +105,13 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		Composite area = this;
 
-		createWrappingLabel(area, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_1, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, schedule.getParticipant().getName()) }), 0, 3); 
+		createWrappingLabel(area, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_1, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, schedule.getParticipant().getName()) }), 0, 3);
 
 		enableBackgroundRefresh = new Button(area, SWT.CHECK);
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 3;
 		enableBackgroundRefresh.setLayoutData(gridData);
-		enableBackgroundRefresh.setText(TeamUIMessages.ConfigureRefreshScheduleDialog_3); 
+		enableBackgroundRefresh.setText(TeamUIMessages.ConfigureRefreshScheduleDialog_3);
 		enableBackgroundRefresh.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -128,7 +128,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		startTime.setLayoutData(gridData);
-				
+
 		repeatEvery = createIndentedButton(area, TeamUIMessages.ConfigureRefreshScheduleDialog_4, 20);
 		repeatEvery.addSelectionListener(new SelectionListener() {
 			@Override
@@ -166,32 +166,32 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		});
 
 		hoursOrMinutes = new Combo(area, SWT.READ_ONLY);
-		hoursOrMinutes.setItems(new String[] { TeamUIMessages.ConfigureRefreshScheduleDialog_5, TeamUIMessages.ConfigureRefreshScheduleDialog_6 }); // 
+		hoursOrMinutes.setItems(new String[] { TeamUIMessages.ConfigureRefreshScheduleDialog_5, TeamUIMessages.ConfigureRefreshScheduleDialog_6 }); //
 		hoursOrMinutes.setLayoutData(new GridData());
-		
+
 		final Label label = new Label(area, SWT.WRAP);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.horizontalSpan = 3;
 		label.setLayoutData(gridData);
-		label.setText(NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_2, new String[] { SubscriberRefreshSchedule.refreshEventAsString(schedule.getLastRefreshEvent()) }));			 
+		label.setText(NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_2, new String[] { SubscriberRefreshSchedule.refreshEventAsString(schedule.getLastRefreshEvent()) }));
 
 		initializeValues();
 		updateEnablements();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	public void saveValues() {
 		if (enableBackgroundRefresh.getSelection()) {
-			
+
 			// start time
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR_OF_DAY, startTime.getHours());
 			cal.set(Calendar.MINUTE, startTime.getMinutes());
 			cal.set(Calendar.SECOND, startTime.getSeconds());
 			schedule.setRefreshStartTime(cal.getTime());
-			
+
 			// repeat interval
 			if (repeatEvery.getSelection()) {
 				int hours = hoursOrMinutes.getSelectionIndex();
@@ -209,18 +209,18 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 			} else {
 				schedule.setRunOnce(true);
 			}
-		}		
-		
+		}
+
 		if(schedule.isEnabled() != enableBackgroundRefresh.getSelection()) {
 			schedule.setEnabled(enableBackgroundRefresh.getSelection(), true /* allow to start */);
 		}
-		
+
 		// update schedule
 		ISynchronizeParticipant participant = schedule.getParticipant();
 		if (!participant.isPinned() && schedule.isEnabled()) {
-			participant.setPinned(MessageDialog.openQuestion(getShell(), 
-					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_0, new String[] { Utils.getTypeName(participant) }), 
-					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_1, new String[] { Utils.getTypeName(participant) }))); 
+			participant.setPinned(MessageDialog.openQuestion(getShell(),
+					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_0, new String[] { Utils.getTypeName(participant) }),
+					NLS.bind(TeamUIMessages.ConfigureSynchronizeScheduleComposite_1, new String[] { Utils.getTypeName(participant) })));
 		}
 		schedule.getRefreshable().setRefreshSchedule(schedule);
 	}
@@ -236,14 +236,14 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 				try {
 					long number = Long.parseLong(timeInterval.getText());
 					if(number <= 0) {
-						validator.setComplete(TeamUIMessages.ConfigureRefreshScheduleDialog_7); 
+						validator.setComplete(TeamUIMessages.ConfigureRefreshScheduleDialog_7);
 					} else {
 						validator.setComplete(null);
 					}
 				} catch (NumberFormatException e) {
-					validator.setComplete(TeamUIMessages.ConfigureRefreshScheduleDialog_7); 
-				}	
-			} 
+					validator.setComplete(TeamUIMessages.ConfigureRefreshScheduleDialog_7);
+				}
+			}
 		}
 		synchronizeAt.setEnabled(enableBackgroundRefresh.getSelection());
 		startTime.setEnabled(enableBackgroundRefresh.getSelection());
@@ -251,7 +251,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		timeInterval.setEnabled(enableBackgroundRefresh.getSelection() && repeatEvery.getSelection());
 		hoursOrMinutes.setEnabled(enableBackgroundRefresh.getSelection() && repeatEvery.getSelection());
 	}
-	
+
 	private Label createWrappingLabel(Composite parent, String text, int indent, int horizontalSpan) {
 		Label label = new Label(parent, SWT.LEFT | SWT.WRAP);
 		label.setText(text);
@@ -264,7 +264,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		label.setLayoutData(data);
 		return label;
 	}
-	
+
 	private static Label createIndentedLabel(Composite parent, String text, int indent) {
 		Label label = new Label(parent, SWT.LEFT);
 		label.setText(text);
@@ -275,7 +275,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		label.setLayoutData(data);
 		return label;
 	}
-	
+
 	private static Button createIndentedButton(Composite parent, String text, int indent) {
 		Button label = new Button(parent, SWT.CHECK);
 		label.setText(text);

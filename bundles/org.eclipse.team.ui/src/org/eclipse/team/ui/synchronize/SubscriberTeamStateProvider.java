@@ -29,7 +29,7 @@ import org.eclipse.team.ui.mapping.*;
  * provider, they must adapt their {@link RepositoryProviderType} class to an appropriate {@link ITeamStateProvider}.
  * <p>
  * Clients may subclass this class.
- * 
+ *
  * @since 3.2
  */
 public class SubscriberTeamStateProvider extends TeamStateProvider implements ISubscriberChangeListener {
@@ -37,7 +37,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	private Subscriber subscriber;
 
 	/**
-	 * Create a provider that determines the synchronization state 
+	 * Create a provider that determines the synchronization state
 	 * from the subscriber. This method registers this provider as a listener
 	 * on the subscriber in order to know when to fire state change events.
 	 * @param subscriber the subscriber for this provider
@@ -75,7 +75,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	 * ISynchronizationCompareAdapter, then the adapter is used to determine the
 	 * synchronization state. Others, the state is obtained from the subscriber
 	 * using {@link Subscriber#getState(ResourceMapping, int, IProgressMonitor)}
-	 * 
+	 *
 	 * @param element the element
 	 * @param stateMask the state mask that indicates which state flags are desired
 	 * @param monitor a progress monitor
@@ -90,7 +90,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		}
 		return IDiff.NO_CHANGE;
 	}
-	
+
 	private int getSynchronizationState(ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
 		ISynchronizationCompareAdapter compareAdapter = (ISynchronizationCompareAdapter)Utils.getAdapter(mapping.getModelProvider(), ISynchronizationCompareAdapter.class);
 		try {
@@ -133,10 +133,10 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		return new SubscriberResourceMappingContext(subscriber, false);
 	}
-	
+
 	/**
 	 * Return the subscriber associated with this tester.
-	 * 
+	 *
 	 * @return the subscriber associated with this tester.
 	 */
 	protected final Subscriber getSubscriber() {

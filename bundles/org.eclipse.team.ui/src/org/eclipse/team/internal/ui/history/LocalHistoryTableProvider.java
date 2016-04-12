@@ -32,54 +32,54 @@ import org.eclipse.ui.themes.ITheme;
 import com.ibm.icu.text.DateFormat;
 
 public class LocalHistoryTableProvider {
-	
+
 	/* private */ static final int COL_DATE = 0;
-	
+
 	/* private */ TreeViewer viewer;
-	
+
 	private Image localRevImage = null;
 	private DateFormat dateFormat;
-	
+
 	/**
 	 * The Local history label provider.
 	 */
 	private class LocalHistoryLabelProvider extends LabelProvider implements ITableLabelProvider, IColorProvider, IFontProvider {
-		
+
 		private Image dateImage = null;
 		private Font currentRevisionFont = null;
-		
+
 		private IPropertyChangeListener themeListener = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				LocalHistoryTableProvider.this.viewer.refresh();
 			}
 		};
-		
+
 		public LocalHistoryLabelProvider(){
 				PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);
 		}
-		
+
 		@Override
 		public void dispose() {
 			if (dateImage != null){
 				dateImage.dispose();
 				dateImage = null;
 			}
-			
+
 			if (localRevImage != null) {
 				localRevImage.dispose();
 				localRevImage = null;
 			}
-					
+
 			if (themeListener != null){
 				PlatformUI.getWorkbench().getThemeManager().removePropertyChangeListener(themeListener);
 			}
-			
+
 			if (currentRevisionFont != null) {
 				currentRevisionFont.dispose();
 			}
 		}
-		
+
 		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			if (columnIndex == COL_DATE) {
@@ -90,12 +90,12 @@ public class LocalHistoryTableProvider {
 					}
 					return dateImage;
 				}
-	
+
 				if (getModificationDate(element) != -1) {
 					return getRevisionImage();
 				}
 			}
-			
+
 			return null;
 		}
 
@@ -105,7 +105,7 @@ public class LocalHistoryTableProvider {
 				if (element instanceof AbstractHistoryCategory){
 					return ((AbstractHistoryCategory) element).getName();
 				}
-				
+
 				long date = getModificationDate(element);
 				if (date != -1) {
 					Date dateFromLong = new Date(date);
@@ -125,7 +125,7 @@ public class LocalHistoryTableProvider {
 				ITheme current = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
 				return current.getColorRegistry().get("org.eclipse.team.cvs.ui.fontsandcolors.cvshistorypagecategories"); //$NON-NLS-1$
 			}
-			
+
 			if (isDeletedEdition(element)) {
 				return Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
 			}
@@ -175,15 +175,15 @@ public class LocalHistoryTableProvider {
 	private class HistoryComparator extends ViewerComparator {
 		private boolean reversed = false;
 		private int columnNumber;
-		
+
 		// column headings:	"Revision" "Tags" "Date" "Author" "Comment"
-		private int[][] SORT_ORDERS_BY_COLUMN = { 
+		private int[][] SORT_ORDERS_BY_COLUMN = {
 				{COL_DATE}, /* date */
 		};
 
 		/**
 		 * The constructor.
-		 * @param columnNumber 
+		 * @param columnNumber
 		 */
 		public HistoryComparator(int columnNumber) {
 			this.columnNumber = columnNumber;
@@ -197,7 +197,7 @@ public class LocalHistoryTableProvider {
 		public int compare(Viewer compareViewer, Object o1, Object o2) {
 			/*if (o1 instanceof AbstractCVSHistoryCategory || o2 instanceof AbstractCVSHistoryCategory)
 				return 0;*/
-			
+
 			long date1 = getModificationDate(o1);
 			long date2 = getModificationDate(o2);
 			int result = 0;
@@ -226,7 +226,7 @@ public class LocalHistoryTableProvider {
 						return 0;
 
 					return date1 > date2 ? -1 : 1;
-					
+
 				default :
 					return 0;
 			}
@@ -251,7 +251,7 @@ public class LocalHistoryTableProvider {
 
 		/**
 		 * Sets the sorting order.
-		 * @param newReversed 
+		 * @param newReversed
 		 */
 		public void setReversed(boolean newReversed) {
 			reversed = newReversed;
@@ -283,11 +283,11 @@ public class LocalHistoryTableProvider {
 		col.addSelectionListener(headerListener);
 		layout.addColumnData(new ColumnWeightData(20, true));
 	}
-	
+
 	/**
 	 * Create a TreeViewer that can be used to display a list of IFile instances.
 	 * This method provides the labels and sorter but does not provide a content provider
-	 * 
+	 *
 	 * @param parent
 	 * @return TableViewer
 	 */
@@ -295,7 +295,7 @@ public class LocalHistoryTableProvider {
 		Tree tree = new Tree(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(false);
-		
+
 		GridData data = new GridData(GridData.FILL_BOTH);
 		tree.setLayoutData(data);
 
@@ -303,20 +303,20 @@ public class LocalHistoryTableProvider {
 		tree.setLayout(layout);
 
 		this.viewer = new TreeViewer(tree);
-		
+
 		createColumns(tree, layout);
 
 		viewer.setLabelProvider(new LocalHistoryLabelProvider());
 
-		// By default, reverse sort by revision. 
+		// By default, reverse sort by revision.
 		// If local filter is on sort by date
 		HistoryComparator sorter = new HistoryComparator(COL_DATE);
 		sorter.setReversed(false);
 		viewer.setComparator(sorter);
-		
+
 		return viewer;
 	}
-	
+
 	protected long getModificationDate(Object element) {
 		IModificationDate md = (IModificationDate)Utils.getAdapter(element, IModificationDate.class);
 		if (md != null)
@@ -331,7 +331,7 @@ public class LocalHistoryTableProvider {
 		}
 		return -1;
 	}
-	
+
 	protected boolean isCurrentEdition(Object element) {
 		if (element instanceof IFile) {
 			return true;
@@ -341,7 +341,7 @@ public class LocalHistoryTableProvider {
 		}
 		return false;
 	}
-	
+
 	protected boolean isDeletedEdition(Object element) {
 		if (element instanceof IFile) {
 			IFile f = (IFile) element;
@@ -357,7 +357,7 @@ public class LocalHistoryTableProvider {
 		}
 		return localRevImage;
 	}
-	
+
 	public synchronized DateFormat getDateFormat() {
 		if (dateFormat == null)
 			dateFormat = DateFormat.getInstance();

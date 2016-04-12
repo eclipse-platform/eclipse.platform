@@ -52,7 +52,7 @@ public class PatchWorkbenchLabelProvider extends WorkbenchLabelProvider
 	public String getDescription(Object anElement) {
 		if (anElement instanceof DiffNode) {
 			return ((DiffNode) anElement).getName();
-		} 
+		}
 		return null;
 	}
 

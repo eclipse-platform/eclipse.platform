@@ -32,7 +32,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 
 	public class ChangeDescription implements IChangeDescription, IDiffChangeListener {
 		Map changes = new HashMap();
-		
+
 		@Override
 		public int getChangeCount() {
 			return changes.size();
@@ -51,13 +51,13 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 				changes.put(node.getPath(), node);
 			}
 		}
-		
+
 		@Override
 		public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 			// Do nothing
 		}
 	}
-	
+
 	public RefreshModelParticipantJob(ISynchronizeParticipant participant, String jobName, String taskName, ResourceMapping[] mappings, IRefreshSubscriberListener listener) {
 		super(participant, jobName, taskName, listener);
 		this.mappings = mappings;
@@ -92,13 +92,13 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
       IResourceDiffTree diffTree = ((ModelSynchronizeParticipant)getParticipant()).getContext().getDiffTree();
       return (int) diffTree.countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK);
     }
-    
+
     @Override
 	protected int getOutgoingChangeCount() {
       IResourceDiffTree diffTree = ((ModelSynchronizeParticipant)getParticipant()).getContext().getDiffTree();
       return (int) diffTree.countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK);
     }
-    
+
 	@Override
 	protected void handleProgressGroupSet(IProgressMonitor group, int ticks) {
 		this.group = group;
@@ -109,7 +109,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 	protected IChangeDescription createChangeDescription() {
 		return new ChangeDescription();
 	}
-	
+
 	@Override
 	public boolean belongsTo(Object family) {
 		if (family instanceof RefreshModelParticipantJob) {
@@ -120,7 +120,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 			return true;
 		return super.belongsTo(family);
 	}
-	
+
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		if (group != null)

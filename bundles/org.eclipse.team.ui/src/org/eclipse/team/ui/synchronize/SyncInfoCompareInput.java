@@ -28,10 +28,10 @@ import org.eclipse.team.internal.ui.synchronize.SynchronizePageConfiguration;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * A {@link SyncInfo} editor input used as input to a two-way or three-way 
- * compare viewer. It defines methods for accessing the three sides for the 
+ * A {@link SyncInfo} editor input used as input to a two-way or three-way
+ * compare viewer. It defines methods for accessing the three sides for the
  * compare, and a name and image which is used when displaying the three way input
- * in an editor. This input can alternately be used to show compare results in 
+ * in an editor. This input can alternately be used to show compare results in
  * a dialog by calling {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}.
  * <p>
  * The editor will not update when the elements in the sync info are changed.
@@ -41,7 +41,7 @@ import org.eclipse.ui.progress.UIJob;
  * when the local resources is changed.
  * </p>
  * @see SyncInfo
- * @since 3.0 
+ * @since 3.0
  */
 public final class SyncInfoCompareInput extends SaveableCompareEditorInput implements IResourceChangeListener {
 
@@ -66,10 +66,10 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 			super.fireChange();
 		}
 	}
-	
+
 	/**
 	 * Creates a compare editor input based on an existing <code>SyncInfo</code>.
-	 * 
+	 *
 	 * @param description a description of the context of this sync info. This
 	 * is displayed to the user.
 	 * @param sync the <code>SyncInfo</code> used as the base for the compare input.
@@ -83,22 +83,22 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		this.node = new MyDiffNode(null, sync);
 		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { sync.getLocal().getName() }));
 	}
-	
+
 	/**
 	 * Creates a compare editor input based on an existing <code>SyncInfo</code>
 	 * from the given participant.
-	 * 
+	 *
 	 * @param participant the participant from which the sync info was obtained. The
 	 * name of the participant is used as the description which is displayed to the user.
 	 * @param sync the <code>SyncInfo</code> used as the base for the compare input.
-     * 
+     *
      * @since 3.1
      */
     public SyncInfoCompareInput(ISynchronizeParticipant participant, SyncInfo sync) {
         this(participant.getName(), sync);
         this.participant = participant;
     }
-	
+
     public SyncInfoCompareInput(ISynchronizePageConfiguration configuration,
 			SyncInfo info) {
 		this(configuration.getParticipant(), info);
@@ -133,13 +133,13 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	private static CompareConfiguration getDefaultCompareConfiguration() {
 		CompareConfiguration cc = new CompareConfiguration();
 		//cc.setProperty(CompareConfiguration.USE_OUTLINE_VIEW, true);
 		return cc;
 	}
-	
+
 	/**
 	 * Note that until the compare editor inputs can be part of the compare editors lifecycle we
 	 * can't register as a listener because there is no dispose() method to remove the listener.
@@ -197,7 +197,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 */
 	@Override
 	public String getToolTipText() {
-		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() }); 
+		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() });
 	}
 
 	/*
@@ -211,9 +211,9 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		if (other instanceof SyncInfoCompareInput) {
 			SyncInfo otherSyncInfo = ((SyncInfoCompareInput) other).getSyncInfo();
 			SyncInfo thisSyncInfo = getSyncInfo();
-			// Consider the inputs equal if the sync info are equal and the 
+			// Consider the inputs equal if the sync info are equal and the
 			// left nodes are equal (i.e they have the same timestamp)
-			return thisSyncInfo.equals(otherSyncInfo) 
+			return thisSyncInfo.equals(otherSyncInfo)
 				&& node.getLeft().equals(((SyncInfoCompareInput) other).node.getLeft());
 		}
 		return false;
@@ -221,7 +221,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -232,7 +232,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	public SyncInfo getSyncInfo() {
 		return node.getSyncInfo();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
 	 */
@@ -240,7 +240,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	public boolean canRunAsJob() {
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getNavigator()
 	 */

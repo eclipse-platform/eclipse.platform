@@ -29,12 +29,12 @@ public class ProjectSetImportWizard extends Wizard implements IImportWizard {
 
 	public ProjectSetImportWizard() {
 		setNeedsProgressMonitor(true);
-		setWindowTitle(TeamUIMessages.ProjectSetImportWizard_Project_Set_1); 
+		setWindowTitle(TeamUIMessages.ProjectSetImportWizard_Project_Set_1);
 	}
-	
+
 	@Override
 	public void addPages() {
-		mainPage = new ImportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetImportWizard_Import_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER)); //$NON-NLS-1$ 
+		mainPage = new ImportProjectSetMainPage("projectSetMainPage", TeamUIMessages.ProjectSetImportWizard_Import_a_Project_Set_3, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER)); //$NON-NLS-1$
 		addPage(mainPage);
 	}
 
@@ -73,14 +73,14 @@ public class ProjectSetImportWizard extends Wizard implements IImportWizard {
 				throw (Error)target;
 			}
 			if (target instanceof SAXException) {
-			    ErrorDialog.openError(getShell(), null, null, new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_2, new String[] { target.getMessage() }), target)); 
+			    ErrorDialog.openError(getShell(), null, null, new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_2, new String[] { target.getMessage() }), target));
 			    return false;
 			}
-			ErrorDialog.openError(getShell(), null, null, new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_3, new String[] { target.getMessage() }), target)); 
+			ErrorDialog.openError(getShell(), null, null, new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_3, new String[] { target.getMessage() }), target));
 		}
 		return result[0];
 	}
-		
+
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// The code that finds "selection" is broken (it is always empty), so we

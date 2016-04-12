@@ -39,24 +39,24 @@ import org.eclipse.ui.navigator.*;
  * in the {@link #fillActionBars(IActionBars)} method.
  * <p>
  * This class may be subclasses by clients.
- * 
+ *
  * @see MergeActionHandler
  * @since 3.2
  */
 public class SynchronizationActionProvider extends CommonActionProvider {
-	
+
 	/**
 	 * Action id constant for the merge action.
 	 * @see #registerHandler(String, IHandler)
 	 */
 	public static final String MERGE_ACTION_ID = "org.eclipse.team.ui.mergeAction"; //$NON-NLS-1$
-	
+
 	/**
 	 * Action id constant for the merge action.
 	 * @see #registerHandler(String, IHandler)
 	 */
 	public static final String OVERWRITE_ACTION_ID = "org.eclipse.team.ui.overwriteAction"; //$NON-NLS-1$
-	
+
 	/**
 	 * Action id constant for the mark-as-merge action.
 	 * @see #registerHandler(String, IHandler)
@@ -92,7 +92,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	 * still call this method, in which case they only need to handle providing
 	 * open for non-files. Otherwise, if they do not call this method, they must
 	 * provide all non-compare related open items.
-	 * 
+	 *
 	 */
 	protected void initializeOpenActions() {
 		ICommonViewerSite cvs = getActionSite().getViewSite();
@@ -105,7 +105,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the configuration from the synchronize page that contains
 	 * the common viewer.
@@ -125,7 +125,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	protected final IExtensionStateModel getExtensionStateModel() {
 		return getActionSite().getExtensionStateModel();
 	}
-	
+
 	/**
 	 * Return the synchronization context to which the actions of this provider
 	 * apply.
@@ -135,10 +135,10 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	protected final ISynchronizationContext getSynchronizationContext() {
 		return (ISynchronizationContext)getExtensionStateModel().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
 	}
-	
+
 	/**
 	 * Register the handler as the handler for the given action id when
-	 * a merge action is performed on elements that match this groups 
+	 * a merge action is performed on elements that match this groups
 	 * enablement.
 	 * @param actionId the id of the merge action
 	 * @param handler the handler for elements of the model that provided this group
@@ -146,7 +146,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	protected void registerHandler(String actionId, IHandler handler) {
 		handlers.put(actionId, handler);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
@@ -165,7 +165,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 			openWithActions.fillContextMenu(menu, fileGroup.getId());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
 	 */
@@ -174,19 +174,19 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 		super.fillActionBars(actionBars);
 		if (openWithActions != null) openWithActions.fillActionBars(actionBars);
 	}
-	
+
 	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
 		if (openWithActions != null) openWithActions.updateActionBars();
 	}
-	
+
 	@Override
 	public void setContext(ActionContext context) {
 		super.setContext(context);
 		if (openWithActions != null) openWithActions.setContext(context);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */

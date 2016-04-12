@@ -19,54 +19,54 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
  * Descriptor for accessing and creating synchronize wizards
  */
 public class SynchronizeWizardDescription {
-	
+
 	public  static final String ATT_ID = "id"; //$NON-NLS-1$
 	public  static final String ATT_NAME = "name"; //$NON-NLS-1$
 	public  static final String ATT_ICON = "icon"; //$NON-NLS-1$
 	public  static final String ATT_CLASS = "class"; //$NON-NLS-1$
 	public  static final String ATT_DESCRIPTION = "description"; //$NON-NLS-1$
-	
+
 	private String label;
 	private String className;
 	private String description;
 	private String id;
 	private ImageDescriptor imageDescriptor;
-	
+
 	private IConfigurationElement configElement;
-	
+
 	public SynchronizeWizardDescription(IConfigurationElement e, String descText) throws CoreException {
 		configElement = e;
 		loadFromExtension();
 	}
-	
+
 	public IWizard createWizard() throws CoreException {
 		Object obj = RegistryReader.createExtension(configElement, ATT_CLASS);
 		return (IWizard) obj;
 	}
-	
+
 	private void loadFromExtension() throws CoreException {
 		String identifier = configElement.getAttribute(ATT_ID);
 		label = configElement.getAttribute(ATT_NAME);
 		className = configElement.getAttribute(ATT_CLASS);
 		description = configElement.getAttribute(ATT_DESCRIPTION);
-		
+
 		// Sanity check.
 		if ((label == null) || (className == null) || (identifier == null) || (description == null)) {
 			throw new CoreException(new Status(IStatus.ERROR, configElement.getNamespace(), 0, "Invalid extension (missing label or class name): " + identifier, //$NON-NLS-1$
 					null));
 		}
-		
+
 		id = identifier;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public ImageDescriptor getImageDescriptor() {
 		if (imageDescriptor != null)
 			return imageDescriptor;
@@ -80,7 +80,7 @@ public class SynchronizeWizardDescription {
 	public String getName() {
 		return label;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Synchronize Participant Creation Wizard(" + getId() + ")"; //$NON-NLS-2$//$NON-NLS-1$

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -22,21 +22,21 @@ import org.eclipse.ui.PartInitException;
  * @since 3.0
  */
 public interface ISynchronizePage {
-	
+
 	/**
 	 * Initialize this page with workbench part that contains the page.
 	 * This method will be called after the <code>Page#init(IPageSite)</code>
 	 * but before <code>Page#createControl(Composite)</code>
-	 * 
+	 *
 	 * @param site the workbench part for the view containing the page
 	 * @throws PartInitException
 	 */
 	public void init(ISynchronizePageSite site) throws PartInitException;
-	
+
 	/**
 	 * Returns the viewer associated with this page or <code>null</code> if the page
 	 * doesn't have a viewer.
-	 * 
+	 *
 	 * @return the viewer associated with this page or <code>null</code> if the page
 	 * doesn't have a viewer.
 	 */
@@ -46,7 +46,7 @@ public interface ISynchronizePage {
 	 * Callback that is invoked from the synchronize configuration whenever a
 	 * property's value is about to be changed. The page can react to the change
 	 * before change events are fired or veto the change.
-	 * 
+	 *
 	 * @param configuration the synchronize page configuration
 	 * @param key the property key
 	 * @param newValue

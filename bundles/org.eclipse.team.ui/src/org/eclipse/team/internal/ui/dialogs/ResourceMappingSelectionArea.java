@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -35,14 +35,14 @@ public class ResourceMappingSelectionArea extends DialogArea {
      * The object associated with the property is a <code>ResourceMapping</code>.
      */
     public static final String SELECTED_MAPPING = "SelectedMapping"; //$NON-NLS-1$
-    
+
     /**
      * Property constant used to indicate that the checked mappings have changed.
      * The object associated with the property is a <code>ResourceMapping[]</code>
      * (i.e. an array of mappings).
      */
     public static final String CHECKED_MAPPINGS = "CheckedMappings"; //$NON-NLS-1$
-    
+
     private ResourceMapping[] mappings;
     private TableViewer viewer;
     private ResourceMapping[] checkedMappings;
@@ -50,7 +50,7 @@ public class ResourceMappingSelectionArea extends DialogArea {
     private String description;
 	private boolean supportsChecking;
 	private boolean supportsSelection;
-    
+
     public ResourceMappingSelectionArea(ResourceMapping[] mappings, boolean supportSelection, boolean supportChecking) {
         this.mappings = mappings;
         this.supportsChecking = supportChecking;
@@ -69,10 +69,10 @@ public class ResourceMappingSelectionArea extends DialogArea {
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
         composite.setLayout(layout);
-        
+
         if (description != null)
             createWrappingLabel(composite, description, 1);
-        
+
         createViewer(composite);
         GridData data = new GridData(GridData.FILL_BOTH);
         data.heightHint = 100;
@@ -111,9 +111,9 @@ public class ResourceMappingSelectionArea extends DialogArea {
         checkedMappings = mappings;
 
         Composite buttons = createEmbeddedButtonComposite(composite);
-        
+
         Button selectAll = new Button(buttons, SWT.PUSH);
-        selectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_0); 
+        selectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_0);
         selectAll.setLayoutData(new GridData(GridData.FILL_BOTH));
         selectAll.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -121,9 +121,9 @@ public class ResourceMappingSelectionArea extends DialogArea {
             	checkboxViewer.setAllChecked(true);
             }
         });
-        
+
         Button deselectAll = new Button(buttons, SWT.PUSH);
-        deselectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_1); 
+        deselectAll.setText(TeamUIMessages.ResourceMappingSelectionArea_1);
         deselectAll.setLayoutData(new GridData(GridData.FILL_BOTH));
         deselectAll.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -156,7 +156,7 @@ public class ResourceMappingSelectionArea extends DialogArea {
         }
         return mappings;
     }
-    
+
     private Composite createEmbeddedButtonComposite(Composite composite) {
         GridData data;
         Composite buttons = new Composite(composite, SWT.NONE);
@@ -170,7 +170,7 @@ public class ResourceMappingSelectionArea extends DialogArea {
         buttons.setLayoutData(data);
         return buttons;
     }
-    
+
     /* private */ ResourceMapping internalGetSelectedMapping() {
         ISelection selection = viewer.getSelection();
         if (selection instanceof IStructuredSelection) {
@@ -181,7 +181,7 @@ public class ResourceMappingSelectionArea extends DialogArea {
         }
         return null;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -191,7 +191,7 @@ public class ResourceMappingSelectionArea extends DialogArea {
     public ResourceMapping getSelectedMapping() {
         return selectedMapping;
     }
-    
+
     private CheckboxTableViewer getCheckboxTableViewer() {
     	return (CheckboxTableViewer)viewer;
     }

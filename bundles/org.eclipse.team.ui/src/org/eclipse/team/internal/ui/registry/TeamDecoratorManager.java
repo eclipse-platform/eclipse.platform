@@ -18,29 +18,29 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor;
 
 public class TeamDecoratorManager {
-	
+
 	public static final String PT_TEAM_DECORATORS = "teamDecorators"; //$NON-NLS-1$
 
 	private static TeamDecoratorManager instance;
-	
+
 	Map descriptors;
-	
+
 	public static TeamDecoratorManager getInstance() {
 		if (instance == null)
 			instance = new TeamDecoratorManager();
 		return instance;
 	}
-	
+
 	public ITeamContentProviderDescriptor[] getDescriptors() {
 		lazyInitialize();
 		return (ITeamContentProviderDescriptor[]) descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
 	}
-	
+
 	public TeamDecoratorDescription getDecoratorDescription(String providerId) {
 		lazyInitialize();
 		return (TeamDecoratorDescription)descriptors.get(providerId);
 	}
-	
+
 	protected void lazyInitialize() {
 		if (descriptors != null)
 			return;

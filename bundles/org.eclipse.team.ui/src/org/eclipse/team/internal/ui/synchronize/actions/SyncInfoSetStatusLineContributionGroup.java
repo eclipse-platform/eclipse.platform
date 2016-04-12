@@ -26,7 +26,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 		SyncInfoSet set = getSyncInfoSet();
 		set.addSyncSetChangedListener(this);
 	}
-	
+
 	@Override
 	public void dispose() {
 		getSyncInfoSet().removeSyncSetChangedListener(this);
@@ -34,14 +34,14 @@ public class SyncInfoSetStatusLineContributionGroup extends
 	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.team.internal.ui.sync.sets.ISyncSetChangedListener#syncSetChanged(org.eclipse.team.internal.ui.sync.sets.SyncSetChangedEvent)
 	 */
 	@Override
 	public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 		updateCounts();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.subscribers.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -57,7 +57,7 @@ public class SyncInfoSetStatusLineContributionGroup extends
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		// Nothing to do for errors
 	}
-	
+
 	private SyncInfoSet getSyncInfoSet() {
 		return (SyncInfoSet)getConfiguration().getProperty(SynchronizePageConfiguration.P_WORKING_SET_SYNC_INFO_SET);
 	}

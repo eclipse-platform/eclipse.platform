@@ -46,7 +46,7 @@ public class RemoteResourceTypedElement extends StorageTypedElement {
 	public String getName() {
 		return remote.getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.StorageTypedElement#getType()
 	 */
@@ -55,7 +55,7 @@ public class RemoteResourceTypedElement extends StorageTypedElement {
 		if (remote.isContainer()) {
 			return ITypedElement.FOLDER_TYPE;
 		}
-		return super.getType();		
+		return super.getType();
 	}
 
 	/* (non-Javadoc)
@@ -63,9 +63,9 @@ public class RemoteResourceTypedElement extends StorageTypedElement {
 	 */
 	@Override
 	protected IStorage fetchContents(IProgressMonitor monitor) throws TeamException {
-		return remote.getStorage(monitor);		
+		return remote.getStorage(monitor);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
 	 */
@@ -76,5 +76,5 @@ public class RemoteResourceTypedElement extends StorageTypedElement {
 		}
 		return null;
 	}
-	
+
 }

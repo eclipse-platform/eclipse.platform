@@ -31,18 +31,18 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 
     public ChangeSetLabelDecorator(ISynchronizePageConfiguration configuration) {
         ISynchronizeParticipant participant = configuration.getParticipant();
-        if (participant instanceof IChangeSetProvider) {  
+        if (participant instanceof IChangeSetProvider) {
             this.collector = ((IChangeSetProvider)participant).getChangeSetCapability().getActiveChangeSetManager();
         }
     }
-    
+
     @Override
 	public String decorateText(String input, Object element) {
 		String text = input;
 		if (element instanceof ChangeSetDiffNode) {
 		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
 		    if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
-		        text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, new String[] { text }); 
+		        text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, new String[] { text });
 		    }
 		}
 		return text;
@@ -65,7 +65,7 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 					FontData[] data = defaultFont.getFontData();
 					for (int i = 0; i < data.length; i++) {
 						data[i].setStyle(SWT.BOLD);
-					}				
+					}
 					boldFont = new Font(TeamUIPlugin.getStandardDisplay(), data);
 				}
 				return boldFont;
@@ -85,5 +85,5 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 	public Image decorateImage(Image image, Object element) {
         return image;
     }
-	
+
 }

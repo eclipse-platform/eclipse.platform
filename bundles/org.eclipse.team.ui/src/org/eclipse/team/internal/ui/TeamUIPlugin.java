@@ -49,25 +49,25 @@ import org.osgi.framework.*;
 public class TeamUIPlugin extends AbstractUIPlugin {
 
 	private static TeamUIPlugin instance;
-	
+
 	// image paths
 	public static final String ICON_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
-	
+
 	public static final String ID = "org.eclipse.team.ui"; //$NON-NLS-1$
-	
+
 	// plugin id
 	public static final String PLUGIN_ID = "org.eclipse.team.ui"; //$NON-NLS-1$
-	
+
 	public static final String TRIGGER_POINT_ID = "org.eclipse.team.ui.activityTriggerPoint"; //$NON-NLS-1$
-	
+
 	private static List propertyChangeListeners = new ArrayList(5);
-	
+
 	private Hashtable imageDescriptors = new Hashtable(20);
-	
+
 	private WorkspaceTeamStateProvider provider;
 
 	private Map decoratedStateProviders = new HashMap();
-	
+
 	// manages synchronize participants
 	private SynchronizeManager synchronizeManager;
 
@@ -78,8 +78,8 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * Value: <code>"org.eclipse.team.internal.ui.RemoveFromView"</code>
 	 */
 	public static final String REMOVE_FROM_VIEW_ACTION_ID = "org.eclipse.team.internal.ui.RemoveFromView"; //$NON-NLS-1$
-	
-	
+
+
 	/**
 	 * Creates a new TeamUIPlugin.
 	 */
@@ -96,7 +96,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @param element the config element defining the extension
 	 * @param classAttribute the name of the attribute carrying the class
 	 * @return the extension object
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	public static Object createExtension(final IConfigurationElement element, final String classAttribute) throws CoreException {
 		// If plugin has been loaded create extension.
@@ -121,15 +121,15 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 				throw exc[0];
 			else
 				return ret[0];
-		}	
+		}
 	}
-	
+
 	/**
 	 * Convenience method to get the currently active workbench page. Note that
 	 * the active page may not be the one that the usr perceives as active in
 	 * some situations so this method of obtaining the activae page should only
 	 * be used if no other method is available.
-	 * 
+	 *
 	 * @return the active workbench page
 	 */
 	public static IWorkbenchPage getActivePage() {
@@ -137,10 +137,10 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		if (window == null) return null;
 		return window.getActivePage();
 	}
-	
+
 	/**
 	 * Return the default instance of the receiver. This represents the runtime plugin.
-	 * 
+	 *
 	 * @return the singleton plugin instance
 	 */
 	public static TeamUIPlugin getPlugin() {
@@ -162,11 +162,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		store.setDefault(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT, IPreferenceIds.COMPRESSED_LAYOUT);
 		store.setDefault(IPreferenceIds.SYNCVIEW_DEFAULT_PERSPECTIVE, TeamSynchronizingPerspective.ID);
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT, GlobalRefreshAction.NO_DEFAULT_PARTICPANT);
-		store.setDefault(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, GlobalRefreshAction.NO_DEFAULT_PARTICPANT);	
+		store.setDefault(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, GlobalRefreshAction.NO_DEFAULT_PARTICPANT);
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_COMPLETE_PERSPECTIVE, MessageDialogWithToggle.PROMPT);
-		store.setDefault(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT, false);	
+		store.setDefault(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT, false);
 		store.setDefault(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME, true);
-		
+
 		// Convert the old compressed folder preference to the new layout preference
 		if (!store.isDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS) && !store.getBoolean(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS)) {
 		    // Set the compress folder preference to the default true) \
@@ -176,16 +176,16 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		    store.setDefault(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT, IPreferenceIds.TREE_LAYOUT);
 		}
 	}
-	
+
 	/**
 	 * Convenience method for logging statuses to the plugin log
-	 * 
+	 *
 	 * @param status  the status to log
 	 */
 	public static void log(IStatus status) {
 		getPlugin().getLog().log(status);
 	}
-	
+
 	/**
 	 * Convenience method for logging a TeamException in such a way that the
 	 * stacktrace is logged as well.
@@ -195,11 +195,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		IStatus status = e.getStatus();
 		log (status.getSeverity(), status.getMessage(), e);
 	}
-	
+
 	/**
 	 * Log the given exception along with the provided message and severity
 	 * indicator
-	 * 
+	 *
 	 * @param severity
 	 *            the severity
 	 * @param message
@@ -210,7 +210,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	public static void log(int severity, String message, Throwable e) {
 		log(new Status(severity, ID, 0, message, e));
 	}
-	
+
 	/**
 	 * @see Plugin#start(BundleContext)
 	 */
@@ -247,12 +247,12 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			};
 			capabilityInitializer.setSystem(true);
 			capabilityInitializer.setPriority(Job.DECORATE);
-			capabilityInitializer.schedule(1000);		
+			capabilityInitializer.schedule(1000);
 		}
-		
+
 		StreamMergerDelegate.start();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see Plugin#stop(BundleContext)
 	 */
@@ -284,7 +284,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	public static void addPropertyChangeListener(IPropertyChangeListener listener) {
 		propertyChangeListeners.add(listener);
 	}
-	
+
 	/**
 	 * Deregister as a Team property changes.
 	 * @param listener the listener to remove
@@ -292,21 +292,21 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	public static void removePropertyChangeListener(IPropertyChangeListener listener) {
 		propertyChangeListeners.remove(listener);
 	}
-	
+
 	/**
 	 * Broadcast a Team property change.
 	 * @param event the property change event object
 	 */
 	public static void broadcastPropertyChange(PropertyChangeEvent event) {
 		for (Iterator it = propertyChangeListeners.iterator(); it.hasNext();) {
-			IPropertyChangeListener listener = (IPropertyChangeListener)it.next();			
+			IPropertyChangeListener listener = (IPropertyChangeListener)it.next();
 			listener.propertyChange(event);
 		}
 	}
-	
+
 	/**
 	 * Creates an image and places it in the image registry.
-	 * 
+	 *
 	 * @param id  the identifier for the image
 	 * @param baseURL  the base URL for the image
 	 */
@@ -318,11 +318,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
         ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(id));
         imageDescriptors.put(id, desc);
 	}
-	
+
 	/**
 	 * Returns the image descriptor for the given image ID.
 	 * Returns null if there is no such image.
-	 * 
+	 *
 	 * @param id  the identifier for the image to retrieve
 	 * @return the image associated with the given ID
 	 */
@@ -335,11 +335,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			createImageDescriptor(getPlugin(), id);
 		}
 		return (ImageDescriptor)imageDescriptors.get(id);
-	}	
+	}
 
 	/**
 	 * Convenience method to get an image descriptor for an extension
-	 * 
+	 *
 	 * @param extension  the extension declaring the image
 	 * @param subdirectoryAndFilename  the path to the image
 	 * @return the image
@@ -352,7 +352,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * Initializes the table of images used in this plugin. The plugin is
 	 * provided because this method is called before the plugin staic
 	 * variable has been set. See the comment on the getPlugin() method
-	 * for a description of why this is required. 
+	 * for a description of why this is required.
 	 */
 	private void initializeImages(TeamUIPlugin plugin) {
 		// Overlays
@@ -363,10 +363,10 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		createImageDescriptor(plugin, ISharedImages.IMG_ERROR_OVR);
 		createImageDescriptor(plugin, ISharedImages.IMG_WARNING_OVR);
 		createImageDescriptor(plugin, ISharedImages.IMG_HOURGLASS_OVR);
-		
+
 		// Target Management Icons
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SITE_ELEMENT);
-		
+
 		// Sync View Icons
 		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING);
@@ -397,14 +397,14 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 		// Wizard banners
 		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER);	
+		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_WIZBAN_SHARE);
-		
+
 		// Live Sync View icons
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPRESSED_FOLDER);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_VIEW);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_HIERARCHICAL);		
-		
+		createImageDescriptor(plugin, ITeamUIImages.IMG_HIERARCHICAL);
+
 		// Local History Page
 		createImageDescriptor(plugin, ITeamUIImages.IMG_DATES_CATEGORY);
 		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPARE_VIEW);
@@ -419,7 +419,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * Returns the standard display to be used. The method first checks, if the
 	 * thread calling this method has an associated display. If so, this display
 	 * is returned. Otherwise the method returns the display for this workbench.
-	 * 
+	 *
 	 * @return the standard display to be used
 	 */
 	public static Display getStandardDisplay() {
@@ -429,7 +429,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		}
 		return display;
 	}
-	
+
 	public Image getImage(String key) {
 		Image image = getImageRegistry().get(key);
 		if(image == null) {
@@ -439,7 +439,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		}
 		return image;
 	}
-	
+
 	public static void run(IRunnableWithProgress runnable) {
 		try {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true, runnable);
@@ -466,11 +466,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Return a decorated state provider that delegates to the appropriate team 
+	 * Return a decorated state provider that delegates to the appropriate team
 	 * provider.
-	 * @return a decorated state provider that delegates to the appropriate team 
+	 * @return a decorated state provider that delegates to the appropriate team
 	 * provider
 	 */
 	public synchronized ITeamStateProvider getDecoratedStateProvider() {
@@ -478,7 +478,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 			provider = new WorkspaceTeamStateProvider();
 		return provider;
 	}
-	
+
 	public ISynchronizeManager getSynchronizeManager() {
 		if (synchronizeManager == null) {
 			synchronizeManager = new SynchronizeManager();

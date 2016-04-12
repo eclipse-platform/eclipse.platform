@@ -27,19 +27,19 @@ import org.eclipse.ui.actions.*;
 import org.eclipse.ui.navigator.INavigatorContentService;
 
 /**
- * This action group is modeled after the class of the same name in 
+ * This action group is modeled after the class of the same name in
  * the org.eclipse.ui.workbench plugin. We couldn't reuse that class
  * because of a hard dependency on the navigator.
  */
 public class RefactorActionGroup extends ActionGroup {
-    
+
 	private CopyToClipboardAction copyAction;
 	private MoveResourceAction moveAction;
 	private RenameResourceAction renameAction;
 	private ISynchronizePageSite site;
 	private DeleteResourceAction deleteAction;
 	private final INavigatorContentService navigatorContentService;
-	
+
 	public RefactorActionGroup(ISynchronizePageSite site) {
 		this(site, null);
 	}
@@ -136,20 +136,20 @@ public class RefactorActionGroup extends ActionGroup {
 		renameAction
 				.setActionDefinitionId(IWorkbenchCommandConstants.FILE_RENAME);
 	}
-    
+
     private IStructuredSelection getSelection() {
         final ISelection selection= getContext().getSelection();
 
-        if (!(selection instanceof IStructuredSelection)) 
+        if (!(selection instanceof IStructuredSelection))
             return new StructuredSelection();
 
     	return new StructuredSelection(Utils.getResources(((IStructuredSelection)selection).toArray()));
 	}
-    
+
     private IStructuredSelection getObjectSelection() {
         final ISelection selection= getContext().getSelection();
 
-        if (!(selection instanceof IStructuredSelection)) 
+        if (!(selection instanceof IStructuredSelection))
             return new StructuredSelection();
 
     	return (IStructuredSelection)selection;
@@ -178,7 +178,7 @@ public class RefactorActionGroup extends ActionGroup {
 		}
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */

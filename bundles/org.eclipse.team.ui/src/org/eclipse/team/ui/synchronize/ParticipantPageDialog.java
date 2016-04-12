@@ -22,24 +22,24 @@ import org.eclipse.team.ui.*;
  * A dialog that displays the option of adding the participant to the {@link org.eclipse.team.ui.synchronize.ISynchronizeManager}
  * when the dialog is closed. This can be useful for showing changes for a participant modally and allowing the
  * user to decide if the participant shown should be made available non-modally.
- * 
+ *
  * @see SaveablePartAdapter
  * @see ISynchronizeParticipant
  * @since 3.0
- * @deprecated Clients should use {@link ParticipantPageCompareEditorInput} 
+ * @deprecated Clients should use {@link ParticipantPageCompareEditorInput}
  *      and {@link CompareUI#openCompareDialog(org.eclipse.compare.CompareEditorInput)}
  */
 @Deprecated
 public class ParticipantPageDialog extends SaveablePartDialog {
-		
+
 	private ISynchronizeParticipant participant;
 	private Button rememberParticipantButton;
 
 	/**
 	 * Creates a dialog with the given participant and input. The input is not created until the dialog
 	 * is opened.
-	 * 
-	 * @param shell the parent shell or <code>null</code> to create a top level shell. 
+	 *
+	 * @param shell the parent shell or <code>null</code> to create a top level shell.
 	 * @param input the compare input to show in the dialog
 	 * @param participant the given participant
 	 */
@@ -47,21 +47,21 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 		super(shell, input);
 		this.participant = participant;
 	}
-	
+
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent2) {
-		Composite parent = (Composite) super.createDialogArea(parent2);	
+		Composite parent = (Composite) super.createDialogArea(parent2);
 		if (isOfferToRememberParticipant() && participant != null && ! particantRegisteredWithSynchronizeManager(participant)) {
 			rememberParticipantButton = new Button(parent, SWT.CHECK);
-			rememberParticipantButton.setText(TeamUIMessages.ParticipantCompareDialog_1); 
+			rememberParticipantButton.setText(TeamUIMessages.ParticipantCompareDialog_1);
 		}
 		Dialog.applyDialogFont(parent2);
 		return parent;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
@@ -72,15 +72,15 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 		}
 		super.buttonPressed(buttonId);
 	}
-	
+
 	private boolean isRememberParticipant() {
 		return getParticipant() != null && rememberParticipantButton != null && rememberParticipantButton.getSelection();
 	}
-	
+
 	private boolean particantRegisteredWithSynchronizeManager(ISynchronizeParticipant participant) {
 		return TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()) != null;
 	}
-	
+
 	private void rememberParticipant() {
 		if(getParticipant() != null) {
 			ISynchronizeManager mgr = TeamUI.getSynchronizeManager();
@@ -89,16 +89,16 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 			view.display(participant);
 		}
 	}
-	
+
 	/**
 	 * Returns the participant showing in this dialog.
-	 * 
-	 * @return the participant showing in this dialog. 
+	 *
+	 * @return the participant showing in this dialog.
 	 */
 	protected ISynchronizeParticipant getParticipant() {
 		return participant;
 	}
-	
+
 	/**
 	 * Return whether the ability to remember the participant in the synchronize
 	 * view should be presented to the user. By default, <code>true</code> is

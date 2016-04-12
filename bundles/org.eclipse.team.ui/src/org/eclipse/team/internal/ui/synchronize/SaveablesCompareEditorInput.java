@@ -92,7 +92,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	 * returned from this method is used as the left contributor of the compare
 	 * input for a {@link SaveableCompareEditorInput}, then the file will be
 	 * properly saved when the compare editor input or viewers are saved.
-	 * 
+	 *
 	 * @param file
 	 *            the file
 	 * @return a typed element that represents a local file.
@@ -113,7 +113,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.CompareEditorInput#contentsCreated()
 	 */
 	@Override
@@ -172,7 +172,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
 	 */
 	@Override
@@ -204,7 +204,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			((IDisposable) getCompareResult()).dispose();
 		}
 	}
-	
+
 	private String[] getLabels() {
 		IResource leftResource = getResource(fLeftElement);
 		IResource rightResource = getResource(fRightElement);
@@ -225,7 +225,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		}
 		return new String[] { fLeftElement.getName(), fRightElement.getName() };
 	}
-	
+
 	@Override
 	public String getToolTipText() {
 		String[] labels = getLabels();
@@ -251,7 +251,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/**
 	 * Return the compare input of this editor input.
-	 * 
+	 *
 	 * @return the compare input of this editor input
 	 */
 	protected final ICompareInput getCompareInput() {
@@ -307,7 +307,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.ISaveablesSource#getActiveSaveables()
 	 */
 	@Override
@@ -319,7 +319,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.ISaveablesSource#getSaveables()
 	 */
 	@Override
@@ -329,7 +329,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.CompareEditorInput#findContentViewer(org.eclipse.
 	 * jface.viewers.Viewer,
@@ -377,7 +377,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	 * current editor input {@link CompareEditorInput#isSaveNeeded()} is called.
 	 * <p>
 	 * This method is preferred to {@link CompareEditorInput#isSaveNeeded()}.
-	 * 
+	 *
 	 * @param the
 	 *            the saveable to check
 	 * @return <code>true</code> if there are changes that need to be saved
@@ -422,7 +422,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	/**
 	 * Close the editor if it is not dirty. If it is still dirty, let the
 	 * content merge viewer handle the compare input change.
-	 * 
+	 *
 	 * @param checkForUnsavedChanges
 	 *            whether to check for unsaved changes
 	 * @return <code>true</code> if the editor was closed (note that the close
@@ -458,7 +458,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	 * this class delegates the creation of the compare input to the
 	 * {@link #prepareCompareInput(IProgressMonitor)} method which subclasses
 	 * must implement.
-	 * 
+	 *
 	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
@@ -474,7 +474,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	/**
 	 * Method called from {@link #prepareInput(IProgressMonitor)} to obtain the input. Its purpose
 	 * is to ensure that the input is an instance of {@link ICompareInput}.
-	 * 
+	 *
 	 * @param monitor a progress monitor
 	 * @return the compare input
 	 * @throws InvocationTargetException
@@ -612,7 +612,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.CompareEditorInput#addCompareInputChangeListener(
 	 * org.eclipse.compare.structuremergeviewer.ICompareInput,
@@ -630,7 +630,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.CompareEditorInput#removeCompareInputChangeListener
 	 * (org.eclipse.compare.structuremergeviewer.ICompareInput,
@@ -669,7 +669,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.CompareEditorInput#getTitleImage()
 	 */
 	@Override
@@ -685,7 +685,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
 	@Override
@@ -695,7 +695,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.CompareEditorInput#canRunAsJob()
 	 */
 	@Override
@@ -813,9 +813,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 			if (!(obj instanceof Saveable))
 				return false;
-			
+
 			Object document = getAdapter(IDocument.class);
-			
+
 			if (document != null) {
 				Object otherDocument = ((Saveable) obj)
 						.getAdapter(IDocument.class);
@@ -854,7 +854,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 						submenu2.add(new OpenWithMenu(ws.getPage(), resource) {
 							/*
 							 * (non-Javadoc)
-							 * 
+							 *
 							 * @see org.eclipse.ui.actions.OpenWithMenu#openEditor(org.eclipse.ui.
 							 * IEditorDescriptor, boolean)
 							 */
@@ -872,7 +872,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 						OpenFileAction openFileAction= new OpenFileAction(ws.getPage()) {
 							/*
 							 * (non-Javadoc)
-							 * 
+							 *
 							 * @see org.eclipse.ui.actions.OpenSystemEditorAction#run()
 							 */
 							@Override
@@ -893,7 +893,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	/**
 	 * Selects and reveals the given offset and length in the given editor part.
-	 * 
+	 *
 	 * @param editor the editor part
 	 * @param offset the offset
 	 * @param length the length

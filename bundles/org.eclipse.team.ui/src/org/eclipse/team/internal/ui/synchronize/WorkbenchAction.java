@@ -15,11 +15,11 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 
 /**
  * Class used as <i>goto</i> actions for synchronize jobs.
- * 
+ *
  * @since 3.0
  */
 public class WorkbenchAction extends Action implements IWorkbenchAction {
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionFactory.IWorkbenchAction#dispose()
 	 */

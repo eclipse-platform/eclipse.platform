@@ -31,7 +31,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	private static final String WORKING_SET_NAME = "workingSetName"; //$NON-NLS-1$
 	private static final String MODEL_PROVIDERS = "modelProviders"; //$NON-NLS-1$
 	private static final String MODEL_PROVIDER_ID = "modelProviderId"; //$NON-NLS-1$
-	
+
 	public ResourceModelPersistenceAdapter() {
 	}
 
@@ -70,7 +70,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 		for (int i = 0; i < children.length; i++) {
 			IMemento child = children[i];
 			Integer typeInt = child.getInteger(RESOURCE_TYPE);
-			if (typeInt == null) 
+			if (typeInt == null)
 				continue;
 			int type = typeInt.intValue();
 			String pathString = child.getString(RESOURCE_PATH);
@@ -137,5 +137,5 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 		}
 		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
 	}
-	
+
 }

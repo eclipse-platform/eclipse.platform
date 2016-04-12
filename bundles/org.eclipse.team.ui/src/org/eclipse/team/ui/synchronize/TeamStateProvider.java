@@ -31,7 +31,7 @@ import org.eclipse.ui.PlatformUI;
  * team state provider that uses the subscriber of the type is provided.
  * <p>
  * Clients may subclass this class.
- * 
+ *
  * @see IAdapterManager
  * @see RepositoryProviderType
  * @since 3.2
@@ -39,13 +39,13 @@ import org.eclipse.ui.PlatformUI;
 public abstract class TeamStateProvider implements ITeamStateProvider {
 
 	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
-	
+
 	/**
 	 * Determine if the decorator for the element is enabled by consulting the
 	 * <code>teamDecorator</code> extension point to determine the decorator
 	 * id associated with the resources the element maps to. Subclasses may
 	 * override.
-	 * 
+	 *
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#isDecorationEnabled(java.lang.Object)
 	 */
 	@Override
@@ -57,13 +57,13 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Determine the decorated state for the element by consulting the
 	 * <code>teamDecorator</code> extension point to get the decorated state
 	 * mask associated with the resources the element maps to. Subclasses may
 	 * override.
-	 * 
+	 *
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedStateMask(java.lang.Object)
 	 */
 	@Override
@@ -75,7 +75,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 		}
 		return 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#addDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
 	 */
@@ -83,7 +83,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	public void addDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#removeDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
 	 */
@@ -91,7 +91,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	public void removeDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Fire the change event to all listeners.
 	 * @param event the change event
@@ -112,7 +112,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 			});
 		}
 	}
-	
+
 	private int internalGetDecoratedStateMask(IProject[] projects) {
 		int stateMask = 0;
 		String[] providerIds = getProviderIds(projects);

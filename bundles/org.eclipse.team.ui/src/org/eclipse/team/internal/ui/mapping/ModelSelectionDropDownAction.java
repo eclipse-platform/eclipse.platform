@@ -33,7 +33,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	private org.eclipse.jface.util.IPropertyChangeListener listener;
 	private MenuCreator menuCreator;
 	private Action showAllFlatAction;
-	
+
 	private class MenuCreator implements IMenuCreator {
 		@Override
 		public void dispose() {
@@ -57,7 +57,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 				addModelsToMenu(modelProviders);
 				menuManager.add(new Separator());
 				menuManager.add(showAllFlatAction);
-				
+
 				menuManager.update(true);
 			} else {
 				fMenu = menuManager.getMenu();
@@ -88,7 +88,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		this.configuration.addPropertyChangeListener(listener);
 		TeamUI.getTeamContentProviderManager().addPropertyChangeListener(listener);
 		getSynchronizationContext().getScope().addScopeChangeListener(this);
-		showAllAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_0, IAction.AS_RADIO_BUTTON) { 
+		showAllAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_0, IAction.AS_RADIO_BUTTON) {
 			@Override
 			public void run() {
 				ModelSelectionDropDownAction.this.configuration.setProperty(
@@ -98,7 +98,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		};
 		//showAllAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_HIERARCHICAL));
 		//showAllAction.setActionDefinitionId("org.eclipse.team.ui.showAllModels"); //$NON-NLS-1$
-		showAllFlatAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_2, IAction.AS_CHECK_BOX) { 
+		showAllFlatAction = new Action(TeamUIMessages.ModelSelectionDropDownAction_2, IAction.AS_CHECK_BOX) {
 			@Override
 			public void run() {
 				boolean checked = showAllFlatAction.isChecked();
@@ -110,8 +110,8 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		showAllFlatAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_FLAT));
 		//showAllAction.setActionDefinitionId("org.eclipse.team.ui.showAllModels"); //$NON-NLS-1$
 		menuCreator = new MenuCreator();
-		setMenuCreator(menuCreator);		
-		update();	
+		setMenuCreator(menuCreator);
+		update();
 	}
 
 	private ISynchronizationContext getSynchronizationContext() {
@@ -156,10 +156,10 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 			id = ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE;
 		return id;
 	}
-	
+
 	private ModelProvider getNextProvider() {
 		ModelProvider[] providers = getSynchronizationContext().getScope().getModelProviders();
-		if (providers.length == 0) 
+		if (providers.length == 0)
 			return null;
 		providers = ModelOperation.sortByExtension(providers);
 		String id = getActiveProviderId();
@@ -181,7 +181,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	public void update() {
 		ModelProvider next = getNextProvider();
 		if (next == null) return;
-		String text = NLS.bind(TeamUIMessages.ModelSelectionDropDownAction_1, next.getDescriptor().getLabel()); 
+		String text = NLS.bind(TeamUIMessages.ModelSelectionDropDownAction_1, next.getDescriptor().getLabel());
 		setToolTipText(text);
 		setText(text);
 		if (menuManager != null) {
@@ -202,7 +202,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		}
 		// TODO: need to update the check mark
 	}
-	
+
 	private boolean isFlatEnabled() {
 		String p = (String)configuration.getProperty(ITeamContentProviderManager.PROP_PAGE_LAYOUT);
 		return p != null && p.equals(ITeamContentProviderManager.FLAT_LAYOUT);

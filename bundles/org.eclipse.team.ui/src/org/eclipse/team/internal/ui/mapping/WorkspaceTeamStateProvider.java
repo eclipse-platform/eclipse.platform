@@ -28,7 +28,7 @@ import org.eclipse.team.ui.synchronize.TeamStateProvider;
  * A decorated state provider that delegates to the provider for the repository
  * provider type that is associated with the projects that an element maps to
  * using the ResourceMapping API.
- * 
+ *
  */
 public class WorkspaceTeamStateProvider extends TeamStateProvider
 		implements ITeamStateChangeListener, IRepositoryProviderListener,
@@ -47,7 +47,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 			handleProject(project);
 		}
 	}
-	
+
 	public void dispose() {
 		RepositoryProviderManager.getInstance().removeListener(this);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
@@ -85,7 +85,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 			return provider.getDecoratedStateMask(element);
 		return 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedProperties(java.lang.Object)
 	 */
@@ -97,7 +97,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return new String[0];
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#getState(java.lang.Object, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -120,7 +120,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 			return provider.getResourceMappingContext(element);
 		return ResourceMappingContext.LOCAL_CONTEXT;
 	}
-	
+
 	private ITeamStateProvider getDecoratedStateProvider(Object element) {
 		RepositoryProviderType type = getProviderType(element);
 		if (type != null)
@@ -182,7 +182,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 			}
 		}
 	}
-	
+
 	private void listenerForStateChangesForId(String id) {
 		if (!providers.containsKey(id)) {
 			ITeamStateProvider provider = getDecoratedStateProviderForId(id);

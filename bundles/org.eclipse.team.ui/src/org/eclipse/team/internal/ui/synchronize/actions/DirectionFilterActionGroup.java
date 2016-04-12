@@ -26,27 +26,27 @@ import org.eclipse.ui.actions.ActionGroup;
  * This action group provides radio buttons for each possible direction of synchronization information. The
  * modes created by this action group can be configured. The actions directly set the mode of an
  * {@link ISynchronizePageConfiguration}.
- * @since 3.0 
+ * @since 3.0
  */
 public class DirectionFilterActionGroup extends ActionGroup implements IPropertyChangeListener {
-	
-	// The list of created actions	
+
+	// The list of created actions
 	private List actions = new ArrayList(3);
-	
+
 	// The modes
-	private DirectionFilterAction incomingMode;					
+	private DirectionFilterAction incomingMode;
 	private DirectionFilterAction outgoingMode;
 	private DirectionFilterAction bothMode;
 	private DirectionFilterAction conflictsMode;
-	
+
 	private ISynchronizePageConfiguration configuration;
-	
+
 	/**
-	 * An action filter for a specific mode. 
+	 * An action filter for a specific mode.
 	 */
 	class DirectionFilterAction extends Action {
 		private int modeId;
-		
+
 		public DirectionFilterAction(String prefix,String commandId, int modeId) {
 			super("", AS_RADIO_BUTTON); //$NON-NLS-1$
 			this.modeId = modeId;
@@ -62,21 +62,21 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			return modeId;
 		}
 	}
-	
+
 	/**
 	 * Creates a direction filter group with the given supported modes. The
 	 * possible values for modes are defined by the {@link ISynchronizePageConfiguration}
 	 * interface.
-	 * 
+	 *
 	 * @param configuration the page configuration
 	 */
-	public DirectionFilterActionGroup(ISynchronizePageConfiguration configuration) {		
+	public DirectionFilterActionGroup(ISynchronizePageConfiguration configuration) {
 		this.configuration = configuration;
 		createActions();
 		configuration.addPropertyChangeListener(this);
 		checkMode(configuration.getMode());
 	}
-	
+
 	/**
 	 * Sets up the sync modes and the actions for switching between them.
 	 */
@@ -95,26 +95,26 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			actions.add(incomingMode);
 			incomingMode.setChecked(currentMode == ISynchronizePageConfiguration.INCOMING_MODE);
 		}
-		
+
 		if((supportedModes & ISynchronizePageConfiguration.OUTGOING_MODE) != 0) {
 			outgoingMode = new DirectionFilterAction("action.directionFilterOutgoing.", "org.eclipse.team.ui.syncview.outgoingFilter",  ISynchronizePageConfiguration.OUTGOING_MODE); //$NON-NLS-1$ //$NON-NLS-2$
 			actions.add(outgoingMode);
 			outgoingMode.setChecked(currentMode == ISynchronizePageConfiguration.OUTGOING_MODE);
 		}
-		
+
 		if((supportedModes & ISynchronizePageConfiguration.BOTH_MODE) != 0) {
 			bothMode = new DirectionFilterAction("action.directionFilterBoth.", "org.eclipse.team.ui.syncview.bothFilter", ISynchronizePageConfiguration.BOTH_MODE); //$NON-NLS-1$ //$NON-NLS-2$
 			actions.add(bothMode);
 			bothMode.setChecked(currentMode == ISynchronizePageConfiguration.BOTH_MODE);
 		}
-		
+
 		if((supportedModes & ISynchronizePageConfiguration.CONFLICTING_MODE) != 0) {
 			conflictsMode = new DirectionFilterAction("action.directionFilterConflicts.", "org.eclipse.team.ui.syncview.conflictsFilter", ISynchronizePageConfiguration.CONFLICTING_MODE); //$NON-NLS-1$ //$NON-NLS-2$
 			actions.add(conflictsMode);
 			conflictsMode.setChecked(currentMode == ISynchronizePageConfiguration.CONFLICTING_MODE);
 		}
 	}
-	
+
 	/**
 	 * @param supportedModes
 	 * @return the support mode
@@ -150,21 +150,21 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			}
 		}
 	}
-	
+
 	public void fillToolBar(String groupId, IToolBarManager toolBar) {
 		for (Iterator it = actions.iterator(); it.hasNext();) {
 			DirectionFilterAction action = (DirectionFilterAction) it.next();
 				toolBar.appendToGroup(groupId, action);
 		}
 	}
-	
+
 	public void fillMenu(IContributionManager manager) {
 		for (Iterator it = actions.iterator(); it.hasNext();) {
 			DirectionFilterAction action = (DirectionFilterAction) it.next();
 				manager.add(action);
 		}
 	}
-	
+
 	private void checkMode(int mode) {
 		for (Iterator it = actions.iterator(); it.hasNext();) {
 			DirectionFilterAction action = (DirectionFilterAction)it.next();
@@ -175,7 +175,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
@@ -186,7 +186,7 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 			checkMode(mode.intValue());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
 	 */

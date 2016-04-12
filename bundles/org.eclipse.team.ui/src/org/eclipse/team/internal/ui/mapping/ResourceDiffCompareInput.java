@@ -35,7 +35,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 
 	private IDiff node;
 	private final ISynchronizationContext context;
-	
+
 	public static int getCompareKind(IDiff node) {
 		int compareKind = 0;
 		if (node != null) {
@@ -51,7 +51,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 				break;
 			}
 			if (node instanceof IThreeWayDiff) {
-				IThreeWayDiff twd = (IThreeWayDiff) node;			
+				IThreeWayDiff twd = (IThreeWayDiff) node;
 				switch (twd.getDirection()) {
 				case IThreeWayDiff.OUTGOING :
 					compareKind |= Differencer.RIGHT;
@@ -68,7 +68,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		}
 		return compareKind;
 	}
-	
+
 	private static FileRevisionTypedElement getRightContributor(IDiff node) {
 		// For a resource diff, use the after state
 		if (node instanceof IResourceDiff) {
@@ -84,7 +84,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 			// There's no remote change so use the before state of the local
 			diff = (IResourceDiff)twd.getLocalChange();
 			return asTypedElement(diff.getBeforeState(), getLocalEncoding(node));
-			
+
 		}
 		return null;
 	}
@@ -101,7 +101,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 			if (diff == null)
 				diff = (IResourceDiff)twd.getRemoteChange();
 			return asTypedElement(diff.getBeforeState(), getLocalEncoding(node));
-			
+
 		}
 		return null;
 	}
@@ -130,7 +130,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 			ensureContentsCached(getAncestor(diff), getRightContributor(diff), monitor);
 		}
 	}
-	
+
 	private static void ensureContentsCached(Object ancestor, Object right,
 			IProgressMonitor monitor) throws CoreException {
 		SubMonitor sm = SubMonitor.convert(monitor, 100);
@@ -147,7 +147,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		if (monitor != null)
 			monitor.done();
 	}
-	
+
 	/**
 	 * Create the compare input on the given diff.
 	 * @param diff the diff
@@ -158,17 +158,17 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		this.node = diff;
 		this.context = context;
 	}
-	
+
 	/**
 	 * Fire a compare input change event.
-	 * This method is public so that the change can be fired 
+	 * This method is public so that the change can be fired
 	 * by the containing editor input on a save.
 	 */
 	@Override
 	public void fireChange() {
 		super.fireChange();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#prepareInput(org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -257,7 +257,7 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		}
 		return false;
 	}
-	
+
 	private boolean isEqual(ITypedElement e1, ITypedElement e2) {
 		if (e1 == null) {
 			return e2 == null;

@@ -33,26 +33,26 @@ public interface ISynchronizeModelElement extends IDiffContainer, ITypedElement,
 	 * Property constant indicating that the element is currently being worked on by an operation.
 	 */
 	public static final String BUSY_PROPERTY = TeamUIPlugin.ID + ".busy"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant indicating that the element has children that are conflicting.
 	 */
 	public static final String PROPAGATED_CONFLICT_PROPERTY = TeamUIPlugin.ID + ".conflict"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant identifying that this element or one of its children has an error marker.
 	 */
 	public static final String PROPAGATED_ERROR_MARKER_PROPERTY = TeamUIPlugin.ID + ".error"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant indicating that this element or one of its children has a warning marker.
 	 */
 	public static final String PROPAGATED_WARNING_MARKER_PROPERTY = TeamUIPlugin.ID + ".warning"; //$NON-NLS-1$
 
 	/**
-	 * Adds a listener for changes to properties of this synchronize element. Has no effect if an identical 
+	 * Adds a listener for changes to properties of this synchronize element. Has no effect if an identical
 	 * listener is already registered.
-	 * 
+	 *
 	 * @param listener the listener to register
 	 */
 	public abstract void addPropertyChangeListener(IPropertyChangeListener listener);
@@ -60,30 +60,30 @@ public interface ISynchronizeModelElement extends IDiffContainer, ITypedElement,
 	/**
 	 * Removes the given property change listener from this model element. Has no effect if
 	 * the listener is not registered.
-	 * 
+	 *
 	 * @param listener the listener to remove
 	 */
 	public abstract void removePropertyChangeListener(IPropertyChangeListener listener);
 
 	/**
 	 * Assigns the given property to this element and all it's parents.
-	 * 
+	 *
 	 * @param propertyName the property name to set
 	 * @param value the value of the property
 	 */
 	public void setPropertyToRoot(String propertyName, boolean value);
-	
+
 	/**
 	 * Assigns the given property to this element.
-	 * 
+	 *
 	 * @param propertyName the property name
 	 * @param value the value of the property.
 	 */
 	public void setProperty(String propertyName, boolean value);
-	
+
 	/**
 	 * Return whether this element has the given property assigned.
-	 * 
+	 *
 	 * @param propertyName the property to test for
 	 * @return <code>true</code> if the property is set and <code>false</code>
 	 * otherwise.
@@ -92,7 +92,7 @@ public interface ISynchronizeModelElement extends IDiffContainer, ITypedElement,
 
 	/**
 	 * The image descriptor describing the given element.
-	 * 
+	 *
 	 * @param element the model element for which to return an image.
 	 * @return the image descriptor for the given element.
 	 */
@@ -101,7 +101,7 @@ public interface ISynchronizeModelElement extends IDiffContainer, ITypedElement,
 	/**
 	 * Returns the resource this element is showing synchronization information for or <code>null</code>
 	 * if the element does not have an associated local resource.
-	 * 
+	 *
 	 * @return the resource this element is showing synchronization information for or <code>null</code>
 	 * if the element does not have an associated local resource.
 	 */

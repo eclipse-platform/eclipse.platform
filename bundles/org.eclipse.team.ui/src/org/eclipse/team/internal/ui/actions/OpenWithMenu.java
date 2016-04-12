@@ -86,7 +86,7 @@ public class OpenWithMenu extends ContributionItem {
 
 	/**
 	 * Constructs a new instance of <code>OpenWithMenu</code>.
-	 * 
+	 *
 	 * @param page
 	 *            the page where the editor is opened if an item within the menu
 	 *            is selected
@@ -98,7 +98,7 @@ public class OpenWithMenu extends ContributionItem {
 
 	/**
 	 * Returns an image to show for the corresponding editor descriptor.
-	 * 
+	 *
 	 * @param editorDesc
 	 *            the editor descriptor, or null for the system editor
 	 * @return the image or null
@@ -143,7 +143,7 @@ public class OpenWithMenu extends ContributionItem {
 
 	/**
 	 * Creates the menu item for the editor descriptor.
-	 * 
+	 *
 	 * @param menu
 	 *            the menu to add the item to
 	 * @param descriptor
@@ -182,7 +182,7 @@ public class OpenWithMenu extends ContributionItem {
 
 	/**
 	 * Creates the Other... menu item
-	 * 
+	 *
 	 * @param menu
 	 *            the menu to add the item to
 	 */

@@ -26,42 +26,42 @@ import com.ibm.icu.util.Calendar;
 /**
  * Schedule to refresh a subscriber at a specified interval. The schedule can be disabled or enabled
  * and will create the refresh job.
- * 
+ *
  * @since 3.0
  */
 public class SubscriberRefreshSchedule {
 	private long refreshInterval = 3600; // 1 hour default
 	private Date refreshStart;
 	private boolean runOnce = false;
-	
+
 	private boolean enabled = false;
-	
+
 	private RefreshParticipantJob job;
-	
+
 	private IRefreshable refreshable;
-	
+
 	private IRefreshEvent lastRefreshEvent;
-	
+
 	/**
 	 * Key for settings in memento
 	 */
 	private static final String CTX_REFRESHSCHEDULE_INTERVAL = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_INTERVAL"; //$NON-NLS-1$
-	
+
 	/**
 	 * Key for schedule in memento
 	 */
 	private static final String CTX_REFRESHSCHEDULE_ENABLED = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_ENABLED"; //$NON-NLS-1$
-	
+
 	/**
 	 * Key for start date in memento
 	 */
 	private static final String CTX_REFRESHSCHEDULE_START = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_START"; //$NON-NLS-1$
-	
+
 	/**
 	 * Key for run once in memento
 	 */
 	private static final String CTX_REFRESHSCHEDULE_RUNONCE = TeamUIPlugin.ID + ".CTX_REFRESHSCHEDULE_RUNONCE"; //$NON-NLS-1$
-		
+
 	private IRefreshSubscriberListener refreshSubscriberListener = new IRefreshSubscriberListener() {
 		@Override
 		public void refreshStarted(IRefreshEvent event) {
@@ -81,12 +81,12 @@ public class SubscriberRefreshSchedule {
 			return (IRefreshable)Utils.getAdapter(participant, IRefreshable.class);
 		}
 	};
-	
-	
+
+
 	public SubscriberRefreshSchedule(IRefreshable refreshable) {
 		this.refreshable = refreshable;
 		RefreshParticipantJob.addRefreshListener(refreshSubscriberListener);
-		
+
 //		Calendar cal = Calendar.getInstance();
 //		cal.clear();
 //		refreshStart = cal.getTime();
@@ -106,7 +106,7 @@ public class SubscriberRefreshSchedule {
 	public void setEnabled(boolean enabled, boolean allowedToStart) {
 		boolean wasEnabled = isEnabled();
 		this.enabled = enabled;
-		if(enabled && ! wasEnabled) { 
+		if(enabled && ! wasEnabled) {
 			if(allowedToStart) {
 				startJob();
 			}
@@ -114,7 +114,7 @@ public class SubscriberRefreshSchedule {
 			stopJob();
 		}
 	}
-	
+
 	/**
 	 * @return Returns the refreshInterval in seconds.
 	 */
@@ -125,7 +125,7 @@ public class SubscriberRefreshSchedule {
 	public ISynchronizeParticipant getParticipant() {
 		return refreshable.getParticipant();
 	}
-	
+
 	/**
 	 * @param refreshInterval The refreshInterval to set.
 	 */
@@ -139,7 +139,7 @@ public class SubscriberRefreshSchedule {
 			}
 		}
 	}
-	
+
 	public void startJob() {
 		if(job == null) {
 			job = refreshable.createJob(getRefreshIntervalAsString());
@@ -169,7 +169,7 @@ public class SubscriberRefreshSchedule {
 		}
 		return start.getTimeInMillis() - now.getTimeInMillis();
 	}
-	
+
 	protected void stopJob() {
 		if(job != null) {
 			job.setRestartOnCancel(false /* don't restart the job */);
@@ -183,7 +183,7 @@ public class SubscriberRefreshSchedule {
 		stopJob();
 		RefreshParticipantJob.removeRefreshListener(refreshSubscriberListener);
 	}
-	
+
 	public void saveState(IMemento memento) {
 		memento.putString(CTX_REFRESHSCHEDULE_ENABLED, Boolean.toString(enabled));
 		memento.putInteger(CTX_REFRESHSCHEDULE_INTERVAL, (int)refreshInterval);
@@ -213,31 +213,31 @@ public class SubscriberRefreshSchedule {
 
 	public static String refreshEventAsString(IRefreshEvent event) {
 		if(event == null) {
-			return TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever; 
+			return TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever;
 		}
 		long stopMills = event.getStopTime();
 		StringBuffer text = new StringBuffer();
 		if(stopMills <= 0) {
-			text.append(TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever); 
+			text.append(TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever);
 		} else {
 			Date lastTimeRun = new Date(stopMills);
 			text.append(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(lastTimeRun));
 		}
 		int changeCount = event.getChangeDescription().getChangeCount();
 		if (changeCount == 0) {
-			text.append(TeamUIMessages.RefreshSchedule_7); 
+			text.append(TeamUIMessages.RefreshSchedule_7);
 		} else if (changeCount == 1) {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, new String[] { Integer.toString(changeCount) })); 
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesSingular, new String[] { Integer.toString(changeCount) }));
 		} else {
-			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, new String[] { Integer.toString(changeCount) })); 
+			text.append(NLS.bind(TeamUIMessages.RefreshSchedule_changesPlural, new String[] { Integer.toString(changeCount) }));
 		}
 		return text.toString();
-	} 
-	
+	}
+
 	public IRefreshEvent getLastRefreshEvent() {
 		return lastRefreshEvent;
 	}
-	
+
 	private String getRefreshIntervalAsString() {
 		if (runOnce)
 			return TeamUIMessages.RefreshSchedule_16;
@@ -246,18 +246,18 @@ public class SubscriberRefreshSchedule {
 		if(seconds <= 60) {
 			seconds = 60;
 		}
-		long minutes = seconds / 60;		
+		long minutes = seconds / 60;
 		if(minutes >= 60) {
 			minutes = minutes / 60;
 			hours = true;
-		}		
+		}
 		String unit;
 		if(minutes >= 1) {
-			unit = (hours ? TeamUIMessages.RefreshSchedule_9 : TeamUIMessages.RefreshSchedule_10); 
+			unit = (hours ? TeamUIMessages.RefreshSchedule_9 : TeamUIMessages.RefreshSchedule_10);
 		} else {
-			unit = (hours ? TeamUIMessages.RefreshSchedule_11 : TeamUIMessages.RefreshSchedule_12); 
+			unit = (hours ? TeamUIMessages.RefreshSchedule_11 : TeamUIMessages.RefreshSchedule_12);
 		}
-		return NLS.bind(TeamUIMessages.RefreshSchedule_13, new String[] { Long.toString(minutes), unit }); 
+		return NLS.bind(TeamUIMessages.RefreshSchedule_13, new String[] { Long.toString(minutes), unit });
 	}
 
 	public IRefreshable getRefreshable() {
@@ -271,7 +271,7 @@ public class SubscriberRefreshSchedule {
 	public Date getRefreshStartTime() {
 		return refreshStart;
 	}
-	
+
 	public void setRefreshStartTime(Date refreshStart) {
 		if(refreshStart==null || refreshStart != getRefreshStartTime()) {
 			stopJob();
@@ -281,7 +281,7 @@ public class SubscriberRefreshSchedule {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return Return <code>false</code> if the job should be run again when
 	 *         finished, or <code>true</code> otherwise.
@@ -289,7 +289,7 @@ public class SubscriberRefreshSchedule {
 	public boolean getRunOnce() {
 		return runOnce;
 	}
-	
+
 	public void setRunOnce(boolean runOnce) {
 		if (runOnce != getRunOnce()) {
 			stopJob();

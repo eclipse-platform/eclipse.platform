@@ -27,7 +27,7 @@ public class DiffTreeStatusLineContributionGroup extends
 		super(shell, configuration);
 		getSynchronizationContext().getDiffTree().addDiffChangeListener(this);
 	}
-	
+
 	@Override
 	public void dispose() {
 		getSynchronizationContext().getDiffTree().removeDiffChangeListener(this);
@@ -63,7 +63,7 @@ public class DiffTreeStatusLineContributionGroup extends
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		updateCounts();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
 	 */

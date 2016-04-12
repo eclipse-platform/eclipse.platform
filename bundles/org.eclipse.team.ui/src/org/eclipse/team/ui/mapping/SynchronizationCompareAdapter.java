@@ -31,7 +31,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * An abstract implementation of {@link ISynchronizationCompareAdapter}.
  * <p>
  * Clients may subclass this class.
- * 
+ *
  * @since 3.2
  */
 public abstract class SynchronizationCompareAdapter implements ISynchronizationCompareAdapter {
@@ -88,7 +88,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		}
 		return ""; //$NON-NLS-1$
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IResourceMappingPersistenceAdapter#getFullPath(org.eclipse.core.resources.mapping.ResourceMapping)
 	 */
@@ -117,7 +117,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		}
 		return getName(mapping);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter#getImageDescriptor(org.eclipse.core.resources.mapping.ResourceMapping)
 	 */
@@ -150,13 +150,13 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the synchronization state of the resource mapping with respect to
 	 * the given team state provider. This method is invoked from instances of
 	 * {@link ITeamStateProvider} when the synchronization state description for
 	 * an element is requested.
-	 * 
+	 *
 	 * @param provider
 	 *            the team state provider
 	 * @param mapping
@@ -168,12 +168,12 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	 * @return the synchronization state of the element or -1 if the calculation
 	 *         of the state should be done using the resources of the mapping.
 	 * @throws CoreException
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	@Override
 	public int getSynchronizationState(ITeamStateProvider provider, ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
 		return -1;
 	}
-	
+
 }

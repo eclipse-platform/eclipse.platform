@@ -33,7 +33,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	 * tree viewer.
 	 */
 	private Composite messageArea;
-	
+
 	public ForwardingChangesSection(Composite parent, AbstractSynchronizePage page, ISynchronizePageConfiguration configuration) {
 		super(parent, page, configuration);
 	}
@@ -45,7 +45,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 	protected void initializeChangesViewer() {
 		calculateDescription();
 	}
-	
+
 	protected void calculateDescription() {
 		if (getContainer().isDisposed())
 			return;
@@ -66,7 +66,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			});
 		}
 	}
-	
+
 	protected void updatePage(Composite message) {
 		if (getContainer().isDisposed()) return;
 		if(messageArea != null) {
@@ -83,7 +83,7 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			getContainer().showPage(messageArea);
 		}
 	}
-	
+
 	protected Composite getEmptyChangesComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setBackground(getListBackgroundColor());
@@ -93,15 +93,15 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
-		
+
 		if(! isThreeWay()) {
-			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));	 
+			createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));
 			return composite;
 		}
-		
+
 		int allChanges = getChangesCount();
 		long visibleChanges = getVisibleChangesCount();
-		
+
 		if(visibleChanges == 0 && allChanges != 0) {
 			final int candidateMode = getCandidateMode();
 			int currentMode = getConfiguration().getMode();
@@ -115,11 +115,11 @@ public abstract class ForwardingChangesSection extends ChangesSection {
                         message = NLS.bind(TeamUIMessages.ChangesSection_filterHidesSingular, new String[] { Long.toString(numChanges), Utils.modeToString(candidateMode) });
 					}
 					message = NLS.bind(TeamUIMessages.ChangesSection_filterHides, new String[] { Utils.modeToString(getConfiguration().getMode()), message });
-					
+
 					Label warning = new Label(composite, SWT.NONE);
 					warning.setImage(TeamUIPlugin.getPlugin().getImage(ISharedImages.IMG_WARNING_OVR));
-					
-					Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.ChangesSection_filterChange, new String[] { Utils.modeToString(candidateMode) }), SWT.WRAP); 
+
+					Hyperlink link = getForms().createHyperlink(composite, NLS.bind(TeamUIMessages.ChangesSection_filterChange, new String[] { Utils.modeToString(candidateMode) }), SWT.WRAP);
 					link.addHyperlinkListener(new HyperlinkAdapter() {
 						@Override
 						public void linkActivated(HyperlinkEvent e) {
@@ -133,10 +133,10 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 			}
 		}
 		// There is no other mode that can be shown so just indicate that there are no changes
-		createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));	 //	
+		createDescriptionLabel(composite,NLS.bind(TeamUIMessages.ChangesSection_noChanges, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, getConfiguration().getParticipant().getName()) }));	 //
 		return composite;
 	}
-	
+
 	protected Label createDescriptionLabel(Composite parent, String text) {
 		Label description = new Label(parent, SWT.WRAP);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -147,12 +147,12 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 		description.setBackground(getListBackgroundColor());
 		return description;
 	}
-	
+
 	protected abstract int getChangesCount();
 
 	protected abstract long getChangesInMode(int candidateMode);
 
 	protected abstract long getVisibleChangesCount();
-	
+
 	protected abstract int getCandidateMode();
 }

@@ -36,7 +36,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 	public ResourceMarkAsMergedHandler(ISynchronizePageConfiguration configuration) {
 		super(configuration);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
 	 */
@@ -61,14 +61,14 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 									throws CoreException {
 								markAsMerged(deltas, context, monitor);
 							}
-	
+
 						}, rule, IResource.NONE, monitor);
-	
+
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}
 				}
-	
+
 				private ISchedulingRule getMergeRule(IMergeContext context,
 						IDiff[] deltas) {
 					ISchedulingRule result = null;
@@ -83,13 +83,13 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 					}
 					return result;
 				}
-	
+
 				private void markAsMerged(IDiff[] deltas,
 						final IMergeContext context, IProgressMonitor monitor)
 						throws CoreException {
 					context.markAsMerged(deltas, false, monitor);
 				}
-	
+
 				/* (non-Javadoc)
 				 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
 				 */
@@ -120,8 +120,8 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 		}
 		return operation;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
@@ -132,7 +132,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 		}
 		super.updateEnablement(selection);
 		int mode = getConfiguration().getMode();
-		if ((mode == ISynchronizePageConfiguration.OUTGOING_MODE 
+		if ((mode == ISynchronizePageConfiguration.OUTGOING_MODE
 				&& getSynchronizationContext().getDiffTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) == 0)
 				|| (getSynchronizationContext().getDiffTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) == 0
 						&& getSynchronizationContext().getDiffTree().countFor(IThreeWayDiff.INCOMING, IThreeWayDiff.DIRECTION_MASK) == 0)) {
@@ -140,12 +140,12 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 			return;
 		}
 	}
-	
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (saveDirtyEditors())
 			return super.execute(event);
 		return null;
 	}
-	
+
 }

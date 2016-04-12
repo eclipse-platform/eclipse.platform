@@ -60,7 +60,7 @@ public class AdditionalMappingsDialog extends DetailsDialog {
         Label seperator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
         seperator.setLayoutData(new GridData (GridData.FILL_HORIZONTAL));
     }
-    
+
     /*
      * Create a list that allows the selection of mappings via checkbox
      */
@@ -92,7 +92,7 @@ public class AdditionalMappingsDialog extends DetailsDialog {
 			});
     	}
 	}
-    
+
     @Override
 	protected Composite createDropDownDialogArea(Composite parent) {
         // TODO Auto-generated method stub
@@ -104,7 +104,7 @@ public class AdditionalMappingsDialog extends DetailsDialog {
         // TODO Auto-generated method stub
 
     }
-    
+
     @Override
 	protected boolean includeDetailsButton() {
         return false;

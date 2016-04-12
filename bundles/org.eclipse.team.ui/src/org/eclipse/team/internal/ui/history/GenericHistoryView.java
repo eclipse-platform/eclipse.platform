@@ -332,17 +332,17 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 				isUpdatingSelection = true;
 				if (GenericHistoryView.this == part)
 					return;
-	
+
 				if (selection instanceof IStructuredSelection) {
 					IStructuredSelection structSelection = (IStructuredSelection) selection;
 					//Always take the first element - this is not intended to work with multiple selection
 					//Also, hang on to this selection for future use in case the history view is not visible
 					lastSelectedElement = structSelection.getFirstElement();
-	
+
 					if (!isLinkingEnabled() || !checkIfPageIsVisible()) {
 						return;
 					}
-	
+
 					showLastSelectedElement();
 				}
 			} finally {
@@ -503,7 +503,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		if (lastSelectedElement != null) {
 			if (lastSelectedElement instanceof IEditorPart)
 				editorActivated((IEditorPart)lastSelectedElement);
-			else { 
+			else {
 				Object resource;
 				if (lastSelectedElement instanceof SyncInfoModelElement) {
 					SyncInfoModelElement syncInfoModelElement = (SyncInfoModelElement) lastSelectedElement;

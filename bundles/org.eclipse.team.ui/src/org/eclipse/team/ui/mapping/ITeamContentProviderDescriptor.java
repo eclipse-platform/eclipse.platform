@@ -15,10 +15,10 @@ import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * A description of a single extension registered with the 
+ * A description of a single extension registered with the
  * <code>org.eclipse.team.ui.teamContentProviders</code>
  * extension point.
- * 
+ *
  *  * <p>
  * This interface is not intended to be implemented by clients.
  * @since 3.2
@@ -41,9 +41,9 @@ public interface ITeamContentProviderDescriptor {
 	public String getModelProviderId();
 
 	/**
-	 * Return an image descriptor that can be displayed with this content 
-	 * extension. 
-	 * @return an image descriptor that can be displayed with this content 
+	 * Return an image descriptor that can be displayed with this content
+	 * extension.
+	 * @return an image descriptor that can be displayed with this content
 	 * extension
 	 */
 	public ImageDescriptor getImageDescriptor();
@@ -56,7 +56,7 @@ public interface ITeamContentProviderDescriptor {
 	 * @throws CoreException
 	 */
 	public IPreferencePage createPreferencePage() throws CoreException;
-	
+
 	/**
 	 * Return whether this content provider is enabled. If it is not
 	 * enabled, it should not be included in any viewers.
@@ -69,7 +69,7 @@ public interface ITeamContentProviderDescriptor {
 	 * @return a string containing the name or null if no name has been specified
 	 */
 	public String getName();
-	
+
 	/**
 	 * Return whether the FLAT layout is supported by this content provider.
 	 * @return whether the FLAT layout is supported by this content provider

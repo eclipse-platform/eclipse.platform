@@ -38,7 +38,7 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 	public IWorkbenchPart getPart() {
 		return part;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getShell()
 	 */

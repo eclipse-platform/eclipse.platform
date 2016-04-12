@@ -48,10 +48,10 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 			Utils.initAction(refreshSelectionAction, "action.refreshWithRemote."); //$NON-NLS-1$
 			refreshSelectionAction.setActionDefinitionId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
 			refreshSelectionAction.setId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
-		
+
 			Object o = participant.getAdapter(IRefreshable.class);
 			if (o instanceof IRefreshable) {
-				final IRefreshable refreshable = (IRefreshable) o;		
+				final IRefreshable refreshable = (IRefreshable) o;
 				configureSchedule = new Action() {
 					@Override
 					public void run() {
@@ -100,6 +100,6 @@ public class RefreshActionContribution extends SynchronizePageActionGroup {
 			} else {
 				appendToGroup(menu, ISynchronizePageConfiguration.SYNCHRONIZE_GROUP, configureSchedule);
 			}
-		}		
+		}
 	}
 }

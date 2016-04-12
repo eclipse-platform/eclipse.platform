@@ -33,12 +33,12 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
     private CommonViewer viewer;
 	private final ISynchronizationScope scope;
 	private final ISynchronizationContext context;
-    
-    
+
+
     public static ResourceMappingHierarchyArea create(ISynchronizationScope scope, ISynchronizationContext context) {
         return new ResourceMappingHierarchyArea(scope, context);
     }
-    
+
 	private ResourceMappingHierarchyArea(ISynchronizationScope scope, ISynchronizationContext context) {
 		this.scope = scope;
 		this.context = context;
@@ -52,10 +52,10 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
         layout.marginWidth = 0;
         composite.setLayout(layout);
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         if (description != null)
             createWrappingLabel(composite, description, 1);
-        
+
         viewer = new CommonViewer(TEAM_NAVIGATOR_CONTENT, composite, SWT.BORDER);
         viewer.setSorter(new CommonViewerSorter());
         viewer.setSorter(new TeamViewerSorter((CommonViewerSorter)viewer.getSorter()));

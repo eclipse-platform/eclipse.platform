@@ -80,7 +80,7 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 			tree.endInput(monitor);
 		}
 	}
-	
+
 	private IResource[] getVisibleResources(IProgressMonitor monitor) throws CoreException {
 		ResourceTraversal[] traversals = getResourceTraversals(getStructuredSelection(), monitor);
 		IDiff[] diffs = getSynchronizationContext().getDiffTree().getDiffs(traversals);
@@ -93,7 +93,7 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
-	
+
 	private boolean confirmRemove() {
 		IPreferenceStore store = TeamUIPlugin.getPlugin().getPreferenceStore();
 		if (store.getBoolean(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT)) {
@@ -101,9 +101,9 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		} else {
 			MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
 					getConfiguration().getSite().getShell(),
-					TeamUIMessages.RemoveFromView_warningTitle, 
-					TeamUIMessages.RemoveFromView_warningMessage, 
-					TeamUIMessages.RemoveFromView_warningDontShow, 
+					TeamUIMessages.RemoveFromView_warningTitle,
+					TeamUIMessages.RemoveFromView_warningMessage,
+					TeamUIMessages.RemoveFromView_warningDontShow,
 					false,
 					null,
 					null);

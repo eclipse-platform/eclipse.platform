@@ -28,21 +28,21 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	/**
 	 * Prompt for the given resources using the specific condition. The prompt dialog will
 	 * have the title specified.
-	 * @param shell 
-	 * @param resources 
-	 * @param condition 
-	 * @param title 
+	 * @param shell
+	 * @param resources
+	 * @param condition
+	 * @param title
 	 */
 	public PromptingDialog(Shell shell, IResource[] resources, IPromptCondition condition, String title) {
-		this(shell, resources, condition, title, false /* all or nothing */);		 
+		this(shell, resources, condition, title, false /* all or nothing */);
 	}
-	
+
 	public PromptingDialog(final Shell shell, IResource[] resources, IPromptCondition condition, String title, boolean allOrNothing) {
-		super(new IShellProvider() {	
+		super(new IShellProvider() {
 			@Override
 			public Shell getShell() {
 				return shell;
-			}	
+			}
 		}, title, resources.length > 1, allOrNothing);
 		this.resources = resources;
 		this.condition = condition;
@@ -52,7 +52,7 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	 * condition a dialog won't be shown. The resources for which the user
 	 * confirmed the action are returned.
 	 * @return the resources
-	 * 
+	 *
 	 * @throws InterruptedException
 	 *             if the user choose to cancel on the prompt dialog
 	 */

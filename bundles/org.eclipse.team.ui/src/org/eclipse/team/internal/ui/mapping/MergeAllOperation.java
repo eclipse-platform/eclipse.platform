@@ -26,7 +26,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.ModelMergeOperation;
 
 public final class MergeAllOperation extends SynchronizationOperation {
-	
+
 	private final IMergeContext context;
 	private final String jobName;
 
@@ -35,7 +35,7 @@ public final class MergeAllOperation extends SynchronizationOperation {
 		this.jobName = jobName;
 		this.context = context;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.SynchronizationOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -122,7 +122,7 @@ public final class MergeAllOperation extends SynchronizationOperation {
 	protected boolean canRunAsJob() {
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
 	 */

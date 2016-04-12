@@ -22,7 +22,7 @@ public abstract class AbstractViewerAdvisor {
 
 	private ISynchronizePageConfiguration configuration;
 	private StructuredViewer viewer;
-	
+
 	public AbstractViewerAdvisor(ISynchronizePageConfiguration configuration) {
 		this.configuration = configuration;
 		configuration.setProperty(SynchronizePageConfiguration.P_ADVISOR, this);
@@ -35,7 +35,7 @@ public abstract class AbstractViewerAdvisor {
 	/**
 	 * Install a viewer to be configured with this advisor. An advisor can only be installed with
 	 * one viewer at a time. When this method completes the viewer is considered initialized and
-	 * can be shown to the user. 
+	 * can be shown to the user.
 	 * @param viewer the viewer being installed
 	 */
 	protected void initializeViewer(final StructuredViewer viewer) {
@@ -43,11 +43,11 @@ public abstract class AbstractViewerAdvisor {
 		Assert.isTrue(validateViewer(viewer));
 		this.viewer = viewer;
 	}
-	
+
 	/**
 	 * Subclasses can validate that the viewer being initialized with this advisor
 	 * is of the correct type.
-	 * 
+	 *
 	 * @param viewer the viewer to validate
 	 * @return <code>true</code> if the viewer is valid, <code>false</code> otherwise.
 	 */
@@ -57,7 +57,7 @@ public abstract class AbstractViewerAdvisor {
 
 	/**
 	 * Returns the viewer configured by this advisor.
-	 * 
+	 *
 	 * @return the viewer configured by this advisor.
 	 */
 	public StructuredViewer getViewer() {

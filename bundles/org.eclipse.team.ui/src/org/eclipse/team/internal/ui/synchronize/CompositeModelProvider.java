@@ -22,18 +22,18 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  * providers. A composite provider is one that breaks up the displayed
  * {@link SyncInfoSet} into subsets that may be displayed using one
  * or more synchronize model providers.
- * 
+ *
  */
 public abstract class CompositeModelProvider extends AbstractSynchronizeModelProvider {
-    
+
     private final List providers = new ArrayList();
     private final Map resourceToElements = new HashMap(); // Map IResource to List of ISynchronizeModelElement
     private final Map elementToProvider = new HashMap(); // Map ISynchronizeModelElement -> AbstractSynchronizeModelProvider
-	
+
     protected CompositeModelProvider(ISynchronizePageConfiguration configuration, SyncInfoSet set) {
         super(configuration, set);
     }
-    
+
     /**
      * Add the provider to the list of providers.
      * @param provider the provider to be added
@@ -41,7 +41,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     protected void addProvider(ISynchronizeModelProvider provider) {
         providers.add(provider);
     }
-    
+
     /**
      * Remove the provider from the list of providers.
      * @param provider the provider to be removed
@@ -50,7 +50,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         providers.remove(provider);
         provider.dispose();
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getProvider(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
@@ -58,7 +58,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	protected ISynchronizeModelProvider getProvider(ISynchronizeModelElement element) {
         return (ISynchronizeModelProvider)elementToProvider.get(element);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getClosestExistingParents(org.eclipse.core.resources.IResource)
      */
@@ -92,7 +92,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
     protected ISynchronizeModelProvider[] getProviders() {
         return (ISynchronizeModelProvider[]) providers.toArray(new ISynchronizeModelProvider[providers.size()]);
     }
-    
+
     /**
      * Return the providers that are displaying the given resource.
      * @param resource the resource
@@ -118,7 +118,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	protected final void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
         handleAdditions(event.getAddedResources());
     }
-    
+
     /**
      * Handle the resource additions by adding them to any existing
      * sub-providers or by creating addition sub-providers as needed.
@@ -148,7 +148,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
             handleChange(info);
         }
     }
-    
+
     /**
      * The state of the sync info for a resource has changed. Propagate the
      * change to any sub-providers that contain the resource.
@@ -182,10 +182,10 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
             removeFromProvider(resource, provider);
         }
     }
-    
+
     /**
      * Remove the resource from the sync set of the given provider
-     * unless the provider is this composite. Subclasses can 
+     * unless the provider is this composite. Subclasses can
      * override if they show resources directly.
      * @param resource the resource to be removed
      * @param provider the provider from which to remove the resource
@@ -214,7 +214,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		elementToProvider.put(node, provider);
 		super.nodeAdded(node, provider);
 	}
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#modelObjectCleared(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
@@ -233,7 +233,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		}
 		elementToProvider.remove(node);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
      */
@@ -244,7 +244,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
             clearProviders();
         }
     }
-    
+
     private void clearProviders() {
         for (Iterator iter = providers.iterator(); iter.hasNext();) {
             ISynchronizeModelProvider provider = (ISynchronizeModelProvider) iter.next();
@@ -270,7 +270,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 			return new HierarchicalModelProvider(this, parent, getConfiguration(), syncInfoTree);
 		}
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#dispose()
      */
@@ -279,7 +279,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         clearProviders();
         super.dispose();
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#hasViewerState()
      */
@@ -287,7 +287,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	protected boolean hasViewerState() {
         return resourceToElements != null && !resourceToElements.isEmpty();
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getModelObjects(org.eclipse.core.resources.IResource)
      */

@@ -4,7 +4,7 @@
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -36,14 +36,14 @@ import org.eclipse.ui.*;
 
 /**
  * Action to open a compare editor from a SyncInfo object.
- * 
+ *
  * @see SyncInfoCompareInput
  * @since 3.0
  */
 public class OpenInCompareAction extends Action {
-	
+
 	private final ISynchronizePageConfiguration configuration;
-	
+
 	public OpenInCompareAction(ISynchronizePageConfiguration configuration) {
 		this.configuration = configuration;
 		Utils.initAction(this, "action.openInCompareEditor."); //$NON-NLS-1$
@@ -55,7 +55,7 @@ public class OpenInCompareAction extends Action {
 		if(selection instanceof IStructuredSelection) {
 			if (!isOkToRun(selection))
 				return;
-				
+
 			boolean reuseEditorIfPossible = ((IStructuredSelection) selection).size()==1;
 			for (Iterator iterator = ((IStructuredSelection) selection).iterator(); iterator.hasNext();) {
 				Object obj = iterator.next();
@@ -71,7 +71,7 @@ public class OpenInCompareAction extends Action {
 			}
 		}
 	}
-	
+
 	private boolean isOkToRun(ISelection selection) {
 		// do not open Compare Editor unless all elements have input
 		Object[] elements = ((IStructuredSelection) selection).toArray();
@@ -88,7 +88,7 @@ public class OpenInCompareAction extends Action {
 			}
 		} else {
 			// all files
-			IResource resources[] = Utils.getResources(elements);  
+			IResource resources[] = Utils.getResources(elements);
 			for (int i = 0; i < resources.length; i++) {
 	            if (resources[i].getType() != IResource.FILE) {
 	                // Only supported if all the items are files.
@@ -99,7 +99,7 @@ public class OpenInCompareAction extends Action {
 		return true;
 	}
 
-	public static IEditorInput openCompareEditor(ISynchronizePageConfiguration configuration, Object object, boolean keepFocus, boolean reuseEditorIfPossible) {	
+	public static IEditorInput openCompareEditor(ISynchronizePageConfiguration configuration, Object object, boolean keepFocus, boolean reuseEditorIfPossible) {
 		Assert.isNotNull(object);
 		Assert.isNotNull(configuration);
 		ISynchronizeParticipant participant = configuration.getParticipant();
@@ -155,31 +155,31 @@ public class OpenInCompareAction extends Action {
 		return true;
 	}
 
-	public static CompareEditorInput openCompareEditorOnSyncInfo(ISynchronizePageConfiguration configuration, SyncInfo info, boolean keepFocus, boolean reuseEditorIfPossible) {		
+	public static CompareEditorInput openCompareEditorOnSyncInfo(ISynchronizePageConfiguration configuration, SyncInfo info, boolean keepFocus, boolean reuseEditorIfPossible) {
 		Assert.isNotNull(info);
-		Assert.isNotNull(configuration);	
+		Assert.isNotNull(configuration);
 		if(info.getLocal().getType() != IResource.FILE) return null;
 		SyncInfoCompareInput input = new SyncInfoCompareInput(configuration, info);
 		return openCompareEditor(getWorkbenchPage(configuration.getSite()), input, keepFocus, configuration.getSite(), reuseEditorIfPossible);
 	}
-	
+
 	public static CompareEditorInput openCompareEditor(ISynchronizeParticipant participant, SyncInfo info, ISynchronizePageSite site) {
 		Assert.isNotNull(info);
-		Assert.isNotNull(participant);	
+		Assert.isNotNull(participant);
 		if(info.getLocal().getType() != IResource.FILE) return null;
 		SyncInfoCompareInput input = new SyncInfoCompareInput(participant, info);
 		return openCompareEditor(getWorkbenchPage(site), input, false, site, false);
 	}
 
 	private static CompareEditorInput openCompareEditor(
-			IWorkbenchPage page, 
-			CompareEditorInput input, 
+			IWorkbenchPage page,
+			CompareEditorInput input,
 			boolean keepFocus,
-			ISynchronizePageSite site, 
+			ISynchronizePageSite site,
 			boolean reuseEditorIfPossible) {
 		if (page == null)
 			return null;
-		
+
 		openCompareEditor(input, page, reuseEditorIfPossible);
 		if(site != null && keepFocus) {
 			site.setFocus();
@@ -203,9 +203,9 @@ public class OpenInCompareAction extends Action {
     	// try to reuse editors, if possible
 		openCompareEditor(input, page, true);
 	}
-	
+
     public static void openCompareEditor(CompareEditorInput input, IWorkbenchPage page, boolean reuseEditorIfPossible) {
-        if (page == null || input == null) 
+        if (page == null || input == null)
             return;
 		IEditorPart editor = Utils.findReusableCompareEditor(input, page,
 				new Class[] { SyncInfoCompareInput.class,
@@ -227,16 +227,16 @@ public class OpenInCompareAction extends Action {
     }
 
 	/**
-	 * Returns an editor handle if a SyncInfoCompareInput compare editor is opened on 
+	 * Returns an editor handle if a SyncInfoCompareInput compare editor is opened on
 	 * the given IResource.
-	 * 
+	 *
 	 * @param site the view site in which to search for editors
 	 * @param resource the resource to use to find the compare editor
 	 * @return an editor handle if found and <code>null</code> otherwise
 	 */
 	public static IEditorPart findOpenCompareEditor(IWorkbenchPartSite site, IResource resource) {
 		IWorkbenchPage page = site.getPage();
-		IEditorReference[] editorRefs = page.getEditorReferences();						
+		IEditorReference[] editorRefs = page.getEditorReferences();
 		for (int i = 0; i < editorRefs.length; i++) {
 			final IEditorPart part = editorRefs[i].getEditor(false /* don't restore editor */);
 			if(part != null) {
@@ -253,11 +253,11 @@ public class OpenInCompareAction extends Action {
 	}
 
 	/**
-	 * Returns an editor handle if a compare editor is opened on 
+	 * Returns an editor handle if a compare editor is opened on
 	 * the given object.
 	 * @param site the view site in which to search for editors
 	 * @param object the object to use to find the compare editor
-	 * @param participant 
+	 * @param participant
 	 * @return an editor handle if found and <code>null</code> otherwise
 	 */
 	public static IEditorPart findOpenCompareEditor(IWorkbenchPartSite site, Object object, ISynchronizeParticipant participant) {
@@ -267,7 +267,7 @@ public class OpenInCompareAction extends Action {
 			return findOpenCompareEditor(site, info.getLocal());
 		}
 		IWorkbenchPage page = site.getPage();
-		IEditorReference[] editorRefs = page.getEditorReferences();						
+		IEditorReference[] editorRefs = page.getEditorReferences();
 		for (int i = 0; i < editorRefs.length; i++) {
 			final IEditorPart part = editorRefs[i].getEditor(false /* don't restore editor */);
 			if(part != null) {

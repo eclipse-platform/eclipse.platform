@@ -23,14 +23,14 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class ImageManager {
-	
+
 	private static final String PROP_IMAGE_MANAGER = TeamUIPlugin.ID + ".imageManager"; //$NON-NLS-1$
-	
+
 	private LocalResourceManager imageManager;
 	// Contains direction images
 	private CompareConfiguration compareConfig = new CompareConfiguration();
 	private boolean disposed = false;
-	
+
 	public synchronized static ImageManager getImageManager(ISynchronizationContext context, ISynchronizePageConfiguration configuration) {
 		ImageManager manager = (ImageManager)context.getCache().get(PROP_IMAGE_MANAGER);
 		if (manager == null || manager.disposed) {
@@ -66,7 +66,7 @@ public class ImageManager {
 			return null;
 		return configuration.getPage().getViewer();
 	}
-	
+
 	public Image getImage(ImageDescriptor descriptor) {
 		if (descriptor == null || disposed)
 			return null;
@@ -74,7 +74,7 @@ public class ImageManager {
 		Image image = manager.createImage(descriptor);
 		return image;
 	}
-	
+
 	private synchronized ResourceManager getResourceManager() {
 		if (imageManager == null) {
 			imageManager = new LocalResourceManager(JFaceResources.getResources());

@@ -33,18 +33,18 @@ import org.eclipse.ui.part.*;
  * provide a link to a non-empty mode.
  */
 public abstract class AbstractSynchronizePage extends Page implements ISynchronizePage, IAdaptable {
-	
+
 	private ISynchronizePageConfiguration configuration;
 	private ISynchronizePageSite site;
-	
-	// Parent composite of this view. It is remembered so that we can dispose of its children when 
+
+	// Parent composite of this view. It is remembered so that we can dispose of its children when
 	// the viewer type is switched.
 	private Composite composite;
 	private ChangesSection changesSection;
 	private Viewer changesViewer;
-	
+
 	private AbstractViewerAdvisor viewerAdvisor;
-	
+
 	/*
 	 * Contribute actions for changing modes to the page.
 	 */
@@ -75,7 +75,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 					group = layoutGroup;
 				}
 				MenuManager modesItem = new MenuManager(Utils.getString("action.modes.label", Policy.getActionBundle())); //$NON-NLS-1$
-				viewMenu.appendToGroup(group.getId(), modesItem);	
+				viewMenu.appendToGroup(group.getId(), modesItem);
 				modes.fillMenu(modesItem);
 			}
 		}
@@ -83,7 +83,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 			return ISynchronizePageConfiguration.THREE_WAY.equals(configuration.getComparisonType());
 		}
 	}
-	
+
 	/**
 	 * Create a new instance of the page
 	 * @param configuration a synchronize page configuration
@@ -93,13 +93,13 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		configuration.setPage(this);
 		configuration.addActionContribution(new ModeFilterActions());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
-		composite = new Composite(parent, SWT.NONE); 
+		composite = new Composite(parent, SWT.NONE);
 		//sc.setContent(composite);
 		GridLayout gridLayout= new GridLayout();
 		gridLayout.makeColumnsEqualWidth= false;
@@ -110,7 +110,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessVerticalSpace = true;
 		composite.setLayoutData(data);
-		
+
 		// Create the changes section which, in turn, creates the changes viewer and its configuration
 		this.changesSection = createChangesSection(composite);
 		createChangesViewer(changesSection.getContainer());
@@ -122,11 +122,11 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 * @return the changes section that will contain the changes viewer
 	 */
 	protected abstract ChangesSection createChangesSection(Composite parent);
-	
+
 	/**
 	 * Return the viewer that will display the changes associated
 	 * with the page.
-	 * 
+	 *
 	 * @param parent the parent of the viewer
 	 */
 	private void createChangesViewer(Composite parent) {
@@ -136,20 +136,20 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	}
 
 	protected abstract AbstractViewerAdvisor createViewerAdvisor(Composite parent);
-	
+
 	public AbstractViewerAdvisor getViewerAdvisor() {
 		return viewerAdvisor;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#setActionBars(org.eclipse.ui.IActionBars)
 	 */
 	@Override
 	public void setActionBars(IActionBars actionBars) {
 		// Delegate menu creation to the advisor
-		viewerAdvisor.setActionBars(actionBars);		
+		viewerAdvisor.setActionBars(actionBars);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#getControl()
 	 */
@@ -157,7 +157,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	public Control getControl() {
 		return composite;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.IPage#setFocus()
 	 */
@@ -165,7 +165,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	public void setFocus() {
 		changesSection.setFocus();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#init(org.eclipse.team.ui.synchronize.ISynchronizePageSite)
 	 */
@@ -181,13 +181,13 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 				}
 			} catch (NumberFormatException e) {
 				// The mode settings does not exist.
-				// Leave the mode as is (assuming the 
+				// Leave the mode as is (assuming the
 				// participant initialized it to an
 				// appropriate value
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.part.Page#dispose()
 	 */
@@ -197,7 +197,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		composite.dispose();
 		super.dispose();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#getViewer()
 	 */
@@ -205,7 +205,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	public Viewer getViewer() {
 		return changesViewer;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#aboutToChangeProperty(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, java.lang.String, java.lang.Object)
 	 */
@@ -231,7 +231,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 
 	/*
 	 * This method enables "Show In" support for this view
-	 * 
+	 *
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	@Override
@@ -241,7 +241,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		if (key == IShowInSource.class) {
 			return new IShowInSource() {
 				@Override
-				public ShowInContext getShowInContext() {					
+				public ShowInContext getShowInContext() {
 					StructuredViewer v = (StructuredViewer)changesViewer;
 					if (v == null) return null;
 					ISelection s = v.getSelection();
@@ -264,7 +264,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the page site that was assigned to this page.
 	 * @return the page site that was assigned to this page
@@ -272,7 +272,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	public ISynchronizePageSite getSynchronizePageSite() {
 		return site;
 	}
-	
+
 	/**
 	 * Return the synchronize page configuration that was used to create
 	 * this page.
@@ -293,12 +293,12 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	}
 
 	/**
-	 * Callback from the changes section that indicates that the 
-	 * user has chosen to reset the view contents after an error 
+	 * Callback from the changes section that indicates that the
+	 * user has chosen to reset the view contents after an error
 	 * has occurred
 	 */
 	public abstract void reset();
-	
+
 	/**
 	 * Change the mode to the given mode. This method is invoked
 	 * when the mode in the configuration is changed by a client.

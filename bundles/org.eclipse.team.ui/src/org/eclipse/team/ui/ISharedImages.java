@@ -13,9 +13,9 @@ package org.eclipse.team.ui;
 /**
  * Images that are available for providers to re-use. They include
  * common overlays and wizard images. A provider can use their own
- * custom images, these shared images are only available for 
+ * custom images, these shared images are only available for
  * convenience.
- * 
+ *
  * @see TeamImages
  * @since 2.0
  */

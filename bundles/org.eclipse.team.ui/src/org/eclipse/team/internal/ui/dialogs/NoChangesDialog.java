@@ -26,7 +26,7 @@ public class NoChangesDialog extends DetailsDialog {
     private ResourceMappingHierarchyArea selectedMappingsArea;
 	private final ISynchronizationScope scope;
 	private final String description;
-    
+
 	public NoChangesDialog(Shell parentShell, String dialogTitle, String message, String description, ISynchronizationScope scope) {
 		super(parentShell, dialogTitle);
 		this.message = message;
@@ -38,7 +38,7 @@ public class NoChangesDialog extends DetailsDialog {
 	protected void initializeStyle() {
 		// Use the default dialog style
 	}
-	
+
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -70,7 +70,7 @@ public class NoChangesDialog extends DetailsDialog {
 	protected void updateEnablements() {
 		// Nothing to do
 	}
-	
+
 	/*
 	 * Code copied from IconandMessageDialog
 	 */
@@ -98,7 +98,7 @@ public class NoChangesDialog extends DetailsDialog {
         }
         return composite;
     }
-	
+
 	/*
 	 * Code copied from IconandMessageDialog
 	 */
@@ -129,12 +129,12 @@ public class NoChangesDialog extends DetailsDialog {
 	public boolean isHelpAvailable() {
     	return false;
     }
-    
+
     @Override
 	protected boolean includeCancelButton() {
     	return false;
     }
-    
+
 	public static void open(Shell shell, String title, String message, String description, ISynchronizationScope scope) {
 		new NoChangesDialog(shell, title, message, description, scope).open();
 	}

@@ -27,7 +27,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  * Stand alone presentation of a participant page within a view pane. This
  * allows showing a participant page with it's toolbar in dialogs and embedded
  * in views and editors.
- * 
+ *
  * @since 3.1
  */
 public final class ParticipantPagePane {
@@ -37,18 +37,18 @@ public final class ParticipantPagePane {
 	private Image titleImage;
 	private Shell shell;
 	private boolean isModal;
-	
+
 	// SWT controls
 	private CompareViewerPane fEditionPane;
 	private IPageBookViewPage fPage;
 	private DialogSynchronizePageSite site;
-	
+
 	/**
 	 * Creates a part for the provided participant. The page configuration is used when creating the participant page and the resulting
 	 * compare/merge panes will be configured with the provided compare configuration.
 	 * <p>
 	 * For example, clients can decide if the user can edit the compare panes by calling {@link org.eclipse.compare.CompareConfiguration#setLeftEditable(boolean)}
-	 * or {@link org.eclipse.compare.CompareConfiguration#setRightEditable(boolean)}. 
+	 * or {@link org.eclipse.compare.CompareConfiguration#setRightEditable(boolean)}.
 	 * </p>
 	 * @param shell the parent shell for this part
 	 * @param isModal to set the pane as modal or not
@@ -61,7 +61,7 @@ public final class ParticipantPagePane {
 		this.participant = participant;
 		this.pageConfiguration = pageConfiguration;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.SaveablePartAdapter#dispose()
 	 */
@@ -75,7 +75,7 @@ public final class ParticipantPagePane {
 		if (site != null)
 			site.dispose();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
 	 */
@@ -103,14 +103,14 @@ public final class ParticipantPagePane {
 		layout.marginWidth = 0;
 		layout.verticalSpacing = 0;
 		top.setLayout(layout);
-		
+
 		shell = parent.getShell();
-		
-		fEditionPane = new CompareViewerPane(top, SWT.BORDER | SWT.FLAT);		
-		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0);		
-		
+
+		fEditionPane = new CompareViewerPane(top, SWT.BORDER | SWT.FLAT);
+		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0);
+
 		fEditionPane.setLayoutData(SWTUtils.createHVFillGridData());
-		
+
 		fPage = participant.createPage(pageConfiguration);
 		site = new DialogSynchronizePageSite(shell, isModal);
 		((SynchronizePageConfiguration)pageConfiguration).setSite(site);
@@ -119,29 +119,29 @@ public final class ParticipantPagePane {
 		try {
 			((ISynchronizePage)fPage).init(pageConfiguration.getSite());
 		} catch (PartInitException e1) {
-		   TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.ParticipantPagePane_0, e1); 
+		   TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.ParticipantPagePane_0, e1);
 		}
 
 		fPage.createControl(fEditionPane);
 		fPage.setActionBars(site.getActionBars());
 		fEditionPane.setContent(fPage.getControl());
 		tbm.update(true);
-		
+
 		return top;
 	}
-	
+
 	/**
 	 * Return the synchronize page configuration for this part
-	 * 
+	 *
 	 * @return Returns the pageConfiguration.
 	 */
 	public ISynchronizePageConfiguration getPageConfiguration() {
 		return pageConfiguration;
 	}
-	
+
 	/**
 	 * Return the Synchronize participant for this part
-	 * 
+	 *
 	 * @return Returns the participant.
 	 */
 	public ISynchronizeParticipant getParticipant() {

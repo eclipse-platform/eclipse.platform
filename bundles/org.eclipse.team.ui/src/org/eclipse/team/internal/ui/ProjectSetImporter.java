@@ -34,7 +34,7 @@ public class ProjectSetImporter {
 	/**
 	 * Imports a psf file based on a file content. This may be used when psf
 	 * file is imported from any other location that local filesystem.
-	 * 
+	 *
 	 * @param psfContents
 	 *            the content of the psf file.
 	 * @param filename
@@ -54,7 +54,7 @@ public class ProjectSetImporter {
 
 	/**
 	 * Imports a psf file.
-	 * 
+	 *
 	 * @param filename
 	 * @param shell
 	 * @param monitor
@@ -72,7 +72,7 @@ public class ProjectSetImporter {
 			throws InvocationTargetException {
 		try {
 			String version = xmlMemento.getString("version"); //$NON-NLS-1$
-			
+
 			List newProjects = new ArrayList();
 			if (version.equals("1.0")){ //$NON-NLS-1$
 				IProjectSetSerializer serializer = Team.getProjectSetSerializer("versionOneSerializer"); //$NON-NLS-1$
@@ -93,7 +93,7 @@ public class ProjectSetImporter {
 					}
 					try {
                         String id = providers[i].getString("id"); //$NON-NLS-1$
-                        TeamCapabilityHelper.getInstance().processRepositoryId(id, 
+                        TeamCapabilityHelper.getInstance().processRepositoryId(id,
                         		PlatformUI.getWorkbench().getActivitySupport());
                         RepositoryProviderType providerType = RepositoryProviderType.getProviderType(id);
                         if (providerType == null) {
@@ -101,7 +101,7 @@ public class ProjectSetImporter {
                             providerType = TeamPlugin.getAliasType(id);
                         }
                         if (providerType == null) {
-                            throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null)); 
+                            throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null));
                         }
                     	ProjectSetCapability serializer = providerType.getProjectSetCapability();
                     	ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
@@ -122,14 +122,14 @@ public class ProjectSetImporter {
 					}
 					throw new TeamException(new MultiStatus(TeamUIPlugin.ID, 0, status, TeamUIMessages.ProjectSetImportWizard_1, null));
 				}
-			  	
+
 			  	//try working sets
 			  	IMemento[] sets = xmlMemento.getChildren("workingSets"); //$NON-NLS-1$
 			  	IWorkingSetManager wsManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
 			  	boolean replaceAll = false;
 			  	boolean mergeAll = false;
 			  	boolean skipAll = false;
-			  	
+
 			  	for (int i = 0; i < sets.length; i++) {
 					IWorkingSet newWs = wsManager.createWorkingSet(sets[i]);
 					if (newWs != null) {
@@ -156,14 +156,14 @@ public class ProjectSetImporter {
 							final AdviceDialog dialog = new AdviceDialog(
 									shell, title, null, msg,
 									MessageDialog.QUESTION, buttons, 0);
-							
+
 							shell.getDisplay().syncExec(new Runnable() {
 								@Override
 								public void run() {
 									 dialog.open();
 								}
 							});
-							
+
 							switch (dialog.getReturnCode()) {
 							case 0: // overwrite
 								replaceWorkingSet(wsManager, newWs, oldWs);
@@ -184,7 +184,7 @@ public class ProjectSetImporter {
 					}
 				}
 			}
-			
+
 			return (IProject[]) newProjects.toArray(new IProject[newProjects.size()]);
 		} catch (TeamException e) {
 			throw new InvocationTargetException(e);
@@ -230,7 +230,7 @@ public class ProjectSetImporter {
 
 	/**
 	 * Check if given file is a valid psf file
-	 * 
+	 *
 	 * @param filename
 	 * @return <code>true</code> is file is a valid psf file
 	 */
@@ -244,7 +244,7 @@ public class ProjectSetImporter {
 
 	/**
 	 * Check if given string is a valid project set
-	 * 
+	 *
 	 * @param psfContent
 	 * @return <code>true</code> if psfContent is a valid project set
 	 */
@@ -262,11 +262,11 @@ public class ProjectSetImporter {
 	private static void mergeWorkingSets(IWorkingSet newWs, IWorkingSet oldWs) {
 		IAdaptable[] oldElements = oldWs.getElements();
 		IAdaptable[] newElements = newWs.getElements();
-		
+
 		Set combinedElements = new HashSet();
 		combinedElements.addAll(Arrays.asList(oldElements));
 		combinedElements.addAll(Arrays.asList(newElements));
-		
+
 		oldWs.setElements((IAdaptable[]) combinedElements.toArray(new IAdaptable[0]));
 	}
 

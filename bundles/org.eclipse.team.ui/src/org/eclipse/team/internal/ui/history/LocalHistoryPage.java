@@ -55,27 +55,27 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
 
 public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdapter {
-	
+
 	public static final int ON = 1;
 	public static final int OFF = 2;
 	public static final int ALWAYS = 4;
-	
+
 	/* private */ IFile file;
 	/* private */ IFileRevision currentFileRevision;
-	
+
 	// cached for efficiency
 	/* private */ LocalFileHistory localFileHistory;
-	
+
 	/* private */ TreeViewer treeViewer;
-	
+
 	/* private */boolean shutdown = false;
-	
+
 	//grouping on
 	private boolean groupingOn = true;
 
 	//toggle constants for default click action
 	private int compareMode = OFF;
-	
+
 	protected LocalFileHistoryTableProvider historyTableProvider;
 	private RefreshFileHistory refreshFileHistoryJob;
 	private Composite localComposite;
@@ -86,11 +86,11 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	private CompareRevisionAction compareAction;
 	private OpenRevisionAction openAction;
 	private OpenWithMenu openWithMenu;
-	
+
 	private HistoryResourceListener resourceListener;
-	
+
 	private IFileRevision currentSelection;
-	
+
 	private final class LocalHistoryContentProvider implements ITreeContentProvider {
 		@Override
 		public Object[] getElements(Object inputElement) {
@@ -123,7 +123,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			if (parentElement instanceof AbstractHistoryCategory){
 				return ((AbstractHistoryCategory) parentElement).getRevisions();
 			}
-			
+
 			return new Object[0];
 		}
 
@@ -162,7 +162,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			}
 			return -1;
 		}
-		
+
 		@Override
 		protected long getModificationDate(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
@@ -170,7 +170,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				return entry.getTimestamp();
 			return -1;
 		}
-		
+
 		@Override
 		protected boolean isCurrentEdition(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
@@ -180,14 +180,14 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			long tempCurrentTimeStamp = getCurrentRevision();
 			return (tempCurrentTimeStamp != -1 && tempCurrentTimeStamp==timestamp);
 		}
-		
+
 		@Override
 		protected boolean isDeletedEdition(Object element) {
 			IFileRevision entry = adaptToFileRevision(element);
 			return (!entry.exists());
 		}
 	}
-	
+
 	private class RefreshFileHistory extends Job {
 		public RefreshFileHistory() {
 			super(TeamUIMessages.LocalHistoryPage_FetchLocalHistoryMessage);
@@ -205,34 +205,34 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				} catch (CoreException ex) {
 					status = new TeamStatus(ex.getStatus().getSeverity(), TeamUIPlugin.ID, ex.getStatus().getCode(), ex.getMessage(), ex, file);
 				}
-	
+
 				update(fileHistory.getFileRevisions(), Policy.subMonitorFor(monitor, 50));
-	
+
 				if (status != Status.OK_STATUS ) {
 					this.setProperty(IProgressConstants.KEEP_PROPERTY, Boolean.TRUE);
 					this.setProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY, Boolean.TRUE);
 				}
-				
+
 				if (Policy.DEBUG_HISTORY) {
 					String time = new SimpleDateFormat("m:ss.SSS").format(new Date(System.currentTimeMillis())); //$NON-NLS-1$
 					System.out.println(time + ": RefreshFileHistoryJob#run finished, status: " + status); //$NON-NLS-1$
 				}
-				
+
 				return status;
 			} finally {
 				monitor.done();
 			}
 		}
 	}
-	
+
 	private class HistoryResourceListener implements IResourceChangeListener {
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta root = event.getDelta();
-		
+
 			if (file == null)
 				 return;
-			
+
 			IResourceDelta resourceDelta = root.findMember(file.getFullPath());
 			if (resourceDelta != null){
 				Display.getDefault().asyncExec(new Runnable() {
@@ -244,16 +244,16 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			}
 		}
 	}
-	
+
 	public LocalHistoryPage(int compareMode) {
 		super();
 		this.compareMode = compareMode;
 	}
-	
+
 	public LocalHistoryPage() {
 		super();
 	}
-	
+
 	@Override
 	public boolean inputSet() {
 		currentFileRevision = null;
@@ -261,16 +261,16 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		this.file = tempFile;
 		if (tempFile == null)
 			return false;
-		
+
 		//blank current input only after we're sure that we have a file
 		//to fetch history for
 		this.treeViewer.setInput(null);
-		
+
 		localFileHistory = new LocalFileHistory(file, !getHistoryPageSite().isModal());
-		
+
 		if (refreshFileHistoryJob == null)
 			refreshFileHistoryJob = new RefreshFileHistory();
-		
+
 		//always refresh the history if the input gets set
 		refreshHistory(true);
 		return true;
@@ -285,7 +285,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			String time = new SimpleDateFormat("m:ss.SSS").format(new Date(System.currentTimeMillis())); //$NON-NLS-1$
 			System.out.println(time + ": LocalHistoryPage#refreshHistory, refetch = " + refetch); //$NON-NLS-1$
 		}
-		
+
 		if (refreshFileHistoryJob.getState() != Job.NONE){
 			refreshFileHistoryJob.cancel();
 		}
@@ -299,7 +299,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			return part.getSite();
 		return null;
 	}
-	
+
 	@Override
 	public void createControl(Composite parent) {
 
@@ -311,18 +311,18 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.grabExcessVerticalSpace = true;
 		localComposite.setLayoutData(data);
-		
+
 		treeViewer = createTree(localComposite);
-		
+
 		contributeActions();
-		
+
 		IHistoryPageSite parentSite = getHistoryPageSite();
 		if (parentSite != null && parentSite instanceof DialogHistoryPageSite && treeViewer != null)
 			parentSite.setSelectionProvider(treeViewer);
-		
+
 		resourceListener = new HistoryResourceListener();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_CHANGE);
-		
+
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(localComposite, IHelpContextIds.LOCAL_HISTORY_PAGE);
 	}
 
@@ -342,7 +342,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		groupByDateMode.setToolTipText(TeamUIMessages.LocalHistoryPage_GroupRevisionsByDateTip);
 		groupByDateMode.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DATES_CATEGORY));
 		groupByDateMode.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_DATES_CATEGORY));
-		
+
 		//Collapse All
 		collapseAll =  new Action(TeamUIMessages.LocalHistoryPage_CollapseAllAction, TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL)) {
 			@Override
@@ -353,7 +353,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		collapseAll.setToolTipText(TeamUIMessages.LocalHistoryPage_CollapseAllTip);
 		collapseAll.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL));
 		collapseAll.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COLLAPSE_ALL));
-		
+
 		IHistoryPageSite historyPageSite = getHistoryPageSite();
 		if (!historyPageSite.isModal()) {
 			//Compare Mode Action
@@ -370,7 +370,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				compareModeAction.setDisabledImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPARE_VIEW));
 				compareModeAction.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPARE_VIEW));
 				compareModeAction.setChecked(compareMode == ON);
-				
+
 				getContentsAction = getContextMenuAction(TeamUIMessages.LocalHistoryPage_GetContents, true /* needs progress */, new IWorkspaceRunnable() {
 					@Override
 					public void run(IProgressMonitor monitor) throws CoreException {
@@ -389,10 +389,10 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					}
 				});
 			}
-			
+
 			//TODO: Doc help
 	        //PlatformUI.getWorkbench().getHelpSystem().setHelp(getContentsAction, );
-	
+
 			// Click Compare action
 			compareAction = createCompareAction();
 			compareAction.setEnabled(!treeViewer.getSelection().isEmpty());
@@ -403,7 +403,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					compareAction.selectionChanged((IStructuredSelection) treeViewer.getSelection());
 				}
 			});
-			
+
 			// Only add the open action if compare mode is not always on
 			if (!((compareMode & (ALWAYS | ON)) == (ALWAYS | ON))) {
 				openAction = new OpenRevisionAction(TeamUIMessages.LocalHistoryPage_OpenAction, this);
@@ -414,7 +414,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 						openAction.selectionChanged((IStructuredSelection) treeViewer.getSelection());
 					}
 				});
-				
+
 				// Add 'Open With...'  sub-menu
 				openWithMenu = new OpenWithMenu(this);
 				treeViewer.getTree().addSelectionListener(new SelectionAdapter(){
@@ -424,7 +424,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					}
 				});
 			}
-			
+
 			new OpenAndLinkWithEditorHelper(treeViewer) {
 				@Override
 				protected void open(ISelection selection, boolean activate) {
@@ -460,7 +460,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					// XXX: Not yet implemented, see http://bugs.eclipse.org/324185
 				}
 			};
-			
+
 			//Contribute actions to popup menu
 			MenuManager menuMgr = new MenuManager();
 			Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
@@ -472,7 +472,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			});
 			menuMgr.setRemoveAllWhenShown(true);
 			treeViewer.getTree().setMenu(menu);
-			
+
 			//Don't add the object contribution menu items if this page is hosted in a dialog
 			IWorkbenchPart part = historyPageSite.getPart();
 			if (part != null) {
@@ -504,7 +504,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				tbm.appendToGroup(fileNameQualifier+"collapse", compareModeAction);  //$NON-NLS-1$
 			tbm.update(false);
 		}
-		
+
 	}
 
 	protected CompareRevisionAction createCompareAction() {
@@ -514,7 +514,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	private String getFileNameQualifier() {
 		if (file != null)
 			return file.getFullPath().toString();
-		
+
 		return ""; //$NON-NLS-1$
 	}
 
@@ -522,7 +522,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		// file actions go first (view file)
 		IHistoryPageSite parentSite = getHistoryPageSite();
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		
+
 		if (file != null && !parentSite.isModal()){
 			if (openAction != null)
 				manager.add(openAction);
@@ -551,7 +551,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 
 	/**
 	 * Creates the tree that displays the local file revisions
-	 * 
+	 *
 	 * @param parent the parent composite to contain the group
 	 * @return the group control
 	 */
@@ -612,7 +612,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
 			resourceListener = null;
 		}
-    	
+
 		//Cancel any incoming
 		if (refreshFileHistoryJob != null) {
 			if (refreshFileHistoryJob.getState() != Job.NONE) {
@@ -620,17 +620,17 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			}
 		}
 	}
-    
+
 	public IFileRevision getCurrentFileRevision() {
 		if (currentFileRevision != null)
 			return currentFileRevision;
-		
+
 		if (file != null)
 			currentFileRevision = new LocalFileRevision(file);
-		
+
 		return currentFileRevision;
     }
-	
+
 	private Action getContextMenuAction(String title, final boolean needsProgressDialog, final IWorkspaceRunnable action) {
 		return new Action(title) {
 			@Override
@@ -641,10 +641,10 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					if (!(selection instanceof IStructuredSelection)) return;
 					IStructuredSelection ss = (IStructuredSelection)selection;
 					Object o = ss.getFirstElement();
-					
+
 					if (o instanceof AbstractHistoryCategory)
 						return;
-					
+
 					currentSelection = (IFileRevision)o;
 					if(needsProgressDialog) {
 						PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
@@ -671,7 +671,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					// Do nothing
 				}
 			}
-			
+
 			@Override
 			public boolean isEnabled() {
 				ISelection selection = treeViewer.getSelection();
@@ -703,7 +703,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		}
 		return true;
 	}
-	
+
 	public void setClickAction(boolean compare) {
 		compareMode = compare ? ON : OFF;
 		if (compareModeAction != null)
@@ -824,14 +824,14 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			return sortRevisions(revisions, monitor);
 		return null;
 	}
-	
+
 	private Object[] mapExpandedElements(AbstractHistoryCategory[] categories, Object[] expandedElements) {
 		//store the names of the currently expanded categories in a map
 		HashMap elementMap = new HashMap();
 		for (int i=0; i<expandedElements.length; i++){
 			elementMap.put(((DateHistoryCategory)expandedElements[i]).getName(), null);
 		}
-		
+
 		//Go through the new categories and keep track of the previously expanded ones
 		ArrayList expandable = new ArrayList();
 		for (int i = 0; i<categories.length; i++){
@@ -844,7 +844,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	}
 
 	private AbstractHistoryCategory[] sortRevisions(IFileRevision[] revisions, IProgressMonitor monitor) {
-		
+
 		try {
 			monitor.beginTask(null, 100);
 			//Create the 4 categories
@@ -862,25 +862,25 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			tempCategories[2] = new DateHistoryCategory(TeamUIMessages.HistoryPage_ThisMonth, monthCal, yesterdayCal);
 			//Everything before after week is previous
 			tempCategories[3] = new DateHistoryCategory(TeamUIMessages.HistoryPage_Previous, null, monthCal);
-		
+
 			ArrayList finalCategories = new ArrayList();
 			for (int i = 0; i<tempCategories.length; i++){
 				tempCategories[i].collectFileRevisions(revisions, false);
 				if (tempCategories[i].hasRevisions())
 					finalCategories.add(tempCategories[i]);
 			}
-			
+
 			if (finalCategories.size() == 0){
 				//no revisions found for the current mode, so add a message category
 				finalCategories.add(getErrorMessage());
 			}
-			
+
 			return (AbstractHistoryCategory[])finalCategories.toArray(new AbstractHistoryCategory[finalCategories.size()]);
 		} finally {
 			monitor.done();
 		}
 	}
-	
+
 	private MessageHistoryCategory getErrorMessage(){
 		MessageHistoryCategory messageCategory = new MessageHistoryCategory(getNoChangesMessage());
 		return messageCategory;

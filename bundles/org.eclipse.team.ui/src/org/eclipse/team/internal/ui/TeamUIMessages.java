@@ -14,14 +14,14 @@ package org.eclipse.team.internal.ui;
 import org.eclipse.osgi.util.NLS;
 
 public class TeamUIMessages extends NLS {
-	
+
 	private static final String BUNDLE_NAME = "org.eclipse.team.internal.ui.messages";//$NON-NLS-1$
 
 	static {
 		// load message values from bundle file
 		NLS.initializeMessages(BUNDLE_NAME, TeamUIMessages.class);
 	}
-	
+
 	public static String ConfigureMultipleProjectsWizard_0;
 
 	public static String ConfigureMultipleProjectsWizard_1;
@@ -33,7 +33,7 @@ public class TeamUIMessages extends NLS {
 	public static String ProjectSelectionPage_2;
 
 	public static String TextPreferencePage_ExtensionNotCompleted;
-	
+
     public static String CompareInputChangeNotifier_0;
 
 	public static String CompareInputChangeNotifier_1;
@@ -109,7 +109,7 @@ public class TeamUIMessages extends NLS {
 	public static String ImportProjectSetMainPage_Project_Set_Url;
 
 	public static String ImportProjectSetMainPage_Browse;
-	
+
 	public static String ImportProjectSetDialog_duplicatedWorkingSet_title;
 	public static String ImportProjectSetDialog_duplicatedWorkingSet_message;
 	public static String ImportProjectSetDialog_duplicatedWorkingSet_replace;
@@ -119,7 +119,7 @@ public class TeamUIMessages extends NLS {
 	public static String ImportProjectSetDialog_malformed_url;
 
 	public static String information;
-    
+
 	public static String ConfigureProjectAction_configureProject;
 	public static String ConfigureProjectWizard_configureProject;
 	public static String ConfigureSynchronizeScheduleComposite_0;
@@ -162,15 +162,15 @@ public class TeamUIMessages extends NLS {
 	public static String LocalHistoryPage_NoRevisionsFound;
 
 	public static String LocalHistoryPage_OpenAction;
-	
+
 	public static String LocalHistoryPage_OpenWithMenu;
-	
+
 	public static String LocalHistoryPage_OpenWithMenu_Other;
-	
+
 	public static String LocalHistoryPage_OpenWithMenu_OtherDialogDescription;
-	
+
 	public static String LocalHistoryPage_OpenWithMenu_DefaultEditorDescription;
-	
+
 	public static String LocalHistoryPage_OpenEditorError;
 
 	public static String LocalHistoryPage_OverwriteMessage;
@@ -584,19 +584,19 @@ public class TeamUIMessages extends NLS {
 
 	public static String nameAndRevision;
 	public static String internal;
-	
+
 	public static String TeamCompareEditorInput_repository;
 	public static String TeamCompareEditorInput_titleAncestor;
 	public static String TeamCompareEditorInput_titleNoAncestor;
 	public static String TeamCompareEditorInput_titleNoAncestorDifferent;
 	public static String TeamCompareEditorInput_different;
-	
+
 	public static String TeamCompareEditorInput_comparing;
 	public static String TeamCompareEditorInput_new;
 	public static String TeamCompareEditorInput_deleted;
-	
+
 	public static String TeamCompareEditorInput_fileProgress;
-	
+
 	public static String GenericHistoryView_Refresh;
 	public static String GenericHistoryView_GetDirectDescendents;
 	public static String GenericHistoryView_GetPredecessor;
@@ -627,8 +627,8 @@ public class TeamUIMessages extends NLS {
 	public static String ResourceMappingMergeOperation_3;
 
 	public static String ResourceMappingMergeOperation_4;
-	
-	
+
+
 	public static String GenericHistoryView_PinCurrentHistory;
 
 	public static String GenericHistoryView_0;
@@ -697,27 +697,27 @@ public class TeamUIMessages extends NLS {
 	public static String CompareFileRevisionEditorInput_2;
 
 	public static String SynchronizationCompareAdapter_0;
-	
+
 	public static String HistoryPage_Today;
 	public static String HistoryPage_Yesterday;
 	public static String HistoryPage_ThisMonth;
 	public static String HistoryPage_Previous;
-	
+
 	public static String OpenRevisionAction_DeletedRevTitle;
 	public static String OpenRevisionAction_ErrorTitle;
 	public static String OpenRevisionAction_ErrorMessage;
 	public static String OpenRevisionAction_DeletedRevMessage;
-	
+
 	public static String CompareRevisionAction_DeleteCompareMessage;
 	public static String CompareRevisionAction_CompareWithCurrent;
 	public static String CompareRevisionAction_CompareWithOther;
 	public static String CompareRevisionAction_Revision;
 	public static String CompareRevisionAction_Local;
-	
+
 	public static String TeamAction_errorTitle;
 	public static String TeamAction_handlerNotEnabledTitle;
 	public static String TeamAction_handlerNotEnabledMessage;
-	
+
 	public static String SelectAncestorDialog_title;
 	public static String SelectAncestorDialog_message;
 	public static String SelectAncestorDialog_option;
@@ -732,7 +732,7 @@ public class TeamUIMessages extends NLS {
 	public static String PatchInaccessibleProjectsPage_selectExisting;
 	public static String PatchInaccessibleProjectsPage_deselectAll;
 	public static String PatchInaccessibleProjectsPage_openingProjects;
-	
+
 	public static String IgnoreLeadingPathSegmentsDialog_title;
 	public static String IgnoreLeadingPathSegmentsDialog_message;
 	public static String IgnoreLeadingPathSegmentsDialog_notANumber;

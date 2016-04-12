@@ -22,7 +22,7 @@ import org.eclipse.jface.action.MenuManager;
 public class CommonMenuManager extends MenuManager {
 
 	private Map handlers = new HashMap();
-	
+
 	public CommonMenuManager(String id) {
 		super(id);
 	}

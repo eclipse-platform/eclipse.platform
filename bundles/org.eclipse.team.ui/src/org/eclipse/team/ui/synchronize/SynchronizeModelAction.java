@@ -30,32 +30,32 @@ import org.eclipse.ui.ide.IDE;
  * instances. Subclasses can use this support to filter the selection in order
  * to determine action enablement and generate the input for a
  * {@link SynchronizeModelOperation}.
- * 
+ *
  * @see SyncInfo
  * @see SyncInfoSet
  * @see SynchronizeModelOperation
  * @since 3.0
  */
 public abstract class SynchronizeModelAction extends BaseSelectionListenerAction {
-	
+
 	private ISynchronizePageConfiguration configuration;
 
 	/**
 	 * Create an action with the given text and configuration. By default,
-	 * the action registers for selection change with the selection provider 
+	 * the action registers for selection change with the selection provider
 	 * from the configuration's site.
-	 * 
+	 *
 	 * @param text the action's text
 	 * @param configuration the actions synchronize page configuration
 	 */
 	protected SynchronizeModelAction(String text, ISynchronizePageConfiguration configuration) {
 		this(text, configuration, configuration.getSite().getSelectionProvider());
 	}
-	
+
 	/**
 	 * Create an action with the given text and configuration. By default,
 	 * the action registers for selection change with the given selection provider.
-	 * 
+	 *
 	 * @param text the action's text
 	 * @param configuration the actions synchronize page configuration
 	 * @param selectionProvider a selection provider
@@ -65,12 +65,12 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 		this.configuration = configuration;
 		initialize(configuration, selectionProvider);
 	}
-	
+
 	/**
 	 * Method invoked from the constructor.
 	 * The default implementation registers the action as a selection change
 	 * listener. Subclasses may override.
-	 * 
+	 *
 	 * @param configuration the synchronize page configuration
 	 * @param selectionProvider a selection provider
 	 */
@@ -107,7 +107,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
      * Create and run the operation for this action. By default, the operation is created
      * by calling <code>getSubscriberOperation</code> and then run. Subclasses may
      * override.
-     * 
+     *
      * @throws InvocationTargetException
      * @throws InterruptedException
      * @since 3.1
@@ -119,7 +119,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	/**
 	 * Return whether dirty editor should be saved before this action is run.
 	 * Default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether dirty editor should be saved before this action is run
 	 */
 	protected boolean needsToSaveDirtyEditors() {
@@ -129,20 +129,20 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	/**
 	 * Returns whether the user should be prompted to save dirty editors. The
 	 * default is <code>true</code>.
-	 * 
+	 *
 	 * @return whether the user should be prompted to save dirty editors
 	 */
 	protected boolean confirmSaveOfDirtyEditor() {
 		return true;
 	}
-	
+
 	/**
 	 * Return the subscriber operation associated with this action. This
 	 * operation will be run when the action is run. Subclass may implement this
 	 * method and provide an operation subclass or may override the
 	 * <code>run(IAction)</code> method directly if they choose not to
 	 * implement a <code>SynchronizeModelOperation</code>.
-	 * 
+	 *
 	 * @param configuration the synchronize page configuration for the page to
 	 * which this action is associated
 	 * @param elements the selected diff element for which this action is
@@ -150,17 +150,17 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 * @return the subscriber operation to be run by this action.
 	 */
 	protected abstract SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements);
-	
+
 	/**
 	 * Generic error handling code that uses an error dialog to show the error
 	 * to the user. Subclasses can use this method and/or override it.
-	 * 
+	 *
 	 * @param e the exception that occurred.
 	 */
 	protected void handle(Exception e) {
 		Utils.handle(e);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
@@ -169,7 +169,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 		super.updateSelection(selection);
 		return isEnabledForSelection(selection);
 	}
-	
+
 	private boolean isEnabledForSelection(IStructuredSelection selection) {
 		return Utils.hasMatchingDescendant(selection, getSyncInfoFilter());
 	}
@@ -177,7 +177,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	/**
 	 * This method returns all instances of IDiffElement that are in the current
 	 * selection.
-	 * 
+	 *
 	 * @return the selected elements
 	 */
 	protected final IDiffElement[] getSelectedDiffElements() {
@@ -188,7 +188,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 * Filter uses to filter the user selection to contain only those elements
 	 * for which this action is enabled. Default filter includes all out-of-sync
 	 * elements in the current selection. Subclasses may override.
-	 * 
+	 *
 	 * @return a sync info filter which selects all out-of-sync resources.
 	 */
 	protected FastSyncInfoFilter getSyncInfoFilter() {
@@ -217,7 +217,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 
 	/**
 	 * Set the selection of this action to the given selection
-	 * 
+	 *
 	 * @param selection the selection
 	 */
 	public void selectionChanged(ISelection selection) {
@@ -226,24 +226,24 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 		} else {
 			super.selectionChanged(StructuredSelection.EMPTY);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Returns the configuration showing this action.
-	 * 
+	 *
 	 * @return the configuration showing this action.
 	 */
 	public ISynchronizePageConfiguration getConfiguration() {
 		return configuration;
 	}
-	
+
 	/**
 	 * Save all dirty editors in the workbench that are open on files that may
 	 * be affected by this operation. Opens a dialog to prompt the user if
 	 * <code>confirm</code> is true. Return true if successful. Return false
 	 * if the user has canceled the command. Must be called from the UI thread.
-	 * 
+	 *
 	 * @param confirm prompt the user if true
 	 * @return boolean false if the operation was canceled.
 	 */

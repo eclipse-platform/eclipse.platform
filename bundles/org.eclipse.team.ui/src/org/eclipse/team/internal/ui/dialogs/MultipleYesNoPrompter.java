@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * This class provides a Yes/No prompter that can be used for multiple questions
  * during the same operation. It can be used for a single prompt (in which case
- * OK and Cancel are presented) or multiple (in which case Yes, Yes to All, No 
+ * OK and Cancel are presented) or multiple (in which case Yes, Yes to All, No
  * and No to All are presented). It uses the previous selection as appropriate.
  */
 public class MultipleYesNoPrompter {
@@ -32,7 +32,7 @@ public class MultipleYesNoPrompter {
 	private boolean hasMultiple;
 	private boolean allOrNothing;
 	private IShellProvider shellProvider;
-	
+
 	/**
 	 * Prompt for the given resources using the specific condition. The prompt dialog will
 	 * have the title specified.
@@ -45,26 +45,26 @@ public class MultipleYesNoPrompter {
 		if (hasMultiple) {
 			if (allOrNothing) {
 				buttons = new String[] {
-					IDialogConstants.YES_LABEL, 
+					IDialogConstants.YES_LABEL,
 					IDialogConstants.YES_TO_ALL_LABEL,
 					IDialogConstants.CANCEL_LABEL};
 			} else {
 				buttons = new String[] {
-					IDialogConstants.YES_LABEL, 
-					IDialogConstants.YES_TO_ALL_LABEL, 
-					IDialogConstants.NO_LABEL, 
+					IDialogConstants.YES_LABEL,
+					IDialogConstants.YES_TO_ALL_LABEL,
+					IDialogConstants.NO_LABEL,
 					IDialogConstants.NO_TO_ALL_LABEL,
 					IDialogConstants.CANCEL_LABEL};
 			}
 		} else {
-			buttons = new String[] { 
+			buttons = new String[] {
 					IDialogConstants.YES_LABEL,
-					IDialogConstants.NO_LABEL, 
-					IDialogConstants.CANCEL_LABEL 
+					IDialogConstants.NO_LABEL,
+					IDialogConstants.CANCEL_LABEL
 			};
-		}	 
+		}
 	}
-	
+
 	/**
 	 * Return whether the given resource should be included in the
 	 * target set.
@@ -104,9 +104,9 @@ public class MultipleYesNoPrompter {
 	private boolean confirmOverwrite(String msg) throws InterruptedException {
 		Shell shell = shellProvider.getShell();
 		if (shell == null) return false;
-		final MessageDialog dialog = 
+		final MessageDialog dialog =
 			new MessageDialog(shell, title, null, msg, MessageDialog.QUESTION, buttons, 0);
-	
+
 		// run in syncExec because callback is from an operation,
 		// which is probably not running in the UI thread.
 		shell.getDisplay().syncExec(
@@ -121,7 +121,7 @@ public class MultipleYesNoPrompter {
 				case 0://Yes
 					return true;
 				case 1://Yes to all
-					confirmation = YES_TO_ALL; 
+					confirmation = YES_TO_ALL;
 					return true;
 				case 2://No (or CANCEL for all-or-nothing)
 					if (allOrNothing) {

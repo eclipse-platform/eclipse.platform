@@ -36,14 +36,14 @@ import org.eclipse.ui.IWorkbenchPart;
  * must be included in the operation to ensure model consistency. The scope
  * generation phase will prompt the user if additional resources have been added
  * to the scope.
- * 
+ *
  * @since 3.2
  */
 public abstract class ModelOperation extends TeamOperation {
-	
+
 	private boolean previewRequested;
 	private ISynchronizationScopeManager manager;
-	
+
 	/**
 	 * Return the list of provides sorted by their extends relationship.
 	 * Extended model providers will appear later in the list then those
@@ -80,7 +80,7 @@ public abstract class ModelOperation extends TeamOperation {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Create a model operation that operates on the given scope.
 	 * @param part the workbench part from which the merge was launched or <code>null</code>
@@ -90,10 +90,10 @@ public abstract class ModelOperation extends TeamOperation {
 		super(part);
 		this.manager = manager;
 	}
-	
+
 	/**
 	 * Run the operation. This method first ensures that the scope is built
-	 * by calling {@link #initializeScope(IProgressMonitor)} and then invokes the 
+	 * by calling {@link #initializeScope(IProgressMonitor)} and then invokes the
 	 * {@link #execute(IProgressMonitor)} method.
 	 * @param monitor a progress monitor
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
@@ -110,12 +110,12 @@ public abstract class ModelOperation extends TeamOperation {
 			monitor.done();
 		}
 	}
-	
+
 	/**
 	 * Method called from {@link #run(IProgressMonitor)} before
 	 * the {@link #execute(IProgressMonitor)} method is invoked.
 	 * This is done to give the operation a chance to initialize
-	 * any state required to execute. By default, the 
+	 * any state required to execute. By default, the
 	 * {@link ISynchronizationScopeManager} for this operation
 	 * is initialized if it was not previously initialized.
 	 * @param monitor a progress monitor
@@ -169,7 +169,7 @@ public abstract class ModelOperation extends TeamOperation {
 
 	/**
 	 * Prompt the user by calling {@link #promptForInputChange(String, IProgressMonitor)}
-	 * if the scope of the operation was expanded (as described in 
+	 * if the scope of the operation was expanded (as described in
 	 * {@link #initializeScope(IProgressMonitor)}).
 	 * @param monitor a progress monitor
 	 */
@@ -395,15 +395,15 @@ public abstract class ModelOperation extends TeamOperation {
                 if (requestPreviewMessage != null) {
                 	forcePreview[0] = dialog.isForcePreview();
                 }
-            }    
+            }
         });
-        
+
         if (canceled[0]) {
             throw new OperationCanceledException();
         }
         return forcePreview[0];
     }
-    
+
 	/**
 	 * Return the synchronization context for the operation or <code>null</code>
 	 * if the operation doesn't have one or if it has not yet been created.
@@ -415,7 +415,7 @@ public abstract class ModelOperation extends TeamOperation {
 	}
 
 	/**
-	 * Execute the operation. This method is invoked after the 
+	 * Execute the operation. This method is invoked after the
 	 * scope has been generated.
 	 * @param monitor a progress monitor
 	 * @throws InvocationTargetException
@@ -449,5 +449,5 @@ public abstract class ModelOperation extends TeamOperation {
 	protected ISynchronizationScopeManager getScopeManager() {
 		return manager;
 	}
-	
+
 }

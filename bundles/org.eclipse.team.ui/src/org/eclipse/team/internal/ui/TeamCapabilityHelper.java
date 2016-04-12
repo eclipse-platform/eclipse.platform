@@ -26,11 +26,11 @@ import org.eclipse.ui.activities.*;
 /**
  * Utility class that manages promotion of team capabilities in response to workspace changes
  * and existing repository providers.
- * 
+ *
  * @since 3.0
  */
 public class TeamCapabilityHelper {
-    
+
     /**
      * Mapping from repository provider id to IPluginContribution.  Used for proper
      * activity mapping of natures.
@@ -41,7 +41,7 @@ public class TeamCapabilityHelper {
      * Singleton instance.
      */
     private static TeamCapabilityHelper singleton;
-    
+
     /**
      * Get the singleton instance of this class.
      * @return the singleton instance of this class.
@@ -49,19 +49,19 @@ public class TeamCapabilityHelper {
      */
     public static TeamCapabilityHelper getInstance() {
         if (singleton == null) {
-            singleton = new TeamCapabilityHelper();            
+            singleton = new TeamCapabilityHelper();
         }
         return singleton;
     }
-    
+
     /**
-     * Create a new <code>IDEWorkbenchActivityHelper</code> which will listen 
+     * Create a new <code>IDEWorkbenchActivityHelper</code> which will listen
      * for workspace changes and promote activities accordingly.
      */
     private TeamCapabilityHelper() {
     	providerIdToPluginId = new HashMap();
         loadRepositoryProviderIds();
- 
+
         // crawl the initial projects
         IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
@@ -73,7 +73,7 @@ public class TeamCapabilityHelper {
             }
         }
    }
-    
+
    /**
     * Loads the list of registered provider types
     */
@@ -112,7 +112,7 @@ public class TeamCapabilityHelper {
 
     /**
      * Handle natures for the given project.
-     * 
+     *
      * @param project the project
      * @param workbenchActivitySupport the activity support
      */
@@ -125,7 +125,7 @@ public class TeamCapabilityHelper {
 
     /**
      * Helper method that enables the activities for the given repository provider.
-     * 
+     *
      * @param id the repository provider id
      * @param workbenchActivitySupport the activity support
      */
@@ -153,14 +153,14 @@ public class TeamCapabilityHelper {
      * Returns the provider id for this project or <code>null</code> if no providers are mapped
      * to this project. Note that this won't instantiate the provider, but instead will simply query
      * the persistent property
-     * 
+     *
      * @param project the project to query.
      * @return the provider id for this project or <code>null</code> if no providers are mapped
      * to this project
      * @throws CoreException
      */
     public String getProviderIdFor(IProject project) throws CoreException {
-    	if(project.isAccessible()) {	
+    	if(project.isAccessible()) {
 			//First, look for the session property
 			Object prop = project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY);
 			if(prop != null && prop instanceof RepositoryProvider) {

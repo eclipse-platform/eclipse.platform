@@ -44,7 +44,7 @@ import org.eclipse.ui.progress.IProgressService;
  * Abstract class for hosting a page based structure input view for the purposes
  * of feeding compare viewers.
  * <p>
- * 
+ *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients outside of the Team framework.
  * @deprecated Clients should use a subclass of {@link CompareEditorInput}
@@ -52,24 +52,24 @@ import org.eclipse.ui.progress.IProgressService;
  */
 @Deprecated
 public abstract class PageSaveablePart extends SaveablePartAdapter implements IContentChangeListener{
-	
+
 	private CompareConfiguration cc;
 	Shell shell;
-	
+
 	// Tracking of dirty state
 	private boolean fDirty= false;
 	private ArrayList fDirtyViewers= new ArrayList();
 	private IPropertyChangeListener fDirtyStateListener;
-	
+
 	//	 SWT controls
 	private CompareViewerSwitchingPane fContentPane;
 	private CompareViewerPane fEditionPane;
 	private CompareViewerSwitchingPane fStructuredComparePane;
 	private Control control;
-	
+
 	// Configuration options
 	private boolean showContentPanes = true;
-	
+
 	/**
 	 * Create a saveable part.
 	 * @param shell the shell for the part
@@ -78,7 +78,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	protected PageSaveablePart(Shell shell, CompareConfiguration compareConfiguration){
 		this.shell = shell;
 		this.cc = compareConfiguration;
-		
+
 		fDirtyStateListener= new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
@@ -89,7 +89,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 					if (newValue instanceof Boolean)
 						changed= ((Boolean)newValue).booleanValue();
 					setDirty(e.getSource(), changed);
-				}			
+				}
 			}
 		};
 	}
@@ -116,9 +116,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayout(layout);
 		composite.setLayoutData(data);
-		
+
 		shell = parent.getShell();
-		
+
 		Splitter vsplitter = new Splitter(composite, SWT.VERTICAL);
 		vsplitter.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL));
 		// we need two panes: the left for the elements, the right one for the structured diff
@@ -138,7 +138,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 				feedInput2(e.getSelection());
 			}
 		});
-		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0); 
+		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0);
 		fContentPane = new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
 			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
@@ -159,14 +159,14 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 						}
 					);
 					hookContentChangeListener((ICompareInput)input);
-				}	
+				}
 				return newViewer;
 			}
 		};
 		vsplitter.setWeights(new int[]{30, 70});
-		
+
 		control = composite;
-		
+
 		ToolBarManager toolBarManager = CompareViewerPane.getToolBarManager(fEditionPane);
 		Control c = createPage(fEditionPane, toolBarManager);
 		fEditionPane.setContent(c);
@@ -174,7 +174,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		if(! showContentPanes) {
 			hsplitter.setMaximizedControl(fEditionPane);
 		}
-		
+
 		getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -185,7 +185,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			}
 		});
 	}
-	
+
 	/**
 	 * Return the selection provider for the page. This method is
 	 * called after the page is created in order to register a
@@ -195,14 +195,14 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	protected abstract ISelectionProvider getSelectionProvider();
 
 	/**
-	 * Create the page for this part and return the top level control 
+	 * Create the page for this part and return the top level control
 	 * for the page.
 	 * @param parent the parent composite
 	 * @param toolBarManager the toolbar manager for the page
 	 * @return the top-level control for the page
 	 */
 	protected abstract Control createPage(Composite parent, ToolBarManager toolBarManager);
-	
+
 	/**
 	 * Set the title of the page's page to the given text. The title
 	 * will appear in the header of the pane containing the page.
@@ -211,7 +211,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	protected void setPageDescription(String title) {
 		fEditionPane.setText(title);
 	}
-	
+
 	/**
 	 * Set the saveable part's dirty state to the given state.
 	 * @param dirty the dirty state
@@ -228,15 +228,15 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 				fDirtyViewers.clear();
 		}
 	}
-	
+
 	private void setDirty(Object source, boolean dirty) {
 		Assert.isNotNull(source);
 		if (dirty)
 			fDirtyViewers.add(source);
 		else
 			fDirtyViewers.remove(source);
-	}	
-	
+	}
+
 	/**
 	 * Feeds input from the page into the content and structured viewers.
 	 * @param input the input
@@ -248,7 +248,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		if (fStructuredComparePane != null && !fStructuredComparePane.isDisposed())
 			fStructuredComparePane.setInput(input);
 	}
-	
+
 	/*
 	 * Feeds selection from structure viewer to content viewer.
 	 */
@@ -258,7 +258,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		if (input != null)
 			fContentPane.setInput(input);
 	}
-	
+
 	/**
 	 * Convenience method that calls {@link #prepareInput(ICompareInput, CompareConfiguration, IProgressMonitor)}
 	 * with a progress monitor.
@@ -289,7 +289,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			// Ignore
 		}
 	}
-	
+
 	/**
 	 * Prepare the compare input for display in a content viewer. This method is
 	 * called from {@link #prepareCompareInput(ICompareInput)} and may be called
@@ -312,7 +312,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			((IContentChangeNotifier)right).addContentChangeListener(this);
 		}
 	}
-	
+
 	/**
 	 * Return the parent shell of this part.
 	 * @return the parent shell of this part
@@ -320,7 +320,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	protected Shell getShell() {
 		return shell;
 	}
-	
+
 	/**
 	 * This method is internal to the framework and should not be called by clients
 	 * outside of the framework.
@@ -334,7 +334,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 				}
 			));
 	}
-	
+
 	/*
 	 * Find a viewer that can provide a structure view for the given compare input.
 	 * Return <code>null</code> if a suitable viewer could not be found.
@@ -347,7 +347,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	private Viewer findStructureViewer(Composite parent, Viewer oldViewer, ICompareInput input) {
 		return CompareUI.findStructureViewer(oldViewer, input, parent, cc);
 	}
-	
+
 	/*
 	 * Find a viewer that can provide a content compare view for the given compare input.
 	 * Return <code>null</code> if a suitable viewer could not be found.
@@ -360,7 +360,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	private Viewer findContentViewer(Composite parent, Viewer oldViewer, ICompareInput input) {
 		return CompareUI.findContentViewer(oldViewer, input, parent, cc);
 	}
-	
+
 	/**
 	 * Return a compare input that represents the selection.
 	 * This input is used to feed the structure and content
@@ -386,7 +386,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
     /**
      * Set whether the file contents panes should be shown. If they are not,
      * only the page will be shown.
-     * 
+     *
      * @param showContentPanes whether to show contents pane
      */
 	public void setShowContentPanes(boolean showContentPanes) {
@@ -395,7 +395,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 
 	/**
 	 * Returns the primary control for this part.
-	 * 
+	 *
 	 * @return the primary control for this part.
 	 */
 	public Control getControl() {
@@ -414,7 +414,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * This method flushes the content in any viewers. Subclasses should
 	 * override if they need to perform additional processing when a save is
 	 * performed.
-	 * 
+	 *
 	 * @param monitor
 	 *            a progress monitor
 	 */
@@ -422,10 +422,10 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	public void doSave(IProgressMonitor monitor) {
 		flushViewers(monitor);
 	}
-	
+
 	private void flushViewers(IProgressMonitor monitor) {
 		Iterator iter = fDirtyViewers.iterator();
-		
+
 		for (int i=0; i<fDirtyViewers.size(); i++){
 			Object element = iter.next();
 			IFlushable flushable = (IFlushable)Utils.getAdapter(element, IFlushable.class);

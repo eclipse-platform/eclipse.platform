@@ -141,7 +141,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class) {

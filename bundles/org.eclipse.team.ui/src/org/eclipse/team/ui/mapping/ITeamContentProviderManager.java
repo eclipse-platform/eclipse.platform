@@ -26,7 +26,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  * the <code>org.eclipse.ui.navigator.navigatorContent</code> extension point.
  * <p>
  * This interface is not intended to be implemented by clients.
- * 
+ *
  * @see TeamUI#getTeamContentProviderManager()
  * @see ModelProvider
  * @since 3.2
@@ -48,7 +48,7 @@ public interface ITeamContentProviderManager {
 	 * shown in an {@link ISynchronizePage}.
 	 */
 	public static final String P_SYNCHRONIZATION_CONTEXT = TeamUIPlugin.ID + ".synchronizationContext"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant used to store and retrieve the resource mapping scope
 	 * from the {@link org.eclipse.ui.navigator.IExtensionStateModel} used by
@@ -66,29 +66,29 @@ public interface ITeamContentProviderManager {
 	 * @since 3.3
 	 */
 	public static final String PROP_PAGE_LAYOUT = TeamUIPlugin.ID + ".pageLayout"; //$NON-NLS-1$
-	
+
 	/**
-	 * Value for the PROP_PAGE_LAYOUT that indicates that the models should display 
+	 * Value for the PROP_PAGE_LAYOUT that indicates that the models should display
 	 * their elements in tree form.
 	 * @since 3.3
 	 */
 	public static final String TREE_LAYOUT = TeamUIPlugin.ID + ".treeLayout"; //$NON-NLS-1$
-	
+
 	/**
-	 * Value for the PROP_PAGE_LAYOUT that indicates that the models should display 
+	 * Value for the PROP_PAGE_LAYOUT that indicates that the models should display
 	 * their elements as a flat list. Only models that indicate in their <code>teamContentProviders</code>
 	 * that they support the flat layout will be enabled when the PROP_PAGE_LAYOUT is set
 	 * to FLAT_LAYOUT.
 	 * @since 3.3
 	 */
 	public static final String FLAT_LAYOUT = TeamUIPlugin.ID + ".flatLayout"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant used during property change notification to indicate
 	 * that one one or more model providers have either been enabled or disabled.
 	 */
 	public static final String PROP_ENABLED_MODEL_PROVIDERS = TeamUIPlugin.ID + ".ENABLED_MODEL_PROVIDERS"; //$NON-NLS-1$
-	
+
 	/**
 	 * Return descriptors for all the registered content extensions.
 	 * @return descriptors for all the registered content extensions
@@ -105,13 +105,13 @@ public interface ITeamContentProviderManager {
 	 */
 	public ITeamContentProviderDescriptor getDescriptor(
 			String modelProviderId);
-	
+
 	/**
 	 * Add a property change listener to the manager.
 	 * @param listener the listener
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener);
-	
+
 	/**
 	 * Remove a property change listener from the manager.
 	 * @param listener the listener
@@ -121,17 +121,17 @@ public interface ITeamContentProviderManager {
 	/**
 	 * Convenience method that returns the list of all enabled content extension ids for
 	 * models that have mappings in the given scope.
-	 * 
+	 *
 	 * @param scope
 	 *            the scope
 	 * @return the list of all content extension ids for models that have
 	 *         mappings in the given scope
 	 */
 	public String[] getContentProviderIds(ISynchronizationScope scope);
-	
+
 	/**
 	 * Enable the given content descriptors, disabling all others.
-	 * This method will fire a {@link ITeamContentProviderManager#PROP_ENABLED_MODEL_PROVIDERS} 
+	 * This method will fire a {@link ITeamContentProviderManager#PROP_ENABLED_MODEL_PROVIDERS}
 	 * property change event to any registered listeners.
 	 * @param descriptors the descriptors to be enabled.
 	 * @see ITeamContentProviderDescriptor#isEnabled()

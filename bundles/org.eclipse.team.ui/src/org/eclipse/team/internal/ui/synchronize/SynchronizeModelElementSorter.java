@@ -20,7 +20,7 @@ import org.eclipse.ui.views.navigator.ResourceSorter;
  * It is not thread safe so it should not be reused between views.
  */
 public class SynchronizeModelElementSorter extends ResourceSorter {
-			
+
 	public SynchronizeModelElementSorter() {
 		super(ResourceSorter.NAME);
 	}
@@ -34,7 +34,7 @@ public class SynchronizeModelElementSorter extends ResourceSorter {
 		IResource resource2 = getResource(o2);
 		Object objectToCompare1 = resource1==null ? o1 : resource1;
 		Object objectToCompare2 = resource2==null ? o2 : resource2;
-		
+
 		return super.compare(viewer, objectToCompare1, objectToCompare2);
 	}
 

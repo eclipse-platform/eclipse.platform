@@ -19,13 +19,13 @@ import org.eclipse.team.core.mapping.ResourceMappingMerger;
  * don't provide a custom merger will get this one.
  */
 public class DefaultResourceMappingMerger extends ResourceMappingMerger {
-	
+
 	private final ModelProvider provider;
 
 	public DefaultResourceMappingMerger(ModelProvider provider) {
 		this.provider = provider;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#getModelProvider()
 	 */

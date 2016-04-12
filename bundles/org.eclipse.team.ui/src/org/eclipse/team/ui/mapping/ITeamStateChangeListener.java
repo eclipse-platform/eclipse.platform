@@ -19,7 +19,7 @@ import org.eclipse.team.ui.synchronize.TeamStateProvider;
  * A listener registered with an {@link TeamStateProvider} in order to
  * receive change events when the team state of any
  * resources change. It is the responsibility of clients to determine if
- * a label update is required based on the changed resources. 
+ * a label update is required based on the changed resources.
  * <p>
  * Change events may not be issued if a local change has resulted in a
  * synchronization state change. It is up to clients to check whether
@@ -27,12 +27,12 @@ import org.eclipse.team.ui.synchronize.TeamStateProvider;
  * by using the resource delta mechanism.
  * <p>
  * Clients may implement this interface
- * 
+ *
  * @see IWorkspace#addResourceChangeListener(org.eclipse.core.resources.IResourceChangeListener)
  * @since 3.2
  */
 public interface ITeamStateChangeListener extends EventListener {
-	
+
 	/**
 	 * Notification that the team state of resources
 	 * has changed.

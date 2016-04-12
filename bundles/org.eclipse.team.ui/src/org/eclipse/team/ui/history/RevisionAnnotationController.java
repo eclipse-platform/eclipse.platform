@@ -38,7 +38,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * revision ruler and a history list such as one shown in the history view. In
  * other words, the selection in the history list will be reflected in the
  * revision rule and vice versa.
- * 
+ *
  * @see Revision
  * @see RevisionInformation
  * @since 3.3
@@ -54,10 +54,10 @@ public abstract class RevisionAnnotationController {
 			Revision selected= null;
 			if (selection instanceof IStructuredSelection)
 				selected= (Revision) ((IStructuredSelection) selection).getFirstElement();
-		
+
 			if (selected == null)
 				return;
-		
+
 			revisionSelected(selected);
 		}
 	};
@@ -75,12 +75,12 @@ public abstract class RevisionAnnotationController {
 			}
 		}
 	};
-	
+
 	/**
 	 * Open a text editor that supports the use of a revision ruler on the given
 	 * file. If an appropriate editor is already open, it is returned. Otherwise
 	 * a new editor is opened.
-	 * 
+	 *
 	 * @param page
 	 *            the page in which the editor is to be opened
 	 * @param file
@@ -99,39 +99,39 @@ public abstract class RevisionAnnotationController {
 				return te;
 			}
 		}
-		
-		// No existing editor references found, try to open a new editor for the file	
+
+		// No existing editor references found, try to open a new editor for the file
 		try {
 			IEditorDescriptor descrptr = IDE.getEditorDescriptor(file);
 			// Try to open the associated editor only if its an internal editor
-			// Also, if a non-text editor is already open, there is no need to try and open 
+			// Also, if a non-text editor is already open, there is no need to try and open
 			// an editor since the open will find the non-text editor
 			if (descrptr.isInternal() && openEditors.length == 0){
 				IEditorPart part = page.openEditor(input, IDE.getEditorDescriptor(file).getId(), true, IWorkbenchPage.MATCH_INPUT);
 				AbstractDecoratedTextEditor te = findTextEditorPart(page, part, input);
 				if (te != null)
 					return te;
-				
+
 				//editor opened is not a text editor - close it
 				page.closeEditor(part, false);
 			}
-			//open file in default text editor	
+			//open file in default text editor
 			IEditorPart part = page.openEditor(input, EditorsUI.DEFAULT_TEXT_EDITOR_ID, true, IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID);
 			AbstractDecoratedTextEditor te = findTextEditorPart(page, part, input);
 			if (te != null)
 				return te;
-			
+
 		} catch (PartInitException e) {
 		}
-	
+
         return null;
 	}
-	
+
 	/**
 	 * Open a text editor that supports the use of a revision ruler on the given
 	 * file. If an appropriate editor is already open, it is returned. Otherwise
 	 * a new editor is opened.
-	 * 
+	 *
 	 * @param page
 	 *            the page in which the editor is to be opened
 	 * @param fileRevision
@@ -149,7 +149,7 @@ public abstract class RevisionAnnotationController {
 			return (AbstractDecoratedTextEditor) editor;
 		return null;
 	}
-	
+
 
     private static ITextEditor getEditor(String id, Object fileRevision, IStorage storage) throws PartInitException {
         final IWorkbench workbench= PlatformUI.getWorkbench();
@@ -167,7 +167,7 @@ public abstract class RevisionAnnotationController {
     			return (ITextEditor)part;
     		} else {
     			// There is something really wrong so just bail
-    			throw new PartInitException(TeamUIMessages.RevisionAnnotationController_0); 
+    			throw new PartInitException(TeamUIMessages.RevisionAnnotationController_0);
     		}
     	}
     }
@@ -177,7 +177,7 @@ public abstract class RevisionAnnotationController {
 		IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
 		IEditorDescriptor descriptor = registry.getDefaultEditor(storage.getName());
 		if (descriptor == null || !descriptor.isInternal()) {
-			id = EditorsUI.DEFAULT_TEXT_EDITOR_ID; 
+			id = EditorsUI.DEFAULT_TEXT_EDITOR_ID;
 		} else {
 			try {
 				if (Utils.isTextEditor(descriptor)) {
@@ -193,7 +193,7 @@ public abstract class RevisionAnnotationController {
     }
 
 
-	
+
 	private static AbstractDecoratedTextEditor findOpenTextEditorForFile(IWorkbenchPage page, IFile file) {
 		if (file == null)
 			return null;
@@ -201,7 +201,7 @@ public abstract class RevisionAnnotationController {
         IEditorPart[] editors = findOpenEditorsForFile(page, input);
 		return findTextEditor(page, editors, input);
 	}
-	
+
 	private static AbstractDecoratedTextEditor findTextEditor(IWorkbenchPage page, IEditorPart[] editors, IEditorInput input) {
 		for (int i = 0; i < editors.length; i++) {
 			IEditorPart editor = editors[i];
@@ -229,7 +229,7 @@ public abstract class RevisionAnnotationController {
 		}
 		return null;
 	}
-	
+
 	private static IEditorPart[] findOpenEditorsForFile(IWorkbenchPage page, FileEditorInput input) {
         final IEditorReference[] references= page.findEditors(input, null, IWorkbenchPage.MATCH_INPUT);
         final List editors = new ArrayList();
@@ -238,10 +238,10 @@ public abstract class RevisionAnnotationController {
 			IEditorPart editor= reference.getEditor(false);
 			editors.add(editor);
 		}
-		
+
         return (IEditorPart[]) editors.toArray(new IEditorPart[editors.size()]);
 	}
-	
+
 	private static AbstractDecoratedTextEditor findOpenTextEditorFor(IWorkbenchPage page, Object object) {
 		if (object == null)
 			return null;
@@ -264,10 +264,10 @@ public abstract class RevisionAnnotationController {
 				// ignore
 			}
 		}
-		
+
         return null;
 	}
-	
+
 	private static IRevisionRulerColumnExtension findEditorRevisonRulerColumn(IWorkbenchPage page, Object object) {
 		ITextEditor editor= findOpenTextEditorFor(page, object);
 		if (editor == null)
@@ -279,21 +279,21 @@ public abstract class RevisionAnnotationController {
 				return null;
 			return (IRevisionRulerColumnExtension) column;
 		}
-		
+
 		return null;
 	}
-	
+
 	private RevisionAnnotationController(IRevisionRulerColumnExtension revisionRuler, ISelectionProvider historyList) {
 		fHistoryListSelectionProvider = historyList;
 		if (revisionRuler == null) {
 			fRulerSelectionProvider = null;
 			return;
 		}
-		
+
 		fRulerSelectionProvider= revisionRuler.getRevisionSelectionProvider();
 		fRulerSelectionProvider.addSelectionChangedListener(rulerListener);
 		fHistoryListSelectionProvider.addSelectionChangedListener(historyListListener);
-		
+
 		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -301,7 +301,7 @@ public abstract class RevisionAnnotationController {
 			}
 		});
 	}
-	
+
 	/**
 	 * Create a controller that links an editor on a local file to a history list.
 	 * @param page the workbench page
@@ -311,7 +311,7 @@ public abstract class RevisionAnnotationController {
 	public RevisionAnnotationController(IWorkbenchPage page, IFile file, ISelectionProvider historyList) {
 		this(findEditorRevisonRulerColumn(page, file), historyList);
 	}
-	
+
 	/**
 	 * Create a controller that links an editor input on a remote file to a history list.
 	 * @param page the workbench page
@@ -324,7 +324,7 @@ public abstract class RevisionAnnotationController {
 	}
 
 	/**
-	 * Dispose of the controller. 
+	 * Dispose of the controller.
 	 */
 	public void dispose() {
 		if (fRulerSelectionProvider != null) {
@@ -339,14 +339,14 @@ public abstract class RevisionAnnotationController {
 
 	/**
 	 * Callback from the ruler when a particular revision has been selected by the user.
-	 * By default, this method will set the selection of the history list selection 
+	 * By default, this method will set the selection of the history list selection
 	 * provider that was passed in the constructor using the history entry returned
 	 * by {@link #getHistoryEntry(Revision)}. Subclasses may override.
 	 * @param selected the selected revision
 	 */
 	protected void revisionSelected(Revision selected) {
 		Object entry= getHistoryEntry(selected);
-		
+
 		if (entry != null) {
 			IStructuredSelection selection = new StructuredSelection(entry);
 			if (fHistoryListSelectionProvider instanceof Viewer) {
@@ -357,7 +357,7 @@ public abstract class RevisionAnnotationController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the history list entry corresponding to the provided revision.
 	 * THis method is called by the {@link #revisionSelected(Revision)} method in
@@ -378,14 +378,14 @@ public abstract class RevisionAnnotationController {
 			fRulerSelectionProvider.setSelection(new StructuredSelection(id));
 		}
 	}
-	
+
 	/**
 	 * Return the revision id associated with the given history list entry.
 	 * This method is used to determine which revision in the revision ruler should
 	 * be highlighted when the history list selection provider fires a selection changed event.
 	 * By default, this method tries to adapt the entry to either {@link IFileRevision} or
 	 * {@link IResourceVariant} in order to obtain the content identifier. Subclasses may override.
-	 * 
+	 *
 	 * @param historyEntry the history list entry
 	 * @return the id of the entry
 	 */
@@ -399,5 +399,5 @@ public abstract class RevisionAnnotationController {
 			return variant.getContentIdentifier();
 		return null;
 	}
-	
+
 }

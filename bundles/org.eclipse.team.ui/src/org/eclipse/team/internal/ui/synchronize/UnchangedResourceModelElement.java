@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -26,7 +26,7 @@ public class UnchangedResourceModelElement extends SynchronizeModelElement {
 		Assert.isNotNull(resource);
 		this.resource = resource;
 	}
-	
+
 	/**
 	 * @return Returns the resource.
 	 */
@@ -34,7 +34,7 @@ public class UnchangedResourceModelElement extends SynchronizeModelElement {
 	public IResource getResource() {
 		return resource;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 	 */

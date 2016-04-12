@@ -29,7 +29,7 @@ import org.eclipse.team.ui.mapping.SynchronizationOperation;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class ResourceMergeHandler extends ResourceMergeActionHandler {
-	
+
 	private final boolean overwrite;
 	private ResourceModelProviderOperation operation;
 
@@ -91,7 +91,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 						if (diffs.length == 1)
 							return TeamUIMessages.ResourceMergeHandler_0;
 						return NLS.bind(TeamUIMessages.ResourceMergeHandler_1, new Integer(diffs.length).toString());
-						
+
 					}
 					if (diffs.length == 1)
 						return TeamUIMessages.ResourceMergeHandler_2;
@@ -101,7 +101,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		}
 		return operation;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
@@ -117,7 +117,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 			return;
 		}
 	}
-	
+
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (saveDirtyEditors() && (!overwrite || promptToConfirm()))
@@ -136,7 +136,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 				public void run() {
 					confirmed[0] = promptToConfirm();
 				}
-			
+
 			}, shell);
 		}
 		return confirmed[0];
@@ -155,5 +155,5 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		}, (StructuredViewer)getConfiguration().getPage().getViewer());
 	}
 
-	
+
 }

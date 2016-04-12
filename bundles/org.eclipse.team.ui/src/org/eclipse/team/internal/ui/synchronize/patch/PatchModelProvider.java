@@ -52,7 +52,7 @@ public class PatchModelProvider extends ModelProvider {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the resource associated with the corresponding model element.
 	 *

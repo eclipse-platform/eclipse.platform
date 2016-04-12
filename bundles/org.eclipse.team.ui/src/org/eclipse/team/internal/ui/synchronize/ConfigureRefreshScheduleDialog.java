@@ -28,7 +28,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	private SubscriberRefreshSchedule schedule;
 
 	public ConfigureRefreshScheduleDialog(Shell parentShell, SubscriberRefreshSchedule schedule) {
-		super(parentShell, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_0, new String[] { Utils.getTypeName(schedule.getParticipant()) })); 
+		super(parentShell, NLS.bind(TeamUIMessages.ConfigureRefreshScheduleDialog_0, new String[] { Utils.getTypeName(schedule.getParticipant()) }));
 		this.schedule = schedule;
 	}
 
@@ -47,7 +47,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 		scheduleComposite = new ConfigureSynchronizeScheduleComposite(parent, schedule, validator);
 		Dialog.applyDialogFont(parent);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
@@ -56,7 +56,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 		scheduleComposite.saveValues();
 		super.okPressed();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeDetailsButton()
 	 */
@@ -79,7 +79,7 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	@Override
 	protected void updateEnablements() {
 	}
-    
+
     @Override
 	protected String getHelpContextId() {
         return IHelpContextIds.CONFIGURE_REFRESH_SCHEDULE_DIALOG;

@@ -41,12 +41,12 @@ import org.eclipse.ui.progress.IProgressConstants2;
  * a {@link ISynchronizationContext}.
  * <p>
  * This class may be subclassed by clients.
- * 
+ *
  * @since 3.2
  */
 public class ModelSynchronizeParticipant extends
 		AbstractSynchronizeParticipant {
-	
+
 	/**
 	 * Property constant used to store and retrieve the id of the active
 	 * {@link ModelProvider} from an {@link ISynchronizePageConfiguration}. The
@@ -55,36 +55,36 @@ public class ModelSynchronizeParticipant extends
 	 * returned, all model providers are considered active and are visible.
 	 */
 	public static final String P_VISIBLE_MODEL_PROVIDER = TeamUIPlugin.ID + ".activeModelProvider"; //$NON-NLS-1$
-	
+
 	/**
 	 * Constant used with the <code>P_ACTIVE_MODEL_PROVIDER</code> property to indicate
 	 * that all enabled model providers are active.
 	 */
 	public static final String ALL_MODEL_PROVIDERS_VISIBLE = TeamUIPlugin.ID + ".activeModelProvider"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant used during property change notification to indicate
 	 * that the enabled model providers for this participant have changed.
 	 */
 	public static final String PROP_ENABLED_MODEL_PROVIDERS = TeamUIPlugin.ID + ".ENABLED_MODEL_PROVIDERS"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant used during property change notification to indicate
 	 * that the active model of this participant has changed.
 	 */
 	public static final String PROP_ACTIVE_SAVEABLE = TeamUIPlugin.ID + ".ACTIVE_SAVEABLE"; //$NON-NLS-1$
-	
+
 	/**
 	 * Property constant used during property change notification to indicate
 	 * that the dirty state for the active saveable model of this participant has changed.
 	 */
 	public static final String PROP_DIRTY = TeamUIPlugin.ID + ".DIRTY"; //$NON-NLS-1$
-	
+
 	/*
 	 * Key for settings in memento
 	 */
 	private static final String CTX_PARTICIPANT_SETTINGS = TeamUIPlugin.ID + ".MODEL_PARTICIPANT_SETTINGS"; //$NON-NLS-1$
-	
+
 	/*
 	 * Key for schedule in memento
 	 */
@@ -94,7 +94,7 @@ public class ModelSynchronizeParticipant extends
 	 * Key for description in memento
 	 */
 	private static final String CTX_DESCRIPTION = TeamUIPlugin.ID + ".MODEL_PARTICIPANT_DESCRIPTION"; //$NON-NLS-1$
-	
+
 	/*
 	 * Constants used to save and restore this scope
 	 */
@@ -102,7 +102,7 @@ public class ModelSynchronizeParticipant extends
 	private static final String CTX_MODEL_PROVIDER_ID = "modelProviderId"; //$NON-NLS-1$
 	private static final String CTX_MODEL_PROVIDER_MAPPINGS = "mappings"; //$NON-NLS-1$
 	private static final String CTX_STARTUP_ACTION = "startupAction"; //$NON-NLS-1$
-	
+
 	private SynchronizationContext context;
 	private boolean mergingEnabled = true;
 	private SubscriberRefreshSchedule refreshSchedule;
@@ -135,7 +135,7 @@ public class ModelSynchronizeParticipant extends
 	public static ModelSynchronizeParticipant createParticipant(SynchronizationContext context, String name) {
 		return new ModelSynchronizeParticipant(context, name);
 	}
-	
+
 	/*
 	 * Create a participant for the given context
 	 * @param context the synchronization context
@@ -161,7 +161,7 @@ public class ModelSynchronizeParticipant extends
 		initializeContext(context);
 		refreshSchedule = new SubscriberRefreshSchedule(createRefreshable());
 	}
-	
+
 	/**
 	 * Create a participant in order to restore it from saved state.
 	 */
@@ -176,11 +176,11 @@ public class ModelSynchronizeParticipant extends
 		String name = super.getName();
 		if (description == null)
 			description = Utils.getScopeDescription(getContext().getScope());
-		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, description }); 
+		return NLS.bind(TeamUIMessages.SubscriberParticipant_namePattern, new String[] { name, description });
 	}
 
 	/**
-	 * Return the name of the participant as specified in the plugin manifest file. 
+	 * Return the name of the participant as specified in the plugin manifest file.
 	 * This method is provided to give access to this name since it is masked by
 	 * the <code>getName()</code> method defined in this class.
 	 * @return the name of the participant as specified in the plugin manifest file
@@ -189,7 +189,7 @@ public class ModelSynchronizeParticipant extends
 	protected final String getShortName() {
 	    return super.getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
@@ -211,7 +211,7 @@ public class ModelSynchronizeParticipant extends
 
 	/**
 	 * Create the merge action group for this participant.
-	 * Subclasses can override in order to provide a 
+	 * Subclasses can override in order to provide a
 	 * merge action group that configures certain aspects
 	 * of the merge actions.
 	 * @return the merge action group for this participant
@@ -238,11 +238,11 @@ public class ModelSynchronizeParticipant extends
 	}
 
 	/**
-	 * Refresh a participant in the background the result of the refresh are shown in the progress view. Refreshing 
+	 * Refresh a participant in the background the result of the refresh are shown in the progress view. Refreshing
 	 * can also be considered synchronizing, or refreshing the synchronization state. Basically this is a long
 	 * running operation that will update the participant's context with new changes detected on the
 	 * server.
-	 * 
+	 *
 	 * @param site the workbench site the synchronize is running from. This can be used to notify the site
 	 * that a job is running.
 	 * @param mappings the resource mappings to be refreshed
@@ -251,7 +251,7 @@ public class ModelSynchronizeParticipant extends
 		IRefreshSubscriberListener listener = new RefreshUserNotificationPolicy(this);
 		internalRefresh(mappings, null, null, site, listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#dispose()
 	 */
@@ -261,7 +261,7 @@ public class ModelSynchronizeParticipant extends
 		Job.getJobManager().cancel(this);
 		refreshSchedule.dispose();
 	}
-	
+
 	/**
 	 * Set the context of this participant. This method must be invoked
 	 * before a page is obtained from the participant.
@@ -298,7 +298,7 @@ public class ModelSynchronizeParticipant extends
 	public ISynchronizationContext getContext() {
 		return context;
 	}
-	
+
 	/**
 	 * Return a compare input for the given model object or <code>null</code>
 	 * if the object is not eligible for comparison.
@@ -333,7 +333,7 @@ public class ModelSynchronizeParticipant extends
 
 	/**
 	 * Return whether merge capabilities are enabled for this participant.
-	 * If merging is enabled, merge actions can be shown. If merging is disabled, no 
+	 * If merging is enabled, merge actions can be shown. If merging is disabled, no
 	 * merge actions should be surfaced.
 	 * @return whether merge capabilities should be enabled for this participant
 	 */
@@ -348,7 +348,7 @@ public class ModelSynchronizeParticipant extends
 	public void setMergingEnabled(boolean mergingEnabled) {
 		this.mergingEnabled = mergingEnabled;
 	}
-	
+
 	private void internalRefresh(ResourceMapping[] mappings, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
 		if (jobName == null)
 		    jobName = getShortTaskName();
@@ -359,30 +359,30 @@ public class ModelSynchronizeParticipant extends
 		job.setUser(true);
 		job.setProperty(IProgressConstants2.SHOW_IN_TASKBAR_ICON_PROPERTY, Boolean.TRUE);
 		Utils.schedule(job, site);
-		
+
 		// Remember the last participant synchronized
 		TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT, getId());
 		TeamUIPlugin.getPlugin().getPreferenceStore().setValue(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, getSecondaryId());
 	}
-	
+
 	/**
 	 * Returns the short task name (e.g. no more than 25 characters) to describe
 	 * the behavior of the refresh operation to the user. This is typically
 	 * shown in the status line when this participant is refreshed in the
 	 * background. When refreshed in the foreground, only the long task name is
 	 * shown.
-	 * 
+	 *
 	 * @return the short task name to show in the status line.
 	 */
 	protected String getShortTaskName() {
 		return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, getShortName());
 	}
-	
+
 	/**
 	 * Returns the long task name to describe the behavior of the refresh
 	 * operation to the user. This is typically shown in the status line when
 	 * this subscriber is refreshed in the background.
-	 * 
+	 *
 	 * @param mappings the mappings being refreshed
 	 * @return the long task name
 	 * @since 3.1
@@ -399,19 +399,19 @@ public class ModelSynchronizeParticipant extends
         	mappingCount = mappings.length;
         }
         if (mappingCount == 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), Utils.getLabel(mappings[0]) }); 
+            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), Utils.getLabel(mappings[0]) });
         }
-        return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(mappingCount) }); 
+        return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(mappingCount) });
     }
-	
+
 	private IRefreshable createRefreshable() {
 		return new IRefreshable() {
-		
+
 			@Override
 			public RefreshParticipantJob createJob(String interval) {
 				String jobName = NLS.bind(TeamUIMessages.RefreshSchedule_15, new String[] { ModelSynchronizeParticipant.this.getName(), interval });
-				return new RefreshModelParticipantJob(ModelSynchronizeParticipant.this, 
-						jobName, 
+				return new RefreshModelParticipantJob(ModelSynchronizeParticipant.this,
+						jobName,
 						jobName,
 						context.getScope().getMappings(),
 						new RefreshUserNotificationPolicy(ModelSynchronizeParticipant.this));
@@ -428,10 +428,10 @@ public class ModelSynchronizeParticipant extends
 			public SubscriberRefreshSchedule getRefreshSchedule() {
 				return refreshSchedule;
 			}
-		
+
 		};
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
 	 */
@@ -439,14 +439,14 @@ public class ModelSynchronizeParticipant extends
 	public Object getAdapter(Class adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
 			return refreshSchedule.getRefreshable();
-			
+
 		}
 		if (adapter == SubscriberRefreshSchedule.class) {
 			return refreshSchedule;
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
 	 */
@@ -501,7 +501,7 @@ public class ModelSynchronizeParticipant extends
 			}
 		}
 	}
-	
+
 	private ResourceMapping[] loadMappings(IMemento settings) throws PartInitException {
 		List result = new ArrayList();
 		IMemento[] children = settings.getChildren(CTX_PARTICIPANT_MAPPINGS);
@@ -553,10 +553,10 @@ public class ModelSynchronizeParticipant extends
 
 	/**
 	 * Create and return a scope manager that can be used to build the scope of this
-	 * participant when it is restored after a restart. By default, this method 
+	 * participant when it is restored after a restart. By default, this method
 	 * returns a scope manager that uses the local content.
 	 * This method can be overridden by subclasses.
-	 * 
+	 *
 	 * @param mappings the restored mappings
 	 * @return a scope manager that can be used to build the scope of this
 	 * participant when it is restored after a restart
@@ -564,7 +564,7 @@ public class ModelSynchronizeParticipant extends
 	protected ISynchronizationScopeManager createScopeManager(ResourceMapping[] mappings) {
 		return new SynchronizationScopeManager(super.getName(), mappings, ResourceMappingContext.LOCAL_CONTEXT, true);
 	}
-	
+
 	/* private */ void setRefreshSchedule(SubscriberRefreshSchedule schedule) {
 		if (refreshSchedule != schedule) {
 			if (refreshSchedule != null) {
@@ -608,7 +608,7 @@ public class ModelSynchronizeParticipant extends
 		if (isDirty != wasDirty)
 			firePropertyChange(this, PROP_DIRTY, Boolean.valueOf(wasDirty), Boolean.valueOf(isDirty));
 	}
-	
+
 	/**
 	 * Convenience method for switching the active saveable of this participant
 	 * to the saveable of the given input.
@@ -632,7 +632,7 @@ public class ModelSynchronizeParticipant extends
 		setActiveSaveable(targetBuffer);
 		return true;
 	}
-	
+
 	/**
 	 * Return the list of model providers that are enabled for the participant.
 	 * By default, the list is those model providers that contain mappings
@@ -642,7 +642,7 @@ public class ModelSynchronizeParticipant extends
 	public ModelProvider[] getEnabledModelProviders() {
 		return getContext().getScope().getModelProviders();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
 	 */
@@ -683,9 +683,9 @@ public class ModelSynchronizeParticipant extends
 		}
 		return false;
 	}
-	
+
 	private SubscriberDiffTreeEventHandler getHandler() {
 		return (SubscriberDiffTreeEventHandler)Utils.getAdapter(context, SubscriberDiffTreeEventHandler.class);
 	}
-	
+
 }

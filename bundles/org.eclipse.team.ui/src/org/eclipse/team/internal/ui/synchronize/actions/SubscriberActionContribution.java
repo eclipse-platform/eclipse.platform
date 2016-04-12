@@ -23,7 +23,7 @@ import org.eclipse.ui.IActionBars;
  * Provides the actions to be associated with a synchronize page
  */
 public final class SubscriberActionContribution extends SynchronizePageActionGroup {
-	
+
 	// the changes viewer are contributed via the viewer and not the page.
 	private Action configureSchedule;
 	private Action refreshSelectionAction;
@@ -50,13 +50,13 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 						// Refresh all participant resources
 						resources = participant.getResources();
 					}
-					participant.refresh(resources, null, null, site.getWorkbenchSite()); // 
+					participant.refresh(resources, null, null, site.getWorkbenchSite()); //
 				}
 			};
 			Utils.initAction(refreshSelectionAction, "action.refreshWithRemote."); //$NON-NLS-1$
 			refreshSelectionAction.setActionDefinitionId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
 			refreshSelectionAction.setId("org.eclipse.team.ui.synchronizeLast"); //$NON-NLS-1$
-		
+
 			configureSchedule = new Action() {
 				@Override
 				public void run() {
@@ -68,7 +68,7 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 			};
 			Utils.initAction(configureSchedule, "action.configureSchedulel."); //$NON-NLS-1$
 		}
-		
+
 		removeFromViewAction = new RemoveFromViewAction(configuration);
 		restoreRemovedItemsAction = new RestoreRemovedItemsAction(configuration);
 		appendToGroup(ISynchronizePageConfiguration.P_VIEW_MENU, ISynchronizePageConfiguration.SYNCHRONIZE_GROUP, restoreRemovedItemsAction);
@@ -105,6 +105,6 @@ public final class SubscriberActionContribution extends SynchronizePageActionGro
 			} else {
 				appendToGroup(menu, ISynchronizePageConfiguration.SYNCHRONIZE_GROUP, configureSchedule);
 			}
-		}		
+		}
 	}
 }

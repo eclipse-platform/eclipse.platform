@@ -22,8 +22,8 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 
 	public ResourceModelPreferencePage() {
 		super(GRID);
-		setTitle(TeamUIMessages.SynchronizationCompareAdapter_0); 
-		setDescription(TeamUIMessages.ResourceModelPreferencePage_0); 
+		setTitle(TeamUIMessages.SynchronizationCompareAdapter_0);
+		setDescription(TeamUIMessages.ResourceModelPreferencePage_0);
 		setPreferenceStore(TeamUIPlugin.getPlugin().getPreferenceStore());
 	}
 
@@ -36,19 +36,19 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
         // set F1 help
         PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.RESOURCE_MODEL_PREFERENCE_PAGE);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	@Override
 	protected void createFieldEditors() {
-	    defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT, 
-	    		TeamUIMessages.SyncViewerPreferencePage_0, 3,  
+	    defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT,
+	    		TeamUIMessages.SyncViewerPreferencePage_0, 3,
 	            new String[][] {
-	            	{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT}, 
-	            	{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT}, 
-	            	{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT} 
-	    		}, 
+	            	{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT},
+	            	{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT},
+	            	{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT}
+	    		},
 	    		getFieldEditorParent(), true /* use a group */);
 	    addField(defaultLayout);
 	}
@@ -69,5 +69,5 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 		TeamUIPlugin.getPlugin().savePluginPreferences();
 		return super.performOk();
 	}
-	
+
 }

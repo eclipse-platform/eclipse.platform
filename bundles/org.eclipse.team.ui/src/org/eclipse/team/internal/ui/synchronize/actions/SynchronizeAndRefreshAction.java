@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.eclipse.ui.actions.RefreshAction;
 /**
  * Action which synchronizes the current synchronization participant and locally refreshes the
  * selected resources.
- * 
+ *
  * @since 3.7
  */
 public class SynchronizeAndRefreshAction extends Action {
@@ -50,7 +50,7 @@ public class SynchronizeAndRefreshAction extends Action {
 		final ISelectionProvider selectionProvider= fView.getSite().getSelectionProvider();
 		if (selectionProvider == null)
 			return;
-		
+
 		ISelection selection= selectionProvider.getSelection();
 		if (!(selection instanceof IStructuredSelection))
 			return;

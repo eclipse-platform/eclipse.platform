@@ -30,16 +30,16 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 public class CompareRevisionAction extends BaseSelectionListenerAction {
-	
+
 	HistoryPage page;
 	IStructuredSelection selection;
 	IFileRevision currentFileRevision;
-	
+
 	public CompareRevisionAction(String text, HistoryPage page) {
 		super(text);
 		this.page = page;
 	}
-	
+
 	public CompareRevisionAction(HistoryPage page) {
 		this(TeamUIMessages.LocalHistoryPage_CompareAction, page);
 	}
@@ -47,15 +47,15 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	@Override
 	public void run() {
 		IStructuredSelection structSel = selection;
-		
+
 		if (structSel == null)
 			return;
-		
+
 		Object[] objArray = structSel.toArray();
 
 		IFileRevision file1 = null;
 		IFileRevision file2 = null;
-		
+
 		switch (structSel.size()){
 			case 1:
 				file1 = getCurrentFileRevision();
@@ -65,11 +65,11 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 				else
 					return;
 			break;
-			
+
 			case 2:
 				Object tempRevision2 = objArray[0];
 				Object tempRevision3 = objArray[1];
-				
+
 				if (tempRevision2 instanceof IFileRevision &&
 					tempRevision3 instanceof IFileRevision){
 					file1 = (IFileRevision) objArray[0];
@@ -84,7 +84,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 			MessageDialog.openError(page.getSite().getShell(), TeamUIMessages.OpenRevisionAction_DeletedRevTitle, TeamUIMessages.CompareRevisionAction_DeleteCompareMessage);
 			return;
 		}
-		
+
 		IResource resource = getResource(file2);
 		if (resource != null) {
 			IFileRevision temp = file1;
@@ -99,7 +99,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 			left = new FileRevisionTypedElement(file1, getLocalEncoding());
 		}
 		ITypedElement right = new FileRevisionTypedElement(file2, getLocalEncoding());
-		
+
 	    openInCompare(left, right);
 	}
 
@@ -165,14 +165,14 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	private IFileRevision getCurrentFileRevision() {
 		return currentFileRevision;
 	}
-	
+
 	public void setCurrentFileRevision(IFileRevision fileRevision){
 		this.currentFileRevision = fileRevision;
 	}
 
 	/**
 	 * DO NOT REMOVE, used in a product.
-	 * 
+	 *
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link Utils#findReusableCompareEditor(CompareEditorInput, IWorkbenchPage, Class[])}
 	 */
@@ -181,7 +181,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		return Utils.findReusableCompareEditor(null, workbenchPage,
 				new Class[] { CompareFileRevisionEditorInput.class });
 	}
-	
+
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		this.selection = selection;
@@ -208,22 +208,22 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	private boolean shouldShow() {
 		IStructuredSelection structSel = selection;
 		Object[] objArray = structSel.toArray();
-		
+
 		if (objArray.length == 0)
 			return false;
-		
+
 		for (int i = 0; i < objArray.length; i++) {
-			
+
 			//Don't bother showing if this a category
 			if (objArray[i] instanceof AbstractHistoryCategory)
 				return false;
-			
+
 			IFileRevision revision = (IFileRevision) objArray[i];
 			//check to see if any of the selected revisions are deleted revisions
 			if (revision != null && !revision.exists())
 				return false;
 		}
-		
+
 		return true;
 	}
 }

@@ -4,7 +4,7 @@
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Contributors:
  *  IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -28,10 +28,10 @@ import org.eclipse.team.ui.synchronize.SaveableCompareEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 
 public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
-	
+
 	private ITypedElement left;
 	private ITypedElement right;
-	
+
 	CompareInputChangeNotifier notifier = new CompareInputChangeNotifier() {
 		@Override
 		protected IResource[] getResources(ICompareInput input) {
@@ -41,7 +41,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 			return new IResource[] { resource };
 		}
 	};
-	
+
 	/*
 	 * Returns <code>true</code> if the other object is of type
 	 * <code>CompareFileRevisionEditorInput</code> and both of their
@@ -59,7 +59,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		}
 		return false;
 	}
-	
+
 	public class MyDiffNode extends AbstractCompareInput {
 		public MyDiffNode(ITypedElement left, ITypedElement right) {
 			super(Differencer.CHANGE, null, left, right);
@@ -82,12 +82,12 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 			fireChange();
 		}
 	}
-	
+
 	/**
 	 * Creates a new CompareFileRevisionEditorInput.
-	 * @param left 
-	 * @param right 
-	 * @param page 
+	 * @param left
+	 * @param right
+	 * @param page
 	 */
 	public CompareFileRevisionEditorInput(ITypedElement left, ITypedElement right, IWorkbenchPage page) {
 		super(new CompareConfiguration(), page);
@@ -140,7 +140,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 			}
 		}
 	}
-	
+
 	private boolean isLeftEditable(ICompareInput input) {
 		Object left = input.getLeft();
 		if (left instanceof IEditableContent) {
@@ -203,7 +203,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 			IFileState state = ((LocalFileRevision) fileObject).getState();
 			if (state != null) {
 				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_localRevision, new Object[]{TextProcessor.process(element.getName()), element.getTimestamp()});
-			} 
+			}
 		} else {
 			if (Utils.isShowAuthor())
 				return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_repository, new Object[] { element.getName(), element.getContentIdentifier(), element.getAuthor() });
@@ -222,9 +222,9 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		titleObject[0] = getLongName(left);
 		titleObject[1] = getContentIdentifier(getLeftRevision());
 		titleObject[2] = getContentIdentifier(getRightRevision());
-		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);	 
+		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getTitle()
 	 */
@@ -234,9 +234,9 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		titleObject[0] = getShortName(left);
 		titleObject[1] = getContentIdentifier(getLeftRevision());
 		titleObject[2] = getContentIdentifier(getRightRevision());
-		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);	 
+		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#getAdapter(java.lang.Class)
 	 */
@@ -250,7 +250,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	private String getShortName(ITypedElement element) {
 		if (element instanceof FileRevisionTypedElement){
 			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
@@ -262,7 +262,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		}
 		return element.getName();
 	}
-	
+
 	private String getLongName(ITypedElement element) {
 		if (element instanceof FileRevisionTypedElement){
 			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
@@ -274,7 +274,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		}
 		return element.getName();
 	}
-	
+
 	private String getContentIdentifier(ITypedElement element){
 		if (element instanceof FileRevisionTypedElement){
 			FileRevisionTypedElement fileRevisionElement = (FileRevisionTypedElement) element;
@@ -314,7 +314,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		super.contentsCreated();
 		notifier.initialize();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#handleDispose()
 	 */

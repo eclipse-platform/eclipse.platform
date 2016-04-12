@@ -23,8 +23,8 @@ import org.eclipse.ui.IDecoratorManager;
 
 /**
  * A state change tester is used by logical models to communicate the
- * synchronization state of their logical model elements to 
- * the lightweight label decorator of a team provider. 
+ * synchronization state of their logical model elements to
+ * the lightweight label decorator of a team provider.
  * <p>
  * There are two different types of elements being decorated: those
  * that have a one-to-one mapping to a resource and those that do not.
@@ -40,7 +40,7 @@ import org.eclipse.ui.IDecoratorManager;
  * required and to communicate the dirty state of their logical model
  * elements to the team decorator.
  * <p>
- * Model providers need to re-evaluate the state of a 
+ * Model providers need to re-evaluate the state of a
  * model element whenever a change in the resources occurs by listening
  * to both resource deltas and change events from the team state provider
  * ({@link #getTeamStateProvider()}.
@@ -48,7 +48,7 @@ import org.eclipse.ui.IDecoratorManager;
  * Decoration enablement changes and decoration configuration changes
  * are handled by the {@link IDecoratorManager#update(String)} API.
  * A call to this method will result in label changes to all elements.
- * The {@link #isDecorationEnabled(Object)} API on this class can 
+ * The {@link #isDecorationEnabled(Object)} API on this class can
  * be used to determine if an element will receive team decorations.
  * If decoration is disabled. team state changes on the element can
  * be ignored.
@@ -60,7 +60,7 @@ import org.eclipse.ui.IDecoratorManager;
  * @see Subscriber#addListener(org.eclipse.team.core.subscribers.ISubscriberChangeListener)
  */
 public class SynchronizationStateTester {
-	
+
 	/**
 	 * Constant that is used as the property key on an
 	 * {@link IDecorationContext}. Model based views can assign their state
@@ -70,14 +70,14 @@ public class SynchronizationStateTester {
 	 * decorated.
 	 */
 	public static final String PROP_TESTER = "org.eclipse.team.ui.syncStateTester"; //$NON-NLS-1$
-	
+
 	/**
 	 * Create a synchronization state tester.
 	 */
 	public SynchronizationStateTester() {
 		super();
 	}
-	
+
 	/**
 	 * Return whether state decoration is enabled for the context
 	 * to which this tester is associated. If <code>true</code>
@@ -87,14 +87,14 @@ public class SynchronizationStateTester {
 	 * is returned, a team decorator will not decorate the elements with any
 	 * synchronization related decorations. Subclasses will want to disable
 	 * state decoration if state decoration is being provided another way
-	 * (e.g. by a {@link SynchronizationLabelProvider}). By default, 
+	 * (e.g. by a {@link SynchronizationLabelProvider}). By default,
 	 * <code>true</code>is returned. Subclasses may override.
 	 * @return whether state decoration is enabled
 	 */
 	public boolean isStateDecorationEnabled() {
 		return true;
 	}
-	
+
 	/**
 	 * Return whether decoration is enabled for the given model element in the
 	 * context to which this tester is associated. By default, the value
@@ -106,7 +106,7 @@ public class SynchronizationStateTester {
 	 * decorations should be applied to the model element. Otherwise, the
 	 * {@link #getState(Object, int, IProgressMonitor)} should be consulted in
 	 * order to determine what state to decorate.
-	 * 
+	 *
 	 * @param element
 	 *            the model element
 	 * @return whether decoration is enabled for the given model element
@@ -142,7 +142,7 @@ public class SynchronizationStateTester {
 	 * use the remote file contents available from the provider to determine the proper
 	 * state for the element.
 	 * </ol>
-	 * 
+	 *
 	 * @param element the model element
 	 * @param stateMask the mask that identifies which state flags are desired if
 	 *            present
@@ -156,21 +156,21 @@ public class SynchronizationStateTester {
 			return desc.getStateFlags();
 		return IDiff.NO_CHANGE;
 	}
-	
+
 	/**
-	 * Return a team state provider that delegates to the appropriate team 
+	 * Return a team state provider that delegates to the appropriate team
 	 * provider.
-	 * @return a team state provider that delegates to the appropriate team 
+	 * @return a team state provider that delegates to the appropriate team
 	 * provider
 	 */
 	public final ITeamStateProvider getTeamStateProvider() {
 		return TeamUIPlugin.getPlugin().getDecoratedStateProvider();
 	}
-	
+
 	/**
 	 * A callback to the tester made from the team decorator to notify the
 	 * tester that the given element has been decorated with the given state.
-	 * The purpose of the callback is to allow the owner of the tester to 
+	 * The purpose of the callback is to allow the owner of the tester to
 	 * cache the decorated state in order to detect whether a future state
 	 * change requires a label update for the element.
 	 * @param element the element that was decorated
@@ -179,6 +179,6 @@ public class SynchronizationStateTester {
 	public void elementDecorated(Object element, ITeamStateDescription description) {
 		// do nothing by default
 	}
-	
+
 
 }

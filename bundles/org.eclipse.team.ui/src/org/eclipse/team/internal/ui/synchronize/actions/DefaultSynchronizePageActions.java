@@ -26,12 +26,12 @@ import org.eclipse.ui.actions.ActionContext;
  * General synchronize page actions
  */
 public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
-	
+
 	// Actions
 	private OpenWithActionGroup openWithActions;
 	private RefactorActionGroup refactorActions;
 	private SyncViewerShowPreferencesAction showPreferences;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
@@ -54,7 +54,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 			// TODO: Add open menu action which opens in compare editor input
 		}
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
      */
@@ -67,7 +67,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
         	appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
         }
     }
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#updateActionBars()
      */
@@ -76,24 +76,24 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
         if (openWithActions != null) openWithActions.updateActionBars();
         if (refactorActions != null) refactorActions.updateActionBars();
     }
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.IActionContribution#fillContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
 	@Override
 	public void fillContextMenu(IMenuManager manager) {
-	    
+
         final IContributionItem fileGroup = findGroup(manager, ISynchronizePageConfiguration.FILE_GROUP);
 		if (openWithActions != null && fileGroup != null) {
 			openWithActions.fillContextMenu(manager, fileGroup.getId());
 		}
-		
+
 		final IContributionItem editGroup = findGroup(manager, ISynchronizePageConfiguration.EDIT_GROUP);
 		if (refactorActions != null && editGroup != null) {
 			refactorActions.fillContextMenu(manager, editGroup.getId());
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
 	 */
@@ -103,7 +103,7 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		if (refactorActions != null) refactorActions.dispose();
 		if (openWithActions != null) openWithActions.dispose();
 	}
-	
+
 	/* (non-Javadoc)
      * @see org.eclipse.ui.actions.ActionGroup#setContext(org.eclipse.ui.actions.ActionContext)
      */

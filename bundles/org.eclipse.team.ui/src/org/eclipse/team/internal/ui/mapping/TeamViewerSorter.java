@@ -22,7 +22,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 
 	private CommonViewerSorter sorter;
 	private ResourceComparator resourceComparator;
-	
+
 	public TeamViewerSorter(CommonViewerSorter sorter) {
 		this.sorter = sorter;
 		this.resourceComparator = new ResourceComparator(ResourceComparator.NAME);
@@ -37,10 +37,10 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 		if (resource != null && resource.getType() == IResource.PROJECT) {
 			return 1;
 		}
-		
+
 		return super.category(element);
 	}
-	
+
 	@Override
 	public int compare(Viewer viewer, TreePath parentPath, Object e1, Object e2) {
 		if (parentPath == null || parentPath.getSegmentCount() == 0) {
@@ -50,7 +50,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 
 	        if (cat1 != cat2)
 	            return cat1 - cat2;
-	        
+
 			if (e1 instanceof ModelProvider && e2 instanceof ModelProvider) {
 				ModelProvider mp1 = (ModelProvider) e1;
 				ModelProvider mp2 = (ModelProvider) e2;
@@ -70,7 +70,7 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 		}
 		return sorter.compare(viewer, parentPath, e1, e2);
 	}
-	
+
 	private boolean isExtends(ModelProvider mp1, IModelProviderDescriptor desc) {
 		String[] extended = mp1.getDescriptor().getExtendedModels();
 		for (int i = 0; i < extended.length; i++) {
