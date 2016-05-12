@@ -37,6 +37,12 @@
         <value>remoteURI</value>
       </detail>
     </annotation>
+    <configSections
+        name="gerrit">
+      <properties
+          key="createchangeid"
+          value="true"/>
+    </configSections>
     <description>Platform Team</description>
   </setupTask>
   <setupTask
