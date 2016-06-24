@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
  *     Stefan Xenos <sxenos@gmail.com> (Google) - bug 448968 - Add diagnostic logging
+ *     Conrad Groth - Bug 213780 - Compare With direction should be configurable
  *******************************************************************************/
 
 package org.eclipse.compare.contentmergeviewer;
@@ -26,11 +27,13 @@ import org.eclipse.compare.internal.ChangePropertyAction;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.compare.internal.CompareHandlerService;
 import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.internal.ComparePreferencePage;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.IFlushable2;
 import org.eclipse.compare.internal.ISavingSaveable;
 import org.eclipse.compare.internal.MergeViewerContentProvider;
+import org.eclipse.compare.internal.MirroredMergeViewerContentProvider;
 import org.eclipse.compare.internal.Policy;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.internal.ViewerSwitchingCancelled;
@@ -354,6 +357,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 			}
 		}
 	};
+	private final MergeViewerContentProvider defaultContentProvider;
+	private boolean leftToRight;
 
 	//---- end
 	
@@ -378,7 +383,10 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fAncestorVisible= Utilities.getBoolean(cc, ICompareUIConstants.PROP_ANCESTOR_VISIBLE, fAncestorVisible);
 		fConfirmSave= Utilities.getBoolean(cc, CompareEditor.CONFIRM_SAVE_PROPERTY, fConfirmSave);
 
-		setContentProvider(new MergeViewerContentProvider(cc));
+		defaultContentProvider = new MergeViewerContentProvider(cc);
+		leftToRight = ICompareUIConstants.PREF_VALUE_LEFT_TO_RIGHT
+				.equals(cc.getProperty(ComparePreferencePage.LAYOUT));
+		updateContentProvider();
 		
 		fCompareInputChangeListener= new ICompareInputChangeListener() {
 			public void compareInputChanged(ICompareInput input) {
@@ -535,6 +543,12 @@ public abstract class ContentMergeViewer extends ContentViewer
 		super.setContentProvider(contentProvider);
 	}
 
+	private void updateContentProvider() {
+		setContentProvider(leftToRight
+				? new MirroredMergeViewerContentProvider(defaultContentProvider)
+				: defaultContentProvider);
+	}
+
 	/* package */ IMergeViewerContentProvider getMergeContentProvider() {
 		return (IMergeViewerContentProvider) getContentProvider();
 	}
@@ -584,6 +598,13 @@ public abstract class ContentMergeViewer extends ContentViewer
 		
 		if (key.equals(ICompareUIConstants.PROP_IGNORE_ANCESTOR)) {
 			setAncestorVisibility(false, !Utilities.getBoolean(getCompareConfiguration(), ICompareUIConstants.PROP_IGNORE_ANCESTOR, false));
+			return;
+		}
+
+		if (key.equals(ComparePreferencePage.LAYOUT)) {
+			leftToRight = ICompareUIConstants.PREF_VALUE_LEFT_TO_RIGHT
+					.equals(event.getNewValue());
+			updateContentProvider();
 			return;
 		}
 	}
@@ -920,6 +941,16 @@ public abstract class ContentMergeViewer extends ContentViewer
 				tbm.appendToGroup("merge", fCopyRightToLeftAction); //$NON-NLS-1$
 				fHandlerService.registerAction(fCopyRightToLeftAction, "org.eclipse.compare.copyAllRightToLeft"); //$NON-NLS-1$
 			}
+
+			Action switchLeftAndRight = new Action() {
+				@Override
+				public void run() {
+					leftToRight = !leftToRight;
+					updateContentProvider();
+				}
+			};
+			Utilities.initAction(switchLeftAndRight, getResourceBundle(), "action.SwitchLeftAndRight."); //$NON-NLS-1$
+			tbm.appendToGroup("modes", switchLeftAndRight); //$NON-NLS-1$
 			
 			final ChangePropertyAction a= new ChangePropertyAction(fBundle, getCompareConfiguration(), "action.EnableAncestor.", ICompareUIConstants.PROP_ANCESTOR_VISIBLE); //$NON-NLS-1$
 			a.setChecked(fAncestorVisible);
@@ -927,7 +958,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 			fAncestorItem.setVisible(false);
 			tbm.appendToGroup("modes", fAncestorItem); //$NON-NLS-1$
 			tbm.getControl().addDisposeListener(a);
-			
+
 			createToolItems(tbm);
 			updateToolItems();
 			
