@@ -676,7 +676,7 @@ public class Utils {
     }
 
 	public static <T> T getAdapter(Object element, Class<T> adapterType) {
-		return Adapters.adapt(element, adapterType, false);
+		return Adapters.adapt(element, adapterType);
 	}
 
 	/**
