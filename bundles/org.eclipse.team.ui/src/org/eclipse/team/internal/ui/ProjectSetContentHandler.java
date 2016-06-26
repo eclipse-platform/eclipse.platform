@@ -23,16 +23,16 @@ public class ProjectSetContentHandler extends DefaultHandler {
 	boolean inPsf = false;
 	boolean inProvider = false;
 	boolean inProject = false;
-	Map map;
+	Map<String, List<String>> map;
 	String id;
-	List references;
+	List<String> references;
 	boolean isVersionOne = false;
 
 	@Override
 	public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
 		String elementName = getElementName(namespaceURI, localName, qName);
 		if (elementName.equals("psf")) { //$NON-NLS-1$
-			map = new HashMap();
+			map = new HashMap<>();
 			inPsf = true;
 			String version = atts.getValue("version"); //$NON-NLS-1$
 			isVersionOne = version.equals("1.0"); //$NON-NLS-1$
@@ -43,7 +43,7 @@ public class ProjectSetContentHandler extends DefaultHandler {
 			if (!inPsf) throw new SAXException(TeamUIMessages.ProjectSetContentHandler_Element_provider_must_be_contained_in_element_psf_4);
 			inProvider = true;
 			id = atts.getValue("id"); //$NON-NLS-1$
-			references = new ArrayList();
+			references = new ArrayList<>();
 			return;
 		}
 		if (elementName.equals("project")) { //$NON-NLS-1$
@@ -75,7 +75,7 @@ public class ProjectSetContentHandler extends DefaultHandler {
 		}
 	}
 
-	public Map getReferences() {
+	public Map<String, List<String>> getReferences() {
 		return map;
 	}
 

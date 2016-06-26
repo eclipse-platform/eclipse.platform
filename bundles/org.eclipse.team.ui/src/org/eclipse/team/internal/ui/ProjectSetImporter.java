@@ -30,7 +30,6 @@ import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.ui.*;
 
 public class ProjectSetImporter {
-
 	/**
 	 * Imports a psf file based on a file content. This may be used when psf
 	 * file is imported from any other location that local filesystem.
@@ -73,7 +72,7 @@ public class ProjectSetImporter {
 		try {
 			String version = xmlMemento.getString("version"); //$NON-NLS-1$
 
-			List newProjects = new ArrayList();
+			List<IProject> newProjects = new ArrayList<>();
 			if (version.equals("1.0")){ //$NON-NLS-1$
 				IProjectSetSerializer serializer = Team.getProjectSetSerializer("versionOneSerializer"); //$NON-NLS-1$
 				if (serializer != null) {
@@ -83,10 +82,10 @@ public class ProjectSetImporter {
 				}
 			} else {
 				UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(shell, filename);
-				List errors = new ArrayList();
+				List<TeamException> errors = new ArrayList<TeamException>();
 			  	IMemento[] providers = xmlMemento.getChildren("provider"); //$NON-NLS-1$
 			  	for (int i = 0; i < providers.length; i++) {
-					ArrayList referenceStrings= new ArrayList();
+					ArrayList<String> referenceStrings= new ArrayList<>();
 					IMemento[] projects = providers[i].getChildren("project"); //$NON-NLS-1$
 					for (int j = 0; j < projects.length; j++) {
 						referenceStrings.add(projects[j].getString("reference")); //$NON-NLS-1$
@@ -106,7 +105,7 @@ public class ProjectSetImporter {
                     	ProjectSetCapability serializer = providerType.getProjectSetCapability();
                     	ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
                     	if (serializer != null) {
-                    		IProject[] allProjects = serializer.addToWorkspace((String[])referenceStrings.toArray(new String[referenceStrings.size()]), context, monitor);
+                    		IProject[] allProjects = serializer.addToWorkspace(referenceStrings.toArray(new String[referenceStrings.size()]), context, monitor);
                     		if (allProjects != null)
                     			newProjects.addAll(Arrays.asList(allProjects));
                     	}
@@ -115,7 +114,7 @@ public class ProjectSetImporter {
                     }
 				}
 			  	if (!errors.isEmpty()) {
-					TeamException[] exceptions= (TeamException[])errors.toArray(new TeamException[errors.size()]);
+					TeamException[] exceptions= errors.toArray(new TeamException[errors.size()]);
 					IStatus[] status= new IStatus[exceptions.length];
 					for (int i= 0; i < exceptions.length; i++) {
 						status[i]= exceptions[i].getStatus();
@@ -185,7 +184,7 @@ public class ProjectSetImporter {
 				}
 			}
 
-			return (IProject[]) newProjects.toArray(new IProject[newProjects.size()]);
+			return newProjects.toArray(new IProject[newProjects.size()]);
 		} catch (TeamException e) {
 			throw new InvocationTargetException(e);
 		}
@@ -263,11 +262,11 @@ public class ProjectSetImporter {
 		IAdaptable[] oldElements = oldWs.getElements();
 		IAdaptable[] newElements = newWs.getElements();
 
-		Set combinedElements = new HashSet();
+		Set<IAdaptable> combinedElements = new HashSet<IAdaptable>();
 		combinedElements.addAll(Arrays.asList(oldElements));
 		combinedElements.addAll(Arrays.asList(newElements));
 
-		oldWs.setElements((IAdaptable[]) combinedElements.toArray(new IAdaptable[0]));
+		oldWs.setElements(combinedElements.toArray(new IAdaptable[0]));
 	}
 
 	private static void replaceWorkingSet(IWorkingSetManager wsManager, IWorkingSet newWs, IWorkingSet oldWs) {

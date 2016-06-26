@@ -30,12 +30,11 @@ import org.eclipse.ui.activities.*;
  * @since 3.0
  */
 public class TeamCapabilityHelper {
-
     /**
      * Mapping from repository provider id to IPluginContribution.  Used for proper
      * activity mapping of natures.
      */
-    private Map providerIdToPluginId;
+    private Map<String, IPluginContribution> providerIdToPluginId;
 
     /**
      * Singleton instance.
@@ -59,7 +58,7 @@ public class TeamCapabilityHelper {
      * for workspace changes and promote activities accordingly.
      */
     private TeamCapabilityHelper() {
-    	providerIdToPluginId = new HashMap();
+    	providerIdToPluginId = new HashMap<String, IPluginContribution>();
         loadRepositoryProviderIds();
 
         // crawl the initial projects
@@ -134,10 +133,10 @@ public class TeamCapabilityHelper {
 			return;
 		IActivityManager activityManager = workbenchActivitySupport
 		.getActivityManager();
-		Set activities = new HashSet(activityManager.getEnabledActivityIds());
+		Set activities = new HashSet<>(activityManager.getEnabledActivityIds());
 		boolean changed = false;
 
-		IPluginContribution contribution = (IPluginContribution) providerIdToPluginId.get(id);
+		IPluginContribution contribution = providerIdToPluginId.get(id);
 		if (contribution == null)
 			return; //bad provider ID.
 		IIdentifier identifier = activityManager.getIdentifier(WorkbenchActivityHelper.createUnifiedId(contribution));

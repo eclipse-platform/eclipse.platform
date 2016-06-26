@@ -35,16 +35,16 @@ import org.eclipse.team.internal.ui.dialogs.PromptingDialog;
  * @since 3.0
  */
 public class UIProjectSetSerializationContext extends ProjectSetSerializationContext {
-
 	/**
 	 * The parent shell for this UI context
 	 */
 	private final Shell shell;
 
 	/**
-	 * Construct a new instance
+	 * Constructs a new instance.
 	 *
 	 * @param shell The parent shell for this UI context
+	 * @param filename a filename or {@code null}
 	 */
 	public UIProjectSetSerializationContext(Shell shell, String filename) {
 		super(filename);
@@ -104,7 +104,7 @@ public class UIProjectSetSerializationContext extends ProjectSetSerializationCon
 		};
 		PromptingDialog dialog =
 			new PromptingDialog(
-				(Shell)getShell(),
+				(Shell) getShell(),
 				projects,
 				prompt,
 				TeamUIMessages.UIProjectSetSerializationContext_1);

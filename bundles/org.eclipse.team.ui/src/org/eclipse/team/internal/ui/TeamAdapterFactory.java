@@ -25,56 +25,52 @@ import org.eclipse.team.ui.mapping.ITeamStateProvider;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class TeamAdapterFactory implements IAdapterFactory {
+	private static final Class[] ADAPTER_CLASSES = new Class[] {
+			IWorkbenchAdapter.class,
+			IResourceMappingMerger.class,
+			ISynchronizationCompareAdapter.class,
+			ISynchronizationScopeParticipantFactory.class,
+			ITeamStateProvider.class ,
+			IFileRevision.class
+		};
 
 	private DiffNodeWorkbenchAdapter diffNodeAdapter = new DiffNodeWorkbenchAdapter();
 
 	private static final ISynchronizationCompareAdapter COMPARE_ADAPTER = new ResourceModelPersistenceAdapter();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if(adaptableObject instanceof DiffNode && adapterType == IWorkbenchAdapter.class) {
-			return diffNodeAdapter;
+			return (T) diffNodeAdapter;
 		}
 		if (adaptableObject instanceof ModelProvider) {
 			ModelProvider provider = (ModelProvider) adaptableObject;
 			if (provider.getDescriptor().getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
 				if (adapterType == IResourceMappingMerger.class) {
-					return new DefaultResourceMappingMerger((ModelProvider)adaptableObject);
+					return (T) new DefaultResourceMappingMerger((ModelProvider)adaptableObject);
 				}
 				if (adapterType == ISynchronizationScopeParticipantFactory.class) {
-					return new ResourceModelScopeParticipantFactory((ModelProvider)adaptableObject);
+					return (T) new ResourceModelScopeParticipantFactory((ModelProvider)adaptableObject);
 				}
 			}
 		}
 		if (adaptableObject instanceof ModelProvider && adapterType == ISynchronizationCompareAdapter.class) {
-			return COMPARE_ADAPTER;
+			return (T) COMPARE_ADAPTER;
 		}
 		if (adaptableObject instanceof RepositoryProviderType && adapterType == ITeamStateProvider.class) {
 			RepositoryProviderType rpt = (RepositoryProviderType) adaptableObject;
-			return TeamUIPlugin.getPlugin().getDecoratedStateProvider(rpt);
+			return (T) TeamUIPlugin.getPlugin().getDecoratedStateProvider(rpt);
 		}
 
 		if (IFileRevision.class == adapterType && adaptableObject instanceof FileRevisionEditorInput) {
-			return ((FileRevisionEditorInput)adaptableObject).getFileRevision();
+			return (T) ((FileRevisionEditorInput) adaptableObject).getFileRevision();
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
-	 */
 	@Override
-	public Class[] getAdapterList() {
-		return new Class[] {
-				IWorkbenchAdapter.class,
-				IResourceMappingMerger.class,
-				ISynchronizationCompareAdapter.class,
-				ISynchronizationScopeParticipantFactory.class,
-				ITeamStateProvider.class ,
-				IFileRevision.class
-			};
+	public Class<?>[] getAdapterList() {
+		return ADAPTER_CLASSES;
 	}
 }

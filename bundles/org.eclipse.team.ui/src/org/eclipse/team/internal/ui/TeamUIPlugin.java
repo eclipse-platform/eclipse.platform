@@ -60,18 +60,18 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	public static final String TRIGGER_POINT_ID = "org.eclipse.team.ui.activityTriggerPoint"; //$NON-NLS-1$
 
-	private static List propertyChangeListeners = new ArrayList(5);
+	private static List<IPropertyChangeListener> propertyChangeListeners = new ArrayList<IPropertyChangeListener>(5);
 
-	private Hashtable imageDescriptors = new Hashtable(20);
+	private Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<String, ImageDescriptor>(20);
 
 	private WorkspaceTeamStateProvider provider;
 
-	private Map decoratedStateProviders = new HashMap();
+	private Map<String, TeamStateProvider> decoratedStateProviders = new HashMap<String, TeamStateProvider>();
 
 	// manages synchronize participants
 	private SynchronizeManager synchronizeManager;
 
-	private ServiceRegistration debugRegistration;
+	private ServiceRegistration<DebugOptionsListener> debugRegistration;
 
 	/**
 	 * ID of the 'Remove from View' action.
@@ -219,7 +219,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		super.start(context);
 
 		// register debug options listener
-		Hashtable properties = new Hashtable(2);
+		Hashtable<String, String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
@@ -271,7 +271,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		if (provider != null) {
 			provider.dispose();
 		}
-		for (Iterator iter = decoratedStateProviders.values().iterator(); iter.hasNext();) {
+		for (Iterator<TeamStateProvider> iter = decoratedStateProviders.values().iterator(); iter.hasNext();) {
 			SubscriberTeamStateProvider sdsp = (SubscriberTeamStateProvider) iter.next();
 			sdsp.dispose();
 		}
@@ -298,8 +298,8 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @param event the property change event object
 	 */
 	public static void broadcastPropertyChange(PropertyChangeEvent event) {
-		for (Iterator it = propertyChangeListeners.iterator(); it.hasNext();) {
-			IPropertyChangeListener listener = (IPropertyChangeListener)it.next();
+		for (Iterator<IPropertyChangeListener> it = propertyChangeListeners.iterator(); it.hasNext();) {
+			IPropertyChangeListener listener = it.next();
 			listener.propertyChange(event);
 		}
 	}
@@ -334,7 +334,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		if(! imageDescriptors.containsKey(id)) {
 			createImageDescriptor(getPlugin(), id);
 		}
-		return (ImageDescriptor)imageDescriptors.get(id);
+		return imageDescriptors.get(id);
 	}
 
 	/**
@@ -455,7 +455,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	}
 
 	public synchronized TeamStateProvider getDecoratedStateProvider(RepositoryProviderType rpt) {
-		TeamStateProvider provider = (TeamStateProvider)decoratedStateProviders.get(rpt.getID());
+		TeamStateProvider provider = decoratedStateProviders.get(rpt.getID());
 		if (provider != null)
 			return provider;
 		Subscriber subscriber = rpt.getSubscriber();

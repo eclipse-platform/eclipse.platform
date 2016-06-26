@@ -112,11 +112,9 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
 			synchronized (this) {
 				if (sharedDocumentAdapter == null)
@@ -133,7 +131,7 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 							// The document is read-only
 						}
 					};
-				return sharedDocumentAdapter;
+				return (T) sharedDocumentAdapter;
 			}
 		}
 		return Platform.getAdapterManager().getAdapter(this, adapter);

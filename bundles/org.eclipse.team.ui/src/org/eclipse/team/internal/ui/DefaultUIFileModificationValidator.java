@@ -49,17 +49,11 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			setImageKey(DLG_IMG_WARNING);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createMainDialogArea(org.eclipse.swt.widgets.Composite)
-         */
         @Override
 		protected void createMainDialogArea(Composite parent) {
 			createWrappingLabel(parent, TeamUIMessages.DefaultUIFileModificationValidator_1);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
-         */
         @Override
 		protected Composite createDropDownDialogArea(Composite parent) {
 			Composite composite = createComposite(parent);
@@ -77,33 +71,21 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			return composite;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
-         */
         @Override
 		protected void updateEnablements() {
             // Nothing to do
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeCancelButton()
-         */
         @Override
 		protected boolean includeCancelButton() {
             return false;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeOkButton()
-         */
         @Override
 		protected boolean includeOkButton() {
             return false;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-         */
         @Override
 		protected void createButtonsForButtonBar(Composite parent) {
             createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
@@ -111,23 +93,18 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
             super.createButtonsForButtonBar(parent);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#buttonPressed(int)
-         */
         @Override
 		protected void buttonPressed(int id) {
-            if (IDialogConstants.YES_ID == id)
+            if (IDialogConstants.YES_ID == id) {
                 okPressed();
-            else if (IDialogConstants.NO_ID == id)
+            } else if (IDialogConstants.NO_ID == id) {
                 cancelPressed();
-            else
+            } else {
                 super.buttonPressed(id);
+            }
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.DefaultFileModificationValidator#validateEdit(org.eclipse.core.resources.IFile[], org.eclipse.core.resources.team.FileModificationValidationContext)
-     */
     @Override
 	public IStatus validateEdit(final IFile[] allFiles, FileModificationValidationContext context) {
     	final IFile[] readOnlyFiles = getReadOnlyFiles(allFiles);
@@ -182,14 +159,14 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 	}
 
 	private IFile[] getReadOnlyFiles(IFile[] files) {
-		List result = new ArrayList();
+		List<IFile> result = new ArrayList<>();
 		for (int i = 0; i < files.length; i++) {
 			IFile file = files[i];
 			if (file.isReadOnly()) {
 				result.add(file);
 			}
 		}
-		return (IFile[]) result.toArray(new IFile[result.size()]);
+		return result.toArray(new IFile[result.size()]);
 	}
 
 	protected IStatus setWritable(final IFile[] files) {
