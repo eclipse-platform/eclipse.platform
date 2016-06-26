@@ -60,10 +60,11 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 			case 1:
 				file1 = getCurrentFileRevision();
 				Object tempRevision = objArray[0];
-				if (tempRevision instanceof IFileRevision)
+				if (tempRevision instanceof IFileRevision) {
 					file2 = (IFileRevision) tempRevision;
-				else
+				} else {
 					return;
+				}
 			break;
 
 			case 2:
@@ -74,8 +75,9 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 					tempRevision3 instanceof IFileRevision){
 					file1 = (IFileRevision) objArray[0];
 					file2 = (IFileRevision) objArray[1];
-				} else
+				} else {
 					return;
+				}
 			break;
 		}
 
@@ -176,6 +178,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link Utils#findReusableCompareEditor(CompareEditorInput, IWorkbenchPage, Class[])}
 	 */
+	@SuppressWarnings("javadoc")
 	@Deprecated
 	public static IEditorPart findReusableCompareEditor(IWorkbenchPage workbenchPage) {
 		return Utils.findReusableCompareEditor(null, workbenchPage,

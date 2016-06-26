@@ -56,7 +56,7 @@ public class OpenWithMenu extends ContributionItem {
 	private IEditorRegistry registry = PlatformUI.getWorkbench()
 			.getEditorRegistry();
 
-	private static Hashtable imageCache = new Hashtable(11);
+	private static Hashtable<ImageDescriptor, Image> imageCache = new Hashtable<ImageDescriptor, Image>(11);
 
 	/**
 	 * The id of this action.
@@ -73,13 +73,13 @@ public class OpenWithMenu extends ContributionItem {
 	/*
 	 * Compares the labels from two IEditorDescriptor objects
 	 */
-	private static final Comparator comparer = new Comparator() {
+	private static final Comparator<IEditorDescriptor> comparer = new Comparator<IEditorDescriptor>() {
 		private Collator collator = Collator.getInstance();
 
 		@Override
-		public int compare(Object arg0, Object arg1) {
-			String s1 = ((IEditorDescriptor) arg0).getLabel();
-			String s2 = ((IEditorDescriptor) arg1).getLabel();
+		public int compare(IEditorDescriptor arg0, IEditorDescriptor arg1) {
+			String s1 = arg0.getLabel();
+			String s2 = arg1.getLabel();
 			return collator.compare(s1, s2);
 		}
 	};
@@ -108,7 +108,7 @@ public class OpenWithMenu extends ContributionItem {
 		if (imageDesc == null) {
 			return null;
 		}
-		Image image = (Image) imageCache.get(imageDesc);
+		Image image = imageCache.get(imageDesc);
 		if (image == null) {
 			image = imageDesc.createImage();
 			imageCache.put(imageDesc, image);
@@ -167,12 +167,8 @@ public class OpenWithMenu extends ContributionItem {
 		Listener listener = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				switch (event.type) {
-				case SWT.Selection:
-					if (menuItem.getSelection()) {
-						openEditor(descriptor, false);
-					}
-					break;
+				if (event.type == SWT.Selection && menuItem.getSelection()) {
+					openEditor(descriptor, false);
 				}
 			}
 		};
@@ -197,22 +193,17 @@ public class OpenWithMenu extends ContributionItem {
 		Listener listener = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				switch (event.type) {
-				case SWT.Selection:
-					EditorSelectionDialog dialog = new EditorSelectionDialog(
-							menu.getShell());
-					dialog
-							.setMessage(NLS
-									.bind(
-											TeamUIMessages.LocalHistoryPage_OpenWithMenu_OtherDialogDescription,
-											fileResource.getName()));
+				if (event.type == SWT.Selection) {
+					EditorSelectionDialog dialog = new EditorSelectionDialog(menu.getShell());
+					dialog.setMessage(NLS.bind(
+							TeamUIMessages.LocalHistoryPage_OpenWithMenu_OtherDialogDescription,
+							fileResource.getName()));
 					if (dialog.open() == Window.OK) {
 						IEditorDescriptor editor = dialog.getSelectedEditor();
 						if (editor != null) {
 							openEditor(editor, editor.isOpenExternal());
 						}
 					}
-					break;
 				}
 			}
 		};
@@ -231,16 +222,16 @@ public class OpenWithMenu extends ContributionItem {
 		IEditorDescriptor preferredEditor = Utils
 				.getDefaultEditor(fileRevision);
 
-		Object[] editors = Utils.getEditors(fileRevision);
+		IEditorDescriptor[] editors = Utils.getEditors(fileRevision);
 		Collections.sort(Arrays.asList(editors), comparer);
 		boolean defaultFound = false;
 
 		// Check that we don't add it twice. This is possible
 		// if the same editor goes to two mappings.
-		ArrayList alreadyMapped = new ArrayList();
+		ArrayList<IEditorDescriptor> alreadyMapped = new ArrayList<>();
 
 		for (int i = 0; i < editors.length; i++) {
-			IEditorDescriptor editor = (IEditorDescriptor) editors[i];
+			IEditorDescriptor editor = editors[i];
 			if (!alreadyMapped.contains(editor)) {
 				createMenuItem(menu, editor, preferredEditor);
 				if (defaultTextEditor != null
@@ -310,18 +301,13 @@ public class OpenWithMenu extends ContributionItem {
 	public void createDefaultMenuItem(Menu menu, final IFileRevision revision, boolean markAsSelected) {
 		final MenuItem menuItem = new MenuItem(menu, SWT.RADIO);
 		menuItem.setSelection(markAsSelected);
-		menuItem
-				.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_DefaultEditorDescription);
+		menuItem.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_DefaultEditorDescription);
 
 		Listener listener = new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				switch (event.type) {
-				case SWT.Selection:
-					if (menuItem.getSelection()) {
-						openEditor(Utils.getDefaultEditor(revision), false);
-					}
-					break;
+				if (event.type == SWT.Selection && menuItem.getSelection()) {
+					openEditor(Utils.getDefaultEditor(revision), false);
 				}
 			}
 		};
@@ -346,12 +332,12 @@ public class OpenWithMenu extends ContributionItem {
 			if (openUsingDescriptor) {
 				// discouraged access to open system editors
 				((WorkbenchPage) (page.getSite().getPage()))
-						.openEditorFromDescriptor(isFile ? new FileEditorInput(
-								(IFile) storage)
-								: (IEditorInput) FileRevisionEditorInput
-										.createEditorInputFor(fileRevision,
-												monitor), editorDescriptor,
-								true, null);
+						.openEditorFromDescriptor(
+								isFile ? new FileEditorInput((IFile) storage)
+										: (IEditorInput) FileRevisionEditorInput
+												.createEditorInputFor(
+														fileRevision, monitor),
+								editorDescriptor, true, null);
 			} else {
 				String editorId = editorDescriptor == null ? IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID
 						: editorDescriptor.getId();

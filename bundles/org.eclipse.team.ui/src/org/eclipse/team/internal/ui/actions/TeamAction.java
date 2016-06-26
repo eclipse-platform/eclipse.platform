@@ -111,22 +111,23 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * @param c
 	 * @return the selected adaptables
 	 */
-	public static Object[] getSelectedAdaptables(ISelection selection, Class c) {
-		ArrayList result = null;
+	@SuppressWarnings("unchecked")
+	public static <T> T[] getSelectedAdaptables(ISelection selection, Class<T> c) {
+		ArrayList<T> result = null;
 		if (selection != null && !selection.isEmpty()) {
-			result = new ArrayList();
+			result = new ArrayList<>();
 			Iterator elements = ((IStructuredSelection) selection).iterator();
 			while (elements.hasNext()) {
-				Object adapter = getAdapter(elements.next(), c);
+				T adapter = getAdapter(elements.next(), c);
 				if (c.isInstance(adapter)) {
 					result.add(adapter);
 				}
 			}
 		}
 		if (result != null && !result.isEmpty()) {
-			return result.toArray((Object[])Array.newInstance(c, result.size()));
+			return result.toArray((T[]) Array.newInstance(c, result.size()));
 		}
-		return (Object[])Array.newInstance(c, 0);
+		return (T[]) Array.newInstance(c, 0);
 	}
 
 	/**
@@ -138,13 +139,14 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * @param c
 	 * @return Object
 	 */
-	public static Object getAdapter(Object adaptable, Class c) {
+	@SuppressWarnings("unchecked")
+	public static <T> T getAdapter(Object adaptable, Class<T> c) {
 		if (c.isInstance(adaptable)) {
-			return adaptable;
+			return (T) adaptable;
 		}
 		if (adaptable instanceof IAdaptable) {
 			IAdaptable a = (IAdaptable) adaptable;
-			Object adapter = a.getAdapter(c);
+			T adapter = a.getAdapter(c);
 			if (c.isInstance(adapter)) {
 				return adapter;
 			}
@@ -160,14 +162,14 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	protected IProject[] getSelectedProjects() {
 		IResource[] selectedResources = getSelectedResources();
 		if (selectedResources.length == 0) return new IProject[0];
-		ArrayList projects = new ArrayList();
+		ArrayList<IProject> projects = new ArrayList<>();
 		for (int i = 0; i < selectedResources.length; i++) {
 			IResource resource = selectedResources[i];
 			if (resource.getType() == IResource.PROJECT) {
-				projects.add(resource);
+				projects.add((IProject) resource);
 			}
 		}
-		return (IProject[]) projects.toArray(new IProject[projects.size()]);
+		return projects.toArray(new IProject[projects.size()]);
 	}
 
 	/**
@@ -178,7 +180,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * @param c
 	 * @return the selection adapted to the given class
 	 */
-	protected Object[] getAdaptedSelection(Class c) {
+	protected <T> T[] getAdaptedSelection(Class<T> c) {
 		return getSelectedAdaptables(selection, c);
 	}
 
@@ -205,7 +207,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 */
     protected ResourceMapping[] getSelectedResourceMappings(String providerId) {
         Object[] elements = getSelection().toArray();
-        ArrayList providerMappings = new ArrayList();
+        ArrayList<ResourceMapping> providerMappings = new ArrayList<>();
         for (int i = 0; i < elements.length; i++) {
             Object object = elements[i];
             Object adapted = getResourceMapping(object);
@@ -216,7 +218,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
                 }
             }
         }
-        return (ResourceMapping[]) providerMappings.toArray(new ResourceMapping[providerMappings.size()]);
+        return providerMappings.toArray(new ResourceMapping[providerMappings.size()]);
     }
 
     private Object getResourceMapping(Object object) {
@@ -368,13 +370,13 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 *
 	 * @return a hashtable mapping providers to their resources
 	 */
-	protected Hashtable getProviderMapping(IResource[] resources) {
-		Hashtable result = new Hashtable();
+	protected Hashtable<RepositoryProvider, List<IResource>> getProviderMapping(IResource[] resources) {
+		Hashtable<RepositoryProvider, List<IResource>> result = new Hashtable<>();
 		for (int i = 0; i < resources.length; i++) {
 			RepositoryProvider provider = RepositoryProvider.getProvider(resources[i].getProject());
-			List list = (List)result.get(provider);
+			List<IResource> list = result.get(provider);
 			if (list == null) {
-				list = new ArrayList();
+				list = new ArrayList<>();
 				result.put(provider, list);
 			}
 			list.add(resources[i]);
