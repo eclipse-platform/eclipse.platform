@@ -105,7 +105,7 @@ public class Utils {
 		private Object[] quickSort(Object[] sortedCollection, int left, int right) {
 			int originalLeft = left;
 			int originalRight = right;
-			Object mid = sortedCollection[(left + right) / 2];
+			Object mid = sortedCollection[(left + right) >>> 1];
 			do {
 				while (compare(sortedCollection[left], mid))
 					left++;
@@ -415,6 +415,7 @@ public class Utils {
 	 * @deprecated As of 3.5, replaced by
 	 *             {@link #updateLabels(SyncInfo, CompareConfiguration, IProgressMonitor)}
 	 */
+	@SuppressWarnings("javadoc")
 	@Deprecated
 	public static void updateLabels(SyncInfo sync, CompareConfiguration config) {
 		updateLabels(sync, config, null);
@@ -430,8 +431,7 @@ public class Utils {
 		String author = null;
 		if (variant instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) variant;
-			IFileRevision revision = (IFileRevision) adaptable
-					.getAdapter(IFileRevision.class);
+			IFileRevision revision = adaptable.getAdapter(IFileRevision.class);
 			if (revision == null)
 				return null;
 			try {
@@ -576,16 +576,17 @@ public class Utils {
 
 	public static String modeToString(int mode) {
 		switch (mode) {
-			case ISynchronizePageConfiguration.INCOMING_MODE :
-				return TeamUIMessages.Utils_22;
-			case ISynchronizePageConfiguration.OUTGOING_MODE :
-				return TeamUIMessages.Utils_23;
-			case ISynchronizePageConfiguration.BOTH_MODE :
-				return TeamUIMessages.Utils_24;
-			case ISynchronizePageConfiguration.CONFLICTING_MODE :
-				return TeamUIMessages.Utils_25;
+		case ISynchronizePageConfiguration.INCOMING_MODE :
+			return TeamUIMessages.Utils_22;
+		case ISynchronizePageConfiguration.OUTGOING_MODE :
+			return TeamUIMessages.Utils_23;
+		case ISynchronizePageConfiguration.BOTH_MODE :
+			return TeamUIMessages.Utils_24;
+		case ISynchronizePageConfiguration.CONFLICTING_MODE :
+			return TeamUIMessages.Utils_25;
+		default:
+			return TeamUIMessages.Utils_26;
 		}
-		return TeamUIMessages.Utils_26;
 	}
 
 	/**
@@ -593,13 +594,14 @@ public class Utils {
 	 * @param elements
 	 * @return the list of resources contained in the given elements.
 	 */
-	private static IResource[] getResources(Object[] elements, List nonResources, boolean isContributed, boolean includeMappingResources) {
-		List resources = new ArrayList();
+	private static IResource[] getResources(Object[] elements, List<Object> nonResources,
+			boolean isContributed, boolean includeMappingResources) {
+		List<IResource> resources = new ArrayList<>();
 		for (int i = 0; i < elements.length; i++) {
 			Object element = elements[i];
 			boolean isResource = false;
 			if (element instanceof IResource) {
-				resources.add(element);
+				resources.add((IResource) element);
                 isResource = true;
 			} else if (element instanceof ISynchronizeModelElement){
                 IResource resource = ((ISynchronizeModelElement) element).getResource();
@@ -638,14 +640,14 @@ public class Utils {
                 }
 			}
 			if (!isResource) {
-				if(nonResources != null)
+				if (nonResources != null)
 					nonResources.add(element);
 			}
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 
-    private static void getResources(ResourceMapping element, List resources) {
+    private static void getResources(ResourceMapping element, List<IResource> resources) {
         try {
             ResourceTraversal[] traversals = element.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
             for (int k = 0; k < traversals.length; k++) {
@@ -662,7 +664,7 @@ public class Utils {
     }
 
 	public static Object[] getNonResources(Object[] elements) {
-		List nonResources = new ArrayList();
+		List<Object> nonResources = new ArrayList<>();
 		getResources(elements, nonResources, false, false);
 		return nonResources.toArray();
 	}
@@ -726,18 +728,18 @@ public class Utils {
 	 * @return the list of selected sync infos
 	 */
 	public static IDiffElement[] getDiffNodes(Object[] selected) {
-		Set result = new HashSet();
+		Set<IDiffElement> result = new HashSet<>();
 		for (int i = 0; i < selected.length; i++) {
 			Object object = selected[i];
 			if(object instanceof IDiffElement) {
 				collectAllNodes((IDiffElement)object, result);
 			}
 		}
-		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
-	private static void collectAllNodes(IDiffElement element, Set nodes) {
-		if(element.getKind() != SyncInfo.IN_SYNC) {
+	private static void collectAllNodes(IDiffElement element, Set<IDiffElement> nodes) {
+		if (element.getKind() != SyncInfo.IN_SYNC) {
 			nodes.add(element);
 		}
 		if(element instanceof IDiffContainer) {
@@ -750,7 +752,7 @@ public class Utils {
 
 	public static void schedule(Job job, IWorkbenchSite site) {
 		if (site != null) {
-			IWorkbenchSiteProgressService siteProgress = (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
+			IWorkbenchSiteProgressService siteProgress = site.getAdapter(IWorkbenchSiteProgressService.class);
 			if (siteProgress != null) {
 				siteProgress.schedule(job, 0, true /* use half-busy cursor */);
 				return;
@@ -901,7 +903,7 @@ public class Utils {
 
     public static SyncInfo getSyncInfo(ISynchronizeModelElement node) {
         if (node instanceof IAdaptable) {
-            return (SyncInfo)((IAdaptable)node).getAdapter(SyncInfo.class);
+            return ((IAdaptable) node).getAdapter(SyncInfo.class);
         }
         return null;
     }
@@ -933,9 +935,9 @@ public class Utils {
 			resource = (IResource) o;
 		} else if (o instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) o;
-			resource = (IResource)adaptable.getAdapter(IResource.class);
+			resource = adaptable.getAdapter(IResource.class);
 			if (resource == null) {
-				IContributorResourceAdapter adapter = (IContributorResourceAdapter)adaptable.getAdapter(IContributorResourceAdapter.class);
+				IContributorResourceAdapter adapter = adaptable.getAdapter(IContributorResourceAdapter.class);
 				if (adapter != null)
 					resource = adapter.getAdaptedResource(adaptable);
 			}
@@ -969,14 +971,14 @@ public class Utils {
 	}
 
 	public static ResourceMapping[] getResourceMappings(Object[] objects) {
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		for (int i = 0; i < objects.length; i++) {
 			Object object = objects[i];
 			ResourceMapping mapping = getResourceMapping(object);
 			if (mapping != null)
 				result.add(mapping);
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
 	public static String getLabel(ResourceMapping mapping) {
