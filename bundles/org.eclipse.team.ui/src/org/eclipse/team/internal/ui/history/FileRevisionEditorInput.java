@@ -28,7 +28,6 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import com.ibm.icu.text.DateFormat;
 
 public class FileRevisionEditorInput extends PlatformObject implements IWorkbenchAdapter, IStorageEditorInput {
-
 	private final Object fileRevision;
 	private final IStorage storage;
 
@@ -51,7 +50,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		if (storage instanceof IFileState) {
 			return new IFileState() {
 				@Override
-				public Object getAdapter(Class adapter) {
+				public <T> T getAdapter(Class<T> adapter) {
 					return storage.getAdapter(adapter);
 				}
 
@@ -94,7 +93,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 		return new IEncodedStorage() {
 			@Override
-			public Object getAdapter(Class adapter) {
+			public <T> T getAdapter(Class<T> adapter) {
 				return storage.getAdapter(adapter);
 			}
 
@@ -162,10 +161,10 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	@Override
 	public String getName() {
-		IFileRevision rev = (IFileRevision)getAdapter(IFileRevision.class);
+		IFileRevision rev = getAdapter(IFileRevision.class);
 		if (rev != null)
 			return NLS.bind(TeamUIMessages.nameAndRevision, new String[] { rev.getName(), rev.getContentIdentifier()});
-		IFileState state = (IFileState)getAdapter(IFileState.class);
+		IFileState state = getAdapter(IFileState.class);
 		if (state != null)
 			return state.getName() +  " " + DateFormat.getInstance().format(new Date(state.getModificationTime())) ; //$NON-NLS-1$
 		return storage.getName();
@@ -184,14 +183,15 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 	}
 
 	@Override
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class)
-			return this;
+			return (T) this;
 		if (adapter == IStorage.class)
-			return storage;
+			return (T) storage;
 		Object object = super.getAdapter(adapter);
 		if (object != null)
-			return object;
+			return (T) object;
 		return Utils.getAdapter(fileRevision, adapter);
 	}
 
@@ -207,7 +207,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 
 	@Override
 	public String getLabel(Object o) {
-		IFileRevision rev = (IFileRevision)getAdapter(IFileRevision.class);
+		IFileRevision rev = getAdapter(IFileRevision.class);
 		if (rev != null)
 			return rev.getName();
 		return storage.getName();
@@ -246,5 +246,4 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		}
 		return null;
 	}
-
 }

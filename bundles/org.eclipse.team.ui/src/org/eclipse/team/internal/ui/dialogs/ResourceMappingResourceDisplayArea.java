@@ -34,17 +34,16 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * Dialog area which displays the resources for a resource mapping
  */
 public class ResourceMappingResourceDisplayArea extends DialogArea {
-
     private ResourceMapping mapping;
     private ResourceMappingContext context = ResourceMappingContext.LOCAL_CONTEXT;
     private TreeViewer viewer;
     private Label label;
     private IResourceMappingResourceFilter filter;
-    private Map cachedFiltering = new HashMap(); // String(mapping)-> Map: Resource -> List(IResource)
+    private Map<ResourceMapping, Map<IResource, List<IResource>>> cachedFiltering = new HashMap<>();
     private String message;
 
     private static IWorkbenchAdapter getWorkbenchAdapter(IAdaptable o) {
-        return (IWorkbenchAdapter)o.getAdapter(IWorkbenchAdapter.class);
+        return o.getAdapter(IWorkbenchAdapter.class);
     }
 
     /**
@@ -85,7 +84,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         @Override
 		public Object[] getChildren(Object o) {
             ResourceTraversal[] traversals = getTraversals();
-            List result = new ArrayList();
+            List<ResourceTraversalElement> result = new ArrayList<>();
             for (int i = 0; i < traversals.length; i++) {
                 ResourceTraversal traversal = traversals[i];
                 IResource[] resources = traversal.getResources();
@@ -138,13 +137,11 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             return null;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-         */
-        @Override
-		public Object getAdapter(Class adapter) {
+		@Override
+        @SuppressWarnings("unchecked")
+		public <T> T getAdapter(Class<T> adapter) {
             if (adapter == IWorkbenchAdapter.class)
-                return this;
+                return (T) this;
             return null;
         }
     }
@@ -182,7 +179,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             try {
                 if (resource.getType() != IResource.FILE) {
                     IResource[] members = members(((IContainer)resource));
-                    List result = new ArrayList();
+                    List<ResourceTraversalElement> result = new ArrayList<ResourceTraversalElement>();
                     for (int i = 0; i < members.length; i++) {
                         IResource child = members[i];
                         if ((includeFolders || child.getType() == IResource.FILE)
@@ -241,15 +238,14 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
             return parent;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-         */
-        @Override
-		public Object getAdapter(Class adapter) {
+		@Override
+        @SuppressWarnings("unchecked")
+		public <T> T getAdapter(Class<T> adapter) {
             if (adapter == IWorkbenchAdapter.class)
-                return this;
+                return (T) this;
             return null;
         }
+
         public IResource getResource() {
             return resource;
         }
@@ -257,7 +253,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
     /**
      * Create a dialog area that will display the resources contained in the
-     * given mapping
+     * given mapping.
+     *
      * @param mapping the mapping
      * @param filter the filter
      * @param string the message to display
@@ -318,7 +315,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
     private boolean isIncludedInFilter(IResource resource, ResourceTraversal traversal) {
         if (filter == null)
             return true;
-        Map mappingResources = (Map)cachedFiltering.get(mapping);
+        Map<IResource, List<IResource>> mappingResources = cachedFiltering.get(mapping);
         if (mappingResources == null) {
             mappingResources = buildFilteredResourceMap(mapping, context);
             cachedFiltering.put(mapping, mappingResources);
@@ -326,8 +323,8 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
         return mappingResources.containsKey(resource);
     }
 
-    private Map buildFilteredResourceMap(final ResourceMapping mapping, final ResourceMappingContext context) {
-        final Map result = new HashMap();
+    private Map<IResource, List<IResource>> buildFilteredResourceMap(final ResourceMapping mapping, final ResourceMappingContext context) {
+        final Map<IResource, List<IResource>> result = new HashMap<>();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
                 @Override
@@ -346,20 +343,22 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                     }
                 }
 
-                private void buildFilteredResourceMap(final ResourceMapping mapping, final ResourceTraversal traversal, IProgressMonitor monitor, final Map result) throws CoreException {
+                private void buildFilteredResourceMap(final ResourceMapping mapping,
+                		final ResourceTraversal traversal, IProgressMonitor monitor,
+                		final Map<IResource, List<IResource>> result) throws CoreException {
                     traversal.accept(new IResourceVisitor() {
                         @Override
 						public boolean visit(IResource resource) throws CoreException {
                             if (filter.select(resource, mapping, traversal)) {
                                 // Add the resource to the result
-                                result.put(resource, new ArrayList());
+                                result.put(resource, new ArrayList<>());
                                 // Make sure that there are parent folders for the resource up to the traversal root
                                 IResource child = resource;
                                 while (!isTraversalRoot(traversal, child)) {
                                     IContainer parent = child.getParent();
-                                    List children = (List)result.get(parent);
+                                    List<IResource> children = result.get(parent);
                                     if (children == null) {
-                                        children = new ArrayList();
+                                        children = new ArrayList<>();
                                         result.put(parent, children);
                                     }
                                     children.add(child);
@@ -381,7 +380,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
     }
 
     /* private */ static ResourceTraversal[] getTraversals(final ResourceMapping mapping, final ResourceMappingContext context) {
-        final List traversals = new ArrayList();
+        final List<ResourceTraversal[]> traversals = new ArrayList<>();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
                 @Override
@@ -393,7 +392,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                     }
                 }
             });
-            return (ResourceTraversal[])traversals.get(0);
+            return traversals.get(0);
         } catch (InvocationTargetException e) {
             TeamUIPlugin.log(IStatus.ERROR, "An error occurred while traversing " + getLabel(mapping), e); //$NON-NLS-1$
         } catch (InterruptedException e) {
@@ -403,7 +402,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
     }
 
     /* private */ static IResource[] members(final IContainer container, final RemoteResourceMappingContext context) {
-        final List members = new ArrayList();
+        final List<IResource[]> members = new ArrayList<>();
         try {
             PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
                 @Override
@@ -415,7 +414,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
                     }
                 }
             });
-            return (IResource[])members.get(0);
+            return members.get(0);
         } catch (InvocationTargetException e) {
             TeamUIPlugin.log(IStatus.ERROR, "An error occurred while fetching the members of" + container.getFullPath(), e); //$NON-NLS-1$
         } catch (InterruptedException e) {

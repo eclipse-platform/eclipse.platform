@@ -32,21 +32,19 @@ import org.eclipse.ui.themes.ITheme;
 import com.ibm.icu.text.DateFormat;
 
 public class LocalHistoryTableProvider {
-
 	/* private */ static final int COL_DATE = 0;
 
 	/* private */ TreeViewer viewer;
 
-	private Image localRevImage = null;
+	private Image localRevImage;
 	private DateFormat dateFormat;
 
 	/**
 	 * The Local history label provider.
 	 */
 	private class LocalHistoryLabelProvider extends LabelProvider implements ITableLabelProvider, IColorProvider, IFontProvider {
-
-		private Image dateImage = null;
-		private Font currentRevisionFont = null;
+		private Image dateImage;
+		private Font currentRevisionFont;
 
 		private IPropertyChangeListener themeListener = new IPropertyChangeListener() {
 			@Override
@@ -55,8 +53,8 @@ public class LocalHistoryTableProvider {
 			}
 		};
 
-		public LocalHistoryLabelProvider(){
-				PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);
+		public LocalHistoryLabelProvider() {
+			PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);
 		}
 
 		@Override
@@ -115,9 +113,6 @@ public class LocalHistoryTableProvider {
 			return ""; //$NON-NLS-1$
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-		 */
 		@Override
 		public Color getForeground(Object element) {
 			if (element instanceof AbstractHistoryCategory){
@@ -133,18 +128,11 @@ public class LocalHistoryTableProvider {
 			return null;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-		 */
 		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
-		 */
 		@Override
 		public Font getFont(Object element) {
 			if (element instanceof AbstractHistoryCategory) {
@@ -318,7 +306,7 @@ public class LocalHistoryTableProvider {
 	}
 
 	protected long getModificationDate(Object element) {
-		IModificationDate md = (IModificationDate)Utils.getAdapter(element, IModificationDate.class);
+		IModificationDate md = Utils.getAdapter(element, IModificationDate.class);
 		if (md != null)
 			return md.getModificationDate();
 		if (element instanceof IFileState) {

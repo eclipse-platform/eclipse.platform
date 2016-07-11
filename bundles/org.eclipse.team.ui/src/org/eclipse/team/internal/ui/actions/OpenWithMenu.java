@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -48,15 +47,13 @@ import com.ibm.icu.text.Collator;
  * </p>
  */
 public class OpenWithMenu extends ContributionItem {
-
 	private IStructuredSelection selection;
 
 	private HistoryPage page;
 
-	private IEditorRegistry registry = PlatformUI.getWorkbench()
-			.getEditorRegistry();
+	private IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
 
-	private static Hashtable<ImageDescriptor, Image> imageCache = new Hashtable<ImageDescriptor, Image>(11);
+	private static Hashtable<ImageDescriptor, Image> imageCache = new Hashtable<>(11);
 
 	/**
 	 * The id of this action.
@@ -123,8 +120,7 @@ public class OpenWithMenu extends ContributionItem {
 	private ImageDescriptor getImageDescriptor(IEditorDescriptor editorDesc) {
 		ImageDescriptor imageDesc = null;
 		if (editorDesc == null) {
-			imageDesc = registry
-					.getImageDescriptor(getFileRevision().getName());
+			imageDesc = registry.getImageDescriptor(getFileRevision().getName());
 			// TODO: is this case valid, and if so, what are the implications
 			// for content-type editor bindings?
 		} else {
@@ -133,9 +129,7 @@ public class OpenWithMenu extends ContributionItem {
 		if (imageDesc == null) {
 			if (editorDesc.getId().equals(
 					IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID)) {
-				imageDesc = registry
-						.getSystemExternalEditorImageDescriptor(getFileRevision()
-								.getName());
+				imageDesc = registry.getSystemExternalEditorImageDescriptor(getFileRevision().getName());
 			}
 		}
 		return imageDesc;
@@ -327,33 +321,23 @@ public class OpenWithMenu extends ContributionItem {
 		try {
 			IProgressMonitor monitor = new NullProgressMonitor();
 			IStorage storage = fileRevision.getStorage(monitor);
-			boolean isFile = storage instanceof IFile;
-
+			IEditorInput editorInput = storage instanceof IFile ?
+					new FileEditorInput((IFile) storage) :
+					FileRevisionEditorInput.createEditorInputFor(fileRevision, monitor);
 			if (openUsingDescriptor) {
-				// discouraged access to open system editors
-				((WorkbenchPage) (page.getSite().getPage()))
-						.openEditorFromDescriptor(
-								isFile ? new FileEditorInput((IFile) storage)
-										: (IEditorInput) FileRevisionEditorInput
-												.createEditorInputFor(
-														fileRevision, monitor),
-								editorDescriptor, true, null);
+				// Discouraged access to open system editors.
+				WorkbenchPage workbenchPage = (WorkbenchPage) (page.getSite().getPage());
+				workbenchPage.openEditorFromDescriptor(editorInput, editorDescriptor, true, null);
 			} else {
-				String editorId = editorDescriptor == null ? IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID
-						: editorDescriptor.getId();
-				page.getSite().getPage().openEditor(
-						isFile ? new FileEditorInput((IFile) storage)
-								: (IEditorInput) FileRevisionEditorInput
-										.createEditorInputFor(fileRevision,
-												monitor), editorId, true,
-						MATCH_BOTH);
+				String editorId = editorDescriptor == null ?
+						IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID : editorDescriptor.getId();
+				page.getSite().getPage().openEditor(editorInput, editorId, true, MATCH_BOTH);
 			}
 		} catch (PartInitException e) {
 			StatusAdapter statusAdapter = new StatusAdapter(e.getStatus());
 			statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
 					TeamUIMessages.LocalHistoryPage_OpenEditorError);
-			StatusManager.getManager()
-					.handle(statusAdapter, StatusManager.SHOW);
+			StatusManager.getManager().handle(statusAdapter, StatusManager.SHOW);
 		} catch (CoreException e) {
 			StatusAdapter statusAdapter = new StatusAdapter(e.getStatus());
 			statusAdapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY,
@@ -383,19 +367,12 @@ public class OpenWithMenu extends ContributionItem {
 		return revision;
 	}
 
-	/*
-	 * (non-Javadoc) Returns whether this menu is dynamic.
-	 */
 	@Override
 	public boolean isDynamic() {
 		return true;
 	}
 
 	public void selectionChanged(IStructuredSelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = selection;
-		} else {
-			this.selection = StructuredSelection.EMPTY;
-		}
+		this.selection = selection;
 	}
 }

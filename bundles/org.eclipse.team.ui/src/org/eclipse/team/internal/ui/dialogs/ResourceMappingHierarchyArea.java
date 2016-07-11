@@ -27,7 +27,6 @@ import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
 import org.eclipse.ui.navigator.*;
 
 public class ResourceMappingHierarchyArea extends DialogArea implements INavigatorContentServiceListener {
-
 	private static final String TEAM_NAVIGATOR_CONTENT = "org.eclipse.team.ui.navigatorViewer"; //$NON-NLS-1$
 	private String description;
     private CommonViewer viewer;
@@ -82,7 +81,7 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 		if (scope == null)
 			return new Object[0];
 		ResourceMapping[] mappings = scope.getMappings();
-		List result = new ArrayList();
+		List<Object> result = new ArrayList<>();
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
 			result.add(mapping.getModelObject());
@@ -94,9 +93,6 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
         description = string;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.internal.extensions.INavigatorContentServiceListener#onLoad(org.eclipse.ui.navigator.internal.extensions.NavigatorContentExtension)
-	 */
 	@Override
 	public void onLoad(INavigatorContentExtension anExtension) {
 		anExtension.getStateModel().setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE, scope);
@@ -104,5 +100,4 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 			anExtension.getStateModel().setProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT, context);
 		}
 	}
-
 }

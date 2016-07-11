@@ -39,7 +39,6 @@ import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 
 public class GenericHistoryTableProvider {
-
 	private IFileHistory currentFileHistory;
 	private IFile currentFile;
 	private String currentRevision;
@@ -78,8 +77,9 @@ public class GenericHistoryTableProvider {
 				case COL_COMMENT:
 					String comment = entry.getComment();
 					return comment;
+				default:
+					return ""; //$NON-NLS-1$
 			}
-			return ""; //$NON-NLS-1$
 		}
 
 		private synchronized DateFormat getDateFormat() {
@@ -227,14 +227,14 @@ public class GenericHistoryTableProvider {
 		if (element instanceof IFileRevision) {
 			entry = (IFileRevision) element;
 		} else if (element instanceof IAdaptable) {
-			entry = (IFileRevision)((IAdaptable)element).getAdapter(IFileRevision.class);
+			entry = ((IAdaptable) element).getAdapter(IFileRevision.class);
 		}
 		return entry;
 	}
 
 	/**
 	 * Create a TableViewer that can be used to display a list of IFileRevision instances.
-	 * Ths method provides the labels and sorter but does not provide a content provider
+	 * This method provides the labels and sorter but does not provide a content provider
 	 *
 	 * @param parent
 	 * @return TableViewer

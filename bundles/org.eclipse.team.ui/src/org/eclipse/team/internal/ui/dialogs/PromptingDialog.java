@@ -47,6 +47,7 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 		this.resources = resources;
 		this.condition = condition;
 	}
+
 	/**
 	 * Call to calculate and show prompt. If no resources satisfy the prompt
 	 * condition a dialog won't be shown. The resources for which the user
@@ -57,13 +58,13 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	 *             if the user choose to cancel on the prompt dialog
 	 */
 	public IResource[] promptForMultiple() throws InterruptedException {
-		List targetResources = new ArrayList();
+		List<IResource> targetResources = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (!condition.needsPrompt(resource) || shouldInclude(condition.promptMessage(resource))) {
 				targetResources.add(resource);
 			}
 		}
-		return (IResource[]) targetResources.toArray(new IResource[targetResources.size()]);
+		return targetResources.toArray(new IResource[targetResources.size()]);
 	}
 }

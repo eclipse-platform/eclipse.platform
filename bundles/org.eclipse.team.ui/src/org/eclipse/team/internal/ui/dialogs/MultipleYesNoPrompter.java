@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
  * and No to All are presented). It uses the previous selection as appropriate.
  */
 public class MultipleYesNoPrompter {
-
 	private static final int ALWAYS_ASK = 0;
 	private static final int YES_TO_ALL = 1;
 	private static final int NO_TO_ALL = 2;
@@ -37,7 +36,8 @@ public class MultipleYesNoPrompter {
 	 * Prompt for the given resources using the specific condition. The prompt dialog will
 	 * have the title specified.
 	 */
-	public MultipleYesNoPrompter(IShellProvider provider, String title, boolean hasMultiple, boolean allOrNothing) {
+	public MultipleYesNoPrompter(IShellProvider provider, String title,
+			boolean hasMultiple, boolean allOrNothing) {
 		this.title = title;
 		this.shellProvider = provider;
 		this.hasMultiple = hasMultiple;
@@ -77,24 +77,25 @@ public class MultipleYesNoPrompter {
 			return true;
 		} else {
 			switch (confirmation) {
-				case ALWAYS_ASK: {
-					// This call has the nasty side effect of changing the
-					// instance scoped "confirmation"
-					if (confirmOverwrite(message)) {
-						return true;
-					}
-					break;
-				}
-				case YES_TO_ALL: {
+			case ALWAYS_ASK:
+				// This call has the nasty side effect of changing the
+				// instance scoped "confirmation"
+				if (confirmOverwrite(message)) {
 					return true;
 				}
-				case NO_TO_ALL: {
-					// Don't overwrite
-					break;
-				}
+				return false;
+
+			case YES_TO_ALL:
+				return true;
+
+			case NO_TO_ALL:
+				// Don't overwrite
+				return false;
+
+			default:
+				// If we get here, the user said no or not_to_all.
+				return false;
 			}
-			// If we get here, the user said no or not_to_all.
-			return false;
 		}
 	}
 
@@ -118,20 +119,20 @@ public class MultipleYesNoPrompter {
 			});
 		if (hasMultiple) {
 			switch (dialog.getReturnCode()) {
-				case 0://Yes
+				case 0:// Yes
 					return true;
-				case 1://Yes to all
+				case 1:// Yes to all
 					confirmation = YES_TO_ALL;
 					return true;
-				case 2://No (or CANCEL for all-or-nothing)
+				case 2:// No (or CANCEL for all-or-nothing)
 					if (allOrNothing) {
 						throw new InterruptedException();
 					}
 					return false;
-				case 3://No to all
+				case 3:// No to all
 					confirmation = NO_TO_ALL;
 					return false;
-				case 4://Cancel
+				case 4:// Cancel
 				default:
 					throw new InterruptedException();
 			}

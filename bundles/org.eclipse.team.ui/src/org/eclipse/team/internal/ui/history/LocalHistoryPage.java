@@ -55,7 +55,6 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.Calendar;
 
 public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdapter {
-
 	public static final int ON = 1;
 	public static final int OFF = 2;
 	public static final int ALWAYS = 4;
@@ -148,7 +147,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			if (element instanceof IFileRevision) {
 				entry = (IFileRevision) element;
 			} else if (element instanceof IAdaptable) {
-				entry = (IFileRevision) ((IAdaptable) element).getAdapter(IFileRevision.class);
+				entry = ((IAdaptable) element).getAdapter(IFileRevision.class);
 			} else if (element instanceof AbstractHistoryCategory){
 				IFileRevision[] revisions = ((AbstractHistoryCategory) element).getRevisions();
 				if (revisions.length > 0)
@@ -374,12 +373,12 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				getContentsAction = getContextMenuAction(TeamUIMessages.LocalHistoryPage_GetContents, true /* needs progress */, new IWorkspaceRunnable() {
 					@Override
 					public void run(IProgressMonitor monitor) throws CoreException {
-						monitor.beginTask(null, 100);
+						SubMonitor progress = SubMonitor.convert(monitor, 2);
 						try {
-							if(confirmOverwrite()) {
-								IStorage currentStorage = currentSelection.getStorage(new SubProgressMonitor(monitor, 50));
+							if (confirmOverwrite()) {
+								IStorage currentStorage = currentSelection.getStorage(progress.split(1));
 								InputStream in = currentStorage.getContents();
-								(file).setContents(in, false, true, new SubProgressMonitor(monitor, 50));
+								file.setContents(in, false, true, progress.split(1));
 							}
 						} catch (TeamException e) {
 							throw new CoreException(e.getStatus());
@@ -597,9 +596,10 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	}
 
 	@Override
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == IHistoryCompareAdapter.class) {
-			return this;
+			return (T) this;
 		}
 		return null;
 	}
@@ -826,17 +826,17 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	}
 
 	private Object[] mapExpandedElements(AbstractHistoryCategory[] categories, Object[] expandedElements) {
-		//store the names of the currently expanded categories in a map
-		HashMap elementMap = new HashMap();
-		for (int i=0; i<expandedElements.length; i++){
-			elementMap.put(((DateHistoryCategory)expandedElements[i]).getName(), null);
+		// Store the names of the currently expanded categories in a set.
+		HashSet<String> names = new HashSet<>();
+		for (int i = 0; i < expandedElements.length; i++){
+			names.add(((DateHistoryCategory) expandedElements[i]).getName());
 		}
 
 		//Go through the new categories and keep track of the previously expanded ones
-		ArrayList expandable = new ArrayList();
-		for (int i = 0; i<categories.length; i++){
-			//check to see if this category is currently expanded
-			if (elementMap.containsKey(categories[i].getName())){
+		ArrayList<AbstractHistoryCategory> expandable = new ArrayList<>();
+		for (int i = 0; i < categories.length; i++){
+			// Check to see if this category is currently expanded.
+			if (names.contains(categories[i].getName())){
 				expandable.add(categories[i]);
 			}
 		}
@@ -863,7 +863,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			//Everything before after week is previous
 			tempCategories[3] = new DateHistoryCategory(TeamUIMessages.HistoryPage_Previous, null, monthCal);
 
-			ArrayList finalCategories = new ArrayList();
+			ArrayList<AbstractHistoryCategory> finalCategories = new ArrayList<AbstractHistoryCategory>();
 			for (int i = 0; i<tempCategories.length; i++){
 				tempCategories[i].collectFileRevisions(revisions, false);
 				if (tempCategories[i].hasRevisions())
@@ -875,7 +875,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				finalCategories.add(getErrorMessage());
 			}
 
-			return (AbstractHistoryCategory[])finalCategories.toArray(new AbstractHistoryCategory[finalCategories.size()]);
+			return finalCategories.toArray(new AbstractHistoryCategory[finalCategories.size()]);
 		} finally {
 			monitor.done();
 		}

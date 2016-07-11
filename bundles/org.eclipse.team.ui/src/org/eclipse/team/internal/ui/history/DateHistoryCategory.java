@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.internal.ui.history;
 
@@ -16,11 +16,9 @@ import com.ibm.icu.util.Calendar;
 import org.eclipse.team.core.history.IFileRevision;
 
 public class DateHistoryCategory extends AbstractHistoryCategory {
-
 	private String name;
 	private Calendar fromDate;
 	private Calendar toDate;
-
 	private IFileRevision[] revisions;
 
 	/**
@@ -37,22 +35,15 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 		this.toDate = toDate;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#getName()
-	 */
 	@Override
 	public String getName() {
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#collectFileRevisions(org.eclipse.team.core.history.IFileRevision[], boolean)
-	 */
 	@Override
 	public boolean collectFileRevisions(IFileRevision[] fileRevisions, boolean shouldRemove) {
-
-		ArrayList pertinentRevisions = new ArrayList();
-		ArrayList nonPertinentRevisions = new ArrayList();
+		ArrayList<IFileRevision> pertinentRevisions = new ArrayList<>();
+		ArrayList<IFileRevision> nonPertinentRevisions = new ArrayList<>();
 
 		for (int i = 0; i < fileRevisions.length; i++) {
 			//get the current file revision's date
@@ -101,7 +92,7 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 		}
 
 		if (pertinentRevisions.size() > 0){
-			IFileRevision[] tempRevision = (IFileRevision[]) pertinentRevisions.toArray(new IFileRevision[pertinentRevisions.size()]);
+			IFileRevision[] tempRevision = pertinentRevisions.toArray(new IFileRevision[pertinentRevisions.size()]);
 			revisions = new IFileRevision[tempRevision.length];
 			System.arraycopy(tempRevision, 0, revisions, 0, tempRevision.length);
 			return true;
@@ -110,23 +101,13 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#getRevisions()
-	 */
 	@Override
 	public IFileRevision[] getRevisions() {
 		return revisions;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.AbstractCVSHistoryCategory#hasRevisions()
-	 */
 	@Override
 	public boolean hasRevisions() {
-		if (revisions != null && revisions.length > 0)
-			return true;
-
-		return false;
+		return revisions != null && revisions.length != 0;
 	}
-
 }

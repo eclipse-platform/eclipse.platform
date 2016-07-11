@@ -150,10 +150,7 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 	}
 
 	private IResource getResource(ICompareInput input) {
-		if (getLocalElement() instanceof IResourceProvider) {
-			return ((IResourceProvider) getLocalElement()).getResource();
-		}
-		return null;
+		return getLocalElement().getResource();
 	}
 
 	private ICompareInput createCompareInput() {

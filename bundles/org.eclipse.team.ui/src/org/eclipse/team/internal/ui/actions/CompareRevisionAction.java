@@ -30,7 +30,6 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
 public class CompareRevisionAction extends BaseSelectionListenerAction {
-
 	HistoryPage page;
 	IStructuredSelection selection;
 	IFileRevision currentFileRevision;

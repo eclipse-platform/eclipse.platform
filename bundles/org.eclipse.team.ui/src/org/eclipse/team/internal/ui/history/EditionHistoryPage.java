@@ -38,14 +38,13 @@ import org.eclipse.ui.IWorkbenchPage;
  * methods are only used when the site is modal so they can use the localEdition.
  */
 public class EditionHistoryPage extends LocalHistoryPage {
-
 	private IFile file;
 
 	private Object element;
 
 	private LocalResourceTypedElement localFileElement;
 	private IStructureCreator structureCreator;
-	private Map editions = new HashMap();
+	private Map<IFileRevision, ITypedElement> editions = new HashMap<IFileRevision, ITypedElement>();
 	private ITypedElement localEdition;
 	private String name;
 
@@ -230,7 +229,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	private IFileRevision[] filterRevisions(ITypedElement localEdition, IFileRevision[] revisions,
 			IProgressMonitor monitor) {
 		ITypedElement previousEdition = localEdition;
-		List result = new ArrayList();
+		List<IFileRevision> result = new ArrayList<IFileRevision>();
 		sortDescending(revisions);
 		editions.clear();
 		for (int i = 0; i < revisions.length; i++) {
@@ -242,21 +241,14 @@ public class EditionHistoryPage extends LocalHistoryPage {
 				result.add(revision);
 			}
 		}
-		return (IFileRevision[]) result.toArray(new IFileRevision[result.size()]);
+		return result.toArray(new IFileRevision[result.size()]);
 	}
 
 	private static void sortDescending(IFileRevision[] revisions) {
-		Arrays.sort(revisions, new Comparator() {
+		Arrays.sort(revisions, new Comparator<IFileRevision>() {
 			@Override
-			public int compare(Object o1, Object o2) {
-				IFileRevision d1= (IFileRevision) o1;
-				IFileRevision d2= (IFileRevision) o2;
-				long d= d2.getTimestamp() - d1.getTimestamp();
-				if (d < 0)
-					return -1;
-				if (d > 0)
-					return 1;
-				return 0;
+			public int compare(IFileRevision d1, IFileRevision d2) {
+				return -Long.compare(d1.getTimestamp(), d2.getTimestamp());
 			}
 		});
 	}
@@ -282,7 +274,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	}
 
 	public ITypedElement getEditionFor(Object object) {
-		return (ITypedElement)editions.get(object);
+		return editions.get(object);
 	}
 
 	private static ITypedElement createLocalEdition(IStructureCreator creator, ITypedElement input, Object element) {
@@ -393,8 +385,8 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	private Object getRevisionFor(Object object) {
 		if (object == localEdition)
 			return localFileElement;
-		for (Iterator iterator = editions.keySet().iterator(); iterator.hasNext();) {
-			IFileRevision revision = (IFileRevision) iterator.next();
+		for (Iterator<IFileRevision> iterator = editions.keySet().iterator(); iterator.hasNext();) {
+			IFileRevision revision = iterator.next();
 			if (editions.get(revision) == object) {
 				return revision;
 			}

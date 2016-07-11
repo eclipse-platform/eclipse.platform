@@ -26,18 +26,17 @@ import org.eclipse.swt.widgets.*;
 
 /**
  * This class provides facilities to allow common widget groupings to be shared
- * by mulitple dialogs or wizards.
+ * by multiple dialogs or wizards.
  */
 public abstract class DialogArea {
-
 	private FontMetrics fontMetrics;
-	private List listeners;
+	private List<IPropertyChangeListener> listeners;
 
 	/**
 	 * Create a dialog area
 	 */
 	protected DialogArea() {
-		this.listeners = new ArrayList();
+		this.listeners = new ArrayList<IPropertyChangeListener>();
 	}
 
 	/**
@@ -62,8 +61,8 @@ public abstract class DialogArea {
 
 	protected void firePropertyChangeChange(String property, Object oldValue, Object newValue) {
 		PropertyChangeEvent event = new PropertyChangeEvent(this, property, oldValue, newValue);
-		for (Iterator iter = listeners.iterator(); iter.hasNext();) {
-			IPropertyChangeListener listener = (IPropertyChangeListener) iter.next();
+		for (Iterator<IPropertyChangeListener> iter = listeners.iterator(); iter.hasNext();) {
+			IPropertyChangeListener listener = iter.next();
 			listener.propertyChange(event);
 		}
 	}

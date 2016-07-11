@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.team.internal.ui.history;
 
 import org.eclipse.jface.resource.JFaceColors;
@@ -19,7 +18,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.team.ui.history.HistoryPage;
 
 public class GenericHistoryViewDefaultPage extends HistoryPage {
-
 	private Composite pgComp;
 
 	@Override
@@ -46,7 +44,7 @@ public class GenericHistoryViewDefaultPage extends HistoryPage {
 
 	@Override
 	public void refresh() {
-		//nothing to refresh
+		// nothing to refresh
 	}
 
 	@Override
@@ -55,7 +53,7 @@ public class GenericHistoryViewDefaultPage extends HistoryPage {
 	}
 
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}
 
@@ -74,5 +72,4 @@ public class GenericHistoryViewDefaultPage extends HistoryPage {
 		//no history to show
 		return false;
 	}
-
 }

@@ -45,7 +45,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	private Button fOkButton;
 
-	private ListenerList pageChangedListeners = new ListenerList();
+	private ListenerList<IPageChangedListener> pageChangedListeners = new ListenerList<IPageChangedListener>();
 
 	/**
 	 * The Composite in which a page is shown.
@@ -59,7 +59,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 */
 	private Point fMinimumPageSize = new Point(200,200);
     private TabFolder tabFolder;
-    private Map pageMap = new HashMap();
+    private Map<TabItem, PreferencePage> pageMap = new HashMap<>();
 
 	/**
 	 * Must declare our own images as the JFaceResource images will not be created unless
@@ -166,7 +166,7 @@ public class PreferencePageContainerDialog extends TrayDialog
     protected void updatePageSelection() {
         TabItem[] items = tabFolder.getSelection();
         if (items.length == 1) {
-            currentPage = (PreferencePage)pageMap.get(items[0]);
+            currentPage = pageMap.get(items[0]);
             updateMessage();
         }
         firePageChanged(new PageChangedEvent(this, currentPage));
