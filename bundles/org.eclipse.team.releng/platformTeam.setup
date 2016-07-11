@@ -101,7 +101,7 @@
     <setupTask
         xsi:type="setup:VariableTask"
         name="eclipse.target.platform"
-        value="Neon"
+        value="Oxygen"
         storageURI="scope://Workspace"/>
   </stream>
   <logicalProjectContainer
