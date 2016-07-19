@@ -12,25 +12,19 @@ package org.eclipse.team.tests.ccvs.core.subscriber;
 
 import java.io.ByteArrayInputStream;
 
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.ISharedDocumentAdapter;
-import org.eclipse.compare.SharedDocumentAdapter;
-import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.ICompareUIConstants;
+import junit.framework.Test;
+
+import org.eclipse.compare.*;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber;
-import org.eclipse.team.internal.ccvs.core.CVSTag;
+import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.history.FileRevisionTypedElement;
@@ -40,15 +34,9 @@ import org.eclipse.team.internal.ui.synchronize.EditableSharedDocumentAdapter;
 import org.eclipse.team.internal.ui.synchronize.LocalResourceTypedElement;
 import org.eclipse.team.internal.ui.synchronize.actions.OpenInCompareAction;
 import org.eclipse.team.tests.ccvs.ui.ModelParticipantSyncInfoSource;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-
-import junit.framework.Test;
 
 /**
  * Test the behavior of compare editors opened on diffs.
@@ -153,8 +141,6 @@ public class CompareEditorTests extends CVSSyncSubscriberTest {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setDefault(ComparePreferencePage.LAYOUT, ICompareUIConstants.PREF_VALUE_RIGHT_TO_LEFT);
 		// Need to set both the Compare and Team test flags to true
 		Utilities.RUNNING_TESTS = true;
 		Utils.RUNNING_TESTS = true;
@@ -168,8 +154,6 @@ public class CompareEditorTests extends CVSSyncSubscriberTest {
 	
 	protected void tearDown() throws Exception {
 		closeAllEditors();
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setToDefault(ComparePreferencePage.LAYOUT);
 		super.tearDown();
 	}
 	

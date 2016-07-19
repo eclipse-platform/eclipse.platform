@@ -50,7 +50,4 @@ public interface ICompareUIConstants {
 	public static final String PREF_VALUE_DO_NOTHING = "doNothing"; //$NON-NLS-1$
 
 	public static final String COMMAND_IGNORE_WHITESPACE = PREFIX + "ignoreWhiteSpace"; //$NON-NLS-1$
-
-	public static final String PREF_VALUE_LEFT_TO_RIGHT = "leftToRight"; //$NON-NLS-1$
-	public static final String PREF_VALUE_RIGHT_TO_LEFT = "rightToLeft"; //$NON-NLS-1$
 }

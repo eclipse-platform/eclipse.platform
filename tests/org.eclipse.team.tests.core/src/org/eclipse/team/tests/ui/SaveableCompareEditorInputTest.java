@@ -16,14 +16,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Test;
+
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerSwitchingPane;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.CompareEditor;
-import org.eclipse.compare.internal.ComparePreferencePage;
 import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.MergeSourceViewer;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
@@ -48,8 +47,6 @@ import org.eclipse.team.internal.ui.synchronize.SaveablesCompareEditorInput;
 import org.eclipse.team.tests.core.TeamTest;
 import org.eclipse.team.ui.synchronize.SaveableCompareEditorInput;
 import org.eclipse.ui.PlatformUI;
-
-import junit.framework.Test;
 
 public class SaveableCompareEditorInputTest extends TeamTest {
 
@@ -70,8 +67,6 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setDefault(ComparePreferencePage.LAYOUT, ICompareUIConstants.PREF_VALUE_RIGHT_TO_LEFT);
 
 		project = createProject("Project_", new String[] {
 				"File1.txt", "File2.txt" });
@@ -89,8 +84,6 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 	protected void tearDown() throws Exception {
 		// remove log listener
 		RuntimeLog.removeLogListener(logListener);
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setToDefault(ComparePreferencePage.LAYOUT);
 		super.tearDown();
 	}
 

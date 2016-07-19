@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
-import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.ICompareUIConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class ContentMergeViewerTest extends TestCase {
 
@@ -91,9 +87,6 @@ public class ContentMergeViewerTest extends TestCase {
 	}
 
 	protected void setUp() throws Exception {
-		super.setUp();
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setDefault(ComparePreferencePage.LAYOUT, ICompareUIConstants.PREF_VALUE_RIGHT_TO_LEFT);
 		result = new boolean[] { false, false };
 		myContentMergeViewer = new MyContentMergeViewer();
 		myContentMergeViewer.addPropertyChangeListener(new IPropertyChangeListener() {
@@ -102,12 +95,6 @@ public class ContentMergeViewerTest extends TestCase {
 				result[1] = ((Boolean) event.getNewValue()).booleanValue();
 			}
 		});
-	}
-
-	protected void tearDown() throws Exception {
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setToDefault(ComparePreferencePage.LAYOUT);
-		super.tearDown();
 	}
 
 	// set left to true

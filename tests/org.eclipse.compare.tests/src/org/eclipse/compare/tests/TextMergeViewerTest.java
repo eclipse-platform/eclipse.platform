@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.IEditableContent;
@@ -23,9 +25,6 @@ import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
-import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.IMergeViewerTestAdapter;
 import org.eclipse.compare.internal.MergeViewerContentProvider;
 import org.eclipse.compare.internal.Utilities;
@@ -34,7 +33,6 @@ import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -47,8 +45,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-
-import junit.framework.TestCase;
 
 public class TextMergeViewerTest extends TestCase {
 
@@ -254,19 +250,7 @@ public class TextMergeViewerTest extends TestCase {
 		}
 		return document;
 	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setDefault(ComparePreferencePage.LAYOUT, ICompareUIConstants.PREF_VALUE_RIGHT_TO_LEFT);
-	}
-
-	protected void tearDown() throws Exception {
-		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
-		store.setToDefault(ComparePreferencePage.LAYOUT);
-		super.tearDown();
-	}
-
+	
 	public void testCopyRightToLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		String copiedText = "hi there";

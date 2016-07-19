@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
- *     Conrad Groth - Bug 213780 - Compare With direction should be configurable
  *******************************************************************************/
 package org.eclipse.compare;
 
@@ -72,21 +71,34 @@ public class CompareConfiguration {
 	 * @since 3.0
 	 */
 	public static final String USE_OUTLINE_VIEW= "USE_OUTLINE_VIEW"; //$NON-NLS-1$
-
+	
 	private static ImageDescriptor[] fgImages= new ImageDescriptor[16];
 	private static boolean fLeftIsLocal= true;
 
 	static {
-		fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.gif"); //$NON-NLS-1$
+		if (fLeftIsLocal) {
+			fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.gif"); //$NON-NLS-1$
 
-		fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.gif"); //$NON-NLS-1$
 
-		fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.gif"); //$NON-NLS-1$
+		} else {
+			fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.gif"); //$NON-NLS-1$
+
+			fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.gif"); //$NON-NLS-1$
+
+			fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.gif"); //$NON-NLS-1$
+			fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.gif"); //$NON-NLS-1$
+		}
 
 		fgImages[Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.gif"); //$NON-NLS-1$
 		fgImages[Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.gif"); //$NON-NLS-1$
@@ -252,14 +264,12 @@ public class CompareConfiguration {
 		if (fPreferenceStore != null) {
 			boolean b= fPreferenceStore.getBoolean(ComparePreferencePage.INITIALLY_SHOW_ANCESTOR_PANE);
 			setProperty(ICompareUIConstants.PROP_ANCESTOR_VISIBLE, Boolean.valueOf(b));
-
+			
 			b= fPreferenceStore.getBoolean(ComparePreferencePage.IGNORE_WHITESPACE);
 			setProperty(CompareConfiguration.IGNORE_WHITESPACE, Boolean.valueOf(b));
-
-			setProperty(ComparePreferencePage.LAYOUT, fPreferenceStore.getString(ComparePreferencePage.LAYOUT));
 		}
-	}
-
+	}	
+	
 	/**
 	 * Creates a new configuration with editable left and right sides,
 	 * suitable default labels, and no images.
