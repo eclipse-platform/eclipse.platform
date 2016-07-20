@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.junit.Assert;
+
+import junit.framework.TestCase;
 
 public class ContentMergeViewerTest extends TestCase {
-
 	private MyContentMergeViewer myContentMergeViewer;
 	/**
 	 * result[0]-event occurred or not; result[1]-new state that was set
@@ -44,52 +43,64 @@ public class ContentMergeViewerTest extends TestCase {
 		public boolean leftDirty = false;
 		public boolean rightDirty = false;
 
+		@Override
 		protected boolean isLeftDirty() {
 			return leftDirty;
 		}
 
+		@Override
 		protected boolean isRightDirty() {
 			return rightDirty;
 		}
 
+		@Override
 		protected void setLeftDirty(boolean dirty) {
 			super.setLeftDirty(dirty);
 		}
 
+		@Override
 		protected void setRightDirty(boolean dirty) {
 			super.setRightDirty(dirty);
 		}
 
+		@Override
 		protected void copy(boolean leftToRight) {
 			// nothing here
 		}
 
+		@Override
 		protected void createControls(Composite composite) {
 			// nothing here
 		}
 
+		@Override
 		protected byte[] getContents(boolean left) {
 			return null;
 		}
 
+		@Override
 		protected void handleResizeAncestor(int x, int y, int width, int height) {
 			// nothing here
 		}
 
+		@Override
 		protected void handleResizeLeftRight(int x, int y, int leftWidth,
 				int centerWidth, int rightWidth, int height) {
 			// nothing here
 		}
 
+		@Override
 		protected void updateContent(Object ancestor, Object left, Object right) {
 			// nothing here
 		}
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		result = new boolean[] { false, false };
 		myContentMergeViewer = new MyContentMergeViewer();
 		myContentMergeViewer.addPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				result[0] = true;
 				result[1] = ((Boolean) event.getNewValue()).booleanValue();

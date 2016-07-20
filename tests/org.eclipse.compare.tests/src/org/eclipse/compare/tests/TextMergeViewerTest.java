@@ -246,7 +246,7 @@ public class TextMergeViewerTest extends TestCase {
 		char leg = left ? MergeViewerContentProvider.LEFT_CONTRIBUTOR : MergeViewerContentProvider.RIGHT_CONTRIBUTOR;
 		IDocument document = Utilities.getDocument(leg, viewer.getInput(), true, true);
 		if (document == null) {
-			return ((IMergeViewerTestAdapter)viewer.getAdapter(IMergeViewerTestAdapter.class)).getDocument(leg);
+			return viewer.getAdapter(IMergeViewerTestAdapter.class).getDocument(leg);
 		}
 		return document;
 	}

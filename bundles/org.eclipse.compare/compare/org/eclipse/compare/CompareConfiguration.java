@@ -57,7 +57,6 @@ import org.eclipse.swt.graphics.Image;
  * </p>
  */
 public class CompareConfiguration {
-
 	/**
 	 * Name of the ignore whitespace property (value <code>"IGNORE_WHITESPACE"</code>).
 	 */
@@ -106,8 +105,8 @@ public class CompareConfiguration {
 	}
 
 	private IPreferenceStore fPreferenceStore;
-	private ListenerList fListeners= new ListenerList();
-	private HashMap fProperties= new HashMap();
+	private ListenerList<IPropertyChangeListener> fListeners= new ListenerList<>();
+	private HashMap<String, Object> fProperties= new HashMap<>();
 	private boolean fLeftEditable= true;
 	private boolean fRightEditable= true;
 	private String fAncestorLabel;
@@ -120,11 +119,13 @@ public class CompareConfiguration {
 	private DefaultLabelProvider labelProvider = new DefaultLabelProvider();
 	private boolean fDisposed;
 	private LocalResourceManager fResourceManager;
-	private Set fIgnoredChanges = new HashSet(6); 
+	private Set<Integer> fIgnoredChanges = new HashSet<>(6); 
 
 	private class DefaultLabelProvider extends LabelProvider implements ICompareInputLabelProvider, ILabelProviderListener {
-		private Map labelProviders = new HashMap();
+		private Map<ICompareInput, ICompareInputLabelProvider> labelProviders = new HashMap<>();
 		private ICompareInputLabelProvider defaultLabelProvider;
+
+		@Override
 		public Image getAncestorImage(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -134,6 +135,8 @@ public class CompareConfiguration {
 			}
 			return fAncestorImage;
 		}
+
+		@Override
 		public String getAncestorLabel(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -143,6 +146,8 @@ public class CompareConfiguration {
 			}
 			return fAncestorLabel;
 		}
+
+		@Override
 		public Image getLeftImage(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -152,6 +157,8 @@ public class CompareConfiguration {
 			}
 			return fLeftImage;
 		}
+
+		@Override
 		public String getLeftLabel(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -161,6 +168,8 @@ public class CompareConfiguration {
 			}
 			return fLeftLabel;
 		}
+
+		@Override
 		public Image getRightImage(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -170,6 +179,8 @@ public class CompareConfiguration {
 			}
 			return fRightImage;
 		}
+
+		@Override
 		public String getRightLabel(Object input) {
 			ICompareInputLabelProvider provider = getLabelProvider(input);
 			if (provider != null) {
@@ -179,19 +190,23 @@ public class CompareConfiguration {
 			}
 			return fRightLabel;
 		}
+
 		public ICompareInputLabelProvider getLabelProvider(Object input) {
-			ICompareInputLabelProvider lp = (ICompareInputLabelProvider)labelProviders.get(input);
+			ICompareInputLabelProvider lp = labelProviders.get(input);
 			if (lp == null)
 				return defaultLabelProvider;
 			return lp;
 		}
+
 		public void setLabelProvider(ICompareInput input, ICompareInputLabelProvider labelProvider) {
-			ICompareInputLabelProvider old = (ICompareInputLabelProvider)labelProviders.get(input);
+			ICompareInputLabelProvider old = labelProviders.get(input);
 			if (old != null)
 				old.removeListener(this);
 			labelProviders.put(input, labelProvider);
 			labelProvider.addListener(this);
 		}
+
+		@Override
 		public Image getImage(Object element) {
 			ICompareInputLabelProvider provider = getLabelProvider(element);
 			if (provider != null) {
@@ -207,6 +222,8 @@ public class CompareConfiguration {
 			}
 			return super.getImage(element);
 		}
+
+		@Override
 		public String getText(Object element) {
 			ICompareInputLabelProvider provider = getLabelProvider(element);
 			if (provider != null) {
@@ -223,9 +240,10 @@ public class CompareConfiguration {
 			return super.getText(element);
 		}
 		
+		@Override
 		public void dispose() {
-			for (Iterator iterator = labelProviders.values().iterator(); iterator.hasNext();) {
-				ICompareInputLabelProvider lp = (ICompareInputLabelProvider) iterator.next();
+			for (Iterator<ICompareInputLabelProvider> iterator = labelProviders.values().iterator(); iterator.hasNext();) {
+				ICompareInputLabelProvider lp = iterator.next();
 				lp.removeListener(this);
 			}
 			if (defaultLabelProvider != null)
@@ -234,9 +252,11 @@ public class CompareConfiguration {
 			labelProviders.clear();
 		}
 			
+		@Override
 		public void labelProviderChanged(LabelProviderChangedEvent event) {
 			fireLabelProviderChanged(new LabelProviderChangedEvent(this, event.getElements()));
 		}
+
 		public void setDefaultLabelProvider(ICompareInputLabelProvider labelProvider) {
 			if (defaultLabelProvider != null)
 				defaultLabelProvider.removeListener(this);
@@ -370,16 +390,10 @@ public class CompareConfiguration {
 		}
 	}
 
-	/* (non javadoc)
-	 * see IPropertyChangeNotifier.addListener
-	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		fListeners.add(listener);
 	}
 
-	/* (non javadoc)
-	 * see IPropertyChangeNotifier.removeListener
-	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		fListeners.remove(listener);
 	}
