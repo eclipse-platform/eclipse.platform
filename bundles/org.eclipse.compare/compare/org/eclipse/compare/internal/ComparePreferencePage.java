@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
+ *     Conrad Groth - Bug 213780 - Compare With direction should be configurable
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -25,6 +28,7 @@ import org.eclipse.compare.internal.core.ComparePlugin;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -98,13 +102,14 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	public static final String PATH_FILTER= PREFIX + "PathFilter"; //$NON-NLS-1$
 	public static final String ADDED_LINES_REGEX= PREFIX + "AddedLinesRegex"; //$NON-NLS-1$
 	public static final String REMOVED_LINES_REGEX= PREFIX + "RemovedLinesRegex"; //$NON-NLS-1$
+	public static final String SWAPPED = PREFIX + "Swapped"; //$NON-NLS-1$
 	
-	
+
 	private TextMergeViewer fPreviewViewer;
 	private IPropertyChangeListener fPreferenceChangeListener;
 	private CompareConfiguration fCompareConfiguration;
 	private OverlayPreferenceStore fOverlayStore;
-	private Map fCheckBoxes= new HashMap();
+	private Map<Button, String> fCheckBoxes = new HashMap<>();
 	private Text fFilters;
 	private Text addedLinesRegex;
 	private Text removedLinesRegex;
@@ -129,8 +134,9 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, PATH_FILTER),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, ICompareUIConstants.PREF_NAVIGATION_END_ACTION),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL),
+		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, SWAPPED),
 	};
-	private RadioGroupFieldEditor editor;
+	private List<FieldEditor> editors = new ArrayList<>();
 	private TabItem fTextCompareTab;
 	private Button fDisableCappingCheckBox;
 	
@@ -153,6 +159,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setDefault(PATH_FILTER, ""); //$NON-NLS-1$
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, ICompareUIConstants.PREF_VALUE_PROMPT);
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, ICompareUIConstants.PREF_VALUE_LOOP);
+		store.setDefault(SWAPPED, false);
 	}
 
 	public ComparePreferencePage() {
@@ -190,7 +197,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fOverlayStore.setValue(ADDED_LINES_REGEX, addedLinesRegex.getText());
 		fOverlayStore.setValue(REMOVED_LINES_REGEX, removedLinesRegex.getText());
 
-		editor.store();
+		editors.forEach(editor -> editor.store());
 		fOverlayStore.propagate();
 
 		ComparePlugin.getDefault().setCappingDisabled(
@@ -206,7 +213,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		
 		fOverlayStore.loadDefaults();
 		initializeFields();
-		
+
 		super.performDefaults();
 	}
 	
@@ -356,10 +363,13 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		addCheckBox(composite, "ComparePreferencePage.highlightTokenChanges.label", HIGHLIGHT_TOKEN_CHANGES, 0);	//$NON-NLS-1$
 		//addCheckBox(composite, "ComparePreferencePage.useResolveUI.label", USE_RESOLVE_UI, 0);	//$NON-NLS-1$
 		fDisableCappingCheckBox = addCheckBox(composite, "ComparePreferencePage.disableCapping.label", CAPPING_DISABLED, 0);	//$NON-NLS-1$
+		addCheckBox(composite, "ComparePreferencePage.swapped.label", SWAPPED, 0);	//$NON-NLS-1$
 		
 		Composite radioGroup = new Composite(composite, SWT.NULL);
 		radioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		editor = new RadioGroupFieldEditor(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, CompareMessages.ComparePreferencePage_0, 1,
+		RadioGroupFieldEditor editor = new RadioGroupFieldEditor(
+				ICompareUIConstants.PREF_NAVIGATION_END_ACTION,
+				CompareMessages.ComparePreferencePage_0, 1,
 				new String[][] {
 					new String[] { CompareMessages.ComparePreferencePage_1, ICompareUIConstants.PREF_VALUE_PROMPT },
 				    new String[] { CompareMessages.ComparePreferencePage_2, ICompareUIConstants.PREF_VALUE_LOOP },
@@ -369,6 +379,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		radioGroup, true);
 		editor.setPreferenceStore(fOverlayStore);
 		editor.fillIntoGrid(radioGroup, 1);
+		editors.add(editor);
 		
 		// a spacer
 		Label separator= new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -427,10 +438,10 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 			
 	private void initializeFields() {
 		
-		Iterator e= fCheckBoxes.keySet().iterator();
+		Iterator<Button> e = fCheckBoxes.keySet().iterator();
 		while (e.hasNext()) {
-			Button b= (Button) e.next();
-			String key= (String) fCheckBoxes.get(b);
+			Button b = e.next();
+			String key= fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
 		
@@ -441,7 +452,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		if (removedLinesRegex != null)
 			removedLinesRegex.setText(fOverlayStore.getString(REMOVED_LINES_REGEX));
 		
-		editor.load();
+		editors.forEach(editor -> editor.load());
 	}
 
 	// overlay stuff
@@ -455,14 +466,13 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		
 		GridData gd= new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalIndent= indentation;
-		gd.horizontalSpan= 2;
 		checkBox.setLayoutData(gd);
 		
 		if (fCheckBoxListener == null) {
 			fCheckBoxListener= new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					Button button= (Button) e.widget;
-					fOverlayStore.setValue((String) fCheckBoxes.get(button), button.getSelection());
+					fOverlayStore.setValue(fCheckBoxes.get(button), button.getSelection());
 				}
 			};
 		}
@@ -472,7 +482,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		
 		return checkBox;
 	}
-	
+
 	private String loadPreviewContentFromFile(String key) {
 		
 		String preview= Utilities.getString(key);

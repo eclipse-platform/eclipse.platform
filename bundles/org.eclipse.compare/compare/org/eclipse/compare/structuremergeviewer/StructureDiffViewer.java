@@ -482,8 +482,8 @@ public class StructureDiffViewer extends DiffTreeViewer {
 						}
 						protected Object visit(Object data, int result, Object ancestor, Object left, Object right) {
 							Object o= super.visit(data, result, ancestor, left, right);
-							if (fLeftIsLocal && o instanceof DiffNode)
-								((DiffNode)o).swapSides(fLeftIsLocal);
+							if (!getCompareConfiguration().isMirrored() && o instanceof DiffNode)
+								((DiffNode)o).swapSides(true);
 							return o;
 						}
 					};
@@ -692,11 +692,8 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		if (Display.getCurrent() != null)
 			runnable.run();
 		else
-			getControl().getDisplay().syncExec(new Runnable() {
-				public void run() {
-					if (!getControl().isDisposed())
-						runnable.run();
-				}
+			getControl().getDisplay().syncExec(() -> {
+				if (!getControl().isDisposed()) runnable.run();
 			});
 	}
 }

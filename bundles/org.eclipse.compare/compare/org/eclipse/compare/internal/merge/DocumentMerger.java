@@ -74,8 +74,6 @@ public class DocumentMerger {
 	/** Subset of above: just real differences. */
 	private ArrayList fChangeDiffs;
 	
-	private final boolean fLeftIsLocal;
-
 	private IDocumentMergerInput fInput;
 	
 	/**
@@ -120,7 +118,7 @@ public class DocumentMerger {
 		int fDirection;
 		boolean fIsToken= false;
 		/** child token diffs */
-		ArrayList fDiffs;
+		List<Diff> fDiffs;
 		boolean fIsWhitespace= false;
 
 		/*
@@ -177,10 +175,10 @@ public class DocumentMerger {
 			int code= Differencer.CHANGE;
 			switch (fDirection) {
 			case RangeDifference.RIGHT:
-				code+= Differencer.LEFT;
+				code+= getCompareConfiguration().isMirrored() ? Differencer.RIGHT : Differencer.LEFT;
 				break;
 			case RangeDifference.LEFT:
-				code+= Differencer.RIGHT;
+				code+= getCompareConfiguration().isMirrored() ? Differencer.LEFT : Differencer.RIGHT ;
 				break;
 			case RangeDifference.ANCESTOR:
 			case RangeDifference.CONFLICT:
@@ -226,7 +224,7 @@ public class DocumentMerger {
 
 		void add(Diff d) {
 			if (fDiffs == null)
-				fDiffs= new ArrayList();
+				fDiffs= new ArrayList<>();
 			fDiffs.add(d);
 		}
 		
@@ -255,48 +253,6 @@ public class DocumentMerger {
 			return fResolved;
 		}
 		
-//		private boolean isIncoming() {
-//			switch (fDirection) {
-//			case RangeDifference.RIGHT:
-//				if (fLeftIsLocal)
-//					return true;
-//				break;
-//			case RangeDifference.LEFT:
-//				if (!fLeftIsLocal)
-//					return true;
-//				break;
-//			}
-//			return false;
-//		}
-		
-		public boolean isIncomingOrConflicting() {
-			switch (fDirection) {
-			case RangeDifference.RIGHT:
-				if (fLeftIsLocal)
-					return true;
-				break;
-			case RangeDifference.LEFT:
-				if (!fLeftIsLocal)
-					return true;
-				break;
-			case RangeDifference.CONFLICT:
-				return true;
-			}
-			return false;
-		}
-		
-//		private boolean isUnresolvedIncoming() {
-//			if (fResolved)
-//				return false;
-//			return isIncoming();
-//		}
-		
-		public boolean isUnresolvedIncomingOrConflicting() {
-			if (fResolved)
-				return false;
-			return isIncomingOrConflicting();
-		}
-				
 		Position getPosition(int contributor) {
 			if (contributor == MergeViewerContentProvider.LEFT_CONTRIBUTOR)
 				return fLeftPos;
@@ -392,7 +348,6 @@ public class DocumentMerger {
 	
 	public DocumentMerger(IDocumentMergerInput input) {
 		this.fInput = input;
-		fLeftIsLocal= Utilities.getBoolean(getCompareConfiguration(), "LEFT_IS_LOCAL", false); //$NON-NLS-1$
 	}
 	
 	/**
@@ -1238,7 +1193,7 @@ public class DocumentMerger {
 	public boolean isFirstChildDiff(char contributor, int childStart, Diff diff) {
 		if (!diff.hasChildren())
 			return false;
-		Diff d = (Diff)diff.fDiffs.get(0);
+		Diff d = diff.fDiffs.get(0);
 		Position p= d.getPosition(contributor);
 		return (p.getOffset() >= childStart);
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,10 +41,10 @@ public class BinaryCompareViewer extends AbstractViewer {
 	private static final int EOF = -1;
 	private ICompareInput fInput;
 	private ResourceBundle fBundle;
-	private boolean fLeftIsLocal;
 
 	private Composite fComposite;
 	private Label fMessage;
+	private CompareConfiguration compareConfiguration;
 	
 	public BinaryCompareViewer(Composite parent, final CompareConfiguration cc) {
 		
@@ -60,19 +60,20 @@ public class BinaryCompareViewer extends AbstractViewer {
 		fMessage= new Label(fComposite, SWT.WRAP);
 		fComposite.setData(CompareUI.COMPARE_VIEWER_TITLE, Utilities.getString(fBundle, "title")); //$NON-NLS-1$
 		
-		fLeftIsLocal= Utilities.getBoolean(cc, "LEFT_IS_LOCAL", false); //$NON-NLS-1$
-		
-		if (cc != null && cc.getContainer() instanceof CompareEditorInput) {
+		compareConfiguration = cc != null ? cc : new CompareConfiguration();
+
+		if (compareConfiguration.getContainer() instanceof CompareEditorInput) {
 			Label compareAsTextLabel = new Label(fComposite, SWT.WRAP);
-			compareAsTextLabel
-					.setText(Utilities.getString(fBundle, "compareAsText")); //$NON-NLS-1$
+			compareAsTextLabel.setText(Utilities.getString(fBundle, "compareAsText")); //$NON-NLS-1$
 		}
 	}
 
+	@Override
 	public Control getControl() {
 		return fComposite;
 	}
 
+	@Override
 	public void setInput(Object input) {
 		if (fComposite != null && input instanceof ICompareInput) {
 			fInput= (ICompareInput) input;
@@ -102,20 +103,13 @@ public class BinaryCompareViewer extends AbstractViewer {
 				} else if (left == null && right == null) {
 					message= Utilities.getString(fBundle, "deleteConflictMessage"); //$NON-NLS-1$
 				} else if (left == null) {
-					if (fLeftIsLocal)
-						message= Utilities.getString(fBundle, "deletedMessage"); //$NON-NLS-1$
-					else
-						message= Utilities.getString(fBundle, "addedMessage"); //$NON-NLS-1$
+					message= Utilities.getString(fBundle, compareConfiguration.isMirrored() ?
+							"addedMessage" : "deletedMessage"); //$NON-NLS-1$ //$NON-NLS-2$
 				} else if (right == null) {
-					if (fLeftIsLocal)
-						message= Utilities.getString(fBundle, "addedMessage"); //$NON-NLS-1$
-					else
-						message= Utilities.getString(fBundle, "deletedMessage"); //$NON-NLS-1$
+					message= Utilities.getString(fBundle, compareConfiguration.isMirrored() ?
+							"deletedMessage" : "addedMessage"); //$NON-NLS-1$ //$NON-NLS-2$
 				}
-			} catch (CoreException ex) {
-				message = Utilities.getString(fBundle, "errorMessage"); //$NON-NLS-1$
-				CompareUIPlugin.log(ex);
-			} catch (IOException ex) {
+			} catch (CoreException | IOException ex) {
 				message = Utilities.getString(fBundle, "errorMessage"); //$NON-NLS-1$
 				CompareUIPlugin.log(ex);
 			} finally {
@@ -128,6 +122,7 @@ public class BinaryCompareViewer extends AbstractViewer {
 		}
 	}
 
+	@Override
 	public Object getInput() {
 		return fInput;
 	}

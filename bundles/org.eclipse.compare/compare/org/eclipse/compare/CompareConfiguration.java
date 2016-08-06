@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Alex Blewitt <alex.blewitt@gmail.com> - replace new Boolean with Boolean.valueOf - https://bugs.eclipse.org/470344
+ *     Conrad Groth - Bug 213780 - Compare With direction should be configurable
  *******************************************************************************/
 package org.eclipse.compare;
 
@@ -42,7 +43,7 @@ import org.eclipse.swt.graphics.Image;
  * A <code>CompareConfiguration</code> object
  * controls various UI aspects of compare/merge viewers like
  * title labels and images, or whether a side of a merge viewer is editable.
- * In addition to these fixed properties <code>ICompareConfiguration</code> provides
+ * In addition to these fixed properties <code>CompareConfiguration</code> provides
  * API for an open ended set of properties. Different viewers which share the same
  * configuration can communicate via this mechanism. E.g. if a compare editor
  * has a button for controlling whether compare viewers ignore white space,
@@ -70,38 +71,46 @@ public class CompareConfiguration {
 	 * @since 3.0
 	 */
 	public static final String USE_OUTLINE_VIEW= "USE_OUTLINE_VIEW"; //$NON-NLS-1$
-	
-	private static ImageDescriptor[] fgImages= new ImageDescriptor[16];
-	private static boolean fLeftIsLocal= true;
+	/**
+	 * Name of the mirrored property, i.e. if left input is shown on the right side and vice versa.
+	 * @since 3.7
+	 */
+	public static final String MIRRORED = "MIRRORED"; //$NON-NLS-1$
+
+	private static ImageDescriptor[] fgImages= new ImageDescriptor[32];
 
 	static {
-		if (fLeftIsLocal) {
-			fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.gif"); //$NON-NLS-1$
+		// Not swapped (a.k.a. left is local)
+		fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.gif"); //$NON-NLS-1$
 
-			fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.gif"); //$NON-NLS-1$
 
-			fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.gif"); //$NON-NLS-1$
-		} else {
-			fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.gif"); //$NON-NLS-1$
-
-			fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.gif"); //$NON-NLS-1$
-
-			fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.gif"); //$NON-NLS-1$
-			fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.gif"); //$NON-NLS-1$
-		}
+		fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.gif"); //$NON-NLS-1$
 
 		fgImages[Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.gif"); //$NON-NLS-1$
 		fgImages[Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.gif"); //$NON-NLS-1$
 		fgImages[Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.gif"); //$NON-NLS-1$
+	
+		// Mirrored (a.k.a. right is local)
+		fgImages[16 + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.gif"); //$NON-NLS-1$
+
+		fgImages[16 + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.gif"); //$NON-NLS-1$
+
+		fgImages[16 + Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.gif"); //$NON-NLS-1$
+
+		fgImages[16 + Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.gif"); //$NON-NLS-1$
 	}
 
 	private IPreferenceStore fPreferenceStore;
@@ -271,25 +280,25 @@ public class CompareConfiguration {
 	 * suitable default labels, and no images.
 	 * The given preference store is used to connect this configuration
 	 * with the Compare preference page properties <code>ComparePreferencePage.INITIALLY_SHOW_ANCESTOR_PANE</code>,
-	 * and <code>CompareConfiguration.IGNORE_WHITESPACE</code>.
+	 * <code>CompareConfiguration.IGNORE_WHITESPACE</code> and {@link #MIRRORED}
 	 * 
 	 * @param prefStore the preference store which this configuration holds onto.
 	 * @since 2.0
 	 */
 	public CompareConfiguration(IPreferenceStore prefStore) {
-		
-		setProperty("LEFT_IS_LOCAL", Boolean.valueOf(fLeftIsLocal)); //$NON-NLS-1$
-		
 		fPreferenceStore= prefStore;
 		if (fPreferenceStore != null) {
 			boolean b= fPreferenceStore.getBoolean(ComparePreferencePage.INITIALLY_SHOW_ANCESTOR_PANE);
 			setProperty(ICompareUIConstants.PROP_ANCESTOR_VISIBLE, Boolean.valueOf(b));
-			
+
 			b= fPreferenceStore.getBoolean(ComparePreferencePage.IGNORE_WHITESPACE);
 			setProperty(CompareConfiguration.IGNORE_WHITESPACE, Boolean.valueOf(b));
+
+			b= fPreferenceStore.getBoolean(ComparePreferencePage.SWAPPED);
+			setProperty(CompareConfiguration.MIRRORED, Boolean.valueOf(b));
 		}
-	}	
-	
+	}
+
 	/**
 	 * Creates a new configuration with editable left and right sides,
 	 * suitable default labels, and no images.
@@ -323,7 +332,7 @@ public class CompareConfiguration {
 	public Image getImage(int kind) {
 		if (fDisposed)
 			return null;
-		ImageDescriptor id= fgImages[kind & 15];
+		ImageDescriptor id= getImageDescriptor(kind);
 		ResourceManager rm = getResourceManager();
 		return rm.createImage(id);
 	}
@@ -351,10 +360,24 @@ public class CompareConfiguration {
 	public Image getImage(Image base, int kind) {
 		if (fDisposed)
 			return null;
-		kind &= 15;
-		ImageDescriptor id = new DiffImageDescriptor(base, fgImages[kind], ICompareUIConstants.COMPARE_IMAGE_WIDTH, !fLeftIsLocal);
+		ImageDescriptor id = new DiffImageDescriptor(base, getImageDescriptor(kind), ICompareUIConstants.COMPARE_IMAGE_WIDTH, false);
 		ResourceManager rm = getResourceManager();
 		return rm.createImage(id);
+	}
+
+	/**
+	 * <b>Only the views are mirrored. All model values for left and right are not changed!</b>
+	 * 
+	 * @return true if the left and right side of the viewer are mirrored. Default is false.
+	 * @since 3.7
+	 */
+	public boolean isMirrored() {
+		Object property = getProperty(MIRRORED);
+		return property instanceof Boolean && (Boolean) property;
+	}
+
+	private ImageDescriptor getImageDescriptor(int kind) {
+		return fgImages[(kind & 15) + (isMirrored() ? 16 : 0)];
 	}
 	
 	/**

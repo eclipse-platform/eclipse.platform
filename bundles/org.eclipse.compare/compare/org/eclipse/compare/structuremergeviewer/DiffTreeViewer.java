@@ -40,15 +40,15 @@ import org.eclipse.swt.widgets.*;
 public class DiffTreeViewer extends TreeViewer {
 	
 	class DiffViewerContentProvider implements ITreeContentProvider {
-			
+
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// empty implementation
 		}
-	
+
 		public boolean isDeleted(Object element) {
 			return false;
 		}
-			
+
 		public void dispose() {
 			inputChanged(DiffTreeViewer.this, getInput(), null);
 		}
@@ -71,6 +71,7 @@ public class DiffTreeViewer extends TreeViewer {
 			return new Object[0];
 		}
 		
+		@Override
 		public Object[] getElements(Object element) {
 			return getChildren(element);
 		}				
@@ -81,7 +82,7 @@ public class DiffTreeViewer extends TreeViewer {
 	 * is true.
 	 */
 	class DiffViewerLabelProvider extends LabelProvider {
-		
+		@Override
 		public String getText(Object element) {
 			
 			if (element instanceof IDiffElement)
@@ -90,25 +91,41 @@ public class DiffTreeViewer extends TreeViewer {
 			return Utilities.getString(fBundle, "defaultLabel"); //$NON-NLS-1$
 		}
 	
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof IDiffElement) {
 				IDiffElement input= (IDiffElement) element;
 				
 				int kind= input.getKind();
-				if (fLeftIsLocal) {
-					switch (kind & Differencer.DIRECTION_MASK) {
+				// Flip the direction and the change type, because all images are the other way round,
+				// i.e. for comparison from left to right.
+				switch (kind & Differencer.DIRECTION_MASK) {
 					case Differencer.LEFT:
 						kind= (kind &~ Differencer.LEFT) | Differencer.RIGHT;
 						break;
 					case Differencer.RIGHT:
 						kind= (kind &~ Differencer.RIGHT) | Differencer.LEFT;
 						break;
-					}
 				}
-				
+				switch (kind & Differencer.CHANGE_TYPE_MASK) {
+					case Differencer.ADDITION:
+						kind= (kind &~ Differencer.ADDITION) | Differencer.DELETION;
+						break;
+					case Differencer.DELETION:
+						kind= (kind &~ Differencer.DELETION) | Differencer.ADDITION;
+						break;
+				}
+
 				return fCompareConfiguration.getImage(input.getImage(), kind);
 			}
 			return null;
+		}
+		
+		/**
+		 * Informs the platform, that the images have changed.
+		 */
+		public void fireLabelProviderChanged() {
+			fireLabelProviderChanged(new LabelProviderChangedEvent(this));
 		}
 	}
 
@@ -125,11 +142,9 @@ public class DiffTreeViewer extends TreeViewer {
 	
 	private ResourceBundle fBundle;
 	private CompareConfiguration fCompareConfiguration;
-	/* package */ boolean fLeftIsLocal;
 	private IPropertyChangeListener fPropertyChangeListener;
+	private DiffViewerLabelProvider diffViewerLabelProvider = new DiffViewerLabelProvider();
 
-	private Action fCopyLeftToRightAction;
-	private Action fCopyRightToLeftAction;
 	private Action fEmptyMenuAction;
 	private Action fExpandAllAction;
 		
@@ -182,9 +197,6 @@ public class DiffTreeViewer extends TreeViewer {
 			}
 		};
 		tree.setData(INavigatable.NAVIGATOR_PROPERTY, nav);
-		
-		fLeftIsLocal= Utilities.getBoolean(configuration, "LEFT_IS_LOCAL", false); //$NON-NLS-1$
-
 		tree.setData(CompareUI.COMPARE_VIEWER_TITLE, getTitle());
 
 		Composite parent= tree.getParent();
@@ -194,25 +206,15 @@ public class DiffTreeViewer extends TreeViewer {
 		// register for notification with the CompareConfiguration 
 		fCompareConfiguration= configuration;
 		if (fCompareConfiguration != null) {
-			fPropertyChangeListener= new IPropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent event) {
-					DiffTreeViewer.this.propertyChange(event);
-				}
-			};
+			fPropertyChangeListener = event -> propertyChange(event);
 			fCompareConfiguration.addPropertyChangeListener(fPropertyChangeListener);
 		}				
 	
 		setContentProvider(new DiffViewerContentProvider());
-		setLabelProvider(new DiffViewerLabelProvider());
-		
-		addSelectionChangedListener(
-			new ISelectionChangedListener() {
-				public void selectionChanged(SelectionChangedEvent se) {
-					updateActions();
-				}
-			}
-		);
-										
+		setLabelProvider(diffViewerLabelProvider);
+
+		addSelectionChangedListener(event -> updateActions());
+
 		setComparator(new DiffViewerComparator());
 		
 		ToolBarManager tbm= CompareViewerPane.getToolBarManager(parent);
@@ -301,12 +303,16 @@ public class DiffTreeViewer extends TreeViewer {
 	/**
 	 * Tracks property changes of the configuration object.
 	 * Clients may extend to track their own property changes.
+	 * In this case they must call the inherited method.
 	 * @param event property change event that triggered call to this method
 	 */
 	protected void propertyChange(PropertyChangeEvent event) {
-		// empty default implementation
+		if (event.getProperty().equals(CompareConfiguration.MIRRORED)) {
+			diffViewerLabelProvider.fireLabelProviderChanged();
+		}
 	}
 	
+	@Override
 	protected void inputChanged(Object in, Object oldInput) {
 		super.inputChanged(in, oldInput);
 		
@@ -375,38 +381,6 @@ public class DiffTreeViewer extends TreeViewer {
 	 * @param toolbarManager the toolbar manager for which to add the actions
 	 */
 	protected void createToolItems(ToolBarManager toolbarManager) {
-		
-//		fCopyLeftToRightAction= new Action() {
-//			public void run() {
-//				copySelected(true);
-//			}
-//		};
-//		Utilities.initAction(fCopyLeftToRightAction, fBundle, "action.TakeLeft.");
-//		toolbarManager.appendToGroup("merge", fCopyLeftToRightAction);
-
-//		fCopyRightToLeftAction= new Action() {
-//			public void run() {
-//				copySelected(false);
-//			}
-//		};
-//		Utilities.initAction(fCopyRightToLeftAction, fBundle, "action.TakeRight.");
-//		toolbarManager.appendToGroup("merge", fCopyRightToLeftAction);
-		
-//		fNextAction= new Action() {
-//			public void run() {
-//				navigate(true);
-//			}
-//		};
-//		Utilities.initAction(fNextAction, fBundle, "action.NextDiff."); //$NON-NLS-1$
-//		toolbarManager.appendToGroup("navigation", fNextAction); //$NON-NLS-1$
-
-//		fPreviousAction= new Action() {
-//			public void run() {
-//				navigate(false);
-//			}
-//		};
-//		Utilities.initAction(fPreviousAction, fBundle, "action.PrevDiff."); //$NON-NLS-1$
-//		toolbarManager.appendToGroup("navigation", fPreviousAction); //$NON-NLS-1$
 	}
 	
 	/**
@@ -442,13 +416,7 @@ public class DiffTreeViewer extends TreeViewer {
 			}
 		}
 		fExpandAllAction.setEnabled(enable);
-
 		manager.add(fExpandAllAction);
-		
-		if (fCopyLeftToRightAction != null)
-			manager.add(fCopyLeftToRightAction);
-		if (fCopyRightToLeftAction != null)
-			manager.add(fCopyRightToLeftAction);
 	}
 
 	/**
@@ -669,48 +637,10 @@ public class DiffTreeViewer extends TreeViewer {
 		}
 	}
 			
-	private final boolean isEditable(Object element, boolean left) {
-		if (element instanceof ICompareInput) {
-			ICompareInput diff= (ICompareInput) element;
-			Object side= left ? diff.getLeft() : diff.getRight();
-			if (side == null && diff instanceof IDiffElement) {
-				IDiffContainer container= ((IDiffElement)diff).getParent();
-				if (container instanceof ICompareInput) {
-					ICompareInput parent= (ICompareInput) container;
-					side= left ? parent.getLeft() : parent.getRight();
-				}
-			}
-			if (side instanceof IEditableContent)
-				return ((IEditableContent) side).isEditable();
-		}
-		return false;
-	}
-		
 	private void updateActions() {
-		int leftToRight= 0;
-		int rightToLeft= 0;
-		ISelection selection= getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection ss= (IStructuredSelection) selection;
-			Iterator e= ss.iterator();
-			while (e.hasNext()) {
-				Object element= e.next();
-				if (element instanceof ICompareInput) {
-					if (isEditable(element, false))
-						leftToRight++;
-					if (isEditable(element, true))
-						rightToLeft++;
-					if (leftToRight > 0 && rightToLeft > 0)
-						break;
-				}
-			}
-			if (fExpandAllAction != null)
-				fExpandAllAction.setEnabled(selection.isEmpty());
+		if (fExpandAllAction != null) {
+			fExpandAllAction.setEnabled(getSelection().isEmpty());
 		}
-		if (fCopyLeftToRightAction != null)
-			fCopyLeftToRightAction.setEnabled(leftToRight > 0);
-		if (fCopyRightToLeftAction != null)
-			fCopyRightToLeftAction.setEnabled(rightToLeft > 0);
 	}
 	
 	/*

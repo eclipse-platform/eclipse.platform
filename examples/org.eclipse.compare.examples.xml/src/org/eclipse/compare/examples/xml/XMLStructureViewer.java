@@ -499,6 +499,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 				!getXMLStructureCreator().getRemoveWhiteSpace());
 			contentChanged();
 		}
+		super.propertyChange(event);
 	}
 
 	private void performMatching(final XMLNode left, final XMLNode right,
