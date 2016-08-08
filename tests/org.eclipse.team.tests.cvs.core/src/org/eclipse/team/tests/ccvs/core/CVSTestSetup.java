@@ -9,6 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.core;
+
 import java.io.*;
 
 import junit.extensions.TestSetup;
@@ -132,6 +133,7 @@ public class CVSTestSetup extends TestSetup {
 	private static void startBackgroundPipeThread(final InputStream is, final PrintStream os,
 		final String prefix) {
 		new Thread() {
+			@Override
 			public void run() {
 				BufferedReader reader = null;
 				try {
@@ -166,6 +168,7 @@ public class CVSTestSetup extends TestSetup {
 		executeRemoteCommand(repository, "cvs -d " + repoRoot + " init");
 	}
 	
+	@Override
 	public void setUp() throws CoreException {
 		if (repository == null) {
 			repository = setupRepository(REPOSITORY_LOCATION);
@@ -180,7 +183,6 @@ public class CVSTestSetup extends TestSetup {
 	}
 
 	protected CVSRepositoryLocation setupRepository(String location) throws CVSException {
-		
 		// Validate that we can connect, also creates and caches the repository location. This
 		// is important for the UI tests.
 		CVSRepositoryLocation repository = (CVSRepositoryLocation)KnownRepositories.getInstance().getRepository(location);
@@ -213,10 +215,5 @@ public class CVSTestSetup extends TestSetup {
 		
 		return repository;
 	}
-	
-	public void tearDown() throws CVSException {
-		// Nothing to do here
-	}
-
 }
 

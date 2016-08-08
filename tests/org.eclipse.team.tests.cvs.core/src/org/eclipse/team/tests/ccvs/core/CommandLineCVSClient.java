@@ -12,18 +12,19 @@ package org.eclipse.team.tests.ccvs.core;
 
 import java.io.File;
 
-import junit.framework.Assert;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
+import org.junit.Assert;
 
 public class CommandLineCVSClient implements ICVSClient {
 	public static final ICVSClient INSTANCE = new CommandLineCVSClient();
 	private static final String cvsExecutable =
 		System.getProperty("eclipse.cvs.command");
 		
+	@Override
 	public void executeCommand(ICVSRepositoryLocation repositoryLocation,
 		IContainer localRoot, String command, String[] globalOptions,
 		String[] localOptions, String[] arguments) throws CVSException {

@@ -22,9 +22,7 @@ public class CVSUITestSetup extends CVSTestSetup implements Test {
 		super(test);
 	}
 	
-	/* (non-Javadoc)
-	 * @see junit.extensions.TestSetup#setUp()
-	 */
+	@Override
 	public void setUp() throws CoreException {
 		super.setUp();
 		PlatformUI.getWorkbench().getDecoratorManager().setEnabled(CVSUIPlugin.DECORATOR_ID, true);

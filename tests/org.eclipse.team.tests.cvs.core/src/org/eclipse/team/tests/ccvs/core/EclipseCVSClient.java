@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Assert;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,10 +27,11 @@ import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
+import org.junit.Assert;
 
 public class EclipseCVSClient implements ICVSClient {
 	public static final ICVSClient INSTANCE = new EclipseCVSClient();
-	private static final HashMap commandPool = new HashMap();
+	private static final HashMap<String, Command> commandPool = new HashMap<>();
 	static {
 		commandPool.put("update", Command.UPDATE);
 		commandPool.put("co", Command.CHECKOUT);
@@ -47,6 +47,7 @@ public class EclipseCVSClient implements ICVSClient {
 		commandPool.put("diff", Command.DIFF);
 	}
 	
+	@Override
 	public void executeCommand(ICVSRepositoryLocation repositoryLocation,
 		IContainer localRoot, String command, String[] globalOptions,
 		String[] localOptions, String[] arguments) throws CVSException {
@@ -68,17 +69,17 @@ public class EclipseCVSClient implements ICVSClient {
 		Assert.assertTrue(cvsLocalRoot.exists());
 
 		// get command instance
-		Command cvsCommand = (Command) commandPool.get(command);
+		Command cvsCommand = commandPool.get(command);
 			
 		// get global options
-		List globals = new ArrayList();
+		List<CustomGlobalOption> globals = new ArrayList<>();
 		for (int i = 0; i < globalOptions.length; i++) {
 			globals.add(new CustomGlobalOption(globalOptions[i]));
 		}
-		GlobalOption[] cvsGlobalOptions = (GlobalOption[]) globals.toArray(new GlobalOption[globals.size()]);
+		GlobalOption[] cvsGlobalOptions = globals.toArray(new GlobalOption[globals.size()]);
 		
 		// get local options
-		List locals = new ArrayList();
+		List<CustomLocalOption> locals = new ArrayList<CustomLocalOption>();
 		for (int i = 0; i < localOptions.length; i++) {
 			String option = localOptions[i];
 			String argument = null;
@@ -87,7 +88,7 @@ public class EclipseCVSClient implements ICVSClient {
 			}
 			locals.add(new CustomLocalOption(option, argument));
 		}
-		LocalOption[] cvsLocalOptions = (LocalOption[]) locals.toArray(new LocalOption[locals.size()]);
+		LocalOption[] cvsLocalOptions = locals.toArray(new LocalOption[locals.size()]);
 		
 		// execute command
 		IProgressMonitor monitor = new NullProgressMonitor();
