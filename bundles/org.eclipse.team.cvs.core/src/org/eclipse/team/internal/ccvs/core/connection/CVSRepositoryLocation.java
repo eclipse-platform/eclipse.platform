@@ -88,7 +88,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	
 	// Locks for ensuring that authentication to a host is serialized
 	// so that invalid passwords do not result in account lockout
-	private static Map<String, ILock> hostLocks = new HashMap<String, ILock>(); 
+	private static Map<String, ILock> hostLocks = new HashMap<>(); 
 
 	private IConnectionMethod method;
 	private String user;
@@ -390,13 +390,11 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 			if (validateOnly)
 				throw new CVSException(new CVSStatus(IStatus.OK, CVSMessages.ok));// 		
 			return new CVSRepositoryLocation(method, user, password, host, port, root, null /* encoding */, (user != null), (password != null));
-		}
-		catch (IndexOutOfBoundsException e) {
+		} catch (IndexOutOfBoundsException e) {
 			// We'll get here if anything funny happened while extracting substrings
 			IStatus status = new CVSStatus(IStatus.ERROR, errorMessage);
 			throw new CVSException(status);
-		}
-		catch (NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			IStatus status = new CVSStatus(IStatus.ERROR, errorMessage);
 			// We'll get here if we couldn't parse a number
 			throw new CVSException(status);
@@ -442,14 +440,10 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				}
 			}
 			IConnectionMethod[] methods = connectionMethods.toArray(new IConnectionMethod[0]);
-			Arrays.sort(methods, new Comparator(){
-				public int compare(Object o1, Object o2) {
-					if (o1 instanceof IConnectionMethod && o2 instanceof IConnectionMethod) {
-						IConnectionMethod cm1 = (IConnectionMethod) o1;
-						IConnectionMethod cm2 = (IConnectionMethod) o2;
-						return cm1.getName().compareTo(cm2.getName());
-					}
-					return 0;
+			Arrays.sort(methods, new Comparator<IConnectionMethod> () {
+				@Override
+				public int compare(IConnectionMethod cm1, IConnectionMethod cm2) {
+					return cm1.getName().compareTo(cm2.getName());
 				}});
 			pluggedInConnectionMethods = methods;
 		}
