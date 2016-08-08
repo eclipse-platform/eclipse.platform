@@ -21,26 +21,18 @@ import org.eclipse.team.internal.ccvs.core.IServerConnection;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TestConnectionMethod implements IConnectionMethod {
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IConnectionMethod#getName()
-	 */
+	@Override
 	public String getName() {
 		return "test";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IConnectionMethod#createConnection(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, java.lang.String)
-	 */
+	@Override
 	public IServerConnection createConnection(ICVSRepositoryLocation location, String password) {
 		return TestConnection.createConnection(location, password);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IConnectionMethod#disconnect(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation)
-	 */
+	@Override
 	public void disconnect(ICVSRepositoryLocation location) {
 		// Nothing need to be done
 	}
-
 }

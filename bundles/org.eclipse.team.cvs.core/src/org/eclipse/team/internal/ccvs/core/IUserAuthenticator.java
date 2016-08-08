@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.core;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,7 +21,6 @@ import java.util.Map;
  * appropriate for the given repository type.
  */
 public interface IUserAuthenticator {
-	
 	/**
 	 * Button id for an "Ok" button (value 0).
 	 */
@@ -148,5 +148,5 @@ public interface IUserAuthenticator {
 	 *         (as values) or <code>null</code> if the operation is to be
 	 *         canceled
 	 */
-	public abstract Map promptToConfigureRepositoryLocations(Map alternativeMap);
+	public abstract Map<ICVSRepositoryLocation, List<String>> promptToConfigureRepositoryLocations(Map<ICVSRepositoryLocation, List<String>> alternativeMap);
 }

@@ -104,7 +104,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.internal.decorators.DecoratorManager;
 
 public class EclipseTest extends ResourceTest { 
-
 	private static final int LOCK_WAIT_TIME = 1000;
     private static final String CVS_TEST_LOCK_FILE = ".lock";
     private static final String CVS_TEST_LOCK_PROJECT  = "cvsTestLock";
@@ -154,14 +153,14 @@ public class EclipseTest extends ResourceTest {
 	}
 
 
-	public static Test suite(Class c) {
+	public static Test suite(Class<?> c) {
 		String testName = System.getProperty("eclipse.cvs.testName");
 		if (testName == null) {
 			TestSuite suite = new TestSuite(c);
 			return new CVSTestSetup(suite);
 		} else {
 			try {
-				return new CVSTestSetup((Test)c.getConstructor(new Class[] { String.class }).newInstance(new Object[] {testName}));
+				return new CVSTestSetup((Test) c.getConstructor(new Class[] { String.class }).newInstance(new Object[] {testName}));
 			} catch (Exception e) {
 				fail(e.getMessage());
 				// Above will throw so below is never actually reached
@@ -284,7 +283,7 @@ public class EclipseTest extends ResourceTest {
 	 * Delete the resources from an existing container and the changes to CVS
 	 */
 	public IResource[] changeResources(IContainer container, String[] hierarchy, boolean checkin) throws CoreException, TeamException {
-		List changedResources = new ArrayList(hierarchy.length);
+		List<IResource> changedResources = new ArrayList<>(hierarchy.length);
 		for (int i=0;i<hierarchy.length;i++) {
 			IResource resource = container.findMember(hierarchy[i]);
 			if (resource.getType() == IResource.FILE) {
@@ -292,7 +291,7 @@ public class EclipseTest extends ResourceTest {
 				setContentsAndEnsureModified((IFile)resource);
 			}
 		}
-		IResource[] resources = (IResource[])changedResources.toArray(new IResource[changedResources.size()]);
+		IResource[] resources = changedResources.toArray(new IResource[changedResources.size()]);
 		if (checkin) commitResources(resources, IResource.DEPTH_ZERO);
 		return resources;
 	}
@@ -311,7 +310,7 @@ public class EclipseTest extends ResourceTest {
 	/**
 	 * Delete the resources and mark them as outgoing deletions.
 	 * Deleting the resources is enough since the move/delete hook will
-	 * tak care of making them outgoing deletions.
+	 * take care of making them outgoing deletions.
 	 */
 	protected void deleteResources(IResource[] resources) throws TeamException, CoreException {
 		if (resources.length == 0) return;
@@ -363,19 +362,24 @@ public class EclipseTest extends ResourceTest {
             options = Command.NO_LOCAL_OPTIONS;
         if (isModelSyncEnabled() && options == Command.NO_LOCAL_OPTIONS) {
 	        executeHeadless(new ModelUpdateOperation(null, mappings, false) {
-	        	protected boolean isAttemptHeadlessMerge() {
+	        	@Override
+				protected boolean isAttemptHeadlessMerge() {
 	        		return true;
 	        	}
-	        	protected void handlePreviewRequest() {
+	        	@Override
+				protected void handlePreviewRequest() {
 	        		// Don't preview anything
 	        	}
-	        	protected void handleNoChanges() {
+	        	@Override
+				protected void handleNoChanges() {
 	        		// Do nothing
 	        	}
-	        	protected void handleValidationFailure(IStatus status) {
+	        	@Override
+				protected void handleValidationFailure(IStatus status) {
 	        		// Do nothing
 	        	}
-	        	protected void handleMergeFailure(IStatus status) {
+	        	@Override
+				protected void handleMergeFailure(IStatus status) {
 	        		// Do nothing
 	        	}
 	        });
@@ -397,16 +401,20 @@ public class EclipseTest extends ResourceTest {
     protected void replace(ResourceMapping[] mappings) throws CVSException {
     	if (isModelSyncEnabled()) {
 	        executeHeadless(new ModelReplaceOperation(null, mappings, false) {
-	        	protected boolean promptForOverwrite() {
+	        	@Override
+				protected boolean promptForOverwrite() {
 	        		return true;
 	        	}
-	        	protected void handlePreviewRequest() {
+	        	@Override
+				protected void handlePreviewRequest() {
 	        		// Don't prompt
 	        	}
-	        	protected void handleMergeFailure(IStatus status) {
+	        	@Override
+				protected void handleMergeFailure(IStatus status) {
 	        		// Don't prompt
 	        	}
-	        	protected void handleValidationFailure(IStatus status) {
+	        	@Override
+				protected void handleValidationFailure(IStatus status) {
 	        		// Don't prompt
 	        	}
 	        });
@@ -536,11 +544,11 @@ public class EclipseTest extends ResourceTest {
 	 * resources are auto-managed, if false, they are left un-managed.
 	 */
 	public IResource[] buildResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
-		List resources = new ArrayList(hierarchy.length + 1);
+		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
 		if (includeContainer)
 			resources.add(container);
-		IResource[] result = (IResource[]) resources.toArray(new IResource[resources.size()]);
+		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		ensureExistsInWorkspace(result, true);
 		for (int i = 0; i < result.length; i++) {
 			if (result[i].getType() == IResource.FILE)
@@ -553,37 +561,36 @@ public class EclipseTest extends ResourceTest {
 	/*
 	 * Checkout a copy of the project into a project with the given postfix
 	 */
-	 protected IProject checkoutCopy(IProject project, String postfix) throws TeamException {
+	protected IProject checkoutCopy(IProject project, String postfix) throws TeamException {
 		// Check the project out under a different name and validate that the results are the same
 		IProject copy = getWorkspace().getRoot().getProject(project.getName() + postfix);
 		checkout(getRepository(), copy, CVSWorkspaceRoot.getCVSFolderFor(project).getFolderSyncInfo().getRepository(), null, DEFAULT_MONITOR);
 		return copy;
-	 }
-	 
-	 protected IProject checkoutCopy(IProject project, CVSTag tag) throws TeamException {
+	}
+
+	protected IProject checkoutCopy(IProject project, CVSTag tag) throws TeamException {
 		// Check the project out under a different name and validate that the results are the same
 		IProject copy = getWorkspace().getRoot().getProject(project.getName() + tag.getName());
 		checkout(getRepository(), copy, 
-			CVSWorkspaceRoot.getCVSFolderFor(project).getFolderSyncInfo().getRepository(), 
-			tag, DEFAULT_MONITOR);
+				CVSWorkspaceRoot.getCVSFolderFor(project).getFolderSyncInfo().getRepository(), 
+				tag, DEFAULT_MONITOR);
 		return copy;
-	 }
-	 
+	}
+
 	public static void checkout(
-		final ICVSRepositoryLocation repository,
-		final IProject project,
-		final String sourceModule,
-		final CVSTag tag,
-		IProgressMonitor monitor)
-		throws TeamException {
-		
+			final ICVSRepositoryLocation repository,
+			final IProject project,
+			final String sourceModule,
+			final CVSTag tag,
+			IProgressMonitor monitor)
+			throws TeamException {
 		RemoteFolder remote = new RemoteFolder(null, repository, sourceModule == null ? project.getName() : sourceModule, tag);
 		executeHeadless(new CheckoutSingleProjectOperation(null, remote, project, null, false /* the project is not preconfigured */) {
+			@Override
 			public boolean promptToOverwrite(String title, String msg, IResource resource) {
 				return true;
 			}
 		});
-
 	}
 
 	protected IProject checkoutProject(IProject project, String moduleName, CVSTag tag) throws TeamException {
@@ -591,7 +598,8 @@ public class EclipseTest extends ResourceTest {
 	 		project = getWorkspace().getRoot().getProject(new Path(moduleName).lastSegment());
 		checkout(getRepository(), project, moduleName, tag, DEFAULT_MONITOR);
 		return project;
-	 }
+	}
+
 	/*
 	 * This method creates a project with the given resources, imports
 	 * it to CVS and checks it out
@@ -776,12 +784,12 @@ public class EclipseTest extends ResourceTest {
 		ICVSRemoteResource[] members1 = container1.getMembers(DEFAULT_MONITOR);
 		ICVSRemoteResource[] members2 = container2.getMembers(DEFAULT_MONITOR);
 		assertTrue("Number of members differ for " + path, members1.length == members2.length);
-		Map memberMap2 = new HashMap();
-		for (int i= 0;i <members2.length;i++) {
+		Map<String, ICVSRemoteResource> memberMap2 = new HashMap<>();
+		for (int i= 0; i < members2.length; i++) {
 			memberMap2.put(members2[i].getName(), members2[i]);
 		}
-		for (int i= 0;i <members1.length;i++) {
-			ICVSRemoteResource member2 = (ICVSRemoteResource)memberMap2.get(members1[i].getName());
+		for (int i= 0; i < members1.length; i++) {
+			ICVSRemoteResource member2 = memberMap2.get(members1[i].getName());
 			assertNotNull("Resource does not exist: " + path.append(members1[i].getName()) + member2);
 			assertEquals(path, members1[i], member2, includeTags);
 		}
@@ -862,6 +870,7 @@ public class EclipseTest extends ResourceTest {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			resource.accept(new IResourceVisitor() {
+				@Override
 				public boolean visit(IResource resource) throws CoreException {
 					if (resource.getType() == IResource.FILE) {
 						assertEquals(isReadOnly, resource.getResourceAttributes().isReadOnly());
@@ -991,14 +1000,14 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void commitNewProject(IProject project) throws CoreException, CVSException, TeamException {
-		List resourcesToAdd = new ArrayList();
+		List<IResource> resourcesToAdd = new ArrayList<IResource>();
 		IResource[] members = project.members();
 		for (int i = 0; i < members.length; i++) {
 			if ( ! CVSWorkspaceRoot.getCVSResourceFor(members[i]).isIgnored()) {
 				resourcesToAdd.add(members[i]);
 			}
 		}
-		addResources((IResource[]) resourcesToAdd.toArray(new IResource[resourcesToAdd.size()]));
+		addResources(resourcesToAdd.toArray(new IResource[resourcesToAdd.size()]));
 		commitResources(new IResource[] {project}, IResource.DEPTH_INFINITE);
 		// Pause to ensure that future operations happen later than timestamp of committed resources
 		waitMsec(1500);
@@ -1008,6 +1017,7 @@ public class EclipseTest extends ResourceTest {
 	 * Return an input stream with some random text to use
 	 * as contents for a file resource.
 	 */
+	@Override
 	public InputStream getRandomContents() {
 		return getRandomContents(RANDOM_CONTENT_SIZE);
 	}
@@ -1081,21 +1091,29 @@ public class EclipseTest extends ResourceTest {
 	
 	public static void waitForSubscriberInputHandling(SubscriberSyncInfoCollector input) {
 		input.waitForCollector(new IProgressMonitor() {
+			@Override
 			public void beginTask(String name, int totalWork) {
 			}
+			@Override
 			public void done() {
 			}
+			@Override
 			public void internalWorked(double work) {
 			}
+			@Override
 			public boolean isCanceled() {
 				return false;
 			}
+			@Override
 			public void setCanceled(boolean value) {
 			}
+			@Override
 			public void setTaskName(String name) {
 			}
+			@Override
 			public void subTask(String name) {
 			}
+			@Override
 			public void worked(int work) {
 				while (Display.getCurrent().readAndDispatch()) {}
 			}
@@ -1120,16 +1138,15 @@ public class EclipseTest extends ResourceTest {
 			throw CVSException.wrapException(ex);
 	}
     
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
     	RepositoryProviderOperation.consultModelsWhenBuildingScope = false;
     	if (CVSTestSetup.ENSURE_SEQUENTIAL_ACCESS)
     		obtainCVSServerLock();
         super.setUp();
     }
 
-    /* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
+	@Override
 	protected void tearDown() throws Exception {
 		RepositoryProviderOperation.consultModelsWhenBuildingScope = true;
 		if (CVSTestSetup.ENSURE_SEQUENTIAL_ACCESS)
@@ -1332,9 +1349,7 @@ public class EclipseTest extends ResourceTest {
 			}
 	}
 	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#runBare()
-	 */
+	@Override
 	public void runBare() throws Throwable {
 		try {
 			super.runBare();
@@ -1364,9 +1379,7 @@ public class EclipseTest extends ResourceTest {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.tests.harness.EclipseWorkspaceTest#ensureDoesNotExistInWorkspace(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public void ensureDoesNotExistInWorkspace(IResource resource) {
 		// Overridden to change how the workspace is deleted on teardown
 		if (resource.getType() == IResource.ROOT) {
@@ -1400,6 +1413,7 @@ public class EclipseTest extends ResourceTest {
 		if (resource.exists()) {
 			try {
 				resource.accept(new IResourceVisitor() {
+					@Override
 					public boolean visit(IResource resource) throws CoreException {
 						ResourceAttributes attrs = resource.getResourceAttributes();
 						if (resource.exists() && attrs.isReadOnly()) {
@@ -1421,8 +1435,9 @@ public class EclipseTest extends ResourceTest {
 	 * contains any failures
 	 */
 	public void ensureDoesNotExistInWorkspace(final IProject[] projects) {
-		final Map failures = new HashMap();
+		final Map<IProject, CoreException> failures = new HashMap<IProject, CoreException>();
 		IWorkspaceRunnable body = new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) {
 				for (int i = 0; i < projects.length; i++) {
 					try {
@@ -1454,8 +1469,8 @@ public class EclipseTest extends ResourceTest {
 		if (!failures.isEmpty()) {
 			StringBuffer text = new StringBuffer();
 			text.append("Could not delete all projects: ");
-			for (Iterator iter = failures.keySet().iterator(); iter.hasNext();) {
-				IProject project = (IProject) iter.next();
+			for (Iterator<IProject> iter = failures.keySet().iterator(); iter.hasNext();) {
+				IProject project = iter.next();
 				text.append(project.getName());
 			}
 			fail(text.toString());
@@ -1476,10 +1491,8 @@ public class EclipseTest extends ResourceTest {
         }
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#runTest()
-     */
-    protected void runTest() throws Throwable {
+    @Override
+	protected void runTest() throws Throwable {
         if (!CVSTestSetup.RECORD_PROTOCOL_TRAFFIC) {
             super.runTest();
             return;
@@ -1507,7 +1520,8 @@ public class EclipseTest extends ResourceTest {
         }
     }
     
-    protected void cleanup() throws CoreException {
+    @Override
+	protected void cleanup() throws CoreException {
 		ensureDoesNotExistInWorkspace(getWorkspace().getRoot());
 		getWorkspace().save(true, null);
 		//don't leak builder jobs, since they may affect subsequent tests

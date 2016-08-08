@@ -46,10 +46,8 @@ import org.osgi.service.prefs.Preferences;
  * 
  * Instances must be disposed of when no longer needed in order to 
  * notify the authenticator so cached properties can be cleared
- * 
  */
 public class CVSRepositoryLocation extends PlatformObject implements ICVSRepositoryLocation, IUserInfo {
-
 	/**
 	 * Top secure preferences node to cache CVS information
 	 */
@@ -90,7 +88,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	
 	// Locks for ensuring that authentication to a host is serialized
 	// so that invalid passwords do not result in account lockout
-	private static Map hostLocks = new HashMap(); 
+	private static Map<String, ILock> hostLocks = new HashMap<String, ILock>(); 
 
 	private IConnectionMethod method;
 	private String user;
@@ -277,7 +275,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 			int end;
 			// For parsing alternative location format
 			int optionStart = location.indexOf(SEMICOLON);
-			HashMap hmOptions = new HashMap();
+			HashMap<String, String> hmOptions = new HashMap<>();
 
 			if (start == 0) {
 				end = location.indexOf(COLON, start + 1);
@@ -422,7 +420,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	 */
 	public static IConnectionMethod[] getPluggedInConnectionMethods() {
 		if(pluggedInConnectionMethods==null) {
-			List connectionMethods = new ArrayList();
+			List<Object> connectionMethods = new ArrayList<Object>();
 			
 			if (STANDALONE_MODE) {				
 				connectionMethods.add(new PServerConnectionMethod());
@@ -443,7 +441,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 					}
 				}
 			}
-			IConnectionMethod[] methods = (IConnectionMethod[]) connectionMethods.toArray(new IConnectionMethod[0]);
+			IConnectionMethod[] methods = connectionMethods.toArray(new IConnectionMethod[0]);
 			Arrays.sort(methods, new Comparator(){
 				public int compare(Object o1, Object o2) {
 					if (o1 instanceof IConnectionMethod && o2 instanceof IConnectionMethod) {
@@ -660,14 +658,14 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				ICVSRemoteResource[] resources = root.members(progress);
 				// There is the off chance that there is a file in the root of the repository.
 				// This is not supported by cvs so we need to make sure there are no files
-				List folders = new ArrayList(resources.length);
+				List<ICVSRemoteResource> folders = new ArrayList<ICVSRemoteResource>(resources.length);
 				for (int i = 0; i < resources.length; i++) {
 					ICVSRemoteResource remoteResource = resources[i];
 					if (remoteResource.isContainer()) {
 						folders.add(remoteResource);
 					}
 				}
-				return (ICVSRemoteResource[]) folders.toArray(new ICVSRemoteResource[folders.size()]);
+				return folders.toArray(new ICVSRemoteResource[folders.size()]);
 			}
 		} catch (CVSException e){
 			// keep current CVSException
@@ -757,7 +755,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
         Policy.checkCanceled(monitor);
 		ILock hostLock;
 		synchronized(hostLocks) {
-			hostLock = (ILock)hostLocks.get(getHost());
+			hostLock = hostLocks.get(getHost());
 			if (hostLock == null) {
 				hostLock = Job.getJobManager().newLock();
 				hostLocks.put(getHost(), hostLock);
@@ -1124,7 +1122,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, PORT_VARIABLE, new Integer(port).toString());
 
 		// Build the command list to be sent to the OS.
-		List commands = new ArrayList();
+		List<String> commands = new ArrayList<String>();
 		commands.add(CVS_RSH);
 		StringTokenizer tokenizer = new StringTokenizer(CVS_RSH_PARAMETERS);
 		while (tokenizer.hasMoreTokens()) {
@@ -1133,7 +1131,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 		commands.add(CVS_SERVER);
 		commands.add(INVOKE_SVR_CMD);
-		return (String[]) commands.toArray(new String[commands.size()]);
+		return commands.toArray(new String[commands.size()]);
 	}
 
 	/*

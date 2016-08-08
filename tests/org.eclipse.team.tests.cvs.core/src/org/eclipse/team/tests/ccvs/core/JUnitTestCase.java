@@ -34,9 +34,9 @@ import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 
 /**
- * Base-class to the low level-testcases for the Session.
- * Supplies convinience-methods and default attributes for the testcases.
- * Especally data for a default-connection to the server is stored.
+ * Base-class to the low level test cases for the Session.
+ * Supplies convenience-methods and default attributes for the test cases.
+ * Especially data for a default-connection to the server is stored.
  */
 public abstract class JUnitTestCase extends TestCase {
 	protected static final int RANDOM_CONTENT_SIZE = 10000;
@@ -47,7 +47,7 @@ public abstract class JUnitTestCase extends TestCase {
 	public static final String[] EMPTY_ARGS = new String[0];
 
 	/**
-	 * Init the options and arguments to standard-values
+	 * Initializes the options and arguments to standard-values
 	 */
 	public JUnitTestCase(String name) {
 		super(name);
@@ -61,10 +61,12 @@ public abstract class JUnitTestCase extends TestCase {
 	}
 
 	/**
-	 * Delete a project/resource form the specified cvs-server
+	 * Deletes a project/resource form the specified cvs-server
+	 *
+	 * @throws CVSException 
 	 */
 	protected static void magicDeleteRemote(ICVSRepositoryLocation location, String remoteName)
-		throws CVSException {
+			throws CVSException {
 		CVSTestSetup.executeRemoteCommand(location, "rm -rf " + 
 			new Path(location.getRootDirectory()).append(remoteName).toString());
 	}
@@ -108,13 +110,12 @@ public abstract class JUnitTestCase extends TestCase {
 	 *  Compare Arrays and find the first different element
 	 */
 	protected static void assertEqualsArrays(Object[] obArr1, Object[] obArr2) {
-		
 		assertEquals("Called assertEqualsArrays with null on one side", obArr1 == null,obArr2 == null);
 		if (obArr1 == null) {
 			return;
 		}
 
-		for (int i=0; i<Math.min(obArr1.length,obArr2.length); i++) {
+		for (int i = 0; i < Math.min(obArr1.length,obArr2.length); i++) {
 			assertEquals("At Element " + i + " of the array",obArr1[i],obArr2[i]);
 		}
 		
@@ -130,14 +131,15 @@ public abstract class JUnitTestCase extends TestCase {
 			assertEquals("Arrays of different length",obArr2[obArr1.length],null);
 			return;
 		}
-			
 	}
 	
 	/**
-	 * Write text lines to file from an array of strings.
+	 * Writes text lines to file from an array of strings.
+	 *
+	 * @throws IOException 
 	 */
 	protected static void writeToFile(IFile file, String[] contents)
-		throws IOException, CoreException {
+			throws IOException, CoreException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		PrintStream os = new PrintStream(bos);
 		try {
@@ -157,13 +159,14 @@ public abstract class JUnitTestCase extends TestCase {
 	}
 	
 	/**
-	 * Read text lines from file into an array of strings.
+	 * Reads text lines from file into an array of strings.
 	 */
 	protected static String[] readFromFile(IFile file)
-		throws IOException, CoreException {
-		if (! file.exists()) return null;
+			throws IOException, CoreException {
+		if (!file.exists())
+			return null;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
-		List fileContentStore = new ArrayList();
+		List<String> fileContentStore = new ArrayList<>();
 		try {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -172,7 +175,7 @@ public abstract class JUnitTestCase extends TestCase {
 		} finally {
 			reader.close();
 		}
-		return (String[]) fileContentStore.toArray(new String[fileContentStore.size()]);
+		return fileContentStore.toArray(new String[fileContentStore.size()]);
 	}
 
 	/**
@@ -212,23 +215,22 @@ public abstract class JUnitTestCase extends TestCase {
 	}
 	
 	/**
-	 * genertates Random content meand to be written in a File
+	 * Generates random content meant to be written in a file.
 	 */
 	protected static String createRandomContent() {
-		
 		StringBuffer content = new StringBuffer();
 		int contentSize;
 		
 		content.append("Random file generated for test" + PLATFORM_NEWLINE);
 		
 		contentSize = (int) Math.round(RANDOM_CONTENT_SIZE * 2 * Math.random());
-		for (int i=0; i<contentSize; i++) {
+		for (int i = 0; i <contentSize; i++) {
 			
-			if (Math.random()>0.99) {
+			if (Math.random() > 0.99) {
 				content.append(PLATFORM_NEWLINE);
 			}
 
-			if (Math.random()>0.99) {
+			if (Math.random() > 0.99) {
 				content.append("\n");
 			}
 			
@@ -289,7 +291,7 @@ public abstract class JUnitTestCase extends TestCase {
 	}
 		
 	/**
-	 * Build the given fileStructure, all files are going to have
+	 * Builds the given fileStructure, all files are going to have
 	 * sample content, all folders on the way are created.
 	 */
 	protected static void createRandomFile(IContainer parent, String[] fileNameArray) 
@@ -318,12 +320,11 @@ public abstract class JUnitTestCase extends TestCase {
 	
 	/**
 	 * Call this method from the main-method of your test-case.
-	 * It initialises some required parameter and runs the testcase.
+	 * It initializes some required parameter and runs the test case.
 	 */
-	protected static void run(Class test) {
+	protected static void run(Class<? extends TestCase> test) {
 		// XXX is this property used anywhere?
 		System.setProperty("eclipse.cvs.standalone", "true");
 		TestRunner.run(test);
 	}
 }
-

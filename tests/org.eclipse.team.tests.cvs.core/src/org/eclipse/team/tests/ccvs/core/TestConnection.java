@@ -29,12 +29,10 @@ import org.eclipse.team.internal.ccvs.core.connection.CVSAuthenticationException
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TestConnection implements IServerConnection {
-
 	public static TestConnection currentConnection;
 	
-	public static List previousLines;
+	public static List<String> previousLines;
 	public static StringBuffer currentLine;
-	
 	
 	private ByteArrayInputStream serverResponse;
 	
@@ -46,38 +44,31 @@ public class TestConnection implements IServerConnection {
 	}
 	
 	public static String getLastLine() {
-		if (previousLines.isEmpty()) return null;
-		return (String)previousLines.get(previousLines.size() - 1);
+		if (previousLines.isEmpty())
+			return null;
+		return previousLines.get(previousLines.size() - 1);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IServerConnection#open(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void open(IProgressMonitor monitor) throws IOException, CVSAuthenticationException {
 		resetStreams();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IServerConnection#close()
-	 */
+	@Override
 	public void close() throws IOException {
 		resetStreams();
 	}
 
-	/**
-	 * 
-	 */
 	private void resetStreams() {
 		currentLine = new StringBuffer();
-		previousLines = new ArrayList();
+		previousLines = new ArrayList<>();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IServerConnection#getInputStream()
-	 */
+	@Override
 	public InputStream getInputStream() {
 		// TODO Auto-generated method stub
 		return new InputStream() {
+			@Override
 			public int read() throws IOException {
 				if (serverResponse == null) {
 					throw new IOException("Not prepared to make a response");
@@ -88,11 +79,10 @@ public class TestConnection implements IServerConnection {
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IServerConnection#getOutputStream()
-	 */
+	@Override
 	public OutputStream getOutputStream() {
 		return new OutputStream() {
+			@Override
 			public void write(int output) throws IOException {
 				byte b = (byte)output;
 				if (b == '\n') {

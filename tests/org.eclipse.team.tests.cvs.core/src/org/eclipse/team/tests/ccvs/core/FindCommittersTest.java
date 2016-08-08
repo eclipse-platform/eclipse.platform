@@ -29,7 +29,7 @@ public class FindCommittersTest extends EclipseTest {
 
 	public class FindCommittersOperation extends RemoteLogOperation {
 		private LogEntryCache cache;
-		private Set authors;
+		private Set<String> authors;
 
 		public FindCommittersOperation(IWorkbenchPart part,
 				ICVSRemoteResource[] remoteResources, CVSTag tag1, CVSTag tag2,
@@ -38,11 +38,14 @@ public class FindCommittersTest extends EclipseTest {
 			this.cache = cache;
 		}
 
+		@Override
 		protected LocalOption[] getLocalOptions(CVSTag tag1, CVSTag tag2) {
 			return new Command.LocalOption[] {RLog.NO_TAGS, RLog.ONLY_INCLUDE_CHANGES, RLog.REVISIONS_ON_DEFAULT_BRANCH, new LocalOption("-d" + tag1.asDate() + "<" + tag2.asDate().toString(), null) {
 				
 			}};
 		}
+
+		@Override
 		protected void execute(ICVSRepositoryLocation location,
 				ICVSRemoteResource[] remoteResources, IProgressMonitor monitor)
 				throws CVSException {
@@ -54,9 +57,9 @@ public class FindCommittersTest extends EclipseTest {
 			authors = getAuthors(cache);
 		}
 		
-		private Set getAuthors(RemoteLogOperation.LogEntryCache logEntryCache) {
+		private Set<String> getAuthors(RemoteLogOperation.LogEntryCache logEntryCache) {
 			String[] paths = logEntryCache.getCachedFilePaths();
-			Set authors = new HashSet();
+			Set<String> authors = new HashSet<>();
 			for (int i = 0; i < paths.length; i++) {
 				String path = paths[i];
 				ILogEntry[] entries = logEntryCache.getLogEntries(path);
@@ -68,7 +71,7 @@ public class FindCommittersTest extends EclipseTest {
 			return authors;
 		}
 
-		public Set getAuthors() {
+		public Set<String> getAuthors() {
 			return authors;
 		}
 	}
@@ -94,23 +97,20 @@ public class FindCommittersTest extends EclipseTest {
 	public void testFetchLogs() throws CVSException, InvocationTargetException, InterruptedException {
 		CVSRepositoryLocation location = CVSRepositoryLocation.fromString(":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse");
 		ICVSRemoteResource[] members = location.members(null, false, DEFAULT_MONITOR);
-		Set authors = fetchLogs(members);
-		for (Iterator iterator = authors.iterator(); iterator.hasNext();) {
-			String name = (String) iterator.next();
+		Set<String> authors = fetchLogs(members);
+		for (String name : authors) {
 			System.out.println(name);
 		}
-		
 	}
 
-	private Set fetchLogs(
+	private Set<String> fetchLogs(
 			ICVSRemoteResource[] members) throws InvocationTargetException,
 			InterruptedException {
-		CVSTag tag1 = new CVSTag(new Date(101, 10, 07));
+		CVSTag tag1 = new CVSTag(new GregorianCalendar(2001, 10, 7).getTime());
 		CVSTag tag2 = new CVSTag(new Date());
 		RemoteLogOperation.LogEntryCache logEntryCache = new RemoteLogOperation.LogEntryCache();
 		FindCommittersOperation op = new FindCommittersOperation(null, members, tag1, tag2, logEntryCache);
 		op.run(DEFAULT_MONITOR);
 		return op.getAuthors();
 	}
-	
 }
