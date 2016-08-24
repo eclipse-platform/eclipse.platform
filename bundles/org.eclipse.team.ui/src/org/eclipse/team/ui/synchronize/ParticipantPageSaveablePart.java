@@ -42,7 +42,6 @@ import org.eclipse.ui.part.IPageBookViewPage;
  */
 @Deprecated
 public class ParticipantPageSaveablePart extends PageSaveablePart implements IContentChangeListener {
-
 	private ISynchronizeParticipant participant;
 	private ISynchronizePageConfiguration pageConfiguration;
 	private Image titleImage;
@@ -280,7 +279,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	}
 
 	private ISynchronizationCompareInput asModelCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Utils.getAdapter(input, ISynchronizationCompareInput.class);
+		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	private SyncInfoModelElement getElement(ISelection selection) {

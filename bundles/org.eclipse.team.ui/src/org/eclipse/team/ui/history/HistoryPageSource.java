@@ -11,6 +11,7 @@
 package org.eclipse.team.ui.history;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.internal.ui.Utils;
@@ -37,16 +38,16 @@ public abstract class HistoryPageSource implements IHistoryPageSource {
 			if (provider != null) {
 				IFileHistoryProvider fileHistoryProvider = provider.getFileHistoryProvider();
 				if (fileHistoryProvider != null) {
-					IHistoryPageSource pageSource = (IHistoryPageSource)Utils.getAdapter(fileHistoryProvider, IHistoryPageSource.class);
+					IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(fileHistoryProvider, IHistoryPageSource.class);
 					if (pageSource != null)
 						return pageSource;
 				}
-				IHistoryPageSource pageSource = (IHistoryPageSource)Utils.getAdapter(provider, IHistoryPageSource.class);
+				IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(provider, IHistoryPageSource.class);
 				if (pageSource != null)
 					return pageSource;
 			}
 		}
-		IHistoryPageSource pageSource = (IHistoryPageSource)Utils.getAdapter(object, IHistoryPageSource.class);
+		IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(object, IHistoryPageSource.class);
 		return pageSource;
 	}
 

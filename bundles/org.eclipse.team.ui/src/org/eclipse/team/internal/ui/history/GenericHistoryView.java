@@ -525,7 +525,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 					SyncInfoModelElement syncInfoModelElement = (SyncInfoModelElement) lastSelectedElement;
 					resource = syncInfoModelElement.getSyncInfo().getLocal();
 				} else {
-					resource= Utils.getAdapter(lastSelectedElement, IResource.class);
+					resource= Adapters.adapt(lastSelectedElement, IResource.class);
 				}
 				if (resource != null)
 					showHistoryPageFor(resource, false, false, null);
@@ -627,7 +627,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			return pageSource;
 		IResource resource = Utils.getResource(object);
 		if (resource == null) {
-			return Utils.getAdapter(object, IHistoryPageSource.class);
+			return Adapters.adapt(object, IHistoryPageSource.class);
 		} else {
 			if (resource.getProject() == null)
 				return null;
@@ -799,7 +799,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 			showHistory(file); /* don't fetch if already cached */
 		} else {
 			// see if it adapts to an IHistoryPageSource
-			Object pageSource = Utils.getAdapter(input, IHistoryPageSource.class);
+			Object pageSource = Adapters.adapt(input, IHistoryPageSource.class);
 			if (pageSource != null)
 				showHistory(input);
 		}

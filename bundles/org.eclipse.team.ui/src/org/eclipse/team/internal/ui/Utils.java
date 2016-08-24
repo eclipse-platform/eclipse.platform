@@ -619,7 +619,7 @@ public class Utils {
                 if (isContributed) {
                     adapted = getResource(element);
                 } else {
-                    adapted = getAdapter(element, IResource.class);
+                    adapted = Adapters.adapt(element, IResource.class);
                 }
                 if (adapted instanceof IResource) {
                     IResource resource = (IResource) adapted;
@@ -631,7 +631,7 @@ public class Utils {
                     if (isContributed) {
                         adapted = getResourceMapping(element);
                     } else {
-                        adapted = getAdapter(element, ResourceMapping.class);
+                        adapted = Adapters.adapt(element, ResourceMapping.class);
                     }
                     if (adapted instanceof ResourceMapping && includeMappingResources) {
                         isResource = true;
@@ -676,10 +676,6 @@ public class Utils {
     public static IResource[] getContributedResources(Object[] elements) {
         return getResources(elements, null, true /* isContributed */, true /* isIncudeMappings */);
     }
-
-	public static <T> T getAdapter(Object element, Class<T> adapterType) {
-		return Adapters.adapt(element, adapterType);
-	}
 
 	/**
 	 * Return whether any sync nodes in the given selection or their

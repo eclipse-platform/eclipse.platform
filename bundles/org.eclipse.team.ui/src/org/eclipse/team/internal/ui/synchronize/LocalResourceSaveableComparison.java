@@ -367,7 +367,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 			if (fileElement instanceof LocalResourceTypedElement) {
 				LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
 				if (lrte.isConnected()) {
-					ISharedDocumentAdapter sda = (ISharedDocumentAdapter)Utils.getAdapter(lrte, ISharedDocumentAdapter.class);
+					ISharedDocumentAdapter sda = (ISharedDocumentAdapter)Adapters.adapt(lrte, ISharedDocumentAdapter.class);
 					if (sda != null) {
 						IEditorInput input = sda.getDocumentKey(lrte);
 						if (input != null) {

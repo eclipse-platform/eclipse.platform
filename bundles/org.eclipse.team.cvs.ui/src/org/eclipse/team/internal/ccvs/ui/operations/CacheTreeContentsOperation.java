@@ -15,8 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.diff.IDiff;
@@ -32,7 +31,6 @@ import org.eclipse.team.internal.ccvs.core.client.listeners.UpdateListener;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFile;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -78,7 +76,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 			IResource local = getTree().getResource(node);
 			IFileRevision remote = getRemoteFileState(twd);
 			if (remote != null) {
-				IResourceVariant variant = (IResourceVariant)Utils.getAdapter(remote, IResourceVariant.class);
+				IResourceVariant variant = (IResourceVariant)Adapters.adapt(remote, IResourceVariant.class);
 				if (local.getType() == IResource.FILE 
 						&& isEnabledForDirection(twd.getDirection()) 
 						&& variant instanceof RemoteFile) {

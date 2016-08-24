@@ -221,7 +221,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	}
 
 	private ISynchronizationCompareInput asModelCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Utils.getAdapter(input, ISynchronizationCompareInput.class);
+		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	/* (non-Javadoc)

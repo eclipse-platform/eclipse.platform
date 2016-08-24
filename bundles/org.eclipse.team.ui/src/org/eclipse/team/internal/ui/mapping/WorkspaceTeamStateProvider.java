@@ -124,7 +124,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 	private ITeamStateProvider getDecoratedStateProvider(Object element) {
 		RepositoryProviderType type = getProviderType(element);
 		if (type != null)
-			return Utils.getAdapter(type, ITeamStateProvider.class);
+			return Adapters.adapt(type, ITeamStateProvider.class);
 		return null;
 	}
 

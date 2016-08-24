@@ -11,11 +11,11 @@
 package org.eclipse.team.examples.model.ui;
 
 import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.team.examples.model.ModelObject;
 import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.Saveable;
 
 /**
@@ -75,7 +75,7 @@ public class ModelSaveable extends Saveable {
 
 	public Object getAdapter(Class adapter) {
 		if (adapter == ResourceMapping.class) {
-			return Utils.getAdapter(getModelObject(), ResourceMapping.class);
+			return Adapters.adapt(getModelObject(), ResourceMapping.class);
 		}
 		return super.getAdapter(adapter);
 	}

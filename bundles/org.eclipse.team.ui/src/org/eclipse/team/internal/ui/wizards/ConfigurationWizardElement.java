@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.IConfigurationWizard;
 import org.eclipse.team.ui.IConfigurationWizardExtension;
 import org.eclipse.ui.*;
@@ -62,7 +61,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	public IWizard createExecutableExtension(IProject[] projects) throws CoreException {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IConfigurationWizard wizard = (IConfigurationWizard)createExecutableExtension();
-		IConfigurationWizardExtension extension = (IConfigurationWizardExtension)Utils.getAdapter(wizard, IConfigurationWizardExtension.class);
+		IConfigurationWizardExtension extension = (IConfigurationWizardExtension)Adapters.adapt(wizard, IConfigurationWizardExtension.class);
 		if (extension == null) {
 			if (projects.length == 1) {
 				wizard.init(workbench, projects[0]);

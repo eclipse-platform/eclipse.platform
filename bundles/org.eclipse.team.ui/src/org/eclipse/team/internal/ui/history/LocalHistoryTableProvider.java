@@ -15,6 +15,7 @@ import java.util.Date;
 import org.eclipse.compare.IModificationDate;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -306,7 +307,7 @@ public class LocalHistoryTableProvider {
 	}
 
 	protected long getModificationDate(Object element) {
-		IModificationDate md = Utils.getAdapter(element, IModificationDate.class);
+		IModificationDate md = Adapters.adapt(element, IModificationDate.class);
 		if (md != null)
 			return md.getModificationDate();
 		if (element instanceof IFileState) {

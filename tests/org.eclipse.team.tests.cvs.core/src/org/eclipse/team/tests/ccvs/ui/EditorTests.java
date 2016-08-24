@@ -16,6 +16,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.team.core.history.IFileRevision;
@@ -56,11 +57,11 @@ public class EditorTests extends EclipseTest {
 		ICVSRemoteFile remoteFile = (ICVSRemoteFile)CVSWorkspaceRoot.getRemoteResourceFor(project.getFile("file.cvsTest"));
 		IEditorPart part = CVSUIPlugin.getPlugin().openEditor(remoteFile, new NullProgressMonitor());
 		assertTrue("The proper remote editor was not opened", !(part instanceof TestEditor) && (part instanceof ITextEditor));
-		assertNotNull(Utils.getAdapter(part.getEditorInput(), IFileRevision.class));
-		assertNotNull(Utils.getAdapter(part.getEditorInput(), ICVSFile.class));
-		assertNotNull(Utils.getAdapter(part.getEditorInput(), IResourceVariant.class));
-		assertNotNull(Utils.getAdapter(part.getEditorInput(), IHistoryPageSource.class));
-		assertNotNull(Utils.getAdapter(part.getEditorInput(), IWorkbenchAdapter.class));
+		assertNotNull(Adapters.adapt(part.getEditorInput(), IFileRevision.class));
+		assertNotNull(Adapters.adapt(part.getEditorInput(), ICVSFile.class));
+		assertNotNull(Adapters.adapt(part.getEditorInput(), IResourceVariant.class));
+		assertNotNull(Adapters.adapt(part.getEditorInput(), IHistoryPageSource.class));
+		assertNotNull(Adapters.adapt(part.getEditorInput(), IWorkbenchAdapter.class));
 	}
 	
 }

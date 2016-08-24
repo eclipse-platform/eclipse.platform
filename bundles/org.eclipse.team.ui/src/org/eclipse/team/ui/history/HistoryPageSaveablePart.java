@@ -16,6 +16,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IContentChangeNotifier;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.*;
@@ -142,7 +143,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 		ICompareInput compareInput = super.getCompareInput(selection);
 		if (compareInput != null)
 			return compareInput;
-		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Utils.getAdapter(historyPage, IHistoryCompareAdapter.class);
+		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection ss= (IStructuredSelection) selection;
@@ -160,7 +161,7 @@ public class HistoryPageSaveablePart extends PageSaveablePart {
 	 */
 	@Override
 	protected void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException {
-		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Utils.getAdapter(historyPage, IHistoryCompareAdapter.class);
+		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
 			compareAdapter.prepareInput(input, configuration, monitor);
 		}

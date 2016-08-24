@@ -39,7 +39,6 @@ import org.eclipse.team.internal.ccvs.ui.subscriber.LogEntryCacheUpdateHandler;
 import org.eclipse.team.internal.ccvs.ui.subscriber.LogEntryCacheUpdateHandler.ILogsFetchedListener;
 import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 import org.eclipse.team.internal.core.subscribers.*;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
 
@@ -405,7 +404,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     }
 
     private SyncInfoToDiffConverter getConverter() {
-		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Utils.getAdapter(subscriber, SyncInfoToDiffConverter.class);
+		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
 		if (converter == null)
 			converter = SyncInfoToDiffConverter.getDefault();
 		return converter;

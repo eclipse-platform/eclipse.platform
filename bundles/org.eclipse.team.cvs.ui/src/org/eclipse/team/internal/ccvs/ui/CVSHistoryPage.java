@@ -1210,7 +1210,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 	
 	protected static ICVSFile getCVSFile(Object object) {
 		// First, adapt to IResource and ensure mapped to CVS
-		IResource resource = (IResource)Utils.getAdapter(object, IResource.class);
+		IResource resource = (IResource)Adapters.adapt(object, IResource.class);
 		if (resource instanceof IFile) {
 			RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
 			if (provider instanceof CVSTeamProvider)
@@ -1218,22 +1218,22 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 			return null;
 		}
 		// Second, try ICVSFile
-		ICVSFile remoteFile = (ICVSFile)Utils.getAdapter(object, ICVSFile.class);
+		ICVSFile remoteFile = (ICVSFile)Adapters.adapt(object, ICVSFile.class);
 		if (remoteFile != null) {
 			return remoteFile;
 		}
 		// Next, try ICVSResource
-		ICVSResource remote = (ICVSResource)Utils.getAdapter(object, ICVSResource.class);
+		ICVSResource remote = (ICVSResource)Adapters.adapt(object, ICVSResource.class);
 		if (remote instanceof RemoteFile) {
 			return (ICVSFile)remote;
 		}
 		// Next, try IResourceVariant
-		IResourceVariant variant = (IResourceVariant)Utils.getAdapter(object, IResourceVariant.class);
+		IResourceVariant variant = (IResourceVariant)Adapters.adapt(object, IResourceVariant.class);
 		if (variant instanceof RemoteFile) {
 			return (ICVSFile)remote;
 		}
 		// Finally, try IFileRevision
-		IFileRevision revision = (IFileRevision)Utils.getAdapter(object, IFileRevision.class);
+		IFileRevision revision = (IFileRevision)Adapters.adapt(object, IFileRevision.class);
 		if (revision instanceof CVSFileRevision) {
 			return ((CVSFileRevision)revision).getCVSRemoteFile();
 		}
@@ -1896,7 +1896,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 			if (fileObject instanceof LocalFileRevision) {
 				try {
 					IStorage storage = ((LocalFileRevision) fileObject).getStorage(new NullProgressMonitor());
-					if (Utils.getAdapter(storage, IFileState.class) != null) {
+					if (Adapters.adapt(storage, IFileState.class) != null) {
 						//local revision
 						label = NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_localRevision, new Object[]{element.getName(), ((FileRevisionTypedElement) element).getTimestamp()});
 					}

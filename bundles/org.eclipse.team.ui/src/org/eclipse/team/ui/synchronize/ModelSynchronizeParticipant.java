@@ -685,7 +685,7 @@ public class ModelSynchronizeParticipant extends
 	}
 
 	private SubscriberDiffTreeEventHandler getHandler() {
-		return (SubscriberDiffTreeEventHandler)Utils.getAdapter(context, SubscriberDiffTreeEventHandler.class);
+		return (SubscriberDiffTreeEventHandler)Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 	}
 
 }

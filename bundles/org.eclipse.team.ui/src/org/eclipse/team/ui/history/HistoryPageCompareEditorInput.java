@@ -15,8 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareViewerPane;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -111,7 +110,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 		ICompareInput compareInput = super.asCompareInput(selection);
 		if (compareInput != null)
 			return compareInput;
-		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Utils.getAdapter(historyPage, IHistoryCompareAdapter.class);
+		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
 			if (selection instanceof IStructuredSelection) {
 				IStructuredSelection ss= (IStructuredSelection) selection;
@@ -139,7 +138,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	protected void prepareInput(ICompareInput input,
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
-		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Utils.getAdapter(historyPage, IHistoryCompareAdapter.class);
+		IHistoryCompareAdapter compareAdapter = (IHistoryCompareAdapter) Adapters.adapt(historyPage, IHistoryCompareAdapter.class);
 		if (compareAdapter != null){
 			compareAdapter.prepareInput(input, configuration, monitor);
 		}

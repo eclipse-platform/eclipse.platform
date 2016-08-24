@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
@@ -25,7 +26,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.examples.model.*;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.navigator.*;
 
 /**
@@ -164,7 +164,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 
 			private ModelSaveablesProvider getSaveablesProvider() {
 				ITreeContentProvider provider = getActionSite().getContentService().getContentExtensionById("org.eclipse.team.examples.model.navigator").getContentProvider();
-				return (ModelSaveablesProvider)Utils.getAdapter(provider, SaveablesProvider.class);
+				return (ModelSaveablesProvider)Adapters.adapt(provider, SaveablesProvider.class);
 			}
 		};
 	}

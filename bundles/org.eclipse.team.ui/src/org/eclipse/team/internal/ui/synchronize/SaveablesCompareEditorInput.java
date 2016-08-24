@@ -103,8 +103,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	private ISaveablesLifecycleListener getSaveablesLifecycleListener(
 			IWorkbenchPart part) {
-		ISaveablesLifecycleListener listener = (ISaveablesLifecycleListener) Utils
-				.getAdapter(part, ISaveablesLifecycleListener.class);
+		ISaveablesLifecycleListener listener = (ISaveablesLifecycleListener) Adapters.adapt(part, ISaveablesLifecycleListener.class);
 		if (listener == null)
 			listener = (ISaveablesLifecycleListener) part.getSite().getService(
 					ISaveablesLifecycleListener.class);
@@ -834,7 +833,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		if (provider instanceof ITextViewer) {
 			final ITextViewer v= (ITextViewer)provider;
 			IDocument d= v.getDocument();
-			IDocument other= (IDocument)Utils.getAdapter(saveable, IDocument.class);
+			IDocument other= (IDocument)Adapters.adapt(saveable, IDocument.class);
 			if (d == other) {
 				if (element instanceof IResourceProvider) {
 					IResourceProvider rp= (IResourceProvider)element;

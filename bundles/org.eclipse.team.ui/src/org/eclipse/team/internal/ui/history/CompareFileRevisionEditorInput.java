@@ -279,10 +279,10 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 			if (fileObject instanceof LocalFileRevision){
 				try {
 					IStorage storage = ((LocalFileRevision) fileObject).getStorage(new NullProgressMonitor());
-					if (Utils.getAdapter(storage, IFileState.class) != null){
+					if (Adapters.adapt(storage, IFileState.class) != null){
 						//local revision
 						return TeamUIMessages.CompareFileRevisionEditorInput_0;
-					} else if (Utils.getAdapter(storage, IFile.class) != null) {
+					} else if (Adapters.adapt(storage, IFile.class) != null) {
 						//current revision
 						return TeamUIMessages.CompareFileRevisionEditorInput_1;
 					}

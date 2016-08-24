@@ -139,7 +139,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	}
 
 	private boolean hasChangesFor(String id, ISynchronizationCompareAdapter adapter, ISynchronizationContext context, int[] states, int mask) {
-		ITraversalFactory factory = (ITraversalFactory)Utils.getAdapter(adapter, ITraversalFactory.class);
+		ITraversalFactory factory = (ITraversalFactory)Adapters.adapt(adapter, ITraversalFactory.class);
 		ResourceTraversal[] traversals;
 		if (factory == null) {
 			traversals = context.getScope().getTraversals(id);
@@ -456,7 +456,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	}
 
 	private SubscriberDiffTreeEventHandler getHandler() {
-		return (SubscriberDiffTreeEventHandler)Utils.getAdapter(context, SubscriberDiffTreeEventHandler.class);
+		return (SubscriberDiffTreeEventHandler)Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 	}
 
 	private Composite getPointerToModel(Composite parent, final ModelProvider provider, String oldId) {

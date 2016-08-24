@@ -193,8 +193,7 @@ public class CommitWizard extends ResizableWizard {
 	private void getAllOutOfSync() throws CVSException {
 		try {
 			ISynchronizationContext context = getParticipant().getContext();
-			SubscriberDiffTreeEventHandler handler = (SubscriberDiffTreeEventHandler) Utils
-					.getAdapter(context, SubscriberDiffTreeEventHandler.class);
+			SubscriberDiffTreeEventHandler handler = (SubscriberDiffTreeEventHandler) Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 			handler.initializeIfNeeded();
 			Job.getJobManager().join(context, null);
 		} catch (InterruptedException e) {

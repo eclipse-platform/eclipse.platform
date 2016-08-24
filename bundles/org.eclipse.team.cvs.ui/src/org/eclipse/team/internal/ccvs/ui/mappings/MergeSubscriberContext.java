@@ -92,7 +92,7 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 						IThreeWayDiff twd = (IThreeWayDiff) diff;
 						if (twd.getKind() == IDiff.ADD && twd.getDirection() == IThreeWayDiff.INCOMING) {
 							IFileRevision remote = Utils.getRemote(diff);
-							IResourceVariant variant = (IResourceVariant)Utils.getAdapter(remote, IResourceVariant.class);
+							IResourceVariant variant = (IResourceVariant)Adapters.adapt(remote, IResourceVariant.class);
 							byte[] syncBytes = variant.asBytes();
 							MutableResourceSyncInfo info = new MutableResourceSyncInfo(resource.getName(), ResourceSyncInfo.ADDED_REVISION);
 							info.setKeywordMode(ResourceSyncInfo.getKeywordMode(syncBytes));

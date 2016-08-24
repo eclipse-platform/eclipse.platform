@@ -17,6 +17,7 @@ import org.eclipse.compare.IContentChangeNotifier;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.mapping.ModelProvider;
 import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ToolBarManager;
@@ -25,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.core.mapping.IMergeContext;
 import org.eclipse.team.internal.ui.Policy;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.PageSaveablePart;
 import org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter;
 import org.eclipse.team.ui.mapping.ISynchronizationCompareInput;
@@ -109,7 +109,7 @@ public class NonSyncMergePart extends PageSaveablePart {
 	 * Convert the compare input to a synchronize compare input.
 	 */
 	private ISynchronizationCompareInput asSynchronizationCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Utils.getAdapter(input, ISynchronizationCompareInput.class);
+		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	public void contentChanged(IContentChangeNotifier source) {

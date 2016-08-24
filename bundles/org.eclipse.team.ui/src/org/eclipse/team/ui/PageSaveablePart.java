@@ -19,8 +19,7 @@ import org.eclipse.compare.contentmergeviewer.IFlushable;
 import org.eclipse.compare.internal.CompareEditor;
 import org.eclipse.compare.internal.CompareEditorInputNavigator;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -428,7 +427,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 
 		for (int i=0; i<fDirtyViewers.size(); i++){
 			Object element = iter.next();
-			IFlushable flushable = (IFlushable)Utils.getAdapter(element, IFlushable.class);
+			IFlushable flushable = (IFlushable)Adapters.adapt(element, IFlushable.class);
 			if (flushable != null)
 				flushable.flush(monitor);
 		}

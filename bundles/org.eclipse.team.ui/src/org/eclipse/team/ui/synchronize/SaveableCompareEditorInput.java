@@ -211,7 +211,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 
 	private ISaveablesLifecycleListener getSaveablesLifecycleListener(
 			IWorkbenchPart part) {
-		ISaveablesLifecycleListener listener = (ISaveablesLifecycleListener)Utils.getAdapter(part, ISaveablesLifecycleListener.class);
+		ISaveablesLifecycleListener listener = (ISaveablesLifecycleListener)Adapters.adapt(part, ISaveablesLifecycleListener.class);
 		if (listener == null)
 			listener = (ISaveablesLifecycleListener) part.getSite().getService(ISaveablesLifecycleListener.class);
 		return listener;

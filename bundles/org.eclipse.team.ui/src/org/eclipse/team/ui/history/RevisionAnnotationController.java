@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.revisions.*;
 import org.eclipse.jface.viewers.*;
@@ -390,11 +391,11 @@ public abstract class RevisionAnnotationController {
 	 * @return the id of the entry
 	 */
 	protected String getRevisionId(Object historyEntry) {
-		IFileRevision revision= (IFileRevision)Utils.getAdapter(historyEntry, IFileRevision.class);
+		IFileRevision revision= (IFileRevision)Adapters.adapt(historyEntry, IFileRevision.class);
 		if (revision != null) {
 			return revision.getContentIdentifier();
 		}
-		IResourceVariant variant = (IResourceVariant)Utils.getAdapter(historyEntry, IResourceVariant.class);
+		IResourceVariant variant = (IResourceVariant)Adapters.adapt(historyEntry, IResourceVariant.class);
 		if (variant != null)
 			return variant.getContentIdentifier();
 		return null;

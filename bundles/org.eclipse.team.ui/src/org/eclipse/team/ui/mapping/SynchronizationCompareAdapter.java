@@ -69,8 +69,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	@Override
 	public String getName(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Utils.getAdapter(
-				object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			String label = adapter.getLabel(object);
 			if (label != null)
@@ -95,8 +94,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	@Override
 	public String getPathString(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Utils.getAdapter(
-				object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			List segments = new ArrayList();
 			Object parent = object;
@@ -143,8 +141,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	}
 
 	private ImageDescriptor getImageDescriptorFromWorkbenchAdapter(Object object) {
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Utils.getAdapter(
-				object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			return adapter.getImageDescriptor(object);
 		}

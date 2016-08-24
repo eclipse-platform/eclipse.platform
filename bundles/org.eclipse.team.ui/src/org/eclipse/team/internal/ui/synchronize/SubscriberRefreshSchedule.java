@@ -13,6 +13,7 @@ package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.Date;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ui.*;
@@ -78,7 +79,7 @@ public class SubscriberRefreshSchedule {
 			return null;
 		}
 		private IRefreshable getRefreshable(ISynchronizeParticipant participant) {
-			return (IRefreshable)Utils.getAdapter(participant, IRefreshable.class);
+			return (IRefreshable)Adapters.adapt(participant, IRefreshable.class);
 		}
 	};
 

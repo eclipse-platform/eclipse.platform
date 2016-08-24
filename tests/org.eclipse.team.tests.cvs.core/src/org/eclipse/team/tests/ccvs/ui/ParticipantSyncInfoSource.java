@@ -13,13 +13,13 @@ package org.eclipse.team.tests.ccvs.ui;
 import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.internal.ccvs.core.CVSMergeSubscriber;
 import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.synchronize.SynchronizeView;
 import org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource;
 import org.eclipse.team.ui.TeamUI;
@@ -47,7 +47,7 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 	}
 	
 	protected SyncInfoToDiffConverter getConverter(Subscriber subscriber) {
-		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Utils.getAdapter(subscriber, SyncInfoToDiffConverter.class);
+		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
 		if (converter == null)
 			converter = SyncInfoToDiffConverter.getDefault();
 		return converter;

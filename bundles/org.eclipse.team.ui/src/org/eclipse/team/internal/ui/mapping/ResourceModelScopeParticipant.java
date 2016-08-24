@@ -15,18 +15,15 @@ import java.util.Set;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.team.core.mapping.*;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.*;
 
 public class ResourceModelScopeParticipant implements
 		ISynchronizationScopeParticipant, IResourceChangeListener, IPropertyChangeListener {
-
 	private final ModelProvider provider;
 	private final ISynchronizationScope scope;
 
@@ -96,7 +93,7 @@ public class ResourceModelScopeParticipant implements
 				IAdaptable[] elements = set.getElements();
 				for (int j = 0; j < elements.length; j++) {
 					IAdaptable adaptable = elements[j];
-					ResourceMapping m = (ResourceMapping)Utils.getAdapter(adaptable, ResourceMapping.class);
+					ResourceMapping m = (ResourceMapping)Adapters.adapt(adaptable, ResourceMapping.class);
 					if (m != null) {
 						IProject[] p = m.getProjects();
 						for (int k = 0; k < p.length; k++) {

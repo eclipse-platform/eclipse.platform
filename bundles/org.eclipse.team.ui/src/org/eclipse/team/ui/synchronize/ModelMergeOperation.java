@@ -99,7 +99,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	private static IResourceMappingMerger getMerger(ModelProvider provider) {
 		Assert.isNotNull(provider);
-		return (IResourceMappingMerger)Utils.getAdapter(provider, IResourceMappingMerger.class);
+		return (IResourceMappingMerger)Adapters.adapt(provider, IResourceMappingMerger.class);
 	}
 
 	/**

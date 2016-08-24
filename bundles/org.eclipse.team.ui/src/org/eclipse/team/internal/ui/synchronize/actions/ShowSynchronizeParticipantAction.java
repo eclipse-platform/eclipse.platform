@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize.actions;
 
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
@@ -99,7 +100,7 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
                   drawImage(scheduledData, 0, 0);
                 }
             } else {
-    			SubscriberRefreshSchedule schedule = (SubscriberRefreshSchedule)Utils.getAdapter(participant, SubscriberRefreshSchedule.class);
+    			SubscriberRefreshSchedule schedule = (SubscriberRefreshSchedule)Adapters.adapt(participant, SubscriberRefreshSchedule.class);
                 if(schedule!=null && schedule.isEnabled()) {
                     drawImage(scheduledData, 0, 0);
                 }

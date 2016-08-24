@@ -13,8 +13,7 @@ package org.eclipse.team.ui.synchronize;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.subscribers.*;
@@ -92,7 +91,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	}
 
 	private int getSynchronizationState(ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
-		ISynchronizationCompareAdapter compareAdapter = (ISynchronizationCompareAdapter)Utils.getAdapter(mapping.getModelProvider(), ISynchronizationCompareAdapter.class);
+		ISynchronizationCompareAdapter compareAdapter = (ISynchronizationCompareAdapter)Adapters.adapt(mapping.getModelProvider(), ISynchronizationCompareAdapter.class);
 		try {
 			if (compareAdapter != null) {
 				int state = compareAdapter.getSynchronizationState(this, mapping, stateMask, monitor);

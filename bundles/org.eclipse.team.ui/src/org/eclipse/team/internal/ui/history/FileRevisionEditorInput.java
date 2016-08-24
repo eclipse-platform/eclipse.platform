@@ -20,7 +20,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -192,7 +191,7 @@ public class FileRevisionEditorInput extends PlatformObject implements IWorkbenc
 		Object object = super.getAdapter(adapter);
 		if (object != null)
 			return (T) object;
-		return Utils.getAdapter(fileRevision, adapter);
+		return Adapters.adapt(fileRevision, adapter);
 	}
 
 	@Override
