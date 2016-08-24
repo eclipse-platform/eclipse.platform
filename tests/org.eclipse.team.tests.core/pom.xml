@@ -18,6 +18,6 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.tests.core</artifactId>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.8.1-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 </project>
