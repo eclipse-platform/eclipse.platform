@@ -21,7 +21,6 @@ package org.eclipse.compare.structuremergeviewer;
  * @see Differencer
  */
 public interface IStructureComparator {
-
 	/**
 	 * Returns an iterator for all children of this object or <code>null</code>
 	 * if there are no children.
@@ -41,5 +40,6 @@ public interface IStructureComparator {
 	 * @return <code>true</code> if this object is the same as the other argument; <code>false</code> otherwise
 	 * @see java.lang.Object#equals
 	 */
+	@Override
 	boolean equals(Object other);
 }

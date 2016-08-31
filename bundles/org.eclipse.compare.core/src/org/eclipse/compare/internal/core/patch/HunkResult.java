@@ -51,7 +51,7 @@ public class HunkResult {
 	 * @param lines the lines to be patched
 	 * @return whether the hunk could be applied
 	 */
-	public boolean patch(List lines) {
+	public boolean patch(List<String> lines) {
 		this.fMatches = false;
 		PatchConfiguration configuration = getConfiguration();
 		// if the fuzz is not set for the current hunk use the one from fDiffResult
@@ -115,7 +115,7 @@ public class HunkResult {
 	 *            a progress monitor
 	 * @return the fuzz factor or -1 if the hunk could not be matched
 	 */
-	public int calculateFuzz(List lines, IProgressMonitor monitor) {
+	public int calculateFuzz(List<String> lines, IProgressMonitor monitor) {
 		this.fMatches = false;
 		PatchConfiguration configuration = getConfiguration();
 		int fuzz = 0;
@@ -228,7 +228,7 @@ public class HunkResult {
 	public String getContents(boolean afterState, boolean fullContext) {
 		if (fullContext) {
 			boolean problemFound = false;
-			List lines = getDiffResult().getBeforeLines();
+			List<String> lines = getDiffResult().getBeforeLines();
 			if (afterState) {
 				if (isOK()) {
 					int oldShift = this.fShift;

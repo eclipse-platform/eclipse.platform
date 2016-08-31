@@ -39,6 +39,7 @@ public class PatchFileTypedElement implements ITypedElement,
 		this.isAfterState = isAfterState;
 	}
 
+	@Override
 	public Image getImage() {
 		IFile file = getPatcher().getTargetFile(result.getDiff());
 		if (file == null) {
@@ -75,6 +76,7 @@ public class PatchFileTypedElement implements ITypedElement,
 	 * 
 	 * @see org.eclipse.compare.ITypedElement#getName()
 	 */
+	@Override
 	public String getName() {
 		return result.getTargetPath().toString();
 	}
@@ -84,14 +86,17 @@ public class PatchFileTypedElement implements ITypedElement,
 	 * 
 	 * @see org.eclipse.compare.ITypedElement#getType()
 	 */
+	@Override
 	public String getType() {
 		return result.getTargetPath().getFileExtension();
 	}
 
+	@Override
 	public String getCharset() throws CoreException {
 		return result.getCharset();
 	}
 
+	@Override
 	public InputStream getContents() throws CoreException {
 		// If there are cached contents, use them
 		if (isAfterState && getPatcher().hasCachedContents(result.getDiff()))
@@ -124,5 +129,4 @@ public class PatchFileTypedElement implements ITypedElement,
 	private Patcher getPatcher() {
 		return Patcher.getPatcher(result.getConfiguration());
 	}
-
 }

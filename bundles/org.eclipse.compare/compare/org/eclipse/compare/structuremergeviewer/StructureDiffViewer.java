@@ -12,17 +12,33 @@ package org.eclipse.compare.structuremergeviewer;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.ICompareFilter;
+import org.eclipse.compare.IContentChangeListener;
+import org.eclipse.compare.IContentChangeNotifier;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
-import org.eclipse.compare.internal.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.compare.internal.ChangeCompareFilterPropertyAction;
+import org.eclipse.compare.internal.CompareMessages;
+import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.Utilities;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.services.IDisposable;
 
 
@@ -58,6 +74,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * A set of background tasks for updating the structure
 	 */
 	private IRunnableWithProgress diffTask = new IRunnableWithProgress() {
+		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException,
 				InterruptedException {
 			monitor.beginTask(CompareMessages.StructureDiffViewer_0, 100);
@@ -67,6 +84,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	};
 	
 	private IRunnableWithProgress inputChangedTask = new IRunnableWithProgress() {
+		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException,
 				InterruptedException {
 			monitor.beginTask(CompareMessages.StructureDiffViewer_1, 100);
@@ -84,6 +102,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		private ITypedElement fInput;
 		private IStructureComparator fStructureComparator;
 		private IRunnableWithProgress refreshTask = new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException,
 					InterruptedException {
 				refresh(monitor);
@@ -204,11 +223,13 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		setAutoExpandLevel(3);
 		
 		fContentChangedListener= new IContentChangeListener() {
+			@Override
 			public void contentChanged(IContentChangeNotifier changed) {
 				StructureDiffViewer.this.contentChanged(changed);
 			}
 		};
 		fCompareInputChangeListener = new ICompareInputChangeListener() {
+			@Override
 			public void compareInputChanged(ICompareInput input) {
 				StructureDiffViewer.this.compareInputChanged(input, true);
 			}
@@ -245,6 +266,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * Reimplemented to get the descriptive title for this viewer from the <code>IStructureCreator</code>.
 	 * @return the viewer's name
 	 */
+	@Override
 	public String getTitle() {
 		if (fStructureCreator != null)
 			return fStructureCreator.getName();
@@ -257,6 +279,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * 
 	 * @return the root of the diff tree produced by method <code>diff</code>
 	 */
+	@Override
 	protected Object getRoot() {
 		return fRoot;
 	}
@@ -267,6 +290,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * and to feed them through the differencing engine. Note: for this viewer
 	 * the value from <code>getInput</code> is not identical to <code>getRoot</code>.
 	 */
+	@Override
 	protected void inputChanged(Object input, Object oldInput) {
 		if (oldInput instanceof ICompareInput) {
 			ICompareInput old = (ICompareInput) oldInput;
@@ -281,6 +305,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		}
 	}
 	
+	@Override
 	protected void initialSelection() {
 		expandToLevel(2);
 	}
@@ -288,6 +313,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	/* (non Javadoc)
 	 * Overridden to unregister all listeners.
 	 */
+	@Override
 	protected void handleDispose(DisposeEvent event) {
 		Object input = getInput();
 		if (input instanceof ICompareInput) {
@@ -317,6 +343,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		// The compare configuration is nulled when the viewer is disposed
 		if (cc != null) {
 			BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+				@Override
 				public void run() {
 					try {
 						inputChangedTask.run(new NullProgressMonitor());
@@ -385,7 +412,6 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @param changed the object that sent out the notification
 	 */
 	protected void contentChanged(final IContentChangeNotifier changed) {
-		
 		if (fStructureCreator == null)
 			return;
 		
@@ -418,6 +444,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @deprecated Clients should override
 	 *             {@link #preDiffHook(IStructureComparator, IStructureComparator, IStructureComparator, IProgressMonitor)}
 	 */
+	@Deprecated
 	protected void preDiffHook(IStructureComparator ancestor, IStructureComparator left, IStructureComparator right) {
 		// we do nothing here
 	}
@@ -440,6 +467,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	protected void preDiffHook(final IStructureComparator ancestor, final IStructureComparator left, final IStructureComparator right, IProgressMonitor monitor) {
 		syncExec(new Runnable() {
+			@Override
 			public void run() {
 				preDiffHook(ancestor, left, right);
 			}
@@ -470,16 +498,16 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				// could not get structure of one (or more) of the legs
 				fRoot= null;
 				message= CompareMessages.StructureDiffViewer_StructureError;	
-				
 			} else {	// calculate difference of the two (or three) structures
-	
 				if (fDifferencer == null)
 					fDifferencer= new Differencer() {
+						@Override
 						protected boolean contentsEqual(Object o1,
 								char contributor1, Object o2, char contributor2) {
 							return StructureDiffViewer.this.contentsEqual(o1,
 									contributor1, o2, contributor2);
 						}
+						@Override
 						protected Object visit(Object data, int result, Object ancestor, Object left, Object right) {
 							Object o= super.visit(data, result, ancestor, left, right);
 							if (!getCompareConfiguration().isMirrored() && o instanceof DiffNode)
@@ -498,11 +526,12 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				}
 			}
 			
-			if (Display.getCurrent() != null)
+			if (Display.getCurrent() != null) {
 				refreshAfterDiff(message);
-			else {
+			} else {
 				final String theMessage = message;
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						refreshAfterDiff(theMessage);
 					}
@@ -533,6 +562,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			// A null compare configuration indicates that the viewer was disposed
 			if (compareConfiguration != null) {
 				compareConfiguration.getContainer().run(true, true, new IRunnableWithProgress() {
+					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 						monitor.beginTask(CompareMessages.StructureDiffViewer_2, 100);
 						diffTask.run(new SubProgressMonitor(monitor, 100));
@@ -552,16 +582,18 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	
 	private void handleFailedRefresh(final String message) {
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				if (getControl().isDisposed())
 					return;
 				refreshAfterDiff(message);
 			}
 		};
-		if (Display.getCurrent() != null)
+		if (Display.getCurrent() != null) {
 			runnable.run();
-		else
+		} else {
 			Display.getDefault().asyncExec(runnable);
+		}
 	}
 
 	/**
@@ -577,6 +609,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 *             {@link #postDiffHook(Differencer, IDiffContainer, IProgressMonitor)}
 	 *             instead
 	 */
+	@Deprecated
 	protected void postDiffHook(Differencer differencer, IDiffContainer root) {
 		// we do nothing here
 	}
@@ -599,6 +632,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	protected void postDiffHook(final Differencer differencer, final IDiffContainer root, IProgressMonitor monitor) {
 		syncExec(new Runnable() {
+			@Override
 			public void run() {
 				postDiffHook(differencer, root);
 			}
@@ -616,18 +650,18 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			boolean ignoreWhiteSpace = Utilities.getBoolean(
 					getCompareConfiguration(),
 					CompareConfiguration.IGNORE_WHITESPACE, false);
-			ICompareFilter[] compareFilters = Utilities
-					.getCompareFilters(getCompareConfiguration());
+			ICompareFilter[] compareFilters =
+					Utilities.getCompareFilters(getCompareConfiguration());
 			String s1, s2;
 			if (compareFilters != null && compareFilters.length > 0
 					&& fStructureCreator instanceof StructureCreator) {
 				return ((StructureCreator) fStructureCreator).contentsEquals(
 						o1, contributor1, o2, contributor2, ignoreWhiteSpace,
 						compareFilters);
-			} else {
-				s1 = fStructureCreator.getContents(o1, ignoreWhiteSpace);
-				s2 = fStructureCreator.getContents(o2, ignoreWhiteSpace);
 			}
+
+			s1 = fStructureCreator.getContents(o1, ignoreWhiteSpace);
+			s2 = fStructureCreator.getContents(o2, ignoreWhiteSpace);
 			if (s1 == null || s2 == null)
 				return false;
 			return s1.equals(s2);
@@ -641,15 +675,14 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * In this case they must call the inherited method.
 	 * @param event the property changed event that triggered the call to this method
 	 */
+	@Override
 	protected void propertyChange(PropertyChangeEvent event) {
 		String key= event.getProperty();
 		if (key.equals(CompareConfiguration.IGNORE_WHITESPACE)) {
 			diff();
-		} else if (key
-				.equals(ChangeCompareFilterPropertyAction.COMPARE_FILTERS)
-				&& getCompareConfiguration()
-						.getProperty(
-								ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING) == null) {
+		} else if (key.equals(ChangeCompareFilterPropertyAction.COMPARE_FILTERS)
+				&& getCompareConfiguration().getProperty(
+						ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING) == null) {
 			diff();
 		} else if (key.equals("ANCESTOR_STRUCTURE_REFRESH")) { //$NON-NLS-1$
 			fAncestorStructure.refresh(new NullProgressMonitor());
@@ -677,24 +710,27 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @param leftToRight if <code>true</code> the left side is copied to the right side.
 	 * If <code>false</code> the right side is copied to the left side
 	 */
+	@Override
 	protected void copySelected(boolean leftToRight) {
 		super.copySelected(leftToRight);
 		
-		if (fStructureCreator != null)
+		if (fStructureCreator != null) {
 			fStructureCreator.save(
 							leftToRight ? fRightStructure.getStructureComparator() : fLeftStructure.getStructureComparator(),
 							leftToRight ? fRightStructure.getInput() : fLeftStructure.getInput());
+		}
 	}
 	
 	private void syncExec(final Runnable runnable) {
 		if (getControl().isDisposed())
 			return;
-		if (Display.getCurrent() != null)
+		if (Display.getCurrent() != null) {
 			runnable.run();
-		else
+		} else {
 			getControl().getDisplay().syncExec(() -> {
 				if (!getControl().isDisposed()) runnable.run();
 			});
+		}
 	}
 }
 

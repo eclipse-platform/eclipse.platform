@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.compare.structuremergeviewer;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.IEditableContentExtension;
+import org.eclipse.compare.ISharedDocumentAdapter;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.IDocument;
@@ -35,7 +37,6 @@ import org.eclipse.ui.services.IDisposable;
  * @since 3.3
  */
 public class StructureRootNode extends DocumentRangeNode implements IDisposable, ITypedElement {
-
 	/**
 	 * The integer constant (value <code>0</code>) that is used as the type code of the root node.
 	 * @see #getTypeCode()
@@ -70,6 +71,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.services.IDisposable#dispose()
 	 */
+	@Override
 	public void dispose() {
 		if (fAdapter != null) {
 			fAdapter.disconnect(fInput);
@@ -84,9 +86,11 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	 * @return the object adapted to the given class or <code>null</code>
 	 * @see IAdaptable#getAdapter(Class)
 	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
-			return fAdapter;
+			return (T) fAdapter;
 		}
 		return super.getAdapter(adapter);
 	}
@@ -96,13 +100,12 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	 * contents of a node have changed.
 	 * @param node the changed node
 	 */
+	@Override
 	protected void nodeChanged(DocumentRangeNode node) {
 		fCreator.save(this, fInput);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#replace(org.eclipse.compare.ITypedElement, org.eclipse.compare.ITypedElement)
-	 */
+	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 		// TODO: I believe the parent implementation is flawed but didn't to remove
 		// it in case I was missing something so I overrode it instead
@@ -113,6 +116,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ITypedElement#getImage()
 	 */
+	@Override
 	public Image getImage() {
 		return null;
 	}
@@ -120,6 +124,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ITypedElement#getName()
 	 */
+	@Override
 	public String getName() {
 		return getId();
 	}
@@ -127,6 +132,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ITypedElement#getType()
 	 */
+	@Override
 	public String getType() {
 		return FOLDER_TYPE;
 	}
@@ -134,6 +140,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly()
 	 */
+	@Override
 	public boolean isReadOnly() {
 		if (fInput instanceof IEditableContentExtension) {
 			IEditableContentExtension ext = (IEditableContentExtension) fInput;
@@ -145,6 +152,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit(org.eclipse.swt.widgets.Shell)
 	 */
+	@Override
 	public IStatus validateEdit(Shell shell) {
 		if (fInput instanceof IEditableContentExtension) {
 			IEditableContentExtension ext = (IEditableContentExtension) fInput;

@@ -29,13 +29,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 
 public class LineReader {
-
-	/*
+	/**
 	 * Reads the contents from the given file and returns them as a List of
 	 * lines.
 	 */
-	public static List load(IStorage file, boolean create) {
-		List lines = null;
+	public static List<String> load(IStorage file, boolean create) {
+		List <String> lines = null;
 		if (!create && file != null && exists(file)) {
 			// read current contents
 			String charset = Utilities.getCharset(file);
@@ -67,7 +66,7 @@ public class LineReader {
 		}
 
 		if (lines == null)
-			lines = new ArrayList();
+			lines = new ArrayList<>();
 		return lines;
 	}
 
@@ -78,8 +77,8 @@ public class LineReader {
 		return true;
 	}
 
-	public static List readLines(BufferedReader reader) {
-		List lines;
+	public static List<String> readLines(BufferedReader reader) {
+		List<String> lines;
 		LineReader lr = new LineReader(reader);
 		if (!Platform.WS_CARBON.equals(Platform.getWS()))
 			// Don't treat single CRs as line feeds to be consistent with command line patch
@@ -91,16 +90,16 @@ public class LineReader {
 	/*
 	 * Concatenates all strings found in the given List.
 	 */
-	public static String createString(boolean preserveLineDelimeters, List lines) {
+	public static String createString(boolean preserveLineDelimeters, List<String> lines) {
 		StringBuffer sb = new StringBuffer();
-		Iterator iter = lines.iterator();
+		Iterator<String> iter = lines.iterator();
 		if (preserveLineDelimeters) {
 			while (iter.hasNext())
-				sb.append((String) iter.next());
+				sb.append(iter.next());
 		} else {
 			String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 			while (iter.hasNext()) {
-				String line = (String) iter.next();
+				String line = iter.next();
 				int l = length(line);
 				if (l < line.length()) { // line has delimiter
 					sb.append(line.substring(0, l));
@@ -117,7 +116,7 @@ public class LineReader {
 	 * Returns the length (excluding a line delimiter CR, LF, CR/LF) of the
 	 * given string.
 	 */
-	/* package */static int length(String s) {
+	static int length(String s) {
 		int l = s.length();
 		if (l > 0) {
 			char c = s.charAt(l - 1);
@@ -159,7 +158,7 @@ public class LineReader {
 	 * @exception IOException
 	 *                If an I/O error occurs
 	 */
-	/* package */String readLine() throws IOException {
+	String readLine() throws IOException {
 		try {
 			while (!fSawEOF) {
 				int c = readChar();
@@ -198,7 +197,7 @@ public class LineReader {
 		}
 	}
 
-	/* package */void close() {
+	void close() {
 		try {
 			fReader.close();
 		} catch (IOException ex) {
@@ -206,9 +205,9 @@ public class LineReader {
 		}
 	}
 
-	public List readLines() {
+	public List<String> readLines() {
 		try {
-			List lines = new ArrayList();
+			List<String> lines = new ArrayList<>();
 			String line;
 			while ((line = readLine()) != null)
 				lines.add(line);
@@ -227,7 +226,7 @@ public class LineReader {
 	 * Returns the number of characters in the given string without counting a
 	 * trailing line separator.
 	 */
-	/* package */int lineContentLength(String line) {
+	int lineContentLength(String line) {
 		if (line == null)
 			return 0;
 		int length = line.length();

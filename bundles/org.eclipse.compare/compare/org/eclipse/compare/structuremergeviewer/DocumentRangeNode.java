@@ -14,12 +14,24 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.IEditableContent;
+import org.eclipse.compare.IEditableContentExtension;
+import org.eclipse.compare.IEncodedStreamContentAccessor;
+import org.eclipse.compare.ISharedDocumentAdapter;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.IDocumentRange;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.Utilities;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.text.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.BadPositionCategoryException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 import org.eclipse.swt.widgets.Shell;
 
 
@@ -48,8 +60,8 @@ import org.eclipse.swt.widgets.Shell;
  * @see Differencer
  */
 public class DocumentRangeNode
-		implements IDocumentRange, IStructureComparator, IEditableContent, IEncodedStreamContentAccessor, IAdaptable, IEditableContentExtension {
-
+		implements IDocumentRange, IStructureComparator, IEditableContent,
+		IEncodedStreamContentAccessor, IAdaptable, IEditableContentExtension {
 	private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		
 	private IDocument fBaseDocument;
@@ -57,7 +69,7 @@ public class DocumentRangeNode
 	private int fTypeCode;
 	private String fID;
 	private Position fAppendPosition; // a position where to insert a child textually
-	private ArrayList fChildren;
+	private ArrayList<DocumentRangeNode> fChildren;
 	private final DocumentRangeNode fParent;
 
 	/**
@@ -113,6 +125,7 @@ public class DocumentRangeNode
 	/* (non Javadoc)
 	 * see IDocumentRange.getDocument
 	 */
+	@Override
 	public IDocument getDocument() {
 		return fBaseDocument;
 	}
@@ -120,6 +133,7 @@ public class DocumentRangeNode
 	/* (non Javadoc)
 	 * see IDocumentRange.getRange
 	 */
+	@Override
 	public Position getRange() {
 		return fRange;
 	}
@@ -161,13 +175,11 @@ public class DocumentRangeNode
 	 */
 	public void addChild(DocumentRangeNode node) {
 		if (fChildren == null)
-			fChildren= new ArrayList();
+			fChildren= new ArrayList<>();
 		fChildren.add(node);
 	}
 
-	/* (non Javadoc)
-	 * see IStructureComparator.getChildren
-	 */
+	@Override
 	public Object[] getChildren() {
 		if (fChildren != null)
 			return fChildren.toArray(); 
@@ -243,6 +255,7 @@ public class DocumentRangeNode
      * @param other the object to compare this <code>DocumentRangeNode</code> against.
      * @return <code>true</code> if the <code>DocumentRangeNodes</code>are equal; <code>false</code> otherwise.
 	 */
+	@Override
 	public boolean equals(Object other) {
 		if (other != null && other.getClass() == getClass()) {
 			DocumentRangeNode tn= (DocumentRangeNode) other;
@@ -255,6 +268,7 @@ public class DocumentRangeNode
 	 * Implementation based on <code>getID</code>.
 	 * @return a hash code for this object.
 	 */
+	@Override
 	public int hashCode() {
 		return fID.hashCode();
 	}
@@ -271,10 +285,10 @@ public class DocumentRangeNode
 			if (ix >= 0) {
 
 				for (int i= ix - 1; i >= 0; i--) {
-					DocumentRangeNode c1= (DocumentRangeNode) otherParent.fChildren.get(i);
+					DocumentRangeNode c1= otherParent.fChildren.get(i);
 					int i2= fChildren.indexOf(c1);
 					if (i2 >= 0) {
-						DocumentRangeNode c= (DocumentRangeNode) fChildren.get(i2);
+						DocumentRangeNode c= fChildren.get(i2);
 						//System.out.println("  found corresponding: " + i2 + " " + c);
 						Position p= c.fRange;
 
@@ -289,10 +303,10 @@ public class DocumentRangeNode
 				}
 
 				for (int i= ix; i < otherParent.fChildren.size(); i++) {
-					DocumentRangeNode c1= (DocumentRangeNode) otherParent.fChildren.get(i);
+					DocumentRangeNode c1= otherParent.fChildren.get(i);
 					int i2= fChildren.indexOf(c1);
 					if (i2 >= 0) {
-						DocumentRangeNode c= (DocumentRangeNode) fChildren.get(i2);
+						DocumentRangeNode c= fChildren.get(i2);
 						//System.out.println("  found corresponding: " + i2 + " " + c);
 						Position p= c.fRange;
 						//try {
@@ -325,6 +339,7 @@ public class DocumentRangeNode
 	/* (non Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
+	@Override
 	public InputStream getContents() {
 		String s;
 		try {
@@ -341,17 +356,15 @@ public class DocumentRangeNode
 	 * Otherwise return <code>true</code>. Subclasses may override.
 	 * @see org.eclipse.compare.IEditableContent#isEditable()
 	 */
+	@Override
 	public boolean isEditable() {
 		if (fParent != null)
 			return fParent.isEditable();
 		return true;
 	}
 		
-	/* (non Javadoc)
-	 * see IEditableContent.replace
-	 */
+	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
-
 		if (fParent == null) {
 			// TODO: I don't believe this code does anything useful but just in case
 			// I'm leaving it in but disabling it for the shared document case
@@ -386,6 +399,7 @@ public class DocumentRangeNode
 	 * after the contents have been set.
 	 * @see org.eclipse.compare.IEditableContent#setContent(byte[])
 	 */
+	@Override
 	public void setContent(byte[] content) {
 		internalSetContents(content);
 		nodeChanged(this);
@@ -399,12 +413,9 @@ public class DocumentRangeNode
 	 */
 	protected void internalSetContents(byte[] content) {
 		// By default, do nothing
-		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IStreamContentAccessor#getEncoding()
-	 */
+	@Override
 	public String getCharset() {
 		return UTF_16;
 	}
@@ -431,25 +442,22 @@ public class DocumentRangeNode
 	 * @see IAdaptable#getAdapter(Class)
 	 * @since 3.3
 	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class && fParent != null)
 			return fParent.getAdapter(adapter);
 		
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContentExtension#isReadOnly()
-	 */
+	@Override
 	public boolean isReadOnly() {
 		if (fParent != null)
 			return fParent.isReadOnly();
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContentExtension#validateEdit(org.eclipse.swt.widgets.Shell)
-	 */
+	@Override
 	public IStatus validateEdit(Shell shell) {
 		if (fParent != null)
 			return fParent.validateEdit(shell);

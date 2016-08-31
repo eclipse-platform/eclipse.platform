@@ -19,9 +19,8 @@ import java.util.Set;
  * in the patch file.
  */
 public class DiffProject {
-
 	private String project;
-	private Set fDiffs= new HashSet();
+	private Set<FilePatch2> fDiffs= new HashSet<>();
 
 	/**
 	 * Create a diff project for the given workspace project.
@@ -71,6 +70,6 @@ public class DiffProject {
 	 * @return the file diffs associated with this project
 	 */
 	public FilePatch2[] getFileDiffs() {
-		return (FilePatch2[]) this.fDiffs.toArray(new FilePatch2[this.fDiffs.size()]);
+		return this.fDiffs.toArray(new FilePatch2[this.fDiffs.size()]);
 	}
 }

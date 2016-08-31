@@ -13,7 +13,7 @@ package org.eclipse.compare.structuremergeviewer;
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.SharedDocumentAdapter;
 import org.eclipse.compare.internal.Utilities;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
@@ -27,7 +27,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * @since 3.3
  */
 public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
-
 	private ISharedDocumentAdapter wrappedAdapter;
 	
 	/**
@@ -50,31 +49,23 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 		this.wrappedAdapter = wrappedAdapter;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#connect(org.eclipse.ui.texteditor.IDocumentProvider, org.eclipse.ui.IEditorInput)
-	 */
+	@Override
 	public void connect(IDocumentProvider provider, IEditorInput documentKey)
 			throws CoreException {
 		wrappedAdapter.connect(provider, documentKey);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#disconnect(org.eclipse.ui.texteditor.IDocumentProvider, org.eclipse.ui.IEditorInput)
-	 */
+	@Override
 	public void disconnect(IDocumentProvider provider, IEditorInput documentKey) {
 		wrappedAdapter.disconnect(provider, documentKey);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
-	 */
+	@Override
 	public IEditorInput getDocumentKey(Object element) {
 		return wrappedAdapter.getDocumentKey(element);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#saveDocument(org.eclipse.ui.texteditor.IDocumentProvider, org.eclipse.ui.IEditorInput, org.eclipse.jface.text.IDocument, boolean, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void flushDocument(IDocumentProvider provider,
 			IEditorInput documentKey, IDocument document, boolean overwrite) throws CoreException {
 		wrappedAdapter.flushDocument(provider, documentKey, document, overwrite);
@@ -88,9 +79,7 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 		return wrappedAdapter;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#disconnect(java.lang.Object)
-	 */
+	@Override
 	public void disconnect(Object element) {
 		IEditorInput input = getDocumentKey(element);
 		if (input == null)
@@ -100,5 +89,4 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 			return;
 		disconnect(provider, input);
 	}
-
 }

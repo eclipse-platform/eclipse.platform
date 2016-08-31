@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.compare.structuremergeviewer;
 
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.compare.ITypedElement;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * An abstract base implementation of the <code>IDiffElement</code> interface.
@@ -21,7 +21,6 @@ import org.eclipse.compare.ITypedElement;
  * </p>
  */
 public abstract class DiffElement implements IDiffElement {
-
 	private int fKind;
 	private IDiffContainer fParent;
 
@@ -45,6 +44,7 @@ public abstract class DiffElement implements IDiffElement {
 	 * an image for this element.
 	 * @return <code>null</code>.
 	 */
+	@Override
 	public Image getImage() {
 		return null;
 	}
@@ -55,6 +55,7 @@ public abstract class DiffElement implements IDiffElement {
 	 * re-implement to provide a type for this element.
 	 * @return <code>ITypedElement.UNKNOWN_TYPE</code>.
 	 */
+	@Override
 	public String getType() {
 		return ITypedElement.UNKNOWN_TYPE;
 	}
@@ -69,23 +70,17 @@ public abstract class DiffElement implements IDiffElement {
 		fKind= kind;
 	}
 
-	/* (non Javadoc)
-	 * see IDiffElement.getKind
-	 */
+	@Override
 	public int getKind() {
 		return fKind;
 	}
 
-	/* (non Javadoc)
-	 * see IDiffElement.getParent
-	 */
+	@Override
 	public IDiffContainer getParent() {
 		return fParent;
 	}
 
-	/* (non Javadoc)
-	 * see IDiffElement.setParent
-	 */
+	@Override
 	public void setParent(IDiffContainer parent) {
 		fParent= parent;
 	}

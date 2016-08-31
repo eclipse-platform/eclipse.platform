@@ -14,17 +14,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.compare.patch.IFilePatchResult;
 import org.eclipse.compare.patch.IHunk;
 import org.eclipse.compare.patch.PatchConfiguration;
+import org.eclipse.core.runtime.Assert;
 
 /**
  * A Hunk describes a range of changed lines and some context lines.
  */
 public class Hunk implements IHunk {
-
 	private FilePatch2 fParent;
 	private int fOldStart, fOldLength;
 	private int fNewStart, fNewLength;
@@ -32,7 +30,8 @@ public class Hunk implements IHunk {
 	private int hunkType;
 	private String charset = null;
 
-	public static Hunk createHunk(FilePatch2 parent, int[] oldRange, int[] newRange, List lines, boolean hasLineAdditions, boolean hasLineDeletions, boolean hasContextLines) {
+	public static Hunk createHunk(FilePatch2 parent, int[] oldRange, int[] newRange,
+			List<String> lines, boolean hasLineAdditions, boolean hasLineDeletions, boolean hasContextLines) {
 		int oldStart = 0;
 		int oldLength = 0;
 		int newStart = 0;
@@ -55,7 +54,7 @@ public class Hunk implements IHunk {
 				hunkType = FilePatch2.DELETION;
 			}
 		}
-		return new Hunk(parent, hunkType, oldStart, oldLength, newStart, newLength, (String[]) lines.toArray(new String[lines.size()]));
+		return new Hunk(parent, hunkType, oldStart, oldLength, newStart, newLength, lines.toArray(new String[lines.size()]));
 	}
 	
 	public Hunk(FilePatch2 parent, int hunkType, int oldStart, int oldLength,
@@ -146,6 +145,7 @@ public class Hunk implements IHunk {
 		return this.fLines;
 	}
 
+	@Override
 	public String[] getUnifiedLines() {
 		String[] ret = new String[this.fLines.length];
 		System.arraycopy(this.fLines, 0, ret, 0, this.fLines.length);
@@ -174,10 +174,10 @@ public class Hunk implements IHunk {
 	 * The parameter shift is added to the line numbers given
 	 * in the hunk.
 	 */
-	public boolean tryPatch(PatchConfiguration configuration, List lines, int shift, int fuzz) {
+	public boolean tryPatch(PatchConfiguration configuration, List<String> lines, int shift, int fuzz) {
 		boolean reverse = configuration.isReversed();
 		int pos = getStart(reverse) + shift;
-		List contextLines = new ArrayList();
+		List<String> contextLines = new ArrayList<>();
 		boolean contextLinesMatched = true;
 		boolean precedingLinesChecked = false;
 		for (int i= 0; i < this.fLines.length; i++) {
@@ -191,7 +191,7 @@ public class Hunk implements IHunk {
 				if (pos < 0 || pos >= lines.size())
 					return false;
 				contextLines.add(line);
-				if (linesMatch(configuration, line, (String) lines.get(pos))) {
+				if (linesMatch(configuration, line, lines.get(pos))) {
 					pos++;
 					continue;
 				} else if (fuzz > 0) {
@@ -225,7 +225,7 @@ public class Hunk implements IHunk {
 				
 				if (pos < 0 || pos >= lines.size()) // out of the file
 					return false;
-				if (linesMatch(configuration, line, (String) lines.get(pos))) {
+				if (linesMatch(configuration, line, lines.get(pos))) {
 					pos++;
 					continue; // line matched, continue with the next one
 				}
@@ -267,26 +267,25 @@ public class Hunk implements IHunk {
 	}
 
 	private boolean checkPrecedingContextLines(
-			PatchConfiguration configuration, List lines, int fuzz, int pos,
-			List contextLines) {
-		
+			PatchConfiguration configuration, List<String> lines, int fuzz, int pos,
+			List<String> contextLines) {
 		// ignore from the beginning
 		for (int j = fuzz; j < contextLines.size(); j++) {
-			if (!linesMatch(configuration, (String) contextLines.get(j),
-							(String) lines.get(pos - contextLines.size() + j)))
+			if (!linesMatch(configuration, contextLines.get(j),
+							lines.get(pos - contextLines.size() + j)))
 				return false;
 		}
 		return true;
 	}
 	
 	private boolean checkFollowingContextLines(
-			PatchConfiguration configuration, List lines, int fuzz, int pos,
-			List contextLines) {
+			PatchConfiguration configuration, List<String> lines, int fuzz, int pos,
+			List<String> contextLines) {
 		if (!contextLines.isEmpty()) {
 			// ignore from the end
 			for (int j = 0; j < contextLines.size() - fuzz; j++) {
-				if (!linesMatch(configuration, (String) contextLines.get(j),
-						(String) lines.get(pos - contextLines.size() + j)))
+				if (!linesMatch(configuration, contextLines.get(j),
+						lines.get(pos - contextLines.size() + j)))
 					return false;
 			}
 		}
@@ -322,10 +321,10 @@ public class Hunk implements IHunk {
 		return this.fNewLength - this.fOldLength;
 	}
 	
-	int doPatch(PatchConfiguration configuration, List lines, int shift, int fuzz) {
+	int doPatch(PatchConfiguration configuration, List<String> lines, int shift, int fuzz) {
 		boolean reverse = configuration.isReversed();
 		int pos = getStart(reverse) + shift;
-		List contextLines = new ArrayList();
+		List<String> contextLines = new ArrayList<>();
 		boolean contextLinesMatched = true;
 		boolean precedingLinesChecked = false;
 		String lineDelimiter = getLineDelimiter(lines);
@@ -339,7 +338,7 @@ public class Hunk implements IHunk {
 				// context lines
 					Assert.isTrue(pos < lines.size(), "doPatch: inconsistency in context"); //$NON-NLS-1$
 					contextLines.add(line);
-					if (linesMatch(configuration, line, (String) lines.get(pos))) {
+					if (linesMatch(configuration, line, lines.get(pos))) {
 						pos++;
 						continue;
 					} else if (fuzz > 0) {
@@ -432,10 +431,10 @@ public class Hunk implements IHunk {
 		return true;
 	}
 
-	private String getLineDelimiter(List lines) {
+	private String getLineDelimiter(List<String> lines) {
 		if (lines.size() > 0) {
 			// get a line separator from the file being patched
-			String line0 = (String) lines.get(0);
+			String line0 = lines.get(0);
 			return line0.substring(LineReader.length(line0));
 		} else if (this.fLines.length > 0) {
 			// if the file doesn't exist use a line separator from the patch
@@ -476,19 +475,23 @@ public class Hunk implements IHunk {
 		return result.toString();
 	}
 
+	@Override
 	public String getLabel() {
 		return getDescription();
 	}
 
+	@Override
 	public int getStartPosition() {
 		return getStart(false);
 	}
 
+	@Override
 	public InputStream getOriginalContents() {
 		String contents = getContents(false, false);
 		return asInputStream(contents);
 	}
 
+	@Override
 	public InputStream getPatchedContents() {
 		String contents = getContents(true, false);
 		return asInputStream(contents);
@@ -511,6 +514,8 @@ public class Hunk implements IHunk {
 	 *             {@link IFilePatchResult#getCharset()} as a proper way to
 	 *             obtain charset.
 	 */
+	@Deprecated
+	@Override
 	public String getCharset() {
 		return this.charset;
 	}

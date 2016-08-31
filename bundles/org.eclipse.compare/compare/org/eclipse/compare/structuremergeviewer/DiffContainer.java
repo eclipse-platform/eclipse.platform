@@ -19,9 +19,8 @@ import java.util.ArrayList;
  * </p>
  */
 public abstract class DiffContainer extends DiffElement implements IDiffContainer {
-
 	private static IDiffElement[] fgEmptyArray= new IDiffElement[0];
-	private ArrayList fChildren;
+	private ArrayList<IDiffElement> fChildren;
 	
 	/**
 	 * Creates a new container with the specified kind under the given parent. 
@@ -50,25 +49,20 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see IDiffContainer.add
-	 */
+	@Override
 	public void add(IDiffElement diff) {
 		if (fChildren == null)
-			fChildren= new ArrayList();
+			fChildren= new ArrayList<>();
 		fChildren.add(diff);
 		diff.setParent(this);
 	}
 
-	/*
-	 * Removes the given child from this container.
-	 * If the container becomes empty it is removed from its container.
-	 */
+	@Override
 	public void removeToRoot(IDiffElement child) {
 		if (fChildren != null) {
 			fChildren.remove(child);
 			child.setParent(null);
-			if (fChildren.size() == 0) {
+			if (fChildren.isEmpty()) {
 				IDiffContainer p= getParent();
 				if (p != null)
 					p.removeToRoot(this);
@@ -88,20 +82,15 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 		}
 	}
 	
-	/* (non Javadoc)
-	 * see IDiffContainer.hasChildren
-	 */
+	@Override
 	public boolean hasChildren() {
 		return fChildren != null && fChildren.size() > 0;
 	}
 
-	/* (non Javadoc)
-	 * see IDiffContainer.getChildren
-	 */
+	@Override
 	public IDiffElement[] getChildren() {
 		if (fChildren != null)
-			return (IDiffElement[]) fChildren.toArray(fgEmptyArray);
+			return fChildren.toArray(fgEmptyArray);
 		return fgEmptyArray;
 	}
 }
-

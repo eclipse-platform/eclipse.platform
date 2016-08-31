@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Path;
  * same path in a patch file.
  */
 public class FilePatch2 implements IFilePatch2 {
-
 	/**
 	 * Difference constant (value 1) indicating one side was added.
 	 */
@@ -44,7 +43,7 @@ public class FilePatch2 implements IFilePatch2 {
 	
 	private IPath fOldPath, fNewPath;
 	private long oldDate, newDate;
-	private List fHunks= new ArrayList();
+	private List<Hunk> fHunks= new ArrayList<Hunk>();
 	private DiffProject fProject; //the project that contains this diff
 	private String header;
 	private int addedLines, removedLines;
@@ -122,15 +121,16 @@ public class FilePatch2 implements IFilePatch2 {
 	}
 	
 	/**
-	 * Return the hunks associated with this file diff.
+	 * Returns the hunks associated with this file diff.
 	 * @return the hunks associated with this file diff
 	 */
+	@Override
 	public IHunk[] getHunks() {
-		return (IHunk[]) this.fHunks.toArray(new IHunk[this.fHunks.size()]);
+		return this.fHunks.toArray(new IHunk[this.fHunks.size()]);
 	}
 	
 	/**
-	 * Return the number of hunks associated with this file diff.
+	 * Returns the number of hunks associated with this file diff.
 	 * @return the number of hunks associated with this file diff
 	 */
 	public int getHunkCount() {
@@ -138,7 +138,7 @@ public class FilePatch2 implements IFilePatch2 {
 	}
 	
 	/**
-	 * Return the difference type of this file diff.
+	 * Returns the difference type of this file diff.
 	 * @param reverse whether the patch is being reversed
 	 * @return the type of this file diff
 	 */
@@ -146,9 +146,9 @@ public class FilePatch2 implements IFilePatch2 {
 		if (this.fHunks.size() == 1) {
 			boolean add = false;
 			boolean delete = false;
-			Iterator iter = this.fHunks.iterator();
+			Iterator<Hunk> iter = this.fHunks.iterator();
 			while (iter.hasNext()){
-				Hunk hunk = (Hunk) iter.next();
+				Hunk hunk = iter.next();
 				int type =hunk.getHunkType(reverse);
 				if (type == ADDITION){
 					add = true;
@@ -195,6 +195,7 @@ public class FilePatch2 implements IFilePatch2 {
 		return length;
 	}
 	
+	@Override
 	public IFilePatchResult apply(ReaderCreator content,
 			PatchConfiguration configuration, IProgressMonitor monitor) {
 		FileDiffResult result = new FileDiffResult(this, configuration);
@@ -202,6 +203,7 @@ public class FilePatch2 implements IFilePatch2 {
 		return result;
 	}
 
+	@Override
 	public IPath getTargetPath(PatchConfiguration configuration) {
 		return getStrippedPath(configuration.getPrefixSegmentStripCount(), configuration.isReversed());
 	}
@@ -218,8 +220,8 @@ public class FilePatch2 implements IFilePatch2 {
 			adjustedNewPath = new Path(null, this.fProject.getName()).append(this.fNewPath);
 		}
 		FilePatch2 diff = create(adjustedOldPath, 0, adjustedNewPath, 0);
-		for (Iterator iterator = this.fHunks.iterator(); iterator.hasNext();) {
-			Hunk hunk = (Hunk) iterator.next();
+		for (Iterator<Hunk> iterator = this.fHunks.iterator(); iterator.hasNext();) {
+			Hunk hunk = iterator.next();
 			// Creating the hunk adds it to the parent diff
 			new Hunk(diff, hunk);
 		}
@@ -235,14 +237,17 @@ public class FilePatch2 implements IFilePatch2 {
 		this.header = header;
 	}
 
+	@Override
 	public String getHeader() {
 		return this.header;
 	}
 
+	@Override
 	public long getBeforeDate() {
 		return this.oldDate;
 	}
 
+	@Override
 	public long getAfterDate() {
 		return this.newDate;
 	}

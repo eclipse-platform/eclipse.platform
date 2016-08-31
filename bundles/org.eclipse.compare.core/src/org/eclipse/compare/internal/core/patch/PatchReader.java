@@ -22,18 +22,16 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
-
+import org.eclipse.compare.patch.IFilePatch2;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
-import org.eclipse.compare.patch.IFilePatch2;
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.SimpleDateFormat;
 
 public class PatchReader {
-
 	private static final boolean DEBUG= false;
 	
 	private static final String DEV_NULL= "/dev/null"; //$NON-NLS-1$
@@ -87,8 +85,8 @@ public class PatchReader {
 	}
 	
 	public void parse(BufferedReader reader) throws IOException {
-		List diffs= new ArrayList();
-		HashMap diffProjects= new HashMap(4);
+		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
+		HashMap<String, DiffProject> diffProjects= new HashMap<String, DiffProject>(4);
 		String line= null;
 		boolean reread= false;
 		String diffArgs= null;
@@ -146,7 +144,7 @@ public class PatchReader {
 					diffProject= new DiffProject(projectName);
 					diffProjects.put(projectName, diffProject);
 				} else {
-					diffProject= (DiffProject) diffProjects.get(projectName);
+					diffProject= diffProjects.get(projectName);
 				}
 
 				line= readUnifiedDiff(diffs, lr, line, diffArgs, fileName, diffProject);
@@ -157,8 +155,8 @@ public class PatchReader {
 
 		lr.close();
 
-		this.fDiffProjects= (DiffProject[]) diffProjects.values().toArray(new DiffProject[diffProjects.size()]);
-		this.fDiffs = (FilePatch2[]) diffs.toArray(new FilePatch2[diffs.size()]);
+		this.fDiffProjects= diffProjects.values().toArray(new DiffProject[diffProjects.size()]);
+		this.fDiffs = diffs.toArray(new FilePatch2[diffs.size()]);
 	}
 
 	protected FilePatch2 createFileDiff(IPath oldPath, long oldDate,
@@ -166,11 +164,11 @@ public class PatchReader {
 		return new FilePatch2(oldPath, oldDate, newPath, newDate);
 	}
 
-	private String readUnifiedDiff(List diffs, LineReader lr, String line, String diffArgs, String fileName, DiffProject diffProject) throws IOException {
-		List newDiffs= new ArrayList();
+	private String readUnifiedDiff(List<FilePatch2> diffs, LineReader lr, String line, String diffArgs, String fileName, DiffProject diffProject) throws IOException {
+		List<FilePatch2> newDiffs= new ArrayList<FilePatch2>();
 		String nextLine= readUnifiedDiff(newDiffs, lr, line, diffArgs, fileName);
-		for (Iterator iter= newDiffs.iterator(); iter.hasNext();) {
-			FilePatch2 diff= (FilePatch2) iter.next();
+		for (Iterator<FilePatch2> iter= newDiffs.iterator(); iter.hasNext();) {
+			FilePatch2 diff= iter.next();
 			diffProject.add(diff);
 			diffs.add(diff);
 		}
@@ -178,11 +176,11 @@ public class PatchReader {
 	}
 	
 	public void parse(LineReader lr, String line) throws IOException {
-		List diffs= new ArrayList();
+		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
 		boolean reread= false;
 		String diffArgs= null;
 		String fileName= null;
-		List headerLines = new ArrayList();
+		List<String> headerLines = new ArrayList<String>();
 		boolean foundDiff= false;
 
 		// read leading garbage
@@ -205,13 +203,13 @@ public class PatchReader {
 			} else if (line.startsWith("--- ")) { //$NON-NLS-1$
 				line= readUnifiedDiff(diffs, lr, line, diffArgs, fileName);
 				if (!headerLines.isEmpty())
-					setHeader((FilePatch2)diffs.get(diffs.size() - 1), headerLines);
+					setHeader(diffs.get(diffs.size() - 1), headerLines);
 				diffArgs= fileName= null;
 				reread= true;
 			} else if (line.startsWith("*** ")) { //$NON-NLS-1$
 				line= readContextDiff(diffs, lr, line, diffArgs, fileName);
 				if (!headerLines.isEmpty())
-					setHeader((FilePatch2)diffs.get(diffs.size() - 1), headerLines);
+					setHeader(diffs.get(diffs.size() - 1), headerLines);
 				diffArgs= fileName= null;
 				reread= true;
 			}
@@ -225,10 +223,10 @@ public class PatchReader {
 		
 		lr.close();
 		
-		this.fDiffs = (FilePatch2[]) diffs.toArray(new FilePatch2[diffs.size()]);
+		this.fDiffs = diffs.toArray(new FilePatch2[diffs.size()]);
 	}
 	
-	private void setHeader(FilePatch2 diff, List headerLines) {
+	private void setHeader(FilePatch2 diff, List<String> headerLines) {
 		String header = LineReader.createString(false, headerLines);
 		diff.setHeader(header);
 		headerLines.clear();
@@ -237,7 +235,7 @@ public class PatchReader {
 	/*
 	 * Returns the next line that does not belong to this diff
 	 */
-	protected String readUnifiedDiff(List diffs, LineReader reader, String line, String args, String fileName) throws IOException {
+	protected String readUnifiedDiff(List<FilePatch2> diffs, LineReader reader, String line, String args, String fileName) throws IOException {
 
 		String[] oldArgs= split(line.substring(4));
 
@@ -257,7 +255,7 @@ public class PatchReader {
 		int[] newRange= new int[2];
 		int remainingOld= -1; // remaining old lines for current hunk
 		int remainingNew= -1; // remaining new lines for current hunk
-		List lines= new ArrayList();
+		List<String> lines= new ArrayList<String>();
 
 		boolean encounteredPlus = false;
 		boolean encounteredMinus = false;
@@ -319,7 +317,7 @@ public class PatchReader {
 						if (line.indexOf("newline at end") > 0) { //$NON-NLS-1$
 							int lastIndex= lines.size();
 							if (lastIndex > 0) {
-								line= (String)lines.get(lastIndex - 1);
+								line= lines.get(lastIndex - 1);
 								int end= line.length() - 1;
 								char lc= line.charAt(end);
 								if (lc == '\n') {
@@ -363,7 +361,7 @@ public class PatchReader {
 	/*
 	 * Returns the next line that does not belong to this diff
 	 */
-	private String readContextDiff(List diffs, LineReader reader, String line, String args, String fileName) throws IOException {
+	private String readContextDiff(List<FilePatch2> diffs, LineReader reader, String line, String args, String fileName) throws IOException {
 		
 		String[] oldArgs= split(line.substring(4));
 		
@@ -381,9 +379,9 @@ public class PatchReader {
 				   
 		int[] oldRange= new int[2];
 		int[] newRange= new int[2];
-		List oldLines= new ArrayList();
-		List newLines= new ArrayList();
-		List lines= oldLines;
+		List<String> oldLines= new ArrayList<String>();
+		List<String> newLines= new ArrayList<String>();
+		List<String> lines= oldLines;
 		
 
 		boolean encounteredPlus = false;
@@ -480,11 +478,11 @@ public class PatchReader {
 	 * Creates a List of lines in the unified format from
 	 * two Lists of lines in the 'classic' format.
 	 */
-	private List unifyLines(List oldLines, List newLines) {
-		List result= new ArrayList();
+	private List<String> unifyLines(List<String> oldLines, List<String> newLines) {
+		List<String> result= new ArrayList<String>();
 
-		String[] ol= (String[]) oldLines.toArray(new String[oldLines.size()]);
-		String[] nl= (String[]) newLines.toArray(new String[newLines.size()]);
+		String[] ol= oldLines.toArray(new String[oldLines.size()]);
+		String[] nl= newLines.toArray(new String[newLines.size()]);
 		
 		int oi= 0, ni= 0;
 		
@@ -670,21 +668,20 @@ public class PatchReader {
 			pair[1]= 1;
 		}
 	}
-	
-	
+
 	/*
 	 * Breaks the given string into tab separated substrings.
 	 * Leading and trailing whitespace is removed from each token.
 	 */ 
 	private String[] split(String line) {
-		List l= new ArrayList();
+		List<String> l= new ArrayList<>();
 		StringTokenizer st= new StringTokenizer(line, "\t"); //$NON-NLS-1$
 		while (st.hasMoreElements()) {
 			String token= st.nextToken().trim();
 			if (token.length() > 0)
  				l.add(token);
 		}
-		return (String[]) l.toArray(new String[l.size()]);
+		return l.toArray(new String[l.size()]);
 	}
 
 	public boolean isWorkspacePatch() {
@@ -706,12 +703,12 @@ public class PatchReader {
 	public FilePatch2[] getAdjustedDiffs() {
 		if (!isWorkspacePatch() || this.fDiffs.length == 0)
 			return this.fDiffs;
-		List result = new ArrayList();
+		List<FilePatch2> result = new ArrayList<FilePatch2>();
 		for (int i = 0; i < this.fDiffs.length; i++) {
 			FilePatch2 diff = this.fDiffs[i];
 			result.add(diff.asRelativeDiff());
 		}
-		return (FilePatch2[]) result.toArray(new FilePatch2[result.size()]);
+		return result.toArray(new FilePatch2[result.size()]);
 	}
 
 }

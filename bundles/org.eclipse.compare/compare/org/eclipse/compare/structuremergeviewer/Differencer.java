@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,7 +57,6 @@ import com.ibm.icu.text.MessageFormat;
  * LEFT, RIGHT, and CONFLICTING.
  */
 public class Differencer {
-	
 	// The kind of differences.
 	/**
 	 * Difference constant (value 0) indicating no difference.
@@ -112,7 +110,7 @@ public class Differencer {
 
 	
 	static class Node {
-		List fChildren;
+		List<Node> fChildren;
 		int fCode;
 		Object fAncestor;
 		Object fLeft;
@@ -121,31 +119,33 @@ public class Differencer {
 		Node() {
 			// nothing to do
 		}
+
 		Node(Node parent, Object ancestor, Object left, Object right) {
 			parent.add(this);
 			fAncestor= ancestor;
 			fLeft= left;
 			fRight= right;
 		}
+
 		void add(Node child) {
 			if (fChildren == null)
-				fChildren= new ArrayList();
+				fChildren= new ArrayList<>();
 			fChildren.add(child);
 		}
+
 		Object visit(Differencer d, Object parent, int level) {
 			if (fCode == NO_CHANGE)
 				return null;
 			//dump(level);
 			Object data= d.visit(parent, fCode, fAncestor, fLeft, fRight);
 			if (fChildren != null) {
-				Iterator i= fChildren.iterator();
-				while (i.hasNext()) {
-					Node n= (Node) i.next();
-					n.visit(d, data, level+1);
+				for (Node n : fChildren) {
+					n.visit(d, data, level + 1);
 				}
 			}
 			return data;
 		}
+
 //		private void dump(int level) {
 //			String name= null;
 //			if (fAncestor instanceof ITypedElement)
@@ -216,15 +216,14 @@ public class Differencer {
 	 *   possibly <code>null</code>
 	 */
 	public Object findDifferences(boolean threeWay, IProgressMonitor pm, Object data, Object ancestor, Object left, Object right) {
-		
 		Node root= new Node();
 		
 		int code= traverse(threeWay, root, pm, threeWay ? ancestor : null, left, right);
 				
 		if (code != NO_CHANGE) {
-			List l= root.fChildren;
-			if (l.size() > 0) {
-				Node first= (Node)l.get(0);
+			List<Node> l= root.fChildren;
+			if (!l.isEmpty()) {
+				Node first= l.get(0);
 				return first.visit(this, data, 0);
 			}
 		}
@@ -234,8 +233,8 @@ public class Differencer {
 	/*
 	 * Traverse tree in postorder.
 	 */
-	private int traverse(boolean threeWay, Node parent, IProgressMonitor pm, Object ancestor, Object left, Object right) {
-				
+	private int traverse(boolean threeWay, Node parent, IProgressMonitor pm,
+			Object ancestor, Object left, Object right) {
 		Object[] ancestorChildren= getChildren(ancestor);
 		Object[] rightChildren= getChildren(right);
 		Object[] leftChildren= getChildren(left);
@@ -251,13 +250,13 @@ public class Differencer {
 			// we only recurse down if no leg is null
 			// a node
 			
-			Set allSet= new HashSet(20);
-			Map ancestorSet= null;
-			Map rightSet= null;
-			Map leftSet= null;
+			Set<Object> allSet= new HashSet<>(20);
+			Map<Object, Object> ancestorSet= null;
+			Map<Object, Object> rightSet= null;
+			Map<Object, Object> leftSet= null;
 						
 			if (ancestorChildren != null) {
-				ancestorSet= new HashMap(10);
+				ancestorSet= new HashMap<>(10);
 				for (int i= 0; i < ancestorChildren.length; i++) {
 					Object ancestorChild= ancestorChildren[i];
 					ancestorSet.put(ancestorChild, ancestorChild);
@@ -266,7 +265,7 @@ public class Differencer {
 			}
 
 			if (rightChildren != null) {
-				rightSet= new HashMap(10);
+				rightSet= new HashMap<>(10);
 				for (int i= 0; i < rightChildren.length; i++) {
 					Object rightChild= rightChildren[i];
 					rightSet.put(rightChild, rightChild);
@@ -275,7 +274,7 @@ public class Differencer {
 			}
 
 			if (leftChildren != null) {
-				leftSet= new HashMap(10);
+				leftSet= new HashMap<>(10);
 				for (int i= 0; i < leftChildren.length; i++) {
 					Object leftChild= leftChildren[i];
 					leftSet.put(leftChild, leftChild);
@@ -283,12 +282,8 @@ public class Differencer {
 				}
 			}
 						
-			Iterator e= allSet.iterator();
-			while (e.hasNext()) {
-				Object keyChild= e.next();
-				
+			for (Object keyChild : allSet) {
 				if (pm != null) {
-					
 					if (pm.isCanceled())
 						throw new OperationCanceledException();
 						
@@ -533,7 +528,7 @@ public class Differencer {
 	 */
 	protected Object[] getChildren(Object input) {
 		if (input instanceof IStructureComparator)
-			return ((IStructureComparator)input).getChildren();
+			return ((IStructureComparator) input).getChildren();
 		return null;
 	}
 	
@@ -549,7 +544,7 @@ public class Differencer {
 	 */
 	protected void updateProgress(IProgressMonitor progressMonitor, Object node) {
 		if (node instanceof ITypedElement) {
-			String name= ((ITypedElement)node).getName();
+			String name= ((ITypedElement) node).getName();
 			String fmt= Utilities.getString("Differencer.progressFormat"); //$NON-NLS-1$
 			String msg= MessageFormat.format(fmt, name );
 			progressMonitor.subTask(msg);

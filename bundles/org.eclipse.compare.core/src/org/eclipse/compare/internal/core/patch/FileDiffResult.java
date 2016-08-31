@@ -31,13 +31,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 public class FileDiffResult implements IFilePatchResult {
-
 	private FilePatch2 fDiff;
 	private boolean fMatches= false;
 	private boolean fDiffProblem;
 	private String fErrorMessage;
-	private Map fHunkResults = new HashMap();
-	private List fBeforeLines, fAfterLines;
+	private Map<Hunk, HunkResult> fHunkResults = new HashMap<Hunk, HunkResult>();
+	private List<String> fBeforeLines, fAfterLines;
 	private final PatchConfiguration configuration;
 	private String charset;
 	
@@ -97,8 +96,8 @@ public class FileDiffResult implements IFilePatchResult {
 			// We couldn't find the target file or the patch is trying to add a
 			// file that already exists but we need to initialize the hunk
 			// results for display
-			this.fBeforeLines = new ArrayList(getLines(content, false));
-			this.fAfterLines = this.fMatches ? new ArrayList() : this.fBeforeLines;
+			this.fBeforeLines = new ArrayList<>(getLines(content, false));
+			this.fAfterLines = this.fMatches ? new ArrayList<>() : this.fBeforeLines;
 			IHunk[] hunks = this.fDiff.getHunks();
 			for (int i = 0; i < hunks.length; i++) {
 				Hunk hunk = (Hunk) hunks[i];
@@ -136,8 +135,8 @@ public class FileDiffResult implements IFilePatchResult {
 		return content != null && content.canCreateReader();
 	}
 
-	protected List getLines(ReaderCreator content, boolean create) {
-		List lines = LineReader.load(content, create);
+	protected List<String> getLines(ReaderCreator content, boolean create) {
+		List<String> lines = LineReader.load(content, create);
 		return lines;
 	}
 
@@ -151,8 +150,8 @@ public class FileDiffResult implements IFilePatchResult {
 	 * Tries to patch the given lines with the specified Diff.
 	 * Any hunk that couldn't be applied is returned in the list failedHunks.
 	 */
-	public void patch(List lines, IProgressMonitor monitor) {
-		this.fBeforeLines = new ArrayList();
+	public void patch(List<String> lines, IProgressMonitor monitor) {
+		this.fBeforeLines = new ArrayList<>();
 		this.fBeforeLines.addAll(lines);
 		if (getConfiguration().getFuzz() != 0) {
 			calculateFuzz(this.fBeforeLines, monitor);
@@ -182,8 +181,8 @@ public class FileDiffResult implements IFilePatchResult {
 	public boolean containsProblems() {
 		if (this.fDiffProblem)
 			return true;
-		for (Iterator iterator = this.fHunkResults.values().iterator(); iterator.hasNext();) {
-			HunkResult result = (HunkResult) iterator.next();
+		for (Iterator<HunkResult> iterator = this.fHunkResults.values().iterator(); iterator.hasNext();) {
+			HunkResult result = iterator.next();
 			if (!result.isOK())
 				return true;
 		}
@@ -197,6 +196,7 @@ public class FileDiffResult implements IFilePatchResult {
 		return label;
 	}
 	
+	@Override
 	public boolean hasMatches() {
 		return this.fMatches;
 	}
@@ -205,7 +205,7 @@ public class FileDiffResult implements IFilePatchResult {
 	 * Return the lines of the target file with all matched hunks applied.
 	 * @return the lines of the target file with all matched hunks applied
 	 */
-	public List getLines() {
+	public List<String> getLines() {
 		return this.fAfterLines;
 	}
 
@@ -215,10 +215,10 @@ public class FileDiffResult implements IFilePatchResult {
 	 * @param monitor a progress monitor
 	 * @return the fuzz factor or <code>-1</code> if no hunks could be matched
 	 */
-	public int calculateFuzz(List lines, IProgressMonitor monitor) {
+	public int calculateFuzz(List<String> lines, IProgressMonitor monitor) {
 		if (monitor == null)
 			monitor = new NullProgressMonitor();
-		this.fBeforeLines = new ArrayList(lines);
+		this.fBeforeLines = new ArrayList<String>(lines);
 		// TODO: What about deletions?
 		if (this.fDiff.getDiffType(getConfiguration().isReversed()) == FilePatch2.ADDITION) {
 			// Additions don't need to adjust the fuzz factor
@@ -249,19 +249,19 @@ public class FileDiffResult implements IFilePatchResult {
 	}
 
 	private HunkResult getHunkResult(Hunk hunk) {
-		HunkResult result = (HunkResult)this.fHunkResults.get(hunk);
+		HunkResult result = this.fHunkResults.get(hunk);
 		if (result == null) {
 			result = new HunkResult(this, hunk);
-			this.fHunkResults .put(hunk, result);
+			this.fHunkResults.put(hunk, result);
 		}
 		return result;
 	}
 
-	public List getFailedHunks() {
-		List failedHunks = new ArrayList();
+	public List<Hunk> getFailedHunks() {
+		List<Hunk> failedHunks = new ArrayList<Hunk>();
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
-			HunkResult result = (HunkResult) this.fHunkResults.get(hunks[i]);
+			HunkResult result = this.fHunkResults.get(hunks[i]);
 			if (result != null && !result.isOK())
 				failedHunks.add(result.getHunk());
 		}
@@ -272,37 +272,40 @@ public class FileDiffResult implements IFilePatchResult {
 		return this.fDiff;
 	}
 
-	public List getBeforeLines() {
+	public List<String> getBeforeLines() {
 		return this.fBeforeLines;
 	}
 
-	public List getAfterLines() {
+	public List<String> getAfterLines() {
 		return this.fAfterLines;
 	}
 
 	public HunkResult[] getHunkResults() {
 		// return hunk results in the same order as hunks are placed in file diff 
-		List results = new ArrayList();
+		List<HunkResult> results = new ArrayList<HunkResult>();
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
-			HunkResult result = (HunkResult) this.fHunkResults.get(hunks[i]);
+			HunkResult result = this.fHunkResults.get(hunks[i]);
 			if (result != null) {
 				results.add(result);
 			}
 		}
-		return (HunkResult[]) results.toArray(new HunkResult[results.size()]);
+		return results.toArray(new HunkResult[results.size()]);
 	}
 
+	@Override
 	public InputStream getOriginalContents() {
 		String contents = LineReader.createString(isPreserveLineDelimeters(), getBeforeLines());
 		return asInputStream(contents, getCharset());
 	}
 
+	@Override
 	public InputStream getPatchedContents() {
 		String contents = LineReader.createString(isPreserveLineDelimeters(), getLines());
 		return asInputStream(contents, getCharset());
 	}
 
+	@Override
 	public String getCharset() {
 		return this.charset;
 	}
@@ -311,11 +314,13 @@ public class FileDiffResult implements IFilePatchResult {
 		return false;
 	}
 
+	@Override
 	public IHunk[] getRejects() {
-		List failedHunks = getFailedHunks();
-		return (IHunk[]) failedHunks.toArray(new IHunk[failedHunks.size()]);
+		List<Hunk> failedHunks = getFailedHunks();
+		return failedHunks.toArray(new IHunk[failedHunks.size()]);
 	}
 
+	@Override
 	public boolean hasRejects() {
 		return getFailedHunks().size() > 0;
 	}

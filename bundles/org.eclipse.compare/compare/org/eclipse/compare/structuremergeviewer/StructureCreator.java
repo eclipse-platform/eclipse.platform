@@ -49,10 +49,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * @since 3.3
  */
 public abstract class StructureCreator implements IStructureCreator2 {
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.IStructureCreator#getStructure(java.lang.Object)
-	 */
+	@Override
 	public IStructureComparator getStructure(Object input) {
 		String contents= null;
 		IDocument doc= CompareUI.getDocument(input);
@@ -85,12 +82,12 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.IStructureCreator2#createStructure(java.lang.Object, org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public IStructureComparator createStructure(final Object element, final IProgressMonitor monitor) throws CoreException {
+	@Override
+	public IStructureComparator createStructure(final Object element,
+			final IProgressMonitor monitor) throws CoreException {
 		final IStructureComparator[] result = new IStructureComparator[] { null };
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				try {
 					result[0]= internalCreateStructure(element, monitor);
@@ -131,7 +128,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	}
 	
 	/**
-	 * Create an {@link IStructureComparator} for the given element using the
+	 * Creates an {@link IStructureComparator} for the given element using the
 	 * contents available in the given document. If the provided
 	 * {@link ISharedDocumentAdapter} is not <code>null</code> then the
 	 * {@link IStructureComparator} returned by this method must implement the
@@ -163,7 +160,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Setup the newly created document as appropriate. Any document partitioners
+	 * Sets up the newly created document as appropriate. Any document partitioners
 	 * should be added to a custom slot using the {@link IDocumentExtension3} interface
 	 * in case the document is shared via a file buffer.
 	 * @param document a document
@@ -191,7 +188,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	}
 	
 	/**
-	 * Return the partitioner to be associated with the document or
+	 * Returns the partitioner to be associated with the document or
 	 * <code>null</code> is partitioning is not needed or if the subclass
 	 * overrode {@link #setupDocument(IDocument)} directly.
 	 * @return a partitioner
@@ -201,7 +198,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	}
 
 	/**
-	 * Return the partitioning to which the partitioner returned from
+	 * Returns the partitioning to which the partitioner returned from
 	 * {@link #getDocumentPartitioner()} is to be associated. Return <code>null</code>
 	 * only if partitioning is not needed or if the subclass
 	 * overrode {@link #setupDocument(IDocument)} directly.
@@ -222,6 +219,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 * input, then the save is issued through the shared document adapter.
 	 * @see org.eclipse.compare.structuremergeviewer.IStructureCreator#save(org.eclipse.compare.structuremergeviewer.IStructureComparator, java.lang.Object)
 	 */
+	@Override
 	public void save(IStructureComparator node, Object input) {
 		if (node instanceof IDocumentRange && input instanceof IEditableContent) {
 			IDocument document= ((IDocumentRange)node).getDocument();
@@ -285,6 +283,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	private final ISharedDocumentAdapter wrapSharedDocumentAdapter(ISharedDocumentAdapter elementAdapter, final Object input, final IDocument document) {
 		// We need to wrap the adapter so that the proper document key gets returned
 		return new SharedDocumentAdapterWrapper(elementAdapter) {
+			@Override
 			public IEditorInput getDocumentKey(Object element) {
 				if (hasSameDocument(element)) {
 					return super.getDocumentKey(input);
@@ -313,6 +312,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 * @return the sub-structure element in the input for the given element
 	 * @throws CoreException if a parse error occurred
 	 */
+	@Override
 	public ITypedElement createElement(Object element, Object input, IProgressMonitor monitor)
 			throws CoreException {
 		String[] path= getPath(element, input);
@@ -344,6 +344,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 * @param input the containing input
 	 * @return the sub-structure element in the input for the given element
 	 */
+	@Override
 	public IStructureComparator locate(Object element, Object input) {
 		String[] path= getPath(element, input);
 		if (path == null)
@@ -358,7 +359,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	}
 	
 	/**
-	 * Find the element at the given path in the given structure.
+	 * Finds the element at the given path in the given structure.
 	 * This method is invoked from the {@link #createElement(Object, Object, IProgressMonitor)}
 	 * and {@link #locate(Object, Object)} methods to find the element for
 	 * the given path.
@@ -401,7 +402,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	}
 	
 	/**
-	 * Return the path of the element in the structure of it's containing input
+	 * Returns the path of the element in the structure of it's containing input
 	 * or <code>null</code> if the element is not contained in the input. This method is
 	 * invoked from {@link #createElement(Object, Object, IProgressMonitor)} and
 	 * {@link #locate(Object, Object)} methods to determine
@@ -416,9 +417,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.IStructureCreator2#destroy(java.lang.Object)
-	 */
+	@Override
 	public void destroy(Object object) {
 		IDisposable disposable = getDisposable(object);
 		if (disposable != null)
@@ -464,9 +463,9 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			Object node2, char contributor2, boolean ignoreWhitespace,
 			ICompareFilter[] compareFilters) {
 
-		List lines1 = LineReader.readLines(new BufferedReader(new StringReader(
+		List<String> lines1 = LineReader.readLines(new BufferedReader(new StringReader(
 				getContents(node1, false))));
-		List lines2 = LineReader.readLines(new BufferedReader(new StringReader(
+		List<String> lines2 = LineReader.readLines(new BufferedReader(new StringReader(
 				getContents(node2, false))));
 
 		StringBuffer buffer1 = new StringBuffer();

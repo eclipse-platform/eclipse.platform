@@ -34,14 +34,12 @@ import com.ibm.icu.text.MessageFormat;
  * @see Differencer
  */
 public class DiffNode extends DiffContainer implements ICompareInput {
-
 	private ITypedElement fAncestor;
 	private ITypedElement fLeft;
 	private ITypedElement fRight;
 	private boolean fDontExpand;
-	private ListenerList fListener;
+	private ListenerList<ICompareInputChangeListener> fListener;
 	private boolean fSwapSides;
-
 	
 	/**
 	 * Creates a new <code>DiffNode</code> and initializes with the given values.
@@ -107,9 +105,10 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 *
 	 * @param listener the listener to add
 	 */
+	@Override
 	public void addCompareInputChangeListener(ICompareInputChangeListener listener) {
 		if (fListener == null)
-			fListener= new ListenerList();
+			fListener= new ListenerList<>();
 		fListener.add(listener);
 	}
 	
@@ -119,6 +118,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 *
 	 * @param listener the listener to remove
 	 */
+	@Override
 	public void removeCompareInputChangeListener(ICompareInputChangeListener listener) {
 		if (fListener != null) {
 			fListener.remove(listener);
@@ -181,6 +181,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 * Subclasses may re-implement to provide a different name for this node.
 	 * @return the name of this node.
 	 */
+	@Override
 	public String getName() {
 		String right= null;
 		if (fRight != null)
@@ -226,6 +227,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ITypedElement.getImage
 	 */
+	@Override
 	public Image getImage() {
 		ITypedElement id= getId();
 		if (id != null)
@@ -236,6 +238,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ITypedElement.getType
 	 */
+	@Override
 	public String getType() {
 		ITypedElement id= getId();
 		if (id != null)
@@ -256,6 +259,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ICompareInput.getAncestor
 	 */
+	@Override
 	public ITypedElement getAncestor() {
 		return fAncestor;
 	}
@@ -272,6 +276,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ICompareInput.getLeft
 	 */
+	@Override
 	public ITypedElement getLeft() {
 		return fLeft;
 	}
@@ -288,6 +293,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ICompareInput.getRight
 	 */
+	@Override
 	public ITypedElement getRight() {
 		return fRight;
 	}
@@ -295,6 +301,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see ICompareInput.copy
 	 */
+	@Override
 	public void copy(boolean leftToRight) {
 		//System.out.println("DiffNode.copy: " + leftToRight);
 		
@@ -322,6 +329,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see Object.hashCode
 	 */
+	@Override
 	public int hashCode() {
 		String[] path= getPath(this, 0);
 		int hashCode= 1;
@@ -335,6 +343,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	/* (non Javadoc)
 	 * see Object.equals
 	 */
+	@Override
 	public boolean equals(Object other) {
 		if (other != null && getClass() == other.getClass()) {
 			String[] path1= getPath(this, 0);

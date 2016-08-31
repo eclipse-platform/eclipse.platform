@@ -184,6 +184,7 @@ public class Patcher implements IHunkFilter {
 	
 	public void parse(BufferedReader reader) throws IOException {
 		PatchReader patchReader = new PatchReader() {
+			@Override
 			protected FilePatch2 createFileDiff(IPath oldPath, long oldDate,
 					IPath newPath, long newDate) {
 				return new FilePatch(oldPath, oldDate, newPath, newDate);
@@ -342,7 +343,7 @@ public class Patcher implements IHunkFilter {
 	
 	List apply(FilePatch2 diff, IFile file, boolean create, List failedHunks) {
 		FileDiffResult result = getDiffResult(diff);
-		List lines = LineReader.load(file, create);
+		List<String> lines = LineReader.load(file, create);
 		result.patch(lines, null);
 		failedHunks.addAll(result.getFailedHunks());
 		if (hasCachedContents(diff)) {
@@ -713,7 +714,7 @@ public class Patcher implements IHunkFilter {
 	 * @param diff the file diff
 	 * @return the content lines that are cached for the file diff
 	 */
-	public List getCachedLines(FilePatch2 diff) {
+	public List<String> getCachedLines(FilePatch2 diff) {
 		byte[] contents = (byte[])contentCache.get(diff);
 		if (contents != null) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(contents)));
@@ -793,6 +794,7 @@ public class Patcher implements IHunkFilter {
 		return false;
 	}
 
+	@Override
 	public boolean select(IHunk hunk) {
 		return isEnabled(hunk);
 	}
