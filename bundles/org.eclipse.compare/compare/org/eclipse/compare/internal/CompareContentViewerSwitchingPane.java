@@ -55,7 +55,7 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 public class CompareContentViewerSwitchingPane extends
 		CompareViewerSwitchingPane {
 
-	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.gif"; //$NON-NLS-1$
+	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.png"; //$NON-NLS-1$
 	public static final String OPTIMIZED_ALGORITHM_USED = "OPTIMIZED_ALGORITHM_USED"; //$NON-NLS-1$
 	public static final String DISABLE_CAPPING_TEMPORARILY = "DISABLE_CAPPING_TEMPORARILY"; //$NON-NLS-1$
 
@@ -206,7 +206,7 @@ public class CompareContentViewerSwitchingPane extends
 		if (menuShowing)
 			return;
 		menuShowing= true;
-		
+
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
 				.findContentViewerDescriptor(getViewer(), getInput(),
 						getCompareConfiguration());
@@ -222,7 +222,7 @@ public class CompareContentViewerSwitchingPane extends
 		defaultItem.setSelection(fSelectedViewerDescriptor == null);
 
 		new MenuItem(menu, SWT.SEPARATOR);
-		
+
 		// add others
 		for (int i = 0; i < vd.length; i++) {
 			final ViewerDescriptor vdi = vd[i];
@@ -239,14 +239,14 @@ public class CompareContentViewerSwitchingPane extends
 			item.addSelectionListener(createSelectionListener(vdi));
 			item.setSelection(vdi == fSelectedViewerDescriptor);
 		}
-		
+
 		// 2. show
 		Rectangle bounds = toolBar.getItem(0).getBounds();
 		Point topLeft = new Point(bounds.x, bounds.y + bounds.height);
 		topLeft = toolBar.toDisplay(topLeft);
 		menu.setLocation(topLeft.x, topLeft.y);
 		menu.setVisible(true);
-		
+
 		// 3. dispose on close
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuHidden(MenuEvent e) {
@@ -305,7 +305,7 @@ public class CompareContentViewerSwitchingPane extends
 			}
 		}
 	}
-	
+
 	public void addMouseListener(MouseListener listener) {
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();

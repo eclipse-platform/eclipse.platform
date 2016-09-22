@@ -6,7 +6,7 @@
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-v10.html
-   
+
     Contributors:
         IBM Corporation - initial API and implementation
  -->
@@ -74,7 +74,7 @@
          </description>
       </fontDefinition>
    </extension>
-   
+
    <extension
          id="rejectedPatchMarker"
          name="%rejectedPatchMarker.name"
@@ -90,13 +90,13 @@
          point="org.eclipse.ui.editors">
       <editor
             name="%defaultCompareEditor.name"
-            icon="$nl$/icons/full/eview16/compare_view.gif"
+            icon="$nl$/icons/full/eview16/compare_view.png"
             contributorClass="org.eclipse.compare.internal.CompareEditorContributor"
             class="org.eclipse.compare.internal.CompareEditor"
             id="org.eclipse.compare.CompareEditor">
       </editor>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -107,14 +107,14 @@
             <keywordReference id="org.eclipse.compare.general"/>
       </page>
    </extension>
-   
+
 	<extension
 		point="org.eclipse.ui.keywords">
 		<keyword
 			label="%preferenceKeywords.general"
 			id="org.eclipse.compare.general"/>
 	</extension>
-   
+
 <!-- commands and their bindings -->
 
    <extension
@@ -126,7 +126,7 @@
             id="org.eclipse.compare.compareEditorScope">
       </context>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.commands">
       <category
@@ -184,7 +184,7 @@
             name="%Command.compareWithOther.name">
       </command>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -286,7 +286,7 @@
          </action>
       </objectContribution>
    </extension>
-   
+
    <extension
          point="org.eclipse.compare.streamMergers">
       <streamMerger
@@ -299,7 +299,7 @@
       		streamMergerId="org.eclipse.compare.internal.merge.TextStreamMerger">
       </contentTypeBinding>
    </extension>
-   
+
    <extension
          point="org.eclipse.compare.structureCreators">
       <structureCreator
@@ -308,7 +308,7 @@
             id="org.eclipse.compare.ZipFileStructureCreator">
       </structureCreator>
    </extension>
-   
+
    <extension
          point="org.eclipse.compare.contentMergeViewers">
       <viewer
@@ -334,7 +334,7 @@
             contentMergeViewerId="org.eclipse.compare.TextMergeViewerCreator">
 	  </contentTypeBinding>
    </extension>
-   
+
    <extension
          point="org.eclipse.compare.contentViewers">
       <viewer

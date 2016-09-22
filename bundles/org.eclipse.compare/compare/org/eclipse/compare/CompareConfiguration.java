@@ -81,36 +81,36 @@ public class CompareConfiguration {
 
 	static {
 		// Not swapped (a.k.a. left is local)
-		fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_inadd_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outadd_ov.png"); //$NON-NLS-1$
 
-		fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_indel_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/r_outdel_ov.png"); //$NON-NLS-1$
 
-		fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.gif"); //$NON-NLS-1$
+		fgImages[Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_inchg_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/r_outchg_ov.png"); //$NON-NLS-1$
 
-		fgImages[Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.gif"); //$NON-NLS-1$
-		fgImages[Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.gif"); //$NON-NLS-1$
-	
+		fgImages[Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.png"); //$NON-NLS-1$
+		fgImages[Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.png"); //$NON-NLS-1$
+
 		// Mirrored (a.k.a. right is local)
-		fgImages[16 + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/add_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/inadd_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/outadd_ov.png"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/del_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/indel_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/outdel_ov.png"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.LEFT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/inchg_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.RIGHT + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/outchg_ov.png"); //$NON-NLS-1$
 
-		fgImages[16 + Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.gif"); //$NON-NLS-1$
-		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.gif"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.ADDITION]= CompareUIPlugin.getImageDescriptor("ovr16/confadd_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.DELETION]= CompareUIPlugin.getImageDescriptor("ovr16/confdel_ov.png"); //$NON-NLS-1$
+		fgImages[16 + Differencer.CONFLICTING + Differencer.CHANGE]= CompareUIPlugin.getImageDescriptor("ovr16/confchg_ov.png"); //$NON-NLS-1$
 	}
 
 	private IPreferenceStore fPreferenceStore;
@@ -128,7 +128,7 @@ public class CompareConfiguration {
 	private DefaultLabelProvider labelProvider = new DefaultLabelProvider();
 	private boolean fDisposed;
 	private LocalResourceManager fResourceManager;
-	private Set<Integer> fIgnoredChanges = new HashSet<>(6); 
+	private Set<Integer> fIgnoredChanges = new HashSet<>(6);
 
 	private class DefaultLabelProvider extends LabelProvider implements ICompareInputLabelProvider, ILabelProviderListener {
 		private Map<ICompareInput, ICompareInputLabelProvider> labelProviders = new HashMap<>();
@@ -248,7 +248,7 @@ public class CompareConfiguration {
 			}
 			return super.getText(element);
 		}
-		
+
 		@Override
 		public void dispose() {
 			for (Iterator<ICompareInputLabelProvider> iterator = labelProviders.values().iterator(); iterator.hasNext();) {
@@ -260,7 +260,7 @@ public class CompareConfiguration {
 			defaultLabelProvider = null;
 			labelProviders.clear();
 		}
-			
+
 		@Override
 		public void labelProviderChanged(LabelProviderChangedEvent event) {
 			fireLabelProviderChanged(new LabelProviderChangedEvent(this, event.getElements()));
@@ -281,7 +281,7 @@ public class CompareConfiguration {
 	 * The given preference store is used to connect this configuration
 	 * with the Compare preference page properties <code>ComparePreferencePage.INITIALLY_SHOW_ANCESTOR_PANE</code>,
 	 * <code>CompareConfiguration.IGNORE_WHITESPACE</code> and {@link #MIRRORED}
-	 * 
+	 *
 	 * @param prefStore the preference store which this configuration holds onto.
 	 * @since 2.0
 	 */
@@ -308,7 +308,7 @@ public class CompareConfiguration {
 	public CompareConfiguration() {
 		this(CompareUIPlugin.getDefault().getPreferenceStore());
 	}
-	
+
 	/**
 	 * Returns the preference store of this configuration.
 	 * @return the preference store of this configuration.
@@ -317,7 +317,7 @@ public class CompareConfiguration {
 	public IPreferenceStore getPreferenceStore() {
 		return fPreferenceStore;
 	}
-	
+
 	/**
 	 * Returns an image showing the specified change kind.
 	 * The different kind of changes are defined in the <code>Differencer</code>.
@@ -336,7 +336,7 @@ public class CompareConfiguration {
 		ResourceManager rm = getResourceManager();
 		return rm.createImage(id);
 	}
-	
+
 	private synchronized ResourceManager getResourceManager() {
 		if (fResourceManager == null) {
 			fResourceManager = new LocalResourceManager(JFaceResources.getResources());
@@ -347,7 +347,7 @@ public class CompareConfiguration {
 	/**
 	 * Returns an image showing the specified change kind applied to a
 	 * given base image. The different kind of changes are defined in the <code>Differencer</code>.
-	 * Typically an implementation would build a composite image 
+	 * Typically an implementation would build a composite image
 	 * from the given base image and an image representing the change kind.
 	 * Newly created images are remembered by this class and
 	 * disposed when the <code>dispose</code> method is called.
@@ -367,7 +367,7 @@ public class CompareConfiguration {
 
 	/**
 	 * <b>Only the views are mirrored. All model values for left and right are not changed!</b>
-	 * 
+	 *
 	 * @return true if the left and right side of the viewer are mirrored. Default is false.
 	 * @since 3.7
 	 */
@@ -379,7 +379,7 @@ public class CompareConfiguration {
 	private ImageDescriptor getImageDescriptor(int kind) {
 		return fgImages[(kind & 15) + (isMirrored() ? 16 : 0)];
 	}
-	
+
 	/**
 	 * Dispose of this compare configuration.
 	 * This method is called if the compare configuration is no longer used.
@@ -448,7 +448,7 @@ public class CompareConfiguration {
 	}
 
 	//---- ancestor
-	
+
 	/**
 	 * Sets the label to use for the ancestor of compare/merge viewers.
 	 * This label will be used if the element for which a label
@@ -493,13 +493,13 @@ public class CompareConfiguration {
 	 *
 	 * @param element the input object of a compare/merge viewer or <code>null</code>
 	 * @return the image for the ancestor side or <code>null</code>
-	 */	
+	 */
 	public Image getAncestorImage(Object element) {
 		return labelProvider.getAncestorImage(element);
 	}
 
 	//---- left side
-	
+
 	/**
 	 * Controls whether the left side of a merge viewer is editable.
 	 *
@@ -508,10 +508,10 @@ public class CompareConfiguration {
 	public void setLeftEditable(boolean editable) {
 		fLeftEditable= editable;
 	}
-	
+
 	/**
 	 * Returns whether the left hand side of a merge viewer is editable.
-	 * 
+	 *
 	 * @return <code>true</code> if the left hand side is editable
 	 */
 	public boolean isLeftEditable() {
@@ -530,7 +530,7 @@ public class CompareConfiguration {
 	public void setLeftLabel(String label) {
 		fLeftLabel= label;
 	}
-	
+
 	/**
 	 * Returns the label for the left hand side of compare/merge viewers.
 	 * This label is typically shown in the title of the left side of a compare viewer.
@@ -562,11 +562,11 @@ public class CompareConfiguration {
 	 *
 	 * @param element the input object of a compare/merge viewer or <code>null</code>
 	 * @return the image for the left hand side or <code>null</code>
-	 */	
+	 */
 	public Image getLeftImage(Object element) {
 		return labelProvider.getLeftImage(element);
 	}
-	
+
 	//---- right side
 
 	/**
@@ -577,10 +577,10 @@ public class CompareConfiguration {
 	public void setRightEditable(boolean editable) {
 		fRightEditable= editable;
 	}
-	
+
 	/**
 	 * Returns whether the right hand side of a merge viewer is editable.
-	 * 
+	 *
 	 * @return <code>true</code> if the right hand side is editable
 	 */
 	public boolean isRightEditable() {
@@ -635,7 +635,7 @@ public class CompareConfiguration {
 	public Image getRightImage(Object element) {
 		return labelProvider.getRightImage(element);
 	}
-	
+
 	/**
 	 * Return the container of the compare associated with this configuration.
 	 * @return the container of the compare associated with this configuration
@@ -657,10 +657,10 @@ public class CompareConfiguration {
 	public void setContainer(ICompareContainer container) {
 		fContainer = container;
 	}
-	
+
 	/**
 	 * Return the label provider that is used to determine the
-	 * text and labels return by this compare configuration. 
+	 * text and labels return by this compare configuration.
 	 * @return the label provider that is used to determine the
 	 * text and labels return by this compare configuration
 	 * @see #getAncestorImage(Object)
@@ -674,11 +674,11 @@ public class CompareConfiguration {
 	public ICompareInputLabelProvider getLabelProvider() {
 		return labelProvider;
 	}
-	
+
 	/**
 	 * Set the label provider for the given compare input. The compare configuration
 	 * will not dispose of the label provider when the configuration is disposed.
-	 * It is up to the provider of the label provider to ensure that it is 
+	 * It is up to the provider of the label provider to ensure that it is
 	 * disposed when it is no longer needed.
 	 * @param input the compare input
 	 * @param labelProvider the label provider for the compare input
@@ -687,7 +687,7 @@ public class CompareConfiguration {
 	public void setLabelProvider(ICompareInput input, ICompareInputLabelProvider labelProvider) {
 		this.labelProvider.setLabelProvider(input, labelProvider);
 	}
-	
+
 	/**
 	 * Set the default label provider for this configuration. The default label
 	 * provider is used when a particular label provider has not been assigned
@@ -696,7 +696,7 @@ public class CompareConfiguration {
 	 * The compare configuration will not dispose of the label provider when the
 	 * configuration is disposed. It is up to the provider of the label provider
 	 * to ensure that it is disposed when it is no longer needed.
-	 * 
+	 *
 	 * @param labelProvider the default label provider
 	 * @since 3.3
 	 */
@@ -708,7 +708,7 @@ public class CompareConfiguration {
 	 * Set whether given change kind should be ignored while computing
 	 * differences between documents. Changes specified by this method will be
 	 * excluded from a comparison result.
-	 * 
+	 *
 	 * @param kind
 	 *            type of change, possible values are:
 	 *            {@link RangeDifference#CHANGE}
@@ -730,7 +730,7 @@ public class CompareConfiguration {
 	/**
 	 * Return if a given change kind is ignored while computing differences
 	 * between documents.
-	 * 
+	 *
 	 * @param kind
 	 *            type of change, possible values are:
 	 *            {@link RangeDifference#CHANGE}
@@ -745,4 +745,3 @@ public class CompareConfiguration {
 	}
 
 }
-

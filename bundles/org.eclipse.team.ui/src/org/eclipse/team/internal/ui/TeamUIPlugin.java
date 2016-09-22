@@ -48,6 +48,57 @@ import org.osgi.framework.*;
  */
 public class TeamUIPlugin extends AbstractUIPlugin {
 
+	/*====================================================================
+	 * Constants defining overlays file names
+	 *====================================================================*/
+
+	private final String IMG_DIRTY_OVR_FILE = "ovr/dirty_ov.png"; //$NON-NLS-1$
+	private final String IMG_CHECKEDIN_OVR_FILE = "ovr/version_controlled.png"; //$NON-NLS-1$
+	private final String IMG_CHECKEDOUT_OVR_FILE = "ovr/checkedout_ov.png"; //$NON-NLS-1$
+	private final String IMG_CONFLICT_OVR_FILE = "ovr/confchg_ov.png"; //$NON-NLS-1$
+	private final String IMG_ERROR_OVR_FILE = "ovr/error_co.png"; //$NON-NLS-1$
+	private final String IMG_WARNING_OVR_FILE = "ovr/warning_co.png"; //$NON-NLS-1$
+	private final String IMG_HOURGLASS_OVR_FILE = "ovr/waiting_ovr.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_INCOMING_FILE = "elcl16/incom_synch.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_OUTGOING_FILE = "elcl16/outgo_synch.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_CONFLICTING_FILE = "elcl16/conflict_synch.png"; //$NON-NLS-1$
+	private final String IMG_REFRESH_FILE = "elcl16/refresh.png"; //$NON-NLS-1$
+	private final String IMG_REFRESH_REMOTE_FILE = "elcl16/refresh_remote.png"; //$NON-NLS-1$
+	private final String IMG_LINK_WITH_FILE = "elcl16/synced.png"; //$NON-NLS-1$
+	private final String IMG_IGNORE_WHITESPACE_FILE = "elcl16/ignorews_edit.png"; //$NON-NLS-1$
+	private final String IMG_COLLAPSE_ALL_FILE = "elcl16/collapseall.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_CATCHUP_FILE = "elcl16/catchup_rls.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_RELEASE_FILE = "elcl16/release_rls.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_FREE_FILE = "elcl16/catchuprelease_rls.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_INCOMING_DISABLED_FILE = "dlcl16/incom_synch.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_OUTGOING_DISABLED_FILE = "dlcl16/outgo_synch.png"; //$NON-NLS-1$
+	private final String IMG_DLG_SYNC_CONFLICTING_DISABLED_FILE = "dlcl16/conflict_synch.png"; //$NON-NLS-1$
+	private final String IMG_REFRESH_DISABLED_FILE = "dlcl16/refresh.png"; //$NON-NLS-1$
+	private final String IMG_REFRESH_REMOTE_DISABLED_FILE = "dlcl16/refresh_remote.png"; //$NON-NLS-1$
+	private final String IMG_LINK_WITH_DISABLED_FILE = "dlcl16/synced.png"; //$NON-NLS-1$
+	private final String IMG_IGNORE_WHITESPACE_DISABLED_FILE = "dlcl16/ignorews_edit.png"; //$NON-NLS-1$
+	private final String IMG_COLLAPSE_ALL_DISABLED_FILE = "dlcl16/collapseall.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_CATCHUP_DISABLED_FILE = "dlcl16/catchup_rls.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_RELEASE_DISABLED_FILE = "dlcl16/release_rls.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_MODE_FREE_DISABLED_FILE = "dlcl16/catchuprelease_rls.png"; //$NON-NLS-1$
+	private final String IMG_WIZBAN_SHARE_FILE = "wizban/share_wizban.png"; //$NON-NLS-1$
+	private final String IMG_PROJECTSET_IMPORT_BANNER_FILE = "wizban/import_projectset_wizban.png"; //$NON-NLS-1$
+	private final String IMG_PROJECTSET_EXPORT_BANNER_FILE = "wizban/export_projectset_wizban.png"; //$NON-NLS-1$
+	private final String IMG_KEY_LOCK_FILE = "wizban/keylock.png"; //$NON-NLS-1$
+	private final String IMG_PINNED_FILE = "elcl16/pin.png";  //$NON-NLS-1$
+	private final String IMG_PREVIOUS_FILE = "elcl16/prev_nav.png"; //$NON-NLS-1$
+	private final String IMG_SITE_ELEMENT_FILE = "elcl16/site_element.png"; //$NON-NLS-1$
+	private final String IMG_CHANGE_FILTER_FILE = "elcl16/change_filter.png"; //$NON-NLS-1$
+	private final String IMG_COMPRESSED_FOLDER_FILE = "obj/compressed_folder_obj.png"; //$NON-NLS-1$
+	private final String IMG_HIERARCHICAL_FILE = "elcl16/hierarchicalLayout.png"; //$NON-NLS-1$
+	private final String IMG_FLAT_FILE = "elcl16/flatLayout.png"; //$NON-NLS-1$
+	private final String IMG_SYNC_VIEW_FILE = "eview16/synch_synch.png"; //$NON-NLS-1$
+	private final String IMG_CHANGE_SET_FILE = "obj/changeset_obj.png"; //$NON-NLS-1$
+	private final String IMG_COMPARE_VIEW_FILE = "eview16/compare_view.png"; //$NON-NLS-1$
+	private final String IMG_DATES_CATEGORY_FILE = "obj/dates.png"; //$NON-NLS-1$
+	private final String IMG_LOCALREVISION_TABLE_FILE = "obj/local_entry_tbl.png"; //$NON-NLS-1$
+
+
 	private static TeamUIPlugin instance;
 
 	// image paths
@@ -310,12 +361,12 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @param id  the identifier for the image
 	 * @param baseURL  the base URL for the image
 	 */
-	private static void createImageDescriptor(TeamUIPlugin plugin, String id) {
+	private static void createImageDescriptor(TeamUIPlugin plugin, String id, String fileName) {
 		// Delegate to the plugin instance to avoid concurrent class loading problems
-		plugin.privateCreateImageDescriptor(id);
+		plugin.privateCreateImageDescriptor(id, fileName);
 	}
-	private void privateCreateImageDescriptor(String id) {
-        ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(id));
+	private void privateCreateImageDescriptor(String id, String fileName) {
+        ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(fileName));
         imageDescriptors.put(id, desc);
 	}
 
@@ -332,7 +383,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	}
 	private ImageDescriptor privateGetImageDescriptor(String id) {
 		if(! imageDescriptors.containsKey(id)) {
-			createImageDescriptor(getPlugin(), id);
+			createImageDescriptor(getPlugin(), id, id);
 		}
 		return imageDescriptors.get(id);
 	}
@@ -356,59 +407,67 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	private void initializeImages(TeamUIPlugin plugin) {
 		// Overlays
-		createImageDescriptor(plugin, ISharedImages.IMG_DIRTY_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_CONFLICT_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_CHECKEDIN_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_CHECKEDOUT_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_ERROR_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_WARNING_OVR);
-		createImageDescriptor(plugin, ISharedImages.IMG_HOURGLASS_OVR);
+		createImageDescriptor(plugin, ISharedImages.IMG_DIRTY_OVR, IMG_DIRTY_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_CONFLICT_OVR, IMG_CONFLICT_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_CHECKEDIN_OVR, IMG_CHECKEDIN_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_CHECKEDOUT_OVR, IMG_CHECKEDOUT_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_ERROR_OVR, IMG_ERROR_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_WARNING_OVR, IMG_WARNING_OVR_FILE);
+		createImageDescriptor(plugin, ISharedImages.IMG_HOURGLASS_OVR, IMG_HOURGLASS_OVR_FILE);
 
 		// Target Management Icons
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SITE_ELEMENT);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SITE_ELEMENT, IMG_SITE_ELEMENT_FILE);
 
 		// Sync View Icons
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_CHANGE_FILTER);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL_ENABLED);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING, IMG_DLG_SYNC_INCOMING_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING, IMG_DLG_SYNC_OUTGOING_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING, IMG_DLG_SYNC_CONFLICTING_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH, IMG_REFRESH_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_REMOTE, IMG_REFRESH_REMOTE_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_LINK_WITH, IMG_LINK_WITH_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_CHANGE_FILTER, IMG_CHANGE_FILTER_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE, IMG_IGNORE_WHITESPACE_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL, IMG_COLLAPSE_ALL_FILE);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE_DISABLED);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_INCOMING_DISABLED, IMG_DLG_SYNC_INCOMING_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_OUTGOING_DISABLED, IMG_DLG_SYNC_OUTGOING_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DLG_SYNC_CONFLICTING_DISABLED, IMG_DLG_SYNC_CONFLICTING_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_DISABLED, IMG_REFRESH_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_REFRESH_REMOTE_DISABLED, IMG_REFRESH_REMOTE_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_LINK_WITH_DISABLED, IMG_LINK_WITH_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_IGNORE_WHITESPACE_DISABLED, IMG_IGNORE_WHITESPACE_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_COLLAPSE_ALL_DISABLED, IMG_COLLAPSE_ALL_DISABLED_FILE);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP, IMG_SYNC_MODE_CATCHUP_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE, IMG_SYNC_MODE_RELEASE_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE, IMG_SYNC_MODE_FREE_FILE);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_DISABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE_DISABLED);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_DISABLED, IMG_SYNC_MODE_CATCHUP_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_DISABLED, IMG_SYNC_MODE_RELEASE_DISABLED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE_DISABLED, IMG_SYNC_MODE_FREE_DISABLED_FILE);
 
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_CATCHUP_ENABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_RELEASE_ENABLED);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_MODE_FREE_ENABLED);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_KEY_LOCK, IMG_KEY_LOCK_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_PINNED, IMG_PINNED_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_PREVIOUS, IMG_PREVIOUS_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SITE_ELEMENT, IMG_SITE_ELEMENT_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_WIZBAN_SHARE, IMG_WIZBAN_SHARE_FILE);
 
 		// Wizard banners
-		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_WIZBAN_SHARE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_IMPORT_BANNER, IMG_PROJECTSET_IMPORT_BANNER_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_PROJECTSET_EXPORT_BANNER, IMG_PROJECTSET_EXPORT_BANNER_FILE);
 
 		// Live Sync View icons
-		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPRESSED_FOLDER);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_VIEW);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_HIERARCHICAL);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPRESSED_FOLDER, IMG_COMPRESSED_FOLDER_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_SYNC_VIEW, IMG_SYNC_VIEW_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_CHANGE_SET, IMG_CHANGE_SET_FILE);
+
+		createImageDescriptor(plugin, ITeamUIImages.IMG_HIERARCHICAL, IMG_HIERARCHICAL_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_FLAT, IMG_FLAT_FILE);
 
 		// Local History Page
-		createImageDescriptor(plugin, ITeamUIImages.IMG_DATES_CATEGORY);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPARE_VIEW);
-		createImageDescriptor(plugin, ITeamUIImages.IMG_LOCALREVISION_TABLE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_DATES_CATEGORY, IMG_DATES_CATEGORY_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_COMPARE_VIEW, IMG_COMPARE_VIEW_FILE);
+		createImageDescriptor(plugin, ITeamUIImages.IMG_LOCALREVISION_TABLE, IMG_LOCALREVISION_TABLE_FILE);
 	}
 
     private URL getImageUrl(String relative) {
