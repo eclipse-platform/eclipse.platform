@@ -16,6 +16,7 @@ import org.eclipse.compare.internal.IFlushable2;
 import org.eclipse.compare.internal.NullViewer;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -27,7 +28,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 import com.ibm.icu.text.MessageFormat;
-
 
 /**
  * A custom <code>CompareViewerPane</code> that supports dynamic viewer switching.
@@ -43,9 +43,8 @@ import com.ibm.icu.text.MessageFormat;
  * @since 2.0
  */
 public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
-	
 	private Viewer fViewer;
-	private boolean fControlVisibility= false;
+	private boolean fControlVisibility;
 	private String fTitle;
 	private String fTitleArgument;
 	
@@ -91,6 +90,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		
 		addDisposeListener(
 			new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					if (fViewer != null)
 						fViewer.removeSelectionChangedListener(CompareViewerSwitchingPane.this);
@@ -115,14 +115,12 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	}
 	
 	private void setViewer(Viewer newViewer) {
-		
 		if (newViewer == fViewer)
 			return;
 				
 		boolean oldEmpty= isEmpty();
 
 		if (fViewer != null) {
-			
 			fViewer.removeSelectionChangedListener(this);
 				 
 			if (fViewer instanceof StructuredViewer) {
@@ -138,7 +136,6 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 								
 			if (content != null && !content.isDisposed())
 				content.dispose();
-
 		} else {
 			oldEmpty= false;
 		}
@@ -199,18 +196,14 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		return fViewer == null || fViewer instanceof NullViewer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareViewerPane#getSelection()
-	 */
+	@Override
 	public ISelection getSelection() {
 		if (fViewer != null)
 			return fViewer.getSelection();
 		return super.getSelection();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareViewerPane#setSelection(org.eclipse.jface.viewers.ISelection)
-	 */
+	@Override
 	public void setSelection(ISelection s) {
 		if (fViewer != null)
 			 fViewer.setSelection(s);
@@ -251,8 +244,8 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 * 
 	 * @param input the new input object or <code>null</code>
 	 */ 
+	@Override
 	public void setInput(Object input) {
-
 		if (!inputChanged(input))
 			return;
 
@@ -327,13 +320,10 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 			setText("");	//$NON-NLS-1$
 		}
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 * @since 3.3
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == INavigatable.class) {
 			if (isEmpty())
 				return null;
@@ -345,30 +335,28 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 				return null;
 			Object data= control.getData(INavigatable.NAVIGATOR_PROPERTY);
 			if (data instanceof INavigatable)
-				return data;
+				return (T) data;
 		}
 		if (adapter == IFlushable.class) {
 			Viewer v= getViewer();
 			if (v != null) {
-				IFlushable flushable = (IFlushable)Utilities.getAdapter(v, IFlushable.class);
+				IFlushable flushable = Adapters.adapt(v, IFlushable.class);
 				if (flushable != null)
-					return flushable;
+					return (T) flushable;
 			}
 		}
 		if (adapter == IFlushable2.class) {
 			Viewer v= getViewer();
 			if (v != null) {
-				IFlushable2 flushable = (IFlushable2)Utilities.getAdapter(v, IFlushable2.class);
+				IFlushable2 flushable = Adapters.adapt(v, IFlushable2.class);
 				if (flushable != null)
-					return flushable;
+					return (T) flushable;
 			}
 		}
 		return super.getAdapter(adapter);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.swt.widgets.Composite#setFocus()
-	 */
+	@Override
 	public boolean setFocus() {
 		Viewer v= getViewer();
 		if (v != null) {

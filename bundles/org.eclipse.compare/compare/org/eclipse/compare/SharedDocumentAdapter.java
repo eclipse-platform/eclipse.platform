@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
@@ -30,9 +30,9 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * @since 3.3
  */
 public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
-
 	/**
-	 * Return the document provider for the given editor input.
+	 * Returns the document provider for the given editor input.
+	 *
 	 * @param input the editor input
 	 * @return the document provider for the given editor input
 	 */
@@ -40,17 +40,13 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 		return DocumentProviderRegistry.getDefault().getDocumentProvider(input);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#connect(org.eclipse.ui.texteditor.IDocumentProvider, org.eclipse.ui.IEditorInput)
-	 */
+	@Override
 	public void connect(IDocumentProvider provider, IEditorInput documentKey)
 			throws CoreException {
 		provider.connect(documentKey);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#disconnect(org.eclipse.ui.texteditor.IDocumentProvider, org.eclipse.ui.IEditorInput)
-	 */
+	@Override
 	public void disconnect(IDocumentProvider provider, IEditorInput documentKey) {
 		provider.disconnect(documentKey);
 	}
@@ -60,6 +56,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	 * {@link FileEditorInput} for the element if the element adapts to {@link IFile}.
 	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
 	 */
+	@Override
 	public IEditorInput getDocumentKey(Object element) {
 		IFile file = getFile(element);
 		if (file != null && file.exists()) {
@@ -76,11 +73,11 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 				return (IFile) resource;
 			}
 		}
-		IFile file = (IFile)Utilities.getAdapter(element, IFile.class);
+		IFile file = Adapters.adapt(element, IFile.class);
 		if (file != null) {
 			return file;
 		}
-		IResource resource = (IResource)Utilities.getAdapter(element, IResource.class);
+		IResource resource = Adapters.adapt(element, IResource.class);
 		if (resource instanceof IFile) {
 			return (IFile) resource;
 		}
@@ -109,9 +106,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ISharedDocumentAdapter#disconnect(java.lang.Object)
-	 */
+	@Override
 	public void disconnect(Object element) {
 		IEditorInput input = getDocumentKey(element);
 		if (input == null)
@@ -121,5 +116,4 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 			return;
 		disconnect(provider, input);
 	}
-
 }

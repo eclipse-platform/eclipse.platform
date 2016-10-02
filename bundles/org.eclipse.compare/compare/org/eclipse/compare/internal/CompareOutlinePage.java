@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.Splitter;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -22,10 +28,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-/**
- */
 public class CompareOutlinePage extends Page implements IContentOutlinePage, IPropertyChangeListener {
-
 	private CompareEditor fCompareEditor;
 	private Control fControl;
 	private CompareViewerSwitchingPane fStructurePane;
@@ -35,12 +38,11 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		fCompareEditor= editor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
 		final Splitter h= new Splitter(parent, SWT.HORIZONTAL);
 		fStructurePane= new CompareViewerSwitchingPane(h, SWT.BORDER | SWT.FLAT, true) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				if (input instanceof ICompareInput)
 					return findStructureViewer(oldViewer, (ICompareInput)input, this);
@@ -66,49 +68,37 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		return fCompareEditor.getCompareConfiguration();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#getControl()
-	 */
+	@Override
 	public Control getControl() {
 		return fControl;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#setFocus()
-	 */
+	@Override
 	public void setFocus() {
 		if (fStructurePane != null)
 			fStructurePane.setFocus();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
+	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		if (fStructurePane != null)
 			fStructurePane.addSelectionChangedListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-	 */
+	@Override
 	public ISelection getSelection() {
 		if (fStructurePane != null)
 			return fStructurePane.getSelection();
 		return StructuredSelection.EMPTY;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
+	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		if (fStructurePane != null)
 			fStructurePane.removeSelectionChangedListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-	 */
+	@Override
 	public void setSelection(ISelection selection) {
 		if (fStructurePane != null)
 			fStructurePane.setSelection(selection);
@@ -123,13 +113,14 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 
 	public OutlineViewerCreator getCreator() {
 		if (fCreator == null) {
-			fCreator = (OutlineViewerCreator)Utilities.getAdapter(fCompareEditor, OutlineViewerCreator.class);
+			fCreator = Adapters.adapt(fCompareEditor, OutlineViewerCreator.class);
 			if (fCreator != null)
 				fCreator.addPropertyChangeListener(this);
 		}
 		return fCreator;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(OutlineViewerCreator.PROP_INPUT)) {
 			fStructurePane.setInput(event.getNewValue());
@@ -137,6 +128,7 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		}
 	}
 	
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (fCreator != null)
@@ -149,9 +141,10 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 			fCreator.removePropertyChangeListener(this);
 		fCreator = null;
 		OutlineViewerCreator creator = getCreator();
-		if (creator != null)
+		if (creator != null) {
 			setInput(creator.getInput());
-		else
+		} else {
 			setInput(null);
+		}
 	}
 }

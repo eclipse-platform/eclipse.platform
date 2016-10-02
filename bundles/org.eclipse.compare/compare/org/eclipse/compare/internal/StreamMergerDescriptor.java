@@ -18,11 +18,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * A factory proxy for creating a StructureCreator.
  */
 class StreamMergerDescriptor {
-    
 	private final static String CLASS_ATTRIBUTE= "class"; //$NON-NLS-1$
-    
+
 	private IConfigurationElement fElement;
-	
+
 	/*
 	 * Creates a new sorter node with the given configuration element.
 	 */
@@ -35,7 +34,7 @@ class StreamMergerDescriptor {
 	 */
 	public IStreamMerger createStreamMerger() {
 		try {
-			return (IStreamMerger)fElement.createExecutableExtension(CLASS_ATTRIBUTE);
+			return (IStreamMerger) fElement.createExecutableExtension(CLASS_ATTRIBUTE);
 		} catch (CoreException ex) {
 			//ExceptionHandler.handle(ex, SearchMessages.getString("Search.Error.createSorter.title"), SearchMessages.getString("Search.Error.createSorter.message")); //$NON-NLS-2$ //$NON-NLS-1$
 			return null;

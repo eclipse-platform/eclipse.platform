@@ -44,25 +44,20 @@ public class Utilities {
 	}
 
 	public static IProject getProject(DiffProject diffProject) {
-		return ResourcesPlugin.getWorkspace().getRoot().getProject(
-				diffProject.getName());
+		return ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
 	}
 
 	public static ReaderCreator getReaderCreator(final IStorage storage) {
 		return new ReaderCreator() {
+			@Override
 			public Reader createReader() throws CoreException {
 				return Utilities.createReader(storage);
 			}
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.compare.patch.ReaderCreator#canCreateReader()
-			 */
+			@Override
 			public boolean canCreateReader() {
 				if (storage == null
-						|| (storage != null && storage instanceof IFile && !((IFile) storage)
-								.isAccessible())) {
+						|| (storage instanceof IFile && !((IFile) storage).isAccessible())) {
 					return false;
 				}
 				return true;
@@ -73,8 +68,7 @@ public class Utilities {
 	public static BufferedReader createReader(IStorage storage)
 			throws CoreException {
 		if (storage == null
-				|| (storage != null && storage instanceof IFile && !((IFile) storage)
-						.isAccessible())) {
+				|| (storage instanceof IFile && !((IFile) storage).isAccessible())) {
 			throw new CoreException(new Status(IStatus.WARNING,
 					CompareUIPlugin.PLUGIN_ID,
 					CompareMessages.ReaderCreator_fileIsNotAccessible));

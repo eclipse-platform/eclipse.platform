@@ -12,7 +12,7 @@ package org.eclipse.compare.structuremergeviewer;
 
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.SharedDocumentAdapter;
-import org.eclipse.compare.internal.Utilities;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
@@ -37,11 +37,11 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 	 *    or <code>null</code>
 	 */
 	public static ISharedDocumentAdapter getAdapter(Object element) {
-		return (ISharedDocumentAdapter)Utilities.getAdapter(element, ISharedDocumentAdapter.class, true);
+		return Adapters.adapt(element, ISharedDocumentAdapter.class);
 	}
 	
 	/**
-	 * Create a shared document adapter that wraps the given adapter.
+	 * Creates a shared document adapter that wraps the given adapter.
 	 * @param wrappedAdapter the wrapped adapter
 	 */
 	public SharedDocumentAdapterWrapper(ISharedDocumentAdapter wrappedAdapter) {
@@ -72,7 +72,7 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 	}
 
 	/**
-	 * Return the wrapped adapter.
+	 * Returns the wrapped adapter.
 	 * @return the wrapped adapter
 	 */
 	public final ISharedDocumentAdapter getWrappedAdapter() {

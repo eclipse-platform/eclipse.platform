@@ -77,6 +77,7 @@ import org.eclipse.core.commands.operations.IUndoableOperation;
 import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -208,8 +209,8 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import com.ibm.icu.text.MessageFormat;
 
 /**
- * A text merge viewer uses the <code>RangeDifferencer</code> to perform a
- * textual, line-by-line comparison of two (or three) input documents.
+ * A text merge viewer uses the <code>RangeDifferencer</code> to perform
+ * a textual, line-by-line comparison of two (or three) input documents.
  * It is based on the <code>ContentMergeViewer</code> and uses <code>TextViewer</code>s
  * to implement the ancestor, left, and right content areas.
  * <p>
@@ -864,7 +865,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		
 		private void connect(IDocumentProvider documentProvider, IEditorInput input) throws CoreException {
-			final ISharedDocumentAdapter sda = (ISharedDocumentAdapter) Utilities.getAdapter(fElement, ISharedDocumentAdapter.class);
+			final ISharedDocumentAdapter sda = Adapters.adapt(fElement, ISharedDocumentAdapter.class);
 			if (sda != null) {
 				sda.connect(documentProvider, input);
 			} else {
@@ -873,7 +874,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		
 		private void disconnect(IDocumentProvider provider, IEditorInput input) {
-			final ISharedDocumentAdapter sda = (ISharedDocumentAdapter) Utilities.getAdapter(fElement, ISharedDocumentAdapter.class);
+			final ISharedDocumentAdapter sda = Adapters.adapt(fElement, ISharedDocumentAdapter.class);
 			if (sda != null) {
 				sda.disconnect(provider, input);
 			} else {
@@ -948,7 +949,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (fDocumentKey != null)
 				return fDocumentKey;
 			if (isUsingDefaultContentProvider() && fElement != null && canHaveSharedDocument()) {
-				ISharedDocumentAdapter sda = (ISharedDocumentAdapter)Utilities.getAdapter(fElement, ISharedDocumentAdapter.class, true);
+				ISharedDocumentAdapter sda = Adapters.adapt(fElement, ISharedDocumentAdapter.class);
 				if (sda != null) {
 					return sda.getDocumentKey(fElement);
 				}
@@ -988,7 +989,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				IEditorInput input = getDocumentKey();
 				IDocument document = fDocumentProvider.getDocument(input);
 				if (document != null) {
-					final ISharedDocumentAdapter sda = (ISharedDocumentAdapter) Utilities.getAdapter(fElement, ISharedDocumentAdapter.class);
+					final ISharedDocumentAdapter sda = Adapters.adapt(fElement, ISharedDocumentAdapter.class);
 					if (sda != null) {
 						sda.flushDocument(fDocumentProvider, input, document, false);
 						return true;
@@ -1124,7 +1125,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				}
 				return !ext.isReadOnly(fDocumentKey);
 			}
-			IEditableContentExtension ext = (IEditableContentExtension)Utilities.getAdapter(fElement, IEditableContentExtension.class);
+			IEditableContentExtension ext = Adapters.adapt(fElement, IEditableContentExtension.class);
 			if (ext != null) {
 				if (ext.isReadOnly()) {
 					IStatus status = ext.validateEdit(getControl().getShell());
@@ -1543,7 +1544,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			@Override
 			public boolean isHunkOnLeft() {
 				ITypedElement left = ((ICompareInput)getInput()).getRight();
-				return left != null && Utilities.getAdapter(left, IHunk.class) != null;
+				return left != null && Adapters.adapt(left, IHunk.class) != null;
 			}
 			@Override
 			public boolean isIgnoreAncestor() {
@@ -3053,7 +3054,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				}
 			} else {
 				if (isPatchHunk()) {
-					if (right != null && Utilities.getAdapter(right, IHunk.class) != null)
+					if (right != null && Adapters.adapt(right, IHunk.class) != null)
 						fLeft.getSourceViewer().setTopIndex(getHunkStart());
 					else
 						fRight.getSourceViewer().setTopIndex(getHunkStart());
@@ -5435,13 +5436,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (input != null && input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			if (right != null) {
-				Object element = Utilities.getAdapter(right, IHunk.class);
+				Object element = Adapters.adapt(right, IHunk.class);
 				if (element instanceof IHunk)
 					return ((IHunk)element).getStartPosition();
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
 			if (left != null) {
-				Object element = Utilities.getAdapter(left, IHunk.class);
+				Object element = Adapters.adapt(left, IHunk.class);
 				if (element instanceof IHunk)
 					return ((IHunk)element).getStartPosition();
 			}
@@ -5603,6 +5604,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 						return null;
 					}
 					@Override
+					@Deprecated
 					public IKeyBindingService getKeyBindingService() {
 						return null;
 					}

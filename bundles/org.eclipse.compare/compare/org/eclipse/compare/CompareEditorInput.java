@@ -33,6 +33,7 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener;
 import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -192,7 +193,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private String fMessage;
 	private Object fInput;
 	private String fTitle;
-	private ListenerList fListenerList= new ListenerList();
+	private ListenerList<IPropertyChangeListener> fListenerList= new ListenerList<>();
 	private CompareNavigator fNavigator;
 	private boolean fLeftDirty = false;
 	private boolean fRightDirty = false;
@@ -212,11 +213,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			if (fContentInputPane != null) {
 				Viewer v = fContentInputPane.getViewer();
 				if (v != null) {
-					return (OutlineViewerCreator)Utilities.getAdapter(v, OutlineViewerCreator.class);
+					return Adapters.adapt(v, OutlineViewerCreator.class);
 				}
 			}
 			return null;
 		}
+
+		@Override
 		public Viewer findStructureViewer(Viewer oldViewer,
 				ICompareInput input, Composite parent,
 				CompareConfiguration configuration) {
@@ -226,11 +229,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			return null;
 		}
 
+		@Override
 		public boolean hasViewerFor(Object input) {
 			OutlineViewerCreator creator = getWrappedCreator();
 			return creator != null;
 		}
 
+		@Override
 		public Object getInput() {
 			OutlineViewerCreator creator = getWrappedCreator();
 			if (creator != null)
@@ -251,6 +256,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		Assert.isNotNull(configuration);
 
 		fDirtyStateListener= new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent e) {
 				String propertyName= e.getProperty();
 				if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
@@ -280,17 +286,17 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return object instanceof Boolean && ((Boolean)object).booleanValue();
 	}
 
-	/* (non Javadoc)
-	 * see IAdaptable.getAdapter
-	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (ICompareNavigator.class.equals(adapter) || CompareNavigator.class.equals(adapter)) {
-			return getNavigator();
+			return (T) getNavigator();
 		}
 		if (adapter == IShowInSource.class) {
-			final IFile file = (IFile)Utilities.getAdapter(this, IFile.class);
+			final IFile file = Adapters.adapt(this, IFile.class);
 			if (file != null)
-				return new IShowInSource() {
+				return (T) new IShowInSource() {
+					@Override
 					public ShowInContext getShowInContext() {
 						return new ShowInContext(new FileEditorInput(file), StructuredSelection.EMPTY);
 					}
@@ -300,14 +306,14 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			synchronized (this) {
 				if (fOutlineView == null)
 					fOutlineView = new InternalOutlineViewerCreator();
-				return fOutlineView;
+				return (T) fOutlineView;
 			}
 		}
 		if (adapter == IFindReplaceTarget.class) {
 			if (fContentInputPane != null) {
 				Viewer v = fContentInputPane.getViewer();
 				if (v != null) {
-					return Utilities.getAdapter(v, IFindReplaceTarget.class);
+					return (T) Adapters.adapt(v, IFindReplaceTarget.class);
 				}
 			}
 		}
@@ -315,7 +321,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			if (fContentInputPane != null) {
 				Viewer v = fContentInputPane.getViewer();
 				if (v != null) {
-					return Utilities.getAdapter(v, IEditorInput.class);
+					return (T) Adapters.adapt(v, IEditorInput.class);
 				}
 			}
 		}
@@ -324,7 +330,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			if (fContentInputPane != null) {
 				Viewer v = fContentInputPane.getViewer();
 				if (v != null) {
-					return Utilities.getAdapter(v, ITextEditorExtension3.class);
+					return (T) Adapters.adapt(v, ITextEditorExtension3.class);
 				}
 			}
 		}
@@ -332,6 +338,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return super.getAdapter(adapter);
 	}
 
+	@Override
 	public synchronized ICompareNavigator getNavigator() {
 		if (fNavigator == null)
 			fNavigator= new CompareEditorInputNavigator(
@@ -345,23 +352,17 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return fNavigator;
 	}
 
-	/* (non Javadoc)
-	 * see IEditorInput.getImageDescriptor
-	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see IEditorInput.getToolTipText
-	 */
+	@Override
 	public String getToolTipText() {
 		return getTitle();
 	}
 
-	/* (non Javadoc)
-	 * see IEditorInput.getName
-	 */
+	@Override
 	public String getName() {
 		return getTitle();
 	}
@@ -371,6 +372,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 *
 	 * @return <code>null</code> because this editor cannot be persisted
 	 */
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
@@ -381,6 +383,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 *
 	 * @return <code>false</code>
 	 */
+	@Override
 	public boolean exists() {
 		return false;
 	}
@@ -472,14 +475,15 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * Runs the compare operation and stores the compare result.
 	 *
 	 * @param monitor the progress monitor to use to display progress and receive
-	 *   requests for cancelation
-	 * @exception InvocationTargetException if the <code>prepareInput</code> method must propagate a checked exception,
-	 * 	it should wrap it inside an <code>InvocationTargetException</code>; runtime exceptions are automatically
-	 *  wrapped in an <code>InvocationTargetException</code> by the calling context
-	 * @exception InterruptedException if the operation detects a request to cancel,
-	 *  using <code>IProgressMonitor.isCanceled()</code>, it should exit by throwing
-	 *  <code>InterruptedException</code>
+	 *     requests for cancellation
+	 * @throws InvocationTargetException if the <code>prepareInput</code> method must propagate a checked exception,
+	 * 	   it should wrap it inside an <code>InvocationTargetException</code>; runtime exceptions are automatically
+	 *     wrapped in an <code>InvocationTargetException</code> by the calling context
+	 * @throws InterruptedException if the operation detects a request to cancel,
+	 *     using <code>IProgressMonitor.isCanceled()</code>, it should exit by throwing
+	 *     <code>InterruptedException</code>
 	 */
+	@Override
 	public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 		fInput= prepareInput(monitor);
 	}
@@ -496,7 +500,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * </p>
 	 *
 	 * @param monitor the progress monitor to use to display progress and receive
-	 *   requests for cancelation
+	 *   requests for cancellation
 	 * @return the result of the compare operation, or <code>null</code> if there are no differences
 	 * @exception InvocationTargetException if the <code>prepareInput</code> method must propagate a checked exception,
 	 * 	it should wrap it inside an <code>InvocationTargetException</code>; runtime exceptions are automatically
@@ -533,7 +537,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @return the SWT control hierarchy for the compare editor
 	 */
 	public Control createContents(Composite parent) {
-
 		fComposite= new Splitter(parent, SWT.VERTICAL);
 		fComposite.setData(this);
 
@@ -555,6 +558,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		feedInput();
 
 		fComposite.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				/*
 				 * When the UI associated with this compare editor input is
@@ -568,12 +572,14 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				Control control = composite;
 				while (composite.getChildren().length > 0) {
 					control = composite.getChildren()[composite.getChildren().length - 1];
-					if (control instanceof Composite)
+					if (control instanceof Composite) {
 						composite = (Composite) control;
-					else
+					} else {
 						break;
+					}
 				}
 				control.addDisposeListener(new DisposeListener() {
+					@Override
 					public void widgetDisposed(DisposeEvent ev) {
 						handleDispose();
 					}
@@ -654,6 +660,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		// setup the wiring for top left pane
 		fStructureInputPane.addOpenListener(
 			new IOpenListener() {
+				@Override
 				public void open(OpenEvent oe) {
 					feed1(oe.getSelection());
 				}
@@ -661,6 +668,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		);
 		fStructureInputPane.addSelectionChangedListener(
 			new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent e) {
 					ISelection s= e.getSelection();
 					if (s == null || s.isEmpty())
@@ -672,6 +680,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		);
 		fStructureInputPane.addDoubleClickListener(
 			new IDoubleClickListener() {
+				@Override
 				public void doubleClick(DoubleClickEvent event) {
 					feedDefault1(event.getSelection());
 				}
@@ -680,6 +689,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 		fStructurePane1.addSelectionChangedListener(
 			new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent e) {
 					feed2(e.getSelection());
 				}
@@ -688,6 +698,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 		fStructurePane2.addSelectionChangedListener(
 			new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent e) {
 					feed3(e.getSelection());
 				}
@@ -705,9 +716,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @return the structure input pane
 	 * @since 3.3
 	 */
-	protected CompareViewerPane createStructureInputPane(
-			final Composite parent) {
+	protected CompareViewerPane createStructureInputPane(final Composite parent) {
 		return new CompareStructureViewerSwitchingPane(parent, SWT.BORDER | SWT.FLAT, true, this) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				if (CompareEditorInput.this.hasChildren(input)) {
 					return createDiffViewer(this);
@@ -717,7 +728,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		};
 	}
 
-	/* private */ boolean hasChildren(Object input) {
+	boolean hasChildren(Object input) {
 		if (input instanceof IDiffContainer) {
 			IDiffContainer dn= (IDiffContainer) input;
 			return dn.hasChildren();
@@ -755,7 +766,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private boolean hasOutlineViewer(Object input) {
 		if (!isShowStructureInOutlineView())
 			return false;
-		OutlineViewerCreator creator = (OutlineViewerCreator)getAdapter(OutlineViewerCreator.class);
+		OutlineViewerCreator creator = getAdapter(OutlineViewerCreator.class);
 		if (creator != null)
 			return creator.hasViewerFor(input);
 		return false;
@@ -772,6 +783,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feed1(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			new Runnable() {
+				@Override
 				public void run() {
 					if (selection == null || selection.isEmpty()) {
 						Object input= fStructureInputPane.getInput();
@@ -800,6 +812,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feedDefault1(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			new Runnable() {
+				@Override
 				public void run() {
 					if (!selection.isEmpty())
 						fStructurePane1.setInput(getElement(selection));
@@ -811,6 +824,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feed2(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			new Runnable() {
+				@Override
 				public void run() {
 					if (selection.isEmpty()) {
 						Object input= fStructurePane1.getInput();
@@ -829,6 +843,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private void feed3(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
 			new Runnable() {
+				@Override
 				public void run() {
 					if (selection.isEmpty())
 						internalSetContentPaneInput(fStructurePane2.getInput());
@@ -873,6 +888,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 *
 	 * @deprecated Please use {@link #setFocus2()} instead.
 	 */
+	@Deprecated
 	public void setFocus() {
 		setFocus2();
 	}
@@ -964,6 +980,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			Control c= newViewer.getControl();
 			c.addDisposeListener(
 				new DisposeListener() {
+					@Override
 					public void widgetDisposed(DisposeEvent e) {
 						dsp.removePropertyChangeListener(fDirtyStateListener);
 					}
@@ -1176,17 +1193,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 	}
 
-	/* (non Javadoc)
-	 * see IPropertyChangeNotifier.addListener
-	 */
+	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (listener != null)
 			fListenerList.add(listener);
 	}
 
-	/* (non Javadoc)
-	 * see IPropertyChangeNotifier.removeListener
-	 */
+	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (fListenerList != null) {
 			fListenerList.remove(listener);
@@ -1201,6 +1214,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @param pm an <code>IProgressMonitor</code> that the implementation of save may use to show progress
 	 * @deprecated Override method saveChanges instead.
 	 */
+	@Deprecated
 	public void save(IProgressMonitor pm) {
 		// empty default implementation
 	}
@@ -1216,7 +1230,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * @since 2.0
 	 */
 	public void saveChanges(IProgressMonitor monitor) throws CoreException {
-
 		flushViewers(monitor);
 
 		save(monitor);
@@ -1261,7 +1274,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private static void flushViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
-			IFlushable flushable = (IFlushable)Utilities.getAdapter(pane, IFlushable.class);
+			IFlushable flushable = Adapters.adapt(pane, IFlushable.class);
 			if (flushable != null)
 				flushable.flush(pm);
 		}
@@ -1269,7 +1282,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private static void flushLeftViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
-			IFlushable2 flushable = (IFlushable2)Utilities.getAdapter(pane, IFlushable2.class);
+			IFlushable2 flushable = Adapters.adapt(pane, IFlushable2.class);
 			if (flushable != null)
 				flushable.flushLeft(pm);
 		}
@@ -1277,15 +1290,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private static void flushRightViewer(CompareViewerPane pane, IProgressMonitor pm) {
 		if (pane != null) {
-			IFlushable2 flushable = (IFlushable2)Utilities.getAdapter(pane, IFlushable2.class);
+			IFlushable2 flushable = Adapters.adapt(pane, IFlushable2.class);
 			if (flushable != null)
 				flushable.flushRight(pm);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#addCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
-	 */
+	@Override
 	public void addCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
 		if (fContainer == null) {
@@ -1298,6 +1309,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
+	@Override
 	public void removeCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
 		if (fContainer == null) {
@@ -1310,14 +1322,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)
 	 */
+	@Override
 	public void registerContextMenu(MenuManager menu, ISelectionProvider selectionProvider) {
 		if (fContainer != null)
 			fContainer.registerContextMenu(menu, selectionProvider);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#setStatusMessage(java.lang.String)
-	 */
+	@Override
 	public void setStatusMessage(String message) {
 		if (!fContainerProvided) {
 			// Try the action bars directly
@@ -1333,9 +1344,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#getActionBars()
-	 */
+	@Override
 	public IActionBars getActionBars() {
 		if (fContainer != null) {
 			IActionBars actionBars = fContainer.getActionBars();
@@ -1351,6 +1360,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getServiceLocator()
 	 */
+	@Override
 	public IServiceLocator getServiceLocator() {
 		IServiceLocator serviceLocator = fContainer.getServiceLocator();
 		if (serviceLocator == null && !fContainerProvided) {
@@ -1363,6 +1373,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getWorkbenchPart()
 	 */
+	@Override
 	public IWorkbenchPart getWorkbenchPart() {
 		if (fContainer != null)
 			return fContainer.getWorkbenchPart();
@@ -1372,6 +1383,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.operation.IRunnableContext#run(boolean, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
 	 */
+	@Override
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable) throws InvocationTargetException,
 			InterruptedException {
@@ -1379,6 +1391,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			fContainer.run(fork, cancelable, runnable);
 	}
 
+	@Override
 	public void runAsynchronously(IRunnableWithProgress runnable) {
 		if (fContainer != null)
 			fContainer.runAsynchronously(runnable);
@@ -1522,6 +1535,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private boolean saveChanges() {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
 						saveChanges(monitor);

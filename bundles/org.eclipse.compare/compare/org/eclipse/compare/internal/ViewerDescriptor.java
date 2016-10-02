@@ -12,6 +12,7 @@ package org.eclipse.compare.internal;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IViewerCreator;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.viewers.Viewer;
@@ -21,21 +22,20 @@ import org.eclipse.swt.widgets.Composite;
  * Creates <code>Viewer</code>s from an <code>IConfigurationElement</code>.
  */
 public class ViewerDescriptor implements IViewerDescriptor {
-
 	private final static String CLASS_ATTRIBUTE= "class"; //$NON-NLS-1$
 	private final static String EXTENSIONS_ATTRIBUTE= "extensions"; //$NON-NLS-1$
 	private final static String LABEL_ATTRIBUTE = "label"; //$NON-NLS-1$
 
 	private IConfigurationElement fConfiguration;
 	private IViewerCreator fViewerCreator;
-	private Class fViewerClass;
+	private Class<? extends Viewer> fViewerClass;
 
 	public ViewerDescriptor(IConfigurationElement config) {
 		fConfiguration= config;
 	}
 
+	@Override
 	public Viewer createViewer(Viewer currentViewer, Composite parent, CompareConfiguration mp) {
-		
 		if (currentViewer != null && currentViewer.getClass() == fViewerClass) {
 			//System.out.println("reused viewer: " + currentViewer.getClass().getName());
 			return currentViewer;
@@ -53,7 +53,7 @@ public class ViewerDescriptor implements IViewerDescriptor {
 			// If we are going to return a new viewer, we want to preemptively deregister
 			// any handlers to avoid the logging of conflict warnings
 			if (currentViewer != null) {
-				CompareHandlerService[] compareHandlerService = (CompareHandlerService[]) Utilities.getAdapter(currentViewer, CompareHandlerService[].class);
+				CompareHandlerService[] compareHandlerService = Adapters.adapt(currentViewer, CompareHandlerService[].class);
 				if (compareHandlerService != null) {
 					for (int i = 0; i < compareHandlerService.length; i++) {
 						compareHandlerService[i].dispose();

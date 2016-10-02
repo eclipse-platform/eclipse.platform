@@ -18,12 +18,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -51,17 +49,16 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
@@ -98,14 +95,13 @@ import com.ibm.icu.text.MessageFormat;
  * Convenience and utility methods.
  */
 public class Utilities {
-	
 	private static final IPath ICONS_PATH= new Path("$nl$/icons/full/"); //$NON-NLS-1$
-	
+
 	public static IWorkbenchPartSite findSite(Control c) {
 		while (c != null && !c.isDisposed()) {
 			Object data= c.getData();
 			if (data instanceof IWorkbenchPart)
-				return ((IWorkbenchPart)data).getSite();
+				return ((IWorkbenchPart) data).getSite();
 			c= c.getParent();
 		}
 		return null;
@@ -115,13 +111,13 @@ public class Utilities {
 		while (c != null && !c.isDisposed()) {
 			Object data= c.getData();
 			if (data instanceof CompareEditor)
-				return ((CompareEditor)data).getActionBars();
-				
+				return ((CompareEditor) data).getActionBars();
+
 			// PR 1GDVZV7: ITPVCM:WIN98 - CTRL + C does not work in Java source compare
 			if (data instanceof IViewPart)
-				return ((IViewPart)data).getViewSite().getActionBars();
+				return ((IViewPart) data).getViewSite().getActionBars();
 			// end PR 1GDVZV7
-			
+
 			c= c.getParent();
 		}
 		return null;
@@ -141,48 +137,39 @@ public class Utilities {
 		}
 		return dflt;
 	}
-	
+
 	/**
 	 * Returns the active compare filters for the compare configuration
-	 * 
+	 *
 	 * @param cc
 	 * @return the active compare filters
 	 */
 	public static ICompareFilter[] getCompareFilters(CompareConfiguration cc) {
 		if (cc != null) {
-			Object value = cc
-					.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS);
+			Object value = cc.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS);
 			if (value instanceof Map) {
-				Map filtersMap = (Map) value;
-				return (ICompareFilter[]) filtersMap.values().toArray(
-						new ICompareFilter[filtersMap.size()]);
+				@SuppressWarnings("unchecked")
+				Map<String, ICompareFilter[]> filtersMap = (Map<String, ICompareFilter[]>) value;
+				return filtersMap.values().toArray(new ICompareFilter[filtersMap.size()]);
 			}
 		}
 		return new ICompareFilter[0];
 	}
 
-	public static void firePropertyChange(ListenerList listenerList, Object source, String property, Object old, Object newValue) {
+	public static void firePropertyChange(ListenerList<IPropertyChangeListener> listenerList, Object source, String property, Object old, Object newValue) {
 		PropertyChangeEvent event= new PropertyChangeEvent(source, property, old, newValue);
 		firePropertyChange(listenerList, event);
 	}
-	
-	public static void firePropertyChange(final ListenerList listenerList, final PropertyChangeEvent event) {
+
+	public static void firePropertyChange(final ListenerList<IPropertyChangeListener> listenerList, final PropertyChangeEvent event) {
 		if (listenerList == null || listenerList.isEmpty())
 			return;
 		// Legacy listeners may expect to get notified in the UI thread
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
-				Object[] listeners= listenerList.getListeners();
-				for (int i= 0; i < listeners.length; i++) {
-					final IPropertyChangeListener listener= (IPropertyChangeListener) listeners[i];
-					SafeRunner.run(new ISafeRunnable() {
-						public void run() throws Exception {
-							listener.propertyChange(event);
-						}
-						public void handleException(Throwable exception) {
-							// Logged by SafeRunner
-						}
-					});
+				for (IPropertyChangeListener listener : listenerList) {
+					SafeRunner.run(() -> listener.propertyChange(event));
 				}
 			}
 		};
@@ -196,18 +183,17 @@ public class Utilities {
 	public static boolean okToUse(Widget widget) {
 		return widget != null && !widget.isDisposed();
 	}
-	
-	private static ArrayList internalGetResources(ISelection selection, Class type) {
-		ArrayList tmp= new ArrayList();
+
+	private static ArrayList<IResource> internalGetResources(ISelection selection, Class<? extends IResource> type) {
+		ArrayList<IResource> tmp= new ArrayList<>();
 		if (selection instanceof IStructuredSelection) {
-			Object[] s= ((IStructuredSelection)selection).toArray();
-				
+			Object[] s= ((IStructuredSelection) selection).toArray();
+
 			for (int i= 0; i < s.length; i++) {
 				IResource resource= null;
 				Object o= s[i];
 				if (type.isInstance(o)) {
 					resource= (IResource) o;
-						
 				} else if (o instanceof ResourceMapping) {
 					try {
 						ResourceTraversal[] travs= ((ResourceMapping)o).getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
@@ -229,7 +215,7 @@ public class Utilities {
 					if (type.isInstance(adapter))
 						resource= (IResource) adapter;
 				}
-				
+
 				if (resource != null && resource.isAccessible())
 					tmp.add(resource);
 			}
@@ -237,38 +223,37 @@ public class Utilities {
 		return tmp;
 	}
 
-	
 	/*
 	 * Convenience method: extract all accessible <code>IResources</code> from given selection.
 	 * Never returns null.
 	 */
 	public static IResource[] getResources(ISelection selection) {
-		ArrayList tmp= internalGetResources(selection, IResource.class);
-		return (IResource[]) tmp.toArray(new IResource[tmp.size()]);
+		ArrayList<IResource> tmp= internalGetResources(selection, IResource.class);
+		return tmp.toArray(new IResource[tmp.size()]);
 	}
-	
+
 	/*
 	 * Convenience method: extract all accessible <code>IFiles</code> from given selection.
 	 * Never returns null.
 	 */
 	public static IFile[] getFiles(ISelection selection) {
-		ArrayList tmp= internalGetResources(selection, IFile.class);
-		return (IFile[]) tmp.toArray(new IFile[tmp.size()]);
+		ArrayList<IResource> tmp= internalGetResources(selection, IFile.class);
+		return tmp.toArray(new IFile[tmp.size()]);
 	}
 
 	public static byte[] readBytes(InputStream in) {
 		ByteArrayOutputStream bos= new ByteArrayOutputStream();
-		try {		
+		try {
 			while (true) {
 				int c= in.read();
 				if (c == -1)
 					break;
 				bos.write(c);
 			}
-					
+
 		} catch (IOException ex) {
 			return null;
-		
+
 		} finally {
 			Utilities.close(in);
 			try {
@@ -277,41 +262,39 @@ public class Utilities {
 				// silently ignored
 			}
 		}
-		
+
 		return bos.toByteArray();
 	}
 
 	public static IPath getIconPath(Display display) {
 		return ICONS_PATH;
 	}
-	
+
 	/*
-	 * Initialize the given Action from a ResourceBundle.
+	 * Initializes the given Action from a ResourceBundle.
 	 */
 	public static void initAction(IAction a, ResourceBundle bundle, String prefix) {
-		
 		String labelKey= "label"; //$NON-NLS-1$
 		String tooltipKey= "tooltip"; //$NON-NLS-1$
 		String imageKey= "image"; //$NON-NLS-1$
 		String descriptionKey= "description"; //$NON-NLS-1$
-		
+
 		if (prefix != null && prefix.length() > 0) {
 			labelKey= prefix + labelKey;
 			tooltipKey= prefix + tooltipKey;
 			imageKey= prefix + imageKey;
 			descriptionKey= prefix + descriptionKey;
 		}
-		
+
 		a.setText(getString(bundle, labelKey, labelKey));
 		a.setToolTipText(getString(bundle, tooltipKey, null));
 		a.setDescription(getString(bundle, descriptionKey, null));
-		
+
 		String relPath= getString(bundle, imageKey, null);
 		if (relPath != null && relPath.trim().length() > 0) {
-			
 			String dPath;
 			String ePath;
-			
+
 			if (relPath.indexOf("/") >= 0) { //$NON-NLS-1$
 				String path= relPath.substring(1);
 				dPath= 'd' + path;
@@ -320,7 +303,7 @@ public class Utilities {
 				dPath= "dlcl16/" + relPath; //$NON-NLS-1$
 				ePath= "elcl16/" + relPath; //$NON-NLS-1$
 			}
-			
+
 			ImageDescriptor id= CompareUIPlugin.getImageDescriptor(dPath);	// we set the disabled image first (see PR 1GDDE87)
 			if (id != null)
 				a.setDisabledImageDescriptor(id);
@@ -331,35 +314,34 @@ public class Utilities {
 			}
 		}
 	}
-	
-	public static void initToggleAction(IAction a, ResourceBundle bundle, String prefix, boolean checked) {
 
+	public static void initToggleAction(IAction a, ResourceBundle bundle, String prefix, boolean checked) {
 		String tooltip= null;
-		if (checked)
+		if (checked) {
 			tooltip= getString(bundle, prefix + "tooltip.checked", null);	//$NON-NLS-1$
-		else
+		} else {
 			tooltip= getString(bundle, prefix + "tooltip.unchecked", null);	//$NON-NLS-1$
+		}
 		if (tooltip == null)
 			tooltip= getString(bundle, prefix + "tooltip", null);	//$NON-NLS-1$
-		
+
 		if (tooltip != null)
 			a.setToolTipText(tooltip);
-			
+
 		String description= null;
-		if (checked)
+		if (checked) {
 			description= getString(bundle, prefix + "description.checked", null);	//$NON-NLS-1$
-		else
+		} else {
 			description= getString(bundle, prefix + "description.unchecked", null);	//$NON-NLS-1$
+		}
 		if (description == null)
 			description= getString(bundle, prefix + "description", null);	//$NON-NLS-1$
-		
+
 		if (description != null)
 			a.setDescription(description);
-			
 	}
 
 	public static String getString(ResourceBundle bundle, String key, String dfltValue) {
-		
 		if (bundle != null) {
 			try {
 				return bundle.getString(key);
@@ -369,9 +351,8 @@ public class Utilities {
 		}
 		return dfltValue;
 	}
-	
+
 	public static String getFormattedString(ResourceBundle bundle, String key, String arg) {
-		
 		if (bundle != null) {
 			try {
 				return MessageFormat.format(bundle.getString(key), arg);
@@ -381,7 +362,7 @@ public class Utilities {
 		}
 		return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
 	}
-	
+
 	public static String getString(String key) {
 		try {
 			return CompareUI.getResourceBundle().getString(key);
@@ -389,13 +370,13 @@ public class Utilities {
 			return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
 		}
 	}
-	
+
 	public static String getFormattedString(String key, String arg) {
 		try {
 			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg);
 		} catch (MissingResourceException e) {
 			return "!" + key + "!";	//$NON-NLS-2$ //$NON-NLS-1$
-		}	
+		}
 	}
 
 	public static String getFormattedString(String key, String arg0, String arg1) {
@@ -403,15 +384,14 @@ public class Utilities {
 			return MessageFormat.format(CompareUI.getResourceBundle().getString(key), arg0, arg1);
 		} catch (MissingResourceException e) {
 			return "!" + key + "!";//$NON-NLS-2$ //$NON-NLS-1$
-		}	
+		}
 	}
 
 	public static String getString(ResourceBundle bundle, String key) {
 		return getString(bundle, key, key);
 	}
-	
+
 	public static int getInteger(ResourceBundle bundle, String key, int dfltValue) {
-		
 		if (bundle != null) {
 			try {
 				String s= bundle.getString(key);
@@ -420,7 +400,7 @@ public class Utilities {
 			} catch (NumberFormatException x) {
 				CompareUIPlugin.log(x);
 			} catch (MissingResourceException x) {
-				// silently ignore Exception
+				// Silently ignore Exception
 			}
 		}
 		return dfltValue;
@@ -428,7 +408,7 @@ public class Utilities {
 
 	/**
 	 * Answers <code>true</code> if the given selection contains resources that don't
-	 * have overlapping paths and <code>false</code> otherwise. 
+	 * have overlapping paths and <code>false</code> otherwise.
 	 */
 	/*
 	public static boolean isSelectionNonOverlapping() throws TeamException {
@@ -438,25 +418,25 @@ public class Utilities {
 			List validPaths = new ArrayList(2);
 			for (int i = 0; i < resources.length; i++) {
 				IResource resource = resources[i];
-				
+
 				// only allow cvs resources to be selected
 				if(RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId()) == null) {
 					return false;
 				}
-				
-				// check if this resource overlaps other selections		
+
+				// check if this resource overlaps other selections
 				IPath resourceFullPath = resource.getFullPath();
 				if(!validPaths.isEmpty()) {
 					for (Iterator it = validPaths.iterator(); it.hasNext();) {
 						IPath path = (IPath) it.next();
-						if(path.isPrefixOf(resourceFullPath) || 
+						if(path.isPrefixOf(resourceFullPath) ||
 					       resourceFullPath.isPrefixOf(path)) {
 							return false;
 						}
 					}
 				}
 				validPaths.add(resourceFullPath);
-				
+
 				// ensure that resources are managed
 				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 				if(cvsResource.isFolder()) {
@@ -470,15 +450,15 @@ public class Utilities {
 		return false;
 	}
 	*/
-	
+
 	/* validate edit utilities */
-	
+
 	/**
 	 * Status constant indicating that an validateEdit call has changed the
 	 * content of a file on disk.
 	 */
 	private static final int VALIDATE_EDIT_PROBLEM= 10004;
-	
+
 	/**
 	 * Constant used to indicate that tests are being run.
 	 */
@@ -488,89 +468,89 @@ public class Utilities {
 	 * Constant used while testing the indicate that changes should be flushed
 	 * when the compare input changes and a viewer is dirty.
 	 */
-	public static boolean TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE = false;	
-	
+	public static boolean TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE = false;
+
 	/*
 	 * Makes the given resources committable. Committable means that all
 	 * resources are writeable and that the content of the resources hasn't
 	 * changed by calling <code>validateEdit</code> for a given file on
 	 * <tt>IWorkspace</tt>.
-	 * 
+	 *
 	 * @param resources the resources to be checked
 	 * @param shell the Shell passed to <code>validateEdit</code> as a context
 	 * @return returns <code>true</code> if all resources are committable, <code>false</code> otherwise
-	 * 
+	 *
 	 * @see org.eclipse.core.resources.IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
 	 */
 	public static boolean validateResource(IResource resource, Shell shell, String title) {
 		return validateResources(new IResource[] { resource }, shell, title);
 	}
-	
+
 	/*
 	 * Makes the given resources committable. Committable means that all
 	 * resources are writeable and that the content of the resources hasn't
 	 * changed by calling <code>validateEdit</code> for a given file on
 	 * <tt>IWorkspace</tt>.
-	 * 
+	 *
 	 * @param resources the resources to be checked
 	 * @param shell the Shell passed to <code>validateEdit</code> as a context
 	 * @return returns <code>true</code> if all resources are committable, <code>false</code> otherwise
-	 * 
+	 *
 	 * @see org.eclipse.core.resources.IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
 	 */
-	public static boolean validateResources(List resources, Shell shell, String title) {
-		IResource r[]= (IResource[]) resources.toArray(new IResource[resources.size()]);
+	public static boolean validateResources(List<IResource> resources, Shell shell, String title) {
+		IResource r[]= resources.toArray(new IResource[resources.size()]);
 		return validateResources(r, shell, title);
 	}
-	
+
 	/*
 	 * Makes the given resources committable. Committable means that all
 	 * resources are writeable and that the content of the resources hasn't
 	 * changed by calling <code>validateEdit</code> for a given file on
 	 * <tt>IWorkspace</tt>.
-	 * 
+	 *
 	 * @param resources the resources to be checked
 	 * @param shell the Shell passed to <code>validateEdit</code> as a context
 	 * @return returns <code>true</code> if all resources are committable, <code>false</code> otherwise
-	 * 
+	 *
 	 * @see org.eclipse.core.resources.IWorkspace#validateEdit(org.eclipse.core.resources.IFile[], java.lang.Object)
 	 */
 	public static boolean validateResources(IResource[] resources, Shell shell, String title) {
-		
 		// get all readonly files
-		List readOnlyFiles= getReadonlyFiles(resources);
+		List<IResource> readOnlyFiles= getReadonlyFiles(resources);
 		if (readOnlyFiles.size() == 0)
 			return true;
-		
+
 		// get timestamps of readonly files before validateEdit
-		Map oldTimeStamps= createModificationStampMap(readOnlyFiles);
-		
-		IFile[] files= (IFile[]) readOnlyFiles.toArray(new IFile[readOnlyFiles.size()]);
+		Map<IFile, Long> oldTimeStamps= createModificationStampMap(readOnlyFiles);
+
+		IFile[] files= readOnlyFiles.toArray(new IFile[readOnlyFiles.size()]);
 		IStatus status= ResourcesPlugin.getWorkspace().validateEdit(files, shell);
-		if (! status.isOK()) {
+		if (!status.isOK()) {
 			String message= getString("ValidateEdit.error.unable_to_perform"); //$NON-NLS-1$
 			displayError(shell, title, status, message);
 			return false;
 		}
-			
+
 		IStatus modified= null;
-		Map newTimeStamps= createModificationStampMap(readOnlyFiles);
-		for (Iterator iter= oldTimeStamps.keySet().iterator(); iter.hasNext();) {
-			IFile file= (IFile) iter.next();
+		Map<IFile, Long> newTimeStamps= createModificationStampMap(readOnlyFiles);
+		for (Map.Entry<IFile, Long> entry : newTimeStamps.entrySet()) {
+			IFile file = entry.getKey();
+			Long newTimeStamp = entry.getValue();
 			if (file.isReadOnly()) {
-				IStatus entry= new Status(IStatus.ERROR,
+				IStatus error = new Status(IStatus.ERROR,
 								CompareUIPlugin.getPluginId(),
 								VALIDATE_EDIT_PROBLEM,
 								getFormattedString("ValidateEdit.error.stillReadonly", file.getFullPath().toString()), //$NON-NLS-1$
 								null);
-				modified= addStatus(modified, entry);
-			} else if (! oldTimeStamps.get(file).equals(newTimeStamps.get(file))) {
-				IStatus entry= new Status(IStatus.ERROR,
+				modified= addStatus(modified, error);
+			} else if (!oldTimeStamps.get(file).equals(newTimeStamp)) {
+				IStatus error = new Status(IStatus.ERROR,
 								CompareUIPlugin.getPluginId(),
 								VALIDATE_EDIT_PROBLEM,
 								getFormattedString("ValidateEdit.error.fileModified", file.getFullPath().toString()), //$NON-NLS-1$
 								null);
-				modified= addStatus(modified, entry);
+				modified= addStatus(modified, error);
 			}
 		}
 		if (modified != null) {
@@ -582,57 +562,55 @@ public class Utilities {
 	}
 
 	private static void displayError(final Shell shell, final String title, final IStatus status, final String message) {
-		if (Display.getCurrent() != null)
+		if (Display.getCurrent() != null) {
 			ErrorDialog.openError(shell, title, message, status);
-		else {
+		} else {
 			Display.getDefault().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					ErrorDialog.openError(shell, title, message, status);
 				}
 			});
 		}
 	}
-	
-	private static List getReadonlyFiles(IResource[] resources) {
-		List readOnlyFiles= new ArrayList();
-		for (int i= 0; i < resources.length; i++) {
-			IResource resource= resources[i];
+
+	private static List<IResource> getReadonlyFiles(IResource[] resources) {
+		List<IResource> readOnlyFiles= new ArrayList<>();
+		for (IResource resource : resources) {
 			ResourceAttributes resourceAttributes= resource.getResourceAttributes();
-			if (resource.getType() == IResource.FILE && resourceAttributes != null && resourceAttributes.isReadOnly())	
+			if (resource.getType() == IResource.FILE && resourceAttributes != null && resourceAttributes.isReadOnly())
 				readOnlyFiles.add(resource);
 		}
 		return readOnlyFiles;
 	}
 
-	private static Map createModificationStampMap(List files) {
-		Map map= new HashMap();
-		for (Iterator iter= files.iterator(); iter.hasNext(); ) {
-			IFile file= (IFile)iter.next();
-			map.put(file, new Long(file.getModificationStamp()));
+	private static Map<IFile, Long> createModificationStampMap(List<IResource> files) {
+		Map<IFile, Long> map= new HashMap<IFile, Long>();
+		for (IResource file : files) {
+			map.put((IFile) file, file.getModificationStamp());
 		}
 		return map;
 	}
-	
+
 	private static IStatus addStatus(IStatus status, IStatus entry) {
-		
 		if (status == null)
 			return entry;
-			
+
 		if (status.isMultiStatus()) {
 			((MultiStatus)status).add(entry);
 			return status;
 		}
 
 		MultiStatus result= new MultiStatus(CompareUIPlugin.getPluginId(),
-			VALIDATE_EDIT_PROBLEM,
-			getString("ValidateEdit.error.unable_to_perform"), null); //$NON-NLS-1$ 
+				VALIDATE_EDIT_PROBLEM,
+				getString("ValidateEdit.error.unable_to_perform"), null); //$NON-NLS-1$
 		result.add(status);
 		result.add(entry);
 		return result;
 	}
-	
+
 	// encoding
-	
+
 	public static String readString(IStreamContentAccessor sca, String encoding) throws CoreException {
 		String s = null;
 		try {
@@ -648,7 +626,7 @@ public class Utilities {
 		}
 		return s;
 	}
-	
+
 	/*
 	 * Returns null if an error occurred.
 	 */
@@ -685,7 +663,7 @@ public class Utilities {
 			}
 		}
 	}
-	
+
 	public static String getCharset(Object resource) {
 		if (resource instanceof IEncodedStorage) {
 			try {
@@ -696,7 +674,7 @@ public class Utilities {
 		}
 		return ResourcesPlugin.getEncoding();
 	}
-	
+
 	public static byte[] getBytes(String s, String encoding) {
 		byte[] bytes= null;
 		if (s != null) {
@@ -734,31 +712,7 @@ public class Utilities {
 			return resources[0];
 		return null;
 	}
-	
-	public static Object getAdapter(Object element, Class adapterType, boolean load) {
-		if (adapterType.isInstance(element))
-			return element;
-		if (element instanceof IAdaptable) {
-			Object adapted = ((IAdaptable) element).getAdapter(adapterType);
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		}
-		if (load) {
-			Object adapted = Platform.getAdapterManager().loadAdapter(element, adapterType.getName());
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		} else {
-			Object adapted = Platform.getAdapterManager().getAdapter(element, adapterType);
-			if (adapterType.isInstance(adapted))
-				return adapted;
-		}
-		return null;
-	}
-	
-	public static Object getAdapter(Object element, Class adapterType) {
-		return getAdapter(element, adapterType, false);
-	}
-	
+
 	public static ITypedElement getLeg(char type, Object input) {
 		if (input instanceof ICompareInput) {
 			switch (type) {
@@ -768,11 +722,13 @@ public class Utilities {
 				return ((ICompareInput)input).getLeft();
 			case MergeViewerContentProvider.RIGHT_CONTRIBUTOR:
 				return ((ICompareInput)input).getRight();
+			default:
+				break;
 			}
 		}
 		return null;
 	}
-	
+
 	public static IDocument getDocument(char type, Object element, boolean isUsingDefaultContentProvider, boolean canHaveSharedDocument) {
 		ITypedElement te= getLeg(type, element);
 		if (te == null)
@@ -783,7 +739,7 @@ public class Utilities {
 			return ((IDocumentRange) te).getDocument();
 
 		if (isUsingDefaultContentProvider && canHaveSharedDocument) {
-			ISharedDocumentAdapter sda = (ISharedDocumentAdapter)Utilities.getAdapter(te, ISharedDocumentAdapter.class, true);
+			ISharedDocumentAdapter sda = Adapters.adapt(te, ISharedDocumentAdapter.class);
 			if (sda != null) {
 				IEditorInput input= sda.getDocumentKey(te);
 				if (input != null) {
@@ -799,7 +755,7 @@ public class Utilities {
 
 		return null;
 	}
-	
+
 	/**
 	 * Return whether either the left or right sides of the given input
 	 * represents a hunk. A hunk is a portion of a file.
@@ -810,39 +766,39 @@ public class Utilities {
 		if (input != null && input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			if (right != null) {
-				Object element = Utilities.getAdapter(right, IHunk.class);
+				Object element = Adapters.adapt(right, IHunk.class);
 				if (element instanceof IHunk)
 					return true;
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
 			if (left != null) {
-				Object element = Utilities.getAdapter(left, IHunk.class);
+				Object element = Adapters.adapt(left, IHunk.class);
 				if (element instanceof IHunk)
 					return true;
 			}
 		}
-		return false; 
+		return false;
 	}
-	
+
 	public static boolean isHunkOk(Object input) {
 		if (input != null && input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			if (right != null) {
-				Object element = Utilities.getAdapter(right, HunkResult.class);
+				Object element = Adapters.adapt(right, HunkResult.class);
 				if (element instanceof HunkResult) {
 					return ((HunkResult)element).isOK();
 				}
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
 			if (left != null) {
-				Object element = Utilities.getAdapter(left, HunkResult.class);
+				Object element = Adapters.adapt(left, HunkResult.class);
 				if (element instanceof HunkResult)
 					return ((HunkResult)element).isOK();
 			}
 		}
-		return false; 
+		return false;
 	}
-	
+
 	public static void schedule(Job job, IWorkbenchSite site) {
 		if (site != null) {
 			IWorkbenchSiteProgressService siteProgress = site.getAdapter(IWorkbenchSiteProgressService.class);
@@ -859,6 +815,7 @@ public class Utilities {
 			BusyIndicator.showWhile(Display.getCurrent(), runnable);
 		} else {
 			Display.getDefault().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					BusyIndicator.showWhile(Display.getCurrent(), runnable);
 				}
@@ -874,22 +831,22 @@ public class Utilities {
 	public static boolean setReadTimeout(URLConnection connection, int timeout) {
 		Method[] methods = connection.getClass().getMethods();
 		for (int i = 0; i < methods.length; i++) {
-			if (methods[i].getName().equals("setReadTimeout")) //$NON-NLS-1$
+			if (methods[i].getName().equals("setReadTimeout")) { //$NON-NLS-1$
 				try {
 					methods[i].invoke(connection, new Object[] {new Integer(timeout)});
 					return true;
-				} catch (IllegalArgumentException e) { // ignore
-				} catch (IllegalAccessException e) { // ignore
-				} catch (InvocationTargetException e) { // ignore
+				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+					// ignore
 				}
+			}
 		}
 		return false;
 	}
 
 	/**
-	 * Load content of file under <code>url</code> displaying progress on given
+	 * Loads content of file under <code>url</code> displaying progress on given
 	 * context.
-	 * 
+	 *
 	 * @param url
 	 * @param context
 	 * @return the content of file under given URL, or <code>null</code> if URL
@@ -904,6 +861,7 @@ public class Utilities {
 			InterruptedException {
 		final String[] result = new String[1];
 		context.run(true, true, new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor)
 					throws InvocationTargetException, InterruptedException {
 				SubMonitor progress = SubMonitor.convert(monitor,
@@ -922,12 +880,8 @@ public class Utilities {
 							connection.getInputStream(), enc,
 							connection.getContentLength(),
 							progress.newChild(90));
-				} catch (SocketTimeoutException e) {
-					throw new InvocationTargetException(e);
 				} catch (IOException e) {
 					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
 				}
 			}
 		});
@@ -937,7 +891,7 @@ public class Utilities {
 	/**
 	 * Applies the compare filters to the lines of text taken from the specified
 	 * contributors
-	 * 
+	 *
 	 * @param thisLine
 	 * @param thisContributor
 	 * @param otherLine
@@ -952,13 +906,11 @@ public class Utilities {
 			ICompareFilter[] filters) {
 		IRegion[][] ignoredRegions = new IRegion[filters.length][];
 
-		HashMap input = new HashMap(4);
+		HashMap<String, Comparable<?>> input = new HashMap<>(4);
 		input.put(ICompareFilter.THIS_LINE, thisLine);
-		input.put(ICompareFilter.THIS_CONTRIBUTOR, new Character(
-				thisContributor));
+		input.put(ICompareFilter.THIS_CONTRIBUTOR, thisContributor);
 		input.put(ICompareFilter.OTHER_LINE, otherLine);
-		input.put(ICompareFilter.OTHER_CONTRIBUTOR, new Character(
-				otherContributor));
+		input.put(ICompareFilter.OTHER_CONTRIBUTOR, otherContributor);
 		for (int i = 0; i < filters.length; i++) {
 			ignoredRegions[i] = filters[i].getFilteredRegions(input);
 		}
@@ -967,14 +919,15 @@ public class Utilities {
 		for (int j = 0; j < ignoredRegions.length; j++) {
 			if (ignoredRegions[j] != null) {
 				for (int k = 0; k < ignoredRegions[j].length; k++) {
-					if (ignoredRegions[j][k] != null)
+					if (ignoredRegions[j][k] != null) {
 						for (int l = 0; l < ignoredRegions[j][k].getLength(); l++) {
 							ignored[ignoredRegions[j][k].getOffset() + l] = true;
 						}
+					}
 				}
 			}
 		}
-		StringBuffer buffer = new StringBuffer(thisLine.length());
+		StringBuilder buffer = new StringBuilder(thisLine.length());
 		for (int i = 0; i < ignored.length; i++) {
 			if (!ignored[i]) {
 				buffer.append(thisLine.charAt(i));

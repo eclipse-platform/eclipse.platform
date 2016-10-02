@@ -14,8 +14,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.CompareViewerSwitchingPane;
+import org.eclipse.compare.Splitter;
+import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
@@ -39,22 +46,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.ui.PlatformUI;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.CompareViewerSwitchingPane;
-import org.eclipse.compare.Splitter;
-import org.eclipse.compare.internal.core.ComparePlugin;
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-
-public class CompareContentViewerSwitchingPane extends
-		CompareViewerSwitchingPane {
-
+public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPane {
 	private static final String OPTIMIZED_INFO_IMAGE_NAME = "obj16/message_info.png"; //$NON-NLS-1$
 	public static final String OPTIMIZED_ALGORITHM_USED = "OPTIMIZED_ALGORITHM_USED"; //$NON-NLS-1$
 	public static final String DISABLE_CAPPING_TEMPORARILY = "DISABLE_CAPPING_TEMPORARILY"; //$NON-NLS-1$
@@ -64,27 +58,27 @@ public class CompareContentViewerSwitchingPane extends
 	private ViewerDescriptor fSelectedViewerDescriptor;
 
 	private ToolBar toolBar;
-	private CLabel clOptimized;
+	private CLabel labelOptimized;
 	private Link recomputeLink;
 
 	private boolean menuShowing;
 
 	public CompareContentViewerSwitchingPane(Splitter parent, int style,
-			CompareEditorInput cei) {
+			CompareEditorInput editorInput) {
 		super(parent, style);
-		fCompareEditorInput = cei;
+		fCompareEditorInput = editorInput;
 	}
 
 	private CompareConfiguration getCompareConfiguration() {
 		return fCompareEditorInput.getCompareConfiguration();
 	}
 
+	@Override
 	protected Viewer getViewer(Viewer oldViewer, Object input) {
 		if (fSelectedViewerDescriptor != null) {
 			ViewerDescriptor[] array = CompareUIPlugin.getDefault().findContentViewerDescriptor(
 					oldViewer, input, getCompareConfiguration());
-			List list = array != null ? Arrays.asList(array)
-					: Collections.EMPTY_LIST;
+			List<ViewerDescriptor> list = array != null ? Arrays.asList(array) : Collections.emptyList();
 			if (list.contains(fSelectedViewerDescriptor)) {
 				// use selected viewer only when appropriate for the new input
 				fCompareEditorInput
@@ -93,21 +87,23 @@ public class CompareContentViewerSwitchingPane extends
 						oldViewer, (ICompareInput) input, this);
 				return viewer;
 			}
-			// fallback to default otherwise
+			// Fallback to default otherwise
 			fSelectedViewerDescriptor = null;
 		}
 		if (input instanceof ICompareInput) {
 			fCompareEditorInput.setContentViewerDescriptor(null);
-			Viewer viewer = fCompareEditorInput.findContentViewer(oldViewer,
-					(ICompareInput) input, this);
+			Viewer viewer =
+					fCompareEditorInput.findContentViewer(oldViewer, (ICompareInput) input, this);
 			fCompareEditorInput.setContentViewerDescriptor(fSelectedViewerDescriptor);
 			return viewer;
 		}
 		return null;
 	}
 
+	@Override
 	protected Control createTopLeft(Composite p) {
 		final Composite composite = new Composite(p, SWT.NONE) {
+			@Override
 			public Point computeSize(int wHint, int hHint, boolean changed) {
 				return super.computeSize(wHint, Math.max(24, hHint), changed);
 			}
@@ -127,27 +123,29 @@ public class CompareContentViewerSwitchingPane extends
 		final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH, 0);
 		toolItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(
 				/* IWorkbenchGraphicConstants */"IMG_LCL_VIEW_MENU")); //$NON-NLS-1$
-		toolItem
-				.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_switchButtonTooltip);
+		toolItem.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_switchButtonTooltip);
 		toolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				showMenu();
 			}
 		});
 		toolBar.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseDown(MouseEvent e) {
 				showMenu();
 			}
 		});
 
-		clOptimized = new CLabel(composite, SWT.NONE);
-		clOptimized.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
-		clOptimized.setImage(CompareUIPlugin.getImageDescriptor(
+		labelOptimized = new CLabel(composite, SWT.NONE);
+		labelOptimized.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
+		labelOptimized.setImage(CompareUIPlugin.getImageDescriptor(
 				OPTIMIZED_INFO_IMAGE_NAME).createImage());
-		clOptimized.setVisible(false); // hide by default
-		clOptimized.addDisposeListener(new DisposeListener() {
+		labelOptimized.setVisible(false); // hide by default
+		labelOptimized.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				Image img = clOptimized.getImage();
+				Image img = labelOptimized.getImage();
 				if ((img != null) && (!img.isDisposed())) {
 					img.dispose();
 				}
@@ -158,6 +156,7 @@ public class CompareContentViewerSwitchingPane extends
 		recomputeLink.setText(CompareMessages.CompareContentViewerSwitchingPane_optimizedLinkLabel);
 		recomputeLink.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
 		recomputeLink.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				/*
 				 * Disable capping temporarily, refresh, restore global state.
@@ -182,23 +181,24 @@ public class CompareContentViewerSwitchingPane extends
 		return composite;
 	}
 
+	@Override
 	protected boolean inputChanged(Object input) {
 		return getInput() != input
 				|| fCompareEditorInput.getContentViewerDescriptor() != fSelectedViewerDescriptor;
 	}
 
+	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
 		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl()))
 			return;
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
-				.findContentViewerDescriptor(getViewer(), getInput(),
-						getCompareConfiguration());
+				.findContentViewerDescriptor(getViewer(), getInput(), getCompareConfiguration());
 		toolBar.setVisible(vd != null && vd.length > 1);
 		CompareConfiguration cc = getCompareConfiguration();
 		Boolean isOptimized = (Boolean) cc.getProperty(OPTIMIZED_ALGORITHM_USED);
 		boolean optimizedVisible = isOptimized != null && isOptimized.booleanValue();
-		clOptimized.setVisible(optimizedVisible);
+		labelOptimized.setVisible(optimizedVisible);
 		recomputeLink.setVisible(optimizedVisible);
 	}
 
@@ -208,13 +208,12 @@ public class CompareContentViewerSwitchingPane extends
 		menuShowing= true;
 
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
-				.findContentViewerDescriptor(getViewer(), getInput(),
-						getCompareConfiguration());
+				.findContentViewerDescriptor(getViewer(), getInput(),getCompareConfiguration());
 
-		// 1. create
+		// 1. Create
 		final Menu menu = new Menu(getShell(), SWT.POP_UP);
 
-		// add default
+		// Add default
 		String label = CompareMessages.CompareContentViewerSwitchingPane_defaultViewer;
 		MenuItem defaultItem = new MenuItem(menu, SWT.RADIO);
 		defaultItem.setText(label);
@@ -223,16 +222,16 @@ public class CompareContentViewerSwitchingPane extends
 
 		new MenuItem(menu, SWT.SEPARATOR);
 
-		// add others
+		// Add others
 		for (int i = 0; i < vd.length; i++) {
 			final ViewerDescriptor vdi = vd[i];
 			label = vdi.getLabel();
-			if (label == null || label.equals("")) { //$NON-NLS-1$
-				String l = CompareUIPlugin.getDefault().findContentTypeNameOrType((ICompareInput) getInput(), vdi, getCompareConfiguration());
+			if (label == null || label.isEmpty()) {
+				String l = CompareUIPlugin.getDefault().findContentTypeNameOrType((ICompareInput) getInput(),
+						vdi, getCompareConfiguration());
 				if (l == null)
-					// couldn't figure out the label, skip the viewer
-					continue;
-				label = NLS.bind(CompareMessages.CompareContentViewerSwitchingPane_discoveredLabel, new Object[] {l});
+					continue;  // Couldn't figure out the label, skip the viewer
+				label = NLS.bind(CompareMessages.CompareContentViewerSwitchingPane_discoveredLabel, l);
 			}
 			MenuItem item = new MenuItem(menu, SWT.RADIO);
 			item.setText(label);
@@ -240,18 +239,20 @@ public class CompareContentViewerSwitchingPane extends
 			item.setSelection(vdi == fSelectedViewerDescriptor);
 		}
 
-		// 2. show
+		// 2. Show
 		Rectangle bounds = toolBar.getItem(0).getBounds();
 		Point topLeft = new Point(bounds.x, bounds.y + bounds.height);
 		topLeft = toolBar.toDisplay(topLeft);
 		menu.setLocation(topLeft.x, topLeft.y);
 		menu.setVisible(true);
 
-		// 3. dispose on close
+		// 3. Dispose on close
 		menu.addMenuListener(new MenuAdapter() {
+			@Override
 			public void menuHidden(MenuEvent e) {
 				menuShowing= false;
 				e.display.asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						menu.dispose();
 					}
@@ -262,30 +263,31 @@ public class CompareContentViewerSwitchingPane extends
 
 	private SelectionListener createSelectionListener(final ViewerDescriptor vd) {
 		return new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				MenuItem mi = (MenuItem) e.widget;
 				if (mi.getSelection()) {
 					Viewer oldViewer = getViewer();
 					fSelectedViewerDescriptor = vd;
-					CompareContentViewerSwitchingPane.this.setInput(oldViewer
-							.getInput());
+					CompareContentViewerSwitchingPane.this.setInput(oldViewer.getInput());
 				}
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// nothing to do
+				// Nothing to do
 			}
 		};
 	}
 
-	public void setText(String label) {
+	@Override
+	public void setText(String text) {
 		Composite c = (Composite) getTopLeft();
-		Control[] children = c.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] instanceof CLabel) {
-				CLabel cl = (CLabel) children[i];
-				if (cl != null && !cl.isDisposed()) {
-					cl.setText(label);
+		for (Control child : c.getChildren()) {
+			if (child instanceof CLabel) {
+				CLabel label = (CLabel) child;
+				if (label != null && !label.isDisposed()) {
+					label.setText(text);
 					c.layout();
 				}
 				return;
@@ -293,28 +295,27 @@ public class CompareContentViewerSwitchingPane extends
 		}
 	}
 
+	@Override
 	public void setImage(Image image) {
 		Composite c = (Composite) getTopLeft();
-		Control[] children = c.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] instanceof CLabel) {
-				CLabel cl = (CLabel) children[i];
-				if (cl != null && !cl.isDisposed())
-					cl.setImage(image);
+		for (Control child : c.getChildren()) {
+			if (child instanceof CLabel) {
+				CLabel label = (CLabel) child;
+				if (label != null && !label.isDisposed())
+					label.setImage(image);
 				return;
 			}
 		}
 	}
 
+	@Override
 	public void addMouseListener(MouseListener listener) {
 		Composite c = (Composite) getTopLeft();
-		Control[] children = c.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] instanceof CLabel) {
-				CLabel cl = (CLabel) children[i];
-				cl.addMouseListener(listener);
+		for (Control child : c.getChildren()) {
+			if (child instanceof CLabel) {
+				CLabel label = (CLabel) child;
+				label.addMouseListener(listener);
 			}
 		}
 	}
-
 }

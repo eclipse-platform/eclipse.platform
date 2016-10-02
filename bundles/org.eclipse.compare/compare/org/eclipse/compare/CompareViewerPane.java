@@ -53,12 +53,11 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public class CompareViewerPane extends ViewForm implements ISelectionProvider, 
 		IDoubleClickListener, ISelectionChangedListener, IOpenListener, IAdaptable {
-	
 	private ToolBarManager fToolBarManager;
 	private Object fInput;
-	private ListenerList fSelectionListeners= new ListenerList();
-	private ListenerList fDoubleClickListener= new ListenerList();
-	private ListenerList fOpenListener= new ListenerList();
+	private ListenerList<ISelectionChangedListener> fSelectionListeners= new ListenerList<>();
+	private ListenerList<IDoubleClickListener> fDoubleClickListener= new ListenerList<>();
+	private ListenerList<IOpenListener> fOpenListener= new ListenerList<>();
 
 	/**
 	 * Constructs a new instance of this class given its parent
@@ -84,6 +83,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		setTopLeft(topLeft);
 		
 		MouseAdapter ml= new MouseAdapter() {
+			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				Control content= getContent();
 				if (content != null && content.getBounds().contains(e.x, e.y))
@@ -98,6 +98,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		getTopLeft().addMouseListener(ml);
 		
 		addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (fToolBarManager != null) {
 					fToolBarManager.removeAll();
@@ -121,6 +122,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 */
 	protected Control createTopLeft(Composite parent) {
 		CLabel label = new CLabel(this, SWT.NONE) {
+			@Override
 			public Point computeSize(int wHint, int hHint, boolean changed) {
 				return super.computeSize(wHint, Math.max(24, hHint), changed);
 			}
@@ -190,6 +192,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 			setTopCenter(tb);
 			fToolBarManager = new ToolBarManager(tb);
 			tb.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+				@Override
 				public void getName(AccessibleEvent e) {
 					if (e.childID != ACC.CHILDID_SELF) {
 						ToolItem item = tb.getItem(e.childID);
@@ -228,50 +231,38 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 			fInput= input;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
+	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener l) {
 		fSelectionListeners.add(l);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
+	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener l) {
 		fSelectionListeners.remove(l);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-	 */
+	@Override
 	public ISelection getSelection() {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-	 */
+	@Override
 	public void setSelection(ISelection s) {
 		// Default is to do nothing
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
+	@Override
 	public void selectionChanged(SelectionChangedEvent ev) {
-		Object[] listeners= fSelectionListeners.getListeners();
-		for (int i= 0; i < listeners.length; i++)
-			((ISelectionChangedListener) listeners[i]).selectionChanged(ev);
+		for (ISelectionChangedListener listener : fSelectionListeners) {
+			listener.selectionChanged(ev);
+		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-	 */
+	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		Object[] listeners= fDoubleClickListener.getListeners();
-		for (int i= 0; i < listeners.length; i++)
-			((IDoubleClickListener) listeners[i]).doubleClick(event);
+		for (IDoubleClickListener listener : fDoubleClickListener) {
+			listener.doubleClick(event);
+		}
 	}
 
 	/**
@@ -316,19 +307,15 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		fOpenListener.remove(listener);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers.OpenEvent)
-	 */
+	@Override
 	public void open(OpenEvent event) {
 		Object[] listeners= fOpenListener.getListeners();
 		for (int i= 0; i < listeners.length; i++)
 			((IOpenListener) listeners[i]).open(event);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 }

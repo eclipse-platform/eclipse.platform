@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import org.eclipse.compare.internal.Utilities;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Adapters;
 
 /**
  * Supports cross-pane navigation through the differences of a compare container.
@@ -22,14 +21,11 @@ import org.eclipse.core.runtime.IAdaptable;
  * @since 3.3
  */
 public abstract class CompareNavigator implements ICompareNavigator {
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareNavigator#selectChange(boolean)
-	 */
+	@Override
 	public boolean selectChange(boolean next) {
 		// find most down stream CompareViewerPane
 		INavigatable[] navigators= getNavigatables();
-		Object downStreamInput = null;						
+		Object downStreamInput = null;
 		for (int i = navigators.length - 1; i >=0; i--) {
 			INavigatable navigatable = navigators[i];
 			if (navigatable.getInput() == downStreamInput) {
@@ -42,49 +38,47 @@ public abstract class CompareNavigator implements ICompareNavigator {
 				continue;
 			}
 			// not at end
-			if (i + 1 < navigators.length && navigators[i+1] != null && navigators[i+1].getInput() != downStreamInput) {
+			if (i + 1 < navigators.length && navigators[i + 1] != null
+					&& navigators[i + 1].getInput() != downStreamInput) {
 				// The navigation has invoked a change in a downstream pane.
 				// Set the selected change depending on the direction we are navigating
 				navigators[i+1].selectChange(next ? INavigatable.FIRST_CHANGE : INavigatable.LAST_CHANGE);
 			}
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	protected abstract INavigatable[] getNavigatables();
-	
+
 	/**
-	 * Return the {@link INavigatable} for the given object.
-	 * If the object implements {@link INavigatable}, then
-	 * the object is returned. Otherwise, if the object
-	 * implements {@link IAdaptable}, the object is
-	 * adapted to {@link INavigatable}.
+	 * Returns the {@link INavigatable} for the given object if the object
+	 * adapts to {@link INavigatable}.
+	 *
 	 * @param object the object
-	 * @return the {@link INavigatable} for the given object or <code>null</code>
+	 * @return the {@link INavigatable} for the given object or {@code null}
 	 */
 	protected final INavigatable getNavigator(Object object) {
 		if (object == null)
 			return null;
-		Object data= Utilities.getAdapter(object, INavigatable.class);
-		if (data instanceof INavigatable)
-			return (INavigatable) data;
-		return null;
+		return Adapters.adapt(object, INavigatable.class);
 	}
 
 	/**
-	 * Return whether a call to {@link ICompareNavigator#selectChange(boolean)} with the same parameter
-	 * would succeed.
-	 * @param next if <code>true</code> the next change is selected, otherwise the previous change
-	 * @return whether a call to {@link ICompareNavigator#selectChange(boolean)} with the same parameter
-	 * would succeed.
+	 * Returns whether a call to {@link ICompareNavigator#selectChange(boolean)}
+	 * with the same parameter would succeed.
+	 *
+	 * @param next if <code>true</code> the next change is selected, otherwise
+	 *     the previous change
+	 * @return whether a call to {@link ICompareNavigator#selectChange(boolean)}
+	 *     with the same parameter would succeed.
 	 * @since 3.3
 	 */
 	public boolean hasChange(boolean next) {
 		INavigatable[] navigators= getNavigatables();
-		Object downStreamInput = null;						
-		for (int i = navigators.length - 1; i >=0; i--) {
+		Object downStreamInput = null;
+		for (int i = navigators.length; --i >= 0;) {
 			INavigatable navigatable = navigators[i];
 			if (navigatable.getInput() == downStreamInput) {
 				// Skip to up stream pane if it has the same input
@@ -97,5 +91,5 @@ public abstract class CompareNavigator implements ICompareNavigator {
 			downStreamInput = navigatable.getInput();
 		}
 		return false;
-	}	
+	}
 }
