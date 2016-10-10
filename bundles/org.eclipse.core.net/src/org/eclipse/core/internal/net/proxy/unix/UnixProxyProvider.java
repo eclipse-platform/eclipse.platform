@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.eclipse.core.internal.net.AbstractProxyProvider;
@@ -151,10 +152,18 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 				Policy.debug("Got proxyEnv: " + proxyEnv); //$NON-NLS-1$
 
 			if (proxyEnv != null) {
+				int colonInd = proxyEnv.indexOf(":"); //$NON-NLS-1$
+				if (colonInd !=-1 && proxyEnv.length() > colonInd + 2 && !"//".equals(proxyEnv.substring(colonInd + 1, colonInd + 3))) { //$NON-NLS-1$
+					proxyEnv = "http://" + proxyEnv; //$NON-NLS-1$
+				}
 				URI uri = new URI(proxyEnv);
 				pd = new ProxyData(protocol);
-				pd.setHost(uri.getHost());
-				pd.setPort(uri.getPort());
+				pd.setHost(Objects.requireNonNull(uri.getHost(), "no host in " + proxyEnv)); //$NON-NLS-1$
+				int port = uri.getPort();
+				if (port == -1) {
+					throw new IllegalStateException("no port in " + proxyEnv); //$NON-NLS-1$
+				}
+				pd.setPort(port);
 				String userInfo = uri.getUserInfo();
 				if (userInfo != null) {
 					String user = null;
