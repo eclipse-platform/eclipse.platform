@@ -338,6 +338,35 @@ public class NetTest extends TestCase {
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
+	public void testHostPatternBug505906() throws CoreException {
+		setDataTest(IProxyData.HTTP_PROXY_TYPE);
+		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
+		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
+		
+		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
+		this.getProxyManager().setNonProxiedHosts(new String[] { "ignore.com" });
+		
+		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com");
+		assertEquals(3, allData.length);
+		
+		IProxyData data = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
+		assertNotNull(data);
+		
+		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
+		assertEquals(0, allData.length);
+		
+		data = this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE);
+		assertNull(data);
+		
+		allData = this.getProxyManager().getProxyDataForHost("ignore.com");
+		assertEquals(0, allData.length);
+		
+		data = this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE);
+		assertNull(data);
+		
+		this.getProxyManager().setNonProxiedHosts(oldHosts);
+	}
+
 	public void testBug238796() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);

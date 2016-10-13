@@ -13,7 +13,6 @@ package org.eclipse.core.internal.net.proxy.win32.winhttp;
 
 import java.net.URI;
 
-import org.eclipse.core.internal.net.StringMatcher;
 import org.eclipse.core.internal.net.StringUtil;
 
 /**
@@ -68,8 +67,7 @@ public class ProxyBypass {
 	private boolean isInBypassList(String host) {
 		for (int i = 0; i < proxyBypassEntries.length; i++) {
 			String entry = proxyBypassEntries[i];
-			StringMatcher matcher = new StringMatcher(entry, true, false);
-			if (matcher.match(host)) {
+			if (StringUtil.hostMatchesFilter(host, entry)) {
 				return true;
 			}
 		}

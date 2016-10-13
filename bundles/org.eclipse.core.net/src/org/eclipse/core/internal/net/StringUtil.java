@@ -100,4 +100,10 @@ public class StringUtil {
 		return buffer.toString();
 	}
 
+	public static boolean hostMatchesFilter(String host, String filter) {
+		String suffixMatchingFilter = "*" + filter; //$NON-NLS-1$
+		StringMatcher matcher = new StringMatcher(suffixMatchingFilter, true, false);
+		return matcher.match(host);
+	}
+
 }

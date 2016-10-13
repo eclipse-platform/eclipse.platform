@@ -333,15 +333,10 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		String[] filters = getNonProxiedHosts();
 		for (int i = 0; i < filters.length; i++) {
 			String filter = filters[i];
-			if (matchesFilter(uri.getHost(), filter))
+			if (StringUtil.hostMatchesFilter(uri.getHost(), filter))
 				return true;
 		}
 		return false;
-	}
-
-	private boolean matchesFilter(String host, String filter) {
-		StringMatcher matcher = new StringMatcher(filter, true, false);
-		return matcher.match(host);
 	}
 
 	/* (non-Javadoc)

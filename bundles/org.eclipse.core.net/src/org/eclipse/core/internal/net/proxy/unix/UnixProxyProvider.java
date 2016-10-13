@@ -23,7 +23,6 @@ import org.eclipse.core.internal.net.AbstractProxyProvider;
 import org.eclipse.core.internal.net.Activator;
 import org.eclipse.core.internal.net.Policy;
 import org.eclipse.core.internal.net.ProxyData;
-import org.eclipse.core.internal.net.StringMatcher;
 import org.eclipse.core.internal.net.StringUtil;
 import org.eclipse.core.net.proxy.IProxyData;
 
@@ -56,7 +55,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		if (nonProxyHosts != null) {
 			String host = uri.getHost();
 			for (int npIndex = 0; npIndex < nonProxyHosts.length; npIndex++) {
-				if (matchesFilter(host, nonProxyHosts[npIndex])) {
+				if (StringUtil.hostMatchesFilter(host, nonProxyHosts[npIndex])) {
 					return new IProxyData[0];
 				}
 			}
@@ -270,11 +269,6 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 			System.out.println(i + ": " + strs[i]); //$NON-NLS-1$
 	}
 	
-	private boolean matchesFilter(String host, String filter) {
-		StringMatcher matcher = new StringMatcher(filter, true, false);
-		return matcher.match(host);
-	}
-
 	protected static native void gconfInit();
 
 	protected static native ProxyData getGConfProxyInfo(String protocol);
