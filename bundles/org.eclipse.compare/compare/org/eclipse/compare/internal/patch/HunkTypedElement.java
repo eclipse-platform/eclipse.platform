@@ -104,7 +104,7 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 
 	public Object getAdapter(Class adapter) {
 		if (adapter == IHunk.class)
-			return fHunkResult;
+			return fHunkResult.getHunk();
 		if (adapter == HunkResult.class)
 			return fHunkResult;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
