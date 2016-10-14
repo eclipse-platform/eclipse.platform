@@ -35,7 +35,33 @@ public class TeamImages {
 	 * @return the image descriptor associated with the given ID
 	 */
 	public static ImageDescriptor getImageDescriptor(String id) {
-		return TeamUIPlugin.getImageDescriptor(id);
+		String key = null;
+		switch (id) {
+		case ISharedImages.IMG_DIRTY_OVR:
+			key = TeamUIPlugin.FILE_DIRTY_OVR;
+			break;
+		case ISharedImages.IMG_CHECKEDIN_OVR:
+			key = TeamUIPlugin.FILE_CHECKEDIN_OVR;
+			break;
+		case ISharedImages.IMG_CHECKEDOUT_OVR:
+			key = TeamUIPlugin.FILE_CHECKEDOUT_OVR;
+			break;
+		case ISharedImages.IMG_CONFLICT_OVR:
+			key = TeamUIPlugin.FILE_CONFLICT_OVR;
+			break;
+		case ISharedImages.IMG_ERROR_OVR:
+			key = TeamUIPlugin.FILE_ERROR_OVR;
+			break;
+		case ISharedImages.IMG_WARNING_OVR:
+			key = TeamUIPlugin.FILE_WARNING_OVR;
+			break;
+		case ISharedImages.IMG_HOURGLASS_OVR:
+			key = TeamUIPlugin.FILE_HOURGLASS_OVR;
+			break;			
+		default:
+			key = id;
+		}
+		return TeamUIPlugin.getImageDescriptor(key);
 	}
 	/**
 	 * Convenience method to get an image descriptor for an extension.
