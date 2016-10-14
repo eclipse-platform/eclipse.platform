@@ -14,7 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
@@ -25,25 +28,28 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  * to the end of the work queue.
  */
 public class Worker implements IRunnableWithProgress {
-
 	private final WorkQueue work = new WorkQueue();
 	private boolean isWorking;
-	private final List errors = new ArrayList();
+	private final List<Throwable> errors = new ArrayList<>();
 	private WorkProgressMonitor currentMonitor;
 	private IRunnableWithProgress currentTask;
 	private final String taskName;
 	
 	/**
-	 * Progress monitor that supports local cancelation of a task.
+	 * Progress monitor that supports local cancellation of a task.
 	 */
 	private static class WorkProgressMonitor extends ProgressMonitorWrapper {
 		private boolean localCancel;
+
 		protected WorkProgressMonitor(IProgressMonitor monitor) {
 			super(monitor);
 		}
+
 		public void cancelTask() {
 			localCancel = true;
 		}
+
+		@Override
 		public boolean isCanceled() {
 			return localCancel || super.isCanceled();
 		}
@@ -53,6 +59,7 @@ public class Worker implements IRunnableWithProgress {
 		this.taskName = taskName;
 	}
 	
+	@Override
 	public void run(IProgressMonitor monitor) {
 		errors.clear();
 		SubMonitor pm = SubMonitor.convert(monitor, getTaskName(), 100);
@@ -62,9 +69,6 @@ public class Worker implements IRunnableWithProgress {
 				try {
 					performNextTask(pm);
 					checkCancelled(pm);
-				} catch (OperationCanceledException e) {
-					// Only cancel all the work if the outer monitor is canceled
-					checkCancelled(pm);
 				} catch (InterruptedException e) {
 					// Only cancel all the work if the outer monitor is canceled
 					checkCancelled(pm);
@@ -73,13 +77,12 @@ public class Worker implements IRunnableWithProgress {
 				}
 				pm.setWorkRemaining(100);
 			}
+			pm.done();
 		} catch (OperationCanceledException e) {
 			// The user chose to cancel
 			work.clear();
 		} finally {
 			isWorking = false;
-			if (monitor!= null)
-				monitor.done();
 			currentMonitor = null;
 			currentTask = null;
 		}
@@ -94,7 +97,7 @@ public class Worker implements IRunnableWithProgress {
 	}
 	
 	public Throwable[] getErrors() {
-		return (Throwable[]) errors.toArray(new Throwable[errors.size()]);
+		return errors.toArray(new Throwable[errors.size()]);
 	}
 
 	private void checkCancelled(SubMonitor pm) {
@@ -130,5 +133,4 @@ public class Worker implements IRunnableWithProgress {
 	public boolean hasWork() {
 		return isWorking() || !work.isEmpty();
 	}
-
 }
