@@ -22,6 +22,7 @@ public class Policy {
 	public static boolean debugContentMergeViewer = false;
 
 	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
+		@Override
 		public void optionsChanged(DebugOptions options) {
 			boolean DEBUG = options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/debug", false); //$NON-NLS-1$
 			debugContentMergeViewer = DEBUG && options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/content_merge_viewer", false); //$NON-NLS-1$

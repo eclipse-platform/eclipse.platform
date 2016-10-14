@@ -28,7 +28,6 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.swt.graphics.Image;
 
 public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAccessor, IAdaptable {
-
 	private final HunkResult fHunkResult;
 	private final boolean fIsAfterState;
 	private final boolean fFullContext;
@@ -39,9 +38,7 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 		this.fFullContext = fullContext;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getImage()
-	 */
+	@Override
 	public Image getImage() {
 		LocalResourceManager imageCache = PatchCompareEditorInput.getImageCache(fHunkResult.getDiffResult().getConfiguration());
 		ImageDescriptor imageDesc = CompareUIPlugin.getImageDescriptor(ICompareUIConstants.HUNK_OBJ);
@@ -72,28 +69,23 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 		return Patcher.getPatcher(fHunkResult.getDiffResult().getConfiguration());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getName()
-	 */
+	@Override
 	public String getName() {
 		return fHunkResult.getHunk().getLabel();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getType()
-	 */
+	@Override
 	public String getType() {
 		return fHunkResult.getDiffResult().getDiff().getTargetPath(fHunkResult.getDiffResult().getConfiguration()).getFileExtension();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IStreamContentAccessor#getContents()
-	 */
+	@Override
 	public InputStream getContents() throws CoreException {
 		String contents = fHunkResult.getContents(fIsAfterState, fFullContext);
 		return FileDiffResult.asInputStream(contents, fHunkResult.getCharset());
 	}
 
+	@Override
 	public String getCharset() throws CoreException {
 		return fHunkResult.getCharset();
 	}
@@ -102,12 +94,13 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 		return fHunkResult;
 	}
 
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IHunk.class)
-			return fHunkResult.getHunk();
+			return (T) fHunkResult.getHunk();
 		if (adapter == HunkResult.class)
-			return fHunkResult;
+			return (T) fHunkResult;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
-
 }

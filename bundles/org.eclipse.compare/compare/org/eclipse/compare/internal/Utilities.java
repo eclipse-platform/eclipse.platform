@@ -765,17 +765,11 @@ public class Utilities {
 	public static boolean isHunk(Object input) {
 		if (input != null && input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
-			if (right != null) {
-				Object element = Adapters.adapt(right, IHunk.class);
-				if (element instanceof IHunk)
-					return true;
-			}
+			if (Adapters.adapt(right, IHunk.class) != null)
+				return true;
 			ITypedElement left = ((DiffNode) input).getLeft();
-			if (left != null) {
-				Object element = Adapters.adapt(left, IHunk.class);
-				if (element instanceof IHunk)
-					return true;
-			}
+			if (Adapters.adapt(left, IHunk.class) != null)
+				return true;
 		}
 		return false;
 	}
@@ -783,18 +777,14 @@ public class Utilities {
 	public static boolean isHunkOk(Object input) {
 		if (input != null && input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
-			if (right != null) {
-				Object element = Adapters.adapt(right, HunkResult.class);
-				if (element instanceof HunkResult) {
-					return ((HunkResult)element).isOK();
-				}
+			HunkResult element = Adapters.adapt(right, HunkResult.class);
+			if (element != null) {
+				return element.isOK();
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
-			if (left != null) {
-				Object element = Adapters.adapt(left, HunkResult.class);
-				if (element instanceof HunkResult)
-					return ((HunkResult)element).isOK();
-			}
+			element = Adapters.adapt(left, HunkResult.class);
+			if (element != null)
+				return element.isOK();
 		}
 		return false;
 	}
@@ -862,8 +852,7 @@ public class Utilities {
 		final String[] result = new String[1];
 		context.run(true, true, new IRunnableWithProgress() {
 			@Override
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException, InterruptedException {
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				SubMonitor progress = SubMonitor.convert(monitor,
 						PatchMessages.InputPatchPage_URLConnecting, 100);
 				try {
