@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.compare.internal.WorkQueue;
 import org.eclipse.compare.internal.Worker;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
+import junit.framework.TestCase;
+
+@SuppressWarnings("restriction")
 public class AsyncExecTests extends TestCase {
 
 	public AsyncExecTests() {
@@ -35,64 +37,64 @@ public class AsyncExecTests extends TestCase {
 		WorkQueue q = new WorkQueue();
 		assertTrue(q.isEmpty());
 		IRunnableWithProgress r = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				// Nothing to do for now
 			}
 		};
 		IRunnableWithProgress r2 = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				// Nothing to do for now
 			}
 		};
 		// Ensure that adding an element adds it
 		q.add(r);
-		assertTrue(q.size() == 1);
+		assertEquals(1, q.size());
 		assertTrue(q.contains(r));
-		assertTrue(q.remove() == r);
+		assertEquals(r, q.remove());
 		assertTrue(q.isEmpty());
 		// Ensure that adding an element again replaces it
 		q.add(r);
 		q.add(r);
-		assertTrue(q.size() == 1);
+		assertEquals(1, q.size());
 		assertTrue(q.contains(r));
 		// Ensure remove order matches add order
 		q.add(r2);
-		assertTrue(q.size() == 2);
+		assertEquals(2, q.size());
 		assertTrue(q.contains(r));
 		assertTrue(q.contains(r2));
-		assertTrue(q.remove() == r);
-		assertTrue(q.size() == 1);
-		assertTrue(q.remove() == r2);
+		assertEquals(r, q.remove());
+		assertEquals(1, q.size());
+		assertEquals(r2, q.remove());
 		assertTrue(q.isEmpty());
 		// Ensure remove order adjusted when same element added
 		q.add(r);
 		q.add(r2);
 		q.add(r);
-		assertTrue(q.size() == 2);
+		assertEquals(2, q.size());
 		assertTrue(q.contains(r));
 		assertTrue(q.contains(r2));
-		assertTrue(q.remove() == r2);
-		assertTrue(q.size() == 1);
-		assertTrue(q.remove() == r);
+		assertEquals(r2, q.remove());
+		assertEquals(1, q.size());
+		assertEquals(r, q.remove());
 		assertTrue(q.isEmpty());
 	}
 	
-	public void testWorker() throws InvocationTargetException, InterruptedException {
+	public void testWorker() {
 		final Worker w = new Worker("");
-		final List worked = new ArrayList();
+		final List<IRunnableWithProgress> worked = new ArrayList<>();
 		IRunnableWithProgress r = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				assertTrue(w.isWorking());
 				assertTrue(w.hasWork());
 				worked.add(this);
 			}
 		};
 		IRunnableWithProgress r2 = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				assertTrue(w.isWorking());
 				assertTrue(w.hasWork());
 				worked.add(this);
@@ -106,8 +108,8 @@ public class AsyncExecTests extends TestCase {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertTrue(worked.size() == 1);
-		assertTrue(worked.get(0) == r);
+		assertEquals(1, worked.size());
+		assertEquals(r, worked.get(0));
 		// Test two tasks
 		worked.clear();
 		w.add(r);
@@ -119,9 +121,9 @@ public class AsyncExecTests extends TestCase {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertTrue(worked.size() == 2);
-		assertTrue(worked.get(0) == r);
-		assertTrue(worked.get(1) == r2);
+		assertEquals(2, worked.size());
+		assertEquals(r, worked.get(0));
+		assertEquals(r2, worked.get(1));
 		// Test re-add order
 		worked.clear();
 		w.add(r);
@@ -136,17 +138,17 @@ public class AsyncExecTests extends TestCase {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertTrue(worked.size() == 2);
-		assertTrue(worked.get(1) == r);
-		assertTrue(worked.get(0) == r2);
+		assertEquals(2, worked.size());
+		assertEquals(r, worked.get(1));
+		assertEquals(r2, worked.get(0));
 	}
 	
-	public void testCancelOnRequeue() throws InvocationTargetException, InterruptedException {
+	public void testCancelOnRequeue() {
 		final Worker w = new Worker("");
-		final List worked = new ArrayList();
+		final List<IRunnableWithProgress> worked = new ArrayList<>();
 		IRunnableWithProgress r = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				if (worked.isEmpty()) {
 					worked.add(this);
 					w.add(this);
@@ -159,8 +161,8 @@ public class AsyncExecTests extends TestCase {
 			}
 		};
 		IRunnableWithProgress r2 = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			@Override
+			public void run(IProgressMonitor monitor) {
 				assertTrue(w.isWorking());
 				assertTrue(w.hasWork());
 				worked.add(this);
@@ -176,10 +178,9 @@ public class AsyncExecTests extends TestCase {
 		w.run(new NullProgressMonitor());
 		assertFalse(w.hasWork());
 		assertFalse(w.isWorking());
-		assertTrue(worked.size() == 3);
-		assertTrue(worked.get(0) == r);
-		assertTrue(worked.get(1) == r2);
-		assertTrue(worked.get(2) == r);
+		assertEquals(3, worked.size());
+		assertEquals(r, worked.get(0));
+		assertEquals(r2, worked.get(1));
+		assertEquals(r, worked.get(2));
 	}
-
 }
