@@ -62,22 +62,25 @@ public class Worker implements IRunnableWithProgress {
 	@Override
 	public void run(IProgressMonitor monitor) {
 		errors.clear();
-		SubMonitor pm = SubMonitor.convert(monitor, getTaskName(), 100);
+		SubMonitor progress = SubMonitor.convert(monitor, getTaskName(), 100);
 		try {
 			isWorking = true;
 			while (!work.isEmpty()) {
 				try {
-					performNextTask(pm);
-					checkCancelled(pm);
+					performNextTask(progress);
+					progress.checkCanceled();
+				} catch (OperationCanceledException e) {
+					// Only cancel all the work if the outer monitor is canceled.
+					progress.checkCanceled();
 				} catch (InterruptedException e) {
-					// Only cancel all the work if the outer monitor is canceled
-					checkCancelled(pm);
+					// Only cancel all the work if the outer monitor is canceled.
+					progress.checkCanceled();
 				} catch (InvocationTargetException e) {
 					handleError(e.getTargetException());
 				}
-				pm.setWorkRemaining(100);
+				progress.setWorkRemaining(100);
 			}
-			pm.done();
+			progress.done();
 		} catch (OperationCanceledException e) {
 			// The user chose to cancel
 			work.clear();
@@ -98,11 +101,6 @@ public class Worker implements IRunnableWithProgress {
 	
 	public Throwable[] getErrors() {
 		return errors.toArray(new Throwable[errors.size()]);
-	}
-
-	private void checkCancelled(SubMonitor pm) {
-		if (pm.isCanceled())
-			throw new OperationCanceledException();
 	}
 
 	protected String getTaskName() {
