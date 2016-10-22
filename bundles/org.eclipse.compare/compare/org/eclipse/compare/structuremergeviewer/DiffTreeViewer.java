@@ -116,28 +116,30 @@ public class DiffTreeViewer extends TreeViewer {
 		}
 	
 		@Override
+		@SuppressWarnings("incomplete-switch")
 		public Image getImage(Object element) {
 			if (element instanceof IDiffElement) {
 				IDiffElement input= (IDiffElement) element;
 				
 				int kind= input.getKind();
-				// Flip the direction and the change type, because all images are the other way round,
-				// i.e. for comparison from left to right.
+				// Flip the direction and the change type, because all images
+				// are the other way round, i.e. for comparison from left to right.
 				switch (kind & Differencer.DIRECTION_MASK) {
-					case Differencer.LEFT:
-						kind= (kind &~ Differencer.LEFT) | Differencer.RIGHT;
-						break;
-					case Differencer.RIGHT:
-						kind= (kind &~ Differencer.RIGHT) | Differencer.LEFT;
-						break;
-				}
-				switch (kind & Differencer.CHANGE_TYPE_MASK) {
+				case Differencer.LEFT:
+					kind= (kind &~ Differencer.LEFT) | Differencer.RIGHT;
+					break;
+				case Differencer.RIGHT:
+					kind= (kind &~ Differencer.RIGHT) | Differencer.LEFT;
+					break;
+				case 0:
+					switch (kind & Differencer.CHANGE_TYPE_MASK) {
 					case Differencer.ADDITION:
 						kind= (kind &~ Differencer.ADDITION) | Differencer.DELETION;
 						break;
 					case Differencer.DELETION:
 						kind= (kind &~ Differencer.DELETION) | Differencer.ADDITION;
 						break;
+					}
 				}
 
 				return fCompareConfiguration.getImage(input.getImage(), kind);
