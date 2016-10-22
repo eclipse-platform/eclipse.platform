@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -48,10 +48,10 @@ import org.eclipse.swt.widgets.Widget;
 
 /**
  * A tree viewer that works on objects implementing
- * the <code>IDiffContainer</code> and <code>IDiffElement</code> interfaces.
+ * the {@code IDiffContainer} and {@code IDiffElement} interfaces.
  * <p>
  * This class may be instantiated; it is not intended to be subclassed outside
- * this package.
+ * of this package.
  * </p>
  *
  * @see IDiffContainer
@@ -59,11 +59,11 @@ import org.eclipse.swt.widgets.Widget;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class DiffTreeViewer extends TreeViewer {
-	
+
 	class DiffViewerContentProvider implements ITreeContentProvider {
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// empty implementation
+			// Empty implementation.
 		}
 
 		public boolean isDeleted(Object element) {
@@ -74,53 +74,52 @@ public class DiffTreeViewer extends TreeViewer {
 		public void dispose() {
 			inputChanged(DiffTreeViewer.this, getInput(), null);
 		}
-			
+
 		@Override
 		public Object getParent(Object element) {
-			if (element instanceof IDiffElement) 
-				return ((IDiffElement)element).getParent();
+			if (element instanceof IDiffElement)
+				return ((IDiffElement) element).getParent();
 			return null;
 		}
-		
+
 		@Override
 		public final boolean hasChildren(Object element) {
-			if (element instanceof IDiffContainer) 
-				return ((IDiffContainer)element).hasChildren();
+			if (element instanceof IDiffContainer)
+				return ((IDiffContainer) element).hasChildren();
 			return false;
 		}
-		
+
 		@Override
 		public final Object[] getChildren(Object element) {
 			if (element instanceof IDiffContainer)
-				return ((IDiffContainer)element).getChildren();
+				return ((IDiffContainer) element).getChildren();
 			return new Object[0];
 		}
-		
+
 		@Override
 		public Object[] getElements(Object element) {
 			return getChildren(element);
-		}				
+		}
 	}
-	
+
 	/*
-	 * Takes care of swapping left and right if fLeftIsLocal
-	 * is true.
+	 * Takes care of swapping left and right if fLeftIsLocal is true.
 	 */
 	class DiffViewerLabelProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
 			if (element instanceof IDiffElement)
-				return ((IDiffElement)element).getName();
-						
+				return ((IDiffElement) element).getName();
+
 			return Utilities.getString(fBundle, "defaultLabel"); //$NON-NLS-1$
 		}
-	
+
 		@Override
 		@SuppressWarnings("incomplete-switch")
 		public Image getImage(Object element) {
 			if (element instanceof IDiffElement) {
 				IDiffElement input= (IDiffElement) element;
-				
+
 				int kind= input.getKind();
 				// Flip the direction and the change type, because all images
 				// are the other way round, i.e. for comparison from left to right.
@@ -146,7 +145,7 @@ public class DiffTreeViewer extends TreeViewer {
 			}
 			return null;
 		}
-		
+
 		/**
 		 * Informs the platform, that the images have changed.
 		 */
@@ -159,14 +158,14 @@ public class DiffTreeViewer extends TreeViewer {
 		@Override
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (element instanceof IDiffElement)
-				return (((IDiffElement)element).getKind() & Differencer.PSEUDO_CONFLICT) == 0;
+				return (((IDiffElement) element).getKind() & Differencer.PSEUDO_CONFLICT) == 0;
 			return true;
 		}
 		public boolean isFilterProperty(Object element, Object property) {
 			return false;
 		}
 	}
-	
+
 	private ResourceBundle fBundle;
 	private CompareConfiguration fCompareConfiguration;
 	private IPropertyChangeListener fPropertyChangeListener;
@@ -174,7 +173,7 @@ public class DiffTreeViewer extends TreeViewer {
 
 	private Action fEmptyMenuAction;
 	private Action fExpandAllAction;
-		
+
 	/**
 	 * Creates a new viewer for the given SWT tree control with the specified configuration.
 	 *
@@ -185,7 +184,7 @@ public class DiffTreeViewer extends TreeViewer {
 		super(tree);
 		initialize(configuration == null ? new CompareConfiguration() : configuration);
 	}
-	
+
 	/**
 	 * Creates a new viewer under the given SWT parent and with the specified configuration.
 	 *
@@ -196,10 +195,10 @@ public class DiffTreeViewer extends TreeViewer {
 		super(new Tree(parent, SWT.MULTI));
 		initialize(configuration == null ? new CompareConfiguration() : configuration);
 	}
-	
+
 	private void initialize(CompareConfiguration configuration) {
 		Control tree= getControl();
-		
+
 		INavigatable nav= new INavigatable() {
 			@Override
 			public boolean selectChange(int flag) {
@@ -230,37 +229,37 @@ public class DiffTreeViewer extends TreeViewer {
 		tree.setData(CompareUI.COMPARE_VIEWER_TITLE, getTitle());
 
 		Composite parent= tree.getParent();
-		
+
 		fBundle= ResourceBundle.getBundle("org.eclipse.compare.structuremergeviewer.DiffTreeViewerResources"); //$NON-NLS-1$
-		
-		// register for notification with the CompareConfiguration 
+
+		// Register for notification with the CompareConfiguration.
 		fCompareConfiguration= configuration;
 		if (fCompareConfiguration != null) {
 			fPropertyChangeListener = event -> propertyChange(event);
 			fCompareConfiguration.addPropertyChangeListener(fPropertyChangeListener);
-		}				
-	
+		}
+
 		setContentProvider(new DiffViewerContentProvider());
 		setLabelProvider(diffViewerLabelProvider);
 
 		addSelectionChangedListener(event -> updateActions());
 
 		setComparator(new DiffViewerComparator());
-		
+
 		ToolBarManager tbm= CompareViewerPane.getToolBarManager(parent);
 		if (tbm != null) {
 			tbm.removeAll();
-			
+
 			tbm.add(new Separator("merge")); //$NON-NLS-1$
 			tbm.add(new Separator("modes")); //$NON-NLS-1$
 			tbm.add(new Separator("navigation")); //$NON-NLS-1$
-			
+
 			createToolItems(tbm);
 			updateActions();
-			
+
 			tbm.update(true);
 		}
-		
+
 		MenuManager mm= new MenuManager();
 		mm.setRemoveAllWhenShown(true);
 		mm.addMenuListener(
@@ -270,7 +269,7 @@ public class DiffTreeViewer extends TreeViewer {
 					fillContextMenu(mm2);
 					if (mm2.isEmpty()) {
 						if (fEmptyMenuAction == null) {
-							fEmptyMenuAction= new Action(Utilities.getString(fBundle, "emptyMenuItem")) {	//$NON-NLS-1$
+							fEmptyMenuAction= new Action(Utilities.getString(fBundle, "emptyMenuItem")) { //$NON-NLS-1$
 								// left empty
 							};
 							fEmptyMenuAction.setEnabled(false);
@@ -282,7 +281,7 @@ public class DiffTreeViewer extends TreeViewer {
 		);
 		tree.setMenu(mm.createContextMenu(tree));
 	}
-			
+
 	/**
 	 * Returns the viewer's name.
 	 *
@@ -294,7 +293,7 @@ public class DiffTreeViewer extends TreeViewer {
 			title= Utilities.getString("DiffTreeViewer.title"); //$NON-NLS-1$
 		return title;
 	}
-	
+
 	/**
 	 * Returns the resource bundle.
 	 *
@@ -312,11 +311,12 @@ public class DiffTreeViewer extends TreeViewer {
 	public CompareConfiguration getCompareConfiguration() {
 		return fCompareConfiguration;
 	}
-			
+
 	/**
 	 * Called on the viewer disposal.
 	 * Unregisters from the compare configuration.
 	 * Clients may extend if they have to do additional cleanup.
+	 *
 	 * @param event dispose event that triggered call to this method
 	 */
 	@Override
@@ -327,14 +327,15 @@ public class DiffTreeViewer extends TreeViewer {
 			fCompareConfiguration= null;
 		}
 		fPropertyChangeListener= null;
-		
+
 		super.handleDispose(event);
 	}
-	
+
 	/**
 	 * Tracks property changes of the configuration object.
 	 * Clients may extend to track their own property changes.
 	 * In this case they must call the inherited method.
+	 *
 	 * @param event property change event that triggered call to this method
 	 */
 	protected void propertyChange(PropertyChangeEvent event) {
@@ -342,25 +343,25 @@ public class DiffTreeViewer extends TreeViewer {
 			diffViewerLabelProvider.fireLabelProviderChanged();
 		}
 	}
-	
+
 	@Override
 	protected void inputChanged(Object in, Object oldInput) {
 		super.inputChanged(in, oldInput);
-		
+
 		if (in != oldInput) {
 			initialSelection();
 			updateActions();
 		}
 	}
-	
+
 	/**
-	 * This hook method is called from within <code>inputChanged</code>
+	 * This hook method is called from within {@code inputChanged}
 	 * after a new input has been set but before any controls are updated.
-	 * This default implementation calls <code>navigate(true)</code>
+	 * This default implementation calls {@code navigate(true)}
 	 * to select and expand the first leaf node.
 	 * Clients can override this method and are free to decide whether
 	 * they want to call the inherited method.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected void initialSelection() {
@@ -368,42 +369,43 @@ public class DiffTreeViewer extends TreeViewer {
 	}
 
 	/**
-	 * Overridden to avoid expanding <code>DiffNode</code>s that shouldn't expand.
+	 * Overridden to avoid expanding {@code DiffNode}s that shouldn't expand.
+	 *
      * @param node the node to expand
-     * @param level non-negative level, or <code>ALL_LEVELS</code> to collapse all levels of the tree
+     * @param level non-negative level, or {@code ALL_LEVELS} to collapse all levels of the tree
 	 */
 	@Override
 	protected void internalExpandToLevel(Widget node, int level) {
 		Object data= node.getData();
-		
+
 		if (dontExpand(data))
 			return;
-		
+
 		super.internalExpandToLevel(node, level);
 	}
-	
+
 	/**
-	 * This hook method is called from within <code>internalExpandToLevel</code>
+	 * This hook method is called from within {@code internalExpandToLevel}
 	 * to control whether a given model node should be expanded or not.
-	 * This default implementation checks whether the object is a <code>DiffNode</code> and
-	 * calls <code>dontExpand()</code> on it.
+	 * This default implementation checks whether the object is a {@code DiffNode} and
+	 * calls {@code dontExpand()} on it.
 	 * Clients can override this method and are free to decide whether
 	 * they want to call the inherited method.
-	 * 
+	 *
 	 * @param o the model object to be expanded
-	 * @return <code>false</code> if a node should be expanded, <code>true</code> to prevent expanding
+	 * @return {@code false} if a node should be expanded, {@code true} to prevent expanding
 	 * @since 2.0
 	 */
 	protected boolean dontExpand(Object o) {
-		return o instanceof DiffNode && ((DiffNode)o).dontExpand();
+		return o instanceof DiffNode && ((DiffNode) o).dontExpand();
 	}
-	
+
 	//---- merge action support
 
 	/**
 	 * This factory method is called after the viewer's controls have been created.
-	 * It installs four actions in the given <code>ToolBarManager</code>. Two actions
-	 * allow for copying one side of a <code>DiffNode</code> to the other side.
+	 * It installs four actions in the given {@code ToolBarManager}. Two actions
+	 * allow for copying one side of a {@code DiffNode} to the other side.
 	 * Two other actions are for navigating from one node to the next (previous).
 	 * <p>
 	 * Clients can override this method and are free to decide whether they want to call
@@ -413,10 +415,10 @@ public class DiffTreeViewer extends TreeViewer {
 	 */
 	protected void createToolItems(ToolBarManager toolbarManager) {
 	}
-	
+
 	/**
 	 * This method is called to add actions to the viewer's context menu.
-	 * It installs actions for expanding tree nodes, copying one side of a <code>DiffNode</code> to the other side.
+	 * It installs actions for expanding tree nodes, copying one side of a {@code DiffNode} to the other side.
 	 * Clients can override this method and are free to decide whether they want to call
 	 * the inherited method.
 	 *
@@ -432,7 +434,7 @@ public class DiffTreeViewer extends TreeViewer {
 			};
 			Utilities.initAction(fExpandAllAction, fBundle, "action.ExpandAll."); //$NON-NLS-1$
 		}
-		
+
 		boolean enable= false;
 		ISelection selection= getSelection();
 		if (selection instanceof IStructuredSelection) {
@@ -440,7 +442,7 @@ public class DiffTreeViewer extends TreeViewer {
 			while (elements.hasNext()) {
 				Object element= elements.next();
 				if (element instanceof IDiffContainer) {
-					if (((IDiffContainer)element).hasChildren()) {
+					if (((IDiffContainer) element).hasChildren()) {
 						enable= true;
 						break;
 					}
@@ -453,13 +455,13 @@ public class DiffTreeViewer extends TreeViewer {
 
 	/**
 	 * Expands to infinity all items in the selection.
-	 * 
+	 *
 	 * @since 2.0
 	 */
 	protected void expandSelection() {
 		ISelection selection= getSelection();
 		if (selection instanceof IStructuredSelection) {
-			Iterator<?> elements= ((IStructuredSelection)selection).iterator();
+			Iterator<?> elements= ((IStructuredSelection) selection).iterator();
 			while (elements.hasNext()) {
 				Object next= elements.next();
 				expandToLevel(next, ALL_LEVELS);
@@ -468,12 +470,12 @@ public class DiffTreeViewer extends TreeViewer {
 	}
 
 	/**
-	 * Copies one side of all <code>DiffNode</code>s in the current selection to the other side.
-	 * Called from the (internal) actions for copying the sides of a <code>DiffNode</code>.
-	 * Clients may override. 
-	 * 
-	 * @param leftToRight if <code>true</code> the left side is copied to the right side.
-	 * If <code>false</code> the right side is copied to the left side
+	 * Copies one side of all {@code DiffNode}s in the current selection to the other side.
+	 * Called from the (internal) actions for copying the sides of a {@code DiffNode}.
+	 * Clients may override.
+	 *
+	 * @param leftToRight if {@code true} the left side is copied to the right side.
+	 *     If {@code false} the right side is copied to the left side
 	 */
 	protected void copySelected(boolean leftToRight) {
 		ISelection selection= getSelection();
@@ -486,46 +488,47 @@ public class DiffTreeViewer extends TreeViewer {
 			}
 		}
 	}
-	
+
 	/**
 	 * Called to copy one side of the given node to the other.
-	 * This default implementation delegates the call to <code>ICompareInput.copy(...)</code>.
-	 * Clients may override. 
+	 * This default implementation delegates the call to {@code ICompareInput.copy(...)}.
+	 * Clients may override.
+	 *
 	 * @param node the node to copy
-	 * @param leftToRight if <code>true</code> the left side is copied to the right side.
-	 * If <code>false</code> the right side is copied to the left side
+	 * @param leftToRight if {@code true} the left side is copied to the right side.
+	 *     If {@code false} the right side is copied to the left side
 	 */
 	protected void copyOne(ICompareInput node, boolean leftToRight) {
 		node.copy(leftToRight);
-		
-		// update node's image
+
+		// Update node's image.
 		update(new Object[] { node }, null);
 	}
-	
+
 	/**
 	 * Selects the next (or previous) node of the current selection.
 	 * If there is no current selection the first (last) node in the tree is selected.
 	 * Wraps around at end or beginning.
-	 * Clients may override. 
+	 * Clients may override.
 	 *
-	 * @param next if <code>true</code> the next node is selected, otherwise the previous node
+	 * @param next if {@code true} the next node is selected, otherwise the previous node
 	 */
-	protected void navigate(boolean next) {	
+	protected void navigate(boolean next) {
 		// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 		internalNavigate(next, false);
 	}
-	
+
 	//---- private
-	
+
 	/**
 	 * Selects the next (or previous) node of the current selection.
 	 * If there is no current selection the first (last) node in the tree is selected.
 	 * Wraps around at end or beginning.
-	 * Clients may override. 
+	 * Clients may override.
 	 *
-	 * @param next if <code>true</code> the next node is selected, otherwise the previous node
-	 * @param fireOpen if <code>true</code> an open event is fired.
-	 * @return <code>true</code> if at end (or beginning)
+	 * @param next if {@code true} the next node is selected, otherwise the previous node
+	 * @param fireOpen if {@code true} an open event is fired.
+	 * @return {@code true} if at end (or beginning)
 	 */
 	private boolean internalNavigate(boolean next, boolean fireOpen) {
 		Control c= getControl();
@@ -537,27 +540,27 @@ public class DiffTreeViewer extends TreeViewer {
 		}
 		return item == null;
 	}
-	
+
 	private TreeItem getNextItem(boolean next, boolean expand) {
 		Control c= getControl();
 		if (!(c instanceof Tree) || c.isDisposed())
 			return null;
-			
+
 		Tree tree= (Tree) c;
 		TreeItem item= null;
 		TreeItem children[]= tree.getSelection();
-		if (children != null && children.length > 0)
+		if (children != null && children.length != 0)
 			item= children[0];
 		if (item == null) {
 			children= tree.getItems();
-			if (children != null && children.length > 0) {
+			if (children != null && children.length != 0) {
 				item= children[0];
 				if (item != null && item.getItemCount() <= 0) {
 					return item;
 				}
 			}
 		}
-			
+
 		while (true) {
 			item= findNextPrev(item, next, expand);
 			if (item == null)
@@ -569,90 +572,90 @@ public class DiffTreeViewer extends TreeViewer {
 	}
 
 	private TreeItem findNextPrev(TreeItem item, boolean next, boolean expand) {
-		
 		if (item == null)
 			return null;
-		
+
 		TreeItem children[]= null;
 
 		if (!next) {
-		
 			TreeItem parent= item.getParentItem();
-			if (parent != null)
+			if (parent != null) {
 				children= parent.getItems();
-			else
+			} else {
 				children= item.getParent().getItems();
-			
+			}
+
 			if (children != null && children.length > 0) {
-				// goto previous child
+				// Go to previous child.
 				int index= 0;
-				for (; index < children.length; index++)
+				for (; index < children.length; index++) {
 					if (children[index] == item)
 						break;
-				
+				}
+
 				if (index > 0) {
-					
 					item= children[index-1];
-					
+
 					while (true) {
 						createChildren(item);
 						int n= item.getItemCount();
 						if (n <= 0)
 							break;
 
-						if (expand)	
+						if (expand)
 							item.setExpanded(true);
 						item= item.getItems()[n-1];
 					}
 
-					// previous
+					// Previous.
 					return item;
 				}
 			}
-			
-			// go up
+
+			// Go up.
 			item= parent;
-					
 		} else {
 			if (expand)
 				item.setExpanded(true);
 			createChildren(item);
-			
+
 			if (item.getItemCount() > 0) {
-				// has children: go down
+				// Has children: go down.
 				children= item.getItems();
 				return children[0];
 			}
-			
+
 			while (item != null) {
 				children= null;
 				TreeItem parent= item.getParentItem();
-				if (parent != null)
+				if (parent != null) {
 					children= parent.getItems();
-				else
+				} else {
 					children= item.getParent().getItems();
-				
+				}
+
 				if (children != null && children.length > 0) {
-					// goto next child
+					// Goto next child.
 					int index= 0;
-					for (; index < children.length; index++)
+					for (; index < children.length; index++) {
 						if (children[index] == item)
 							break;
-					
+					}
+
 					if (index < children.length-1) {
-						// next
+						// Next.
 						return children[index+1];
 					}
 				}
-				
-				// go up
+
+				// Go up.
 				item= parent;
 			}
 		}
-				
+
 		return item;
 	}
-	
+
 	private void internalSetSelection(TreeItem ti, boolean fireOpen) {
 		if (ti != null) {
 			Object data= ti.getData();
@@ -667,16 +670,16 @@ public class DiffTreeViewer extends TreeViewer {
 			}
 		}
 	}
-			
+
 	private void updateActions() {
 		if (fExpandAllAction != null) {
 			fExpandAllAction.setEnabled(getSelection().isEmpty());
 		}
 	}
-	
+
 	/*
 	 * Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
-	 */ 
+	 */
 	private boolean internalOpen()  {
 		ISelection selection= getSelection();
 		if (selection != null && !selection.isEmpty()) {
@@ -686,4 +689,3 @@ public class DiffTreeViewer extends TreeViewer {
 		return false;
 	}
 }
-
