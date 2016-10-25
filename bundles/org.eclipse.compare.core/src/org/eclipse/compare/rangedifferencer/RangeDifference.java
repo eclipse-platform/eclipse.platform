@@ -257,6 +257,7 @@ public class RangeDifference {
 		return Math.max(this.rightLength, Math.max(this.leftLength, this.ancestorLength));
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof RangeDifference) {
 			RangeDifference other = (RangeDifference) obj;
@@ -271,6 +272,7 @@ public class RangeDifference {
 		return super.equals(obj);
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -284,6 +286,7 @@ public class RangeDifference {
 		return result;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("RangeDifference {"); //$NON-NLS-1$
 		switch (this.kind) {

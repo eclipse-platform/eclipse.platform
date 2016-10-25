@@ -41,22 +41,27 @@ import org.eclipse.core.runtime.SubMonitor;
 		this.comparator2 = comparator2;
 	}
 	
+	@Override
 	protected int getLength1() {
 		return this.comparator1.getRangeCount();
 	}
 
+	@Override
 	protected int getLength2() {
 		return this.comparator2.getRangeCount();
 	}
 
+	@Override
 	protected void initializeLcs(int lcsLength) {
 		this.lcs = new int[2][lcsLength];
 	}
 
+	@Override
 	protected boolean isRangeEqual(int i1, int i2) {
 		return this.comparator1.rangesEqual(i1, this.comparator2, i2);
 	}
 
+	@Override
 	protected void setLcs(int sl1, int sl2) {
 		// Add one to the values so that 0 can mean that the slot is empty
 		this.lcs[0][sl1] = sl1 + 1;
@@ -182,6 +187,7 @@ import org.eclipse.core.runtime.SubMonitor;
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.LCS#longestCommonSubsequence(org.eclipse.core.runtime.SubMonitor)
 	 */
+	@Override
 	public void longestCommonSubsequence(SubMonitor subMonitor) {
 		super.longestCommonSubsequence(subMonitor);
 		if (this.lcs != null) { // The LCS can be null if one of the sides is empty

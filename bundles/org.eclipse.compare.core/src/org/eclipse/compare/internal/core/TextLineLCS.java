@@ -38,23 +38,28 @@ public class TextLineLCS extends LCS {
 		return result;
 	}
 
+	@Override
 	protected int getLength2() {
 		return this.lines2.length;
 	}
 
+	@Override
 	protected int getLength1() {
 		return this.lines1.length;
 	}
 	
+	@Override
 	protected boolean isRangeEqual(int i1, int i2) {
 		return this.lines1[i1].sameText(this.lines2[i2]);
 	}
 	
+	@Override
 	protected void setLcs(int sl1, int sl2) {
 		this.lcs[0][sl1] = this.lines1[sl1];
 		this.lcs[1][sl1] = this.lines2[sl2];
 	}
 	
+	@Override
 	protected void initializeLcs(int length) {
 		this.lcs = new TextLine[2][length];
 	}
@@ -200,6 +205,7 @@ public class TextLineLCS extends LCS {
 			return this.number;
 		}
 
+		@Override
 		public String toString() {
 			return "" + this.number + " " + this.text + "\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}

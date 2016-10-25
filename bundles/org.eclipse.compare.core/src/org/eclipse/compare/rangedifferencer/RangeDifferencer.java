@@ -42,6 +42,7 @@ public final class RangeDifferencer {
 	private static final RangeDifference[] EMPTY_RESULT= new RangeDifference[0];
 	
 	private static final AbstractRangeDifferenceFactory defaultFactory = new AbstractRangeDifferenceFactory() {
+		@Override
 		protected RangeDifference createRangeDifference() {
 			return new RangeDifference(RangeDifference.NOCHANGE);
 		}

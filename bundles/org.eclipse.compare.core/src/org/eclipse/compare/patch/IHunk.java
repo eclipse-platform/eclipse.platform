@@ -92,6 +92,7 @@ public interface IHunk {
 	 *             {@link IFilePatchResult#getCharset()} as a proper way to
 	 *             obtain charset.
 	 */
+	@Deprecated
 	public String getCharset() throws CoreException;
 	
 	
