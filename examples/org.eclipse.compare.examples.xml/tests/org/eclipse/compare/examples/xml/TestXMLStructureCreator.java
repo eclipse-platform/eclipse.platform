@@ -35,6 +35,7 @@ public class TestXMLStructureCreator extends TestCase {
 			fString= string;
 		}
 		
+		@Override
 		public InputStream getContents() throws CoreException {
 			try {
 				return new ByteArrayInputStream(fString.getBytes("UTF-16")); //$NON-NLS-1$
@@ -43,6 +44,7 @@ public class TestXMLStructureCreator extends TestCase {
 			}
 		}
 		
+		@Override
 		public String getCharset() {
 			return "UTF-16"; //$NON-NLS-1$
 		}
@@ -52,12 +54,14 @@ public class TestXMLStructureCreator extends TestCase {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() {
 		System.out.println("TestXMLStructureCreator.name()==" + getName()); //$NON-NLS-1$
 		fdoc = new Document();
 		fsc = new XMLStructureCreator();
 	}
 	
+	@Override
 	protected void tearDown() throws Exception {
 		//remove set-up
 	}

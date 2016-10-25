@@ -115,6 +115,7 @@ public class MessageLine extends CLabel {
 			if (fErrorColor == null) {
 				fErrorColor= new Color(getDisplay(), fErrorRGB);
 				addDisposeListener(new DisposeListener() {
+					@Override
 					public void widgetDisposed(DisposeEvent e) {
 						fErrorColor.dispose();
 					}

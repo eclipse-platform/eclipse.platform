@@ -100,6 +100,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
+	@Override
 	protected Control createContents(Composite ancestor) {
 		Composite parent= new Composite(ancestor, SWT.NULL);
 		GridLayout layout= new GridLayout();
@@ -122,6 +123,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		data.heightHint = fIdMapsTable.getItemHeight()*4;
 		fIdMapsTable.setLayoutData(data);
 		fIdMapsTable.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectionChanged();
 			}
@@ -156,6 +158,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fAddIdMapButton = new Button(buttons, SWT.PUSH);
 		fAddIdMapButton.setText(XMLCompareMessages.XMLComparePreference_topAdd); 
 		fAddIdMapButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addIdMap(fAddIdMapButton.getShell());
 			}
@@ -170,6 +173,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fRenameIdMapButton = new Button(buttons, SWT.PUSH);
 		fRenameIdMapButton.setText(XMLCompareMessages.XMLComparePreference_topRename); 
 		fRenameIdMapButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				renameIdMap(fRenameIdMapButton.getShell());
 			}
@@ -184,6 +188,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fRemoveIdMapButton = new Button(buttons, SWT.PUSH);
 		fRemoveIdMapButton.setText(XMLCompareMessages.XMLComparePreference_topRemove); 
 		fRemoveIdMapButton.addSelectionListener(new SelectionAdapter() {
+		@Override
 		public void widgetSelected(SelectionEvent e) {
 				removeIdMap(fRemoveIdMapButton.getShell());
 			}
@@ -200,6 +205,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fEditIdMapButton = new Button(buttons, SWT.PUSH);
 		fEditIdMapButton.setText(XMLCompareMessages.XMLComparePreference_topEdit); 
 		fEditIdMapButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editIdMap(fEditIdMapButton.getShell());
 			}
@@ -264,6 +270,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fNewMappingsButton.setLayoutData(getButtonGridData(fNewMappingsButton));
 		fNewMappingsButton.setText(XMLCompareMessages.XMLComparePreference_middleNew); 
 		fNewMappingsButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addMapping(fAddIdMapButton.getShell());
 			}
@@ -273,6 +280,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fEditMappingsButton.setLayoutData(getButtonGridData(fEditMappingsButton));
 		fEditMappingsButton.setText(XMLCompareMessages.XMLComparePreference_middleEdit); 
 		fEditMappingsButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editMapping(fEditMappingsButton.getShell());
 			}
@@ -282,6 +290,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fRemoveMappingsButton.setLayoutData(getButtonGridData(fRemoveMappingsButton));
 		fRemoveMappingsButton.setText(XMLCompareMessages.XMLComparePreference_middleRemove); 
 		fRemoveMappingsButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeMapping(fRemoveMappingsButton.getShell());
 			}
@@ -327,6 +336,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fNewOrderedButton.setLayoutData(getButtonGridData(fNewOrderedButton));
 		fNewOrderedButton.setText(XMLCompareMessages.XMLComparePreference_bottomNew); 
 		fNewOrderedButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addOrdered(fNewOrderedButton.getShell());
 			}
@@ -336,6 +346,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fEditOrderedButton.setLayoutData(getButtonGridData(fEditOrderedButton));
 		fEditOrderedButton.setText(XMLCompareMessages.XMLComparePreference_bottomEdit); 
 		fEditOrderedButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editOrdered(fEditOrderedButton.getShell());
 			}
@@ -345,6 +356,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fRemoveOrderedButton.setLayoutData(getButtonGridData(fRemoveOrderedButton));
 		fRemoveOrderedButton.setText(XMLCompareMessages.XMLComparePreference_bottomRemove); 
 		fRemoveOrderedButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeOrdered(fRemoveOrderedButton.getShell());
 			}
@@ -377,10 +389,12 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		return data;
 	}
 	
+	@Override
 	public void init(IWorkbench workbench) {
 		noDefaultAndApplyButton();
 	}
 
+	@Override
 	public void handleEvent(Event event) {
 		// empty implementation
 	}
@@ -758,6 +772,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 	/*
 	 * @see IWorkbenchPreferencePage#performDefaults
 	 */	
+	@Override
 	public boolean performOk() {
 		XMLPlugin plugin= XMLPlugin.getDefault();
 		if (!plugin.getIdMaps().equals(fIdMaps)
@@ -768,6 +783,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		return super.performOk();
 	}	
 	
+	@Override
 	public boolean performCancel() {
 		fIdMaps = (HashMap) XMLPlugin.getDefault().getIdMaps().clone();
 		return super.performCancel();

@@ -66,6 +66,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 	 * @param ancestor the parent composite to contain the dialog area
 	 * @return the dialog area control
 	 */	
+	@Override
 	protected Control createDialogArea(Composite ancestor) {
 		Composite composite= (Composite) super.createDialogArea(ancestor);
 		
@@ -84,6 +85,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fElementText.setText(fMapping.getElement());
 		fElementText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fElementText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -100,6 +102,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		data.widthHint= convertWidthInCharsToPixels(50);
 		fSignatureText.setLayoutData(data);
 		fSignatureText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -114,6 +117,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 
 		fIdAttributeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fIdAttributeText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -165,6 +169,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 */	
+	@Override
 	protected void okPressed() {
 		fMapping.setElement(fElementText.getText());
 		fMapping.setSignature(fSignatureText.getText());

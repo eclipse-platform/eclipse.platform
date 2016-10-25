@@ -56,6 +56,7 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 	/*
 	 * @see ITypedElement#getName
 	 */
+	@Override
 	public String getName() {
 		if (fName != null)
 			return fName;
@@ -70,6 +71,7 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 	 * Every xml node is of type "txt" so that the builtin TextMergeViewer is used automatically.
 	 * @see ITypedElement#getType
 	 */
+	@Override
 	public String getType() {
 		return "txt"; //$NON-NLS-1$
 	}
@@ -81,6 +83,7 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 	/*
 	 * @see ITypedElement#getImage
 	 */
+	@Override
 	public Image getImage() {
 		if (fOrderedChild)
 			return CompareUI.getImage(XMLPlugin.IMAGE_TYPE_PREFIX + XMLStructureCreator.TYPE_ELEMENT + XMLPlugin.IMAGE_TYPE_ORDERED_SUFFIX);

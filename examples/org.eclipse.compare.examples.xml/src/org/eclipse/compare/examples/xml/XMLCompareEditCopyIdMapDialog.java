@@ -58,6 +58,7 @@ public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 	 * @param ancestor the parent composite to contain the dialog area
 	 * @return the dialog area control
 	 */		
+	@Override
 	protected Control createDialogArea(Composite ancestor) {
 		Composite composite= (Composite) super.createDialogArea(ancestor);
 		
@@ -81,6 +82,7 @@ public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 		fIdMapText= new Text(inner, SWT.BORDER);
 		fIdMapText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fIdMapText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -109,6 +111,7 @@ public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 */		
+	@Override
 	protected void okPressed() {
 		fResult= fIdMapText.getText();
 		super.okPressed();

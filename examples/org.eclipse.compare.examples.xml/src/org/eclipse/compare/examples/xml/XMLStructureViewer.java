@@ -64,6 +64,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			fAlwaysOrderSort= alwaysOrderSort;
 		}
 
+		@Override
 		public int category(Object node) {
 			if (node instanceof DiffNode) {
 				Object o= ((DiffNode) node).getId();
@@ -80,6 +81,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			return 0;
 		}
 
+		@Override
 		public void sort(final Viewer viewer, Object[] elements) {
 			if ((fOrdered != null || fAlwaysOrderSort)
 				&& elements != null
@@ -100,6 +102,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 								new ArrayList(
 									Arrays.asList(parent.getChildren()));
 							Arrays.sort(elements, new Comparator() {
+								@Override
 								public int compare(Object a, Object b) {
 									return XMLSorter.this.compare(
 										(DiffNode) a,
@@ -175,6 +178,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	/* (non Javadoc)
 	 * Overridden to unregister all listeners.
 	 */
+	@Override
 	protected void handleDispose(DisposeEvent event) {
 
 		XMLPlugin.getDefault().getViewers().remove(this);
@@ -185,6 +189,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	/*
 	 * Recreates the comparable structures for the input sides.
 	 */
+	@Override
 	protected void compareInputChanged(ICompareInput input) {
 		if (input != null) {
 			ITypedElement t= input.getLeft();
@@ -222,6 +227,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 
 	}
 
+	@Override
 	protected void preDiffHook(
 		IStructureComparator ancestor,
 		IStructureComparator left,
@@ -239,6 +245,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	 *
 	 * @param toolBarManager the toolbar manager for which to add the buttons
 	 */
+	@Override
 	protected void createToolItems(ToolBarManager toolBarManager) {
 		super.createToolItems(toolBarManager);
 		toolBarManager.appendToGroup("modes", new ChooseMatcherDropDownAction(this)); //$NON-NLS-1$
@@ -251,6 +258,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	 *
 	 * @param manager the menu manager for which to add menu items
 	 */
+	@Override
 	protected void fillContextMenu(IMenuManager manager) {
 		super.fillContextMenu(manager);
 		ISelection s= getSelection();
@@ -393,6 +401,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			fDiffNode= diffnode;
 		}
 
+		@Override
 		public void run() {
 			XMLStructureCreator sc= getXMLStructureCreator();
 			//			DiffNode diffnode = (DiffNode) ((StructuredSelection) getSelection()).getFirstElement();
@@ -465,6 +474,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 			fIdMapName= idmap_name;
 		}
 
+		@Override
 		public void run() {
 			//String idmap_name= getXMLStructureCreator().getIdMap();
 			if (fSignature != null) {
@@ -492,6 +502,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 	 * Clients may override to track their own property changes.
 	 * In this case they must call the inherited method.
 	 */
+	@Override
 	protected void propertyChange(PropertyChangeEvent event) {
 		String key= event.getProperty();
 		if (key.equals(CompareConfiguration.IGNORE_WHITESPACE)) {

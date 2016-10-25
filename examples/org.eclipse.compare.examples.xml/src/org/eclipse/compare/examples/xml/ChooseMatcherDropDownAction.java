@@ -33,14 +33,17 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		setMenuCreator(this);
 	}
 
+	@Override
 	public void dispose() {
 		// nothing to do
 	}
 
+	@Override
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
 
+	@Override
 	public Menu getMenu(Control parent) {
 		XMLPlugin plugin= XMLPlugin.getDefault();
 		Menu menu= new Menu(parent);
@@ -93,6 +96,7 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		item.fill(parent, -1);
 	}
 
+	@Override
 	public void run() {
 		fViewer.contentChanged();
 	}

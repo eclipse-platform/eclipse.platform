@@ -24,6 +24,7 @@ class SelectMatcherAction extends Action {
 		setToolTipText(fDesc);
 	}
 
+	@Override
 	public void run() {
 		((XMLStructureCreator) fViewer.getStructureCreator()).setIdMap(fDesc);
 		fViewer.contentChanged();

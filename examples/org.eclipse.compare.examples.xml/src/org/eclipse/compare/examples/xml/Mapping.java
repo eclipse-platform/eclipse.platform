@@ -36,6 +36,7 @@ public class Mapping {
 	/*
 	 * @see Object#equals(Object)
 	 */
+	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Mapping))
 			return false;
@@ -54,6 +55,7 @@ public class Mapping {
 	/*
 	 * @see Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return fElement.hashCode() ^ fSignature.hashCode();
 	}

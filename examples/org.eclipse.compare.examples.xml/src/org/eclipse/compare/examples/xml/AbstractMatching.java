@@ -106,6 +106,7 @@ public abstract class AbstractMatching {
 		/*
 		 * @see IRangeComparator#getRangeCount()
 		 */
+		@Override
 		public int getRangeCount() {
 			return fXML_elements.length;
 		}
@@ -113,6 +114,7 @@ public abstract class AbstractMatching {
 		/*
 		 * @see IRangeComparator#rangesEqual(int, IRangeComparator, int)
 		 */
+		@Override
 		public boolean rangesEqual(
 			int thisIndex,
 			IRangeComparator other_irc,
@@ -146,6 +148,7 @@ public abstract class AbstractMatching {
 		/*
 		 * @see IRangeComparator#skipRangeComparison(int, int, IRangeComparator)
 		 */
+		@Override
 		public boolean skipRangeComparison(
 			int length,
 			int maxLength,
@@ -169,6 +172,7 @@ public abstract class AbstractMatching {
 			fy = y;	
 		}
 		
+		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof Match) {
 				Match m = (Match) obj;

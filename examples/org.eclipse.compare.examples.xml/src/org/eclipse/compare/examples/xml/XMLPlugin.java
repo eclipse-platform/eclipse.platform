@@ -92,6 +92,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		fgXMLPlugin= this;
 	}
 	
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		
@@ -355,6 +356,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		if (window == null) {
 			final WindowRef windowRef= new WindowRef();
 			Display.getDefault().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					setActiveWorkbenchWindow(windowRef);
 				}

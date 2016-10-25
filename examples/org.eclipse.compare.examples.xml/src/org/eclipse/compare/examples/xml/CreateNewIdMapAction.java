@@ -29,6 +29,7 @@ public class CreateNewIdMapAction extends Action {
 		setToolTipText(XMLCompareMessages.XMLStructureViewer_newtask); 
 	}
 	
+	@Override
 	public void run() {
 		XMLPlugin plugin= XMLPlugin.getDefault();
 		fIdMapsInternal= plugin.getIdMapsInternal();//fIdMapsInternal is only read, not modified

@@ -61,6 +61,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 	 * @param ancestor the parent composite to contain the dialog area
 	 * @return the dialog area control
 	 */		
+	@Override
 	protected Control createDialogArea(Composite ancestor) {
 		Composite composite= (Composite) super.createDialogArea(ancestor);
 		
@@ -80,6 +81,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		fIdMapText.setLayoutData(data);
 		fIdMapText.setText(fIdMap.getName());
 		fIdMapText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -95,6 +97,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		fIdMapExtText.setLayoutData(data);
 		fIdMapExtText.setText(fIdMap.getExtension());
 		fIdMapExtText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e){
 				doValidation();
 			}
@@ -133,6 +136,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 */	
+	@Override
 	protected void okPressed() {
 		fIdMap.setName(fIdMapText.getText());
 		fIdMap.setExtension(fIdMapExtText.getText().toLowerCase());

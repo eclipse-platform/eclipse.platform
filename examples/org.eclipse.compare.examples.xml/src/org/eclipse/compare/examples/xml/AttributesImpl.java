@@ -30,11 +30,13 @@ public class AttributesImpl implements Attributes {
 
 
 	/* Returns the number of attributes. */
+	@Override
 	public int getLength() {
 		return fLength;
 	}
 
 	/* Returns the index of the specified attribute. */
+	@Override
 	public int getIndex(String raw) {
 		ListNode place= fHead;
 		int index= 0;
@@ -49,6 +51,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the index of the specified attribute. */
+	@Override
 	public int getIndex(String uri, String local) {
 		ListNode place= fHead;
 		int index= 0;
@@ -63,6 +66,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute URI by index. */
+	@Override
 	public String getURI(int index) {
 
 		ListNode node= getListNodeAt(index);
@@ -70,6 +74,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute local name by index. */
+	@Override
 	public String getLocalName(int index) {
 
 		ListNode node= getListNodeAt(index);
@@ -77,6 +82,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute raw name by index. */
+	@Override
 	public String getQName(int index) {
 
 		ListNode node= getListNodeAt(index);
@@ -85,6 +91,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute type by index. */
+	@Override
 	public String getType(int index) {
 
 		ListNode node= getListNodeAt(index);
@@ -92,6 +99,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute type by uri and local. */
+	@Override
 	public String getType(String uri, String local) {
 
 		ListNode node= getListNode(uri, local);
@@ -100,6 +108,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute type by raw name. */
+	@Override
 	public String getType(String raw) {
 
 		ListNode node= getListNode(raw);
@@ -107,6 +116,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute value by index. */
+	@Override
 	public String getValue(int index) {
 
 		ListNode node= getListNodeAt(index);
@@ -114,6 +124,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute value by uri and local. */
+	@Override
 	public String getValue(String uri, String local) {
 
 		ListNode node= getListNode(uri, local);
@@ -121,6 +132,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns the attribute value by raw name. */
+	@Override
 	public String getValue(String raw) {
 
 		ListNode node= getListNode(raw);
@@ -266,6 +278,7 @@ public class AttributesImpl implements Attributes {
 	}
 
 	/* Returns a string representation of this object. */
+	@Override
 	public String toString() {
 		StringBuffer str= new StringBuffer();
 
@@ -324,6 +337,7 @@ public class AttributesImpl implements Attributes {
 		}
 
 		/* Returns string representation of this object. */
+		@Override
 		public String toString() {
 			return raw != null ? raw : local;
 		}

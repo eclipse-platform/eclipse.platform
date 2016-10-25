@@ -25,6 +25,7 @@ import org.eclipse.compare.IViewerCreator;
  */
 public class XMLStructureViewerCreator implements IViewerCreator {
 
+	@Override
 	public Viewer createViewer(Composite parent, CompareConfiguration mp) {
 		return new XMLStructureViewer(parent, mp);
 	}

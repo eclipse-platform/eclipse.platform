@@ -101,14 +101,16 @@ public class XMLStructureCreator implements IStructureCreator {
         protected Locator prevlocator; //previous locator
         protected Locator locator; //current locator
 
-        public void setDocumentLocator(Locator locator0) {
+        @Override
+		public void setDocumentLocator(Locator locator0) {
             this.locator= locator0;
         }
 
         // DocumentHandler methods
         
         /* Processing instruction. */
-        public void processingInstruction(String target, String data) {
+        @Override
+		public void processingInstruction(String target, String data) {
 
             //    	System.out.println("target: " + target);
             //    	System.out.println("data: " + data);
@@ -124,12 +126,14 @@ public class XMLStructureCreator implements IStructureCreator {
         }
 
         /** Start document. */
-        public void startDocument() {
+        @Override
+		public void startDocument() {
             prevlocator= new LocatorImpl(locator);
         }
 
         /* Start element. */
-        public void startElement(String uri, String local, String raw, Attributes attrs) {
+        @Override
+		public void startElement(String uri, String local, String raw, Attributes attrs) {
             XMLNode currentElement;
 
             /* add root node for this element */
@@ -310,7 +314,8 @@ public class XMLStructureCreator implements IStructureCreator {
         }
 
         /* Characters. */
-        public void characters(char ch[], int start, int length) {
+        @Override
+		public void characters(char ch[], int start, int length) {
             if (!ignoreBodies) {
                 //			String chars = (new String(ch, start, length)).trim();
                 String chars= new String(ch, start, length);
@@ -369,7 +374,8 @@ public class XMLStructureCreator implements IStructureCreator {
         }
 
         /* Ignorable whitespace. */
-        public void ignorableWhitespace(char ch[], int start, int length) {
+        @Override
+		public void ignorableWhitespace(char ch[], int start, int length) {
             //
             //// characters(ch, start, length);
             //// System.out.flush();
@@ -378,7 +384,8 @@ public class XMLStructureCreator implements IStructureCreator {
         }
 
         /* End element. */
-        public void endElement(String uri, String local, String raw) {
+        @Override
+		public void endElement(String uri, String local, String raw) {
             if (XMLStructureCreator.DEBUG_MODE)
                 System.out.println("\nExiting element " + fcurrentParent.getId()); //$NON-NLS-1$
 
@@ -453,21 +460,24 @@ public class XMLStructureCreator implements IStructureCreator {
         //
 
         /* Warning. */
-        public void warning(SAXParseException ex) {
+        @Override
+		public void warning(SAXParseException ex) {
             System.err.println("[Warning] " + //$NON-NLS-1$
                     getLocationString(ex) + ": " + //$NON-NLS-1$
                     ex.getMessage());
         }
 
         /* Error. */
-        public void error(SAXParseException ex) {
+        @Override
+		public void error(SAXParseException ex) {
             System.err.println("[Error] " + //$NON-NLS-1$
                     getLocationString(ex) + ": " + //$NON-NLS-1$
                     ex.getMessage());
         }
 
         /* Fatal error. */
-        public void fatalError(SAXParseException ex) throws SAXException {
+        @Override
+		public void fatalError(SAXParseException ex) throws SAXException {
             System.err.println("[Fatal Error] " + //$NON-NLS-1$
                     getLocationString(ex) + ": " + //$NON-NLS-1$
                     ex.getMessage());
@@ -515,7 +525,8 @@ public class XMLStructureCreator implements IStructureCreator {
     /*
      * This title will be shown in the title bar of the structure compare pane.
      */
-    public String getName() {
+    @Override
+	public String getName() {
         return DEFAULT_NAME;
     }
 
@@ -557,7 +568,8 @@ public class XMLStructureCreator implements IStructureCreator {
     /*
      * Returns the XML parse tree of the input.
      */
-    public IStructureComparator getStructure(Object input) {
+    @Override
+	public IStructureComparator getStructure(Object input) {
         if (XMLStructureCreator.DEBUG_MODE)
             System.out.println("Starting parse"); //$NON-NLS-1$
 
@@ -632,7 +644,8 @@ public class XMLStructureCreator implements IStructureCreator {
     		// nothing to do
     }
 
-    public void save(IStructureComparator structure, Object input) {
+    @Override
+	public void save(IStructureComparator structure, Object input) {
         if (input instanceof IEditableContent && structure instanceof XMLNode) {
             IDocument document= ((XMLNode) structure).getDocument();
             IEditableContent bca= (IEditableContent) input;
@@ -655,7 +668,8 @@ public class XMLStructureCreator implements IStructureCreator {
 		}
 	}
 
-    public String getContents(Object node, boolean ignoreWhitespace) {
+    @Override
+	public String getContents(Object node, boolean ignoreWhitespace) {
         if (node instanceof XMLNode) {
             String s= ((XMLNode) node).getValue();
             if (ignoreWhitespace)
@@ -665,7 +679,8 @@ public class XMLStructureCreator implements IStructureCreator {
         return null;
     }
 
-    public IStructureComparator locate(Object path, Object source) {
+    @Override
+	public IStructureComparator locate(Object path, Object source) {
         return null;
     }
 

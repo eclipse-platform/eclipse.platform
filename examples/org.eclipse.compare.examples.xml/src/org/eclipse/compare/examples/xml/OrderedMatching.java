@@ -113,6 +113,7 @@ public class OrderedMatching extends AbstractMatching {
 	}
 
 	/* matches two trees according to paper "X-Diff", p. 16 */
+	@Override
 	public void match(
 		XMLNode LeftTree,
 		XMLNode RightTree,
@@ -210,6 +211,7 @@ public class OrderedMatching extends AbstractMatching {
 		return distance;
 	}
 
+	@Override
 	protected int handleXandYnotLeaves(XMLNode x, XMLNode y) {
 		/* handle entries as ordered*/
 		return orderedMath(x, y);
