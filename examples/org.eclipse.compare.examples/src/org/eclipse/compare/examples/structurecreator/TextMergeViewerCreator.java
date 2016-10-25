@@ -25,6 +25,7 @@ import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
  */
 public class TextMergeViewerCreator implements IViewerCreator {
 
+	@Override
 	public Viewer createViewer(Composite parent, CompareConfiguration mp) {
 		return new TextMergeViewer(parent, mp);
 	}

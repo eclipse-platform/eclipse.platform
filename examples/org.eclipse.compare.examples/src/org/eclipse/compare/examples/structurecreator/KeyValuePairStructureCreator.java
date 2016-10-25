@@ -52,6 +52,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		/*
 		 * @see ITypedElement#getName
 		 */
+		@Override
 		public String getName() {
 			return this.getId();
 		}
@@ -60,6 +61,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		 * Every key/value pair is of type "kvtxt". We register a TextMergeViewer for it. 
 		 * @see ITypedElement#getType
 		 */
+		@Override
 		public String getType() {
 			return "kvtxt"; //$NON-NLS-1$
 		}
@@ -67,6 +69,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		/*
 		 * @see ITypedElement#getImage
 		 */
+		@Override
 		public Image getImage() {
 			return CompareUI.getImage(getType());
 		}
@@ -80,6 +83,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 	/*
 	 * This title will be shown in the title bar of the structure compare pane.
 	 */
+	@Override
 	public String getName() {
 		return Util.getString("KeyValuePairStructureCreator.title"); //$NON-NLS-1$
 	}
@@ -87,6 +91,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 	/*
 	 * Returns a node.
 	 */
+	@Override
 	public IStructureComparator getStructure(Object input) {
 		
 		if (!(input instanceof IStreamContentAccessor))
@@ -131,6 +136,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		return null;
 	}
 	
+	@Override
 	public void save(IStructureComparator structure, Object input) {
 		if (input instanceof IEditableContent && structure instanceof KeyValueNode) {
 			IDocument doc= ((KeyValueNode)structure).getDocument();
@@ -140,6 +146,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		}
 	}
 	
+	@Override
 	public String getContents(Object node, boolean ignoreWhitespace) {
 		if (node instanceof KeyValueNode) {
 			String s= ((KeyValueNode)node).getValue();
@@ -150,6 +157,7 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 		return null;
 	}
 	
+	@Override
 	public IStructureComparator locate(Object path, Object source) {
 		return null;
 	}
