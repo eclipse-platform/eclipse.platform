@@ -21,16 +21,16 @@ import org.eclipse.team.core.TeamException;
  * A <code>ResourceVariantByteStore</code> that caches the variant bytes using
  * the <code>org.eclipse.core.resources.ISynchronizer</code> so that the tree is
  * cached across workbench invocations.
- * 
+ *
  * @since 3.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class PersistantResourceVariantByteStore extends ResourceVariantByteStore {
 
 	private static final byte[] NO_REMOTE = new byte[0];
-	
+
 	private QualifiedName syncName;
-	
+
 	/**
 	 * Create a persistent tree that uses the given qualified name
 	 * as the key in the <code>org.eclipse.core.resources.ISynchronizer</code>.
@@ -42,7 +42,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		syncName = name;
 		getSynchronizer().add(syncName);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
 	 */
@@ -69,7 +69,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		}
 		return syncBytes;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#setBytes(org.eclipse.core.resources.IResource, byte[])
 	 */
@@ -101,7 +101,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Return whether the resource variant state for this resource is known.
 	 * This is used to differentiate the case where a resource variant has never been fetched
@@ -114,9 +114,9 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	public boolean isVariantKnown(IResource resource) throws TeamException {
 		return internalGetSyncBytes(resource) != null;
 	}
-	
+
 	/**
-	 * This method should be invoked by a client to indicate that it is known that 
+	 * This method should be invoked by a client to indicate that it is known that
 	 * there is no remote resource associated with the local resource. After this method
 	 * is invoked, <code>isVariantKnown(resource)</code> will return <code>true</code> and
 	 * <code>getBytes(resource)</code> will return <code>null</code>.
@@ -132,7 +132,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	public IResource[] members(IResource resource) throws TeamException {
 		if(resource.getType() == IResource.FILE) {
 			return new IResource[0];
-		}	
+		}
 		try {
 			// Filter and return only resources that have sync bytes in the cache.
 			IResource[] members = ((IContainer)resource).members(true /* include phantoms */);
@@ -152,7 +152,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	private ISynchronizer getSynchronizer() {
 		return ResourcesPlugin.getWorkspace().getSynchronizer();
 	}
-	
+
 	private byte[] internalGetSyncBytes(IResource resource) throws TeamException {
 		try {
 			return getSynchronizer().getSyncInfo(getSyncName(), resource);
@@ -160,7 +160,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 			throw TeamException.asTeamException(e);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.IProgressMonitor)
 	 */

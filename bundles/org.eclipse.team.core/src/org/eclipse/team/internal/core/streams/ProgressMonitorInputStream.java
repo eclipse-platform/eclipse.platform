@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Updates a progress monitor as bytes are read from the input stream.
  * Also starts a background thread to provide responsive cancellation on read().
- * 
+ *
  * Supports resuming partially completed operations after an InterruptedIOException
  * if the underlying stream does.  Check the bytesTransferred field to determine how
  * much of the operation completed; conversely, at what point to resume.
@@ -32,7 +32,7 @@ public abstract class ProgressMonitorInputStream extends FilterInputStream {
 	private long bytesRead = 0;
 	private long lastUpdate = -1;
 	private long nextUpdate = 0;
-	
+
 	/**
 	 * Creates a progress monitoring input stream.
 	 * @param in the underlying input stream
@@ -78,7 +78,7 @@ public abstract class ProgressMonitorInputStream extends FilterInputStream {
 		}
 		return b;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Updates the progress monitor if the next update increment has been reached.
@@ -100,7 +100,7 @@ public abstract class ProgressMonitorInputStream extends FilterInputStream {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Updates the progress monitor if the next update increment has been reached.
@@ -120,14 +120,14 @@ public abstract class ProgressMonitorInputStream extends FilterInputStream {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */
 	public boolean markSupported() {
 		return false;
 	}
-	
+
 	private void update(boolean now) {
 		if (bytesRead >= nextUpdate || now) {
 			nextUpdate = bytesRead - (bytesRead % updateIncrement);

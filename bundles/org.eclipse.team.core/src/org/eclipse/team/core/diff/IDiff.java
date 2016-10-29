@@ -14,7 +14,7 @@ import org.eclipse.team.core.diff.provider.Diff;
 
 /**
  * A diff describes differences between two or more model objects.
- * 
+ *
  * @see ITwoWayDiff
  * @see IThreeWayDiff
  * @since 3.2
@@ -32,7 +32,7 @@ public interface IDiff {
 	/**
 	 * Diff kind constant (bit mask) indicating that the resource has not been changed in
 	 * any way.
-	 * 
+	 *
 	 * @see IDiff#getKind()
 	 */
 	public static final int NO_CHANGE = 0;
@@ -41,7 +41,7 @@ public interface IDiff {
 	 * Diff kind constant (bit mask) indicating that the resource has been
 	 * added to its parent. That is, one that appears in the "after" state, not
 	 * in the "before" one.
-	 * 
+	 *
 	 * @see IDiff#getKind()
 	 */
 	public static final int ADD = 0x1;
@@ -50,7 +50,7 @@ public interface IDiff {
 	 * Diff kind constant (bit mask) indicating that the resource has been
 	 * removed from its parent. That is, one that appears in the "before" state,
 	 * not in the "after" one.
-	 * 
+	 *
 	 * @see IDiff#getKind()
 	 */
 	public static final int REMOVE = 0x2;
@@ -59,18 +59,18 @@ public interface IDiff {
 	 * Diff kind constant (bit mask) indicating that the resource has been
 	 * changed. That is, one that appears in both the "before" and "after"
 	 * states.
-	 * 
+	 *
 	 * @see IDiff#getKind()
 	 */
 	public static final int CHANGE = 0x4;
-	
+
 	/**
 	 * Returns the full, absolute path of the object to which the diff applies
 	 * with respect to the model root.
 	 * <p>
 	 * Note: the returned path never has a trailing separator.
 	 * </p>
-	 * 
+	 *
 	 * @return the full, absolute path of this diff
 	 */
 	public IPath getPath();
@@ -78,7 +78,7 @@ public interface IDiff {
 	/**
 	 * Returns the kind of this diff. Normally, one of
 	 * <code>ADDED</code>, <code>REMOVED</code>, <code>CHANGED</code>.
-	 * 
+	 *
 	 * @return the kind of this diff
 	 * @see IDiff#ADD
 	 * @see IDiff#REMOVE

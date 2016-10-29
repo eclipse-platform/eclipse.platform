@@ -17,14 +17,14 @@ import org.eclipse.team.core.diff.provider.Diff;
  * A specialized <code>DiffNodeFilter</code> that does not require a progress monitor.
  * This enables these filters to be used when determining menu enablement or other
  * operations that must be short running.
- * 
+ *
  * @see IDiff
  * @see IDiffTree
  * @see DiffFilter
  * @since 3.2
  */
 public abstract class FastDiffFilter extends DiffFilter {
-	
+
 	public static final FastDiffFilter getStateFilter(final int[] states, final int mask) {
 		return new FastDiffFilter() {
 			public boolean select(IDiff node) {
@@ -49,7 +49,7 @@ public abstract class FastDiffFilter extends DiffFilter {
 
 	/**
 	 * Return <code>true</code> if the provided <code>IDiffNode</code> matches the filter.
-	 * 
+	 *
 	 * @param diff the <code>IDiffNode</code> to be tested
 	 * @return <code>true</code> if the <code>IDiffNode</code> matches the filter
 	 */

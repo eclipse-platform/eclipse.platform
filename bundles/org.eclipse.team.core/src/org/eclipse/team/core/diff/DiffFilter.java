@@ -16,17 +16,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * A <code>DiffNodeFilter</code> tests an {@link IDiff} for inclusion,
  * typically in an {@link IDiffTree}.
- * 
+ *
  * @see IDiff
  * @see IDiffTree
- * 
+ *
  * @since 3.2
  */
 public abstract class DiffFilter {
 
 	/**
 	 * Return <code>true</code> if the provided <code>IDiffNode</code> matches the filter.
-	 * 
+	 *
 	 * @param diff the <code>IDiffNode</code> to be tested
 	 * @param monitor a progress monitor
 	 * @return <code>true</code> if the <code>IDiffNode</code> matches the filter

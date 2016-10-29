@@ -20,9 +20,9 @@ import org.eclipse.team.core.TeamException;
  * A resource variant tree that caches and obtains its bytes from the remote slot
  * in a three-way synchronizer. Clients must subclass to provide remote resource
  * variant refresh functionality.
- * 
+ *
  * @see ThreeWaySubscriber
- * 
+ *
  * @since 3.0
  */
 public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
@@ -30,7 +30,7 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 	private ThreeWaySubscriber subscriber;
 
 	/*
-	 * A resource variant byte store that accesses the remote bytes 
+	 * A resource variant byte store that accesses the remote bytes
 	 * from a three-way synchronizer. Both access and modification
 	 * are supported.
 	 */
@@ -66,7 +66,7 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 			return synchronizer;
 		}
 	}
-	
+
 	/**
 	 * Create a remote resource variant tree that stores and obtains
 	 * it's bytes from the remote slot of the synchronizer of the
@@ -77,14 +77,14 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 		super(new RemoteResourceVariantByteStore(subscriber.getSynchronizer()));
 		this.subscriber = subscriber;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#roots()
 	 */
 	public IResource[] roots() {
 		return getSubscriber().roots();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#getResourceVariant(org.eclipse.core.resources.IResource)
 	 */
@@ -99,7 +99,7 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 	protected ThreeWaySubscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#collectChanges(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */

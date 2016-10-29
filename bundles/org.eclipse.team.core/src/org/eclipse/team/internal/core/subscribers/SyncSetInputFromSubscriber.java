@@ -16,7 +16,7 @@ import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.Subscriber;
 
 /**
- * Records resource synchronization changes from a Team subscriber. The actual changes 
+ * Records resource synchronization changes from a Team subscriber. The actual changes
  * are calculated via the SubscriberEventHandler and stored in this input.
  */
 public class SyncSetInputFromSubscriber extends SyncSetInput  {
@@ -27,29 +27,29 @@ public class SyncSetInputFromSubscriber extends SyncSetInput  {
 		super(handler);
 		this.subscriber = subscriber;
 	}
-		
+
 	public void disconnect() {
 	}
-	
+
 	public Subscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetInput#fetchInput(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	protected void fetchInput(IProgressMonitor monitor) throws TeamException {
 		// don't calculate changes. The SubscriberEventHandler will fetch the
-		// input in a job and update this sync set when the changes are 
-		// calculated. 
+		// input in a job and update this sync set when the changes are
+		// calculated.
 	}
 
 	/**
 	 * Handle an error that occurred while populating the receiver's set.
-	 * The <code>ITeamStatus</code> includes the resource for which the 
+	 * The <code>ITeamStatus</code> includes the resource for which the
 	 * error occurred.
 	 * This error is propogated to any set listeners.
-	 * @param status the error status 
+	 * @param status the error status
 	 */
 	public void handleError(ITeamStatus  status) {
 		getSyncSet().addError(status);

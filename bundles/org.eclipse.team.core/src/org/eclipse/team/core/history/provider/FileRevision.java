@@ -22,11 +22,11 @@ import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.history.ITag;
 
 /**
- * Abstract implementation of {@link IFileRevision} that can be implemented by 
+ * Abstract implementation of {@link IFileRevision} that can be implemented by
  * clients.
- * 
+ *
  * @see IFileRevision
- * 
+ *
  * @since 3.2
  */
 public abstract class FileRevision implements IFileRevision {
@@ -147,5 +147,5 @@ public abstract class FileRevision implements IFileRevision {
 	public ITag[] getTags() {
 		return new ITag[0];
 	}
-	
+
 }

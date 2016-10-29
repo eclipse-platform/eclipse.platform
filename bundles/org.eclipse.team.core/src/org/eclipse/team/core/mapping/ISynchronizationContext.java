@@ -50,10 +50,10 @@ import org.eclipse.team.core.mapping.provider.SynchronizationContext;
  * {@link IJobManager#join(Object, IProgressMonitor)} if they wish to wait until
  * all background handlers related to this context are finished.
  * </p>
- * 
+ *
  * @see SynchronizationContext
  * @see MergeContext
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  *              They should subclass {@link SynchronizationContext} or one of
@@ -78,7 +78,7 @@ public interface ISynchronizationContext {
 	 * The input determines the set of resources to which the context applies.
 	 * Changes in the input may result in changes to the sync-info available in
 	 * the tree of this context.
-	 * 
+	 *
 	 * @return the input that defined the scope of this synchronization context.
 	 */
 	ISynchronizationScope getScope();
@@ -97,7 +97,7 @@ public interface ISynchronizationContext {
 	 * {@link IResourceDiff} instances as the local and remote changes. This
 	 * interface also has several helper methods for handling entries contained in
 	 * the returned diff tree.
-	 * 
+	 *
 	 * @return a tree that contains an entry for any
 	 *         resources that are out-of-sync.
 	 * @see IResourceDiffTree#getDiffs(ResourceTraversal[])
@@ -113,9 +113,9 @@ public interface ISynchronizationContext {
 	 * the synchronization state of resources. A type of <code>THREE_WAY</code>
 	 * indicates that the synchronization information will be three-way
 	 * {@link IThreeWayDiff} instances.
-	 * 
+	 *
 	 * @return the type of synchronization information available in the context
-	 * 
+	 *
 	 * @see IDiff
 	 * @see IThreeWayDiff
 	 */
@@ -147,12 +147,12 @@ public interface ISynchronizationContext {
 	 * Changes to the diff tree may be triggered by a call to this method or by a
 	 * refresh triggered by some other source. Hence, the callback from the diff tree
 	 * to report changes may occur in the same thread as the refresh or
-	 * <a href="#async">asynchronously</a> in a separate thread, regardless of who triggered 
+	 * <a href="#async">asynchronously</a> in a separate thread, regardless of who triggered
 	 * the refresh.
-	 * 
+	 *
 	 * @see #getDiffTree()
 	 * @see IDiffTree#addDiffChangeListener(IDiffChangeListener)
-	 * 
+	 *
 	 * @param traversals
 	 *            the resource traversals which indicate which resources are to
 	 *            be refreshed
@@ -192,7 +192,7 @@ public interface ISynchronizationContext {
 	 * diff tree to report changes may occur in the same thread as the refresh
 	 * or <a href="#async">asynchronously</a> in a separate thread, regardless
 	 * of who triggered the refresh.
-	 * 
+	 *
 	 * @param mappings
 	 *            the mappings to be refreshed
 	 * @param monitor

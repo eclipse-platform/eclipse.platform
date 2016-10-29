@@ -26,7 +26,7 @@ import org.eclipse.team.internal.core.*;
  * A specialization of Subscriber that uses <code>IResourceVariantTree</code> objects
  * to manage the base (for three-way) and remote trees. Refreshing and obtaining the subscriber
  * members and resource variants is delegated to the resource variant trees.
- * 
+ *
  * @since 3.0
  */
 public abstract class ResourceVariantTreeSubscriber extends Subscriber {
@@ -67,7 +67,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 	public IResource[] members(IResource resource) throws TeamException {
 		if(resource.getType() == IResource.FILE) {
 			return new IResource[0];
-		}	
+		}
 		try {
 			Set allMembers = new HashSet();
 			try {
@@ -121,7 +121,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 			}
 		} finally {
 			monitor.done();
-		} 
+		}
 		if (!errors.isEmpty()) {
 			int numSuccess = resources.length - errors.size() - cancels.size();
 			if (!cancels.isEmpty()) {
@@ -141,16 +141,16 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 					}
 				});
 			}
-			throw new TeamException(new MultiStatus(TeamPlugin.ID, 0, 
-					(IStatus[]) errors.toArray(new IStatus[errors.size()]), 
-					NLS.bind(Messages.ResourceVariantTreeSubscriber_1, (new Object[] {getName(), Integer.toString(numSuccess), Integer.toString(resources.length)})), null)); 
+			throw new TeamException(new MultiStatus(TeamPlugin.ID, 0,
+					(IStatus[]) errors.toArray(new IStatus[errors.size()]),
+					NLS.bind(Messages.ResourceVariantTreeSubscriber_1, (new Object[] {getName(), Integer.toString(numSuccess), Integer.toString(resources.length)})), null));
 		}
 		if (!cancels.isEmpty()) {
 			throw new OperationCanceledException(
 					((IStatus) cancels.get(0)).getMessage());
 		}
 	}
-	
+
 	/**
 	 * Return the base resource variant tree.
 	 */
@@ -160,7 +160,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 	 * Return the remote resource variant tree.
 	 */
 	protected abstract IResourceVariantTree getRemoteTree();
-	
+
 	private IStatus refresh(IResource resource, int depth, IProgressMonitor monitor) {
 		monitor = Policy.monitorFor(monitor);
 		try {
@@ -176,7 +176,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 			fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, changedResources));
 			return Status.OK_STATUS;
 		} catch (TeamException e) {
-			return new TeamStatus(IStatus.ERROR, TeamPlugin.ID, 0, NLS.bind(Messages.ResourceVariantTreeSubscriber_2, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource); 
+			return new TeamStatus(IStatus.ERROR, TeamPlugin.ID, 0, NLS.bind(Messages.ResourceVariantTreeSubscriber_2, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource);
 		} catch (OperationCanceledException e) {
 			return new TeamStatus(IStatus.CANCEL, TeamPlugin.ID, 0, NLS.bind(
 					Messages.ResourceVariantTreeSubscriber_4,
@@ -184,9 +184,9 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 					resource);
 		} finally {
 			monitor.done();
-		} 
+		}
 	}
-	
+
 	private IResource[] internalMembers(IResourceVariantTree tree, IResource resource) throws TeamException, CoreException {
 		// Filter and return only phantoms associated with the remote synchronizer.
 		IResource[] members;

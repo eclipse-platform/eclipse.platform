@@ -18,16 +18,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * of references to projects.  Given a project, it can produce a
  * UTF-8 encoded String which can be stored in a file.
  * Given this String, it can create in the workspace an IProject.
- * 
+ *
  * @since 2.0
- * 
- * @deprecated 
+ *
+ * @deprecated
  *       Use {@link org.eclipse.team.core.RepositoryProviderType#getProjectSetCapability()}
  *       to obtain an instance of {@link org.eclipse.team.core.ProjectSetCapability} instead.
  */
 
 public interface IProjectSetSerializer {
-	
+
 	/**
 	 * For every IProject in providerProjects, return an opaque
 	 * UTF-8 encoded String to act as a reference to that project.
@@ -36,17 +36,17 @@ public interface IProjectSetSerializer {
 	 * IProjectSetSerializer.addToWorskpace() will be able to
 	 * consume it and recreate a corresponding project.
 	 * @see IProjectSetSerializer#addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor)
-	 * 
+	 *
 	 * @param providerProjects  an array of projects that the serializer should create
 	 *   text references for
-	 * @param context  a UI context object. This object will either be a 
+	 * @param context  a UI context object. This object will either be a
 	 *                 com.ibm.swt.widgets.Shell or it will be null.
 	 * @param monitor  a progress monitor
 	 * @return String[] an array of serialized reference strings uniquely identifying the projects
 	 * @throws TeamException
 	 */
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) throws TeamException;
-	
+
 	/**
 	 * For every String in referenceStrings, create in the workspace a
 	 * corresponding IProject.  Return an Array of the resulting IProjects.
@@ -55,11 +55,11 @@ public interface IProjectSetSerializer {
 	 * The opaque strings in referenceStrings are guaranteed to have been previously
 	 * produced by IProjectSetSerializer.asReference().
 	 * @see IProjectSetSerializer#asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor)
-	 * 
+	 *
 	 * @param referenceStrings  an array of reference strings uniquely identifying the projects
 	 * @param filename  the name of the file that the references were read from. This is included
 	 *   in case the provider needs to deduce relative paths
-	 * @param context  a UI context object. This object will either be a 
+	 * @param context  a UI context object. This object will either be a
 	 *                 com.ibm.swt.widgets.Shell or it will be null.
 	 * @param monitor  a progress monitor
 	 * @return IProject[]  an array of projects that were created

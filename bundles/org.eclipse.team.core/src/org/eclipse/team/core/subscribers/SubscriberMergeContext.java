@@ -26,10 +26,10 @@ import org.eclipse.team.internal.core.subscribers.SubscriberDiffTreeEventHandler
  * A merge context that uses a subscriber to populate the diff tree
  * used by the context. The population of the diff tree is performed
  * by a handler that runs in a background job.
- * 
+ *
  * @see Subscriber
  * @see MergeContext
- * 
+ *
  * @since 3.2
  */
 public abstract class SubscriberMergeContext extends MergeContext {
@@ -37,7 +37,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	private Subscriber subscriber;
 	private SubscriberDiffTreeEventHandler handler;
 	private final ISynchronizationScopeManager manager;
-	
+
 	/**
 	 * Create a merge context for the given subscriber
 	 * @param subscriber the subscriber
@@ -63,7 +63,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		handler.setJobFamily(this);
 		handler.start();
 	}
-	
+
 	/**
 	 * Return the diff filter used to filter the differences that the merge context will present to clients.
 	 * @return the diff filter used to filter the differences that the merge context will present to clients
@@ -84,7 +84,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		handler.initializeIfNeeded();
 		subscriber.refresh(traversals, monitor);
 	}
-	
+
 	private GroupProgressMonitor getGroup(IProgressMonitor monitor) {
 		if (monitor instanceof GroupProgressMonitor) {
 			return (GroupProgressMonitor) monitor;
@@ -103,7 +103,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		handler.shutdown();
 		super.dispose();
 	}
-	
+
 	/**
 	 * Return the sync info for the given resource.
 	 * @param resource the resource
@@ -121,7 +121,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	public Subscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 	/**
 	 * Run the given runnable when the background handler
 	 * for this context is idle. The given runnable should not lock
@@ -131,7 +131,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	protected void runInBackground(IWorkspaceRunnable runnable) {
 		handler.run(runnable, false);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
 	 */

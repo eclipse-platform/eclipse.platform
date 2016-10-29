@@ -25,16 +25,16 @@ import org.osgi.service.prefs.Preferences;
  * @since 3.1
  */
 public class ActiveChangeSet extends DiffChangeSet {
-    
+
     private static final String CTX_TITLE = "title"; //$NON-NLS-1$
     private static final String CTX_COMMENT = "comment"; //$NON-NLS-1$
     private static final String CTX_RESOURCES = "resources"; //$NON-NLS-1$
     private static final String CTX_USER_CREATED = "userCreated"; //$NON-NLS-1$
-    
+
     private final ActiveChangeSetManager manager;
     private String comment;
 	private boolean userCreated = true;
-    
+
 	/**
 	 * Create a change set with the given title
 	 * @param manager the manager that owns this set
@@ -54,7 +54,7 @@ public class ActiveChangeSet extends DiffChangeSet {
     public String getTitle() {
         return getName();
     }
-    
+
     /**
      * Set the title of the set. The title is used
      * as the comment when the set is committed if no comment
@@ -77,7 +77,7 @@ public class ActiveChangeSet extends DiffChangeSet {
         }
         return comment;
     }
-    
+
     /**
      * Set the comment to be used when the change set is committed.
      * If <code>null</code> is passed, the title of the set
@@ -118,7 +118,7 @@ public class ActiveChangeSet extends DiffChangeSet {
     public boolean hasComment() {
         return comment != null;
     }
-    
+
     public void save(Preferences prefs) {
         prefs.put(CTX_TITLE, getTitle());
         if (comment != null) {

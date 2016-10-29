@@ -59,7 +59,7 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		}
 		return null;
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (obj instanceof ResourceVariantFileRevision) {
 			ResourceVariantFileRevision fileRevision = (ResourceVariantFileRevision) obj;
@@ -67,7 +67,7 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		}
 		return false;
 	}
-	
+
 	public int hashCode() {
 		return getVariant().hashCode();
 	}

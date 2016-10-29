@@ -35,7 +35,7 @@ public class PollingInputStream extends FilterInputStream {
 	private int numAttempts;
 	private IProgressMonitor monitor;
 	private boolean cancellable;
-	
+
 	/**
 	 * Creates a new polling input stream.
 	 * @param in the underlying input stream
@@ -49,7 +49,7 @@ public class PollingInputStream extends FilterInputStream {
 		this.monitor = monitor;
 		this.cancellable = true;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * It may be important to wait for an input stream to be closed because it
@@ -77,7 +77,7 @@ public class PollingInputStream extends FilterInputStream {
 				} catch (InterruptedIOException e) {
 					if (checkCancellation()) throw new OperationCanceledException();
 					if (++attempts == numAttempts)
-						throw new InterruptedIOException(Messages.PollingInputStream_closeTimeout); 
+						throw new InterruptedIOException(Messages.PollingInputStream_closeTimeout);
 					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
 				} catch (IOException e) {
 					// ignore it - see https://bugs.eclipse.org/bugs/show_bug.cgi?id=203423#c10
@@ -85,7 +85,7 @@ public class PollingInputStream extends FilterInputStream {
 			}
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * @return the next byte of data, or -1 if the end of the stream is reached.
@@ -102,12 +102,12 @@ public class PollingInputStream extends FilterInputStream {
 				return in.read();
 			} catch (InterruptedIOException e) {
 				if (++attempts == numAttempts)
-					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
+					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
 				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * @param buffer - the buffer into which the data is read.
@@ -128,12 +128,12 @@ public class PollingInputStream extends FilterInputStream {
 			} catch (InterruptedIOException e) {
 				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
 				if (++attempts == numAttempts)
-					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
+					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
 				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * @param count - the number of bytes to be skipped.
@@ -152,12 +152,12 @@ public class PollingInputStream extends FilterInputStream {
 			} catch (InterruptedIOException e) {
 				if (e.bytesTransferred != 0) return e.bytesTransferred; // keep partial transfer
 				if (++attempts == numAttempts)
-					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout); 
+					throw new InterruptedIOException(Messages.PollingInputStream_readTimeout);
 				if (Policy.DEBUG_STREAMS) System.out.println("read retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
-	
+
 	/**
 	 * Reads any pending input from the input stream so that
 	 * the stream can savely be closed.
@@ -169,12 +169,12 @@ public class PollingInputStream extends FilterInputStream {
 			if (available < 1) break;
 			if (available > buffer.length) available = buffer.length;
 			if (in.read(buffer, 0, available) < 1) break;
-		}	
+		}
 	}
-		
+
 	/**
 	 * Called to set whether cancellation will be checked by this stream. Turning cancellation checking
-	 * off can be very useful for protecting critical portions of a protocol that shouldn't be interrupted. 
+	 * off can be very useful for protecting critical portions of a protocol that shouldn't be interrupted.
 	 * For example, it is often necessary to protect login sequences.
 	 * @param cancellable a flag controlling whether this stream will check for cancellation.
 	 */
@@ -184,10 +184,10 @@ public class PollingInputStream extends FilterInputStream {
 
 	/**
 	 * Checked whether the monitor for this stream has been cancelled. If the cancellable
-	 * flag is <code>false</code> then the monitor is never cancelled. 
+	 * flag is <code>false</code> then the monitor is never cancelled.
 	 * @return <code>true</code> if the monitor has been cancelled and <code>false</code>
 	 * otherwise.
-	 */	
+	 */
 	private boolean checkCancellation() {
 		if(cancellable) {
 			return monitor.isCanceled();

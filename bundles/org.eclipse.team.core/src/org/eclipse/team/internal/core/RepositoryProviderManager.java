@@ -18,7 +18,7 @@ public class RepositoryProviderManager implements IRepositoryProviderListener {
 
 	private static RepositoryProviderManager instance;
 	private ListenerList listeners = new ListenerList();
-	
+
 	public static synchronized RepositoryProviderManager getInstance() {
 		if (instance == null) {
 			instance = new RepositoryProviderManager();
@@ -47,14 +47,14 @@ public class RepositoryProviderManager implements IRepositoryProviderListener {
 			listener.providerUnmapped(project);
 		}
 	}
-	
+
 	public void addListener(IRepositoryProviderListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	public void removeListener(IRepositoryProviderListener listener) {
 		listeners.remove(listener);
 	}
-	
-	
+
+
 }

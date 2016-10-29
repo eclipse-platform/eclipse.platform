@@ -57,7 +57,7 @@ public class TeamImages {
 			break;
 		case ISharedImages.IMG_HOURGLASS_OVR:
 			key = TeamUIPlugin.FILE_HOURGLASS_OVR;
-			break;			
+			break;
 		default:
 			key = id;
 		}

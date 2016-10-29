@@ -322,7 +322,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
         ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(imageUrl));
         imageDescriptors.put(id, desc);
 	}
-	
+
 	/**
 	 * Returns the image descriptor for the given image ID.
 	 * Returns null if there is no such image.
@@ -359,7 +359,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	public static final String FILE_CONFLICT_OVR = "ovr/confchg_ov.png"; //$NON-NLS-1$
 	public static final String FILE_ERROR_OVR = "ovr/error_co.png"; //$NON-NLS-1$
 	public static final String FILE_WARNING_OVR = "ovr/warning_co.png"; //$NON-NLS-1$
-	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.png"; //$NON-NLS-1$		
+	public static final String FILE_HOURGLASS_OVR = "ovr/waiting_ovr.png"; //$NON-NLS-1$
 	/*
 	 * Initializes the table of images used in this plugin. The plugin is
 	 * provided because this method is called before the plugin staic
@@ -368,7 +368,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 */
 	private void initializeImages(TeamUIPlugin plugin) {
 		// Overlays
-		
+
 		privateCreateImageDescriptor(ISharedImages.IMG_DIRTY_OVR, FILE_DIRTY_OVR);
 		privateCreateImageDescriptor(ISharedImages.IMG_CONFLICT_OVR, FILE_CONFLICT_OVR);
 		privateCreateImageDescriptor(ISharedImages.IMG_CHECKEDIN_OVR, FILE_CHECKEDIN_OVR);

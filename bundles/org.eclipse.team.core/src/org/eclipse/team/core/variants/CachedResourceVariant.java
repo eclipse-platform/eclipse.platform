@@ -37,20 +37,20 @@ import org.eclipse.team.internal.core.*;
  * cache additional resource variant properties such as author, comment, etc.
  * </p>
  * <p>
- * The <code>IStorage</code> instance returned by this class will be 
+ * The <code>IStorage</code> instance returned by this class will be
  * an {@link org.eclipse.core.resources.IEncodedStorage}.
  * <p>
  * The cache in which the resource variants reside will occasionally clear
  * cached entries if they have not been accessed for a certain amount of time.
  * </p>
- * 
+ *
  * @since 3.0
  */
 public abstract class CachedResourceVariant extends PlatformObject implements IResourceVariant {
-	
+
 	// holds the storage instance for this resource variant
 	private IStorage storage;
-	
+
 	/*
 	 * Internal class which provides access to the cached contents
 	 * of this resource variant
@@ -60,7 +60,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 			if (!isContentsCached()) {
 				// The cache may have been cleared if someone held
 				// on to the storage too long
-				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, new String[] { getCachePath() })); 
+				throw new TeamException(NLS.bind(Messages.CachedResourceVariant_0, new String[] { getCachePath() }));
 			}
 			return getCachedContents();
 		}
@@ -82,7 +82,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 				String charSet = TeamPlugin.getCharset(getName(), contents);
 				return charSet;
 			} catch (IOException e) {
-				throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS, NLS.bind(Messages.CachedResourceVariant_1, new String[] { getFullPath().toString() }), e)); 
+				throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.FAILED_DESCRIBING_CONTENTS, NLS.bind(Messages.CachedResourceVariant_1, new String[] { getFullPath().toString() }), e));
 			} finally {
 				try {
 					contents.close();
@@ -92,7 +92,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.IResourceVariant#getStorage(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -104,16 +104,16 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		}
 		return storage;
 	}
-	
+
 	private void ensureContentsCached(IProgressMonitor monitor) throws TeamException {
 		// Ensure that the contents are cached from the server
 		if (!isContentsCached()) {
 			fetchContents(monitor);
 		}
 	}
-	
+
 	/**
-	 * Method that is invoked when the contents of the resource variant need to 
+	 * Method that is invoked when the contents of the resource variant need to
 	 * be fetched. This method will only be invoked for files (i.e.
 	 * <code>isContainer()</code> returns <code>false</code>.
 	 * Subclasses should override this method and invoke <code>setContents</code>
@@ -124,7 +124,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 
 	/**
 	 * This method should be invoked by subclasses from within their <code>fetchContents</code>
-	 * method in order to cache the contents for this resource variant. 
+	 * method in order to cache the contents for this resource variant.
 	 * <p>
 	 * This method is not intended to be overridden by clients.
 	 * @param stream the stream containing the contents of the resource variant
@@ -137,11 +137,11 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		if (!isHandleCached()) cacheHandle();
 		getCacheEntry().setContents(stream, monitor);
 	}
-	
+
 	private ResourceVariantCacheEntry getCacheEntry() {
 		return getCache().getCacheEntry(this.getCachePath());
 	}
-	
+
 	/**
 	 * Return whether there are already contents cached for this resource variant.
 	 * This method will return <code>false</code> even if the contents are currently
@@ -159,7 +159,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		ResourceVariantCacheEntry entry = getCache().getCacheEntry(getCachePath());
 		return entry.getState() == ResourceVariantCacheEntry.READY;
 	}
-	
+
 	/**
 	 * Return the cached contents for this resource variant or <code>null</code>
 	 * if the contents have not been cached.
@@ -173,17 +173,17 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		if (isContainer() || !isContentsCached()) return null;
 		return getCache().getCacheEntry(getCachePath()).getContents();
 	}
-	
+
 	/**
 	 * Return <code>true</code> if the cache contains an entry for this resource
 	 * variant. It is possible that another instance of this variant is cached.
-	 * To get the cached instance, call <code>getCachedHandle()</code>. Note that 
+	 * To get the cached instance, call <code>getCachedHandle()</code>. Note that
 	 * cached contents can be retrieved from any handle to a resource variant whose
 	 * cache path (as returned by <code>getCachePath()</code>) match but other
 	 * state information may only be accessible from the cached copy.
-	 * 
+	 *
 	 * @return whether the variant is cached
-	 * @nooverride This method is not intended to be overridden by clients. 
+	 * @nooverride This method is not intended to be overridden by clients.
 	 */
 	protected boolean isHandleCached() {
 		return (getCache().hasEntry(getCachePath()));
@@ -201,7 +201,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * @return the full path of the remote resource variant
 	 */
 	protected abstract String getCachePath();
-	
+
 	/**
 	 * Return the size (in bytes) of the contents of this resource variant.
 	 * The method will return 0 if the contents have not yet been cached
@@ -217,7 +217,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		}
 		return entry.getSize();
 	}
-	
+
 	/*
 	 * Return the cache that is used to cache this resource variant and its contents.
 	 * @return Returns the cache.
@@ -226,7 +226,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		ResourceVariantCache.enableCaching(getCacheId());
 		return ResourceVariantCache.getCache(getCacheId());
 	}
-	
+
 	/**
 	 * Return the ID that uniquely identifies the cache in which this resource variant
 	 * is to be cache. The ID of the plugin that provides the resource variant subclass
@@ -241,44 +241,44 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * one. If there isn't one, then <code>null</code> is returned.
 	 * If there is no cached handle and one is desired, then <code>cacheHandle()</code>
 	 * should be called.
-	 * 
+	 *
 	 * @return a cached copy of this resource variant or <code>null</code>
-	 * @nooverride This method is not intended to be overridden by clients. 
+	 * @nooverride This method is not intended to be overridden by clients.
 	 */
 	protected CachedResourceVariant getCachedHandle() {
 		ResourceVariantCacheEntry entry = getCacheEntry();
 		if (entry == null) return null;
 		return entry.getResourceVariant();
 	}
-	
+
 	/**
 	 * Cache this handle in the cache, replacing any previously cached handle.
-	 * Note that caching this handle will replace any state associated with a 
+	 * Note that caching this handle will replace any state associated with a
 	 * previously cached handle, if there is one, but the contents will remain.
 	 * The reason for this is the assumption that the cache path for a resource
 	 * variant (as returned by <code>getCachePath()</code> identifies an immutable
 	 * resource version (or revision). The ability to replace the handle itself
 	 * is provided so that additional state may be cached before or after the contents
 	 * are fetched.
-	 * 
+	 *
 	 * @nooverride This method is not intended to be overridden by clients.
 	 */
 	protected void cacheHandle() {
 		getCache().add(getCachePath(), this);
 	}
-	
+
 	/**
 	 * Return the full path of this resource that should be displayed to the
-	 * user. This path is also used as the path of the <code>IStorage</code> that 
+	 * user. This path is also used as the path of the <code>IStorage</code> that
 	 * is returned by this instance.
 	 * Subclasses may override.
 	 * @return the full path of this resource that should be displayed to the
 	 * user
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public IPath getDisplayPath() {
 		return new Path(null, getCachePath());
 	}
-	
+
 }

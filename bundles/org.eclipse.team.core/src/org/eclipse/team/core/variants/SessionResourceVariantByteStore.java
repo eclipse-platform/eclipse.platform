@@ -20,7 +20,7 @@ import org.eclipse.team.core.TeamException;
 /**
  * A <code>ResourceVariantByteStore</code> that caches the variant bytes in
  * memory and does not persist them over workbench invocations.
- * 
+ *
  * @since 3.0
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -28,7 +28,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 
 	private static final byte[] NO_REMOTE = new byte[0];
 	private Map membersCache = new HashMap();
-	
+
 	private Map syncBytesCache = new HashMap();
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 	public boolean deleteBytes(IResource resource) throws TeamException {
 		return flushBytes(resource, IResource.DEPTH_ZERO);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
 	 */
@@ -106,11 +106,11 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		internalSetSyncInfo(resource, bytes);
 		return true;
 	}
-	
+
 	private Map getSyncBytesCache() {
 		return syncBytesCache;
 	}
-	
+
 	private void internalAddToParent(IResource resource) {
 		IContainer parent = resource.getParent();
 		if (parent == null) return;
@@ -121,7 +121,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		}
 		members.add(resource);
 	}
-	
+
 	private byte[] internalGetSyncBytes(IResource resource) {
 		return (byte[])getSyncBytesCache().get(resource);
 	}
@@ -136,7 +136,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 			}
 		}
 	}
-	
+
 	private void internalSetSyncInfo(IResource resource, byte[] bytes) {
 		getSyncBytesCache().put(resource, bytes);
 		internalAddToParent(resource);

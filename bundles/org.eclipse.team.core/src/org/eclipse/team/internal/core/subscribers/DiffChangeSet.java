@@ -19,15 +19,15 @@ import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 public class DiffChangeSet extends ChangeSet {
 
 	private final ResourceDiffTree tree = new ResourceDiffTree();
-    
+
     public DiffChangeSet() {
 		super();
 	}
-    
+
     public DiffChangeSet(String name) {
     	super(name);
     }
-    
+
     /**
      * Return the diff tree that contains the resources that belong to this change set.
      * @return  the diff tree that contains the resources that belong to this change set
@@ -35,7 +35,7 @@ public class DiffChangeSet extends ChangeSet {
     public IResourceDiffTree getDiffTree() {
         return tree;
     }
-    
+
     protected ResourceDiffTree internalGetDiffTree() {
         return tree;
     }
@@ -47,7 +47,7 @@ public class DiffChangeSet extends ChangeSet {
     public IResource[] getResources() {
         return tree.getAffectedResources();
     }
-    
+
     /**
      * Return whether the set contains any files.
      * @return whether the set contains any files
@@ -64,7 +64,7 @@ public class DiffChangeSet extends ChangeSet {
     public boolean contains(IResource local) {
         return tree.getDiff(local) != null;
     }
-    
+
     /**
      * Add the resource to this set if it is modified
      * w.r.t. the subscriber.
@@ -75,7 +75,7 @@ public class DiffChangeSet extends ChangeSet {
             tree.add(diff);
         }
     }
-    
+
     /**
      * Return whether the given sync info is a valid change
      * and can be included in this set. This method is used
@@ -103,7 +103,7 @@ public class DiffChangeSet extends ChangeSet {
            tree.endInput(null);
        }
     }
-    
+
     /**
      * Remove the resource from the set.
      * @param resource the resource to be removed
@@ -113,7 +113,7 @@ public class DiffChangeSet extends ChangeSet {
             tree.remove(resource);
         }
     }
-    
+
     /**
      * Remove the resource and it's descendants to the given depth.
      * @param resource the resource to be removed
@@ -136,11 +136,11 @@ public class DiffChangeSet extends ChangeSet {
     		}
     	}
     }
-    
+
 	public boolean contains(IPath path) {
 		return getDiffTree().getDiff(path) != null;
 	}
-	
+
 	public boolean containsChildren(IResource resource, int depth) {
 		return getDiffTree().getDiffs(resource, depth).length > 0;
 	}
@@ -156,7 +156,7 @@ public class DiffChangeSet extends ChangeSet {
 			tree.endInput(null);
 		}
 	}
-	
+
 	public void remove(IResource[] resources) {
 		try {
 			tree.beginInput();
@@ -168,7 +168,7 @@ public class DiffChangeSet extends ChangeSet {
 			tree.endInput(null);
 		}
 	}
-	
+
 	public String getComment() {
 		return null;
 	}

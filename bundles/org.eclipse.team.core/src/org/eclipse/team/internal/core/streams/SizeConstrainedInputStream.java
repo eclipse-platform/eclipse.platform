@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
  * Will report EOF when this portion has been fully read and prevent further reads.
  * The underlying stream is not closed on close(), but the remaining unread input
  * may optionally be skip()'d.
- * 
+ *
  * Supports resuming partially completed operations after an InterruptedIOException
  * if the underlying stream does.  Check the bytesTransferred field to determine how
  * much of the operation completed; conversely, at what point to resume.
@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 public class SizeConstrainedInputStream extends FilterInputStream {
 	private boolean discardOnClose;
 	private long bytesRemaining;
-	
+
 	/**
 	 * Creates a size constrained input stream.
 	 * @param in the underlying input stream, never actually closed by this filter
@@ -43,7 +43,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 		this.bytesRemaining = size;
 		this.discardOnClose = discardOnClose;
 	}
-	
+
 	/**
 	 * Prevents further reading from the stream but does not close the underlying stream.
 	 * If discardOnClose, skip()'s over any remaining unread bytes in the constrained region.
@@ -55,7 +55,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 				while (bytesRemaining != 0 && skip(bytesRemaining) != 0);
 			}
 		} catch (OperationCanceledException e) {
-			// The receiver is likely wrapping a PollingInputStream which could throw 
+			// The receiver is likely wrapping a PollingInputStream which could throw
 			// an OperationCanceledException on a skip.
 			// Since we're closing, just ignore the cancel and let the caller check the monitor
 		} finally {
@@ -73,7 +73,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 		if (amount > bytesRemaining) amount = (int) bytesRemaining;
 		return amount;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Simulates an end-of-file condition if the end of the constrained region has been reached.
@@ -87,7 +87,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 		if (b != -1) bytesRemaining -= 1;
 		return b;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Simulates an end-of-file condition if the end of the constrained region has been reached.
@@ -109,7 +109,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Simulates an end-of-file condition if the end of the constrained region has been reached.
@@ -128,7 +128,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */

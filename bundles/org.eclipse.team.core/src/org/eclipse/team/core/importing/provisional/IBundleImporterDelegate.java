@@ -23,7 +23,7 @@ import org.eclipse.team.core.ScmUrlImportDescription;
  * on bundle manifest entries.
  * <p>
  * Following is an example extension:
- * 
+ *
  * <pre>
  * &lt;extension point=&quot;org.eclipse.team.core.bundleImporters&quot;&gt;
  *  &lt;importer
@@ -32,7 +32,7 @@ import org.eclipse.team.core.ScmUrlImportDescription;
  *  &lt;/importer&gt;
  * &lt;/extension&gt;
  * </pre>
- * 
+ *
  * </p>
  * <p>
  * Clients contributing bundle importer extensions are intended to implement
@@ -44,7 +44,7 @@ import org.eclipse.team.core.ScmUrlImportDescription;
  * will remain the same. Please do not use this API without consulting with the
  * Team team.
  * </p>
- * 
+ *
  * @since 3.6
  * @noextend This interface is not intended to be extended by clients.
  */
@@ -55,7 +55,7 @@ public interface IBundleImporterDelegate {
 	 * headers and values) can be imported into a workspace project. A
 	 * <code>null</code> entry in the returned array indicates the corresponding
 	 * bundle cannot be imported by this delegate.
-	 * 
+	 *
 	 * @param manifests
 	 *            array of maps containing manifest headers and values of the
 	 *            associated bundles
@@ -68,7 +68,7 @@ public interface IBundleImporterDelegate {
 	 * Imports bundles into the workspace creating a project for each import
 	 * description. Reports progress to the given monitor, if not
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @param descriptions
 	 *            description of bundles to import
 	 * @param monitor

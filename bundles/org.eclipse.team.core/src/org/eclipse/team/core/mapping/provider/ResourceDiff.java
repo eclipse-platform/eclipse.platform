@@ -20,7 +20,7 @@ import org.eclipse.team.core.mapping.IResourceDiff;
  * Implementation of {@link IResourceDiff}.
  * <p>
  * This class may be subclassed by clients.
- * 
+ *
  * @since 3.2
  */
 public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
@@ -76,7 +76,7 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 	public IResource getResource() {
 		return resource;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
 	 */
@@ -86,8 +86,8 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 		if (super.equals(obj)) {
 			if (obj instanceof ResourceDiff) {
 				ResourceDiff other = (ResourceDiff) obj;
-				return getResource().equals(getResource()) 
-					&& revisionsEqual(getBeforeState(), other.getBeforeState()) 
+				return getResource().equals(getResource())
+					&& revisionsEqual(getBeforeState(), other.getBeforeState())
 					&& revisionsEqual(getAfterState(), other.getAfterState());
 			}
 		}

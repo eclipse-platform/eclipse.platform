@@ -24,8 +24,8 @@ import org.eclipse.team.internal.core.Messages;
 
 /**
  * A LocalFileRevision is used for wrapping local files in order to display
- * them in the History View. As such, this class can be used to wrap either 
- * a local file's IFileState or an IFile. 
+ * them in the History View. As such, this class can be used to wrap either
+ * a local file's IFileState or an IFile.
  */
 public class LocalFileRevision extends FileRevision {
 	/*
@@ -37,7 +37,7 @@ public class LocalFileRevision extends FileRevision {
 
 	//Used for displaying the "real" current file
 	private IFile file;
-	//Used for displaying which base revision 
+	//Used for displaying which base revision
 	private IFileRevision baseRevision;
 
 	/*
@@ -52,8 +52,8 @@ public class LocalFileRevision extends FileRevision {
 	/*
 	 * Used for wrapping an IFile. This is generally used to represent the local
 	 * current version of the file being displayed in the history. Make sure to
-	 * also pass in the base revision associated with this current version. 
-	 * 
+	 * also pass in the base revision associated with this current version.
+	 *
 	 * @see #setBaseRevision(IFileRevision)
 	 */
 	public LocalFileRevision(IFile file) {
@@ -135,7 +135,7 @@ public class LocalFileRevision extends FileRevision {
 		if (file != null) {
 			return file.exists();
 		}
-		
+
 		return state.exists();
 	}
 
@@ -146,12 +146,12 @@ public class LocalFileRevision extends FileRevision {
 	public void setBaseRevision(IFileRevision baseRevision) {
 		this.baseRevision = baseRevision;
 	}
-	
+
 	public boolean isPropertyMissing() {
 		return true;
 	}
 
-	
+
 	public IFileRevision withAllProperties(IProgressMonitor monitor) {
 		return this;
 	}
@@ -165,11 +165,11 @@ public class LocalFileRevision extends FileRevision {
 		long compareRevisionTime = revision.getTimestamp();
 		return (this.getTimestamp() > compareRevisionTime);
 	}
-	
+
 	public URI getURI() {
 		if (file != null)
 			return file.getLocationURI();
-		
+
 		return URIUtil.toURI(state.getFullPath());
 	}
 
@@ -180,11 +180,11 @@ public class LocalFileRevision extends FileRevision {
 	public IFileState getState() {
 		return state;
 	}
-	
+
 	public boolean isCurrentState() {
 		return file != null;
 	}
-	
+
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -201,7 +201,7 @@ public class LocalFileRevision extends FileRevision {
 	private boolean statesEqual(IFileState s1, IFileState s2) {
 		return (s1.getFullPath().equals(s2.getFullPath()) && s1.getModificationTime() == s2.getModificationTime());
 	}
-	
+
 	public int hashCode() {
 		if (file != null)
 			return file.hashCode();

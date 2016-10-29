@@ -19,7 +19,7 @@ import org.eclipse.team.core.mapping.*;
 import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 
 /**
- * A {@link ISynchronizationScopeManager} that uses a {@link Subscriber} to provide 
+ * A {@link ISynchronizationScopeManager} that uses a {@link Subscriber} to provide
  * a {@link RemoteResourceMappingContext} and to notify participants when the
  * remote state of resources change.
  * @since 3.2
@@ -60,7 +60,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 	protected Subscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#dispose()
 	 */
@@ -71,7 +71,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		}
 		super.dispose();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.provider.ResourceMappingScopeManager#initialize(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -84,7 +84,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 			}
 		}, getSchedulingRule(), IResource.NONE, monitor);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.provider.ResourceMappingScopeManager#refresh(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -100,11 +100,11 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 			return new ResourceTraversal[0];
 		return (ResourceTraversal[])result.get(0);
 	}
-	
+
 	/*
 	 * Hook up the participants for the participating models.
-	 * This is done to ensure that future local and remote changes to 
-	 * resources will update the resources contained in the scope 
+	 * This is done to ensure that future local and remote changes to
+	 * resources will update the resources contained in the scope
 	 * appropriately
 	 */
 	/* private */ void hookupParticipants() {
@@ -119,7 +119,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 			}
 		}
 	}
-	
+
 	/*
 	 * Obtain a participant through the factory which is obtained using IAdaptable
 	 */

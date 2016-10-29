@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IResource;
  * @since 3.0
  */
 public interface ISynchronizerChangeListener {
-	
+
 	/**
 	 * Notification of synchronization state changes for the given resources.
 	 * Clients must query the <code>ThreeWaySynchronizer</code> that generated

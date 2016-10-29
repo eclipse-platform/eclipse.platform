@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core;
 
- 
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Internal class which provides the default behavior for resource deletions and moves.
- * 
+ *
  */
 
 public class DefaultMoveDeleteHook implements IMoveDeleteHook {

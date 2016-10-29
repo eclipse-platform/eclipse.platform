@@ -18,25 +18,25 @@ import org.eclipse.team.internal.core.Policy;
 
 /**
  * The <code>SubscriberSyncInfoSet</code> is a <code>SyncInfoSet</code> that provides the ability to add,
- * remove and change <code>SyncInfo</code> and fires change event notifications to registered listeners. 
+ * remove and change <code>SyncInfo</code> and fires change event notifications to registered listeners.
  * It also provides the ability
  * to batch changes in a single change notification as well as optimizations for sync info retrieval.
- * 
+ *
  * This class uses synchronized methods and synchronized blocks to protect internal data structures during both access
  * and modify operations and uses an <code>ILock</code> to make modification operations thread-safe. The events
  * are fired while this lock is held so clients responding to these events should not obtain their own internal locks
  * while processing change events.
- * 
+ *
  * TODO: Override modification methods to enforce use with handler
- * 
+ *
  */
 public class SubscriberSyncInfoSet extends SyncInfoTree {
-	
+
 	protected SubscriberEventHandler handler;
-	
+
 	public SubscriberSyncInfoSet(SubscriberEventHandler handler) {
 		this.handler = handler;
-	}	
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#connect(org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener, org.eclipse.core.runtime.IProgressMonitor)

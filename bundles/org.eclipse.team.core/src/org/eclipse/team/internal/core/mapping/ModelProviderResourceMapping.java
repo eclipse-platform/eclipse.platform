@@ -23,11 +23,11 @@ import org.eclipse.team.internal.core.TeamPlugin;
 public class ModelProviderResourceMapping extends ResourceMapping {
 
 	ModelProvider provider;
-	
+
 	public ModelProviderResourceMapping(ModelProvider provider) {
 		this.provider = provider;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getModelObject()
 	 */
@@ -90,7 +90,7 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 		}
 		return getProjects();
 	}
-	
+
 	public boolean contains(ResourceMapping mapping) {
 		return (mapping.getModelProviderId().equals(getModelProviderId()));
 	}

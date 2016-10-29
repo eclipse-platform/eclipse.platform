@@ -41,17 +41,17 @@ import org.eclipse.team.internal.core.subscribers.SyncInfoTreeChangeEvent;
 public class SyncInfoTree extends SyncInfoSet {
 
 	protected Map parents = Collections.synchronizedMap(new HashMap());
-	
+
 	/**
 	 * Create an empty sync info tree.
 	 */
 	public SyncInfoTree() {
 		super();
 	}
-	
+
 	/**
 	 * Create a sync info tree containing the given sync info elements.
-	 * 
+	 *
 	 * @param infos the sync info elements
 	 */
 	public SyncInfoTree(SyncInfo[] infos) {
@@ -67,7 +67,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	 * Return whether the given resource has any children in the sync set. The children
 	 * could be either out-of-sync resources that are contained by the set or containers
 	 * that are ancestors of out-of-sync resources contained by the set.
-	 * 
+	 *
 	 * @param resource the resource to check for children.
 	 * @return <code>true</code> if the resource has children in the set.
 	 */
@@ -146,13 +146,13 @@ public class SyncInfoTree extends SyncInfoSet {
 			if(info != null) {
 				infos.add(info);
 			} else {
-				TeamPlugin.log(IStatus.INFO, Messages.SyncInfoTree_0 + child.getFullPath(), null); 
+				TeamPlugin.log(IStatus.INFO, Messages.SyncInfoTree_0 + child.getFullPath(), null);
 			}
 		}
 		return (SyncInfo[]) infos.toArray(new SyncInfo[infos.size()]);
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#createEmptyChangeEvent()
 	 */
@@ -188,7 +188,7 @@ public class SyncInfoTree extends SyncInfoSet {
 		} finally {
 			endInput(null);
 		}
-	
+
 	}
 
 	/* (non-Javadoc)
@@ -297,7 +297,7 @@ public class SyncInfoTree extends SyncInfoSet {
 				for (int i = 0; i < toRemove.length; i++) {
 					remove(toRemove[i]);
 				}
-			} 
+			}
 		} finally {
 			endInput(null);
 		}
@@ -328,10 +328,10 @@ public class SyncInfoTree extends SyncInfoSet {
 	}
 
 	/**
-	 * Return the immediate children of the given resource who are either out-of-sync 
+	 * Return the immediate children of the given resource who are either out-of-sync
 	 * or contain out-of-sync resources.
-	 * 
-	 * @param resource the parent resource 
+	 *
+	 * @param resource the parent resource
 	 * @return the children of the resource that are either out-of-sync or are ancestors of
 	 * out-of-sync resources contained in the set
 	 */
@@ -339,7 +339,7 @@ public class SyncInfoTree extends SyncInfoSet {
 		if (resource.getType() == IResource.FILE) return new IResource[0];
 		IContainer parent = (IContainer)resource;
 		if (parent.getType() == IResource.ROOT) return internalMembers((IWorkspaceRoot)parent);
-		// OPTIMIZE: could be optimized so that we don't traverse all the deep 
+		// OPTIMIZE: could be optimized so that we don't traverse all the deep
 		// children to find the immediate ones.
 		Set children = new HashSet();
 		IPath path = parent.getFullPath();
@@ -352,7 +352,7 @@ public class SyncInfoTree extends SyncInfoSet {
 				IResource modelObject = null;
 				if(childPath.segmentCount() == (path.segmentCount() +  1)) {
 					modelObject = element;
-	
+
 				} else if (childPath.segmentCount() > path.segmentCount()) {
 					IContainer childFolder = parent.getFolder(new Path(null, childPath.segment(path.segmentCount())));
 					modelObject = childFolder;

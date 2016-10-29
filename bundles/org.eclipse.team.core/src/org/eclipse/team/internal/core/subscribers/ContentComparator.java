@@ -30,7 +30,7 @@ public class ContentComparator extends AbstractContentComparator{
 	/**
 	 * Returns <code>true</code> if both input streams byte contents is
 	 * identical.
-	 * 
+	 *
 	 * @param is1
 	 *                   first input to contents compare
 	 * @param is2

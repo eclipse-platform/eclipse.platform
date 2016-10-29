@@ -20,18 +20,18 @@ import org.eclipse.team.internal.core.Policy;
  * This is the superclass for all SyncSet input providers
  */
 public abstract class SyncSetInput {
-	
+
 	private SubscriberSyncInfoSet syncSet;
 	private SyncInfoFilter filter = new FastSyncInfoFilter();
-	
+
 	public SyncSetInput(SubscriberEventHandler handler) {
 		syncSet = new SubscriberSyncInfoSet(handler);
 	}
-	
+
 	public SubscriberSyncInfoSet getSyncSet() {
 		return syncSet;
 	}
-	
+
 	/**
 	 * This method is invoked from reset to get all the sync information from
 	 * the input source.
@@ -42,13 +42,13 @@ public abstract class SyncSetInput {
 	 * The input is no longer being used. Disconnect it from its source.
 	 */
 	public abstract void disconnect();
-		
+
 	/**
 	 * Reset the input. This will clear the current contents of the sync set and
 	 * obtain the contents from the input source.
 	 */
 	public void reset(IProgressMonitor monitor) throws TeamException {
-		
+
 		try {
 			syncSet.beginInput();
 			monitor = Policy.monitorFor(monitor);
@@ -81,7 +81,7 @@ public abstract class SyncSetInput {
 			syncSet.remove(resource);
 		}
 	}
-	
+
 	public SyncInfoFilter getFilter() {
 		return filter;
 	}

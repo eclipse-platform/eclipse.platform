@@ -34,12 +34,12 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	private static final int STATE_OK_TO_INITIALIZE = 3;
 	private static final int STATE_COLLECTING_CHANGES = 5;
 	private static final int STATE_SHUTDOWN = 8;
-	
+
 	// state constants for exceptions
 	private static final int EXCEPTION_NONE = 0;
 	private static final int EXCEPTION_CANCELED = 1;
 	private static final int EXCEPTION_ERROR = 2;
-	
+
 	private ResourceDiffTree tree;
 	private SubscriberDiffCollector collector;
 	private ISynchronizationScopeManager manager;
@@ -62,7 +62,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			return node;
 		}
 	}
-	
+
 	/*
 	 * Collects resource and subscriber changes
 	 */
@@ -93,7 +93,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			SubscriberDiffTreeEventHandler.this.change(resource, depth);
 		}
 	}
-	
+
 	/**
 	 * Create the handler
 	 * @param subscriber the subscriber for the handler
@@ -138,12 +138,12 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			super.reset(traversals, type);
 		}
 	}
-	
+
 	public void reset(){
 		reset(getScope().getTraversals(),
 				SubscriberEventHandler.SubscriberEvent.INITIALIZE);
 	}
-	
+
 	protected void prepareScope(IProgressMonitor monitor) {
 		try {
 			manager.initialize(monitor);
@@ -248,21 +248,21 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	}
 
 	/**
-	 * Return the resource diff tree that contains the out-of-sync diffs for the 
+	 * Return the resource diff tree that contains the out-of-sync diffs for the
 	 * subscriber.
 	 * @return the resource diff tree
 	 */
 	public IResourceDiffTree getTree() {
 		return tree;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#getSubscriber()
 	 */
 	public Subscriber getSubscriber() {
 		return super.getSubscriber();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#shutdown()
 	 */
@@ -278,7 +278,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	protected Object getJobFamiliy() {
 		return family;
 	}
-	
+
 	/**
 	 * Set the family of this handler to the given object
 	 * @param family the family of the handler's job
@@ -286,7 +286,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	public void setJobFamily(Object family) {
 		this.family = family;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleException(org.eclipse.core.runtime.CoreException, org.eclipse.core.resources.IResource, int, java.lang.String)
 	 */
@@ -295,7 +295,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		tree.reportError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, code, message, e, resource));
 		exceptionState = EXCEPTION_ERROR;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleCancel(org.eclipse.core.runtime.OperationCanceledException)
 	 */
@@ -336,20 +336,20 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	public int getState() {
 		return state;
 	}
-	
+
 	protected boolean isSystemJob() {
 		if (manager != null && !manager.isInitialized())
 			return false;
 		return super.isSystemJob();
 	}
-	
+
 	public synchronized void remove(IResource resource) {
 		// Don't queue changes if we haven't been initialized
 		if (state == STATE_STARTED)
 			return;
 		super.remove(resource);
 	}
-	
+
 	public void change(IResource resource, int depth) {
 		// Don't queue changes if we haven't been initialized
 		if (state == STATE_STARTED)

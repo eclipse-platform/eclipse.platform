@@ -17,7 +17,7 @@ import org.eclipse.team.core.synchronize.*;
 
 /**
  * This collector maintains a {@link SyncInfoSet} for a particular team subscriber keeping
- * it up-to-date with both incoming changes and outgoing changes as they occur for 
+ * it up-to-date with both incoming changes and outgoing changes as they occur for
  * resources in the workspace. The collector can be configured to consider all the subscriber's
  * roots or only a subset.
  * <p>
@@ -31,7 +31,7 @@ public final class WorkingSetFilteredSyncInfoCollector {
 	private WorkingSetSyncSetInput workingSetInput;
 	private SyncSetInputFromSyncSet filteredInput;
 	private SubscriberEventHandler eventHandler;
-	
+
 	/**
 	 * Create a collector that collects out-of-sync resources that are children of
 	 * the given roots. If the roots are <code>null</code>, then all out-of-sync resources
@@ -42,7 +42,7 @@ public final class WorkingSetFilteredSyncInfoCollector {
 	 * @param roots the roots of the out-of-sync resources to be collected
 	 */
 	public WorkingSetFilteredSyncInfoCollector(SubscriberSyncInfoCollector collector, IResource[] roots) {
-		this.eventHandler = collector.getEventHandler();	
+		this.eventHandler = collector.getEventHandler();
 		// TODO: optimize and don't use working set if no roots are passed in
 		workingSetInput = new WorkingSetSyncSetInput((SubscriberSyncInfoSet)collector.getSyncInfoSet(), getEventHandler());
 		filteredInput = new SyncSetInputFromSyncSet(workingSetInput.getSyncSet(), getEventHandler());
@@ -52,11 +52,11 @@ public final class WorkingSetFilteredSyncInfoCollector {
 			}
 		});
 	}
-	
+
 	/**
 	 * Return the set that provides access to the out-of-sync resources for the collector's
 	 * subscriber that are descendants of the roots for the collector,
-	 * are in the collector's working set and match the collectors filter. 
+	 * are in the collector's working set and match the collectors filter.
 	 * @return a SyncInfoSet containing out-of-sync resources
 	 */
 	public SyncInfoTree getSyncInfoTree() {
@@ -66,10 +66,10 @@ public final class WorkingSetFilteredSyncInfoCollector {
 	/**
 	 * Clears this collector's sync info sets and causes them to be recreated from the
 	 * associated <code>Subscriber</code>. The reset will occur in the background. If the
-	 * caller wishes to wait for the reset to complete, they should call 
+	 * caller wishes to wait for the reset to complete, they should call
 	 * waitForCollector(IProgressMonitor).
 	 */
-	public void reset() {	
+	public void reset() {
 		workingSetInput.reset();
 	}
 
@@ -84,7 +84,7 @@ public final class WorkingSetFilteredSyncInfoCollector {
 			filteredInput.disconnect();
 		}
 	}
-	
+
 	/**
 	 * Return the event handler that performs the background processing for this collector.
 	 * The event handler also serves the purpose of serializing the modifications and adjustments
@@ -95,7 +95,7 @@ public final class WorkingSetFilteredSyncInfoCollector {
 	protected SubscriberEventHandler getEventHandler() {
 		return eventHandler;
 	}
-	
+
 	/**
 	 * Set the filter for this collector. Only elements that match the filter will
 	 * be in the out sync info set.
@@ -105,7 +105,7 @@ public final class WorkingSetFilteredSyncInfoCollector {
 		filteredInput.setFilter(filter);
 		filteredInput.reset();
 	}
-	
+
 	/**
 	 * Return a <code>SyncInfoSet</code> that contains the out-of-sync elements
 	 * from the subsciber sync info set filtered

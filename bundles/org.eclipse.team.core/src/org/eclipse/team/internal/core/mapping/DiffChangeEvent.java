@@ -22,13 +22,13 @@ import org.eclipse.team.core.diff.*;
 public class DiffChangeEvent implements IDiffChangeEvent {
 
 	private final IDiffTree tree;
-	
+
 	// List that accumulate changes
 	// SyncInfo
 	private Map changedResources = new HashMap();
 	private Set removedResources = new HashSet();
 	private Map addedResources = new HashMap();
-	
+
 	private boolean reset = false;
 
 	private List errors = new ArrayList();
@@ -68,7 +68,7 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 	public IDiff[] getChanges() {
 		return (IDiff[]) changedResources.values().toArray(new IDiff[changedResources.size()]);
 	}
-	
+
 	public void added(IDiff delta) {
 		if (removedResources.contains(delta.getPath())) {
 			// A removal followed by an addition is treated as a change
@@ -78,19 +78,19 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 			addedResources.put(delta.getPath(), delta);
 		}
 	}
-	
+
 	public void removed(IPath path, IDiff delta) {
 		if (changedResources.containsKey(path)) {
 			// No use in reporting the change since it has subsequently been removed
 			changedResources.remove(path);
 		} else if (addedResources.containsKey(path)) {
-			// An addition followed by a removal can be dropped 
+			// An addition followed by a removal can be dropped
 			addedResources.remove(path);
 			return;
 		}
 		removedResources.add(path);
 	}
-	
+
 	public void changed(IDiff delta) {
 		if (addedResources.containsKey(delta.getPath())) {
 			// An addition followed by a change is an addition
@@ -103,11 +103,11 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 	public void reset() {
 		reset = true;
 	}
-	
+
 	public boolean isReset() {
 		return reset;
 	}
-	
+
 	public boolean isEmpty() {
 		return changedResources.isEmpty() && removedResources.isEmpty() && addedResources.isEmpty();
 	}

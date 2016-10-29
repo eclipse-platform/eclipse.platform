@@ -21,12 +21,12 @@ import org.eclipse.team.core.mapping.ISynchronizationScope;
 public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 
 	ISynchronizationScope wrappedScope;
-	
+
 	public ResourceMappingInputScope(ISynchronizationScope wrappedScope) {
-		
+
 		this.wrappedScope = wrappedScope;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#getInputMappings()
 	 */
@@ -82,14 +82,14 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 	public boolean hasAdditionalMappings() {
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#hasAdditonalResources()
 	 */
 	public boolean hasAdditonalResources() {
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#asInputScope()
 	 */

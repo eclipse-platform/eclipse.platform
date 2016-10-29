@@ -20,9 +20,9 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
  * <p>
  * Clients may implement this interface.
  * </p>
- * 
+ *
  * @see ISynchronizationScope
- * 
+ *
  * @since 3.2
  */
 public interface ISynchronizationScopeChangeListener extends EventListener {
@@ -62,7 +62,7 @@ public interface ISynchronizationScopeChangeListener extends EventListener {
 	 * logical model or the resource under the control of the repository
 	 * providers that manages the scope.
 	 * </ol>
-	 * 
+	 *
 	 * @param scope
 	 *            the scope that has changed
 	 * @param mappings

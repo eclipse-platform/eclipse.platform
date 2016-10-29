@@ -87,7 +87,7 @@ public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements I
 	public IResource[] getRemovedSubtreeRoots() {
 		return (IResource[]) removedSubtrees.toArray(new IResource[removedSubtrees.size()]);
 	}
-	
+
 	public boolean isEmpty() {
 		return super.isEmpty() && removedSubtrees.isEmpty() && addedSubtrees.isEmpty();
 	}

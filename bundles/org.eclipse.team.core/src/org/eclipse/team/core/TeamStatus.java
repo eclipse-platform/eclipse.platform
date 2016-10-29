@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 /**
  * Status that is returned from some Team operations or is the payload of
  * some TeamExceptions.
- * 
+ *
  * @since 3.0
  */
 public class TeamStatus extends Status implements ITeamStatus {
@@ -33,7 +33,7 @@ public class TeamStatus extends Status implements ITeamStatus {
 	 * @param message a human-readable message, localized to the
 	 *    current locale
 	 * @param exception a low-level exception, or <code>null</code> if not
-	 *    applicable 
+	 *    applicable
 	 * @param resource the resource associated with the exception
 	 */
 	public TeamStatus(int severity, String pluginId, int code, String message, Throwable exception, IResource resource) {
@@ -44,7 +44,7 @@ public class TeamStatus extends Status implements ITeamStatus {
 			this.resource = resource;
 		}
 	}
-	
+
 	/**
 	 * Return the resource associated with this status.
 	 * @return Returns the resource.

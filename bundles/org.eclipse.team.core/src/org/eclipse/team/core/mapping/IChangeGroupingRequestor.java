@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Interface used to allow model tooling to request that a particular set of modified files
- * be committed together to the repository. It is used by the {@link ChangeTracker} class to 
+ * be committed together to the repository. It is used by the {@link ChangeTracker} class to
  * track changes and request that they be grouped when appropriate. Clients may obtain an
  * instance of this interface from a repository provider plug-in using the adapter manager in the
  * following way:
@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.CoreException;
  * @since 3.3
  */
 public interface IChangeGroupingRequestor {
-	
+
 	/**
 	 * Issue a request to group the provided files together when the changes
 	 * are committed or checked-in to the repository.
@@ -47,7 +47,7 @@ public interface IChangeGroupingRequestor {
 
 	/**
 	 * Return whether the given file is modified with respect to the repository.
-	 * In other words, return whether the file contains changes that need to be committed 
+	 * In other words, return whether the file contains changes that need to be committed
 	 * or checked-in to the repository.
 	 * @param file the file
 	 * @return whether the given file is modified with respect to the repository
@@ -55,5 +55,5 @@ public interface IChangeGroupingRequestor {
 	 * of the file
 	 */
 	public boolean isModified(IFile file) throws CoreException;
-	
+
 }

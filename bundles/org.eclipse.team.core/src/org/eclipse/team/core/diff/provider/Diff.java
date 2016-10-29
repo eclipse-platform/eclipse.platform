@@ -17,7 +17,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 /**
  * Abstract implementation of {@link IDiff} that can be subclassed by
  * clients.
- * 
+ *
  * @see ITwoWayDiff
  * @see IThreeWayDiff
  * @since 3.2
@@ -27,7 +27,7 @@ public abstract class Diff implements IDiff {
 	/**
 	 * Constant (bit mask) that defines the area of the status that is reserved
 	 * for use by this abstract class for encoding the kind of the diff.
-	 * 
+	 *
 	 * @see #getStatus()
 	 */
 	public static final int KIND_MASK = 0xFF;
@@ -38,7 +38,7 @@ public abstract class Diff implements IDiff {
 
 	/**
 	 * Create a diff node.
-	 * 
+	 *
 	 * @param path the path of the diff
 	 * @param status the status of the diff. The kind should be encoded in the
 	 *            status along with any additional flags required by a subclass.
@@ -50,7 +50,7 @@ public abstract class Diff implements IDiff {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.team.core.synchronize.ISyncDelta#getFullPath()
 	 */
 	public IPath getPath() {
@@ -59,7 +59,7 @@ public abstract class Diff implements IDiff {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.team.core.synchronize.ISyncDelta#getKind()
 	 */
 	public int getKind() {
@@ -71,7 +71,7 @@ public abstract class Diff implements IDiff {
 	 * contains the kind and any additional status information that subclasses
 	 * need to encode. The first byte of the status is reserved for use by this
 	 * abstract class as indicated by the <code>KIND_MASK</code>.
-	 * 
+	 *
 	 * @return the status of the diff node
 	 */
 	public final int getStatus() {
@@ -84,16 +84,16 @@ public abstract class Diff implements IDiff {
 	public String toDiffString() {
 		int kind = getKind();
 		String label = SyncInfoToDiffConverter.diffKindToString(kind);
-		return label; 
+		return label;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
 		return getPath().hashCode();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

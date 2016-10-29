@@ -24,11 +24,11 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * An event handler that collects {@link SyncInfo} in a {@link SyncInfoTree}.
  */
 public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
-	
+
 	// The set that receives notification when the resource synchronization state
 	// has been calculated by the job.
 	private final SyncSetInputFromSubscriber syncSetInput;
-	
+
 	private class SubscriberSyncInfoEvent extends SubscriberEvent {
 		private final SyncInfo result;
 
@@ -40,13 +40,13 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			return result;
 		}
 	}
-	
+
 	public static ISynchronizationScope createScope(IResource[] roots, Subscriber subscriber) {
 		if (roots == null)
 			roots = subscriber.roots();
 		return new RootResourceSynchronizationScope(roots);
 	}
-	
+
 	/**
 	 * Create the event handler for the given subscriber and roots
 	 * @param subscriber the subscriber
@@ -65,7 +65,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		super.handleException(e, resource, code, message);
 		syncSetInput.handleError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, code, message, e, resource));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleCancel(org.eclipse.core.runtime.OperationCanceledException)
 	 */
@@ -73,7 +73,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		super.handleCancel(e);
 		syncSetInput.handleError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_CANCELLATION, Messages.SubscriberEventHandler_12, e, ResourcesPlugin.getWorkspace().getRoot()));
 	}
-	
+
 	/**
 	 * Return the sync set input that was created by this event handler
 	 * @return the sync set input
@@ -81,7 +81,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 	public SyncSetInputFromSubscriber getSyncSetInput() {
 		return syncSetInput;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleChange(org.eclipse.core.resources.IResource)
 	 */
@@ -96,7 +96,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 				new SubscriberSyncInfoEvent(resource, SubscriberEvent.CHANGE, IResource.DEPTH_ZERO, info));
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#collectAll(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -104,10 +104,10 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			IResource resource,
 			int depth,
 			IProgressMonitor monitor) {
-			
+
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		try {
-			
+
 			// Create a monitor that will handle preemption and dispatch if required
 			IProgressMonitor collectionMonitor = new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN) {
 				boolean dispatching = false;
@@ -130,7 +130,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 					super.worked(work);
 				}
 			};
-			
+
 			// Create a sync set that queues up resources and errors for dispatch
 			SyncInfoSet collectionSet = new SyncInfoSet() {
 				public void add(SyncInfo info) {
@@ -158,9 +158,9 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 							new SubscriberEvent(resource, SubscriberEvent.REMOVAL, IResource.DEPTH_ZERO));
 				}
 			};
-			
+
 			syncSetInput.getSubscriber().collectOutOfSync(new IResource[] { resource }, depth, collectionSet, collectionMonitor);
-			
+
 		} finally {
 			monitor.done();
 		}
@@ -192,7 +192,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			syncSet.endInput(monitor);
 		}
 	}
-	
+
 	/**
 	 * Initialize all resources for the subscriber associated with the set. This
 	 * will basically recalculate all synchronization information for the
@@ -200,7 +200,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 	 * <p>
 	 * This method is synchronized with the queueEvent method to ensure that the
 	 * two events queued by this method are back-to-back.
-	 * 
+	 *
 	 * @param roots
 	 *            the new roots or <code>null</code> if the roots from the
 	 *            subscriber should be used.
@@ -211,7 +211,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			roots = getSubscriber().roots();
 		scope.setRoots(roots);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#reset(org.eclipse.core.resources.mapping.ResourceTraversal[], org.eclipse.core.resources.mapping.ResourceTraversal[])
 	 */

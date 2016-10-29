@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  * This sub-progress monitor can be used to ignore progress indication for
  * methods but allow cancellation.
  * <p>
- * This implementation supports cancelation. The default implementations of the 
+ * This implementation supports cancelation. The default implementations of the
  * other methods do nothing.
  * </p>
  * @see SubProgressMonitor
@@ -30,7 +30,7 @@ public class NullSubProgressMonitor extends SubProgressMonitor {
 	public NullSubProgressMonitor(IProgressMonitor monitor) {
 		super(monitor, 0, 0);
 	}
-	
+
 	/**
 	 * @see IProgressMonitor#beginTask(String, int)
 	 */

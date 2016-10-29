@@ -42,7 +42,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	private int length = 0;  // number of remaining unread bytes
 	private IOException ioe = null; // if non-null, contains a pending exception
 	private boolean waitingForClose = false; // if true, thread is waiting for close()
-	
+
 	private boolean growWhenFull = false; // if true, buffer will grow when it is full
 
 	/**
@@ -68,7 +68,7 @@ public class TimeoutInputStream extends FilterInputStream {
 		thread.setDaemon(true);
 		thread.start();
 	}
-	
+
 	public TimeoutInputStream(InputStream in, int bufferSize, long readTimeout, long closeTimeout, boolean growWhenFull) {
 		this(in, bufferSize, readTimeout, closeTimeout);
 		this.growWhenFull = growWhenFull;
@@ -103,7 +103,7 @@ public class TimeoutInputStream extends FilterInputStream {
 			if (thread != null) throw new InterruptedIOException();
 		}
 	}
-	
+
 	/**
 	 * Returns the number of unread bytes in the buffer.
 	 * @throws IOException if an i/o error occurs
@@ -112,7 +112,7 @@ public class TimeoutInputStream extends FilterInputStream {
 		if (length == 0) checkError();
 		return length > 0 ? length : 0;
 	}
-	
+
 	/**
 	 * Reads a byte from the stream.
 	 * @throws InterruptedIOException if the timeout expired and no data was received,
@@ -127,7 +127,7 @@ public class TimeoutInputStream extends FilterInputStream {
 		notify();
 		return b;
 	}
-	
+
 	/**
 	 * Reads multiple bytes from the stream.
 	 * @throws InterruptedIOException if the timeout expired and no data was received,
@@ -209,7 +209,7 @@ public class TimeoutInputStream extends FilterInputStream {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Runs the thread in the background.
 	 */
@@ -223,7 +223,7 @@ public class TimeoutInputStream extends FilterInputStream {
 			try {
 				in.close();
 			} catch (IOException e) {
-				synchronized (this) { ioe = e; } 
+				synchronized (this) { ioe = e; }
 			} finally {
 				synchronized (this) {
 					thread = null;
@@ -232,7 +232,7 @@ public class TimeoutInputStream extends FilterInputStream {
 			}
 		}
 	}
-	
+
 	/**
 	 * Waits until we have been requested to close the stream.
 	 */
@@ -275,12 +275,12 @@ public class TimeoutInputStream extends FilterInputStream {
 				length += count;
 				notify();
 			}
-		}				
+		}
 	}
-	
+
 	/*
 	 * Wait for a read when the buffer is full (with the implication
-	 * that space will become available in the buffer after the read 
+	 * that space will become available in the buffer after the read
 	 * takes place).
 	 */
 	private synchronized void waitForRead() {

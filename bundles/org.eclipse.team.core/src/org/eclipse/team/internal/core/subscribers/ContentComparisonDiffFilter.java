@@ -22,7 +22,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 
 public class ContentComparisonDiffFilter extends DiffFilter {
 	ContentComparator criteria = new ContentComparator(false);
-	
+
 	/**
 	 * Create a filter that does not ignore whitespace.
 	 */
@@ -36,7 +36,7 @@ public class ContentComparisonDiffFilter extends DiffFilter {
 	public ContentComparisonDiffFilter(boolean ignoreWhitespace) {
 		criteria = new ContentComparator(ignoreWhitespace);
 	}
-	
+
 	/**
 	 * Compare the contents of the local file and its variant.
 	 * This is used by the <code>select</code> method to compare the
@@ -51,7 +51,7 @@ public class ContentComparisonDiffFilter extends DiffFilter {
 		Assert.isNotNull(remote);
 		return criteria.compare(local, remote, monitor);
 	}
-	
+
 	public boolean select(IDiff diff, IProgressMonitor monitor) {
 		IFileRevision remote = SyncInfoToDiffConverter.getRemote(diff);
 		IResource local = ResourceDiffTree.getResourceFor(diff);

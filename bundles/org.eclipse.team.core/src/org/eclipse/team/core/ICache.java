@@ -15,7 +15,7 @@ package org.eclipse.team.core;
  * to cache synchronization state related to their model for the duration of the
  * operation. When the context is disposed, the cache will be disposed and any
  * listeners notified.
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  */
@@ -27,20 +27,20 @@ public interface ICache {
 	 * @param value the value to be cached.
 	 */
 	void put(String name, Object value);
-	
+
 	/**
 	 * Retrieve an object that has been cached with the context
 	 * @param name the name of the object
 	 * @return the object associated with the name or <code>null</code>
 	 */
 	Object get(String name);
-	
+
 	/**
 	 * Remove the named object from the cache
 	 * @param name the name
 	 */
 	void remove(String name);
-	
+
 	/**
 	 * Add a listener to the cache that will receive notification
 	 * when the cache is disposed. Adding a listener that has already
@@ -48,7 +48,7 @@ public interface ICache {
 	 * @param listener the listener to add
 	 */
 	void addCacheListener(ICacheListener listener);
-	
+
 	/**
 	 * Remove the listener. Removing a listener that is not registered
 	 * has no effect.
@@ -56,7 +56,7 @@ public interface ICache {
 	 * @since 3.3
 	 */
 	void removeCacheListener(ICacheListener listener);
-	
+
 	/**
 	 * Remove the listener. Removing a listener that is not registered
 	 * has no effect.
@@ -64,5 +64,5 @@ public interface ICache {
 	 * @deprecated use {@link #removeCacheListener(ICacheListener)}
 	 */
 	void removeDisposeListener(ICacheListener listener);
-	
+
 }

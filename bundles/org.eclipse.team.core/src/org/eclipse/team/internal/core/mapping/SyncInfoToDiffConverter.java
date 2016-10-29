@@ -45,31 +45,31 @@ public class SyncInfoToDiffConverter {
 	}
 
 	private static SyncInfoToDiffConverter instance;
-	
-	
+
+
 	public static String diffKindToString(int kind) {
 		String label = ""; //$NON-NLS-1$
 		if(kind==IDiff.NO_CHANGE) {
-			label = Messages.RemoteSyncElement_insync; 
+			label = Messages.RemoteSyncElement_insync;
 		} else {
 			switch(kind) {
 				case IDiff.CHANGE: label = Messages.RemoteSyncElement_change ; break;
 				case IDiff.ADD: label = Messages.RemoteSyncElement_addition; break;
-				case IDiff.REMOVE: label = Messages.RemoteSyncElement_deletion; break; 
+				case IDiff.REMOVE: label = Messages.RemoteSyncElement_deletion; break;
 			}
 		}
 		return label;
 	}
-	
+
 	public static String diffDirectionToString(int direction) {
 		switch(direction) {
-			case IThreeWayDiff.CONFLICTING: return Messages.RemoteSyncElement_conflicting; 
-			case IThreeWayDiff.OUTGOING: return Messages.RemoteSyncElement_outgoing; 
-			case IThreeWayDiff.INCOMING: return Messages.RemoteSyncElement_incoming; 
-		}	
+			case IThreeWayDiff.CONFLICTING: return Messages.RemoteSyncElement_conflicting;
+			case IThreeWayDiff.OUTGOING: return Messages.RemoteSyncElement_outgoing;
+			case IThreeWayDiff.INCOMING: return Messages.RemoteSyncElement_incoming;
+		}
 		return ""; //$NON-NLS-1$
 	}
-	
+
 	public static String diffStatusToString(int status) {
 		int kind = status & Diff.KIND_MASK;
 		String label = diffKindToString(kind);
@@ -78,7 +78,7 @@ public class SyncInfoToDiffConverter {
 			label = NLS.bind(Messages.concatStrings, new String[] { diffDirectionToString(direction), label });
 		return label;
 	}
-	
+
 	public static int asDiffFlags(int syncInfoFlags) {
 		if (syncInfoFlags == SyncInfo.IN_SYNC)
 			return IDiff.NO_CHANGE;
@@ -109,7 +109,7 @@ public class SyncInfoToDiffConverter {
 		}
 		return diffFlags;
 	}
-	
+
 	private static int asSyncInfoKind(IThreeWayDiff diff) {
 		int kind = diff.getKind();
 		if (diff.getKind() == IDiff.NO_CHANGE)
@@ -140,7 +140,7 @@ public class SyncInfoToDiffConverter {
 		}
 		return syncKind;
 	}
-	
+
 	public IDiff getDeltaFor(SyncInfo info) {
 		if (info.getComparator().isThreeWay()) {
 			ITwoWayDiff local = getLocalDelta(info);
@@ -204,7 +204,7 @@ public class SyncInfoToDiffConverter {
 	private IFileRevision getFileRevisionFor(final IFile file) {
 		return new LocalFileRevision(file);
 	}
-	
+
 	protected ResourceVariantFileRevision asFileRevision(final IResourceVariant variant) {
 		return new ResourceVariantFileRevision(variant);
 	}
@@ -229,7 +229,7 @@ public class SyncInfoToDiffConverter {
 			}
 			// For folders, we don't need file states
 			return new ResourceDiff(info.getLocal(), kind);
-			
+
 		}
 		return null;
 	}
@@ -250,7 +250,7 @@ public class SyncInfoToDiffConverter {
 			return asResourceVariant(diff.getBeforeState());
 		return null;
 	}
-	
+
 	public SyncInfo asSyncInfo(IDiff diff, IResourceVariantComparator comparator) {
 		if (diff instanceof ResourceDiff) {
 			ResourceDiff rd = (ResourceDiff) diff;
@@ -329,7 +329,7 @@ public class SyncInfoToDiffConverter {
 		}
 		return null;
 	}
-	
+
 	public static IFileRevision getRemote(IThreeWayDiff twd) {
 		IResourceDiff rd = (IResourceDiff)twd.getRemoteChange();
 		if (rd != null)

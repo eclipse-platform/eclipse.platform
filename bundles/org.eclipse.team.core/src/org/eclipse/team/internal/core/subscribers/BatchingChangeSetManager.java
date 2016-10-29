@@ -23,14 +23,14 @@ import org.eclipse.team.internal.core.Policy;
 public class BatchingChangeSetManager extends ChangeSetManager {
 
 	private ILock lock = Job.getJobManager().newLock();
-	
+
 	public static class CollectorChangeEvent {
 
 		Set added = new HashSet();
 		Set removed = new HashSet();
 		Map changed = new HashMap();
 		private final BatchingChangeSetManager collector;
-		
+
 		public CollectorChangeEvent(BatchingChangeSetManager collector) {
 			this.collector = collector;
 		}
@@ -91,13 +91,13 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 			return collector;
 		}
 	}
-	
+
 	public static interface IChangeSetCollectorChangeListener {
 		public void changeSetChanges(CollectorChangeEvent event, IProgressMonitor monitor);
 	}
-	
+
 	private CollectorChangeEvent changes = new CollectorChangeEvent(this);
-	
+
 	public void beginInput() {
 		lock.acquire();
 	}
@@ -105,7 +105,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 	public void endInput(IProgressMonitor monitor) {
 		try {
 			if (lock.getDepth() == 1) {
-				// Remain locked while firing the events so the handlers 
+				// Remain locked while firing the events so the handlers
 				// can expect the set to remain constant while they process the events
 				fireChanges(Policy.monitorFor(monitor));
 			}
@@ -113,7 +113,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 			lock.release();
 		}
 	}
-	
+
     private void fireChanges(final IProgressMonitor monitor) {
     	if (changes.isEmpty()) {
     		return;
@@ -136,7 +136,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 			}
         }
 	}
-    
+
     public void add(ChangeSet set) {
     	try {
     		beginInput();
@@ -146,7 +146,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     		endInput(null);
     	}
     }
-    
+
     public void remove(ChangeSet set) {
     	try {
     		beginInput();
@@ -156,7 +156,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     		endInput(null);
     	}
     }
-    
+
     protected void fireResourcesChangedEvent(ChangeSet changeSet, IPath[] allAffectedResources) {
     	super.fireResourcesChangedEvent(changeSet, allAffectedResources);
     	try {
@@ -166,7 +166,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     		endInput(null);
     	}
     }
-    
+
     protected void initializeSets() {
     	// Nothing to do
     }

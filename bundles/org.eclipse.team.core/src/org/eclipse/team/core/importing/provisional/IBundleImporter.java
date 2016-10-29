@@ -25,7 +25,7 @@ package org.eclipse.team.core.importing.provisional;
  * will remain the same. Please do not use this API without consulting with the
  * Team team.
  * </p>
- * 
+ *
  * @since 3.6
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
@@ -34,21 +34,21 @@ public interface IBundleImporter extends IBundleImporterDelegate {
 
 	/**
 	 * Returns this impoter's unique identifier.
-	 * 
+	 *
 	 * @return identifier
 	 */
 	public String getId();
 
 	/**
 	 * Returns a short description of this importer, or <code>null</code> if unspecified.
-	 * 
+	 *
 	 * @return description or <code>null</code>
 	 */
 	public String getDescription();
 
 	/**
 	 * Returns a human readable name for this importer.
-	 * 
+	 *
 	 * @return name
 	 */
 	public String getName();

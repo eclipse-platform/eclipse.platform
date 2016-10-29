@@ -47,9 +47,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 			}
 		}
 		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
-	
+
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getTraversals(java.lang.String)
 	 */
@@ -79,5 +79,5 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 		}
 		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
 	}
-	
+
 }

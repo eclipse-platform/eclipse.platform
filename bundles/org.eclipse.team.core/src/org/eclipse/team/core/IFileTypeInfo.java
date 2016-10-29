@@ -13,7 +13,7 @@ package org.eclipse.team.core;
 /**
  * A file type info specifies both the file extension and the corresponding file
  * type.
- * 
+ *
  * @since 2.0
  * @deprecated Use the <code>IFileContentManager</code> API instead.
  * @noimplement This interface is not intended to be implemented by clients.
@@ -21,20 +21,20 @@ package org.eclipse.team.core;
 public interface IFileTypeInfo {
 	/**
 	 * Returns the string specifying the file extension
-	 * 
+	 *
 	 * @return the file extension
 	 */
 	public String getExtension();
-	
+
 	/**
 	 * Returns the file type for files ending with the corresponding
 	 * extension.
-	 * 
+	 *
 	 * Valid values are:
 	 * Team.UNKNOWN
 	 * Team.TEXT
 	 * Team.BINARY
-	 * 
+	 *
 	 * @return the file type
 	 */
 	public int getType();

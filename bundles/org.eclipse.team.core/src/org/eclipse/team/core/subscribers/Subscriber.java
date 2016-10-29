@@ -30,34 +30,34 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
  * A Subscriber provides synchronization between local resources and a
  * remote location that is used to share those resources.
  * <p>
- * When queried for the <code>SyncInfo</code> corresponding to a local resource using 
- * <code>getSyncInfo(IResource)</code>, the subscriber should not contact the server. 
+ * When queried for the <code>SyncInfo</code> corresponding to a local resource using
+ * <code>getSyncInfo(IResource)</code>, the subscriber should not contact the server.
  * Server round trips should only occur within the <code>refresh</code>
  * method of the subscriber. Consequently,
- * the implementation of a subscriber must cache enough state information for a remote resource to calculate the 
- * synchronization state without contacting the server.  During a refresh, the latest remote resource state 
+ * the implementation of a subscriber must cache enough state information for a remote resource to calculate the
+ * synchronization state without contacting the server.  During a refresh, the latest remote resource state
  * information should be fetched and cached. For
  * a subscriber that supports three-way compare, the refresh should also fetch the latest base state unless this is
  * available by some other means (e.g. for some repository tools, the base state is persisted on disk with the
  * local resources).
  * </p>
  * <p>
- * After a refresh, the subscriber must notify any listeners of local resources whose corresponding remote resource 
+ * After a refresh, the subscriber must notify any listeners of local resources whose corresponding remote resource
  * or base resource changed. The subscriber does not need to notify listeners when the state changes due to a local
- * modification since local changes are available through the <code>IResource</code> delta mechanism. However, 
+ * modification since local changes are available through the <code>IResource</code> delta mechanism. However,
  * the subscriber must
- * cache enough information (e.g. the local timestamp of when the file was in-sync with its corresponding remote 
+ * cache enough information (e.g. the local timestamp of when the file was in-sync with its corresponding remote
  * resource)
  * to determine if the file represents an outgoing change so that <code>SyncInfo</code> obtained
- * after a delta will indicate that the file has an outgoing change. The subscriber must also notify listeners 
- * when roots are added 
- * or removed. For example, a subscriber for a repository provider would fire a root added event when a project 
+ * after a delta will indicate that the file has an outgoing change. The subscriber must also notify listeners
+ * when roots are added
+ * or removed. For example, a subscriber for a repository provider would fire a root added event when a project
  * was shared
- * with a repository. No event is required when a root is deleted as this is available through the 
+ * with a repository. No event is required when a root is deleted as this is available through the
  * <code>IResource</code> delta mechanism. It is up to clients to re-query the subscriber
  * when the state of a resource changes locally by listening to <code>IResource</code> deltas.
  * </p><p>
- * The remote and base states can also include the state for resources that do not exist locally (i.e outgoing deletions 
+ * The remote and base states can also include the state for resources that do not exist locally (i.e outgoing deletions
  * or incoming additions). When queried for the members of a local resource, the subscriber should include any children
  * for which a remote exists even if the local does not.
  * </p>
@@ -70,7 +70,7 @@ abstract public class Subscriber {
 	/**
 	 * Return the name of this subscription, in a format that is
 	 * suitable for display to an end user.
-	 * 
+	 *
 	 * @return String representing the name of this subscription.
 	 */
 	abstract public String getName();
@@ -82,11 +82,11 @@ abstract public class Subscriber {
 	 * resources returned when <code>members(IResource)</code> was invoked with the parent
 	 * of the resource. Returns <code>false</code> in all
 	 * other cases.
-	 * 
+	 *
 	 * @param resource the resource being tested
 	 * @return <code>true</code> if this resource is supervised, and <code>false</code>
 	 *               otherwise
-	 * @throws TeamException 
+	 * @throws TeamException
 	 */
 	abstract public boolean isSupervised(IResource resource) throws TeamException;
 
@@ -101,7 +101,7 @@ abstract public class Subscriber {
 	 * </p>
 	 * @param resource the resource
 	 * @return a list of member resources
-	 * @throws TeamException 
+	 * @throws TeamException
 	 */
 	abstract public IResource[] members(IResource resource) throws TeamException;
 
@@ -110,7 +110,7 @@ abstract public class Subscriber {
 	 * synchronization. A client should call this method first then can safely
 	 * call <code>members</code> to navigate the resources managed by this
 	 * subscriber.
-	 * 
+	 *
 	 * @return a list of resources
 	 */
 	abstract public IResource[] roots();
@@ -134,23 +134,23 @@ abstract public class Subscriber {
 	 * The sync-info node returned by this method does not fully describe
 	 * all types of changes. A more descriptive change can be obtained from
 	 * the {@link #getDiff(IResource) } method.
-	 * 
+	 *
 	 * @param resource the resource of interest
 	 * @return sync info
-	 * @throws TeamException 
+	 * @throws TeamException
 	 * @see #getDiff(IResource)
 	 */
 	abstract public SyncInfo getSyncInfo(IResource resource) throws TeamException;
-	
+
 	/**
 	 * Returns the comparison criteria that will be used by the sync info
 	 * created by this subscriber.
-	 * 
+	 *
 	 * @return the comparator to use when computing sync states for this
 	 * subscriber.
 	 */
 	abstract public IResourceVariantComparator getResourceComparator();
-	
+
 	/**
 	 * Refreshes the resource hierarchy from the given resources and their
 	 * children (to the specified depth) from the corresponding resources in the
@@ -221,7 +221,7 @@ abstract public class Subscriber {
 	/**
 	 * Removes a listener previously registered with this team subscriber. Has
 	 * no effect if an identical listener is not registered.
-	 * 
+	 *
 	 * @param listener a team resource change listener
 	 */
 	public void removeListener(ISubscriberChangeListener listener) {
@@ -229,7 +229,7 @@ abstract public class Subscriber {
 			listeners.remove(listener);
 		}
 	}
-	
+
 	/**
 	 * Adds all out-of-sync resources (<code>getKind() != SyncInfo.IN_SYNC</code>) that occur
 	 * under the given resources to the specified depth. The purpose of this
@@ -263,7 +263,7 @@ abstract public class Subscriber {
 			monitor.done();
 		}
 	}
-	
+
 	/**
 	 * Fires a team resource change event to all registered listeners. Only
 	 * listeners registered at the time this method is called are notified.
@@ -290,7 +290,7 @@ abstract public class Subscriber {
 			});
 		}
 	}
-	
+
 	/*
 	 * Collect the calculated synchronization information for the given resource at the given depth. The
 	 * results are added to the provided list.
@@ -300,9 +300,9 @@ abstract public class Subscriber {
 		int depth,
 		SyncInfoSet set,
 		IProgressMonitor monitor) {
-		
+
 		Policy.checkCanceled(monitor);
-		
+
 		if (resource.getType() != IResource.FILE
 			&& depth != IResource.DEPTH_ZERO) {
 			try {
@@ -317,11 +317,11 @@ abstract public class Subscriber {
 						monitor);
 				}
 			} catch (TeamException e) {
-				set.addError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource)); 
+				set.addError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() }), e, resource));
 			}
 		}
 
-		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() })); 
+		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() }));
 		try {
 			SyncInfo info = getSyncInfo(resource);
 			if (info == null || info.getKind() == SyncInfo.IN_SYNC) {
@@ -333,14 +333,14 @@ abstract public class Subscriber {
 			}
 		} catch (TeamException e) {
 			set.addError(new TeamStatus(
-					IStatus.ERROR, TeamPlugin.ID, ITeamStatus.RESOURCE_SYNC_INFO_ERROR, 
-					NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() }),  
+					IStatus.ERROR, TeamPlugin.ID, ITeamStatus.RESOURCE_SYNC_INFO_ERROR,
+					NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() }),
 					e, resource));
 		}
 		// Tick the monitor to give the owner a chance to do something
 		monitor.worked(1);
 	}
-	
+
 	/**
 	 * Returns synchronization info, in the form of an {@link IDiff} for the
 	 * given resource, or <code>null</code> if there is no synchronization
@@ -360,10 +360,10 @@ abstract public class Subscriber {
 	 * The diff node returned by this method describes the changes associated
 	 * with the given resource in more detail than the sync-info returned
 	 * by calling {@link #getSyncInfo(IResource) }.
-	 * 
+	 *
 	 * @param resource the resource of interest
 	 * @return the diff for the resource or <code>null</code>
-	 * @throws CoreException 
+	 * @throws CoreException
 	 * @throws TeamException if errors occur
 	 * @since 3.2
 	 */
@@ -373,7 +373,7 @@ abstract public class Subscriber {
 			return null;
 		return SyncInfoToDiffConverter.getDefault().getDeltaFor(info);
 	}
-	
+
 	/**
 	 * Visit any out-of-sync resources covered by the given traversals. Any resources
 	 * covered by the traversals are ignored in the following cases:
@@ -386,7 +386,7 @@ abstract public class Subscriber {
 	 * </ul>
 	 * @param traversals the traversals to be visited
 	 * @param visitor the visitor
-	 * @throws CoreException 
+	 * @throws CoreException
 	 * @throws TeamException if errors occur
 	 * @since 3.2
 	 */
@@ -396,7 +396,7 @@ abstract public class Subscriber {
 			accept(traversal.getResources(), traversal.getDepth(), visitor);
 		}
 	}
-	
+
 	/**
 	 * Visit any out-of-sync resources in the given resources visited to the
 	 * given depth. Resources are ignored in the following cases:
@@ -407,7 +407,7 @@ abstract public class Subscriber {
 	 * <li>if the given resource is a closed project (they are ineligible for
 	 * synchronization)</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param resources the root of the resource subtrees from which out-of-sync
 	 *            sync info should be visited
 	 * @param depth the depth to which sync info should be collected (one of
@@ -467,7 +467,7 @@ abstract public class Subscriber {
 		}
 		monitor.done();
 	}
-	
+
 	/**
 	 * Return the synchronization state of the given resource mapping.
 	 * Only return the portion of the synchronization state that matches
@@ -484,13 +484,13 @@ abstract public class Subscriber {
 	 * An element will only include {@link IDiff#ADD} in the returned state if all resources covered
 	 * by the traversals mappings are added. Similarly, {@link IDiff#REMOVE} will only be included
 	 * if all the resources covered by the traversals are deleted. Otherwise {@link IDiff#CHANGE}
-	 * will be returned. 
-	 * 
+	 * will be returned.
+	 *
 	 * @param mapping the resource mapping whose synchronization state is to be determined
 	 * @param stateMask the mask that identifies the state flags of interested
 	 * @param monitor a progress monitor
 	 * @return the synchronization state of the given resource mapping
-	 * @throws CoreException 
+	 * @throws CoreException
 	 * @since 3.2
 	 * @see IDiff
 	 * @see IThreeWayDiff

@@ -29,11 +29,11 @@ public class ScopeChangeEvent {
 		originalMappings = scope.getMappings();
 		originalTraversals = scope.getTraversals();
 	}
-	
+
 	public boolean hasAdditionalMappings() {
 		return scope.getMappings().length > originalMappings.length;
 	}
-	
+
 	public ResourceTraversal[] getUncoveredTraversals(CompoundResourceTraversal traversal) {
 		CompoundResourceTraversal originals = new CompoundResourceTraversal();
 		originals.addTraversals(originalTraversals);
@@ -55,7 +55,7 @@ public class ScopeChangeEvent {
 	public boolean isContracted() {
 		return contracted;
 	}
-	
+
 	public ResourceMapping[] getChangedMappings() {
 		ResourceMapping[] currentMappings = scope.getMappings();
 		ResourceMapping[] changedMappings;

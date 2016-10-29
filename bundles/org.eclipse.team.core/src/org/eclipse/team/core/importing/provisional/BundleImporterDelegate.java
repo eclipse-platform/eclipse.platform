@@ -30,7 +30,7 @@ import org.osgi.framework.Constants;
  * will remain the same. Please do not use this API without consulting with the
  * Team team.
  * </p>
- * 
+ *
  * @since 3.6
  */
 public abstract class BundleImporterDelegate implements IBundleImporterDelegate {

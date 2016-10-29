@@ -19,11 +19,11 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * model elements or a model element consists of multiple files. It can also be
  * used for cases where there is a one-to-one mapping between model elements and
  * files, although <code>IStorageMerger</code> can also be used in that case.
- * 
+ *
  * Clients should group resource mappings by model provider and then attempt to
  * obtain a merger from the model provider using the adaptable mechanism as
  * follows:
- * 
+ *
  * <pre>
  *      Object o = mapping.getModelProvider().getAdapter(IResourceMappingMerger.class);
  *      if (o instanceof IResourceMappingMerger.class) {
@@ -31,13 +31,13 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  *         ...
  *      }
  * </pre>
- * 
+ *
  * @see ResourceMappingMerger
  * @see IStorageMerger
  * @see org.eclipse.core.resources.mapping.ResourceMapping
  * @see org.eclipse.core.resources.mapping.ModelProvider
  * @see org.eclipse.team.core.mapping.IMergeContext
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  *              Client should subclass {@link ResourceMappingMerger} instead.
@@ -69,7 +69,7 @@ public interface IResourceMappingMerger {
 	 * mappings which could not be merged. Note that it is up to the model to
 	 * decide whether it wants to break one of the provided resource mappings
 	 * into several sub-mappings and attempt auto-merging at that level.
-	 * 
+	 *
 	 * @param mergeContext a context that provides access to the resources
 	 *            involved in the merge. The context must not be
 	 *            <code>null</code>.
@@ -83,10 +83,10 @@ public interface IResourceMappingMerger {
 	 */
     public IStatus merge(IMergeContext mergeContext,
             IProgressMonitor monitor) throws CoreException;
-    
+
     /**
      * Return the scheduling rule that is required to merge
-     * all the changes that apply to this merger in the given 
+     * all the changes that apply to this merger in the given
      * context. When calling {@link #merge(IMergeContext, IProgressMonitor)},
      * clients must ensure that they either have obtained
      * a rule that covers the rule returned by this method or
@@ -97,9 +97,9 @@ public interface IResourceMappingMerger {
      * model provider.
      */
     public ISchedulingRule getMergeRule(IMergeContext context);
-    
+
     /**
-     * Validate an auto-merge for the given context. This 
+     * Validate an auto-merge for the given context. This
      * method must be invoked for all mergers involved
      * in the merge before the auto-merge is attempted.
      * The purpose of the validation is to indicate whether there
@@ -114,7 +114,7 @@ public interface IResourceMappingMerger {
      * user to make them aware of the potential side effects.
      * The user may still decide to attempt an auto-merge, in which case
      * the client may still invoke the <code>merge</code> method.
-     * 
+     *
 	 * @param mergeContext a context that provides access to the resources
 	 *            involved in the merge. The context must not be
 	 *            <code>null</code>.

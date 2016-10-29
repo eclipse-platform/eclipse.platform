@@ -26,7 +26,7 @@ import java.util.HashMap;
  * progress. There is no guarantee that this API will work or that it will
  * remain the same. Please do not use this API without consulting with the Team
  * team.
- * 
+ *
  * @since 3.6
  */
 public class ScmUrlImportDescription {
@@ -48,7 +48,7 @@ public class ScmUrlImportDescription {
 
 	/**
 	 * SCM URL
-	 * 
+	 *
 	 * @return a string representation of the SCM URL
 	 */
 	public String getUrl() {
@@ -65,7 +65,7 @@ public class ScmUrlImportDescription {
 
 	/**
 	 * Sets or removes a client property.
-	 * 
+	 *
 	 * @param key
 	 *            property key
 	 * @param value
@@ -85,7 +85,7 @@ public class ScmUrlImportDescription {
 
 	/**
 	 * Returns the specified client property, or <code>null</code> if none.
-	 * 
+	 *
 	 * @param key
 	 *            property key
 	 * @return property value or <code>null</code>

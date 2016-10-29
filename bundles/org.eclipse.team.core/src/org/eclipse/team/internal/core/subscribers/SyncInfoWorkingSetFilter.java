@@ -24,7 +24,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
 public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 
 	private IResource[] resources;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.sync.SyncInfoFilter#select(org.eclipse.team.core.subscribers.SyncInfo)
 	 */
@@ -52,14 +52,14 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	private boolean isParent(IResource parent, IResource child) {
 		return (parent.getFullPath().isPrefixOf(child.getFullPath()));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetInputFromSubscriber#getRoots()
 	 */
 	public IResource[] getRoots(Subscriber subscriber) {
 		IResource[] roots = subscriber.roots();
 		if (isEmpty()) return roots;
-		
+
 		// filter the roots by the selected working set
 		Set result = new HashSet();
 		for (int i = 0; i < roots.length; i++) {
@@ -99,11 +99,11 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	public void setWorkingSet(IResource[] resources) {
 		this.resources = resources;
 	}
-	
+
 	public IResource[] getWorkingSet() {
 		return this.resources;
 	}
-	
+
 	private boolean isEmpty() {
 		return resources == null || resources.length == 0;
 	}

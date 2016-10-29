@@ -33,7 +33,7 @@ public class PollingOutputStream extends FilterOutputStream {
 	private int numAttempts;
 	private IProgressMonitor monitor;
 	private boolean cancellable;
-	
+
 	/**
 	 * Creates a new polling output stream.
 	 * @param out the underlying output stream
@@ -47,7 +47,7 @@ public class PollingOutputStream extends FilterOutputStream {
 		this.monitor = monitor;
 		this.cancellable = true;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * @throws OperationCanceledException if the progress monitor is canceled
@@ -64,12 +64,12 @@ public class PollingOutputStream extends FilterOutputStream {
 				return;
 			} catch (InterruptedIOException e) {
 				if (++attempts == numAttempts)
-					throw new InterruptedIOException(Messages.PollingOutputStream_writeTimeout); 
+					throw new InterruptedIOException(Messages.PollingOutputStream_writeTimeout);
 				if (Policy.DEBUG_STREAMS) System.out.println("write retry=" + attempts); //$NON-NLS-1$
 			}
 		}
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * @throws OperationCanceledException if the progress monitor is canceled
@@ -95,7 +95,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					attempts = 0; // made some progress, don't time out quite yet
 				}
 				if (++attempts == numAttempts) {
-					e = new InterruptedIOException(Messages.PollingOutputStream_writeTimeout); 
+					e = new InterruptedIOException(Messages.PollingOutputStream_writeTimeout);
 					e.bytesTransferred = count;
 					throw e;
 				}
@@ -126,7 +126,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					attempts = 0; // made some progress, don't time out quite yet
 				}
 				if (++attempts == numAttempts) {
-					e = new InterruptedIOException(Messages.PollingOutputStream_writeTimeout); 
+					e = new InterruptedIOException(Messages.PollingOutputStream_writeTimeout);
 					e.bytesTransferred = count;
 					throw e;
 				}
@@ -134,7 +134,7 @@ public class PollingOutputStream extends FilterOutputStream {
 			}
 		}
 	}
-	
+
 	/**
 	 * Calls flush() then close() on the underlying stream.
 	 * @throws OperationCanceledException if the progress monitor is canceled
@@ -156,16 +156,16 @@ public class PollingOutputStream extends FilterOutputStream {
 				} catch (InterruptedIOException e) {
 					if (checkCancellation()) throw new OperationCanceledException();
 					if (++attempts == numAttempts)
-						throw new InterruptedIOException(Messages.PollingOutputStream_closeTimeout); 
+						throw new InterruptedIOException(Messages.PollingOutputStream_closeTimeout);
 					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
 				}
 			}
  		}
 	}
-	
+
 	/**
 	 * Called to set whether cancellation will be checked by this stream. Turning cancellation checking
-	 * off can be very useful for protecting critical portions of a protocol that shouldn't be interrupted. 
+	 * off can be very useful for protecting critical portions of a protocol that shouldn't be interrupted.
 	 * For example, it is often necessary to protect login sequences.
 	 * @param cancellable a flag controlling whether this stream will check for cancellation.
 	 */
@@ -175,15 +175,15 @@ public class PollingOutputStream extends FilterOutputStream {
 
 	/**
 	 * Checked whether the monitor for this stream has been cancelled. If the cancellable
-	 * flag is <code>false</code> then the monitor is never cancelled. 
+	 * flag is <code>false</code> then the monitor is never cancelled.
 	 * @return <code>true</code> if the monitor has been cancelled and <code>false</code>
 	 * otherwise.
-	 */	
+	 */
 	private boolean checkCancellation() {
 		if(cancellable) {
 			return monitor.isCanceled();
 		} else {
 			return false;
 		}
-	} 
+	}
 }

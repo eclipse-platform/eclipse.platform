@@ -24,15 +24,15 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * is in the absence of a project, as opposed to RepositoryProvider which
  * requires a concrete project in order to be instantiated.
  * <p>
- * A repository provider type class is associated with it's provider ID along with it's 
+ * A repository provider type class is associated with it's provider ID along with it's
  * corresponding repository provider class. To add a
  * repository provider type and have it registered with the platform, a client
  * must minimally:
  * <ol>
  * 	<li>extend <code>RepositoryProviderType</code>
- * 	<li>add the typeClass field to the repository extension in <code>plugin.xml</code>. 
+ * 	<li>add the typeClass field to the repository extension in <code>plugin.xml</code>.
  *     Here is an example extension point definition:
- * 
+ *
  *  <code>
  *	<br>&lt;extension point="org.eclipse.team.core.repository"&gt;
  *  <br>&nbsp;&lt;repository
@@ -43,20 +43,20 @@ import org.eclipse.team.internal.core.TeamPlugin;
  *	<br>&lt;/extension&gt;
  *  </code>
  * </ol></p>
- * 
+ *
  * <p>
  * Once a repository provider type is registered with Team, then you
  * can access the singleton instance of the class by invoking <code>RepositoryProviderType.getProviderType()</code>.
  * </p>
- * 
+ *
  * @see RepositoryProviderType#getProviderType(String)
- * 
+ *
  * @since 2.1
  */
 
 public abstract class RepositoryProviderType extends PlatformObject {
 	private static Map allProviderTypes = new HashMap();
-	
+
 	private String id;
 
 	private String scheme;
@@ -66,10 +66,10 @@ public abstract class RepositoryProviderType extends PlatformObject {
 
 	/**
 	 * Return the RepositoryProviderType for the given provider ID.
-	 * 
+	 *
 	 * @param id the ID of the provider
 	 * @return RepositoryProviderType
-	 * 
+	 *
 	 * @see #getID()
 	 */
 	public static RepositoryProviderType getProviderType(String id) {
@@ -77,12 +77,12 @@ public abstract class RepositoryProviderType extends PlatformObject {
 
 		if(type != null)
 			return type;
-			
+
 		//If there isn't one in the table, we'll try to create one from the extension point
 		//Its possible that newProviderType() will return null, but in that case it will have also logged the error	so just return the result
 		return newProviderType(id);
 	}
-	
+
 	/**
 	 * Return the repository type for the given file system scheme or
 	 * <code>null</code> if there isn't one. The scheme corresponds to
@@ -101,7 +101,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 		}
 		return findProviderForScheme(scheme);
 	}
-	
+
 	private static RepositoryProviderType findProviderForScheme(String scheme) {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
@@ -116,14 +116,14 @@ public abstract class RepositoryProviderType extends PlatformObject {
 					}
 				}
 			}
-		}		
+		}
 		return null;
-	}	
-	
+	}
+
 	private void setID(String id) {
 		this.id = id;
 	}
-	
+
 	private static RepositoryProviderType newProviderType(String id) {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
@@ -132,7 +132,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
 				for (int j = 0; j < configElements.length; j++) {
 					String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
-					
+
 					if (extensionId != null && extensionId.equals(id)) {
 						try {
 							RepositoryProviderType providerType;
@@ -142,7 +142,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 							} else {
 								providerType = (RepositoryProviderType) configElements[j].createExecutableExtension("typeClass"); //$NON-NLS-1$
 							}
-							
+
 							providerType.setID(id);
 							allProviderTypes.put(id, providerType);
 							String scheme = configElements[j].getAttribute("fileSystemScheme"); //$NON-NLS-1$
@@ -158,10 +158,10 @@ public abstract class RepositoryProviderType extends PlatformObject {
 					}
 				}
 			}
-		}		
+		}
 		return null;
-	}	
-	
+	}
+
 	private void setFileSystemScheme(String scheme) {
 		this.scheme = scheme;
 	}
@@ -169,7 +169,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	/**
 	 * Answer the id of this provider type. The id will be the repository
 	 * provider type's id as defined in the provider plugin's plugin.xml.
-	 * 
+	 *
 	 * @return the id of this provider type
 	 */
 	public final String getID() {
@@ -195,7 +195,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	 * interface if one exists, providing backward compatibility with existing code.
 	 * At some time in the future, the <code>IProjectSetSerializer</code> interface will be removed
 	 * and the default implementation will revert to having limited functionality.
-	 * 
+	 *
 	 * @return the project set serializer (or <code>null</code>)
 	 */
 	public ProjectSetCapability getProjectSetCapability() {
@@ -208,7 +208,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Callback from team when the meta-files for a repository type are detected in an
 	 * unshared project. The meta-file paths are provided as part of the <code>repository</code>
@@ -220,19 +220,19 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	 * or in any way modify workspace resources (including auto-sharing the project). However,
 	 * auto-sharing (or other modification) could be performed by a background job scheduled from
 	 * this callback.
-     * 
+     *
      * @since 3.1
-     * 
+     *
 	 * @param project the project that contains the detected meta-files.
 	 * @param containers the folders (possibly including the project folder) in which meta-files were found
 	 */
 	public void metaFilesDetected(IProject project, IContainer[] containers) {
 		// Do nothing by default
 	}
-	
+
 	/**
 	 * Return a {@link Subscriber} that describes the synchronization state
-	 * of the resources contained in the project associated with this 
+	 * of the resources contained in the project associated with this
 	 * provider type. By default, <code>null</code> is returned. Subclasses
 	 * may override.
 	 * @return a subscriber that provides resource synchronization state or <code>null</code>

@@ -20,7 +20,7 @@ import org.eclipse.team.core.history.provider.FileRevision;
 
 /**
  * Represents an individual revision of a file.
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  *              Clients can instead subclass {@link FileRevision}.
@@ -34,7 +34,7 @@ public interface IFileRevision {
 	 * file state represents the current state of
 	 * the returned <code>IFile</code>.
 	 * @param monitor a progress monitor
-	 * @return IStorage containing file storage 
+	 * @return IStorage containing file storage
 	 * @throws CoreException if an error occurs
 	 */
 	public IStorage getStorage(IProgressMonitor monitor) throws CoreException;
@@ -55,7 +55,7 @@ public interface IFileRevision {
 	/**
 	 * Returns the time stamp of this revision as a long or <code>-1</code>
 	 * if the timestamp is unknown.
-	 * 
+	 *
 	 * @return a long that represents the time of this revision as the number of milliseconds
 	 * since the base time
 	 *
@@ -68,13 +68,13 @@ public interface IFileRevision {
 	 * @return whether the file represented by this state exists
 	 */
 	public boolean exists();
-	
+
 	/**
-	 * Returns the <em>unique</em> identifier for this file revision 
+	 * Returns the <em>unique</em> identifier for this file revision
 	 * or <code>null</code> if one is not available. If <code>null</code>
-	 * is returned, clients can use the timestamp to differentiate 
+	 * is returned, clients can use the timestamp to differentiate
 	 * revisions.
-	 * @return the <em>unique</em> identifier for this file revision 
+	 * @return the <em>unique</em> identifier for this file revision
 	 * or <code>null</code>
 	 */
 	public String getContentIdentifier();
@@ -82,7 +82,7 @@ public interface IFileRevision {
 	/**
 	 *  Returns the author of this revision or <code>null</code> if
 	 *  this information is not available.
-	 *  
+	 *
 	 *  @return the author of this revision or <code>null</code>
 	 */
 	public String getAuthor();
@@ -90,15 +90,15 @@ public interface IFileRevision {
 	/**
 	 * Returns the comment for this file revision or <code>null</code> if
 	 * this information is not available.
-	 * 
+	 *
 	 * @return the comment for this file revision or <code>null</code>
 	 */
 	public String getComment();
 
 	/**
 	 * Returns the branches names of file revision.
-	 * 
-	 * @return an array of ITag's if branch names exist for this revision 
+	 *
+	 * @return an array of ITag's if branch names exist for this revision
      * or an empty ITag array if no names exist
      * @since 3.6
 	 */
@@ -106,22 +106,22 @@ public interface IFileRevision {
 
 	/**
 	 * Returns the set of tags available for this file revision.
-	 * 
+	 *
 	 * @return an array of ITag's if ITags exist for this revision or an empty ITag array
 	 * if no tags exist
 	 */
 	public ITag[] getTags();
-	
+
 	/**
-	 * Returns whether this particular file revision has at least one supported property 
+	 * Returns whether this particular file revision has at least one supported property
 	 * missing. If the revision is missing some queries
 	 * clients can use {@link #withAllProperties(IProgressMonitor)}.
-	 * 
-	 * @return whether this particular file revision has at least one supported property 
+	 *
+	 * @return whether this particular file revision has at least one supported property
 	 * missing
 	 */
 	public boolean isPropertyMissing();
-	
+
 	/**
 	 * Returns an {@link IFileRevision} with all supported properties present.
 	 * @param monitor a monitor

@@ -17,27 +17,27 @@ import org.eclipse.team.core.history.provider.FileHistoryProvider;
 
 /**
  * This is API to access individual file histories.
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  *              Clients can instead subclass {@link FileHistoryProvider}.
- * 
+ *
  */
 public interface IFileHistoryProvider {
-	
+
 	/**
 	 * Constant flag used with
 	 * {@link #getFileHistoryFor(IResource, int, IProgressMonitor)} to indicate
 	 * no flags.
 	 */
 	public static final int NONE = 0;
-	
+
 	/**
 	 * Constant flag used with {@link #getFileHistoryFor(IResource, int, IProgressMonitor)}
 	 * to indicate that only a single revision is desired.
 	 */
 	public static final int SINGLE_REVISION = 1;
-	
+
 	/**
 	 * Constant flag used with
 	 * {@link #getFileHistoryFor(IResource, int, IProgressMonitor)} to indicate
@@ -59,7 +59,7 @@ public interface IFileHistoryProvider {
 	 * {@link IFileHistory#getTargets(IFileRevision)} should either return zero
 	 * or one revision. If both flags are present, {@link #SINGLE_REVISION}
 	 * should take precedence.
-	 * 
+	 *
 	 * @param resource
 	 *            the resource
 	 * @param flags
@@ -69,17 +69,17 @@ public interface IFileHistoryProvider {
 	 * @return the history of the file
 	 */
 	public abstract IFileHistory getFileHistoryFor(IResource resource, int flags, IProgressMonitor monitor);
-	
+
 
 	/**
 	 * Returns the file revision of the passed in resource or null if that file revision cannot be
 	 * determined
-	 * 
+	 *
 	 * @param resource the resource
 	 * @return the file revision belonging to the passed in resource or null
 	 */
 	public abstract IFileRevision getWorkspaceFileRevision(IResource resource);
-	
+
 	/**
 	 * Returns an {@link IFileHistory} for the specified {@link IFileStore}.
 	 * @param store an IFileStore
@@ -88,5 +88,5 @@ public interface IFileHistoryProvider {
 	 * @return the history for the IFileStore
 	 */
 	public abstract IFileHistory getFileHistoryFor(IFileStore store, int flags, IProgressMonitor monitor);
-	
+
 }

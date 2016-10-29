@@ -20,7 +20,7 @@ import org.eclipse.team.core.diff.ITwoWayDiff;
  * should override these methods.
  * <p>
  * This class may be subclassed by clients.
- * 
+ *
  * @since 3.2
  */
 public class TwoWayDiff extends Diff implements ITwoWayDiff {
@@ -30,7 +30,7 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 	 * for use by this abstract class for encoding the flags of the diff.
 	 * However, subclasses may include their own bits in the flag
 	 * as long as they do not overlap with the bits in the <code>FLAG_MASK</code>
-	 * 
+	 *
 	 * @see Diff#getStatus()
 	 */
 	protected static final int FLAG_MASK = 0xFF00;
@@ -51,7 +51,7 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 	public int getFlags() {
 		return getStatus() & ~KIND_MASK;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.delta.ITwoWayDelta#getMovedToPath()
 	 */
@@ -65,7 +65,7 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 	public IPath getFromPath() {
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
 	 */

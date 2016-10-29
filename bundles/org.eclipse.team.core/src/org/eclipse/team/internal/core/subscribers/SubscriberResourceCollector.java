@@ -21,9 +21,9 @@ import org.eclipse.team.core.subscribers.*;
  * that are supervised by a subscriber may have changed.
  */
 public abstract class SubscriberResourceCollector implements IResourceChangeListener, ISubscriberChangeListener {
-    
+
     Subscriber subscriber;
-    
+
     /**
      * Create the collector and register it as a listener with the workspace
      * and the subscriber.
@@ -35,24 +35,24 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		subscriber.addListener(this);
     }
-    
+
 	/**
 	 * Returns the <code>Subscriber</code> associated with this collector.
-	 * 
+	 *
 	 * @return the <code>Subscriber</code> associated with this collector.
 	 */
 	public Subscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
     /**
      * De-register the listeners for this collector.
      */
 	public void dispose() {
-		getSubscriber().removeListener(this);		
+		getSubscriber().removeListener(this);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.sync.ITeamResourceChangeListener#teamResourceChanged(org.eclipse.team.core.sync.TeamDelta[])
 	 */
@@ -91,7 +91,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
     protected void beginInput() {
         // Do nothing by default
     }
-    
+
     /**
      * The processing of the resource or subscriber delta has finished.
      * Subclasses can accumulate removals and changes and handle them
@@ -100,7 +100,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
     protected void endInput() {
         // Do nothing by default
     }
-    
+
 
     /*(non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
@@ -113,11 +113,11 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 	        endInput();
 	    }
 	}
-	
+
     /**
 	 * Process the resource delta and posts all necessary events to the background
 	 * event handler.
-	 * 
+	 *
 	 * @param delta the resource delta to analyze
 	 */
 	protected void processDelta(IResourceDelta delta, IResource[] roots) {
@@ -126,7 +126,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 
 		if (resource.getType() == IResource.PROJECT) {
 			// Handle projects that should be removed from the collector
-			if (((kind & IResourceDelta.REMOVED) != 0) /* deleted project */ 
+			if (((kind & IResourceDelta.REMOVED) != 0) /* deleted project */
 			        || (delta.getFlags() & IResourceDelta.OPEN) != 0 && !((IProject) resource).isOpen() /* closed project */
 			        || !isAncestorOfRoot(resource, roots)) /* not within subscriber roots */ {
 				// If the project has any entries in the sync set, remove them
@@ -145,14 +145,14 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 				remove(resource);
 				change(resource, IResource.DEPTH_INFINITE);
 			}
-	
+
 			// Check the flags for changes the SyncSet cares about.
 			// Notice we don't care about MARKERS currently.
 			int changeFlags = delta.getFlags();
 			if ((changeFlags & (IResourceDelta.OPEN | IResourceDelta.CONTENT)) != 0) {
 				change(resource, IResource.DEPTH_ZERO);
 			}
-	
+
 			// Check the kind and deal with those we care about
 			if ((delta.getKind() & (IResourceDelta.REMOVED | IResourceDelta.ADDED)) != 0) {
 				change(resource, IResource.DEPTH_ZERO);
@@ -167,7 +167,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the root resources that are to be considered by this handler.
 	 * These may be either the subscriber roots or a set of resources that are
@@ -187,7 +187,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
      * by this handler.
      */
     protected abstract boolean hasMembers(IResource resource);
-    
+
     /**
      * The resource is no longer of concern to the subscriber.
      * Remove the resource and any of it's descendants
@@ -203,7 +203,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
      * @param depth the depth
      */
     protected abstract void change(IResource resource, int depth);
-    
+
 	/**
 	 * Return whether all roots of a subscriber are included or
 	 * if the collector is only consider a subset of the resources.

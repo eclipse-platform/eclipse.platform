@@ -26,20 +26,20 @@ import org.eclipse.team.internal.core.subscribers.ThreeWayBaseTree;
  * provide a subclass of <code>ThreeWayRemoteTree</code> and a method
  * to create resource variant handles from the bytes cached in the
  * <code>ThreeWaySynchronizer</code>.
- * 
+ *
  * @see ThreeWaySynchronizer
  * @see ThreeWayRemoteTree
  * @see CachedResourceVariant
- * 
+ *
  * @since 3.0
  */
 public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber implements ISynchronizerChangeListener {
-	
+
 	private ThreeWayResourceComparator comparator;
 	private ThreeWayBaseTree baseTree;
 	private ThreeWayRemoteTree remoteTree;
 	private ThreeWaySynchronizer synchronizer;
-	
+
 	/**
 	 * Create a three-way subscriber that uses the given synchronizer
 	 * to manage the synchronization state of local resources
@@ -51,14 +51,14 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		baseTree = new ThreeWayBaseTree(this);
 		getSynchronizer().addListener(this);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantTreeSubscriber#getBaseTree()
 	 */
 	protected final IResourceVariantTree getBaseTree() {
 		return baseTree;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantTreeSubscriber#getRemoteTree()
 	 */
@@ -78,14 +78,14 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		}
 		return comparator;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ISynchronizerChangeListener#syncStateChanged(org.eclipse.core.resources.IResource[])
 	 */
 	public void syncStateChanged(IResource[] resources) {
 		fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, resources));
 	}
-	
+
 	/**
 	 * Returns <code>false</code> for resources that are not children
 	 * of a subscriber root, are ignored by the subscriber's synchronizer
@@ -99,7 +99,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		if (Team.isIgnoredHint(resource)) return false;
 		return true;
 	}
-	
+
 	/**
 	 * Return the three-way synchronizer of this subscriber.
 	 * @return the three-way synchronizer of this subscriber.
@@ -107,9 +107,9 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	public ThreeWaySynchronizer getSynchronizer() {
 		return synchronizer;
 	}
-	
+
 	/**
-	 * Create the resource variant for the given local resource from the 
+	 * Create the resource variant for the given local resource from the
 	 * given bytes. The bytes are those that were previously returned
 	 * from a call to <code>IResourceVariant#asBytes()</code>.
 	 * @param resource the local resource
@@ -118,7 +118,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	 * @throws TeamException
 	 */
 	public abstract IResourceVariant getResourceVariant(IResource resource, byte[] bytes) throws TeamException;
-	
+
 	/**
 	 * Create the three-way remote tree which provides access to the
 	 * remote bytes in the three-way synchronizer. This method is invoked
@@ -127,7 +127,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	 * @return the remote tree
 	 */
 	protected abstract ThreeWayRemoteTree createRemoteTree();
-	
+
 	/**
 	 * Convenience method that can be used by subclasses to notify listeners
 	 * when a root is added or removed from the subscriber. The added
@@ -144,7 +144,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 			rootRemoved(resource);
 		}
 	}
-	
+
 	private void rootAdded(IResource resource) {
 		SubscriberChangeEvent delta = new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_ADDED, resource);
 		fireTeamResourceChange(new SubscriberChangeEvent[] { delta });
@@ -159,7 +159,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		SubscriberChangeEvent delta = new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_REMOVED, resource);
 		fireTeamResourceChange(new SubscriberChangeEvent[] { delta });
 	}
-	
+
 	private boolean isChildOfRoot(IResource resource) {
 		IResource[] roots = roots();
 		IPath fullPath = resource.getFullPath();

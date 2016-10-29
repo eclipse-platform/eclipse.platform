@@ -23,10 +23,10 @@ import org.eclipse.team.core.RepositoryProvider;
  * This class forwards TeamHook callbacks to the proper RepositoryProvider
  */
 public class TeamHookDispatcher extends TeamHook {
-	
+
 	private static final ResourceRuleFactory defaultFactory = new ResourceRuleFactory() {};
 	private static TeamHookDispatcher instance;
-	
+
 	public static void setProviderRuleFactory(IProject project, IResourceRuleFactory factory) {
 		if (instance != null) {
 			if (factory == null) {
@@ -35,7 +35,7 @@ public class TeamHookDispatcher extends TeamHook {
 			instance.setRuleFactory(project, factory);
 		}
 	}
-	
+
 	public TeamHookDispatcher() {
 		instance = this;
 	}
@@ -51,7 +51,7 @@ public class TeamHookDispatcher extends TeamHook {
 			return provider.validateCreateLink(file, updateFlags, location);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFile, int, java.net.URI)
 	 */
@@ -75,7 +75,7 @@ public class TeamHookDispatcher extends TeamHook {
 			return provider.validateCreateLink(folder, updateFlags, location);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFolder, int, java.net.URI)
 	 */
@@ -87,7 +87,7 @@ public class TeamHookDispatcher extends TeamHook {
 			return provider.validateCreateLink(folder, updateFlags, location);
 		}
 	}
-	
+
 	/**
 	 * Method getProvider.
 	 * @param folder
@@ -111,5 +111,5 @@ public class TeamHookDispatcher extends TeamHook {
 		// Use the default provided by the superclass
 		return super.getRuleFactory(project);
 	}
-	
+
 }

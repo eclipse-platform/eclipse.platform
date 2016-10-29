@@ -17,7 +17,7 @@ import java.io.InterruptedIOException;
 
 /**
  * Converts CR/LFs in the underlying input stream to LF.
- * 
+ *
  * Supports resuming partially completed operations after an InterruptedIOException
  * if the underlying stream does.  Check the bytesTransferred field to determine how
  * much of the operation completed; conversely, at what point to resume.
@@ -25,7 +25,7 @@ import java.io.InterruptedIOException;
 public class CRLFtoLFInputStream extends FilterInputStream {
 	private boolean pendingByte = false;
 	private int lastByte = -1;
-	
+
 	/**
 	 * Creates a new filtered input stream.
 	 * @param in the underlying input stream
@@ -56,7 +56,7 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 		pendingByte = false;
 		return lastByte;
 	}
-	
+
 	/**
 	 * Wraps the underlying stream's method.
 	 * Translates CR/LF sequences to LFs transparently.
@@ -145,7 +145,7 @@ public class CRLFtoLFInputStream extends FilterInputStream {
 	public int available() throws IOException {
 		return in.available() / 2; // we can guarantee at least this amount after contraction
 	}
-	
+
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */

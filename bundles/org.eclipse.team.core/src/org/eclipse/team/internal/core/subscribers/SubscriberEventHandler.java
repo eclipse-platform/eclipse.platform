@@ -31,7 +31,7 @@ import org.eclipse.team.internal.core.*;
 /**
  * This handler collects changes and removals to resources and calculates their
  * synchronization state in a background job. The result is fed input the SyncSetInput.
- * 
+ *
  * Exceptions that occur when the job is processing the events are collected and
  * returned as part of the Job's status.
  */
@@ -39,7 +39,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 
 	// Changes accumulated by the event handler
 	private List resultCache = new ArrayList();
-	
+
 	private boolean started = false;
 	private boolean initializing = true;
 
@@ -51,7 +51,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	private ISynchronizationScope scope;
 
 	private ISynchronizationScopeChangeListener scopeChangeListener;
-	
+
 	/**
 	 * Internal resource synchronization event. Can contain a result.
 	 */
@@ -79,7 +79,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 			return new ResourceTraversal(new IResource[] { getResource() }, getDepth(), IResource.NONE);
 		}
 	}
-	
+
 	/**
 	 * Create a handler. This will initialize all resources for the subscriber associated with
 	 * the set.
@@ -88,7 +88,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	 */
 	public SubscriberEventHandler(Subscriber subscriber, ISynchronizationScope scope) {
 		super(
-			NLS.bind(Messages.SubscriberEventHandler_jobName, new String[] { subscriber.getName() }), 
+			NLS.bind(Messages.SubscriberEventHandler_jobName, new String[] { subscriber.getName() }),
 			NLS.bind(Messages.SubscriberEventHandler_errors, new String[] { subscriber.getName() }));
 		this.subscriber = subscriber;
 		this.scope = scope;
@@ -101,7 +101,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		};
 		this.scope.addScopeChangeListener(scopeChangeListener);
 	}
-	
+
 	/**
 	 * The traversals of the scope have changed
 	 * @param oldTraversals the old traversals
@@ -112,7 +112,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	}
 
 	/**
-	 * Start the event handler by queuing events to prime the sync set input with the out-of-sync 
+	 * Start the event handler by queuing events to prime the sync set input with the out-of-sync
 	 * resources of the subscriber.
 	 */
 	public synchronized void start() {
@@ -149,8 +149,8 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	protected boolean isSystemJob() {
 		return !initializing;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.BackgroundEventHandler#jobDone(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 	 */
@@ -158,17 +158,17 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		super.jobDone(event);
 		progressGroup = null;
 	}
-	
+
 	/**
 	 * Called by a client to indicate that a resource has changed and its synchronization state
-	 * should be recalculated.  
+	 * should be recalculated.
 	 * @param resource the changed resource
 	 * @param depth the depth of the change calculation
 	 */
 	public void change(IResource resource, int depth) {
 		queueEvent(new SubscriberEvent(resource, SubscriberEvent.CHANGE, depth), false);
 	}
-	
+
 	/**
 	 * Called by a client to indicate that a resource has been removed and should be removed. The
 	 * removal will propagate to the set.
@@ -178,7 +178,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		queueEvent(
 			new SubscriberEvent(resource, SubscriberEvent.REMOVAL, IResource.DEPTH_INFINITE), false);
 	}
-	
+
 	/**
 	 * Collect the calculated synchronization information for the given resource at the given depth. The
 	 * results are added to the provided list.
@@ -187,12 +187,12 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		IResource resource,
 		int depth,
 		IProgressMonitor monitor) {
-		
+
 		Policy.checkCanceled(monitor);
-		
+
 		// handle any preemptive events before continuing
 		handlePreemptiveEvents(monitor);
-		
+
 		if (resource.getType() != IResource.FILE
 			&& depth != IResource.DEPTH_ZERO) {
 			try {
@@ -210,16 +210,16 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 				// We only handle the exception if the resource's project is accessible.
 				// The project close delta will clean up.
 				if (resource.getProject().isAccessible())
-					handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() })); 
+					handleException(e, resource, ITeamStatus.SYNC_INFO_SET_ERROR, NLS.bind(Messages.SubscriberEventHandler_8, new String[] { resource.getFullPath().toString(), e.getMessage() }));
 			}
 		}
 
-		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() })); 
+		monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { resource.getFullPath().toString() }));
 		try {
 			handleChange(resource);
 			handlePendingDispatch(monitor);
 		} catch (CoreException e) {
-			handleException(e, resource, ITeamStatus.RESOURCE_SYNC_INFO_ERROR, NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() })); 
+			handleException(e, resource, ITeamStatus.RESOURCE_SYNC_INFO_ERROR, NLS.bind(Messages.SubscriberEventHandler_9, new String[] { resource.getFullPath().toString(), e.getMessage() }));
 		}
 		monitor.worked(1);
 	}
@@ -261,7 +261,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 
 	/**
 	 * Called to initialize to calculate the synchronization information using the optimized subscriber method. For
-	 * subscribers that don't support the optimization, all resources in the subscriber are manually re-calculated. 
+	 * subscribers that don't support the optimization, all resources in the subscriber are manually re-calculated.
 	 * @param resource the resources to check
 	 * @param depth the depth
 	 * @param monitor
@@ -273,11 +273,11 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 
 	/**
 	 * Feed the given events to the set. The appropriate method on the set is called
-	 * for each event type. 
+	 * for each event type.
 	 * @param events
 	 */
 	protected abstract void dispatchEvents(SubscriberEvent[] events, IProgressMonitor monitor);
-	
+
 	/**
 	 * Initialize all resources for the subscriber associated with the set. This will basically recalculate
 	 * all synchronization information for the subscriber.
@@ -313,7 +313,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 						monitor);
 					break;
 				case SubscriberEvent.INITIALIZE :
-					monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { event.getResource().getFullPath().toString() })); 
+					monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { event.getResource().getFullPath().toString() }));
 					collectAll(
 					        event.getResource(),
 					        ((ResourceEvent)event).getDepth(),
@@ -321,9 +321,9 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 					break;
 			}
 		} catch (OperationCanceledException e) {
-			// the job has been canceled. 
+			// the job has been canceled.
 			// Clear the queue and propagate the cancellation through the sets.
-			handleCancel(e); 
+			handleCancel(e);
 		} catch (RuntimeException e) {
 			// handle the exception and keep processing
 			if (event.getType() == BackgroundEventHandler.RUNNABLE_EVENT ) {
@@ -349,7 +349,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	protected void handleCancel(OperationCanceledException e) {
 		resultCache.clear();
 	}
-		
+
 	/*
 	 * Execute the RunnableEvent
 	 */
@@ -392,12 +392,12 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	public void run(IWorkspaceRunnable runnable, boolean frontOnQueue) {
 		queueEvent(new RunnableEvent(runnable, frontOnQueue), frontOnQueue);
 	}
-	
+
 	public void setProgressGroupHint(IProgressMonitor progressGroup, int ticks) {
 		this.progressGroup = progressGroup;
 		this.ticks = ticks;
 	}
-	
+
 	protected void handlePreemptiveEvents(IProgressMonitor monitor) {
 		Event event = peek();
 		if (event instanceof RunnableEvent && ((RunnableEvent)event).isPreemtive()) {
@@ -413,7 +413,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	protected ISynchronizationScope getScope() {
 		return scope;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.BackgroundEventHandler#shutdown()
 	 */

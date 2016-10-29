@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IResource;
  * A set that contains a group of related changes
  */
 public abstract class ChangeSet {
-	
+
     private String name;
 
     /**
@@ -27,7 +27,7 @@ public abstract class ChangeSet {
     protected ChangeSet() {
         super();
     }
-    
+
     /**
      * Create a change set with the given name.
      * @param name the name of the change set
@@ -41,7 +41,7 @@ public abstract class ChangeSet {
      * @return the resources that are contained in this set
      */
     public abstract IResource[] getResources();
-    
+
     /**
      * Return whether the set contains any files.
      * @return whether the set contains any files
@@ -54,13 +54,13 @@ public abstract class ChangeSet {
      * @return true if the given file is included in this set
      */
     public abstract boolean contains(IResource local);
-    
+
     /**
      * Remove the resource from the set.
      * @param resource the resource to be removed
      */
     public abstract void remove(IResource resource);
-    
+
     /**
      * Remove the resources from the set.
      * @param resources the resources to be removed
@@ -71,7 +71,7 @@ public abstract class ChangeSet {
             remove(resource);
         }
     }
-    
+
     /**
      * Remove the resource and it's descendants to the given depth.
      * @param resource the resource to be removed
@@ -79,7 +79,7 @@ public abstract class ChangeSet {
      * <code>IResource.DEPTH_ZERO, IResource.DEPTH_ONE, IResource.DEPTH_INFINITE)</code>
      */
     public abstract void rootRemoved(IResource resource, int depth);
-    
+
     /**
      * Return a comment describing the change.
      * @return a comment describing the change

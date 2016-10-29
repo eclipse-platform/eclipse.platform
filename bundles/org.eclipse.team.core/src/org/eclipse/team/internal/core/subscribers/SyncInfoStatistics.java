@@ -35,19 +35,19 @@ public class SyncInfoStatistics {
 		}
 		stats.put(new Integer(info.getKind()), new Long(count.longValue() + 1));
 	}
-	
+
 	/**
 	 * Remove this sync kind.
-	 * @param info the info type to remove 
-	 */	
+	 * @param info the info type to remove
+	 */
 	public void remove(SyncInfo info) {
 		// update stats
 		Integer kind = new Integer(info.getKind());
 		Long count = (Long)stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
-			// programmer error calling remove before add.			
-		} else {						
+			// programmer error calling remove before add.
+		} else {
 			long newCount = count.intValue() - 1;
 			if(newCount > 0) {
 				stats.put(kind, new Long(newCount));
@@ -56,13 +56,13 @@ public class SyncInfoStatistics {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the count of sync infos for the specified sync kind. A mask can be used to acucmulate
 	 * counts for specific directions or change types.
 	 * To return the number of outgoing changes:
 	 * 	long outgoingChanges = stats.countFor(SyncInfo.OUTGOING, SyncInfo.DIRECTION_MASK);
-	 *  
+	 *
 	 * @param kind the sync kind for which to return the count
 	 * @param mask the mask applied to the stored sync kind
 	 * @return the number of sync info types added for the specific kind
@@ -91,7 +91,7 @@ public class SyncInfoStatistics {
 	public void clear() {
 		stats.clear();
 	}
-	
+
 	/**
 	 * For debugging
 	 */

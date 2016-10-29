@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IAdapterManager;
  * mechanism.
  * <p>
  * This interface may be implemented by clients.
- * 
+ *
  * @see ModelProvider
  * @see IAdaptable
  * @see IAdapterManager

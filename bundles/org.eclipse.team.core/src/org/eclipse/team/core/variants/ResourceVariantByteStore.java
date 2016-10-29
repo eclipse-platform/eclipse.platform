@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -23,12 +23,12 @@ import org.eclipse.team.core.TeamException;
  * responsibility of the client of this API to cache enough bytes to meaningfully identify
  * a resource variant (and possibly create an {@link IResourceVariant} handle from them).
  * <p>
- * The bytes for a resource variant are accessed using the local <code>IResource</code> handle 
- * that corresponds to the resource variant (using the <code>getBytes</code> method). 
+ * The bytes for a resource variant are accessed using the local <code>IResource</code> handle
+ * that corresponds to the resource variant (using the <code>getBytes</code> method).
  * The potential children of a resource variant are also accessed
- * by using the local handle that corresponds to the resource variant 
+ * by using the local handle that corresponds to the resource variant
  * (using the <code>members</code> method).
- * 
+ *
  * @since 3.0
  */
 public abstract class ResourceVariantByteStore {
@@ -37,7 +37,7 @@ public abstract class ResourceVariantByteStore {
 	 * Dispose of any cached sync bytes when this cache is no longer needed.
 	 */
 	public abstract void dispose();
-	
+
 	/**
 	 * Return the bytes for the variant corresponding the given local resource.
 	 * A return value of <code>null</code> means that no bytes have been stored
@@ -49,12 +49,12 @@ public abstract class ResourceVariantByteStore {
 	 * @throws TeamException
 	 */
 	public abstract byte[] getBytes(IResource resource) throws TeamException;
-	
+
 	/**
-	 * Set the bytes for the variant corresponding the given local resource. 
-	 * The bytes should never be <code>null</code>. If it is known that the remote 
-	 * does not exist, <code>deleteBytes(IResource)</code> should be used instead. 
-	 * If the sync bytes for the remote are stale and should be removed, 
+	 * Set the bytes for the variant corresponding the given local resource.
+	 * The bytes should never be <code>null</code>. If it is known that the remote
+	 * does not exist, <code>deleteBytes(IResource)</code> should be used instead.
+	 * If the sync bytes for the remote are stale and should be removed,
 	 * <code>flushBytes(IResouce, int)</code> should be called.
 	 * @param resource the local resource
 	 * @param bytes the bytes that represent the resource's variant
@@ -62,11 +62,11 @@ public abstract class ResourceVariantByteStore {
 	 * @throws TeamException
 	 */
 	public abstract boolean setBytes(IResource resource, byte[] bytes) throws TeamException;
-	
+
 	/**
-	 * Remove the bytes from the tree for the resource variants corresponding to the 
+	 * Remove the bytes from the tree for the resource variants corresponding to the
 	 * given local resource and its descendants to the given depth.
-	 * After the bytes are removed, <code>getBytes(resource)</code> will 
+	 * After the bytes are removed, <code>getBytes(resource)</code> will
 	 * return <code>null</code> for the affected resources.
 	 * @param resource the local resource
 	 * @param depth the depth of the operation (one of <code>IResource.DEPTH_ZERO</code>,
@@ -75,9 +75,9 @@ public abstract class ResourceVariantByteStore {
 	 * @throws TeamException
 	 */
 	public abstract boolean flushBytes(IResource resource, int depth) throws TeamException;
-	
+
 	/**
-	 * Method called to indicate that it is known that there is no variant associated 
+	 * Method called to indicate that it is known that there is no variant associated
 	 * with the local resource. Subclasses may handle this information in different ways.
 	 * The <code>flush(IResource, int)</code> method should be used in the cases
 	 * where a client wishes to remove bytes for other reason.
@@ -85,14 +85,14 @@ public abstract class ResourceVariantByteStore {
 	 * @return <code>true</code> if this changes the bytes for the variant
 	 */
 	public abstract boolean deleteBytes(IResource resource) throws TeamException;
-	
+
 	/**
 	 * Return the children of the given resource that have resource variants in this tree.
 	 * @param resource the parent resource
 	 * @return the members who have resource variants in this tree.
 	 */
 	public abstract IResource[] members(IResource resource) throws TeamException;
-	
+
 	/**
 	 * Helper method to compare two byte arrays for equality
 	 * @param syncBytes1 the first byte array or <code>null</code>
@@ -121,7 +121,7 @@ public abstract class ResourceVariantByteStore {
 	 * @param runnable the action to perform
 	 * @param monitor a progress monitor.
 	 * @exception TeamException if the operation failed.
-	 * @exception OperationCanceledException if the operation is canceled. 
+	 * @exception OperationCanceledException if the operation is canceled.
 	 */
 	public void run(IResource root, IWorkspaceRunnable runnable, IProgressMonitor monitor) throws TeamException {
 		try {

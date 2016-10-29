@@ -24,27 +24,27 @@ import org.eclipse.team.internal.core.subscribers.DiffTreeStatistics;
 
 /**
  * Implementation of {@link IDiffTree}.
- * 
+ *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients. Clients can
  *           instead use {@link DiffTree}.
  */
 public class DiffTree implements IDiffTree {
-	
+
 	/**
 	 * Constant that indicates the start of the property value
 	 * range that clients can use when storing properties in this tree.
 	 */
 	public static final int START_CLIENT_PROPERTY_RANGE = 1024;
-	
+
 	private ListenerList listeners = new ListenerList();
-	
+
 	private PathTree pathTree = new PathTree();
-	
+
 	private ILock lock = Job.getJobManager().newLock();
-	
+
 	private DiffTreeStatistics statistics = new DiffTreeStatistics();
-	
+
 	private DiffChangeEvent changes;
 
 	private  boolean lockedForModification;
@@ -57,7 +57,7 @@ public class DiffTree implements IDiffTree {
 	public DiffTree() {
 		resetChanges();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#addSyncDeltaChangeListener(org.eclipse.team.core.synchronize.ISyncDeltaChangeListener)
 	 */
@@ -152,7 +152,7 @@ public class DiffTree implements IDiffTree {
 	 * progress monitor. If responsiveness is required, the client should always
 	 * nest sync set modifications within <code>beginInput/endInput</code>.
 	 * </p>
-	 * 
+	 *
 	 * @param path the path to remove
 	 */
 	public void remove(IPath path) {
@@ -181,11 +181,11 @@ public class DiffTree implements IDiffTree {
 			endInput(null);
 		}
 	}
-	
+
 	/**
 	 * This method is used to obtain a lock on the set which ensures thread safety
-	 * and batches change notification. If the set is locked by another thread, 
-	 * the calling thread will block until the lock 
+	 * and batches change notification. If the set is locked by another thread,
+	 * the calling thread will block until the lock
 	 * becomes available. This method uses an <code>org.eclipse.core.runtime.jobs.ILock</code>.
 	 * <p>
 	 * It is important that the lock is released after it is obtained. Calls to <code>endInput</code>
@@ -216,7 +216,7 @@ public class DiffTree implements IDiffTree {
 	public void endInput(IProgressMonitor monitor) {
 		try {
 			if (lock.getDepth() == 1) {
-				// Remain locked while firing the events so the handlers 
+				// Remain locked while firing the events so the handlers
 				// can expect the set to remain constant while they process the events
 				fireChanges(Policy.monitorFor(monitor));
 			}
@@ -226,12 +226,12 @@ public class DiffTree implements IDiffTree {
 	}
 
 	private void fireChanges(final IProgressMonitor monitor) {
-		
+
 		final DiffChangeEvent event = getChangeEvent();
 		resetChanges();
 		final Map propertyChanges = this.propertyChanges;
 		this.propertyChanges = new HashMap();
-		
+
 		if(event.isEmpty() && ! event.isReset() && propertyChanges.isEmpty()) return;
 		Object[] listeners = this.listeners.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
@@ -251,7 +251,7 @@ public class DiffTree implements IDiffTree {
 							listener.propertyChanged(DiffTree.this, key.intValue(), (IPath[]) paths.toArray(new IPath[paths
 									.size()]));
 						}
-						
+
 					} finally {
 						lockedForModification = false;
 					}
@@ -264,7 +264,7 @@ public class DiffTree implements IDiffTree {
 	private DiffChangeEvent getChangeEvent() {
 		return changes;
 	}
-	
+
 	private void resetChanges() {
 		changes = createEmptyChangeEvent();
 	}
@@ -290,7 +290,7 @@ public class DiffTree implements IDiffTree {
 		}
 		setPropertyToRoot(delta, P_HAS_DESCENDANT_CONFLICTS, isConflict);
 	}
-	
+
 	private void internalRemove(IDiff delta) {
 		Assert.isTrue(!lockedForModification);
 		statistics.remove(delta);
@@ -298,18 +298,18 @@ public class DiffTree implements IDiffTree {
 		setPropertyToRoot(delta, P_BUSY_HINT, false);
 		pathTree.remove(delta.getPath());
 	}
-	
+
 	private void internalAdded(IDiff delta) {
 		changes.added(delta);
 	}
-	
+
 	private void internalChanged(IDiff delta) {
 		changes.changed(delta);
 	}
 	private void internalRemoved(IPath path, IDiff delta) {
 		changes.removed(path, delta);
 	}
-	
+
 	private void internalReset() {
 		changes.reset();
 	}
@@ -321,7 +321,7 @@ public class DiffTree implements IDiffTree {
 	public IPath[] getPaths() {
 		return pathTree.getPaths();
 	}
-	
+
 	/**
 	 * Return all the diffs contained in this diff tree.
 	 * @return all the diffs contained in this diff tree
@@ -329,7 +329,7 @@ public class DiffTree implements IDiffTree {
 	public IDiff[] getDiffs() {
 		return (IDiff[]) pathTree.values().toArray(new IDiff[pathTree.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffTree#countFor(int, int)
 	 */
@@ -358,7 +358,7 @@ public class DiffTree implements IDiffTree {
 			endInput(null);
 		}
 	}
-	
+
 	private void accumulatePropertyChanges(int property, IPath[] paths) {
 		Integer key = new Integer(property);
 		Set changes = (Set)propertyChanges.get(key);
@@ -410,7 +410,7 @@ public class DiffTree implements IDiffTree {
 			endInput(monitor);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffTree#hasDiffsMatching(org.eclipse.core.runtime.IPath, org.eclipse.team.core.diff.FastDiffFilter)
 	 */
@@ -424,7 +424,7 @@ public class DiffTree implements IDiffTree {
 					}
 					return false;
 				}
-			
+
 			}, IResource.DEPTH_INFINITE);
 		} catch (RuntimeException e) {
 			if (e == found)
@@ -433,13 +433,13 @@ public class DiffTree implements IDiffTree {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Report to any listeners that an error has occurred while populating the
 	 * set. Listeners will be notified that an error occurred and can react
 	 * accordingly.
 	 * </p>
-	 * 
+	 *
 	 * @param status
 	 *            the status that describes the error that occurred.
 	 */

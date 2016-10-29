@@ -19,7 +19,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 
 /**
  * Implementation of {@link IThreeWayDiff}.
- * 
+ *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -62,7 +62,7 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 		}
 		return direction;
 	}
-	
+
 	private static int calculateKind(ITwoWayDiff localChange, ITwoWayDiff remoteChange) {
 		int localKind = NO_CHANGE;
 		if (localChange != null)
@@ -105,14 +105,14 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 		int kind = getKind();
 		String label = ""; //$NON-NLS-1$
 		if(kind==IDiff.NO_CHANGE) {
-			label = super.toDiffString(); 
+			label = super.toDiffString();
 		} else {
 			label = SyncInfoToDiffConverter.diffDirectionToString(getDirection());
 			label = NLS.bind(Messages.concatStrings, new String[] { label, super.toDiffString() });
 		}
-		return label; 
+		return label;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
 	 */
@@ -122,7 +122,7 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 		if (super.equals(obj)) {
 			if (obj instanceof ThreeWayDiff) {
 				ThreeWayDiff other = (ThreeWayDiff) obj;
-				return changesEqual(getLocalChange(), other.getLocalChange()) 
+				return changesEqual(getLocalChange(), other.getLocalChange())
 					&& changesEqual(getRemoteChange(), other.getRemoteChange());
 			}
 		}

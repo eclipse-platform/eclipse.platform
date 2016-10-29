@@ -33,9 +33,9 @@ import org.eclipse.team.internal.core.*;
  * must minimally:
  * <ol>
  * 	<li>extend <code>RepositoryProvider</code>
- * 	<li>define a repository extension in <code>plugin.xml</code>. 
+ * 	<li>define a repository extension in <code>plugin.xml</code>.
  *     Here is an example extension point definition:
- * 
+ *
  *  <code>
  *	<br>&lt;extension point="org.eclipse.team.core.repository"&gt;
  *  <br>&nbsp;&lt;repository
@@ -54,24 +54,24 @@ import org.eclipse.team.internal.core.*;
  * @since 2.0
  */
 public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
-	
+
 	private final static String TEAM_SETID = "org.eclipse.team.repository-provider"; //$NON-NLS-1$
 
 	private final static List AllProviderTypeIds = initializeAllProviderTypes();
-	
+
 	// the project instance that this nature is assigned to
-	private IProject project;	
-	
+	private IProject project;
+
 	// lock to ensure that map/unmap and getProvider support concurrency
 	private static final ILock mappingLock = Job.getJobManager().newLock();
-    
+
     // Session property used to identify projects that are not mapped
     private static final Object NOT_MAPPED = new Object();
-	
+
 	/**
 	 * Instantiate a new RepositoryProvider with concrete class by given providerID
 	 * and associate it with project.
-	 * 
+	 *
 	 * @param project the project to be mapped
 	 * @param id the ID of the provider to be mapped to the project
 	 * @throws TeamException if
@@ -89,16 +89,16 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			// mappingLock. This is required because a caller of getProvider
 			// may hold a scheduling rule before getProvider is invoked but
 			// getProvider itself does not (and can not) obtain a scheduling rule.
-			// Thus, the locking order is always scheduling rule followed by 
+			// Thus, the locking order is always scheduling rule followed by
 			// mappingLock.
 			Job.getJobManager().beginRule(rule, null);
 			try {
 				mappingLock.acquire();
 				RepositoryProvider existingProvider = null;
-	
+
 				if(project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY) != null)
 					existingProvider = getProvider(project);	// get the real one, not the nature one
-				
+
 				//if we already have a provider, and its the same ID, we're ok
 				//if the ID's differ, unmap the existing.
 				if(existingProvider != null) {
@@ -107,11 +107,11 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 					else
 						unmap(project);
 				}
-				
+
 				// Create the provider as a session property before adding the persistent
 				// property to ensure that the provider can be instantiated
 				RepositoryProvider provider = mapNewProvider(project, id);
-	
+
 				//mark it with the persistent ID for filtering
 				try {
 					project.setPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY, id);
@@ -124,17 +124,17 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 						TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_couldNotClearAfterError, new String[] { project.getName(), id }), inner);
 					}
 					throw outer;
-				}	
-				
+				}
+
 				provider.configure();
-				
+
 				//adding the nature would've caused project description delta, so trigger one
 				project.touch(null);
-				
+
 				// Set the rule factory for the provider after the touch
 				// so the touch does not fail due to incompatible modify rules
 				TeamHookDispatcher.setProviderRuleFactory(project, provider.getRuleFactory());
-				
+
 				// Notify any listeners
 				RepositoryProviderManager.getInstance().providerMapped(provider);
 			} finally {
@@ -145,13 +145,13 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
-	}	
+	}
 
 	/*
 	 * Instantiate the provider denoted by ID and store it in the session property.
 	 * Return the new provider instance. If a TeamException is thrown, it is
 	 * guaranteed that the session property will not be set.
-	 * 
+	 *
 	 * @param project
 	 * @param id
 	 * @return RepositoryProvider
@@ -162,15 +162,15 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		final RepositoryProvider provider = newProvider(id); 	// instantiate via extension point
 
 		if(provider == null)
-			throw new TeamException(NLS.bind(Messages.RepositoryProvider_couldNotInstantiateProvider, new String[] { project.getName(), id })); 
-		
+			throw new TeamException(NLS.bind(Messages.RepositoryProvider_couldNotInstantiateProvider, new String[] { project.getName(), id }));
+
 		// validate that either the provider supports linked resources or the project has no linked resources
 		if (!provider.canHandleLinkedResourceURI()) {
 			try {
 				project.accept(new IResourceProxyVisitor() {
 					public boolean visit(IResourceProxy proxy) throws CoreException {
 						if (proxy.isLinked()) {
-							if (!provider.canHandleLinkedResources() || 
+							if (!provider.canHandleLinkedResources() ||
 									proxy.requestFullPath().segmentCount() > 2 ||
 									!EFS.SCHEME_FILE.equals(proxy.requestResource().getLocationURI().getScheme()))
 								throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedURIsExist, new String[] { project.getName(), id }), null));
@@ -192,14 +192,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				for (int i = 0; i < members.length; i++) {
 					IResource resource = members[i];
 					if (resource.isLinked()) {
-						throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedResourcesExist, new String[] { project.getName(), id }), null)); 
+						throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedResourcesExist, new String[] { project.getName(), id }), null));
 					}
 				}
 			} catch (CoreException e) {
 				throw TeamPlugin.wrapException(e);
 			}
 		}
-		
+
 		//store provider instance as session property
 		try {
 			project.setSessionProperty(TeamPlugin.PROVIDER_PROP_KEY, provider);
@@ -208,7 +208,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			throw TeamPlugin.wrapException(e);
 		}
 		return provider;
-	}	
+	}
 
 	private static RepositoryProvider mapExistingProvider(IProject project, String id) throws TeamException {
 		try {
@@ -250,12 +250,12 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			try {
 				mappingLock.acquire();
 				String id = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
-				
+
 				//If you tried to remove a non-existant nature it would fail, so we need to as well with the persistent prop
 				if(id == null) {
-					throw new TeamException(NLS.bind(Messages.RepositoryProvider_No_Provider_Registered, new String[] { project.getName() })); 
+					throw new TeamException(NLS.bind(Messages.RepositoryProvider_No_Provider_Registered, new String[] { project.getName() }));
 				}
-				
+
 				//This will instantiate one if it didn't already exist,
 				//which is ok since we need to call deconfigure() on it for proper lifecycle
 				RepositoryProvider provider = getProvider(project);
@@ -263,23 +263,23 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 					// There is a persistent property but the provider cannot be obtained.
 					// The reason could be that the provider's plugin is no longer available.
 					// Better log it just in case this is unexpected.
-					TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_couldNotInstantiateProvider, new String[] { project.getName(), id }), null);  
+					TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_couldNotInstantiateProvider, new String[] { project.getName(), id }), null);
 				}
-	
+
 				if (provider != null) provider.deconfigure();
-								
+
 				project.setSessionProperty(TeamPlugin.PROVIDER_PROP_KEY, null);
 				project.setPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY, null);
-				
+
 				if (provider != null) provider.deconfigured();
-				
+
 				//removing the nature would've caused project description delta, so trigger one
 				project.touch(null);
-				
+
 				// Change the rule factory after the touch in order to
 				// avoid rule incompatibility
 				TeamHookDispatcher.setProviderRuleFactory(project, null);
-				
+
 				// Notify any listeners
 				RepositoryProviderManager.getInstance().providerUnmapped(project);
 			} finally {
@@ -290,8 +290,8 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		} finally {
 			Job.getJobManager().endRule(rule);
 		}
-	}	
-	
+	}
+
 	/*
 	 * Return the provider mapped to project, or null if none;
 	 */
@@ -301,7 +301,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
             return (RepositoryProvider) provider;
         }
         return null;
-	}	
+	}
 
 
 	/**
@@ -312,21 +312,21 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	}
 
 	/**
-	 * Configures the provider for the given project. This method is called after <code>setProject</code>. 
+	 * Configures the provider for the given project. This method is called after <code>setProject</code>.
 	 * If an exception is generated during configuration
 	 * of the project, the provider will not be assigned to the project.
-	 * 
-	 * @throws CoreException if the configuration fails. 
+	 *
+	 * @throws CoreException if the configuration fails.
 	 */
 	abstract public void configureProject() throws CoreException;
-	
+
 	/**
 	 * Configures the nature for the given project. This is called by <code>RepositoryProvider.map()</code>
 	 * the first time a provider is mapped to a project. It is not intended to be called by clients.
-	 * 
+	 *
 	 * @throws CoreException if this method fails. If the configuration fails the provider will not be
 	 * associated with the project.
-	 * 
+	 *
 	 * @see RepositoryProvider#configureProject()
 	 */
 	final public void configure() throws CoreException {
@@ -336,7 +336,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			try {
 				RepositoryProvider.unmap(getProject());
 			} catch(TeamException e2) {
-				throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, 0, Messages.RepositoryProvider_Error_removing_nature_from_project___1 + getID(), e2)); 
+				throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, 0, Messages.RepositoryProvider_Error_removing_nature_from_project___1 + getID(), e2));
 			}
 			throw e;
 		}
@@ -349,30 +349,30 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 */
 	protected void deconfigured() {
 	}
-	
+
 	/**
-	 * Answer the id of this provider instance. The id should be the repository provider's 
+	 * Answer the id of this provider instance. The id should be the repository provider's
 	 * id as defined in the provider plugin's plugin.xml.
-	 * 
+	 *
 	 * @return the nature id of this provider
 	 */
 	abstract public String getID();
 
 	/**
-	 * Returns an <code>IFileModificationValidator</code> for pre-checking operations 
+	 * Returns an <code>IFileModificationValidator</code> for pre-checking operations
  	 * that modify the contents of files.
  	 * Returns <code>null</code> if the provider does not wish to participate in
  	 * file modification validation.
-	 * @return an <code>IFileModificationValidator</code> for pre-checking operations 
+	 * @return an <code>IFileModificationValidator</code> for pre-checking operations
  	 * that modify the contents of files
- 	 * 
+ 	 *
 	 * @see org.eclipse.core.resources.IFileModificationValidator
 	 * @deprecated use {@link #getFileModificationValidator2()}
 	 */
 	public IFileModificationValidator getFileModificationValidator() {
 		return null;
 	}
-	
+
 	/**
 	 * Returns a {@link FileModificationValidator} for pre-checking operations
 	 * that modify the contents of files. Returns <code>null</code> if the
@@ -386,10 +386,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * <p>
 	 * This method is not intended to be called by clients. Clients should
 	 * use the {@link IWorkspace#validateEdit(IFile[], Object)} method instead.
-	 * 
+	 *
 	 * @return an <code>FileModificationValidator</code> for pre-checking
 	 *         operations that modify the contents of files
-	 * 
+	 *
 	 * @see FileModificationValidator
 	 * @see IWorkspace#validateEdit(IFile[], Object)
 	 * @since 3.3
@@ -414,7 +414,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			}
 		};
 	}
-	
+
 	/**
 	 * Returns an <code>IFileHistoryProvider</code> which can be used to access
 	 * file histories. By default, returns <code>null</code>. Subclasses may override.
@@ -425,46 +425,46 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	public IFileHistoryProvider getFileHistoryProvider(){
 	   return null;
 	}
-	
+
 	/**
 	 * Returns an <code>IMoveDeleteHook</code> for handling moves and deletes
-	 * that occur within projects managed by the provider. This allows providers 
-	 * to control how moves and deletes occur and includes the ability to prevent them. 
+	 * that occur within projects managed by the provider. This allows providers
+	 * to control how moves and deletes occur and includes the ability to prevent them.
 	 * <p>
 	 * Returning <code>null</code> signals that the default move and delete behavior is desired.
 	 * @return an <code>IMoveDeleteHook</code> for handling moves and deletes
 	 * that occur within projects managed by the provider
-	 * 
+	 *
 	 * @see org.eclipse.core.resources.team.IMoveDeleteHook
 	 */
 	public IMoveDeleteHook getMoveDeleteHook() {
 		return null;
 	}
-	
+
 	/**
 	 * Returns a brief description of this provider. The exact details of the
 	 * representation are unspecified and subject to change, but the following
 	 * may be regarded as typical:
-	 * 
+	 *
 	 * "SampleProject:org.eclipse.team.cvs.provider"
-	 * 
+	 *
 	 * @return a string description of this provider
 	 */
 	public String toString() {
-		return NLS.bind(Messages.RepositoryProvider_toString, new String[] { getProject().getName(), getID() });   
+		return NLS.bind(Messages.RepositoryProvider_toString, new String[] { getProject().getName(), getID() });
 	}
-	
+
 	/**
 	 * Returns all known (registered) RepositoryProvider ids.
-	 * 
+	 *
 	 * @return an array of registered repository provider ids.
 	 */
 	final public static String[] getAllProviderTypeIds() {
 		IProjectNatureDescriptor[] desc = ResourcesPlugin.getWorkspace().getNatureDescriptors();
 		Set teamSet = new HashSet();
-		
+
 		teamSet.addAll(AllProviderTypeIds);	// add in all the ones we know via extension point
-		
+
 		//fall back to old method of nature ID to find any for backwards compatibility
 		for (int i = 0; i < desc.length; i++) {
 			String[] setIds = desc[i].getNatureSetIds();
@@ -476,10 +476,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		}
 		return (String[]) teamSet.toArray(new String[teamSet.size()]);
 	}
-	
+
 	/**
-	 * Returns the provider for a given IProject or <code>null</code> if a provider is not associated with 
-	 * the project or if the project is closed or does not exist. This method should be called if the caller 
+	 * Returns the provider for a given IProject or <code>null</code> if a provider is not associated with
+	 * the project or if the project is closed or does not exist. This method should be called if the caller
 	 * is looking for <b>any</b> repository provider. Otherwise call <code>getProvider(project, id)</code>
 	 * to look for a specific repository provider type.
 	 * </p>
@@ -487,9 +487,9 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * @return the repository provider associated with the project
 	 */
 	final public static RepositoryProvider getProvider(IProject project) {
-		try {					
+		try {
 			if (project.isAccessible()) {
-				
+
 				//-----------------------------
 				//First, look for the session property
 				RepositoryProvider provider = lookupProviderProp(project);
@@ -499,15 +499,15 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
                 // This is done to avoid accessing the persistent property store
                 if (isMarkedAsUnshared(project))
                     return null;
-				
+
 				// -----------------------------
 				//Next, check if it has the ID as a persistent property, if yes then instantiate provider
 				String id = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
 				if(id != null)
 					return mapExistingProvider(project, id);
-				
+
 				//Couldn't find using new method, fall back to lookup using natures for backwards compatibility
-				//-----------------------------		
+				//-----------------------------
 				IProjectDescription projectDesc = project.getDescription();
 				String[] natureIds = projectDesc.getNatureIds();
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -521,7 +521,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 						for (int j = 0; j < setIds.length; j++) {
 							if(setIds[j].equals(TEAM_SETID)) {
 								return getProvider(project, natureIds[i]);
-							}			
+							}
 						}
 					}
 				}
@@ -535,7 +535,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Return whether the given exception is acceptable during a getProvider().
 	 * If the exception is acceptable, it is assumed that there is no provider
@@ -546,10 +546,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	}
 
 	/**
-	 * Returns a provider of type with the given id if associated with the given project 
+	 * Returns a provider of type with the given id if associated with the given project
 	 * or <code>null</code> if the project is not associated with a provider of that type
 	 * or the nature id is that of a non-team repository provider nature.
-	 * 
+	 *
 	 * @param project the project to query for a provider
 	 * @param id the repository provider id
 	 * @return the repository provider
@@ -570,11 +570,11 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
                 // This is done to avoid accessing the persistent property store
                 if (isMarkedAsUnshared(project))
                     return null;
-                
+
 				// There isn't one so check the persistent property
 				String existingID = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
 				if(id.equals(existingID)) {
-					// The ids are equal so instantiate and return					
+					// The ids are equal so instantiate and return
 					RepositoryProvider newProvider = mapExistingProvider(project, id);
 					if (newProvider!= null && newProvider.getID().equals(id)) {
 						return newProvider;
@@ -583,7 +583,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 						return null;
 					}
 				}
-					
+
 				//couldn't find using new method, fall back to lookup using natures for backwards compatibility
 				//-----------------------------
 
@@ -592,12 +592,12 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				IProjectNatureDescriptor desc = ResourcesPlugin.getWorkspace().getNatureDescriptor(id);
 				if(desc == null) //for backwards compatibility, may not have any nature by that ID
 					return null;
-					
+
 				String[] setIds = desc.getNatureSetIds();
 				for (int i = 0; i < setIds.length; i++) {
 					if(setIds[i].equals(TEAM_SETID)) {
 						return (RepositoryProvider)project.getNature(id);
-					}			
+					}
 				}
 				markAsUnshared(project);
 			}
@@ -609,20 +609,20 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns whether the given project is shared or not. This is a lightweight
 	 * method in that it will not instantiate a provider instance (as
 	 * <code>getProvider</code> would) if one is not already instantiated.
-	 * 
+	 *
 	 * Note that IProject.touch() generates a project description delta.  This, in combination
 	 * with isShared() can be used to be notified of sharing/unsharing of projects.
-	 * 
+	 *
 	 * @param project the project being tested.
 	 * @return boolean
-	 * 
+	 *
 	 * @see #getProvider(IProject)
-	 * 
+	 *
 	 * @since 2.1
 	 */
 	public static boolean isShared(IProject project) {
@@ -642,7 +642,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			return false;
 		}
 	}
- 	
+
 	private static boolean isMarkedAsUnshared(IProject project) {
         try {
             return project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY) == NOT_MAPPED;
@@ -672,10 +672,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	public void setProject(IProject project) {
 		this.project = project;
 	}
-	
+
 	private static List initializeAllProviderTypes() {
 		List allIDs = new ArrayList();
-		
+
 		TeamPlugin plugin = TeamPlugin.getPlugin();
 		if (plugin != null) {
 			IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
@@ -710,17 +710,17 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 								TeamPlugin.log(e);
 							} catch (ClassCastException e) {
 								String className = configElements[j].getAttribute("class"); //$NON-NLS-1$
-								TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_invalidClass, new String[] { id, className }), e); 
+								TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_invalidClass, new String[] { id, className }), e);
 							}
 							return null;
 						}
 					}
 				}
-			}		
+			}
 		}
 		return null;
-	}	
-	
+	}
+
 	/**
 	 * Method validateCreateLink is invoked by the Platform Core TeamHook when a
 	 * linked resource is about to be added to the provider's project. It should
@@ -728,14 +728,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * subclasses (although it is possible to do so in special cases).
 	 * Subclasses can indicate that they support linked resources by overriding
 	 * the <code>canHandleLinkedResources()</code> method.
-	 * 
+	 *
 	 * @param resource see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @param updateFlags see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @param location see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @return IStatus see <code>org.eclipse.core.resources.team.TeamHook</code>
-	 * 
+	 *
 	 * @see RepositoryProvider#canHandleLinkedResources()
-	 * 
+	 *
 	 * @deprecated see {@link #validateCreateLink(IResource, int, URI) } instead
 	 * @since 2.1
 	 */
@@ -743,10 +743,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		if (canHandleLinkedResources()) {
 			return Team.OK_STATUS;
 		} else {
-			return new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedResourcesNotSupported, new String[] { getProject().getName(), getID() }), null); 
+			return new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedResourcesNotSupported, new String[] { getProject().getName(), getID() }), null);
 		}
 	}
-	
+
 	/**
 	 * Method validateCreateLink is invoked by the Platform Core TeamHook when a
 	 * linked resource is about to be added to the provider's project. It should
@@ -754,14 +754,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * subclasses (although it is possible to do so in special cases).
 	 * Subclasses can indicate that they support linked resources by overriding
 	 * the <code>canHandleLinkedResourcesAtArbitraryDepth()</code> method.
-	 * 
+	 *
 	 * @param resource see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @param updateFlags see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @param location see <code>org.eclipse.core.resources.team.TeamHook</code>
 	 * @return IStatus see <code>org.eclipse.core.resources.team.TeamHook</code>
-	 * 
+	 *
 	 * @see RepositoryProvider#canHandleLinkedResourceURI()
-	 * 
+	 *
 	 * @since 3.2
 	 */
 	public IStatus validateCreateLink(IResource resource, int updateFlags, URI location) {
@@ -773,30 +773,30 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		if (canHandleLinkedResourceURI()) {
 			return Team.OK_STATUS;
 		} else {
-			return new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedURIsNotSupported, new String[] { getProject().getName(), getID() }), null); 
+			return new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedURIsNotSupported, new String[] { getProject().getName(), getID() }), null);
 		}
 	}
-	
+
 	/**
 	 * Method canHandleLinkedResources should be overridden by subclasses who
 	 * support linked resources. At a minimum, supporting linked resources
-	 * requires changes to the move/delete hook 
+	 * requires changes to the move/delete hook
 	 * {@link org.eclipse.core.resources.team.IMoveDeleteHook}. This method is
 	 * called after the RepositoryProvider is instantiated but before
 	 * <code>setProject()</code> is invoked so it will not have access to any
 	 * state determined from the <code>setProject()</code> method.
 	 * @return boolean
-	 * 
+	 *
 	 * @see org.eclipse.core.resources.team.IMoveDeleteHook
-	 * 
+	 *
 	 * @since 2.1
-	 * 
+	 *
 	 * @deprecated see {@link #canHandleLinkedResourceURI() }
 	 */
 	public boolean canHandleLinkedResources() {
 		return canHandleLinkedResourceURI();
 	}
-	
+
 	/**
 	 * Return whether this repository provider can handle linked resources that
 	 * are located via a URI (i.e. may not be on the local file system) or occur
@@ -808,24 +808,24 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * RepositoryProvider is instantiated but before <code>setProject()</code>
 	 * is invoked so it will not have access to any state determined from the
 	 * <code>setProject()</code> method.
-	 * 
+	 *
 	 * @return whether this repository provider can handle linked resources that
 	 *         are located via a URI or occur at an arbitrary depth in the
 	 *         project
-	 * 
+	 *
 	 * @see #validateCreateLink(IResource, int, URI)
-	 * 
+	 *
 	 * @since 3.2
 	 */
 	public boolean canHandleLinkedResourceURI() {
 		return false;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	public Object getAdapter(Class adapter) {		
+	public Object getAdapter(Class adapter) {
 		return null;
 	}
 
@@ -836,7 +836,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * on the resources in the project the provider is mapped to.
 	 * <p>
 	 * By default, the factory returned by this method is pessimistic and
-	 * obtains the workspace lock for all operations that could result in a 
+	 * obtains the workspace lock for all operations that could result in a
 	 * callback to the provider (either through the <code>IMoveDeleteHook</code>
 	 * or <code>IFileModificationValidator</code>). This is done to ensure that
 	 * older providers are not broken. However, providers should override this
@@ -850,10 +850,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	public IResourceRuleFactory getRuleFactory() {
 		return new PessimisticResourceRuleFactory();
 	}
-	
+
 	/**
 	 * Return a {@link Subscriber} that describes the synchronization state
-	 * of the resources contained in the project associated with this 
+	 * of the resources contained in the project associated with this
 	 * provider. The subscriber is obtained from the {@link RepositoryProviderType}
 	 * associated with a provider and is thus shared for all providers of the
 	 * same type.
@@ -866,4 +866,4 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			return type.getSubscriber();
 		return null;
 	}
-}	
+}

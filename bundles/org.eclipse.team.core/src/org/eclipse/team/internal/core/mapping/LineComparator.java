@@ -124,7 +124,7 @@ class LineComparator implements IRangeComparator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
 	 */
@@ -134,7 +134,7 @@ class LineComparator implements IRangeComparator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int,
 	 * org.eclipse.compare.rangedifferencer.IRangeComparator, int)
@@ -148,7 +148,7 @@ class LineComparator implements IRangeComparator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison
 	 * (int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)

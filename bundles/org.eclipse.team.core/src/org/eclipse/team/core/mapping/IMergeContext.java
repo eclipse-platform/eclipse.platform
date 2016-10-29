@@ -35,7 +35,7 @@ import org.eclipse.team.core.mapping.provider.MergeContext;
  * also call {@link IJobManager#join(Object, IProgressMonitor)} if they wish to
  * wait until all background handlers related to this context are finished.
  * </p>
- * 
+ *
  * @see IResourceMappingMerger
  * @see MergeContext
  * @since 3.2
@@ -58,7 +58,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * context.
 	 */
 	public int getMergeType();
-	
+
 	/**
 	 * Method that allows the model merger to signal that the file associated
 	 * with the given diff node has been completely merged. Model mergers can
@@ -85,7 +85,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * file at the content level and make the local file in-sync with the remote
 	 * if the contents are the same.
 	 * </p>
-	 * 
+	 *
 	 * @param node the diff node whose file has been merged
 	 * @param inSyncHint a hint to the context that the model persisted in the
 	 *            file is in-sync.
@@ -98,7 +98,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	/**
 	 * Mark the files associated with the given diff nodes as being merged.
 	 * This method is equivalent to calling {@link #markAsMerged(IDiff, boolean, IProgressMonitor) }
-	 * for each diff but gives the context the opportunity to optimize the 
+	 * for each diff but gives the context the opportunity to optimize the
 	 * operation for multiple files.
 	 * <p>
 	 * This method will batch change notification by using the
@@ -109,7 +109,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * occur. Clients may wrap the call in an outer run that either uses a
 	 * broader scheduling rule or the <code>IWorkspace.AVOID_UPDATES</code>
 	 * flag.
-	 * 
+	 *
 	 * @param nodes the nodes to be marked as merged
 	 * @param inSyncHint a hint to the context that the model persisted in the
 	 *            file is in-sync.
@@ -118,7 +118,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 */
 	public void markAsMerged(IDiff[] nodes, boolean inSyncHint,
 			IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
 	 * Method that can be called by the model merger to attempt a file-system
 	 * level merge. This is useful for cases where the model merger does not
@@ -174,7 +174,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * change (see {@link IThreeWayDiff#getRemoteChange()}), whereas conflicts
 	 * are indicated by the three-way delta itself.
 	 * <ul>
-	 * 
+	 *
 	 * <li> When the delta kind is {@link IDiff#ADD} and the delta is also a
 	 * move (i.e. the {@link ITwoWayDiff#MOVE_FROM} is set). The merge can
 	 * either use the {@link #merge(IDiff[], boolean, IProgressMonitor) } method
@@ -185,7 +185,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * later approach is helpful in the case where the local file and remote
 	 * file both contain content changes (i.e. the file can be moved by the
 	 * model and then the contents can be merged by the model). </li>
-	 * 
+	 *
 	 * <li> When the delta kind is {@link IDiff#REMOVE} and the delta is also a
 	 * move (i.e. the {@link ITwoWayDiff#MOVE_TO} is set). The merge can either
 	 * use the {@link #merge(IDiff[], boolean, IProgressMonitor) } method to
@@ -196,7 +196,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * helpful in the case where the local file and remote file both contain
 	 * content changes (i.e. the file can be moved by the model and then the
 	 * contents can be merged by the model). </li>
-	 * 
+	 *
 	 * <li> When the delta kind is {@link IDiff#ADD} and it is not part of a
 	 * move, the merger must use the
 	 * {@link #merge(IDiff[], boolean, IProgressMonitor) } method to accept this
@@ -205,7 +205,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * they can overwrite the file after merging it. Models should consult the
 	 * flags to see if the remote change is a rename ({@link ITwoWayDiff#MOVE_FROM}).
 	 * </li>
-	 * 
+	 *
 	 * <li>When the delta kind is {@link IDiff#REMOVE} and it is not part of a
 	 * move, the merger can use the
 	 * {@link #merge(IDiff[], boolean, IProgressMonitor) } method but could also
@@ -215,7 +215,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * removing the file and the local changes) or call
 	 * {@link #markAsMerged(IDiff, boolean, IProgressMonitor) } on the file
 	 * which will convert the incoming deletion to an outgoing addition.</li>
-	 * 
+	 *
 	 * <li>When the delta kind is {@link IDiff#CHANGE} and there is no
 	 * conflict, the model is advised to use the
 	 * {@link #merge(IDiff[], boolean, IProgressMonitor) } method to merge these
@@ -224,7 +224,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * {@link #markAsMerged(IDiff, boolean, IProgressMonitor) } with the
 	 * <code>inSyncHint</code> set to <code>true</code> but this will be
 	 * less efficient. </li>
-	 * 
+	 *
 	 * <li>When the delta kind is {@link IDiff#CHANGE} and there is a conflict,
 	 * the model can use the {@link #merge(IDiff[], boolean, IProgressMonitor) }
 	 * method to merge these changes. If the force flag is not set, an
@@ -235,12 +235,12 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * <code>inSyncHint</code> set to <code>false</code> which will make the
 	 * file an outgoing change. </li>
 	 * </ul>
-	 * 
+	 *
 	 * TODO: need to talk about ITwoWayDelta CONTENT and REPLACED
-	 * 
+	 *
 	 * @see IDiffTree#addDiffChangeListener(IDiffChangeListener)
 	 * @see org.eclipse.core.resources.IWorkspace#addResourceChangeListener(IResourceChangeListener)
-	 * 
+	 *
 	 * @param diff
 	 *            the difference to be merged
 	 * @param ignoreLocalChanges
@@ -271,7 +271,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * occur. Clients may wrap the call in an outer run that either uses a
 	 * broader scheduling rule or the <code>IWorkspace.AVOID_UPDATES</code>
 	 * flag.
-	 * 
+	 *
 	 * @param diffs the differences to be merged
 	 * @param ignoreLocalChanges ignore any local changes when performing the merge.
 	 * @param monitor a progress monitor
@@ -289,24 +289,24 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * the diff tree. For a three-way merge, this should throw away the
 	 * remote change and keep any local changes. So, for instance, if
 	 * the diff is an incoming change or a conflict, the result of rejecting the
-	 * change should be an outgoing change that will make the remote state 
+	 * change should be an outgoing change that will make the remote state
 	 * match the local state.
 	 * @param diff the diff
 	 * @param monitor a progress monitor
 	 * @throws CoreException
 	 */
 	public void reject(IDiff diff, IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
-	 * Reject the changes associated with the given diffs. This method is 
-	 * equivalent to calling {@link #reject(IDiff, IProgressMonitor)} for 
+	 * Reject the changes associated with the given diffs. This method is
+	 * equivalent to calling {@link #reject(IDiff, IProgressMonitor)} for
 	 * each diff.
 	 * @param diffs the diffs
 	 * @param monitor a progress monitor
 	 * @throws CoreException
 	 */
 	public void reject(IDiff[] diffs, IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
 	 * Runs the given action as an atomic workspace operation. It has the same
 	 * semantics as
@@ -314,7 +314,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * with the added behavior that any synchronization state updates are
 	 * batched or deferred until the end of the operation (depending on the
 	 * {@link IWorkspace#AVOID_UPDATE } flag.
-	 * 
+	 *
 	 * @param runnable a workspace runnable
 	 * @param rule a scheduling rule to be obtained while the runnable is run
 	 * @param flags flags indicating when updates occur (either
@@ -331,9 +331,9 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * associated with the given diff. If a resource being merged is a folder or
 	 * project, the returned rule will be sufficient to merge any files
 	 * contained in the folder or project. The returned rule also applies to
-	 * {@link #markAsMerged(IDiff, boolean, IProgressMonitor) } 
+	 * {@link #markAsMerged(IDiff, boolean, IProgressMonitor) }
 	 * and {@link #reject(IDiff, IProgressMonitor)}.
-	 * 
+	 *
 	 * @param diff the diff to be merged
 	 * @return the scheduling rule that is required to merge the resource of the
 	 *         given diff
@@ -345,9 +345,9 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * associated with the given diffs. If a resource being merged is a folder
 	 * or project, the returned rule will be sufficient to merge any files
 	 * contained in the folder or project. The returned rule also applies to
-	 * {@link #markAsMerged(IDiff[], boolean, IProgressMonitor) } 
+	 * {@link #markAsMerged(IDiff[], boolean, IProgressMonitor) }
 	 * and {@link #reject(IDiff[], IProgressMonitor)}.
-	 * 
+	 *
 	 * @param diffs the diffs being merged
 	 * @return the scheduling rule that is required to merge the resources of
 	 *         the given diffs

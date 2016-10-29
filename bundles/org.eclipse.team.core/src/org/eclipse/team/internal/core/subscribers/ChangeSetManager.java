@@ -22,7 +22,7 @@ public abstract class ChangeSetManager {
     private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
     private Set sets;
 	private boolean initializing;
-    
+
     /**
      * Return the list of listeners registered with this change set manager.
      * @return the list of listeners registered with this change set manager
@@ -30,7 +30,7 @@ public abstract class ChangeSetManager {
     protected Object[] getListeners() {
         return listeners.getListeners();
     }
-    
+
     /**
      * Method that can be invoked by subclasses when the name of
      * a managed change set changes.
@@ -54,7 +54,7 @@ public abstract class ChangeSetManager {
             }
         }
     }
-    
+
     /**
      * Method which allows subclasses to notify listeners that the default
      * set has changed.
@@ -77,7 +77,7 @@ public abstract class ChangeSetManager {
             });
         }
     }
-    
+
     /**
      * Add the set to the list of active sets.
      * @param set the set to be added
@@ -175,7 +175,7 @@ public abstract class ChangeSetManager {
         Set sets = internalGetSets();
 		return (ChangeSet[]) sets.toArray(new ChangeSet[sets.size()]);
     }
-    
+
     /**
      * Dispose of any resources maintained by the manager
      */
@@ -204,7 +204,7 @@ public abstract class ChangeSetManager {
             });
         }
     }
-    
+
     private Set internalGetSets() {
     	if (sets == null) {
     		sets = Collections.synchronizedSet(new HashSet());
@@ -223,7 +223,7 @@ public abstract class ChangeSetManager {
      * This method is called the first time the sets are accessed.
      */
 	protected abstract void initializeSets();
-	
+
 	public boolean isInitialized() {
 		return sets != null;
 	}

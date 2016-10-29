@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Diff change listener that reports changes in an {@link IDiffTree}.
  * Clients may implement this interface.
- * 
+ *
  * @see IDiffTree
- * 
+ *
  * @since 3.2
  */
 public interface IDiffChangeListener {
@@ -29,7 +29,7 @@ public interface IDiffChangeListener {
 	 * @param monitor a progress monitor
 	 */
 	void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor);
-	
+
 	/**
 	 * The given property has changed for the given paths.
 	 * @param tree the tree for which the property changed

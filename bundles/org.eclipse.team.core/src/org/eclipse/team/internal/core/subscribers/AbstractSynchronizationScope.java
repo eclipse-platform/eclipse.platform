@@ -21,7 +21,7 @@ import org.eclipse.team.core.mapping.ISynchronizationScopeChangeListener;
 
 /**
  * An abstract implementation of an {@link ISynchronizationScope}.
- * 
+ *
  * @since 3.2
  */
 public abstract class AbstractSynchronizationScope implements ISynchronizationScope {
@@ -44,7 +44,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#contains(org.eclipse.core.resources.IResource)
 	 */
@@ -57,7 +57,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Add the resource to the list if it isn't there already
 	 * or is not a child of an existing resource.
@@ -77,7 +77,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 		// There were no higher resources, so add this one
 		roots.add(resource);
 	}
-	
+
 	/**
 	 * Fire the scope change event
 	 * @param newTraversals the new traversals (may be empty)

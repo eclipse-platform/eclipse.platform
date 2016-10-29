@@ -27,13 +27,13 @@ import org.eclipse.team.internal.core.importing.BundleImporterExtension;
 /**
  * The Team class provides a global point of reference for the global ignore set
  * and the text/binary registry.
- * 
+ *
  * @since 2.0
  */
 public final class Team {
-    
+
     private static class StringMappingWrapper implements IFileTypeInfo {
-        
+
         private final IStringMapping fMapping;
 
         public StringMappingWrapper(IStringMapping mapping) {
@@ -47,45 +47,45 @@ public final class Team {
         public int getType() {
             return fMapping.getType();
         }
-        
+
     }
-	
+
 	private static final String PREF_TEAM_IGNORES = "ignore_files"; //$NON-NLS-1$
 	private static final String PREF_TEAM_SEPARATOR = "\n"; //$NON-NLS-1$
-	public static final Status OK_STATUS = new Status(IStatus.OK, TeamPlugin.ID, IStatus.OK, Messages.ok, null); 
-	
+	public static final Status OK_STATUS = new Status(IStatus.OK, TeamPlugin.ID, IStatus.OK, Messages.ok, null);
+
 	// File type constants
 	public static final int UNKNOWN = 0;
 	public static final int TEXT = 1;
 	public static final int BINARY = 2;
-	
+
 
 	// The ignore list that is read at startup from the persisted file
 	protected static SortedMap globalIgnore, pluginIgnore;
 	private static StringMatcher[] ignoreMatchers;
-    
+
     private final static FileContentManager fFileContentManager;
-    
+
 	private static List fBundleImporters;
 
     static {
         fFileContentManager= new FileContentManager();
     }
-	
-	
+
+
 	/**
      * Return the type of the given IStorage. First, we check whether a mapping has
      * been defined for the name of the IStorage. If this is not the case, we check for
      * a mapping with the extension. If no mapping is defined, UNKNOWN is returned.
-	 * 
+	 *
 	 * Valid return values are:
 	 * Team.TEXT
 	 * Team.BINARY
 	 * Team.UNKNOWN
-	 * 
+	 *
 	 * @param storage  the IStorage
 	 * @return whether the given IStorage is TEXT, BINARY, or UNKNOWN
-     * 
+     *
      * @deprecated Use <code>getFileContentManager().getType(IStorage storage)</code> instead.
 	 */
 	public static int getType(IStorage storage) {
@@ -94,10 +94,10 @@ public final class Team {
 
 	/**
 	 * Returns whether the given file or folder with its content should be ignored.
-	 * 
+	 *
 	 * This method answers true if the file matches one of the global ignore
 	 * patterns, or if the file is marked as derived.
-	 * 
+	 *
 	 * @param resource the file or folder
 	 * @return whether the file should be ignored
 	 */
@@ -105,7 +105,7 @@ public final class Team {
 		if (resource.isDerived()) return true;
 		return matchesEnabledIgnore(resource);
 	}
-	
+
 	/**
 	 * Returns whether the given file should be ignored.
 	 * @param file file to check
@@ -116,7 +116,7 @@ public final class Team {
 		if (file.isDerived()) return true;
 		return matchesEnabledIgnore(file);
 	}
-	
+
 	private static boolean matchesEnabledIgnore(IResource resource) {
 		StringMatcher[] matchers = getStringMatchers();
 		for (int i = 0; i < matchers.length; i++) {
@@ -128,7 +128,7 @@ public final class Team {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns whether the given file should be ignored.
 	 * @param file file to check
@@ -139,10 +139,10 @@ public final class Team {
 		return matchesEnabledIgnore(file);
 	}
 
-	
+
 	/**
      * Return all known file types.
-	 * 
+	 *
 	 * @return all known file types
      * @deprecated Use <code>getFileContentManager().getExtensionMappings()</code> instead.
 	 */
@@ -154,7 +154,7 @@ public final class Team {
         }
         return infos;
 	}
-    
+
 	/**
 	 * Returns the list of global ignores.
 	 * @return all ignore infos representing globally ignored patterns
@@ -176,7 +176,7 @@ public final class Team {
 			try {
 				readIgnoreState();
 			} catch (TeamException e) {
-				TeamPlugin.log(IStatus.ERROR, Messages.Team_Error_loading_ignore_state_from_disk_1, e); 
+				TeamPlugin.log(IStatus.ERROR, Messages.Team_Error_loading_ignore_state_from_disk_1, e);
 			}
 			initializePluginIgnores(pluginIgnore, globalIgnore);
 		}
@@ -218,8 +218,8 @@ public final class Team {
 		}
 		return ignoreMatchers;
 	}
-	
-	
+
+
 	/**
      * Set the file type for the give extensions. This
      * will replace the existing file types with this new list.
@@ -228,21 +228,21 @@ public final class Team {
 	 * Team.TEXT
 	 * Team.BINARY
 	 * Team.UNKNOWN
-	 * 
+	 *
 	 * @param extensions  the file extensions
 	 * @param types  the file types
-     * 
+     *
      * @deprecated Use <code>getFileContentManager().setExtensionMappings()</code> instead.
 	 */
 	public static void setAllTypes(String[] extensions, int[] types) {
         fFileContentManager.addExtensionMappings(extensions, types);
 	}
-    
+
 	/**
 	 * Add patterns to the list of global ignores.
-	 * 
+	 *
 	 * @param patterns Array of patterns to set
-	 * @param enabled Array of booleans indicating if given pattern is enabled 
+	 * @param enabled Array of booleans indicating if given pattern is enabled
 	 */
 	public static void setAllIgnores(String[] patterns, boolean[] enabled) {
 		initializeIgnores();
@@ -267,17 +267,17 @@ public final class Team {
 				buf.append(en);
 				buf.append(PREF_TEAM_SEPARATOR);
 			}
-			
+
 		}
 		TeamPlugin.getPlugin().getPluginPreferences().setValue(PREF_TEAM_IGNORES, buf.toString());
 	}
-	
-	
+
+
 
 
 	/*
 	 * IGNORE
-	 * 
+	 *
 	 * Reads the ignores currently defined by extensions.
 	 */
 	private static void initializePluginIgnores(SortedMap pIgnore, SortedMap gIgnore) {
@@ -359,7 +359,7 @@ public final class Team {
 
 	/*
 	 * IGNORE
-	 * 
+	 *
 	 * Reads global ignore preferences and populates globalIgnore
 	 */
 	private static void readIgnoreState() throws TeamException {
@@ -383,7 +383,7 @@ public final class Team {
 				if (pattern.length()==0) return;
 				enabled = tok.nextToken();
 				globalIgnore.put(pattern, Boolean.valueOf(enabled));
-			} 
+			}
 		} catch (NoSuchElementException e) {
 			return;
 		}
@@ -420,30 +420,30 @@ public final class Team {
 		} catch (FileNotFoundException e) {
 			// not a fatal error, there just happens not to be any state to read
 		} catch (IOException ex) {
-			throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, 0, Messages.Team_readError, ex));			 
+			throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, 0, Messages.Team_readError, ex));
 		}
 		return true;
 	}
 	/**
 	 * Initialize the registry, restoring its state.
-	 * 
+	 *
 	 * This method is called by the plug-in upon startup, clients should not call this method
 	 */
 	public static void startup() {
 		// Register a delta listener that will tell the provider about a project move and meta-file creation
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(new TeamResourceChangeListener(), IResourceChangeEvent.POST_CHANGE);
 	}
-	
+
 	/**
 	 * Shut down the registry, persisting its state.
-	 * 
+	 *
 	 * This method is called by the plug-in upon shutdown, clients should not call this method
-	 */	
+	 */
 	public static void shutdown() {
 		TeamPlugin.getPlugin().savePluginPreferences();
 	}
 	/**
-	 * @deprecated 
+	 * @deprecated
 	 * 		Use {@link org.eclipse.team.core.RepositoryProviderType#getProjectSetCapability()}
 	 * 		to obtain an instance of {@link ProjectSetCapability} instead.
 	 */
@@ -467,11 +467,11 @@ public final class Team {
 						}
 					}
 				}
-			}		
+			}
 		}
 		return null;
 	}
-	
+
 
 	/**
 	 * Return the default ignore infos
@@ -511,17 +511,17 @@ public final class Team {
     /**
      * Get the file content manager which implements the API for manipulating the mappings between
      * file names, file extensions and content types.
-     *  
+     *
      * @return an instance of IFileContentManager
-     * 
+     *
      * @see IFileContentManager
-     * 
+     *
      * @since 3.1
      */
     public static IFileContentManager getFileContentManager() {
         return fFileContentManager;
     }
-    
+
 	/**
 	 * Creates a storage merger for the given content type.
 	 * If no storage merger is registered for the given content type <code>null</code> is returned.
@@ -529,13 +529,13 @@ public final class Team {
 	 * @param type the type for which to find a storage merger
 	 * @return a storage merger for the given type, or <code>null</code> if no
 	 *   storage merger has been registered
-	 *   
+	 *
 	 * @since 3.4
 	 */
     public static IStorageMerger createMerger(IContentType type) {
     	return StorageMergerRegistry.getInstance().createStreamMerger(type);
     }
-    
+
 	/**
 	 * Creates a storage merger for the given file extension.
 	 * If no storage merger is registered for the file extension <code>null</code> is returned.
@@ -543,13 +543,13 @@ public final class Team {
 	 * @param extension the extension for which to find a storage merger
 	 * @return a stream merger for the given type, or <code>null</code> if no
 	 *   storage merger has been registered
-	 *   
+	 *
 	 * @since 3.4
 	 */
     public static IStorageMerger createMerger(String extension) {
     	return StorageMergerRegistry.getInstance().createStreamMerger(extension);
     }
-    
+
 	/**
 	 * Creates a storage merger for the given content type.
 	 * If no storage merger is registered for the given content type <code>null</code> is returned.
@@ -563,7 +563,7 @@ public final class Team {
     public IStorageMerger createStorageMerger(IContentType type) {
     	return createMerger(type);
     }
-    
+
 	/**
 	 * Creates a storage merger for the given file extension.
 	 * If no storage merger is registered for the file extension <code>null</code> is returned.
@@ -580,14 +580,14 @@ public final class Team {
 
 	/**
 	 * Returns the available bundle importers.
-	 * 
+	 *
 	 * <p>
 	 * <strong>EXPERIMENTAL</strong>. This interface has been added as part of a
 	 * work in progress. There is no guarantee that this API will work or that
 	 * it will remain the same. Please do not use this API without consulting
 	 * with the Team team.
 	 * </p>
-	 * 
+	 *
 	 * @return IBundleImporter[] returns the available bundle importers
 	 * @since 3.6
 	 * @noreference This method is not intended to be referenced by clients.

@@ -19,7 +19,7 @@ import org.eclipse.team.core.synchronize.SyncInfoTree;
 /**
  * A checked-in change set represents a group of resource
  * changes that were previously checked into a repository
- * as a single logical change. 
+ * as a single logical change.
  * <p>
  * A previously checked-in set of changes may not apply directly
  * to the local versions of the resources involved. However,
@@ -29,13 +29,13 @@ import org.eclipse.team.core.synchronize.SyncInfoTree;
  * @since 3.1
  */
 public abstract class CheckedInChangeSet extends ChangeSet {
-    
+
 	private final SyncInfoTree set = new SyncInfoTree();
-	
+
     public abstract String getAuthor();
-    
+
     public abstract Date getDate();
-	
+
     /**
      * Return the SyncInfoSet that contains the resources that belong to this change set.
      * @return  the SyncInfoSet that contains the resources that belong to this change set
@@ -51,7 +51,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
     public IResource[] getResources() {
         return set.getResources();
     }
-    
+
     /**
      * Return whether the set contains any files.
      * @return whether the set contains any files
@@ -68,7 +68,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
     public boolean contains(IResource local) {
         return set.getSyncInfo(local) != null;
     }
-    
+
     /**
      * Add the resource to this set if it is modified
      * w.r.t. the subscriber.
@@ -79,7 +79,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
             set.add(info);
         }
     }
-    
+
     /**
      * Return whether the given sync info is a valid change
      * and can be included in this set. This method is used
@@ -107,7 +107,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
            set.endInput(null);
        }
     }
-    
+
     /**
      * Remove the resource from the set.
      * @param resource the resource to be removed
@@ -117,7 +117,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
             set.remove(resource);
         }
     }
-    
+
     /**
      * Remove the resources from the set.
      * @param resources the resources to be removed
@@ -128,7 +128,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
             remove(resource);
         }
     }
-    
+
     /**
      * Remove the resource and it's descendants to the given depth.
      * @param resource the resource to be removed
@@ -145,7 +145,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
             set.removeAll(resources);
         }
     }
-    
+
     public boolean containsChildren(IResource resource, int depth) {
     	return set.getSyncInfos(resource, depth).length > 0;
     }

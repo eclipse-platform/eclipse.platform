@@ -21,26 +21,26 @@ import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 /**
  * Concrete implementation of the {@link ISynchronizationScope} interface for
  * use by clients.
- * 
+ *
  * @see org.eclipse.core.resources.mapping.ResourceMapping
- * 
+ *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ResourceMappingScope extends AbstractResourceMappingScope {
-	
+
 	private ResourceMapping[] inputMappings;
 	private final Map mappingsToTraversals = Collections.synchronizedMap(new HashMap());
 	private boolean hasAdditionalMappings;
 	private boolean hasAdditionalResources;
 	private final CompoundResourceTraversal compoundTraversal = new CompoundResourceTraversal();
 	private final SynchronizationScopeManager manager;
-	
+
 	public ResourceMappingScope(ResourceMapping[] selectedMappings, SynchronizationScopeManager manager) {
 		inputMappings = selectedMappings;
 		this.manager = manager;
 	}
-	
+
 	/**
 	 * Add the mapping and its traversals to the scope. This method should
 	 * only be invoked during the scope building process.
@@ -54,7 +54,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 		compoundTraversal.addTraversals(traversals);
 		return newTraversals;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#getInputMappings()
 	 */
@@ -91,7 +91,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 	public boolean hasAdditionalMappings() {
 		return hasAdditionalMappings;
 	}
-	
+
 	/**
 	 * Set whether the scope has additional mappings to the input mappings.
 	 * This method should only be invoked during the scope building process.
@@ -109,7 +109,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 	public void setHasAdditionalResources(boolean hasAdditionalResources) {
 		this.hasAdditionalResources = hasAdditionalResources;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#hasAdditonalResources()
 	 */
@@ -120,7 +120,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 	public CompoundResourceTraversal getCompoundTraversal() {
 		return compoundTraversal;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#asInputScope()
 	 */
@@ -150,7 +150,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 	public void refresh(ResourceMapping[] mappings) {
 		manager.refresh(mappings);
 	}
-	
+
 	public void reset() {
 		mappingsToTraversals.clear();
 		compoundTraversal.clear();

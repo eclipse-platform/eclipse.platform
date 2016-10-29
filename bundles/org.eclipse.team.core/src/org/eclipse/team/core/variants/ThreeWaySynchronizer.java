@@ -23,7 +23,7 @@ import org.eclipse.team.internal.core.subscribers.BatchingLock.IFlushOperation;
 import org.eclipse.team.internal.core.subscribers.BatchingLock.ThreadInfo;
 
 /**
- * This class manages the synchronization between local resources and their 
+ * This class manages the synchronization between local resources and their
  * corresponding resource variants. It provides the following:
  * <ul>
  * <li>Three way synchronization (set base, set remote, ignored)
@@ -31,16 +31,16 @@ import org.eclipse.team.internal.core.subscribers.BatchingLock.ThreadInfo;
  * <li>Change events and event batching (run)
  * <li>Thread-safety
  * </ul>
- * 
+ *
  * @since 3.0
  */
 public class ThreeWaySynchronizer {
-	
+
 	private IFlushOperation flushOperation = new IFlushOperation() {
 		/**
 		 * Callback which is invoked when the batching resource lock is released
 		 * or when a flush is requested (see beginBatching(IResource)).
-		 * 
+		 *
 		 * @see BatchingLock#flush(IProgressMonitor)
 		 */
 		public void flush(ThreadInfo info, IProgressMonitor monitor)
@@ -52,22 +52,22 @@ public class ThreeWaySynchronizer {
 	};
 
 	private static final byte[] IGNORED_BYTES = "i".getBytes(); //$NON-NLS-1$
-	
+
 	private ILock lock = Job.getJobManager().newLock();
 	private BatchingLock batchingLock = new BatchingLock();
 	private ResourceVariantByteStore cache;
 	private Set listeners = new HashSet();
-	
+
 	/**
 	 * Create a three-way synchronizer that uses a persistent
-	 * byte store with the given qualified name as its unique 
+	 * byte store with the given qualified name as its unique
 	 * identifier.
 	 * @param name the unique identifier for the persistent store
 	 */
 	public ThreeWaySynchronizer(QualifiedName name) {
 		this(new PersistantResourceVariantByteStore(name));
 	}
-	
+
 	/**
 	 * Create a three-way synchronizer that uses the given byte store
 	 * as its underlying byte cache.
@@ -80,14 +80,14 @@ public class ThreeWaySynchronizer {
 	/**
 	 * Adds a listener to this synchronizer. Listeners will be notified
 	 * when the synchronization state of a resource changes. Listeners
-	 * are not notified when files are modified locally. Clients can 
+	 * are not notified when files are modified locally. Clients can
 	 * make use of the <code>IResource</code> delta mechanism if they
 	 * need to know about local modifications.
 	 * Has no effect if an identical listener is already registered.
 	 * <p>
-	 * Team resource change listeners are informed about state changes 
+	 * Team resource change listeners are informed about state changes
 	 * that affect the resources supervised by this subscriber.</p>
-	 * 
+	 *
 	 * @param listener a synchronizer change listener
 	 */
 	public void addListener(ISynchronizerChangeListener listener) {
@@ -99,21 +99,21 @@ public class ThreeWaySynchronizer {
 	/**
 	 * Removes a listener previously registered with this synchronizer.
 	 * Has no effect if an identical listener is not registered.
-	 * 
+	 *
 	 * @param listener a synchronizer change listener
-	 */	
+	 */
 	public void removeListener(ISynchronizerChangeListener listener) {
 		synchronized (listeners) {
 			listeners.remove(listener);
 		}
 	}
-	
+
 	/**
-	 * Return the base bytes that are cached for the given resource 
+	 * Return the base bytes that are cached for the given resource
 	 * or <code>null</code> if no base is cached. The returned bytes
-	 * should uniquely identify the resource variant that is the base 
+	 * should uniquely identify the resource variant that is the base
 	 * for the given local resource.
-	 * 
+	 *
 	 * @param resource the resource
 	 * @return the base bytes cached with the resource or <code>null</code>
 	 * @throws TeamException
@@ -133,13 +133,13 @@ public class ThreeWaySynchronizer {
 
 	/**
 	 * Set the base bytes for the given resource. The provided bytes
-	 * should encode enough information to uniquely identify 
-	 * (and possibly recreate) the resource variant that is the base 
+	 * should encode enough information to uniquely identify
+	 * (and possibly recreate) the resource variant that is the base
 	 * for the given local resource. In essence, setting the base
 	 * bytes is equivalent to marking the file as in-sync. As such,
-	 * setting the base bytes will also set the remote bytes and mark 
+	 * setting the base bytes will also set the remote bytes and mark
 	 * the file as clean (i.e. having no outgoing changes).
-	 * 
+	 *
 	 * @param resource the resource
 	 * @param baseBytes the base bytes that identify the base resource variant
 	 * @throws TeamException
@@ -183,13 +183,13 @@ public class ThreeWaySynchronizer {
 				(getLocalTimestamp(resource) != resource.getModificationStamp()) ||
 				(getBaseBytes(resource) != null && !resource.exists()));
 	}
-	
+
 	/**
-	 * Return the remote bytes that are cached for the given resource 
+	 * Return the remote bytes that are cached for the given resource
 	 * or <code>null</code> if no remote is cached. The returned bytes
-	 * should uniquely identify the resource variant that is the remote 
+	 * should uniquely identify the resource variant that is the remote
 	 * for the given local resource.
-	 * 
+	 *
 	 * @param resource the resource
 	 * @return the remote bytes cached with the resource or <code>null</code>
 	 * @throws TeamException
@@ -206,15 +206,15 @@ public class ThreeWaySynchronizer {
 			endOperation();
 		}
 	}
-	
+
 	/**
 	 * Set the remote bytes for the given resource. The provided bytes
-	 * should encode enough information to uniquely identify 
-	 * (and possibly recreate) the resource variant that is the remote 
+	 * should encode enough information to uniquely identify
+	 * (and possibly recreate) the resource variant that is the remote
 	 * for the given local resource. If the remote for a resource
-	 * no longer exists, <code>removeRemoteBytes(IResource)</code> 
+	 * no longer exists, <code>removeRemoteBytes(IResource)</code>
 	 * should be called.
-	 * 
+	 *
 	 * @param resource the resource
 	 * @param remoteBytes the base bytes that identify the remote resource variant
 	 * @return <code>true</code> if the remote bytes changed as a result of the set
@@ -273,7 +273,7 @@ public class ThreeWaySynchronizer {
 					batchingLock.resourceChanged(resource);
 					return true;
 				}
-				return false;	
+				return false;
 			} finally {
 				endOperation();
 			}
@@ -281,17 +281,17 @@ public class ThreeWaySynchronizer {
 			if (rule != null) endBatching(rule, null);
 		}
 	}
-	
+
 	/**
 	 * Return whether the given resource has sync bytes in the synchronizer.
 	 * @param resource the local resource
 	 * @return whether there are sync bytes cached for the local resources.
-	 * @throws TeamException 
+	 * @throws TeamException
 	 */
 	public boolean hasSyncBytes(IResource resource) throws TeamException {
 		return internalGetSyncBytes(resource) != null;
 	}
-	
+
 	/**
 	 * Returns whether the resource has been marked as ignored
 	 * using <code>setIgnored(IResource)</code>.
@@ -303,7 +303,7 @@ public class ThreeWaySynchronizer {
 		byte[] bytes = cache.getBytes(resource);
 		return (bytes != null && equals(bytes, IGNORED_BYTES));
 	}
-	
+
 	/**
 	 * Mark the resource as being ignored. Ignored resources
 	 * are not returned by the <code>members</code> method,
@@ -317,7 +317,7 @@ public class ThreeWaySynchronizer {
 	}
 
 	/**
-	 * Return the members of the local resource that either have sync bytes 
+	 * Return the members of the local resource that either have sync bytes
 	 * or exist locally and are not ignored.
 	 * @param resource the local resource
 	 * @return the children of the local resource that have cached sync bytes
@@ -363,7 +363,7 @@ public class ThreeWaySynchronizer {
 				beginOperation();
 				if (cache.flushBytes(resource, depth)) {
 					batchingLock.resourceChanged(resource);
-				}		
+				}
 			} finally {
 				endOperation();
 			}
@@ -414,7 +414,7 @@ public class ThreeWaySynchronizer {
 			});
 		}
 	}
-	
+
 	/*
 	 * Return the cached sync bytes for the given resource.
 	 * The value <code>null</code> is returned if there is no
@@ -425,26 +425,26 @@ public class ThreeWaySynchronizer {
 		if (bytes != null && equals(bytes, IGNORED_BYTES)) return null;
 		return bytes;
 	}
-	
+
 	/*
 	 * Set the cached sync bytes
 	 */
 	private boolean internalSetSyncBytes(IResource resource, byte[] syncBytes) throws TeamException {
 		return cache.setBytes(resource, syncBytes);
 	}
-	
+
 	private byte[] getSlot(byte[] syncBytes, int i) {
 		return SyncByteConverter.getSlot(syncBytes, i, false);
 	}
-	
+
 	private byte[] setSlot(byte[] syncBytes, int i, byte[] insertBytes) throws TeamException {
 		return SyncByteConverter.setSlot(syncBytes, i, insertBytes);
 	}
-	
+
 	private byte[] toBytes(String[] slots) {
 		return SyncByteConverter.toBytes(slots);
 	}
-	
+
 	private long getLocalTimestamp(IResource resource) throws TeamException {
 		try {
 			beginOperation();
@@ -457,7 +457,7 @@ public class ThreeWaySynchronizer {
 			endOperation();
 		}
 	}
-	
+
 	private boolean equals(byte[] syncBytes, byte[] oldBytes) {
 		if (syncBytes.length != oldBytes.length) return false;
 		for (int i = 0; i < oldBytes.length; i++) {
@@ -465,20 +465,20 @@ public class ThreeWaySynchronizer {
 		}
 		return true;
 	}
-	
+
 	/*
 	 * Begin an access to the internal data structures of the synchronizer
 	 */
 	private void beginOperation() {
 		// Do not try to acquire the lock if the resources tree is locked
 		// The reason for this is that during the resource delta phase (i.e. when the tree is locked)
-		// the workspace lock is held. If we obtain our lock, there is 
+		// the workspace lock is held. If we obtain our lock, there is
 		// a chance of deadlock. It is OK if we don't as we are still protected
 		// by scheduling rules and the workspace lock.
 		if (ResourcesPlugin.getWorkspace().isTreeLocked()) return;
 		lock.acquire();
 	}
-	
+
 	/*
 	 * End an access to the internal data structures of the synchronizer
 	 */
@@ -487,9 +487,9 @@ public class ThreeWaySynchronizer {
 		if (ResourcesPlugin.getWorkspace().isTreeLocked()) return;
 		lock.release();
 	}
-	
+
 	/*
-	 * Begins a batch of operations in order to batch event changes. 
+	 * Begins a batch of operations in order to batch event changes.
 	 * The provided scheduling rule indicates the resources
 	 * that the resources affected by the operation while the returned scheduling rule
 	 * is the rule obtained by the lock. It may differ from the provided rule.
@@ -497,7 +497,7 @@ public class ThreeWaySynchronizer {
 	private ISchedulingRule beginBatching(ISchedulingRule resourceRule, IProgressMonitor monitor) {
 		return batchingLock.acquire(resourceRule, flushOperation /* IFlushOperation */, monitor);
 	}
-	
+
 	/*
 	 * Ends a batch of operations. The provided rule must be the one that was returned
 	 * by the corresponding call to beginBatching.

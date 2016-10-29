@@ -15,7 +15,7 @@ import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.core.Messages;
 
 /**
- * Utility for managing slash separated sync information fields. 
+ * Utility for managing slash separated sync information fields.
  */
 public class SyncByteConverter {
 
@@ -32,7 +32,7 @@ public class SyncByteConverter {
 	public static byte[] setSlot(byte[] syncBytes, int slot, byte[] newBytes) throws TeamException {
 		int start = startOfSlot(syncBytes, slot);
 		if (start == -1) {
-			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String[] { new String(syncBytes) })); 
+			throw new TeamException(NLS.bind(Messages.SyncByteConverter_1, new String[] { new String(syncBytes) }));
 		}
 		int end = startOfSlot(syncBytes, slot + 1);
 		int totalLength = start + 1 + newBytes.length;
@@ -52,7 +52,7 @@ public class SyncByteConverter {
 	 * Method startOfSlot returns the index of the slash that occurs before the
 	 * given slot index. The provided index should be >= 1 which assumes that
 	 * slot zero occurs before the first slash.
-	 * 
+	 *
 	 * @param syncBytes
 	 * @param i
 	 * @return int
@@ -63,11 +63,11 @@ public class SyncByteConverter {
 			if (syncBytes[j] == SEPARATOR_BYTE) {
 				count++;
 				if (count == slot) return j;
-			} 
+			}
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Return the offset the the Nth delimeter from the given start index.
 	 * @param bytes
@@ -85,7 +85,7 @@ public class SyncByteConverter {
 		// the Nth delimeter was not found
 		return -1;
 	}
-	
+
 	/**
 	 * Get the bytes in the given slot.
 	 * @param bytes the sync bytes
@@ -117,7 +117,7 @@ public class SyncByteConverter {
 		System.arraycopy(bytes, start + 1, result, 0, length);
 		return result;
 	}
-	
+
 	public static byte[] toBytes(String[] slots) {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < slots.length; i++) {

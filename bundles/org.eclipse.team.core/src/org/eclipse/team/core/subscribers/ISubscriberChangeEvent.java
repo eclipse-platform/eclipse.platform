@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IResource;
  * A change event that describes a change in a resource that is or was
  * supervised by a subscriber.
  * <p>
- * 
+ *
  * @see ISubscriberChangeListener
  * @since 3.0
  * @noimplement Clients are not intended to implement. Instead subclass
@@ -45,11 +45,11 @@ public interface ISubscriberChangeEvent {
 	 * @see #getFlags
 	 */
 	public static final int ROOT_REMOVED = 0x4;
-	
+
 	/**
 	 * Return the flags that describe the type of change.
 	 * The returned value should be ANDed with the change type
-	 * flags to determine whether the change event is of 
+	 * flags to determine whether the change event is of
 	 * a particular type. For example,
 	 * <pre>
 	 *   if (event.getFlags() & ISubscriberChangeEvent.SYNC_CHANGED) {
@@ -59,7 +59,7 @@ public interface ISubscriberChangeEvent {
 	 * @return the flags that describe the type of change
 	 */
 	public abstract int getFlags();
-	
+
 	/**
 	 * Return the resource whose state with
 	 * respect to the subscriber has changed.
@@ -67,7 +67,7 @@ public interface ISubscriberChangeEvent {
 	 * respect to the subscriber has changed
 	 */
 	public abstract IResource getResource();
-	
+
 	/**
 	 * Return the subscriber to which this change event applies.
 	 * @return the subscriber to which this change event applies

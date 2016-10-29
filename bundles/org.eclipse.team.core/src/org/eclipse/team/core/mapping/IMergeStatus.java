@@ -22,10 +22,10 @@ import org.eclipse.team.core.mapping.provider.MergeStatus;
  * implementor of <code>IResourceMappingMerger</code> can return a multi-status
  * in which one of the children is a <code>MergeStatus</code> and the others
  * describe other problems that were encountered.
- * 
+ *
  * @see org.eclipse.team.core.mapping.IResourceMappingMerger
  * @see MergeStatus
- * 
+ *
  * @since 3.2
  * @noimplement This interface is not intended to be implemented by clients.
  */

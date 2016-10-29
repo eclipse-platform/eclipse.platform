@@ -33,7 +33,7 @@ import org.osgi.service.prefs.Preferences;
 public abstract class ActiveChangeSetManager extends ChangeSetManager implements IDiffChangeListener, IChangeGroupingRequestor {
 
     private static final String CTX_DEFAULT_SET = "defaultSet"; //$NON-NLS-1$
-    
+
     private ActiveChangeSet defaultSet;
 
 	/**
@@ -52,7 +52,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         }
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.subscribers.ChangeSetManager#add(org.eclipse.team.internal.core.subscribers.ChangeSet)
      */
@@ -60,7 +60,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         Assert.isTrue(set instanceof ActiveChangeSet);
         super.add(set);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.subscribers.AbstractChangeSetCollector#handleSetAdded(org.eclipse.team.internal.core.subscribers.ChangeSet)
      */
@@ -70,7 +70,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
     	super.handleSetAdded(set);
     	handleAddedResources(set, ((ActiveChangeSet)set).internalGetDiffTree().getDiffs());
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.subscribers.AbstractChangeSetCollector#handleSetRemoved(org.eclipse.team.internal.core.subscribers.ChangeSet)
      */
@@ -78,7 +78,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
     	((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(getDiffTreeListener());
     	super.handleSetRemoved(set);
     }
-    
+
     /**
      * Return the listener that is registered with the diff trees associated with
      * the sets for this manager.
@@ -88,7 +88,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
     protected IDiffChangeListener getDiffTreeListener() {
         return this;
     }
-    
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -96,21 +96,21 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	    IResourceDiffTree tree = (IResourceDiffTree)event.getTree();
 	    handleSyncSetChange(tree, event.getAdditions(), getAllResources(event));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
 	 */
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// ignore
 	}
-    
+
 	public boolean isModified(IFile file) throws CoreException {
 		IDiff diff = getDiff(file);
 		if (diff != null)
 			return isModified(diff);
 		return false;
 	}
-	
+
 	/**
 	 * Return whether the given diff represents a local change.
 	 * @param diff the diff
@@ -258,7 +258,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	/**
 	 * Make the given set the default set into which all new modifications that
 	 * are not already in another set go.
-	 * 
+	 *
 	 * @param set
 	 *            the set which is to become the default set or
 	 *            <code>null</code> to unset the default set
@@ -282,7 +282,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	public boolean isDefault(ActiveChangeSet set) {
 	    return set == defaultSet;
 	}
-	
+
     /**
      * Return the set which is currently the default or
      * <code>null</code> if there is no default set.
@@ -291,7 +291,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
     public ActiveChangeSet getDefaultSet() {
         return defaultSet;
     }
-    
+
 	/**
 	 * If the given traversals contain any resources in the active change sets, ensure
 	 * that the traversals cover all the resources in the overlapping change set.
@@ -360,15 +360,15 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		try {
             prefs.flush();
         } catch (BackingStoreException e) {
-            TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e); 
+            TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e);
         }
     }
-    
+
     /**
 	 * Escape the given string for safe use as a preference node name by
 	 * translating / to \s (so it's a single path component) and \ to \\ (to
 	 * preserve uniqueness).
-	 * 
+	 *
 	 * @param string
 	 *            Input string
 	 * @return Escaped output string
@@ -390,10 +390,10 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		}
 		return out.toString();
 	}
-    
+
 	/**
 	 * Load the manager's state from the given preferences node.
-	 * 
+	 *
 	 * @param prefs
 	 *            a preferences node
 	 */
@@ -413,10 +413,10 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			    }
 			}
 		} catch (BackingStoreException e) {
-			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, new String[] { getName() }), e); 
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, new String[] { getName() }), e);
 		}
     }
-	
+
 	/**
 	 * Return the name of this change set manager.
 	 * @return the name of this change set manager
@@ -424,7 +424,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	protected abstract String getName();
 
     /**
-     * Create a change set from the given preferences that were 
+     * Create a change set from the given preferences that were
      * previously saved.
      * @param childPrefs the previously saved preferences
      * @return the created change set
@@ -436,7 +436,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         changeSet.init(childPrefs);
         return changeSet;
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.IChangeGroupingRequestor#ensureChangesGrouped(org.eclipse.core.resources.IProject, org.eclipse.core.resources.IFile[], java.lang.String)
      */

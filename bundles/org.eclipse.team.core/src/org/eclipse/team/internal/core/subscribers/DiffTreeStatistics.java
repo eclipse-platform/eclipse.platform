@@ -34,19 +34,19 @@ public class DiffTreeStatistics {
 		}
 		stats.put(new Integer(state), new Long(count.longValue() + 1));
 	}
-	
+
 	/**
 	 * Remove this sync kind.
-	 * @param state the info type to remove 
-	 */	
+	 * @param state the info type to remove
+	 */
 	public void remove(int state) {
 		// update stats
 		Integer kind = new Integer(state);
 		Long count = (Long)stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
-			// programmer error calling remove before add.			
-		} else {						
+			// programmer error calling remove before add.
+		} else {
 			long newCount = count.intValue() - 1;
 			if(newCount > 0) {
 				stats.put(kind, new Long(newCount));
@@ -55,13 +55,13 @@ public class DiffTreeStatistics {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the count of sync infos for the specified sync kind. A mask can be used to accumulate
 	 * counts for specific directions or change types.
 	 * To return the number of outgoing changes:
 	 * 	long outgoingChanges = stats.countFor(SyncInfo.OUTGOING, SyncInfo.DIRECTION_MASK);
-	 *  
+	 *
 	 * @param state the sync kind for which to return the count
 	 * @param mask the mask applied to the stored sync kind
 	 * @return the number of sync info types added for the specific kind
@@ -93,7 +93,7 @@ public class DiffTreeStatistics {
 	public void clear() {
 		stats.clear();
 	}
-	
+
 	/**
 	 * For debugging
 	 */

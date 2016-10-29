@@ -20,13 +20,13 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * is determined using the local modification state and the remote state
  * is determined by comparing the base bytes to the remote bytes obtained
  * from the synchronizer.
- * 
+ *
  * @since 3.0
  */
 public class ThreeWayResourceComparator implements IResourceVariantComparator {
-	
+
 	private ThreeWaySynchronizer synchronizer;
-	
+
 	/**
 	 * Create a three-way resource comparator that uses the <code>ThreeWaySynchronizer</code>
 	 * to compare a local resource to a resource variant.
@@ -35,7 +35,7 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 	public ThreeWayResourceComparator(ThreeWaySynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.IResourceVariantComparator#compare(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant)
 	 */
@@ -67,22 +67,22 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 		byte[] bytes2 = getBytes(remote);
 		return equals(bytes1, bytes2);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.IResourceVariantComparator#isThreeWay()
 	 */
 	public boolean isThreeWay() {
 		return true;
 	}
-	
+
 	private ThreeWaySynchronizer getSynchronizer() {
 		return synchronizer;
 	}
-	
+
 	private byte[] getBytes(IResourceVariant remote) {
 		return remote.asBytes();
 	}
-	
+
 	private boolean equals(byte[] syncBytes, byte[] oldBytes) {
 		if (syncBytes.length != oldBytes.length) return false;
 		for (int i = 0; i < oldBytes.length; i++) {

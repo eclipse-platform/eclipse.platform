@@ -28,7 +28,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		this.inputSyncSet = set;
 		inputSyncSet.addSyncSetChangedListener(this);
 	}
-	
+
 	public void disconnect() {
 		if (inputSyncSet == null) return;
 		inputSyncSet.removeSyncSetChangedListener(this);
@@ -54,7 +54,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		try {
 			syncSet.beginInput();
 			monitor.beginTask(null, 105);
-			syncSetChanged(event.getChangedResources(), Policy.subMonitorFor(monitor, 50));			
+			syncSetChanged(event.getChangedResources(), Policy.subMonitorFor(monitor, 50));
 			syncSetChanged(event.getAddedResources(), Policy.subMonitorFor(monitor, 50));
 			remove(event.getRemovedResources());
 		} finally {
@@ -67,13 +67,13 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 			collect(infos[i], monitor);
 		}
 	}
-	
+
 	private void remove(IResource[] resources) {
 		for (int i = 0; i < resources.length; i++) {
 			remove(resources[i]);
 		}
 	}
-	
+
 	public void reset() {
 		inputSyncSet.connect(this);
 	}
@@ -95,7 +95,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 				syncSet.endInput(Policy.subMonitorFor(monitor, 5));
 				monitor.done();
 			}
-		}		
+		}
 	}
 
 	/* (non-Javadoc)

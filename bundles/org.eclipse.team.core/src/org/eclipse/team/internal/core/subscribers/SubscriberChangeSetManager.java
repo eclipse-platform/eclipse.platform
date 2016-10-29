@@ -28,22 +28,22 @@ import org.osgi.service.prefs.Preferences;
  * This class manages the active change sets associated with a subscriber.
  */
 public class SubscriberChangeSetManager extends ActiveChangeSetManager {
-    
+
     private static final String PREF_CHANGE_SETS = "changeSets"; //$NON-NLS-1$
-    
+
     private static final int RESOURCE_REMOVAL = 1;
     private static final int RESOURCE_CHANGE = 2;
-    
+
     private EventHandler handler;
     private ResourceCollector collector;
-    
+
     /*
      * Background event handler for serializing and batching change set changes
      */
     private class EventHandler extends BackgroundEventHandler {
 
         private List dispatchEvents = new ArrayList();
-        
+
         protected EventHandler(String jobName, String errorTitle) {
             super(jobName, errorTitle);
         }
@@ -57,7 +57,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
                 throw new OperationCanceledException();
             dispatchEvents.add(event);
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
          */
@@ -98,7 +98,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         }
 
         /*
-         * Begin input on all the sets and return the sync sets that were 
+         * Begin input on all the sets and return the sync sets that were
          * locked. If this method throws an exception then the client
          * can assume that no sets were locked
          */
@@ -143,13 +143,13 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
                 } catch (RuntimeException e) {
                     // Don't worry about ending every set if an error occurs.
                     // Instead, log the error and suggest a restart.
-                    TeamPlugin.log(IStatus.ERROR, Messages.SubscriberChangeSetCollector_0, e); 
+                    TeamPlugin.log(IStatus.ERROR, Messages.SubscriberChangeSetCollector_0, e);
                     throw e;
                 }
             }
             monitor.done();
         }
-        
+
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.core.BackgroundEventHandler#queueEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, boolean)
          */
@@ -157,7 +157,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
             // Override to allow access from enclosing class
             super.queueEvent(event, front);
         }
-        
+
         /*
          * Handle the removal
          */
@@ -165,7 +165,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
             ChangeSet[] sets = getSets();
             for (int i = 0; i < sets.length; i++) {
                 ChangeSet set = sets[i];
-                // This will remove any descendants from the set and callback to 
+                // This will remove any descendants from the set and callback to
                 // resourcesChanged which will batch changes
                 if (!set.isEmpty()) {
 	                set.rootRemoved(resource, IResource.DEPTH_INFINITE);
@@ -175,7 +175,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
                 }
             }
         }
-        
+
         /*
          * Handle the change
          */
@@ -207,7 +207,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
                 }
             }
         }
-        
+
         private void removeFromAllSets(IResource resource) {
             List toRemove = new ArrayList();
             ChangeSet[] sets = getSets();
@@ -238,7 +238,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
             return (ActiveChangeSet[]) result.toArray(new ActiveChangeSet[result.size()]);
         }
     }
-    
+
     private class ResourceCollector extends SubscriberResourceCollector {
 
         public ResourceCollector(Subscriber subscriber) {
@@ -260,24 +260,24 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         	if (handler != null)
         		handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_CHANGE, depth), false);
         }
-        
+
         protected boolean hasMembers(IResource resource) {
             return SubscriberChangeSetManager.this.hasMembers(resource);
         }
     }
-    
+
     public SubscriberChangeSetManager(Subscriber subscriber) {
         collector = new ResourceCollector(subscriber);
-        handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); // 
+        handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.subscribers.ChangeSetManager#initializeSets()
      */
     protected void initializeSets() {
     	load(getPreferences());
     }
-    
+
     public boolean hasMembers(IResource resource) {
         ChangeSet[] sets = getSets();
         for (int i = 0; i < sets.length; i++) {
@@ -301,7 +301,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         Subscriber subscriber = getSubscriber();
         return subscriber.getDiff(resource);
     }
-    
+
     /**
      * Return the subscriber associated with this collector.
      * @return the subscriber associated with this collector
@@ -323,15 +323,15 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
     private Preferences getPreferences() {
         return getParentPreferences().node(getSubscriberIdentifier());
     }
-    
+
 	private static Preferences getParentPreferences() {
 		return getTeamPreferences().node(PREF_CHANGE_SETS);
 	}
-	
+
 	private static Preferences getTeamPreferences() {
 		return InstanceScope.INSTANCE.getNode(TeamPlugin.getPlugin().getBundle().getSymbolicName());
 	}
-	
+
     /**
      * Return the id that will uniquely identify the subscriber across
      * restarts.
@@ -344,7 +344,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
     /**
      * Wait until the collector is done processing any events.
      * This method is for testing purposes only.
-     * @param monitor 
+     * @param monitor
      */
     public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);
@@ -352,7 +352,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		while(handler.getEventHandlerJob().getState() != Job.NONE) {
 			monitor.worked(1);
 			try {
-				Thread.sleep(10);		
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 			}
 			Policy.checkCanceled(monitor);

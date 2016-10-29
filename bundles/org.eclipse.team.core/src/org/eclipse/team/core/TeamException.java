@@ -28,7 +28,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * @since 2.0
  */
 public class TeamException extends CoreException {
-	
+
     // Field required to avoid compiler warning
 	private static final long serialVersionUID = 1L;
 
@@ -52,7 +52,7 @@ public class TeamException extends CoreException {
 
 	// The provider was unable to complete the operation for an unspecified reason.
 	public static final int UNABLE = -6;
-	
+
 	// The operation cannot be performed due to a conflict with other work.
 	public static final int CONFLICT = -7;
 
@@ -61,12 +61,12 @@ public class TeamException extends CoreException {
 	 * @param status the status for this exception
 	 */
 	public TeamException(IStatus status) {
-		super(status);	
+		super(status);
 	}
 
 	/**
 	 * Create a <code>TeamException</code> with an
-	 * error status that contains the given message and 
+	 * error status that contains the given message and
 	 * throwable.
 	 * @param message the message for the exception
 	 * @param e an associated exception
@@ -75,7 +75,7 @@ public class TeamException extends CoreException {
 	public TeamException(String message, Throwable e) {
 		super(new Status(IStatus.ERROR, TeamPlugin.ID, 0, message, e));
 	}
-	
+
 	/**
 	 * Create a <code>TeamException</code> with an
 	 * error status that contains the given message.
@@ -84,13 +84,13 @@ public class TeamException extends CoreException {
 	public TeamException(String message) {
 		this(message, null);
 	}
-	
+
 	/**
 	 * Create a <code>TeamException</code> that wraps the given <code>CoreException</code>
 	 * @param e a <code>CoreException</code>
 	 * @since 3.0
 	 */
-	protected TeamException(CoreException e) {		
+	protected TeamException(CoreException e) {
 		super(asStatus(e));
 	}
 
@@ -106,12 +106,12 @@ public class TeamException extends CoreException {
 	 * @since 3.0
 	 */
 	public static TeamException asTeamException(CoreException e) {
-		if (e instanceof TeamException) { 
+		if (e instanceof TeamException) {
 			return (TeamException)e;
 		}
 		return new TeamException(e);
 	}
-	
+
 	/**
 	 * Return a <code>TeamException</code> for the given exception.
 	 * @param e an exception

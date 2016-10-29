@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * A specialized <code>SyncInfoFilter</code> that does not require a progress monitor.
  * This enables these filters to be used when determining menu enablement or other
  * operations that must be short running.
- * 
+ *
  * @see SyncInfo
  * @see SyncInfoSet
  * @see SyncInfoFilter
@@ -26,7 +26,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 
 	/**
 	 * Selects <code>SyncInfo</code> that match the given change type and direction.
-	 * 
+	 *
 	 * @param direction the change direction (<code>SyncInfo.OUTGOING</code>,
 	 * <code>SyncInfo.INCOMING</code> and <code>SyncInfo.CONFLICTING</code>) that this filter matches
 	 * @param change the change type (<code>SyncInfo.ADDITION</code>,
@@ -41,7 +41,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 	/**
 	 * An abstract class which contains a set of <code>FastSyncInfoFilter</code> instances.
 	 * Subclasses must provide the <code>select(SyncInfo)</code> method for determining
-	 * matches. 
+	 * matches.
 	 */
 	public static abstract class CompoundSyncInfoFilter extends FastSyncInfoFilter {
 		/**
@@ -56,7 +56,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 			this.filters = filters;
 		}
 	}
-	
+
 	/**
 	 * Selects <code>SyncInfo</code> which match all child filters.
 	 */
@@ -105,7 +105,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 			return info.getKind() != 0 && (info.getKind() & SyncInfo.PSEUDO_CONFLICT) == 0;
 		}
 	}
-	
+
 	/**
 	 * Selects <code>SyncInfo</code> that match any of the child filters.
 	 */
@@ -130,9 +130,9 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Selects <code>SyncInfo</code> whose change type match those of the filter. 
+	 * Selects <code>SyncInfo</code> whose change type match those of the filter.
 	 */
 	public static class SyncInfoChangeTypeFilter extends FastSyncInfoFilter {
 		private int[] changeFilters = new int[]{SyncInfo.ADDITION, SyncInfo.DELETION, SyncInfo.CHANGE};
@@ -169,8 +169,8 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 	}
 
 	/**
-	 * Selects <code>SyncInfo</code> whose change direction match those of the filter. 
-	 */	
+	 * Selects <code>SyncInfo</code> whose change direction match those of the filter.
+	 */
 	public static class SyncInfoDirectionFilter extends FastSyncInfoFilter {
 		int[] directionFilters = new int[] {SyncInfo.OUTGOING, SyncInfo.INCOMING, SyncInfo.CONFLICTING};
 		/**
@@ -208,14 +208,14 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 	/**
 	 * Return whether the provided <code>SyncInfo</code> matches the filter. The default
 	 * behavior it to include resources whose syncKind is non-zero.
-	 * 
+	 *
 	 * @param info the <code>SyncInfo</code> being tested
 	 * @return <code>true</code> if the <code>SyncInfo</code> matches the filter
 	 */
 	public boolean select(SyncInfo info) {
 		return info.getKind() != 0;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.SyncInfoFilter#select(org.eclipse.team.core.subscribers.SyncInfo, org.eclipse.core.runtime.IProgressMonitor)
 	 */

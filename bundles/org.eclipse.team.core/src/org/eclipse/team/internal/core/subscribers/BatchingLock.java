@@ -23,10 +23,10 @@ import org.eclipse.team.internal.core.*;
  * lock on a specific resource by calling acquire(). Subsequently, acquire() can be called
  * multiple times on the resource or any of its children from within the same thread
  * without blocking. Other threads that try
- * and acquire the lock on those same resources will be blocked until the first 
+ * and acquire the lock on those same resources will be blocked until the first
  * thread releases all it's nested locks.
  * <p>
- * The locking is managed by the platform via scheduling rules. This class simply 
+ * The locking is managed by the platform via scheduling rules. This class simply
  * provides the nesting mechanism in order to allow the client to determine when
  * the lock for the thread has been released. Therefore, this lock will block if
  * another thread already locks the same resource.</p>
@@ -41,7 +41,7 @@ public class BatchingLock {
 			return false;
 		}
 	};
-	
+
 	public class ThreadInfo {
 		private Set changedResources = new HashSet();
 		private IFlushOperation operation;
@@ -53,7 +53,7 @@ public class BatchingLock {
 		 * Push a scheduling rule onto the stack for this thread and
 		 * acquire the rule if it is not the workspace root.
 		 * @param resource
-		 * @param monitor 
+		 * @param monitor
 		 * @return the scheduling rule that was obtained
 		 */
 		public ISchedulingRule pushRule(ISchedulingRule resource, IProgressMonitor monitor) {
@@ -88,11 +88,11 @@ public class BatchingLock {
 		}
 		/**
 		 * Pop the scheduling rule from the stack and release it if it
-		 * is not the workspace root. Flush any changed sync info to 
+		 * is not the workspace root. Flush any changed sync info to
 		 * disk if necessary. A flush is necessary if the stack is empty
 		 * or if the top-most non-null scheduling rule was popped as a result
 		 * of this operation.
-		 * @param rule 
+		 * @param rule
 		 * @param monitor
 		 * @throws TeamException
 		 */
@@ -150,7 +150,7 @@ public class BatchingLock {
 		/**
 		 * Return <code>true</code> if we are still nested in
 		 * an acquire for this thread.
-		 * 
+		 *
 		 * @return whether there are still rules on the stack
 		 */
 		public boolean isNested() {
@@ -198,7 +198,7 @@ public class BatchingLock {
 			return true;
 		}
 		private void handleAbortedFlush(Throwable t) {
-			TeamPlugin.log(IStatus.ERROR, Messages.BatchingLock_11, t); 
+			TeamPlugin.log(IStatus.ERROR, Messages.BatchingLock_11, t);
 		}
 		private void addRule(ISchedulingRule rule) {
 			rules.add(rule);
@@ -216,13 +216,13 @@ public class BatchingLock {
 			return false;
 		}
 	}
-	
+
 	public interface IFlushOperation {
 		public void flush(ThreadInfo info, IProgressMonitor monitor) throws TeamException;
 	}
-	
+
 	private Map infos = new HashMap();
-	
+
 	/**
 	 * Return the thread info for the current thread
 	 * @return the thread info for the current thread
@@ -234,7 +234,7 @@ public class BatchingLock {
 			return info;
 		}
 	}
-	
+
 	private ThreadInfo getThreadInfo(IResource resource) {
 		synchronized (infos) {
 			for (Iterator iter = infos.values().iterator(); iter.hasNext();) {
@@ -246,7 +246,7 @@ public class BatchingLock {
 			return null;
 		}
 	}
-	
+
 	public ISchedulingRule acquire(ISchedulingRule resourceRule, IFlushOperation operation, IProgressMonitor monitor) {
 		ThreadInfo info = getThreadInfo();
 		boolean added = false;
@@ -272,9 +272,9 @@ public class BatchingLock {
 			throw e;
 		}
 	}
-	
+
 	/**
-	 * Create the ThreadInfo instance used to cache the lock state for the 
+	 * Create the ThreadInfo instance used to cache the lock state for the
 	 * current thread. Subclass can override to provide a subclass of
 	 * ThreadInfo.
      * @param operation the flush operation
@@ -291,7 +291,7 @@ public class BatchingLock {
 	 * the the flush operation provided in the acquire method will be executed.
      * @param rule the scheduling rule
      * @param monitor a progress monitor
-     * @throws TeamException 
+     * @throws TeamException
 	 */
 	public void release(ISchedulingRule rule, IProgressMonitor monitor) throws TeamException {
 		ThreadInfo info = getThreadInfo();
@@ -316,7 +316,7 @@ public class BatchingLock {
 	/**
 	 * Flush any changes accumulated by the lock so far.
 	 * @param monitor a progress monitor
-	 * @throws TeamException 
+	 * @throws TeamException
 	 */
 	public void flush(IProgressMonitor monitor) throws TeamException {
 		ThreadInfo info = getThreadInfo();

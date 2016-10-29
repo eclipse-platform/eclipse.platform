@@ -14,9 +14,9 @@ package org.eclipse.team.internal.core;
 import org.eclipse.team.core.ProjectSetCapability;
 
 /**
- * An internal class for backward compatibility with the 
+ * An internal class for backward compatibility with the
  * {@link org.eclipse.team.core.IProjectSetSerializer} interface.
- * 
+ *
  * @since 3.0
  */
 public class DefaultProjectSetCapability extends ProjectSetCapability {

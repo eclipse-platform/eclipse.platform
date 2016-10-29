@@ -32,7 +32,7 @@ public abstract class ChangeTracker {
 	private Map trackedProjects = new HashMap(); // Map IProject->IChangeGroupingRequestor
 	private boolean disposed;
 	private ChangeListener changeListener = new ChangeListener();
-	
+
 	private class ChangeListener implements IResourceChangeListener, IRepositoryProviderListener {
 		/**
 		 * Handle a resource change event.
@@ -63,7 +63,7 @@ public abstract class ChangeTracker {
 				}
 			}
 		}
-		
+
 		/**
 		 * When a project is shared, start tracking it if it is of interest.
 		 * @param provider the repository provider
@@ -84,7 +84,7 @@ public abstract class ChangeTracker {
 			stopTrackingProject(project);
 		}
 	}
-	
+
 	/**
 	 * Create a change tracker
 	 */
@@ -93,7 +93,7 @@ public abstract class ChangeTracker {
 	}
 
 	/**
-	 * Start tracking changes. This registers listeners with the workspace 
+	 * Start tracking changes. This registers listeners with the workspace
 	 * and team.
 	 */
 	public void start() {
@@ -130,7 +130,7 @@ public abstract class ChangeTracker {
 			});
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
-		} 
+		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
 
@@ -164,7 +164,7 @@ public abstract class ChangeTracker {
 	/**
 	 * Return whether the given project is of interest to this
 	 * tracker. By default, <code>true</code> is returned if the
-	 * project is accessible. Subclasses may extend but should 
+	 * project is accessible. Subclasses may extend but should
 	 * still check for project accessibility either by calling
 	 * {@link IResource#isAccessible()} or by invoking the
 	 * overridden method.
@@ -191,7 +191,7 @@ public abstract class ChangeTracker {
 	protected abstract void handleChanges(IProject project, IResource[] resources);
 
 	/**
-	 * Resources of interest in the given project have changed but the 
+	 * Resources of interest in the given project have changed but the
 	 * specific changes are not known. Implementors must search the project for
 	 * changes of interest.
 	 * @param project the project
@@ -248,7 +248,7 @@ public abstract class ChangeTracker {
 	protected void projectTracked(IProject project) {
 		handleProjectChange(project);
 	}
-	
+
 	/**
 	 * Group the given modified file into a change set with the given name.
 	 * @param project the project
@@ -266,9 +266,9 @@ public abstract class ChangeTracker {
 	private IChangeGroupingRequestor getCollector(IProject project) {
 		return (IChangeGroupingRequestor)trackedProjects.get(project);
 	}
-	
+
 	/**
-	 * Return whether the given file is modified with respect to the 
+	 * Return whether the given file is modified with respect to the
 	 * repository provider associated with the file's project.
 	 * @param file the file
 	 * @return whether the given file is modified

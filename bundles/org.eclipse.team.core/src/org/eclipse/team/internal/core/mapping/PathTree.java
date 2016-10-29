@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
  * A tree of objects keyed by path
  */
 public class PathTree {
-	
+
 	class Node {
 		Object payload;
 		Set descendantsWithPayload;
@@ -41,7 +41,7 @@ public class PathTree {
 		public void setProperty(int propertyBit, boolean value) {
 			if (value)
 				flags |= propertyBit;
-			else 
+			else
 				flags ^= propertyBit;
 		}
 		public boolean descendantHasFlag(int property) {
@@ -57,7 +57,7 @@ public class PathTree {
 			return false;
 		}
 	}
-	
+
 	private Map objects = new HashMap();
 
 	/**
@@ -72,7 +72,7 @@ public class PathTree {
 			return null;
 		return node.getPayload();
 	}
-	
+
 	/**
 	 * Put the object at the given path. Return the
 	 * previous object at that path or <code>null</code>
@@ -93,7 +93,7 @@ public class PathTree {
 		}
 		return previous;
 	}
-	
+
 	/**
 	 * Remove the object at the given path and return
 	 * the removed object or <code>null</code> if no
@@ -115,9 +115,9 @@ public class PathTree {
 			}
 		}
 		return previous;
-		
+
 	}
-	
+
 	/**
 	 * Return whether the given path has children in the tree
 	 * @param path
@@ -130,14 +130,14 @@ public class PathTree {
 			return false;
 		return node.hasDescendants();
 	}
-	
+
 	/**
 	 * Return the paths for any children of the given path in this set.
 	 * @param path the path
 	 * @return the paths for any children of the given path in this set
 	 */
 	public synchronized IPath[] getChildren(IPath path) {
-		// OPTIMIZE: could be optimized so that we don't traverse all the deep 
+		// OPTIMIZE: could be optimized so that we don't traverse all the deep
 		// children to find the immediate ones.
 		Set children = new HashSet();
 		Node node = getNode(path);
@@ -161,7 +161,7 @@ public class PathTree {
 		}
 		return (IPath[]) children.toArray(new IPath[children.size()]);
 	}
-	
+
 	private boolean addToParents(IPath path, IPath parent) {
 		// this flag is used to indicate if the parent was previously in the set
 		boolean addedParent = false;
@@ -188,7 +188,7 @@ public class PathTree {
 		}
 		return addedParent;
 	}
-	
+
 	private boolean removeFromParents(IPath path, IPath parent) {
 		// this flag is used to indicate if the parent was removed from the set
 		boolean removedParent = false;
@@ -271,22 +271,22 @@ public class PathTree {
 	public int size() {
 		return values().size();
 	}
-	
+
 	private Node getNode(IPath path) {
 		return (Node)objects.get(path);
 	}
-	
+
 	private Node addNode(IPath path) {
 		Node node;
 		node = new Node();
 		objects.put(path, node);
 		return node;
 	}
-	
+
 	private Object removeNode(IPath path) {
 		return objects.remove(path);
 	}
-	
+
 	/**
 	 * Set the property for the given path and propogate the
 	 * bit to the root. The property is only set if the given path
@@ -301,7 +301,7 @@ public class PathTree {
 		internalSetPropertyBit(path, property, value, changed);
 		return (IPath[]) changed.toArray(new IPath[changed.size()]);
 	}
-	
+
 	private void internalSetPropertyBit(IPath path, int property, boolean value, Set changed) {
 		if (path.segmentCount() == 0)
 			return;

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -35,7 +35,7 @@ public class Policy {
 
 	/**
 	 * Progress monitor helpers.
-	 * 
+	 *
 	 * @param monitor the progress monitor
 	 */
 	public static void checkCanceled(IProgressMonitor monitor) {
@@ -47,7 +47,7 @@ public class Policy {
 			return new NullProgressMonitor();
 		return monitor;
 	}
-	
+
 	public static IProgressMonitor subMonitorFor(IProgressMonitor monitor, int ticks) {
 		if (monitor == null)
 			return new NullProgressMonitor();
@@ -55,7 +55,7 @@ public class Policy {
 			return monitor;
 		return new SubProgressMonitor(monitor, ticks);
 	}
-	
+
 	public static IProgressMonitor infiniteSubMonitorFor(IProgressMonitor monitor, int ticks) {
 		if (monitor == null)
 			return new NullProgressMonitor();

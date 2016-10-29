@@ -22,7 +22,7 @@ import org.eclipse.team.internal.core.Policy;
 /**
  * Abstract implementation of the {@link ISynchronizationContext} interface.
  * This class can be subclassed by clients.
- * 
+ *
  * @see ISynchronizationContext
  * @since 3.2
  */
@@ -44,7 +44,7 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		this.type = type;
 		this.diffTree = diffTree;
     }
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -59,7 +59,7 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 	public ISynchronizationScopeManager getScopeManager() {
 		return manager;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,14 +86,14 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		}
 		return cache;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public IResourceDiffTree getDiffTree() {
 		return diffTree;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

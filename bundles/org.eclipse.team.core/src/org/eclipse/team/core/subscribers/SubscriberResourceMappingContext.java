@@ -22,7 +22,7 @@ import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.internal.core.*;
 
 /**
- * A resource mapping context that provides the client access to the remote state 
+ * A resource mapping context that provides the client access to the remote state
  * of local resources using a subscriber. It uses a <code>SyncInfoFilter</code>
  * to determine whether the local contents differ from the remote contents.
  * This allows the context to be used for different operations (check-in,
@@ -30,14 +30,14 @@ import org.eclipse.team.internal.core.*;
  * @since 3.2
  */
 public class SubscriberResourceMappingContext extends RemoteResourceMappingContext {
-    
+
     private final Subscriber subscriber;
-    
+
     // Lists used to keep track of resources that have been refreshed
     private Set shallowRefresh = new HashSet();
     private Set deepRefresh = new HashSet();
     private boolean autoRefresh;
-    
+
     /**
      * Return a resource mapping context suitable for comparison operations.
      * Comparisons require that any out-of-sync resources have contents
@@ -48,7 +48,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
     public static RemoteResourceMappingContext createContext(Subscriber subscriber) {
         return new SubscriberResourceMappingContext(subscriber, true);
     }
-    
+
     /**
      * Create a resource mapping context for the given subscriber
      * @param subscriber the subscriber
@@ -76,7 +76,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 			monitor.done();
 		}
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.core.internal.resources.mapping.RemoteResourceMappingContext#hasLocalChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -104,7 +104,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 			monitor.done();
 		}
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.core.internal.resources.mapping.RemoteResourceMappingContext#fetchBaseContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -180,13 +180,13 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 			IResource resource = resources[i];
 			// Include files and depth-one folders as shallow
 			if (depth == IResource.DEPTH_ONE || resource.getType() == IResource.FILE) {
-				shallowRefresh.add(resource);		
+				shallowRefresh.add(resource);
 			} else if (depth == IResource.DEPTH_INFINITE) {
 				deepRefresh.add(resource);
 			}
 		}
 	}
-	
+
     /*
      * Ensure that the given resource has been refreshed to the specified depth
      * since the context has been created.
@@ -214,7 +214,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
      * direct parent if the resource is a file.
      */
 	private boolean wasRefreshedShallow(IResource resource) {
-		if  (shallowRefresh.contains(resource)) 
+		if  (shallowRefresh.contains(resource))
 			return true;
 		if (resource.getType() == IResource.FILE && shallowRefresh.contains(resource.getParent()))
 			return true;
@@ -233,7 +233,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 			return true;
 		return wasRefreshedDeeply(resource.getParent());
 	}
-	
+
 	/*
 	 * Validate that the remote resource is of the proper type and return the
 	 * remote resource if it is OK. A return of null indicates that there is no remote.
@@ -254,7 +254,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
         }
         return remote;
 	}
-    
+
 	/*
 	 * Validate that the base resource is of the proper type and return the
 	 * base resource if it is OK. A return of null indicates that there is no base.
@@ -291,7 +291,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	public boolean contentDiffers(IFile file, IProgressMonitor monitor) throws CoreException {
 		return hasRemoteChange(file, monitor) || hasLocalChange(file, monitor);
 	}
-	
+
 	public IProject[] getProjects() {
 		Set projects = new HashSet();
 		IResource[] roots = subscriber.roots();

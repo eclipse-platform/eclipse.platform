@@ -19,13 +19,13 @@ import org.eclipse.core.resources.mapping.ResourceMapping;
  * within an {@link ISynchronizationScope} that overlap with the participant's
  * model provider stay up-to-date with the model elements (represented as
  * {@link ResourceMapping} instances) contained in the scope.
- * 
+ *
  * <p>
  * Clients may implement this interface.
- * 
+ *
  * @see org.eclipse.core.resources.mapping.ResourceMapping
  * @see ISynchronizationScopeManager
- * 
+ *
  * @since 3.2
  */
 public interface ISynchronizationScopeParticipant {
@@ -39,12 +39,12 @@ public interface ISynchronizationScopeParticipant {
 	 * participant to react to local changes that affect the resources in the
 	 * scope by calling
 	 * {@link ISynchronizationScope#refresh(ResourceMapping[])}.
-	 * 
+	 *
 	 * @param scope
 	 *            the scope
 	 * @param resources
 	 *            the changed resources
-	 * @param projects 
+	 * @param projects
 	 *            projects that were either added or removed
 	 * @return the resource mappings that need to be refreshed.
 	 */

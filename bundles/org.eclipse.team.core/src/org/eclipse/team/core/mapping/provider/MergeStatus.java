@@ -17,20 +17,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.team.core.mapping.IMergeStatus;
 
 /**
- * A special status that is returned when the return code 
+ * A special status that is returned when the return code
  * of the <code>merge</code> method is <code>CONFLICTS</code>.
- * It is possible that there were problems that caused the 
+ * It is possible that there were problems that caused the
  * auto-merge to fail. In that case, the implementor of
  * <code>IResourceMappingMerger</code> can return a multi-status
  * in which one of the children is a <code>MergeStatus</code> and
  * the others describe other problems that were encountered.
- * 
+ *
  * @see org.eclipse.team.core.mapping.IResourceMappingMerger
- * 
+ *
  * @since 3.2
  */
 public class MergeStatus extends Status implements IMergeStatus {
-    
+
     private ResourceMapping[] conflictingMappings;
 	private IFile[] conflictingFiles;
 
@@ -64,7 +64,7 @@ public class MergeStatus extends Status implements IMergeStatus {
     public ResourceMapping[] getConflictingMappings() {
         return conflictingMappings;
     }
-    
+
     /* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.IMergeStatus#getConflictingFiles()
 	 */

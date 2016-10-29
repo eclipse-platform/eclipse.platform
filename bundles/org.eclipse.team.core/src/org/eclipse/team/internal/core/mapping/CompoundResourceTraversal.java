@@ -22,12 +22,12 @@ import org.eclipse.core.runtime.IPath;
  * queries on a set of traversals.
  */
 public class CompoundResourceTraversal {
-	
+
 	private Set deepFolders = new HashSet();
 	private Set shallowFolders = new HashSet();
 	private Set zeroFolders = new HashSet();
 	private Set files = new HashSet();
-	
+
 	public synchronized void addTraversals(ResourceTraversal[] traversals) {
 		for (int i = 0; i < traversals.length; i++) {
 			ResourceTraversal traversal = traversals[i];
@@ -151,19 +151,19 @@ public class CompoundResourceTraversal {
 
 	public synchronized void add(CompoundResourceTraversal compoundTraversal) {
 		// Technically, this code should synchronize on compoundTraversal.
-		// However, this makes deadlock possible and, in practive, I don't think that 
+		// However, this makes deadlock possible and, in practive, I don't think that
 		// the provided traversal will be modified after it is passed to this method.
 		addResources(
-				(IResource[]) compoundTraversal.deepFolders.toArray(new IResource[compoundTraversal.deepFolders.size()]), 
+				(IResource[]) compoundTraversal.deepFolders.toArray(new IResource[compoundTraversal.deepFolders.size()]),
 				IResource.DEPTH_INFINITE);
 		addResources(
-				(IResource[]) compoundTraversal.shallowFolders.toArray(new IResource[compoundTraversal.shallowFolders.size()]), 
+				(IResource[]) compoundTraversal.shallowFolders.toArray(new IResource[compoundTraversal.shallowFolders.size()]),
 				IResource.DEPTH_ONE);
 		addResources(
-				(IResource[]) compoundTraversal.zeroFolders.toArray(new IResource[compoundTraversal.zeroFolders.size()]), 
+				(IResource[]) compoundTraversal.zeroFolders.toArray(new IResource[compoundTraversal.zeroFolders.size()]),
 				IResource.DEPTH_ZERO);
 		addResources(
-				(IResource[]) compoundTraversal.files.toArray(new IResource[compoundTraversal.files.size()]), 
+				(IResource[]) compoundTraversal.files.toArray(new IResource[compoundTraversal.files.size()]),
 				IResource.DEPTH_ZERO);
 	}
 
@@ -172,7 +172,7 @@ public class CompoundResourceTraversal {
 			IResource resource = resources[i];
 			addResource(resource, depth);
 		}
-		
+
 	}
 
 	/**

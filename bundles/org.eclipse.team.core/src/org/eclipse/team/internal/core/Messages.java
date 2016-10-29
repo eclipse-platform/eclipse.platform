@@ -25,7 +25,7 @@ public class Messages extends NLS {
 	public static String concatStrings;
 
     public static String AbstractResourceVariantTree_0;
-    
+
 	public static String Assert_assertionFailed;
 
 	public static String FileModificationValidator_someReadOnly;
@@ -95,7 +95,7 @@ public class Messages extends NLS {
 	public static String SubscriberEventHandler_12;
 	public static String ProjectSetCapability_0;
 	public static String ProjectSetCapability_1;
-	
+
     public static String SubscriberResourceMappingContext_0;
     public static String SubscriberResourceMappingContext_1;
 	public static String MergeContext_0;

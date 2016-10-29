@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * is returned for all rules.
  */
 public class PessimisticResourceRuleFactory extends ResourceRuleFactory {
-	
+
 	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceRuleFactory#copyRule(org.eclipse.core.resources.IResource, org.eclipse.core.resources.IResource)
 	 */
@@ -65,7 +65,7 @@ public class PessimisticResourceRuleFactory extends ResourceRuleFactory {
 	public ISchedulingRule validateEditRule(IResource[] resources) {
 		return root;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.team.ResourceRuleFactory#charsetRule(org.eclipse.core.resources.IResource)
 	 */

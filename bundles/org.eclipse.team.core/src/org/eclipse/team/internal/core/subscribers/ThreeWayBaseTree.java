@@ -58,7 +58,7 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 			return subscriber.getSynchronizer().members(resource);
 		}
 	}
-	
+
 	/**
 	 * Create a base resource variant tree that accesses the base bytes
 	 * from a three-way synchronizer.
@@ -68,7 +68,7 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 		super(new BaseResourceVariantByteStore(subscriber));
 		this.subscriber = subscriber;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.caches.AbstractResourceVariantTree#refresh(org.eclipse.core.resources.IResource[], int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -109,5 +109,5 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 	private ThreeWaySubscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 }

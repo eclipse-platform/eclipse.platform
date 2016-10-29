@@ -11,13 +11,13 @@
 package org.eclipse.team.core.history;
 
 /**
- * ITags can be used to hang additional repository information for IFileRevisions. 
- * 
- * @see IFileRevision 
+ * ITags can be used to hang additional repository information for IFileRevisions.
+ *
+ * @see IFileRevision
  * @since 3.2
  */
 public interface ITag {
-	
+
 	/**
 	 * Returns the name of this tag.
 	 * @return String containing the name of the tag

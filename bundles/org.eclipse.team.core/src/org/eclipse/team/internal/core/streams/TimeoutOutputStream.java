@@ -113,7 +113,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 		length++;
 		notify();
 	}
-	
+
 	/**
 	 * Writes multiple bytes to the stream.
 	 * @throws InterruptedIOException if the timeout expired, bytesTransferred will
@@ -155,7 +155,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 		}
 		notify();
 	}
-	
+
 	/**
 	 * Waits for the buffer to drain if it is full.
 	 * @param partial if true, waits until the buffer is partially empty, else drains it entirely
@@ -164,7 +164,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	private void syncCommit(boolean partial) throws IOException {
 		checkError(); // check errors before allowing the addition of new bytes
 		if (partial && length != iobuffer.length || length == 0) return;
-		if (waitingForClose) throw new IOException(Messages.TimeoutOutputStream_cannotWriteToStream); 
+		if (waitingForClose) throw new IOException(Messages.TimeoutOutputStream_cannotWriteToStream);
 		notify();
 		try {
 			wait(writeTimeout);
@@ -200,7 +200,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 			try {
 				out.close();
 			} catch (IOException e) {
-				synchronized (this) { ioe = e; } 
+				synchronized (this) { ioe = e; }
 			} finally {
 				synchronized (this) {
 					thread = null;
@@ -250,7 +250,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 					bytesUntilFlush = length;
 				}
 			}
-			
+
 			// If there are bytes to be written, write them
 			if (len != 0) {
 				// write out all remaining bytes from the buffer before flushing
@@ -262,7 +262,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 					len = e.bytesTransferred;
 				}
 			}
-			
+
 			// If there was a pending flush, do it
 			if (bytesUntilFlush >= 0) {
 				bytesUntilFlush -= len;
@@ -275,7 +275,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 					bytesUntilFlush = -1; // might have been 0
 				}
 			}
-			
+
 			// If bytes were written, update the circular buffer
 			if (len != 0) {
 				synchronized (this) {

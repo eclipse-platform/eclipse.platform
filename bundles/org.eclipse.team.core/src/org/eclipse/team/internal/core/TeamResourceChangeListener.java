@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -24,13 +24,13 @@ import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
 
 /**
- * Change listener that detects and handles project moves and 
+ * Change listener that detects and handles project moves and
  * meta-file creation.
  */
 public final class TeamResourceChangeListener implements IResourceChangeListener {
-	
+
 	private static final Map metaFilePaths; // Map of String (repository id) -> IPath[]
-	
+
 	static {
 		metaFilePaths = new HashMap();
 		String[] ids = RepositoryProvider.getAllProviderTypeIds();
@@ -42,10 +42,10 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 			}
 		}
 	}
-	
+
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta[] projectDeltas = event.getDelta().getAffectedChildren();
-		for (int i = 0; i < projectDeltas.length; i++) {							
+		for (int i = 0; i < projectDeltas.length; i++) {
 			IResourceDelta delta = projectDeltas[i];
 			IResource resource = delta.getResource();
 			IProject project = resource.getProject();
@@ -109,7 +109,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		IResource resource = file;
 		if (foundPath != null) {
 			for (int i = 0; i < foundPath.segmentCount(); i++) {
-				resource = resource.getParent(); 
+				resource = resource.getParent();
 			}
 		}
 		if (resource.getType() == IResource.FILE) {
@@ -148,7 +148,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		try {
 			delta.accept(new IResourceDeltaVisitor() {
 				public boolean visit(IResourceDelta delta) throws CoreException {
-					if ((delta.getKind() & IResourceDelta.ADDED) != 0 
+					if ((delta.getKind() & IResourceDelta.ADDED) != 0
 							&& delta.getResource().getType() == IResource.FILE) {
 						result.add(delta.getResource());
 					}

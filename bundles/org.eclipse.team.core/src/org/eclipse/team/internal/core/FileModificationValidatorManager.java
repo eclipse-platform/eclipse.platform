@@ -22,7 +22,7 @@ import org.eclipse.team.core.RepositoryProvider;
 
 public class FileModificationValidatorManager extends FileModificationValidator {
 	private FileModificationValidator defaultValidator;
-	
+
 	/*
 	 * @see IFileModificationValidator#validateEdit(IFile[], Object)
 	 * For all files, determine which provider.
@@ -31,26 +31,26 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 	 */
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 		ArrayList returnStati = new ArrayList();
-		
+
 		//map provider to the files under that provider's control
 		Map providersToFiles = new HashMap(files.length);
-		
+
 		//for each file, determine which provider, map providers to files
 		for (int i = 0; i < files.length; i++) {
 			IFile file = files[i];
 			RepositoryProvider provider = RepositoryProvider.getProvider(file.getProject());
-			
+
 			if (!providersToFiles.containsKey(provider)) {
 				providersToFiles.put(provider, new ArrayList());
 			}
-			
+
 			((ArrayList)providersToFiles.get(provider)).add(file);
 		}
-		
+
 		Iterator providersIterator = providersToFiles.keySet().iterator();
-		
+
 		boolean allOK = true;
-		
+
 		//for each provider, validate its files
 		while(providersIterator.hasNext()) {
 			RepositoryProvider provider = (RepositoryProvider)providersIterator.next();
@@ -63,20 +63,20 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 				FileModificationValidator v = provider.getFileModificationValidator2();
 				if (v != null) validator = v;
 			}
-			
+
 			IStatus status = validator.validateEdit(filesArray, context);
 			if(!status.isOK())
 				allOK = false;
 
 			returnStati.add(status);
-		}				
+		}
 
 		if (returnStati.size() == 1) {
 			return (IStatus)returnStati.get(0);
-		} 
-		
+		}
+
 		return new MultiStatus(TeamPlugin.ID,
-			0, 
+			0,
 			(IStatus[])returnStati.toArray(new IStatus[returnStati.size()]),
 				allOK
 					? Messages.ok
@@ -99,7 +99,7 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 
 		return validator.validateSave(file);
 	}
-	
+
 	private synchronized FileModificationValidator getDefaultValidator() {
 	    if (defaultValidator == null) {
 	        defaultValidator = new DefaultFileModificationValidator();

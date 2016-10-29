@@ -22,7 +22,7 @@ import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.TeamStatus;
 
 public class DefaultFileModificationValidator extends FileModificationValidator {
-	
+
 	/*
 	 * A validator plugged in the the Team UI that will prompt
 	 * the user to make read-only files writable. In the absence of
@@ -31,41 +31,41 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 	private FileModificationValidator uiValidator;
 
 	protected IStatus getDefaultStatus(IFile file) {
-		return 
+		return
 			file.isReadOnly()
-			? new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.READ_ONLY_LOCAL, NLS.bind(Messages.FileModificationValidator_fileIsReadOnly, new String[] { file.getFullPath().toString() }), null, file) 
+			? new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.READ_ONLY_LOCAL, NLS.bind(Messages.FileModificationValidator_fileIsReadOnly, new String[] { file.getFullPath().toString() }), null, file)
 				: Status.OK_STATUS;
 	}
-	
+
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 	    IFile[] readOnlyFiles = getReadOnly(files);
 	    if (readOnlyFiles.length == 0)
 	        return Status.OK_STATUS;
 	    synchronized (this) {
-	        if (uiValidator == null) 
+	        if (uiValidator == null)
 	            uiValidator = loadUIValidator();
 	    }
 	    if (uiValidator != null) {
 	        return uiValidator.validateEdit(files, context);
 	    }
 	    // There was no plugged in validator so fail gracefully
-		return getStatus(files); 
+		return getStatus(files);
 	}
 
     protected IStatus getStatus(IFile[] files) {
         if (files.length == 1) {
 			return getDefaultStatus(files[0]);
 		}
-		
+
 		IStatus[] stati = new Status[files.length];
 		boolean allOK = true;
-		
+
 		for (int i = 0; i < files.length; i++) {
-			stati[i] = getDefaultStatus(files[i]);	
+			stati[i] = getDefaultStatus(files[i]);
 			if(! stati[i].isOK())
 				allOK = false;
 		}
-		
+
 		return new MultiStatus(TeamPlugin.ID,
 			0, stati,
 			allOK
@@ -89,7 +89,7 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 	    if (!file.isReadOnly())
 	        return Status.OK_STATUS;
 	    synchronized (this) {
-	        if (uiValidator == null) 
+	        if (uiValidator == null)
 	            uiValidator = loadUIValidator();
 	    }
 	    if (uiValidator != null) {
@@ -97,7 +97,7 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 	    }
 		return getDefaultStatus(file);
 	}
-	
+
     private FileModificationValidator loadUIValidator() {
         IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.DEFAULT_FILE_MODIFICATION_VALIDATOR_EXTENSION);
 		if (extension != null) {

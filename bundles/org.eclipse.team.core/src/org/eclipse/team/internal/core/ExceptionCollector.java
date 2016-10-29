@@ -17,11 +17,11 @@ import org.eclipse.core.runtime.*;
 /**
  * Collects exceptions and can be configured to ignore duplicates exceptions. Exceptions can be logged
  * and a MultiStatus containing all collected exceptions can be returned.
- * 
+ *
  * @see org.eclipse.core.runtime.MultiStatus
  * @see org.eclipse.core.runtime.IStatus
- * 
- * @since 3.0 
+ *
+ * @since 3.0
  */
 public class ExceptionCollector {
 
@@ -30,11 +30,11 @@ public class ExceptionCollector {
 	private String pluginId;
 	private int severity;
 	private ILog log;
-		
+
 	/**
 	 * Creates a collector and initializes the parameters for the top-level exception
 	 * that would be returned from <code>getStatus</code> is exceptions are collected.
-	 * 
+	 *
 	 * @param message a human-readable message, localized to the current locale
 	 * @param pluginId the unique identifier of the relevant plug-in
 	 * @param severity the severity; one of <code>OK</code>,
@@ -61,7 +61,7 @@ public class ExceptionCollector {
 	 * is empty <code>IStatus.OK</code> is returned. Otherwise a MultiStatus containing
 	 * all collected exceptions is returned.
 	 * @return a multistatus containing the exceptions collected or IStatus.OK if
-	 * the collector is empty. 
+	 * the collector is empty.
 	 */
 	public IStatus getStatus() {
 		if(statuses.isEmpty()) {
@@ -73,15 +73,15 @@ public class ExceptionCollector {
 				IStatus status = (IStatus) it.next();
 				multiStatus.merge(status);
 			}
-			return multiStatus; 
+			return multiStatus;
 		}
 	}
-	
+
 	/**
 	 * Add this exception to the collector. If a log was specified in the constructor
 	 * then the exception will be output to the log. You can retreive exceptions
 	 * using <code>getStatus</code>.
-	 * 
+	 *
 	 * @param exception the exception to collect
 	 */
 	public void handleException(CoreException exception) {
@@ -102,6 +102,6 @@ public class ExceptionCollector {
 	}
 
 	private void recordStatus(IStatus status) {
-		statuses.add(status);		
+		statuses.add(status);
 	}
 }

@@ -23,7 +23,7 @@ import org.eclipse.team.core.mapping.IResourceDiffTree;
 
 /**
  * Implementation of {@link IResourceDiffTree}.
- * 
+ *
  * @since 3.2
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -52,7 +52,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 		Assert.isLegal(false);
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.diff.IResourceDiffTree#getDiff(org.eclipse.core.resources.IResource)
 	 */
@@ -104,7 +104,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 		}
 		return (IDiff[]) result.toArray(new IDiff[result.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceDiffTree#getDiffs(org.eclipse.core.resources.IResource, int)
 	 */
@@ -161,7 +161,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.provider.DiffTree#add(org.eclipse.team.core.diff.IDiffNode)
 	 */
@@ -169,7 +169,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 		Assert.isTrue(delta instanceof IResourceDiff || delta instanceof IThreeWayDiff);
 		super.add(delta);
 	}
-	
+
 	/**
 	 * Remove the diff associated with the given resource from
 	 * the tree.
@@ -189,7 +189,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 					}
 					return false;
 				}
-			
+
 			});
 		} catch (RuntimeException e) {
 			if (e == found)
@@ -197,5 +197,5 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 			throw e;
 		}
 		return false;
-	}	
+	}
 }

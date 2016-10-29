@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.team.core.TeamException;
 
 /**
- * This class provides the infrastructure for processing/dispatching of events using a 
- * background job. This is useful in the following situations. 
+ * This class provides the infrastructure for processing/dispatching of events using a
+ * background job. This is useful in the following situations.
  * <ul>
  * <li>an operation is potentially long running but a responsive UI is desired
  * while the operation is being performed. To do this incoming events are processed
@@ -29,67 +29,67 @@ import org.eclipse.team.core.TeamException;
  * thus batching UI updates.</li>
  * <li>a change is a POST_CHANGE delta requires further modifications to the workspace
  * which cannot be performed in the delta handler because the workspace is locked.</li>
- * <li>a data structure is not thread safe and requires serialized operations.<li> 
+ * <li>a data structure is not thread safe and requires serialized operations.<li>
  * </ul>
  * </p>
  * <p>
  * The event handler has the following characteristics:
  * <ol>
  * <li>Incoming events are placed in an incoming queue.</li>
- * <li>Each event is processed by calling the <code>processEvent</code> method 
+ * <li>Each event is processed by calling the <code>processEvent</code> method
  * which is implemented by the subclass. The implementation may choose to process events
  * directly or queue events on an outgoing event queue</li>
  * <li>The <code>doDispatchEvents</code> method of the subclass is called at certain intervals
  * to give the subclass a chance to dispatch the events in it's outgoing queue. The interval between
  * the first 3 dispatches will be the <code>shortDispatchDelay</code> and subsequent intervals will be
  * the <code>longDispatchDelay</code>. This is done to avoid constantly hammering the UI for long running
- * operations.<li> 
+ * operations.<li>
  * <li>Errors that occur during event processing or dispatch can be accumulated by calling the <code>handle</code>
- * method. Accumulated errors are used to form the status that is returned when the job completes.<li> 
+ * method. Accumulated errors are used to form the status that is returned when the job completes.<li>
  * </ul>
  * </p>
  *
  * @since 3.0
  */
 public abstract class BackgroundEventHandler {
-	
+
 	/**
 	 * Event type constant used to identify a runnable event
 	 */
 	public static final int RUNNABLE_EVENT = 1000;
-	
+
 	// Events that need to be processed
 	private List awaitingProcessing = new ArrayList();
-	
+
 	// The job that runs when events need to be processed
 	private Job eventHandlerJob;
-	
+
 	// Indicate if the event handler has been shutdown
 	private boolean shutdown;
 
 	// Accumulate exceptions that occur
 	private ExceptionCollector errors;
-	
+
 	// time the last dispatch occurred
 	private long timeOfLastDispatch = 0L;
-	
+
 	// the number of dispatches that have occurred since the job started
 	private int dispatchCount;
 
 	// time between event dispatches
 	private static final long DISPATCH_DELAY = 1500;
-	
+
 	// time between dispatches if the dispatch threshold has been exceeded
 	private static final long LONG_DISPATCH_DELAY = 10000;
-	
+
 	// the number of dispatches that can occur before using the long delay
 	private static final int DISPATCH_THRESHOLD = 3;
-	
+
 	// time to wait for messages to be queued
 	private static final long WAIT_DELAY = 100;
 
 	private String jobName;
-	
+
 	/**
 	 * General event class. The type is specific to subclasses.
 	 */
@@ -114,7 +114,7 @@ public abstract class BackgroundEventHandler {
 			return String.valueOf(type);
 		}
 	}
-	
+
 	/**
 	 * Resource event class. The type is specific to subclasses.
 	 */
@@ -155,13 +155,13 @@ public abstract class BackgroundEventHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * This is a special event used to run some work in the background.
 	 * The preemptive flag is used to indicate that the runnable should take
 	 * the highest priority and thus be placed on the front of the queue
 	 * and be processed as soon as possible, preempting any event that is currently
-	 * being processed. The current event will continue processing once the 
+	 * being processed. The current event will continue processing once the
 	 * high priority event has been processed
 	 */
 	public static class RunnableEvent extends Event {
@@ -179,7 +179,7 @@ public abstract class BackgroundEventHandler {
 			return preemtive;
 		}
 	}
-	
+
 	protected BackgroundEventHandler(String jobName, String errorTitle) {
 		this.jobName = jobName;
 		errors =
@@ -192,13 +192,13 @@ public abstract class BackgroundEventHandler {
 		createEventHandlingJob();
 		schedule();
 	}
-	
+
 	/**
 	 * Create the job used for processing the events in the queue. The job stops working when
 	 * the queue is empty.
 	 */
 	protected void createEventHandlingJob() {
-		eventHandlerJob = new Job(getName()) {	
+		eventHandlerJob = new Job(getName()) {
 			public IStatus run(IProgressMonitor monitor) {
 				return processEvents(monitor);
 			}
@@ -220,7 +220,7 @@ public abstract class BackgroundEventHandler {
 		eventHandlerJob.setSystem(true);
 		eventHandlerJob.setPriority(Job.SHORT);
 	}
-	
+
 	/**
 	 * Return whether this background handler belongs to the given job family.
 	 * @param family the job family
@@ -257,14 +257,14 @@ public abstract class BackgroundEventHandler {
 			schedule();
 		}
 	}
-	
+
 	/**
 	 * Schedule the job to process the events now.
 	 */
 	protected void schedule() {
 		eventHandlerJob.schedule();
 	}
-	
+
 	/**
 	 * Shutdown the event handler. Any events on the queue will be removed from the queue
 	 * and will not be processed.
@@ -273,7 +273,7 @@ public abstract class BackgroundEventHandler {
 		shutdown = true;
 		eventHandlerJob.cancel();
 	}
-	
+
 	/**
 	 * Returns whether the handle has been shutdown.
 	 * @return Returns whether the handle has been shutdown.
@@ -281,9 +281,9 @@ public abstract class BackgroundEventHandler {
 	public boolean isShutdown() {
 		return shutdown;
 	}
-	
+
 	/**
-	 * Queue the event and start the job if it's not already doing work. If the job is 
+	 * Queue the event and start the job if it's not already doing work. If the job is
 	 * already running then notify in case it was waiting.
 	 * @param event the event to be queued
 	 */
@@ -304,7 +304,7 @@ public abstract class BackgroundEventHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * Return the name that is to be associated with the background job.
 	 * @return the job name
@@ -314,7 +314,7 @@ public abstract class BackgroundEventHandler {
 	}
 
 	/*
-	 * Return the next event that has been queued, removing it from the queue. 
+	 * Return the next event that has been queued, removing it from the queue.
 	 * @return the next event in the queue
 	 */
 	protected synchronized Event nextElement() {
@@ -323,14 +323,14 @@ public abstract class BackgroundEventHandler {
 		}
 		return (Event) awaitingProcessing.remove(0);
 	}
-	
+
 	protected synchronized Event peek() {
 		if (isShutdown() || isQueueEmpty()) {
 			return null;
 		}
 		return (Event) awaitingProcessing.get(0);
 	}
-	
+
 	/**
 	 * Return whether there are unprocessed events on the event queue.
 	 * @return whether there are unprocessed events on the queue
@@ -338,7 +338,7 @@ public abstract class BackgroundEventHandler {
 	protected synchronized boolean isQueueEmpty() {
 		return awaitingProcessing.isEmpty();
 	}
-	
+
 	/**
 	 * Process events from the events queue and dispatch results. This method does not
 	 * directly check for or handle cancelation of the provided monitor. However,
@@ -364,7 +364,7 @@ public abstract class BackgroundEventHandler {
 			Event event;
 			timeOfLastDispatch = System.currentTimeMillis();
 			dispatchCount = 1;
-			while ((event = nextElement()) != null && ! isShutdown()) {			 	
+			while ((event = nextElement()) != null && ! isShutdown()) {
 				try {
 					processEvent(event, subMonitor);
 					if (Policy.DEBUG_BACKGROUND_EVENTS) {
@@ -399,7 +399,7 @@ public abstract class BackgroundEventHandler {
 	}
 
 	/**
-	 * Notify clients of processed events. Return <code>true</code> if there 
+	 * Notify clients of processed events. Return <code>true</code> if there
 	 * was something to dispatch and false otherwise. This is used to help
 	 * control the frequency of dispatches (e.g. if there is a lot of dispatching
 	 * going on, the frequency of dispatches may be reduced.
@@ -410,10 +410,10 @@ public abstract class BackgroundEventHandler {
 	/**
 	 * Returns <code>true</code> if processed events should be dispatched and
 	 * <code>false</code> otherwise. Events are dispatched at regular intervals
-	 * to avoid fine grain events causing the UI to be too jumpy. Also, if the 
+	 * to avoid fine grain events causing the UI to be too jumpy. Also, if the
 	 * events queue is empty we will wait a small amount of time to allow
 	 * pending events to be queued. The queueEvent notifies when events are
-	 * queued.  
+	 * queued.
 	 * @return <code>true</code> if processed events should be dispatched and
 	 * <code>false</code> otherwise
 	 */
@@ -421,7 +421,7 @@ public abstract class BackgroundEventHandler {
 		// Check if the time since the last dispatch is greater than the delay.
 		if (isDispatchDelayExceeded())
 			return true;
-		
+
 		synchronized(this) {
 			// If we have incoming events, process them before dispatching
 			if(! isQueueEmpty() || ! wait) {
@@ -437,7 +437,7 @@ public abstract class BackgroundEventHandler {
 		}
 		return isQueueEmpty() || isDispatchDelayExceeded();
 	}
-	
+
 	private boolean isDispatchDelayExceeded() {
 		long duration = System.currentTimeMillis() - timeOfLastDispatch;
 		return ((dispatchCount < DISPATCH_THRESHOLD && duration >= getShortDispatchDelay()) ||
@@ -462,7 +462,7 @@ public abstract class BackgroundEventHandler {
     protected long getShortDispatchDelay() {
         return DISPATCH_DELAY;
     }
-    
+
 	/**
 	 * Return the value that is used to determine how often
 	 * the events are dispatched (i.e. how often the UI is
@@ -480,27 +480,27 @@ public abstract class BackgroundEventHandler {
 	protected void handleException(CoreException e) {
 		errors.handleException(e);
 	}
-	
+
 	/**
 	 * Process the event in the context of a running background job. Subclasses may
-	 * (but are not required to) check the provided monitor for cancelation and shut down the 
+	 * (but are not required to) check the provided monitor for cancelation and shut down the
 	 * receiver by invoking the <code>shutdown()</code> method.
 	 * <p>
 	 * In many cases, a background event handler will translate incoming events into outgoing
-	 * events. If this is the case, the handler should accumulate these events in the 
+	 * events. If this is the case, the handler should accumulate these events in the
 	 * <code>proceessEvent</code> method and propagate them from the <code>dispatchEvent</code>
 	 * method which is invoked periodically in order to batch outgoing events and avoid
 	 * the UI becoming too jumpy.
-	 * 
+	 *
 	 * @param event the <code>Event</code> to be processed
 	 * @param monitor a progress monitor
 	 */
 	protected abstract void processEvent(Event event, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Return the job from which the <code>processedEvent</code> method is invoked. 
+	 * Return the job from which the <code>processedEvent</code> method is invoked.
 	 * @return Returns the background event handling job.
-	 */ 
+	 */
 	public Job getEventHandlerJob() {
 		return eventHandlerJob;
 	}

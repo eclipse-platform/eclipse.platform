@@ -25,7 +25,7 @@ public interface IStreamMergerDelegate {
 	 * A storage merger will only be returned if
 	 * there is a stream merger that matches the
 	 * targets content type or extension.
-	 * 
+	 *
 	 * @param target the input storage
 	 * @return a storage merger for the given target
 	 */

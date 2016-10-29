@@ -16,7 +16,7 @@ package org.eclipse.team.core;
  * when the cache is disposed.
  * <p>
  * Clients may implement this interface.
- * 
+ *
  * @since 3.2
  */
 public interface ICacheListener {

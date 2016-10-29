@@ -20,21 +20,21 @@ import org.eclipse.team.internal.core.subscribers.ContentComparator;
 /**
  * A <code>SyncInfoFilter</code> tests a <code>SyncInfo</code> for inclusion,
  * typically in a <code>SyncInfoSet</code>.
- * 
+ *
  * @see SyncInfo
  * @see SyncInfoSet
- * 
+ *
  * @since 3.0
  */
 public abstract class SyncInfoFilter {
-	
+
 	/**
 	 * Selects <code>SyncInfo</code> whose local and remote contents match.
 	 * This filter makes use of the <code>IStorage</code> provided by
 	 * an <code>IResourceVariant</code> to obtain the remote contents.
 	 * This means that the comparison may contact the server unless the contents
 	 * were cached locally by a previous operation. The caching of remote
-	 * contents is subscriber specific. 
+	 * contents is subscriber specific.
 	 * <p>
 	 * For folders, the comparison always returns <code>true</code>.
 	 */
@@ -53,7 +53,7 @@ public abstract class SyncInfoFilter {
 		public ContentComparisonSyncInfoFilter(boolean ignoreWhitespace) {
 			criteria = new ContentComparator(ignoreWhitespace);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.core.synchronize.SyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo, org.eclipse.core.runtime.IProgressMonitor)
 		 */
@@ -65,7 +65,7 @@ public abstract class SyncInfoFilter {
 			if (!local.exists()) return false;
 			return compareContents((IFile)local, remote, monitor);
 		}
-		
+
 		/**
 		 * Compare the contents of the local file and its variant.
 		 * This is used by the <code>select</code> method to compare the
@@ -81,14 +81,14 @@ public abstract class SyncInfoFilter {
 			return criteria.compare(local, remote, monitor);
 		}
 	}
-	
+
 	/**
 	 * Return <code>true</code> if the provided <code>SyncInfo</code> matches the filter.
-	 * 
+	 *
 	 * @param info the <code>SyncInfo</code> to be tested
 	 * @param monitor a progress monitor
 	 * @return <code>true</code> if the <code>SyncInfo</code> matches the filter
 	 */
 	public abstract boolean select(SyncInfo info, IProgressMonitor monitor);
-	
+
 }

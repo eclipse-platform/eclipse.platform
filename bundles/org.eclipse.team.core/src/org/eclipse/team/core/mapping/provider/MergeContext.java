@@ -31,7 +31,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
  * so that resource mapping mergers can attempt head-less auto-merges.
  * The ancestor context is only required for merges while the remote
  * is required for both merge and replace.
- * 
+ *
  * @see IResourceMappingMerger
  * @since 3.2
  */
@@ -39,12 +39,12 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 
 	/**
      * Create a merge context.
-	 * @param type 
+	 * @param type
      */
     protected MergeContext(ISynchronizationScopeManager manager, int type, IResourceDiffTree deltaTree) {
     	super(manager, type, deltaTree);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.core.mapping.IMergeContext#reject(org.eclipse.team.core.diff.IDiff[], org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -58,7 +58,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			}
 		}, getMergeRule(diffs), IResource.NONE, monitor);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.core.mapping.IMergeContext#markAsMerged(org.eclipse.team.core.diff.IDiffNode[], boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -72,7 +72,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			}
 		}, getMergeRule(nodes), IResource.NONE, monitor);
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.mapping.IMergeContext#merge(org.eclipse.team.core.delta.ISyncDelta[], boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -104,7 +104,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			return new MergeStatus(TeamPlugin.ID, Messages.MergeContext_0, (IFile[]) failedFiles.toArray(new IFile[failedFiles.size()]));
 		}
     }
-    
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IMergeContext#merge(org.eclipse.team.core.diff.IDiffNode, boolean, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -116,14 +116,14 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 				IThreeWayDiff twd = (IThreeWayDiff) diff;
 				if ((ignoreLocalChanges || getMergeType() == TWO_WAY)
 						&& resource.getType() == IResource.FOLDER
-						&& twd.getKind() == IDiff.ADD 
+						&& twd.getKind() == IDiff.ADD
 						&& twd.getDirection() == IThreeWayDiff.OUTGOING
 						&& ((IFolder)resource).members().length == 0) {
 					// Delete the local folder addition
 					((IFolder)resource).delete(false, monitor);
 				} else if (resource.getType() == IResource.FOLDER
 						&& !resource.exists()
-						&& twd.getKind() == IDiff.ADD 
+						&& twd.getKind() == IDiff.ADD
 						&& twd.getDirection() == IThreeWayDiff.INCOMING) {
 					ensureParentsExist(resource, monitor);
 					((IFolder)resource).create(false, true, monitor);
@@ -161,14 +161,14 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 				// TODO: Should we handle the case where the local and remote have the same contents for a conflicting addition?
 				return new MergeStatus(TeamPlugin.ID, NLS.bind(Messages.MergeContext_1, new String[] { diff.getPath().toString() }), new IFile[] { getLocalFile(diff) });
 			}
-			// We have a conflict, a local, base and remote so we can do 
+			// We have a conflict, a local, base and remote so we can do
 			// a three-way merge
             return performThreeWayMerge(twDelta, monitor);
     	} else {
     		performReplace(diff, monitor);
     		return Status.OK_STATUS;
     	}
-    	
+
 	}
 
 	/**
@@ -200,7 +200,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 				IStorage ancestorStorage;
 				if (ancestorState != null)
 					ancestorStorage = ancestorState.getStorage(Policy.subMonitorFor(monitor, 30));
-				else 
+				else
 					ancestorStorage = null;
 				IStorage remoteStorage = remoteState.getStorage(Policy.subMonitorFor(monitor, 30));
 				OutputStream os = getTempOutputStream(file);
@@ -238,7 +238,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
         if (tmpFile.exists())
             tmpFile.delete();
     }
-    
+
     private OutputStream getTempOutputStream(IFile file) throws CoreException {
         File tmpFile = getTempFile(file);
         if (tmpFile.exists())
@@ -253,7 +253,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
             return new ByteArrayOutputStream();
         }
     }
-    
+
     private InputStream getTempInputStream(IFile file, OutputStream output) throws CoreException {
         if (output instanceof ByteArrayOutputStream) {
             ByteArrayOutputStream baos = (ByteArrayOutputStream) output;
@@ -274,11 +274,11 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
             throw new CoreException(new Status(IStatus.ERROR, TeamPlugin.ID, IMergeStatus.INTERNAL_ERROR, NLS.bind(Messages.MergeContext_4, new String[] { tmpFile.getAbsolutePath(), e.getMessage() }), e));
         }
     }
-    
+
     private File getTempFile(IFile file) {
         return TeamPlugin.getPlugin().getStateLocation().append(".tmp").append(file.getName() + ".tmp").toFile(); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
 	private IFile getLocalFile(IDiff delta) {
 		return ResourcesPlugin.getWorkspace().getRoot().getFile(delta.getPath());
 	}
@@ -292,7 +292,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 * if the local doesn't exist but the remote does. It then calls
 	 * {@link #makeInSync(IDiff, IProgressMonitor)} to give subclasses a change
 	 * to make the file associated with the diff in-sync.
-	 * 
+	 *
 	 * @param diff
 	 *            the diff whose local is to be replaced
 	 * @param monitor
@@ -316,13 +316,13 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
     		if (d != null)
     			remote = d.getBeforeState();
     	}
-    	
+
     	// Only perform the replace if a local or remote change was found
     	if (d != null) {
 	    	performReplace(diff, file, remote, monitor);
     	}
 	}
-    
+
     /**
 	 * Method that is invoked from
 	 * {@link #performReplace(IDiff, IProgressMonitor)} after the local has been
@@ -332,7 +332,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 * invoked from {@link #merge(IDiff, boolean, IProgressMonitor)} if deletion
 	 * conflicts are encountered. It can also be invoked from that same method if
 	 * a folder is created due to an incoming folder addition.
-	 * 
+	 *
 	 * @param diff
 	 *            the diff whose local is now in-sync
 	 * @param monitor
@@ -398,7 +398,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 			((IFolder)parent).create(false, true, monitor);
 		}
 	}
-	
+
 	/**
 	 * Default implementation of <code>run</code> that invokes the
 	 * corresponding <code>run</code> on {@link org.eclipse.core.resources.IWorkspace}.
@@ -407,7 +407,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	public void run(IWorkspaceRunnable runnable, ISchedulingRule rule, int flags, IProgressMonitor monitor) throws CoreException {
 		ResourcesPlugin.getWorkspace().run(runnable, rule, flags, monitor);
 	}
-	
+
 	/**
 	 * Default implementation that returns the resource itself if it exists
 	 * and the first existing parent if the resource does not exist.
@@ -433,7 +433,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		}
 		return rule;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IMergeContext#getMergeRule(org.eclipse.team.core.diff.IDiff[])
 	 */
@@ -450,14 +450,14 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		}
 		return result;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IMergeContext#getMergeType()
 	 */
 	public int getMergeType() {
 		return getType();
 	}
-	
+
 	public Object getAdapter(Class adapter) {
 		if (adapter == IStorageMerger.class) {
 			return DelegatingStorageMerger.getInstance();

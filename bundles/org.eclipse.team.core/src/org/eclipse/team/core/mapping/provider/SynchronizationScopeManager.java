@@ -49,10 +49,10 @@ import org.eclipse.team.internal.core.mapping.*;
  * scopes to provide for participation. For example, the
  * {@link SubscriberScopeManager} class includes participates in the scope
  * management process.
- * 
+ *
  * @see org.eclipse.core.resources.mapping.ResourceMapping
  * @see SubscriberScopeManager
- * 
+ *
  * @since 3.2
  */
 public class SynchronizationScopeManager extends PlatformObject implements ISynchronizationScopeManager {
@@ -90,7 +90,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		}
 		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
 	}
-	
+
 	private static ResourceMapping[] getMappings(IModelProviderDescriptor descriptor,
 			ResourceTraversal[] traversals,
 			ResourceMappingContext context, IProgressMonitor monitor)
@@ -100,9 +100,9 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		return descriptor.getModelProvider().getMappings(matchingTraversals,
 				context, monitor);
 	}
-	
+
 	/**
-	 * Create a scope manager that uses the given context to 
+	 * Create a scope manager that uses the given context to
 	 * determine what resources should be included in the scope.
 	 * If <code>consultModels</code> is <code>true</code> then
 	 * the model providers will be queried in order to determine if
@@ -125,12 +125,12 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	public boolean isInitialized() {
 		return initialized;
 	}
-	
+
 	/**
 	 * Return the scheduling rule that is used when initializing and refreshing
 	 * the scope. By default, a rule that covers all projects for the input mappings
 	 * of the scope is returned. Subclasses may override.
-	 * 
+	 *
 	 * @return the scheduling rule that is used when initializing and refreshing
 	 *         the scope
 	 */
@@ -143,12 +143,12 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			if (modelObject instanceof IResource) {
 				IResource resource = (IResource) modelObject;
 				if (resource.getType() == IResource.ROOT)
-					// If the workspace root is one of the inputs, 
+					// If the workspace root is one of the inputs,
 					// then use the workspace root as the rule
 					return ResourcesPlugin.getWorkspace().getRoot();
 				projects.add(resource.getProject());
 			} else {
-				// If one of the inputs is not a resource, then use the 
+				// If one of the inputs is not a resource, then use the
 				// root as the rule since we don't know whether projects
 				// can be added or removed
 				return ResourcesPlugin.getWorkspace().getRoot();
@@ -156,7 +156,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		}
 		return MultiRule.combine((IProject[]) projects.toArray(new IProject[projects.size()]));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#initialize(org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -183,7 +183,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		}, getSchedulingRule(), IResource.NONE, monitor);
 		return traversals[0];
 	}
-	
+
 	private void internalPrepareContext(IProgressMonitor monitor) throws CoreException {
 		if (initialized)
 			return;
@@ -202,7 +202,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			if (newTraversals.length > 0 && consultModels) {
 				ResourceTraversal[] adjusted = adjustInputTraversals(newTraversals);
 				targetMappings = getMappingsFromProviders(adjusted,
-						context, 
+						context,
 						Policy.subMonitorFor(monitor, IProgressMonitor.UNKNOWN));
 				if (firstTime) {
 					firstTime = false;
@@ -240,7 +240,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 				refreshTraversals.addTraversals(result);
 			}
 		}
-		
+
 		if (checkForContraction && removedTraversals.getRoots().length > 0) {
 			// The scope may have contracted. The only way to handle this is to recalculate from scratch
 			// TODO: This may not be thread safe
@@ -248,7 +248,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			internalRefreshScope(scope.getInputMappings(), false, monitor);
 			change.setContracted(true);
 		}
-		
+
 		if (change.shouldFireChange())
 			fireMappingsChangedEvent(change.getChangedMappings(), change.getChangedTraversals(refreshTraversals));
 		monitor.done();
@@ -328,7 +328,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	/**
 	 * Set whether the scope has additional mappings. This method is not
 	 * intended to be overridden.
-	 * 
+	 *
 	 * @param hasAdditionalMappings a boolean indicating if the scope has
 	 *            additional mappings
 	 */
@@ -340,14 +340,14 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	/**
 	 * Set whether the scope has additional resources. This method is not
 	 * intended to be overridden.
-	 * 
+	 *
 	 * @param hasAdditionalResources a boolean indicating if the scope has
 	 *            additional resources
 	 */
 	protected final void setHasAdditionalResources(boolean hasAdditionalResources) {
 		((ResourceMappingScope)scope).setHasAdditionalResources(hasAdditionalResources);
 	}
-	
+
 	/**
 	 * Create the scope that will be populated and returned by the builder. This
 	 * method is not intended to be overridden by clients.
@@ -369,7 +369,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	 * of a returned resource.
 	 * <p>
 	 * Subclasses may override this method to include additional resources.
-	 * 
+	 *
 	 * @param traversals the input resource traversals
 	 * @return the input resource traversals adjusted to include any additional resources
 	 *         required for the current operation
@@ -400,7 +400,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	 * Add the mapping and its calculated traversals to the scope. Return the
 	 * resources that were not previously covered by the scope. This method
 	 * is not intended to be subclassed by clients.
-	 * 
+	 *
 	 * @param mapping the resource mapping
 	 * @param traversals the resource mapping's traversals
 	 * @return the resource traversals that were not previously covered by the scope
@@ -443,7 +443,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	public ISynchronizationScope getScope() {
 		return scope;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#dispose()
 	 */
@@ -453,7 +453,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	}
 
 	/**
-	 * Refresh the given mappings by recalculating the traversals for the 
+	 * Refresh the given mappings by recalculating the traversals for the
 	 * mappings and adjusting the scope accordingly.
 	 * @param mappings the mappings to be refreshed
 	 */
@@ -468,7 +468,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	}
 
 	/**
-	 * Returns the human readable name of this manager.  The name is never 
+	 * Returns the human readable name of this manager.  The name is never
 	 * <code>null</code>.
 	 * @return the name associated with this scope manager
 	 */

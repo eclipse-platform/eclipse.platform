@@ -27,12 +27,12 @@ import org.eclipse.team.core.mapping.provider.MergeStatus;
  * model provider returned from {@link #getModelProvider()} back to the
  * merge context. Subclasses should override the {@link #merge(IMergeContext, IProgressMonitor)}
  * method in order to change this behavior.
- * 
+ *
  * <p>
  * Clients may subclass this class.
- * 
+ *
  * @see IResourceMappingMerger
- * 
+ *
  * @since 3.2
  */
 public abstract class ResourceMappingMerger implements IResourceMappingMerger {
@@ -43,15 +43,15 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 	public IStatus validateMerge(IMergeContext mergeContext, IProgressMonitor monitor) {
 		return Status.OK_STATUS;
 	}
-	
+
 	/**
 	 * Return the model provider associated with this merger.
 	 * @return Return the model provider associated with this merger.
 	 */
 	protected abstract ModelProvider getModelProvider();
-	
+
 	/**
-	 * Return the scheduling rule required to merge all the 
+	 * Return the scheduling rule required to merge all the
 	 * changes in the context for the model provider of this merger.
 	 * By default, return a rule that covers all the projects for the mappings
 	 * that belong to the model provider of this merger.
@@ -78,14 +78,14 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 		}
 		return rule;
 	}
-	
+
 	/**
 	 * A default implementation of merge that attempts to merge all the mappings
 	 * in the context.
 	 * @param mergeContext the context
 	 * @param monitor a progress monitor
 	 * @return a status indicating whether the merge was successful
-	 * @throws CoreException if an error occurred 
+	 * @throws CoreException if an error occurred
 	 * @see org.eclipse.team.core.mapping.IResourceMappingMerger#merge(org.eclipse.team.core.mapping.IMergeContext, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public IStatus merge(IMergeContext mergeContext, IProgressMonitor monitor) throws CoreException {

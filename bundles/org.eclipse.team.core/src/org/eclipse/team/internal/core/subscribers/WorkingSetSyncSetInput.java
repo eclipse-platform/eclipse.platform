@@ -15,16 +15,16 @@ import org.eclipse.core.resources.IResource;
 public class WorkingSetSyncSetInput extends SyncSetInputFromSyncSet {
 
 	private SyncInfoWorkingSetFilter workingSetFilter = new SyncInfoWorkingSetFilter();
-	
+
 	public WorkingSetSyncSetInput(SubscriberSyncInfoSet set, SubscriberEventHandler handler) {
 		super(set, handler);
 		setFilter(workingSetFilter);
 	}
-	
+
 	public void setWorkingSet(IResource[] resources) {
 		workingSetFilter.setWorkingSet(resources);
 	}
-	
+
 	public IResource[] getWorkingSet() {
 		return workingSetFilter.getWorkingSet();
 	}

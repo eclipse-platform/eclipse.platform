@@ -21,7 +21,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
 
 /**
  * A bundle importer extension.
- * 
+ *
  * @since 3.7
  */
 public class BundleImporterExtension implements IBundleImporter {
@@ -31,7 +31,7 @@ public class BundleImporterExtension implements IBundleImporter {
 
 	/**
 	 * Constructs a bundle importer extension on the given element.
-	 * 
+	 *
 	 * @param element contribution
 	 */
 	public BundleImporterExtension(IConfigurationElement element) {
@@ -52,7 +52,7 @@ public class BundleImporterExtension implements IBundleImporter {
 
 	/**
 	 * Returns underlying delegate.
-	 * 
+	 *
 	 * @return delegate
 	 * @exception CoreException if unable to instantiate delegate
 	 */

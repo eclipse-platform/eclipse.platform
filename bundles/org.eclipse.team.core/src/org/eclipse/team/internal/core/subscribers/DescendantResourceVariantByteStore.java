@@ -34,18 +34,18 @@ import org.eclipse.team.core.variants.*;
  * ways that invalidate the stored remote variants. For example, if the local
  * resources are moved from the main trunk to a branch, any cached remote
  * resource variants would be stale.
- * 
+ *
  * @since 3.0
  */
 public abstract class DescendantResourceVariantByteStore extends ResourceVariantByteStore {
-	
+
 	ResourceVariantByteStore baseStore, remoteStore;
 
 	public DescendantResourceVariantByteStore(ResourceVariantByteStore baseCache, ResourceVariantByteStore remoteCache) {
 		this.baseStore = baseCache;
 		this.remoteStore = remoteCache;
 	}
-	
+
 	/**
 	 * This method will dispose the remote cache but not the base cache.
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
@@ -94,7 +94,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 			return remoteStore.flushBytes(resource, IResource.DEPTH_ZERO);
 		} else {
 			return remoteStore.setBytes(resource, bytes);
-		}	
+		}
 	}
 
 	/* (non-Javadoc)
@@ -105,14 +105,14 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	}
 
 	/**
-	 * Return <code>true</code> if the variant associated with the given local 
+	 * Return <code>true</code> if the variant associated with the given local
 	 * resource has been cached. This method is useful for those cases when
 	 * there are no bytes for a resource variant and the client wants to
 	 * know if this means that the remote does exist (i.e. this method returns
 	 * <code>true</code>) or the remote has not been fetched (i.e. this method returns
 	 * <code>false</code>).
 	 * @param resource the local resource
-	 * @return <code>true</code> if the variant associated with the given local 
+	 * @return <code>true</code> if the variant associated with the given local
 	 * resource has been cached.
 	 * @throws TeamException
 	 */
@@ -129,7 +129,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	 * @return whether the remote bytes are later on the same line-of-descent as the base bytes
 	 */
 	protected abstract boolean isDescendant(IResource resource, byte[] baseBytes, byte[] remoteBytes) throws TeamException;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#setVariantDoesNotExist(org.eclipse.core.resources.IResource)
 	 */
@@ -153,7 +153,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	protected ResourceVariantByteStore getRemoteStore() {
 		return remoteStore;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#members(org.eclipse.core.resources.IResource)
 	 */
@@ -174,7 +174,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 		}
 		return (IResource[]) members.toArray(new IResource[members.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#run(org.eclipse.core.resources.IResource, org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.IProgressMonitor)
 	 */

@@ -18,15 +18,15 @@ import org.eclipse.core.resources.IResource;
  *
  * @see ISubscriberChangeEvent
  * @see Subscriber
- * 
+ *
  * @since 3.0
  */
 public class SubscriberChangeEvent implements ISubscriberChangeEvent {
 
-	private Subscriber subscriber; 
+	private Subscriber subscriber;
 	private int flags;
-	private IResource resource; 
-	
+	private IResource resource;
+
 	/**
 	 * Create a change event with the given flags for the given subscriber and resource.
 	 * @param subscriber the subscriber to which the state change applies
@@ -59,7 +59,7 @@ public class SubscriberChangeEvent implements ISubscriberChangeEvent {
 	public Subscriber getSubscriber() {
 		return subscriber;
 	}
-	
+
 	/**
 	 * Returns an array of deltas for the resources with <code>ISubscriberChangeEvent.SYNC_CHANGED</code>
 	 * as the flag.

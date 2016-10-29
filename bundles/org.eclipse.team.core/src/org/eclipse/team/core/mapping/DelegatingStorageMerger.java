@@ -34,12 +34,12 @@ import org.eclipse.team.internal.core.mapping.IStreamMergerDelegate;
  * <p>
  * Clients may use this class directly or subclass it.
  * @since 3.4
- * 
+ *
  */
 public class DelegatingStorageMerger implements IStorageMerger {
 
 	private static DelegatingStorageMerger instance;
-	
+
 	/**
 	 * Return the storage merger associated with the <code>IContentTypeManager.CT_TEXT</code>
 	 * content type.
@@ -49,14 +49,14 @@ public class DelegatingStorageMerger implements IStorageMerger {
 	public static IStorageMerger createTextMerger() {
 		return Team.createMerger(Platform.getContentTypeManager().getContentType(IContentTypeManager.CT_TEXT));
 	}
-	
+
 	/**
 	 * Default no-arg constructor.
 	 */
 	public DelegatingStorageMerger() {
 		// Nothing to do
 	}
-	
+
 	/**
 	 * Helper method that returns a singleton instance that can be used to merge
 	 * two {@link IStorage} instances.
@@ -68,7 +68,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 			instance = new DelegatingStorageMerger();
 		return instance;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IStorageMerger#merge(java.io.OutputStream, java.lang.String, org.eclipse.core.resources.IStorage, org.eclipse.core.resources.IStorage, org.eclipse.core.resources.IStorage, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -112,7 +112,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 			if (merger == null) {
 				// If team thinks the file is text, try to get a text merger for the file
 				int type = getType(target);
-				if (type == Team.TEXT) 
+				if (type == Team.TEXT)
 					merger = createTextMerger();
 				if (merger == null) {
 					// As a last resort, look for a stream merger
@@ -133,10 +133,10 @@ public class DelegatingStorageMerger implements IStorageMerger {
 	}
 
 	/**
-	 * Return the Team content type associated with the given 
+	 * Return the Team content type associated with the given
 	 * target.
 	 * @param target the storage that contains the target contents for the merge.
-	 * @return the Team content type associated with the given 
+	 * @return the Team content type associated with the given
 	 * target
 	 * @see Team#getFileContentManager()
 	 * @see IFileContentManager#getType(IStorage)

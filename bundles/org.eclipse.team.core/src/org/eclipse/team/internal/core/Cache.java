@@ -21,7 +21,7 @@ import org.eclipse.team.core.ICacheListener;
  * A synchronize operation context that supports caching of
  * properties relevant to the operation and the registering of
  * dispose listeners.
- * 
+ *
  * @see org.eclipse.team.core.ICache
  * @since 3.2
  */
@@ -29,7 +29,7 @@ public class Cache implements ICache {
 
 	Map properties;
 	ListenerList listeners;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.mapping.ISynchronizeOperationContext#addProperty(java.lang.String, java.lang.Object)
 	 */
@@ -55,7 +55,7 @@ public class Cache implements ICache {
 		if (properties.isEmpty()) {
 			properties = null;
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -65,7 +65,7 @@ public class Cache implements ICache {
 		if (listeners == null)
 			listeners = new ListenerList(ListenerList.IDENTITY);
 		listeners.add(listener);
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -74,7 +74,7 @@ public class Cache implements ICache {
 	public synchronized void removeDisposeListener(ICacheListener listener) {
 		removeCacheListener(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.ICache#removeCacheListener(org.eclipse.team.core.ICacheListener)
 	 */
@@ -97,12 +97,12 @@ public class Cache implements ICache {
 					}
 					public void handleException(Throwable exception) {
 						// Ignore since the platform logs the error
-						
+
 					}
 				});
 			}
 		}
 		properties = null;
 	}
-	
+
 }

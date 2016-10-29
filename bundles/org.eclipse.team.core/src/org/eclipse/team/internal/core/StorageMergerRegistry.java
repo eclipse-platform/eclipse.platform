@@ -19,7 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.mapping.IStorageMerger;
 
 public class StorageMergerRegistry {
-	
+
 	private final static String ID_ATTRIBUTE = "id"; //$NON-NLS-1$
 	private final static String EXTENSIONS_ATTRIBUTE = "extensions"; //$NON-NLS-1$
 	private final static String CONTENT_TYPE_ID_ATTRIBUTE = "contentTypeId"; //$NON-NLS-1$
@@ -27,16 +27,16 @@ public class StorageMergerRegistry {
 	private static final Object STORAGE_MERGER = "storageMerger"; //$NON-NLS-1$
 	private static final String CONTENT_TYPE_BINDING= "contentTypeBinding"; //$NON-NLS-1$
 	private static final String STORAGE_MERGER_ID_ATTRIBUTE= "storageMergerId"; //$NON-NLS-1$
-	
+
 	private static boolean NORMALIZE_CASE= true;
-	
+
 	private static StorageMergerRegistry instance;
 
 	private HashMap fIdMap; // maps ids to datas
 	private HashMap fExtensionMap; // maps extensions to datas
 	private HashMap fContentTypeBindings; // maps content type bindings to datas
 	private boolean fRegistriesInitialized;
-	
+
 	public static StorageMergerRegistry getInstance() {
 		if (instance == null) {
 			instance = new StorageMergerRegistry();
@@ -58,7 +58,7 @@ public class StorageMergerRegistry {
 			return descriptor.createStreamMerger();
 		return null;
 	}
-	
+
 	/**
 	 * Returns a stream merger for the given content type.
 	 *
@@ -73,21 +73,21 @@ public class StorageMergerRegistry {
 			return descriptor.createStreamMerger();
 		return null;
 	}
-	
+
 	private void initializeRegistry() {
 		if (!fRegistriesInitialized) {
 			registerExtensions();
 			fRegistriesInitialized= true;
 		}
 	}
-	
+
 	/**
 	 * Registers all stream mergers, structure creators, content merge viewers, and structure merge viewers
 	 * that are found in the XML plugin files.
 	 */
 	private void registerExtensions() {
 		IExtensionRegistry registry= Platform.getExtensionRegistry();
-		
+
 		// collect all IStreamMergers
 		IConfigurationElement[] elements= registry.getConfigurationElementsFor(TeamPlugin.ID, STORAGE_MERGER_EXTENSION_POINT);
 		for (int i= 0; i < elements.length; i++) {
@@ -98,13 +98,13 @@ public class StorageMergerRegistry {
 	    		    createBinding(element, STORAGE_MERGER_ID_ATTRIBUTE);
 		}
 	}
-	
+
 	private static String normalizeCase(String s) {
 		if (NORMALIZE_CASE && s != null)
 			return s.toUpperCase();
 		return s;
 	}
-	
+
 	void register(IConfigurationElement element, Object data) {
 		String id = element.getAttribute(ID_ATTRIBUTE);
 		if (id != null) {
