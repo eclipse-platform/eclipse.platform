@@ -44,7 +44,7 @@ public class NetTest extends TestCase {
 	public NetTest(String name) {
 		super(name);
 	}
-	
+
 	public static Test suite() {
 		return new TestSuite(NetTest.class);
 	}
@@ -71,7 +71,7 @@ public class NetTest extends TestCase {
 		}
 		getProxyManager().setProxyData(data);
 	}
-	
+
 	private IProxyService getProxyManager() {
 		return Activator.getDefault().getProxyService();
 	}
@@ -89,7 +89,7 @@ public class NetTest extends TestCase {
 		assertEquals(expectedData.getSource(), data.getSource());
 		assertSystemPropertiesMatch(data);
 	}
-	
+
 	public void assertSystemPropertiesMatch(IProxyData proxyData) {
 		if (proxyData.getType().equals(IProxyData.HTTP_PROXY_TYPE)) {
 			assertHttpSystemProperties(proxyData, "http");
@@ -102,7 +102,7 @@ public class NetTest extends TestCase {
 
 	private void assertHttpSystemProperties(IProxyData proxyData, String keyPrefix) {
 		Properties sysProps = System.getProperties();
-		
+
 		if (this.getProxyManager().isProxiesEnabled()) {
 			boolean isSet = Boolean.getBoolean(keyPrefix + ".proxySet");
 			assertEquals(proxyData.getHost() != null, isSet); //$NON-NLS-1$
@@ -114,7 +114,7 @@ public class NetTest extends TestCase {
 			assertEquals(proxyData.getPort(), port);
 			if (isSet)
 				assertEquals(ProxyType.convertHostsToPropertyString(this.getProxyManager().getNonProxiedHosts()), sysProps.get(keyPrefix + ".nonProxyHosts")); //$NON-NLS-1$
-			else 
+			else
 				assertNull(sysProps.get(keyPrefix + ".nonProxyHosts"));
 			assertEquals(proxyData.getUserId(), sysProps.get(keyPrefix + ".proxyUser")); //$NON-NLS-1$
 			assertEquals(proxyData.getUserId(), sysProps.get(keyPrefix + ".proxyUserName")); //$NON-NLS-1$
@@ -144,7 +144,7 @@ public class NetTest extends TestCase {
 			assertNull(sysProps.get("socksProxyPort"));
 		}
 	}
-	
+
 	private IProxyData getProxyData(String type) {
 		IProxyData data = (IProxyData)dataCache.get(type);
 		if (data == null) {
@@ -153,7 +153,7 @@ public class NetTest extends TestCase {
 		}
 		return data;
 	}
-	
+
 	private void setProxyData(IProxyData data) throws CoreException {
 		if (isSetEnabled) {
 			this.getProxyManager().setProxyData(new IProxyData[] { data });
@@ -162,12 +162,12 @@ public class NetTest extends TestCase {
 			dataCache.put(data.getType(), data);
 		}
 	}
-	
+
 	private void disableProxy(IProxyData proxyData) throws CoreException {
 		proxyData.disable();
 		setProxyData(proxyData);
 	}
-	
+
 	private void changeProxyData(IProxyData oldData, IProxyData data)
 			throws CoreException {
 		// Make sure that setting the host doesn't change the persisted settings
@@ -176,7 +176,7 @@ public class NetTest extends TestCase {
 		// Now set it in the manager and assert that it is set
 		setProxyData(data);
 	}
-	
+
 	private void setHost(String type) throws CoreException {
 		String host = "www.eclipse.org";
 		setHost(type, host);
@@ -188,14 +188,14 @@ public class NetTest extends TestCase {
 		data.setHost(host);
 		changeProxyData(oldData, data);
 	}
-	
+
 	private void setPort(String type, int port) throws CoreException {
 		IProxyData data = getProxyData(type);
 		IProxyData oldData = getProxyData(type);
 		data.setPort(port);
 		changeProxyData(oldData, data);
 	}
-	
+
 	private void setUser(String type, String user, String password) throws CoreException {
 		IProxyData data = getProxyData(type);
 		IProxyData oldData = getProxyData(type);
@@ -203,7 +203,7 @@ public class NetTest extends TestCase {
 		data.setPassword(password);
 		changeProxyData(oldData, data);
 	}
-	
+
 	private void setDataTest(String type) throws CoreException {
 		setHost(type, "www.eclipse.org");
 		setPort(type, 1024);
@@ -236,7 +236,7 @@ public class NetTest extends TestCase {
 	private void delaySettingData() {
 		isSetEnabled = false;
 	}
-	
+
 	private void performSettingData() throws CoreException {
 		IProxyData[] data = (IProxyData[]) dataCache.values().toArray(new IProxyData[dataCache.size()]);
 		this.getProxyManager().setProxyData(data);
@@ -247,7 +247,7 @@ public class NetTest extends TestCase {
 		isSetEnabled = true;
 		dataCache.clear();
 	}
-	
+
 	public void testIndividualSetAndClear() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -258,14 +258,14 @@ public class NetTest extends TestCase {
 			disableProxy(proxyData);
 		}
 	}
-	
+
 	public void testAllSetAndClear() throws CoreException {
 		delaySettingData();
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
 		performSettingData();
-		
+
 		delaySettingData();
 		IProxyData[] data = this.getProxyManager().getProxyData();
 		for (int i = 0; i < data.length; i++) {
@@ -288,53 +288,53 @@ public class NetTest extends TestCase {
 		setProxiesEnabled(false);
 		assertProxyDataEqual(data);
 	}
-	
+
 	//TODO test disabled, see Bug 403311
 	public void _testSimpleHost() throws CoreException {
-		
+
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
-		
+
 		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("www.randomhot.com");
 		assertEquals(3, allData.length);
-		
+
 		IProxyData data = this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNotNull(data);
-		
+
 		allData = this.getProxyManager().getProxyDataForHost("localhost");
 		assertEquals(0, allData.length);
-		
+
 		data = this.getProxyManager().getProxyDataForHost("localhost", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
 	}
-	
+
 	public void testHostPattern() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
-		
+
 		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
 		this.getProxyManager().setNonProxiedHosts(new String[] { "*ignore.com" });
-		
+
 		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("www.randomhot.com");
 		assertEquals(3, allData.length);
-		
+
 		IProxyData data = this.getProxyManager().getProxyDataForHost("www.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNotNull(data);
-		
+
 		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
 		assertEquals(0, allData.length);
-		
+
 		data = this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
-		
+
 		allData = this.getProxyManager().getProxyDataForHost("ignore.com");
 		assertEquals(0, allData.length);
-		
+
 		data = this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
-		
+
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
@@ -342,28 +342,28 @@ public class NetTest extends TestCase {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
-		
+
 		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
 		this.getProxyManager().setNonProxiedHosts(new String[] { "ignore.com" });
-		
+
 		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com");
 		assertEquals(3, allData.length);
-		
+
 		IProxyData data = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNotNull(data);
-		
+
 		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
 		assertEquals(0, allData.length);
-		
+
 		data = this.getProxyManager().getProxyDataForHost("www.ignore.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
-		
+
 		allData = this.getProxyManager().getProxyDataForHost("ignore.com");
 		assertEquals(0, allData.length);
-		
+
 		data = this.getProxyManager().getProxyDataForHost("ignore.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
-		
+
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
@@ -461,7 +461,7 @@ public class NetTest extends TestCase {
 
 		// check if system properties are updated
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
-		String assertMessage = "http.nonProxyHost should contain '" + testHost 
+		String assertMessage = "http.nonProxyHost should contain '" + testHost
 				+ "', but its current value is '" + sysPropNonProxyHosts + "'";
 		assertTrue(assertMessage, sysPropNonProxyHosts.indexOf(testHost) > -1);
 

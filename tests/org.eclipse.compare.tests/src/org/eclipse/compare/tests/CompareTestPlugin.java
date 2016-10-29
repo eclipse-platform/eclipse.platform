@@ -14,13 +14,13 @@ import org.eclipse.core.runtime.Plugin;
 
 /**
  * The main plug-in class to be used in the desktop.
- * 
+ *
  * @since 3.1
  */
 public class CompareTestPlugin extends Plugin {
-	
+
 	private static CompareTestPlugin fgPlugin;
-	
+
 	public CompareTestPlugin() {
 		fgPlugin= this;
 	}

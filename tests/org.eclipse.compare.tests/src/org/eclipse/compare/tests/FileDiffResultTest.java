@@ -59,7 +59,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * doesn't exist in the project.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	public void testPatchAddsNewFile() throws CoreException {
@@ -96,7 +96,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * already exists in the project.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	public void testPatchAddsExistingFileWithSameContents()
@@ -141,7 +141,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Tests applying a patch which creates a new file in a project. The file
 	 * already exists in the project, but has different contents.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	public void testPatchAddsExistingFileWithDifferentContents()
@@ -199,7 +199,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 			fail();
 		}
 	}
-	
+
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=187365
 	public void testExcludePartOfNonWorkspacePatch() {
 		Patcher patcher = new Patcher();
@@ -262,7 +262,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 
 	/**
 	 * Return string read from an input stream.
-	 * 
+	 *
 	 * @param in
 	 *            Input stream.
 	 * @return String read from the stream.
@@ -275,7 +275,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 
 	/**
 	 * Returns content of a file.
-	 * 
+	 *
 	 * @param file
 	 *            A file.
 	 * @return Content of the file.
@@ -290,7 +290,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 	/**
 	 * Check if two input streams are equal. They can't be null, all bytes need
 	 * to be the same, and they need to have same length.
-	 * 
+	 *
 	 * @param inputStream1
 	 *            First stream to check.
 	 * @param inputStream2

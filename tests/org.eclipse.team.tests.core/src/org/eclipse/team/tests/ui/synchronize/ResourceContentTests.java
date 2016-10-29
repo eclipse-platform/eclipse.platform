@@ -32,7 +32,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 public class ResourceContentTests extends TeamTest {
 
 	public static class TestableResourceModelContentProvider extends ResourceModelContentProvider {
-		
+
 		private final ISynchronizationScope scope;
 		private final ISynchronizationContext context;
 		private final ISynchronizePageConfiguration configuration;
@@ -55,13 +55,13 @@ public class ResourceContentTests extends TeamTest {
 			return scope;
 		}
 	}
-	
+
 	public static Test suite() {
 		return suite(ResourceContentTests.class);
 	}
 
 	private ResourceModelContentProvider provider;
-	
+
 	public ResourceContentTests() {
 		super();
 	}
@@ -69,12 +69,12 @@ public class ResourceContentTests extends TeamTest {
 	public ResourceContentTests(String name) {
 		super(name);
 	}
-	
+
 	protected void setUp() throws Exception {
 		initializeProvider(null, null, null);
 		super.setUp();
 	}
-	
+
 	protected void tearDown() throws Exception {
 		cleanupProvider();
 		super.tearDown();
@@ -84,17 +84,17 @@ public class ResourceContentTests extends TeamTest {
 		cleanupProvider();
 		provider = new TestableResourceModelContentProvider(scope, context, configuration);
 	}
-	
+
 	private void cleanupProvider() {
 		if (provider != null)
 			provider.dispose();
 		provider = null;
 	}
-	
+
 	private void assertContentMatches(IProject project, String[] leaves) {
 		assertContentsMatch(asResources(project, leaves));
 	}
-	
+
 	private void assertContentsMatch(IResource[] resources) {
 		Set paths = getPaths(ResourcesPlugin.getWorkspace().getRoot());
 		Set resourceSet = new HashSet();
@@ -129,9 +129,9 @@ public class ResourceContentTests extends TeamTest {
 		}
 		return result;
 	}
-	
+
 	private Set getPaths(ResourceModelContentProvider provider, TreePath path) {
-		Object[] children = provider.getChildren(path);	
+		Object[] children = provider.getChildren(path);
 		Set result = new HashSet();
 		if (children.length == 0)
 			result.add(path);
@@ -186,11 +186,11 @@ public class ResourceContentTests extends TeamTest {
 		files = new String[] {".project", "file.txt", "file2.txt", "folder1/file3.txt", "folder1/folder2/file4.txt"};
 		assertContentMatches(project, files);
 	}
-	
+
 	public void testFileChange() throws CoreException {
 //		String[] files = new String[] {"file.txt", "file2.txt", "folder1/file3.txt", "folder1/folder2/file4.txt"};
 //		IProject project = createProject(files);
-		
+
 	}
 
 

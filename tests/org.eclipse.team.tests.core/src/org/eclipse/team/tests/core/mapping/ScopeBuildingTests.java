@@ -32,7 +32,7 @@ public class ScopeBuildingTests extends TeamTest {
 	private class TestResourceMappingOperation extends ModelOperation {
 
 		protected TestResourceMappingOperation(ResourceMapping[] selectedMappings, final ResourceMapping[] additionalMappings) {
-			super(null, new SynchronizationScopeManager("", selectedMappings, ResourceMappingContext.LOCAL_CONTEXT, false) {	
+			super(null, new SynchronizationScopeManager("", selectedMappings, ResourceMappingContext.LOCAL_CONTEXT, false) {
 				public void initialize(
 						IProgressMonitor monitor) throws CoreException {
 					super.initialize(monitor);
@@ -57,11 +57,11 @@ public class ScopeBuildingTests extends TeamTest {
 			// Do nothing since we're just testing the scope build
 		}
 	}
-	
+
 	public static Test suite() {
 		return suite(ScopeBuildingTests.class);
 	}
-	
+
 	public ScopeBuildingTests() {
 		super();
 	}
@@ -69,7 +69,7 @@ public class ScopeBuildingTests extends TeamTest {
 	public ScopeBuildingTests(String name) {
 		super(name);
 	}
-	
+
 	private void expectPrompt(TestResourceMappingOperation op) {
 		try {
 			op.run(new NullProgressMonitor());
@@ -84,39 +84,39 @@ public class ScopeBuildingTests extends TeamTest {
 		}
 		fail("Expected prompt did not occur");
 	}
-	
+
 	private ResourceMapping getMapping(final IProject project, final IResource[] resources, final int depth) {
 		return new ResourceMapping() {
-		
+
 			public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 					IProgressMonitor monitor) throws CoreException {
 				return new ResourceTraversal[] { new ResourceTraversal(resources, depth, IResource.NONE)};
 			}
-		
+
 			public IProject[] getProjects() {
 				return new IProject[] { project };
 			}
-		
+
 			public Object getModelObject() {
 				return new Object();
 			}
-			
+
 			public String getModelProviderId() {
 				return TEST_MODEL_PROVIDER_ID;
 			}
 		    public boolean contains(ResourceMapping mapping) {
 		    	return false;
 		    }
-		
+
 		};
 	}
-	
+
 	public void testAdditionalResources() throws CoreException {
 		IProject project = createProject(new String[]{"file.txt", "folder1/file2.txt", "folder1/folder2/file3.txt", "folder3/"});
-		ResourceMapping[] mappings = new ResourceMapping[] { 
+		ResourceMapping[] mappings = new ResourceMapping[] {
 				getMapping(project, new IResource[] { project.getFolder("folder1") }, IResource.DEPTH_INFINITE)
 		};
-		ResourceMapping[] additionalMappings = new ResourceMapping[] { 
+		ResourceMapping[] additionalMappings = new ResourceMapping[] {
 				getMapping(project, new IResource[] { project.getFile("file.txt")}, IResource.DEPTH_INFINITE)
 		};
 		TestResourceMappingOperation op = new TestResourceMappingOperation(mappings, additionalMappings);

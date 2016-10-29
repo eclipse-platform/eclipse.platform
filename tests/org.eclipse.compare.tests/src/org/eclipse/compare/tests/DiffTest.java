@@ -30,9 +30,9 @@ public class DiffTest extends TestCase {
 	private static final String XYZ= "xyz"; //$NON-NLS-1$
 	private static final String _123= "123"; //$NON-NLS-1$
 	//private static final String _456= "456"; //$NON-NLS-1$
-	
+
 	static final String SEPARATOR= System.getProperty("line.separator"); //$NON-NLS-1$
-	
+
 	public DiffTest() {
 		super();
 	}
@@ -40,11 +40,11 @@ public class DiffTest extends TestCase {
 	public DiffTest(String name) {
 		super(name);
 	}
-	
+
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-	
+
 	public void testLineAddition() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
@@ -65,7 +65,7 @@ public class DiffTest extends TestCase {
 		assertTrue(result[0][2].lineNumber() == 2);
 		assertTrue(result[1][2].lineNumber() == 3);
 	}
-	
+
 	public void testLineDeletion() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
@@ -85,7 +85,7 @@ public class DiffTest extends TestCase {
 		assertTrue(result[1][1].lineNumber() == 1);
 		assertTrue(result[1][2].lineNumber() == 2);
 	}
-	
+
 	public void testLineAppendEnd() {
 		String s1= ABC + SEPARATOR + DEF;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + _123;
@@ -104,7 +104,7 @@ public class DiffTest extends TestCase {
 		assertTrue(result[0][1].lineNumber() == 1);
 		assertTrue(result[1][1].lineNumber() == 1);
 	}
-	
+
 	public void testLineDeleteEnd() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + _123;
 		String s2= ABC + SEPARATOR + DEF;
@@ -123,7 +123,7 @@ public class DiffTest extends TestCase {
 		assertTrue(result[0][1].lineNumber() == 1);
 		assertTrue(result[1][1].lineNumber() == 1);
 	}
-	
+
 	public void testLineAppendStart() {
 		String s1= ABC + SEPARATOR + DEF;
 		String s2= _123 + SEPARATOR + ABC + SEPARATOR + DEF;
@@ -142,7 +142,7 @@ public class DiffTest extends TestCase {
 		assertTrue(result[0][1].lineNumber() == 1);
 		assertTrue(result[1][1].lineNumber() == 2);
 	}
-	
+
 	public void testLineDeleteStart() {
 		String s1= _123 + SEPARATOR + ABC + SEPARATOR + DEF;
 		String s2= ABC + SEPARATOR + DEF;
@@ -161,13 +161,13 @@ public class DiffTest extends TestCase {
 		assertTrue(result[1][0].lineNumber() == 0);
 		assertTrue(result[1][1].lineNumber() == 1);
 	}
-	
+
 	private IRangeComparator toRangeComparator(String s) {
 		IDocument doc1= new Document();
 		doc1.set(s);
 		return new DocLineComparator(doc1, null, true);
 	}
-	
+
 	private RangeDifference[] getDifferences(String s1, String s2) {
 		IRangeComparator comp1= toRangeComparator(s1);
 		IRangeComparator comp2= toRangeComparator(s2);
@@ -176,82 +176,82 @@ public class DiffTest extends TestCase {
 		assertTrue(differences.length == oldDifferences.length);
 		for (int i = 0; i < oldDifferences.length; i++) {
 			assertEquals(oldDifferences[i], differences[i]);
-			
+
 		}
 		return differences;
 	}
-	
+
 	public void testDocAddition() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 2);
 		assertTrue(result[0].leftLength() == 0);
 		assertTrue(result[0].rightStart() == 2);
 		assertTrue(result[0].rightLength() == 1);
 	}
-	
+
 	public void testDocDeletion() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 2);
 		assertTrue(result[0].leftLength() == 1);
 		assertTrue(result[0].rightStart() == 2);
 		assertTrue(result[0].rightLength() == 0);
 	}
-	
+
 	public void testDocAppendStart() {
 		String s1= ABC + SEPARATOR + DEF;
 		String s2= _123 + SEPARATOR + ABC + SEPARATOR + DEF;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 0);
 		assertTrue(result[0].leftLength() == 0);
 		assertTrue(result[0].rightStart() == 0);
 		assertTrue(result[0].rightLength() == 1);
 	}
-	
+
 	public void testDocDeleteStart() {
 		String s1= _123 + SEPARATOR + ABC + SEPARATOR + DEF;
 		String s2= ABC + SEPARATOR + DEF;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 0);
 		assertTrue(result[0].leftLength() == 1);
 		assertTrue(result[0].rightStart() == 0);
 		assertTrue(result[0].rightLength() == 0);
 	}
-	
+
 	public void testDocAppendEnd() {
 		String s1= ABC + SEPARATOR + DEF;
 		String s2= ABC + SEPARATOR + DEF + SEPARATOR + _123;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 2);
 		assertTrue(result[0].leftLength() == 0);
 		assertTrue(result[0].rightStart() == 2);
 		assertTrue(result[0].rightLength() == 1);
 	}
-	
+
 	public void testDocDeleteEnd() {
 		String s1= ABC + SEPARATOR + DEF + SEPARATOR + _123;
 		String s2= ABC + SEPARATOR + DEF;
-		
+
 		RangeDifference[] result = getDifferences(s1, s2);
-		
+
 		assertTrue(result.length == 1);
 		assertTrue(result[0].leftStart() == 2);
 		assertTrue(result[0].leftLength() == 1);

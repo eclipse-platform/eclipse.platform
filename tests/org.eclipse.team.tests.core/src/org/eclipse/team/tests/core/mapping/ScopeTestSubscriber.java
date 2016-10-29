@@ -36,7 +36,7 @@ public class ScopeTestSubscriber extends Subscriber {
 			public boolean compare(IResource local, IResourceVariant remote) {
 				return false;
 			}
-		
+
 		};
 	}
 

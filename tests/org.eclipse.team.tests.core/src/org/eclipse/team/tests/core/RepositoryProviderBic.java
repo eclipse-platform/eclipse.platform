@@ -16,12 +16,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
 
 public class RepositoryProviderBic extends RepositoryProvider {
-	
+
 	final public static String NATURE_ID = "org.eclipse.team.tests.core.bic-provider";
-	
+
 	private IMoveDeleteHook mdh;
 	private IFileModificationValidator mv;
-	
+
 	/*
 	 * @see RepositoryProvider#configureProject()
 	 */
@@ -39,7 +39,7 @@ public class RepositoryProviderBic extends RepositoryProvider {
 	 */
 	public void deconfigure() throws CoreException {
 	}
-	
+
 	/*
 	 * @see RepositoryProvider#getFileModificationValidator()
 	 */
@@ -53,11 +53,11 @@ public class RepositoryProviderBic extends RepositoryProvider {
 	public IMoveDeleteHook getMoveDeleteHook() {
 		return mdh;
 	}
-	
+
 	public void setModificationValidator(IFileModificationValidator mv) {
 		this.mv = mv;
 	}
-	
+
 	public void setMoveDeleteHook(IMoveDeleteHook mdh) {
 		this.mdh = mdh;
 	}

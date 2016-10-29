@@ -30,7 +30,7 @@ public class ScopeTests extends TeamTest {
 	private IProject project1, project2, project3;
 	private IWorkingSet workingSet;
 	private SubscriberScopeManager manager;
-	
+
 	public ScopeTests() {
 		super();
 	}
@@ -38,7 +38,7 @@ public class ScopeTests extends TeamTest {
 	public ScopeTests(String name) {
 		super(name);
 	}
-	
+
 	protected void setUp() throws Exception {
 		super.setUp();
 		project1 = createProject("p1", new String[]{"file.txt"});
@@ -48,7 +48,7 @@ public class ScopeTests extends TeamTest {
 		workingSet = manager.createWorkingSet("TestWS", new IProject[] { project1 });
 		manager.addWorkingSet(workingSet);
 	}
-	
+
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		this.manager.dispose();
@@ -57,7 +57,7 @@ public class ScopeTests extends TeamTest {
 		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();
 		manager.removeWorkingSet(workingSet);
 	}
-	
+
 	private void assertProperContainment(ISynchronizationScopeManager sm) throws OperationCanceledException, InterruptedException {
 		waitForManager(sm);
 		testProjectContainment(sm, project1);
@@ -97,7 +97,7 @@ public class ScopeTests extends TeamTest {
 		waitForManager(manager);
 		return manager;
 	}
-	
+
 	public void testScopeExpansion() throws CoreException, OperationCanceledException, InterruptedException {
 		ISynchronizationScopeManager sm = createScopeManager();
 		assertProperContainment(sm);

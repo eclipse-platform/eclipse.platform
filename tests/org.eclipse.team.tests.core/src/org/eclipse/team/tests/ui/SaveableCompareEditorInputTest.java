@@ -56,7 +56,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 
 	private static final String COMPARE_EDITOR = CompareUIPlugin.PLUGIN_ID
 			+ ".CompareEditor"; //$NON-NLS-1$
-	
+
 	private IFile file1;
 	private IFile file2;
 	private String appendFileContents = "_append";
@@ -334,7 +334,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		 * handled, see javadoc to SaveableCompareEditorInput.
 		 */
 	}
-	
+
 	private void verifyModifyAndSaveBothSidesOfCompareEditor(String extention)
 			throws InterruptedException, InvocationTargetException,
 			IllegalArgumentException, SecurityException,

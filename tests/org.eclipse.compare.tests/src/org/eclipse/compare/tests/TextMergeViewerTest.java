@@ -83,7 +83,7 @@ public class TextMergeViewerTest extends TestCase {
 			}
 		}
 	}
-	
+
 	public static class TestElement implements ITypedElement {
 		public Image getImage() {
 			return null;
@@ -95,7 +95,7 @@ public class TextMergeViewerTest extends TestCase {
 			return UNKNOWN_TYPE;
 		}
 	}
-	
+
 	/**
 	 * A parent test element is an {@link IEditableContent} but is not directly editable.
 	 * The purpose of the parent is to be able to copy a child into the destination element.
@@ -116,10 +116,10 @@ public class TextMergeViewerTest extends TestCase {
 				// Return null as the new child
 				return null;
 			}
-			
+
 			if (other instanceof IStreamContentAccessor && child instanceof IEditableContent) {
 				IEditableContent dst= (IEditableContent) child;
-				
+
 				try {
 					InputStream is= ((IStreamContentAccessor)other).getContents();
 					byte[] bytes= Utilities.readBytes(is);
@@ -135,7 +135,7 @@ public class TextMergeViewerTest extends TestCase {
 			// Node is not directly editable
 		}
 	}
-	
+
 	public static class EditableTestElement extends TestElement implements IStreamContentAccessor, IEditableContent {
 		byte[] contents = new byte[0];
 		public EditableTestElement(byte[] contents) {
@@ -169,9 +169,9 @@ public class TextMergeViewerTest extends TestCase {
 		}
 		public Object getContentsAsString() {
 			return new String(contents);
-		}	
+		}
 	}
-	
+
 	public static class TestMergeViewer extends TextMergeViewer {
 		public TestMergeViewer(Composite parent) {
 			super(parent, new CompareConfiguration());
@@ -185,7 +185,7 @@ public class TextMergeViewerTest extends TestCase {
 			super.copy(leftToRight);
 		}
 	}
-	
+
 	public static class WrappedException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 		Exception exception;
@@ -197,9 +197,9 @@ public class TextMergeViewerTest extends TestCase {
 			throw exception;
 		}
 	}
-	
+
 	TestMergeViewer viewer;
-	
+
 	public TextMergeViewerTest() {
 		super();
 	}
@@ -207,7 +207,7 @@ public class TextMergeViewerTest extends TestCase {
 	public TextMergeViewerTest(String name) {
 		super(name);
 	}
-	
+
 	private void runInDialog(Object input, Runnable runnable) throws Exception {
 		runInDialog(input, runnable, new CompareConfiguration());
 	}
@@ -233,7 +233,7 @@ public class TextMergeViewerTest extends TestCase {
 		dialog.close();
 		viewer = null;
 	}
-	
+
 	protected void saveViewerContents() {
 		try {
 			viewer.save(new NullProgressMonitor());
@@ -241,7 +241,7 @@ public class TextMergeViewerTest extends TestCase {
 			throw new WrappedException(e);
 		}
 	}
-	
+
 	protected IDocument getDocument(boolean left) {
 		char leg = left ? MergeViewerContentProvider.LEFT_CONTRIBUTOR : MergeViewerContentProvider.RIGHT_CONTRIBUTOR;
 		IDocument document = Utilities.getDocument(leg, viewer.getInput(), true, true);
@@ -250,7 +250,7 @@ public class TextMergeViewerTest extends TestCase {
 		}
 		return document;
 	}
-	
+
 	public void testCopyRightToLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		String copiedText = "hi there";
@@ -263,7 +263,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(copiedText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
-	
+
 	public void testCopyLeftToRight() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		String copiedText = "hi there";
@@ -276,7 +276,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(copiedText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
-	
+
 	public void testCopyRightToEmptyLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
@@ -288,7 +288,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(testNode.getRight(), testNode.getLeft());
 	}
-	
+
 	public void testCopyLeftToEmptyRight() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
@@ -300,7 +300,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(testNode.getRight(), testNode.getLeft());
 	}
-	
+
 	public void testCopyEmptyLeftToRight() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
@@ -313,7 +313,7 @@ public class TextMergeViewerTest extends TestCase {
 		assertNull(testNode.getLeft());
 		assertNull(testNode.getRight());
 	}
-	
+
 	public void testCopyEmptyRightToLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
@@ -326,7 +326,7 @@ public class TextMergeViewerTest extends TestCase {
 		assertNull(testNode.getLeft());
 		assertNull(testNode.getRight());
 	}
-	
+
 	public void testModifyLeft() throws Exception {
 		DiffNode testNode = new DiffNode(new EditableTestElement("hi there".getBytes()), null);
 		final String newText = "New text";
@@ -339,7 +339,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
-	
+
 	public void testModifyRight() throws Exception {
 		DiffNode testNode = new DiffNode(null, new EditableTestElement("hi there".getBytes()));
 		final String newText = "New text";
@@ -352,7 +352,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
-	
+
 	public void testCopyEmptyRightToLeftAndModify() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
@@ -367,7 +367,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
-	
+
 	public void testCopyEmptyLeftToRightAndModify() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
@@ -382,7 +382,7 @@ public class TextMergeViewerTest extends TestCase {
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
-	
+
 	public void testCompareFilter() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(),
 				new ParentTestElement());
@@ -465,8 +465,8 @@ public class TextMergeViewerTest extends TestCase {
 			}
 		}, cc);
 	}
-	
-	
+
+
 	public void testDocumentAsTypedElement() throws Exception {
 		class DocumentAsTypedElement extends Document implements ITypedElement {
 
@@ -516,7 +516,7 @@ public class TextMergeViewerTest extends TestCase {
 		dialog.close();
 		viewer = null;
 	}
-	
+
 	//This viewer is used to provide a dummy partitioner
 	public static class TestMergeViewerWithPartitioner extends TestMergeViewer {
 		public class DummyPartitioner implements IDocumentPartitioner {
@@ -551,7 +551,7 @@ public class TextMergeViewerTest extends TestCase {
 			public ITypedRegion getPartition(int offset) {
 				return null;
 			}
-			
+
 		}
 		public TestMergeViewerWithPartitioner(Composite parent) {
 			super(parent, new CompareConfiguration());

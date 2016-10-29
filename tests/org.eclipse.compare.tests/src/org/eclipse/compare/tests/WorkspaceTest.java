@@ -67,12 +67,12 @@ public class WorkspaceTest extends ResourceTest {
 		assertExistsInFileSystem(target);
 		return target;
 	}
-	
+
 	protected IProject getUniqueTestProject(String prefix) throws CoreException {
 		// manage and share with the default stream create by this class
 		return getNamedTestProject(prefix + "-" + Long.toString(System.currentTimeMillis()));
 	}
-	
+
 	/*
 	 * This method creates a project with the given resources
 	 */
@@ -81,14 +81,14 @@ public class WorkspaceTest extends ResourceTest {
 		buildResources(project, resources, true);
 		return project;
 	}
-	
+
 	/*
 	 * Create a test project using the currently running test case as the project name prefix
 	 */
 	protected IProject createProject(String[] resources) throws CoreException {
 		return createProject(getName(), resources);
 	}
-	
+
 	protected IStatus getTeamTestStatus(int severity) {
 		return new Status(severity, "org.eclipse.team.tests.core", 0, "team status", null);
 	}
@@ -166,7 +166,7 @@ public class WorkspaceTest extends ResourceTest {
 		}
 	}
 
-	
+
 	public void sleep(int ms) {
 		try {
 			Thread.sleep(ms);
@@ -208,16 +208,16 @@ public class WorkspaceTest extends ResourceTest {
 		}
 		return resources;
 	}
-	
+
 	// Assert that the two containers have equal contents
 	protected void assertEquals(IContainer container1, IContainer container2) throws CoreException {
 		assertEquals(container1.getName(), container2.getName());
 		List members1 = new ArrayList();
 		members1.addAll(Arrays.asList(container1.members()));
-		
+
 		List members2 = new ArrayList();
 		members2.addAll(Arrays.asList(container2.members()));
-		
+
 		assertTrue(members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
 			IResource member1 = (IResource)members1.get(i);
@@ -226,24 +226,24 @@ public class WorkspaceTest extends ResourceTest {
 			assertEquals(member1, member2);
 		}
 	}
-	
+
 	// Assert that the two files have equal contents
 	protected void assertEquals(IFile file1, IFile file2) throws CoreException {
 		assertEquals(file1.getName(), file2.getName());
 		assertTrue(compareContent(file1.getContents(), file2.getContents()));
 	}
-	
+
 	// Assert that the two projects have equal contents ignoreing the project name
 	// and the .vcm_meta file
 	protected void assertEquals(IProject container1, IProject container2) throws CoreException {
 		List members1 = new ArrayList();
 		members1.addAll(Arrays.asList(container1.members()));
 		members1.remove(container1.findMember(".project"));
-		
+
 		List members2 = new ArrayList();
 		members2.addAll(Arrays.asList(container2.members()));
 		members2.remove(container2.findMember(".project"));
-		
+
 		assertTrue("Number of children differs for " + container1.getFullPath(), members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
 			IResource member1 = (IResource)members1.get(i);
@@ -256,7 +256,7 @@ public class WorkspaceTest extends ResourceTest {
 		assertEquals(resource1.getType(), resource2.getType());
 		if (resource1.getType() == IResource.FILE)
 			assertEquals((IFile)resource1, (IFile)resource2);
-		else 
+		else
 			assertEquals((IContainer)resource1, (IContainer)resource2);
 	}
 }

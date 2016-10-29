@@ -21,7 +21,7 @@ import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.PerformanceTestCase;
 
 public class RangeDifferencerTest extends PerformanceTestCase {
-	
+
 
 	// static private final String EXPLANATION = "Performance decrease caused by changes in the compare framework, see bug 210688";
 
@@ -39,7 +39,7 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 			sb.append("line "); //$NON-NLS-1$
 			sb.append(Integer.toString(i));
 			sb.append('\n');
-			
+
 			int mod= i % 10;
 			switch (code) {
 			case 1:
@@ -58,9 +58,9 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 		}
 		return new Document(sb.toString());
 	}
-	
+
 	public void testLargeDocument() {
-			    
+
 		tagAsGlobalSummary("3-way compare, 5000 lines", Dimension.ELAPSED_PROCESS); //$NON-NLS-1$
 		// setComment(Performance.EXPLAINS_DEGRADATION_COMMENT, EXPLANATION);
 
@@ -69,10 +69,10 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 		ITokenComparator right= new DocLineComparator(createDocument(2), null, false);
 
 		RangeDifference[] diffs= null;
-		
+
 		// a warm up run
 		diffs= RangeDifferencer.findRanges(new NullProgressMonitor(), ancestor, left, right);
-		
+
 		// assert that result correct
 		for (int i= 0; i < diffs.length-6; i+= 6) {
 			assertEquals(diffs[i+0].kind(), RangeDifference.NOCHANGE);
@@ -82,14 +82,14 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 			assertEquals(diffs[i+4].kind(), RangeDifference.NOCHANGE);
 			assertEquals(diffs[i+5].kind(), RangeDifference.RIGHT);
 		}
-		
+
 		// now do 3 performance runs
 		for (int count= 0; count < 3; count++) {
 			startMeasuring();
 			RangeDifferencer.findRanges(new NullProgressMonitor(), ancestor, left, right);
 			stopMeasuring();
 		}
-		
+
 		commitMeasurements();
 		assertPerformance();
 	}

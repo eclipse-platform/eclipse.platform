@@ -17,13 +17,13 @@ import org.eclipse.team.core.RepositoryProvider;
  * This class is used to text resource linking
  */
 public class RepositoryProviderWithLinking extends RepositoryProvider {
-	
+
 	final public static String TYPE_ID = "org.eclipse.team.tests.core.linking";
-	
+
 	private static boolean canHandleLinking = false;
 
 	private static boolean canHandleLinkedURI;
-	
+
 	/**
 	 * @see org.eclipse.team.core.RepositoryProvider#configureProject()
 	 */
@@ -51,11 +51,11 @@ public class RepositoryProviderWithLinking extends RepositoryProvider {
 	public boolean canHandleLinkedResources() {
 		return canHandleLinking;
 	}
-	
+
 	public static void setCanHandleLinkedURI(boolean canHandleLinkedURI) {
 		RepositoryProviderWithLinking.canHandleLinkedURI = canHandleLinkedURI;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.RepositoryProvider#canHandleLinkedResourceURI()
 	 */

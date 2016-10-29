@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
 
 public class RepositoryProviderOtherSport extends RepositoryProvider {
-	
+
 	final public static String NATURE_ID = "org.eclipse.team.tests.core.other";
 
 	/*

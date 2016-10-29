@@ -13,7 +13,7 @@ package org.eclipse.core.tests.net;
 import junit.framework.*;
 
 public class AllNetTests extends TestCase {
-	
+
 	public AllNetTests() {
 		super();
 	}

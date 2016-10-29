@@ -60,7 +60,7 @@ public class StreamTests extends TestCase {
 		testLFtoCRLFTranslation("The \r\n quick brown \n fox \r\n\n\r\r\n jumped \n\n over \r\n the \n lazy dog.\r\n",
 			"The \r\r\n quick brown \r\n fox \r\r\n\r\n\r\r\r\n jumped \r\n\r\n over \r\r\n the \r\n lazy dog.\r\r\n");
 	}
-	
+
 	private void testLFtoCRLFTranslation(String pre, String post) throws IOException {
 		ByteArrayInputStream bin = new ByteArrayInputStream(pre.getBytes());
 		InputStream in = new LFtoCRLFInputStream(bin);

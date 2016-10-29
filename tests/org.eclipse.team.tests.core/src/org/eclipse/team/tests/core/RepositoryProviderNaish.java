@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
 
 public class RepositoryProviderNaish extends RepositoryProvider {
-	
+
 	final public static String NATURE_ID = "org.eclipse.team.tests.core.naish-provider";
 	private IMoveDeleteHook mdh;
 	private IFileModificationValidator mv;
@@ -37,11 +37,11 @@ public class RepositoryProviderNaish extends RepositoryProvider {
 	 */
 	public void deconfigure() throws CoreException {
 	}
-	
+
 	public void setModificationValidator(IFileModificationValidator mv) {
 		this.mv = mv;
 	}
-	
+
 	public void setMoveDeleteHook(IMoveDeleteHook mdh) {
 		this.mdh = mdh;
 	}

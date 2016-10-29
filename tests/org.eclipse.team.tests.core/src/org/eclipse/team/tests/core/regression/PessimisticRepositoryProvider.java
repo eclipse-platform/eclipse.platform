@@ -27,16 +27,16 @@ import org.eclipse.team.core.RepositoryProvider;
  */
 public class PessimisticRepositoryProvider extends RepositoryProvider implements IFileModificationValidator {
 	private static PessimisticRepositoryProvider soleInstance;
-	
+
 	public static final String NATURE_ID = "org.eclipse.team.tests.core.regression.pessimistic-provider";
-	
+
 	public static boolean markWritableOnEdit;
 	public static boolean markWritableOnSave;
 
 	public PessimisticRepositoryProvider() {
 		soleInstance = this;
 	}
-	
+
 	public void configureProject() {
 	}
 
@@ -55,7 +55,7 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 	public IFileModificationValidator getFileModificationValidator() {
 		return soleInstance;
 	}
-	
+
 	public IStatus validateEdit(final IFile[] files, Object context) {
 		if (markWritableOnEdit) {
 			try {
@@ -76,7 +76,7 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 				e.printStackTrace();
 				return e.getStatus();
 			}
-		} 
+		}
 		return Status.OK_STATUS;
 	}
 
@@ -97,7 +97,7 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 		if (resourceAttributes != null) {
 			resourceAttributes.setReadOnly(readOnly);
 			resource.setResourceAttributes(resourceAttributes);
-		}		
+		}
 	}
 
 	public boolean isReadOnly(IResource resource) throws CoreException {

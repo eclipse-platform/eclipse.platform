@@ -199,7 +199,7 @@ public class PatchUITest extends TestCase {
 	private void openPatchWizard() {
 		ImageDescriptor patchWizardImage = CompareUIPlugin.getImageDescriptor("wizban/applypatch_wizban.png");
 		String patchWizardTitle = PatchMessages.PatchWizard_title;
-		
+
 		IStorage patch = null;
 		IResource target = null;
 		CompareConfiguration configuration = new CompareConfiguration();

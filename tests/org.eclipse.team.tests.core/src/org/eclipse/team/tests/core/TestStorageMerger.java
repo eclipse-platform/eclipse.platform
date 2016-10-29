@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.team.core.mapping.IStorageMerger;
 
 public class TestStorageMerger implements IStorageMerger {
-	
+
 	public static final String MERGE_FAILURE = "merge failed";
 
 	public boolean canMergeWithoutAncestor() {

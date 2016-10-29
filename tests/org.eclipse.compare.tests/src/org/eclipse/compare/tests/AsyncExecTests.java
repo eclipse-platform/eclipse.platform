@@ -32,7 +32,7 @@ public class AsyncExecTests extends TestCase {
 	public AsyncExecTests(String name) {
 		super(name);
 	}
-	
+
 	public void testQueueAdd() {
 		WorkQueue q = new WorkQueue();
 		assertTrue(q.isEmpty());
@@ -80,7 +80,7 @@ public class AsyncExecTests extends TestCase {
 		assertEquals(r, q.remove());
 		assertTrue(q.isEmpty());
 	}
-	
+
 	public void testWorker() {
 		final Worker w = new Worker("");
 		final List<IRunnableWithProgress> worked = new ArrayList<>();
@@ -142,7 +142,7 @@ public class AsyncExecTests extends TestCase {
 		assertEquals(r, worked.get(1));
 		assertEquals(r2, worked.get(0));
 	}
-	
+
 	public void testCancelOnRequeue() {
 		final Worker w = new Worker("");
 		final List<IRunnableWithProgress> worked = new ArrayList<>();

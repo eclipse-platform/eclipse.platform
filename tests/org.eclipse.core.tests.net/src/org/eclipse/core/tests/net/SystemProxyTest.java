@@ -197,7 +197,7 @@ public class SystemProxyTest extends TestCase {
 	 * {@link #initializeTestProxyData()} for values. Additionally set
 	 * <code>"eclipse.*;nonexisting.com;*.eclipse.org;www.*.com;*.test.*"</code>
 	 * as proxy bypass in the IE settings.
-	 * 
+	 *
 	 * @throws URISyntaxException
 	 */
 	public void testNonProxiedHosts_WindowsIEManualSettings()
@@ -213,15 +213,15 @@ public class SystemProxyTest extends TestCase {
 		proxiesData = getProxyManager().select(
 				new URI("http://nonexisting.com"));
 		assertEquals(0, proxiesData.length);
-		
+
 		proxiesData = getProxyManager().select(
 				new URI("http://www.eclipse.org"));
 		assertEquals(0, proxiesData.length);
-		
+
 		proxiesData = getProxyManager().select(
 				new URI("http://www.myDomain.com"));
 		assertEquals(0, proxiesData.length);
-		
+
 		proxiesData = getProxyManager().select(
 				new URI("http://www.test.edu"));
 		assertEquals(0, proxiesData.length);
