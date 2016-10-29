@@ -49,7 +49,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 	public UnixProxyProvider() {
 		// Nothing to initialize
 	}
-	
+
 	public IProxyData[] select(URI uri) {
 		String[] nonProxyHosts = getNonProxiedHosts();
 		if (nonProxyHosts != null) {
@@ -95,7 +95,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 
 	public String[] getNonProxiedHosts() {
 		String[] npHosts;
-		
+
 		if (Policy.DEBUG_SYSTEM_PROVIDERS)
 			Policy.debug("Getting no_proxy"); //$NON-NLS-1$
 
@@ -136,7 +136,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 	protected ProxyData getSystemProxyInfo(String protocol) {
 		ProxyData pd = null;
 		String envName = null;
-		
+
 		if (Policy.DEBUG_SYSTEM_PROVIDERS)
 			Policy.debug("Getting proxies for: " + protocol); //$NON-NLS-1$
 
@@ -268,7 +268,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		for (int i = 0; i < strs.length; i++)
 			System.out.println(i + ": " + strs[i]); //$NON-NLS-1$
 	}
-	
+
 	protected static native void gconfInit();
 
 	protected static native ProxyData getGConfProxyInfo(String protocol);

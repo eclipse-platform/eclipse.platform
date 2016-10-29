@@ -134,7 +134,7 @@ public class ProxyPreferencePage extends PreferencePage implements
 		nonProxyHostsComposite.setProvider(name);
 		refresh();
 	}
-	
+
 	private void refresh() {
 		proxyEntriesComposite.refresh();
 		nonProxyHostsComposite.refresh();

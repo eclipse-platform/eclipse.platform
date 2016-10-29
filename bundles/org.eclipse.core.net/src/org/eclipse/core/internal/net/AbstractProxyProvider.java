@@ -23,7 +23,7 @@ public abstract class AbstractProxyProvider {
 	/**
 	 * Returns proxies to use with the given URI. Returns empty array
 	 * when there is no appropriate proxy.
-	 * 
+	 *
 	 * @param uri
 	 *            the URI that a connection is required to
 	 * @return an array of proxies for the given URI

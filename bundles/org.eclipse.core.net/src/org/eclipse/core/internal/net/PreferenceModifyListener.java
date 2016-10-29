@@ -22,7 +22,7 @@ public class PreferenceModifyListener extends
 	public PreferenceModifyListener() {
 		// Nothing to do
 	}
-	
+
 	public IEclipsePreferences preApply(IEclipsePreferences node) {
 		// the node does not need to be the root of the hierarchy
 		Preferences root = node.node("/"); //$NON-NLS-1$

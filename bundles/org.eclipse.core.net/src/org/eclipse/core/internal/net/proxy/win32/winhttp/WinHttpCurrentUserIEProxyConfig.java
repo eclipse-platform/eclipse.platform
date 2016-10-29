@@ -49,7 +49,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * I auto detection requested?
-	 * 
+	 *
 	 * @return the isAutoDetect
 	 */
 	public boolean isAutoDetect() {
@@ -58,7 +58,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * Is a auto config url reqested?
-	 * 
+	 *
 	 * @return true if there is a auto config url
 	 */
 	public boolean isAutoConfigUrl() {
@@ -67,7 +67,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * Are static proxies defined?
-	 * 
+	 *
 	 * @return the isStaticProxy
 	 */
 	public boolean isStaticProxy() {
@@ -76,7 +76,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * Did the auto-detect change?
-	 * 
+	 *
 	 * @param proxyConfig
 	 *            the proxy config; maybe null
 	 * @return true if changed
@@ -89,7 +89,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * Did the auto-config url change?
-	 * 
+	 *
 	 * @param proxyConfig
 	 *            the proxy config; maybe null
 	 * @return true if changed
@@ -104,7 +104,7 @@ public class WinHttpCurrentUserIEProxyConfig {
 
 	/**
 	 * Did the static proxy information change?
-	 * 
+	 *
 	 * @param proxyConfig
 	 *            the proxy config; maybe null
 	 * @return true if changed

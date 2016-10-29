@@ -30,7 +30,7 @@ public final class WinHttp {
 
 	/**
 	 * WinHttpOpen - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @param userAgent
 	 * @param accessType
 	 * @param proxyName
@@ -42,7 +42,7 @@ public final class WinHttp {
 
 	/**
 	 * WinHttpCloseHandle - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @param hInternet
 	 * @return true on success
 	 */
@@ -50,7 +50,7 @@ public final class WinHttp {
 
 	/**
 	 * WinHttpGetIEProxyConfigForCurrentUser - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @param proxyConfig
 	 * @return true on success
 	 */
@@ -58,7 +58,7 @@ public final class WinHttp {
 
 	/**
 	 * WinHttpGetProxyForUrl - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @param hSession
 	 * @param url
 	 * @param autoProxyOptions
@@ -69,7 +69,7 @@ public final class WinHttp {
 
 	/**
 	 * WinHttpDetectAutoProxyConfigUrl - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @param autoProxyHolder
 	 * @return true on success
 	 */
@@ -77,14 +77,14 @@ public final class WinHttp {
 
 	/**
 	 * GetLastError - see Microsoft SDK Documentation
-	 * 
+	 *
 	 * @return the last error code (win32)
 	 */
 	public static native int getLastError();
 
 	/**
 	 * GetLastErrorMessage - formats the last error
-	 * 
+	 *
 	 * @return the readable last error code
 	 */
 	public static native String getLastErrorMessage();

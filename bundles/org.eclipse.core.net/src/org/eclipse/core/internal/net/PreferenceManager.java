@@ -24,9 +24,9 @@ import org.osgi.service.prefs.Preferences;
  * Provides set of methods to operate on preferences
  */
 public class PreferenceManager {
-	
+
 	public static final String ROOT = ""; //$NON-NLS-1$
-	
+
 	private static final String PREF_HAS_MIGRATED = "org.eclipse.core.net.hasMigrated"; //$NON-NLS-1$
 
 	/**
@@ -35,7 +35,7 @@ public class PreferenceManager {
 	private static String HTTP_PROXY_HOST = "org.eclipse.update.core.proxy.host"; //$NON-NLS-1$
 	private static String HTTP_PROXY_PORT = "org.eclipse.update.core.proxy.port"; //$NON-NLS-1$
 	private static String HTTP_PROXY_ENABLE = "org.eclipse.update.core.proxy.enable"; //$NON-NLS-1$
-	
+
 	private static final int DEFAULT_INT = -1;
 	private static final String DEFAULT_STRING = null;
 	private static final boolean DEFAULT_BOOLEAN = false;
@@ -48,11 +48,11 @@ public class PreferenceManager {
 	private PreferenceManager(String id) {
 		this.defaultScope = DefaultScope.INSTANCE.getNode(id);
 	}
-	
+
 	/**
 	 * Creates the preferences manager for the node defined by id
 	 * in configuration scope.
-	 * @param id node name for which node should be created in configuration scope 
+	 * @param id node name for which node should be created in configuration scope
 	 * @return {@link PreferenceManager}
 	 */
 	public static PreferenceManager createConfigurationManager(String id) {
@@ -60,7 +60,7 @@ public class PreferenceManager {
 		manager.currentScope = ConfigurationScope.INSTANCE.getNode(id);
 		return manager;
 	}
-	
+
 	/**
 	 * Checks if preference migration was already performed.
 	 * @return <code>boolean</code>
@@ -68,11 +68,11 @@ public class PreferenceManager {
 	public boolean isMigrated() {
 		return migrated;
 	}
-	
+
 	/**
-	 * Returns the <code>boolean</code> value associated with the specified <code>key</code> 
-	 * for specified <code>node</code> in current scope. 
-	 * 
+	 * Returns the <code>boolean</code> value associated with the specified <code>key</code>
+	 * for specified <code>node</code> in current scope.
+	 *
 	 * <p>
 	 * Returns the value specified in the default scope if there is no value associated with the
 	 * <code>key</code> in the current scope, the backing store is inaccessible, or if the associated
@@ -91,9 +91,9 @@ public class PreferenceManager {
 	}
 
 	/**
-	 * Returns the <code>int</code> value associated with the specified <code>key</code> 
-	 * for specified <code>node</code> in current scope. 
-	 * 
+	 * Returns the <code>int</code> value associated with the specified <code>key</code>
+	 * for specified <code>node</code> in current scope.
+	 *
 	 * <p>
 	 * Returns the value specified in the default scope if there is no value associated with the
 	 * <code>key</code> in the current scope, the backing store is inaccessible, or if the associated
@@ -112,9 +112,9 @@ public class PreferenceManager {
 	}
 
 	/**
-	 * Returns the <code>String</code> value associated with the specified <code>key</code> 
-	 * for specified <code>node</code> in current scope. 
-	 * 
+	 * Returns the <code>String</code> value associated with the specified <code>key</code>
+	 * for specified <code>node</code> in current scope.
+	 *
 	 * <p>
 	 * Returns the value specified in the default scope if there is no value associated with the
 	 * <code>key</code> in the current scope, the backing store is inaccessible, or if the associated
@@ -131,12 +131,12 @@ public class PreferenceManager {
 	public String getString(String node, String key) {
 		return currentScope.node(node).get(key, defaultScope.node(node).get(key, DEFAULT_STRING));
 	}
-	
+
 	/**
-	 * Associates the specified <code>int</code> value with the specified key 
+	 * Associates the specified <code>int</code> value with the specified key
 	 * for specified <code>node</code> in current scope.
-	 * 
-	 * @param node node 
+	 *
+	 * @param node node
 	 * @param key <code>key</code> with which the string form of value is to be associated.
 	 * @param value <code>value</code> to be associated with <code>key</code>.
 	 * @see #getInt(String, String)
@@ -148,8 +148,8 @@ public class PreferenceManager {
 	/**
 	 * Associates the specified <code>boolean</code> value with the specified key
 	 * for specified <code>node</code> in current scope.
-	 * 
-	 * @param node node 
+	 *
+	 * @param node node
 	 * @param key <code>key</code> with which the string form of value is to be associated.
 	 * @param value <code>value</code> to be associated with <code>key</code>.
 	 * @see #getBoolean(String, String)
@@ -161,8 +161,8 @@ public class PreferenceManager {
 	/**
 	 * Associates the specified <code>String</code> value with the specified key
 	 * for specified <code>node</code> in current scope.
-	 * 
-	 * @param node node 
+	 *
+	 * @param node node
 	 * @param key <code>key</code> with which the string form of value is to be associated.
 	 * @param value <code>value</code> to be associated with <code>key</code>.
 	 * @see #getString(String, String)
@@ -170,12 +170,12 @@ public class PreferenceManager {
 	public void putString(String node, String key, String value) {
 		currentScope.node(node).put(key, value);
 	}
-	
+
 	/**
 	 * Register the given listener for notification of preference changes.
 	 * Calling this method multiple times with the same listener has no effect. The
 	 * given listener argument must not be <code>null</code>.
-	 * 
+	 *
 	 * @param node node
 	 * @param listener the preference change listener to register
 	 * @see #removePreferenceChangeListener(String, IEclipsePreferences.IPreferenceChangeListener)
@@ -197,12 +197,12 @@ public class PreferenceManager {
 	public void removePreferenceChangeListener(String node, IPreferenceChangeListener listener) {
 		((IEclipsePreferences)currentScope.node(node)).removePreferenceChangeListener(listener);
 	}
-	
+
 	/**
 	 * Register the given listener for changes to this node.
 	 * Calling this method multiple times with the same listener has no effect. The
 	 * given listener argument must not be <code>null</code>.
-	 * 
+	 *
 	 * @param node node
 	 * @param listener the preference change listener to register
 	 * @see #removeNodeChangeListener(String, IEclipsePreferences.INodeChangeListener)
@@ -224,12 +224,12 @@ public class PreferenceManager {
 	public void removeNodeChangeListener(String node, INodeChangeListener listener) {
 		((IEclipsePreferences)currentScope.node(node)).removeNodeChangeListener(listener);
 	}
-	
+
 	/**
-	 * Removes this node and all of its descendants, 
-	 * invalidating any properties contained in the removed nodes. 
+	 * Removes this node and all of its descendants,
+	 * invalidating any properties contained in the removed nodes.
 	 * @param node name of a node which should be removed
-	 * @throws BackingStoreException - if this operation cannot be completed 
+	 * @throws BackingStoreException - if this operation cannot be completed
 	 * due to a failure in the backing store, or inability to communicate with it.
 	 */
 	public void removeNode(String node) throws BackingStoreException {
@@ -238,7 +238,7 @@ public class PreferenceManager {
 
 	/**
 	 * Forces any changes in the contents of current scope
-	 * and its descendants to the persistent store. 
+	 * and its descendants to the persistent store.
 	 * @throws BackingStoreException - if this operation cannot be completed
 	 * due to a failure in the backing store, or inability to communicate with it.
 	 */
@@ -269,14 +269,14 @@ public class PreferenceManager {
 			if (instanceEnabled != null)
 				configuration.put(ProxyManager.PREF_ENABLED, instanceEnabled);
 		}
-		
+
 		// migrate enabled status
 		if (configuration.get(ProxyManager.PREF_OS, null) == null) {
 			String instanceEnabled = instanceScope.get(ProxyManager.PREF_OS, null);
 			if (instanceEnabled != null)
 				configuration.put(ProxyManager.PREF_OS, instanceEnabled);
 		}
-	
+
 		// migrate non proxied hosts if not already set
 		if (configuration.get(ProxyManager.PREF_NON_PROXIED_HOSTS, null) == null) {
 			String instanceNonProxiedHosts = instanceScope.get(ProxyManager.PREF_NON_PROXIED_HOSTS, null);
@@ -284,7 +284,7 @@ public class PreferenceManager {
 				configuration.put(ProxyManager.PREF_NON_PROXIED_HOSTS, instanceNonProxiedHosts);
 			}
 		}
-		
+
 		// migrate proxy data
 		PreferenceManager instanceManager = PreferenceManager.createInstanceManager(instanceScope);
 		for (int i = 0; i < proxies.length; i++) {
@@ -297,7 +297,7 @@ public class PreferenceManager {
 					type.setProxyData(instanceData);
 			}
 		}
-		
+
 		// if this an import we should remove the old node
 		if (!isInitialize) {
 			try {
@@ -305,9 +305,9 @@ public class PreferenceManager {
 			} catch (BackingStoreException e) {
 				// ignore
 			}
-		}			
+		}
 	}
-	
+
 	private void migrateUpdateHttpProxy(Preferences instanceScope, ProxyType[] proxies, boolean isInitialize) {
 		if (!instanceScope.getBoolean(PREF_HAS_MIGRATED, false)) {
 			// Only set the migration bit when initializing
@@ -332,7 +332,7 @@ public class PreferenceManager {
 			}
 		}
 	}
-	
+
 	private String getHostToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
 		String httpProxyHost = updatePrefs.get(HTTP_PROXY_HOST, ""); //$NON-NLS-1$
 		if (checkSystemProperties && "".equals(httpProxyHost)) { //$NON-NLS-1$
@@ -343,7 +343,7 @@ public class PreferenceManager {
 		updatePrefs.remove(HTTP_PROXY_HOST);
 		return httpProxyHost;
 	}
-	
+
 	private int getPortToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
 		String httpProxyPort = updatePrefs.get(HTTP_PROXY_PORT, ""); //$NON-NLS-1$
 		if (checkSystemProperties && "".equals(httpProxyPort)) { //$NON-NLS-1$
@@ -359,7 +359,7 @@ public class PreferenceManager {
 			}
 		return port;
 	}
-	
+
 	private boolean getEnablementToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
 		boolean httpProxyEnable = false;
 		if (checkSystemProperties && updatePrefs.get(HTTP_PROXY_ENABLE, null) == null) {
@@ -370,7 +370,7 @@ public class PreferenceManager {
 		}
 		return httpProxyEnable;
 	}
-	
+
 	private static PreferenceManager createInstanceManager(Preferences instance) {
 		PreferenceManager manager = new PreferenceManager(Activator.ID);
 		manager.currentScope = (IEclipsePreferences) instance;

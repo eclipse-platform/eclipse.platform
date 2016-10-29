@@ -27,7 +27,7 @@ public class WinHttpAutoProxyOptions {
 
 	public static final int WINHTTP_AUTOPROXY_RUN_OUTPROCESS_ONLY= 0x00020000;
 
-	// Flags for WINHTTP_AUTOPROXY_OPTIONS::dwAutoDetectFlags 
+	// Flags for WINHTTP_AUTOPROXY_OPTIONS::dwAutoDetectFlags
 	public static final int WINHTTP_AUTO_DETECT_TYPE_DHCP= 0x00000001;
 
 	public static final int WINHTTP_AUTO_DETECT_TYPE_DNS_A= 0x00000002;

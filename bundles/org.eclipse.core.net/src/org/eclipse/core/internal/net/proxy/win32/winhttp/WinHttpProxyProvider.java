@@ -24,7 +24,7 @@ import org.eclipse.core.net.proxy.IProxyData;
  * The <code>WinHttpProxyProvivider</code> gets its settings from the
  * "internet options >> connection settings". For this it uses the Windows
  * WinHttp API.
- * 
+ *
  * @see "http://msdn2.microsoft.com/en-us/library/aa382925(VS.85).aspx"
  */
 public class WinHttpProxyProvider {
@@ -34,7 +34,7 @@ public class WinHttpProxyProvider {
 	private String wpadAutoConfigUrl;
 	private boolean tryWpadGetUrl;
 	private boolean tryPac;
-	
+
 	// Buffered delayed logging to avoid deadlocks. Logging itself might trigger
 	// through listeners/appenders other threads to do some communication which in
 	// turn uses this proxy provider.
@@ -47,9 +47,9 @@ public class WinHttpProxyProvider {
 	/**
 	 * Retrieve the proxies that are suitable for the given uri. An empty array
 	 * of proxies indicates that no proxy should be used (direct connection).
-	 * This method considers already the ´no proxy for´ definition of the
+	 * This method considers already the ï¿½no proxy forï¿½ definition of the
 	 * internet options dialog.
-	 * 
+	 *
 	 * @param uri
 	 * @return an array of proxies
 	 */
@@ -85,7 +85,7 @@ public class WinHttpProxyProvider {
 
 		// Explicit proxies defined?
 		if (newProxyConfig.isStaticProxy()) {
-			// Yes, let´s see if we are still up-to-date
+			// Yes, letï¿½s see if we are still up-to-date
 			if (newProxyConfig.staticProxyChanged(proxyConfig))
 				staticProxyConfig = new StaticProxyConfig(newProxyConfig
 						.getProxy(), newProxyConfig.getProxyBypass());
@@ -93,14 +93,14 @@ public class WinHttpProxyProvider {
 			return staticProxyConfig.getProxyData();
 		}
 
-		// Let´s find out if auto detect has changed.
+		// Letï¿½s find out if auto detect has changed.
 		if (newProxyConfig.autoDetectChanged(proxyConfig)) {
 			tryWpadGetUrl = newProxyConfig.isAutoDetect();
 			if (!tryWpadGetUrl)
 				wpadAutoConfigUrl = null;
 		}
 
-		// Let´s find out if pac file url has changed.
+		// Letï¿½s find out if pac file url has changed.
 		if (newProxyConfig.autoConfigUrlChanged(proxyConfig))
 			tryPac = newProxyConfig.isAutoConfigUrl();
 
@@ -110,7 +110,7 @@ public class WinHttpProxyProvider {
 		ProxyData data = new ProxyData(IProxyData.HTTP_PROXY_TYPE, "", -1, //$NON-NLS-1$
 				false, "WINDOWS_IE"); //$NON-NLS-1$
 		data.setDynamic(true);
-		return new IProxyData[] { data }; 
+		return new IProxyData[] { data };
 	}
 
 	public String[] getNonProxiedHosts() {
@@ -132,7 +132,7 @@ public class WinHttpProxyProvider {
 			return new String[0];
 		}
 		if (newProxyConfig.isStaticProxy()) {
-			// Yes, let´s see if we are still up-to-date
+			// Yes, letï¿½s see if we are still up-to-date
 			if (newProxyConfig.staticProxyChanged(proxyConfig))
 				staticProxyConfig = new StaticProxyConfig(newProxyConfig
 						.getProxy(), newProxyConfig.getProxyBypass());
@@ -144,7 +144,7 @@ public class WinHttpProxyProvider {
 	/**
 	 * This method is the not synchronized counterpart of
 	 * <code>getProxyData</code>.
-	 * 
+	 *
 	 * @param uri
 	 * @return an array of proxies
 	 */
@@ -158,20 +158,20 @@ public class WinHttpProxyProvider {
 
 		List proxies = new ArrayList();
 
-		// Let´s find out if auto detect has changed.
+		// Letï¿½s find out if auto detect has changed.
 		if (newProxyConfig.autoDetectChanged(proxyConfig)) {
 			tryWpadGetUrl = newProxyConfig.isAutoDetect();
 			if (!tryWpadGetUrl)
 				wpadAutoConfigUrl = null;
 		}
 
-		// Let´s find out if pac file url has changed.
+		// Letï¿½s find out if pac file url has changed.
 		if (newProxyConfig.autoConfigUrlChanged(proxyConfig))
 			tryPac = newProxyConfig.isAutoConfigUrl();
 
 		// Explicit proxies defined?
 		if (newProxyConfig.isStaticProxy()) {
-			// Yes, let´s see if we are still up-to-date
+			// Yes, letï¿½s see if we are still up-to-date
 			if (newProxyConfig.staticProxyChanged(proxyConfig))
 				staticProxyConfig = new StaticProxyConfig(newProxyConfig
 						.getProxy(), newProxyConfig.getProxyBypass());
@@ -241,14 +241,14 @@ public class WinHttpProxyProvider {
 
 	/**
 	 * Retrieve the proxies from the specified pac file url.
-	 * 
+	 *
 	 * @param hHttpSession
 	 * @param configUrl
 	 * @param uri
 	 * @return a list of proxies (IProxyData) or null in case of an error.
 	 */
 	protected List pacSelect(int hHttpSession, String configUrl, URI uri) {
-		// Don´t ask for anything else than http or https since that is not
+		// Donï¿½t ask for anything else than http or https since that is not
 		// supported by WinHttp pac file support:
 		// ERROR_WINHTTP_UNRECOGNIZED_SCHEME
 		if (!IProxyData.HTTP_PROXY_TYPE.equalsIgnoreCase(uri.getScheme())

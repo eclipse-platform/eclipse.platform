@@ -48,7 +48,7 @@ public final class ProxyProviderUtil {
 	 * <code><pre>
 	 * ([&lt;scheme&gt;=][&lt;scheme&gt; &quot;://&quot; ]&lt;server&gt;[ &quot;:&quot; &lt;port&gt;])
 	 * </pre></code>
-	 * 
+	 *
 	 * @param proxyList
 	 *            the proxy list as a string
 	 * @param universalProxies
@@ -146,7 +146,7 @@ public final class ProxyProviderUtil {
 
 		//		if (protocol.equalsIgnoreCase("socks") || protocol.equalsIgnoreCase("socket")) //$NON-NLS-1$ //$NON-NLS-2$
 		// return IProxyData.SOCKS_PROXY_TYPE;
-		//		if (protocol.equalsIgnoreCase("https")) //$NON-NLS-1$ 
+		//		if (protocol.equalsIgnoreCase("https")) //$NON-NLS-1$
 		// return IProxyData.HTTPS_PROXY_TYPE;
 		// return IProxyData.HTTP_PROXY_TYPE;
 	}

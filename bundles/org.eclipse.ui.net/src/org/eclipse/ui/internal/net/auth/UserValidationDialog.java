@@ -34,7 +34,7 @@ public class UserValidationDialog extends Dialog {
 	 * Gets user and password from a user. May be called from any thread
 	 * @param host the host name
 	 * @param message the message to be displayed when prompting
-	 * 
+	 *
 	 * @return UserAuthentication that contains the userid and the password or
 	 *         <code>null</code> if the dialog has been cancelled
 	 */
@@ -58,19 +58,19 @@ public class UserValidationDialog extends Dialog {
 	}
 	/**
 	 * Gets user and password from a user Must be called from UI thread
-	 * 
+	 *
 	 * @return UserAuthentication that contains the userid and the password or
 	 *         <code>null</code> if the dialog has been cancelled
 	 */
 	protected static Authentication askForAuthentication(String host,
 			String message) {
-		UserValidationDialog ui = new UserValidationDialog(null, host, message); 
+		UserValidationDialog ui = new UserValidationDialog(null, host, message);
 		ui.open();
 		return ui.getAuthentication();
 	}
 	/**
 	 * Creates a new UserValidationDialog.
-	 * 
+	 *
 	 * @param parentShell
 	 *            parent Shell or null
 	 */
@@ -85,7 +85,7 @@ public class UserValidationDialog extends Dialog {
 	 */
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(NetUIMessages.UserValidationDialog_0); 
+		newShell.setText(NetUIMessages.UserValidationDialog_0);
 	}
 	/**
 	 */
@@ -105,8 +105,8 @@ public class UserValidationDialog extends Dialog {
 		main.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		Label label = new Label(main, SWT.WRAP);
-		String text = NLS.bind(NetUIMessages.UserValidationDialog_1, host); 
-		text += "\n\n" + message; //$NON-NLS-1$ 
+		String text = NLS.bind(NetUIMessages.UserValidationDialog_1, host);
+		text += "\n\n" + message; //$NON-NLS-1$
 		label.setText(text);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 3;
@@ -122,7 +122,7 @@ public class UserValidationDialog extends Dialog {
 	 * Creates the three widgets that represent the user name entry area.
 	 */
 	protected void createPasswordFields(Composite parent) {
-		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_2); 
+		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_2);
 
 		passwordField = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
@@ -135,7 +135,7 @@ public class UserValidationDialog extends Dialog {
 	 * Creates the three widgets that represent the user name entry area.
 	 */
 	protected void createUsernameFields(Composite parent) {
-		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_3); 
+		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_3);
 
 		usernameField = new Text(parent, SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);

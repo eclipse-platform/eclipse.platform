@@ -54,11 +54,11 @@ public class Activator implements BundleActivator {
 	private BundleContext bundleContext;
 
 	private ServiceTracker instanceLocationTracker;
-	
+
 	private ServiceRegistration debugRegistration;
 
 	private ServiceRegistration proxyService;
-	
+
 	private PreferenceManager preferenceManger;
 
 	/**
@@ -71,7 +71,7 @@ public class Activator implements BundleActivator {
 
 	/**
 	 * Returns the instance of this plugin.
-	 * 
+	 *
 	 * @return the singleton instance of this plug-in class
 	 */
 	static public Activator getInstance() {

@@ -44,7 +44,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public static final int DO_NOT_VERIFY = 1;
 	public static final int VERIFY_EMPTY = 2;
 	public static final int VERIFY_EQUAL = 4;
-	
+
 	/**
 	 * Constants that control the setting of the SOCKS system properties
 	 */
@@ -53,7 +53,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public static final int ALWAYS_SET = 1;
 	public static final int NEVER_SET = 2;
 	public static int socksSystemPropertySetting;
-	
+
     /**
      * Absolute path to the node for the cached proxy information
      */
@@ -61,8 +61,8 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	/*
 	 * Fields used to cache authentication information in the keyring
 	 */
-    private static final String INFO_PROXY_USER = "user"; //$NON-NLS-1$ 
-    private static final String INFO_PROXY_PASS = "pass"; //$NON-NLS-1$ 
+    private static final String INFO_PROXY_USER = "user"; //$NON-NLS-1$
+    private static final String INFO_PROXY_PASS = "pass"; //$NON-NLS-1$
     static {
         String value = System.getProperty(PROP_SOCKS_SYSTEM_PROPERTY_HANDLING);
         if (value == null) {
@@ -75,7 +75,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
         	socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
         }
     }
-    
+
 	private String name;
 	private boolean updatingPreferences;
 	private PreferenceManager preferenceManager;
@@ -112,8 +112,8 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public ProxyType(String name) {
 		this.name = name;
 		this.preferenceManager = Activator.getInstance().getPreferenceManager();
-	}	
-	
+	}
+
 	public ProxyType(String name, PreferenceManager manager) {
 		this.name = name;
 		this.preferenceManager = manager;
@@ -140,7 +140,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 			// We are initializing so verify that the system properties are empty
 			verifySystemPropertiesEmpty(type);
 		} else if (verifyFlag == VERIFY_EQUAL) {
-			// Verify that the data in the preferences matches the system properties 
+			// Verify that the data in the preferences matches the system properties
 			verifyDataMatchesSystemProperties(proxyData);
 		}
 		return proxyData;
@@ -165,13 +165,13 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	private void updatePreferences(IProxyData proxyData) {
 		updatePreferences(getPreferenceNode(), proxyData);
 	}
-	
+
 	/*package*/  void updatePreferencesIfMissing(IProxyData proxyData) {
 		String node = getPreferenceNode();
 		if (preferenceManager.getString(node, PREF_PROXY_HOST) == null)
 			updatePreferences(node, proxyData);
 	}
-	
+
 	private void updatePreferences(String node, IProxyData proxyData) {
 		if (!hasPreferencesChanged(node, proxyData)) {
 			return;
@@ -212,7 +212,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		}
 		return true;
 	}
-	
+
 	/* package */void updateSystemProperties(IProxyData proxyData) {
 		try {
 			if (proxyData.getType().equals(IProxyData.HTTP_PROXY_TYPE)) {
@@ -226,7 +226,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 			Activator.logError("A security exception occurred while trying to put the proxy data into the system properties", e); //$NON-NLS-1$
 		}
 	}
-	
+
 	private boolean verifyDataMatchesSystemProperties(ProxyData proxyData) {
 		try {
 			boolean proxiesEnabled = ProxyManager.getProxyManager().isProxiesEnabled();
@@ -237,7 +237,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 			} else if (proxyData.getType().equals(IProxyData.SOCKS_PROXY_TYPE)) {
 				return verifyDataMatchesSocksSystemProperties(proxyData, proxiesEnabled);
 			}
-			
+
 		} catch (SecurityException e) {
 			// Just ignore this here since it will be surfaced elsewhere
 		}
@@ -300,7 +300,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		}
 		return verifySocksSystemPropertiesEmpty();
 	}
-	
+
 	private boolean shouldSetSocksSystemProperties() {
 		if (socksSystemPropertySetting == ALWAYS_SET)
 			return true;
@@ -435,7 +435,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 				.getDefaultProvider());
 		for (int i = 0; i < data.length; i++) {
 			if (data[i].getType().equalsIgnoreCase(type)) {
-				return data[i]; 
+				return data[i];
 			}
 		}
 		return new ProxyData(type, null, -1, false, null);
@@ -484,7 +484,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 			}
 		}
 	}
-	
+
 	private void updateSocksSystemProperties() {
 		IProxyData data = getProxyData(IProxyData.SOCKS_PROXY_TYPE);
 		boolean proxiesEnabled = isProxyEnabled();
@@ -518,7 +518,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		preferenceManager.addNodeChangeListener(PREF_PROXY_DATA_NODE, this);
 		preferenceManager.addPreferenceChangeListener(getPreferenceNode(), this);
 	}
-	
+
 	private ISecurePreferences getNode() {
 		ISecurePreferences root = SecurePreferencesFactory.getDefault();
 		if (root == null)
@@ -593,7 +593,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		if (updatingPreferences)
 			return;
 		updateSystemProperties(getProxyData(DO_NOT_VERIFY));
-		
+
 	}
 
 }

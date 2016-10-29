@@ -43,7 +43,7 @@ public class WindowsProxyProvider extends AbstractProxyProvider {
 			winHttpProxyProvider = null;
 		}
 	}
-	
+
 	public IProxyData[] select(URI uri) {
 		IProxyData[] proxies = new IProxyData[0];
 		if (jWinHttpLoaded) {

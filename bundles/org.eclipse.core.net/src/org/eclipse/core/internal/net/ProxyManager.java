@@ -38,17 +38,17 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class ProxyManager implements IProxyService, IPreferenceChangeListener {
-	
+
 	static final String PREF_NON_PROXIED_HOSTS = "nonProxiedHosts"; //$NON-NLS-1$
 	static final String PREF_ENABLED = "proxiesEnabled"; //$NON-NLS-1$
 	static final String PREF_OS = "systemProxiesEnabled"; //$NON-NLS-1$
-	
+
 	private static IProxyService proxyManager;
-	
+
 	private AbstractProxyProvider nativeProxyProvider;
-	
+
 	private PreferenceManager preferenceManager;
-	
+
 	ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
 	private String[] nonProxiedHosts;
 	private final ProxyType[] proxies = new ProxyType[] {
@@ -78,21 +78,21 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			proxyManager = new ProxyManager();
 		return proxyManager;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.net.IProxyManager#addProxyChangeListener(org.eclipse.core.net.IProxyChangeListener)
 	 */
 	public void addProxyChangeListener(IProxyChangeListener listener) {
 		listeners.add(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.net.IProxyManager#removeProxyChangeListener(org.eclipse.core.net.IProxyChangeListener)
 	 */
 	public void removeProxyChangeListener(IProxyChangeListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	private void fireChange(final IProxyChangeEvent event) {
 		Object[] l = listeners.getListeners();
 		for (int i = 0; i < l.length; i++) {
@@ -160,7 +160,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		fireChange(event);
 	}
 
-	
+
 	public IProxyData[] getProxyData() {
 		checkMigrated();
 		IProxyData[] result = new IProxyData[proxies.length];
@@ -182,7 +182,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		checkMigrated();
 		doSetProxyData(proxies);
 	}
-	
+
 	private void doSetProxyData(IProxyData[] proxyDatas) {
 		IProxyData[] oldData = getProxyData();
 		String[] hosts = getNonProxiedHosts();
@@ -355,7 +355,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			} catch (URISyntaxException e) {
 				return null;
 			}
-			
+
 		IProxyData[] data = getProxyDataForHost(host);
 		for (int i = 0; i < data.length; i++) {
 			IProxyData proxyData = data[i];
@@ -365,14 +365,14 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		}
 		return null;
 	}
-	
+
 	private void registerAuthenticator() {
 		Authenticator a = getPluggedInAuthenticator();
 		if (a != null) {
 			Authenticator.setDefault(a);
 		}
 	}
-	
+
 	private Authenticator getPluggedInAuthenticator() {
 		IExtension[] extensions = RegistryFactory.getRegistry().getExtensionPoint(Activator.ID, Activator.PT_AUTHENTICATOR).getExtensions();
 		if (extensions.length == 0)
@@ -380,25 +380,25 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		IExtension extension = extensions[0];
 		IConfigurationElement[] configs = extension.getConfigurationElements();
 		if (configs.length == 0) {
-			Activator.log(IStatus.ERROR, NLS.bind("Authenticator {0} is missing required fields", (new Object[] {extension.getUniqueIdentifier()})), null);//$NON-NLS-1$ 
+			Activator.log(IStatus.ERROR, NLS.bind("Authenticator {0} is missing required fields", (new Object[] {extension.getUniqueIdentifier()})), null);//$NON-NLS-1$
 			return null;
 		}
 		try {
 			IConfigurationElement config = configs[0];
-			return (Authenticator) config.createExecutableExtension("class");//$NON-NLS-1$ 
+			return (Authenticator) config.createExecutableExtension("class");//$NON-NLS-1$
 		} catch (CoreException ex) {
-			Activator.log(IStatus.ERROR, NLS.bind("Unable to instantiate authenticator {0}", (new Object[] {extension.getUniqueIdentifier()})), ex);//$NON-NLS-1$ 
+			Activator.log(IStatus.ERROR, NLS.bind("Unable to instantiate authenticator {0}", (new Object[] {extension.getUniqueIdentifier()})), ex);//$NON-NLS-1$
 			return null;
 		}
 	}
-	
+
 	private synchronized void checkMigrated() {
 		if (preferenceManager.isMigrated() || !Activator.getInstance().instanceLocationAvailable()) {
 			return;
 		}
 		preferenceManager.migrate(proxies);
 	}
-	
+
 	void migrateInstanceScopePreferences(Preferences instance,
 			Preferences configuration, boolean isInitialize) {
 		preferenceManager.migrateInstanceScopePreferences(instance,

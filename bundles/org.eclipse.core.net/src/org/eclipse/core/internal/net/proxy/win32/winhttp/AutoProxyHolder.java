@@ -25,7 +25,7 @@ public class AutoProxyHolder {
 
 	/**
 	 * Set the auto detect flags.
-	 * 
+	 *
 	 * @param autoDetectFlags
 	 */
 	public void setAutoDetectFlags(int autoDetectFlags) {
@@ -34,7 +34,7 @@ public class AutoProxyHolder {
 
 	/**
 	 * Get the auto config url.
-	 * 
+	 *
 	 * @return the auto config url (pac file)
 	 */
 	public String getAutoConfigUrl() {

@@ -327,7 +327,7 @@ public class NonProxyHostsComposite extends Composite {
 			if (!data.getSource().equals(provider)) {
 				natives.add(data);
 			}
-		}		
+		}
 		bypassHosts.removeAll(natives);
 		String providers[] = ProxySelector.getProviders();
 		for (int i = 0; i < providers.length; i++) {
@@ -338,7 +338,7 @@ public class NonProxyHostsComposite extends Composite {
 		hostsViewer.refresh();
 		setProvider(currentProvider);
 	}
-	
+
 	private List getProxyBypassData(String provider) {
 		List bypassProxyData = new ArrayList();
 		String[] hosts = ProxySelector.getBypassHosts(provider);

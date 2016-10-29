@@ -16,7 +16,7 @@ public class StringUtil {
 
 	/**
 	 * Splits a string into substrings using a delimiter array.
-	 * 
+	 *
 	 * @param value
 	 *            string to be tokenized
 	 * @param delimiters
@@ -53,7 +53,7 @@ public class StringUtil {
 
 	/**
 	 * Tests equality of the given strings.
-	 * 
+	 *
 	 * @param sequence1
 	 *            candidate 1, may be null
 	 * @param sequence2
@@ -75,7 +75,7 @@ public class StringUtil {
 	 * with <code>to</code>.<br>
 	 * <b>Note:</b> This has the same behavior as the
 	 * <code>String.replace()</code> method within JDK 1.5.
-	 * 
+	 *
 	 * @param source
 	 * @param from
 	 * @param to

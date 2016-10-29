@@ -111,7 +111,7 @@ public class ProxySelector {
 			}
 		} else {
 			throw new IllegalArgumentException(
-					"Provider does not support setting proxy data"); //$NON-NLS-1$ 
+					"Provider does not support setting proxy data"); //$NON-NLS-1$
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ProxySelector {
 		} else if (provider.equals(NATIVE_PROVIDER)) {
 			return manager.getNativeNonProxiedHosts();
 		}
-		throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$ 
+		throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 	}
 
 	public static void setBypassHosts(String provider, String hosts[]) {
@@ -146,7 +146,7 @@ public class ProxySelector {
 			}
 		} else {
 			throw new IllegalArgumentException(
-					"Provider does not support setting bypass hosts"); //$NON-NLS-1$ 
+					"Provider does not support setting bypass hosts"); //$NON-NLS-1$
 		}
 	}
 

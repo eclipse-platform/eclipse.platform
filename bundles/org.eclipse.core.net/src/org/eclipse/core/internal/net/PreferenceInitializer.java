@@ -18,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-	
+
 	private static final int DEFAULT_PREF_PROXY_PORT = -1;
 	private static final boolean DEFAULT_PREF_PROXY_HAS_AUTH = false;
 	private static final boolean DEFAULT_PREF_ENABLED = true;
@@ -33,19 +33,19 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		node.put(ProxyManager.PREF_NON_PROXIED_HOSTS, DEFAULT_PREF_NON_PROXIED_HOSTS);
 		node.putBoolean(ProxyManager.PREF_ENABLED, DEFAULT_PREF_ENABLED);
 		node.putBoolean(ProxyManager.PREF_OS, DEFAULT_PREF_OS);
-		
+
 		Preferences type = node.node(ProxyType.PREF_PROXY_DATA_NODE).node(IProxyData.HTTP_PROXY_TYPE);
 		type.putInt(ProxyType.PREF_PROXY_PORT, DEFAULT_PREF_PROXY_PORT);
 		type.putBoolean(ProxyType.PREF_PROXY_HAS_AUTH, DEFAULT_PREF_PROXY_HAS_AUTH);
-		
+
 		type = node.node(ProxyType.PREF_PROXY_DATA_NODE).node(IProxyData.HTTPS_PROXY_TYPE);
-		type.putInt(ProxyType.PREF_PROXY_PORT, DEFAULT_PREF_PROXY_PORT); 
+		type.putInt(ProxyType.PREF_PROXY_PORT, DEFAULT_PREF_PROXY_PORT);
 		type.putBoolean(ProxyType.PREF_PROXY_HAS_AUTH, DEFAULT_PREF_PROXY_HAS_AUTH);
-		
+
 		type = node.node(ProxyType.PREF_PROXY_DATA_NODE).node(IProxyData.SOCKS_PROXY_TYPE);
-		type.putInt(ProxyType.PREF_PROXY_PORT, DEFAULT_PREF_PROXY_PORT); 
+		type.putInt(ProxyType.PREF_PROXY_PORT, DEFAULT_PREF_PROXY_PORT);
 		type.putBoolean(ProxyType.PREF_PROXY_HAS_AUTH, DEFAULT_PREF_PROXY_HAS_AUTH);
-	
+
 		try {
 			node.flush();
 		} catch (BackingStoreException e) {

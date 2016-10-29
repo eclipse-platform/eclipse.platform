@@ -298,7 +298,7 @@ public class ProxyEntriesComposite extends Composite {
 	}
 
 	public void refresh() {
-		String provider = getEditableProvider();	
+		String provider = getEditableProvider();
 		Iterator it = proxyEntries.iterator();
 		ArrayList natives = new ArrayList();
 		while (it.hasNext()) {
@@ -317,7 +317,7 @@ public class ProxyEntriesComposite extends Composite {
 		entriesViewer.refresh();
 		setProvider(currentProvider);
 	}
-	
+
 	private List getProxyData(String provider) {
 		List proxyDatas = new ArrayList();
 		ProxyData[] entries = ProxySelector.getProxyData(provider);

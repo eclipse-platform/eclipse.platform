@@ -47,7 +47,7 @@ public class StaticProxyConfig {
 	 * Select the static proxies for the given uri and add it to the given list
 	 * of proxies.<br>
 	 * This respects also the proxy bypass definition.
-	 * 
+	 *
 	 * @param uri
 	 * @param proxies
 	 */

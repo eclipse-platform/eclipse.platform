@@ -18,7 +18,7 @@ import org.eclipse.core.internal.net.StringUtil;
 /**
  * Encapsulates the windows specific proxy bypass list. It transforms the native
  * API proxy bypass list into queryable java object.
- * 
+ *
  * @see "http://msdn2.microsoft.com/en-us/library/aa383912(VS.85).aspx"
  */
 public class ProxyBypass {
@@ -31,7 +31,7 @@ public class ProxyBypass {
 
 	/**
 	 * Create a ProxyBypass instance from the proxy bypass list string.
-	 * 
+	 *
 	 * @param proxyBypass
 	 */
 	public ProxyBypass(String proxyBypass) {
@@ -47,7 +47,7 @@ public class ProxyBypass {
 
 	/**
 	 * Check whether the given uri should bypass the proxy.
-	 * 
+	 *
 	 * @param uri
 	 * @return true if the the uri should bypass the proxy; otherwise false
 	 */

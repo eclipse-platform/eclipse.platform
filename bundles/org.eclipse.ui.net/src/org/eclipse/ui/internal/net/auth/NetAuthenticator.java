@@ -13,7 +13,7 @@ package org.eclipse.ui.internal.net.auth;
 import java.net.*;
 
 public class NetAuthenticator extends Authenticator {
-	
+
 	/*
 	 * @see Authenticator#getPasswordAuthentication()
 	 */

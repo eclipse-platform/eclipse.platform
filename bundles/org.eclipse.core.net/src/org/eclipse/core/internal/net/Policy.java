@@ -16,7 +16,7 @@ import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 public class Policy {
-	
+
 	// general debug flag
 	public static boolean DEBUG = false;
 
@@ -32,7 +32,7 @@ public class Policy {
 	/**
 	 * Print a debug message to the console. Pre-pend the message with the
 	 * current date and the name of the current thread.
-	 * 
+	 *
 	 * @param message
 	 */
 	public static void debug(String message) {
