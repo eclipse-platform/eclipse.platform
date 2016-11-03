@@ -16,6 +16,7 @@
     <groupId>org.eclipse</groupId>
     <artifactId>eclipse-platform-parent</artifactId>
     <version>4.7.0-SNAPSHOT</version>
+    
     <relativePath>../eclipse-platform-parent</relativePath>
   </parent>
 
@@ -26,7 +27,7 @@
 
   <properties>
     <tycho.scmUrl>scm:git:git://git.eclipse.org/gitroot/platform/eclipse.platform.team.git</tycho.scmUrl>
-    <code.ignoredWarnings>-warn:-deprecation,raw,unchecked</code.ignoredWarnings>
+    <code.ignoredWarnings>-warn:-deprecation,raw,unchecked,warningToken</code.ignoredWarnings>
   </properties>
 
   <!-- 
