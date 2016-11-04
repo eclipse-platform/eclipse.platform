@@ -47,37 +47,37 @@ public class TextLineLCS extends LCS {
 	protected int getLength1() {
 		return this.lines1.length;
 	}
-	
+
 	@Override
 	protected boolean isRangeEqual(int i1, int i2) {
 		return this.lines1[i1].sameText(this.lines2[i2]);
 	}
-	
+
 	@Override
 	protected void setLcs(int sl1, int sl2) {
 		this.lcs[0][sl1] = this.lines1[sl1];
 		this.lcs[1][sl1] = this.lines2[sl2];
 	}
-	
+
 	@Override
 	protected void initializeLcs(int length) {
 		this.lcs = new TextLine[2][length];
 	}
-	
+
 	/**
 	 * This method takes an lcs result interspersed with nulls, compacts it and
 	 * shifts the LCS chunks as far towards the front as possible. This tends to
 	 * produce good results most of the time.
-	 * 
+	 *
 	 * TODO: investigate what to do about comments. shifting either up or down
 	 * hurts them
-	 * 
+	 *
 	 * @param lcsSide A subsequence of original, presumably it is the LCS of it and
 	 *            some other collection of lines
 	 * @param len The number of non-null entries in lcs
 	 * @param original The original sequence of lines of which lcs is a
 	 *            subsequence
-	 * 
+	 *
 	 * @return The subsequence lcs compacted and chunks shifted towards the
 	 *         front
 	 */
@@ -113,7 +113,7 @@ public class TextLineLCS extends LCS {
 
 		return result;
 	}
-	
+
 	/**
 	 * Breaks the given text up into lines and returns an array of TextLine
 	 * objects each corresponding to a single line, ordered according to the
@@ -121,7 +121,7 @@ public class TextLineLCS extends LCS {
 	 * text (starting from 0) Note: there are 1 more lines than there are
 	 * newline characters in text. Corollary 1: if the last character is
 	 * newline, the last line is empty Corollary 2: the empty string is 1 line
-	 * 
+	 *
 	 * @param text The text to extract lines from
 	 * @return the array of TextLine object each corresponding to a line of text
 	 */
@@ -155,7 +155,7 @@ public class TextLineLCS extends LCS {
 	/**
 	 * Returns the index of the next end of line marker ('\n' or '\r') after
 	 * start
-	 * 
+	 *
 	 * @param text The string to examine
 	 * @param start The location in the string to start looking
 	 * @return the index such that text.charAt(index) == '\n' or '\r', -1 if not
@@ -186,7 +186,7 @@ public class TextLineLCS extends LCS {
 		/**
 		 * Compares this TextLine to l and returns true if they have the same
 		 * text
-		 * 
+		 *
 		 * @param l the TextLine to compare to
 		 * @return true if this and l have the same text
 		 */
@@ -198,7 +198,7 @@ public class TextLineLCS extends LCS {
 
 		/**
 		 * Returns the line number of this line
-		 * 
+		 *
 		 * @return the line number
 		 */
 		public int lineNumber() {

@@ -23,20 +23,20 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 
 
 public class SimpleTextViewer extends AbstractViewer {
-		
+
 	private SourceViewer fSourceViewer;
 	private ICompareInput fInput;
-	
-	
+
+
 	SimpleTextViewer(Composite parent) {
 		fSourceViewer= new SourceViewer(parent, null, SWT.H_SCROLL | SWT.V_SCROLL);
 		fSourceViewer.setEditable(false);
 	}
-		
+
 	public Control getControl() {
 		return fSourceViewer.getTextWidget();
 	}
-	
+
 	public void setInput(Object input) {
 		if (input instanceof IStreamContentAccessor) {
 			fSourceViewer.setDocument(new Document(getString(input)));
@@ -46,13 +46,13 @@ public class SimpleTextViewer extends AbstractViewer {
 			fSourceViewer.setDocument(new Document(getString(left)));
 		}
 	}
-	
+
 	public Object getInput() {
 		return fInput;
 	}
-	
+
 	private String getString(Object input) {
-		
+
 		if (input instanceof IStreamContentAccessor) {
 			try {
 				return Utilities.readString((IStreamContentAccessor) input);

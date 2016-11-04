@@ -15,7 +15,7 @@ import org.eclipse.ui.Saveable;
 /**
  * Interface defines API for checking if an object, preferably an instance of
  * {@link Saveable}, is being saved.
- * 
+ *
  * @since 3.7
  */
 public interface ISavingSaveable {

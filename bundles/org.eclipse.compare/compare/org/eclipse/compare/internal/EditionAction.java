@@ -48,24 +48,24 @@ public class EditionAction extends BaseCompareAction {
 		private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		private IDocument fDocument;
 		private IFile fFile;
-		
+
 		DocumentBufferNode(IDocument document, IFile file) {
 			fDocument= document;
 			fFile= file;
 		}
-		
+
 		public String getName() {
 			return fFile.getName();
 		}
-		
+
 		public String getType() {
 			return fFile.getFileExtension();
 		}
-		
+
 		public Image getImage() {
 			return null;
 		}
-		
+
 		public InputStream getContents() {
 			return new ByteArrayInputStream(Utilities.getBytes(fDocument.get(), UTF_16));
 		}
@@ -79,7 +79,7 @@ public class EditionAction extends BaseCompareAction {
 	private boolean fReplaceMode;
 	protected boolean fPrevious= false;
 	protected String fHelpContextId;
-	
+
 	EditionAction(boolean replaceMode, String bundleName) {
 		fReplaceMode= replaceMode;
 		fBundleName= bundleName;
@@ -96,33 +96,33 @@ public class EditionAction extends BaseCompareAction {
 	}
 
 	private void doFromHistory(final IFile file) {
-						
+
 		ResourceBundle bundle= ResourceBundle.getBundle(fBundleName);
 		String title= Utilities.getString(bundle, "title"); //$NON-NLS-1$
-			
+
 		Shell parentShell= CompareUIPlugin.getShell();
-		
+
 		IFileState states[]= null;
 		try {
 			states= file.getHistory(null);
-		} catch (CoreException ex) {		
+		} catch (CoreException ex) {
 			MessageDialog.openError(parentShell, title, ex.getMessage());
 			return;
 		}
-		
+
 		if (states == null || states.length <= 0) {
 			String msg= Utilities.getString(bundle, "noLocalHistoryError"); //$NON-NLS-1$
 			MessageDialog.openInformation(parentShell, title, msg);
 			return;
 		}
-		
+
 		ITypedElement base= new ResourceNode(file);
-		
+
 		IDocument document= getDocument(file);
 		ITypedElement target= base;
 		if (document != null)
 			target= new DocumentBufferNode(document, file);
-	
+
 		ITypedElement[] editions= new ITypedElement[states.length+1];
 		editions[0]= base;
 		for (int i= 0; i < states.length; i++)
@@ -134,29 +134,29 @@ public class EditionAction extends BaseCompareAction {
 		//d.setHideIdenticalEntries(false);
 		if (fHelpContextId != null)
 			d.setHelpContextId(fHelpContextId);
-		
+
 		if (fReplaceMode) {
-			
+
 			ITypedElement ti= null;
 			if (fPrevious)
 				ti= d.selectPreviousEdition(target, editions, null);
 			else
 				ti= d.selectEdition(target, editions, null);
-			
+
 			if (ti instanceof IStreamContentAccessor) {
 				IStreamContentAccessor sa= (IStreamContentAccessor)ti;
-				
+
 				if (Utilities.validateResource(file, parentShell, title)) {
 					try {
-	
+
 						if (document != null)
-							updateDocument(document, sa);	
+							updateDocument(document, sa);
 						else
 							updateWorkspace(bundle, parentShell, sa, file);
-							
+
 					} catch (InterruptedException x) {
 						// Do nothing. Operation has been canceled by user.
-						
+
 					} catch (InvocationTargetException x) {
 						String reason= x.getTargetException().getMessage();
 						MessageDialog.openError(parentShell, title, Utilities.getFormattedString(bundle, "replaceError", reason));	//$NON-NLS-1$
@@ -166,13 +166,13 @@ public class EditionAction extends BaseCompareAction {
 		} else {
 			d.setCompareMode(true);
 
-			d.selectEdition(target, editions, null);			
+			d.selectEdition(target, editions, null);
 		}
 	}
-	
+
 	private void updateWorkspace(final ResourceBundle bundle, Shell shell,
 						final IStreamContentAccessor sa, final IFile file)
-									throws InvocationTargetException, InterruptedException {	
+									throws InvocationTargetException, InterruptedException {
 		WorkspaceModifyOperation operation= new WorkspaceModifyOperation() {
 			public void execute(IProgressMonitor pm) throws InvocationTargetException {
 				try {
@@ -186,11 +186,11 @@ public class EditionAction extends BaseCompareAction {
 				}
 			}
 		};
-		
-		ProgressMonitorDialog pmdialog= new ProgressMonitorDialog(shell);				
-		pmdialog.run(false, true, operation);									
+
+		ProgressMonitorDialog pmdialog= new ProgressMonitorDialog(shell);
+		pmdialog.run(false, true, operation);
 	}
-	
+
 	private void updateDocument(IDocument document, IStreamContentAccessor sa) throws InvocationTargetException {
 		try {
 			String text= Utilities.readString(sa);
@@ -201,7 +201,7 @@ public class EditionAction extends BaseCompareAction {
 			throw new InvocationTargetException(e);
 		}
 	}
-	
+
 	private IDocument getDocument(IFile file) {
 		IWorkbench wb= PlatformUI.getWorkbench();
 		if (wb == null)
@@ -209,9 +209,9 @@ public class EditionAction extends BaseCompareAction {
 		IWorkbenchWindow[] ws= wb.getWorkbenchWindows();
 		if (ws == null)
 			return null;
-			
+
 		FileEditorInput test= new FileEditorInput(file);
-		
+
 		for (int i= 0; i < ws.length; i++) {
 			IWorkbenchWindow w= ws[i];
 			IWorkbenchPage[] wps= w.getPages();

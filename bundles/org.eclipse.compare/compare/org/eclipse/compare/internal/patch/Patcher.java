@@ -58,7 +58,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.text.TextUtilities;
 
 /**
- * A Patcher 
+ * A Patcher
  * - knows how to parse various patch file formats into some in-memory structure,
  * - holds onto the parsed data and the options to use when applying the patches,
  * - knows how to apply the patches to files and folders.
@@ -73,7 +73,7 @@ public class Patcher implements IHunkFilter {
 	 * Property used to associate a patcher with a {@link PatchConfiguration}
 	 */
 	public static final String PROP_PATCHER = "org.eclipse.compare.patcher"; //$NON-NLS-1$
-	
+
 	public interface IFileValidator {
 		boolean validateResources(IFile[] array);
 	}
@@ -83,7 +83,7 @@ public class Patcher implements IHunkFilter {
 	//	private static final int ED= 1;
 	//	private static final int NORMAL= 2;
 	//	private static final int UNIFIED= 3;
-	
+
 	private FilePatch2[] fDiffs;
 	private IResource fTarget;
 	// patch options
@@ -94,13 +94,13 @@ public class Patcher implements IHunkFilter {
 
 	private final PatchConfiguration configuration;
 	private boolean fGenerateRejectFile = false;
-	
+
 	public Patcher() {
 		configuration = new PatchConfiguration();
 		configuration.setProperty(PROP_PATCHER, this);
 		configuration.addHunkFilter(this);
 	}
-	
+
 	/*
 	 * Returns an array of Diffs after a successful call to <code>parse</code>.
 	 * If <code>parse</code> hasn't been called returns <code>null</code>.
@@ -110,7 +110,7 @@ public class Patcher implements IHunkFilter {
 			return new FilePatch2[0];
 		return fDiffs;
 	}
-	
+
 	public IPath getPath(FilePatch2 diff) {
 		return diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 	}
@@ -125,11 +125,11 @@ public class Patcher implements IHunkFilter {
 		}
 		return false;
 	}
-	
+
 	int getStripPrefixSegments() {
 		return getConfiguration().getPrefixSegmentStripCount();
 	}
-	
+
 	/*
 	 * Returns <code>true</code> if new value differs from old.
 	 */
@@ -140,11 +140,11 @@ public class Patcher implements IHunkFilter {
 		}
 		return false;
 	}
-	
+
 	public int getFuzz(){
 		return getConfiguration().getFuzz();
 	}
-		
+
 	/*
 	 * Returns <code>true</code> if new value differs from old.
 	 */
@@ -155,11 +155,11 @@ public class Patcher implements IHunkFilter {
 		}
 		return false;
 	}
-	
+
 	public boolean isIgnoreWhitespace() {
 		return getConfiguration().isIgnoreWhitespace();
 	}
-	
+
 	public boolean isGenerateRejectFile() {
 		return fGenerateRejectFile;
 	}
@@ -167,7 +167,7 @@ public class Patcher implements IHunkFilter {
 	public void setGenerateRejectFile(boolean generateRejectFile) {
 		fGenerateRejectFile = generateRejectFile;
 	}
-	
+
 	//---- parsing patch files
 
 	public void parse(IStorage storage) throws IOException, CoreException {
@@ -181,7 +181,7 @@ public class Patcher implements IHunkFilter {
 			}
 		}
 	}
-	
+
 	public void parse(BufferedReader reader) throws IOException {
 		PatchReader patchReader = new PatchReader() {
 			@Override
@@ -197,7 +197,7 @@ public class Patcher implements IHunkFilter {
 	protected void patchParsed(PatchReader patchReader) {
 		fDiffs = patchReader.getDiffs();
 	}
-	
+
 	public void countLines() {
 		FilePatch2[] fileDiffs = getDiffs();
 		for (int i = 0; i < fileDiffs.length; i++) {
@@ -223,13 +223,13 @@ public class Patcher implements IHunkFilter {
 			fileDiff.setRemovedLines(removedLines);
 		}
 	}
-	
+
 	//---- applying a patch file
 
 	public void applyAll(IProgressMonitor pm, IFileValidator validator) throws CoreException {
-		
+
 		int i;
-		
+
 		IFile singleFile= null;	// file to be patched
 		IContainer container= null;
 		if (fTarget instanceof IContainer)
@@ -240,7 +240,7 @@ public class Patcher implements IHunkFilter {
 		} else {
 			Assert.isTrue(false);
 		}
-		
+
 		// get all files to be modified in order to call validateEdit
 		List list= new ArrayList();
 		if (singleFile != null)
@@ -260,30 +260,30 @@ public class Patcher implements IHunkFilter {
 		if (! validator.validateResources((IFile[])list.toArray(new IFile[list.size()]))) {
 			return;
 		}
-		
+
 		final int WORK_UNIT= 10;
 		if (pm != null) {
-			String message= Messages.Patcher_0;	
+			String message= Messages.Patcher_0;
 			pm.beginTask(message, fDiffs.length*WORK_UNIT);
 		}
-		
+
 		for (i= 0; i < fDiffs.length; i++) {
-			
+
 			int workTicks= WORK_UNIT;
-			
+
 			FilePatch2 diff= fDiffs[i];
 			if (isEnabled(diff)) {
-				
+
 				IPath path= getPath(diff);
 				if (pm != null)
 					pm.subTask(path.toString());
-			
+
 				IFile file= singleFile != null
 								? singleFile
 								: createPath(container, path);
-					
+
 				List failed= new ArrayList();
-				
+
 				int type= diff.getDiffType(isReversed());
 				switch (type) {
 				case FilePatch2.ADDITION:
@@ -313,7 +313,7 @@ public class Patcher implements IHunkFilter {
 						store(getRejected(failed), file, pm);
 						try {
 							IMarker marker= file.createMarker(MARKER_TYPE);
-							marker.setAttribute(IMarker.MESSAGE, Messages.Patcher_1);	
+							marker.setAttribute(IMarker.MESSAGE, Messages.Patcher_1);
 							marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 						} catch (CoreException ex) {
 							// NeedWork
@@ -321,7 +321,7 @@ public class Patcher implements IHunkFilter {
 					}
 				}
 			}
-			
+
 			if (pm != null) {
 				if (pm.isCanceled())
 					break;
@@ -340,7 +340,7 @@ public class Patcher implements IHunkFilter {
 			pp= new Path(path.lastSegment() + REJECT_FILE_EXTENSION);
 		return pp;
 	}
-	
+
 	List apply(FilePatch2 diff, IFile file, boolean create, List failedHunks) {
 		FileDiffResult result = getDiffResult(diff);
 		List<String> lines = LineReader.load(file, create);
@@ -355,7 +355,7 @@ public class Patcher implements IHunkFilter {
 		}
 		return result.getLines();
 	}
-	
+
 	/*
 	 * Converts the string into bytes and stores them in the given file.
 	 */
@@ -380,7 +380,7 @@ public class Patcher implements IHunkFilter {
 			// uses default encoding
 			bytes= contents.getBytes();
 		}
-		
+
 		store(bytes,file, pm);
 	}
 
@@ -423,7 +423,7 @@ public class Patcher implements IHunkFilter {
 	public static String getRejected(List failedHunks) {
 		if (failedHunks.size() <= 0)
 			return null;
-		
+
 		String lineSeparator= System.getProperty("line.separator"); //$NON-NLS-1$
 		StringBuffer sb= new StringBuffer();
 		Iterator iter= failedHunks.iterator();
@@ -435,7 +435,7 @@ public class Patcher implements IHunkFilter {
 		}
 		return sb.toString();
 	}
-	
+
 	/*
 	 * Ensures that a file with the given path exists in
 	 * the given container. Folder are created as necessary.
@@ -469,16 +469,16 @@ public class Patcher implements IHunkFilter {
 	public void setTarget(IResource target) {
 		fTarget= target;
 	}
-	
+
 
 	public IFile getTargetFile(FilePatch2 diff) {
 		IPath path = diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 		return existsInTarget(path);
 	}
-	
+
 	/**
 	 * Iterates through all of the resources contained in the Patch Wizard target
-	 * and looks to for a match to the passed in file 
+	 * and looks to for a match to the passed in file
 	 * @param path
 	 * @return IFile which matches the passed in path or null if none found
 	 */
@@ -497,8 +497,8 @@ public class Patcher implements IHunkFilter {
 
 	/**
 	 * Returns true if path completely matches the end of fullpath
-	 * @param fullpath 
-	 * @param path 
+	 * @param fullpath
+	 * @param path
 	 * @return true if path matches, false otherwise
 	 */
 	private boolean matches(IPath fullpath, IPath path) {
@@ -523,14 +523,14 @@ public class Patcher implements IHunkFilter {
 		}
 		return length;
 	}
-	
+
 	public void addDiff(FilePatch2 newDiff){
 		FilePatch2[] temp = new FilePatch2[fDiffs.length + 1];
 		System.arraycopy(fDiffs,0, temp, 0, fDiffs.length);
 		temp[fDiffs.length] = newDiff;
 		fDiffs = temp;
 	}
-	
+
 	public void removeDiff(FilePatch2 diffToRemove){
 		FilePatch2[] temp = new FilePatch2[fDiffs.length - 1];
 		int counter = 0;
@@ -541,23 +541,23 @@ public class Patcher implements IHunkFilter {
 		}
 		fDiffs = temp;
 	}
-	
+
 	public void setEnabled(Object element, boolean enabled) {
-		if (element instanceof DiffProject) 
+		if (element instanceof DiffProject)
 			setEnabledProject((DiffProject) element, enabled);
-		if (element instanceof FilePatch2) 
+		if (element instanceof FilePatch2)
 			setEnabledFile((FilePatch2)element, enabled);
-		if (element instanceof Hunk) 
+		if (element instanceof Hunk)
 			setEnabledHunk((Hunk) element, enabled);
 	}
-	
+
 	private void setEnabledProject(DiffProject projectDiff, boolean enabled) {
 		FilePatch2[] diffFiles = projectDiff.getFileDiffs();
 		for (int i = 0; i < diffFiles.length; i++) {
 			setEnabledFile(diffFiles[i], enabled);
 		}
 	}
-	
+
 	private void setEnabledFile(FilePatch2 fileDiff, boolean enabled) {
 		IHunk[] hunks = fileDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
@@ -588,7 +588,7 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public boolean isEnabled(Object element) {
-		if (disabledElements.contains(element)) 
+		if (disabledElements.contains(element))
 			return false;
 		Object parent = getElementParent(element);
 		if (parent == null)
@@ -603,7 +603,7 @@ public class Patcher implements IHunkFilter {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Calculate the fuzz factor that will allow the most hunks to be matched.
 	 * @param monitor a progress monitor
@@ -632,12 +632,12 @@ public class Patcher implements IHunkFilter {
 			monitor.done();
 		}
 	}
-	
+
 	public void refresh() {
 		diffResults.clear();
 		refresh(getDiffs());
 	}
-	
+
 	public void refresh(FilePatch2[] diffs) {
 		for (int i = 0; i < diffs.length; i++) {
 			FilePatch2 diff = diffs[i];
@@ -645,7 +645,7 @@ public class Patcher implements IHunkFilter {
 			((WorkspaceFileDiffResult)result).refresh();
 		}
 	}
-	
+
 	public FileDiffResult getDiffResult(FilePatch2 diff) {
 		FileDiffResult result = (FileDiffResult)diffResults.get(diff);
 		if (result == null) {
@@ -680,15 +680,15 @@ public class Patcher implements IHunkFilter {
 		}
 		return false;
 	}
-	
+
 	public boolean isReversed() {
 		return getConfiguration().isReversed();
 	}
-	
+
 	/**
 	 * Cache the contents for the given file diff. These contents
 	 * will be used for the diff when the patch is applied. When the
-	 * patch is applied, it is assumed that the provided contents 
+	 * patch is applied, it is assumed that the provided contents
 	 * already have all relevant hunks applied.
 	 * @param diff the file diff
 	 * @param contents the contents for the file diff
@@ -696,9 +696,9 @@ public class Patcher implements IHunkFilter {
 	public void cacheContents(FilePatch2 diff, byte[] contents) {
 		contentCache.put(diff, contents);
 	}
-	
+
 	/**
-	 * Return whether contents have been cached for the 
+	 * Return whether contents have been cached for the
 	 * given file diff.
 	 * @param diff the file diff
 	 * @return whether contents have been cached for the file diff
@@ -709,7 +709,7 @@ public class Patcher implements IHunkFilter {
 	}
 
 	/**
-	 * Return the content lines that are cached for the given 
+	 * Return the content lines that are cached for the given
 	 * file diff.
 	 * @param diff the file diff
 	 * @return the content lines that are cached for the file diff
@@ -733,7 +733,7 @@ public class Patcher implements IHunkFilter {
 	public byte[] getCachedContents(FilePatch2 diff) {
 		return (byte[])contentCache.get(diff);
 	}
-	
+
 	/**
 	 * Return whether the patcher has any cached contents.
 	 * @return whether the patcher has any cached contents
@@ -749,11 +749,11 @@ public class Patcher implements IHunkFilter {
 		contentCache.clear();
 		mergedHunks.clear();
 	}
-	
+
 	public void setProperty(String key, Object value) {
 		getConfiguration().setProperty(key, value);
 	}
-	
+
 	public Object getProperty(String key) {
 		return getConfiguration().getProperty(key);
 	}
@@ -765,7 +765,7 @@ public class Patcher implements IHunkFilter {
 	public void setManuallyMerged(Hunk hunk, boolean merged) {
 		if (merged)
 			mergedHunks.add(hunk);
-		else 
+		else
 			mergedHunks.remove(hunk);
 	}
 
@@ -784,7 +784,7 @@ public class Patcher implements IHunkFilter {
 	public static Patcher getPatcher(PatchConfiguration configuration) {
 		return (Patcher)configuration.getProperty(PROP_PATCHER);
 	}
-	
+
 	public boolean hasRejects() {
 		for (Iterator iterator = diffResults.values().iterator(); iterator.hasNext();) {
 			FileDiffResult result = (FileDiffResult) iterator.next();

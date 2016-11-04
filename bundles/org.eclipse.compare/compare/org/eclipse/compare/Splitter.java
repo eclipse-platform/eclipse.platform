@@ -23,13 +23,13 @@ import org.eclipse.swt.custom.SashForm;
  * is the last child to become invisible or the first to become visible.</LI>
  * <LI>maximizing a child makes it as large as the topmost enclosing Splitter</LI>
  * </UL>
- * 
+ *
  * @since 2.1
  */
 public class Splitter extends SashForm {
-	
+
 	private static final String VISIBILITY= "org.eclipse.compare.internal.visibility"; //$NON-NLS-1$
-	
+
 	/**
 	 * Constructs a new instance of this class given its parent
 	 * and a style value describing its behavior and appearance.
@@ -56,7 +56,7 @@ public class Splitter extends SashForm {
 	public Splitter(Composite parent, int style) {
 		super(parent, style);
 	}
-		
+
 	/**
 	 * Sets the visibility of the given child in this Splitter. If this change
 	 * affects the visibility state of the whole Splitter, and if the Splitter
@@ -67,12 +67,12 @@ public class Splitter extends SashForm {
 	 * @param visible the new visibility state
 	 */
 	public void setVisible(Control child, boolean visible) {
-		
+
 		boolean wasEmpty= isEmpty();
-				
+
 		child.setVisible(visible);
 		child.setData(VISIBILITY, Boolean.valueOf(visible));
-		
+
 		if (wasEmpty != isEmpty()) {
 			// recursively walk up
 			Composite parent= getParent();
@@ -114,7 +114,7 @@ public class Splitter extends SashForm {
 				return false;
 		return true;
 	}
-	
+
 	/* (non-Javadoc)
 	 * Returns the visibility state of the given child control. If the
 	 * control is a Sash, this method always returns false.

@@ -35,7 +35,7 @@ import org.eclipse.compare.ITypedElement;
  * @see DiffNode
  */
 public interface IDiffElement extends ITypedElement {
-	
+
 	/**
 	 * Returns the kind of difference as defined in <code>Differencer</code>.
 	 *

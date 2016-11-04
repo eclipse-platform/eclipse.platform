@@ -76,28 +76,28 @@ public class PreviewPatchPage2 extends WizardPage {
 
 	private static final String EXPAND_PATCH_OPTIONS = "expandPatchOptions"; //$NON-NLS-1$
 	private static final String GENERATE_REJECTS = "generateRejects"; //$NON-NLS-1$
-	
+
 	final WorkspacePatcher fPatcher;
 	private final CompareConfiguration fConfiguration;
 	private PatchCompareEditorInput fInput;
-	
+
 	private Combo fStripPrefixSegments;
 	private Text fFuzzField;
 	private Label addedRemovedLines;
-	
+
 	private Action fExcludeAction;
 	private Action fIncludeAction;
 	private Action fIgnoreWhiteSpace;
 	private Action fReversePatch;
 	private Action fMoveAction;
-	
+
 	protected boolean pageRecalculate= true;
 
 	private IDialogSettings settings;
 	private ExpandableComposite patchOptions;
 	private Button generateRejects;
 	private FormToolkit fToolkit;
-		
+
 	public PreviewPatchPage2(WorkspacePatcher patcher, CompareConfiguration configuration) {
 		super(PREVIEWPATCHPAGE_NAME, PatchMessages.PreviewPatchPage_title, null);
 		setDescription(PatchMessages.PreviewPatchPage2_8);
@@ -117,13 +117,13 @@ public class PreviewPatchPage2 extends WizardPage {
 	public void createControl(Composite parent) {
 		fToolkit = new FormToolkit(parent.getDisplay());
 		fToolkit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-		
+
 		final Form form = fToolkit.createForm(parent);
 		Composite composite = form.getBody();
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 		initializeDialogUnits(parent);
-		
+
 		fInput = new PatchCompareEditorInput(getPatcher(), getCompareConfiguration()) {
 			protected void fillContextMenu(IMenuManager manager) {
 				if (isShowAll()) {
@@ -134,16 +134,16 @@ public class PreviewPatchPage2 extends WizardPage {
 				manager.add(fMoveAction);
 			}
 		};
-		
+
 		buildPatchOptionsGroup(form);
-		
+
 		// Initialize the input
 		try {
 			fInput.run(null);
 		} catch (InterruptedException e) {//ignore
 		} catch (InvocationTargetException e) {//ignore
 		}
-	
+
 		Label label = new Label(composite, SWT.NONE);
 		label.setText(PatchMessages.PreviewPatchPage2_9);
 		Control c = fInput.createContents(composite);
@@ -161,18 +161,18 @@ public class PreviewPatchPage2 extends WizardPage {
 			}});
 
 		c.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		addedRemovedLines = new Label(composite, SWT.NONE);
 		addedRemovedLines.setLayoutData(new GridData(GridData.FILL_HORIZONTAL
 				| GridData.VERTICAL_ALIGN_BEGINNING));
-			
+
 		setControl(composite);
-		
+
 		restoreWidgetValues();
-		
+
 		Dialog.applyDialogFont(composite);
 	}
-	
+
 	private void updateActions(IStructuredSelection ss) {
 		fExcludeAction.setEnabled(false);
 		fIncludeAction.setEnabled(false);
@@ -187,7 +187,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			}
 		}
 	}
-	
+
 	/**
 	 * Makes sure that at least one hunk is checked off in the tree before
 	 * allowing the patch to be applied.
@@ -198,13 +198,13 @@ public class PreviewPatchPage2 extends WizardPage {
 			atLeastOneIsEnabled = fInput.hasResultToApply();
 		setPageComplete(atLeastOneIsEnabled);
 	}
-	
+
 	private Action[] getContributedActions() {
 		return new Action[]{ fIgnoreWhiteSpace };
 	}
 
 	private void initializeActions() {
-		
+
 		fMoveAction = new Action(PatchMessages.PreviewPatchPage2_RetargetAction, null) {
 			public void run() {
 				Shell shell = getShell();
@@ -244,7 +244,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				fMoveAction.setEnabled(enable);
 			}
 		});
-		
+
 		fExcludeAction = new Action(PatchMessages.PreviewPatchPage2_0) {
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
@@ -257,7 +257,7 @@ public class PreviewPatchPage2 extends WizardPage {
 							PatchDiffNode node = ((PatchDiffNode) obj);
 							node.setEnabled(false);
 							// TODO: This may require a rebuild if matched hunks are shown
-						} 
+						}
 					}
 					updateActions(treeSelection);
 				}
@@ -265,7 +265,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			}
 		};
 		fExcludeAction.setEnabled(true);
-		
+
 		fIncludeAction = new Action(PatchMessages.PreviewPatchPage2_1) {
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
@@ -278,7 +278,7 @@ public class PreviewPatchPage2 extends WizardPage {
 							PatchDiffNode node = ((PatchDiffNode) obj);
 							node.setEnabled(true);
 							// TODO: This may require a rebuild if matched hunks are shown
-						} 
+						}
 					}
 					updateActions(treeSelection);
 				}
@@ -286,7 +286,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			}
 		};
 		fIncludeAction.setEnabled(true);
-		
+
 		fIgnoreWhiteSpace = new Action(PatchMessages.PreviewPatchPage2_IgnoreWSAction, CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_ENABLED)){
 			public void run(){
 				try {
@@ -313,7 +313,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		fIgnoreWhiteSpace.setChecked(false);
 		fIgnoreWhiteSpace.setToolTipText(PatchMessages.PreviewPatchPage2_IgnoreWSTooltip);
 		fIgnoreWhiteSpace.setDisabledImageDescriptor(CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_DISABLED));
-		
+
 		fReversePatch = new Action(PatchMessages.PreviewPatchPage_ReversePatch_text){
 			public void run(){
 				try {
@@ -335,14 +335,14 @@ public class PreviewPatchPage2 extends WizardPage {
 				} catch (InvocationTargetException e) { //ignore
 				} catch (InterruptedException e) { //ignore
 				}
-				
+
 			}
-			
+
 		};
 		fReversePatch.setChecked(false);
 		fReversePatch.setToolTipText(PatchMessages.PreviewPatchPage_ReversePatch_text);
 	}
-	
+
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		//Need to handle input and rebuild tree only when becoming visible
@@ -363,7 +363,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			getShell().getDefaultButton().setFocus();
 		}
 	}
-	
+
 	private boolean promptToRebuild(final String promptToConfirm){
 		final Control ctrl = getControl();
 		final boolean[] result = new boolean[] { false };
@@ -388,7 +388,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		}
 		return result[0];
 	}
-	
+
 	private void rebuildTree(){
 		final Control ctrl = getControl();
 		if (ctrl != null && !ctrl.isDisposed()){
@@ -434,7 +434,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	 */
 	private void buildPatchOptionsGroup(final Form form) {
 		Composite parent = form.getBody();
-			
+
 		patchOptions = fToolkit.createExpandableComposite(parent, ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
 		patchOptions.setText(PatchMessages.PreviewPatchPage_PatchOptions_title);
 		patchOptions.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
@@ -477,7 +477,7 @@ public class PreviewPatchPage2 extends WizardPage {
 					}
 				}
 			);
-	
+
 
 		fFuzzField.addModifyListener(
 			new ModifyListener() {
@@ -522,7 +522,7 @@ public class PreviewPatchPage2 extends WizardPage {
 							// Reset the fuzz. We don't use HunkResult.MAXIMUM_FUZZ_FACTOR on purpose here,
 							// in order to refresh the tree the result of the calculation needs to be different
 							// than the fuzz set in the configuration (see fFuzzField modify listener).
-							patcher.setFuzz(-1); 
+							patcher.setFuzz(-1);
 							int fuzz= guessFuzzFactor(patcher);
 							if (fuzz>=0)
 								fFuzzField.setText(Integer.toString(fuzz));
@@ -533,7 +533,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		gd= new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		Point minSize = b.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-		gd.widthHint = Math.max(widthHint, minSize.x);		
+		gd.widthHint = Math.max(widthHint, minSize.x);
 		b.setLayoutData(gd);
 	}
 
@@ -552,7 +552,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		generateRejects.setSelection(false);
 		generateRejects.setLayoutData(gd);
 	}
-	
+
 	private void createShowRemovedToggle(Composite pair) {
 		final Button showRemoved = new Button(pair, SWT.CHECK);
 		showRemoved.setText(PatchMessages.PreviewPatchPage2_7);
@@ -568,7 +568,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		showRemoved.setSelection(fInput.isShowAll());
 		showRemoved.setLayoutData(gd);
 	}
-	
+
 	private void createReversePatchToggle(Composite pair) {
 		final Button reversePatch = new Button(pair, SWT.CHECK);
 		reversePatch.setText(PatchMessages.PreviewPatchPage_ReversePatch_text);
@@ -592,7 +592,7 @@ public class PreviewPatchPage2 extends WizardPage {
 
 	private void createStripSegmentCombo(Composite parent) {
 		final WorkspacePatcher patcher= getPatcher();
-		
+
 		Composite pair= new Composite(parent, SWT.NONE);
 		GridLayout gl= new GridLayout(); gl.numColumns= 2; gl.marginHeight= gl.marginWidth= 0;
 		pair.setLayout(gl);
@@ -612,7 +612,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		gd= new GridData(GridData.VERTICAL_ALIGN_CENTER|GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.GRAB_HORIZONTAL);
 		fStripPrefixSegments.setLayoutData(gd);
 	}
-	
+
 	private void createShowMatchedToggle(Composite parent) {
 		final Button showMatched = new Button(parent, SWT.CHECK);
 		showMatched.setText(PatchMessages.PreviewPatchPage2_ShowMatched);
@@ -628,7 +628,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		showMatched.setSelection(fInput.isShowMatched());
 		showMatched.setLayoutData(gd);
 	}
-	
+
 	public int getFuzzFactor() {
 		int fuzzFactor= 0;
 		if (fFuzzField!=null) {
@@ -641,7 +641,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		}
 		return fuzzFactor;
 	}
-	
+
 	public int getStripPrefixSegments() {
 		int stripPrefixSegments= 0;
 		if (fStripPrefixSegments!=null) {
@@ -654,7 +654,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		}
 		return stripPrefixSegments;
 	}
-	
+
 	private int guessFuzzFactor(final WorkspacePatcher patcher) {
 		final int[] result= new int[] { -1 };
 		try {
@@ -672,7 +672,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		}
 		return result[0];
 	}
-	
+
 	public void ensureContentsSaved() {
 		try {
 			fInput.saveChanges(new NullProgressMonitor());
@@ -688,7 +688,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	public CompareConfiguration getCompareConfiguration() {
 		return fConfiguration;
 	}
-	
+
 	private void restoreWidgetValues() {
 		IDialogSettings dialogSettings = CompareUI.getPlugin().getDialogSettings();
 		settings = dialogSettings.getSection(PREVIEWPATCHPAGE_NAME);
@@ -703,30 +703,30 @@ public class PreviewPatchPage2 extends WizardPage {
 				getPatcher().setGenerateRejectFile(generateRejects.getSelection());
 			}
 		}
-	}			
-	
+	}
+
 	void saveWidgetValues() {
 		settings.put(EXPAND_PATCH_OPTIONS, patchOptions.isExpanded());
 		settings.put(GENERATE_REJECTS, generateRejects.getSelection());
 	}
-	
+
 	private String countLines() {
 		int added = 0, removed = 0;
-		
+
 		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
 		String addedLinesRegex = store.getString(ComparePreferencePage.ADDED_LINES_REGEX);
 		String removedLinesRegex = store.getString(ComparePreferencePage.REMOVED_LINES_REGEX);
-		
+
 		if ((addedLinesRegex == null || "".equals(addedLinesRegex)) //$NON-NLS-1$
 				&& (removedLinesRegex == null || "".equals(removedLinesRegex))) { //$NON-NLS-1$
-			
+
 			fPatcher.countLines();
 			FilePatch2[] fileDiffs = fPatcher.getDiffs();
 			for (int i = 0; i < fileDiffs.length; i++) {
 				added += fileDiffs[i].getAddedLines();
 				removed += fileDiffs[i].getRemovedLines();
 			}
-			
+
 		} else {
 
 			Pattern addedPattern = Pattern.compile(addedLinesRegex);
@@ -747,7 +747,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				}
 			}
 		}
-		
+
 		return NLS.bind(PatchMessages.PreviewPatchPage2_AddedRemovedLines,
 				new String[] { added + "", removed + "" }); //$NON-NLS-1$ //$NON-NLS-2$
 	}

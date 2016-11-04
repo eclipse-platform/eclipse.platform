@@ -59,7 +59,7 @@ public class RangeDifference {
 	/**
 	 * the kind of change: NOCHANGE, CHANGE, LEFT, RIGHT, ANCESTOR, CONFLICT,
 	 * ERROR
-	 * 
+	 *
 	 * @since org.eclipse.compare.core 3.5
 	 */
 	protected int kind;
@@ -93,10 +93,10 @@ public class RangeDifference {
 	 * @since org.eclipse.compare.core 3.5
 	 */
 	protected int ancestorLength;
-	
+
 	/**
 	 * Creates a new range difference with the given change kind.
-	 * 
+	 *
 	 * @param changeKind
 	 *            the kind of change
 	 * @since org.eclipse.compare.core 3.5
@@ -108,7 +108,7 @@ public class RangeDifference {
 	/**
 	 * Creates a new <code>RangeDifference</code> with the given change kind and
 	 * left and right ranges.
-	 * 
+	 *
 	 * @param kind
 	 *            the kind of change
 	 * @param rightStart
@@ -132,7 +132,7 @@ public class RangeDifference {
 	/**
 	 * Creates a new <code>RangeDifference</code> with the given change kind and
 	 * left, right, and ancestor ranges.
-	 * 
+	 *
 	 * @param kind
 	 *            the kind of change
 	 * @param rightStart
@@ -256,7 +256,7 @@ public class RangeDifference {
 	public int maxLength() {
 		return Math.max(this.rightLength, Math.max(this.leftLength, this.ancestorLength));
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof RangeDifference) {

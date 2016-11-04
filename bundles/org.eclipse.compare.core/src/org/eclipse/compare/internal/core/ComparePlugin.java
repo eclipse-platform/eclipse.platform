@@ -57,7 +57,7 @@ public class ComparePlugin extends Plugin {
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static ComparePlugin getDefault() {

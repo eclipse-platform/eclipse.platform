@@ -56,7 +56,7 @@ public class Hunk implements IHunk {
 		}
 		return new Hunk(parent, hunkType, oldStart, oldLength, newStart, newLength, lines.toArray(new String[lines.size()]));
 	}
-	
+
 	public Hunk(FilePatch2 parent, int hunkType, int oldStart, int oldLength,
 			int newStart, int newLength, String[] lines) {
 		this.fParent = parent;
@@ -70,7 +70,7 @@ public class Hunk implements IHunk {
 		this.fNewStart = newStart;
 		this.fLines = lines;
 	}
-	
+
     public Hunk(FilePatch2 parent, Hunk toCopy) {
     	this(parent, toCopy.hunkType, toCopy.fOldStart, toCopy.fOldLength, toCopy.fNewStart, toCopy.fNewLength, toCopy.fLines);
     }
@@ -96,7 +96,7 @@ public class Hunk implements IHunk {
 		}
 		return sb.toString();
 	}
-	
+
 	/*
 	 * Returns a descriptive String for this hunk.
 	 * It is in the form old_start,old_length -> new_start,new_length.
@@ -112,7 +112,7 @@ public class Hunk implements IHunk {
 		sb.append(Integer.toString(this.fNewLength));
 		return sb.toString();
 	}
-	
+
 	public String getRejectedDescription() {
 		StringBuffer sb= new StringBuffer();
 		sb.append("@@ -"); //$NON-NLS-1$
@@ -126,7 +126,7 @@ public class Hunk implements IHunk {
 		sb.append(" @@"); //$NON-NLS-1$
 		return sb.toString();
 	}
-	
+
 	public int getHunkType(boolean reverse) {
 		if (reverse) {
 			if (this.hunkType == FilePatch2.ADDITION)
@@ -162,13 +162,13 @@ public class Hunk implements IHunk {
 			return;
 		if (this.fParent != null)
 			this.fParent.remove(this);
-		this.fParent = diff;	
+		this.fParent = diff;
 	}
 
 	public FilePatch2 getParent() {
 		return this.fParent;
 	}
-	
+
 	/*
 	 * Tries to apply the given hunk on the specified lines.
 	 * The parameter shift is added to the line numbers given
@@ -185,9 +185,9 @@ public class Hunk implements IHunk {
 			Assert.isTrue(s.length() > 0);
 			String line = s.substring(1);
 			char controlChar = s.charAt(0);
-			
+
 			if (controlChar == ' ') {	// context lines
-				
+
 				if (pos < 0 || pos >= lines.size())
 					return false;
 				contextLines.add(line);
@@ -199,15 +199,15 @@ public class Hunk implements IHunk {
 					contextLinesMatched = false;
 					pos++;
 					continue;
-				} 
+				}
 				return false;
 			} else if (isDeletedDelimeter(controlChar, reverse)) {
 				// deleted lines
-				
+
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					// context lines inside hunk don't match
 					return false;
-				
+
 				// check following context lines if exist
 				// use the fuzz factor if needed
 				if (!precedingLinesChecked
@@ -218,11 +218,11 @@ public class Hunk implements IHunk {
 					return false;
 				// else if there is less or equal context line to the fuzz
 				// factor we ignore them all and treat as matching
-				
+
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
-				
+
 				if (pos < 0 || pos >= lines.size()) // out of the file
 					return false;
 				if (linesMatch(configuration, line, lines.get(pos))) {
@@ -235,10 +235,10 @@ public class Hunk implements IHunk {
 				// must be found one by one.
 				return false;
 			} else if (isAddedDelimeter(controlChar, reverse)) {
-				
+
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					return false;
-				
+
 				if (!precedingLinesChecked
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
@@ -249,12 +249,12 @@ public class Hunk implements IHunk {
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
-				
+
 				// we don't have to do anything more for a 'try'
 			} else
 				Assert.isTrue(false, "tryPatch: unknown control character: " + controlChar); //$NON-NLS-1$
 		}
-		
+
 		// check following context lines if exist
 		if (!contextLinesMatched
 				&& fuzz > 0
@@ -262,7 +262,7 @@ public class Hunk implements IHunk {
 				&& !checkFollowingContextLines(configuration, lines, fuzz, pos,
 						contextLines))
 			return false;
-		
+
 		return true;
 	}
 
@@ -277,7 +277,7 @@ public class Hunk implements IHunk {
 		}
 		return true;
 	}
-	
+
 	private boolean checkFollowingContextLines(
 			PatchConfiguration configuration, List<String> lines, int fuzz, int pos,
 			List<String> contextLines) {
@@ -291,7 +291,7 @@ public class Hunk implements IHunk {
 		}
 		return true;
 	}
-	
+
 	public int getStart(boolean after) {
 		if (after) {
 			return this.fNewStart;
@@ -313,14 +313,14 @@ public class Hunk implements IHunk {
 		}
 		return this.fOldLength;
 	}
-	
+
 	private int getShift(boolean reverse) {
 		if (reverse) {
 			return this.fOldLength - this.fNewLength;
 		}
 		return this.fNewLength - this.fOldLength;
 	}
-	
+
 	int doPatch(PatchConfiguration configuration, List<String> lines, int shift, int fuzz) {
 		boolean reverse = configuration.isReversed();
 		int pos = getStart(reverse) + shift;
@@ -334,7 +334,7 @@ public class Hunk implements IHunk {
 			Assert.isTrue(s.length() > 0);
 			String line= s.substring(1);
 			char controlChar= s.charAt(0);
-			if (controlChar == ' ') {	
+			if (controlChar == ' ') {
 				// context lines
 					Assert.isTrue(pos < lines.size(), "doPatch: inconsistency in context"); //$NON-NLS-1$
 					contextLines.add(line);
@@ -350,11 +350,11 @@ public class Hunk implements IHunk {
 					Assert.isTrue(false, "doPatch: context doesn't match"); //$NON-NLS-1$
 //					pos++;
 			} else if (isDeletedDelimeter(controlChar, reverse)) {
-				// deleted lines	
+				// deleted lines
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					// context lines inside hunk don't match
 					Assert.isTrue(false, "doPatch: context lines inside hunk don't match"); //$NON-NLS-1$
-				
+
 				// check following context lines if exist
 				// use the fuzz factor if needed
 				if (!precedingLinesChecked
@@ -365,17 +365,17 @@ public class Hunk implements IHunk {
 					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$;
 				// else if there is less or equal context line to the fuzz
 				// factor we ignore them all and treat as matching
-				
+
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
-				
+
 				lines.remove(pos);
 			} else if (isAddedDelimeter(controlChar, reverse)) {
 				// added lines
 				if (precedingLinesChecked && !contextLinesMatched && contextLines.size() > 0)
 					Assert.isTrue(false, "doPatch: context lines inside hunk don't match"); //$NON-NLS-1$
-				
+
 				if (!precedingLinesChecked
 						&& !contextLinesMatched
 						&& contextLines.size() >= fuzz
@@ -386,11 +386,11 @@ public class Hunk implements IHunk {
 				precedingLinesChecked = true;
 				contextLines.clear();
 				contextLinesMatched = true;
-				
+
 				// if the line contains a delimiter, use a proper one
 				if (line.length() > LineReader.length(line))
 					line = line.substring(0, LineReader.length(line)) + lineDelimiter;
-				
+
 				if (getLength(reverse) == 0 && pos+1 < lines.size())
 					lines.add(pos+1, line);
 				else
@@ -405,11 +405,11 @@ public class Hunk implements IHunk {
 	private boolean isDeletedDelimeter(char controlChar, boolean reverse) {
 		return (!reverse && controlChar == '-') || (reverse && controlChar == '+');
 	}
-	
+
 	private boolean isAddedDelimeter(char controlChar, boolean reverse) {
 		return (reverse && controlChar == '-') || (!reverse && controlChar == '+');
 	}
-	
+
 	/*
 	 * Compares two strings.
 	 * If fIgnoreWhitespace is true whitespace is ignored.
@@ -426,7 +426,7 @@ public class Hunk implements IHunk {
 		}
 		return line1.equals(line2);
 	}
-	
+
 	private boolean isIgnoreLineDelimiter() {
 		return true;
 	}
@@ -457,7 +457,7 @@ public class Hunk implements IHunk {
 		}
 		return sb.toString();
 	}
-	
+
 	public String getContents(boolean isAfterState, boolean reverse) {
 		StringBuffer result= new StringBuffer();
 		for (int i= 0; i<this.fLines.length; i++) {
@@ -467,7 +467,7 @@ public class Hunk implements IHunk {
 			if (c == ' ') {
 				result.append(rest);
 			} else if (isDeletedDelimeter(c, reverse) && !isAfterState) {
-				result.append(rest);	
+				result.append(rest);
 			} else if (isAddedDelimeter(c, reverse) && isAfterState) {
 				result.append(rest);
 			}

@@ -21,7 +21,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  * previous location and aded to the end of the queue.
  */
 public class WorkQueue {
-	
+
 	private List runnables = new ArrayList();
 
 	public boolean add(IRunnableWithProgress runnable) {

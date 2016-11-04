@@ -16,7 +16,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 
 public class NavigationEndDialog extends MessageDialogWithToggle {
-	
+
 	private final String[][] labelsAndValues;
 	private RadioGroupFieldEditor editor;
 
@@ -27,7 +27,7 @@ public class NavigationEndDialog extends MessageDialogWithToggle {
 				CompareMessages.NavigationEndDialog_0, false);
 		this.labelsAndValues = labelsAndValues;
 	}
-	
+
 	protected Control createCustomArea(Composite parent) {
 		editor = new RadioGroupFieldEditor(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, CompareMessages.NavigationEndDialog_1, 1,
 				labelsAndValues,
@@ -37,7 +37,7 @@ public class NavigationEndDialog extends MessageDialogWithToggle {
 		editor.load();
 		return parent;
 	}
-	
+
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
 			editor.store();

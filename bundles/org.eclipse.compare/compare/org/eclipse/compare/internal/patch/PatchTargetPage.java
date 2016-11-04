@@ -81,17 +81,17 @@ public class PatchTargetPage extends WizardPage {
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
 		setControl(composite);
-		
-		useWorkspaceAsTarget = createRadioButton(composite, PatchMessages.PatchTargetPage_0, 1); 
-		selectTarget = createRadioButton(composite, PatchMessages.InputPatchPage_SelectInput, 1); 
-		
+
+		useWorkspaceAsTarget = createRadioButton(composite, PatchMessages.PatchTargetPage_0, 1);
+		selectTarget = createRadioButton(composite, PatchMessages.InputPatchPage_SelectInput, 1);
+
 		buildInputGroup(composite);
 
 		updateWidgetEnablements();
 
 		Dialog.applyDialogFont(composite);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
-		
+
 		useWorkspaceAsTarget.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
             	fShowError = true;
@@ -124,7 +124,7 @@ public class PatchTargetPage extends WizardPage {
 		button.setLayoutData(data);
 		return button;
 	}
-	
+
 	/* (non-JavaDoc)
 	 * Method declared in IWizardPage.
 	 */
@@ -177,7 +177,7 @@ public class PatchTargetPage extends WizardPage {
 		fPatchTargets.setContentProvider(new WorkbenchContentProvider());
 		fPatchTargets.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		fPatchTargets.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		
+
 		IResource target = fPatcher.getTarget();
 		if (target != null && !(target instanceof IWorkspaceRoot)) {
 			fPatchTargets.expandToLevel(target, 0);
@@ -192,7 +192,7 @@ public class PatchTargetPage extends WizardPage {
 				updateWidgetEnablements();
 			}
 		});
-		
+
 		fPatchTargets.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				((PatchWizard)getWizard()).showPage(getNextPage());

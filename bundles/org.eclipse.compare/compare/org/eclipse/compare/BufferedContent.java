@@ -27,22 +27,22 @@ import org.eclipse.core.runtime.CoreException;
  * (by means of <code>getContents</code>) and the <code>BufferedContent</code> is not modified (with
  * <code>setContent</code>) no buffering takes place.
  * Buffering starts when either method <code>getContent</code> or <code>setContent</code> is called.
- * 
+ *
  * @see IContentChangeNotifier
  * @see IStreamContentAccessor
  */
 public abstract class BufferedContent implements IContentChangeNotifier, IStreamContentAccessor {
-	
+
 	byte[] fContent;
 	private ContentChangeNotifier fChangeNotifier;
-	
+
 	/**
 	 * Creates a buffered stream content accessor.
 	 */
 	protected BufferedContent() {
 		// empty implementation
 	}
-		
+
 	/* (non-Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
@@ -62,7 +62,7 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 	 * @exception CoreException if the contents could not be accessed
 	 */
 	protected abstract InputStream createStream() throws CoreException;
-	
+
 	/**
 	 * Sets the contents. Registered content change listeners are notified.
 	 *
@@ -72,7 +72,7 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 		fContent= contents;
 		fireContentChanged();
 	}
-	
+
 	/**
 	 * Returns the contents as an array of bytes.
 	 *
@@ -97,7 +97,7 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 	public void discardBuffer() {
 		fContent= null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * see IContentChangeNotifier.addChangeListener
 	 */
@@ -106,7 +106,7 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 			fChangeNotifier= new ContentChangeNotifier(this);
 		fChangeNotifier.addContentChangeListener(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * see IContentChangeNotifier.removeChangeListener
 	 */
@@ -117,7 +117,7 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 				fChangeNotifier= null;
 		}
 	}
-	
+
 	/**
 	 * Notifies all registered <code>IContentChangeListener</code>s of a content change.
 	 */

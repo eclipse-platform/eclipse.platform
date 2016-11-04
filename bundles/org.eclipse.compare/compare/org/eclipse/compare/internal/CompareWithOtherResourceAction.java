@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
  * The "Compare with other resource" action.
- * 
+ *
  * @deprecated Temporarily replaced by CompareWithOtherResourceHandler. See bug
  *             264498.
  */

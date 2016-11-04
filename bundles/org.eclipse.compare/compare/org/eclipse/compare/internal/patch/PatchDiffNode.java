@@ -49,7 +49,7 @@ public abstract class PatchDiffNode extends DiffNode implements IResourceProvide
 	}
 
 	protected abstract PatchConfiguration getConfiguration();
-	
+
 	public boolean equals(Object other) {
 		if (other instanceof PatchDiffNode) {
 			PatchDiffNode node = (PatchDiffNode) other;
@@ -57,7 +57,7 @@ public abstract class PatchDiffNode extends DiffNode implements IResourceProvide
 		}
 		return super.equals(other);
 	}
-	
+
 	public int hashCode() {
 		return getPatchElement().hashCode();
 	}

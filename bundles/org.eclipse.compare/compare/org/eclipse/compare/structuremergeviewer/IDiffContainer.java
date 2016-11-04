@@ -30,15 +30,15 @@ public interface IDiffContainer extends IDiffElement {
 	 * Returns whether this container has at least one child.
 	 * In some cases this methods avoids having to call the
 	 * potential more costly <code>getChildren</code> method.
-	 * 
-	 * @return <code>true</code> if this container has at least one child 
+	 *
+	 * @return <code>true</code> if this container has at least one child
 	 */
 	boolean hasChildren();
 
 	/**
 	 * Returns the children of this container.
 	 * If this container has no children an empty array is returned (not <code>null</code>).
-	 * 
+	 *
 	 * @return the children of this container as an array
 	 */
 	IDiffElement[] getChildren();
@@ -50,7 +50,7 @@ public interface IDiffContainer extends IDiffElement {
 	 * @param child the child to be added to this container
 	 */
 	void add(IDiffElement child);
-	
+
 	/**
 	 * Removes the given child from this container.
 	 * If the container becomes empty it is removed from its container.

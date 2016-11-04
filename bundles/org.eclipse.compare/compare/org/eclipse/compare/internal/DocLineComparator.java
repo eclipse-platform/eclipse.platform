@@ -56,7 +56,7 @@ public class DocLineComparator implements ITokenComparator {
 	 * ignoreWhiteSpace controls whether comparing lines (in method
 	 * <code>rangesEqual<code>) should ignore whitespace. Compare filters may be used
 	 * to affect the detection of line differences.
-	 * 
+	 *
 	 * @param document
 	 *            the document from which the lines are taken
 	 * @param region
@@ -181,7 +181,7 @@ public class DocLineComparator implements ITokenComparator {
 
 	/**
 	 * Aborts the comparison if the number of tokens is too large.
-	 * 
+	 *
 	 * @param length a number on which to base the decision whether to return
 	 * 	<code>true</code> or <code>false</code>
 	 * @param maxLength another number on which to base the decision whether to return
@@ -192,9 +192,9 @@ public class DocLineComparator implements ITokenComparator {
 	public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
 		return false;
 	}
-		
+
 	//---- private methods
-	
+
 	private String[] extract(int thisIndex, int otherIndex,
 			DocLineComparator other, boolean includeSeparator) {
 
@@ -268,9 +268,9 @@ public class DocLineComparator implements ITokenComparator {
 		int l2= s2.length();
 		int c1= 0, c2= 0;
 		int i1= 0, i2= 0;
-		
+
 		while (c1 != -1) {
-			
+
 			c1= -1;
 			while (i1 < l1) {
 				char c= s1.charAt(i1++);
@@ -279,7 +279,7 @@ public class DocLineComparator implements ITokenComparator {
 					break;
 				}
 			}
-			
+
 			c2= -1;
 			while (i2 < l2) {
 				char c= s2.charAt(i2++);
@@ -288,7 +288,7 @@ public class DocLineComparator implements ITokenComparator {
 					break;
 				}
 			}
-				
+
 			if (c1 != c2)
 				return false;
 		}

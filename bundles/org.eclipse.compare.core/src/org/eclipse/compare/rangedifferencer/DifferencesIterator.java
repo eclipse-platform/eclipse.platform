@@ -21,14 +21,14 @@ import java.util.List;
 
 	List fRange;
 	int fIndex;
-	RangeDifference[] fArray;	
+	RangeDifference[] fArray;
 	RangeDifference fDifference;
-	
+
 	/*
 	 * Creates a differences iterator on an array of <code>RangeDifference</code>s.
 	 */
 	DifferencesIterator(RangeDifference[] differenceRanges) {
-		
+
 		this.fArray= differenceRanges;
 		this.fIndex= 0;
 		this.fRange= new ArrayList();

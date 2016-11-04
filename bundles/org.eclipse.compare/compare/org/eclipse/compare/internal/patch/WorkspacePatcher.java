@@ -39,7 +39,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
 
 /**
- * A Patcher 
+ * A Patcher
  * - knows how to parse various patch file formats into some in-memory structure,
  * - holds onto the parsed data and the options to use when applying the patches,
  * - knows how to apply the patches to files and folders.
@@ -58,14 +58,14 @@ public class WorkspacePatcher extends Patcher {
 	public WorkspacePatcher(IResource target) {
 		setTarget(target);
 	}
-	
+
 	protected void patchParsed(PatchReader patchReader) {
 		super.patchParsed(patchReader);
 		fDiffProjects = patchReader.getDiffProjects();
 		fIsWorkspacePatch = patchReader.isWorkspacePatch();
 		fIsGitPatch = patchReader.isGitPatch() && calculateStripGitPrefixSegments() > -1;
 	}
-	
+
 	public DiffProject[] getDiffProjects() {
 		return fDiffProjects;
 	}
@@ -172,15 +172,15 @@ public class WorkspacePatcher extends Patcher {
 			}
 		}
 	}
-	
+
 	private boolean isAccessible(FilePatch2 diff) {
 		return isEnabled(diff) && Utilities.getProject(diff.getProject()).isAccessible();
 	}
 
 	/**
-	 * Returns the target files of all the Diffs contained by this 
+	 * Returns the target files of all the Diffs contained by this
 	 * DiffProject.
-	 * @param project 
+	 * @param project
 	 * @return An array of IFiles that are targeted by the Diffs
 	 */
 	public IFile[] getTargetFiles(DiffProject project) {
@@ -202,7 +202,7 @@ public class WorkspacePatcher extends Patcher {
 			return Utilities.getProject(project).getFile(path);
 		return super.getTargetFile(diff);
 	}
-	
+
 	private IPath getFullPath(FilePatch2 diff) {
 		IPath path = diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 		DiffProject project = getProject(diff);
@@ -214,7 +214,7 @@ public class WorkspacePatcher extends Patcher {
 	public ISchedulingRule[] getTargetProjects() {
 		List projects= new ArrayList();
 		IResourceRuleFactory ruleFactory= ResourcesPlugin.getWorkspace().getRuleFactory();
-		// Determine the appropriate scheduling rules 
+		// Determine the appropriate scheduling rules
 		for (int i= 0; i < fDiffProjects.length; i++) {
 			IProject tempProject= Utilities.getProject(fDiffProjects[i]);
 			// The goal here is to lock as little of the workspace as necessary
@@ -226,7 +226,7 @@ public class WorkspacePatcher extends Patcher {
 			MultiRule multiRule= new MultiRule(new ISchedulingRule[] { scheduleRule, tempProject } );
 			projects.add(multiRule);
 		}
-	
+
 		return (ISchedulingRule[]) projects.toArray(new ISchedulingRule[projects.size()]);
 	}
 
@@ -244,8 +244,8 @@ public class WorkspacePatcher extends Patcher {
 			}
 		}
 		fDiffProjects = temp;
-	}	
-	
+	}
+
 	protected Object getElementParent(Object element) {
 		if (element instanceof FilePatch2 && fDiffProjects != null) {
 			FilePatch2 diff = (FilePatch2) element;
@@ -261,7 +261,7 @@ public class WorkspacePatcher extends Patcher {
 	public boolean isRetargeted(Object object) {
 		return retargetedDiffs.containsKey(object);
 	}
-	
+
 	public IPath getOriginalPath(Object object) {
 		return (IPath)retargetedDiffs.get(object);
 	}
@@ -269,7 +269,7 @@ public class WorkspacePatcher extends Patcher {
 	public void retargetDiff(FilePatch2 diff, IFile file) {
 		retargetedDiffs.put(diff, diff.getPath(false));
 		IHunk[] hunks = diff.getHunks();
-		
+
 		if (isWorkspacePatch()){
 			//since the diff has no more hunks to apply, remove it from the parent and the patcher
 			diff.getProject().remove(diff);
@@ -310,7 +310,7 @@ public class WorkspacePatcher extends Patcher {
 				return fileDiff;
 			}
 		}
-		
+
 		// Create a new diff for the file
 		IPath path = getDiffPath(file);
 		FilePatch2 newDiff = new FilePatch2(path, 0, path, 0);
@@ -361,7 +361,7 @@ public class WorkspacePatcher extends Patcher {
 		// Since the project has been retargeted, remove it from the patcher
 		removeProject(project);
 	}
-	
+
 	/**
 	 * Return the diff project for the given project
 	 * or <code>null</code> if the diff project doesn't exist
@@ -380,7 +380,7 @@ public class WorkspacePatcher extends Patcher {
 		}
 		return null;
 	}
-	
+
 	public int getStripPrefixSegments() {
 		// Segments are never stripped from a workspace patch
 		if (isWorkspacePatch())

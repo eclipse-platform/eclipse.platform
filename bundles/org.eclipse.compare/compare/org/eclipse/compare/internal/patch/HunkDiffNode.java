@@ -23,11 +23,11 @@ public class HunkDiffNode extends PatchDiffNode {
 	public static HunkDiffNode createDiffNode(PatchFileDiffNode parent, HunkResult result, boolean fullContext) {
 		return createDiffNode(parent, result, fullContext, fullContext, fullContext);
 	}
-	
+
 	public static HunkDiffNode createDiffNode(PatchFileDiffNode parent, HunkResult result, boolean ancestorFullContext, boolean leftFullContext, boolean rightFullContext) {
 		return new HunkDiffNode(result, parent, Differencer.CHANGE, getAncestorElement(result, ancestorFullContext), getLeftElement(result, leftFullContext), getRightElement(result, rightFullContext));
 	}
-	
+
 	public static ITypedElement getRightElement(HunkResult result, boolean fullContext) {
 		return new HunkTypedElement(result, true /* isResult */, fullContext);
 	}
@@ -72,11 +72,11 @@ public class HunkDiffNode extends PatchDiffNode {
 		}
 		return false;
 	}
-	
+
 	public boolean isFuzzUsed() {
 		return result.getFuzz() > 0;
 	}
-	
+
 	public boolean isAllContextIgnored() {
 		int fuzz = result.getFuzz();
 		if (fuzz > 0) {
@@ -97,7 +97,7 @@ public class HunkDiffNode extends PatchDiffNode {
 			if (contextLines > 0 && fuzz >= contextLines) {
 				return true;
 			}
-			
+
 		}
 		return false;
 	}

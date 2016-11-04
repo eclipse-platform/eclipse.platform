@@ -15,16 +15,16 @@ import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/** 
+/**
  * A specialized content provider to show a list of editor parts.
- */ 
+ */
 public class ListContentProvider implements IStructuredContentProvider {
-	List fContents;	
+	List fContents;
 
 	public ListContentProvider() {
 		// nothing to do
 	}
-	
+
 	public Object[] getElements(Object input) {
 		if (fContents != null && fContents == input)
 			return fContents.toArray();
@@ -32,7 +32,7 @@ public class ListContentProvider implements IStructuredContentProvider {
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (newInput instanceof List) 
+		if (newInput instanceof List)
 			fContents= (List)newInput;
 		else
 			fContents= null;
@@ -42,7 +42,7 @@ public class ListContentProvider implements IStructuredContentProvider {
 	public void dispose() {
 		// empty default implementation
 	}
-	
+
 	public boolean isDeleted(Object o) {
 		return fContents != null && !fContents.contains(o);
 	}

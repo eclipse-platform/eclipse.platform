@@ -31,12 +31,12 @@ import org.eclipse.swt.graphics.Image;
  * the (non-<code>null</code>) left side of an <code>ICompareInput</code>
  * is copied to the right side by means of method <code>copy</code>.
  * This should trigger a call to <code>compareInputChanged</code> of registered
- * <code>ICompareInputChangeListener</code>s. 
+ * <code>ICompareInputChangeListener</code>s.
  * <p>
- * Clients can implement this interface, or use the convenience implementation 
+ * Clients can implement this interface, or use the convenience implementation
  * <code>DiffNode</code>.
  * </p>
- * 
+ *
  * @see StructureDiffViewer
  * @see org.eclipse.compare.contentmergeviewer.ContentMergeViewer
  * @see DiffNode
@@ -52,7 +52,7 @@ public interface ICompareInput {
 	 * @return name of input
 	 */
 	String getName();
-	
+
 	/**
 	 * Returns an image representing this input.
 	 * This image is typically displayed when this input is shown in a viewer.
@@ -73,7 +73,7 @@ public interface ICompareInput {
 	 * @return kind of difference (see <code>Differencer</code>)
 	 */
 	int getKind();
-	
+
 	/**
 	 * Returns the ancestor side of this input.
 	 * Returns <code>null</code> if this input has no ancestor
@@ -82,7 +82,7 @@ public interface ICompareInput {
 	 * @return the ancestor of this input, or <code>null</code>
 	 */
 	ITypedElement getAncestor();
-	
+
 	/**
 	 * Returns the left side of this input.
 	 * Returns <code>null</code> if there is no left side (deletion or addition).
@@ -90,7 +90,7 @@ public interface ICompareInput {
 	 * @return the left side of this input, or <code>null</code>
 	 */
 	ITypedElement getLeft();
-	
+
 	/**
 	 * Returns the right side of this input.
 	 * Returns <code>null</code> if there is no right side (deletion or addition).
@@ -98,7 +98,7 @@ public interface ICompareInput {
 	 * @return the right side of this input, or <code>null</code>
 	 */
 	ITypedElement getRight();
-	
+
 	/**
 	 * Registers the given listener for notification.
 	 * If the identical listener is already registered the method has no effect.
@@ -106,7 +106,7 @@ public interface ICompareInput {
 	 * @param listener the listener to register for changes of this input
 	 */
 	void addCompareInputChangeListener(ICompareInputChangeListener listener);
-	
+
 	/**
 	 * Unregisters the given listener.
 	 * If the identical listener is not registered the method has no effect.
@@ -114,9 +114,9 @@ public interface ICompareInput {
 	 * @param listener the listener to unregister
 	 */
 	void removeCompareInputChangeListener(ICompareInputChangeListener listener);
-	
+
 	/**
-	 * Copy one side (source) to the other side (destination) depending on the 
+	 * Copy one side (source) to the other side (destination) depending on the
 	 * value of <code>leftToRight</code>. This method is called from
 	 * a merge viewer if a corresponding action ("take left" or "take right")
 	 * has been pressed.
@@ -133,7 +133,7 @@ public interface ICompareInput {
 	 * </UL>
 	 * In addition the implementation should send out notification to the registered
 	 * <code>ICompareInputChangeListener</code>.
-	 * 
+	 *
 	 * @param leftToRight if <code>true</code> the left side is copied to the right side.
 	 * If <code>false</code> the right side is copied to the left side
 	 */

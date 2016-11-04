@@ -19,7 +19,7 @@ import org.eclipse.jface.text.IRegion;
  * A filter that can be applied during the comparison of documents that can be
  * used to customize the detection of text differences via the compareFilter
  * extension point. Filters are exposed as toggle actions in the compare viewer.
- * 
+ *
  * @noreference This interface is not intended to be referenced by clients
  * @since 3.6
  */
@@ -50,7 +50,7 @@ public interface ICompareFilter {
 
 	/**
 	 * Forwards the current input objects of the compare
-	 * 
+	 *
 	 * @param input
 	 *            the merge viewer input
 	 * @param ancestor
@@ -66,7 +66,7 @@ public interface ICompareFilter {
 	/**
 	 * Identifies the regions of a line of text in a comparison that should be
 	 * ignored for comparison purposes.
-	 * 
+	 *
 	 * @param lineComparison
 	 *            contains values for the keys <CODE>THIS_LINE</CODE>,
 	 *            <CODE>THIS_CONTRIBUTOR</CODE>, <CODE>OTHER_LINE</CODE> and
@@ -78,7 +78,7 @@ public interface ICompareFilter {
 
 	/**
 	 * Returns whether the filter should be enabled when first initialized
-	 * 
+	 *
 	 * @return default enablement
 	 */
 	public boolean isEnabledInitially();
@@ -90,7 +90,7 @@ public interface ICompareFilter {
 	 * line will be the same regardless of what line it is being compared to,
 	 * returning <code>true</code> to this method will cause the ignored region
 	 * calculations to be re-used and improve the performance of the comparison.
-	 * 
+	 *
 	 * @return ignored region results can be cached
 	 */
 	public boolean canCacheFilteredRegions();

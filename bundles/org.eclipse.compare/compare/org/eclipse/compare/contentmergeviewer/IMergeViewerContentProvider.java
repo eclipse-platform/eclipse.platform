@@ -14,17 +14,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.viewers.IContentProvider;
 
 
-/** 
+/**
  * A content provider that mediates between a <code>ContentMergeViewer</code>'s model
  * and the viewer itself.
  * <p>
  * Clients may implement this interface.
  * </p>
- * 
+ *
  * @see ContentMergeViewer
  */
 public interface IMergeViewerContentProvider extends IContentProvider {
-	
+
 	//---- ancestor side
 
 	/**
@@ -60,7 +60,7 @@ public interface IMergeViewerContentProvider extends IContentProvider {
 	 * @return <code>true</code> if the ancestor side of the given input element should be shown
 	 */
 	boolean showAncestor(Object input);
-	
+
 	//---- left side
 
 	/**
@@ -94,7 +94,7 @@ public interface IMergeViewerContentProvider extends IContentProvider {
 	 * Returns whether the left side is editable.
 	 *
 	 * @param input the input object of the <code>ContentMergeViewer</code>
-	 * @return <code>true</code> if the left side of a <code>ContentMergeViewer</code> is editable	 
+	 * @return <code>true</code> if the left side of a <code>ContentMergeViewer</code> is editable
 	 */
 	boolean isLeftEditable(Object input);
 
@@ -139,7 +139,7 @@ public interface IMergeViewerContentProvider extends IContentProvider {
 	 * Returns whether the right side is editable.
 	 *
 	 * @param input the input object of the <code>ContentMergeViewer</code>
-	 * @return <code>true</code> if the right side of a <code>ContentMergeViewer</code> is editable	 
+	 * @return <code>true</code> if the right side of a <code>ContentMergeViewer</code> is editable
 	 */
 	boolean isRightEditable(Object input);
 

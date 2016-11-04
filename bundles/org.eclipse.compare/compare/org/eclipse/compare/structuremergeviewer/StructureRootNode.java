@@ -42,7 +42,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	 * @see #getTypeCode()
 	 */
 	public static final int ROOT_TYPE = 0;
-	
+
 	/**
 	 * The string constant (value <code>"root"</code>) that is used as the id of the root node.
 	 * @see #getId()
@@ -52,7 +52,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	private final Object fInput;
 	private final StructureCreator fCreator;
 	private ISharedDocumentAdapter fAdapter;
-	
+
 	/**
 	 * Create the structure root node.
 	 * @param document the document
@@ -67,7 +67,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		fCreator = creator;
 		fAdapter = adapter;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.services.IDisposable#dispose()
 	 */
@@ -94,7 +94,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	/**
 	 * Override in order to invoke {@link IStructureCreator#save(IStructureComparator, Object)} when the
 	 * contents of a node have changed.
@@ -104,7 +104,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	protected void nodeChanged(DocumentRangeNode node) {
 		fCreator.save(this, fInput);
 	}
-	
+
 	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 		// TODO: I believe the parent implementation is flawed but didn't to remove
@@ -136,7 +136,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 	public String getType() {
 		return FOLDER_TYPE;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly()
 	 */
@@ -148,7 +148,7 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		}
 		return super.isReadOnly();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit(org.eclipse.swt.widgets.Shell)
 	 */

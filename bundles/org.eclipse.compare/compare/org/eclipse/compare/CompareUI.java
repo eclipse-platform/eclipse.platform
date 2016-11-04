@@ -4,7 +4,7 @@
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
  *  http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -39,17 +39,17 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @noinstantiate This class is not intended to be instantiated by clients.
  */
 public final class CompareUI {
-	
+
 	/**
 	 * Compare Plug-in ID (value <code>"org.eclipse.compare"</code>).
 	 * @since 2.0
 	 */
 	public static final String PLUGIN_ID= "org.eclipse.compare"; //$NON-NLS-1$
-	
+
 	/**
 	 * The id of the Compare Preference Page
 	 * (value <code>"org.eclipse.compare.internal.ComparePreferencePage"</code>).
-	 * 
+	 *
 	 * @since 3.1
 	 */
 	public static final String PREFERENCE_PAGE_ID= "org.eclipse.compare.internal.ComparePreferencePage"; //$NON-NLS-1$
@@ -69,7 +69,7 @@ public final class CompareUI {
 	 * @since 2.0
 	 */
 	public static final ImageDescriptor DESC_ETOOL_NEXT= CompareUIPlugin.getImageDescriptor(ICompareUIConstants.ETOOL_NEXT);
-	
+
 	/**
 	 * Image descriptor for the disabled icon of the 'Previous' tool bar button.
 	 * @since 2.0
@@ -93,15 +93,15 @@ public final class CompareUI {
  	 * title bar.
  	 */
 	public static final String COMPARE_VIEWER_TITLE= "org.eclipse.compare.CompareUI.CompareViewerTitle"; //$NON-NLS-1$
-	
+
 	private CompareUI() {
 		// empty implementation
 	}
-	
+
 	public static AbstractUIPlugin getPlugin() {
 		return CompareUIPlugin.getDefault();
 	}
-	
+
 	/**
 	 * Returns this plug-in's resource bundle.
 	 *
@@ -110,7 +110,7 @@ public final class CompareUI {
 	public static ResourceBundle getResourceBundle() {
 		return CompareUIPlugin.getDefault().getResourceBundle();
 	}
-	
+
 	/**
 	 * Performs the comparison described by the given input and opens a
 	 * compare editor on the result in the currently active workbench page.
@@ -120,11 +120,11 @@ public final class CompareUI {
 	public static void openCompareEditor(CompareEditorInput input) {
 		openCompareEditor(input, true);
 	}
-	
+
 	/**
 	 * Performs the comparison described by the given input and opens a compare
 	 * editor on the result in the currently active workbench page.
-	 * 
+	 *
 	 * @param input
 	 *            the input on which to open the compare editor
 	 * @param activate
@@ -136,7 +136,7 @@ public final class CompareUI {
 	public static void openCompareEditor(CompareEditorInput input, boolean activate) {
 		openCompareEditorOnPage(input, null, activate);
 	}
-			
+
 	/**
 	 * Performs the comparison described by the given input and opens a
 	 * compare editor on the result in the given workbench page.
@@ -148,11 +148,11 @@ public final class CompareUI {
 	public static void openCompareEditorOnPage(CompareEditorInput input, IWorkbenchPage page) {
 		openCompareEditorOnPage(input, page, true);
 	}
-	
+
 	/**
 	 * Performs the comparison described by the given input and opens a compare
 	 * editor on the result in the given workbench page.
-	 * 
+	 *
 	 * @param input
 	 *            the input on which to open the compare editor
 	 * @param page
@@ -167,7 +167,7 @@ public final class CompareUI {
 		if (plugin != null)
 			plugin.openCompareEditor(input, page, null, activate);
 	}
-	
+
 	/**
 	 * Performs the comparison described by the given input and
 	 * shows the result in the given editor.
@@ -179,11 +179,11 @@ public final class CompareUI {
 	public static void reuseCompareEditor(CompareEditorInput input, IReusableEditor editor) {
 		reuseCompareEditor(input, editor, true);
 	}
-	
+
 	/**
 	 * Performs the comparison described by the given input and shows the result
 	 * in the given editor.
-	 * 
+	 *
 	 * @param input
 	 *            the input on which to open the compare editor
 	 * @param editor
@@ -198,7 +198,7 @@ public final class CompareUI {
 		if (plugin != null)
 			plugin.openCompareEditor(input, null, editor, activate);
 	}
-			
+
 	/**
 	 * Performs the comparison described by the given input and opens a
 	 * modal compare dialog on the result.
@@ -210,7 +210,7 @@ public final class CompareUI {
 		if (plugin != null)
 			plugin.openCompareDialog(input);
 	}
-			
+
 	/**
 	 * Registers an image descriptor for the given type.
 	 *
@@ -220,7 +220,7 @@ public final class CompareUI {
 	public static void registerImageDescriptor(String type, ImageDescriptor descriptor) {
 		CompareUIPlugin.registerImageDescriptor(type, descriptor);
 	}
-	
+
 	/**
 	 * Returns a shared image for the given type, or a generic image if none
 	 * has been registered for the given type.
@@ -236,7 +236,7 @@ public final class CompareUI {
 	public static Image getImage(String type) {
 		return CompareUIPlugin.getImage(type);
 	}
-		
+
 	/**
 	 * Registers the given image for being disposed when this plug-in is shutdown.
 	 *
@@ -245,7 +245,7 @@ public final class CompareUI {
 	public static void disposeOnShutdown(Image image) {
 		CompareUIPlugin.disposeOnShutdown(image);
 	}
-	
+
 	/**
 	 * Returns a shared image for the given adaptable.
 	 * This convenience method queries the given adaptable
@@ -263,8 +263,8 @@ public final class CompareUI {
 	public static Image getImage(IAdaptable adaptable) {
 		return CompareUIPlugin.getImage(adaptable);
 	}
-		
-	
+
+
 	/**
 	 * Creates a stream merger for the given content type.
 	 * If no stream merger is registered for the given content type <code>null</code> is returned.
@@ -272,7 +272,7 @@ public final class CompareUI {
 	 * @param type the type for which to find a stream merger
 	 * @return a stream merger for the given type, or <code>null</code> if no
 	 *   stream merger has been registered
-	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the 
+	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the
 	 * <code>org.eclipse.team.core.Team#createMerger(IContentType)</code> method.
 	 */
 	public static IStreamMerger createStreamMerger(IContentType type) {
@@ -286,7 +286,7 @@ public final class CompareUI {
 	 * @param type the type for which to find a stream merger
 	 * @return a stream merger for the given type, or <code>null</code> if no
 	 *   stream merger has been registered
-	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the 
+	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the
 	 * <code>org.eclipse.team.core.Team#createMerger(String)</code> method.
 	 */
 	public static IStreamMerger createStreamMerger(String type) {
@@ -311,7 +311,7 @@ public final class CompareUI {
 
 		return CompareUIPlugin.getDefault().findStructureViewer(oldViewer, input, parent, configuration);
 	}
-	
+
 	/**
 	 * Returns a content compare viewer based on an old viewer and an input object.
 	 * If the old viewer is suitable for showing the input the old viewer
@@ -329,7 +329,7 @@ public final class CompareUI {
 			CompareConfiguration configuration) {
 		return CompareUIPlugin.getDefault().findContentViewer(oldViewer, input, parent, configuration);
 	}
-	
+
 	/**
 	 * Returns a content compare viewer based on an old viewer and an input
 	 * object. If the old viewer is suitable for showing the input the old
@@ -350,7 +350,7 @@ public final class CompareUI {
 	 */
 	public static Viewer findContentViewer(Viewer oldViewer, Object input, Composite parent,
 			CompareConfiguration configuration) {
-		
+
 		return CompareUIPlugin.getDefault().findContentViewer(oldViewer, input, parent, configuration);
 	}
 
@@ -358,7 +358,7 @@ public final class CompareUI {
 	 * Adds an alias for the given type. Subsequent calls to
 	 * <code>findStructureViewer</code> treat alias as a synonym for type and
 	 * return the same viewer.
-	 * 
+	 *
 	 * @param type
 	 *            a type name for which a viewer has been registered
 	 * @param alias
@@ -370,12 +370,12 @@ public final class CompareUI {
 	public static void addStructureViewerAlias(String type, String alias) {
 		CompareUIPlugin.getDefault().addStructureViewerAlias(type, alias);
 	}
-	
+
 	/**
 	 * Remove all aliases for the given type. This method does not affect the
 	 * initial binding between type and viewer. If no aliases exist for the
 	 * given type this method does nothing.
-	 * 
+	 *
 	 * @param type
 	 *            the type name for which all synonyms are removed.
 	 * @since 2.0
@@ -385,7 +385,7 @@ public final class CompareUI {
 	public static void removeAllStructureViewerAliases(String type) {
 		CompareUIPlugin.getDefault().removeAllStructureViewerAliases(type);
 	}
-	
+
 	/**
 	 * Retrieve a document for the given input or return <code>null</code> if
 	 * no document has been registered for the input.
@@ -415,7 +415,7 @@ public final class CompareUI {
 	public static void unregisterDocument(IDocument document) {
 		DocumentManager.remove(document);
 	}
-	
+
 	/**
 	 * Create and return a structure creator for the given typed element.
 	 * Return <code>null</code> if an appropriate structure creator could
@@ -431,6 +431,6 @@ public final class CompareUI {
 		}
 		return null;
 	}
-	
+
 }
 

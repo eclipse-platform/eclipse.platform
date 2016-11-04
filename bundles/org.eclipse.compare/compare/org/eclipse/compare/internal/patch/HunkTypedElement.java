@@ -54,7 +54,7 @@ public class HunkTypedElement implements ITypedElement, IEncodedStreamContentAcc
 	public static Image getHunkErrorImage(Image baseImage, LocalResourceManager imageCache, boolean onLeft) {
 		return getHunkOverlayImage(baseImage, imageCache, ICompareUIConstants.ERROR_OVERLAY, onLeft);
 	}
-	
+
 	private static Image getHunkOverlayImage(Image baseImage, LocalResourceManager imageCache, String path, boolean onLeft) {
 		ImageDescriptor desc = new DiffImageDescriptor(baseImage, CompareUIPlugin.getImageDescriptor(path), ICompareUIConstants.COMPARE_IMAGE_WIDTH, onLeft);
 		Image image = imageCache.createImage(desc);

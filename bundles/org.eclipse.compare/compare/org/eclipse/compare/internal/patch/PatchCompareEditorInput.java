@@ -58,21 +58,21 @@ import org.eclipse.swt.widgets.Composite;
 public abstract class PatchCompareEditorInput extends CompareEditorInput {
 
 	private static final String IMAGE_CACHE_KEY = "IMAGE_CACHE"; //$NON-NLS-1$
-	
+
 	public static ImageDescriptor createOverlay(Image baseImage, ImageDescriptor overlayImage, int quadrant) {
 		return new DecoratorOverlayIcon(baseImage, createArrayFrom(overlayImage, quadrant), new Point(Math.max(baseImage.getBounds().width, 16), Math.max(baseImage.getBounds().height, 16)));
 	}
-	
+
 	private static ImageDescriptor[] createArrayFrom(
 			ImageDescriptor overlayImage, int quadrant) {
 		ImageDescriptor[] descs = new ImageDescriptor[] { null, null, null, null, null };
 		descs[quadrant] = overlayImage;
 		return descs;
 	}
-	
+
 	class PatcherCompareEditorLabelProvider extends LabelProvider {
 		private ILabelProvider wrappedProvider;
-		
+
 		public PatcherCompareEditorLabelProvider(ILabelProvider labelProvider) {
 			wrappedProvider = labelProvider;
 		}
@@ -88,7 +88,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 					}
 				}
 				if (!node.isEnabled()) {
-					return NLS.bind(PatchMessages.Diff_2Args, 
+					return NLS.bind(PatchMessages.Diff_2Args,
 							new String[]{text, PatchMessages.PatcherCompareEditorInput_NotIncluded});
 				}
 				if (node instanceof PatchFileDiffNode) {
@@ -107,19 +107,19 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 					}
 					if (hunkNode.isFuzzUsed()) {
 						text = NLS.bind(PatchMessages.Diff_2Args,
-								new String[] { text, 
+								new String[] { text,
 								NLS.bind(hunkNode.isAllContextIgnored() ? PatchMessages.PreviewPatchPage_AllContextIgnored : PatchMessages.PreviewPatchPage_FuzzUsed,
 										new String[] { hunkNode.getHunkResult().getFuzz() + ""}) }); //$NON-NLS-1$
 					}
 				}
-				if (getPatcher().isRetargeted(node.getPatchElement()))	
-					return NLS.bind(PatchMessages.Diff_2Args, 
+				if (getPatcher().isRetargeted(node.getPatchElement()))
+					return NLS.bind(PatchMessages.Diff_2Args,
 							new String[]{getPatcher().getOriginalPath(node.getPatchElement()).toString(),
 							NLS.bind(PatchMessages.PreviewPatchPage_Target, new String[]{node.getName()})});
 			}
 			return text;
 		}
-	
+
 		public Image getImage(Object element) {
 			Image image = wrappedProvider.getImage(element);
 			if (element instanceof PatchDiffNode){
@@ -139,17 +139,17 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 			return image;
 		}
 	}
-	
+
 	private final DiffNode root;
 	private final WorkspacePatcher patcher;
 	private TreeViewer viewer;
 	private boolean fShowAll;
 	private boolean showMatched = false;
-	
+
 	/**
 	 * Creates a new PatchCompareEditorInput and makes use of the passed in CompareConfiguration
 	 * to configure the UI elements.
-	 * @param patcher 
+	 * @param patcher
 	 * @param configuration
 	 */
 	public PatchCompareEditorInput(WorkspacePatcher patcher, CompareConfiguration configuration) {
@@ -167,13 +167,13 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	private void initializeImageCache() {
 		initializeImageCache(patcher.getConfiguration());
 	}
-	
+
 	private static LocalResourceManager initializeImageCache(PatchConfiguration patchConfiguration) {
 		LocalResourceManager imageCache = new LocalResourceManager(JFaceResources.getResources());
 		patchConfiguration.setProperty(IMAGE_CACHE_KEY, imageCache);
 		return imageCache;
 	}
-	
+
 	protected void handleDispose() {
 		super.handleDispose();
 		getImageCache(getPatcher().getConfiguration()).dispose();
@@ -191,7 +191,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		initLabels();
 		return root;
 	}
-	
+
 	private void initLabels() {
 		CompareConfiguration cc = getCompareConfiguration();
 		// set left editable so that unmatched hunks can be edited
@@ -211,34 +211,34 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		if (getViewer() != null && !getViewer().getControl().isDisposed())
 			getViewer().refresh(true);
 	}
-	
+
 	/**
 	 * Build the diff tree.
 	 */
 	protected void buildTree(){
-		
+
 		// Reset the input node so it is empty
 		if (getRoot().hasChildren()) {
 			resetRoot();
 		}
 		// Reset the input of the viewer so the old state is no longer used
 		getViewer().setInput(getRoot());
-		
+
 		// Refresh the patcher state
 		getPatcher().refresh();
-		
+
 		// Build the diff tree
 		if (getPatcher().isWorkspacePatch()){
 			processProjects(getPatcher().getDiffProjects());
 		} else {
 			processDiffs(getPatcher().getDiffs());
 		}
-		
+
 		// Refresh the viewer
 		getViewer().refresh();
 	}
-	
-	private void processDiffs(FilePatch2[] diffs) { 
+
+	private void processDiffs(FilePatch2[] diffs) {
 		for (int i = 0; i < diffs.length; i++) {
 			processDiff(diffs[i], getRoot());
 		}
@@ -290,7 +290,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 				PatchCompareEditorInput.this.fillContextMenu(manager);
 			}
 		};
-			
+
 		viewer.setLabelProvider(new PatcherCompareEditorLabelProvider((ILabelProvider)viewer.getLabelProvider()));
 		viewer.getTree().setData(CompareUI.COMPARE_VIEWER_TITLE, PatchMessages.PatcherCompareEditorInput_PatchContents);
 		viewer.addOpenListener(new IOpenListener() {
@@ -310,13 +310,13 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 					getCompareConfiguration().setRightLabel(PatchMessages.PatcherCompareEditorInput_AfterPatch);
 				}
 			}
-		
+
 		});
 		viewer.setFilters(getFilters());
 		viewer.setInput(root);
 		return viewer;
 	}
-	
+
 	private ViewerFilter[] getFilters() {
 		return new ViewerFilter[] { new ViewerFilter() {
 			public boolean select(Viewer v, Object parentElement, Object element) {
@@ -332,7 +332,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	protected boolean isShowAll() {
 		return fShowAll;
 	}
-	
+
 	protected void setShowAll(boolean show) {
 		fShowAll = show;
 	}
@@ -349,25 +349,25 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		ToolBarManager tbm= CompareViewerPane.getToolBarManager(viewer.getControl().getParent());
 		if (tbm != null) {
 			tbm.removeAll();
-			
+
 			tbm.add(new Separator("contributed")); //$NON-NLS-1$
-			
+
 			for (int i = 0; i < actions.length; i++) {
 				tbm.appendToGroup("contributed", actions[i]); //$NON-NLS-1$
 			}
-			
+
 			tbm.update(true);
 		}
 	}
-	
+
 	public TreeViewer getViewer() {
 		return viewer;
 	}
-	
+
 	public DiffNode getRoot() {
 		return root;
 	}
-	
+
 	public void resetRoot() {
 		IDiffElement[] children = root.getChildren();
 		for (int i = 0; i < children.length; i++) {
@@ -379,7 +379,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	public WorkspacePatcher getPatcher() {
 		return patcher;
 	}
-	
+
 	public boolean confirmRebuild(String message) {
 		if (getPatcher().hasCachedContents()) {
 			if (promptToDiscardCachedChanges(message)) {
@@ -422,9 +422,9 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		}
 		return false;
 	}
-	
+
 	protected abstract void fillContextMenu(IMenuManager manager);
-	
+
 	public Viewer findStructureViewer(Viewer oldViewer, ICompareInput input,
 			Composite parent) {
 		if (org.eclipse.compare.internal.Utilities.isHunk(input))

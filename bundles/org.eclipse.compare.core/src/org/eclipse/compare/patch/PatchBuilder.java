@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.IPath;
 /**
  * Builder for creating IFilePatch2 and IHunk objects as well as building
  * relationship between them.
- * 
+ *
  * @noextend This class is not intended to be subclassed by clients.
  * @noinstantiate This class is not intended to be instantiated by clients.
- * 
+ *
  * @since org.eclipse.compare.core 3.5
  */
 public class PatchBuilder {
@@ -43,7 +43,7 @@ public class PatchBuilder {
 
 	/**
 	 * Creates an IHunk instance.
-	 * 
+	 *
 	 * @param start
 	 *            the start position in the before file
 	 * @param lines
@@ -72,7 +72,7 @@ public class PatchBuilder {
 	 * after applying a patch. It is affected by all the hunks that are to be
 	 * applied before a given one. This recalculation is necessary to keep
 	 * IFilePatch2's state coherent.
-	 * 
+	 *
 	 * @param oldPath
 	 *            the path of the before state of the file
 	 * @param oldDate
@@ -103,7 +103,7 @@ public class PatchBuilder {
 	 * state after applying a patch. It is affected by all the hunks that are to
 	 * be applied before a given one. This recalculation is necessary to keep
 	 * IFilePatch2's state coherent.
-	 * 
+	 *
 	 * @param filePatch
 	 *            a file patch to add hunks to
 	 * @param toAdd
@@ -122,7 +122,7 @@ public class PatchBuilder {
 	 * state after applying a patch. It is affected by all the hunks that are to
 	 * be applied before a given one. This recalculation is necessary to keep
 	 * IFilePatch2's state coherent.
-	 * 
+	 *
 	 * @param filePatch
 	 *            a file patch to add hunks to
 	 * @param toRemove

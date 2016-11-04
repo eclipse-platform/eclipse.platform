@@ -60,9 +60,9 @@ import com.ibm.icu.text.MessageFormat;
  * A two-way or three-way compare for arbitrary IResources.
  */
 class ResourceCompareInput extends CompareEditorInput {
-	
+
 	private static final boolean NORMALIZE_CASE= true;
-	
+
 	private boolean fThreeWay= false;
 	private Object fRoot;
 	private IStructureComparator fAncestor;
@@ -73,14 +73,14 @@ class ResourceCompareInput extends CompareEditorInput {
 	private IResource fRightResource;
 	private DiffTreeViewer fDiffViewer;
 	private IAction fOpenAction;
-	
+
 	class MyDiffNode extends DiffNode {
-		
+
 		private boolean fDirty= false;
 		private ITypedElement fLastId;
 		private String fLastName;
-		
-		
+
+
 		public MyDiffNode(IDiffContainer parent, int description, ITypedElement ancestor, ITypedElement left, ITypedElement right) {
 			super(parent, description, ancestor, left, right);
 		}
@@ -101,7 +101,7 @@ class ResourceCompareInput extends CompareEditorInput {
 				return '<' + fLastName + '>';
 			return fLastName;
 		}
-		
+
 		public ITypedElement getId() {
 			ITypedElement id= super.getId();
 			if (id == null)
@@ -110,7 +110,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			return id;
 		}
 	}
-	
+
 	static class FilteredBufferedResourceNode extends BufferedResourceNode {
 		FilteredBufferedResourceNode(IResource resource) {
 			super(resource);
@@ -122,18 +122,18 @@ class ResourceCompareInput extends CompareEditorInput {
 			return new FilteredBufferedResourceNode(child);
 		}
 	}
-	
+
 	/*
 	 * Creates an compare editor input for the given selection.
 	 */
 	ResourceCompareInput(CompareConfiguration config) {
 		super(config);
 	}
-			
+
 	public Viewer createDiffViewer(Composite parent) {
 		fDiffViewer= new DiffTreeViewer(parent, getCompareConfiguration()) {
 			protected void fillContextMenu(IMenuManager manager) {
-				
+
 				if (fOpenAction == null) {
 					fOpenAction= new Action() {
 						public void run() {
@@ -142,7 +142,7 @@ class ResourceCompareInput extends CompareEditorInput {
 					};
 					Utilities.initAction(fOpenAction, getBundle(), "action.CompareContents."); //$NON-NLS-1$
 				}
-				
+
 				boolean enable= false;
 				ISelection selection= getSelection();
 				if (selection instanceof IStructuredSelection) {
@@ -158,9 +158,9 @@ class ResourceCompareInput extends CompareEditorInput {
 					}
 				}
 				fOpenAction.setEnabled(enable);
-				
+
 				manager.add(fOpenAction);
-				
+
 				super.fillContextMenu(manager);
 			}
 		};
@@ -172,9 +172,9 @@ class ResourceCompareInput extends CompareEditorInput {
 		IResource ancestorResource;
 		IResource leftResource;
 		IResource rightResource;
-		
+
 		private Button[] buttons;
-		
+
 		public SelectAncestorDialog(Shell parentShell, IResource[] theResources) {
 			super(parentShell, CompareMessages.SelectAncestorDialog_title,
 				null, CompareMessages.SelectAncestorDialog_message,
@@ -183,7 +183,7 @@ class ResourceCompareInput extends CompareEditorInput {
 					IDialogConstants.CANCEL_LABEL }, 0);
 			this.theResources = theResources;
 		}
-		
+
 		protected Control createCustomArea(Composite parent) {
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout());
@@ -206,7 +206,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			leftResource = theResources[i == 0 ? 1 : 0];
 			rightResource = theResources[i == 2 ? 1 : 2];
 		}
-		
+
 		private SelectionListener selectionListener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				Button selectedButton = (Button) e.widget;
@@ -231,14 +231,14 @@ class ResourceCompareInput extends CompareEditorInput {
 		IResource[] selection= Utilities.getResources(s);
 
 		fThreeWay= selection.length == 3;
-		
+
 		if (fThreeWay) {
 			SelectAncestorDialog dialog =
 				new SelectAncestorDialog(shell, selection);
 			int code = dialog.open();
 			if (code != Window.OK)
 				return false;
-			
+
 			fAncestorResource= dialog.ancestorResource;
 			fAncestor= getStructure(fAncestorResource);
 			fLeftResource= dialog.leftResource;
@@ -290,23 +290,23 @@ class ResourceCompareInput extends CompareEditorInput {
 	 * Returns true if compare can be executed for the given selection.
 	 */
 	public boolean isEnabled(ISelection s) {
-		
+
 		IResource[] selection= Utilities.getResources(s);
 		if (selection.length < 2 || selection.length > 3)
 			return false;
 
 		boolean threeWay= selection.length == 3;
-		
+
 		if (threeWay)
 			// It only makes sense if they're all mutually comparable.
 			// If not, the user should compare two of them.
 			return comparable(selection[0], selection[1])
 				&& comparable(selection[0], selection[2])
 				&& comparable(selection[1], selection[2]);
-		
+
 		return comparable(selection[0], selection[1]);
 	}
-	
+
 	/**
 	 * Initializes the images in the compare configuration.
 	 */
@@ -320,27 +320,27 @@ class ResourceCompareInput extends CompareEditorInput {
 			cc.setRightLabel(buildLabel(fRightResource));
 			cc.setRightImage(CompareUIPlugin.getImage(fRightResource));
 		}
-		if (fThreeWay && fAncestorResource != null) {			
+		if (fThreeWay && fAncestorResource != null) {
 			cc.setAncestorLabel(buildLabel(fAncestorResource));
 			cc.setAncestorImage(CompareUIPlugin.getImage(fAncestorResource));
 		}
 	}
-	
+
 	/*
 	 * Returns true if both resources are either structured or unstructured.
 	 */
 	private boolean comparable(IResource c1, IResource c2) {
 		return hasStructure(c1) == hasStructure(c2);
 	}
-	
+
 	/*
 	 * Returns true if the given argument has a structure.
 	 */
 	private boolean hasStructure(IResource input) {
-		
+
 		if (input instanceof IContainer)
 			return true;
-			
+
 		if (input instanceof IFile) {
 			IFile file= (IFile) input;
 			String type= file.getFileExtension();
@@ -349,20 +349,20 @@ class ResourceCompareInput extends CompareEditorInput {
 				return "JAR".equals(type) || "ZIP".equals(type);	//$NON-NLS-2$ //$NON-NLS-1$
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/*
 	 * Creates a <code>IStructureComparator</code> for the given input.
 	 * Returns <code>null</code> if no <code>IStructureComparator</code>
 	 * can be found for the <code>IResource</code>.
 	 */
 	private IStructureComparator getStructure(IResource input) {
-		
+
 		if (input instanceof IContainer)
 			return new FilteredBufferedResourceNode(input);
-			
+
 		if (input instanceof IFile) {
 			IStructureComparator rn= new FilteredBufferedResourceNode(input);
 			IFile file= (IFile) input;
@@ -373,57 +373,57 @@ class ResourceCompareInput extends CompareEditorInput {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Performs a two-way or three-way diff on the current selection.
 	 */
 	public Object prepareInput(IProgressMonitor pm) throws InvocationTargetException {
-				
+
 		try {
-			// fix for PR 1GFMLFB: ITPUI:WIN2000 - files that are out of sync with the file system appear as empty							
+			// fix for PR 1GFMLFB: ITPUI:WIN2000 - files that are out of sync with the file system appear as empty
 			fLeftResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
 			fRightResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
 			if (fThreeWay && fAncestorResource != null)
 				fAncestorResource.refreshLocal(IResource.DEPTH_INFINITE, pm);
-			// end fix						
-				
+			// end fix
+
 			pm.beginTask(Utilities.getString("ResourceCompare.taskName"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
 			String leftLabel= fLeftResource.getName();
 			String rightLabel= fRightResource.getName();
-			
+
 			String title;
-			if (fThreeWay) {			
+			if (fThreeWay) {
 				String format= Utilities.getString("ResourceCompare.threeWay.title"); //$NON-NLS-1$
 				String ancestorLabel= fAncestorResource.getName();
-				title= MessageFormat.format(format, ancestorLabel, leftLabel, rightLabel);	
+				title= MessageFormat.format(format, ancestorLabel, leftLabel, rightLabel);
 			} else {
 				String format= Utilities.getString("ResourceCompare.twoWay.title"); //$NON-NLS-1$
 				title= MessageFormat.format(format, leftLabel, rightLabel);
 			}
 			setTitle(title);
-			
+
 			Differencer d= new Differencer() {
 				protected Object visit(Object parent, int description, Object ancestor, Object left, Object right) {
 					return new MyDiffNode((IDiffContainer) parent, description, (ITypedElement)ancestor, (ITypedElement)left, (ITypedElement)right);
 				}
 			};
-			
+
 			fRoot= d.findDifferences(fThreeWay, pm, null, fAncestor, fLeft, fRight);
 			return fRoot;
-			
+
 		} catch (CoreException ex) {
 			throw new InvocationTargetException(ex);
 		} finally {
 			pm.done();
 		}
 	}
-	
+
 	public String getToolTipText() {
 		if (fLeftResource != null && fRightResource != null) {
 			String leftLabel= fLeftResource.getFullPath().makeRelative().toString();
-			String rightLabel= fRightResource.getFullPath().makeRelative().toString();			
-			if (fThreeWay) {			
+			String rightLabel= fRightResource.getFullPath().makeRelative().toString();
+			if (fThreeWay) {
 				String format= Utilities.getString("ResourceCompare.threeWay.tooltip"); //$NON-NLS-1$
 				String ancestorLabel= fAncestorResource.getFullPath().makeRelative().toString();
 				return MessageFormat.format(format, ancestorLabel, leftLabel, rightLabel);
@@ -434,7 +434,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		// fall back
 		return super.getToolTipText();
 	}
-	
+
 	private String buildLabel(IResource r) {
 		// for a linked resource in a hidden project use its local file system location
 		if (r.isLinked() && r.getProject().isHidden())
@@ -444,7 +444,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			return n.substring(1);
 		return n;
 	}
-	
+
 	public void saveChanges(IProgressMonitor pm) throws CoreException {
 		super.saveChanges(pm);
 		if (fRoot instanceof DiffNode) {
@@ -452,24 +452,24 @@ class ResourceCompareInput extends CompareEditorInput {
 				commit(pm, (DiffNode) fRoot);
 			} finally {
 				if (fDiffViewer != null)
-					fDiffViewer.refresh();				
+					fDiffViewer.refresh();
 				setDirty(false);
 			}
 		}
 	}
-	
+
 	/*
 	 * Recursively walks the diff tree and commits all changes.
 	 */
 	private static void commit(IProgressMonitor pm, DiffNode node) throws CoreException {
-		
-		if (node instanceof MyDiffNode)		
+
+		if (node instanceof MyDiffNode)
 			((MyDiffNode)node).clearDirty();
-		
+
 		ITypedElement left= node.getLeft();
 		if (left instanceof BufferedResourceNode)
 			((BufferedResourceNode) left).commit(pm);
-			
+
 		ITypedElement right= node.getRight();
 		if (right instanceof BufferedResourceNode)
 			((BufferedResourceNode) right).commit(pm);
@@ -483,7 +483,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			}
 		}
 	}
-	
+
 	/* (non Javadoc)
 	 * see IAdaptable.getAdapter
 	 */
@@ -504,11 +504,11 @@ class ResourceCompareInput extends CompareEditorInput {
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	private void collectDirtyResources(Object o, Set collector) {
 		if (o instanceof DiffNode) {
 		    DiffNode node= (DiffNode) o;
-			
+
 			ITypedElement left= node.getLeft();
 			if (left instanceof BufferedResourceNode) {
 			    BufferedResourceNode bn= (BufferedResourceNode) left;
@@ -528,7 +528,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			            collector.add(resource);
 			    }
 			}
-				
+
 			IDiffElement[] children= node.getChildren();
 			if (children != null) {
 				for (int i= 0; i < children.length; i++) {
@@ -539,13 +539,13 @@ class ResourceCompareInput extends CompareEditorInput {
 			}
 		}
 	}
-	
+
 	private static String normalizeCase(String s) {
 		if (NORMALIZE_CASE && s != null)
 			return s.toUpperCase();
 		return s;
 	}
-	
+
 	public boolean canRunAsJob() {
 		return true;
 	}

@@ -29,7 +29,7 @@ import com.ibm.icu.text.MessageFormat;
  * a compare with the <code>Differencer</code>.
  * <p>
  * Clients typically use this class as is, but may subclass if required.
- * 
+ *
  * @see DiffTreeViewer
  * @see Differencer
  */
@@ -40,7 +40,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	private boolean fDontExpand;
 	private ListenerList<ICompareInputChangeListener> fListener;
 	private boolean fSwapSides;
-	
+
 	/**
 	 * Creates a new <code>DiffNode</code> and initializes with the given values.
 	 *
@@ -111,7 +111,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 			fListener= new ListenerList<>();
 		fListener.add(listener);
 	}
-	
+
 	/**
 	 * Unregisters a <code>ICompareInput</code> listener.
 	 * Has no effect if listener is not registered.
@@ -126,7 +126,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 				fListener= null;
 		}
 	}
-	
+
 	/**
 	 * Sends out notification that a change has occurred on the <code>ICompareInput</code>.
 	 */
@@ -204,10 +204,10 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 
 		if (right.equals(left))
 			return right;
-			
+
 		String s1;
 		String s2;
-		
+
 		if (fSwapSides) {
 			s1= left;
 			s2= right;
@@ -215,15 +215,15 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 			s1= right;
 			s2= left;
 		}
-		
+
 		String fmt= Utilities.getString("DiffNode.nameFormat"); //$NON-NLS-1$
 		return MessageFormat.format(fmt, s1, s2);
 	}
-	
+
 	void swapSides(boolean swap) {
 		fSwapSides= swap;
 	}
-		
+
 	/* (non Javadoc)
 	 * see ITypedElement.getImage
 	 */
@@ -255,7 +255,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	public void setAncestor(ITypedElement ancestor) {
 	    fAncestor= ancestor;
 	}
-	
+
 	/* (non Javadoc)
 	 * see ICompareInput.getAncestor
 	 */
@@ -263,7 +263,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	public ITypedElement getAncestor() {
 		return fAncestor;
 	}
-	
+
 	/**
 	 * Sets the left input to the given value.
 	 *
@@ -272,7 +272,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	public void setLeft(ITypedElement left) {
 		fLeft= left;
 	}
-	
+
 	/* (non Javadoc)
 	 * see ICompareInput.getLeft
 	 */
@@ -289,7 +289,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	public void setRight(ITypedElement right) {
 		fRight= right;
 	}
-	
+
 	/* (non Javadoc)
 	 * see ICompareInput.getRight
 	 */
@@ -304,12 +304,12 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	@Override
 	public void copy(boolean leftToRight) {
 		//System.out.println("DiffNode.copy: " + leftToRight);
-		
+
 		IDiffContainer pa= getParent();
 		if (pa instanceof ICompareInput) {
 			ICompareInput parent= (ICompareInput) pa;
 			Object dstParent= leftToRight ? parent.getRight() : parent.getLeft();
-			
+
 			if (dstParent instanceof IEditableContent) {
 				ITypedElement dst= leftToRight ? getRight() : getLeft();
 				ITypedElement src= leftToRight ? getLeft() : getRight();
@@ -318,14 +318,14 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 					setRight(dst);
 				else
 					setLeft(dst);
-				
+
 				//setKind(Differencer.NO_CHANGE);
-				
+
 				fireChange();
 			}
 		}
 	}
-	
+
 	/* (non Javadoc)
 	 * see Object.hashCode
 	 */
@@ -339,7 +339,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		}
 		return hashCode;
 	}
-	
+
 	/* (non Javadoc)
 	 * see Object.equals
 	 */
@@ -357,7 +357,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		}
 		return super.equals(other);
 	}
-	
+
 	private static String[] getPath(ITypedElement el, int level) {
 		String[] path= null;
 		if (el instanceof IDiffContainer) {

@@ -27,7 +27,7 @@ public interface IMergeViewerTestAdapter {
 
 	/**
 	 * Returns the number of changes in merge viewer
-	 * 
+	 *
 	 * @return the number of changes
 	 */
 	public int getChangesCount();

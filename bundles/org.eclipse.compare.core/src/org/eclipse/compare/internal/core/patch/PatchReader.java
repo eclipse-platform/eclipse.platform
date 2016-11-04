@@ -33,7 +33,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 public class PatchReader {
 	private static final boolean DEBUG= false;
-	
+
 	private static final String DEV_NULL= "/dev/null"; //$NON-NLS-1$
 
 	protected static final String MARKER_TYPE= "org.eclipse.compare.rejectedPatchMarker"; //$NON-NLS-1$
@@ -74,7 +74,7 @@ public class PatchReader {
 
 	/**
 	 * Create a patch reader for the given date formats.
-	 * 
+	 *
 	 * @param dateFormats
 	 *            Array of <code>DateFormat</code>s to be used when
 	 *            extracting dates from the patch.
@@ -83,7 +83,7 @@ public class PatchReader {
 		this();
 		this.fDateFormats = dateFormats;
 	}
-	
+
 	public void parse(BufferedReader reader) throws IOException {
 		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
 		HashMap<String, DiffProject> diffProjects= new HashMap<String, DiffProject>(4);
@@ -174,7 +174,7 @@ public class PatchReader {
 		}
 		return nextLine;
 	}
-	
+
 	public void parse(LineReader lr, String line) throws IOException {
 		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
 		boolean reread= false;
@@ -191,7 +191,7 @@ public class PatchReader {
 			reread= false;
 			if (line == null)
 				break;
-								
+
 			// remember some infos
 			if (line.startsWith("Index: ")) { //$NON-NLS-1$
 				fileName= line.substring(7).trim();
@@ -213,19 +213,19 @@ public class PatchReader {
 				diffArgs= fileName= null;
 				reread= true;
 			}
-			
+
 			// Any lines we read here are header lines.
 			// However, if reread is set, we will add them to the header on the next pass through
 			if (!reread) {
 				headerLines.add(line);
 			}
 		}
-		
+
 		lr.close();
-		
+
 		this.fDiffs = diffs.toArray(new FilePatch2[diffs.size()]);
 	}
-	
+
 	private void setHeader(FilePatch2 diff, List<String> headerLines) {
 		String header = LineReader.createString(false, headerLines);
 		diff.setHeader(header);
@@ -243,14 +243,14 @@ public class PatchReader {
 		line= reader.readLine();
 		if (line == null || !line.startsWith("+++ ")) //$NON-NLS-1$
 			return line;
-			
+
 		String[] newArgs= split(line.substring(4));
-	
+
 		FilePatch2 diff = createFileDiff(extractPath(oldArgs, 0, fileName),
 				extractDate(oldArgs, 1), extractPath(newArgs, 0, fileName),
 				extractDate(newArgs, 1));
 		diffs.add(diff);
-				   
+
 		int[] oldRange= new int[2];
 		int[] newRange= new int[2];
 		int remainingOld= -1; // remaining old lines for current hunk
@@ -260,7 +260,7 @@ public class PatchReader {
 		boolean encounteredPlus = false;
 		boolean encounteredMinus = false;
 		boolean encounteredSpace = false;
-		
+
 		try {
 			// read lines of hunk
 			while (true) {
@@ -357,51 +357,51 @@ public class PatchReader {
 				Hunk.createHunk(diff, oldRange, newRange, lines, encounteredPlus, encounteredMinus, encounteredSpace);
 		}
 	}
-	
+
 	/*
 	 * Returns the next line that does not belong to this diff
 	 */
 	private String readContextDiff(List<FilePatch2> diffs, LineReader reader, String line, String args, String fileName) throws IOException {
-		
+
 		String[] oldArgs= split(line.substring(4));
-		
+
 		// read info about new file
 		line= reader.readLine();
 		if (line == null || !line.startsWith("--- ")) //$NON-NLS-1$
 			return line;
-		
+
 		String[] newArgs= split(line.substring(4));
-						
+
 		FilePatch2 diff = createFileDiff(extractPath(oldArgs, 0, fileName),
 				extractDate(oldArgs, 1), extractPath(newArgs, 0, fileName),
 				extractDate(newArgs, 1));
 		diffs.add(diff);
-				   
+
 		int[] oldRange= new int[2];
 		int[] newRange= new int[2];
 		List<String> oldLines= new ArrayList<String>();
 		List<String> newLines= new ArrayList<String>();
 		List<String> lines= oldLines;
-		
+
 
 		boolean encounteredPlus = false;
 		boolean encounteredMinus = false;
 		boolean encounteredSpace = false;
-		
+
 		try {
 			// read lines of hunk
 			while (true) {
-				
+
 				line= reader.readLine();
 				if (line == null)
 					return line;
-				
+
 				int l= line.length();
 				if (l == 0)
 					continue;
 				if (l > 1) {
 					switch (line.charAt(0)) {
-					case '*':	
+					case '*':
 						if (line.startsWith("***************")) {	// new hunk //$NON-NLS-1$
 							// flush old hunk
 							if (oldLines.size() > 0 || newLines.size() > 0) {
@@ -473,7 +473,7 @@ public class PatchReader {
 				Hunk.createHunk(diff, oldRange, newRange, unifyLines(oldLines, newLines), encounteredPlus, encounteredMinus, encounteredSpace);
 		}
 	}
-	
+
 	/*
 	 * Creates a List of lines in the unified format from
 	 * two Lists of lines in the 'classic' format.
@@ -483,29 +483,29 @@ public class PatchReader {
 
 		String[] ol= oldLines.toArray(new String[oldLines.size()]);
 		String[] nl= newLines.toArray(new String[newLines.size()]);
-		
+
 		int oi= 0, ni= 0;
-		
+
 		while (true) {
-			
+
 			char oc= 0;
 			String o= null;
 			if (oi < ol.length) {
 				o= ol[oi];
 				oc= o.charAt(0);
 			}
-			
+
 			char nc= 0;
 			String n= null;
 			if (ni < nl.length) {
 				n= nl[ni];
 				nc= n.charAt(0);
 			}
-			
+
 			// EOF
 			if (oc == 0 && nc == 0)
 				break;
-				
+
 			// deletion in old
 			if (oc == '-') {
 				do {
@@ -517,7 +517,7 @@ public class PatchReader {
 				} while (o.charAt(0) == '-');
 				continue;
 			}
-			
+
 			// addition in new
 			if (nc == '+') {
 				do {
@@ -529,7 +529,7 @@ public class PatchReader {
 				} while (n.charAt(0) == '+');
 				continue;
 			}
-			
+
 			// differing lines on both sides
 			if (oc == '!' && nc == '!') {
 				// remove old
@@ -540,7 +540,7 @@ public class PatchReader {
 						break;
 					o= ol[oi];
 				} while (o.charAt(0) == '!');
-				
+
 				// add new
 				do {
 					result.add('+' + n.substring(2));
@@ -549,10 +549,10 @@ public class PatchReader {
 						break;
 					n= nl[ni];
 				} while (n.charAt(0) == '!');
-				
+
 				continue;
 			}
-			
+
 			// context lines
 			if (oc == ' ' && nc == ' ') {
 				do {
@@ -567,7 +567,7 @@ public class PatchReader {
 				} while (o.charAt(0) == ' ' && n.charAt(0) == ' ');
 				continue;
 			}
-			
+
 			if (oc == ' ') {
 				do {
 					result.add(' ' + o.substring(2));
@@ -589,13 +589,13 @@ public class PatchReader {
 				} while (n.charAt(0) == ' ');
 				continue;
 			}
-			
+
 			Assert.isTrue(false, "unexpected char <" + oc + "> <" + nc + ">"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
-		
+
 		return result;
 	}
-	
+
 	/*
 	 * @return the parsed time/date in milliseconds or IFilePatch.DATE_UNKNOWN
 	 * (0) on error
@@ -607,7 +607,7 @@ public class PatchReader {
 				this.fDateFormats[i].setLenient(true);
 				try {
 					Date date= this.fDateFormats[i].parse(line);
-					return date.getTime();		
+					return date.getTime();
 				} catch (ParseException ex) {
 					// silently ignored
 				}
@@ -616,7 +616,7 @@ public class PatchReader {
 		}
 		return IFilePatch2.DATE_UNKNOWN;
 	}
-	
+
 	/*
 	 * Returns null if file name is "/dev/null".
 	 */
@@ -636,7 +636,7 @@ public class PatchReader {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Tries to extract two integers separated by a comma.
 	 * The parsing of the line starts at the position after
@@ -672,7 +672,7 @@ public class PatchReader {
 	/*
 	 * Breaks the given string into tab separated substrings.
 	 * Leading and trailing whitespace is removed from each token.
-	 */ 
+	 */
 	private String[] split(String line) {
 		List<String> l= new ArrayList<>();
 		StringTokenizer st= new StringTokenizer(line, "\t"); //$NON-NLS-1$
@@ -699,7 +699,7 @@ public class PatchReader {
 	public FilePatch2[] getDiffs() {
 		return this.fDiffs;
 	}
-	
+
 	public FilePatch2[] getAdjustedDiffs() {
 		if (!isWorkspacePatch() || this.fDiffs.length == 0)
 			return this.fDiffs;

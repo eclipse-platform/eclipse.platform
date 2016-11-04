@@ -28,17 +28,17 @@ import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 /**
  */
 public class ImageMergeViewer extends ContentMergeViewer {
-	
+
 	private static final String BUNDLE_NAME= "org.eclipse.compare.internal.ImageMergeViewerResources"; //$NON-NLS-1$
-		
+
 	private Object fLeftImage;
 	private Object fRightImage;
 
 	private ImageCanvas fAncestor;
 	private ImageCanvas fLeft;
 	private ImageCanvas fRight;
-	
-			
+
+
 	public ImageMergeViewer(Composite parent, int styles, CompareConfiguration mp) {
 		super(styles, ResourceBundle.getBundle(BUNDLE_NAME), mp);
 
@@ -50,23 +50,23 @@ public class ImageMergeViewer extends ContentMergeViewer {
 	}
 
 	protected void updateContent(Object ancestor, Object left, Object right) {
-		
+
 		setInput(fAncestor, ancestor);
-		
+
 		fLeftImage= left;
 		setInput(fLeft, left);
-		
+
 		fRightImage= right;
 		setInput(fRight, right);
 	}
-	
+
 	/*
 	 * We can't modify the contents of either side we just return null.
 	 */
 	protected byte[] getContents(boolean left) {
 		return null;
 	}
-	
+
 	public void createControls(Composite composite) {
 		fAncestor= new ImageCanvas(composite, SWT.NO_FOCUS);
 		fLeft= new ImageCanvas(composite, SWT.NO_FOCUS);
@@ -87,8 +87,8 @@ public class ImageMergeViewer extends ContentMergeViewer {
 					}
 				}
 			}
-			
-			Image image= null;			
+
+			Image image= null;
 			Display display= canvas.getDisplay();
 			if (stream != null) {
 				try {
@@ -104,7 +104,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 			} else {
 				canvas.setBackground(null);
 			}
-			
+
 			if (stream != null) {
 				try {
 					stream.close();
@@ -114,7 +114,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 			}
 		}
 	}
-	
+
 	protected void handleResizeAncestor(int x, int y, int width, int height) {
 		if (width > 0) {
 			fAncestor.setVisible(true);
@@ -128,7 +128,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		fLeft.setBounds(x, y, width1, height);
 		fRight.setBounds(x+width1+centerWidth, y, width2, height);
 	}
-	
+
 	protected void copy(boolean leftToRight) {
 		if (leftToRight) {
 			fRightImage= fLeftImage;

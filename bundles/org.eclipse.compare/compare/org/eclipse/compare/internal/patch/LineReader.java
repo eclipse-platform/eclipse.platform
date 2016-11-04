@@ -82,7 +82,7 @@ public class LineReader {
 		LineReader lr = new LineReader(reader);
 		if (!Platform.WS_CARBON.equals(Platform.getWS()))
 			// Don't treat single CRs as line feeds to be consistent with command line patch
-			lr.ignoreSingleCR(); 
+			lr.ignoreSingleCR();
 		lines = lr.readLines();
 		return lines;
 	}
@@ -151,7 +151,7 @@ public class LineReader {
 	 * Reads a line of text. A line is considered to be terminated by any one of
 	 * a line feed ('\n'), a carriage return ('\r'), or a carriage return
 	 * followed immediately by a line-feed.
-	 * 
+	 *
 	 * @return A string containing the contents of the line including the
 	 *         line-termination characters, or <code>null</code> if the end of
 	 *         the stream has been reached

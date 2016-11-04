@@ -37,7 +37,7 @@ import com.ibm.icu.text.MessageFormat;
 public class BinaryCompareViewer extends AbstractViewer {
 
 	private static final String BUNDLE_NAME = "org.eclipse.compare.internal.BinaryCompareViewerResources"; //$NON-NLS-1$
-	
+
 	private static final int EOF = -1;
 	private ICompareInput fInput;
 	private ResourceBundle fBundle;
@@ -45,13 +45,13 @@ public class BinaryCompareViewer extends AbstractViewer {
 	private Composite fComposite;
 	private Label fMessage;
 	private CompareConfiguration compareConfiguration;
-	
+
 	public BinaryCompareViewer(Composite parent, final CompareConfiguration cc) {
-		
+
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.BINARY_COMPARE_VIEW);
 
 		fBundle= ResourceBundle.getBundle(BUNDLE_NAME);
-		
+
 		fComposite= new Composite(parent, SWT.NONE);
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.type = SWT.VERTICAL;
@@ -59,7 +59,7 @@ public class BinaryCompareViewer extends AbstractViewer {
 
 		fMessage= new Label(fComposite, SWT.WRAP);
 		fComposite.setData(CompareUI.COMPARE_VIEWER_TITLE, Utilities.getString(fBundle, "title")); //$NON-NLS-1$
-		
+
 		compareConfiguration = cc != null ? cc : new CompareConfiguration();
 
 		if (compareConfiguration.getContainer() instanceof CompareEditorInput) {
@@ -80,12 +80,12 @@ public class BinaryCompareViewer extends AbstractViewer {
 
 			InputStream left= null;
 			InputStream right= null;
-			
+
 			String message= null;
 			try {
 				left= getStream(fInput.getLeft());
 				right= getStream(fInput.getRight());
-				
+
 				if (left != null && right != null) {
 					int pos= 0;
 					while (true) {

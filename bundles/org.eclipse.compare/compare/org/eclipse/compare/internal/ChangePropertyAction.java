@@ -56,7 +56,7 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 		super.setChecked(state);
 		Utilities.initToggleAction(this, fBundle, fPrefix, state);
 	}
-	
+
 	public void setCompareConfiguration(CompareConfiguration cc) {
 		if (fCompareConfiguration != null)
 			fCompareConfiguration.removePropertyChangeListener(this);
@@ -71,12 +71,12 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 			setChecked(Utilities.getBoolean(fCompareConfiguration, fPropertyKey, false));
 		}
 	}
-	
+
 	public void dispose(){
 		if (fCompareConfiguration != null)
 			fCompareConfiguration.removePropertyChangeListener(this);
 	}
-	
+
 	public void widgetDisposed(DisposeEvent e) {
 		dispose();
 	}

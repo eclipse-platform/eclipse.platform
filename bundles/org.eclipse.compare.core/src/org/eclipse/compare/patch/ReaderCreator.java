@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Abstract class for creating readers.
- * 
+ *
  * @since org.eclipse.compare.core 3.5
  */
 public abstract class ReaderCreator {
@@ -24,7 +24,7 @@ public abstract class ReaderCreator {
 	/**
 	 * Creates new reader. The caller is responsible for closing the reader when
 	 * finished.
-	 * 
+	 *
 	 * @return a reader
 	 * @exception CoreException
 	 *                if the reader can't be created
@@ -33,7 +33,7 @@ public abstract class ReaderCreator {
 
 	/**
 	 * Returns whether the reader can be created.
-	 * 
+	 *
 	 * @return true if the reader can be created, false otherwise
 	 */
 	public boolean canCreateReader() {

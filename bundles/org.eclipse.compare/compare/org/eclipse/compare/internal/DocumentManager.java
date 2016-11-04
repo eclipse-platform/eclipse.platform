@@ -18,21 +18,21 @@ import org.eclipse.jface.text.IDocument;
  * No API yet.
  */
 public class DocumentManager {
-	
+
 	private static final boolean DEBUG= false;
-	
+
 	private static ArrayList fgKeys= new ArrayList();
 	private static ArrayList fgValues= new ArrayList();
-	
+
 	public static IDocument get(Object o) {
-		
+
 		for (int i= 0; i < fgKeys.size(); i++) {
 			if (fgKeys.get(i) == o)
 				return (IDocument) fgValues.get(i);
 		}
 		return null;
 	}
-	
+
 	public static void put(Object o, IDocument document) {
 		if (DEBUG) System.out.println("DocumentManager.put: " + document);	//$NON-NLS-1$
 		for (int i= 0; i < fgKeys.size(); i++) {
@@ -42,9 +42,9 @@ public class DocumentManager {
 			}
 		}
 		fgKeys.add(o);
-		fgValues.add(document);	
+		fgValues.add(document);
 	}
-	
+
 	public static void remove(IDocument document) {
 		if (document != null) {
 			if (DEBUG) System.out.println("DocumentManager.remove: " + document);	//$NON-NLS-1$
@@ -58,7 +58,7 @@ public class DocumentManager {
 			if (DEBUG) System.out.println("DocumentManager.remove: not found");	//$NON-NLS-1$
 		}
 	}
-	
+
 	public static void dump() {
 		if (DEBUG) System.out.println("DocumentManager: managed docs:" + fgValues.size());	//$NON-NLS-1$
 	}

@@ -12,14 +12,14 @@ package org.eclipse.compare.patch;
 
 /**
  * Filter that is used to determine if a hunk should be applied or not
- * 
+ *
  * @since org.eclipse.compare.core 3.5
  */
 public interface IHunkFilter {
 
 	/**
 	 * Returns true if the given hunk should be applied
-	 * 
+	 *
 	 * @param hunk
 	 *            the hunk
 	 * @return true if the given hunk should be applied

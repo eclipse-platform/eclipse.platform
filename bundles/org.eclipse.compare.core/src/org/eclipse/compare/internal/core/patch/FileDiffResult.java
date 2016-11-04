@@ -39,22 +39,22 @@ public class FileDiffResult implements IFilePatchResult {
 	private List<String> fBeforeLines, fAfterLines;
 	private final PatchConfiguration configuration;
 	private String charset;
-	
+
 	public FileDiffResult(FilePatch2 diff, PatchConfiguration configuration) {
 		super();
 		this.fDiff = diff;
 		this.configuration = configuration;
 	}
-	
+
 	public PatchConfiguration getConfiguration() {
 		return this.configuration;
 	}
-	
+
 	public boolean canApplyHunk(Hunk hunk) {
 		HunkResult result = getHunkResult(hunk);
 		return result.isOK() && !this.fDiffProblem;
 	}
-	
+
 	/**
 	 * Refreshes the state of the diff to {no matches, no problems} and checks to see what hunks contained
 	 * by this Diff can actually be applied.
@@ -169,7 +169,7 @@ public class FileDiffResult implements IFilePatchResult {
 		}
 		this.fAfterLines = lines;
 	}
-	
+
 	public boolean getDiffProblem() {
 		return this.fDiffProblem;
 	}
@@ -188,14 +188,14 @@ public class FileDiffResult implements IFilePatchResult {
 		}
 		return false;
 	}
-	
+
 	public String getLabel() {
 		String label= getTargetPath().toString();
 		if (this.fDiffProblem)
 			return NLS.bind(Messages.FileDiffResult_2, new String[] {label, this.fErrorMessage});
 		return label;
 	}
-	
+
 	@Override
 	public boolean hasMatches() {
 		return this.fMatches;
@@ -243,7 +243,7 @@ public class FileDiffResult implements IFilePatchResult {
 		this.fAfterLines = lines;
 		return highestFuzz;
 	}
-	
+
 	public IPath getTargetPath() {
 		return this.fDiff.getStrippedPath(getConfiguration().getPrefixSegmentStripCount(), getConfiguration().isReversed());
 	}
@@ -281,7 +281,7 @@ public class FileDiffResult implements IFilePatchResult {
 	}
 
 	public HunkResult[] getHunkResults() {
-		// return hunk results in the same order as hunks are placed in file diff 
+		// return hunk results in the same order as hunks are placed in file diff
 		List<HunkResult> results = new ArrayList<HunkResult>();
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
@@ -339,5 +339,5 @@ public class FileDiffResult implements IFilePatchResult {
 		}
 		return new ByteArrayInputStream(bytes);
 	}
-	
+
 }

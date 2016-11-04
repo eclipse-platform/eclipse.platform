@@ -18,18 +18,18 @@ package org.eclipse.compare.structuremergeviewer;
  * the (non-null) left side of an <code>ICompareInput</code>
  * is copied to the right side (which was <code>null</code>).
  * This triggers a call to <code>compareInputChanged</code> of registered
- * <code>ICompareInputChangeListener</code>. 
+ * <code>ICompareInputChangeListener</code>.
  * <p>
  * Note however, that listener are not informed if the content of one of the sides changes.
  * <p>
- * Clients may implement this interface. It is also implemented by viewers that take 
+ * Clients may implement this interface. It is also implemented by viewers that take
  * an <code>ICompareInput</code> as input.
  * </p>
  */
 public interface ICompareInputChangeListener {
-	
+
 	/**
-	 * Called whenever the value (not the content) of one or more of the three sides 
+	 * Called whenever the value (not the content) of one or more of the three sides
  	 * of a <code>ICompareInput</code> has changed.
 	 *
 	 * @param source the <code>ICompareInput</code> that has changed

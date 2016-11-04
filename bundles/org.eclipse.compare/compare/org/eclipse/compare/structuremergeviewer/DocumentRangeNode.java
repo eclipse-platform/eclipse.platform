@@ -50,20 +50,20 @@ import org.eclipse.swt.widgets.Shell;
  * to character ranges within the document.
  * <p>
  * Clients need to be aware that this node registers position updaters with the document
- * using {@link IDocument#addPosition(String, Position)} with the category set to 
- * {@link IDocumentRange#RANGE_CATEGORY}. The {@link StructureDiffViewer} will 
+ * using {@link IDocument#addPosition(String, Position)} with the category set to
+ * {@link IDocumentRange#RANGE_CATEGORY}. The {@link StructureDiffViewer} will
  * remove the category when the nodes are no longer being used. Other clients
  * must do the same.
  * <p>
  * Subclasses may add additional state collected while parsing the document.
- * </p> 
+ * </p>
  * @see Differencer
  */
 public class DocumentRangeNode
 		implements IDocumentRange, IStructureComparator, IEditableContent,
 		IEncodedStreamContentAccessor, IAdaptable, IEditableContentExtension {
 	private static final String UTF_16= "UTF-16"; //$NON-NLS-1$
-		
+
 	private IDocument fBaseDocument;
 	private Position fRange; // the range in the base document
 	private int fTypeCode;
@@ -75,7 +75,7 @@ public class DocumentRangeNode
 	/**
 	 * Creates a new <code>DocumentRangeNode</code> for the given range within the specified
 	 * document. The <code>typeCode</code> is uninterpreted client data. The ID is used when comparing
-	 * two nodes with each other: i.e. the differencing engine performs a content compare 
+	 * two nodes with each other: i.e. the differencing engine performs a content compare
 	 * on two nodes if their IDs are equal.
 	 *
 	 * @param typeCode a type code for this node
@@ -87,13 +87,13 @@ public class DocumentRangeNode
 	public DocumentRangeNode(int typeCode, String id, IDocument document, int start, int length) {
 		this(null, typeCode, id, document, start, length);
 	}
-	
+
 	/**
 	 * Creates a new <code>DocumentRangeNode</code> for the given range within the specified
 	 * document. The <code>typeCode</code> is uninterpreted client data. The ID is used when comparing
-	 * two nodes with each other: i.e. the differencing engine performs a content compare 
+	 * two nodes with each other: i.e. the differencing engine performs a content compare
 	 * on two nodes if their IDs are equal.
-	 * 
+	 *
 	 * @param parent the parent node
 	 * @param typeCode a type code for this node
 	 * @param id an identifier for this node
@@ -129,7 +129,7 @@ public class DocumentRangeNode
 	public IDocument getDocument() {
 		return fBaseDocument;
 	}
-	
+
 	/* (non Javadoc)
 	 * see IDocumentRange.getRange
 	 */
@@ -137,7 +137,7 @@ public class DocumentRangeNode
 	public Position getRange() {
 		return fRange;
 	}
-	
+
 	/**
 	 * Returns the type code of this node.
 	 * The type code is uninterpreted client data which can be set in the constructor.
@@ -147,7 +147,7 @@ public class DocumentRangeNode
 	public int getTypeCode() {
 		return fTypeCode;
 	}
-	
+
 	/**
 	 * Returns this node's id.
 	 * It is used in <code>equals</code> and <code>hashcode</code>.
@@ -182,7 +182,7 @@ public class DocumentRangeNode
 	@Override
 	public Object[] getChildren() {
 		if (fChildren != null)
-			return fChildren.toArray(); 
+			return fChildren.toArray();
 		return new Object[0];
 	}
 
@@ -335,7 +335,7 @@ public class DocumentRangeNode
 			}
 		}
 	}
-	
+
 	/* (non Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
@@ -346,7 +346,7 @@ public class DocumentRangeNode
 			s= fBaseDocument.get(fRange.getOffset(), fRange.getLength());
 		} catch (BadLocationException ex) {
 			s= ""; //$NON-NLS-1$
-		}		
+		}
 		return new ByteArrayInputStream(Utilities.getBytes(s, UTF_16));
 	}
 
@@ -362,7 +362,7 @@ public class DocumentRangeNode
 			return fParent.isEditable();
 		return true;
 	}
-		
+
 	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 		if (fParent == null) {
@@ -371,10 +371,10 @@ public class DocumentRangeNode
 			// since all the subclasses that have been converted overrode the method anyway
 			DocumentRangeNode src= null;
 			String srcContents= ""; //$NON-NLS-1$
-			
+
 			if (other != null) {
 				src= (DocumentRangeNode) child;
-				
+
 				if (other instanceof IStreamContentAccessor) {
 					try {
 						srcContents= Utilities.readString((IStreamContentAccessor)other);
@@ -384,14 +384,14 @@ public class DocumentRangeNode
 					}
 				}
 			}
-	
+
 			if (child == null) // no destination: we have to add the contents into the parent
 				add(srcContents, null, src);
 		}
 		nodeChanged(this);
 		return child;
 	}
-	
+
 	/**
 	 * Default implementation that calls {@link #internalSetContents(byte[])}
 	 * and then {@link #nodeChanged(DocumentRangeNode)}. Subclasses
@@ -407,7 +407,7 @@ public class DocumentRangeNode
 
 	/**
 	 * Method that is invoked from {@link #setContent(byte[])}. By default,
-	 * this method does nothing. Subclasses may override. 
+	 * this method does nothing. Subclasses may override.
 	 * @param content the new content
 	 * @since 3.3
 	 */
@@ -419,7 +419,7 @@ public class DocumentRangeNode
 	public String getCharset() {
 		return UTF_16;
 	}
-	
+
 	/**
 	 * Method that should be invoked whenever the contents of this node are
 	 * changed. the change is propagated to the parent if there is one.
@@ -430,7 +430,7 @@ public class DocumentRangeNode
 		if (fParent != null)
 			fParent.nodeChanged(node);
 	}
-	
+
 	/**
 	 * Implement {@link IAdaptable#getAdapter(Class)} in order to provide
 	 * an {@link ISharedDocumentAdapter} that provides the proper look up key based
@@ -446,7 +446,7 @@ public class DocumentRangeNode
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class && fParent != null)
 			return fParent.getAdapter(adapter);
-		
+
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 

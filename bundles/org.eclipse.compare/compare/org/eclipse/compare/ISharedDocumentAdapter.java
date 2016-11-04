@@ -20,7 +20,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 /**
  * An <code>ISharedDocumentAdapter</code> is used to map an
  * {@link ITypedElement} to a shared document for the purposes of editing.
- * 
+ *
  * @noimplement Clients are not expected to implement this interface but instead
  *              should subclass {@link SharedDocumentAdapter} or
  *              {@link SharedDocumentAdapterWrapper}.
@@ -34,14 +34,14 @@ public interface ISharedDocumentAdapter {
 	 * <code>DocumentProviderRegistry</code> and for obtaining the shared
 	 * {@link IDocument} from the document provider. Returns <code>null</code>
 	 * if the element does not have a shared document.
-	 * 
+	 *
 	 * @param element
 	 *            the element being queried for a shared document
 	 * @return the object that acts as the key to obtain a document provider and
 	 *         document or <code>null</code>
 	 */
 	IEditorInput getDocumentKey(Object element);
-	
+
 	/**
 	 * Connect the given element to its document provider. All connections must be performed
 	 * through this adapter so that the adapter can track whether it is connected or not.
@@ -51,17 +51,17 @@ public interface ISharedDocumentAdapter {
 	 * @see IDocumentProvider#connect(Object)
 	 */
 	void connect(IDocumentProvider provider, IEditorInput documentKey) throws CoreException;
-	
+
 	/**
 	 * Disconnect the element from the document provider. All connects and
-	 * disconnects must occur through the adapter so that the adapter can 
+	 * disconnects must occur through the adapter so that the adapter can
 	 * track whether it is connected or not.
 	 * @param provider the document provider
 	 * @param documentKey the element's key returned from {@link #getDocumentKey(Object)}
 	 * @see IDocumentProvider#disconnect(Object)
 	 */
 	void disconnect(IDocumentProvider provider, IEditorInput documentKey);
-	
+
 	/**
 	 * A helper disconnect method that looks up the appropriate key (using {@link #getDocumentKey(Object)}
 	 * and the appropriate provider and calls {@link #disconnect(IDocumentProvider, IEditorInput)}.
@@ -69,14 +69,14 @@ public interface ISharedDocumentAdapter {
 	 * @see IDocumentProvider#disconnect(Object)
 	 */
 	void disconnect(Object element);
-	
+
 	/**
 	 * Flush the contents of the given document into the typed element that provided the
 	 * document. This method is invoked by the Compare framework classes
 	 * when a request to flush the viewers has been made. It is up to the implementor to decide
 	 * whether the changes in the buffer should be saved to disk at the time of the flush or
 	 * buffered to be saved at a later time.
-	 * 
+	 *
 	 * @param provider the document provider
 	 * @param documentKey the element's key returned from {@link #getDocumentKey(Object)}
 	 * @param document the document

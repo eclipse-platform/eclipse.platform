@@ -29,7 +29,7 @@ import org.eclipse.jface.text.IDocument;
  * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode
  */
 public interface IDocumentRange {
-	
+
 	/**
 	 * The position category typically used for an <code>IDocumentRange</code> position
 	 * (value <code>"DocumentRangeCategory"</code>).
@@ -39,15 +39,15 @@ public interface IDocumentRange {
 
 	/**
 	 * Returns the underlying document.
-	 * 
+	 *
 	 * @return the underlying document
 	 */
 	IDocument getDocument();
-	
+
 	/**
 	 * Returns a position that specifies a subrange in the underlying document,
 	 * or <code>null</code> if this document range spans the whole underlying document.
-	 * 
+	 *
 	 * @return a position that specifies a subrange in the underlying document, or <code>null</code>
 	 */
 	Position getRange();

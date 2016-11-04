@@ -55,21 +55,21 @@ import org.eclipse.ui.services.IDisposable;
  * @see ICompareInput
  * @noextend This class is not intended to be subclassed by clients.
  */
-		
+
 public class StructureDiffViewer extends DiffTreeViewer {
 	private Differencer fDifferencer;
 	private boolean fThreeWay= false;
-	
+
 	private StructureInfo fAncestorStructure = new StructureInfo();
 	private StructureInfo fLeftStructure = new StructureInfo();
 	private StructureInfo fRightStructure = new StructureInfo();
-	
+
 	private IStructureCreator fStructureCreator;
 	private IDiffContainer fRoot;
 	private IContentChangeListener fContentChangedListener;
 	private CompareViewerSwitchingPane fParent;
 	private ICompareInputChangeListener fCompareInputChangeListener;
-	
+
 	/*
 	 * A set of background tasks for updating the structure
 	 */
@@ -82,7 +82,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			monitor.done();
 		}
 	};
-	
+
 	private IRunnableWithProgress inputChangedTask = new IRunnableWithProgress() {
 		@Override
 		public void run(IProgressMonitor monitor) throws InvocationTargetException,
@@ -93,7 +93,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			monitor.done();
 		}
 	};
-	
+
 	/*
 	 * A helper class for holding the input and generated structure
 	 * for the ancestor, left and right inputs.
@@ -108,7 +108,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				refresh(monitor);
 			}
 		};
-		
+
 		public boolean setInput(ITypedElement newInput, boolean force, IProgressMonitor monitor) {
 			boolean changed = false;
 			if (force || newInput != fInput) {
@@ -142,7 +142,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				}
 			}
 		}
-		
+
 		public IStructureComparator getStructureComparator() {
 			return fStructureComparator;
 		}
@@ -151,7 +151,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			IStructureComparator oldComparator = fStructureComparator;
 			fStructureComparator= createStructure(monitor);
 			// Dispose of the old one after in case they are using a shared document
-			// (i.e. disposing it after will hold on to a reference to the document 
+			// (i.e. disposing it after will hold on to a reference to the document
 			// so it doesn't get freed and reloaded)
 			if (oldComparator instanceof IDisposable) {
 				IDisposable disposable = (IDisposable) oldComparator;
@@ -162,7 +162,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		public Object getInput() {
 			return fInput;
 		}
-		
+
 		private IStructureComparator createStructure(IProgressMonitor monitor) {
 			// Defend against concurrent disposal
 			Object input = fInput;
@@ -190,7 +190,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			return refreshTask;
 		}
 	}
-	
+
 	/**
 	 * Creates a new viewer for the given SWT tree control with the specified configuration.
 	 *
@@ -204,7 +204,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			fParent= (CompareViewerSwitchingPane) c;
 		initialize();
 	}
-	
+
 	/**
 	 * Creates a new viewer under the given SWT parent with the specified configuration.
 	 *
@@ -217,11 +217,11 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			fParent= (CompareViewerSwitchingPane) parent;
 		initialize();
 	}
-	
+
 	private void initialize() {
-		
+
 		setAutoExpandLevel(3);
-		
+
 		fContentChangedListener= new IContentChangeListener() {
 			@Override
 			public void contentChanged(IContentChangeNotifier changed) {
@@ -235,7 +235,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			}
 		};
 	}
-	
+
 	/**
 	 * Configures the <code>StructureDiffViewer</code> with a structure creator.
 	 * The structure creator is used to create a hierarchical structure
@@ -251,7 +251,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				tree.setData(CompareUI.COMPARE_VIEWER_TITLE, getTitle());
 		}
 	}
-	
+
 	/**
 	 * Returns the structure creator or <code>null</code> if no
 	 * structure creator has been set with <code>setStructureCreator</code>.
@@ -261,7 +261,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	public IStructureCreator getStructureCreator() {
 		return fStructureCreator;
 	}
-	
+
 	/**
 	 * Reimplemented to get the descriptive title for this viewer from the <code>IStructureCreator</code>.
 	 * @return the viewer's name
@@ -272,18 +272,18 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			return fStructureCreator.getName();
 		return super.getTitle();
 	}
-	
+
 	/**
 	 * Overridden because the input of this viewer is not identical to the root of the tree.
 	 * The tree's root is a IDiffContainer that was returned from the method <code>diff</code>.
-	 * 
+	 *
 	 * @return the root of the diff tree produced by method <code>diff</code>
 	 */
 	@Override
 	protected Object getRoot() {
 		return fRoot;
 	}
-	
+
     /*
      * (non-Javadoc) Method declared on StructuredViewer.
      * Overridden to create the comparable structures from the input object
@@ -304,7 +304,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				initialSelection();
 		}
 	}
-	
+
 	@Override
 	protected void initialSelection() {
 		expandToLevel(2);
@@ -324,7 +324,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		fContentChangedListener= null;
 		super.handleDispose(event);
 	}
-	
+
 	/**
 	 * Recreates the comparable structures for the input sides.
 	 * @param input this viewer's new input
@@ -332,7 +332,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	protected void compareInputChanged(ICompareInput input) {
 		compareInputChanged(input, false);
 	}
-		
+
 	/* package */ void compareInputChanged(final ICompareInput input, final boolean force) {
 		if (input == null) {
 			// When closing, we don't need a progress monitor to handle the input change
@@ -360,7 +360,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	/* package */ void compareInputChanged(ICompareInput input, boolean force, IProgressMonitor monitor) {
 		ITypedElement t= null;
 		boolean changed= false;
-		
+
 		if (input != null)
 			t= input.getAncestor();
 		fThreeWay= (t != null);
@@ -368,17 +368,17 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		try {
 			if (fAncestorStructure.setInput(t, force, subMonitor(monitor, 100)))
 				changed = true;
-			
+
 			if (input != null)
 				t= input.getLeft();
 			if (fLeftStructure.setInput(t, force, subMonitor(monitor, 100)))
 				changed = true;
-			
+
 			if (input != null)
 				t= input.getRight();
 			if (fRightStructure.setInput(t, force, subMonitor(monitor, 100)))
 				changed = true;
-			
+
 			// The compare configuration is nulled when the viewer is disposed
 			CompareConfiguration cc = getCompareConfiguration();
 			if (changed && cc != null)
@@ -387,7 +387,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			endWork(monitor);
 		}
 	}
-	
+
 	private void endWork(IProgressMonitor monitor) {
 		if (monitor != null)
 			monitor.done();
@@ -414,7 +414,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	protected void contentChanged(final IContentChangeNotifier changed) {
 		if (fStructureCreator == null)
 			return;
-		
+
 		if (changed == null) {
 			getCompareConfiguration().getContainer().runAsynchronously(fAncestorStructure.getRefreshTask());
 			getCompareConfiguration().getContainer().runAsynchronously(fLeftStructure.getRefreshTask());
@@ -436,7 +436,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * difference tree is being built. Clients may override this method to
 	 * perform their own pre-processing. This default implementation does
 	 * nothing.
-	 * 
+	 *
 	 * @param ancestor the ancestor input to the differencing operation
 	 * @param left the left input to the differencing operation
 	 * @param right the right input to the differencing operation
@@ -448,7 +448,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	protected void preDiffHook(IStructureComparator ancestor, IStructureComparator left, IStructureComparator right) {
 		// we do nothing here
 	}
-	
+
 	/**
 	 * This method is called from within {@link #diff(IProgressMonitor)} before
 	 * the difference tree is being built. This method may be called from a
@@ -458,7 +458,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * {@link #preDiffHook(IStructureComparator, IStructureComparator, IStructureComparator)}
 	 * from the UI thread. Clients should override this method even if they
 	 * don't perform pre-processing to avoid the call to the UI thread.
-	 * 
+	 *
 	 * @param ancestor the ancestor input to the differencing operation
 	 * @param left the left input to the differencing operation
 	 * @param right the right input to the differencing operation
@@ -482,22 +482,22 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	protected void diff(IProgressMonitor monitor) {
 		try {
 			beginWork(monitor, 150);
-			
+
 			IStructureComparator ancestorComparator = fAncestorStructure.getStructureComparator();
 			IStructureComparator leftComparator = fLeftStructure.getStructureComparator();
 			IStructureComparator rightComparator = fRightStructure.getStructureComparator();
-			
-			preDiffHook(ancestorComparator, 
-					leftComparator, 
+
+			preDiffHook(ancestorComparator,
+					leftComparator,
 					rightComparator,
 					subMonitor(monitor, 25));
-								
+
 			String message= null;
-			
+
 			if ((fThreeWay && ancestorComparator == null) || leftComparator == null || rightComparator == null) {
 				// could not get structure of one (or more) of the legs
 				fRoot= null;
-				message= CompareMessages.StructureDiffViewer_StructureError;	
+				message= CompareMessages.StructureDiffViewer_StructureError;
 			} else {	// calculate difference of the two (or three) structures
 				if (fDifferencer == null)
 					fDifferencer= new Differencer() {
@@ -515,17 +515,17 @@ public class StructureDiffViewer extends DiffTreeViewer {
 							return o;
 						}
 					};
-				
+
 				fRoot= (IDiffContainer) fDifferencer.findDifferences(fThreeWay, subMonitor(monitor, 100), null,
 						ancestorComparator, leftComparator, rightComparator);
-						
+
 				if (fRoot == null || fRoot.getChildren().length == 0) {
-					message= CompareMessages.StructureDiffViewer_NoStructuralDifferences;	
+					message= CompareMessages.StructureDiffViewer_NoStructuralDifferences;
 				} else {
 					postDiffHook(fDifferencer, fRoot, subMonitor(monitor, 25));
 				}
 			}
-			
+
 			if (Display.getCurrent() != null) {
 				refreshAfterDiff(message);
 			} else {
@@ -547,12 +547,12 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			return;
 		if (fParent != null)
 			fParent.setTitleArgument(message);
-		
+
 		refresh(getRoot());
 		// Setting the auto-expand level doesn't do anything for refreshes
 		expandToLevel(3);
 	}
-	
+
 	/**
 	 * Runs the difference engine and refreshes the tree.
 	 */
@@ -579,7 +579,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			handleFailedRefresh(CompareMessages.StructureDiffViewer_3);
 		}
 	}
-	
+
 	private void handleFailedRefresh(final String message) {
 		Runnable runnable = new Runnable() {
 			@Override
@@ -601,7 +601,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * difference tree has been built. Clients may override this method to
 	 * perform their own post-processing. This default implementation does
 	 * nothing.
-	 * 
+	 *
 	 * @param differencer the differencer used to perform the differencing
 	 * @param root the non-<code>null</code> root node of the difference tree
 	 * @since 2.0
@@ -613,7 +613,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	protected void postDiffHook(Differencer differencer, IDiffContainer root) {
 		// we do nothing here
 	}
-	
+
 	/**
 	 * This method is called from within {@link #diff(IProgressMonitor)} after
 	 * the difference tree has been built. This method may be called from a
@@ -623,7 +623,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * {@link #postDiffHook(Differencer, IDiffContainer)} from the UI thread.
 	 * Clients should override this method even if they don't perform post
 	 * processing to avoid the call to the UI thread.
-	 * 
+	 *
 	 * @param differencer the differencer used to perform the differencing
 	 * @param root the non-<code>null</code> root node of the difference tree
 	 * @param monitor a progress monitor or <code>null</code> if progress is
@@ -638,7 +638,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			}
 		});
 	}
-	
+
 	/*
 	 * Performs a byte compare on the given objects.
 	 * Called from the difference engine.
@@ -668,7 +668,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Tracks property changes of the configuration object.
 	 * Clients may override to track their own property changes.
@@ -702,7 +702,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			super.propertyChange(event);
 		}
 	}
-		
+
 	/**
 	 * Overridden to call the <code>save</code> method on the structure creator after
 	 * nodes have been copied from one side to the other side of an input object.
@@ -713,14 +713,14 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	@Override
 	protected void copySelected(boolean leftToRight) {
 		super.copySelected(leftToRight);
-		
+
 		if (fStructureCreator != null) {
 			fStructureCreator.save(
 							leftToRight ? fRightStructure.getStructureComparator() : fLeftStructure.getStructureComparator(),
 							leftToRight ? fRightStructure.getInput() : fLeftStructure.getInput());
 		}
 	}
-	
+
 	private void syncExec(final Runnable runnable) {
 		if (getControl().isDisposed())
 			return;

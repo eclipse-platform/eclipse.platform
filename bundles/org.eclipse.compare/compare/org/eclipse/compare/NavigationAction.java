@@ -31,11 +31,11 @@ import org.eclipse.compare.internal.Utilities;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class NavigationAction extends Action {
-	
+
 	private boolean fNext;
 	private CompareEditorInput fCompareEditorInput;
-	
-	
+
+
 	/**
 	 * Creates a <code>NavigationAction</code>.
 	 *
@@ -64,7 +64,7 @@ public class NavigationAction extends Action {
 				boolean atEnd= ((ICompareNavigator)adapter).selectChange(fNext);
 				Shell shell= CompareUIPlugin.getShell();
 				if (atEnd && shell != null) {
-					
+
 					Display display= shell.getDisplay();
 					if (display != null)
 						display.beep();
@@ -72,21 +72,21 @@ public class NavigationAction extends Action {
 					String title;
 					String message;
 					if (fNext) {
-						title= CompareMessages.CompareNavigator_atEnd_title; 
-						message= CompareMessages.CompareNavigator_atEnd_message; 
+						title= CompareMessages.CompareNavigator_atEnd_title;
+						message= CompareMessages.CompareNavigator_atEnd_message;
 					} else {
-						title= CompareMessages.CompareNavigator_atBeginning_title; 
-						message= CompareMessages.CompareNavigator_atBeginning_message; 
+						title= CompareMessages.CompareNavigator_atBeginning_title;
+						message= CompareMessages.CompareNavigator_atBeginning_message;
 					}
 					MessageDialog.openInformation(shell, title, message);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Sets the <code>CompareEditorInput</code> on which this action operates.
-	 * 
+	 *
 	 * @param input the <code>CompareEditorInput</code> on which this action operates; if <code>null</code> action does nothing
 	 */
 	public void setCompareEditorInput(CompareEditorInput input) {

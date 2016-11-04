@@ -39,7 +39,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	public static IDocumentProvider getDocumentProvider(IEditorInput input) {
 		return DocumentProviderRegistry.getDefault().getDocumentProvider(input);
 	}
-	
+
 	@Override
 	public void connect(IDocumentProvider provider, IEditorInput documentKey)
 			throws CoreException {
@@ -52,7 +52,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	}
 
 	/**
-	 * Default implementation of {@link #getDocumentKey(Object)} that returns a 
+	 * Default implementation of {@link #getDocumentKey(Object)} that returns a
 	 * {@link FileEditorInput} for the element if the element adapts to {@link IFile}.
 	 * @see org.eclipse.compare.ISharedDocumentAdapter#getDocumentKey(java.lang.Object)
 	 */
@@ -64,7 +64,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 		}
 		return null;
 	}
-	
+
 	private IFile getFile(Object element) {
 		if (element instanceof IResourceProvider) {
 			IResourceProvider rp = (IResourceProvider) element;
@@ -86,7 +86,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 
 	/**
 	 * A helper method to save a document.
-	 * 
+	 *
 	 * @param provider the document provider
 	 * @param documentKey the document key
 	 * @param document the document
@@ -105,7 +105,7 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 			provider.changed(documentKey);
 		}
 	}
-	
+
 	@Override
 	public void disconnect(Object element) {
 		IEditorInput input = getDocumentKey(element);

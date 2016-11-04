@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 public class UnmatchedHunkTypedElement extends HunkTypedElement implements IContentChangeNotifier, IEditableContent {
 
 	private ContentChangeNotifier changeNotifier;
-	
+
 	public UnmatchedHunkTypedElement(HunkResult result) {
 		// An unmatched hunk element is always used for the before state and is full context
 		super(result, false, true);
@@ -86,7 +86,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	private Patcher getPatcher() {
 		return Patcher.getPatcher(getConfiguration());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.patch.HunkTypedElement#getContents()
 	 */

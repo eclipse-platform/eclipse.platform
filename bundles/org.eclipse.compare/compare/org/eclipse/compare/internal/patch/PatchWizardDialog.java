@@ -22,17 +22,17 @@ public class PatchWizardDialog extends WizardDialog {
 
 	public PatchWizardDialog(Shell parent, IWizard wizard) {
 		super(parent, wizard);
-		
+
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		setMinimumPageSize(700, 500);
 	}
-	
+
 	protected IDialogSettings getDialogBoundsSettings() {
         IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = settings.getSection(PATCH_WIZARD_SETTINGS_SECTION);
         if (section == null) {
             section = settings.addNewSection(PATCH_WIZARD_SETTINGS_SECTION);
-        } 
+        }
         return section;
 	}
 }

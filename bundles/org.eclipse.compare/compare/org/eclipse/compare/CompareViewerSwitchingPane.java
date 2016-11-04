@@ -31,7 +31,7 @@ import com.ibm.icu.text.MessageFormat;
 
 /**
  * A custom <code>CompareViewerPane</code> that supports dynamic viewer switching.
- * 
+ *
  * <p>
  * Clients must implement the viewer switching strategy by implementing
  * the <code>getViewer(Viewer, Object)</code> method.
@@ -39,7 +39,7 @@ import com.ibm.icu.text.MessageFormat;
  * If a property with the name <code>CompareUI.COMPARE_VIEWER_TITLE</code> is set
  * on the top level SWT control of a viewer, it is used as a title in the <code>CompareViewerPane</code>'s
  * title bar.
- * 
+ *
  * @since 2.0
  */
 public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
@@ -47,7 +47,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	private boolean fControlVisibility;
 	private String fTitle;
 	private String fTitleArgument;
-	
+
 	/**
 	 * Creates a <code>CompareViewerSwitchingPane</code> as a child of the given parent and with the
 	 * specified SWT style bits.
@@ -61,11 +61,11 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 * @exception org.eclipse.swt.SWTException <ul>
 	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
 	 * </ul>
-	 */		
+	 */
 	public CompareViewerSwitchingPane(Composite parent, int style) {
 		this(parent, style, false);
 	}
-	
+
 	/**
 	 * Creates a <code>CompareViewerSwitchingPane</code> as a child of the given parent and with the
 	 * specified SWT style bits.
@@ -80,14 +80,14 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 * @exception org.eclipse.swt.SWTException <ul>
 	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
 	 * </ul>
-	 */		
+	 */
 	public CompareViewerSwitchingPane(Composite parent, int style, boolean visibility) {
 		super(parent, style);
 
 		fControlVisibility= visibility;
-		
+
 		setViewer(new NullViewer(this));
-		
+
 		addDisposeListener(
 			new DisposeListener() {
 				@Override
@@ -104,25 +104,25 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 			}
 		);
 	}
-	
+
 	/**
 	 * Returns the current viewer.
-	 * 
+	 *
 	 * @return the current viewer
 	 */
 	public Viewer getViewer() {
 		return fViewer;
 	}
-	
+
 	private void setViewer(Viewer newViewer) {
 		if (newViewer == fViewer)
 			return;
-				
+
 		boolean oldEmpty= isEmpty();
 
 		if (fViewer != null) {
 			fViewer.removeSelectionChangedListener(this);
-				 
+
 			if (fViewer instanceof StructuredViewer) {
 				StructuredViewer sv= (StructuredViewer) fViewer;
 				sv.removeDoubleClickListener(this);
@@ -131,9 +131,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 
 			Control content= getContent();
 			setContent(null);
-			
+
 			fViewer.setInput(null);
-								
+
 			if (content != null && !content.isDisposed())
 				content.dispose();
 		} else {
@@ -160,13 +160,13 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 				sv.addDoubleClickListener(this);
 				sv.addOpenListener(this);
 			}
-			
+
 			if (oldEmpty != newEmpty) {	// re-layout my container
 				Composite parent= getParent();
 				if (parent instanceof Splitter)
 					((Splitter)parent).setVisible(this, fControlVisibility ? !newEmpty : true);
 			}
-				
+
 			layout(true);
 		}
 	}
@@ -175,7 +175,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 * Returns the optional title argument that has been set with
 	 * <code>setTitelArgument</code> or <code>null</code> if no optional title
 	 * argument has been set.
-	 * 
+	 *
 	 * @return the optional title argument or <code>null</code>
 	 * @noreference This method is for internal use only. Clients should not
 	 *              call this method.
@@ -189,7 +189,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	/**
 	 * Returns <code>true</code> if no viewer is installed or if the current viewer
 	 * is a <code>NullViewer</code>.
-	 * 
+	 *
 	 * @return <code>true</code> if no viewer is installed or if the current viewer is a <code>NullViewer</code>
 	 */
 	public boolean isEmpty() {
@@ -208,7 +208,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		if (fViewer != null)
 			 fViewer.setSelection(s);
 	}
-	
+
 	private boolean hasFocus2() {
 		// do we have focus?
 		Display display= getDisplay();
@@ -218,7 +218,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 					return true;
 		return false;
 	}
-	
+
 	/**
 	 * @param input the input
 	 * @return true, if the input is considered as changed
@@ -229,9 +229,9 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	protected boolean inputChanged(Object input) {
 		return getInput() != input;
 	}
-		
+
 	/**
-	 * Sets the input object of this pane. 
+	 * Sets the input object of this pane.
 	 * For this input object a suitable viewer is determined by calling the abstract
 	 * method <code>getViewer(Viewer, Object)</code>.
 	 * If the returned viewer differs from the current one, the old viewer
@@ -241,16 +241,16 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	 * <code>setInput(Object)</code> is called.
 	 * If the input is <code>null</code> the pane is cleared,
 	 * that is the current viewer is disposed.
-	 * 
+	 *
 	 * @param input the new input object or <code>null</code>
-	 */ 
+	 */
 	@Override
 	public void setInput(Object input) {
 		if (!inputChanged(input))
 			return;
 
 		boolean hadFocus = hasFocus2();
-		
+
 		super.setInput(input);
 
 		// viewer switching
@@ -263,7 +263,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 				return;
 			newViewer= new NullViewer(this);
 		}
-		
+
 		setViewer(newViewer);
 
 		// set input
@@ -276,8 +276,8 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		if (!(fViewer instanceof NullViewer) && input instanceof ICompareInput)
 			image= ((ICompareInput)input).getImage();
 		setImage(image);
-		
-		String title= null;	
+
+		String title= null;
 		if (fViewer != null) {
 			Control c= fViewer.getControl();
 			if (c != null) {
@@ -286,16 +286,16 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 					title= (String) data;
 				if (hadFocus)
 					c.setFocus();
-			}	
+			}
 		}
-			
+
 		fTitle= title;
 		updateTitle();
 	}
-	
+
 	/**
 	 * Sets an additional and optional argument for the pane's title.
-	 * 
+	 *
 	 * @param argument
 	 *            an optional argument for the pane's title
 	 * @noreference This method is for internal use only. Clients should not
@@ -311,11 +311,11 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	private void updateTitle() {
 		if (fTitle != null) {
 			if (fTitleArgument != null) {
-				String format= CompareMessages.CompareViewerSwitchingPane_Titleformat;	
+				String format= CompareMessages.CompareViewerSwitchingPane_Titleformat;
 				String t= MessageFormat.format(format, fTitle, fTitleArgument);
 				setText(t);
 			} else
-				setText(fTitle);			
+				setText(fTitle);
 		} else {
 			setText("");	//$NON-NLS-1$
 		}
@@ -355,7 +355,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		}
 		return super.getAdapter(adapter);
 	}
-	
+
 	@Override
 	public boolean setFocus() {
 		Viewer v= getViewer();

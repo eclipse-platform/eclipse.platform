@@ -21,56 +21,56 @@ import org.eclipse.swt.graphics.Image;
  * e.g. a <code>DiffNode</code>.
  */
 public class MergeViewerContentProvider implements IMergeViewerContentProvider {
-	
+
 	public static final char ANCESTOR_CONTRIBUTOR = 'A';
 	public static final char RIGHT_CONTRIBUTOR = 'R';
 	public static final char LEFT_CONTRIBUTOR = 'L';
-	
+
 	private CompareConfiguration fCompareConfiguration;
 	private String fAncestorError;
 	private String fLeftError;
 	private String fRightError;
-		
+
 	public MergeViewerContentProvider(CompareConfiguration cc) {
 		fCompareConfiguration= cc;
 	}
-	
+
 	private boolean hasError() {
 		return fAncestorError != null || fLeftError != null || fRightError != null;
 	}
-	
+
 	public void dispose() {
 		// empty default implementation
 	}
-	
+
 	public void inputChanged(Viewer v, Object o1, Object o2) {
 		// we are not interested since we have no state
 	}
-	
+
 	//---- ancestor
-			
+
 	public void setAncestorError(String errorMessage) {
 		fAncestorError= errorMessage;
 	}
-	
+
 	public String getAncestorLabel(Object element) {
 		if (fAncestorError != null)
 			return fAncestorError;
 		return fCompareConfiguration.getAncestorLabel(element);
 	}
-	
+
 	public Image getAncestorImage(Object element) {
 		if (fAncestorError != null)
 			return null;
 		return fCompareConfiguration.getAncestorImage(element);
 	}
-	
+
 	public Object getAncestorContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getAncestor();
 		return null;
 	}
-	
+
 	public boolean showAncestor(Object element) {
 		if (element instanceof ICompareInput)
 			return true;	// fix for #45239: Show ancestor for incoming and outgoing changes
@@ -79,29 +79,29 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 	}
 
 	//---- left
-					
+
 	public void setLeftError(String errorMessage) {
 		fLeftError= errorMessage;
 	}
-	
+
 	public String getLeftLabel(Object element) {
 		if (fLeftError != null)
 			return fLeftError;
 		return fCompareConfiguration.getLeftLabel(element);
 	}
-	
+
 	public Image getLeftImage(Object element) {
 		if (fLeftError != null)
 			return null;
 		return fCompareConfiguration.getLeftImage(element);
 	}
-	
-	public Object getLeftContent(Object element) {	
+
+	public Object getLeftContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getLeft();
 		return null;
 	}
-		
+
 	public boolean isLeftEditable(Object element) {
 		if (hasError())
 			return false;
@@ -134,34 +134,34 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 					((ResourceCompareInput.MyDiffNode)node).fireChange();
 			} else {
 				node.copy(false);
-			}			
+			}
 		}
 	}
-	
+
 	//---- right
-	
+
 	public void setRightError(String errorMessage) {
 		fRightError= errorMessage;
 	}
-	
+
 	public String getRightLabel(Object element) {
 		if (fRightError != null)
 			return fRightError;
 		return fCompareConfiguration.getRightLabel(element);
 	}
-	
+
 	public Image getRightImage(Object element) {
 		if (fRightError != null)
 			return null;
 		return fCompareConfiguration.getRightImage(element);
 	}
-	
+
 	public Object getRightContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getRight();
 		return null;
 	}
-	
+
 	public boolean isRightEditable(Object element) {
 		if (hasError())
 			return false;
@@ -177,7 +177,7 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		}
 		return false;
 	}
-	
+
 	public void saveRightContent(Object element, byte[] bytes) {
 		if (element instanceof ICompareInput) {
 			ICompareInput node= (ICompareInput) element;
@@ -194,7 +194,7 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 					((ResourceCompareInput.MyDiffNode)node).fireChange();
 			} else {
 				node.copy(true);
-			}		
+			}
 		}
 	}
 }

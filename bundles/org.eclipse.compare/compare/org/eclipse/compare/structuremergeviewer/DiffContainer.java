@@ -21,9 +21,9 @@ import java.util.ArrayList;
 public abstract class DiffContainer extends DiffElement implements IDiffContainer {
 	private static IDiffElement[] fgEmptyArray= new IDiffElement[0];
 	private ArrayList<IDiffElement> fChildren;
-	
+
 	/**
-	 * Creates a new container with the specified kind under the given parent. 
+	 * Creates a new container with the specified kind under the given parent.
 	 *
 	 * @param parent under which the new container is added as a child or <code>null</code>.
 	 * @param kind of difference (defined in <code>Differencer</code>).
@@ -31,11 +31,11 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 	public DiffContainer(IDiffContainer parent, int kind) {
 		super(parent, kind);
 	}
-	
+
 	/**
 	 * Tries to find the child with the given name.
 	 * Returns <code>null</code> if no such child exists.
-	 * 
+	 *
 	 * @param name of the child to find
 	 * @return the first element with a matching name
 	 */
@@ -81,7 +81,7 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 			child.setParent(null);
 		}
 	}
-	
+
 	@Override
 	public boolean hasChildren() {
 		return fChildren != null && fChildren.size() > 0;

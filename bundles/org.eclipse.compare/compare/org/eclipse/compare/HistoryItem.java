@@ -34,9 +34,9 @@ import org.eclipse.core.runtime.IPath;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement, IModificationDate, IResourceProvider {
-	
+
 	private ITypedElement fBase;
-	private IFileState fFileState; 
+	private IFileState fFileState;
 
 	/**
 	 * Creates a <code>HistoryItem</code> object which combines the given <code>IFileState</code>
@@ -50,21 +50,21 @@ public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement
 		fBase= base;
 		fFileState= fileState;
 	}
-	
+
 	/* (non-Javadoc)
 	 * see ITypedElement.getName
 	 */
 	public String getName() {
 		return fBase.getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * see ITypedElement.getImage
 	 */
 	public Image getImage() {
 		return fBase.getImage();
 	}
-	
+
 	/* (non-Javadoc)
 	 * see ITypedElement.getType
 	 */
@@ -78,7 +78,7 @@ public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement
 	public long getModificationDate() {
 		return fFileState.getModificationTime();
 	}
-	
+
 	/* (non-Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
@@ -90,7 +90,7 @@ public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement
 	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
 	 */
 	public String getCharset() throws CoreException {
-	    String charset= fFileState.getCharset(); 
+	    String charset= fFileState.getCharset();
 	    if (charset == null) {
 		    IResource resource= getResource();
 		    if (resource instanceof IEncodedStorage)

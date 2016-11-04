@@ -40,14 +40,14 @@ public class FilePatch2 implements IFilePatch2 {
 	 * Difference constant (value 3) indicating side changed.
 	 */
 	public static final int CHANGE= 3;
-	
+
 	private IPath fOldPath, fNewPath;
 	private long oldDate, newDate;
 	private List<Hunk> fHunks= new ArrayList<Hunk>();
 	private DiffProject fProject; //the project that contains this diff
 	private String header;
 	private int addedLines, removedLines;
-	
+
 	/**
 	 * Create a file diff for the given path and date information.
 	 * @param oldPath the path of the before state of the file
@@ -61,7 +61,7 @@ public class FilePatch2 implements IFilePatch2 {
 		this.fNewPath= newPath;
 		this.newDate = newDate;
 	}
-	
+
  	/**
  	 * Return the parent project or <code>null</code> if there isn't one.
  	 * @return the parent project or <code>null</code>
@@ -69,7 +69,7 @@ public class FilePatch2 implements IFilePatch2 {
 	public DiffProject getProject() {
 		return this.fProject;
 	}
-	
+
 	/**
 	 * Set the project of this diff to the given project.
 	 * This method should only be called from
@@ -83,10 +83,10 @@ public class FilePatch2 implements IFilePatch2 {
 			this.fProject.remove(this);
 		this.fProject= diffProject;
 	}
-	
+
 	/**
 	 * Get the path of the file diff.
-	 * @param reverse whether the path of the before state or after state 
+	 * @param reverse whether the path of the before state or after state
 	 * should be used
 	 * @return the path of the file diff
 	 */
@@ -102,7 +102,7 @@ public class FilePatch2 implements IFilePatch2 {
 			return this.fOldPath;
 		return this.fNewPath;
 	}
-	
+
 	/**
 	 * Add the hunk to this file diff.
 	 * @param hunk the hunk
@@ -111,7 +111,7 @@ public class FilePatch2 implements IFilePatch2 {
 		this.fHunks.add(hunk);
 		hunk.setParent(this);
 	}
-	
+
 	/**
 	 * Remove the hunk from this file diff
 	 * @param hunk the hunk
@@ -119,7 +119,7 @@ public class FilePatch2 implements IFilePatch2 {
 	protected void remove(Hunk hunk) {
 		this.fHunks.remove(hunk);
 	}
-	
+
 	/**
 	 * Returns the hunks associated with this file diff.
 	 * @return the hunks associated with this file diff
@@ -128,7 +128,7 @@ public class FilePatch2 implements IFilePatch2 {
 	public IHunk[] getHunks() {
 		return this.fHunks.toArray(new IHunk[this.fHunks.size()]);
 	}
-	
+
 	/**
 	 * Returns the number of hunks associated with this file diff.
 	 * @return the number of hunks associated with this file diff
@@ -136,7 +136,7 @@ public class FilePatch2 implements IFilePatch2 {
 	public int getHunkCount() {
 		return this.fHunks.size();
 	}
-	
+
 	/**
 	 * Returns the difference type of this file diff.
 	 * @param reverse whether the patch is being reversed
@@ -164,7 +164,7 @@ public class FilePatch2 implements IFilePatch2 {
 		}
 		return CHANGE;
 	}
-	
+
 	/**
 	 * Return the path of this file diff with the specified number
 	 * of leading segments striped.
@@ -179,7 +179,7 @@ public class FilePatch2 implements IFilePatch2 {
 			path= path.removeFirstSegments(strip);
 		return path;
 	}
-	
+
 	/**
 	 * Return the segment count of the path of this file diff.
 	 * @return the segment count of the path of this file diff
@@ -194,7 +194,7 @@ public class FilePatch2 implements IFilePatch2 {
 			length= Math.min(length, this.fNewPath.segmentCount());
 		return length;
 	}
-	
+
 	@Override
 	public IFilePatchResult apply(ReaderCreator content,
 			PatchConfiguration configuration, IProgressMonitor monitor) {
@@ -255,7 +255,7 @@ public class FilePatch2 implements IFilePatch2 {
 	public void setAddedLines(int addedLines) {
 		this.addedLines = addedLines;
 	}
-	
+
 	public void setRemovedLines(int removedLines) {
 		this.removedLines = removedLines;
 	}
@@ -263,7 +263,7 @@ public class FilePatch2 implements IFilePatch2 {
 	public int getAddedLines() {
 		return this.addedLines;
 	}
-	
+
 	public int getRemovedLines() {
 		return this.removedLines;
 	}

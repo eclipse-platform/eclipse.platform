@@ -22,7 +22,7 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	private final MergeSourceViewer[] viewers;
 	private final String preferenceKey;
 	private IPreferenceStore store;
-	
+
 	public TextEditorPropertyAction(String label, MergeSourceViewer[] viewers, String preferenceKey) {
 		super(label, IAction.AS_CHECK_BOX);
 		this.viewers = viewers;
@@ -44,13 +44,13 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	public MergeSourceViewer[] getViewers() {
 		return viewers;
 	}
-	
+
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(getPreferenceKey())) {
 			synchronizeWithPreference();
 		}
 	}
-	
+
 	protected void synchronizeWithPreference() {
 		boolean checked = false;
 		if (store != null) {
@@ -65,18 +65,18 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	public String getPreferenceKey() {
 		return preferenceKey;
 	}
-	
+
 	public void run() {
 		toggleState(isChecked());
 		if (store != null)
 			store.setValue(getPreferenceKey(), isChecked());
 	}
-	
+
 	public void dispose() {
 		if (store != null)
 			store.removePropertyChangeListener(this);
 	}
-	
+
 	/**
 	 * @param checked
 	 *            new state

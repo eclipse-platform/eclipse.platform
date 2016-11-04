@@ -60,11 +60,11 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 
 public class ComparePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-	
+
 	class FakeInput implements ITypedElement, IEncodedStreamContentAccessor {
 		static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		String fContent;
-		
+
 		FakeInput(String name) {
 			fContent= loadPreviewContentFromFile(name);
 		}
@@ -93,7 +93,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	public static final String INITIALLY_SHOW_ANCESTOR_PANE= PREFIX + "InitiallyShowAncestorPane"; //$NON-NLS-1$
 	public static final String PREF_SAVE_ALL_EDITORS= PREFIX + "SaveAllEditors"; //$NON-NLS-1$
 	public static final String IGNORE_WHITESPACE= PREFIX + "IgnoreWhitespace"; //$NON-NLS-1$
-	
+
 	//public static final String USE_SPLINES= PREFIX + "UseSplines"; //$NON-NLS-1$
 	public static final String USE_SINGLE_LINE= PREFIX + "UseSingleLine"; //$NON-NLS-1$
 	public static final String HIGHLIGHT_TOKEN_CHANGES= PREFIX + "HighlightTokenChanges"; //$NON-NLS-1$
@@ -103,7 +103,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	public static final String ADDED_LINES_REGEX= PREFIX + "AddedLinesRegex"; //$NON-NLS-1$
 	public static final String REMOVED_LINES_REGEX= PREFIX + "RemovedLinesRegex"; //$NON-NLS-1$
 	public static final String SWAPPED = PREFIX + "Swapped"; //$NON-NLS-1$
-	
+
 
 	private TextMergeViewer fPreviewViewer;
 	private IPropertyChangeListener fPreferenceChangeListener;
@@ -116,7 +116,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	private SelectionListener fCheckBoxListener;
 
 
-	public final OverlayPreferenceStore.OverlayKey[] fKeys= new OverlayPreferenceStore.OverlayKey[] {	
+	public final OverlayPreferenceStore.OverlayKey[] fKeys= new OverlayPreferenceStore.OverlayKey[] {
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, OPEN_STRUCTURE_COMPARE),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, USE_OUTLINE_VIEW),
 		new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, SYNCHRONIZE_SCROLLING),
@@ -139,8 +139,8 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	private List<FieldEditor> editors = new ArrayList<>();
 	private TabItem fTextCompareTab;
 	private Button fDisableCappingCheckBox;
-	
-	
+
+
 	public static void initDefaults(IPreferenceStore store) {
 		store.setDefault(OPEN_STRUCTURE_COMPARE, true);
 		store.setDefault(USE_OUTLINE_VIEW, false);
@@ -163,11 +163,11 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	}
 
 	public ComparePreferencePage() {
-		
+
 		//setDescription(Utilities.getString("ComparePreferencePage.description"));	//$NON-NLS-1$
-		
+
 		setPreferenceStore(CompareUIPlugin.getDefault().getPreferenceStore());
-		
+
 		fOverlayStore= new OverlayPreferenceStore(getPreferenceStore(), fKeys);
 		fPreferenceChangeListener= new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
@@ -182,13 +182,13 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		};
 		fOverlayStore.addPropertyChangeListener(fPreferenceChangeListener);
 	}
-	
+
 	/*
 	 * @see IWorkbenchPreferencePage#init()
 	 */
 	public void init(IWorkbench workbench) {
 		// empty
-	}	
+	}
 
 	/*
 	 * @see PreferencePage#performOk()
@@ -205,23 +205,23 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 						ComparePreferencePage.CAPPING_DISABLED));
 		return true;
 	}
-	
+
 	/*
 	 * @see PreferencePage#performDefaults()
 	 */
 	protected void performDefaults() {
-		
+
 		fOverlayStore.loadDefaults();
 		initializeFields();
 
 		super.performDefaults();
 	}
-	
+
 	/*
 	 * @see DialogPage#dispose()
 	 */
 	public void dispose() {
-				
+
 		if (fOverlayStore != null) {
 			if (fPreferenceChangeListener != null) {
 				fOverlayStore.removePropertyChangeListener(fPreferenceChangeListener);
@@ -230,7 +230,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 			fOverlayStore.stop();
 			fOverlayStore= null;
 		}
-		
+
 		super.dispose();
 	}
 
@@ -238,52 +238,52 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		IPreferenceStore store= CompareUIPlugin.getDefault().getPreferenceStore();
 		return store.getBoolean(PREF_SAVE_ALL_EDITORS);
 	}
-	
+
 	static public void setSaveAllEditors(boolean value) {
 		IPreferenceStore store= CompareUIPlugin.getDefault().getPreferenceStore();
 		store.setValue(PREF_SAVE_ALL_EDITORS, value);
-	}	
+	}
 
 	/*
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	protected Control createContents(Composite parent) {
-		
+
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.COMPARE_PREFERENCE_PAGE);
-		
+
 		fOverlayStore.load();
 		fOverlayStore.start();
-		
+
 		TabFolder folder= new TabFolder(parent, SWT.NONE);
-		folder.setLayout(new TabFolderLayout());	
+		folder.setLayout(new TabFolderLayout());
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		TabItem item= new TabItem(folder, SWT.NONE);
 		item.setText(Utilities.getString("ComparePreferencePage.generalTab.label"));	//$NON-NLS-1$
 		//item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CFILE));
 		item.setControl(createGeneralPage(folder));
-		
+
 		item= new TabItem(folder, SWT.NONE);
 		item.setText(Utilities.getString("ComparePreferencePage.textCompareTab.label"));	//$NON-NLS-1$
 		//item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CFILE));
 		item.setControl(createTextComparePage(folder));
 		fTextCompareTab = item;
-		
+
 		initializeFields();
 		Dialog.applyDialogFont(folder);
 		return folder;
 	}
-	
+
 	private Control createGeneralPage(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NULL);
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 1;
 		composite.setLayout(layout);
-				
+
 		addCheckBox(composite, "ComparePreferencePage.structureCompare.label", OPEN_STRUCTURE_COMPARE, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.structureOutline.label", USE_OUTLINE_VIEW, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.ignoreWhitespace.label", IGNORE_WHITESPACE, 0);	//$NON-NLS-1$
-		
+
 		// a spacer
 		new Label(composite, SWT.NONE);
 
@@ -291,22 +291,22 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		// a spacer
 		new Label(composite, SWT.NONE);
-		
+
 		Label l= new Label(composite, SWT.WRAP);
 		l.setText(Utilities.getString("ComparePreferencePage.regex.description")); //$NON-NLS-1$
-		
+
 		Composite c2= new Composite(composite, SWT.NONE);
 		c2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		layout= new GridLayout(2, false);
 		layout.marginWidth= 0;
 		c2.setLayout(layout);
-		
+
 		l= new Label(c2, SWT.NONE);
 		l.setText(Utilities.getString("ComparePreferencePage.regexAdded.label")); //$NON-NLS-1$
 		addedLinesRegex = new Text(c2, SWT.BORDER);
 		addedLinesRegex.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		addedLinesRegex.setText(fOverlayStore.getString(ADDED_LINES_REGEX));
-		
+
 		l= new Label(c2, SWT.NONE);
 		l.setText(Utilities.getString("ComparePreferencePage.regexRemoved.label")); //$NON-NLS-1$
 		removedLinesRegex = new Text(c2, SWT.BORDER);
@@ -315,19 +315,19 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		// a spacer
 		new Label(composite, SWT.NONE);
-		
+
 		l= new Label(composite, SWT.WRAP);
 		l.setText(Utilities.getString("ComparePreferencePage.filter.description")); //$NON-NLS-1$
-		
+
 		Composite c3= new Composite(composite, SWT.NONE);
 		c3.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		layout= new GridLayout(2, false);
 		layout.marginWidth= 0;
 		c3.setLayout(layout);
-		
+
 		l= new Label(c3, SWT.NONE);
 		l.setText(Utilities.getString("ComparePreferencePage.filter.label")); //$NON-NLS-1$
-		
+
 		fFilters= new Text(c3, SWT.BORDER);
 		fFilters.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fFilters.setText(fOverlayStore.getString(PATH_FILTER));
@@ -343,28 +343,28 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 				}
 			}
 		);
-		
+
 		return composite;
 	}
-	
+
 	private Control createTextComparePage(Composite parent) {
-		
+
 		Composite composite= new Composite(parent, SWT.NULL);
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 1;
 		composite.setLayout(layout);
-				
+
 		addCheckBox(composite, "ComparePreferencePage.synchronizeScrolling.label", SYNCHRONIZE_SCROLLING, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.initiallyShowAncestorPane.label", INITIALLY_SHOW_ANCESTOR_PANE, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.showPseudoConflicts.label", SHOW_PSEUDO_CONFLICTS, 0);	//$NON-NLS-1$
-		
+
 		//addCheckBox(composite, "ComparePreferencePage.useSplines.label", USE_SPLINES, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.useSingleLine.label", USE_SINGLE_LINE, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.highlightTokenChanges.label", HIGHLIGHT_TOKEN_CHANGES, 0);	//$NON-NLS-1$
 		//addCheckBox(composite, "ComparePreferencePage.useResolveUI.label", USE_RESOLVE_UI, 0);	//$NON-NLS-1$
 		fDisableCappingCheckBox = addCheckBox(composite, "ComparePreferencePage.disableCapping.label", CAPPING_DISABLED, 0);	//$NON-NLS-1$
 		addCheckBox(composite, "ComparePreferencePage.swapped.label", SWAPPED, 0);	//$NON-NLS-1$
-		
+
 		Composite radioGroup = new Composite(composite, SWT.NULL);
 		radioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		RadioGroupFieldEditor editor = new RadioGroupFieldEditor(
@@ -380,43 +380,43 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		editor.setPreferenceStore(fOverlayStore);
 		editor.fillIntoGrid(radioGroup, 1);
 		editors.add(editor);
-		
+
 		// a spacer
 		Label separator= new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		separator.setVisible(false);
-		
+
 		Label previewLabel= new Label(composite, SWT.NULL);
 		previewLabel.setText(Utilities.getString("ComparePreferencePage.preview.label"));	//$NON-NLS-1$
-		
+
 		Control previewer= createPreviewer(composite);
 		GridData gd= new GridData(GridData.FILL_BOTH);
 		gd.widthHint= convertWidthInCharsToPixels(60);
 		gd.heightHint= convertHeightInCharsToPixels(13);
 		previewer.setLayoutData(gd);
-		
+
 		PreferenceLinkArea area = new PreferenceLinkArea(composite, SWT.NONE,
 				"org.eclipse.ui.preferencePages.ColorsAndFonts", Utilities.getString("ComparePreferencePage.colorAndFontLink"), //$NON-NLS-1$ //$NON-NLS-2$
 				(IWorkbenchPreferenceContainer)getContainer(), "selectCategory:org.eclipse.compare.contentmergeviewer.TextMergeViewer"); //$NON-NLS-1$
 
 		GridData data= new GridData(SWT.FILL, SWT.CENTER, false, false);
 		area.getControl().setLayoutData(data);
-		
+
 		return composite;
 	}
-	
+
 	private Control createPreviewer(Composite parent) {
-				
+
 		fCompareConfiguration= new CompareConfiguration(fOverlayStore);
 		fCompareConfiguration.setAncestorLabel(Utilities.getString("ComparePreferencePage.ancestor.label"));	//$NON-NLS-1$
-		
+
 		fCompareConfiguration.setLeftLabel(Utilities.getString("ComparePreferencePage.left.label"));	//$NON-NLS-1$
 		fCompareConfiguration.setLeftEditable(false);
-		
+
 		fCompareConfiguration.setRightLabel(Utilities.getString("ComparePreferencePage.right.label"));	//$NON-NLS-1$
 		fCompareConfiguration.setRightEditable(false);
-		
+
 		fPreviewViewer= new TextMergeViewer(parent, SWT.BORDER, fCompareConfiguration);
-		
+
 		fPreviewViewer.setInput(
 			new DiffNode(Differencer.CONFLICTING,
 				new FakeInput("ComparePreferencePage.previewAncestor"),	//$NON-NLS-1$
@@ -432,42 +432,42 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 					fCompareConfiguration.dispose();
 			}
 		});
-		
+
 		return  c;
 	}
-			
+
 	private void initializeFields() {
-		
+
 		Iterator<Button> e = fCheckBoxes.keySet().iterator();
 		while (e.hasNext()) {
 			Button b = e.next();
 			String key= fCheckBoxes.get(b);
 			b.setSelection(fOverlayStore.getBoolean(key));
 		}
-		
+
 		if (fFilters != null)
 			fFilters.setText(fOverlayStore.getString(PATH_FILTER));
 		if (addedLinesRegex != null)
 			addedLinesRegex.setText(fOverlayStore.getString(ADDED_LINES_REGEX));
 		if (removedLinesRegex != null)
 			removedLinesRegex.setText(fOverlayStore.getString(REMOVED_LINES_REGEX));
-		
+
 		editors.forEach(editor -> editor.load());
 	}
 
 	// overlay stuff
-	
+
 	private Button addCheckBox(Composite parent, String labelKey, String key, int indentation) {
-		
+
 		String label= Utilities.getString(labelKey);
-				
+
 		Button checkBox= new Button(parent, SWT.CHECK);
 		checkBox.setText(label);
-		
+
 		GridData gd= new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalIndent= indentation;
 		checkBox.setLayoutData(gd);
-		
+
 		if (fCheckBoxListener == null) {
 			fCheckBoxListener= new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
@@ -477,14 +477,14 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 			};
 		}
 		checkBox.addSelectionListener(fCheckBoxListener);
-		
+
 		fCheckBoxes.put(checkBox, key);
-		
+
 		return checkBox;
 	}
 
 	private String loadPreviewContentFromFile(String key) {
-		
+
 		String preview= Utilities.getString(key);
 		String separator= System.getProperty("line.separator"); //$NON-NLS-1$
 		StringBuffer buffer= new StringBuffer();

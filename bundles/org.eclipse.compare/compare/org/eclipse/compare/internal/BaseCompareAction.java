@@ -18,7 +18,7 @@ import org.eclipse.ui.IActionDelegate;
 public abstract class BaseCompareAction implements IActionDelegate {
 
 	private ISelection fSelection;
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
@@ -34,10 +34,10 @@ public abstract class BaseCompareAction implements IActionDelegate {
 		if (action != null)
 			action.setEnabled(isEnabled(fSelection));
 	}
-	
+
 	protected boolean isEnabled(ISelection selection) {
 		return false;
 	}
-	
+
 	abstract protected void run(ISelection selection);
 }

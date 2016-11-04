@@ -27,7 +27,7 @@ public class FilePatch extends FilePatch2 implements IFilePatch {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.compare.patch.IFilePatch#apply(org.eclipse.core.resources
 	 * .IStorage, org.eclipse.compare.patch.PatchConfiguration,

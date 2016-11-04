@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
 
 /**
  * Helper class for parsing patches.
- * 
+ *
  * @since org.eclipse.compare.core 3.5
  */
 public class PatchParser {
@@ -29,7 +29,7 @@ public class PatchParser {
 	/**
 	 * Parse the given patch and return the set of file patches that it
 	 * contains.
-	 * 
+	 *
 	 * @param content
 	 *            a patch reader creator
 	 * @return the set of file patches that the patch contains

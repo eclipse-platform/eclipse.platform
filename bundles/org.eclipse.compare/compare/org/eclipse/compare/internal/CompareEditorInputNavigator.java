@@ -25,7 +25,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 	private boolean fNextFirstTime= true;
 	private Object[] fPanes;
-	
+
 	/**
 	 * Create a navigator for navigating the given panes
 	 * @param panes the panes to navigate.
@@ -33,7 +33,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	public CompareEditorInputNavigator(Object[] panes) {
 		fPanes= panes;
 	}
-	
+
 	/**
 	 * Return the set of panes that this navigator is navigating.
 	 * The {@link INavigatable} is obtain from each pane using the
@@ -43,7 +43,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	public Object[] getPanes() {
 		return fPanes;
 	}
-	
+
 	protected INavigatable[] getNavigatables() {
 		List result = new ArrayList();
 		Object[] panes = getPanes();
@@ -55,7 +55,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		}
 		return (INavigatable[]) result.toArray(new INavigatable[result.size()]);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareNavigator#selectChange(boolean)
 	 */
@@ -68,7 +68,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		}
 		return super.selectChange(next);
 	}
-	
+
 	/*
 	 * Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 	 */
@@ -84,7 +84,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		}
 		return true;
 	}
-	
+
 	/*
 	 * Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 	 */

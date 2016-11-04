@@ -35,20 +35,20 @@ public class TokenComparator implements ITokenComparator {
 	 * @param text the string that is split into token
 	 */
 	public TokenComparator(String text) {
-		
+
 		Assert.isNotNull(text);
 
 		fText= text;
-		
+
 		int length= fText.length();
 		fStarts= new int[length];	// pessimistic assumption!
 		fLengths= new int[length];
 		fCount= 0;
-		
+
 		char lastCategory= 0;	// 0: no category
 		for (int i= 0; i < length; i++) {
 			char c= fText.charAt(i);
-			
+
 			char category= '?';	// unspecified category
 			if (Character.isWhitespace(c))
 				category= ' ';	// white space category
@@ -58,7 +58,7 @@ public class TokenComparator implements ITokenComparator {
 				category= 'a';	// letters
 			else if (c == '\"' || c == '\'')
 				category= '\"';	// quotes (see bug 198671)
-			
+
 			if (category != lastCategory) {
 				// start a new token
 				fStarts[fCount++]= i;
@@ -92,7 +92,7 @@ public class TokenComparator implements ITokenComparator {
 			return fLengths[index];
 		return 0;
 	}
-		
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int, org.eclipse.compare.rangedifferencer.IRangeComparator, int)
 	 */

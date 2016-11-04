@@ -26,16 +26,16 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * available from "Compare With > Other Resource...". See bug 264498.
  */
 public class CompareWithOtherResourceHandler extends AbstractHandler {
-	
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		IWorkbenchPage workbenchPage = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
-		
+
 		// CompareAction#isEnabled(ISelection)
 		CompareConfiguration cc = new CompareConfiguration();
 		cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, Boolean.FALSE);
 		ResourceCompareInput input = new ResourceCompareInput(cc);
-		
+
 		int selectionSize = 0;
 		if (selection instanceof IStructuredSelection) {
 			selectionSize = ((IStructuredSelection) selection).toArray().length;

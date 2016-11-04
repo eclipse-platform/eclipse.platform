@@ -85,14 +85,14 @@ public class InputPatchPage extends WizardPage {
 	// constants
 	protected static final int SIZING_TEXT_FIELD_WIDTH= 250;
 	protected static final int COMBO_HISTORY_LENGTH= 5;
-	
+
 	// dialog store id constants
-	private final static String PAGE_NAME= "PatchWizardPage1"; //$NON-NLS-1$  
+	private final static String PAGE_NAME= "PatchWizardPage1"; //$NON-NLS-1$
 	private final static String STORE_PATCH_FILES_ID= PAGE_NAME+".PATCH_FILES"; //$NON-NLS-1$
 	private final static String STORE_PATCH_URLS_ID= PAGE_NAME+".PATCH_URLS"; //$NON-NLS-1$
 	private final static String STORE_INPUT_METHOD_ID= PAGE_NAME+".INPUT_METHOD"; //$NON-NLS-1$
 	private final static String STORE_WORKSPACE_PATH_ID= PAGE_NAME+".WORKSPACE_PATH"; //$NON-NLS-1$
-	
+
 	//patch input constants
 	protected final static int CLIPBOARD= 1;
 	protected final static int FILE= 2;
@@ -119,7 +119,7 @@ public class InputPatchPage extends WizardPage {
 	private Combo fPatchURLField;
 	private Label fWorkspaceSelectLabel;
 	private TreeViewer fTreeViewer;
-	
+
 	class ActivationListener extends ShellAdapter {
 		public void shellActivated(ShellEvent e) {
 			// allow error messages if the selected input actually has something selected in it
@@ -138,13 +138,13 @@ public class InputPatchPage extends WizardPage {
 			updateWidgetEnablements();
 		}
 	}
-	
+
 	public InputPatchPage(PatchWizard pw) {
 		super(INPUTPATCHPAGE_NAME, PatchMessages.InputPatchPage_title, null);
 		fPatchWizard= pw;
 		setMessage(PatchMessages.InputPatchPage_message);
 	}
-	
+
 	/*
 	 * Get a path from the supplied text widget.
 	 * @return org.eclipse.core.runtime.IPath
@@ -158,34 +158,34 @@ public class InputPatchPage extends WizardPage {
 			return PatchMessages.InputPatchPage_Clipboard;
 		return getPatchFilePath();
 	}
-	
+
 	public void createControl(Composite parent) {
-				
+
 		Composite composite= new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
 		setControl(composite);
 
 		initializeDialogUnits(parent);
-		
+
 		buildPatchFileGroup(composite);
-		
-		// by default, whatever was used last was selected or 
+
+		// by default, whatever was used last was selected or
 		// default to File if nothing has been selected
 		restoreWidgetValues();
-		
+
 		// see if there are any better options presently selected (i.e workspace
 		// or clipboard or URL from clipboard)
 		adjustToCurrentTarget();
-		
+
 		// No error for dialog opening
 		fShowError= false;
 		clearErrorMessage();
 		updateWidgetEnablements();
-		
+
 		Shell shell= getShell();
 		shell.addShellListener(fActivationListener);
-		
+
 		Dialog.applyDialogFont(composite);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
 	}
@@ -194,7 +194,7 @@ public class InputPatchPage extends WizardPage {
 	 * Returns the next page depending on what type of patch is being applied:
 	 * 	 i) If the patch is a Workspace patch then it will proceed right to the PreviewPatchPage
 	 *  ii) If the patch is a single project patch then it will proceed to the PatchTargetPage, which
-	 *      allows the user to specify where to root the patch 
+	 *      allows the user to specify where to root the patch
 	 * @return PreviewPatchPage if multi-project patch, PatchTargetPage if single project patch
 	 */
 	public IWizardPage getNextPage() {
@@ -202,13 +202,13 @@ public class InputPatchPage extends WizardPage {
 			return this;
 
 		WorkspacePatcher patcher= ((PatchWizard) getWizard()).getPatcher();
-		
+
 		// guess prefix count
 		int guess= 0; // guessPrefix(diffs);
 		patcher.setStripPrefixSegments(guess);
 
-		// If this is a workspace patch we don't need to set a target as the targets will be figured out from 
-		// all of the projects that make up the patch and continue on to final preview page 
+		// If this is a workspace patch we don't need to set a target as the targets will be figured out from
+		// all of the projects that make up the patch and continue on to final preview page
 		if (patcher.isWorkspacePatch()) {
 			// skip 'Patch Target' page
 			IWizardPage page = super.getNextPage();
@@ -276,8 +276,8 @@ public class InputPatchPage extends WizardPage {
 						reader= new FileReader(patchFilePath);
 					} catch (FileNotFoundException ex) {
 						MessageDialog.openError(null,
-							PatchMessages.InputPatchPage_PatchErrorDialog_title,	
-							PatchMessages.InputPatchPage_PatchFileNotFound_message); 
+							PatchMessages.InputPatchPage_PatchErrorDialog_title,
+							PatchMessages.InputPatchPage_PatchFileNotFound_message);
 					}
 				}
 				fPatchSource= PatchMessages.InputPatchPage_PatchFile_title;
@@ -313,7 +313,7 @@ public class InputPatchPage extends WizardPage {
 				}
 				fPatchSource= PatchMessages.InputPatchPage_WorkspacePatch_title;
 			}
-			
+
 			// parse the input
 			if (reader != null) {
 				try {
@@ -345,7 +345,7 @@ public class InputPatchPage extends WizardPage {
 		// the next page is quite expensive. So we say yes if the page is complete.
 		return isPageComplete();
 	}
-	
+
 	private void setEnablePatchFile(boolean enable) {
 		fPatchFileNameField.setEnabled(enable);
 		fPatchFileBrowseButton.setEnabled(enable);
@@ -417,7 +417,7 @@ public class InputPatchPage extends WizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				if (!fUseClipboardButton.getSelection())
 					return;
-				
+
 				clearErrorMessage();
 				fShowError= true;
 				int state= getInputMethod();
@@ -425,10 +425,10 @@ public class InputPatchPage extends WizardPage {
 				setEnableURLPatch(state == URL);
 				setEnableWorkspacePatch(state == WORKSPACE);
 				updateWidgetEnablements();
-				fPatchRead = false; 
+				fPatchRead = false;
 			}
 		});
-		
+
 		fUsePatchFileButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (!fUsePatchFileButton.getSelection())
@@ -441,7 +441,7 @@ public class InputPatchPage extends WizardPage {
 				setEnableURLPatch(state == URL);
 				setEnableWorkspacePatch(state == WORKSPACE);
 				updateWidgetEnablements();
-				fPatchRead = false; 
+				fPatchRead = false;
 			}
 		});
 		fPatchFileNameField.addSelectionListener(new SelectionAdapter() {
@@ -496,7 +496,7 @@ public class InputPatchPage extends WizardPage {
 				setEnableURLPatch(state == URL);
 				setEnableWorkspacePatch(state == WORKSPACE);
 				updateWidgetEnablements();
-				fPatchRead = false; 
+				fPatchRead = false;
 			}
 		});
 
@@ -506,7 +506,7 @@ public class InputPatchPage extends WizardPage {
 				updateWidgetEnablements();
 			}
 		});
-		
+
 		fTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection selection= event.getSelection();
@@ -534,10 +534,10 @@ public class InputPatchPage extends WizardPage {
 		layout.marginLeft= 16; // align w/ lable of check button
 		newComp.setLayout(layout);
 		newComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-			
+
 		fWorkspaceSelectLabel= new Label(newComp, SWT.LEFT);
 		fWorkspaceSelectLabel.setText(PatchMessages.InputPatchPage_WorkspaceSelectPatch_text);
-		
+
 		fTreeViewer= new TreeViewer(newComp, SWT.BORDER);
 		fTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -552,7 +552,7 @@ public class InputPatchPage extends WizardPage {
 	 * Updates the enable state of this page's controls.
 	 */
 	private void updateWidgetEnablements() {
-		
+
 		String error= null;
 
 		boolean gotPatch= false;
@@ -568,9 +568,9 @@ public class InputPatchPage extends WizardPage {
 					if (s.length() > 0)
 						gotPatch= true;
 					else
-						error= PatchMessages.InputPatchPage_ClipboardIsEmpty_message; 
+						error= PatchMessages.InputPatchPage_ClipboardIsEmpty_message;
 				} else
-					error= PatchMessages.InputPatchPage_NoTextInClipboard_message;					 
+					error= PatchMessages.InputPatchPage_NoTextInClipboard_message;
 			} else
 				error= PatchMessages.InputPatchPage_CouldNotReadClipboard_message;
 		} else if (inputMethod==FILE) {
@@ -579,9 +579,9 @@ public class InputPatchPage extends WizardPage {
 				File file= new File(path);
 				gotPatch= file.exists() && file.isFile() && file.length() > 0;
 				if (!gotPatch)
-					error= PatchMessages.InputPatchPage_CannotLocatePatch_message + path; 
+					error= PatchMessages.InputPatchPage_CannotLocatePatch_message + path;
 			} else {
-				error= PatchMessages.InputPatchPage_NoFileName_message; 
+				error= PatchMessages.InputPatchPage_NoFileName_message;
 			}
 		} else if (inputMethod == URL) {
 			String urlText = fPatchURLField.getText();
@@ -623,10 +623,10 @@ public class InputPatchPage extends WizardPage {
 		if (fShowError)
 			setErrorMessage(error);
 	}
-	
+
 	protected void handlePatchFileBrowseButtonPressed() {
 		FileDialog dialog= new FileDialog(getShell(), SWT.NONE);
-		dialog.setText(PatchMessages.InputPatchPage_SelectPatchFileDialog_title);		 
+		dialog.setText(PatchMessages.InputPatchPage_SelectPatchFileDialog_title);
 		String patchFilePath= getPatchFilePath();
 		if (patchFilePath != null) {
 			int lastSegment= patchFilePath.lastIndexOf(SEPARATOR);
@@ -638,17 +638,17 @@ public class InputPatchPage extends WizardPage {
 		String res= dialog.open();
 		if (res == null)
 			return;
-		
+
 		patchFilePath= dialog.getFileName();
 		IPath filterPath= new Path(dialog.getFilterPath());
-		IPath path= filterPath.append(patchFilePath).makeAbsolute();	
+		IPath path= filterPath.append(patchFilePath).makeAbsolute();
 		patchFilePath= path.toOSString();
 		//fDialogSettings.put(IUIConstants.DIALOGSTORE_LASTEXTJAR, filterPath.toOSString());
-		
+
 		fPatchFileNameField.setText(patchFilePath);
 		//setSourceName(patchFilePath);
 	}
-	
+
 	/**
 	 * Sets the source name of the import to be the supplied path.
 	 * Adds the name of the path to the list of items in the
@@ -657,15 +657,15 @@ public class InputPatchPage extends WizardPage {
 	 * @param path the path to be added
 	 */
 	protected void setSourceName(String path) {
-	
+
 		if (path.length() > 0) {
-	
+
 			String[] currentItems= fPatchFileNameField.getItems();
 			int selectionIndex= -1;
 			for (int i= 0; i < currentItems.length; i++)
 				if (currentItems[i].equals(path))
 					selectionIndex= i;
-			
+
 			if (selectionIndex < 0) {	// not found in history
 				int oldLength= currentItems.length;
 				String[] newItems= new String[oldLength + 1];
@@ -675,11 +675,11 @@ public class InputPatchPage extends WizardPage {
 				selectionIndex= oldLength;
 			}
 			fPatchFileNameField.select(selectionIndex);
-	
+
 			//resetSelection();
 		}
 	}
-	
+
 	/**
 	 *	The Finish button was pressed. Try to do the required work now and answer
 	 *	a boolean indicating success. If false is returned then the wizard will
@@ -690,30 +690,30 @@ public class InputPatchPage extends WizardPage {
 	public boolean finish() {
 //		if (!ensureSourceIsValid())
 //			return false;
-	
+
 		saveWidgetValues();
-	
+
 //		Iterator resourcesEnum= getSelectedResources().iterator();
 //		List fileSystemObjects= new ArrayList();
 //		while (resourcesEnum.hasNext()) {
 //			fileSystemObjects.add(
 //				((FileSystemElement) resourcesEnum.next()).getFileSystemObject());
 //		}
-//	
+//
 //		if (fileSystemObjects.size() > 0)
 //			return importResources(fileSystemObjects);
-//	
+//
 //		MessageDialog
 //			.openInformation(
 //				getContainer().getShell(),
 //				DataTransferMessages.getString("DataTransfer.information"), //$NON-NLS-1$
 //				DataTransferMessages.getString("FileImport.noneSelected")); //$NON-NLS-1$
-//	
+//
 //		return false;
 
 		return true;
 	}
-	
+
 	/**
 	 *	Use the dialog store to restore widget values to the values that they held
 	 *	last time this wizard was used to completion
@@ -737,12 +737,12 @@ public class InputPatchPage extends WizardPage {
 				for (int i= 0; i < sourceNames.length; i++)
 					if (sourceNames[i] != null && sourceNames[i].length() > 0)
 						fPatchFileNameField.add(sourceNames[i]);
-			
+
 			// set patch file path
 			String patchFilePath= settings.get(STORE_PATCH_FILES_ID);
 			if (patchFilePath != null)
 				setSourceName(patchFilePath);
-			
+
 			// set URLs history
 			String[] sourceURLs= settings.getArray(STORE_PATCH_URLS_ID);
 			if (sourceURLs != null)
@@ -758,7 +758,7 @@ public class InputPatchPage extends WizardPage {
 				inputMethod= FILE;
 				fPatchFileNameField.deselectAll();
 			}
-			
+
 			//set the workspace patch selection
 			String workspaceSetting= settings.get(STORE_WORKSPACE_PATH_ID);
 			if (workspaceSetting != null && workspaceSetting.length() > 0) {
@@ -772,10 +772,10 @@ public class InputPatchPage extends WizardPage {
 					}
 				} catch (RuntimeException e) {
 					// Ignore. The setting was invalid
-				} 
+				}
 			} else {
 				//check to see if the current input is set to workspace - if it is switch it
-				//back to clipboard since there is no corresponding element to go along with 
+				//back to clipboard since there is no corresponding element to go along with
 				//the tree viewer
 				if (inputMethod == WORKSPACE)
 					inputMethod= FILE;
@@ -785,7 +785,7 @@ public class InputPatchPage extends WizardPage {
 		// set radio buttons state
 		setInputButtonState(inputMethod);
 	}
-	
+
 	/**
 	 * 	Since Finish was pressed, write widget values to the dialog store so that they
 	 *	will persist into the next invocation of this wizard page
@@ -796,15 +796,15 @@ public class InputPatchPage extends WizardPage {
 
 			settings.put(STORE_INPUT_METHOD_ID, getInputMethod());
 			settings.put(STORE_PATCH_FILES_ID, getPatchFilePath());
-			
+
 			// update source names history
 			String[] sourceNames= settings.getArray(STORE_PATCH_FILES_ID);
 			if (sourceNames == null)
 				sourceNames= new String[0];
-	
+
 			sourceNames= addToHistory(sourceNames, getPatchFilePath());
 			settings.put(STORE_PATCH_FILES_ID, sourceNames);
-			
+
 			// update source URLs history
 			String[] sourceURLs= settings.getArray(STORE_PATCH_URLS_ID);
 			if (sourceURLs == null)
@@ -815,10 +815,10 @@ public class InputPatchPage extends WizardPage {
 
 			// save the workspace selection
 			settings.put(STORE_WORKSPACE_PATH_ID, getWorkspacePath());
-			
+
 		}
 	}
-	
+
 	private String getWorkspacePath() {
 		if (fTreeViewer != null){
 			IResource[] resources= Utilities.getResources(fTreeViewer.getSelection());
@@ -826,7 +826,7 @@ public class InputPatchPage extends WizardPage {
 				IResource patchFile= resources[0];
 				return patchFile.getFullPath().toString();
 			}
-			
+
 		}
 		return ""; //$NON-NLS-1$
 	}
@@ -836,7 +836,7 @@ public class InputPatchPage extends WizardPage {
 	/**
 	 * Checks to see if the file that has been selected for Apply Patch is
 	 * actually a patch
-	 * 
+	 *
 	 * @return true if the file selected to run Apply Patch on in the workspace
 	 *         is a patch file or if the clipboard contains a patch or if the
 	 *         clipboard contains an URL (we assume it points to a patch )
@@ -874,7 +874,7 @@ public class InputPatchPage extends WizardPage {
 					}
 				}
 			}
-		} 
+		}
 		// check out clipboard contents
 		Reader reader = null;
 		Control c = getControl();
@@ -910,7 +910,7 @@ public class InputPatchPage extends WizardPage {
 			}
 		}
 		return false;
-	} 
+	}
 
 	private boolean isPatchFile(Reader reader) {
 		WorkspacePatcher patcher= ((PatchWizard) getWizard()).getPatcher();
@@ -926,14 +926,14 @@ public class InputPatchPage extends WizardPage {
 			return false;
 		return true;
 	}
-	
+
 	/*
 	 * Clears the dialog message box
 	 */
 	private void clearErrorMessage(){
 		setErrorMessage(null);
 	}
-	
+
 	private void setInputButtonState(int state) {
 
 		switch (state) {
@@ -985,7 +985,7 @@ public class InputPatchPage extends WizardPage {
 		if (fPatchFileNameField != null)
 			return fPatchFileNameField.getText();
 		return ""; //$NON-NLS-1$
-	} 
+	}
 
 	/*
 	 * Adds an entry to a history, while taking care of duplicate history items
@@ -1000,12 +1000,12 @@ public class InputPatchPage extends WizardPage {
 
 		l.remove(newEntry);
 		l.add(0,newEntry);
-	
+
 		// since only one new item was added, we can be over the limit
 		// by at most one item
 		if (l.size() > COMBO_HISTORY_LENGTH)
 			l.remove(COMBO_HISTORY_LENGTH);
-		
+
 		return (String[]) l.toArray(new String[l.size()]);
 	}
 

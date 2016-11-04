@@ -18,7 +18,7 @@ package org.eclipse.compare;
  * </p>
  */
 public interface IModificationDate {
-	
+
 	/**
 	 * Returns the modification time of this object.
 	 * <p>

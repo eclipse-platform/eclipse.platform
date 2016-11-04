@@ -26,7 +26,7 @@ public class HunkResult {
 	 * number of context lines, which is 3.
 	 */
 	private static final int MAXIMUM_FUZZ_FACTOR = 2;
-	
+
 	private Hunk fHunk;
 	private boolean fMatches;
 	private int fShift;
@@ -64,7 +64,7 @@ public class HunkResult {
 			} else {
 				boolean found= false;
 				int oldShift= this.fShift;
-				
+
 				int hugeShift = lines.size();
 				for (int i = 1; i <= hugeShift; i++) {
 					if (this.fHunk.tryPatch(configuration, lines, this.fShift - i, fuzz)) {
@@ -74,7 +74,7 @@ public class HunkResult {
 						break;
 					}
 				}
-				
+
 				if (!found) {
 					for (int i = 1; i <= hugeShift; i++) {
 						if (this.fHunk.tryPatch(configuration, lines, this.fShift + i, fuzz)) {
@@ -85,7 +85,7 @@ public class HunkResult {
 						}
 					}
 				}
-				
+
 				if (found) {
 					if (DEBUG) System.out.println("patched hunk at offset: " + (this.fShift-oldShift)); //$NON-NLS-1$
 					this.fShift+= this.fHunk.doPatch(configuration, lines, this.fShift, fuzz);
@@ -108,7 +108,7 @@ public class HunkResult {
 	 * Calculate the fuzz that will allow the most hunks to be matched. Even
 	 * though we're interested only in the value of the fuzz, the shifting is
 	 * done anyway.
-	 * 
+	 *
 	 * @param lines
 	 *            the lines of the target file
 	 * @param monitor
@@ -129,14 +129,14 @@ public class HunkResult {
 				this.fMatches = true;
 				break;
 			}
-			
+
 			// TODO (tzarna): hugeShift=lines.size() is more than we need.
 			// Lines to the beg/end of a file would be enough but this can still
 			// in matching hunks out of order. Try to shift using only lines
 			// available "between" hunks.
-			int hugeShift = lines.size(); 
-			
-			// shift up 
+			int hugeShift = lines.size();
+
+			// shift up
 			for (int i = 1; i <= hugeShift; i++) {
 				if (monitor.isCanceled()) {
 					throw new OperationCanceledException();
@@ -266,7 +266,7 @@ public class HunkResult {
 	public String getCharset() {
 		return this.fDiffResult.getCharset();
 	}
-	
+
 	public int getFuzz() {
 		return this.fFuzz;
 	}

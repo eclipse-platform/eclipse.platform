@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 
 /* package */ class RangeComparatorLCS extends LCS {
-	
+
 	private final IRangeComparator comparator1, comparator2;
 	private int[][] lcs;
-	
+
 	public static RangeDifference[] findDifferences(AbstractRangeDifferenceFactory factory, IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
 		RangeComparatorLCS lcs = new RangeComparatorLCS(left, right);
 		SubMonitor monitor = SubMonitor.convert(pm, Messages.RangeComparatorLCS_0, 100);
@@ -35,12 +35,12 @@ import org.eclipse.core.runtime.SubMonitor;
 				pm.done();
 		}
 	}
-	
+
 	public RangeComparatorLCS(IRangeComparator comparator1, IRangeComparator comparator2) {
 		this.comparator1 = comparator1;
 		this.comparator2 = comparator2;
 	}
-	
+
 	@Override
 	protected int getLength1() {
 		return this.comparator1.getRangeCount();
@@ -67,7 +67,7 @@ import org.eclipse.core.runtime.SubMonitor;
 		this.lcs[0][sl1] = sl1 + 1;
 		this.lcs[1][sl1] = sl2 + 1;
 	}
-	
+
 	public RangeDifference[] getDifferences(SubMonitor subMonitor, AbstractRangeDifferenceFactory factory) {
 		try {
 			List differences = new ArrayList();
@@ -126,25 +126,25 @@ import org.eclipse.core.runtime.SubMonitor;
 					// TODO: We need to confirm that this is the proper order
 					differences.add(factory.createRangeDifference(RangeDifference.CHANGE, rightStart, this.comparator2.getRangeCount() - (s2 + 1), leftStart, this.comparator1.getRangeCount() - (s1 + 1)));
 				}
-				
+
 			}
 			return (RangeDifference[]) differences.toArray(new RangeDifference[differences.size()]);
 		} finally {
 			subMonitor.done();
 		}
 	}
-	
+
 	private void worked(SubMonitor subMonitor, int work) {
 		if (subMonitor.isCanceled())
 			throw new OperationCanceledException();
-		subMonitor.worked(work);	
+		subMonitor.worked(work);
 	}
 
 	/**
-	 * This method takes an LCS result interspersed with zeros (i.e. empty slots 
-	 * from the LCS algorithm), compacts it and shifts the LCS chunks as far towards 
+	 * This method takes an LCS result interspersed with zeros (i.e. empty slots
+	 * from the LCS algorithm), compacts it and shifts the LCS chunks as far towards
 	 * the front as possible. This tends to produce good results most of the time.
-	 * 
+	 *
 	 * @param lcsSide A subsequence of original, presumably it is the LCS of it and
 	 *            some other collection of lines
 	 * @param length The number of non-empty (i.e non-zero) entries in LCS
@@ -168,7 +168,7 @@ import org.eclipse.core.runtime.SubMonitor;
 			while (lcsSide[j] == 0) {
 				j++;
 			}
-			// Push the difference down as far as possible by comparing the line at the 
+			// Push the difference down as far as possible by comparing the line at the
 			// start of the diff with the line and the end and adjusting if they are the same
 			int nextLine = lcsSide[i - 1] + 1;
 			if (nextLine != lcsSide[j] && comparator.rangesEqual(nextLine - 1, comparator, lcsSide[j] - 1)) {
@@ -183,7 +183,7 @@ import org.eclipse.core.runtime.SubMonitor;
 			lcsSide[i] = 0;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.LCS#longestCommonSubsequence(org.eclipse.core.runtime.SubMonitor)
 	 */

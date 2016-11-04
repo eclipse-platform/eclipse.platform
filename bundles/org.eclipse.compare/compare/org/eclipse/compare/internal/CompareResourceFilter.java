@@ -22,11 +22,11 @@ import com.ibm.icu.text.MessageFormat;
 
 public class CompareResourceFilter {
 	private static final char[][] NO_CHAR_CHAR= new char[0][];
-	
+
 	private char[][] fExtraResourceFileFilters;
 	private String[] fExtraResourceFolderFilters;
 
-	
+
 	public CompareResourceFilter() {
 		// nothing to do
 	}
@@ -61,14 +61,14 @@ public class CompareResourceFilter {
 				resourceType= IResource.FOLDER;
 			}
 			IStatus status= workspace.validateName(fileName, resourceType);
-			if (status.matches(IStatus.ERROR)) {		
+			if (status.matches(IStatus.ERROR)) {
 				String format= Utilities.getString("ComparePreferencePage.filter.invalidsegment.error"); //$NON-NLS-1$
 				return MessageFormat.format(format, status.getMessage());
 			}
 		}
 		return null;
 	}
-	
+
 	public void setFilters(String filterSequence) {
 		char[][] filters= filterSequence != null && filterSequence.length() > 0
 		? splitAndTrimOn(',', filterSequence.toCharArray())
@@ -102,7 +102,7 @@ public class CompareResourceFilter {
 	}
 
 	/////////
-	
+
 	private static String[] getTokens(String text, String separator) {
 		StringTokenizer tok= new StringTokenizer(text, separator);
 		int nTokens= tok.countTokens();
@@ -110,43 +110,43 @@ public class CompareResourceFilter {
 		for (int i= 0; i < res.length; i++)
 			res[i]= tok.nextToken().trim();
 		return res;
-	}	
-	
+	}
+
 	/**
 	 * Answers true if the pattern matches the given name, false otherwise.
 	 * This char[] pattern matching accepts wild-cards '*' and '?'.
-	 * 
+	 *
 	 * When not case sensitive, the pattern is assumed to already be
 	 * lowercased, the name will be lowercased character per character as
 	 * comparing. If name is null, the answer is false. If pattern is null, the
 	 * answer is true if name is not null. <br><br>For example:
 	 * <ol>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  pattern = { '?', 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => true
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  pattern = { '?', 'b', '?' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => false
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  pattern = { 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => false
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param pattern
 	 *            the given pattern
 	 * @param name
@@ -174,23 +174,23 @@ public class CompareResourceFilter {
 	 * character as comparing. <br><br>For example:
 	 * <ol>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 3 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 4 isCaseSensitive = true result => true
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 2 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 2 isCaseSensitive = true result => false
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param pattern
 	 *            the given pattern
 	 * @param patternStart
@@ -273,39 +273,39 @@ public class CompareResourceFilter {
 	 * <br><br>For example:
 	 * <ol>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  divider = 'b' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result => { { 'a' }, { }, { 'a' }, { 'a' } }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  divider = 'c' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result => { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  divider = 'b' array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' } result => { { 'a' }, { }, { 'a' }, { 'a' } }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  divider = 'c' array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' } result => { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param divider
 	 *            the given divider
 	 * @param array
@@ -355,23 +355,23 @@ public class CompareResourceFilter {
 	 * <br><br>For example:
 	 * <ol>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  array = { 'a' , 'b' } start = 0 end = 1 result => { 'a' }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * <li>
-	 * 
+	 *
 	 * <pre>
 	 *  array = { 'a', 'b' } start = 0 end = -1 result => { 'a' , 'b' }
 	 * </pre>
-	 * 
-	 * 
+	 *
+	 *
 	 * </li>
 	 * </ol>
-	 * 
+	 *
 	 * @param array
 	 *            the given array
 	 * @param start

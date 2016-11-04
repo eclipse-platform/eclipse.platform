@@ -11,7 +11,7 @@
 package org.eclipse.compare;
 
 /**
- * An <code>IContentChangeListener</code> is informed about content changes of a 
+ * An <code>IContentChangeListener</code> is informed about content changes of a
  * <code>IContentChangeNotifier</code>.
  * <p>
  * Clients may implement this interface.

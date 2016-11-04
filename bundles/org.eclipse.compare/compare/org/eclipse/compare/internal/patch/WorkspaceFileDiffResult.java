@@ -27,17 +27,17 @@ public class WorkspaceFileDiffResult extends FileDiffResult {
 			PatchConfiguration configuration) {
 		super(diff, configuration);
 	}
-	
+
 	protected boolean canCreateTarget(IStorage storage) {
 		IProject project = getPatcher().getTargetProject(getDiff());
 		return project != null && project.isAccessible();
 	}
-	
+
 	protected boolean targetExists(IStorage storage) {
 		IFile file= (IFile)storage;
 		return file != null && file.isAccessible();
 	}
-	
+
 	protected List getLines(IStorage storage, boolean create) {
 		IFile file= getTargetFile();
 		List lines = LineReader.load(file, create);
@@ -51,7 +51,7 @@ public class WorkspaceFileDiffResult extends FileDiffResult {
 	public IFile getTargetFile() {
 		return getPatcher().getTargetFile(getDiff());
 	}
-	
+
 	public void refresh() {
 		refresh(Utilities.getReaderCreator(getTargetFile()), null);
 	}

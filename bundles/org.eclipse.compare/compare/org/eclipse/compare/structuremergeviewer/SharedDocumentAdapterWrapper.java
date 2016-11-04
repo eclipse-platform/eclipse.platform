@@ -28,18 +28,18 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  */
 public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 	private ISharedDocumentAdapter wrappedAdapter;
-	
+
 	/**
 	 * Helper method that returns the shared document adapter for the
 	 * given typed element or <code>null</code> if there isn't one.
 	 * @param element the typed element
-	 * @return the shared document adapter for the given typed element 
+	 * @return the shared document adapter for the given typed element
 	 *    or <code>null</code>
 	 */
 	public static ISharedDocumentAdapter getAdapter(Object element) {
 		return Adapters.adapt(element, ISharedDocumentAdapter.class);
 	}
-	
+
 	/**
 	 * Creates a shared document adapter that wraps the given adapter.
 	 * @param wrappedAdapter the wrapped adapter
@@ -48,7 +48,7 @@ public class SharedDocumentAdapterWrapper implements ISharedDocumentAdapter {
 		super();
 		this.wrappedAdapter = wrappedAdapter;
 	}
-	
+
 	@Override
 	public void connect(IDocumentProvider provider, IEditorInput documentKey)
 			throws CoreException {

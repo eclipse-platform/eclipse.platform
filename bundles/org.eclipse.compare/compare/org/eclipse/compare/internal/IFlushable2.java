@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Interface which provides the ability to flush the contents from the specified
  * side of the viewer.
- * 
+ *
  * @see IFlushable
- * 
+ *
  * @since 3.7
  */
 public interface IFlushable2 {

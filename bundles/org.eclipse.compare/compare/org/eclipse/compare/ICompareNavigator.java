@@ -21,15 +21,15 @@ package org.eclipse.compare;
  * <p>
  * Although it is legal for clients to implement this interface, it is better
  * to subclass {@link CompareNavigator}.
- * 
+ *
  * @since 3.0
  */
 public interface ICompareNavigator {
-	
+
 	/**
 	 * Starting from the current selection <code>selectChange</code> selects and reveals the next (previous) change.
 	 * If the end (or beginning) is reached, the method returns <code>true</code>.
-	 * 
+	 *
 	 * @param next if <code>true</code> the next change is selected, otherwise the previous change
 	 * @return returns <code>true</code> if end (beginning) is reached, <code>false</code> otherwise
 	 */

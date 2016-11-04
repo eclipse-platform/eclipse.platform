@@ -14,7 +14,7 @@ package org.eclipse.compare.structuremergeviewer;
  * Interface used to compare hierarchical structures.
  * It is used by the differencing engine.
  * <p>
- * Clients typically implement this interface in an adaptor class which 
+ * Clients typically implement this interface in an adaptor class which
  * wrappers the objects to be compared.
  *
  * @see org.eclipse.compare.ResourceNode
@@ -33,7 +33,7 @@ public interface IStructureComparator {
 	 * Returns whether some other object is "equal to" this one
 	 * with respect to a structural comparison. For example, when comparing
 	 * Java class methods, <code>equals</code> would return <code>true</code>
-	 * if two methods have the same signature (the argument names and the 
+	 * if two methods have the same signature (the argument names and the
 	 * method body might differ).
 	 *
 	 * @param other the reference object with which to compare

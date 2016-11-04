@@ -25,7 +25,7 @@ import org.eclipse.ui.texteditor.IDocumentProviderExtension;
  * @since 3.3
  */
 public interface IEditableContentExtension {
-	
+
 	/**
 	 * Return whether the typed element being displayed
 	 * is read-only. a read-only element will require a
@@ -33,13 +33,13 @@ public interface IEditableContentExtension {
 	 * @return whether the typed element is read-only
 	 */
 	boolean isReadOnly();
-	
+
 	/**
 	 * If the element is read-only, this method should be called
 	 * to attempt to make it writable.
 	 * @param shell a shell used to prompt the user if required.
-	 * @return a status object that is <code>OK</code> if things are fine, 
-	 * otherwise a status describing reasons why modifying the given files is not 
+	 * @return a status object that is <code>OK</code> if things are fine,
+	 * otherwise a status describing reasons why modifying the given files is not
 	 * reasonable. A status with a severity of <code>CANCEL</code> is returned
 	 * if the validation was canceled, indicating the edit should not proceed.
 	 */

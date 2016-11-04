@@ -32,11 +32,11 @@ import org.eclipse.swt.widgets.Shell;
 public class ResourceNode extends BufferedContent
 			implements IEncodedStreamContentAccessor, IStructureComparator, ITypedElement,
 							IEditableContent, IModificationDate, IResourceProvider, IEditableContentExtension {
-			
+
 	private IResource fResource;
 	private ArrayList fChildren;
-		
-	
+
+
 	/**
 	 * Creates a <code>ResourceNode</code> for the given resource.
 	 *
@@ -46,7 +46,7 @@ public class ResourceNode extends BufferedContent
 		fResource= resource;
 		Assert.isNotNull(resource);
 	}
-		
+
 	/**
 	 * Returns the corresponding resource for this object.
 	 *
@@ -55,7 +55,7 @@ public class ResourceNode extends BufferedContent
 	public IResource getResource() {
 		return fResource;
 	}
-	
+
 	/* (non Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
@@ -64,14 +64,14 @@ public class ResourceNode extends BufferedContent
 			return super.getContents();
 		return null;
 	}
-	
+
 	/* (non Javadoc)
 	 * see IModificationDate.getModificationDate
 	 */
 	public long getModificationDate() {
 		return fResource.getLocalTimeStamp();
 	}
-	
+
 	/* (non Javadoc)
 	 * see ITypedElement.getName
 	 */
@@ -80,7 +80,7 @@ public class ResourceNode extends BufferedContent
 			return fResource.getName();
 		return null;
 	}
-		
+
 	/* (non Javadoc)
 	 * see ITypedElement.getType
 	 */
@@ -94,7 +94,7 @@ public class ResourceNode extends BufferedContent
 		}
 		return ITypedElement.UNKNOWN_TYPE;
 	}
-	
+
 	/* (non Javadoc)
 	 * see ITypedElement.getImage
 	 */
@@ -113,7 +113,7 @@ public class ResourceNode extends BufferedContent
 		}
 		return super.equals(other);
 	}
-	
+
 	/**
 	 * Returns the hash code of the name.
      * @return a hash code value for this object.
@@ -121,7 +121,7 @@ public class ResourceNode extends BufferedContent
 	public int hashCode() {
 		return getName().hashCode();
 	}
-	
+
 	/* (non Javadoc)
 	 * see IStructureComparator.getChildren
 	 */
@@ -143,7 +143,7 @@ public class ResourceNode extends BufferedContent
 		}
 		return fChildren.toArray();
 	}
-	
+
 	/**
 	 * This hook method is called from <code>getChildren</code> once for every
 	 * member of a container resource. This implementation
@@ -157,7 +157,7 @@ public class ResourceNode extends BufferedContent
 	protected IStructureComparator createChild(IResource child) {
 		return new ResourceNode(child);
 	}
-		
+
 	/**
 	 * Returns an open stream if the corresponding resource implements the
 	 * <code>IStorage</code> interface. Otherwise the value <code>null</code> is returned.
@@ -183,14 +183,14 @@ public class ResourceNode extends BufferedContent
 		}
 		return null;
 	}
-			
+
 	/* (non Javadoc)
 	 * see IEditableContent.isEditable
 	 */
 	public boolean isEditable() {
 		return true;
 	}
-	
+
 	/* (non Javadoc)
 	 * see IEditableContent.replace
 	 */

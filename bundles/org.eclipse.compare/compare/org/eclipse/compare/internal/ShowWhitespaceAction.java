@@ -58,7 +58,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		fNeedsPainters = needsPainters;
 		synchronizeWithPreference();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.compare.internal.TextEditorPropertyAction#synchronizeWithPreference()
@@ -115,13 +115,13 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		}
 		return true;
 	}
-	
+
 	private synchronized Map getPainters() {
 		if (fPainters == null)
 			fPainters = new HashMap();
 		return fPainters;
 	}
-	
+
 	private void showWhitespace() {
 		if (isWhitespaceShowing)
 			return;
@@ -147,7 +147,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 			isWhitespaceShowing = true;
 		}
 	}
-	
+
 	private void hideWhitespace() {
 		Map painters = getPainters();
 		for (Iterator iterator = painters.keySet().iterator(); iterator.hasNext();) {
@@ -161,5 +161,5 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		painters.clear();
 		isWhitespaceShowing = false;
 	}
-		
+
 }

@@ -36,19 +36,19 @@ import org.eclipse.ui.PlatformUI;
  * This is a dialog that can host a {@link CompareEditorInput}.
  * <p>
  * This class can be used as is or can be subclassed.
- * 
+ *
  * @since 3.3
  */
 public class CompareDialog extends TrayDialog implements IPropertyChangeListener {
-	
+
 	private final CompareEditorInput fCompareEditorInput;
 	private Button fCommitButton;
 	private Label statusLabel;
 	boolean hasSettings = true;
 	private final DialogCompareContainer fContainer = new DialogCompareContainer();
-	
+
 	private class DialogCompareContainer extends CompareContainer {
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.operation.IRunnableContext#run(boolean, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
 		 */
@@ -58,7 +58,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 			ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
 			dialog.run(fork, cancelable, runnable);
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.ICompareContainer#setStatusMessage(java.lang.String)
 		 */
@@ -72,7 +72,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 			}
 		}
 	}
-	
+
 	/**
 	 * Create a dialog to host the given input.
 	 * @param shell a shell
@@ -84,7 +84,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		Assert.isNotNull(input);
 		fCompareEditorInput= input;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.ResizableDialog#close()
 	 */
@@ -96,7 +96,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		}
 		return false;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
@@ -134,7 +134,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	 * @see CompareConfiguration#isRightEditable()
 	 */
 	protected boolean isInputEditable() {
-		return fCompareEditorInput.getCompareConfiguration().isLeftEditable() 
+		return fCompareEditorInput.getCompareConfiguration().isLeftEditable()
 			|| fCompareEditorInput.getCompareConfiguration().isRightEditable();
 	}
 
@@ -160,7 +160,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 			return getSelectedElement() != null;
 		return true;
 	}
-	
+
 	private Object getSelectedElement() {
 		return fCompareEditorInput.getSelectedEdition();
 	}
@@ -169,22 +169,22 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	protected Control createDialogArea(Composite parent2) {
-						
+
 		Composite parent= (Composite) super.createDialogArea(parent2);
 
 		Control c= fCompareEditorInput.createContents(parent);
 		c.setLayoutData(new GridData(GridData.FILL_BOTH));
-		
+
 		statusLabel = new Label(parent, SWT.NONE);
 		statusLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		Shell shell= c.getShell();
 		shell.setText(fCompareEditorInput.getTitle());
 		shell.setImage(fCompareEditorInput.getTitleImage());
 		applyDialogFont(parent);
 		return parent;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.window.Window#open()
 	 */
@@ -195,7 +195,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		fCompareEditorInput.setContainer(fContainer);
 		return super.open();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
@@ -222,7 +222,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		}
 		return dialogSettings;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.ResizableDialog#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
@@ -241,7 +241,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	public String getHelpContextId() {
 		return ICompareContextIds.COMPARE_DIALOG;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#getInitialSize()
 	 */
@@ -255,7 +255,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 
 	/**
 	 * If we don't have settings we need to come up with a reasonable default
-	 * since we can't depend on the compare editor input layout returning a 
+	 * since we can't depend on the compare editor input layout returning a
 	 * good default size.
 	 * @return the default size of the dialog
 	 */

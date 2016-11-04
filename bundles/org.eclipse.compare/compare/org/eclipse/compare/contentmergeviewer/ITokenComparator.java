@@ -20,7 +20,7 @@ import org.eclipse.compare.rangedifferencer.IRangeComparator;
  * <p>
  * <code>TextMergeViewer</code> activates the token compare when navigating into
  * a range of differing lines. At first the lines are selected as a block.
- * When navigating into this block the token compare shows for every line 
+ * When navigating into this block the token compare shows for every line
  * the differing token by selecting them.
  * <p>
  * <code>TextMergeViewer</code>'s default token comparator works on characters separated

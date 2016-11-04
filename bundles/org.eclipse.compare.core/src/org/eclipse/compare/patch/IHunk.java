@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IAdaptable;
  * this interface is a means to communicate to content merge viewers that one of
  * the sides of a compare input is a patch hunk. Clients can determine which
  * side it is by adapting the side to this interface (see {@link IAdaptable}.
- * 
+ *
  * @since 3.3
  * @noimplement This interface is not intended to be implemented by clients but
  *              can be obtained from an {@link IFilePatchResult}
@@ -33,10 +33,10 @@ public interface IHunk {
 	 * @return a label that can be used to describe the hunk
 	 */
 	public String getLabel();
-	
+
 	/**
 	 * Return the start position of the hunk in the target file.
-	 * 
+	 *
 	 * @return the start position of the hunk in the target file.
 	 */
 	public int getStartPosition();
@@ -51,7 +51,7 @@ public interface IHunk {
 	 * <li> <code>'+'</code> for addition
 	 * <li> <code>'-'</code> for removal
 	 * </ul>
-	 * 
+	 *
 	 * @return hunk's content in the unified format
 	 * @since org.eclipse.compare 3.5
 	 */
@@ -64,7 +64,7 @@ public interface IHunk {
 	 * @return the original contents from which the hunk was generated
 	 */
 	public InputStream getOriginalContents();
-	
+
 	/**
 	 * Return the contents that contain the modifications for this hunk.
 	 * The returned contents usually only represent a portion of the
@@ -72,19 +72,19 @@ public interface IHunk {
 	 * @return the contents that contain the modifications for this hunk
 	 */
 	public InputStream getPatchedContents();
-	
+
 	/**
-	 * Returns the name of a charset encoding to be used when decoding the contents 
-	 * of this hunk into characters. Returns <code>null</code> if a proper 
+	 * Returns the name of a charset encoding to be used when decoding the contents
+	 * of this hunk into characters. Returns <code>null</code> if a proper
 	 * encoding cannot be determined.
 	 * <p>
 	 * Note that this method does not check whether the result is a supported
-	 * charset name. Callers should be prepared to handle 
-	 * <code>UnsupportedEncodingException</code> where this charset is used. 
+	 * charset name. Callers should be prepared to handle
+	 * <code>UnsupportedEncodingException</code> where this charset is used.
 	 * </p>
 	 *
 	 * @return the name of a charset, or <code>null</code>
-	 * @exception CoreException if an error happens while determining 
+	 * @exception CoreException if an error happens while determining
 	 * the charset. See any refinements for more information.
 	 * @deprecated This method can be called before the first attempt to apply
 	 *             the hunk when it is impossible to determine the encoding and
@@ -94,6 +94,6 @@ public interface IHunk {
 	 */
 	@Deprecated
 	public String getCharset() throws CoreException;
-	
-	
+
+
 }

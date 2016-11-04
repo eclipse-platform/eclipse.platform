@@ -38,28 +38,28 @@ import org.eclipse.core.runtime.SubMonitor;
  * @see RangeDifference
  */
 public final class RangeDifferencer {
-	
+
 	private static final RangeDifference[] EMPTY_RESULT= new RangeDifference[0];
-	
+
 	private static final AbstractRangeDifferenceFactory defaultFactory = new AbstractRangeDifferenceFactory() {
 		@Override
 		protected RangeDifference createRangeDifference() {
 			return new RangeDifference(RangeDifference.NOCHANGE);
 		}
 	};
-	
+
 	/* (non Javadoc)
 	 * Cannot be instantiated!
 	 */
 	private RangeDifferencer() {
 		// nothing to do
 	}
-	
+
 	/**
 	 * Finds the differences between two <code>IRangeComparator</code>s.
 	 * The differences are returned as an array of <code>RangeDifference</code>s.
 	 * If no differences are detected an empty array is returned.
-	 * 
+	 *
 	 * @param left the left range comparator
 	 * @param right the right range comparator
 	 * @return an array of range differences, or an empty array if no differences were found
@@ -67,12 +67,12 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findDifferences(IRangeComparator left, IRangeComparator right) {
 		return findDifferences((IProgressMonitor)null, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences between two <code>IRangeComparator</code>s.
 	 * The differences are returned as an array of <code>RangeDifference</code>s.
 	 * If no differences are detected an empty array is returned.
-	 * 
+	 *
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param left the left range comparator
 	 * @param right the right range comparator
@@ -82,12 +82,12 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findDifferences(IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
 		return findDifferences(defaultFactory, null, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences between two <code>IRangeComparator</code>s.
 	 * The differences are returned as an array of <code>RangeDifference</code>s.
 	 * If no differences are detected an empty array is returned.
-	 * 
+	 *
 	 * @param factory
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param left the left range comparator
@@ -105,7 +105,7 @@ public final class RangeDifferencer {
 	 * If no differences are detected an empty list is returned.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 
+	 *
 	 * @param ancestor the ancestor range comparator or <code>null</code>
 	 * @param left the left range comparator
 	 * @param right the right range comparator
@@ -114,14 +114,14 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findDifferences(IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
 		return findDifferences(null, ancestor, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among three <code>IRangeComparator</code>s.
 	 * The differences are returned as a list of <code>RangeDifference</code>s.
 	 * If no differences are detected an empty list is returned.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 
+	 *
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param ancestor the ancestor range comparator or <code>null</code>
 	 * @param left the left range comparator
@@ -132,14 +132,14 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findDifferences(IProgressMonitor pm, IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
 		return findDifferences(defaultFactory, pm, ancestor, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among three <code>IRangeComparator</code>s.
 	 * The differences are returned as a list of <code>RangeDifference</code>s.
 	 * If no differences are detected an empty list is returned.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 	 
+	 *
 	 * @param factory
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param ancestor the ancestor range comparator or <code>null</code>
@@ -161,13 +161,13 @@ public final class RangeDifferencer {
 			}
 			if (rightAncestorScript == null || leftAncestorScript == null)
 				return null;
-	
+
 			DifferencesIterator myIter= new DifferencesIterator(rightAncestorScript);
 			DifferencesIterator yourIter= new DifferencesIterator(leftAncestorScript);
-	
+
 			List diff3= new ArrayList();
 			diff3.add(factory.createRangeDifference(RangeDifference.ERROR)); // add a sentinel
-	
+
 			int changeRangeStart= 0;
 			int changeRangeEnd= 0;
 			//
@@ -175,7 +175,7 @@ public final class RangeDifferencer {
 			//
 			monitor.setWorkRemaining(rightAncestorScript.length + leftAncestorScript.length);
 			while (myIter.fDifference != null || yourIter.fDifference != null) {
-	
+
 				DifferencesIterator startThread;
 				myIter.removeAll();
 				yourIter.removeAll();
@@ -193,7 +193,7 @@ public final class RangeDifferencer {
 						startThread= yourIter;
 					} else {
 						if (myIter.fDifference.leftLength == 0 && yourIter.fDifference.leftLength == 0) {
-							//insertion into the same position is conflict. 
+							//insertion into the same position is conflict.
 							changeRangeStart= myIter.fDifference.leftStart;
 							changeRangeEnd= myIter.fDifference.leftEnd();
 							myIter.next();
@@ -210,11 +210,11 @@ public final class RangeDifferencer {
 							startThread= myIter;
 						}
 					}
-						
+
 				}
 				changeRangeStart= startThread.fDifference.leftStart;
 				changeRangeEnd= startThread.fDifference.leftEnd();
-	
+
 				startThread.next();
 				monitor.worked(1);
 				//
@@ -233,7 +233,7 @@ public final class RangeDifferencer {
 				}
 				diff3.add(createRangeDifference3(factory, myIter, yourIter, diff3, right, left, changeRangeStart, changeRangeEnd));
 			}
-	
+
 			// remove sentinel
 			diff3.remove(0);
 			return (RangeDifference[]) diff3.toArray(EMPTY_RESULT);
@@ -247,7 +247,7 @@ public final class RangeDifferencer {
 	 * Finds the differences among two <code>IRangeComparator</code>s.
 	 * In contrast to <code>findDifferences</code>, the result
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
-	 * 
+	 *
 	 * @param left the left range comparator
 	 * @param right the right range comparator
 	 * @return an array of range differences
@@ -256,12 +256,12 @@ public final class RangeDifferencer {
 			IRangeComparator right) {
 		return findRanges((IProgressMonitor) null, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among two <code>IRangeComparator</code>s.
 	 * In contrast to <code>findDifferences</code>, the result
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
-	 * 
+	 *
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param left the left range comparator
 	 * @param right the right range comparator
@@ -271,12 +271,12 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findRanges(IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
 		return findRanges(defaultFactory, pm, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among two <code>IRangeComparator</code>s.
 	 * In contrast to <code>findDifferences</code>, the result
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
-	 * 
+	 *
 	 * @param factory
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param left the left range comparator
@@ -318,7 +318,7 @@ public final class RangeDifferencer {
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 
+	 *
 	 * @param ancestor the ancestor range comparator or <code>null</code>
 	 * @param left the left range comparator
 	 * @param right the right range comparator
@@ -327,14 +327,14 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findRanges(IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
 		return findRanges(null, ancestor, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among three <code>IRangeComparator</code>s.
 	 * In contrast to <code>findDifferences</code>, the result
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 
+	 *
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param ancestor the ancestor range comparator or <code>null</code>
 	 * @param left the left range comparator
@@ -345,14 +345,14 @@ public final class RangeDifferencer {
 	public static RangeDifference[] findRanges(IProgressMonitor pm, IRangeComparator ancestor, IRangeComparator left, IRangeComparator right) {
 		return findRanges(defaultFactory, pm, ancestor, left, right);
 	}
-	
+
 	/**
 	 * Finds the differences among three <code>IRangeComparator</code>s.
 	 * In contrast to <code>findDifferences</code>, the result
 	 * contains <code>RangeDifference</code> elements for non-differing ranges too.
 	 * If the ancestor range comparator is <code>null</code>, a two-way
 	 * comparison is performed.
-	 * 
+	 *
 	 * @param factory
 	 * @param pm if not <code>null</code> used to report progress
 	 * @param ancestor the ancestor range comparator or <code>null</code>
@@ -400,7 +400,7 @@ public final class RangeDifferencer {
 	 * Creates a <code>RangeDifference3</code> given the
 	 * state of two DifferenceIterators.
 	 */
-	private static RangeDifference createRangeDifference3(AbstractRangeDifferenceFactory configurator, DifferencesIterator myIter, DifferencesIterator yourIter, List diff3, 
+	private static RangeDifference createRangeDifference3(AbstractRangeDifferenceFactory configurator, DifferencesIterator myIter, DifferencesIterator yourIter, List diff3,
 		IRangeComparator right, IRangeComparator left, int changeRangeStart,  int changeRangeEnd) {
 
 		int rightStart, rightEnd;
@@ -458,7 +458,7 @@ public final class RangeDifferencer {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Tests if two ranges are equal
 	 */

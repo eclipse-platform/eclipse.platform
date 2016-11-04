@@ -45,7 +45,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
  * <p>
  * Clients may subclass this class.
  * </p>
- * 
+ *
  * @since 3.3
  */
 public abstract class StructureCreator implements IStructureCreator2 {
@@ -64,16 +64,16 @@ public abstract class StructureCreator implements IStructureCreator2 {
 					return null;
 				}
 			}
-			
+
 			if (contents == null) {
 				// Node has no contents
 				return null;
 			}
-			
+
 			doc= new Document(contents);
 			setupDocument(doc);
 		}
-		
+
 		try {
 			return createStructureComparator(input, doc, null, null);
 		} catch (CoreException e) {
@@ -126,7 +126,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		}
 		return getStructure(element);
 	}
-	
+
 	/**
 	 * Creates an {@link IStructureComparator} for the given element using the
 	 * contents available in the given document. If the provided
@@ -150,7 +150,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 *            document was obtained or <code>null</code> if the document
 	 *            is not shared.
 	 * @param monitor a progress monitor or <code>null</code> if progress is not required
-	 * 
+	 *
 	 * @return a structure comparator
 	 * @throws CoreException
 	 */
@@ -186,7 +186,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns the partitioner to be associated with the document or
 	 * <code>null</code> is partitioning is not needed or if the subclass
@@ -208,7 +208,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	protected String getDocumentPartitioning() {
 		return null;
 	}
-	
+
 	/**
 	 * Default implementation of save that extracts the contents from
 	 * the document of an {@link IDocumentRange} and sets it on the
@@ -271,7 +271,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Create an {@link ISharedDocumentAdapter} that will provide the document key for the given input
 	 * object for any {@link DocumentRangeNode} instances whose document is the same as the
@@ -299,7 +299,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 			}
 		};
 	}
-	
+
 	/**
 	 * Default implementation of {@link #createElement(Object, Object, IProgressMonitor)}
 	 * that uses {@link #getPath(Object, Object)} to determine the
@@ -329,11 +329,11 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		IStructureComparator structure= createStructure(input, monitor);
 		if (structure == null)	// we couldn't parse the structure
 			return null;		// so we can't find anything
-			
+
 		// find the path in the tree
 		return findElement(structure, path);
 	}
-	
+
 	/**
 	 * Default implementation of {@link #locate(Object, Object)} that
 	 * uses {@link #getPath(Object, Object)} to determine the
@@ -353,11 +353,11 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		IStructureComparator structure= getStructure(input);
 		if (structure == null)	// we couldn't parse the structure
 			return null;		// so we can't find anything
-			
+
 		// find the path in the tree
 		return (IStructureComparator)findElement(structure, path);
 	}
-	
+
 	/**
 	 * Finds the element at the given path in the given structure.
 	 * This method is invoked from the {@link #createElement(Object, Object, IProgressMonitor)}
@@ -400,7 +400,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the path of the element in the structure of it's containing input
 	 * or <code>null</code> if the element is not contained in the input. This method is
@@ -439,7 +439,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 * Returns true if the two nodes are equal for comparison purposes. If
 	 * <code>compareFilters</code> is not empty, the filters are applied to each
 	 * line of each node's text representation.
-	 * 
+	 *
 	 * @param node1
 	 * @param contributor1
 	 *            either 'A', 'L', or 'R' for ancestor, left or right

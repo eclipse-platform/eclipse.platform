@@ -33,7 +33,7 @@ import org.eclipse.jface.text.TextViewer;
 /**
  * A selection provider for view parts with more that one viewer. Tracks the
  * focus of the viewers to provide the correct selection.
- * 
+ *
  * This is a modified version of
  * org.eclipse.jdt.internal.ui.viewsupport.SelectionProviderMediator
  */
@@ -82,7 +82,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		fPostSelectionChangedListeners = new ListenerList();
 		// nothing more to do here, Compare Editor is initializing
 	}
-	
+
 	/**
 	 * @param viewers All viewers that can provide a selection
 	 * @param viewerInFocus the viewer currently in focus or <code>null</code>
@@ -92,7 +92,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		fViewers= viewers;
 		InternalListener listener= new InternalListener();
 		fViewerInFocus= viewerInFocus;
-		
+
 		for (int i= 0; i < fViewers.length; i++) {
 			TextViewer viewer= fViewers[i];
 			viewer.addSelectionChangedListener(listener);
@@ -110,7 +110,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 			}
 		}
 	}
-	
+
 	final void doPostSelectionChanged(SelectionChangedEvent event) {
 		ISelectionProvider provider= event.getSelectionProvider();
 		if (provider == fViewerInFocus) {
@@ -213,7 +213,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 
 	/**
 	 * Resets the visible region for all text viewers of this selection provider.
-	 * 
+	 *
 	 * @since 3.6
 	 */
 	private void resetVisibleRegion() {
@@ -226,7 +226,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 
 	/**
 	 * Tells whether the given selection is inside the text viewer's visible region.
-	 * 
+	 *
 	 * @param textViewer the text viewer
 	 * @param selection the selection
 	 * @return <code>true</code> if the selection is inside the text viewer's visible region

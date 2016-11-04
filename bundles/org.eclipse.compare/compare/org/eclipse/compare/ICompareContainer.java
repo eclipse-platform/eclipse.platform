@@ -27,17 +27,17 @@ import org.eclipse.ui.services.IServiceLocator;
  * @since 3.3
  */
 public interface ICompareContainer extends IRunnableContext{
-	
+
 	/**
 	 * Register for change events for the given compare input. Although clients can register
-	 * with the compare input directly, registering through the container allows for 
-	 * deterministic and optimized behavior in some cases. Registering multiple times for the 
+	 * with the compare input directly, registering through the container allows for
+	 * deterministic and optimized behavior in some cases. Registering multiple times for the
 	 * same compare input has no effect.
 	 * @param input the compare input
 	 * @param listener the compare input change listener
 	 */
 	public void addCompareInputChangeListener(ICompareInput input, ICompareInputChangeListener listener);
-	
+
 	/**
 	 * Remove the change listener from the given compare input. Removing a listener that is not
 	 * registered has no effect.
@@ -55,20 +55,20 @@ public interface ICompareContainer extends IRunnableContext{
 	 * @param selectionProvider the selection provider
 	 */
 	public void registerContextMenu(MenuManager menu, ISelectionProvider selectionProvider);
-	
+
 	/**
 	 * Set the status message displayed by the container to the given message
 	 * @param message the status message
 	 */
 	public void setStatusMessage(String message);
-	
+
 	/**
 	 * Return the action bars for the container or <code>null</code> if the container
 	 * does not have an action bars.
 	 * @return the action bars for the container or <code>null</code>
 	 */
 	public IActionBars getActionBars();
-	
+
 	/**
 	 * Return the service locator for the container or <code>null</code> if the container
 	 * does not have one.
@@ -82,7 +82,7 @@ public interface ICompareContainer extends IRunnableContext{
 	 * @return the {@link ICompareNavigator} associated with this container or <code>null</code>
 	 */
 	public ICompareNavigator getNavigator();
-	
+
 	/**
 	 * Queue the given task to be run asynchronously. If the given runnable was
 	 * previously queued to run asynchronously and it has not yet run, the task
@@ -91,11 +91,11 @@ public interface ICompareContainer extends IRunnableContext{
 	 * to the end of the queue.
 	 * <p>
 	 * This method should be treated as a request to run the given task asynchronously.
-	 * However, clients should not assume that the code will be run asynchronously. 
+	 * However, clients should not assume that the code will be run asynchronously.
 	 * Depending on the container implementation, a call to this method may or may
 	 * not block the caller until the task is completed. Also, the task may be executed
 	 * in a modal or non-modal fashion.
-	 * 
+	 *
 	 * @param runnable the task to be performed
 	 */
 	public void runAsynchronously(IRunnableWithProgress runnable);
@@ -107,5 +107,5 @@ public interface ICompareContainer extends IRunnableContext{
 	 * <code>null</code>
 	 */
 	public IWorkbenchPart getWorkbenchPart();
-	
+
 }

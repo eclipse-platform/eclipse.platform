@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @since 3.3
  */
 public interface IStructureCreator2 extends IStructureCreator {
-	
+
 	/**
 	 * Creates a tree structure consisting of <code>IStructureComparator</code>s
 	 * from the given object and returns its root object. Implementing this
@@ -33,19 +33,19 @@ public interface IStructureCreator2 extends IStructureCreator {
 	 * (e.g. a parsing error) the value <code>null</code> is returned.
 	 * <p>
 	 * This method is equivalent to
-	 * {@link IStructureCreator#getStructure(Object)} with the exception that 
+	 * {@link IStructureCreator#getStructure(Object)} with the exception that
 	 * the {@link #destroy(Object)} method must be called with the returned
 	 * comparator as a parameter when the comparator is no longer
 	 * needed. This is done to allow structure creators
 	 * to make use of shared resources such a file buffer.
 	 * <p>
-	 * Also, the node returned from this method should adapt to an 
-	 * {@link ISharedDocumentAdapter} if the provided input has 
-	 * a shared document adapter and it is being used by the 
+	 * Also, the node returned from this method should adapt to an
+	 * {@link ISharedDocumentAdapter} if the provided input has
+	 * a shared document adapter and it is being used by the
 	 * this creator. The convenience class {@link SharedDocumentAdapterWrapper}
 	 * is provided to allow the creator to wrap the adapter of the input
 	 * so that the proper key can be returned.
-	 * 
+	 *
 	 * @param input
 	 *            the object from which to create the tree of
 	 *            <code>IStructureComparator</code>
@@ -57,16 +57,16 @@ public interface IStructureCreator2 extends IStructureCreator {
 	 * @see #destroy(Object)
 	 */
 	IStructureComparator createStructure(Object input, IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
 	 * Creates the single node specified by path from the given input object.
 	 * This method is equivalent to
-	 * {@link IStructureCreator#locate(Object, Object)} with the exception that 
+	 * {@link IStructureCreator#locate(Object, Object)} with the exception that
 	 * the {@link #destroy(Object)} method must be called with the returned
 	 * element as a parameter when the element is no longer
 	 * needed. This is done to allow structure creators
 	 * to make use of shared resources such a file buffer.
-	 * 
+	 *
 	 * @param element specifies a sub object within the input object
 	 * @param input the object from which to create the
 	 *            <code>ITypedElement</code>
@@ -74,12 +74,12 @@ public interface IStructureCreator2 extends IStructureCreator {
 	 * @return the single node specified by <code>path</code> or
 	 *         <code>null</code>
 	 * @throws CoreException if an error occurs while parsing the input
-	 * 
+	 *
 	 * @see IStructureCreator#locate(Object, Object)
 	 * @see #destroy(Object)
 	 */
 	ITypedElement createElement(Object element, Object input, IProgressMonitor monitor) throws CoreException;
-	
+
 	/**
 	 * Release any resources associated with the given object.
 	 * This method must be called for objects returned from either

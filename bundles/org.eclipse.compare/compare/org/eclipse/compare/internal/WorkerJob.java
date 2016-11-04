@@ -20,7 +20,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 public class WorkerJob extends Job {
 
 	private final Worker worker;
-	
+
 	public WorkerJob(String name) {
 		super(name);
 		worker = new Worker(name);
@@ -33,7 +33,7 @@ public class WorkerJob extends Job {
 		schedule();
 		return result;
 	}
-	
+
 	private IStatus getResult(Worker w) {
 		Throwable[] errors = w.getErrors();
 		if (errors.length == 0)
@@ -47,11 +47,11 @@ public class WorkerJob extends Job {
 		}
 		return new MultiStatus(CompareUIPlugin.PLUGIN_ID, 0, (IStatus[]) statii.toArray(new IStatus[statii.size()]), CompareMessages.WorkerJob_0, null);
 	}
-	
+
 	public boolean shouldRun() {
 		return worker.hasWork();
 	}
-	
+
 	public void add(IRunnableWithProgress runnable) {
 		worker.add(runnable);
 		schedule();

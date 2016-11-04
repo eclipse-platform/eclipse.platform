@@ -21,15 +21,15 @@ import org.eclipse.jface.text.IDocument;
  * <p>
  * This interface may be implemented by clients.
  * </p>
- * 
+ *
  * @since 3.3
  */
 public interface IFlushable {
-	
+
 	/**
 	 * Request that the view contents be flushed to the underlying compare input.
 	 * Depending on the type of input, this may result in the contents being written
-	 * into the underlying model (e.g. file) as well. 
+	 * into the underlying model (e.g. file) as well.
 	 * @param monitor a progress monitor or <code>null</code> if progress reporting is not desired
 	 */
 	void flush(IProgressMonitor monitor);

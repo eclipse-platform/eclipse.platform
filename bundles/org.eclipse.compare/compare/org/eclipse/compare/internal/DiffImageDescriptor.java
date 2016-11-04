@@ -53,7 +53,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 		}
 		return h1 + h2 + fWidth;
 	}
-	
+
 	private int calculateHash(ImageData baseImageData) {
 		byte[] data = baseImageData.data;
 		int hash = baseImageData.width + baseImageData.height;
@@ -80,7 +80,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 			if (fBaseImageData != null) {
 				drawImage(fBaseImageData, fWidth - fBaseImageData.width, 0);
 			}
-	
+
 			if (fOverlayImage != null) {
 				ImageData overlay= fOverlayImage.getImageData();
 				if (overlay == null)
@@ -91,7 +91,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 			if (fBaseImageData != null) {
 				drawImage(fBaseImageData, 0, 0);
 			}
-	
+
 			if (fOverlayImage != null) {
 				ImageData overlay= fOverlayImage.getImageData();
 				if (overlay == null)
@@ -100,7 +100,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -118,13 +118,13 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 			DiffImageDescriptor other = (DiffImageDescriptor) obj;
 			return (other.hashCode == hashCode
 					&& isEqual(other.fOverlayImage, fOverlayImage)
-					&& other.fWidth == fWidth 
+					&& other.fWidth == fWidth
 					&& other.fLeft == fLeft
 					&& isEqual(other.fBaseImageData, fBaseImageData));
 		}
 		return false;
 	}
-	
+
 	private boolean isEqual(ImageData i1, ImageData i2) {
 		if (isEqual((Object) i1, (Object) i2)) {
 			return true;
@@ -143,7 +143,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 				&& equals(i1.data,i2.data) && equals(i1.maskData, i2.maskData)
 				&& equals(i1.alphaData, i2.alphaData));
 	}
-	
+
 	private boolean equals(byte[] data, byte[] data2) {
 		if (isEqual(data, data2))
 			return true;

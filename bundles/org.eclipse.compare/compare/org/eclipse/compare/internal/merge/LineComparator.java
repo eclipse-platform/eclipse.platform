@@ -22,7 +22,7 @@ class LineComparator implements IRangeComparator {
     private String[] fLines;
 
     public LineComparator(InputStream is, String encoding) throws IOException {
-        
+
         BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
         String line;
         ArrayList ar = new ArrayList();

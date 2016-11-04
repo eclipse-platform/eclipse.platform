@@ -147,7 +147,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		public Object[] getChildren() {
 			return null;
 		}
-		
+
 		public InputStream getContents() {
 			if (fContents == null)
 				fContents= new byte[0];
@@ -175,7 +175,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	    	}
 		}
 	}
-	
+
 	private String fTitle;
 
 	/**
@@ -184,7 +184,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	public ZipFileStructureCreator() {
 		this(Utilities.getString("ZipStructureCreator.name")); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * Create a new ZipFileStructureCreator with the given title.
 	 * The title is returned by the method <code>getName()</code>.
@@ -201,7 +201,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	public IStructureComparator getStructure(Object input) {
 
 		InputStream is= null;
-		
+
 		if (input instanceof IStreamContentAccessor) {
 			IStreamContentAccessor sca= (IStreamContentAccessor) input;
 			try {
@@ -228,16 +228,16 @@ public class ZipFileStructureCreator implements IStructureCreator {
 					if (length >= 0) {
 						byte[] buffer= new byte[length];
 						int offset= 0;
-	
+
 						do {
 							int n= zip.read(buffer, offset, length);
 							offset += n;
 							length -= n;
 						} while (length > 0);
-	
+
 						ze.setBytes(buffer);
 					} else {
-						byte[] buffer= new byte[1024];		
+						byte[] buffer= new byte[1024];
 						int n;
 						do {
 							n= zip.read(buffer, 0, 1024);
@@ -293,29 +293,29 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	public void save(IStructureComparator structure, Object input) {
 		Assert.isTrue(false); // Cannot update zip archive
 	}
-	
+
 	public IStructureComparator locate(Object path, Object source) {
 		return null;
 	}
-		
+
 	/**
 	 * Returns <code>false</code> since this <code>IStructureCreator</code>
 	 * cannot rewrite the diff tree in order to fold certain combinations of
 	 * additions and deletions.
 	 * <p>
-	 * Note: this method is for internal use only. Clients should not call this method. 
+	 * Note: this method is for internal use only. Clients should not call this method.
 	 * @return <code>false</code>
 	 */
 	public boolean canRewriteTree() {
 		return false;
 	}
-	
+
 	/**
 	 * Empty implementation since this <code>IStructureCreator</code>
 	 * cannot rewrite the diff tree in order to fold certain combinations of
 	 * additions and deletions.
 	 * <p>
-	 * Note: this method is for internal use only. Clients should not call this method. 
+	 * Note: this method is for internal use only. Clients should not call this method.
 	 * @param differencer
 	 * @param root
 	 */

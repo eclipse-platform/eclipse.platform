@@ -43,18 +43,18 @@ public class PatchWizard extends Wizard {
 	private final static String DIALOG_SETTINGS_KEY= "PatchWizard"; //$NON-NLS-1$
 
 	private boolean fHasNewDialogSettings;
-	
+
 	protected InputPatchPage fPatchWizardPage;
 	protected PatchTargetPage fPatchTargetPage;
 	protected PreviewPatchPage2 fPreviewPage2;
-	
+
 	private final WorkspacePatcher fPatcher;
-	
+
 	private CompareConfiguration fConfiguration;
 	private IStorage patch;
 
 	private boolean patchReadIn = false;
-	
+
 	public PatchWizard(IStorage patch, IResource target, CompareConfiguration configuration) {
 		Assert.isNotNull(configuration);
 		this.fConfiguration = configuration;
@@ -69,16 +69,16 @@ public class PatchWizard extends Wizard {
 				patchReadIn = true;
 			} catch (IOException e) {
 				MessageDialog.openError(null,
-						PatchMessages.InputPatchPage_PatchErrorDialog_title, 
-						PatchMessages.InputPatchPage_ParseError_message); 
+						PatchMessages.InputPatchPage_PatchErrorDialog_title,
+						PatchMessages.InputPatchPage_ParseError_message);
 			} catch (CoreException e) {
 				ErrorDialog.openError(getShell(),
-						PatchMessages.InputPatchPage_PatchErrorDialog_title,	
+						PatchMessages.InputPatchPage_PatchErrorDialog_title,
 						PatchMessages.InputPatchPage_PatchFileNotFound_message, e.getStatus());
 			}
 		}
 	}
-	
+
 	private void initializeDialogSettings() {
 		IDialogSettings workbenchSettings= CompareUIPlugin.getDefault().getDialogSettings();
 		IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
@@ -101,7 +101,7 @@ public class PatchWizard extends Wizard {
 	IResource getTarget() {
 		return fPatcher.getTarget();
 	}
-	
+
 	/* (non-Javadoc)
 	 * Method declared on IWizard.
 	 */
@@ -115,24 +115,24 @@ public class PatchWizard extends Wizard {
 		fPreviewPage2 = new PreviewPatchPage2(fPatcher, fConfiguration);
 		addPage(fPreviewPage2);
 	}
-	
+
 	/* (non-Javadoc)
 	 * Method declared on IWizard.
 	 */
 	public boolean performFinish() {
-		
+
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage.getName().equals(PreviewPatchPage2.PREVIEWPATCHPAGE_NAME)){
 			PreviewPatchPage2 previewPage = (PreviewPatchPage2) currentPage;
 			previewPage.ensureContentsSaved();
 		}
-		
+
 		if (fPatchWizardPage != null){
 			// make sure that the patch has been read
 			if (!fPatchWizardPage.isPatchRead())
 				fPatchWizardPage.readInPatch();
 			fPatcher.refresh();
-			
+
 			// make sure that the patch is not invalid
 			if (!fPatchWizardPage.checkPageComplete())
 				return false;
@@ -143,18 +143,18 @@ public class PatchWizard extends Wizard {
 			//make sure that the patch has been read in
 			Assert.isTrue(patchReadIn);
 		}
-		
+
 		if (!currentPage.getName().equals(PreviewPatchPage2.PREVIEWPATCHPAGE_NAME) && fPatcher.hasRejects()){
 			if (!MessageDialog.openConfirm(getShell(), PatchMessages.PatchWizard_0, PatchMessages.PatchWizard_1)) {
 				return false;
 			}
 		}
-		
+
 		try {
 			// create scheduling rule based on the type of patch - single or workspace
 			ISchedulingRule scheduleRule = null;
 			if (fPatcher.isWorkspacePatch()) {
-				// workspace patch 
+				// workspace patch
 				ISchedulingRule[] projectRules = fPatcher.getTargetProjects();
 				scheduleRule = new MultiRule(projectRules);
 			} else {
@@ -206,7 +206,7 @@ public class PatchWizard extends Wizard {
 	public void showPage(IWizardPage page) {
 		getContainer().showPage(page);
 	}
-	
+
 	public IWizardPage getNextPage(IWizardPage page) {
 		//no patch has been read in yet, input patch page
 		if (!patchReadIn)
@@ -225,7 +225,7 @@ public class PatchWizard extends Wizard {
 
 	/**
 	 * Used to report that the patch has
-	 * 
+	 *
 	 */
 	protected void patchReadIn() {
 		patchReadIn = true;
@@ -234,7 +234,7 @@ public class PatchWizard extends Wizard {
 	public CompareConfiguration getCompareConfiguration() {
 		return fConfiguration;
 	}
-	
+
 	public boolean canFinish() {
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage.getName().equals(PreviewPatchPage2.PREVIEWPATCHPAGE_NAME)){
@@ -242,5 +242,5 @@ public class PatchWizard extends Wizard {
 		}
 		return super.canFinish();
 	}
-	
+
 }

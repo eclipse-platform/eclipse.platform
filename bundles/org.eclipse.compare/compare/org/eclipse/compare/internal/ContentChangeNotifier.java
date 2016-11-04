@@ -24,7 +24,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 
 	private ListenerList fListenerList;
 	private final IContentChangeNotifier element;
-	
+
 	public ContentChangeNotifier(IContentChangeNotifier element) {
 		this.element = element;
 	}
@@ -37,7 +37,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 			fListenerList= new ListenerList();
 		fListenerList.add(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * see IContentChangeNotifier.removeChangeListener
 	 */
@@ -48,7 +48,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 				fListenerList= null;
 		}
 	}
-	
+
 	/**
 	 * Notifies all registered <code>IContentChangeListener</code>s of a content change.
 	 */
@@ -82,7 +82,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 
 	/**
 	 * Return whether this notifier is empty (i.e. has no listeners).
-	 * @return whether this notifier is empty 
+	 * @return whether this notifier is empty
 	 */
 	public boolean isEmpty() {
 		return fListenerList == null || fListenerList.isEmpty();

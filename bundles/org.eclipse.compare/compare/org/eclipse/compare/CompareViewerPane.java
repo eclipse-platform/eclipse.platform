@@ -48,10 +48,10 @@ import org.eclipse.swt.widgets.ToolItem;
  * (if there is one).
  * If more <code>Splitters</code> are nested maximizing walks up and
  * maximizes to the outermost <code>Splitter</code>.
- * 
+ *
  * @since 2.0
  */
-public class CompareViewerPane extends ViewForm implements ISelectionProvider, 
+public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		IDoubleClickListener, ISelectionChangedListener, IOpenListener, IAdaptable {
 	private ToolBarManager fToolBarManager;
 	private Object fInput;
@@ -72,16 +72,16 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	 * @exception org.eclipse.swt.SWTException <ul>
 	 *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
 	 * </ul>
-	 */		
+	 */
 	public CompareViewerPane(Composite container, int style) {
 		super(container, style);
-		
+
 		marginWidth= 0;
 		marginHeight= 0;
-		
+
 		Control topLeft = createTopLeft(this);
 		setTopLeft(topLeft);
-		
+
 		MouseAdapter ml= new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
@@ -92,11 +92,11 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 				if (parent instanceof Splitter)
 					((Splitter)parent).setMaximizedControl(CompareViewerPane.this);
 			}
-		};	
-				
+		};
+
 		addMouseListener(ml);
 		getTopLeft().addMouseListener(ml);
-		
+
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -110,7 +110,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 			}
 		});
 	}
-	
+
 	/**
 	 * @param parent
 	 *            a widget which will be the parent of the control (cannot be
@@ -129,23 +129,23 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		};
 		return label;
 	}
-	
+
 	/**
 	 * Set the pane's title text.
 	 * The value <code>null</code> clears it.
-	 * 
+	 *
 	 * @param label the text to be displayed in the pane or null
 	 */
 	public void setText(String label) {
 		CLabel cl= (CLabel) getTopLeft();
 		if (cl != null && !cl.isDisposed())
-			cl.setText(label);		
+			cl.setText(label);
 	}
-	
+
 	/**
 	 * Set the pane's title Image.
 	 * The value <code>null</code> clears it.
-	 * 
+	 *
 	 * @param image the image to be displayed in the pane or null
 	 */
 	public void setImage(Image image) {
@@ -153,11 +153,11 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		if (cl != null)
 			cl.setImage(image);
 	}
-	
+
 	/**
 	 * Returns a <code>ToolBarManager</code> if the given parent is a
 	 * <code>CompareViewerPane</code> or <code>null</code> otherwise.
-	 * 
+	 *
 	 * @param parent a <code>Composite</code> or <code>null</code>
 	 * @return a <code>ToolBarManager</code> if the given parent is a <code>CompareViewerPane</code> otherwise <code>null</code>
 	 */
@@ -171,7 +171,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 
 	/**
 	 * Clears tool items in the <code>CompareViewerPane</code>'s control bar.
-	 * 
+	 *
 	 * @param parent a <code>Composite</code> or <code>null</code>
 	 */
 	public static void clearToolBar(Composite parent) {
@@ -181,9 +181,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 			tbm.update(true);
 		}
 	}
-	
+
 	//---- private stuff
-	
+
 	private ToolBarManager getToolBarManager() {
 		if (fToolBarManager != null && fToolBarManager.getControl() == null)
 			return null;
@@ -208,29 +208,29 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		}
 		return fToolBarManager;
 	}
-	
+
 	/**
 	 * Returns the current input of this pane or null if the pane has no input.
-	 * 
+	 *
 	 * @return an <code>Object</code> that is the input to this pane or null if the pane has no input.
-	 * 
+	 *
 	 * @since 3.3
 	 */
 	public Object getInput() {
 		return fInput;
 	}
-	
+
 	/**
-	 * Sets the input object of this pane. 
-	 * 
+	 * Sets the input object of this pane.
+	 *
 	 * @param input the new input object or <code>null</code>
 	 * @since 3.3
-	 */ 
+	 */
 	public void setInput(Object input) {
 		if (fInput != input)
 			fInput= input;
 	}
-	
+
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener l) {
 		fSelectionListeners.add(l);
@@ -240,24 +240,24 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	public void removeSelectionChangedListener(ISelectionChangedListener l) {
 		fSelectionListeners.remove(l);
 	}
-	
+
 	@Override
 	public ISelection getSelection() {
 		return null;
 	}
-	
+
 	@Override
 	public void setSelection(ISelection s) {
 		// Default is to do nothing
 	}
-	
+
 	@Override
 	public void selectionChanged(SelectionChangedEvent ev) {
 		for (ISelectionChangedListener listener : fSelectionListeners) {
 			listener.selectionChanged(ev);
 		}
 	}
-	
+
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		for (IDoubleClickListener listener : fDoubleClickListener) {
@@ -277,7 +277,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	}
 
 	/**
-	 * Remove a double-click listener. Removing a listener that is not 
+	 * Remove a double-click listener. Removing a listener that is not
 	 * registered has no effect.
 	 * @param listener the listener
 	 * @since 3.3
@@ -298,7 +298,7 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	}
 
 	/**
-	 * Remove an open listener. Removing a listener that is not 
+	 * Remove an open listener. Removing a listener that is not
 	 * registered has no effect.
 	 * @param listener the listener
 	 * @since 3.3
@@ -306,14 +306,14 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	public void removeOpenListener(IOpenListener listener) {
 		fOpenListener.remove(listener);
 	}
-	
+
 	@Override
 	public void open(OpenEvent event) {
 		Object[] listeners= fOpenListener.getListeners();
 		for (int i= 0; i < listeners.length; i++)
 			((IOpenListener) listeners[i]).open(event);
 	}
-	
+
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);

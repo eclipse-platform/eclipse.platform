@@ -24,7 +24,7 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class CompareHandlerService {
-	
+
 	private final List fActivations = new ArrayList();
 	private final Expression fExpression;
 	private ICompareContainer fContainer;
@@ -49,14 +49,14 @@ public class CompareHandlerService {
 		}
 		return new CompareHandlerService(null, null);
 	}
-	
+
 	private CompareHandlerService(ICompareContainer container,
 			Expression expression) {
 		fContainer = container;
 		fExpression = expression;
 		initialize();
 	}
-	
+
 	public void registerAction(IAction action, String commandId) {
 		IHandlerService handlerService = getHandlerService();
 		if (handlerService == null)
@@ -72,7 +72,7 @@ public class CompareHandlerService {
 			fActivations .add(activation);
 		}
 	}
-	
+
 	private IHandlerService getHandlerService() {
 		if (fDisposed)
 			return null;
@@ -114,7 +114,7 @@ public class CompareHandlerService {
 		if (actionHandler != null)
 			actionHandler.setActionDefinitionId(null);
 	}
-	
+
 	private void updateActionBars() {
 		IActionBars bars = getActionBars();
 		if (bars != null)
@@ -130,7 +130,7 @@ public class CompareHandlerService {
 			}
 		}
 	}
-	
+
 	private IActionBars getActionBars() {
 		return fContainer.getActionBars();
 	}

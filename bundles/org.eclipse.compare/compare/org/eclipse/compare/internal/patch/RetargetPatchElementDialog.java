@@ -31,7 +31,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 class RetargetPatchElementDialog extends Dialog {
-	
+
 	private static class RetargetPatchContentProvider extends BaseWorkbenchContentProvider {
 		private final PatchDiffNode node;
 		public RetargetPatchContentProvider(PatchDiffNode node) {
@@ -56,12 +56,12 @@ class RetargetPatchElementDialog extends Dialog {
 			return super.getChildren(element);
 		}
 	}
-	
+
 	private final PatchDiffNode fSelectedNode;
 	private final WorkspacePatcher fPatcher;
 	private TreeViewer fViewer;
 	private IResource fSelectedResource;
-	
+
 	public RetargetPatchElementDialog(Shell shell, WorkspacePatcher patcher, PatchDiffNode node) {
 		super(shell);
 		Assert.isNotNull(patcher);
@@ -77,7 +77,7 @@ class RetargetPatchElementDialog extends Dialog {
 		okButton.setEnabled(false);
 		return control;
 	}
-	
+
 	protected Control createDialogArea(Composite parent) {
 		Composite composite= (Composite) super.createDialogArea(parent);
 
@@ -88,7 +88,7 @@ class RetargetPatchElementDialog extends Dialog {
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 1;
         layout.marginHeight= convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-        layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);			
+        layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		composite.setLayout(layout);
 		final GridData data= new GridData(SWT.FILL, SWT.FILL, true, true);
 		composite.setLayoutData(data);
@@ -124,7 +124,7 @@ class RetargetPatchElementDialog extends Dialog {
 			return ResourcesPlugin.getWorkspace().getRoot();
 		return fPatcher.getTarget();
 	}
-	
+
 	private IResource getInitialSelection() {
 		if (fSelectedNode instanceof PatchFileDiffNode) {
 			PatchFileDiffNode node = (PatchFileDiffNode) fSelectedNode;
@@ -174,7 +174,7 @@ class RetargetPatchElementDialog extends Dialog {
 				fPatcher.retargetHunk(node.getHunkResult().getHunk(), (IFile)fSelectedResource);
 			}
 		}
-		super.okPressed();	
+		super.okPressed();
 	}
 
 	void setupListeners() {

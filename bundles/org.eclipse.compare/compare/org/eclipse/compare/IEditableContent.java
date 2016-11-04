@@ -24,26 +24,26 @@ package org.eclipse.compare;
  * @see IStreamContentAccessor
  */
 public interface IEditableContent {
-	
+
 	/**
 	 * Returns <code>true</code> if this object can be modified.
 	 * If it returns <code>false</code> the other methods of this API must not be called.
-	 * 
+	 *
 	 * @return <code>true</code> if this object can be modified
 	 */
 	boolean isEditable();
-			
+
 	/**
 	 * Replaces the current content with the given new bytes.
-	 * 
+	 *
 	 * @param newContent this new contents replaces the old contents
 	 */
-	void setContent(byte[] newContent); 
+	void setContent(byte[] newContent);
 
 	/**
 	 * This method is called on a parent to add or remove a child,
 	 * or to copy the contents of a child.
-	 * 
+	 *
 	 * What to do is encoded in the two arguments as follows:
 	 * <TABLE>
 	 * <TR>

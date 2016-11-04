@@ -21,10 +21,10 @@ import org.eclipse.compare.structuremergeviewer.IStructureComparator;
  * A buffer for a workspace resource.
  */
 public class BufferedResourceNode extends ResourceNode {
-	
+
 	private boolean fDirty= false;
 	private IFile fDeleteFile;
-		
+
 	/**
 	 * Creates a <code>ResourceNode</code> for the given resource.
 	 *
@@ -33,34 +33,34 @@ public class BufferedResourceNode extends ResourceNode {
 	public BufferedResourceNode(IResource resource) {
 		super(resource);
 	}
-	
+
     /*
      * Returns <code>true</code> if buffer contains uncommitted changes.
      */
 	public boolean isDirty() {
 	    return fDirty;
 	}
-	
+
 	protected IStructureComparator createChild(IResource child) {
 		return new BufferedResourceNode(child);
 	}
-		
+
 	public void setContent(byte[] contents) {
 		fDirty= true;
 		super.setContent(contents);
-	}	
+	}
 
 	/*
 	 * Commits buffered contents to resource.
 	 */
 	public void commit(IProgressMonitor pm) throws CoreException {
 		if (fDirty) {
-			
+
 			if (fDeleteFile != null) {
 				fDeleteFile.delete(true, true, pm);
 				return;
 			}
-			
+
 			IResource resource= getResource();
 			if (resource instanceof IFile) {
 
@@ -84,9 +84,9 @@ public class BufferedResourceNode extends ResourceNode {
 			}
 		}
 	}
-	
+
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
-		
+
 		if (child == null) {	// add resource
 			// create a node without a resource behind it!
 			IResource resource= getResource();
@@ -96,7 +96,7 @@ public class BufferedResourceNode extends ResourceNode {
 				child= new BufferedResourceNode(file);
 			}
 		}
-		
+
 		if (other == null) {	// delete resource
 			IResource resource= getResource();
 			if (resource instanceof IFolder) {
@@ -109,10 +109,10 @@ public class BufferedResourceNode extends ResourceNode {
 			}
 			return null;
 		}
-		
+
 		if (other instanceof IStreamContentAccessor && child instanceof IEditableContent) {
 			IEditableContent dst= (IEditableContent) child;
-			
+
 			try {
 				InputStream is= ((IStreamContentAccessor)other).getContents();
 				byte[] bytes= Utilities.readBytes(is);

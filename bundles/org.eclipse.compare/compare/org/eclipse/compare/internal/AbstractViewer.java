@@ -21,19 +21,19 @@ public abstract class AbstractViewer extends Viewer {
 	public void setInput(Object input) {
 		// empty default implementation
 	}
-	
+
 	public Object getInput() {
 		return null;
 	}
-	
+
 	public ISelection getSelection() {
 		return StructuredSelection.EMPTY;
 	}
-	
+
 	public void setSelection(ISelection s, boolean reveal) {
 		// empty default implementation
 	}
-	
+
 	public void refresh() {
 		// empty default implementation
 	}

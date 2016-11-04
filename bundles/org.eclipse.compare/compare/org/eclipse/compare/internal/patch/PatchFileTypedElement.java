@@ -73,7 +73,7 @@ public class PatchFileTypedElement implements ITypedElement,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.ITypedElement#getName()
 	 */
 	@Override
@@ -83,7 +83,7 @@ public class PatchFileTypedElement implements ITypedElement,
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.ITypedElement#getType()
 	 */
 	@Override

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * A patch configuration allows clients to set parameters that control how a
  * patch is applied.
- * 
+ *
  * @see IFilePatch2
  * @since 3.3
  * @noextend This class may be instantiated by clients but is not intended to be
@@ -49,9 +49,9 @@ public class PatchConfiguration {
 	}
 
 	/**
-	 * Return the number of prefix segments to be stripped when attempting 
+	 * Return the number of prefix segments to be stripped when attempting
 	 * to apply a patch.
-	 * @return the number of prefix segments to be stripped when attempting 
+	 * @return the number of prefix segments to be stripped when attempting
 	 * to apply a patch
 	 */
 	public int getPrefixSegmentStripCount() {
@@ -59,9 +59,9 @@ public class PatchConfiguration {
 	}
 
 	/**
-	 * Set the number of prefix segments to be stripped when attempting 
+	 * Set the number of prefix segments to be stripped when attempting
 	 * to apply a patch.
-	 * @param stripCount the number of prefix segments to be stripped when attempting 
+	 * @param stripCount the number of prefix segments to be stripped when attempting
 	 * to apply a patch.
 	 */
 	public void setPrefixSegmentStripCount(int stripCount) {
@@ -78,7 +78,7 @@ public class PatchConfiguration {
 	public int getFuzz() {
 		return this.fFuzz;
 	}
-	
+
 	/**
 	 * Set the fuzz factor to be used when applying a patch.
 	 * @param fuzz the fuzz factor to be used when applying a patch.
@@ -94,7 +94,7 @@ public class PatchConfiguration {
 	public boolean isIgnoreWhitespace() {
 		return this.fIgnoreWhitespace;
 	}
-	
+
 	/**
 	 * Set whether whitespace should be ignored
 	 * @param ignoreWhitespace whether whitespace should be ignored
@@ -102,18 +102,18 @@ public class PatchConfiguration {
 	public void setIgnoreWhitespace(boolean ignoreWhitespace) {
 		this.fIgnoreWhitespace = ignoreWhitespace;
 	}
-	
+
 	/**
-	 * Return the property associated with the given key or 
+	 * Return the property associated with the given key or
 	 * <code>null</code> if there is no property for the key.
 	 * @param key the key
-	 * @return the property associated with the given key or 
+	 * @return the property associated with the given key or
 	 * <code>null</code>
 	 */
 	public Object getProperty(String key) {
 		return this.properties.get(key);
 	}
-	
+
 	/**
 	 * Set the property associated with the given key
 	 * @param key the key
@@ -125,7 +125,7 @@ public class PatchConfiguration {
 
 	/**
 	 * Adds a hunk filter.
-	 * 
+	 *
 	 * @param filter the filter
 	 * @since org.eclipse.compare.core 3.5
 	 */
@@ -135,7 +135,7 @@ public class PatchConfiguration {
 
 	/**
 	 * Removes a hunk filter.
-	 * 
+	 *
 	 * @param filter the filter
 	 * @since org.eclipse.compare.core 3.5
 	 */
@@ -146,7 +146,7 @@ public class PatchConfiguration {
 	/**
 	 * Return an array of hunk filters that have been added to this
 	 * configuration.
-	 * 
+	 *
 	 * @return an array of hunk filters that have been added to this configuration
 	 * @since org.eclipse.compare.core 3.5
 	 */

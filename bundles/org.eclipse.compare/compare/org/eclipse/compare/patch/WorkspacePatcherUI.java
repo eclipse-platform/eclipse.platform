@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IProject;
  */
 public class WorkspacePatcherUI {
 	/**
-	 * Returns a string that must be the first line of a workspace patch (a multi-project patch 
+	 * Returns a string that must be the first line of a workspace patch (a multi-project patch
 	 * that is understood by the Apply Patch wizard). Each project to be included in the patch
 	 * must be prefixed by the line obtained from the <code>getWorkspacePatchProjectHeader()</code>.
 	 * This snippet outlines how the a workspace patch is to be created:

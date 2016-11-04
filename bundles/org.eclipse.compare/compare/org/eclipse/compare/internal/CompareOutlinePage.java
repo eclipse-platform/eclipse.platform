@@ -33,7 +33,7 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 	private Control fControl;
 	private CompareViewerSwitchingPane fStructurePane;
 	private OutlineViewerCreator fCreator;
-	
+
 	CompareOutlinePage(CompareEditor editor) {
 		fCompareEditor= editor;
 	}
@@ -56,7 +56,7 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		h.layout();
 		reset();
 	}
-	
+
 	private Viewer findStructureViewer(Viewer oldViewer, ICompareInput input, Composite parent) {
 		OutlineViewerCreator creator = getCreator();
 		if (creator != null)
@@ -103,7 +103,7 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 		if (fStructurePane != null)
 			fStructurePane.setSelection(selection);
 	}
-	
+
 	private void setInput(Object input) {
 		if (fStructurePane != null) {
 			fStructurePane.setInput(input);
@@ -127,7 +127,7 @@ public class CompareOutlinePage extends Page implements IContentOutlinePage, IPr
 			((Splitter)fControl).layout();
 		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();

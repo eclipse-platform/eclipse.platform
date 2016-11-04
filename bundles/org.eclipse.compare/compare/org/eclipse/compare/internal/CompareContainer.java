@@ -23,7 +23,7 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class CompareContainer implements ICompareContainer {
-	
+
 	private WorkerJob worker;
 
 	/* (non-Javadoc)
@@ -32,7 +32,7 @@ public class CompareContainer implements ICompareContainer {
 	public void setStatusMessage(String message) {
 		// Do nothing, by default
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#addCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
@@ -40,7 +40,7 @@ public class CompareContainer implements ICompareContainer {
 			ICompareInputChangeListener listener) {
 		input.addCompareInputChangeListener(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
@@ -48,7 +48,7 @@ public class CompareContainer implements ICompareContainer {
 			ICompareInputChangeListener listener) {
 		input.removeCompareInputChangeListener(listener);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)
 	 */
@@ -56,14 +56,14 @@ public class CompareContainer implements ICompareContainer {
 			ISelectionProvider selectionProvider) {
 		// Nothing to do
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getServiceLocator()
 	 */
 	public IServiceLocator getServiceLocator() {
 		return null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getActionBars()
 	 */
@@ -79,7 +79,7 @@ public class CompareContainer implements ICompareContainer {
 			throws InvocationTargetException, InterruptedException {
 		PlatformUI.getWorkbench().getProgressService().run(fork, cancelable, runnable);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getNavigator()
 	 */

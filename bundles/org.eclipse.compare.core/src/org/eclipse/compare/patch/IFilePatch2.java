@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A representation of a file patch that can be applied to an input stream.
- * 
+ *
  * @noimplement This interface is not intended to be implemented by clients.
  * @since org.eclipse.compare.core 3.5
  */
@@ -31,7 +31,7 @@ public interface IFilePatch2 {
 	/**
 	 * Return the target path for this patch. The target path may differ
 	 * depending on whether the patch is being reversed or not.
-	 * 
+	 *
 	 * @param configuration
 	 *            the patch configuration
 	 * @return the target path for this patch
@@ -43,7 +43,7 @@ public interface IFilePatch2 {
 	 * Apply this patch to the given contents. The result provides the
 	 * original and patch contents and also indicates whether some portions of
 	 * the patch (called hunks) failed to apply.
-	 * 
+	 *
 	 * @param content
 	 *            the contents
 	 * @param configuration
@@ -58,7 +58,7 @@ public interface IFilePatch2 {
 	/**
 	 * Return the header information of the patch or <code>null</code> if there
 	 * was no header text. The header may be multi-line.
-	 * 
+	 *
 	 * @return the header information of the patch or <code>null</code>
 	 */
 	public String getHeader();
@@ -66,7 +66,7 @@ public interface IFilePatch2 {
 	/**
 	 * Returns the milliseconds time value of the before date from the patch, or
 	 * DATE_UNKNOWN if the date is unknown.
-	 * 
+	 *
 	 * @return milliseconds time value of the before date from the patch
 	 */
 	public long getBeforeDate();
@@ -74,14 +74,14 @@ public interface IFilePatch2 {
 	/**
 	 * Returns the milliseconds time value of the after date from the patch, or
 	 * DATE_UNKNOWN if the date is unknown.
-	 * 
+	 *
 	 * @return milliseconds time value of the after date from the patch
 	 */
 	public long getAfterDate();
 
 	/**
 	 * Returns all the hunks this file patch contains.
-	 * 
+	 *
 	 * @return array of hunks
 	 */
 	public IHunk[] getHunks();

@@ -29,7 +29,7 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	public static PatchFileDiffNode createDiffNode(DiffNode parent, FileDiffResult result) {
 		return new PatchFileDiffNode(result, parent, getKind(result), getAncestorElement(result), getLeftElement(result), getRightElement(result));
 	}
-	
+
 	public static int getKind(FileDiffResult result) {
 		if (!result.hasMatches())
 			return Differencer.NO_CHANGE;
@@ -78,11 +78,11 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	public FileDiffResult getDiffResult() {
 		return result;
 	}
-	
+
 	protected PatchConfiguration getConfiguration() {
 		return result.getConfiguration();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffContainer#add(org.eclipse.compare.structuremergeviewer.IDiffElement)
 	 */
@@ -105,7 +105,7 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	public void contentChanged(IContentChangeNotifier source) {
 		fireChange();
 	}
-	
+
 	public int getKind() {
 		int kind = super.getKind();
 		if (kind == Differencer.NO_CHANGE && getPatcher().hasCachedContents(getDiffResult().getDiff())) {

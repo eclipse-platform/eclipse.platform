@@ -69,7 +69,7 @@ import org.eclipse.ui.part.ResourceTransfer;
  * This is a dialog that can invoke the compare editor on chosen files.
  */
 public class CompareWithOtherResourceDialog extends TitleAreaDialog {
-	
+
 	private int MIN_WIDTH = 320;
 	private int MIN_HEIGHT_WITH_ANCESTOR = 320;
 	private int MIN_HEIGHT_WITHOUT_ANCESTOR = 238;
@@ -169,28 +169,28 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		}
 
 	}
-	
+
 	private abstract class ContentTypeElement {
-		
+
 		private Button radioButton;
 		protected Button mainButton;
 		protected Text text;
 		private String type;
 		protected InternalSection section;
 		private IResource resource;
-		
+
 		public ContentTypeElement(Composite parent, String type, InternalSection section) {
 			this.type = type;
 			this.section = section;
 			createContents(parent);
 		}
-		
+
 		private void createContents(Composite parent) {
 			createRadioButton(parent);
 			createText(parent);
 			createMainButton(parent);
 		}
-		
+
 		private void createRadioButton(Composite parent) {
 			radioButton = new Button(parent, SWT.RADIO);
 			radioButton.setText(type);
@@ -201,30 +201,30 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			text.setEditable(false);
 		}
-		
+
 		protected void createMainButton(Composite parent) {
 			mainButton = new Button(parent, SWT.PUSH);
 			mainButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		}
-		
+
 		protected Button getRadioButton() {
 			return radioButton;
 		}
-		
+
 		protected String getText() {
 			return text.getText();
 		}
-		
+
 		protected void setText(String string) {
 			text.setText(string);
 		}
-		
+
 		protected void setEnabled(boolean enabled) {
 			radioButton.setSelection(enabled);
 			mainButton.setEnabled(enabled);
 			text.setEnabled(enabled);
 		}
-		
+
 		protected void setResource(IResource resource) {
 			this.resource = resource;
 			section.setResource(resource);
@@ -233,32 +233,32 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		public IResource getResource() {
 			return resource;
 		}
-		
+
 		void clearResource() {
 			resource = null;
 			text.setText(""); //$NON-NLS-1$
 		}
-		
+
 	}
-	
+
 	private class WorkspaceContent extends ContentTypeElement {
-		
+
 		public WorkspaceContent(Composite parent, InternalSection section) {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_workspaceRadioButton, section);
 		}
-		
+
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_workspaceMainButton);
 			// temporarily hide this button. For more information about supporting for browsing workspace see bug 243744.
 			mainButton.setVisible(false);
 		}
-		
+
 		protected void createText(Composite parent) {
-			
+
 			super.createText(parent);
 			text.setEditable(true);
-			
+
 			text.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
 					section.setResource(text.getText());
@@ -275,7 +275,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					updateErrorInfo();
 				}
 			});
-			
+
 			initDrag();
 			initDrop();
 		}
@@ -302,15 +302,15 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			target.setTransfer(types);
 			target.addDropListener(new FileTextDropListener(this));
 		}
-		
+
 	}
-	
+
 	private class ExternalFileContent extends ContentTypeElement {
-		
+
 		public ExternalFileContent(Composite parent, InternalSection section) {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_externalFileRadioButton, section);
 		}
-		
+
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFileMainButton);
@@ -320,7 +320,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				}
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFile();
-					if (r == null) 
+					if (r == null)
 						return;
 					setResource(r);
 				}
@@ -331,15 +331,15 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super.setResource(resource);
 			text.setText(resource.getLocation().toOSString());
 		}
-		
+
 	}
-	
+
 	private class ExternalFolderContent extends ContentTypeElement {
-		
+
 		public ExternalFolderContent(Composite parent, InternalSection section) {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_externalFolderRadioButton, section);
 		}
-		
+
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFolderMainButton);
@@ -360,11 +360,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super.setResource(resource);
 			text.setText(resource.getLocation().toOSString());
 		}
-		
+
 	}
 
 	private abstract class InternalSection {
-		
+
 		// there is no "enum" support in Java 1.4. Sigh...
 		public static final int WORKSPACE = 0;
 		public static final int EXTERNAL_FILE = 1;
@@ -372,11 +372,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 		protected Group group;
 		private IResource resource;
-		
+
 		ExternalFileContent externalFileContent;
 		ExternalFolderContent externalFolderContent;
 		WorkspaceContent workspaceContent;
-		
+
 		private InternalSection() {
 			// not to instantiate
 		}
@@ -386,16 +386,16 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			group = new Group(parent, SWT.NONE);
 			group.setLayout(new GridLayout(3, false));
 			group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-			
+
 			workspaceContent = new WorkspaceContent(group, this);
 			externalFileContent = new ExternalFileContent(group, this);
 			externalFolderContent = new ExternalFolderContent(group, this);
-			
+
 			addListenersToRadioButtons();
 		}
-		
+
 		private void addListenersToRadioButtons() {
-			final ContentTypeElement[] elements = new ContentTypeElement[] { workspaceContent, 
+			final ContentTypeElement[] elements = new ContentTypeElement[] { workspaceContent,
 					externalFileContent, externalFolderContent };
 			for (int i = 0; i < elements.length; i++) {
 				elements[i].getRadioButton().addListener(SWT.Selection, new Listener() {
@@ -425,9 +425,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		protected void setResource(String s) {
 			IResource tmp = ResourcesPlugin.getWorkspace().getRoot()
 					.findMember(s);
-			if (tmp instanceof IWorkspaceRoot) 
+			if (tmp instanceof IWorkspaceRoot)
 				resource = null;
-			else 
+			else
 				resource = tmp;
 			updateErrorInfo();
 		}
@@ -439,10 +439,10 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			externalFolderContent.clearResource();
 			updateErrorInfo();
 		}
-		
+
 		protected void setContentType(int type) {
 			switch(type) {
-			case WORKSPACE: 
+			case WORKSPACE:
 				workspaceContent.setEnabled(true);
 				externalFileContent.setEnabled(false);
 				externalFolderContent.setEnabled(false);
@@ -521,15 +521,15 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			expandable.setLayoutData(layoutData);
 		}
 	}
-	
+
 	private class ExternalResourcesProject {
-		
+
 		// Implementation based on org.eclipse.jdt.internal.core.ExternalFoldersManager
-		
+
 		private int counter = 0;
-		
+
 		private static final String TMP_PROJECT_NAME = ".org.eclipse.compare.tmp"; //$NON-NLS-1$
-		
+
 		private final static String TMP_PROJECT_FILE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" //$NON-NLS-1$
 				+ "<projectDescription>\n" //$NON-NLS-1$
 				+ "\t<name>" + TMP_PROJECT_NAME + "\t</name>\n" //$NON-NLS-1$ //$NON-NLS-2$
@@ -540,13 +540,13 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				+ "\t</buildSpec>\n" //$NON-NLS-1$
 				+ "\t<natures>\n" + "\t</natures>\n" //$NON-NLS-1$//$NON-NLS-2$
 				+ "</projectDescription>"; //$NON-NLS-1$
-		
+
 		private final static String TMP_FOLDER_NAME = "tmpFolder"; //$NON-NLS-1$
-		
+
 		private ExternalResourcesProject() {
 			// nothing to do here
 		}
-		
+
 		private IProject createTmpProject() throws CoreException {
 			IProject project = getTmpProject();
 			if (!project.isAccessible()) {
@@ -582,14 +582,14 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			project.setHidden(true);
 			return project;
 		}
-		
+
 		private IFolder getTmpFolder(IProject project) throws CoreException {
 			IFolder folder = project.getFolder(TMP_FOLDER_NAME);
 			if (!folder.exists())
 				folder.create(IResource.NONE, true, null);
 			return folder;
 		}
-		
+
 		private IFile getExternalFile() {
 			FileDialog dialog = new FileDialog(getShell());
 			String path = dialog.open();
@@ -605,7 +605,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				return (IFolder) linkResource(new Path(path));
 			return null;
 		}
-		
+
 		private IResource linkResource(IPath path) {
 			IResource r = null;
 			String resourceName = path.lastSegment();
@@ -617,7 +617,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					r = getTmpFolder(project).getFile(resourceName);
 					if (r.exists()) { 	// add a number to file's name when there already is a file with that name in a folder
 						String extension = path.getFileExtension();
-						String fileName = path.removeFileExtension().lastSegment(); 
+						String fileName = path.removeFileExtension().lastSegment();
 						r = getTmpFolder(project).getFile(getName(fileName, extension));
 					}
 					((IFile)r).createLink(path, IResource.REPLACE, null);
@@ -636,11 +636,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			}
 			return r;
 		}
-		
+
 		/**
 		 * This method is used to prevent duplicating names of linked resources.
 		 * It adds a suffix based on the <code>counter</code> value.
-		 * 
+		 *
 		 * @param name
 		 * @param extension optional
 		 * @return
@@ -658,13 +658,13 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			// don't change the name if counter equals 0
 			return name;
 		}
-		
+
 		private IProject getTmpProject() {
 			return ResourcesPlugin.getWorkspace().getRoot().getProject(
 					TMP_PROJECT_NAME);
 		}
 	}
-	
+
 	private Button okButton;
 	private InternalGroup rightPanel, leftPanel;
 	private InternalExpandable ancestorPanel;
@@ -673,7 +673,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	/**
 	 * Creates the dialog.
-	 * 
+	 *
 	 * @param shell
 	 *            a shell
 	 * @param selection
@@ -689,7 +689,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
 	 * .Composite)
@@ -730,7 +730,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
 	 * .swt.widgets.Composite)
@@ -800,13 +800,13 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns table with selected resources. If any resource wasn't chosen in
 	 * the ancestor panel, table has only two elements -- resources chosen in
 	 * left and right panel. In the other case table contains all three
 	 * resources.
-	 * 
+	 *
 	 * @return table with selected resources
 	 */
 	public IResource[] getResult() {

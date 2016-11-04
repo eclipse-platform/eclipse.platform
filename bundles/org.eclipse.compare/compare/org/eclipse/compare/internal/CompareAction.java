@@ -50,10 +50,10 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 			// buffered merge mode: don't ask for confirmation
 			// when switching between modified resources
 			cc.setProperty(CompareEditor.CONFIRM_SAVE_PROPERTY, Boolean.FALSE);
-			
+
 			// uncomment following line to have separate outline view
 			//cc.setProperty(CompareConfiguration.USE_OUTLINE_VIEW, Boolean.TRUE);
-						
+
 			fInput= new ResourceCompareInput(cc);
 		}
 		return fInput.isEnabled(selection);

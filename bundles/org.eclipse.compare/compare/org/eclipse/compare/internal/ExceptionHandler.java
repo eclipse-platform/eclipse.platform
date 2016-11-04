@@ -32,20 +32,20 @@ import org.eclipse.jface.dialogs.MessageDialog;
 public class ExceptionHandler {
 
 	private static ExceptionHandler fgInstance= new ExceptionHandler();
-	
+
 	/*
 	 * Logs the given exception using the platform's logging mechanism. The exception is
 	 * logged as an error with the error code <code>JavaStatusConstants.INTERNAL_ERROR</code>.
 	 */
 	public static void log(Throwable t, String message) {
-		CompareUIPlugin.log(new Status(IStatus.ERROR, CompareUIPlugin.getPluginId(), 
+		CompareUIPlugin.log(new Status(IStatus.ERROR, CompareUIPlugin.getPluginId(),
 			CompareUIPlugin.INTERNAL_ERROR, message, t));
 	}
-	
+
 	/**
 	 * Handles the given <code>CoreException</code>. The workbench shell is used as a parent
 	 * for the dialog window.
-	 * 
+	 *
 	 * @param e the <code>CoreException</code> to be handled
 	 * @param title the dialog window's window title
 	 * @param message message to be displayed by the dialog window
@@ -53,10 +53,10 @@ public class ExceptionHandler {
 	public static void handle(CoreException e, String title, String message) {
 		handle(e, CompareUIPlugin.getShell(), title, message);
 	}
-	
+
 	/**
-	 * Handles the given <code>CoreException</code>. 
-	 * 
+	 * Handles the given <code>CoreException</code>.
+	 *
 	 * @param e the <code>CoreException</code> to be handled
 	 * @param parent the dialog window's parent shell
 	 * @param title the dialog window's window title
@@ -65,11 +65,11 @@ public class ExceptionHandler {
 	public static void handle(CoreException e, Shell parent, String title, String message) {
 		fgInstance.perform(e, parent, title, message);
 	}
-	
+
 	/**
-	 * Handles the given <code>InvocationTargetException</code>. The workbench shell is used 
+	 * Handles the given <code>InvocationTargetException</code>. The workbench shell is used
 	 * as a parent for the dialog window.
-	 * 
+	 *
 	 * @param e the <code>InvocationTargetException</code> to be handled
 	 * @param title the dialog window's window title
 	 * @param message message to be displayed by the dialog window
@@ -77,10 +77,10 @@ public class ExceptionHandler {
 	public static void handle(InvocationTargetException e, String title, String message) {
 		handle(e, CompareUIPlugin.getShell(), title, message);
 	}
-	
+
 	/**
-	 * Handles the given <code>InvocationTargetException</code>. 
-	 * 
+	 * Handles the given <code>InvocationTargetException</code>.
+	 *
 	 * @param e the <code>InvocationTargetException</code> to be handled
 	 * @param parent the dialog window's parent shell
 	 * @param title the dialog window's window title
@@ -91,7 +91,7 @@ public class ExceptionHandler {
 	}
 
 	//---- Hooks for subclasses to control exception handling ------------------------------------
-	
+
 	protected void perform(CoreException e, Shell shell, String title, String message) {
 		CompareUIPlugin.log(e);
 		IStatus status= e.getStatus();
@@ -117,7 +117,7 @@ public class ExceptionHandler {
 	}
 
 	//---- Helper methods -----------------------------------------------------------------------
-	
+
 	private void displayMessageDialog(Throwable t, String exceptionMessage, Shell shell, String title, String message) {
 		StringWriter msg= new StringWriter();
 		if (message != null) {
@@ -125,9 +125,9 @@ public class ExceptionHandler {
 			msg.write("\n\n"); //$NON-NLS-1$
 		}
 		if (exceptionMessage == null || exceptionMessage.length() == 0)
-			msg.write(CompareMessages.ExceptionDialog_seeErrorLogMessage); 
+			msg.write(CompareMessages.ExceptionDialog_seeErrorLogMessage);
 		else
 			msg.write(exceptionMessage);
-		MessageDialog.openError(shell, title, msg.toString());			
-	}	
+		MessageDialog.openError(shell, title, msg.toString());
+	}
 }

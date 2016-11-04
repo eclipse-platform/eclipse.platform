@@ -12,7 +12,7 @@ package org.eclipse.compare.internal;
 
 
 public class ReplaceWithEditionAction extends EditionAction {
-		
+
 	public ReplaceWithEditionAction() {
 		super(true, "org.eclipse.compare.internal.ReplaceWithEditionAction"); //$NON-NLS-1$
 		fHelpContextId= ICompareContextIds.REPLACE_WITH_EDITION_DIALOG;

@@ -122,7 +122,7 @@ public class CompareStructureViewerSwitchingPane extends
 		});
 		return composite;
 	}
-	
+
 	protected boolean inputChanged(Object input) {
 		return getInput() != input
 				|| fCompareEditorInput.getStructureViewerDescriptor() != fSelectedViewerDescriptor;
@@ -144,7 +144,7 @@ public class CompareStructureViewerSwitchingPane extends
 	private void showMenu() {
 		if (!(getInput() instanceof ICompareInput))
 			return;
-		
+
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
 				.findStructureViewerDescriptor(getViewer(),
 						(ICompareInput) getInput(), getCompareConfiguration());
@@ -160,7 +160,7 @@ public class CompareStructureViewerSwitchingPane extends
 		defaultItem.setSelection(fSelectedViewerDescriptor == null);
 
 		new MenuItem(menu, SWT.SEPARATOR);
-		
+
 		// add others
 		for (int i = 0; i < vd.length; i++) {
 			final ViewerDescriptor vdi = vd[i];
@@ -177,14 +177,14 @@ public class CompareStructureViewerSwitchingPane extends
 			item.addSelectionListener(createSelectionListener(vdi));
 			item.setSelection(vdi == fSelectedViewerDescriptor);
 		}
-		
+
 		// 2. show
 		Rectangle bounds = toolBar.getItem(0).getBounds();
 		Point topLeft = new Point(bounds.x, bounds.y + bounds.height);
 		topLeft = toolBar.toDisplay(topLeft);
 		menu.setLocation(topLeft.x, topLeft.y);
 		menu.setVisible(true);
-		
+
 		// 3. dispose on close
 		menu.addMenuListener(new MenuAdapter() {
 			public void menuHidden(MenuEvent e) {
@@ -242,7 +242,7 @@ public class CompareStructureViewerSwitchingPane extends
 			}
 		}
 	}
-	
+
 	public void addMouseListener(MouseListener listener) {
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();

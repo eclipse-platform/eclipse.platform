@@ -34,7 +34,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 
 public class CompareEditorContributor extends EditorActionBarContributor {
-	
+
 	public final static String FILTER_SEPARATOR = "compare.filters"; //$NON-NLS-1$
 	public final static String BUILTIN_SEPARATOR = "compare.builtin"; //$NON-NLS-1$
 
@@ -43,27 +43,27 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	private ChangePropertyAction fIgnoreWhitespace;
 	private NavigationAction fNext;
 	private NavigationAction fPrevious;
-	
+
 	private NavigationAction fToolbarNext;
 	private NavigationAction fToolbarPrevious;
 
 	public CompareEditorContributor() {
 		ResourceBundle bundle= CompareUI.getResourceBundle();
-		
+
 		IWorkbenchHelpSystem helpSystem= PlatformUI.getWorkbench().getHelpSystem();
-		
+
 		fIgnoreWhitespace= ChangePropertyAction.createIgnoreWhiteSpaceAction(bundle, null);
 		helpSystem.setHelp(fIgnoreWhitespace, ICompareContextIds.IGNORE_WHITESPACE_ACTION);
-		
+
 		fNext= new NavigationAction(bundle, true);
 		helpSystem.setHelp(fNext, ICompareContextIds.GLOBAL_NEXT_DIFF_ACTION);
-		
+
 		fPrevious= new NavigationAction(bundle, false);
 		helpSystem.setHelp(fPrevious, ICompareContextIds.GLOBAL_PREVIOUS_DIFF_ACTION);
-		
+
 		fToolbarNext= new NavigationAction(bundle, true);
 		helpSystem.setHelp(fToolbarNext, ICompareContextIds.NEXT_DIFF_ACTION);
-		
+
 		fToolbarPrevious= new NavigationAction(bundle, false);
 		helpSystem.setHelp(fToolbarPrevious, ICompareContextIds.PREVIOUS_DIFF_ACTION);
 	}
@@ -78,7 +78,7 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 		tbm.appendToGroup(BUILTIN_SEPARATOR, fToolbarNext);
 		tbm.appendToGroup(BUILTIN_SEPARATOR, fToolbarPrevious);
 	}
-	
+
 	/*
 	 * @see EditorActionBarContributor#contributeToMenu(IMenuManager)
 	 */
@@ -87,12 +87,12 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	}
 
 	public void setActiveEditor(IEditorPart targetEditor) {
-				
+
 		if (fActiveEditorPart == targetEditor)
 			return;
-			
+
 		fActiveEditorPart= targetEditor;
-		
+
 		if (fActiveEditorPart != null) {
 			IEditorInput input= fActiveEditorPart.getEditorInput();
 			if (input instanceof CompareEditorInput) {
@@ -105,19 +105,19 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 				// End fix http://bugs.eclipse.org/bugs/show_bug.cgi?id=20105
 			}
 		}
-			
+
 		if (targetEditor instanceof CompareEditor) {
 			IActionBars actionBars= getActionBars();
-		
+
 			CompareEditor editor= (CompareEditor) targetEditor;
 			editor.setActionBars(actionBars);
-		
+
 			actionBars.setGlobalActionHandler(ActionFactory.NEXT.getId(), fNext);
 			actionBars.setGlobalActionHandler(ActionFactory.PREVIOUS.getId(), fPrevious);
 
 			actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION, fNext);
 			actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, fPrevious);
-			
+
 			CompareConfiguration cc= editor.getCompareConfiguration();
 			fIgnoreWhitespace.setCompareConfiguration(cc);
 
@@ -181,7 +181,7 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 			actionBars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, null);
 		}
 	}
-	
+
 	public void dispose() {
 		setActiveEditor(null);
 		super.dispose();

@@ -25,23 +25,23 @@ public abstract class LCS {
 
 	private int max_differences; // the maximum number of differences from
 									// each end to consider
-	
+
 	private int length;
 
 	/**
 	 * Myers' algorithm for longest common subsequence. O((M + N)D) worst case
 	 * time, O(M + N + D^2) expected time, O(M + N) space
 	 * (http://citeseer.ist.psu.edu/myers86ond.html)
-	 * 
+	 *
 	 * Note: Beyond implementing the algorithm as described in the paper I have
 	 * added diagonal range compression which helps when finding the LCS of a
 	 * very long and a very short sequence, also bound the running time to (N +
 	 * M)^1.5 when both sequences are very long.
-	 * 
+	 *
 	 * After this method is called, the longest common subsequence is available
 	 * by calling getResult() where result[0] is composed of
 	 * entries from l1 and result[1] is composed of entries from l2
-	 * @param subMonitor 
+	 * @param subMonitor
 	 */
 	public void longestCommonSubsequence(SubMonitor subMonitor) {
 		int length1 = getLength1();
@@ -58,9 +58,9 @@ public abstract class LCS {
 		}
 
 		initializeLcs(length1);
-		
+
 		subMonitor.beginTask(null, length1);
-		
+
 		/*
 		 * The common prefixes and suffixes are always part of some LCS, include
 		 * them now to reduce our search space
@@ -102,7 +102,7 @@ public abstract class LCS {
 	 * The recursive helper function for Myers' LCS. Computes the LCS of
 	 * l1[bottoml1 .. topl1] and l2[bottoml2 .. topl2] fills in the appropriate
 	 * location in lcs and returns the length
-	 * 
+	 *
 	 * @param l1 The 1st sequence
 	 * @param bottoml1 Index in the 1st sequence to start from (inclusive)
 	 * @param topl1 Index in the 1st sequence to end on (inclusive)
@@ -113,16 +113,16 @@ public abstract class LCS {
 	 *            to store furthest reaching D-paths
 	 * @param snake should be allocated as int[3], used to store the beginning
 	 *            x, y coordinates and the length of the latest snake traversed
-	 * @param subMonitor 
+	 * @param subMonitor
 	 * @param lcs should be allocated as TextLine[2][l1.length], used to store
 	 *            the common points found to be part of the LCS where lcs[0]
 	 *            references lines of l1 and lcs[1] references lines of l2.
-	 * 
+	 *
 	 * @return the length of the LCS
 	 */
 	private int lcs_rec(
 			int bottoml1, int topl1,
-			int bottoml2, int topl2, 
+			int bottoml2, int topl2,
 			int[][] V, int[] snake, SubMonitor subMonitor) {
 
 		// check that both sequences are non-empty
@@ -169,7 +169,7 @@ public abstract class LCS {
 	private void worked(SubMonitor subMonitor, int work) {
 		if (subMonitor.isCanceled())
 			throw new OperationCanceledException();
-		subMonitor.worked(work);	
+		subMonitor.worked(work);
 	}
 
 	/**
@@ -177,7 +177,7 @@ public abstract class LCS {
 	 * l1[bottoml1..topl1] and l2[bottoml2..topl2] The x, y coodrdinates of the
 	 * start of the middle snake are saved in snake[0], snake[1] respectively
 	 * and the length of the snake is saved in s[2].
-	 * 
+	 *
 	 * @param l1 The 1st sequence
 	 * @param bottoml1 Index in the 1st sequence to start from (inclusive)
 	 * @param topl1 Index in the 1st sequence to end on (inclusive)
@@ -189,13 +189,13 @@ public abstract class LCS {
 	 * @param snake should be allocated as int[3], used to store the beginning
 	 *            x, y coordinates and the length of the middle snake
 	 * @subMonitor subMonitor
-	 * 
+	 *
 	 * @return The number of differences (SES) between l1[bottoml1..topl1] and
 	 *         l2[bottoml2..topl2]
 	 */
 	private int find_middle_snake(
 			int bottoml1, int topl1,
-			int bottoml2, int topl2, 
+			int bottoml2, int topl2,
 			int[][] V, int[] snake,
 			SubMonitor subMonitor) {
 		int N = topl1 - bottoml1 + 1;
@@ -353,7 +353,7 @@ public abstract class LCS {
 	 * Takes the array with furthest reaching D-paths from an LCS computation
 	 * and returns the x,y coordinates and progress made in the middle diagonal
 	 * among those with maximum progress, both from the front and from the back.
-	 * 
+	 *
 	 * @param M the length of the 1st sequence for which LCS is being computed
 	 * @param N the length of the 2nd sequence for which LCS is being computed
 	 * @param limit the number of steps made in an attempt to find the LCS from
@@ -444,15 +444,15 @@ public abstract class LCS {
 		// return the middle diagonal with maximal progress.
 		return max_progress[num_progress / 2];
 	}
-	
+
 	protected abstract int getLength2();
 
 	protected abstract int getLength1();
-	
+
 	protected abstract boolean isRangeEqual(int i1, int i2);
-	
+
 	protected abstract void setLcs(int sl1, int sl2);
-	
+
 	protected abstract void initializeLcs(int lcsLength);
 
 	public int getLength() {

@@ -15,11 +15,11 @@ import org.eclipse.jface.action.Action;
 
 
 public abstract class MergeViewerAction extends Action implements IUpdate {
-	
+
 	private boolean fMutable;
 	private boolean fSelection;
 	private boolean fContent;
-	
+
 	public MergeViewerAction(boolean mutable, boolean selection, boolean content) {
 		fMutable= mutable;
 		fSelection= selection;
@@ -29,15 +29,15 @@ public abstract class MergeViewerAction extends Action implements IUpdate {
 	public boolean isSelectionDependent() {
 		return fSelection;
 	}
-	
+
 	public boolean isContentDependent() {
 		return fContent;
 	}
-	
+
 	public boolean isEditableDependent() {
 		return fMutable;
 	}
-	
+
 	public void update() {
 		// empty default implementation
 	}

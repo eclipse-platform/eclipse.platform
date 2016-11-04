@@ -86,7 +86,7 @@ public class LineReader {
 		}
 		return sb.toString();
 	}
-	
+
 	/*
 	 * Returns the length (excluding a line delimiter CR, LF, CR/LF)
 	 * of the given string.
@@ -105,14 +105,14 @@ public class LineReader {
 		}
 		return l;
 	}
-	
+
 	private boolean fHaveChar= false;
 	private int fLastChar;
 	private boolean fSawEOF= false;
 	private BufferedReader fReader;
 	private boolean fIgnoreSingleCR= false;
 	private StringBuffer fBuffer= new StringBuffer();
-	
+
 	public LineReader(BufferedReader reader) {
 		this.fReader= reader;
 		Assert.isNotNull(reader);
@@ -121,7 +121,7 @@ public class LineReader {
 	public void ignoreSingleCR() {
 		this.fIgnoreSingleCR= true;
 	}
-	
+
     /**
      * Reads a line of text. A line is considered to be terminated by any one
      * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
@@ -150,17 +150,17 @@ public class LineReader {
 					}
 					if (c != '\n') {
 						if (this.fIgnoreSingleCR) {
-							this.fBuffer.append((char)c);	
+							this.fBuffer.append((char)c);
 							continue;
 						}
 						this.fHaveChar= true;
 						this.fLastChar= c;
 					} else
-						this.fBuffer.append((char)c);	
+						this.fBuffer.append((char)c);
 					break;
 				}
 			}
-			
+
 			if (this.fBuffer.length() != 0) {
 				return this.fBuffer.toString();
 			}
@@ -169,7 +169,7 @@ public class LineReader {
 			this.fBuffer.setLength(0);
 		}
 	}
-	
+
 	void close() {
 		try {
 			this.fReader.close();
@@ -177,7 +177,7 @@ public class LineReader {
 			// silently ignored
 		}
 	}
-	
+
 	public List<String> readLines() {
 		try {
 			List<String> lines= new ArrayList<>();
@@ -193,7 +193,7 @@ public class LineReader {
 		}
 		return null;
 	}
-	
+
 	/*
 	 * Returns the number of characters in the given string without
 	 * counting a trailing line separator.
@@ -211,9 +211,9 @@ public class LineReader {
 		}
 		return length;
 	}
-	
+
 	//---- private
-	
+
 	private int readChar() throws IOException {
 		if (this.fHaveChar) {
 			this.fHaveChar= false;

@@ -32,14 +32,14 @@ public class PatchProjectDiffNode extends PatchDiffNode {
 		this.project = project;
 		this.configuration = configuration;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
 	 */
 	public String getName() {
 		return project.getName();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getImage()
 	 */
@@ -71,7 +71,7 @@ public class PatchProjectDiffNode extends PatchDiffNode {
 	public String getType() {
 		return ITypedElement.FOLDER_TYPE;
 	}
-	
+
 	protected PatchConfiguration getConfiguration() {
 		return configuration;
 	}

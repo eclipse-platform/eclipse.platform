@@ -34,7 +34,7 @@ public class Worker implements IRunnableWithProgress {
 	private WorkProgressMonitor currentMonitor;
 	private IRunnableWithProgress currentTask;
 	private final String taskName;
-	
+
 	/**
 	 * Progress monitor that supports local cancellation of a task.
 	 */
@@ -54,11 +54,11 @@ public class Worker implements IRunnableWithProgress {
 			return localCancel || super.isCanceled();
 		}
 	}
-	
+
 	public Worker(String taskName) {
 		this.taskName = taskName;
 	}
-	
+
 	@Override
 	public void run(IProgressMonitor monitor) {
 		errors.clear();
@@ -98,7 +98,7 @@ public class Worker implements IRunnableWithProgress {
 	private void handleError(Throwable targetException) {
 		errors.add(targetException);
 	}
-	
+
 	public Throwable[] getErrors() {
 		return errors.toArray(new Throwable[errors.size()]);
 	}

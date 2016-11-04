@@ -20,7 +20,7 @@ package org.eclipse.compare;
  * @see IContentChangeListener
  */
 public interface IContentChangeNotifier {
-	
+
 	/**
 	 * Adds a content change listener to this notifier.
 	 * Has no effect if an identical listener is already registered.
@@ -28,7 +28,7 @@ public interface IContentChangeNotifier {
 	 * @param listener a content changed listener
 	 */
 	void addContentChangeListener(IContentChangeListener listener);
-	
+
 	/**
 	 * Removes the given content changed listener from this notifier.
 	 * Has no effect if the listener is not registered.

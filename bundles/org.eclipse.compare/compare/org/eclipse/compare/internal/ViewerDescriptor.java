@@ -40,7 +40,7 @@ public class ViewerDescriptor implements IViewerDescriptor {
 			//System.out.println("reused viewer: " + currentViewer.getClass().getName());
 			return currentViewer;
 		}
-		
+
 		if (fViewerCreator == null) {
 			try {
 				fViewerCreator= (IViewerCreator) fConfiguration.createExecutableExtension(CLASS_ATTRIBUTE);

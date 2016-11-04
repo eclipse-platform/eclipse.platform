@@ -29,7 +29,7 @@ public class TextStreamMerger implements IStreamMerger {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.compare.internal.merge.IAutoMerger#automerge(java.io.OutputStream,
 	 *      org.eclipse.core.resources.IEncodedStorage,
 	 *      org.eclipse.core.resources.IEncodedStorage,
