@@ -129,8 +129,11 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 				}
 				// int ver = (int) (CompilerOptions.versionToJdkLevel(vmver) >>> 16);
 				if (JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_7) < 0) {
-					IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__2, null);
-					throw new CoreException(status);
+					boolean useDefault = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
+					if (useDefault) { // Java 1.7 and above is required if Default Ant Home is used
+						IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__2, null);
+						throw new CoreException(status);
+					}
 				}
 			}
 		}

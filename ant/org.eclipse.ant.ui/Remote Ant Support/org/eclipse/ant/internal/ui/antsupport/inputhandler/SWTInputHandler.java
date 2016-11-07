@@ -146,7 +146,7 @@ public class SWTInputHandler extends DefaultInputHandler {
 
 		String value = null;
 		try {
-			fRequest.getClass().getMethod("getDefaultValue", new Class[0]); //$NON-NLS-1$
+			fRequest.getClass().getMethod("getDefaultValue", new Class<?>[0]); //$NON-NLS-1$
 			value = fRequest.getDefaultValue();
 		}
 		catch (SecurityException e) {

@@ -28,9 +28,9 @@ import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.util.StringUtils;
-import org.eclipse.ant.internal.core.IAntCoreConstants;
 import org.eclipse.ant.internal.launching.debug.AntDebugState;
 import org.eclipse.ant.internal.launching.remote.AntSecurityException;
+import org.eclipse.ant.internal.launching.remote.IAntCoreConstants;
 import org.eclipse.ant.internal.launching.remote.InternalAntRunner;
 import org.eclipse.ant.internal.launching.remote.RemoteAntMessages;
 
@@ -254,6 +254,7 @@ public class RemoteAntBuildLogger extends DefaultLogger {
 	 * 
 	 * @see org.apache.tools.ant.BuildListener#messageLogged(org.apache.tools.ant.BuildEvent)
 	 */
+	@SuppressWarnings("unused")
 	@Override
 	public void messageLogged(BuildEvent event) {
 		if (event.getPriority() > msgOutputLevel && event.getPriority() != InternalAntRunner.MSG_PROJECT_HELP) {
@@ -270,7 +271,7 @@ public class RemoteAntBuildLogger extends DefaultLogger {
 				return;
 			}
 			if (fEventQueue == null) {
-				fEventQueue = new ArrayList<>(10);
+				fEventQueue = new ArrayList<BuildEvent>(10);
 			}
 			fEventQueue.add(event);
 			return;

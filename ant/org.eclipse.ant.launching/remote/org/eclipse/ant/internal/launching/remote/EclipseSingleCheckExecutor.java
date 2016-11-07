@@ -17,7 +17,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Executor;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.SingleCheckExecutor;
-import org.eclipse.ant.internal.core.IAntCoreConstants;
 
 public class EclipseSingleCheckExecutor extends SingleCheckExecutor {
 
@@ -26,9 +25,10 @@ public class EclipseSingleCheckExecutor extends SingleCheckExecutor {
 	 * 
 	 * @see org.apache.tools.ant.Executor#executeTargets(org.apache.tools.ant.Project, java.lang.String[])
 	 */
+	@SuppressWarnings("unused")
 	@Override
 	public void executeTargets(Project project, String[] targetNames) throws BuildException {
-		Vector<String> v = new Vector<>();
+		Vector<String> v = new Vector<String>();
 		v.addAll(Arrays.asList(targetNames));
 		project.addReference(IAntCoreConstants.TARGET_VECTOR_NAME, v);
 		super.executeTargets(project, targetNames);

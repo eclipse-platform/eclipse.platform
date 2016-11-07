@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-     Copyright (c) 2005, 2013 IBM Corporation and others.
+     Copyright (c) 2005, 2016 IBM Corporation and others.
      All rights reserved. This program and the accompanying materials
      are made available under the terms of the Eclipse Public License v1.0
      which accompanies this distribution, and is available at
@@ -14,19 +14,26 @@
 	
 	<target name="build" description="Cleans, builds and refreshes" depends="clean, lib/antdebuglib.jar"/>
 
-	<target name="init">
+	<target name="init" depends="properties">
 		<property name="temp.folder" value="${basedir}/temp.folder"/>
 		<property name="build.result.folder" value="${basedir}"/>
+	</target>
+	
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	</target>
 	
 	<target name="lib/antdebuglib.jar" description= "Creates the antdebug.jar" depends="init">
 		<property name="destdir" value="${temp.folder}/lib/antdebug.jar.bin"/>
 		<delete dir="${destdir}"/>
 		<mkdir dir="${destdir}"/>
-		<!-- copy necessary class files resources -->
-		<copy todir="${destdir}">
-			<fileset dir="${basedir}/common_bin"/>
-		</copy>
+		<javac target="1.6" source="1.6" destdir="${destdir}" failonerror="true" verbose="false" debug="on" includeAntRuntime="yes"
+				classpath="${basedir}/bin">
+			<src path="${basedir}/common"/>
+			<compilerarg value="-Xlint"/>
+		</javac>
+		<copy file="${basedir}/common_bin/META-INF/eclipse.inf" tofile="${destdir}/META-INF/eclipse.inf"/>
+		
 		<mkdir dir="${build.result.folder}/lib"/>
 		<jar destfile="${build.result.folder}/lib/antdebug.jar" basedir="${destdir}"/>
 		<delete dir="${temp.folder}"/>
@@ -36,4 +43,7 @@
 		<delete file="${build.result.folder}/lib/antdebug.jar"/>
 		<delete dir="${temp.folder}"/>
 	</target>
+	
+	<!-- Empty target for "After a Clean" task (we don't want to rebuild the Jar here, e.g. on checkout). -->
+	<target name="after_clean"/>
 </project>

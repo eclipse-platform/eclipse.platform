@@ -360,9 +360,10 @@ public class RemoteAntDebugBuildLogger extends RemoteAntBuildLogger implements I
 		sendRequestResponse(propertiesRepresentation.toString());
 	}
 
+	@SuppressWarnings("unused")
 	protected void addBreakpoint(String breakpointRepresentation) {
 		if (fBreakpoints == null) {
-			fBreakpoints = new ArrayList<>();
+			fBreakpoints = new ArrayList<RemoteAntBreakpoint>();
 		}
 		RemoteAntBreakpoint newBreakpoint = new RemoteAntBreakpoint(breakpointRepresentation);
 		if (!fBreakpoints.contains(newBreakpoint)) {
