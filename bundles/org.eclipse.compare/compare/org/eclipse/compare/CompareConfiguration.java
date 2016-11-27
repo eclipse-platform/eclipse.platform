@@ -116,6 +116,7 @@ public class CompareConfiguration {
 	private IPreferenceStore fPreferenceStore;
 	private ListenerList<IPropertyChangeListener> fListeners= new ListenerList<>();
 	private HashMap<String, Object> fProperties= new HashMap<>();
+	private boolean fMirroringEnabled = true;
 	private boolean fLeftEditable= true;
 	private boolean fRightEditable= true;
 	private String fAncestorLabel;
@@ -366,14 +367,53 @@ public class CompareConfiguration {
 	}
 
 	/**
+	 * Returns true if the compare viewer is mirrored, i.e. the left and the right panes are swapped.
+	 * Mirroring is enabled by default.
+	 * <p>
 	 * <b>Only the views are mirrored. All model values for left and right are not changed!</b>
 	 *
-	 * @return true if the left and right side of the viewer are mirrored. Default is false.
+	 * @return true if the compare viewer is mirrored. By default the Compare viewer is not mirrored.
 	 * @since 3.7
 	 */
 	public boolean isMirrored() {
+		if (!fMirroringEnabled)
+			return false;
 		Object property = getProperty(MIRRORED);
 		return property instanceof Boolean && (Boolean) property;
+	}
+
+	/**
+	 * Returns true if mirroring of the compare viewer is enabled. Mirroring is enabled by default.
+	 *
+	 * @return true if mirroring is enabled
+	 * @see #isMirrored()
+	 * @see #setMirroringEnabled(boolean)
+	 * @since 3.7
+	 */
+	public final boolean isMirroringEnabled() {
+		return fMirroringEnabled;
+	}
+
+	/**
+	 * Enables or disables mirroring of the compare viewer, i.e. swapping of the left and the right panes.
+	 * The mirroring is enabled by default.
+	 * <p>
+	 * Code that always puts the after state on the right should disable mirroring. Code that may put the after state
+	 * on the left should not disable mirroring.
+	 * <p>
+	 * The "after" state is the state of the file after applying some particular change and is determined by user
+	 * actions rather than the file timestamps. For example, when previewing result of a revert operation, the "after"
+	 * state is the state of the file that existed at some point in the past.
+	 * <p>
+	 * When previewing a hypothetical change, the "after" state is the proposed future change and the "before" state
+	 * is the current state of the file. When comparing two existing file states, the "before" and "after" states
+	 * can be determined by chronology or by order in which the users selected the file states.
+	 *
+	 * @param value if true, the mirroring is enabled, otherwise disabled
+	 * @since 3.7
+	 */
+	public final void setMirroringEnabled(boolean value) {
+		fMirroringEnabled = value;
 	}
 
 	private ImageDescriptor getImageDescriptor(int kind) {
