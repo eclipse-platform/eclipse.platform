@@ -156,17 +156,17 @@ public abstract class ContentMergeViewer extends ContentViewer
 			Rectangle r= composite.getClientArea();
 
 			int centerWidth= getCenterWidth();
-			int width1= (int)((r.width-centerWidth)*getHorizontalSplitRatio());
-			int width2= r.width-width1-centerWidth;
+			int width1= (int) ((r.width - centerWidth) * getHorizontalSplitRatio());
+			int width2= r.width - width1 - centerWidth;
 
 			int height1= 0;
 			int height2= 0;
 			if (fIsThreeWay && fAncestorVisible) {
-				height1= (int)((r.height-(2*headerHeight))*fVSplit);
-				height2= r.height-(2*headerHeight)-height1;
+				height1= (int) ((r.height - (2 * headerHeight)) * fVSplit);
+				height2= r.height - (2 * headerHeight) - height1;
 			} else {
 				height1= 0;
-				height2= r.height-headerHeight;
+				height2= r.height - headerHeight;
 			}
 
 			int y= 0;
@@ -185,14 +185,14 @@ public abstract class ContentMergeViewer extends ContentViewer
 			fLeftLabel.getSize();	// without this resizing would not always work
 
 			if (centerWidth > 3) {
-				fLeftLabel.setBounds(0, y, width1+1, headerHeight);
+				fLeftLabel.setBounds(0, y, width1 + 1, headerHeight);
 				fDirectionLabel.setVisible(true);
-				fDirectionLabel.setBounds(width1+1, y, centerWidth-1, headerHeight);
+				fDirectionLabel.setBounds(width1 + 1, y, centerWidth - 1, headerHeight);
 				fRightLabel.setBounds(width1+centerWidth, y, width2, headerHeight);
 			} else {
 				fLeftLabel.setBounds(0, y, width1, headerHeight);
 				fDirectionLabel.setVisible(false);
-				fRightLabel.setBounds(width1, y, r.width-width1, headerHeight);
+				fRightLabel.setBounds(width1, y, r.width - width1, headerHeight);
 			}
 
 			y+= headerHeight;
@@ -220,7 +220,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 	}
 
 	class Resizer extends MouseAdapter implements MouseMoveListener {
-
 		Control fControl;
 		int fX, fY;
 		int fWidth1, fWidth2;
@@ -266,8 +265,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 			fWidth1= ys.x;
 			fWidth2= ms.x;
-			fHeight1= fLeftLabel.getLocation().y-as.y;
-			fHeight2= s.y-(fLeftLabel.getLocation().y+ys.y);
+			fHeight1= fLeftLabel.getLocation().y - as.y;
+			fHeight2= s.y - (fLeftLabel.getLocation().y + ys.y);
 
 			fX= e.x;
 			fY= e.y;
@@ -294,16 +293,16 @@ public abstract class ContentMergeViewer extends ContentViewer
 			int centerWidth= fCenter.getSize().x;
 
 			if (fWidth1 + dx > centerWidth && fWidth2 - dx > centerWidth) {
-				fWidth1+= dx;
-				fWidth2-= dx;
+				fWidth1 += dx;
+				fWidth2 -= dx;
 				if ((fDirection & HORIZONTAL) != 0)
-					fHSplit= (double)fWidth1/(double)(fWidth1+fWidth2);
+					fHSplit= (double) fWidth1 / (double) (fWidth1 + fWidth2);
 			}
 			if (fHeight1 + dy > centerWidth && fHeight2 - dy > centerWidth) {
-				fHeight1+= dy;
-				fHeight2-= dy;
+				fHeight1 += dy;
+				fHeight2 -= dy;
 				if ((fDirection & VERTICAL) != 0)
-					fVSplit= (double)fHeight1/(double)(fHeight1+fHeight2);
+					fVSplit= (double) fHeight1 / (double) (fHeight1 + fHeight2);
 			}
 
 			fComposite.layout(true);
@@ -380,7 +379,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * @param cc the configuration object
 	 */
 	protected ContentMergeViewer(int style, ResourceBundle bundle, CompareConfiguration cc) {
-
 		if (Policy.debugContentMergeViewer) {
 			logTrace("constructed (fLeftLabel == null)"); //$NON-NLS-1$
 			logStackTrace();
@@ -569,7 +567,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 */
 	@Override
 	public void setSelection(ISelection selection, boolean reveal) {
-		// empty implementation
+		// Empty implementation.
 	}
 
 	/**
@@ -611,23 +609,28 @@ public abstract class ContentMergeViewer extends ContentViewer
 			switch (dir) {
 			case VERTICAL:
 				if (fAncestorVisible) {
-					if (fVSashCursor == null) fVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZENS);
+					if (fVSashCursor == null)
+						fVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZENS);
 					cursor= fVSashCursor;
 				} else {
-					if (fNormalCursor == null) fNormalCursor= new Cursor(c.getDisplay(), SWT.CURSOR_ARROW);
+					if (fNormalCursor == null)
+						fNormalCursor= new Cursor(c.getDisplay(), SWT.CURSOR_ARROW);
 					cursor= fNormalCursor;
 				}
 				break;
 			case HORIZONTAL:
-				if (fHSashCursor == null) fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
+				if (fHSashCursor == null)
+					fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
 				cursor= fHSashCursor;
 				break;
 			case VERTICAL + HORIZONTAL:
 				if (fAncestorVisible) {
-					if (fHVSashCursor == null) fHVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEALL);
+					if (fHVSashCursor == null)
+						fHVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEALL);
 					cursor= fHVSashCursor;
 				} else {
-					if (fHSashCursor == null) fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
+					if (fHSashCursor == null)
+						fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
 					cursor= fHSashCursor;
 				}
 				break;
@@ -721,11 +724,8 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * @since 2.0
 	 */
 	protected boolean doSave(Object newInput, Object oldInput) {
-
 		// before setting the new input we have to save the old
 		if (isLeftDirty() || isRightDirty()) {
-
-
 			if (Utilities.RUNNING_TESTS) {
 				if (Utilities.TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE) {
 					flushContent(oldInput, null);
@@ -735,15 +735,12 @@ public abstract class ContentMergeViewer extends ContentViewer
 				Shell shell= fComposite.getShell();
 
 				MessageDialog dialog= new MessageDialog(shell,
-					Utilities.getString(getResourceBundle(), "saveDialog.title"), //$NON-NLS-1$
-					null, 	// accept the default window icon
-					Utilities.getString(getResourceBundle(), "saveDialog.message"), //$NON-NLS-1$
-					MessageDialog.QUESTION,
-					new String[] {
-						IDialogConstants.YES_LABEL,
-						IDialogConstants.NO_LABEL,
-					},
-					0);		// default button index
+						Utilities.getString(getResourceBundle(), "saveDialog.title"), //$NON-NLS-1$
+						null, 	// accept the default window icon
+						Utilities.getString(getResourceBundle(), "saveDialog.message"), //$NON-NLS-1$
+						MessageDialog.QUESTION,
+						new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, },
+						0);		// default button index
 
 				switch (dialog.open()) {	// open returns index of pressed button
 				case 0:
@@ -756,8 +753,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 				case 2:
 					throw new ViewerSwitchingCancelled();
 				}
-			} else
+			} else {
 				flushContent(oldInput, null);
+			}
 			return true;
 		}
 		return false;
@@ -785,17 +783,17 @@ public abstract class ContentMergeViewer extends ContentViewer
 			boolean oldFlag = fIsThreeWay;
 			if (Utilities.isHunk(input)) {
 				fIsThreeWay = true;
-			} else if (input instanceof ICompareInput)
-				fIsThreeWay= (((ICompareInput)input).getKind() & Differencer.DIRECTION_MASK) != 0;
-			else
+			} else if (input instanceof ICompareInput) {
+				fIsThreeWay= (((ICompareInput) input).getKind() & Differencer.DIRECTION_MASK) != 0;
+			} else {
 				fIsThreeWay= ancestor != null;
+			}
 
 			if (fAncestorItem != null)
 				fAncestorItem.setVisible(fIsThreeWay);
 
 			if (fAncestorVisible && oldFlag != fIsThreeWay)
 				fComposite.layout(true);
-
 
 			Object left= content.getLeftContent(input);
 			Object right= content.getRightContent(input);
@@ -836,7 +834,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * @return the new control
 	 */
 	protected final Control buildControl(Composite parent) {
-		fComposite= new Composite(parent, fStyles | SWT.LEFT_TO_RIGHT) { // we force a specific direction
+		fComposite= new Composite(parent, fStyles | SWT.LEFT_TO_RIGHT) { // We force a specific direction
 			@Override
 			public boolean setFocus() {
 				return ContentMergeViewer.this.handleSetFocus();
@@ -844,7 +842,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		};
 		fComposite.setData(CompareUI.COMPARE_VIEWER_TITLE, getTitle());
 
-		hookControl(fComposite);	// hook help & dispose listener
+		hookControl(fComposite);	// Hook help & dispose listener.
 
 		fComposite.setLayout(new ContentMergeViewerLayout());
 		if (Policy.debugContentMergeViewer) {
@@ -905,7 +903,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		if (tbm != null) {
 			tbm.removeAll();
 
-			// define groups
+			// Define groups.
 			tbm.add(new Separator("modes"));	//$NON-NLS-1$
 			tbm.add(new Separator("merge"));	//$NON-NLS-1$
 			tbm.add(new Separator("navigation"));	//$NON-NLS-1$
@@ -1098,7 +1096,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * Subclasses may extend this method, although this is generally not required.
 	 */
 	protected void updateToolItems() {
-
 		IMergeViewerContentProvider content= getMergeContentProvider();
 
 		Object input= getInput();
@@ -1130,7 +1127,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * Subclasses may extend this method, although this is generally not required.
 	 */
 	protected void updateHeader() {
-
 		IMergeViewerContentProvider content= getMergeContentProvider();
 		Object input= getInput();
 
@@ -1161,7 +1157,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		}
 	}
 
-	/*
+	/**
 	 * Calculates the height of the header.
 	 */
 	/* package */ int getHeaderHeight() {
@@ -1230,6 +1226,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * Method from the old internal <code>ISavable</code> interface
 	 * Save the viewers's content.
 	 * Note: this method is for internal use only. Clients should not call this method.
+	 *
 	 * @param monitor a progress monitor
 	 * @throws CoreException
 	 * @deprecated use {@link IFlushable#flush(IProgressMonitor)}.
@@ -1243,6 +1240,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * Flush any modifications made in the viewer into the compare input. This method
 	 * calls {@link #flushContent(Object, IProgressMonitor)} with the compare input
 	 * of the viewer as the first parameter.
+	 *
 	 * @param monitor a progress monitor
 	 * @see org.eclipse.compare.contentmergeviewer.IFlushable#flush(org.eclipse.core.runtime.IProgressMonitor)
 	 * @since 3.3
@@ -1253,10 +1251,11 @@ public abstract class ContentMergeViewer extends ContentViewer
 	}
 
 	/**
-	 * Flush the modified content back to input elements via the content provider.
+	 * Flushes the modified content back to input elements via the content provider.
 	 * The provided input may be the current input of the viewer or it may be
 	 * the previous input (i.e. this method may be called to flush modified content
 	 * during an input change).
+	 *
 	 * @param input the compare input
 	 * @param monitor a progress monitor or <code>null</code> if the method
 	 * was call from a place where a progress monitor was not available.
@@ -1357,7 +1356,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * @since 3.3
 	 */
 	protected void handleCompareInputChange() {
-		// before setting the new input we have to save the old
+		// Before setting the new input we have to save the old.
 		Object input = getInput();
 		if (!isSaving() && (isLeftDirty() || isRightDirty())) {
 
@@ -1392,7 +1391,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 			}
 		}
 		if (isSaving() && (isLeftDirty() || isRightDirty())) {
-			return; // Do not refresh until saving both sides is complete
+			return; // Do not refresh until saving both sides is complete.
 		}
 		refresh();
 	}
@@ -1431,7 +1430,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	/**
 	 * If the inputs are mirrored, this asks the right model value.
 	 *
-	 * @return true if the left viewer is editable.
+	 * @return true if the left viewer is editable
 	 * @since 3.7
 	 */
 	protected boolean isLeftEditable() {
@@ -1441,7 +1440,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	/**
 	 * If the inputs are mirrored, this asks the left model value.
 	 *
-	 * @return true if the right viewer is editable.
+	 * @return true if the right viewer is editable
 	 * @since 3.7
 	 */
 	protected boolean isRightEditable() {
