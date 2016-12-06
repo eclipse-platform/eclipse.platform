@@ -918,24 +918,22 @@ public abstract class ContentMergeViewer extends ContentViewer
 			tbm.appendToGroup("merge", copyRightToLeftItem); //$NON-NLS-1$
 			fHandlerService.registerAction(copyRightToLeftItem.getAction(), "org.eclipse.compare.copyAllRightToLeft"); //$NON-NLS-1$
 
-			if (getCompareConfiguration().isMirroringEnabled()) {
-				fSwitchLeftAndRight = new Action() {
-					@Override
-					public void run() {
-						IPreferenceStore preferences = getCompareConfiguration().getPreferenceStore();
-						preferences.setValue(ComparePreferencePage.SWAPPED, !getCompareConfiguration().isMirrored());
-						if (preferences instanceof IPersistentPreferenceStore) {
-							try {
-								((IPersistentPreferenceStore) preferences).save();
-							} catch (IOException e) {
-								CompareUIPlugin.log(e);
-							}
+			fSwitchLeftAndRight = new Action() {
+				@Override
+				public void run() {
+					IPreferenceStore preferences = getCompareConfiguration().getPreferenceStore();
+					preferences.setValue(ComparePreferencePage.SWAPPED, !getCompareConfiguration().isMirrored());
+					if (preferences instanceof IPersistentPreferenceStore) {
+						try {
+							((IPersistentPreferenceStore) preferences).save();
+						} catch (IOException e) {
+							CompareUIPlugin.log(e);
 						}
 					}
-				};
-				Utilities.initAction(fSwitchLeftAndRight, getResourceBundle(), "action.SwitchLeftAndRight."); //$NON-NLS-1$
-				tbm.appendToGroup("modes", fSwitchLeftAndRight); //$NON-NLS-1$
-			}
+				}
+			};
+			Utilities.initAction(fSwitchLeftAndRight, getResourceBundle(), "action.SwitchLeftAndRight."); //$NON-NLS-1$
+			tbm.appendToGroup("modes", fSwitchLeftAndRight); //$NON-NLS-1$
 
 			final ChangePropertyAction a= new ChangePropertyAction(fBundle, getCompareConfiguration(), "action.EnableAncestor.", ICompareUIConstants.PROP_ANCESTOR_VISIBLE); //$NON-NLS-1$
 			a.setChecked(fAncestorVisible);
