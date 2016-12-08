@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.core;
 
-import org.junit.Assert;
-
-import org.eclipse.swt.widgets.Display;
-
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
+import org.junit.Assert;
 
 public class TestUtil {
 	/**
@@ -28,8 +27,11 @@ public class TestUtil {
 		Assert.assertFalse("The main thread should not be interrupted at the end of a test", Thread.interrupted());
 		// Wait for any outstanding jobs to finish. Protect against deadlock by
 		// terminating the wait after a timeout.
-		boolean timedOut = waitForJobs(0, TimeUnit.MINUTES.toMillis(3));
-		Assert.assertFalse("Some Job did not terminate at the end of the test", timedOut);
+		Job[] unfinishedJobs = waitForJobs(0, TimeUnit.MINUTES.toMillis(3));
+		if (unfinishedJobs != null && unfinishedJobs.length != 0) {
+			Assert.fail(
+					"The following jobs did not terminate at the end of the test: " + Arrays.toString(unfinishedJobs));
+		}
 		// Wait for any pending *syncExec calls to finish
 		runEventLoop();
 		// Ensure that the Thread.interrupted() flag didn't leak.
@@ -55,10 +57,10 @@ public class TestUtil {
 	 *            minimum wait time in milliseconds
 	 * @param maxTimeMs
 	 *            maximum wait time in milliseconds
-	 * @return true if the method timed out, false if all the jobs terminated
-	 *         before the timeout
+	 * @return {@code null} if all jobs have completed, or an array of jobs that were still running after
+	 * 			  {@code maxTimeMs}
 	 */
-	public static boolean waitForJobs(long minTimeMs, long maxTimeMs) {
+	public static Job[] waitForJobs(long minTimeMs, long maxTimeMs) {
 		if (maxTimeMs < minTimeMs) {
 			throw new IllegalArgumentException("Max time is smaller as min time!");
 		}
@@ -73,7 +75,7 @@ public class TestUtil {
 		}
 		while (!Job.getJobManager().isIdle()) {
 			if (System.currentTimeMillis() - start >= maxTimeMs) {
-				return true;
+				return Job.getJobManager().find(null);
 			}
 			runEventLoop();
 			try {
@@ -82,6 +84,6 @@ public class TestUtil {
 				// Uninterruptable
 			}
 		}
-		return false;
+		return null;
 	}
 }
