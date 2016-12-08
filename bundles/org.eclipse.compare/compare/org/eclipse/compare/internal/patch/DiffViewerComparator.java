@@ -24,6 +24,7 @@ public class DiffViewerComparator extends ViewerSorter {
 		return false;
 	}
 
+	@Override
 	public int category(Object node) {
 		if (node instanceof DiffNode) {
 			Object o= ((DiffNode) node).getId();
@@ -33,8 +34,10 @@ public class DiffViewerComparator extends ViewerSorter {
 		return 0;
 	}
 
+	@Override
 	protected Comparator getComparator() {
 		return new Comparator() {
+			@Override
 			public int compare(Object arg0, Object arg1) {
 				String label0 = arg0 == null ? "" : arg0.toString(); //$NON-NLS-1$
 				String label1 = arg1 == null ? "" : arg1.toString(); //$NON-NLS-1$

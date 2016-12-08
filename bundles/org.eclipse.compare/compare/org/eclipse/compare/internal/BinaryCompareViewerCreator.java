@@ -23,6 +23,7 @@ import org.eclipse.compare.*;
  */
 public class BinaryCompareViewerCreator implements IViewerCreator {
 
+	@Override
 	public Viewer createViewer(Composite parent, CompareConfiguration mp) {
 		return new BinaryCompareViewer(parent, mp);
 	}

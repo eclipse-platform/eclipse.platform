@@ -105,6 +105,7 @@ public class PatchWizard extends Wizard {
 	/* (non-Javadoc)
 	 * Method declared on IWizard.
 	 */
+	@Override
 	public void addPages() {
 		if (patch == null)
 			addPage(fPatchWizardPage = new InputPatchPage(this));
@@ -119,6 +120,7 @@ public class PatchWizard extends Wizard {
 	/* (non-Javadoc)
 	 * Method declared on IWizard.
 	 */
+	@Override
 	public boolean performFinish() {
 
 		IWizardPage currentPage = getContainer().getCurrentPage();
@@ -168,9 +170,11 @@ public class PatchWizard extends Wizard {
 			}
 
 			WorkspaceModifyOperation op = new WorkspaceModifyOperation(scheduleRule) {
+				@Override
 				protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
 						fPatcher.applyAll(monitor, new Patcher.IFileValidator() {
+							@Override
 							public boolean validateResources(IFile[] resoures) {
 								return Utilities.validateResources(resoures, getShell(), PatchMessages.PatchWizard_title);
 							}
@@ -207,6 +211,7 @@ public class PatchWizard extends Wizard {
 		getContainer().showPage(page);
 	}
 
+	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		//no patch has been read in yet, input patch page
 		if (!patchReadIn)
@@ -235,6 +240,7 @@ public class PatchWizard extends Wizard {
 		return fConfiguration;
 	}
 
+	@Override
 	public boolean canFinish() {
 		IWizardPage currentPage = getContainer().getCurrentPage();
 		if (currentPage.getName().equals(PreviewPatchPage2.PREVIEWPATCHPAGE_NAME)){

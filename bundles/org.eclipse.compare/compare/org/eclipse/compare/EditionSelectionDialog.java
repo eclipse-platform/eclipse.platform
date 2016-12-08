@@ -102,6 +102,7 @@ import org.eclipse.compare.structuremergeviewer.IStructureCreator;
  * For sub-file elements, a <code>org.eclipse.team.ui.history.ElementLocalHistoryPageSource</code> can be used.
  * @noextend This class is not intended to be subclassed by clients.
  */
+@Deprecated
 public class EditionSelectionDialog extends ResizableDialog {
 
 	/**
@@ -157,6 +158,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			return fContent;
 		}
 
+		@Override
 		public boolean equals(Object other) {
 			if (other != null && other.getClass() == getClass()) {
 				if (getContent().equals(((Pair)other).getContent()))
@@ -165,6 +167,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			return super.equals(other);
 		}
 
+		@Override
 		public int hashCode() {
 			return getContent().hashCode();
 		}
@@ -251,6 +254,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			fCompareConfiguration.setLeftEditable(false);
 			fCompareConfiguration.setRightEditable(false);
 			fCompareConfiguration.setContainer(new CompareContainer() {
+				@Override
 				public void setStatusMessage(String message) {
 					if (statusLabel != null && !statusLabel.isDisposed()) {
 						if (message == null) {
@@ -271,6 +275,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @param contextId the help context id.
 	 * @since 3.2
 	 */
+	@Override
 	public void setHelpContextId(String contextId) {
 		super.setHelpContextId(contextId);
 	}
@@ -425,6 +430,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				// construct the comparer thread
 				// and perform the background extract
 				fThread= new Thread() {
+					@Override
 					public void run() {
 
 						// from front (newest) to back (oldest)
@@ -474,6 +480,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			// construct the comparer thread
 			// and perform the background extract
 			fThread= new Thread() {
+				@Override
 				public void run() {
 
 					// from front (newest) to back (oldest)
@@ -740,6 +747,7 @@ public class EditionSelectionDialog extends ResizableDialog {
  	/* (non Javadoc)
  	 * Creates SWT control tree.
  	 */
+	@Override
 	protected synchronized Control createDialogArea(Composite parent2) {
 
 		Composite parent= (Composite) super.createDialogArea(parent2);
@@ -752,6 +760,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 		vsplitter.addDisposeListener(
 			new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					if (fCompareConfiguration != null) {
 						fCompareConfiguration.dispose();
@@ -782,6 +791,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			fMemberTable= new Table(fMemberPane, flags);
 			fMemberTable.addSelectionListener(
 				new SelectionAdapter() {
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (e.detail == SWT.CHECK) {
 							if (e.item instanceof TableItem) {
@@ -813,6 +823,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 				fEditionPane= new CompareViewerPane(hsplitter, SWT.BORDER | SWT.FLAT);
 				fStructuredComparePane= new CompareViewerSwitchingPane(hsplitter, SWT.BORDER | SWT.FLAT, true) {
+					@Override
 					protected Viewer getViewer(Viewer oldViewer, Object input) {
 						if (input instanceof ICompareInput)
 							return CompareUI.findStructureViewer(oldViewer, (ICompareInput)input, this, getCompareConfiguration());
@@ -821,6 +832,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				};
 				fStructuredComparePane.addSelectionChangedListener(
 					new ISelectionChangedListener() {
+						@Override
 						public void selectionChanged(SelectionChangedEvent e) {
 							feedInput2(e.getSelection());
 						}
@@ -845,6 +857,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 //				public void widgetDefaultSelected(SelectionEvent e) {
 //					handleDefaultSelected();
 //				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					feedInput(e.item);
 				}
@@ -859,6 +872,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 		}
 
 		fContentPane= new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				return CompareUI.findContentViewer(oldViewer, input, this, getCompareConfiguration());
 			}
@@ -875,6 +889,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		String buttonLabel= Utilities.getString(fBundle, "buttonLabel", IDialogConstants.OK_LABEL); //$NON-NLS-1$
 		if (fCompareMode) {
@@ -892,6 +907,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * Overidden to disable dismiss on double click in compare mode.
 	 * @since 2.0
 	 */
+	@Override
 	protected void okPressed() {
 		if (fCompareMode) {
 			// don't dismiss dialog
@@ -909,6 +925,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			Display display= fEditionTree.getDisplay();
 			display.asyncExec(
 				new Runnable() {
+					@Override
 					public void run() {
 						addMemberEdition(pair);
 					}
@@ -919,6 +936,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 	private static void internalSort(IModificationDate[] keys) {
 		Arrays.sort(keys, new Comparator() {
+			@Override
 			public int compare(Object o1, Object o2) {
 				IModificationDate d1= (IModificationDate) o1;
 				IModificationDate d2= (IModificationDate) o2;

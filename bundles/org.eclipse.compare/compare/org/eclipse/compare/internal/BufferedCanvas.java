@@ -31,6 +31,7 @@ public abstract class BufferedCanvas extends Canvas {
 
 		addPaintListener(
 			new PaintListener() {
+				@Override
 				public void paintControl(PaintEvent event) {
 					doubleBufferPaint(event.gc);
 				}
@@ -39,6 +40,7 @@ public abstract class BufferedCanvas extends Canvas {
 
 		addDisposeListener(
 			new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					if (fBuffer != null) {
 						fBuffer.dispose();

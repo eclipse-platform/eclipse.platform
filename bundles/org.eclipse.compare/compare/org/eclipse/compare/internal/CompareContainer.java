@@ -29,6 +29,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#setStatusMessage(java.lang.String)
 	 */
+	@Override
 	public void setStatusMessage(String message) {
 		// Do nothing, by default
 	}
@@ -36,6 +37,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#addCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
+	@Override
 	public void addCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
 		input.addCompareInputChangeListener(listener);
@@ -44,6 +46,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
 	 */
+	@Override
 	public void removeCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
 		input.removeCompareInputChangeListener(listener);
@@ -52,6 +55,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)
 	 */
+	@Override
 	public void registerContextMenu(MenuManager menu,
 			ISelectionProvider selectionProvider) {
 		// Nothing to do
@@ -60,6 +64,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getServiceLocator()
 	 */
+	@Override
 	public IServiceLocator getServiceLocator() {
 		return null;
 	}
@@ -67,6 +72,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getActionBars()
 	 */
+	@Override
 	public IActionBars getActionBars() {
 		return null;
 	}
@@ -74,6 +80,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.operation.IRunnableContext#run(boolean, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
 	 */
+	@Override
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable)
 			throws InvocationTargetException, InterruptedException {
@@ -83,6 +90,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#getNavigator()
 	 */
+	@Override
 	public ICompareNavigator getNavigator() {
 		return null;
 	}
@@ -90,6 +98,7 @@ public class CompareContainer implements ICompareContainer {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareContainer#runAsynchronously(org.eclipse.jface.operation.IRunnableWithProgress)
 	 */
+	@Override
 	public synchronized void runAsynchronously(IRunnableWithProgress runnable) {
 		if (worker == null)
 			worker = createWorkerJob();
@@ -105,6 +114,7 @@ public class CompareContainer implements ICompareContainer {
 		return CompareMessages.CompareContainer_0;
 	}
 
+	@Override
 	public IWorkbenchPart getWorkbenchPart() {
 		return null;
 	}

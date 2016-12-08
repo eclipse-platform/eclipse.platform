@@ -20,8 +20,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * @deprecated Temporarily replaced by CompareWithOtherResourceHandler. See bug
  *             264498.
  */
+@Deprecated
 public class CompareWithOtherResourceAction extends CompareAction {
 
+	@Override
 	public void run(ISelection selection) {
 		// Show CompareWithOtherResourceDialog which return resources to compare
 		// and ancestor if specified. Don't need to display the other dialog
@@ -29,6 +31,7 @@ public class CompareWithOtherResourceAction extends CompareAction {
 		super.run(selection);
 	}
 
+	@Override
 	protected boolean isEnabled(ISelection selection) {
 		int selectionSize = 0;
 		if (selection instanceof IStructuredSelection) {

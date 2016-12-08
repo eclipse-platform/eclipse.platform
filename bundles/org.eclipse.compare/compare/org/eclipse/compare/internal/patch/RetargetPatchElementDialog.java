@@ -37,6 +37,7 @@ class RetargetPatchElementDialog extends Dialog {
 		public RetargetPatchContentProvider(PatchDiffNode node) {
 			 this.node = node;
 		}
+		@Override
 		public Object[] getChildren(Object element) {
 			if (element instanceof IWorkspaceRoot) {
 				// Don't show closed projects
@@ -71,6 +72,7 @@ class RetargetPatchElementDialog extends Dialog {
 		fSelectedNode= node;
 	}
 
+	@Override
 	protected Control createButtonBar(Composite parent) {
 		Control control = super.createButtonBar(parent);
 		Button okButton = this.getButton(IDialogConstants.OK_ID);
@@ -78,6 +80,7 @@ class RetargetPatchElementDialog extends Dialog {
 		return control;
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite= (Composite) super.createDialogArea(parent);
 
@@ -158,6 +161,7 @@ class RetargetPatchElementDialog extends Dialog {
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	protected void okPressed() {
 		if (fSelectedResource != null){
 			if (fSelectedNode instanceof PatchProjectDiffNode && fSelectedResource instanceof IProject) {
@@ -179,6 +183,7 @@ class RetargetPatchElementDialog extends Dialog {
 
 	void setupListeners() {
 		fViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection s= (IStructuredSelection) event.getSelection();
 				Object obj= s.getFirstElement();
@@ -201,6 +206,7 @@ class RetargetPatchElementDialog extends Dialog {
 		});
 
 		fViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection s= event.getSelection();
 				if (s instanceof IStructuredSelection) {
@@ -215,6 +221,7 @@ class RetargetPatchElementDialog extends Dialog {
 
 	}
 
+	@Override
 	protected Point getInitialSize() {
 		final Point size= super.getInitialSize();
 		size.x= convertWidthInCharsToPixels(75);

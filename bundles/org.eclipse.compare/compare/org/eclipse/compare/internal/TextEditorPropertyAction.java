@@ -45,6 +45,7 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 		return viewers;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(getPreferenceKey())) {
 			synchronizeWithPreference();
@@ -66,6 +67,7 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 		return preferenceKey;
 	}
 
+	@Override
 	public void run() {
 		toggleState(isChecked());
 		if (store != null)

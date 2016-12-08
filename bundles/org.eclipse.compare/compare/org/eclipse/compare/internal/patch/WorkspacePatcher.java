@@ -59,6 +59,7 @@ public class WorkspacePatcher extends Patcher {
 		setTarget(target);
 	}
 
+	@Override
 	protected void patchParsed(PatchReader patchReader) {
 		super.patchParsed(patchReader);
 		fDiffProjects = patchReader.getDiffProjects();
@@ -80,6 +81,7 @@ public class WorkspacePatcher extends Patcher {
 
 	//---- parsing patch files
 
+	@Override
 	public void applyAll(IProgressMonitor pm, IFileValidator validator) throws CoreException {
 		if (pm == null)
 			pm = new NullProgressMonitor();
@@ -195,6 +197,7 @@ public class WorkspacePatcher extends Patcher {
 		return (IFile[]) files.toArray(new IFile[files.size()]);
 	}
 
+	@Override
 	public IFile getTargetFile(FilePatch2 diff) {
 		IPath path = diff.getStrippedPath(getStripPrefixSegments(), isReversed());
 		DiffProject project = getProject(diff);
@@ -246,6 +249,7 @@ public class WorkspacePatcher extends Patcher {
 		fDiffProjects = temp;
 	}
 
+	@Override
 	protected Object getElementParent(Object element) {
 		if (element instanceof FilePatch2 && fDiffProjects != null) {
 			FilePatch2 diff = (FilePatch2) element;
@@ -381,6 +385,7 @@ public class WorkspacePatcher extends Patcher {
 		return null;
 	}
 
+	@Override
 	public int getStripPrefixSegments() {
 		// Segments are never stripped from a workspace patch
 		if (isWorkspacePatch())

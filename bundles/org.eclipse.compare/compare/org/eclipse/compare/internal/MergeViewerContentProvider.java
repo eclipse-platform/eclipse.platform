@@ -39,10 +39,12 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		return fAncestorError != null || fLeftError != null || fRightError != null;
 	}
 
+	@Override
 	public void dispose() {
 		// empty default implementation
 	}
 
+	@Override
 	public void inputChanged(Viewer v, Object o1, Object o2) {
 		// we are not interested since we have no state
 	}
@@ -53,24 +55,28 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		fAncestorError= errorMessage;
 	}
 
+	@Override
 	public String getAncestorLabel(Object element) {
 		if (fAncestorError != null)
 			return fAncestorError;
 		return fCompareConfiguration.getAncestorLabel(element);
 	}
 
+	@Override
 	public Image getAncestorImage(Object element) {
 		if (fAncestorError != null)
 			return null;
 		return fCompareConfiguration.getAncestorImage(element);
 	}
 
+	@Override
 	public Object getAncestorContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getAncestor();
 		return null;
 	}
 
+	@Override
 	public boolean showAncestor(Object element) {
 		if (element instanceof ICompareInput)
 			return true;	// fix for #45239: Show ancestor for incoming and outgoing changes
@@ -84,24 +90,28 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		fLeftError= errorMessage;
 	}
 
+	@Override
 	public String getLeftLabel(Object element) {
 		if (fLeftError != null)
 			return fLeftError;
 		return fCompareConfiguration.getLeftLabel(element);
 	}
 
+	@Override
 	public Image getLeftImage(Object element) {
 		if (fLeftError != null)
 			return null;
 		return fCompareConfiguration.getLeftImage(element);
 	}
 
+	@Override
 	public Object getLeftContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getLeft();
 		return null;
 	}
 
+	@Override
 	public boolean isLeftEditable(Object element) {
 		if (hasError())
 			return false;
@@ -118,6 +128,7 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		return false;
 	}
 
+	@Override
 	public void saveLeftContent(Object element, byte[] bytes) {
 		if (element instanceof ICompareInput) {
 			ICompareInput node= (ICompareInput) element;
@@ -144,24 +155,28 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		fRightError= errorMessage;
 	}
 
+	@Override
 	public String getRightLabel(Object element) {
 		if (fRightError != null)
 			return fRightError;
 		return fCompareConfiguration.getRightLabel(element);
 	}
 
+	@Override
 	public Image getRightImage(Object element) {
 		if (fRightError != null)
 			return null;
 		return fCompareConfiguration.getRightImage(element);
 	}
 
+	@Override
 	public Object getRightContent(Object element) {
 		if (element instanceof ICompareInput)
 			return ((ICompareInput) element).getRight();
 		return null;
 	}
 
+	@Override
 	public boolean isRightEditable(Object element) {
 		if (hasError())
 			return false;
@@ -178,6 +193,7 @@ public class MergeViewerContentProvider implements IMergeViewerContentProvider {
 		return false;
 	}
 
+	@Override
 	public void saveRightContent(Object element, byte[] bytes) {
 		if (element instanceof ICompareInput) {
 			ICompareInput node= (ICompareInput) element;

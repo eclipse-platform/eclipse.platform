@@ -45,9 +45,11 @@ public class AddFromHistoryDialog extends ResizableDialog {
 			fFile= file;
 			fFileState= fileState;
 		}
+		@Override
 		public InputStream getContents() throws CoreException {
 			return new BufferedInputStream(fFileState.getContents());
 		}
+		@Override
 		public String getCharset() {
 			String charset= null;
 			try {
@@ -59,15 +61,19 @@ public class AddFromHistoryDialog extends ResizableDialog {
 				charset= Utilities.getCharset(fFile);
 			return charset;
 		}
+		@Override
 		public String getName() {
 			return fFile.getName();
 		}
+		@Override
 		public String getType() {
 			return fFile.getFileExtension();
 		}
+		@Override
 		public Image getImage() {
 			return CompareUI.getImage(fFile);
 		}
+		@Override
 		public long getModificationDate() {
 			return fFileState.getModificationTime();
 		}
@@ -201,6 +207,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		return selected;
 	}
 
+	@Override
 	protected synchronized Control createDialogArea(Composite parent2) {
 
 		Composite parent= (Composite) super.createDialogArea(parent2);
@@ -213,6 +220,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 		vsplitter.addDisposeListener(
 			new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					if (fDateImage != null)
 						fDateImage.dispose();
@@ -241,6 +249,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		fMemberTable= new Table(fMemberPane, SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL);
 		fMemberTable.addSelectionListener(
 			new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (e.detail == SWT.CHECK) {
 						if (e.item instanceof TableItem) {
@@ -278,6 +287,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		fEditionTree= new Tree(fEditionPane, SWT.H_SCROLL | SWT.V_SCROLL);
 		fEditionTree.addSelectionListener(
 			new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					feedContent(e.item);
 				}
@@ -287,6 +297,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 		applyDialogFont(parent); // to avoid applying font to compare viewer
 		fContentPane= new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
+			@Override
 			protected Viewer getViewer(Viewer oldViewer, Object input) {
 				return CompareUI.findContentViewer(oldViewer, input, this, fCompareConfiguration);
 			}
@@ -427,6 +438,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		String buttonLabel= Utilities.getString(fBundle, "buttonLabel", IDialogConstants.OK_LABEL); //$NON-NLS-1$
 		// a 'Cancel' and a 'Add' button

@@ -68,18 +68,23 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		FakeInput(String name) {
 			fContent= loadPreviewContentFromFile(name);
 		}
+		@Override
 		public Image getImage() {
 			return null;
 		}
+		@Override
 		public String getName() {
 			return "no name";	//$NON-NLS-1$
 		}
+		@Override
 		public String getType() {
 			return "no type";	//$NON-NLS-1$
 		}
+		@Override
 		public InputStream getContents() {
 			return new ByteArrayInputStream(Utilities.getBytes(fContent, UTF_16));
 		}
+		@Override
 		public String getCharset() {
 			return UTF_16;
 		}
@@ -170,6 +175,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		fOverlayStore= new OverlayPreferenceStore(getPreferenceStore(), fKeys);
 		fPreferenceChangeListener= new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				String key= event.getProperty();
 				if (key.equals(INITIALLY_SHOW_ANCESTOR_PANE)) {
@@ -186,6 +192,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	/*
 	 * @see IWorkbenchPreferencePage#init()
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		// empty
 	}
@@ -193,6 +200,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	/*
 	 * @see PreferencePage#performOk()
 	 */
+	@Override
 	public boolean performOk() {
 		fOverlayStore.setValue(ADDED_LINES_REGEX, addedLinesRegex.getText());
 		fOverlayStore.setValue(REMOVED_LINES_REGEX, removedLinesRegex.getText());
@@ -209,6 +217,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	/*
 	 * @see PreferencePage#performDefaults()
 	 */
+	@Override
 	protected void performDefaults() {
 
 		fOverlayStore.loadDefaults();
@@ -220,6 +229,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	/*
 	 * @see DialogPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 
 		if (fOverlayStore != null) {
@@ -247,6 +257,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	/*
 	 * @see PreferencePage#createContents(Composite)
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, ICompareContextIds.COMPARE_PREFERENCE_PAGE);
@@ -333,6 +344,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fFilters.setText(fOverlayStore.getString(PATH_FILTER));
 		fFilters.addModifyListener(
 			new ModifyListener() {
+				@Override
 				public void modifyText(ModifyEvent e) {
 					String filters= fFilters.getText();
 					String message= CompareResourceFilter.validateResourceFilters(filters);
@@ -427,6 +439,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		Control c= fPreviewViewer.getControl();
 		c.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (fCompareConfiguration != null)
 					fCompareConfiguration.dispose();
@@ -470,6 +483,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		if (fCheckBoxListener == null) {
 			fCheckBoxListener= new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					Button button= (Button) e.widget;
 					fOverlayStore.setValue(fCheckBoxes.get(button), button.getSelection());
@@ -498,6 +512,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		return buffer.toString();
 	}
 
+	@Override
 	public void applyData(Object data) {
 		if (ComparePreferencePage.CAPPING_DISABLED.equals(data)) {
 			fTextCompareTab.getParent().setSelection(fTextCompareTab);

@@ -22,6 +22,7 @@ public abstract class BaseCompareAction implements IActionDelegate {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	final public void run(IAction action) {
 		run(fSelection);
 	}
@@ -29,6 +30,7 @@ public abstract class BaseCompareAction implements IActionDelegate {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
+	@Override
 	final public void selectionChanged(IAction action, ISelection selection) {
 		fSelection= selection;
 		if (action != null)

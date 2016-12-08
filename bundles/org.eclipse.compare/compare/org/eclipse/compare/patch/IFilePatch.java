@@ -42,6 +42,7 @@ public interface IFilePatch extends IFilePatch2 {
 	 * @return the target path for this patch
 	 * @see PatchConfiguration#isReversed()
 	 */
+	@Override
 	public IPath getTargetPath(PatchConfiguration configuration);
 
 	/**
@@ -64,6 +65,7 @@ public interface IFilePatch extends IFilePatch2 {
 	 * @return the header information of the patch or
 	 * <code>null</code>
 	 */
+	@Override
 	public String getHeader();
 
 	/**
@@ -73,6 +75,7 @@ public interface IFilePatch extends IFilePatch2 {
 	 * @return milliseconds time value of the before date from the patch
 	 * @since 3.4
 	 */
+	@Override
 	public long getBeforeDate();
 
 	/**
@@ -82,5 +85,6 @@ public interface IFilePatch extends IFilePatch2 {
 	 * @return milliseconds time value of the after date from the patch
 	 * @since 3.4
 	 */
+	@Override
 	public long getAfterDate();
 }

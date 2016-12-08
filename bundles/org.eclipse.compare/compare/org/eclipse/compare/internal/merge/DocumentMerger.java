@@ -404,6 +404,7 @@ public class DocumentMerger {
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
 		IRunnableWithProgress runnable= new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 				monitor.beginTask(CompareMessages.DocumentMerger_0, maxWork(sa, sl, sr));
 				try {
@@ -569,6 +570,7 @@ public class DocumentMerger {
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
 		IRunnableWithProgress runnable= new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 				monitor.beginTask(CompareMessages.DocumentMerger_2, maxWork(sa, sl, sr));
 				try {

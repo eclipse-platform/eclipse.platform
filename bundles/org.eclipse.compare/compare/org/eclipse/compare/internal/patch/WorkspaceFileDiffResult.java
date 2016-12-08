@@ -56,6 +56,7 @@ public class WorkspaceFileDiffResult extends FileDiffResult {
 		refresh(Utilities.getReaderCreator(getTargetFile()), null);
 	}
 
+	@Override
 	public String getCharset() {
 		IFile file = getTargetFile();
 		try {

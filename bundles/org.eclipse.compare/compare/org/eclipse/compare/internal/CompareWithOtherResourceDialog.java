@@ -82,14 +82,17 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			this.element = element;
 		}
 
+		@Override
 		public void dragFinished(DragSourceEvent event) {
 			element.setText(""); //$NON-NLS-1$
 		}
 
+		@Override
 		public void dragSetData(DragSourceEvent event) {
 			event.data = element.getText();
 		}
 
+		@Override
 		public void dragStart(DragSourceEvent event) {
 			if (element.getText() == null)
 				event.doit = false;
@@ -108,6 +111,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			textTransfer = TextTransfer.getInstance();
 		}
 
+		@Override
 		public void dragEnter(DropTargetEvent event) {
 
 			if (event.detail == DND.DROP_DEFAULT) {
@@ -128,10 +132,12 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			}
 		}
 
+		@Override
 		public void dragLeave(DropTargetEvent event) {
 			// intentionally empty
 		}
 
+		@Override
 		public void dragOperationChanged(DropTargetEvent event) {
 
 			if (event.detail == DND.DROP_DEFAULT) {
@@ -145,10 +151,12 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			}
 		}
 
+		@Override
 		public void dragOver(DropTargetEvent event) {
 			// intentionally empty
 		}
 
+		@Override
 		public void drop(DropTargetEvent event) {
 
 			if (textTransfer.isSupportedType(event.currentDataType)) {
@@ -164,6 +172,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 		}
 
+		@Override
 		public void dropAccept(DropTargetEvent event) {
 			// intentionally empty
 		}
@@ -247,6 +256,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_workspaceRadioButton, section);
 		}
 
+		@Override
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_workspaceMainButton);
@@ -254,12 +264,14 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			mainButton.setVisible(false);
 		}
 
+		@Override
 		protected void createText(Composite parent) {
 
 			super.createText(parent);
 			text.setEditable(true);
 
 			text.addModifyListener(new ModifyListener() {
+				@Override
 				public void modifyText(ModifyEvent e) {
 					section.setResource(text.getText());
 					updateErrorInfo();
@@ -267,9 +279,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			});
 
 			text.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					widgetSelected(e);
 				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					section.setResource(text.getText());
 					updateErrorInfo();
@@ -280,6 +294,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			initDrop();
 		}
 
+		@Override
 		protected void setResource(IResource resource) {
 			super.setResource(resource);
 			text.setText(resource.getFullPath().toOSString());
@@ -311,13 +326,16 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_externalFileRadioButton, section);
 		}
 
+		@Override
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFileMainButton);
 			mainButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					widgetSelected(e);
 				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFile();
 					if (r == null)
@@ -327,6 +345,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			});
 		}
 
+		@Override
 		protected void setResource(IResource resource) {
 			super.setResource(resource);
 			text.setText(resource.getLocation().toOSString());
@@ -340,13 +359,16 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super(parent, CompareMessages.CompareWithOtherResourceDialog_externalFolderRadioButton, section);
 		}
 
+		@Override
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFolderMainButton);
 			mainButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					widgetSelected(e);
 				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFolder();
 					if (r == null)
@@ -356,6 +378,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			});
 		}
 
+		@Override
 		protected void setResource(IResource resource) {
 			super.setResource(resource);
 			text.setText(resource.getLocation().toOSString());
@@ -399,6 +422,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					externalFileContent, externalFolderContent };
 			for (int i = 0; i < elements.length; i++) {
 				elements[i].getRadioButton().addListener(SWT.Selection, new Listener() {
+					@Override
 					public void handleEvent(Event event) {
 						for (int j = 0; j < elements.length; j++) {
 							if (event.widget != elements[j].getRadioButton())
@@ -484,6 +508,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			createContents(parent);
 		}
 
+		@Override
 		protected void createContents(Composite parent) {
 			final Composite p = parent;
 			expandable = new ExpandableComposite(parent, SWT.NONE,
@@ -492,6 +517,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			createClearButton(group);
 			expandable.setClient(group);
 			expandable.addExpansionListener(new ExpansionAdapter() {
+				@Override
 				public void expansionStateChanged(ExpansionEvent e) {
 					p.layout();
 					adjustSize(e.getState());
@@ -503,9 +529,11 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			clearButton = new Button(parent, SWT.PUSH);
 			clearButton.setText(CompareMessages.CompareWithOtherResourceDialog_clear);
 			clearButton.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					widgetSelected(e);
 				}
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					clearResource();
 				}
@@ -694,6 +722,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
 	 * .Composite)
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 
 		Composite mainPanel = new Composite(parent, SWT.NULL);
@@ -735,6 +764,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	 * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
 	 * .swt.widgets.Composite)
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
 		okButton = getButton(IDialogConstants.OK_ID);
@@ -825,6 +855,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	/*
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
 	 */
+	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName = getClass().getName() + "_dialogBounds"; //$NON-NLS-1$
 		IDialogSettings settings = CompareUIPlugin.getDefault()

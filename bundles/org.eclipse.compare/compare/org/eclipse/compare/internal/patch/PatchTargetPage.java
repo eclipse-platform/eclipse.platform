@@ -75,6 +75,7 @@ public class PatchTargetPage extends WizardPage {
 		return (new Path(textField.getText())).makeAbsolute();
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -93,7 +94,8 @@ public class PatchTargetPage extends WizardPage {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
 
 		useWorkspaceAsTarget.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
+            @Override
+			public void handleEvent(Event event) {
             	fShowError = true;
                 if (useWorkspaceAsTarget.getSelection()) {
                     fPatchTargets.getTree().setEnabled(false);
@@ -128,6 +130,7 @@ public class PatchTargetPage extends WizardPage {
 	/* (non-JavaDoc)
 	 * Method declared in IWizardPage.
 	 */
+	@Override
 	public IWizardPage getNextPage() {
 
 		// if selected target is file ensure that patch file
@@ -160,6 +163,7 @@ public class PatchTargetPage extends WizardPage {
 	/* (non-JavaDoc)
 	 * Method declared in IWizardPage.
 	 */
+	@Override
 	public boolean canFlipToNextPage() {
 		// we can't call getNextPage to determine if flipping is allowed since computing
 		// the next page is quite expensive. So we say yes if the page is complete.
@@ -186,6 +190,7 @@ public class PatchTargetPage extends WizardPage {
 
 		// register listeners
 		fPatchTargets.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				fShowError = true;
 				fPatcher.setTarget(Utilities.getFirstResource(event.getSelection()));
@@ -194,6 +199,7 @@ public class PatchTargetPage extends WizardPage {
 		});
 
 		fPatchTargets.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				((PatchWizard)getWizard()).showPage(getNextPage());
 			}

@@ -45,6 +45,7 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 		setCompareConfiguration(cc);
 	}
 
+	@Override
 	public void run() {
 		boolean b= !Utilities.getBoolean(fCompareConfiguration, fPropertyKey, false);
 		setChecked(b);
@@ -52,6 +53,7 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 			fCompareConfiguration.setProperty(fPropertyKey, Boolean.valueOf(b));
 	}
 
+	@Override
 	public void setChecked(boolean state) {
 		super.setChecked(state);
 		Utilities.initToggleAction(this, fBundle, fPrefix, state);
@@ -66,6 +68,7 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 		setChecked(Utilities.getBoolean(fCompareConfiguration, fPropertyKey, false));
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(fPropertyKey)) {
 			setChecked(Utilities.getBoolean(fCompareConfiguration, fPropertyKey, false));
@@ -77,6 +80,7 @@ public class ChangePropertyAction extends Action implements IPropertyChangeListe
 			fCompareConfiguration.removePropertyChangeListener(this);
 	}
 
+	@Override
 	public void widgetDisposed(DisposeEvent e) {
 		dispose();
 	}

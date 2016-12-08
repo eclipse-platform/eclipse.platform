@@ -71,6 +71,7 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	/*
 	 * @see EditorActionBarContributor#contributeToToolBar(IToolBarManager)
 	 */
+	@Override
 	public void contributeToToolBar(IToolBarManager tbm) {
 		tbm.add(new Separator(FILTER_SEPARATOR));
 		tbm.add(new Separator(BUILTIN_SEPARATOR));
@@ -82,10 +83,12 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 	/*
 	 * @see EditorActionBarContributor#contributeToMenu(IMenuManager)
 	 */
+	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
 		// empty implementation
 	}
 
+	@Override
 	public void setActiveEditor(IEditorPart targetEditor) {
 
 		if (fActiveEditorPart == targetEditor)
@@ -182,6 +185,7 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 		}
 	}
 
+	@Override
 	public void dispose() {
 		setActiveEditor(null);
 		super.dispose();

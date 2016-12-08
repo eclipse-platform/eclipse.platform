@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Sash;
 
 /**
  * The Splitter adds support for nesting to a SashForm.
@@ -90,6 +92,7 @@ public class Splitter extends SashForm {
 	 * Recursively calls setMaximizedControl for all direct parents that are
 	 * itself Splitters.
 	 */
+	@Override
 	public void setMaximizedControl(Control control) {
 		if (control == null || control == getMaximizedControl())
 			super.setMaximizedControl(null);
@@ -100,8 +103,8 @@ public class Splitter extends SashForm {
 		Composite parent= getParent();
 		if (parent instanceof Splitter)
 			((Splitter) parent).setMaximizedControl(this);
-		else
-			layout(true);
+		
+		layout(true);
 	}
 
 	/* (non-Javadoc)
@@ -109,8 +112,8 @@ public class Splitter extends SashForm {
 	 */
 	private boolean isEmpty() {
 		Control[] controls= getChildren();
-		for (int i= 0; i < controls.length; i++)
-			if (isVisible(controls[i]))
+		for (Control control : controls)
+			if (isVisible(control))
 				return false;
 		return true;
 	}

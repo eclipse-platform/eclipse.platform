@@ -77,6 +77,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 			wrappedProvider = labelProvider;
 		}
 
+		@Override
 		public String getText(Object element) {
 			String text = wrappedProvider.getText(element);
 			if (element instanceof PatchDiffNode){
@@ -120,6 +121,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 			return text;
 		}
 
+		@Override
 		public Image getImage(Object element) {
 			Image image = wrappedProvider.getImage(element);
 			if (element instanceof PatchDiffNode){
@@ -157,6 +159,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		Assert.isNotNull(patcher);
 		this.patcher = patcher;
 		root = new DiffNode(Differencer.NO_CHANGE) {
+			@Override
 			public boolean hasChildren() {
 				return true;
 			}
@@ -174,6 +177,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		return imageCache;
 	}
 
+	@Override
 	protected void handleDispose() {
 		super.handleDispose();
 		getImageCache(getPatcher().getConfiguration()).dispose();
@@ -187,6 +191,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		return cache;
 	}
 
+	@Override
 	protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		initLabels();
 		return root;
@@ -268,6 +273,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 				if (left instanceof UnmatchedHunkTypedElement) {
 					UnmatchedHunkTypedElement element = (UnmatchedHunkTypedElement) left;
 					element.addContentChangeListener(new IContentChangeListener() {
+						@Override
 						public void contentChanged(IContentChangeNotifier source) {
 							if (getViewer() == null || getViewer().getControl().isDisposed())
 								return;
@@ -284,8 +290,10 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.CompareEditorInput#createDiffViewer(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public Viewer createDiffViewer(Composite parent) {
 		viewer =  new DiffTreeViewer(parent, getCompareConfiguration()){
+			@Override
 			protected void fillContextMenu(IMenuManager manager) {
 				PatchCompareEditorInput.this.fillContextMenu(manager);
 			}
@@ -294,6 +302,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		viewer.setLabelProvider(new PatcherCompareEditorLabelProvider((ILabelProvider)viewer.getLabelProvider()));
 		viewer.getTree().setData(CompareUI.COMPARE_VIEWER_TITLE, PatchMessages.PatcherCompareEditorInput_PatchContents);
 		viewer.addOpenListener(new IOpenListener() {
+			@Override
 			public void open(OpenEvent event) {
 				IStructuredSelection sel= (IStructuredSelection) event.getSelection();
 				Object obj= sel.getFirstElement();
@@ -319,6 +328,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 
 	private ViewerFilter[] getFilters() {
 		return new ViewerFilter[] { new ViewerFilter() {
+			@Override
 			public boolean select(Viewer v, Object parentElement, Object element) {
 				if (element instanceof PatchDiffNode) {
 					PatchDiffNode node = (PatchDiffNode) element;
@@ -425,6 +435,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 
 	protected abstract void fillContextMenu(IMenuManager manager);
 
+	@Override
 	public Viewer findStructureViewer(Viewer oldViewer, ICompareInput input,
 			Composite parent) {
 		if (org.eclipse.compare.internal.Utilities.isHunk(input))

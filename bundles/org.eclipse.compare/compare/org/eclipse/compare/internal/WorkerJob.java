@@ -26,6 +26,7 @@ public class WorkerJob extends Job {
 		worker = new Worker(name);
 	}
 
+	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		worker.run(monitor);
 		// reschedule to ensure we don't miss a task
@@ -48,6 +49,7 @@ public class WorkerJob extends Job {
 		return new MultiStatus(CompareUIPlugin.PLUGIN_ID, 0, (IStatus[]) statii.toArray(new IStatus[statii.size()]), CompareMessages.WorkerJob_0, null);
 	}
 
+	@Override
 	public boolean shouldRun() {
 		return worker.hasWork();
 	}

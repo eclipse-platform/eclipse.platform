@@ -39,6 +39,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeNotifier#addContentChangeListener(org.eclipse.compare.IContentChangeListener)
 	 */
+	@Override
 	public synchronized void addContentChangeListener(IContentChangeListener listener) {
 		if (changeNotifier == null)
 			changeNotifier = new ContentChangeNotifier(this);
@@ -48,6 +49,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeNotifier#removeContentChangeListener(org.eclipse.compare.IContentChangeListener)
 	 */
+	@Override
 	public synchronized void removeContentChangeListener(IContentChangeListener listener) {
 		if (changeNotifier != null)
 			changeNotifier.removeContentChangeListener(listener);
@@ -56,6 +58,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEditableContent#isEditable()
 	 */
+	@Override
 	public boolean isEditable() {
 		IFile file = ((WorkspaceFileDiffResult)getHunkResult().getDiffResult()).getTargetFile();
 		return file != null && file.isAccessible();
@@ -64,6 +67,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEditableContent#replace(org.eclipse.compare.ITypedElement, org.eclipse.compare.ITypedElement)
 	 */
+	@Override
 	public ITypedElement replace(ITypedElement dest, ITypedElement src) {
 		// Not supported
 		return null;
@@ -72,6 +76,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEditableContent#setContent(byte[])
 	 */
+	@Override
 	public void setContent(byte[] newContent) {
 		getPatcher().setManuallyMerged(getHunkResult().getHunk(), true);
 		getPatcher().cacheContents(getDiff(), newContent);
@@ -90,6 +95,7 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.patch.HunkTypedElement#getContents()
 	 */
+	@Override
 	public InputStream getContents() throws CoreException {
 		// If there are cached contents, use them
 		if (getPatcher().hasCachedContents(getDiff()))

@@ -49,6 +49,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		getControl().setData(CompareUI.COMPARE_VIEWER_TITLE, title);
 	}
 
+	@Override
 	protected void updateContent(Object ancestor, Object left, Object right) {
 
 		setInput(fAncestor, ancestor);
@@ -63,10 +64,12 @@ public class ImageMergeViewer extends ContentMergeViewer {
 	/*
 	 * We can't modify the contents of either side we just return null.
 	 */
+	@Override
 	protected byte[] getContents(boolean left) {
 		return null;
 	}
 
+	@Override
 	public void createControls(Composite composite) {
 		fAncestor= new ImageCanvas(composite, SWT.NO_FOCUS);
 		fLeft= new ImageCanvas(composite, SWT.NO_FOCUS);
@@ -115,6 +118,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		}
 	}
 
+	@Override
 	protected void handleResizeAncestor(int x, int y, int width, int height) {
 		if (width > 0) {
 			fAncestor.setVisible(true);
@@ -124,11 +128,13 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		}
 	}
 
+	@Override
 	protected void handleResizeLeftRight(int x, int y, int width1, int centerWidth, int width2, int height) {
 		fLeft.setBounds(x, y, width1, height);
 		fRight.setBounds(x+width1+centerWidth, y, width2, height);
 	}
 
+	@Override
 	protected void copy(boolean leftToRight) {
 		if (leftToRight) {
 			fRightImage= fLeftImage;

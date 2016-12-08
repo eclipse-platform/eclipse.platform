@@ -81,7 +81,8 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
         }
     }
 
-    public boolean equals(Object o) {
+    @Override
+	public boolean equals(Object o) {
         if (!(o instanceof DecoratorOverlayIcon)) {
 			return false;
 		}
@@ -90,7 +91,8 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
                 && Arrays.equals(overlays, other.overlays);
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         int code = base.hashCode();
         for (int i = 0; i < overlays.length; i++) {
             if (overlays[i] != null) {
@@ -100,7 +102,8 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
         return code;
     }
 
-    protected void drawCompositeImage(int width, int height) {
+    @Override
+	protected void drawCompositeImage(int width, int height) {
         ImageDescriptor underlay = overlays[IDecoration.UNDERLAY];
         if (underlay != null) {
 			drawImage(underlay.getImageData(), 0, 0);
@@ -109,14 +112,16 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
         drawOverlays(overlays);
     }
 
-    protected Point getSize() {
+    @Override
+	protected Point getSize() {
         return size;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.resource.CompositeImageDescriptor#getTransparentPixel()
      */
-    protected int getTransparentPixel() {
+    @Override
+	protected int getTransparentPixel() {
     	return base.getImageData().transparentPixel;
     }
 

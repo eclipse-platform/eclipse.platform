@@ -71,6 +71,7 @@ public class TokenComparator implements ITokenComparator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
 	 */
+	@Override
 	public int getRangeCount() {
 		return fCount;
 	}
@@ -78,6 +79,7 @@ public class TokenComparator implements ITokenComparator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.contentmergeviewer.ITokenComparator#getTokenStart(int)
 	 */
+	@Override
 	public int getTokenStart(int index) {
 		if (index < fCount)
 			return fStarts[index];
@@ -87,6 +89,7 @@ public class TokenComparator implements ITokenComparator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.contentmergeviewer.ITokenComparator#getTokenLength(int)
 	 */
+	@Override
 	public int getTokenLength(int index) {
 		if (index < fCount)
 			return fLengths[index];
@@ -96,6 +99,7 @@ public class TokenComparator implements ITokenComparator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int, org.eclipse.compare.rangedifferencer.IRangeComparator, int)
 	 */
+	@Override
 	public boolean rangesEqual(int thisIndex, IRangeComparator other, int otherIndex) {
 		if (other != null && getClass() == other.getClass()) {
 			TokenComparator tc= (TokenComparator) other;
@@ -110,6 +114,7 @@ public class TokenComparator implements ITokenComparator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison(int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)
 	 */
+	@Override
 	public boolean skipRangeComparison(int length, int max, IRangeComparator other) {
 
 		if (getRangeCount() < 50 || other.getRangeCount() < 50)

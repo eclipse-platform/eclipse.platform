@@ -275,6 +275,7 @@ public final class CompareUI {
 	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the
 	 * <code>org.eclipse.team.core.Team#createMerger(IContentType)</code> method.
 	 */
+	@Deprecated
 	public static IStreamMerger createStreamMerger(IContentType type) {
 	    return CompareUIPlugin.getDefault().createStreamMerger(type);
 	}
@@ -289,6 +290,7 @@ public final class CompareUI {
 	 * @deprecated Clients should obtain an <code>org.eclipse.team.core.mapping.IStorageMerger</code> from the
 	 * <code>org.eclipse.team.core.Team#createMerger(String)</code> method.
 	 */
+	@Deprecated
 	public static IStreamMerger createStreamMerger(String type) {
 	    return CompareUIPlugin.getDefault().createStreamMerger(type);
 	}

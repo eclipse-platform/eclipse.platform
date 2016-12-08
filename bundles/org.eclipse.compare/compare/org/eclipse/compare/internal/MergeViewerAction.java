@@ -38,6 +38,7 @@ public abstract class MergeViewerAction extends Action implements IUpdate {
 		return fMutable;
 	}
 
+	@Override
 	public void update() {
 		// empty default implementation
 	}

@@ -60,6 +60,7 @@ public class HunkDiffNode extends PatchDiffNode {
 		return result;
 	}
 
+	@Override
 	protected PatchConfiguration getConfiguration() {
 		return result.getDiffResult().getConfiguration();
 	}
@@ -102,6 +103,7 @@ public class HunkDiffNode extends PatchDiffNode {
 		return false;
 	}
 
+	@Override
 	public IResource getResource() {
 		return ((PatchFileDiffNode)getParent()).getResource();
 	}

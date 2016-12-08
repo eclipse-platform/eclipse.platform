@@ -28,6 +28,7 @@ public class NavigationEndDialog extends MessageDialogWithToggle {
 		this.labelsAndValues = labelsAndValues;
 	}
 
+	@Override
 	protected Control createCustomArea(Composite parent) {
 		editor = new RadioGroupFieldEditor(ICompareUIConstants.PREF_NAVIGATION_END_ACTION_LOCAL, CompareMessages.NavigationEndDialog_1, 1,
 				labelsAndValues,
@@ -38,6 +39,7 @@ public class NavigationEndDialog extends MessageDialogWithToggle {
 		return parent;
 	}
 
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
 			editor.store();

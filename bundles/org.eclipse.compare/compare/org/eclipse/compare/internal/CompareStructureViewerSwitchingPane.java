@@ -61,6 +61,7 @@ public class CompareStructureViewerSwitchingPane extends
 		return fCompareEditorInput.getCompareConfiguration();
 	}
 
+	@Override
 	protected Viewer getViewer(Viewer oldViewer, Object input) {
 		if (input instanceof ICompareInput) {
 			if (fSelectedViewerDescriptor != null) {
@@ -89,8 +90,10 @@ public class CompareStructureViewerSwitchingPane extends
 		return null;
 	}
 
+	@Override
 	protected Control createTopLeft(Composite p) {
 		final Composite composite = new Composite(p, SWT.NONE) {
+			@Override
 			public Point computeSize(int wHint, int hHint, boolean changed) {
 				return super.computeSize(wHint, Math.max(24, hHint), changed);
 			}
@@ -111,11 +114,13 @@ public class CompareStructureViewerSwitchingPane extends
 		toolItem
 				.setToolTipText(CompareMessages.CompareStructureViewerSwitchingPane_switchButtonTooltip);
 		toolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				showMenu();
 			}
 		});
 		toolBar.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseDown(MouseEvent e) {
 				showMenu();
 			}
@@ -123,11 +128,13 @@ public class CompareStructureViewerSwitchingPane extends
 		return composite;
 	}
 
+	@Override
 	protected boolean inputChanged(Object input) {
 		return getInput() != input
 				|| fCompareEditorInput.getStructureViewerDescriptor() != fSelectedViewerDescriptor;
 	}
 
+	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
 		if (getViewer() == null || !Utilities.okToUse(getViewer().getControl()))
@@ -187,8 +194,10 @@ public class CompareStructureViewerSwitchingPane extends
 
 		// 3. dispose on close
 		menu.addMenuListener(new MenuAdapter() {
+			@Override
 			public void menuHidden(MenuEvent e) {
 				e.display.asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						menu.dispose();
 					}
@@ -199,6 +208,7 @@ public class CompareStructureViewerSwitchingPane extends
 
 	private SelectionListener createSelectionListener(final ViewerDescriptor vd) {
 		return new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				MenuItem mi = (MenuItem) e.widget;
 				if (mi.getSelection()) {
@@ -209,12 +219,14 @@ public class CompareStructureViewerSwitchingPane extends
 				}
 			}
 
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// nothing to do
 			}
 		};
 	}
 
+	@Override
 	public void setText(String label) {
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();
@@ -230,6 +242,7 @@ public class CompareStructureViewerSwitchingPane extends
 		}
 	}
 
+	@Override
 	public void setImage(Image image) {
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();
@@ -243,6 +256,7 @@ public class CompareStructureViewerSwitchingPane extends
 		}
 	}
 
+	@Override
 	public void addMouseListener(MouseListener listener) {
 		Composite c = (Composite) getTopLeft();
 		Control[] children = c.getChildren();

@@ -121,6 +121,7 @@ public class InputPatchPage extends WizardPage {
 	private TreeViewer fTreeViewer;
 
 	class ActivationListener extends ShellAdapter {
+		@Override
 		public void shellActivated(ShellEvent e) {
 			// allow error messages if the selected input actually has something selected in it
 			fShowError=true;
@@ -159,6 +160,7 @@ public class InputPatchPage extends WizardPage {
 		return getPatchFilePath();
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 
 		Composite composite= new Composite(parent, SWT.NULL);
@@ -197,6 +199,7 @@ public class InputPatchPage extends WizardPage {
 	 *      allows the user to specify where to root the patch
 	 * @return PreviewPatchPage if multi-project patch, PatchTargetPage if single project patch
 	 */
+	@Override
 	public IWizardPage getNextPage() {
 		if (!checkPageComplete())
 			return this;
@@ -340,6 +343,7 @@ public class InputPatchPage extends WizardPage {
 	/* (non-JavaDoc)
 	 * Method declared in IWizardPage.
 	 */
+	@Override
 	public boolean canFlipToNextPage() {
 		// we can't call getNextPage to determine if flipping is allowed since computing
 		// the next page is quite expensive. So we say yes if the page is complete.
@@ -414,6 +418,7 @@ public class InputPatchPage extends WizardPage {
 
 		// Add listeners
 		fUseClipboardButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (!fUseClipboardButton.getSelection())
 					return;
@@ -430,6 +435,7 @@ public class InputPatchPage extends WizardPage {
 		});
 
 		fUsePatchFileButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (!fUsePatchFileButton.getSelection())
 					return;
@@ -445,11 +451,13 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 		fPatchFileNameField.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateWidgetEnablements();
 			}
 		});
 		fPatchFileNameField.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				clearErrorMessage();
 				fShowError= true;
@@ -458,6 +466,7 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 		fPatchFileBrowseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				clearErrorMessage();
 				fShowError= true;
@@ -466,6 +475,7 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 		fUseURLButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				clearErrorMessage();
 				fShowError= (fPatchURLField.getText() != ""); //$NON-NLS-1$
@@ -477,6 +487,7 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 		fPatchURLField.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				clearErrorMessage();
 				fShowError = true;
@@ -485,6 +496,7 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 		fUseWorkspaceButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (!fUseWorkspaceButton.getSelection())
 					return;
@@ -501,6 +513,7 @@ public class InputPatchPage extends WizardPage {
 		});
 
 		fTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				clearErrorMessage();
 				updateWidgetEnablements();
@@ -508,6 +521,7 @@ public class InputPatchPage extends WizardPage {
 		});
 
 		fTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection selection= event.getSelection();
 				if (selection instanceof TreeSelection) {

@@ -33,12 +33,14 @@ public class FilePatch extends FilePatch2 implements IFilePatch {
 	 * .IStorage, org.eclipse.compare.patch.PatchConfiguration,
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IFilePatchResult apply(IStorage content,
 			PatchConfiguration configuration, IProgressMonitor monitor) {
 		return apply(content != null ? Utilities.getReaderCreator(content)
 				: null, configuration, monitor);
 	}
 
+	@Override
 	protected FilePatch2 create(IPath oldPath, long oldDate, IPath newPath,
 			long newDate) {
 		return new FilePatch(oldPath, oldDate, newPath, newDate);

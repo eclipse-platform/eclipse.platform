@@ -68,6 +68,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
 	 */
+	@Override
 	protected Point getSize() {
 		return new Point(fWidth, HEIGHT);
 	}
@@ -75,6 +76,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
 	 */
+	@Override
 	protected void drawCompositeImage(int width, int height) {
 		if (fLeft) {
 			if (fBaseImageData != null) {
@@ -104,6 +106,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	@Override
 	public int hashCode() {
 		return hashCode;
 	}
@@ -111,6 +114,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

@@ -32,10 +32,12 @@ public class AddFromHistoryAction extends BaseCompareAction {
 		// empty default implementation
 	}
 
+	@Override
 	protected boolean isEnabled(ISelection selection) {
 		return Utilities.getResources(selection).length == 1;
 	}
 
+	@Override
 	protected void run(ISelection selection) {
 
 		ResourceBundle bundle= ResourceBundle.getBundle(BUNDLE_NAME);
@@ -113,6 +115,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 									throws InvocationTargetException, InterruptedException {
 
 		WorkspaceModifyOperation operation= new WorkspaceModifyOperation() {
+			@Override
 			public void execute(IProgressMonitor pm) throws InvocationTargetException {
 				try {
 					String taskName= Utilities.getString(bundle, "taskName"); //$NON-NLS-1$

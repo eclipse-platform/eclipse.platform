@@ -19,6 +19,7 @@ public class ComparePreferenceInitializer extends AbstractPreferenceInitializer 
 		// Nothing to do
 	}
 
+	@Override
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = CompareUIPlugin.getDefault().getPreferenceStore();
 		ComparePreferencePage.initDefaults(store);

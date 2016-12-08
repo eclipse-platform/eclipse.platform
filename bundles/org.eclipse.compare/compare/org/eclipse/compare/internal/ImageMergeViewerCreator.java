@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ImageMergeViewerCreator implements IViewerCreator {
 
+	@Override
 	public Viewer createViewer(Composite parent, CompareConfiguration mp) {
 		return new ImageMergeViewer(parent, SWT.NULL, mp);
 	}

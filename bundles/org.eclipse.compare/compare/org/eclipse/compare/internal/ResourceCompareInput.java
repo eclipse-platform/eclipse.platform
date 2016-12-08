@@ -84,6 +84,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		public MyDiffNode(IDiffContainer parent, int description, ITypedElement ancestor, ITypedElement left, ITypedElement right) {
 			super(parent, description, ancestor, left, right);
 		}
+		@Override
 		public void fireChange() {
 			super.fireChange();
 			setDirty(true);
@@ -94,6 +95,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		void clearDirty() {
 			fDirty= false;
 		}
+		@Override
 		public String getName() {
 			if (fLastName == null)
 				fLastName= super.getName();
@@ -102,6 +104,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			return fLastName;
 		}
 
+		@Override
 		public ITypedElement getId() {
 			ITypedElement id= super.getId();
 			if (id == null)
@@ -115,6 +118,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		FilteredBufferedResourceNode(IResource resource) {
 			super(resource);
 		}
+		@Override
 		protected IStructureComparator createChild(IResource child) {
 			String name= child.getName();
 			if (CompareUIPlugin.getDefault().filter(name, child instanceof IContainer, false))
@@ -130,12 +134,15 @@ class ResourceCompareInput extends CompareEditorInput {
 		super(config);
 	}
 
+	@Override
 	public Viewer createDiffViewer(Composite parent) {
 		fDiffViewer= new DiffTreeViewer(parent, getCompareConfiguration()) {
+			@Override
 			protected void fillContextMenu(IMenuManager manager) {
 
 				if (fOpenAction == null) {
 					fOpenAction= new Action() {
+						@Override
 						public void run() {
 							handleOpen(null);
 						}
@@ -184,6 +191,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			this.theResources = theResources;
 		}
 
+		@Override
 		protected Control createCustomArea(Composite parent) {
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout());
@@ -208,6 +216,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		}
 
 		private SelectionListener selectionListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button selectedButton = (Button) e.widget;
 				if (!selectedButton.getSelection())
@@ -377,6 +386,7 @@ class ResourceCompareInput extends CompareEditorInput {
 	/*
 	 * Performs a two-way or three-way diff on the current selection.
 	 */
+	@Override
 	public Object prepareInput(IProgressMonitor pm) throws InvocationTargetException {
 
 		try {
@@ -404,6 +414,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			setTitle(title);
 
 			Differencer d= new Differencer() {
+				@Override
 				protected Object visit(Object parent, int description, Object ancestor, Object left, Object right) {
 					return new MyDiffNode((IDiffContainer) parent, description, (ITypedElement)ancestor, (ITypedElement)left, (ITypedElement)right);
 				}
@@ -419,6 +430,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		}
 	}
 
+	@Override
 	public String getToolTipText() {
 		if (fLeftResource != null && fRightResource != null) {
 			String leftLabel= fLeftResource.getFullPath().makeRelative().toString();
@@ -445,6 +457,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		return n;
 	}
 
+	@Override
 	public void saveChanges(IProgressMonitor pm) throws CoreException {
 		super.saveChanges(pm);
 		if (fRoot instanceof DiffNode) {
@@ -487,6 +500,7 @@ class ResourceCompareInput extends CompareEditorInput {
 	/* (non Javadoc)
 	 * see IAdaptable.getAdapter
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (IFile.class.equals(adapter)) {
 		    IProgressMonitor pm= new NullProgressMonitor();
@@ -546,6 +560,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		return s;
 	}
 
+	@Override
 	public boolean canRunAsJob() {
 		return true;
 	}

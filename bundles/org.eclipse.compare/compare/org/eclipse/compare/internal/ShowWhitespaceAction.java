@@ -63,6 +63,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 	 * (non-Javadoc)
 	 * @see org.eclipse.compare.internal.TextEditorPropertyAction#synchronizeWithPreference()
 	 */
+	@Override
 	protected void synchronizeWithPreference() {
 		boolean checked = false;
 		if (fStore != null) {
@@ -93,6 +94,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 	 * (non-Javadoc)
 	 * @see org.eclipse.compare.internal.TextEditorPropertyAction#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getProperty();
 		if (property.equals(getPreferenceKey()) || AbstractTextEditor.PREFERENCE_SHOW_LEADING_SPACES.equals(property) || AbstractTextEditor.PREFERENCE_SHOW_ENCLOSED_SPACES.equals(property)
@@ -105,6 +107,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		}
 	}
 
+	@Override
 	protected boolean toggleState(boolean checked) {
 		if (fNeedsPainters == null)
 			return false; // Not initialized yet

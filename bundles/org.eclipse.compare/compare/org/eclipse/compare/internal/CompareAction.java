@@ -31,6 +31,7 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 	protected IWorkbenchPage fWorkbenchPage;
 	protected boolean showSelectAncestorDialog = true;
 
+	@Override
 	public void run(ISelection selection) {
 		if (fInput != null) {
 			// Pass the shell so setSelection can prompt the user for which
@@ -44,6 +45,7 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 		}
 	}
 
+	@Override
 	protected boolean isEnabled(ISelection selection) {
 		if (fInput == null) {
 			CompareConfiguration cc= new CompareConfiguration();
@@ -59,6 +61,7 @@ public class CompareAction extends BaseCompareAction implements IObjectActionDel
 		return fInput.isEnabled(selection);
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		fWorkbenchPage= targetPart.getSite().getPage();
 	}

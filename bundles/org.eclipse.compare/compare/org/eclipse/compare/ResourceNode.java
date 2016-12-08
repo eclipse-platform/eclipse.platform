@@ -52,6 +52,7 @@ public class ResourceNode extends BufferedContent
 	 *
 	 * @return the corresponding resource
 	 */
+	@Override
 	public IResource getResource() {
 		return fResource;
 	}
@@ -59,6 +60,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see IStreamContentAccessor.getContents
 	 */
+	@Override
 	public InputStream getContents() throws CoreException {
 		if (fResource instanceof IStorage)
 			return super.getContents();
@@ -68,6 +70,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see IModificationDate.getModificationDate
 	 */
+	@Override
 	public long getModificationDate() {
 		return fResource.getLocalTimeStamp();
 	}
@@ -75,6 +78,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see ITypedElement.getName
 	 */
+	@Override
 	public String getName() {
 		if (fResource != null)
 			return fResource.getName();
@@ -84,6 +88,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see ITypedElement.getType
 	 */
+	@Override
 	public String getType() {
 		if (fResource instanceof IContainer)
 			return ITypedElement.FOLDER_TYPE;
@@ -98,6 +103,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see ITypedElement.getImage
 	 */
+	@Override
 	public Image getImage() {
 		return CompareUI.getImage(fResource);
 	}
@@ -106,6 +112,7 @@ public class ResourceNode extends BufferedContent
 	 * Returns <code>true</code> if the other object is of type <code>ITypedElement</code>
 	 * and their names are identical. The content is not considered.
 	 */
+	@Override
 	public boolean equals(Object other) {
 		if (other instanceof ITypedElement) {
 			String otherName= ((ITypedElement)other).getName();
@@ -118,6 +125,7 @@ public class ResourceNode extends BufferedContent
 	 * Returns the hash code of the name.
      * @return a hash code value for this object.
 	 */
+	@Override
 	public int hashCode() {
 		return getName().hashCode();
 	}
@@ -125,6 +133,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see IStructureComparator.getChildren
 	 */
+	@Override
 	public Object[] getChildren() {
 		if (fChildren == null) {
 			fChildren= new ArrayList();
@@ -165,6 +174,7 @@ public class ResourceNode extends BufferedContent
 	 * @return a buffered input stream containing the contents of this storage
 	 * @exception CoreException if the contents of this storage could not be accessed
 	 */
+	@Override
 	protected InputStream createStream() throws CoreException {
 		if (fResource instanceof IStorage) {
 			InputStream is= null;
@@ -187,6 +197,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see IEditableContent.isEditable
 	 */
+	@Override
 	public boolean isEditable() {
 		return true;
 	}
@@ -194,6 +205,7 @@ public class ResourceNode extends BufferedContent
 	/* (non Javadoc)
 	 * see IEditableContent.replace
 	 */
+	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 		return child;
 	}
@@ -201,6 +213,7 @@ public class ResourceNode extends BufferedContent
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
 	 */
+	@Override
 	public String getCharset() {
 		return Utilities.getCharset(fResource);
 	}
@@ -208,6 +221,7 @@ public class ResourceNode extends BufferedContent
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEditableContentExtension#isReadOnly()
 	 */
+	@Override
 	public boolean isReadOnly() {
 		if (fResource.getType() == IResource.FILE) {
 			ResourceAttributes attrs = fResource.getResourceAttributes();
@@ -221,6 +235,7 @@ public class ResourceNode extends BufferedContent
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IEditableContentExtension#validateEdit(org.eclipse.swt.widgets.Shell)
 	 */
+	@Override
 	public IStatus validateEdit(Shell shell) {
 		if (isReadOnly())
 			return ResourcesPlugin.getWorkspace().validateEdit(new IFile[] { (IFile)fResource}, shell);

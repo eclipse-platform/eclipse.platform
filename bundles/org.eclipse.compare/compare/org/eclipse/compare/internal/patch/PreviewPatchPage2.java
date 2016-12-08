@@ -106,6 +106,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		this.fPatcher = patcher;
 		this.fConfiguration = configuration;
 		this.fConfiguration.addPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(CompareConfiguration.IGNORE_WHITESPACE)){
 					rebuildTree();
@@ -114,6 +115,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		});
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		fToolkit = new FormToolkit(parent.getDisplay());
 		fToolkit.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
@@ -125,6 +127,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		initializeDialogUnits(parent);
 
 		fInput = new PatchCompareEditorInput(getPatcher(), getCompareConfiguration()) {
+			@Override
 			protected void fillContextMenu(IMenuManager manager) {
 				if (isShowAll()) {
 					manager.add(fIncludeAction);
@@ -150,6 +153,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		initializeActions();
 		fInput.contributeDiffViewerToolbarItems(getContributedActions(), getPatcher().isWorkspacePatch());
 		fInput.getViewer().addSelectionChangedListener(new ISelectionChangedListener(){
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection s = event.getSelection();
 				if (s != null && !s.isEmpty()) {
@@ -206,6 +210,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	private void initializeActions() {
 
 		fMoveAction = new Action(PatchMessages.PreviewPatchPage2_RetargetAction, null) {
+			@Override
 			public void run() {
 				Shell shell = getShell();
 				ISelection selection = fInput.getViewer().getSelection();
@@ -229,6 +234,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		fMoveAction .setToolTipText(PatchMessages.PreviewPatchPage2_RetargetTooltip);
 		fMoveAction.setEnabled(true);
 		fInput.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel= (IStructuredSelection) event.getSelection();
 				Object obj= sel.getFirstElement();
@@ -246,6 +252,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		});
 
 		fExcludeAction = new Action(PatchMessages.PreviewPatchPage2_0) {
+			@Override
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
 				if (selection instanceof TreeSelection){
@@ -267,6 +274,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		fExcludeAction.setEnabled(true);
 
 		fIncludeAction = new Action(PatchMessages.PreviewPatchPage2_1) {
+			@Override
 			public void run() {
 				ISelection selection = fInput.getViewer().getSelection();
 				if (selection instanceof TreeSelection){
@@ -288,9 +296,11 @@ public class PreviewPatchPage2 extends WizardPage {
 		fIncludeAction.setEnabled(true);
 
 		fIgnoreWhiteSpace = new Action(PatchMessages.PreviewPatchPage2_IgnoreWSAction, CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_ENABLED)){
+			@Override
 			public void run(){
 				try {
 					getContainer().run(false, true, new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 							monitor.beginTask(PatchMessages.PreviewPatchPage2_IgnoreWhitespace, IProgressMonitor.UNKNOWN);
 							if (isChecked() != getPatcher().isIgnoreWhitespace()) {
@@ -315,9 +325,11 @@ public class PreviewPatchPage2 extends WizardPage {
 		fIgnoreWhiteSpace.setDisabledImageDescriptor(CompareUIPlugin.getImageDescriptor(ICompareUIConstants.IGNORE_WHITESPACE_DISABLED));
 
 		fReversePatch = new Action(PatchMessages.PreviewPatchPage_ReversePatch_text){
+			@Override
 			public void run(){
 				try {
 					getContainer().run(true, true, new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 							monitor.beginTask(PatchMessages.PreviewPatchPage2_CalculateReverse, IProgressMonitor.UNKNOWN);
 							if (isChecked() != getPatcher().isReversed()) {
@@ -343,6 +355,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		fReversePatch.setToolTipText(PatchMessages.PreviewPatchPage_ReversePatch_text);
 	}
 
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		//Need to handle input and rebuild tree only when becoming visible
@@ -369,6 +382,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		final boolean[] result = new boolean[] { false };
 		if (ctrl != null && !ctrl.isDisposed()){
 			Runnable runnable = new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 						// flush any viewers before prompting
@@ -393,6 +407,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		final Control ctrl = getControl();
 		if (ctrl != null && !ctrl.isDisposed()){
 			Runnable runnable = new Runnable() {
+				@Override
 				public void run() {
 					if (!ctrl.isDisposed()) {
 						fInput.buildTree();
@@ -440,6 +455,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		patchOptions.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
 		patchOptions.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 3, 1));
 		patchOptions.addExpansionListener(new ExpansionAdapter() {
+			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
 				form.layout();
 			}
@@ -467,6 +483,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		if (fStripPrefixSegments!=null)
 			fStripPrefixSegments.addSelectionListener(
 				new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (patcher.getStripPrefixSegments() != getStripPrefixSegments()) {
 						if (promptToRebuild(PatchMessages.PreviewPatchPage2_4)) {
@@ -481,6 +498,7 @@ public class PreviewPatchPage2 extends WizardPage {
 
 		fFuzzField.addModifyListener(
 			new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				if (patcher.getFuzz() != getFuzzFactor()) {
 					if (promptToRebuild(PatchMessages.PreviewPatchPage2_5)) {
@@ -517,6 +535,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		Button b= new Button(pair, SWT.PUSH);
 		b.setText(PatchMessages.PreviewPatchPage_GuessFuzz_text);
 			b.addSelectionListener(new SelectionAdapter() {
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						if (promptToRebuild(PatchMessages.PreviewPatchPage2_6)) {
 							// Reset the fuzz. We don't use HunkResult.MAXIMUM_FUZZ_FACTOR on purpose here,
@@ -544,6 +563,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				| GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.GRAB_HORIZONTAL);
 		generateRejects.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				getPatcher().setGenerateRejectFile(
 						generateRejects.getSelection());
@@ -560,6 +580,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				| GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.GRAB_HORIZONTAL);
 		showRemoved.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				fInput.setShowAll(showRemoved.getSelection());
 				fInput.updateTree();
@@ -576,6 +597,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				| GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.GRAB_HORIZONTAL);
 		reversePatch.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (fReversePatch != null) {
 					fReversePatch.setChecked(reversePatch.getSelection());
@@ -620,6 +642,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				| GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.GRAB_HORIZONTAL);
 		showMatched.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				fInput.setShowMatched(showMatched.getSelection());
 				rebuildTree();
@@ -660,6 +683,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true,
 					new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) {
 							result[0]= patcher.guessFuzzFactor(monitor);
 						}
@@ -752,6 +776,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				new String[] { added + "", removed + "" }); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	@Override
 	public void dispose() {
 		fToolkit.dispose();
 		super.dispose();

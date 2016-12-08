@@ -29,6 +29,7 @@ public class NullViewer extends AbstractViewer {
 		CompareViewerPane.clearToolBar(parent);
 	}
 
+	@Override
 	public Control getControl() {
 		return fDummy;
 	}

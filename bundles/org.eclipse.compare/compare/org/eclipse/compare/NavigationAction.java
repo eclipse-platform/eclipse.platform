@@ -57,6 +57,7 @@ public class NavigationAction extends Action {
 		fNext= next;
 	}
 
+	@Override
 	public void run() {
 		if (fCompareEditorInput != null) {
 			Object adapter= fCompareEditorInput.getAdapter(ICompareNavigator.class);

@@ -41,10 +41,12 @@ public class BufferedResourceNode extends ResourceNode {
 	    return fDirty;
 	}
 
+	@Override
 	protected IStructureComparator createChild(IResource child) {
 		return new BufferedResourceNode(child);
 	}
 
+	@Override
 	public void setContent(byte[] contents) {
 		fDirty= true;
 		super.setContent(contents);
@@ -85,6 +87,7 @@ public class BufferedResourceNode extends ResourceNode {
 		}
 	}
 
+	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 
 		if (child == null) {	// add resource

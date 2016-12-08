@@ -50,10 +50,12 @@ public class ZipFileStructureCreator implements IStructureCreator {
 			fName= name;
 		}
 
+		@Override
 		public String getName() {
 			return fName;
 		}
 
+		@Override
 		public Image getImage() {
 			return CompareUI.getImage(getType());
 		}
@@ -62,12 +64,14 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		 * Returns true if other is ITypedElement and names are equal.
 		 * @see IComparator#equals
 		 */
+		@Override
 		public boolean equals(Object other) {
 			if (other instanceof ITypedElement)
 				return fName.equals(((ITypedElement) other).getName());
 			return super.equals(other);
 		}
 
+		@Override
 		public int hashCode() {
 			return fName.hashCode();
 		}
@@ -81,10 +85,12 @@ public class ZipFileStructureCreator implements IStructureCreator {
 			super(name);
 		}
 
+		@Override
 		public String getType() {
 			return ITypedElement.FOLDER_TYPE;
 		}
 
+		@Override
 		public Object[] getChildren() {
 			Object[] children= new Object[fChildren.size()];
 			Iterator iter= fChildren.values().iterator();
@@ -136,6 +142,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 			super(name);
 		}
 
+		@Override
 		public String getType() {
 			String s= this.getName();
 			int pos= s.lastIndexOf('.');
@@ -144,10 +151,12 @@ public class ZipFileStructureCreator implements IStructureCreator {
 			return ITypedElement.UNKNOWN_TYPE;
 		}
 
+		@Override
 		public Object[] getChildren() {
 			return null;
 		}
 
+		@Override
 		public InputStream getContents() {
 			if (fContents == null)
 				fContents= new byte[0];
@@ -194,10 +203,12 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		fTitle= title;
 	}
 
+	@Override
 	public String getName() {
 		return fTitle;
 	}
 
+	@Override
 	public IStructureComparator getStructure(Object input) {
 
 		InputStream is= null;
@@ -264,6 +275,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		return root;
 	}
 
+	@Override
 	public String getContents(Object o, boolean ignoreWhitespace) {
 		if (o instanceof ZipFile) {
 			byte[] bytes= ((ZipFile)o).getBytes();
@@ -290,10 +302,12 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	 * @param structure the node for which to save the new content
 	 * @param input the object from which the structure tree was created in <code>getStructure</code>
 	 */
+	@Override
 	public void save(IStructureComparator structure, Object input) {
 		Assert.isTrue(false); // Cannot update zip archive
 	}
 
+	@Override
 	public IStructureComparator locate(Object path, Object source) {
 		return null;
 	}

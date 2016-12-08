@@ -36,6 +36,7 @@ public class TextStreamMerger implements IStreamMerger {
 	 *      org.eclipse.core.resources.IEncodedStorage,
 	 *      org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStatus merge(OutputStream output, String outputEncoding, InputStream ancestor, String ancestorEncoding, InputStream target, String targetEncoding, InputStream other, String otherEncoding, IProgressMonitor monitor) {
 
 		LineComparator a, t, o;

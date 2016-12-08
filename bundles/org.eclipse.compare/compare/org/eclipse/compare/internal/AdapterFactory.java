@@ -20,10 +20,12 @@ import org.eclipse.ui.IFileEditorInput;
 
 public class AdapterFactory implements IAdapterFactory {
 
+	@Override
 	public Object getAdapter(final Object adaptableObject, Class adapterType) {
 		if (IContributorResourceAdapter.class.equals(adapterType)
 				&& adaptableObject instanceof CompareEditorInput) {
 			return new IContributorResourceAdapter() {
+				@Override
 				public IResource getAdaptedResource(IAdaptable adaptable) {
 					Object ei = ((CompareEditorInput) adaptableObject)
 							.getAdapter(IEditorInput.class);
@@ -37,6 +39,7 @@ public class AdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { IContributorResourceAdapter.class };
 	}

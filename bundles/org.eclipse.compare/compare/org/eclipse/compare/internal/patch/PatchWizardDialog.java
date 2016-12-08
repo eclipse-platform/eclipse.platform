@@ -27,6 +27,7 @@ public class PatchWizardDialog extends WizardDialog {
 		setMinimumPageSize(700, 500);
 	}
 
+	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
         IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = settings.getSection(PATCH_WIZARD_SETTINGS_SECTION);

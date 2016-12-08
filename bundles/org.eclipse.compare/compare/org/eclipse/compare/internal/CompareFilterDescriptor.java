@@ -47,10 +47,12 @@ public class CompareFilterDescriptor {
 			this.keySet = configuration.getAttributeNames();
 		}
 
+		@Override
 		public boolean hasMoreElements() {
 			return cursor >= keySet.length;
 		}
 
+		@Override
 		public Object nextElement() {
 			return keySet[cursor++];
 		}
@@ -60,10 +62,12 @@ public class CompareFilterDescriptor {
 	public CompareFilterDescriptor(IConfigurationElement config) {
 		fConfiguration = config;
 		fResourceBundle = new ResourceBundle() {
+			@Override
 			protected Object handleGetObject(String key) {
 				return fConfiguration.getAttribute(key);
 			}
 
+			@Override
 			public Enumeration getKeys() {
 				return new ConfigurationKeysEnumeration(fConfiguration);
 			}

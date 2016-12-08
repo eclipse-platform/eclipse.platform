@@ -133,15 +133,18 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			update();
 		}
 
+		@Override
 		public void run() {
 			if (isEnabled())
 				getSourceViewer().doOperation(fOperationCode);
 		}
 
+		@Override
 		public boolean isEnabled() {
 			return fOperationCode != -1 && getSourceViewer().canDoOperation(fOperationCode);
 		}
 
+		@Override
 		public void update() {
 			setEnabled(isEnabled());
 		}
@@ -154,86 +157,105 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	 */
 	class TextEditorAdapter implements ITextEditor {
 
+		@Override
 		public void close(boolean save) {
 			// defining interface method
 		}
 
+		@Override
 		public void doRevertToSaved() {
 			// defining interface method
 		}
 
+		@Override
 		public IAction getAction(String actionId) {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public IDocumentProvider getDocumentProvider() {
 			return new IDocumentProvider(){
 
+				@Override
 				public void aboutToChange(Object element) {
 					// defining interface method
 				}
 
+				@Override
 				public void addElementStateListener(
 						IElementStateListener listener) {
 					// defining interface method
 				}
 
+				@Override
 				public boolean canSaveDocument(Object element) {
 					// defining interface method
 					return false;
 				}
 
+				@Override
 				public void changed(Object element) {
 					// defining interface method
 				}
 
+				@Override
 				public void connect(Object element) throws CoreException {
 					// defining interface method
 				}
 
+				@Override
 				public void disconnect(Object element) {
 					// defining interface method
 				}
 
+				@Override
 				public IAnnotationModel getAnnotationModel(Object element) {
 					// defining interface method
 					return null;
 				}
 
+				@Override
 				public IDocument getDocument(Object element) {
 					return MergeSourceViewer.this.getSourceViewer().getDocument();
 				}
 
+				@Override
 				public long getModificationStamp(Object element) {
 					// defining interface method
 					return 0;
 				}
 
+				@Override
 				public long getSynchronizationStamp(Object element) {
 					// defining interface method
 					return 0;
 				}
 
+				@Override
 				public boolean isDeleted(Object element) {
 					// defining interface method
 					return false;
 				}
 
+				@Override
 				public boolean mustSaveDocument(Object element) {
 					// defining interface method
 					return false;
 				}
 
+				@Override
 				public void removeElementStateListener(
 						IElementStateListener listener) {
 					// defining interface method
 				}
 
+				@Override
 				public void resetDocument(Object element) throws CoreException {
 					// defining interface method
 				}
 
+				@Override
 				public void saveDocument(IProgressMonitor monitor,
 						Object element, IDocument document, boolean overwrite)
 						throws CoreException {
@@ -241,28 +263,34 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 				}};
 		}
 
+		@Override
 		public IRegion getHighlightRange() {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public ISelectionProvider getSelectionProvider() {
 			return MergeSourceViewer.this.getSourceViewer().getSelectionProvider();
 		}
 
+		@Override
 		public boolean isEditable() {
 			// defining interface method
 			return false;
 		}
 
+		@Override
 		public void removeActionActivationCode(String actionId) {
 			// defining interface method
 		}
 
+		@Override
 		public void resetHighlightRange() {
 			// defining interface method
 		}
 
+		@Override
 		public void selectAndReveal(int start, int length) {
 			selectAndReveal(start, length, start, length);
 		}
@@ -324,107 +352,130 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			return viewer.overlapsWithVisibleRegion(offset, length);
 		}
 
+		@Override
 		public void setAction(String actionID, IAction action) {
 			// defining interface method
 		}
 
+		@Override
 		public void setActionActivationCode(String actionId,
 				char activationCharacter, int activationKeyCode,
 				int activationStateMask) {
 			// defining interface method
 		}
 
+		@Override
 		public void setHighlightRange(int offset, int length, boolean moveCursor) {
 			// defining interface method
 		}
 
+		@Override
 		public void showHighlightRangeOnly(boolean showHighlightRangeOnly) {
 			// defining interface method
 		}
 
+		@Override
 		public boolean showsHighlightRangeOnly() {
 			// defining interface method
 			return false;
 		}
 
+		@Override
 		public IEditorInput getEditorInput() {
 			if (MergeSourceViewer.this.fContainer.getWorkbenchPart() instanceof IEditorPart)
 				return ((IEditorPart) MergeSourceViewer.this.fContainer.getWorkbenchPart()).getEditorInput();
 			return null;
 		}
 
+		@Override
 		public IEditorSite getEditorSite() {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public void init(IEditorSite site, IEditorInput input)
 				throws PartInitException {
 			// defining interface method
 		}
 
+		@Override
 		public void addPropertyListener(IPropertyListener listener) {
 			// defining interface method
 		}
 
+		@Override
 		public void createPartControl(Composite parent) {
 			// defining interface method
 		}
 
+		@Override
 		public void dispose() {
 			// defining interface method
 		}
 
+		@Override
 		public IWorkbenchPartSite getSite() {
 			return MergeSourceViewer.this.fContainer.getWorkbenchPart().getSite();
 		}
 
+		@Override
 		public String getTitle() {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public Image getTitleImage() {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public String getTitleToolTip() {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public void removePropertyListener(IPropertyListener listener) {
 			// defining interface method
 		}
 
+		@Override
 		public void setFocus() {
 			// defining interface method
 		}
 
+		@Override
 		public Object getAdapter(Class adapter) {
 			// defining interface method
 			return null;
 		}
 
+		@Override
 		public void doSave(IProgressMonitor monitor) {
 			// defining interface method
 		}
 
+		@Override
 		public void doSaveAs() {
 			// defining interface method
 		}
 
+		@Override
 		public boolean isDirty() {
 			// defining interface method
 			return false;
 		}
 
+		@Override
 		public boolean isSaveAsAllowed() {
 			// defining interface method
 			return false;
 		}
 
+		@Override
 		public boolean isSaveOnCloseNeeded() {
 			// defining interface method
 			return false;
@@ -464,6 +515,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 		// for listening to editor show/hide line number preference value
 		fPreferenceChangeListener= new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				MergeSourceViewer.this.handlePropertyChangeEvent(event);
 			}
@@ -764,6 +816,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		return null;
 	}
 
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		Iterator e= fActions.values().iterator();
 		while (e.hasNext()) {
@@ -776,6 +829,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		}
 	}
 
+	@Override
 	public void textChanged(TextEvent event) {
 		updateContentDependantActions();
 	}
@@ -795,6 +849,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	/*
 	 * Allows the viewer to add menus and/or tools to the context menu.
 	 */
+	@Override
 	public void menuAboutToShow(IMenuManager menu) {
 
 		menu.add(new Separator("undo")); //$NON-NLS-1$
@@ -1015,12 +1070,14 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 				.getOperationHistory();
 	}
 
+	@Override
 	public void historyNotification(OperationHistoryEvent event) {
 		// This method updates the enablement of all content operations
 		// when the undo history changes. It could be localized to UNDO and REDO.
 		IUndoContext context = getUndoContext();
 		if (context != null && event.getOperation().hasContext(context)) {
 			Display.getDefault().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					updateContentDependantActions();
 				}
@@ -1042,6 +1099,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		return fSourceViewer;
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (adapter == ITextEditor.class) {
 			return new TextEditorAdapter();

@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IStatus;
  * @deprecated Clients should use <code>org.eclipse.team.core.mapping.IStorageMerger</code> instead.
  * @since 3.0
  */
+@Deprecated
 public interface IStreamMerger {
 
     /**

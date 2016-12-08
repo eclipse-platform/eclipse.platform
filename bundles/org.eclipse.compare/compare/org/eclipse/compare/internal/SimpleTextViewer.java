@@ -33,10 +33,12 @@ public class SimpleTextViewer extends AbstractViewer {
 		fSourceViewer.setEditable(false);
 	}
 
+	@Override
 	public Control getControl() {
 		return fSourceViewer.getTextWidget();
 	}
 
+	@Override
 	public void setInput(Object input) {
 		if (input instanceof IStreamContentAccessor) {
 			fSourceViewer.setDocument(new Document(getString(input)));
@@ -47,6 +49,7 @@ public class SimpleTextViewer extends AbstractViewer {
 		}
 	}
 
+	@Override
 	public Object getInput() {
 		return fInput;
 	}

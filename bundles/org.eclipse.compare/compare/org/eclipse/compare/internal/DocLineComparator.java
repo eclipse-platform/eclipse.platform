@@ -123,6 +123,7 @@ public class DocLineComparator implements ITokenComparator {
 	 *
 	 * @return number of lines
 	 */
+	@Override
 	public int getRangeCount() {
 		return fLineCount;
 	}
@@ -130,6 +131,7 @@ public class DocLineComparator implements ITokenComparator {
 	/* (non Javadoc)
 	 * see ITokenComparator.getTokenStart
 	 */
+	@Override
 	public int getTokenStart(int line) {
 		try {
 			IRegion r= fDocument.getLineInformation(fLineOffset + line);
@@ -143,6 +145,7 @@ public class DocLineComparator implements ITokenComparator {
 	 * Returns the length of the given line.
 	 * see ITokenComparator.getTokenLength
 	 */
+	@Override
 	public int getTokenLength(int line) {
 		return getTokenStart(line+1) - getTokenStart(line);
 	}
@@ -156,6 +159,7 @@ public class DocLineComparator implements ITokenComparator {
 	 * @param otherIndex the number of the line within the other comparator
 	 * @return <code>true</code> if the lines are equal
 	 */
+	@Override
 	public boolean rangesEqual(int thisIndex, IRangeComparator otherComparator, int otherIndex) {
 
 		if (otherComparator != null && otherComparator.getClass() == getClass()) {
@@ -189,6 +193,7 @@ public class DocLineComparator implements ITokenComparator {
 	 * @param other the other <code>IRangeComparator</code> to compare with
 	 * @return <code>true</code> to avoid a too lengthy range comparison
 	 */
+	@Override
 	public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
 		return false;
 	}

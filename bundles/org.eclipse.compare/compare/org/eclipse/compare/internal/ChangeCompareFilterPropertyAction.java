@@ -83,12 +83,14 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 		return filters.containsKey(fCompareFilterDescriptor.getFilterId());
 	}
 
+	@Override
 	public void run() {
 		boolean b = !getProperty();
 		setChecked(b);
 		setProperty(b);
 	}
 
+	@Override
 	public void setChecked(boolean state) {
 		super.setChecked(state);
 		Utilities.initToggleAction(this, fBundle, fPrefix, state);
@@ -103,6 +105,7 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 		setChecked(getProperty());
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(COMPARE_FILTERS)
 				&& event.getNewValue() instanceof Map) {
@@ -116,6 +119,7 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 			fCompareConfiguration.removePropertyChangeListener(this);
 	}
 
+	@Override
 	public void widgetDisposed(DisposeEvent e) {
 		dispose();
 	}

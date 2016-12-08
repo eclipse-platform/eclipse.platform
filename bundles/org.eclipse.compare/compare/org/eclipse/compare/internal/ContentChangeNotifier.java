@@ -32,6 +32,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 	/* (non-Javadoc)
 	 * see IContentChangeNotifier.addChangeListener
 	 */
+	@Override
 	public void addContentChangeListener(IContentChangeListener listener) {
 		if (fListenerList == null)
 			fListenerList= new ListenerList();
@@ -41,6 +42,7 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 	/* (non-Javadoc)
 	 * see IContentChangeNotifier.removeChangeListener
 	 */
+	@Override
 	public void removeContentChangeListener(IContentChangeListener listener) {
 		if (fListenerList != null) {
 			fListenerList.remove(listener);
@@ -58,14 +60,17 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 		}
 		// Legacy listeners may expect to be notified in the UI thread.
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				Object[] listeners= fListenerList.getListeners();
 				for (int i= 0; i < listeners.length; i++) {
 					final IContentChangeListener contentChangeListener = (IContentChangeListener)listeners[i];
 					SafeRunner.run(new ISafeRunnable() {
+						@Override
 						public void run() throws Exception {
 							contentChangeListener.contentChanged(element);
 						}
+						@Override
 						public void handleException(Throwable exception) {
 							// Logged by safe runner
 						}

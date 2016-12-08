@@ -56,12 +56,14 @@ public abstract class ResizableDialog extends Dialog {
 	/*
 	 * @see org.eclipse.jface.window.Window#configureShell(Shell)
 	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		if (fContextId != null)
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
 	}
 
+	@Override
 	protected Point getInitialSize() {
 
 		int width= 0;
@@ -71,9 +73,11 @@ public abstract class ResizableDialog extends Dialog {
 		if (s != null) {
 			s.addControlListener(
 				new ControlListener() {
+					@Override
 					public void controlMoved(ControlEvent arg0) {
 						fNewBounds= s.getBounds();
 					}
+					@Override
 					public void controlResized(ControlEvent arg0) {
 						fNewBounds= s.getBounds();
 					}
@@ -122,6 +126,7 @@ public abstract class ResizableDialog extends Dialog {
 		return new Point(width, height);
 	}
 
+	@Override
 	protected Point getInitialLocation(Point initialSize) {
 		Point loc= super.getInitialLocation(initialSize);
 
@@ -141,6 +146,7 @@ public abstract class ResizableDialog extends Dialog {
 		return loc;
 	}
 
+	@Override
 	public boolean close() {
 		boolean closed= super.close();
 		if (closed && fNewBounds != null)

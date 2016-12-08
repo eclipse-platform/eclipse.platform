@@ -33,6 +33,7 @@ class ImageCanvas extends Canvas {
 		ScrollBar sb= getHorizontalBar();
 		sb.setIncrement(20);
 		sb.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				repaint();
 			}
@@ -41,18 +42,21 @@ class ImageCanvas extends Canvas {
 		sb= getVerticalBar();
 		sb.setIncrement(20);
 		sb.addListener(SWT.Selection, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				repaint();
 			}
 		});
 
 		addListener(SWT.Resize, new Listener() {
+			@Override
 			public void handleEvent(Event e) {
 				updateScrollbars();
 			}
 		});
 
 		addListener(SWT.Paint, new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				paint(event.gc);
 			}

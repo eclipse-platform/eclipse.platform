@@ -54,22 +54,27 @@ public class EditionAction extends BaseCompareAction {
 			fFile= file;
 		}
 
+		@Override
 		public String getName() {
 			return fFile.getName();
 		}
 
+		@Override
 		public String getType() {
 			return fFile.getFileExtension();
 		}
 
+		@Override
 		public Image getImage() {
 			return null;
 		}
 
+		@Override
 		public InputStream getContents() {
 			return new ByteArrayInputStream(Utilities.getBytes(fDocument.get(), UTF_16));
 		}
 
+		@Override
 		public String getCharset() {
 			return UTF_16;
 		}
@@ -85,10 +90,12 @@ public class EditionAction extends BaseCompareAction {
 		fBundleName= bundleName;
 	}
 
+	@Override
 	protected boolean isEnabled(ISelection selection) {
 		return Utilities.getFiles(selection).length == 1;		// we don't support multiple selection for now
 	}
 
+	@Override
 	protected void run(ISelection selection) {
 		IFile[] files= Utilities.getFiles(selection);
 		for (int i= 0; i < files.length; i++)
@@ -174,6 +181,7 @@ public class EditionAction extends BaseCompareAction {
 						final IStreamContentAccessor sa, final IFile file)
 									throws InvocationTargetException, InterruptedException {
 		WorkspaceModifyOperation operation= new WorkspaceModifyOperation() {
+			@Override
 			public void execute(IProgressMonitor pm) throws InvocationTargetException {
 				try {
 					String taskName= Utilities.getString(bundle, "taskName"); //$NON-NLS-1$

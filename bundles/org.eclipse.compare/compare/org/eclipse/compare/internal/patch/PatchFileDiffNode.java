@@ -79,6 +79,7 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 		return result;
 	}
 
+	@Override
 	protected PatchConfiguration getConfiguration() {
 		return result.getConfiguration();
 	}
@@ -86,6 +87,7 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.structuremergeviewer.DiffContainer#add(org.eclipse.compare.structuremergeviewer.IDiffElement)
 	 */
+	@Override
 	public void add(IDiffElement diff) {
 		super.add(diff);
 		// Listen for content changes in unmatched children so we can fire an input change
@@ -102,10 +104,12 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
 	 */
+	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		fireChange();
 	}
 
+	@Override
 	public int getKind() {
 		int kind = super.getKind();
 		if (kind == Differencer.NO_CHANGE && getPatcher().hasCachedContents(getDiffResult().getDiff())) {
@@ -119,6 +123,7 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 		return file != null && file.isAccessible();
 	}
 
+	@Override
 	public IResource getResource() {
 		return ((WorkspaceFileDiffResult)getDiffResult()).getTargetFile();
 	}

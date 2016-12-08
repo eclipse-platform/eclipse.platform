@@ -58,9 +58,11 @@ public abstract class OutlineViewerCreator {
 		for (int i = 0; i < list.length; i++) {
 			final IPropertyChangeListener listener = (IPropertyChangeListener)list[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					listener.propertyChange(event);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// Logged by SafeRunner
 				}

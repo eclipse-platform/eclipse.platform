@@ -52,6 +52,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.operation.IRunnableContext#run(boolean, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
 		 */
+		@Override
 		public void run(boolean fork, boolean cancelable,
 				IRunnableWithProgress runnable) throws InvocationTargetException,
 				InterruptedException {
@@ -62,6 +63,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 		/* (non-Javadoc)
 		 * @see org.eclipse.compare.ICompareContainer#setStatusMessage(java.lang.String)
 		 */
+		@Override
 		public void setStatusMessage(String message) {
 			if (statusLabel != null && !statusLabel.isDisposed()) {
 				if (message == null) {
@@ -88,6 +90,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.ResizableDialog#close()
 	 */
+	@Override
 	public boolean close() {
 		if (super.close()) {
 			if (fCompareEditorInput != null)
@@ -100,6 +103,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		fCommitButton= createButton(parent, IDialogConstants.OK_ID, getOKButtonLabel(), true);
 		fCommitButton.setEnabled(isOKEnabled());
@@ -141,6 +145,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(CompareEditorInput.DIRTY_STATE)
 				|| event.getProperty().equals(CompareEditorInput.PROP_SELECTED_EDITION)) {
@@ -168,6 +173,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent2) {
 
 		Composite parent= (Composite) super.createDialogArea(parent2);
@@ -188,6 +194,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.window.Window#open()
 	 */
+	@Override
 	public int open() {
 		// Before opening, set the container of the input and listen
 		// for changes to the input
@@ -199,6 +206,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == OK) {
 			if (!fCompareEditorInput.okPressed())
@@ -212,6 +220,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
 	 */
+	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		IDialogSettings compareSettings = CompareUIPlugin.getDefault().getDialogSettings();
 		String sectionName = this.getClass().getName();
@@ -226,6 +235,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.internal.ResizableDialog#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		if (getHelpContextId() != null)
@@ -245,6 +255,7 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#getInitialSize()
 	 */
+	@Override
 	protected Point getInitialSize() {
 		Point initialSize = super.getInitialSize();
 		if (hasSettings) {

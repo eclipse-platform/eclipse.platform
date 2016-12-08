@@ -44,6 +44,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 		return fPanes;
 	}
 
+	@Override
 	protected INavigatable[] getNavigatables() {
 		List result = new ArrayList();
 		Object[] panes = getPanes();
@@ -59,6 +60,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.compare.ICompareNavigator#selectChange(boolean)
 	 */
+	@Override
 	public boolean selectChange(boolean next) {
 		// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106
 		if (next && fNextFirstTime && mustOpen()) {

@@ -18,22 +18,27 @@ import org.eclipse.jface.viewers.Viewer;
 
 public abstract class AbstractViewer extends Viewer {
 
+	@Override
 	public void setInput(Object input) {
 		// empty default implementation
 	}
 
+	@Override
 	public Object getInput() {
 		return null;
 	}
 
+	@Override
 	public ISelection getSelection() {
 		return StructuredSelection.EMPTY;
 	}
 
+	@Override
 	public void setSelection(ISelection s, boolean reveal) {
 		// empty default implementation
 	}
 
+	@Override
 	public void refresh() {
 		// empty default implementation
 	}
