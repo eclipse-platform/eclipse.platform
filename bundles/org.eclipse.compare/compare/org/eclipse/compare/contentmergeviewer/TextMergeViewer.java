@@ -5240,7 +5240,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		IMergeViewerContentProvider content= getMergeContentProvider();
 		Object leftContent = content.getLeftContent(oldInput);
 
-		if (leftContent != null && getCompareConfiguration().isLeftEditable() && isLeftDirty()) {
+		if (leftContent != null && isLeftEditable() && isLeftDirty()) {
 			if (fLeftContributor.hasSharedDocument(leftContent)) {
 				if (flush(fLeftContributor))
 					setLeftDirty(false);
@@ -5257,7 +5257,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		IMergeViewerContentProvider content= getMergeContentProvider();
 		Object rightContent = content.getRightContent(oldInput);
 
-		if (rightContent != null && getCompareConfiguration().isRightEditable() && isRightDirty()) {
+		if (rightContent != null && isRightEditable() && isRightDirty()) {
 			if (fRightContributor.hasSharedDocument(rightContent)) {
 				if (flush(fRightContributor))
 					setRightDirty(false);
