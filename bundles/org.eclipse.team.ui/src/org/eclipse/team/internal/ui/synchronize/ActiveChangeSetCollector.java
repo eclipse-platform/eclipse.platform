@@ -235,6 +235,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
     }
 
     protected void add(SyncInfo[] infos) {
+    	rootSet.beginInput();
         for (int i = 0; i < infos.length; i++) {
             SyncInfo info = infos[i];
             if (isLocalChange(info) && select(info)) {
@@ -255,6 +256,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
                 }
             }
         }
+        rootSet.endInput(null);
     }
 
     private ChangeSet[] findChangeSets(SyncInfo info) {
