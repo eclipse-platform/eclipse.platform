@@ -12,27 +12,26 @@ package org.eclipse.compare.structuremergeviewer;
 
 /**
  * Listener that gets informed if one (or more)
- * of the three sides of an <code>ICompareInput</code> object changes its value.
+ * of the three sides of an {@link ICompareInput} object changes its value.
  * <p>
  * For example when accepting an incoming addition
- * the (non-null) left side of an <code>ICompareInput</code>
- * is copied to the right side (which was <code>null</code>).
- * This triggers a call to <code>compareInputChanged</code> of registered
- * <code>ICompareInputChangeListener</code>.
+ * the (non-{@code null}) left side of an {@link ICompareInput}
+ * is copied to the right side (which was {@code null}).
+ * This triggers a call to {@link #compareInputChanged} of registered
+ * {@code ICompareInputChangeListener}.
  * <p>
  * Note however, that listener are not informed if the content of one of the sides changes.
  * <p>
  * Clients may implement this interface. It is also implemented by viewers that take
- * an <code>ICompareInput</code> as input.
+ * an {@link ICompareInput} as input.
  * </p>
  */
 public interface ICompareInputChangeListener {
-
 	/**
 	 * Called whenever the value (not the content) of one or more of the three sides
- 	 * of a <code>ICompareInput</code> has changed.
+ 	 * of a {@link ICompareInput} has changed.
 	 *
-	 * @param source the <code>ICompareInput</code> that has changed
+	 * @param source the {@link ICompareInput} that has changed
 	 */
 	void compareInputChanged(ICompareInput source);
 }

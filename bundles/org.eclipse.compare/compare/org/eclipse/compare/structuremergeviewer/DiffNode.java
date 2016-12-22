@@ -20,13 +20,13 @@ import com.ibm.icu.text.MessageFormat;
 
 /**
  * Diff node are used as the compare result of the differencing engine.
- * Since it implements the <code>ITypedElement</code> and <code>ICompareInput</code>
+ * Since it implements the {@link ITypedElement} and {@link ICompareInput}
  * interfaces it can be used directly to display the
- * compare result in a <code>DiffTreeViewer</code> and as the input to any other
+ * compare result in a {@link DiffTreeViewer} and as the input to any other
  * compare/merge viewer.
  * <p>
- * <code>DiffNode</code>s are typically created as the result of performing
- * a compare with the <code>Differencer</code>.
+ * {@code DiffNode}s are typically created as the result of performing
+ * a compare with the {@link Differencer}.
  * <p>
  * Clients typically use this class as is, but may subclass if required.
  *
@@ -42,10 +42,10 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	private boolean fSwapSides;
 
 	/**
-	 * Creates a new <code>DiffNode</code> and initializes with the given values.
+	 * Creates a new {@code DiffNode} and initializes with the given values.
 	 *
-	 * @param parent under which the new container is added as a child or <code>null</code>
-	 * @param kind of difference (defined in <code>Differencer</code>)
+	 * @param parent under which the new container is added as a child or {@code null}
+	 * @param kind of difference (defined in {@link Differencer})
 	 * @param ancestor the common ancestor input to a compare
 	 * @param left the left input to a compare
 	 * @param right the right input to a compare
@@ -58,7 +58,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Creates a new <code>DiffNode</code> with diff kind <code>Differencer.CHANGE</code>
+	 * Creates a new {@code DiffNode} with diff kind {@link Differencer#CHANGE}
 	 * and initializes with the given values.
 	 *
 	 * @param left the left input to a compare
@@ -69,9 +69,9 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Creates a new <code>DiffNode</code> and initializes with the given values.
+	 * Creates a new {@code DiffNode} and initializes with the given values.
 	 *
-	 * @param kind of difference (defined in <code>Differencer</code>)
+	 * @param kind of difference (defined in {@link Differencer})
 	 * @param ancestor the common ancestor input to a compare
 	 * @param left the left input to a compare
 	 * @param right the right input to a compare
@@ -81,26 +81,26 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Creates a new <code>DiffNode</code> with the given diff kind.
+	 * Creates a new {@code DiffNode} with the given diff kind.
 	 *
-	 * @param kind of difference (defined in <code>Differencer</code>)
+	 * @param kind of difference (defined in {@link Differencer})
 	 */
 	public DiffNode(int kind) {
 		super(null, kind);
 	}
 
 	/**
-	 * Creates a new <code>DiffNode</code> and initializes with the given values.
+	 * Creates a new {@code DiffNode} and initializes with the given values.
 	 *
-	 * @param parent under which the new container is added as a child or <code>null</code>
-	 * @param kind of difference (defined in <code>Differencer</code>)
+	 * @param parent under which the new container is added as a child or {@code null}
+	 * @param kind of difference (defined in {@link Differencer})
 	 */
 	public DiffNode(IDiffContainer parent, int kind) {
 		super(parent, kind);
 	}
 
 	/**
-	 * Registers a listener for changes of this <code>ICompareInput</code>.
+	 * Registers a listener for changes of this {@link ICompareInput}.
 	 * Has no effect if an identical listener is already registered.
 	 *
 	 * @param listener the listener to add
@@ -113,7 +113,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Unregisters a <code>ICompareInput</code> listener.
+	 * Unregisters a {@link ICompareInput} listener.
 	 * Has no effect if listener is not registered.
 	 *
 	 * @param listener the listener to remove
@@ -128,7 +128,7 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Sends out notification that a change has occurred on the <code>ICompareInput</code>.
+	 * Sends out notification that a change has occurred on the {@link ICompareInput}.
 	 */
 	protected void fireChange() {
 		if (fListener != null) {
@@ -141,10 +141,10 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	//---- getters & setters
 
 	/**
-	 * Returns <code>true</code> if this node shouldn't automatically be expanded in
-	 * a </code>DiffTreeViewer</code>.
+	 * Returns {@code true} if this node shouldn't automatically be expanded in
+	 * a {@link DiffTreeViewer}.
 	 *
-	 * @return <code>true</code> if node shouldn't automatically be expanded
+	 * @return {@code true} if node shouldn't automatically be expanded
 	 */
 	public boolean dontExpand() {
 		return fDontExpand;
@@ -152,19 +152,19 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 
 	/**
 	 * Controls whether this node is not automatically expanded when displayed in
-	 * a </code>DiffTreeViewer</code>.
+	 * a {@link DiffTreeViewer}.
 	 *
-	 * @param dontExpand if <code>true</code> this node is not automatically expanded in </code>DiffTreeViewer</code>
+	 * @param dontExpand if {@code true} this node is not automatically expanded in {@link DiffTreeViewer}
 	 */
 	public void setDontExpand(boolean dontExpand) {
 		fDontExpand= dontExpand;
 	}
 
 	/**
-	 * Returns the first not-<code>null</code> input of this node.
+	 * Returns the first not-{@code null} input of this node.
 	 * Method checks the three inputs in the order: ancestor, right, left.
 	 *
-	 * @return the first not-<code>null</code> input of this node
+	 * @return the first not-{@code null} input of this node
 	 */
 	public ITypedElement getId() {
 		if (fAncestor != null)
@@ -175,10 +175,11 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	}
 
 	/**
-	 * Returns the (non-<code>null</code>) name of the left or right side if they are identical.
+	 * Returns the (non-{@code null}) name of the left or right side if they are identical.
 	 * Otherwise both names are concatenated (separated with a slash ('/')).
 	 * <p>
 	 * Subclasses may re-implement to provide a different name for this node.
+	 *
 	 * @return the name of this node.
 	 */
 	@Override
@@ -224,9 +225,6 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		fSwapSides= swap;
 	}
 
-	/* (non Javadoc)
-	 * see ITypedElement.getImage
-	 */
 	@Override
 	public Image getImage() {
 		ITypedElement id= getId();
@@ -235,9 +233,6 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see ITypedElement.getType
-	 */
 	@Override
 	public String getType() {
 		ITypedElement id= getId();
@@ -253,12 +248,9 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	 * @since 3.0
 	 */
 	public void setAncestor(ITypedElement ancestor) {
-	    fAncestor= ancestor;
+		fAncestor= ancestor;
 	}
 
-	/* (non Javadoc)
-	 * see ICompareInput.getAncestor
-	 */
 	@Override
 	public ITypedElement getAncestor() {
 		return fAncestor;
@@ -273,9 +265,6 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		fLeft= left;
 	}
 
-	/* (non Javadoc)
-	 * see ICompareInput.getLeft
-	 */
 	@Override
 	public ITypedElement getLeft() {
 		return fLeft;
@@ -290,17 +279,11 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		fRight= right;
 	}
 
-	/* (non Javadoc)
-	 * see ICompareInput.getRight
-	 */
 	@Override
 	public ITypedElement getRight() {
 		return fRight;
 	}
 
-	/* (non Javadoc)
-	 * see ICompareInput.copy
-	 */
 	@Override
 	public void copy(boolean leftToRight) {
 		//System.out.println("DiffNode.copy: " + leftToRight);
@@ -314,10 +297,11 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 				ITypedElement dst= leftToRight ? getRight() : getLeft();
 				ITypedElement src= leftToRight ? getLeft() : getRight();
 				dst= ((IEditableContent)dstParent).replace(dst, src);
-				if (leftToRight)
+				if (leftToRight) {
 					setRight(dst);
-				else
+				} else {
 					setLeft(dst);
+				}
 
 				//setKind(Differencer.NO_CHANGE);
 
@@ -326,23 +310,17 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 		}
 	}
 
-	/* (non Javadoc)
-	 * see Object.hashCode
-	 */
 	@Override
 	public int hashCode() {
 		String[] path= getPath(this, 0);
 		int hashCode= 1;
 		for (int i= 0; i < path.length; i++) {
-	    	String s= path[i];
-	   	 	hashCode= (31*hashCode) + (s != null ? s.hashCode() : 0);
+			String s= path[i];
+			hashCode= (31 * hashCode) + (s != null ? s.hashCode() : 0);
 		}
 		return hashCode;
 	}
 
-	/* (non Javadoc)
-	 * see Object.equals
-	 */
 	@Override
 	public boolean equals(Object other) {
 		if (other != null && getClass() == other.getClass()) {
@@ -350,9 +328,10 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 			String[] path2= getPath((DiffNode) other, 0);
 			if (path1.length != path2.length)
 				return false;
-			for (int i= 0; i < path1.length; i++)
+			for (int i= 0; i < path1.length; i++) {
 				if (! path1[i].equals(path2[i]))
 					return false;
+			}
 			return true;
 		}
 		return super.equals(other);
@@ -361,13 +340,13 @@ public class DiffNode extends DiffContainer implements ICompareInput {
 	private static String[] getPath(ITypedElement el, int level) {
 		String[] path= null;
 		if (el instanceof IDiffContainer) {
-			IDiffContainer parent= ((IDiffContainer)el).getParent();
+			IDiffContainer parent= ((IDiffContainer) el).getParent();
 			if (parent != null)
-				path= getPath(parent, level+1);
+				path= getPath(parent, level + 1);
 		}
 		if (path == null)
-			path= new String[level+1];
-		path[(path.length-1)-level]= el.getName();
+			path= new String[level + 1];
+		path[(path.length - 1) - level]= el.getName();
 		return path;
 	}
 }
