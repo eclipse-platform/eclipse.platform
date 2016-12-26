@@ -325,14 +325,20 @@ public class CompareConfiguration {
 	 * disposed when the <code>dispose</code> method is called.
 	 *
 	 * @param kind the kind of change as defined in <code>Differencer</code>.
-	 * @return an modification of the base image reflecting the kind of change.
+	 * @return an modification of the base image reflecting the kind of change
+	 *         or {@code null} if there is no image descriptor registered for
+	 *         given id.
 	 * @see org.eclipse.compare.structuremergeviewer.Differencer
 	 * @since 2.0
 	 */
 	public Image getImage(int kind) {
-		if (fDisposed)
+		if (fDisposed) {
 			return null;
+		}
 		ImageDescriptor id= getImageDescriptor(kind);
+		if (id == null) {
+			return null;
+		}
 		ResourceManager rm = getResourceManager();
 		return rm.createImage(id);
 	}
