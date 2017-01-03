@@ -261,7 +261,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	 */
 	@Override
 	public void propertyChanged(IDiffTree tree, final int property, final IPath[] paths) {
-		Utils.syncExec(new Runnable() {
+		Utils.asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				ISynchronizationContext context = getContext();
