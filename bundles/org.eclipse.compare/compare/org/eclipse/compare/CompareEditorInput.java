@@ -86,7 +86,6 @@ import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 
-
 /**
  * A compare operation which can present its results in a special editor.
  * Running the compare operation and presenting the results in a compare editor
@@ -146,7 +145,6 @@ import org.eclipse.ui.texteditor.ITextEditorExtension3;
  * @see CompareEditorInput
  */
 public abstract class CompareEditorInput extends PlatformObject implements IEditorInput, IPropertyChangeNotifier, IRunnableWithProgress, ICompareContainer {
-
 	private static final boolean DEBUG= false;
 
 	/**
@@ -195,8 +193,8 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	private String fTitle;
 	private ListenerList<IPropertyChangeListener> fListenerList= new ListenerList<>();
 	private CompareNavigator fNavigator;
-	private boolean fLeftDirty = false;
-	private boolean fRightDirty = false;
+	private boolean fLeftDirty;
+	private boolean fRightDirty;
 	private IPropertyChangeListener fDirtyStateListener;
 
 	boolean fStructureCompareOnSingleClick= true;
@@ -220,8 +218,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 
 		@Override
-		public Viewer findStructureViewer(Viewer oldViewer,
-				ICompareInput input, Composite parent,
+		public Viewer findStructureViewer(Viewer oldViewer,	ICompareInput input, Composite parent,
 				CompareConfiguration configuration) {
 			OutlineViewerCreator creator = getWrappedCreator();
 			if (creator != null)
@@ -263,7 +260,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 					boolean changed= false;
 					Object newValue= e.getNewValue();
 					if (newValue instanceof Boolean)
-						changed= ((Boolean)newValue).booleanValue();
+						changed= ((Boolean) newValue).booleanValue();
 					setDirty(e.getSource(), changed);
 				}
 			}
@@ -518,14 +515,14 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	 * differences were found.
 	 *
 	 * @return the compare result prepared in method <code>prepareInput</code>
-	 *   or <code>null</code> if there were no differences
+	 *     or <code>null</code> if there were no differences
 	 */
 	public Object getCompareResult() {
 		return fInput;
 	}
 
 	/**
-	 * Create the SWT controls that are used to display the result of the compare operation.
+	 * Creates the SWT controls that are used to display the result of the compare operation.
 	 * Creates the SWT Controls and sets up the wiring between the individual panes.
 	 * This implementation creates all four panes but makes only the necessary ones visible.
 	 * Finally it feeds the compare result into the top left structure viewer
@@ -566,7 +563,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				 * input is disposed at the end making it possible to refer
 				 * during widgets disposal.
 				 */
-				Composite composite = (Composite)e.widget;
+				Composite composite = (Composite) e.widget;
 				Control control = composite;
 				while (composite.getChildren().length > 0) {
 					control = composite.getChildren()[composite.getChildren().length - 1];
@@ -1205,7 +1202,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Save any unsaved changes.
+	 * Saves any unsaved changes.
 	 * Empty implementation.
 	 * Subclasses must override to save any changes.
 	 *
@@ -1218,7 +1215,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Save any unsaved changes.
+	 * Saves any unsaved changes.
 	 * Subclasses must override to save any changes.
 	 * This implementation tries to flush changes in all viewers by
 	 * calling <code>ISavable.save</code> on them.
@@ -1234,7 +1231,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Flush the viewer contents into the input.
+	 * Flushes the viewer contents into the input.
 	 * @param monitor a progress monitor
 	 * @since 3.3
 	 */
@@ -1304,9 +1301,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#removeCompareInputChangeListener(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
-	 */
 	@Override
 	public void removeCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
@@ -1317,9 +1311,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#registerContextMenu(org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)
-	 */
 	@Override
 	public void registerContextMenu(MenuManager menu, ISelectionProvider selectionProvider) {
 		if (fContainer != null)
@@ -1355,9 +1346,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#getServiceLocator()
-	 */
 	@Override
 	public IServiceLocator getServiceLocator() {
 		IServiceLocator serviceLocator = fContainer.getServiceLocator();
@@ -1368,9 +1356,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return serviceLocator;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareContainer#getWorkbenchPart()
-	 */
 	@Override
 	public IWorkbenchPart getWorkbenchPart() {
 		if (fContainer != null)
@@ -1378,9 +1363,6 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.operation.IRunnableContext#run(boolean, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
-	 */
 	@Override
 	public void run(boolean fork, boolean cancelable,
 			IRunnableWithProgress runnable) throws InvocationTargetException,
@@ -1396,7 +1378,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Set the container of this input to the given container
+	 * Sets the container of this input to the given container
 	 * @param container the container
 	 * @since 3.3
 	 */
@@ -1407,7 +1389,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return the container of this input or <code>null</code> if there is no container
+	 * Returns the container of this input or <code>null</code> if there is no container
 	 * set.
 	 * @return the container of this input or <code>null</code>
 	 * @since 3.3
@@ -1417,7 +1399,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Fire the given property change event to all listeners
+	 * Fires the given property change event to all listeners
 	 * registered with this compare editor input.
 	 * @param event the property change event
 	 * @since 3.3
@@ -1427,7 +1409,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return whether this compare editor input can be run as a job.
+	 * Returns whether this compare editor input can be run as a job.
 	 * By default, <code>false</code> is returned since traditionally inputs
 	 * were prepared in the foreground (i.e the UI was blocked when the
 	 * {@link #run(IProgressMonitor)} method (and indirectly the
@@ -1441,7 +1423,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return whether this input belongs to the given family
+	 * Returns whether this input belongs to the given family
 	 * when it is run as a job.
 	 * @see #canRunAsJob()
 	 * @see Job#belongsTo(Object)
@@ -1454,7 +1436,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return whether this input is intended to be used to select
+	 * Returns whether this input is intended to be used to select
 	 * a particular edition of an element in a dialog. The result
 	 * of this method is only consider if neither sides of the
 	 * input are editable. By default, <code>false</code> is returned.
@@ -1470,7 +1452,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return the label to be used for the <code>OK</code>
+	 * Returns the label to be used for the <code>OK</code>
 	 * button when this input is displayed in a dialog.
 	 * By default, different labels are used depending on
 	 * whether the input is editable or is for edition selection
@@ -1488,7 +1470,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return the label used for the <code>CANCEL</code>
+	 * Returns the label used for the <code>CANCEL</code>
 	 * button when this input is shown in a compare dialog
 	 * using {@link CompareUI#openCompareDialog(CompareEditorInput)}.
 	 * @return the label used for the <code>CANCEL</code> button
@@ -1557,7 +1539,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Return the selected edition or <code>null</code> if no edition is selected.
+	 * Returns the selected edition or <code>null</code> if no edition is selected.
 	 * The result of this method should only be considered if {@link #isEditionSelectionDialog()}
 	 * returns <code>true</code>.
 	 * @return the selected edition or <code>null</code>
@@ -1577,12 +1559,11 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Set the help context id for this input.
+	 * Sets the help context id for this input.
 	 * @param helpContextId the help context id.
 	 * @since 3.3
 	 */
 	public void setHelpContextId(String helpContextId) {
 		this.fHelpContextId = helpContextId;
 	}
-
 }
