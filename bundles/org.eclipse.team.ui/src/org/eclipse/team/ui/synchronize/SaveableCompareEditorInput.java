@@ -231,13 +231,12 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		super.handleDispose();
 		ICompareInput compareInput = getCompareInput();
 		if (compareInput != null) {
-			if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
-				if (compareInputChangeListener == null) {
-					logTrace("null change listener detected!"); //$NON-NLS-1$
-					logStackTrace();
-				}
+			if (compareInputChangeListener != null) {
+				compareInput.removeCompareInputChangeListener(compareInputChangeListener);
+			} else if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
+				logTrace("compareInputChangeListener is unexpectedly null!"); //$NON-NLS-1$
+				logStackTrace();
 			}
-			compareInput.removeCompareInputChangeListener(compareInputChangeListener);
 		}
 		if (Policy.DEBUG_COMPARE_EDITOR_INPUT) {
 			logTrace("compareInputChangeListener = null"); //$NON-NLS-1$
