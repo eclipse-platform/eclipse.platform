@@ -66,6 +66,7 @@
     <module>bundles/org.eclipse.team.cvs.ssh2</module>
     <module>bundles/org.eclipse.team.cvs.ui</module>
     <module>bundles/org.eclipse.team.ui</module>
+    <module>bundles/org.eclipse.team.genericeditor.diff.extension</module>
     <module>bundles/org.eclipse.ui.net</module>
     <module>examples/org.eclipse.compare.examples</module>
     <module>examples/org.eclipse.compare.examples.xml</module>
