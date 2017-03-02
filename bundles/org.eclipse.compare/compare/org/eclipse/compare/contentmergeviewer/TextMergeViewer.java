@@ -558,7 +558,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fLeg = leg;
 			if (fElement instanceof IEncodedStreamContentAccessor) {
 				try {
-					fEncoding = ((IEncodedStreamContentAccessor)fElement).getCharset();
+					fEncoding = ((IEncodedStreamContentAccessor) fElement).getCharset();
 				} catch (CoreException e) {
 					// silently ignored
 				}
@@ -677,8 +677,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			Position range= null;
 
 			if (fElement instanceof IDocumentRange) {
-				newDocument= ((IDocumentRange)fElement).getDocument();
-				range= ((IDocumentRange)fElement).getRange();
+				newDocument= ((IDocumentRange) fElement).getDocument();
+				range= ((IDocumentRange) fElement).getRange();
 				connectToSharedDocument();
 
 			} else if (fElement instanceof IDocument) {
@@ -700,14 +700,14 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				ITypedElement parent= this.fViewer.getParent(fLeg);	// we try to find an insertion position within the deletion's parent
 
 				if (parent instanceof IDocumentRange) {
-					newDocument= ((IDocumentRange)parent).getDocument();
+					newDocument= ((IDocumentRange) parent).getDocument();
 					newDocument.addPositionCategory(DIFF_RANGE_CATEGORY);
 					Object input= this.fViewer.getInput();
 					range= this.fViewer.getNewRange(fLeg, input);
 					if (range == null) {
 						int pos= 0;
 						if (input instanceof ICompareInput)
-							pos= this.fViewer.findInsertionPosition(fLeg, (ICompareInput)input);
+							pos= this.fViewer.findInsertionPosition(fLeg, (ICompareInput) input);
 						range= new Position(pos, 0);
 						try {
 							newDocument.addPosition(DIFF_RANGE_CATEGORY, range);
@@ -721,7 +721,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 						this.fViewer.addNewRange(fLeg, input, range);
 					}
 				} else if (parent instanceof IDocument) {
-					newDocument= ((IDocumentRange)fElement).getDocument();
+					newDocument= ((IDocumentRange) fElement).getDocument();
 				}
 			}
 
@@ -1113,7 +1113,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (fElement == null)
 				return true;
 			if (fDocumentProvider instanceof IDocumentProviderExtension) {
-				IDocumentProviderExtension ext = (IDocumentProviderExtension)fDocumentProvider;
+				IDocumentProviderExtension ext = (IDocumentProviderExtension) fDocumentProvider;
 				if (ext.isReadOnly(fDocumentKey)) {
 					try {
 						ext.validateState(fDocumentKey, getControl().getShell());
@@ -1543,7 +1543,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			}
 			@Override
 			public boolean isHunkOnLeft() {
-				ITypedElement left = ((ICompareInput)getInput()).getRight();
+				ITypedElement left = ((ICompareInput) getInput()).getRight();
 				return left != null && Adapters.adapt(left, IHunk.class) != null;
 			}
 			@Override
@@ -1851,7 +1851,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		// to get undo for all text files, bugzilla 131895, 33665
 		if(textViewer instanceof ISourceViewer){
 			SourceViewerConfiguration configuration= new SourceViewerConfiguration();
-			((ISourceViewer)textViewer).configure(configuration);
+			((ISourceViewer) textViewer).configure(configuration);
 		}
 	}
 
@@ -2160,7 +2160,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			new Listener() {
 				@Override
 				public void handleEvent(Event e) {
-					int vpos= ((ScrollBar)e.widget).getSelection();
+					int vpos= ((ScrollBar) e.widget).getSelection();
 					synchronizedScrollVertical(vpos);
 				}
 			}
@@ -2883,7 +2883,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return doc;
 
 		if (input instanceof IDiffElement) {
-			IDiffContainer parent= ((IDiffElement)input).getParent();
+			IDiffContainer parent= ((IDiffElement) input).getParent();
 			return getElementDocument(type, parent);
 		}
 		return null;
@@ -2939,7 +2939,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private ITypedElement getParent(char type) {
 		Object input= getInput();
 		if (input instanceof IDiffElement) {
-			IDiffContainer parent= ((IDiffElement)input).getParent();
+			IDiffContainer parent= ((IDiffElement) input).getParent();
 			return Utilities.getLeg(type, parent);
 		}
 		return null;
@@ -2963,22 +2963,21 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		// if one side is empty use container
 		if (FIX_47640 && !emptyInput && (left == null || right == null)) {
 			if (input instanceof IDiffElement) {
-				IDiffContainer parent= ((IDiffElement)input).getParent();
+				IDiffContainer parent= ((IDiffElement) input).getParent();
 				if (parent instanceof ICompareInput) {
 				    ICompareInput ci= (ICompareInput) parent;
 
 				    if (ci.getAncestor() instanceof IDocumentRange
-				            || ci.getLeft() instanceof IDocumentRange
-				            		|| ci.getRight() instanceof IDocumentRange) {
+				    		|| ci.getLeft() instanceof IDocumentRange
+				    		|| ci.getRight() instanceof IDocumentRange) {
+				    	if (left instanceof IDocumentRange)
+				    		leftRange= ((IDocumentRange) left).getRange();
+				    	if (right instanceof IDocumentRange)
+				    		rightRange= ((IDocumentRange) right).getRange();
 
-				        	if (left instanceof IDocumentRange)
-				        	    leftRange= ((IDocumentRange)left).getRange();
-				        	if (right instanceof IDocumentRange)
-				        	    rightRange= ((IDocumentRange)right).getRange();
-
-					    ancestor= ci.getAncestor();
-					    left= getCompareConfiguration().isMirrored() ? ci.getRight() : ci.getLeft();
-					    right= getCompareConfiguration().isMirrored() ? ci.getLeft() : ci.getRight();
+				    	ancestor= ci.getAncestor();
+				    	left= getCompareConfiguration().isMirrored() ? ci.getRight() : ci.getLeft();
+				    	right= getCompareConfiguration().isMirrored() ? ci.getLeft() : ci.getRight();
 				    }
 				}
 			}
@@ -5169,7 +5168,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Control center= getCenterControl();
 		if (center instanceof BufferedCanvas)
-			((BufferedCanvas)center).repaint();
+			((BufferedCanvas) center).repaint();
 
 		if (fRightCanvas != null)
 			fRightCanvas.repaint();
@@ -5425,13 +5424,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (right != null) {
 				Object element = Adapters.adapt(right, IHunk.class);
 				if (element instanceof IHunk)
-					return ((IHunk)element).getStartPosition();
+					return ((IHunk) element).getStartPosition();
 			}
 			ITypedElement left = ((DiffNode) input).getLeft();
 			if (left != null) {
 				Object element = Adapters.adapt(left, IHunk.class);
 				if (element instanceof IHunk)
-					return ((IHunk)element).getStartPosition();
+					return ((IHunk) element).getStartPosition();
 			}
 		}
 		return 0;

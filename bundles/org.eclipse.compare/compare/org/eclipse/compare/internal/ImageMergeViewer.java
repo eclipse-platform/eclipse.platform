@@ -28,7 +28,6 @@ import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 /**
  */
 public class ImageMergeViewer extends ContentMergeViewer {
-
 	private static final String BUNDLE_NAME= "org.eclipse.compare.internal.ImageMergeViewerResources"; //$NON-NLS-1$
 
 	private Object fLeftImage;
@@ -37,7 +36,6 @@ public class ImageMergeViewer extends ContentMergeViewer {
 	private ImageCanvas fAncestor;
 	private ImageCanvas fLeft;
 	private ImageCanvas fRight;
-
 
 	public ImageMergeViewer(Composite parent, int styles, CompareConfiguration mp) {
 		super(styles, ResourceBundle.getBundle(BUNDLE_NAME), mp);
@@ -51,7 +49,6 @@ public class ImageMergeViewer extends ContentMergeViewer {
 
 	@Override
 	protected void updateContent(Object ancestor, Object left, Object right) {
-
 		setInput(fAncestor, ancestor);
 
 		fLeftImage= left;
@@ -78,41 +75,42 @@ public class ImageMergeViewer extends ContentMergeViewer {
 
 	private static void setInput(ImageCanvas canvas, Object input) {
 		if (canvas != null) {
-
 			InputStream stream= null;
-			if (input instanceof IStreamContentAccessor) {
-				IStreamContentAccessor sca= (IStreamContentAccessor) input;
-				if (sca != null) {
-					try {
-						stream= sca.getContents();
-					} catch (CoreException ex) {
-						// NeedWork
+			try {
+				if (input instanceof IStreamContentAccessor) {
+					IStreamContentAccessor sca= (IStreamContentAccessor) input;
+					if (sca != null) {
+						try {
+							stream= sca.getContents();
+						} catch (CoreException e) {
+							// NeedWork
+						}
 					}
 				}
-			}
 
-			Image image= null;
-			Display display= canvas.getDisplay();
-			if (stream != null) {
-				try {
-					image= new Image(display, stream);
-				} catch (SWTException ex) {
-					// silently ignored
+				Image image= null;
+				Display display= canvas.getDisplay();
+				if (stream != null) {
+					try {
+						image= new Image(display, stream);
+					} catch (SWTException e) {
+						// silently ignored
+					}
 				}
-			}
 
-			canvas.setImage(image);
-			if (image != null) {
-				canvas.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-			} else {
-				canvas.setBackground(null);
-			}
-
-			if (stream != null) {
-				try {
-					stream.close();
-				} catch (IOException ex) {
-					// silently ignored
+				canvas.setImage(image);
+				if (image != null) {
+					canvas.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+				} else {
+					canvas.setBackground(null);
+				}
+			} finally {
+				if (stream != null) {
+					try {
+						stream.close();
+					} catch (IOException e) {
+						// silently ignored
+					}
 				}
 			}
 		}
@@ -131,7 +129,7 @@ public class ImageMergeViewer extends ContentMergeViewer {
 	@Override
 	protected void handleResizeLeftRight(int x, int y, int width1, int centerWidth, int width2, int height) {
 		fLeft.setBounds(x, y, width1, height);
-		fRight.setBounds(x+width1+centerWidth, y, width2, height);
+		fRight.setBounds(x + width1 + centerWidth, y, width2, height);
 	}
 
 	@Override
@@ -147,4 +145,3 @@ public class ImageMergeViewer extends ContentMergeViewer {
 		}
 	}
 }
-
