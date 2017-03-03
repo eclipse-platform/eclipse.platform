@@ -315,6 +315,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	private ResourceBundle fBundle;
 	private final CompareConfiguration fCompareConfiguration;
 	private IPropertyChangeListener fPropertyChangeListener;
+	private IPropertyChangeListener fPreferenceChangeListener;
 	private ICompareInputChangeListener fCompareInputChangeListener;
 	private ListenerList<IPropertyChangeListener> fListenerList;
 	boolean fConfirmSave= true;
@@ -394,8 +395,16 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		// Make sure the compare configuration is not null
 		fCompareConfiguration = cc != null ? cc : new CompareConfiguration();
-		fPropertyChangeListener = (event) -> handlePropertyChangeEvent(event);
+		fPropertyChangeListener = event -> handlePropertyChangeEvent(event);
 		fCompareConfiguration.addPropertyChangeListener(fPropertyChangeListener);
+		fPreferenceChangeListener = event -> {
+			if (event.getProperty().equals(ComparePreferencePage.SWAPPED)) {
+				getCompareConfiguration().setProperty(CompareConfiguration.MIRRORED, event.getNewValue());
+				updateContentProvider();
+				updateToolItems();
+			}
+		};
+		cc.getPreferenceStore().addPropertyChangeListener(fPreferenceChangeListener);
 
 		fDefaultContentProvider = new MergeViewerContentProvider(fCompareConfiguration);
 		updateContentProvider();
@@ -592,13 +601,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 		if (key.equals(ICompareUIConstants.PROP_IGNORE_ANCESTOR)) {
 			setAncestorVisibility(false, !Utilities.getBoolean(getCompareConfiguration(), ICompareUIConstants.PROP_IGNORE_ANCESTOR, false));
-			return;
-		}
-
-		if (key.equals(ComparePreferencePage.SWAPPED)) {
-			getCompareConfiguration().setProperty(CompareConfiguration.MIRRORED, event.getNewValue());
-			updateContentProvider();
-			updateToolItems();
 			return;
 		}
 	}
@@ -1043,6 +1045,11 @@ public abstract class ContentMergeViewer extends ContentViewer
 		if (fPropertyChangeListener != null) {
 			fCompareConfiguration.removePropertyChangeListener(fPropertyChangeListener);
 			fPropertyChangeListener= null;
+		}
+
+		if (fPreferenceChangeListener != null) {
+			fCompareConfiguration.getPreferenceStore().removePropertyChangeListener(fPreferenceChangeListener);
+			fPreferenceChangeListener= null;
 		}
 
 		fAncestorLabel= null;
