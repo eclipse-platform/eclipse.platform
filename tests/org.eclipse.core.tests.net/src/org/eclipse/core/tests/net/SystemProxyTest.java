@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class SystemProxyTest extends TestCase {
 	private boolean isProxiesDefault;
 	private boolean isSystemProxiesDefault;
 
-	private Map proxyDataMap = new HashMap();
+	private Map<String, IProxyData> proxyDataMap = new HashMap<>();
 
 	public SystemProxyTest() {
 		super();
@@ -114,7 +114,7 @@ public class SystemProxyTest extends TestCase {
 		IProxyData[] proxiesData = getProxyManager().getProxyDataForHost(host);
 		assertNotNull(proxiesData);
 
-		Map typeMap = new HashMap();
+		Map<String, String> typeMap = new HashMap<>();
 		for (int i = 0; i < proxiesData.length; i++) {
 			assertProxyDataEqual(proxiesData[i], (IProxyData) proxyDataMap
 					.get(proxiesData[i].getType()));
@@ -128,7 +128,7 @@ public class SystemProxyTest extends TestCase {
 		IProxyData[] proxiesData = ProxySelector.getProxyData("Native");
 		assertNotNull(proxiesData);
 
-		Map typeMap = new HashMap();
+		Map<String, String> typeMap = new HashMap<>();
 		for (int i = 0; i < proxiesData.length; i++) {
 			assertProxyDataEqual(proxiesData[i], (IProxyData) proxyDataMap
 					.get(proxiesData[i].getType()));

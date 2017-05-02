@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
+import static org.junit.Assert.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
 
 import org.eclipse.core.internal.preferences.EclipsePreferences;
 import org.eclipse.core.runtime.CoreException;
@@ -23,21 +22,15 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IExportedPreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.junit.Test;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class PreferenceModifyListenerTest extends TestCase {
+public class PreferenceModifyListenerTest  {
 	private static final String NODE_NAME = "bug419228";
 	private static final String KEY = "someKey";
 	private static final String VALUE = "someValue";
 
-	public static Test suite() {
-		return new PreferenceModifyListenerTest("testPreApply");
-	}
-
-	public PreferenceModifyListenerTest(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testPreApply() throws BackingStoreException, CoreException {
 		// create a dummy node and export it to a stream
 		IEclipsePreferences toExport = InstanceScope.INSTANCE.getNode(NODE_NAME);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,47 +10,33 @@
  *******************************************************************************/
 package org.eclipse.core.tests.net;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.*;
 
 import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxyType;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.*;
 
-public class NetTest extends TestCase {
+public class NetTest {
 
-	private static final boolean BUG_338097= true;
+	private static final boolean BUG_338097 = true;
 
 	private boolean isSetEnabled;
 	private boolean isProxiesDefault;
 	private boolean isSystemProxiesDefault;
-	private Map dataCache = new HashMap();
+	private Map<String, IProxyData> dataCache = new HashMap<>();
 
-	public NetTest() {
-		super();
-	}
-
-	public NetTest(String name) {
-		super(name);
-	}
-
-	public static Test suite() {
-		return new TestSuite(NetTest.class);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		isSystemProxiesDefault = isSystemProxiesEnabled();
 		setSystemProxiesEnabled(false);
 		isProxiesDefault = isProxiesEnabled();
@@ -60,8 +46,8 @@ public class NetTest extends TestCase {
 		ProxyType.socksSystemPropertySetting = ProxyType.ALWAYS_SET;
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
 		IProxyData[] data = getProxyManager().getProxyData();
@@ -78,8 +64,7 @@ public class NetTest extends TestCase {
 
 	private void assertProxyDataEqual(IProxyData expected) {
 		ProxyData expectedData = (ProxyData) expected;
-		ProxyData data = (ProxyData) getProxyManager().getProxyData(
-				expectedData.getType());
+		ProxyData data = (ProxyData) getProxyManager().getProxyData(expectedData.getType());
 		assertEquals(expectedData.getType(), data.getType());
 		assertEquals(expectedData.getHost(), data.getHost());
 		assertEquals(expectedData.getPort(), data.getPort());
@@ -105,15 +90,16 @@ public class NetTest extends TestCase {
 
 		if (this.getProxyManager().isProxiesEnabled()) {
 			boolean isSet = Boolean.getBoolean(keyPrefix + ".proxySet");
-			assertEquals(proxyData.getHost() != null, isSet); //$NON-NLS-1$
+			assertEquals(proxyData.getHost() != null, isSet); // $NON-NLS-1$
 			assertEquals(proxyData.getHost(), sysProps.get(keyPrefix + ".proxyHost")); //$NON-NLS-1$
-			String portString = (String)sysProps.get(keyPrefix + ".proxyPort"); //$NON-NLS-1$
+			String portString = (String) sysProps.get(keyPrefix + ".proxyPort"); //$NON-NLS-1$
 			int port = -1;
 			if (portString != null)
 				port = Integer.parseInt(portString);
 			assertEquals(proxyData.getPort(), port);
 			if (isSet)
-				assertEquals(ProxyType.convertHostsToPropertyString(this.getProxyManager().getNonProxiedHosts()), sysProps.get(keyPrefix + ".nonProxyHosts")); //$NON-NLS-1$
+				assertEquals(ProxyType.convertHostsToPropertyString(this.getProxyManager().getNonProxiedHosts()),
+						sysProps.get(keyPrefix + ".nonProxyHosts")); //$NON-NLS-1$
 			else
 				assertNull(sysProps.get(keyPrefix + ".nonProxyHosts"));
 			assertEquals(proxyData.getUserId(), sysProps.get(keyPrefix + ".proxyUser")); //$NON-NLS-1$
@@ -134,7 +120,7 @@ public class NetTest extends TestCase {
 		Properties sysProps = System.getProperties();
 		if (this.getProxyManager().isProxiesEnabled()) {
 			assertEquals(proxyData.getHost(), sysProps.get("socksProxyHost")); //$NON-NLS-1$
-			String portString = (String)sysProps.get("socksProxyPort"); //$NON-NLS-1$
+			String portString = (String) sysProps.get("socksProxyPort"); //$NON-NLS-1$
 			int port = -1;
 			if (portString != null)
 				port = Integer.parseInt(portString);
@@ -146,7 +132,7 @@ public class NetTest extends TestCase {
 	}
 
 	private IProxyData getProxyData(String type) {
-		IProxyData data = (IProxyData)dataCache.get(type);
+		IProxyData data = (IProxyData) dataCache.get(type);
 		if (data == null) {
 			data = this.getProxyManager().getProxyData(type);
 			assertProxyDataEqual(data);
@@ -168,8 +154,7 @@ public class NetTest extends TestCase {
 		setProxyData(proxyData);
 	}
 
-	private void changeProxyData(IProxyData oldData, IProxyData data)
-			throws CoreException {
+	private void changeProxyData(IProxyData oldData, IProxyData data) throws CoreException {
 		// Make sure that setting the host doesn't change the persisted settings
 		if (isSetEnabled)
 			assertProxyDataEqual(oldData);
@@ -220,8 +205,7 @@ public class NetTest extends TestCase {
 
 	private void setProxiesEnabled(boolean enabled) {
 		this.getProxyManager().setProxiesEnabled(enabled);
-		if (enabled && this.getProxyManager().isSystemProxiesEnabled()
-				&& !this.getProxyManager().hasSystemProxies()) {
+		if (enabled && this.getProxyManager().isSystemProxiesEnabled() && !this.getProxyManager().hasSystemProxies()) {
 			assertEquals(false, this.getProxyManager().isProxiesEnabled());
 		} else {
 			assertEquals(enabled, this.getProxyManager().isProxiesEnabled());
@@ -248,6 +232,7 @@ public class NetTest extends TestCase {
 		dataCache.clear();
 	}
 
+	@Test
 	public void testIndividualSetAndClear() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -259,6 +244,7 @@ public class NetTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testAllSetAndClear() throws CoreException {
 		delaySettingData();
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
@@ -275,12 +261,14 @@ public class NetTest extends TestCase {
 		performSettingData();
 	}
 
+	@Test
 	public void testSetWhenDisabled() throws CoreException {
 		setProxiesEnabled(false);
 		String type = IProxyData.HTTP_PROXY_TYPE;
 		setHost(type);
 	}
 
+	@Test
 	public void testDisableAfterSet() throws CoreException {
 		String type = IProxyData.HTTP_PROXY_TYPE;
 		setHost(type);
@@ -289,7 +277,9 @@ public class NetTest extends TestCase {
 		assertProxyDataEqual(data);
 	}
 
-	//TODO test disabled, see Bug 403311
+	// TODO test disabled, see Bug 403311
+	@Test
+	@Ignore
 	public void _testSimpleHost() throws CoreException {
 
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
@@ -309,6 +299,7 @@ public class NetTest extends TestCase {
 		assertNull(data);
 	}
 
+	@Test
 	public void testHostPattern() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -338,6 +329,7 @@ public class NetTest extends TestCase {
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
+	@Test
 	public void testHostPatternBug505906() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -349,7 +341,8 @@ public class NetTest extends TestCase {
 		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com");
 		assertEquals(3, allData.length);
 
-		IProxyData data = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com", IProxyData.HTTP_PROXY_TYPE);
+		IProxyData data = this.getProxyManager().getProxyDataForHost("ignore.com.randomhot.com",
+				IProxyData.HTTP_PROXY_TYPE);
 		assertNotNull(data);
 
 		allData = this.getProxyManager().getProxyDataForHost("www.ignore.com");
@@ -367,6 +360,7 @@ public class NetTest extends TestCase {
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
+	@Test
 	public void testBug238796() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -374,39 +368,34 @@ public class NetTest extends TestCase {
 
 		String[] oldHosts = this.getProxyManager().getNonProxiedHosts();
 
-		this.getProxyManager().setNonProxiedHosts(
-				new String[] { "nonexisting.com" });
+		this.getProxyManager().setNonProxiedHosts(new String[] { "nonexisting.com" });
 
-		IProxyData[] allData = this.getProxyManager().getProxyDataForHost(
-				"NONEXISTING.COM");
+		IProxyData[] allData = this.getProxyManager().getProxyDataForHost("NONEXISTING.COM");
 		assertEquals(0, allData.length);
-		IProxyData data = this.getProxyManager().getProxyDataForHost(
-				"NONEXISTING.COM", IProxyData.HTTP_PROXY_TYPE);
+		IProxyData data = this.getProxyManager().getProxyDataForHost("NONEXISTING.COM", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}
 
+	@Test
 	public void testBug247408() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
 
-		IProxyData data1 = this.getProxyManager().getProxyDataForHost(
-				"randomhost.com", IProxyData.HTTP_PROXY_TYPE);
-		IProxyData[] data2 = this.getProxyManager().select(
-				new URI("http://randomhost.com"));
+		IProxyData data1 = this.getProxyManager().getProxyDataForHost("randomhost.com", IProxyData.HTTP_PROXY_TYPE);
+		IProxyData[] data2 = this.getProxyManager().select(new URI("http://randomhost.com"));
 		assertEquals(data2.length, 1);
 		assertEquals(data1, data2[0]);
 
-		IProxyData data3 = this.getProxyManager().getProxyDataForHost(
-				"randomhost.com", null);
-		IProxyData[] data4 = this.getProxyManager().select(
-				new URI(null, "randomhost.com", null, null));
+		IProxyData data3 = this.getProxyManager().getProxyDataForHost("randomhost.com", null);
+		IProxyData[] data4 = this.getProxyManager().select(new URI(null, "randomhost.com", null, null));
 		assertNull(data3);
 		assertEquals(data4.length, 0);
 	}
 
+	@Test
 	public void testBug255981() throws CoreException, URISyntaxException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -414,19 +403,17 @@ public class NetTest extends TestCase {
 
 		this.getProxyManager().setProxiesEnabled(false);
 
-		IProxyData data = this.getProxyManager().getProxyDataForHost(
-				"randomhost.com", IProxyData.HTTP_PROXY_TYPE);
+		IProxyData data = this.getProxyManager().getProxyDataForHost("randomhost.com", IProxyData.HTTP_PROXY_TYPE);
 		assertNull(data);
 
-		IProxyData[] data2 = this.getProxyManager().select(
-				new URI("http://randomhost.com"));
+		IProxyData[] data2 = this.getProxyManager().select(new URI("http://randomhost.com"));
 		assertEquals(data2.length, 0);
 
-		IProxyData data3[] = this.getProxyManager().getProxyDataForHost(
-				"http://randomhost.com");
+		IProxyData data3[] = this.getProxyManager().getProxyDataForHost("http://randomhost.com");
 		assertEquals(data3.length, 0);
 	}
 
+	@Test
 	public void testBug257503() throws CoreException {
 		if (BUG_338097)
 			return;
@@ -443,6 +430,7 @@ public class NetTest extends TestCase {
 
 	}
 
+	@Test
 	public void testNonProxyHosts() throws CoreException {
 		setDataTest(IProxyData.HTTP_PROXY_TYPE);
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
@@ -452,17 +440,17 @@ public class NetTest extends TestCase {
 
 		// add new host to the nonProxiedHosts list
 		String testHost = "bug284540.com";
-		ArrayList hostsList = new ArrayList();
+		ArrayList<String> hostsList = new ArrayList<>();
 		hostsList.addAll(Arrays.asList(oldHosts));
 		hostsList.add(testHost);
-		String[] newHosts = (String[]) hostsList.toArray(new String[] {});
+		String[] newHosts = hostsList.toArray(new String[] {});
 
 		this.getProxyManager().setNonProxiedHosts(newHosts);
 
 		// check if system properties are updated
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
-		String assertMessage = "http.nonProxyHost should contain '" + testHost
-				+ "', but its current value is '" + sysPropNonProxyHosts + "'";
+		String assertMessage = "http.nonProxyHost should contain '" + testHost + "', but its current value is '"
+				+ sysPropNonProxyHosts + "'";
 		assertTrue(assertMessage, sysPropNonProxyHosts.indexOf(testHost) > -1);
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
@@ -489,8 +477,7 @@ public class NetTest extends TestCase {
 
 	private void validateProperty(String key, String expected, boolean equals) {
 		String actual = System.getProperties().getProperty(key);
-		assertTrue((equals && expected.equals(actual))
-				|| (!equals && !expected.equals(actual)));
+		assertTrue((equals && expected.equals(actual)) || (!equals && !expected.equals(actual)));
 	}
 
 }
