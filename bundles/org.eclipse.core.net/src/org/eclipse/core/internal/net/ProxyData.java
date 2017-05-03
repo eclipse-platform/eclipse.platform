@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,22 +36,27 @@ public class ProxyData implements IProxyData {
 		this.type = type;
 	}
 
+	@Override
 	public String getHost() {
 		return host;
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
 	}
 
+	@Override
 	public int getPort() {
 		return port;
 	}
 
+	@Override
 	public String getType() {
 		return type;
 	}
 
+	@Override
 	public String getUserId() {
 		return user;
 	}
@@ -60,29 +65,35 @@ public class ProxyData implements IProxyData {
 		this.type = type;
 	}
 
+	@Override
 	public void setHost(String host) {
 		if (host != null && host.length() == 0)
 			host = null;
 		this.host = host;
 	}
 
+	@Override
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	@Override
 	public void setPort(int port) {
 		this.port = port;
 	}
 
+	@Override
 	public void setUserid(String userid) {
 		this.user = userid;
 		requiresAuthentication = userid != null;
 	}
 
+	@Override
 	public boolean isRequiresAuthentication() {
 		return requiresAuthentication;
 	}
 
+	@Override
 	public void disable() {
 		host = null;
 		port = -1;
@@ -107,6 +118,7 @@ public class ProxyData implements IProxyData {
 		this.dynamic = dynamic;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("type: "); //$NON-NLS-1$
@@ -128,6 +140,7 @@ public class ProxyData implements IProxyData {
 		return stringBuffer.toString();
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -143,6 +156,7 @@ public class ProxyData implements IProxyData {
 		return result;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

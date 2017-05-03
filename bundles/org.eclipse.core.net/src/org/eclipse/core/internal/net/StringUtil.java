@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ public class StringUtil {
 	 * @return array of tokens
 	 */
 	public static String[] split(String value, String[] delimiters) {
-		ArrayList result = new ArrayList();
+		ArrayList<String> result = new ArrayList<>();
 		int firstIndex = 0;
 		int separator = 0;
 		while (firstIndex != -1) {
@@ -48,7 +48,7 @@ public class StringUtil {
 				result.add(value);
 			}
 		}
-		return (String[]) result.toArray(new String[0]);
+		return result.toArray(new String[0]);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private PreferenceManager preferenceManager;
 
-	ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	ListenerList<IProxyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 	private String[] nonProxiedHosts;
 	private final ProxyType[] proxies = new ProxyType[] {
 			new ProxyType(IProxyData.HTTP_PROXY_TYPE),
@@ -79,28 +79,24 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return proxyManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#addProxyChangeListener(org.eclipse.core.net.IProxyChangeListener)
-	 */
+	@Override
 	public void addProxyChangeListener(IProxyChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#removeProxyChangeListener(org.eclipse.core.net.IProxyChangeListener)
-	 */
+	@Override
 	public void removeProxyChangeListener(IProxyChangeListener listener) {
 		listeners.remove(listener);
 	}
 
 	private void fireChange(final IProxyChangeEvent event) {
-		Object[] l = listeners.getListeners();
-		for (int i = 0; i < l.length; i++) {
-			final IProxyChangeListener listener = (IProxyChangeListener)l[i];
+		for (final IProxyChangeListener listener : listeners) {
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					listener.proxyInfoChanged(event);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// Logged by SafeRunner
 				}
@@ -108,9 +104,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#getNonProxiedHosts()
-	 */
+	@Override
 	public synchronized String[] getNonProxiedHosts() {
 		checkMigrated();
 		if (nonProxiedHosts == null) {
@@ -131,9 +125,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return new String[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#setNonProxiedHosts(java.lang.String[])
-	 */
+	@Override
 	public void setNonProxiedHosts(String[] hosts) {
 		checkMigrated();
 		Assert.isNotNull(hosts);
@@ -161,6 +153,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 
+	@Override
 	public IProxyData[] getProxyData() {
 		checkMigrated();
 		IProxyData[] result = new IProxyData[proxies.length];
@@ -178,6 +171,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return new IProxyData[0];
 	}
 
+	@Override
 	public void setProxyData(IProxyData[] proxies) {
 		checkMigrated();
 		doSetProxyData(proxies);
@@ -194,7 +188,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 	private IProxyData[] internalSetProxyData(IProxyData[] proxyDatas) {
-		List result = new ArrayList();
+		List<IProxyData> result = new ArrayList<>();
 		for (int i = 0; i < proxyDatas.length; i++) {
 			IProxyData proxyData = proxyDatas[i];
 			ProxyType type = getType(proxyData);
@@ -202,7 +196,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 				result.add(proxyData);
 			}
 		}
-		return (IProxyData[]) result.toArray(new IProxyData[result.size()]);
+		return result.toArray(new IProxyData[result.size()]);
 	}
 
 	private ProxyType getType(IProxyData proxyData) {
@@ -215,9 +209,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#isProxiesEnabled()
-	 */
+	@Override
 	public boolean isProxiesEnabled() {
 		checkMigrated();
 		return internalIsProxiesEnabled()
@@ -228,9 +220,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return preferenceManager.getBoolean(PreferenceManager.ROOT, PREF_ENABLED);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.net.IProxyManager#setProxiesEnabled(boolean)
-	 */
+	@Override
 	public void setProxiesEnabled(boolean enabled) {
 		checkMigrated();
 		boolean current = internalIsProxiesEnabled();
@@ -276,6 +266,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		registerAuthenticator();
 	}
 
+	@Override
 	public IProxyData getProxyData(String type) {
 		checkMigrated();
 		return resolveType(internalGetProxyData(type, ProxyType.VERIFY_EQUAL));
@@ -291,6 +282,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return null;
 	}
 
+	@Override
 	public IProxyData[] getProxyDataForHost(String host) {
 		checkMigrated();
 		if (!internalIsProxiesEnabled()) {
@@ -307,13 +299,13 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		if (isHostFiltered(uri))
 			return new IProxyData[0];
 		IProxyData[] data = getProxyData();
-		List result = new ArrayList();
+		List<IProxyData> result = new ArrayList<>();
 		for (int i = 0; i < data.length; i++) {
 			IProxyData proxyData = data[i];
 			if (proxyData.getHost() != null)
 				result.add(proxyData);
 		}
-		IProxyData ret[] = (IProxyData[]) result.toArray(new IProxyData[result.size()]);
+		IProxyData ret[] = result.toArray(new IProxyData[result.size()]);
 		return resolveType(ret);
 	}
 
@@ -339,9 +331,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.net.core.IProxyManager#getProxyDataForHost(java.lang.String, java.lang.String)
-	 */
+	@Override
 	public IProxyData getProxyDataForHost(String host, String type) {
 		checkMigrated();
 		if (!internalIsProxiesEnabled()) {
@@ -405,6 +395,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 				configuration, proxies, isInitialize);
 	}
 
+	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (event.getKey().equals(PREF_ENABLED) || event.getKey().equals(PREF_OS)) {
 			checkMigrated();
@@ -413,15 +404,18 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		}
 	}
 
+	@Override
 	public boolean hasSystemProxies() {
 		return nativeProxyProvider != null;
 	}
 
+	@Override
 	public boolean isSystemProxiesEnabled() {
 		checkMigrated();
 		return preferenceManager.getBoolean(PreferenceManager.ROOT, PREF_OS);
 	}
 
+	@Override
 	public void setSystemProxiesEnabled(boolean enabled) {
 		checkMigrated();
 		boolean current = isSystemProxiesEnabled();
@@ -432,6 +426,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		preferenceManager.putBoolean(PreferenceManager.ROOT, PREF_OS, enabled);
 	}
 
+	@Override
 	public IProxyData[] select(URI uri) {
 		IProxyData data = getProxyDataForHost(uri.getHost(), uri.getScheme());
 		if (data != null) {

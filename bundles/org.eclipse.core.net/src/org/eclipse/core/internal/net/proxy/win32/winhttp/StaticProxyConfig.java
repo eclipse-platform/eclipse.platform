@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 compeople AG and others.
+ * Copyright (c) 2008, 2017 compeople AG and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@ import org.eclipse.core.net.proxy.IProxyData;
 public class StaticProxyConfig {
 
 	private static final String[] KNOWN_TYPES = {"HTTP", "HTTPS", "FTP", "GOPHER"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	private List universalProxies = new ArrayList();
-	private Map protocolSpecificProxies = new HashMap();
+	private List<IProxyData> universalProxies = new ArrayList<>();
+	private Map<String, List<IProxyData>> protocolSpecificProxies = new HashMap<>();
 	private ProxyBypass proxyBypass;
 
 	/**
@@ -51,21 +51,21 @@ public class StaticProxyConfig {
 	 * @param uri
 	 * @param proxies
 	 */
-	public void select(URI uri, List proxies) {
+	public void select(URI uri, List<IProxyData> proxies) {
 		if (proxyBypass.bypassProxyFor(uri))
 			return;
 
 		if (!protocolSpecificProxies.isEmpty()) {
 			if (uri.getScheme() != null) {
-				List protocolProxies = (List) protocolSpecificProxies.get(uri
+				List<IProxyData> protocolProxies = protocolSpecificProxies.get(uri
 						.getScheme().toUpperCase());
 				if (protocolProxies == null)
 					return;
 				proxies.addAll(protocolProxies);
 			} else {
-				Iterator it = protocolSpecificProxies.values().iterator();
+				Iterator<List<IProxyData>> it = protocolSpecificProxies.values().iterator();
 				while (it.hasNext()) {
-					List protocolProxies = (List) it.next();
+					List<IProxyData> protocolProxies = it.next();
 					if (protocolProxies == null)
 						return;
 					proxies.addAll(protocolProxies);
@@ -91,15 +91,15 @@ public class StaticProxyConfig {
 		IProxyData[] data = getUniversalProxiesData();
 		if (data.length > 0)
 			return data;
-		List proxies = new ArrayList();
-		Iterator it = protocolSpecificProxies.values().iterator();
+		List<IProxyData> proxies = new ArrayList<>();
+		Iterator<List<IProxyData>> it = protocolSpecificProxies.values().iterator();
 		while (it.hasNext()) {
-			List protocolProxies = (List) it.next();
+			List<IProxyData> protocolProxies = it.next();
 			if (protocolProxies != null) {
 				proxies.addAll(protocolProxies);
 			}
 		}
-		return (IProxyData[]) proxies.toArray(new IProxyData[0]);
+		return proxies.toArray(new IProxyData[0]);
 	}
 
 	private IProxyData[] getUniversalProxiesData() {

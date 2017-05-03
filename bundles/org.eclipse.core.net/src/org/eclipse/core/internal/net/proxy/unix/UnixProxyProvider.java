@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Oakland Software Incorporated and others
+ * Copyright (c) 2008, 2017 Oakland Software Incorporated and others
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		// Nothing to initialize
 	}
 
+	@Override
 	public IProxyData[] select(URI uri) {
 		String[] nonProxyHosts = getNonProxiedHosts();
 		if (nonProxyHosts != null) {
@@ -75,6 +76,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		return proxies;
 	}
 
+	@Override
 	public IProxyData[] getProxyData() {
 		String[] commonTypes = new String[] { IProxyData.HTTP_PROXY_TYPE,
 				IProxyData.SOCKS_PROXY_TYPE, IProxyData.HTTPS_PROXY_TYPE };
@@ -82,7 +84,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 	}
 
 	private IProxyData[] getProxyForTypes(String[] types) {
-		ArrayList allData = new ArrayList();
+		ArrayList<IProxyData> allData = new ArrayList<>();
 		for (int i = 0; i < types.length; i++) {
 			String type = types[i];
 			ProxyData pd = getSystemProxyInfo(type);
@@ -90,9 +92,10 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 				allData.add(pd);
 			}
 		}
-		return (IProxyData[]) allData.toArray(new IProxyData[0]);
+		return allData.toArray(new IProxyData[0]);
 	}
 
+	@Override
 	public String[] getNonProxiedHosts() {
 		String[] npHosts;
 

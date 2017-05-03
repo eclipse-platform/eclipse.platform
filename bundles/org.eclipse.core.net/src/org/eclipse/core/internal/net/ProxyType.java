@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,13 +100,13 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	public static String[] convertPropertyStringToHosts(String property) {
 		String hosts[] = StringUtil.split(property, new String[] { "|" }); //$NON-NLS-1$
-		ArrayList ret = new ArrayList();
+		ArrayList<String> ret = new ArrayList<>();
 		for (int i = 0; i < hosts.length; i++) {
 			if (hosts[i].length() != 0) {
 				ret.add(hosts[i]);
 			}
 		}
-		return (String[]) ret.toArray(new String[0]);
+		return ret.toArray(new String[0]);
 	}
 
 	public ProxyType(String name) {
@@ -571,7 +571,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	private synchronized boolean hasJavaNetProxyClass() {
 		try {
-			Class proxyClass = Class.forName("java.net.Proxy"); //$NON-NLS-1$
+			Class<?> proxyClass = Class.forName("java.net.Proxy"); //$NON-NLS-1$
 			return proxyClass != null;
 		} catch (ClassNotFoundException e) {
 			// Ignore
@@ -579,16 +579,19 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		return false;
 	}
 
+	@Override
 	public void added(NodeChangeEvent event) {
 		// Add a preference listener so we'll get changes to the fields of the node
 		if (event.getChild().name().equals(getName()))
 			((IEclipsePreferences)event.getChild()).addPreferenceChangeListener(this);
 	}
 
+	@Override
 	public void removed(NodeChangeEvent event) {
 		// Nothing to do
 	}
 
+	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (updatingPreferences)
 			return;

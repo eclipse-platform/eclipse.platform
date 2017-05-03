@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 compeople AG and others.
+ * Copyright (c) 2008, 2017 compeople AG and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,8 @@ public final class ProxyProviderUtil {
 	 * @param protocolSpecificProxies
 	 *            a map from http schemes to the list of scheme specific proxies
 	 */
-	public static void fillProxyLists(String proxyList, List universalProxies,
-			Map protocolSpecificProxies) {
+	public static void fillProxyLists(String proxyList, List<IProxyData> universalProxies,
+			Map<String, List<IProxyData>> protocolSpecificProxies) {
 		StringTokenizer tokenizer = new StringTokenizer(proxyList, ";"); //$NON-NLS-1$
 		while (tokenizer.hasMoreTokens()) {
 			createProxy(tokenizer.nextToken(), universalProxies,
@@ -66,7 +66,7 @@ public final class ProxyProviderUtil {
 	}
 
 	private static void createProxy(final String proxyDefinition,
-			List universalProxies, Map protocolSpecificProxies) {
+			List<IProxyData> universalProxies, Map<String, List<IProxyData>> protocolSpecificProxies) {
 		String protocol = null;
 		String host = null;
 		int port = 0;
@@ -127,11 +127,11 @@ public final class ProxyProviderUtil {
 		return PROXY_DEFAULT_PORT;
 	}
 
-	private static void addProtocolSpecificProxy(Map protocolSpecificProxies,
+	private static void addProtocolSpecificProxy(Map<String, List<IProxyData>> protocolSpecificProxies,
 			String protocol, IProxyData proxy) {
-		List list = (List) protocolSpecificProxies.get(protocol);
+		List<IProxyData> list = protocolSpecificProxies.get(protocol);
 		if (list == null) {
-			list = new ArrayList();
+			list = new ArrayList<>();
 			protocolSpecificProxies.put(protocol, list);
 		}
 
@@ -164,7 +164,7 @@ public final class ProxyProviderUtil {
 	 * Pac related helper methods below here.
 	 */
 
-	private static final Map PROXY_TYPE_MAP;
+	private static final Map<String, String> PROXY_TYPE_MAP;
 
 	/*
 	 * @see "http://wp.netscape.com/eng/mozilla/2.0/relnotes/demo/proxy-live.html"
@@ -176,7 +176,7 @@ public final class ProxyProviderUtil {
 
 	static {
 		// mapping of pacProgram proxy type names to java proxy types:
-		final Map temp = new HashMap();
+		final Map<String, String> temp = new HashMap<>();
 		temp.put(PAC_PROXY_TYPE_DIRECT, NO_PROXY);
 		temp.put(PAC_PROXY_TYPE_PROXY, IProxyData.HTTP_PROXY_TYPE);
 		temp.put(PAC_PROXY_TYPE_SOCKS, IProxyData.SOCKS_PROXY_TYPE);
@@ -187,12 +187,12 @@ public final class ProxyProviderUtil {
 	 * @param pacFindProxyForUrlResult
 	 * @return a list of IProxyData objects
 	 */
-	public static List getProxies(String pacFindProxyForUrlResult) {
+	public static List<IProxyData> getProxies(String pacFindProxyForUrlResult) {
 		if (pacFindProxyForUrlResult == null
 				|| pacFindProxyForUrlResult.trim().length() == 0)
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 
-		final List result = new ArrayList();
+		final List<IProxyData> result = new ArrayList<>();
 		final StringTokenizer scanner = new StringTokenizer(
 				pacFindProxyForUrlResult, ";"); //$NON-NLS-1$
 		while (scanner.hasMoreTokens()) {
@@ -214,7 +214,7 @@ public final class ProxyProviderUtil {
 			pacProxy = "PROXY " + pacProxy; //$NON-NLS-1$
 		StringTokenizer scanner = new StringTokenizer(pacProxy);
 		String pacProxyType = scanner.nextToken();
-		String proxyType = (String) PROXY_TYPE_MAP.get(pacProxyType);
+		String proxyType = PROXY_TYPE_MAP.get(pacProxyType);
 		if (proxyType == null || proxyType.equals(NO_PROXY))
 			return null;
 
@@ -234,9 +234,9 @@ public final class ProxyProviderUtil {
 	}
 
 	private static boolean startsWithProxyType(String pacProxy) {
-		Iterator iter = PROXY_TYPE_MAP.keySet().iterator();
+		Iterator<String> iter = PROXY_TYPE_MAP.keySet().iterator();
 		while (iter.hasNext())
-			if (pacProxy.startsWith((String) iter.next()))
+			if (pacProxy.startsWith(iter.next()))
 				return true;
 
 		return false;

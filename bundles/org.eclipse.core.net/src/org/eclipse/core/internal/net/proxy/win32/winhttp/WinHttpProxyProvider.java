@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 compeople AG and others.
+ * Copyright (c) 2008, 2017 compeople AG and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -156,7 +156,7 @@ public class WinHttpProxyProvider {
 			return EMPTY_PROXIES;
 		}
 
-		List proxies = new ArrayList();
+		List<IProxyData> proxies = new ArrayList<>();
 
 		// Let�s find out if auto detect has changed.
 		if (newProxyConfig.autoDetectChanged(proxyConfig)) {
@@ -203,10 +203,10 @@ public class WinHttpProxyProvider {
 		return toArray(proxies);
 	}
 
-	protected void pacSelect(int hHttpSession, URI uri, List proxies) {
+	protected void pacSelect(int hHttpSession, URI uri, List<IProxyData> proxies) {
 		if (!tryPac)
 			return;
-		List pacProxies = pacSelect(hHttpSession, proxyConfig
+		List<IProxyData> pacProxies = pacSelect(hHttpSession, proxyConfig
 				.getAutoConfigUrl(), uri);
 		if (pacProxies == null)
 			tryPac = false;
@@ -215,7 +215,7 @@ public class WinHttpProxyProvider {
 
 	}
 
-	protected void wpadSelect(int hHttpSession, URI uri, List proxies) {
+	protected void wpadSelect(int hHttpSession, URI uri, List<IProxyData> proxies) {
 		if (tryWpadGetUrl) {
 			tryWpadGetUrl = false;
 			AutoProxyHolder autoProxyHolder = new AutoProxyHolder();
@@ -232,7 +232,7 @@ public class WinHttpProxyProvider {
 		}
 		if (wpadAutoConfigUrl == null)
 			return;
-		List wpadProxies = pacSelect(hHttpSession, wpadAutoConfigUrl, uri);
+		List<IProxyData> wpadProxies = pacSelect(hHttpSession, wpadAutoConfigUrl, uri);
 		if (wpadProxies == null)
 			wpadAutoConfigUrl = null;
 		else
@@ -247,14 +247,14 @@ public class WinHttpProxyProvider {
 	 * @param uri
 	 * @return a list of proxies (IProxyData) or null in case of an error.
 	 */
-	protected List pacSelect(int hHttpSession, String configUrl, URI uri) {
+	protected List<IProxyData> pacSelect(int hHttpSession, String configUrl, URI uri) {
 		// Don�t ask for anything else than http or https since that is not
 		// supported by WinHttp pac file support:
 		// ERROR_WINHTTP_UNRECOGNIZED_SCHEME
 		if (!IProxyData.HTTP_PROXY_TYPE.equalsIgnoreCase(uri.getScheme())
 				&& !IProxyData.HTTPS_PROXY_TYPE.equalsIgnoreCase(uri
 						.getScheme()))
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		// Set up the autoproxy call.
 		WinHttpAutoProxyOptions autoProxyOptions = new WinHttpAutoProxyOptions();
 		autoProxyOptions
@@ -272,7 +272,7 @@ public class WinHttpProxyProvider {
 		}
 		ProxyBypass proxyBypass = new ProxyBypass(proxyInfo.getProxyBypass());
 		if (proxyBypass.bypassProxyFor(uri))
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		return ProxyProviderUtil.getProxies(proxyInfo.getProxy());
 	}
 
@@ -281,8 +281,8 @@ public class WinHttpProxyProvider {
 		this.logThrowable = throwable;
 	}
 
-	private static IProxyData[] toArray(List proxies) {
-		return (IProxyData[]) proxies.toArray(new IProxyData[proxies.size()]);
+	private static IProxyData[] toArray(List<IProxyData> proxies) {
+		return proxies.toArray(new IProxyData[proxies.size()]);
 	}
 
 }

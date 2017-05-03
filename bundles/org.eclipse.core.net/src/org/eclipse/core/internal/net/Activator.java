@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class Activator implements BundleActivator {
 	 */
 	private static Activator instance;
 
-	private static ServiceTracker logTracker;
+	private static ServiceTracker<FrameworkLog, FrameworkLog> logTracker;
 
 	private static final String PROP_REGISTER_SERVICE = "org.eclipse.net.core.enableProxyService"; //$NON-NLS-1$
 
@@ -53,11 +53,11 @@ public class Activator implements BundleActivator {
 
 	private BundleContext bundleContext;
 
-	private ServiceTracker instanceLocationTracker;
+	private ServiceTracker<?,?> instanceLocationTracker;
 
-	private ServiceRegistration debugRegistration;
+	private ServiceRegistration<DebugOptionsListener> debugRegistration;
 
-	private ServiceRegistration proxyService;
+	private ServiceRegistration<IProxyService> proxyService;
 
 	private PreferenceManager preferenceManger;
 
@@ -96,11 +96,10 @@ public class Activator implements BundleActivator {
 	 */
 	private void log(IStatus status) {
 		if (logTracker == null) {
-			logTracker = new ServiceTracker(bundleContext, FrameworkLog.class
-					.getName(), null);
+			logTracker = new ServiceTracker<>(bundleContext, FrameworkLog.class, null);
 			logTracker.open();
 		}
-		FrameworkLog log = (FrameworkLog) logTracker.getService();
+		FrameworkLog log = logTracker.getService();
 		if (log != null) {
 			log.log(getLog(status));
 		} else {
@@ -115,7 +114,7 @@ public class Activator implements BundleActivator {
 	 */
 	private FrameworkLogEntry getLog(IStatus status) {
 		Throwable t = status.getException();
-		ArrayList childlist = new ArrayList();
+		ArrayList<FrameworkLogEntry> childlist = new ArrayList<>();
 
 		int stackCode = t instanceof CoreException ? 1 : 0;
 		// ensure a substatus inside a CoreException is properly logged
@@ -133,8 +132,8 @@ public class Activator implements BundleActivator {
 			}
 		}
 
-		FrameworkLogEntry[] children = (FrameworkLogEntry[]) (childlist.size() == 0 ? null
-				: childlist.toArray(new FrameworkLogEntry[childlist.size()]));
+		FrameworkLogEntry[] children = childlist.size() == 0 ? null
+				: childlist.toArray(new FrameworkLogEntry[childlist.size()]);
 
 		return new FrameworkLogEntry(status.getPlugin(), status.getSeverity(),
 				status.getCode(), status.getMessage(), stackCode, t, children);
@@ -150,6 +149,7 @@ public class Activator implements BundleActivator {
 		return (instanceLocation != null && instanceLocation.isSet());
 	}
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		this.bundleContext = context;
 		this.preferenceManger = PreferenceManager.createConfigurationManager(ID);
@@ -160,11 +160,11 @@ public class Activator implements BundleActivator {
 			// ignore this. It should never happen as we have tested the above
 			// format.
 		}
-		instanceLocationTracker = new ServiceTracker(context, filter, null);
+		instanceLocationTracker = new ServiceTracker<>(context, filter, null);
 		instanceLocationTracker.open();
 
 		// register debug options listener
-		Hashtable properties = new Hashtable(2);
+		Hashtable<String, String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
@@ -173,11 +173,11 @@ public class Activator implements BundleActivator {
 			ProxyManager proxyManager = (ProxyManager) ProxyManager
 					.getProxyManager();
 			proxyManager.initialize();
-			proxyService = context.registerService(IProxyService.class
-					.getName(), proxyManager, new Hashtable());
+			proxyService = context.registerService(IProxyService.class, proxyManager, new Hashtable<>());
 		}
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		if (proxyService != null) {
 			proxyService.unregister();

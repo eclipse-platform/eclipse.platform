@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,6 +137,7 @@ public interface IProxyService {
 	 * @return the list of known proxy types and their settings for the
 	 * given host
 	 */
+	@Deprecated
 	IProxyData[] getProxyDataForHost(String host);
 
 	/**
@@ -187,6 +188,7 @@ public interface IProxyService {
 	 * @see IProxyData#HTTPS_PROXY_TYPE
 	 * @see IProxyData#SOCKS_PROXY_TYPE
 	 */
+	@Deprecated
 	IProxyData getProxyDataForHost(String host, String type);
 
 	/**
