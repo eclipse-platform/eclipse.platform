@@ -166,6 +166,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 			if (scope.contains(resource)) {
 				List<ResourceTraversal> result = new ArrayList<>();
 				ResourceTraversal[] traversals = scope.getTraversals();
+				if(traversals == null) {
+					return result.toArray(new ResourceTraversal[result.size()]);
+				}
 				for (int i = 0; i < traversals.length; i++) {
 					ResourceTraversal traversal = traversals[i];
 					if (traversal.contains(resource)) {
@@ -209,7 +212,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 							mapping = scope.getMapping(element);
 							if (mapping != null) {
 								ResourceTraversal[] traversals = scope.getTraversals(mapping);
-								result.addAll(Arrays.asList(traversals));
+								if(traversals != null) {
+									result.addAll(Arrays.asList(traversals));
+								}
 							}
 						}
 					}
