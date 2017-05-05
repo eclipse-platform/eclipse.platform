@@ -45,9 +45,6 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	private WorkbenchContentProvider provider;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getDelegateContentProvider()
-	 */
 	@Override
 	protected ITreeContentProvider getDelegateContentProvider() {
 		if (provider == null)
@@ -55,25 +52,16 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return provider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelProviderId()
-	 */
 	@Override
 	protected String getModelProviderId() {
 		return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelRoot()
-	 */
 	@Override
 	protected Object getModelRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#isInScope(org.eclipse.team.core.mapping.IResourceMappingScope, java.lang.Object, java.lang.Object)
-	 */
 	@Override
 	protected boolean isInScope(ISynchronizationScope scope, Object parent, Object elementOrPath) {
 		Object object = internalGetElement(elementOrPath);
@@ -102,18 +90,12 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
-	 */
 	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if (provider != null)
@@ -130,9 +112,6 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		super.propertyChange(event);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getChildrenInContext(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object, java.lang.Object[])
-	 */
 	@Override
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parentOrPath, Object[] children) {
 		Object parent = internalGetElement(parentOrPath);
@@ -153,7 +132,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private Object[] internalGetChildren(ISynchronizationContext context, Object parent, Object[] children) {
-		List result = new ArrayList(children.length);
+		List<Object> result = new ArrayList<>(children.length);
 		for (int i = 0; i < children.length; i++) {
 			Object object = children[i];
 			// If the parent is a TreePath then the subclass is
@@ -185,7 +164,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		if (object instanceof IResource) {
 			IResource resource = (IResource) object;
 			if (scope.contains(resource)) {
-				List result = new ArrayList();
+				List<ResourceTraversal> result = new ArrayList<>();
 				ResourceTraversal[] traversals = scope.getTraversals();
 				for (int i = 0; i < traversals.length; i++) {
 					ResourceTraversal traversal = traversals[i];
@@ -215,12 +194,12 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 						}
 					}
 				}
-				return (ResourceTraversal[]) result.toArray(new ResourceTraversal[result.size()]);
+				return result.toArray(new ResourceTraversal[result.size()]);
 			} else {
 				// The resource is a parent of an in-scope resource
 				// TODO: fails due to use of roots
 				ResourceMapping[] mappings = scope.getMappings(ModelProvider.RESOURCE_MODEL_PROVIDER_ID);
-				List result = new ArrayList();
+				List<ResourceTraversal> result = new ArrayList<>();
 				for (int i = 0; i < mappings.length; i++) {
 					ResourceMapping resourceMapping = mappings[i];
 					Object element = resourceMapping.getModelObject();
@@ -235,7 +214,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 						}
 					}
 				}
-				return (ResourceTraversal[]) result.toArray(new ResourceTraversal[result.size()]);
+				return result.toArray(new ResourceTraversal[result.size()]);
 			}
 		}
 		return new ResourceTraversal[0];
@@ -248,17 +227,11 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		return Utils.getResource(element);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#hasChildrenInContext(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
-	 */
 	@Override
 	protected boolean hasChildrenInContext(ISynchronizationContext context, Object elementOrPath) {
 		return getTraversalCalculator().hasChildren(context, elementOrPath);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#propertyChanged(int, org.eclipse.core.runtime.IPath[])
-	 */
 	@Override
 	public void propertyChanged(IDiffTree tree, final int property, final IPath[] paths) {
 		Utils.asyncExec(new Runnable() {
@@ -273,14 +246,14 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private IResource[] getResources(ISynchronizationContext context, IPath[] paths) {
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		for (int i = 0; i < paths.length; i++) {
 			IPath path = paths[i];
 			IResource resource = getResource(context, path);
 			if (resource != null)
 				resources.add(resource);
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 
 	private IResource getResource(ISynchronizationContext context, IPath path) {
@@ -423,9 +396,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private void handleChange(IDiffChangeEvent event) {
-		List refreshes = new ArrayList();
-		List additions = new ArrayList();
-		List removals = new ArrayList();
+		List<IResource> refreshes = new ArrayList<>();
+		List<IResource> additions = new ArrayList<>();
+		List<IResource> removals = new ArrayList<>();
 		if (isFlatPresentation()) {
 			Set existingResources = getVisibleResources();
 			IResource[] changedResources = getChangedResources(event, existingResources);
@@ -499,7 +472,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private IProject[] getChangedProjects(IDiffChangeEvent event) {
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		IDiff[] changes = event.getChanges();
 		for (int i = 0; i < changes.length; i++) {
 			IDiff diff = changes[i];
@@ -524,14 +497,14 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 				result.add(project);
 			}
 		}
-		return (IProject[]) result.toArray(new IProject[result.size()]);
+		return result.toArray(new IProject[result.size()]);
 	}
 
 	private Set getVisibleProjects() {
 		TreeViewer viewer = (TreeViewer)getViewer();
 		Tree tree = viewer.getTree();
 		TreeItem[] children = tree.getItems();
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		for (int i = 0; i < children.length; i++) {
 			TreeItem control = children[i];
 			Object data = control.getData();
@@ -547,7 +520,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 		TreeViewer viewer = (TreeViewer)getViewer();
 		Tree tree = viewer.getTree();
 		TreeItem[] children = tree.getItems();
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		for (int i = 0; i < children.length; i++) {
 			TreeItem control = children[i];
 			Object data = control.getData();
@@ -560,7 +533,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 	}
 
 	private IResource[] getChangedResources(IDiffChangeEvent event, Set existingResources) {
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		IDiff[] changes = event.getChanges();
 		for (int i = 0; i < changes.length; i++) {
 			IDiff diff = changes[i];
@@ -597,6 +570,6 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 }
