@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Sebastian Davids <sdavids@gmx.de> - bug 75886
+ *     Rüdiger Herrmann <ruediger.herrmann@gmx.de> - bug 516228
  *******************************************************************************/
 package org.eclipse.team.internal.ui.dialogs;
 
@@ -69,8 +70,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 	protected static final String PREF_DLG_IMG_TITLE_ERROR = "preference_page_container_title_error_image";//$NON-NLS-1$
 	static {
 		ImageRegistry reg = TeamUIPlugin.getPlugin().getImageRegistry();
-		reg.put(PREF_DLG_TITLE_IMG, ImageDescriptor.createFromFile(PreferenceDialog.class, "images/pref_dialog_title.gif"));//$NON-NLS-1$
-		reg.put(PREF_DLG_IMG_TITLE_ERROR, ImageDescriptor.createFromFile(Dialog.class, "images/message_error.gif"));//$NON-NLS-1$
+		reg.put(PREF_DLG_TITLE_IMG, ImageDescriptor.createFromFile(PreferenceDialog.class, "images/pref_dialog_title.png"));//$NON-NLS-1$
+		reg.put(PREF_DLG_IMG_TITLE_ERROR, ImageDescriptor.createFromFile(Dialog.class, "images/message_error.png"));//$NON-NLS-1$
 	}
 
 	public PreferencePageContainerDialog(Shell shell, PreferencePage[] pages) {
