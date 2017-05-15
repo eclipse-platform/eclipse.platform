@@ -37,6 +37,7 @@ public class AllTests {
 		suite.addTestSuite(RangeDifferencerThreeWayDiffTest.class);
 		suite.addTestSuite(CompareUIPluginTest.class);
 		suite.addTestSuite(StructureCreatorTest.class);
+		suite.addTestSuite(CompareFileRevisionEditorInputTest.class);
 		// $JUnit-END$
 		return suite;
 	}
