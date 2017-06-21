@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.team.internal.ccvs.ui;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class XMLWriter extends PrintWriter {
 	protected static final String XML_VERSION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"; //$NON-NLS-1$
 
 public XMLWriter(OutputStream output) throws UnsupportedEncodingException {
-	super(new OutputStreamWriter(output, "UTF8")); //$NON-NLS-1$
+	super(new OutputStreamWriter(output, StandardCharsets.UTF_8));
 	tab = 0;
 	println(XML_VERSION);
 }

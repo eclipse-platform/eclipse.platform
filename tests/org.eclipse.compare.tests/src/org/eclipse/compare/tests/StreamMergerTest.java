@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import junit.framework.TestCase;
 
@@ -144,9 +145,9 @@ public class StreamMergerTest extends TestCase {
 	}
 
 	private IStatus merge(StringBuffer output, String a, String m, String y) throws UnsupportedEncodingException {
-		InputStream ancestor= new ByteArrayInputStream(a.getBytes(encoding));
-		InputStream target= new ByteArrayInputStream(m.getBytes(encoding));
-		InputStream other= new ByteArrayInputStream(y.getBytes(encoding));
+		InputStream ancestor= new ByteArrayInputStream(a.getBytes(StandardCharsets.UTF_8));
+		InputStream target= new ByteArrayInputStream(m.getBytes(StandardCharsets.UTF_8));
+		InputStream other= new ByteArrayInputStream(y.getBytes(StandardCharsets.UTF_8));
 
 		return merge(output, ancestor, target, other);
 	}
@@ -159,7 +160,7 @@ public class StreamMergerTest extends TestCase {
 		IStreamMerger merger= new TextStreamMerger();
 		IStatus status= merger.merge(os, encoding, ancestor, encoding, target, encoding, other, encoding, (IProgressMonitor) null);
 
-		output.append(new String(os.toByteArray(), encoding));
+		output.append(new String(os.toByteArray(), StandardCharsets.UTF_8));
 
 		return status;
 	}
