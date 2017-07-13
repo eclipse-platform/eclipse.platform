@@ -66,7 +66,7 @@ public class LineReader {
 	 * Concatenates all strings found in the given List.
 	 */
 	public static String createString(boolean preserveLineDelimeters, List<String> lines) {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		Iterator<String> iter= lines.iterator();
 		if (preserveLineDelimeters) {
 			while (iter.hasNext())
@@ -111,7 +111,7 @@ public class LineReader {
 	private boolean fSawEOF= false;
 	private BufferedReader fReader;
 	private boolean fIgnoreSingleCR= false;
-	private StringBuffer fBuffer= new StringBuffer();
+	private StringBuilder fBuffer= new StringBuilder();
 
 	public LineReader(BufferedReader reader) {
 		this.fReader= reader;

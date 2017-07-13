@@ -288,7 +288,7 @@ public class RangeDifference {
 
 	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer("RangeDifference {"); //$NON-NLS-1$
+		StringBuilder buf = new StringBuilder("RangeDifference {"); //$NON-NLS-1$
 		switch (this.kind) {
 		case NOCHANGE:
 			buf.append("NOCHANGE"); //$NON-NLS-1$

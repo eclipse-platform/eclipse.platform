@@ -88,7 +88,7 @@ public class Hunk implements IHunk {
 	 * </ul>
 	 */
 	public String getContent() {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		for (int i= 0; i < this.fLines.length; i++) {
 			String line= this.fLines[i];
 			sb.append(line.substring(0, LineReader.length(line)));
@@ -102,7 +102,7 @@ public class Hunk implements IHunk {
 	 * It is in the form old_start,old_length -> new_start,new_length.
 	 */
 	String getDescription() {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		sb.append(Integer.toString(this.fOldStart));
 		sb.append(',');
 		sb.append(Integer.toString(this.fOldLength));
@@ -114,7 +114,7 @@ public class Hunk implements IHunk {
 	}
 
 	public String getRejectedDescription() {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		sb.append("@@ -"); //$NON-NLS-1$
 		sb.append(Integer.toString(this.fOldStart));
 		sb.append(',');
@@ -448,7 +448,7 @@ public class Hunk implements IHunk {
 	 * Whitespace is defined by <code>Character.isWhitespace(...)</code>.
 	 */
 	private String stripWhiteSpace(String s) {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		int l= s.length();
 		for (int i= 0; i < l; i++) {
 			char c= s.charAt(i);
@@ -459,7 +459,7 @@ public class Hunk implements IHunk {
 	}
 
 	public String getContents(boolean isAfterState, boolean reverse) {
-		StringBuffer result= new StringBuffer();
+		StringBuilder result= new StringBuilder();
 		for (int i= 0; i<this.fLines.length; i++) {
 			String line= this.fLines[i];
 			String rest= line.substring(1);
