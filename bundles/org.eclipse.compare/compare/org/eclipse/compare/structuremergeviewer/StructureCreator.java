@@ -468,8 +468,8 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		List<String> lines2 = LineReader.readLines(new BufferedReader(new StringReader(
 				getContents(node2, false))));
 
-		StringBuffer buffer1 = new StringBuffer();
-		StringBuffer buffer2 = new StringBuffer();
+		StringBuilder buffer1 = new StringBuilder();
+		StringBuilder buffer2 = new StringBuilder();
 
 		int maxLines = Math.max(lines1.size(), lines2.size());
 		for (int i = 0; i < maxLines; i++) {

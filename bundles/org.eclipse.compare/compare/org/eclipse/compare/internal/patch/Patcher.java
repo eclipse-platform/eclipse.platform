@@ -425,7 +425,7 @@ public class Patcher implements IHunkFilter {
 			return null;
 
 		String lineSeparator= System.getProperty("line.separator"); //$NON-NLS-1$
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		Iterator iter= failedHunks.iterator();
 		while (iter.hasNext()) {
 			Hunk hunk= (Hunk) iter.next();

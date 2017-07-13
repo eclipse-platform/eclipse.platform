@@ -501,7 +501,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		String preview= Utilities.getString(key);
 		String separator= System.getProperty("line.separator"); //$NON-NLS-1$
-		StringBuffer buffer= new StringBuffer();
+		StringBuilder buffer= new StringBuilder();
 		for (int i= 0; i < preview.length(); i++) {
 			char c= preview.charAt(i);
 			if (c == '\n')
