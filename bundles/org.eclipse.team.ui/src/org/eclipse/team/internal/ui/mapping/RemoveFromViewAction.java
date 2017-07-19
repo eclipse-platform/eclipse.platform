@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -39,22 +38,15 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		setId(TeamUIPlugin.REMOVE_FROM_VIEW_ACTION_ID);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
 	@Override
 	public void run() {
 		if (confirmRemove()) {
 			try {
-				PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-							InterruptedException {
-						try {
-							performRemove(monitor);
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
-						}
+				PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+					try {
+						performRemove(monitor);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
 					}
 				});
 			} catch (InvocationTargetException e) {
@@ -84,14 +76,14 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 	private IResource[] getVisibleResources(IProgressMonitor monitor) throws CoreException {
 		ResourceTraversal[] traversals = getResourceTraversals(getStructuredSelection(), monitor);
 		IDiff[] diffs = getSynchronizationContext().getDiffTree().getDiffs(traversals);
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
 			if (isVisible(diff)) {
 				result.add(ResourceDiffTree.getResourceFor(diff));
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private boolean confirmRemove() {
@@ -112,9 +104,6 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ModelParticipantAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		// Only enable if the selected elements adapt to IResource

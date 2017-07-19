@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,7 @@ import java.util.*;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
@@ -50,12 +48,12 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 		super("elementSelection"); //$NON-NLS-1$
 		setDescription(TeamUIMessages.GlobalRefreshResourceSelectionPage_2);
 		setTitle(TeamUIMessages.GlobalRefreshResourceSelectionPage_3);
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			result.add(Utils.getResourceMapping(resource));
 		}
-		manager = new SynchronizationScopeManager(TeamUIMessages.ModelElementSelectionPage_0, (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]),
+		manager = new SynchronizationScopeManager(TeamUIMessages.ModelElementSelectionPage_0, result.toArray(new ResourceMapping[result.size()]),
 						ResourceMappingContext.LOCAL_CONTEXT, true);
 	}
 
@@ -73,25 +71,22 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 		fViewer.getControl().setLayoutData(data);
 		fViewer.setContentProvider(service.createCommonContentProvider());
 		fViewer.setLabelProvider(new DecoratingLabelProvider(service.createCommonLabelProvider(), PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
-		fViewer.addCheckStateListener(new ICheckStateListener() {
-			@Override
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				Object element = event.getElement();
-				//If the workspace model has been checked, switch the scope to workspace
-				if (event.getChecked() && element instanceof ModelProvider && ((ModelProvider) element).getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
-						setWorkspaceSelected(true);
-				} else {
-					//Get the resource mapping from the element
-					ResourceMapping mapping = Utils.getResourceMapping(element);
-					if (mapping != null) {
-						if (!(element instanceof ModelProvider)) {
-							uncheckOtherModels(mapping.getModelProviderId());
-							event.getCheckable().setChecked(event.getElement(), event.getChecked());
-						}
-						updateOKStatus();
-					} else
-						updateOKStatus();
-				}
+		fViewer.addCheckStateListener(event -> {
+			Object element = event.getElement();
+			//If the workspace model has been checked, switch the scope to workspace
+			if (event.getChecked() && element instanceof ModelProvider && ((ModelProvider) element).getId().equals(ModelProvider.RESOURCE_MODEL_PROVIDER_ID)) {
+					setWorkspaceSelected(true);
+			} else {
+				//Get the resource mapping from the element
+				ResourceMapping mapping = Utils.getResourceMapping(element);
+				if (mapping != null) {
+					if (!(element instanceof ModelProvider)) {
+						uncheckOtherModels(mapping.getModelProviderId());
+						event.getCheckable().setChecked(event.getElement(), event.getChecked());
+					}
+					updateOKStatus();
+				} else
+					updateOKStatus();
 			}
 		});
 		fViewer.getTree().addTreeListener(new TreeListener(){
@@ -113,13 +108,13 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 	public ResourceMapping[] getSelectedMappings() {
 		if (isWorkingSetSelected()) {
-			List result = new ArrayList();
+			List<ResourceMapping> result = new ArrayList<>();
 			IWorkingSet[] sets = getWorkingSets();
 			for (int i = 0; i < sets.length; i++) {
 				IWorkingSet set = sets[i];
 				result.add(Utils.getResourceMapping(set));
 			}
-			return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+			return result.toArray(new ResourceMapping[result.size()]);
 		}
 		if (isWorkspaceSelected()) {
 			try {
@@ -135,7 +130,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 			ResourceMapping[] mappings = manager.getScope().getMappings(ModelProvider.RESOURCE_MODEL_PROVIDER_ID);
 			return mappings;
 		}
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		Object[] objects = getRootElement();
 		for (int i = 0; i < objects.length; i++) {
 			Object object = objects[i];
@@ -144,7 +139,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 				result.add(mapping);
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
 	@Override
@@ -217,11 +212,11 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 				if (!foundEnabledModelProvider){
 					if (MessageDialog.openConfirm(getShell(), TeamUIMessages.ModelElementSelectionPage_AllModelsDisabledTitle, TeamUIMessages.ModelElementSelectionPage_AllModelsDisabledMessage)) {
-						ArrayList teamProviderDescriptors = new ArrayList();
+						ArrayList<ITeamContentProviderDescriptor> teamProviderDescriptors = new ArrayList<>();
 						for (int i = 0; i < providers.length; i++)
 							teamProviderDescriptors.add(TeamUI.getTeamContentProviderManager().getDescriptor(providers[i].getId()));
 
-						ITeamContentProviderDescriptor[] desc = (ITeamContentProviderDescriptor[]) teamProviderDescriptors.toArray(new ITeamContentProviderDescriptor[teamProviderDescriptors.size()]);
+						ITeamContentProviderDescriptor[] desc = teamProviderDescriptors.toArray(new ITeamContentProviderDescriptor[teamProviderDescriptors.size()]);
 						TeamUI.getTeamContentProviderManager().setEnabledDescriptors(desc);
 					}
 				}
@@ -235,18 +230,13 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 	private void initialize() {
 		try {
-			getContainer().run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						manager.initialize(monitor);
-						initialized = true;
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			getContainer().run(true, true, monitor -> {
+				try {
+					manager.initialize(monitor);
+					initialized = true;
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
-
 			});
 		} catch (InvocationTargetException e) {
 			Utils.handleError(getShell(), e, null, null);
@@ -264,15 +254,14 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 		if (!isSelectedResourcesSelected()) {
 			ModelProvider[] providers = manager.getScope().getModelProviders();
-			ArrayList disabledProviders = new ArrayList();
+			ArrayList<ModelProvider> disabledProviders = new ArrayList<>();
 			for (int i = 0; i < providers.length; i++) {
 				if (!providers[i].getId().equals(modelProviderId)) {
 					disabledProviders.add(providers[i]);
 				}
 			}
 
-			for (Iterator iterator = disabledProviders.iterator(); iterator.hasNext();) {
-				ModelProvider disable = (ModelProvider) iterator.next();
+			for (ModelProvider disable : disabledProviders) {
 				fViewer.setChecked(disable, false);
 			}
 		}

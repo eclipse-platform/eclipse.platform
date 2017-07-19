@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -134,8 +134,8 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		return navigatorContentService;
 	}
 
-	private void copyResources(List selectedResources, String text) {
-		IResource[] resources = (IResource[]) selectedResources.toArray(new IResource[selectedResources.size()]);
+	private void copyResources(List<? extends IResource> selectedResources, String text) {
+		IResource[] resources = selectedResources.toArray(new IResource[selectedResources.size()]);
 		// Get the file names and a string representation
 		final int length = resources.length;
 		int actualLength = 0;
@@ -167,7 +167,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
         try {
             // set the clipboard contents
         	List data = new ArrayList();
-        	List dataTypes = new ArrayList();
+        	List<Transfer> dataTypes = new ArrayList<>();
         	 if (resources.length > 0) {
         		 data.add(resources);
         		 dataTypes.add(ResourceTransfer.getInstance());
@@ -183,7 +183,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
             if (!data.isEmpty())
                 fClipboard.setContents(
                 		data.toArray(),
-                		(Transfer[]) dataTypes.toArray(new Transfer[dataTypes.size()]));
+                		dataTypes.toArray(new Transfer[dataTypes.size()]));
         } catch (SWTError e) {
             if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
                 throw e;
@@ -230,12 +230,12 @@ class CopyToClipboardAction extends SelectionListenerAction {
 	}
 
 	@Override
-	protected List getSelectedNonResources() {
+	protected List<?> getSelectedNonResources() {
 		return Arrays.asList(Utils.getNonResources(getStructuredSelection().toArray()));
 	}
 
 	@Override
-	protected List getSelectedResources() {
+	protected List<? extends IResource> getSelectedResources() {
     	// Calling our own selection utility because the elements in the
 		// synchronize view can't adapt to IResource because we don't want the usual object
 		// contribution/ on them.

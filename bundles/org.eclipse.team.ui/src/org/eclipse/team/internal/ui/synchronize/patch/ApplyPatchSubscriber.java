@@ -153,7 +153,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 	@Override
 	public void refresh(IResource[] resources, int depth,
 			IProgressMonitor monitor) throws TeamException {
-		Set /* <FilePatch> */diffs = new HashSet();
+		Set<FilePatch2> diffs = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			Object object = PatchModelProvider.getPatchObject(resources[i],
 					getPatcher());
@@ -162,7 +162,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 				diffs.add(filePatch);
 			}
 		}
-		getPatcher().refresh((FilePatch2[]) diffs.toArray(new FilePatch2[0]));
+		getPatcher().refresh(diffs.toArray(new FilePatch2[0]));
 	}
 
 	@Override

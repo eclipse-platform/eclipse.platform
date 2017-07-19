@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	 */
 	public static final String MARK_AS_MERGE_ACTION_ID = "org.eclipse.team.ui.markAsMergeAction"; //$NON-NLS-1$
 
-	private Map handlers = new HashMap();
+	private Map<String, IHandler> handlers = new HashMap<>();
 	private OpenWithActionGroup openWithActions;
 
 	@Override
@@ -147,9 +147,6 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 		handlers.put(actionId, handler);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
@@ -157,7 +154,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 			CommonMenuManager manager = (CommonMenuManager) menu;
 			for (Iterator iter = handlers.keySet().iterator(); iter.hasNext();) {
 				String actionId = (String) iter.next();
-				manager.registerHandler(actionId, (IHandler)handlers.get(actionId));
+				manager.registerHandler(actionId, handlers.get(actionId));
 			}
 		}
         final IContributionItem fileGroup = menu.find(ISynchronizePageConfiguration.FILE_GROUP);
@@ -166,9 +163,6 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
@@ -187,9 +181,6 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 		if (openWithActions != null) openWithActions.setContext(context);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();

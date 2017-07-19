@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ public class TeamDecoratorManager {
 
 	private static TeamDecoratorManager instance;
 
-	Map descriptors;
+	Map<String, TeamDecoratorDescription> descriptors;
 
 	public static TeamDecoratorManager getInstance() {
 		if (instance == null)
@@ -33,12 +33,12 @@ public class TeamDecoratorManager {
 
 	public ITeamContentProviderDescriptor[] getDescriptors() {
 		lazyInitialize();
-		return (ITeamContentProviderDescriptor[]) descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
+		return descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
 	}
 
 	public TeamDecoratorDescription getDecoratorDescription(String providerId) {
 		lazyInitialize();
-		return (TeamDecoratorDescription)descriptors.get(providerId);
+		return descriptors.get(providerId);
 	}
 
 	protected void lazyInitialize() {
@@ -46,7 +46,7 @@ public class TeamDecoratorManager {
 			return;
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_DECORATORS);
 		IExtension[] extensions = point.getExtensions();
-		descriptors = new HashMap(extensions.length * 2 + 1);
+		descriptors = new HashMap<>(extensions.length * 2 + 1);
 		for (int i = 0, imax = extensions.length; i < imax; i++) {
 			TeamDecoratorDescription desc = null;
 			try {

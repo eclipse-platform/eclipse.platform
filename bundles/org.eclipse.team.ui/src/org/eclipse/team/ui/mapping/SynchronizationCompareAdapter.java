@@ -87,7 +87,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		Object object = mapping.getModelObject();
 		IWorkbenchAdapter adapter = Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
-			List segments = new ArrayList();
+			List<String> segments = new ArrayList<>();
 			Object parent = object;
 			do {
 				String segment = adapter.getLabel(parent);

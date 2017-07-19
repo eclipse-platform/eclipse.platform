@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,12 +53,12 @@ public abstract class ModelOperation extends TeamOperation {
 	 * @return the list of provides sorted by their extends relationship
 	 */
 	public static ModelProvider[] sortByExtension(ModelProvider[] providers) {
-		List result = new ArrayList();
+		List<ModelProvider> result = new ArrayList<>();
 		for (int i = 0; i < providers.length; i++) {
 			ModelProvider providerToInsert = providers[i];
 			int index = result.size();
 			for (int j = 0; j < result.size(); j++) {
-				ModelProvider provider = (ModelProvider) result.get(j);
+				ModelProvider provider = result.get(j);
 				if (extendsProvider(providerToInsert, provider)) {
 					index = j;
 					break;
@@ -66,7 +66,7 @@ public abstract class ModelOperation extends TeamOperation {
 			}
 			result.add(index, providerToInsert);
 		}
-		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
+		return result.toArray(new ModelProvider[result.size()]);
 	}
 
 	private static boolean extendsProvider(ModelProvider providerToInsert, ModelProvider provider) {
@@ -273,15 +273,15 @@ public abstract class ModelOperation extends TeamOperation {
 	}
 
 	private ModelProvider[] getAdditionalProviders(ModelProvider[] inputModelProviders, ModelProvider[] modelProviders) {
-		Set input = new HashSet();
-		List result = new ArrayList();
+		Set<ModelProvider> input = new HashSet<>();
+		List<ModelProvider> result = new ArrayList<>();
 		input.addAll(Arrays.asList(inputModelProviders));
 		for (int i = 0; i < modelProviders.length; i++) {
 			ModelProvider provider = modelProviders[i];
 			if (!input.contains(provider))
 				result.add(provider);
 		}
-		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
+		return result.toArray(new ModelProvider[result.size()]);
 	}
 
 	private boolean overlaps(ResourceTraversal[] scopeTraversals, ResourceTraversal[] inputModelTraversals) {

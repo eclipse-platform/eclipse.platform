@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.team.core.synchronize.*;
@@ -81,9 +80,6 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
         super(parentProvider, modelRoot, configuration, set);
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getDescriptor()
-	 */
 	@Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
 		return hierarchicalDescriptor;
@@ -172,9 +168,6 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
         }
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.SynchronizeModelProvider#buildModelObjects(org.eclipse.team.ui.synchronize.viewers.SynchronizeModelElement)
-	 */
 	@Override
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
 		IDiffElement[] children = createModelObjects(node);
@@ -187,13 +180,10 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		return children;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.SynchronizeModelProvider#handleResourceAdditions(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-	 */
 	@Override
 	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
 		SyncInfo[] infos = event.getAddedResources();
-		HashSet set = new HashSet();
+		HashSet<IProject> set = new HashSet<>();
 		for (int i = 0; i < infos.length; i++) {
 			SyncInfo info = infos[i];
 			set.add(info.getLocal().getProject());
@@ -203,9 +193,6 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.SynchronizeModelProvider#handleResourceRemovals(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-	 */
 	@Override
 	protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
 		// Remove the removed subtrees
@@ -225,17 +212,11 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		}
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelProvider#createModelObject(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.team.core.synchronize.SyncInfo)
-     */
     @Override
 	protected ISynchronizeModelElement createModelObject(ISynchronizeModelElement parent, SyncInfo info) {
         return createModelObject(parent, info.getLocal());
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelProvider#addResource(org.eclipse.team.core.synchronize.SyncInfo)
-     */
     @Override
 	protected void addResource(SyncInfo info) {
         addResource(info.getLocal());

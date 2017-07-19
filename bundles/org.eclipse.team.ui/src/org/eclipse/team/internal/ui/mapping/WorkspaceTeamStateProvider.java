@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		implements ITeamStateChangeListener, IRepositoryProviderListener,
 		IResourceChangeListener {
 
-	private Map providers = new HashMap();
+	private Map<String, ITeamStateProvider> providers = new HashMap<>();
 
 	public WorkspaceTeamStateProvider() {
 		RepositoryProviderManager.getInstance().addListener(this);
@@ -53,9 +53,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorationEnabled(java.lang.Object)
-	 */
 	@Override
 	public final boolean isDecorationEnabled(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -64,9 +61,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorated(java.lang.Object)
-	 */
 	@Override
 	public boolean hasDecoratedState(Object element) throws CoreException {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -75,9 +69,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#getDecoratedStateMask(java.lang.Object)
-	 */
 	@Override
 	public final int getDecoratedStateMask(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -86,9 +77,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedProperties(java.lang.Object)
-	 */
 	@Override
 	public String[] getDecoratedProperties(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -97,10 +85,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return new String[0];
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#getState(java.lang.Object, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
@@ -110,9 +94,6 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getResourceMappingContext(java.lang.Object)
-	 */
 	@Override
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		ITeamStateProvider provider = getDecoratedStateProvider(element);
@@ -193,34 +174,22 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeListener#decoratedStateChanged(org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent)
-	 */
 	@Override
 	public void teamStateChanged(ITeamStateChangeEvent event) {
 		fireStateChangeEvent(event);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerUnmapped(org.eclipse.core.resources.IProject)
-	 */
 	@Override
 	public void providerUnmapped(IProject project) {
 		// We don't need to worry about this
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerMapped(org.eclipse.team.core.RepositoryProvider)
-	 */
 	@Override
 	public void providerMapped(RepositoryProvider provider) {
 		String id = provider.getID();
 		listenerForStateChangesForId(id);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();

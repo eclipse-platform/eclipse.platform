@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	// The id of the sub-provider
     private final String subProvierId;
 
-	private Map rootToProvider = new HashMap(); // Maps ISynchronizeModelElement -> AbstractSynchronizeModelProvider
+	private Map<ISynchronizeModelElement, ISynchronizeModelProvider> rootToProvider = new HashMap<>();
 
 	private ViewerSorter embeddedSorter;
 
@@ -44,9 +44,6 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 
 	private IChangeSetChangeListener changeSetListener = new IChangeSetChangeListener() {
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#setAdded(org.eclipse.team.core.subscribers.ChangeSet)
-         */
         @Override
 		public void setAdded(final ChangeSet set) {
             final SyncInfoTree syncInfoSet;
@@ -60,34 +57,22 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
                 createChangeSetModelElement(set, syncInfoSet);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#defaultSetChanged(org.eclipse.team.core.subscribers.ChangeSet, org.eclipse.team.core.subscribers.ChangeSet)
-         */
         @Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
 		    refreshLabel(previousDefault);
 		    refreshLabel(set);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#setRemoved(org.eclipse.team.core.subscribers.ChangeSet)
-         */
         @Override
 		public void setRemoved(final ChangeSet set) {
             removeModelElementForSet(set);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#nameChanged(org.eclipse.team.core.subscribers.ChangeSet)
-         */
         @Override
 		public void nameChanged(final ChangeSet set) {
             refreshLabel(set);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.IChangeSetChangeListener#resourcesChanged(org.eclipse.team.core.subscribers.ChangeSet, org.eclipse.core.resources.IResource[])
-         */
         @Override
 		public void resourcesChanged(ChangeSet set, IPath[] paths) {
             // The sub-providers listen directly to the sets for changes
@@ -133,9 +118,6 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected void handleChanges(ISyncInfoTreeChangeEvent event, IProgressMonitor monitor) {
         boolean handled = false;
@@ -223,17 +205,11 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 		return new IDiffElement[0];
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getDescriptor()
-     */
     @Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
         return descriptor;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getViewerSorter()
-     */
     @Override
 	public ViewerSorter getViewerSorter() {
         if (viewerSorter == null) {
@@ -250,9 +226,6 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         firePropertyChange(ISynchronizeModelProvider.P_VIEWER_SORTER, null, null);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#createActionGroup()
-     */
     @Override
 	protected SynchronizePageActionGroup createActionGroup() {
         return new ChangeSetActionGroup(this);
@@ -266,12 +239,9 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
     }
 
     private ISynchronizeModelProvider getProviderRootedAt(ISynchronizeModelElement parent) {
-        return (ISynchronizeModelProvider)rootToProvider.get(parent);
+        return rootToProvider.get(parent);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.CompositeModelProvider#removeProvider(org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider)
-     */
     @Override
 	protected void removeProvider(ISynchronizeModelProvider provider) {
         rootToProvider.remove(provider.getModelRoot());
@@ -294,9 +264,6 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
         return embeddedSorter;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.CompositeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
     @Override
 	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
         super.recursiveClearModelObjects(node);

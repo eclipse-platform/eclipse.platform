@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,14 +54,11 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	@Override
 	public void run() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					if (removeAll) {
-						removeAll();
-					} else {
-						removeCurrent();
-					}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				if (removeAll) {
+					removeAll();
+				} else {
+					removeCurrent();
 				}
 			});
 		} catch (InvocationTargetException e) {
@@ -77,19 +74,16 @@ public class RemoveSynchronizeParticipantAction extends Action {
 			final List dirtyModels = getDirtyModels(new ISynchronizeParticipant[] { participant });
 			if (participant.isPinned() || !dirtyModels.isEmpty()) {
 				final boolean[] keepGoing = new boolean[] { false };
-				Display.getDefault().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						if (!dirtyModels.isEmpty()) {
-							keepGoing[0] = promptToSave(dirtyModels);
-						} else {
-							keepGoing[0] = MessageDialog.openQuestion(
-									view.getSite().getShell(),
-									TeamUIMessages.RemoveSynchronizeParticipantAction_0,
-									TeamUIMessages.RemoveSynchronizeParticipantAction_1);
-						}
-
+				Display.getDefault().syncExec(() -> {
+					if (!dirtyModels.isEmpty()) {
+						keepGoing[0] = promptToSave(dirtyModels);
+					} else {
+						keepGoing[0] = MessageDialog.openQuestion(
+								view.getSite().getShell(),
+								TeamUIMessages.RemoveSynchronizeParticipantAction_0,
+								TeamUIMessages.RemoveSynchronizeParticipantAction_1);
 					}
+
 				});
 				if (!keepGoing[0]) {
 					return;
@@ -102,7 +96,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	private void removeAll() {
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		ISynchronizeParticipantReference[] refs = manager.getSynchronizeParticipants();
-		ArrayList removals = new ArrayList();
+		ArrayList<ISynchronizeParticipant> removals = new ArrayList<>();
 		for (int i = 0; i < refs.length; i++) {
 			ISynchronizeParticipantReference reference = refs[i];
 			ISynchronizeParticipant p;
@@ -114,16 +108,13 @@ public class RemoveSynchronizeParticipantAction extends Action {
 				// keep going
 			}
 		}
-		ISynchronizeParticipant[] toRemove = (ISynchronizeParticipant[]) removals.toArray(new ISynchronizeParticipant[removals.size()]);
+		ISynchronizeParticipant[] toRemove = removals.toArray(new ISynchronizeParticipant[removals.size()]);
 		final List dirtyModels = getDirtyModels(toRemove);
 		if (!dirtyModels.isEmpty()) {
 			final boolean[] keepGoing = new boolean[] { false };
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!dirtyModels.isEmpty()) {
-						keepGoing[0] = promptToSave(dirtyModels);
-					}
+			Display.getDefault().syncExec(() -> {
+				if (!dirtyModels.isEmpty()) {
+					keepGoing[0] = promptToSave(dirtyModels);
 				}
 			});
 			if (!keepGoing[0]) {
@@ -179,24 +170,21 @@ public class RemoveSynchronizeParticipantAction extends Action {
 
 		// Create save block.
 	    final List finalModels = dirtyModels;
-		IRunnableWithProgress progressOp = new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) {
-				monitor.beginTask(null, finalModels.size());
-				for (Iterator i = finalModels.iterator(); i.hasNext();) {
-					Saveable model = (Saveable) i.next();
-					if (model.isDirty()) {
-						try {
-							model.doSave(new SubProgressMonitor(monitor, 1));
-						} catch (CoreException e) {
-							ErrorDialog.openError(view.getSite().getShell(), null, e.getMessage(), e.getStatus());
-						}
+		IRunnableWithProgress progressOp = monitor -> {
+			monitor.beginTask(null, finalModels.size());
+			for (Iterator i = finalModels.iterator(); i.hasNext();) {
+				Saveable model = (Saveable) i.next();
+				if (model.isDirty()) {
+					try {
+						model.doSave(new SubProgressMonitor(monitor, 1));
+					} catch (CoreException e) {
+						ErrorDialog.openError(view.getSite().getShell(), null, e.getMessage(), e.getStatus());
 					}
-					if (monitor.isCanceled())
-						break;
 				}
-				monitor.done();
+				if (monitor.isCanceled())
+					break;
 			}
+			monitor.done();
 		};
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, progressOp);
@@ -210,8 +198,8 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		return true;
 	}
 
-	private List getDirtyModels(ISynchronizeParticipant[] participants) {
-		List result = new ArrayList();
+	private List<Saveable> getDirtyModels(ISynchronizeParticipant[] participants) {
+		List<Saveable> result = new ArrayList<>();
 		for (int i = 0; i < participants.length; i++) {
 			ISynchronizeParticipant participant = participants[i];
 			if (participant instanceof ModelSynchronizeParticipant) {

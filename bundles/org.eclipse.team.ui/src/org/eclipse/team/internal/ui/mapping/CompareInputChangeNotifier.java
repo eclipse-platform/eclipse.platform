@@ -40,7 +40,7 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 public abstract class CompareInputChangeNotifier implements
 		IResourceChangeListener {
 
-	private Map inputs = new HashMap();
+	private Map<ICompareInput, CompareInputConnecton> inputs = new HashMap<>();
 	private InputChangeEventHandler eventHandler;
 
 	private class CompareInputConnecton {
@@ -74,7 +74,7 @@ public abstract class CompareInputChangeNotifier implements
 
 	private class InputChangeEventHandler extends BackgroundEventHandler {
 
-		private final Set changedInputs = new HashSet();
+		private final Set<ICompareInput> changedInputs = new HashSet<>();
 		private final List pendingRunnables = new ArrayList();
 
 		protected InputChangeEventHandler() {
@@ -90,7 +90,7 @@ public abstract class CompareInputChangeNotifier implements
 				synchronized (changedInputs) {
 					if (changedInputs.isEmpty() && pendingRunnables.isEmpty())
 						return false;
-					toDispatch = (ICompareInput[]) changedInputs.toArray(new ICompareInput[changedInputs.size()]);
+					toDispatch = changedInputs.toArray(new ICompareInput[changedInputs.size()]);
 					events = (RunnableEvent[]) pendingRunnables.toArray(new RunnableEvent[pendingRunnables.size()]);
 					changedInputs.clear();
 					pendingRunnables.clear();
@@ -205,7 +205,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @param input the compare input
 	 */
 	public void connect(ICompareInput input) {
-		CompareInputConnecton con = (CompareInputConnecton)inputs.get(input);
+		CompareInputConnecton con = inputs.get(input);
 		if (con == null) {
 			con = new CompareInputConnecton();
 			inputs.put(input, con);
@@ -219,7 +219,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @see #connect(ICompareInput)
 	 */
 	public void disconnect(ICompareInput input) {
-		CompareInputConnecton con = (CompareInputConnecton)inputs.get(input);
+		CompareInputConnecton con = inputs.get(input);
 		if (con != null) {
 			con.decrement();
 			if (con.isDisconnected()) {
@@ -233,7 +233,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @return the array of inputs that have connections
 	 */
 	protected ICompareInput[] getConnectedInputs() {
-		return (ICompareInput[])inputs.keySet().toArray(new ICompareInput[inputs.size()]);
+		return inputs.keySet().toArray(new ICompareInput[inputs.size()]);
 	}
 
 	/**

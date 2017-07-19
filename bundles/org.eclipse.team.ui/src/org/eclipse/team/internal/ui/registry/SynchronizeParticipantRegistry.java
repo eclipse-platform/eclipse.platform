@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,15 +21,12 @@ public class SynchronizeParticipantRegistry extends RegistryReader {
 
 	public static final String PT_SYNCPARTICIPANTS = "synchronizeParticipants"; //$NON-NLS-1$
 	private static final String TAG_SYNCPARTICIPANT = "participant"; //$NON-NLS-1$
-	private Map participants = new HashMap();
+	private Map<String, SynchronizeParticipantDescriptor> participants = new HashMap<>();
 
 	public SynchronizeParticipantRegistry() {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.RegistryReader#readElement(org.eclipse.core.runtime.IConfigurationElement)
-	 */
 	@Override
 	protected boolean readElement(IConfigurationElement element) {
 		if (element.getName().equals(TAG_SYNCPARTICIPANT)) {
@@ -47,6 +44,6 @@ public class SynchronizeParticipantRegistry extends RegistryReader {
 	}
 
 	public SynchronizeParticipantDescriptor find(String id) {
-		return (SynchronizeParticipantDescriptor)participants.get(id);
+		return participants.get(id);
 	}
 }

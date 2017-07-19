@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.osgi.framework.Bundle;
 
 public abstract class RegistryReader {
 	protected static final String TAG_DESCRIPTION = "description"; //$NON-NLS-1$
-	protected static Hashtable extensionPoints = new Hashtable();
+	protected static Hashtable<String, IExtension[]> extensionPoints = new Hashtable<>();
 
     /**
      * Creates an extension.  If the extension plugin has not
@@ -45,17 +45,14 @@ public abstract class RegistryReader {
             }
             final Object[] ret = new Object[1];
             final CoreException[] exc = new CoreException[1];
-            BusyIndicator.showWhile(null, new Runnable() {
-                @Override
-				public void run() {
-                    try {
-                        ret[0] = element
-                                .createExecutableExtension(classAttribute);
-                    } catch (CoreException e) {
-                        exc[0] = e;
-                    }
-                }
-            });
+            BusyIndicator.showWhile(null, () -> {
+			    try {
+			        ret[0] = element
+			                .createExecutableExtension(classAttribute);
+			    } catch (CoreException e) {
+			        exc[0] = e;
+			    }
+			});
             if (exc[0] != null) {
 				throw exc[0];
 			}
@@ -191,7 +188,7 @@ public abstract class RegistryReader {
 	 */
 	public void readRegistry(IExtensionRegistry registry, String pluginId, String extensionPoint) {
 		String pointId = pluginId + "-" + extensionPoint; //$NON-NLS-1$
-		IExtension[] extensions = (IExtension[]) extensionPoints.get(pointId);
+		IExtension[] extensions = extensionPoints.get(pointId);
 		if (extensions == null) {
 			IExtensionPoint point = registry.getExtensionPoint(pluginId, extensionPoint);
 			if (point == null)

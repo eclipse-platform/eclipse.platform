@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,7 +133,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 
 	private void updateControls() {
 		DiffProject[] diffProjects = fPatcher.getDiffProjects();
-		List projects = new ArrayList();
+		List<IProject> projects = new ArrayList<>();
 		if (diffProjects != null) {
 			for (int i = 0; i < diffProjects.length; i++) {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot()
@@ -163,10 +163,10 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 
 	public IProject[] getSelectedProjects() {
 		Object elements[] = checkList.getCheckedElements();
-		List projects = new ArrayList();
+		List<IProject> projects = new ArrayList<>();
 		for (int i = 0; i < elements.length; i++)
-			projects.add(elements[i]);
-		return (IProject[]) projects.toArray(new IProject[] {});
+			projects.add((IProject) elements[i]);
+		return projects.toArray(new IProject[] {});
 	}
 
 	private void setAllChecked(boolean checked) {

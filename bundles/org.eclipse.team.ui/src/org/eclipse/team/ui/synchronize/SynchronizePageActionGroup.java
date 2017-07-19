@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 
 	private ISynchronizePageConfiguration configuration;
 
-	private Map menuContributions = new HashMap();
+	private Map<String, Map<String, List<Object>>> menuContributions = new HashMap<>();
 
 	private VisibleRootsSelectionProvider visibleRootSelectionProvider;
 
@@ -71,16 +71,13 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 */
 	private class VisibleRootsSelectionProvider extends SynchronizePageActionGroup implements ISelectionProvider {
 
-		private ListenerList selectionChangedListeners = new ListenerList(ListenerList.IDENTITY);
+		private ListenerList<ISelectionChangedListener> selectionChangedListeners = new ListenerList<>(ListenerList.IDENTITY);
 		private ISelection selection;
 
 		protected VisibleRootsSelectionProvider(ISynchronizeModelElement element) {
 			modelChanged(element);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#modelChanged(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-		 */
 		@Override
 		public void modelChanged(ISynchronizeModelElement root) {
 			if (root == null) {
@@ -90,33 +87,21 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			}
 		}
 
-		/* (non-Javadoc)
-		 * Method declared on ISelectionProvider.
-		 */
 		@Override
 		public void addSelectionChangedListener(ISelectionChangedListener listener) {
 			selectionChangedListeners.add(listener);
 		}
 
-		/* (non-Javadoc)
-		 * Method declared on ISelectionProvider.
-		 */
 		@Override
 		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 			selectionChangedListeners.remove(listener);
 		}
 
-		/* (non-Javadoc)
-		 * Method declared on ISelectionProvider.
-		 */
 		@Override
 		public ISelection getSelection() {
 			return selection;
 		}
 
-		/* (non-Javadoc)
-		 * Method declared on ISelectionProvider.
-		 */
 		@Override
 		public void setSelection(ISelection selection) {
 			this.selection = selection;
@@ -125,9 +110,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 
 		private void selectionChanged(final SelectionChangedEvent event) {
 			// pass on the notification to listeners
-			Object[] listeners = selectionChangedListeners.getListeners();
-			for (int i = 0; i < listeners.length; ++i) {
-				final ISelectionChangedListener l = (ISelectionChangedListener)listeners[i];
+			for (final ISelectionChangedListener l: selectionChangedListeners) {
 				SafeRunner.run(new SafeRunnable() {
 					@Override
 					public void run() {
@@ -322,18 +305,12 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 		return visibleRootSelectionProvider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		fillMenu(menu, ISynchronizePageConfiguration.P_CONTEXT_MENU);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
@@ -344,11 +321,11 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	}
 
 	private void fillMenu(IContributionManager menu, String menuId) {
-		Map groups = (Map)menuContributions.get(menuId);
+		Map<String, List<Object>> groups = menuContributions.get(menuId);
 		if (menu != null && groups != null) {
-			for (Iterator iter = groups.keySet().iterator(); iter.hasNext(); ) {
-				String groupId = (String) iter.next();
-				List actions = (List)groups.get(groupId);
+			for (Iterator<String> iter = groups.keySet().iterator(); iter.hasNext(); ) {
+				String groupId = iter.next();
+				List actions = groups.get(groupId);
 				if (actions != null) {
 					for (Iterator iter2 = actions.iterator(); iter2.hasNext();) {
 						Object element = iter2.next();
@@ -367,14 +344,14 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	}
 
 	private void internalAppendToGroup(String menuId, String groupId, Object action) {
-		Map groups = (Map)menuContributions.get(menuId);
+		Map<String, List<Object>> groups = menuContributions.get(menuId);
 		if (groups == null) {
-			groups = new HashMap();
+			groups = new HashMap<>();
 			menuContributions.put(menuId, groups);
 		}
-		List actions = (List)groups.get(groupId);
+		List<Object> actions = groups.get(groupId);
 		if (actions == null) {
-			actions = new ArrayList();
+			actions = new ArrayList<>();
 			groups.put(groupId, actions);
 		}
 		actions.add(action);

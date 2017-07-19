@@ -284,7 +284,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private ModelProvider[] findModelsWithChangesInMode(int mode) {
 		ModelProvider[] providers =context.getScope().getModelProviders();
 		providers = ModelOperation.sortByExtension(providers);
-		List result = new ArrayList();
+		List<ModelProvider> result = new ArrayList<>();
 		for (int i = 0; i < providers.length; i++) {
 			ModelProvider provider = providers[i];
 			ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(provider);
@@ -295,7 +295,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				}
 			}
 		}
-		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
+		return result.toArray(new ModelProvider[result.size()]);
 	}
 
 	private boolean isEnabled(ModelProvider provider) {

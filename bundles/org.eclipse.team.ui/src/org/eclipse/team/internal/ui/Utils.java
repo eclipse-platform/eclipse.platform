@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -143,16 +143,14 @@ public class Utils {
 		}
 	}
 
-	public static final Comparator resourceComparator = new Comparator() {
+	public static final Comparator<IResource> resourceComparator = new Comparator<IResource>() {
 		@Override
 		public boolean equals(Object obj) {
 			return false;
 		}
 		@Override
-		public int compare(Object o1, Object o2) {
-				IResource resource0 = (IResource) o1;
-				IResource resource1 = (IResource) o2;
-				return resource0.getFullPath().toString().compareTo(resource1.getFullPath().toString());
+		public int compare(IResource o1, IResource o2) {
+				return o1.getFullPath().toString().compareTo(o2.getFullPath().toString());
 		}
 	};
 

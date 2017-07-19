@@ -54,7 +54,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 		try {
 			ModelProvider[] providers = context.getScope().getModelProviders();
 			monitor.beginTask(null, 100 * providers.length);
-			List notOK = new ArrayList();
+			List<IStatus> notOK = new ArrayList<>();
 			for (int i = 0; i < providers.length; i++) {
 				ModelProvider provider = providers[i];
 				IStatus status = validateMerge(provider, context, Policy.subMonitorFor(monitor, 100));
@@ -64,8 +64,8 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			if (notOK.isEmpty())
 				return Status.OK_STATUS;
 			if (notOK.size() == 1)
-				return (IStatus)notOK.get(0);
-			return new MultiStatus(TeamUIPlugin.ID, 0, (IStatus[]) notOK.toArray(new IStatus[notOK.size()]), TeamUIMessages.ResourceMappingMergeOperation_3, null);
+				return notOK.get(0);
+			return new MultiStatus(TeamUIPlugin.ID, 0, notOK.toArray(new IStatus[notOK.size()]), TeamUIMessages.ResourceMappingMergeOperation_3, null);
 		} finally {
 			monitor.done();
 		}
@@ -193,31 +193,28 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	protected void handleValidationFailure(final IStatus status) {
     	final boolean[] result = new boolean[] { false };
-    	Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
-					@Override
-					protected void createButtonsForButtonBar(Composite parent) {
-				        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
-				                false);
-						createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
-								true);
-				        createDetailsButton(parent);
-					}
+    	Runnable runnable = () -> {
+			ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
+				@Override
+				protected void createButtonsForButtonBar(Composite parent) {
+			        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
+			                false);
+					createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
+							true);
+			        createDetailsButton(parent);
+				}
 
-					@Override
-					protected void buttonPressed(int id) {
-						if (id == IDialogConstants.YES_ID)
-							super.buttonPressed(IDialogConstants.OK_ID);
-						else if (id == IDialogConstants.NO_ID)
-							super.buttonPressed(IDialogConstants.CANCEL_ID);
-						super.buttonPressed(id);
-					}
-				};
-				int code = dialog.open();
-				result[0] = code == 0;
-			}
+				@Override
+				protected void buttonPressed(int id) {
+					if (id == IDialogConstants.YES_ID)
+						super.buttonPressed(IDialogConstants.OK_ID);
+					else if (id == IDialogConstants.NO_ID)
+						super.buttonPressed(IDialogConstants.CANCEL_ID);
+					super.buttonPressed(id);
+				}
+			};
+			int code = dialog.open();
+			result[0] = code == 0;
 		};
 		getShell().getDisplay().syncExec(runnable);
 		if (result[0])

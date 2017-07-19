@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,29 +36,18 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 		this.participant = participant;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.jobs.IRefreshSubscriberListener#refreshStarted(org.eclipse.team.internal.ui.jobs.IRefreshEvent)
-	 */
 	@Override
 	public void refreshStarted(final IRefreshEvent event) {
-		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (event.getRefreshType() == IRefreshEvent.USER_REFRESH && event.getParticipant() == participant) {
-					ISynchronizeView view = TeamUI.getSynchronizeManager().showSynchronizeViewInActivePage();
-					if (view != null) {
-						view.display(participant);
-					}
+		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+			if (event.getRefreshType() == IRefreshEvent.USER_REFRESH && event.getParticipant() == participant) {
+				ISynchronizeView view = TeamUI.getSynchronizeManager().showSynchronizeViewInActivePage();
+				if (view != null) {
+					view.display(participant);
 				}
 			}
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.jobs.IRefreshSubscriberListener#refreshDone(org.eclipse.team.internal.ui.jobs.IRefreshEvent)
-	 */
 	@Override
 	public ActionFactory.IWorkbenchAction refreshDone(final IRefreshEvent event) {
 		// Ensure that this event was generated for this participant
@@ -101,15 +90,12 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 	}
 
 	private void notifyIfNeededModal(final IRefreshEvent event) {
-		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				String title = (event.getRefreshType() == IRefreshEvent.SCHEDULED_REFRESH ?
-						NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, new String[] { Utils.getTypeName(participant) }) :
-							NLS.bind(TeamUIMessages.RefreshCompleteDialog_4, new String[] { Utils.getTypeName(participant) })
-							);
-				MessageDialog.openInformation(Utils.getShell(null), title, event.getStatus().getMessage());
-			}
+		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+			String title = (event.getRefreshType() == IRefreshEvent.SCHEDULED_REFRESH
+					? NLS.bind(TeamUIMessages.RefreshCompleteDialog_4a, new String[] { Utils.getTypeName(participant) })
+					: NLS.bind(TeamUIMessages.RefreshCompleteDialog_4,
+							new String[] { Utils.getTypeName(participant) }));
+			MessageDialog.openInformation(Utils.getShell(null), title, event.getStatus().getMessage());
 		});
 	}
 
@@ -117,12 +103,12 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 		if (participant instanceof SubscriberParticipant) {
 			SubscriberParticipant sp = (SubscriberParticipant) participant;
 			SyncInfo[] infos = ((RefreshChangeListener)event.getChangeDescription()).getChanges();
-			List selectedResources = new ArrayList();
+			List<IResource> selectedResources = new ArrayList<>();
 			selectedResources.addAll(Arrays.asList(((RefreshChangeListener)event.getChangeDescription()).getResources()));
 			for (int i = 0; i < infos.length; i++) {
 				selectedResources.add(infos[i].getLocal());
 			}
-			IResource[] resources = (IResource[]) selectedResources.toArray(new IResource[selectedResources.size()]);
+			IResource[] resources = selectedResources.toArray(new IResource[selectedResources.size()]);
 
 			// If it's a file, simply show the compare editor
 			if (resources.length == 1 && resources[0].getType() == IResource.FILE) {

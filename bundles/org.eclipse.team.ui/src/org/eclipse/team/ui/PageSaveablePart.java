@@ -22,11 +22,8 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -56,7 +53,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 
 	// Tracking of dirty state
 	private boolean fDirty= false;
-	private ArrayList fDirtyViewers= new ArrayList();
+	private ArrayList<Object> fDirtyViewers= new ArrayList<>();
 	private IPropertyChangeListener fDirtyStateListener;
 
 	//	 SWT controls
@@ -77,32 +74,23 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		this.shell = shell;
 		this.cc = compareConfiguration;
 
-		fDirtyStateListener= new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent e) {
-				String propertyName= e.getProperty();
-				if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
-					boolean changed= false;
-					Object newValue= e.getNewValue();
-					if (newValue instanceof Boolean)
-						changed= ((Boolean)newValue).booleanValue();
-					setDirty(e.getSource(), changed);
-				}
+		fDirtyStateListener= e -> {
+			String propertyName= e.getProperty();
+			if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
+				boolean changed= false;
+				Object newValue= e.getNewValue();
+				if (newValue instanceof Boolean)
+					changed= ((Boolean)newValue).booleanValue();
+				setDirty(e.getSource(), changed);
 			}
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.ISaveablePart#isDirty()
-	 */
 	@Override
 	public boolean isDirty() {
 		return fDirty || fDirtyViewers.size() > 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -130,12 +118,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 				return null;
 			}
 		};
-		fStructuredComparePane.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent e) {
-				feedInput2(e.getSelection());
-			}
-		});
+		fStructuredComparePane.addSelectionChangedListener(e -> feedInput2(e.getSelection()));
 		fEditionPane.setText(TeamUIMessages.ParticipantPageSaveablePart_0);
 		fContentPane = new CompareViewerSwitchingPane(vsplitter, SWT.BORDER | SWT.FLAT) {
 			@Override
@@ -149,12 +132,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 					dsp.addPropertyChangeListener(fDirtyStateListener);
 					Control c= newViewer.getControl();
 					c.addDisposeListener(
-						new DisposeListener() {
-							@Override
-							public void widgetDisposed(DisposeEvent e) {
-								dsp.removePropertyChangeListener(fDirtyStateListener);
-							}
-						}
+						e -> dsp.removePropertyChangeListener(fDirtyStateListener)
 					);
 					hookContentChangeListener((ICompareInput)input);
 				}
@@ -173,14 +151,11 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 			hsplitter.setMaximizedControl(fEditionPane);
 		}
 
-		getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ICompareInput input = getCompareInput(event.getSelection());
-				if (input != null)
-					prepareCompareInput(input);
-				setInput(input);
-			}
+		getSelectionProvider().addSelectionChangedListener(event -> {
+			ICompareInput input = getCompareInput(event.getSelection());
+			if (input != null)
+				prepareCompareInput(input);
+			setInput(input);
 		});
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 	private final boolean isModal;
 	// Keybindings enabled in the dialog, these should be removed
 	// when the dialog is closed.
-	private List actionHandlers = new ArrayList(2);
+	private List<HandlerSubmission> actionHandlers = new ArrayList<>(2);
 
 	/**
 	 * Create a site for use in a dialog
@@ -45,71 +45,51 @@ public class DialogSynchronizePageSite implements ISynchronizePageSite {
 		this.shell = shell;
 		this.isModal = isModal;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getSelectionProvider()
-	 */
+
 	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return selectionProvider;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getShell()
-	 */
+
 	@Override
 	public Shell getShell() {
 		return shell;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setSelectionProvider(org.eclipse.jface.viewers.ISelectionProvider)
-	 */
+
 	@Override
 	public void setSelectionProvider(ISelectionProvider provider) {
 		selectionProvider = provider;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getWorkbenchSite()
-	 */
+
 	@Override
 	public IWorkbenchSite getWorkbenchSite() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPart()
-	 */
+
 	@Override
 	public IWorkbenchPart getPart() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getKeyBindingService()
-	 */
+
 	@Override
 	public IKeyBindingService getKeyBindingService() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setFocus()
-	 */
+
 	@Override
 	public void setFocus() {
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPageSettings()
-	 */
+
 	@Override
 	public IDialogSettings getPageSettings() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getActionBars()
-	 */
+
 	@Override
 	public IActionBars getActionBars() {
 		return actionBars;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#isModal()
-	 */
+
 	@Override
 	public boolean isModal() {
 		return isModal;

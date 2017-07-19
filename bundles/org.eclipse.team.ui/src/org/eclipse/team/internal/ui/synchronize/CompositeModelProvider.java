@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  */
 public abstract class CompositeModelProvider extends AbstractSynchronizeModelProvider {
 
-    private final List providers = new ArrayList();
-    private final Map resourceToElements = new HashMap(); // Map IResource to List of ISynchronizeModelElement
-    private final Map elementToProvider = new HashMap(); // Map ISynchronizeModelElement -> AbstractSynchronizeModelProvider
+    private final List<ISynchronizeModelProvider> providers = new ArrayList<>();
+    private final Map<IResource, List <ISynchronizeModelElement>> resourceToElements = new HashMap<>();
+    private final Map<ISynchronizeModelElement, AbstractSynchronizeModelProvider> elementToProvider = new HashMap<>();
 
     protected CompositeModelProvider(ISynchronizePageConfiguration configuration, SyncInfoSet set) {
         super(configuration, set);
@@ -51,17 +51,11 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         provider.dispose();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getProvider(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
     @Override
 	protected ISynchronizeModelProvider getProvider(ISynchronizeModelElement element) {
-        return (ISynchronizeModelProvider)elementToProvider.get(element);
+        return elementToProvider.get(element);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getClosestExistingParents(org.eclipse.core.resources.IResource)
-     */
     @Override
 	public ISynchronizeModelElement[] getClosestExistingParents(IResource resource) {
         ISynchronizeModelProvider[] providers = getProviders();
@@ -71,7 +65,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         if (providers.length == 1 && providers[0] instanceof AbstractSynchronizeModelProvider) {
             return ((AbstractSynchronizeModelProvider)providers[0]).getClosestExistingParents(resource);
         }
-        List result = new ArrayList();
+        List<ISynchronizeModelElement> result = new ArrayList<>();
         for (int i = 0; i < providers.length; i++) {
             ISynchronizeModelProvider provider = providers[i];
             if (provider instanceof AbstractSynchronizeModelProvider) {
@@ -82,7 +76,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	            }
             }
         }
-        return (ISynchronizeModelElement[]) result.toArray(new ISynchronizeModelElement[result.size()]);
+        return result.toArray(new ISynchronizeModelElement[result.size()]);
     }
 
     /**
@@ -90,7 +84,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
      * @return the sub-providers of this composite
      */
     protected ISynchronizeModelProvider[] getProviders() {
-        return (ISynchronizeModelProvider[]) providers.toArray(new ISynchronizeModelProvider[providers.size()]);
+        return providers.toArray(new ISynchronizeModelProvider[providers.size()]);
     }
 
     /**
@@ -99,21 +93,18 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
      * @return the providers displaying the resource
      */
     protected ISynchronizeModelProvider[] getProvidersContaining(IResource resource) {
-        List elements = (List)resourceToElements.get(resource);
+        List<ISynchronizeModelElement> elements = resourceToElements.get(resource);
         if (elements == null || elements.isEmpty()) {
             return new ISynchronizeModelProvider[0];
         }
-        List result = new ArrayList();
-        for (Iterator iter = elements.iterator(); iter.hasNext();) {
-            ISynchronizeModelElement element = (ISynchronizeModelElement)iter.next();
+        List<ISynchronizeModelProvider> result = new ArrayList<>();
+        for (Iterator<ISynchronizeModelElement> iter = elements.iterator(); iter.hasNext();) {
+            ISynchronizeModelElement element = iter.next();
             result.add(getProvider(element));
         }
-        return (ISynchronizeModelProvider[]) result.toArray(new ISynchronizeModelProvider[result.size()]);
+        return result.toArray(new ISynchronizeModelProvider[result.size()]);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceAdditions(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected final void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
         handleAdditions(event.getAddedResources());
@@ -196,17 +187,14 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#nodeAdded(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
 	@Override
 	protected void nodeAdded(ISynchronizeModelElement node, AbstractSynchronizeModelProvider provider) {
 		// Update the resource-to-element map and the element-to-provider map
 		IResource r = node.getResource();
 		if(r != null) {
-			List elements = (List)resourceToElements.get(r);
+			List<ISynchronizeModelElement> elements = resourceToElements.get(r);
 			if(elements == null) {
-				elements = new ArrayList(2);
+				elements = new ArrayList<>(2);
 				resourceToElements.put(r, elements);
 			}
 			elements.add(node);
@@ -215,15 +203,12 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		super.nodeAdded(node, provider);
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#modelObjectCleared(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
     @Override
 	public void modelObjectCleared(ISynchronizeModelElement node) {
         super.modelObjectCleared(node);
 	    IResource r = node.getResource();
 		if(r != null) {
-			List elements = (List)resourceToElements.get(r);
+			List elements = resourceToElements.get(r);
 			if(elements != null) {
 				elements.remove(node);
 				if (elements.isEmpty()) {
@@ -234,9 +219,6 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		elementToProvider.remove(node);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
     @Override
 	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
         super.recursiveClearModelObjects(node);
@@ -271,32 +253,23 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		}
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#dispose()
-     */
     @Override
 	public void dispose() {
         clearProviders();
         super.dispose();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#hasViewerState()
-     */
     @Override
 	protected boolean hasViewerState() {
         return resourceToElements != null && !resourceToElements.isEmpty();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getModelObjects(org.eclipse.core.resources.IResource)
-     */
     @Override
 	protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
-        List elements = (List)resourceToElements.get(resource);
+        List<ISynchronizeModelElement> elements = resourceToElements.get(resource);
         if (elements == null) {
             return new ISynchronizeModelElement[0];
         }
-        return (ISynchronizeModelElement[]) elements.toArray(new ISynchronizeModelElement[elements.size()]);
+        return elements.toArray(new ISynchronizeModelElement[elements.size()]);
     }
 }

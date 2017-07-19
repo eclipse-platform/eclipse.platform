@@ -232,7 +232,7 @@ public abstract class RevisionAnnotationController {
 			editors.add(editor);
 		}
 
-        return (IEditorPart[]) editors.toArray(new IEditorPart[editors.size()]);
+        return editors.toArray(new IEditorPart[editors.size()]);
 	}
 
 	private static AbstractDecoratedTextEditor findOpenTextEditorFor(IWorkbenchPage page, Object object) {

@@ -34,7 +34,7 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 			ResourceTransfer.getInstance(),
 			FileTransfer.getInstance() };
 
-	private static final Class IRESOURCE_TYPE = IResource.class;
+	private static final Class<IResource> IRESOURCE_TYPE = IResource.class;
 
 	@Override
 	public Transfer[] getSupportedTransferTypes() {
@@ -107,11 +107,9 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 		if (selected instanceof IResource) {
 			resource = (IResource) selected;
 		} else if (selected instanceof IAdaptable) {
-			resource = (IResource) ((IAdaptable) selected)
-					.getAdapter(IRESOURCE_TYPE);
+			resource = ((IAdaptable) selected).getAdapter(IRESOURCE_TYPE);
 		} else {
-			resource = (IResource) Platform.getAdapterManager().getAdapter(
-					selected, IRESOURCE_TYPE);
+			resource = Platform.getAdapterManager().getAdapter(selected, IRESOURCE_TYPE);
 		}
 		return resource;
 	}

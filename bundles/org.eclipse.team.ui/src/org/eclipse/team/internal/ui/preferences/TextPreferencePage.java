@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,24 +131,18 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
     }
 
-    private static Set makeSetOfStrings(IStringMapping [] mappings) {
-    	final Set set= new HashSet(mappings.length);
+    private static Set<String> makeSetOfStrings(IStringMapping [] mappings) {
+    	final Set<String> set= new HashSet<>(mappings.length);
     	for (int i = 0; i < mappings.length; i++) {
 			set.add(mappings[i].getString());
 		}
     	return set;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
 	@Override
 	public void init(IWorkbench workbench) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected Control createContents(Composite parent) {
 
@@ -255,11 +249,11 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	 */
 	@Override
 	public boolean performOk() {
-	    final ArrayList extensionsList= new ArrayList();
-	    final ArrayList extensionsModesList= new ArrayList();
+	    final ArrayList<String> extensionsList= new ArrayList<>();
+	    final ArrayList<Integer> extensionsModesList= new ArrayList<>();
 
-	    final ArrayList namesList= new ArrayList();
-	    final ArrayList namesModesList= new ArrayList();
+	    final ArrayList<String> namesList= new ArrayList<>();
+	    final ArrayList<Integer> namesModesList= new ArrayList<>();
 
 	    for (final Iterator iter = fItems.iterator(); iter.hasNext();) {
             final FileTypeTable.Item item= (FileTypeTable.Item) iter.next();
@@ -273,8 +267,8 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
             }
         }
 
-	    final String [] extensions= (String [])extensionsList.toArray(new String [extensionsList.size()]);
-	    final String [] names= (String [])namesList.toArray(new String [namesList.size()]);
+	    final String [] extensions= extensionsList.toArray(new String [extensionsList.size()]);
+	    final String [] names= namesList.toArray(new String [namesList.size()]);
 
 	    final int [] extensionsModes= integerListToIntArray(extensionsModesList);
 	    final int [] namesModes= integerListToIntArray(namesModesList);

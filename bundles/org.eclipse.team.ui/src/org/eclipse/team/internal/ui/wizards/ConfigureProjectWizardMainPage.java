@@ -147,12 +147,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			// Ask the container to update button enablement
 			setPageComplete(true);
 		});
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				getWizard().getContainer().showPage(getNextPage());
-			}
-		});
+		viewer.addDoubleClickListener(event -> getWizard().getContainer().showPage(getNextPage()));
 		viewer.setComparator(new ViewerComparator() {
 			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
@@ -193,13 +188,13 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	}
 
 	/* package */ IProject[] getUnsharedProjects() {
-		java.util.List unshared = new ArrayList();
+		java.util.List<IProject> unshared = new ArrayList<>();
 		for (int i = 0; i < projects.length; i++) {
 			IProject project = projects[i];
 			if (!RepositoryProvider.isShared(project))
 				unshared.add(project);
 		}
-		return (IProject[]) unshared.toArray(new IProject[unshared.size()]);
+		return unshared.toArray(new IProject[unshared.size()]);
 	}
 
 	/**

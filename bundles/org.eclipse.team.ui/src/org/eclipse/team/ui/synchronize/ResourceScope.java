@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,33 +67,21 @@ public class ResourceScope extends AbstractSynchronizeScope {
 		fireRootsChanges();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getName()
-	 */
 	@Override
 	public String getName() {
 		return Utils.convertSelection(resources);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getRoots()
-	 */
 	@Override
 	public IResource[] getRoots() {
 		return resources;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#dispose()
-	 */
 	@Override
 	public void dispose() {
 		// Nothing to dispose
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento memento) {
 		if (resources != null) {
@@ -105,14 +93,11 @@ public class ResourceScope extends AbstractSynchronizeScope {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#init(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	protected void init(IMemento memento) {
 		IMemento[] rootNodes = memento.getChildren(CTX_ROOT);
 		if(rootNodes != null) {
-			List resources = new ArrayList();
+			List<IResource> resources = new ArrayList<>();
 			for (int i = 0; i < rootNodes.length; i++) {
 				IMemento rootNode = rootNodes[i];
 				IPath path = new Path(rootNode.getString(CTX_ROOT_PATH));
@@ -121,7 +106,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 					resources.add(resource);
 				}
 			}
-			this.resources = (IResource[]) resources.toArray(new IResource[resources.size()]);
+			this.resources = resources.toArray(new IResource[resources.size()]);
 		}
 	}
 }

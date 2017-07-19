@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,21 +26,15 @@ public class OpenFileInSystemEditorAction extends OpenFileAction {
 		super(page);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.SelectionListenerAction#getSelectedResources()
-	 */
 	@Override
-	protected List getSelectedResources() {
+	protected List<? extends IResource> getSelectedResources() {
 		IStructuredSelection selection = getStructuredSelection();
 		IResource[] resources = Utils.getResources(selection.toArray());
 		return Arrays.asList(resources);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.SelectionListenerAction#getSelectedNonResources()
-	 */
 	@Override
-	protected List getSelectedNonResources() {
+	protected List<?> getSelectedNonResources() {
 		return Collections.EMPTY_LIST;
 	}
 }

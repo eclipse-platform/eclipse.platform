@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.internal.ui.*;
@@ -78,7 +76,7 @@ public abstract class RefreshParticipantJob extends Job {
 	/**
 	 * Refresh started/completed listener for every refresh
 	 */
-	private static List listeners = new ArrayList(1);
+	private static List<IRefreshSubscriberListener> listeners = new ArrayList<>(1);
 	private static final int STARTED = 1;
 	private static final int DONE = 2;
 
@@ -143,13 +141,10 @@ public abstract class RefreshParticipantJob extends Job {
             this.gotoAction = gotoAction;
 			setEnabled(isEnabled());
 			setToolTipText(getToolTipText());
-			gotoAction.addPropertyChangeListener(new IPropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent event) {
-					if(event.getProperty().equals(IAction.ENABLED)) {
-						Boolean bool = (Boolean) event.getNewValue();
-						GotoActionWrapper.this.setEnabled(bool.booleanValue());
-					}
+			gotoAction.addPropertyChangeListener(event -> {
+				if(event.getProperty().equals(IAction.ENABLED)) {
+					Boolean bool = (Boolean) event.getNewValue();
+					GotoActionWrapper.this.setEnabled(bool.booleanValue());
 				}
 			});
         }
@@ -565,7 +560,7 @@ public abstract class RefreshParticipantJob extends Job {
 		// Get a snapshot of the listeners so the list doesn't change while we're firing
 		IRefreshSubscriberListener[] listenerArray;
 		synchronized (listeners) {
-			listenerArray = (IRefreshSubscriberListener[]) listeners.toArray(new IRefreshSubscriberListener[listeners.size()]);
+			listenerArray = listeners.toArray(new IRefreshSubscriberListener[listeners.size()]);
 		}
 		// Notify each listener in a safe manner (i.e. so their exceptions don't kill us)
 		for (int i = 0; i < listenerArray.length; i++) {

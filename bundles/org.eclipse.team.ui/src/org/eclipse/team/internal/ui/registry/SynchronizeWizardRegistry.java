@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,8 @@ public class SynchronizeWizardRegistry extends RegistryReader {
 
 	public static final String PT_SYNCHRONIZE_WIZARDS = "synchronizeWizards"; //$NON-NLS-1$
 	private static final String TAG_SYNCHRONIZE_WIZARD = "wizard"; //$NON-NLS-1$
-	private Map wizards = new HashMap();
+	private Map<String, SynchronizeWizardDescription> wizards = new HashMap<>();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.RegistryReader#readElement(org.eclipse.core.runtime.IConfigurationElement)
-	 */
 	@Override
 	protected boolean readElement(IConfigurationElement element) {
 		if (element.getName().equals(TAG_SYNCHRONIZE_WIZARD)) {
@@ -43,7 +40,7 @@ public class SynchronizeWizardRegistry extends RegistryReader {
 	}
 
 	public SynchronizeWizardDescription[] getSynchronizeWizards() {
-		return (SynchronizeWizardDescription[])wizards.values().toArray(new SynchronizeWizardDescription[wizards.size()]);
+		return wizards.values().toArray(new SynchronizeWizardDescription[wizards.size()]);
 	}
 
 }

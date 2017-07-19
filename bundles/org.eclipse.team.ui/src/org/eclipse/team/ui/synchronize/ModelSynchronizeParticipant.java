@@ -477,7 +477,7 @@ public class ModelSynchronizeParticipant extends
 	}
 
 	private ResourceMapping[] loadMappings(IMemento settings) throws PartInitException {
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		IMemento[] children = settings.getChildren(CTX_PARTICIPANT_MAPPINGS);
 		for (int i = 0; i < children.length; i++) {
 			IMemento memento = children[i];
@@ -499,7 +499,7 @@ public class ModelSynchronizeParticipant extends
 				}
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
 	private void initializeContext(ResourceMapping[] mappings) throws PartInitException {
@@ -619,7 +619,7 @@ public class ModelSynchronizeParticipant extends
 
 	@Override
 	public PreferencePage[] getPreferencePages() {
-		List pages = new ArrayList();
+		List<PreferencePage> pages = new ArrayList<>();
 		SyncViewerPreferencePage syncViewerPreferencePage = new SyncViewerPreferencePage();
 		syncViewerPreferencePage.setIncludeDefaultLayout(false);
 		pages.add(syncViewerPreferencePage);
@@ -641,7 +641,7 @@ public class ModelSynchronizeParticipant extends
 		if (getHandler() != null) {
 			pages.add(new StartupPreferencePage(preferences));
 		}
-		return (PreferencePage[]) pages.toArray(new PreferencePage[pages.size()]);
+		return pages.toArray(new PreferencePage[pages.size()]);
 	}
 
 	private boolean isIncluded(ITeamContentProviderDescriptor descriptor) {

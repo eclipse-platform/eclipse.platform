@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 public class SynchronizeModelElementLabelProvider extends LabelProvider implements IColorProvider, IFontProvider {
 
 	// Cache for folder images that have been overlayed with conflict icon
-	private Map fgImageCache;
+	private Map<ImageDescriptor, Image> fgImageCache;
 
 	// Contains direction images
 	CompareConfiguration compareConfig = new CompareConfiguration();
@@ -50,27 +50,16 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 	public SynchronizeModelElementLabelProvider() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-	 */
 	@Override
 	public Color getForeground(Object element) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-	 */
 	@Override
 	public Color getBackground(Object element) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
-	 */
 	@Override
 	public Font getFont(Object element) {
 		if (element instanceof ISynchronizeModelElement) {
@@ -90,10 +79,6 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-	 */
 	@Override
 	public Image getImage(Object element) {
 		Image base = workbenchLabelProvider.getImage(element);
@@ -112,10 +97,6 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 		return base;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
-	 */
 	@Override
 	public String getText(Object element) {
 		String base = workbenchLabelProvider.getText(element);
@@ -175,9 +156,9 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 		if (hasOverlay) {
 			ImageDescriptor overlay = new DecorationOverlayIcon(base, overlayImages, new Point(base.getBounds().width, base.getBounds().height));
 			if (fgImageCache == null) {
-				fgImageCache = new HashMap(10);
+				fgImageCache = new HashMap<>(10);
 			}
-			Image conflictDecoratedImage = (Image) fgImageCache.get(overlay);
+			Image conflictDecoratedImage = fgImageCache.get(overlay);
 			if (conflictDecoratedImage == null) {
 				conflictDecoratedImage = overlay.createImage();
 				fgImageCache.put(overlay, conflictDecoratedImage);
@@ -212,10 +193,6 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 		return node.getProperty(ISynchronizeModelElement.PROPAGATED_WARNING_MARKER_PROPERTY);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
         workbenchLabelProvider.dispose();

@@ -71,16 +71,16 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processDiffs(FilePatch2[])
 	private IDiffElement[] processDiffs(FilePatch2[] diffs) {
-		List result = new ArrayList();
+		List<IDiffElement> result = new ArrayList<>();
 		for (int i = 0; i < diffs.length; i++) {
 			result.addAll(processDiff(diffs[i], this));
 		}
-		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processProjects(DiffProject[])
 	private IDiffElement[] processProjects(DiffProject[] diffProjects) {
-		List result = new ArrayList();
+		List<IDiffElement> result = new ArrayList<>();
 		for (int i = 0; i < diffProjects.length; i++) {
 			PatchProjectDiffNode projectNode = new PatchProjectDiffNode(this, diffProjects[i], getPatcher().getConfiguration());
 			result.add(projectNode);
@@ -90,12 +90,12 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 				processDiff(fileDiff, projectNode);
 			}
 		}
-		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processDiff(FilePatch2, DiffNode)
-	private List/*<IDiffElement>*/ processDiff(FilePatch2 diff, DiffNode parent) {
-		List result = new ArrayList();
+	private List<IDiffElement> processDiff(FilePatch2 diff, DiffNode parent) {
+		List<IDiffElement> result = new ArrayList<>();
 		FileDiffResult diffResult = getPatcher().getDiffResult(diff);
 		PatchFileDiffNode node = new PatchFileDiffNode(diffResult, parent, PatchFileDiffNode.getKind(diffResult), PatchFileDiffNode.getAncestorElement(diffResult), getLeftElement(diffResult), PatchFileDiffNode.getRightElement(diffResult));
 		result.add(node);

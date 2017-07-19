@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,18 +131,18 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 	}
 
 	class WorkingSetLabelProvider extends LabelProvider {
-		  private Map icons;
+		  private Map<ImageDescriptor, Image> icons;
 
 		    public WorkingSetLabelProvider() {
-		        icons = new Hashtable();
+		        icons = new Hashtable<>();
 		    }
 
 		    @Override
 			public void dispose() {
-		        Iterator iterator = icons.values().iterator();
+		        Iterator<Image> iterator = icons.values().iterator();
 
 		        while (iterator.hasNext()) {
-		            Image icon = (Image) iterator.next();
+		            Image icon = iterator.next();
 		            icon.dispose();
 		        }
 		        super.dispose();
@@ -158,7 +158,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 					return null;
 				}
 
-		        Image icon = (Image) icons.get(imageDescriptor);
+		        Image icon = icons.get(imageDescriptor);
 		        if (icon == null) {
 		            icon = imageDescriptor.createImage();
 		            icons.put(imageDescriptor, icon);

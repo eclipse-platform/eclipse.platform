@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,9 +113,9 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 
 	private ISynchronizeParticipant participant;
 	private ISynchronizePageSite site;
-	private ListenerList propertyChangeListeners = new ListenerList(ListenerList.IDENTITY);
-	private ListenerList actionContributions = new ListenerList(ListenerList.IDENTITY);
-	private Map properties = new HashMap();
+	private ListenerList<IPropertyChangeListener> propertyChangeListeners = new ListenerList<>(ListenerList.IDENTITY);
+	private ListenerList<SynchronizePageActionGroup> actionContributions = new ListenerList<>(ListenerList.IDENTITY);
+	private Map<String, Object> properties = new HashMap<>();
 	private int actionState = UNINITIALIZED;
 	private ISynchronizePage page;
 	private IRunnableContext context;
@@ -132,17 +132,11 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		setProperty(P_COMPARISON_TYPE, THREE_WAY);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getParticipant()
-	 */
 	@Override
 	public ISynchronizeParticipant getParticipant() {
 		return participant;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getSite()
-	 */
 	@Override
 	public ISynchronizePageSite getSite() {
 		return site;
@@ -157,9 +151,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		this.site = site;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		synchronized(propertyChangeListeners) {
@@ -167,9 +158,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		synchronized(propertyChangeListeners) {
@@ -177,9 +165,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#setProperty(java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public void setProperty(String key, Object newValue) {
 		Object oldValue = properties.get(key);
@@ -190,17 +175,11 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getProperty(java.lang.String)
-	 */
 	@Override
 	public Object getProperty(String key) {
 		return properties.get(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#addActionContribution(org.eclipse.team.ui.synchronize.IActionContribution)
-	 */
 	@Override
 	public void addActionContribution(SynchronizePageActionGroup contribution) {
         int currentActionState;
@@ -224,9 +203,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
         }
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#removeActionContribution(org.eclipse.team.ui.synchronize.IActionContribution)
-	 */
 	@Override
 	public void removeActionContribution(SynchronizePageActionGroup contribution) {
 		synchronized(actionContributions) {
@@ -255,9 +231,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	public void initialize(final ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
@@ -286,9 +259,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#setContext(org.eclipse.ui.actions.ActionContext)
-	 */
 	@Override
 	public void setContext(final ActionContext context) {
 		super.setContext(context);
@@ -365,9 +335,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#updateActionBars()
-	 */
 	@Override
 	public void updateActionBars() {
         final Object[] listeners;
@@ -389,9 +356,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#modelChanged(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-	 */
 	@Override
 	public void modelChanged(final ISynchronizeModelElement root) {
         final Object[] listeners;
@@ -413,9 +377,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -439,17 +400,11 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#setMenu(java.lang.String, java.lang.String[])
-	 */
 	@Override
 	public void setMenuGroups(String menuPropertyId, String[] groups) {
 		setProperty(menuPropertyId, groups);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#appendMenu(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void addMenuGroup(String menuPropertyId, String groupId) {
 		String[] menuGroups = (String[])getProperty(menuPropertyId);
@@ -462,9 +417,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		setProperty(menuPropertyId, newGroups);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#hasMenuGroup(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean hasMenuGroup(String menuPropertyId, String groupId) {
 		String[] groups = (String[])getProperty(menuPropertyId);
@@ -490,9 +442,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#addLabelDecorator(org.eclipse.jface.viewers.ILabelDecorator)
-	 */
 	@Override
 	public void addLabelDecorator(ILabelDecorator decorator) {
 		ILabelDecorator[] decorators = (ILabelDecorator[])getProperty(P_LABEL_DECORATORS);
@@ -525,9 +474,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		return id + "." + group; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscribers.ISubscriberPageConfiguration#getMode()
-	 */
 	@Override
 	public int getMode() {
 		Object o = getProperty(P_MODE);
@@ -537,9 +483,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscribers.ISubscriberPageConfiguration#setMode(int)
-	 */
 	@Override
 	public void setMode(int mode) {
 		if (isModeSupported(mode))
@@ -559,9 +502,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscribers.ISubscriberPageConfiguration#setSupportedModes(int)
-	 */
 	@Override
 	public void setSupportedModes(int modes) {
 		setProperty(P_SUPPORTED_MODES, new Integer(modes));
@@ -600,9 +540,6 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		setProperty(P_VIEWER_STYLE, new Integer(style));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getSyncInfoSet()
-	 */
 	@Override
 	public SyncInfoSet getSyncInfoSet() {
 		Object o = getProperty(P_SYNC_INFO_SET);
@@ -612,33 +549,21 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getComparisonType()
-	 */
 	@Override
 	public String getComparisonType() {
 		return (String)getProperty(P_COMPARISON_TYPE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#setComparisonType(java.lang.String)
-	 */
 	@Override
 	public void setComparisonType(String type) {
 		setProperty(P_COMPARISON_TYPE,type);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#setRunnableContext(org.eclipse.jface.operation.IRunnableContext)
-	 */
 	@Override
 	public void setRunnableContext(IRunnableContext context) {
 		this.context = context;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration#getRunnableContext()
-	 */
 	@Override
 	public IRunnableContext getRunnableContext() {
 		return context;
