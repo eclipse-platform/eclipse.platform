@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,12 +69,7 @@ public class ProjectSelectionPage extends WizardPage {
 		projectViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		projectViewer.setInput(projectList);
 		projectViewer.getTable().select(0);
-		projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateEnablements();
-			}
-		});
+		projectViewer.addSelectionChangedListener(event -> updateEnablements());
 	}
 
 	private void createShareButton(Composite composite) {

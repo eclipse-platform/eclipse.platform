@@ -18,8 +18,6 @@ import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -112,22 +110,14 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 	}
 
 	void setupListeners() {
-		wsTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection s = (IStructuredSelection) event.getSelection();
-				Object obj = s.getFirstElement();
-				if (obj instanceof IWorkingSet)
-					wsNameText.setText(((IWorkingSet) obj).getName());
-			}
+		wsTableViewer.addSelectionChangedListener(event -> {
+			IStructuredSelection s = (IStructuredSelection) event.getSelection();
+			Object obj = s.getFirstElement();
+			if (obj instanceof IWorkingSet)
+				wsNameText.setText(((IWorkingSet) obj).getName());
 		});
 
-		wsNameText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				setErrorMessage(null);
-			}
-		});
+		wsNameText.addModifyListener(e -> setErrorMessage(null));
 	}
 
 	class WorkingSetLabelProvider extends LabelProvider {

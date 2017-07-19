@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,12 +65,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		//gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.heightHint = 300;
 		ignoreTable.setLayoutData(gd);
-		ignoreTable.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				handleSelection();
-			}
-		});
+		ignoreTable.addListener(SWT.Selection, e -> handleSelection());
 
 		Composite buttons = new Composite(parent, SWT.NULL);
 		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -81,22 +76,12 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 
 		addButton = new Button(buttons, SWT.PUSH);
 		addButton.setText(TeamUIMessages.IgnorePreferencePage_add);
-		addButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				addIgnore();
-			}
-		});
+		addButton.addListener(SWT.Selection, e -> addIgnore());
 
 		removeButton = new Button(buttons, SWT.PUSH);
 		removeButton.setText(TeamUIMessages.IgnorePreferencePage_remove);
 		removeButton.setEnabled(false);
-		removeButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				removeIgnore();
-			}
-		});
+		removeButton.addListener(SWT.Selection, e -> removeIgnore());
 		fillTable(Team.getAllIgnores());
 		Dialog.applyDialogFont(ancestor);
 		setButtonLayoutData(addButton);

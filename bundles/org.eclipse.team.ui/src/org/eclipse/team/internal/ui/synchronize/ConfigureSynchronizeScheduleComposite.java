@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -144,23 +144,15 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		gridData = new GridData();
 		gridData.widthHint = 35;
 		timeInterval.setLayoutData(gridData);
-		timeInterval.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateEnablements();
-			}
-		});
-		timeInterval.addVerifyListener(new VerifyListener() {
-			@Override
-			public void verifyText(VerifyEvent e) {
-				String string = e.text;
-				char[] chars = new char[string.length()];
-				string.getChars(0, chars.length, chars, 0);
-				for (int i = 0; i < chars.length; i++) {
-					if (!('0' <= chars[i] && chars[i] <= '9')) {
-						e.doit = false;
-						return;
-					}
+		timeInterval.addModifyListener(e -> updateEnablements());
+		timeInterval.addVerifyListener(e -> {
+			String string = e.text;
+			char[] chars = new char[string.length()];
+			string.getChars(0, chars.length, chars, 0);
+			for (int i = 0; i < chars.length; i++) {
+				if (!('0' <= chars[i] && chars[i] <= '9')) {
+					e.doit = false;
+					return;
 				}
 			}
 		});

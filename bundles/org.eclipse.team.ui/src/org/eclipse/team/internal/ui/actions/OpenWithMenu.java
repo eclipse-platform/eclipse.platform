@@ -158,12 +158,9 @@ public class OpenWithMenu extends ContributionItem {
 		if (image != null) {
 			menuItem.setImage(image);
 		}
-		Listener listener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Selection && menuItem.getSelection()) {
-					openEditor(descriptor, false);
-				}
+		Listener listener = event -> {
+			if (event.type == SWT.Selection && menuItem.getSelection()) {
+				openEditor(descriptor, false);
 			}
 		};
 		menuItem.addListener(SWT.Selection, listener);
@@ -184,19 +181,16 @@ public class OpenWithMenu extends ContributionItem {
 		new MenuItem(menu, SWT.SEPARATOR);
 		final MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
 		menuItem.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_Other);
-		Listener listener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Selection) {
-					EditorSelectionDialog dialog = new EditorSelectionDialog(menu.getShell());
-					dialog.setMessage(NLS.bind(
-							TeamUIMessages.LocalHistoryPage_OpenWithMenu_OtherDialogDescription,
-							fileResource.getName()));
-					if (dialog.open() == Window.OK) {
-						IEditorDescriptor editor = dialog.getSelectedEditor();
-						if (editor != null) {
-							openEditor(editor, editor.isOpenExternal());
-						}
+		Listener listener = event -> {
+			if (event.type == SWT.Selection) {
+				EditorSelectionDialog dialog = new EditorSelectionDialog(menu.getShell());
+				dialog.setMessage(NLS.bind(
+						TeamUIMessages.LocalHistoryPage_OpenWithMenu_OtherDialogDescription,
+						fileResource.getName()));
+				if (dialog.open() == Window.OK) {
+					IEditorDescriptor editor = dialog.getSelectedEditor();
+					if (editor != null) {
+						openEditor(editor, editor.isOpenExternal());
 					}
 				}
 			}
@@ -257,12 +251,9 @@ public class OpenWithMenu extends ContributionItem {
 		menuItem.setSelection(markAsSelected);
 		menuItem.setText(TeamUIMessages.LocalHistoryPage_OpenWithMenu_DefaultEditorDescription);
 
-		Listener listener = new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Selection && menuItem.getSelection()) {
-					openEditor(Utils.getDefaultEditor(revision), false);
-				}
+		Listener listener = event -> {
+			if (event.type == SWT.Selection && menuItem.getSelection()) {
+				openEditor(Utils.getDefaultEditor(revision), false);
 			}
 		};
 

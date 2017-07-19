@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,7 @@ package org.eclipse.team.internal.ui.synchronize;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.jface.resource.*;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.team.core.ICache;
-import org.eclipse.team.core.ICacheListener;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
@@ -39,20 +35,10 @@ public class ImageManager {
 			Viewer v = getViewer(configuration);
 			if (v != null) {
 				// It is best to dispose the images when the view is disposed (see bug 198383)
-				v.getControl().addDisposeListener(new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						newRegistry.dispose();
-					}
-				});
+				v.getControl().addDisposeListener(e -> newRegistry.dispose());
 			} else {
 				// The viewer wasn't available so we'll dispose when the context is disposed
-				context.getCache().addCacheListener(new ICacheListener() {
-					@Override
-					public void cacheDisposed(ICache cache) {
-						newRegistry.dispose();
-					}
-				});
+				context.getCache().addCacheListener(cache -> newRegistry.dispose());
 			}
 			manager = newRegistry;
 		}

@@ -81,16 +81,13 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		ITypedElement te = getFileElement();
 		if (te instanceof IContentChangeNotifier) {
 			if (contentChangeListener == null) {
-				contentChangeListener = new IContentChangeListener() {
-					@Override
-					public void contentChanged(IContentChangeNotifier source) {
-						try {
-							if(! isSaving) {
-								performSave(new NullProgressMonitor());
-							}
-						} catch (CoreException e) {
-							TeamUIPlugin.log(e);
+				contentChangeListener = source -> {
+					try {
+						if(! isSaving) {
+							performSave(new NullProgressMonitor());
 						}
+					} catch (CoreException e) {
+						TeamUIPlugin.log(e);
 					}
 				};
 			}

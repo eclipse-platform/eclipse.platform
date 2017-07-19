@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.team.core.synchronize.*;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.synchronize.SyncInfoModelElement;
@@ -76,17 +74,9 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 */
 	protected void initialize(final ISynchronizePageConfiguration configuration, final ISelectionProvider selectionProvider) {
 		selectionProvider.addSelectionChangedListener(this);
-		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				selectionProvider.removeSelectionChangedListener(SynchronizeModelAction.this);
-			}
-		});
+		configuration.getPage().getViewer().getControl().addDisposeListener(e -> selectionProvider.removeSelectionChangedListener(SynchronizeModelAction.this));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
 	@Override
 	public void run() {
 		if(needsToSaveDirtyEditors()) {

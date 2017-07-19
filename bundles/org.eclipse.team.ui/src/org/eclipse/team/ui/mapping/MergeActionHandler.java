@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,12 +36,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	private final ISynchronizePageConfiguration configuration;
 	private boolean enabled = false;
 	private IStructuredSelection selection;
-	private ISelectionChangedListener listener = new ISelectionChangedListener() {
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			updatedEnablement(event);
-		}
-	};
+	private ISelectionChangedListener listener = event -> updatedEnablement(event);
 
 	/**
 	 * Return an instance of the default handler for the given merge action id.

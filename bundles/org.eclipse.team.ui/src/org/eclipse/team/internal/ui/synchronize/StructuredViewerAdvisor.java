@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,15 +65,12 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	// Property change listener which responds to:
 	//    - working set selection by the user
 	//    - decorator format change selected by the user
-	private IPropertyChangeListener propertyListener = new IPropertyChangeListener() {
-		@Override
-		public void propertyChange(PropertyChangeEvent event) {
-			// Change to showing of sync state in text labels preference
-			if(event.getProperty().equals(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL)) {
-				StructuredViewer viewer = getViewer();
-				if(viewer != null && !viewer.getControl().isDisposed()) {
-					viewer.refresh(true /* update labels */);
-				}
+	private IPropertyChangeListener propertyListener = event -> {
+		// Change to showing of sync state in text labels preference
+		if(event.getProperty().equals(IPreferenceIds.SYNCVIEW_VIEW_SYNCINFO_IN_LABEL)) {
+			StructuredViewer viewer = getViewer();
+			if(viewer != null && !viewer.getControl().isDisposed()) {
+				viewer.refresh(true /* update labels */);
 			}
 		}
 	};
@@ -122,12 +119,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 	 * @param viewer the viewer being initialize
 	 */
 	protected void initializeListeners(final StructuredViewer viewer) {
-		viewer.getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				StructuredViewerAdvisor.this.dispose();
-			}
-		});
+		viewer.getControl().addDisposeListener(e -> StructuredViewerAdvisor.this.dispose());
 
 		new OpenAndLinkWithEditorHelper(viewer) {
 
@@ -154,20 +146,9 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 
 		};
 
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				handleDoubleClick(viewer, event);
-			}
-		});
+		viewer.addDoubleClickListener(event -> handleDoubleClick(viewer, event));
 
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				// Update the action bars enablement for any contributed action groups
-				updateActionBars((IStructuredSelection)viewer.getSelection());
-			}
-		});
+		viewer.addSelectionChangedListener(event -> updateActionBars((IStructuredSelection)viewer.getSelection()));
 		TeamUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(propertyListener);
 	}
 
@@ -271,12 +252,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 		final MenuManager menuMgr = createContextMenuManager(targetID);
 
 		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				fillContextMenu(viewer, manager);
-			}
-		});
+		menuMgr.addMenuListener(manager -> fillContextMenu(viewer, manager));
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		menu.addMenuListener(new MenuListener() {
 

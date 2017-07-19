@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.team.internal.ui;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 /**
@@ -42,15 +41,12 @@ public class Policy {
         return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
     }
 
-	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
-		@Override
-		public void optionsChanged(DebugOptions options) {
-			boolean DEBUG = options.getBooleanOption(TeamUIPlugin.ID + "/debug", false); //$NON-NLS-1$
-			DEBUG_SYNC_MODELS = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/syncmodels", false); //$NON-NLS-1$
-			DEBUG_HISTORY = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/history", false); //$NON-NLS-1$
-			DEBUG_DND = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/dnd", false); //$NON-NLS-1$
-			DEBUG_COMPARE_EDITOR_INPUT = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/compare_editor_input", false); //$NON-NLS-1$
-		}
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = options -> {
+		boolean DEBUG = options.getBooleanOption(TeamUIPlugin.ID + "/debug", false); //$NON-NLS-1$
+		DEBUG_SYNC_MODELS = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/syncmodels", false); //$NON-NLS-1$
+		DEBUG_HISTORY = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/history", false); //$NON-NLS-1$
+		DEBUG_DND = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/dnd", false); //$NON-NLS-1$
+		DEBUG_COMPARE_EDITOR_INPUT = DEBUG && options.getBooleanOption(TeamUIPlugin.ID + "/compare_editor_input", false); //$NON-NLS-1$
 	};
 
 	/**

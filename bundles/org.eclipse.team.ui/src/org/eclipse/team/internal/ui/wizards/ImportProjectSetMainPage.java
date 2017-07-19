@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,12 +118,9 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		file = psfFilenameStore.getSuggestedDefault();
 		fileCombo.setItems(psfFilenameStore.getHistory());
 		fileCombo.setText(file);
-		fileCombo.addListener(SWT.Modify, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				file = fileCombo.getText();
-				updateFileEnablement();
-			}
+		fileCombo.addListener(SWT.Modify, event -> {
+			file = fileCombo.getText();
+			updateFileEnablement();
 		});
 
 		browseButton = new Button(inner, SWT.PUSH);
@@ -145,12 +142,9 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 2;
 		urlCombo.setLayoutData(gd);
-		urlCombo.addListener(SWT.Modify, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				urlString = urlCombo.getText();
-				updateUrlEnablement();
-			}
+		urlCombo.addListener(SWT.Modify, event -> {
+			urlString = urlCombo.getText();
+			updateUrlEnablement();
 		});
 
 		GridData data = new GridData();
@@ -158,27 +152,24 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
-		browseButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				FileDialog d = new FileDialog(getShell());
-				d.setFilterExtensions(new String[] {"*.psf", "*"}); //$NON-NLS-1$ //$NON-NLS-2$
-				d.setFilterNames(new String[] {TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles}); //
-				String fileName= getFileName();
-				if (fileName != null && fileName.length() > 0) {
-					int separator= fileName.lastIndexOf(System.getProperty ("file.separator").charAt (0)); //$NON-NLS-1$
-					if (separator != -1) {
-						fileName= fileName.substring(0, separator);
-					}
-				} else {
-					fileName= ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+		browseButton.addListener(SWT.Selection, event -> {
+			FileDialog d = new FileDialog(getShell());
+			d.setFilterExtensions(new String[] {"*.psf", "*"}); //$NON-NLS-1$ //$NON-NLS-2$
+			d.setFilterNames(new String[] {TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles}); //
+			String fileName= getFileName();
+			if (fileName != null && fileName.length() > 0) {
+				int separator= fileName.lastIndexOf(System.getProperty ("file.separator").charAt (0)); //$NON-NLS-1$
+				if (separator != -1) {
+					fileName= fileName.substring(0, separator);
 				}
-				d.setFilterPath(fileName);
-				String f = d.open();
-				if (f != null) {
-					fileCombo.setText(f);
-					file = f;
-				}
+			} else {
+				fileName= ResourcesPlugin.getWorkspace().getRoot().getLocation().toString();
+			}
+			d.setFilterPath(fileName);
+			String f = d.open();
+			if (f != null) {
+				fileCombo.setText(f);
+				file = f;
 			}
 		});
 

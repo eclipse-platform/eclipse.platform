@@ -17,8 +17,6 @@ import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.team.core.synchronize.*;
 import org.eclipse.team.internal.core.subscribers.*;
@@ -297,15 +295,12 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
             if (actionGroup != null) {
                 // This action group will be disposed when the provider is disposed
                 getConfiguration().addActionContribution(actionGroup);
-                provider.addPropertyChangeListener(new IPropertyChangeListener() {
-                    @Override
-					public void propertyChange(PropertyChangeEvent event) {
-                        if (event.getProperty().equals(P_VIEWER_SORTER)) {
-                            embeddedSorter = provider.getViewerSorter();
-                            ChangeSetModelProvider.this.firePropertyChange(P_VIEWER_SORTER, null, null);
-                        }
-                    }
-                });
+                provider.addPropertyChangeListener(event -> {
+				    if (event.getProperty().equals(P_VIEWER_SORTER)) {
+				        embeddedSorter = provider.getViewerSorter();
+				        ChangeSetModelProvider.this.firePropertyChange(P_VIEWER_SORTER, null, null);
+				    }
+				});
             }
         }
     }

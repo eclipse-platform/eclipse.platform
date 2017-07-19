@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,6 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,13 +73,10 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	private void createExportToFile(Composite composite) {
 		fileRadio = new Button(composite, SWT.RADIO);
 		fileRadio.setText(TeamUIMessages.ExportProjectSetMainPage_FileButton);
-		fileRadio.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				saveToFileSystem = true;
-				file = fileCombo.getText();
-				updateEnablement();
-			}
+		fileRadio.addListener(SWT.Selection, event -> {
+			saveToFileSystem = true;
+			file = fileCombo.getText();
+			updateEnablement();
 		});
 
 		Composite inner = new Composite(composite, SWT.NONE);
@@ -96,12 +91,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		file = PsfFilenameStore.getInstance().getSuggestedDefault();
 		fileCombo.setItems(PsfFilenameStore.getInstance().getHistory());
 		fileCombo.setText(file);
-		fileCombo.addListener(SWT.Modify, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				file = fileCombo.getText();
-				updateEnablement();
-			}
+		fileCombo.addListener(SWT.Modify, event -> {
+			file = fileCombo.getText();
+			updateEnablement();
 		});
 
 		browseButton = new Button(inner, SWT.PUSH);
@@ -111,29 +103,26 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, browseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		browseButton.setLayoutData(data);
-		browseButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (!isSaveToFileSystem())
-					saveToFileSystem = true;
+		browseButton.addListener(SWT.Selection, event -> {
+			if (!isSaveToFileSystem())
+				saveToFileSystem = true;
 
-				FileDialog d = new FileDialog(getShell(), SWT.SAVE);
-				d.setFilterExtensions(new String[] {"*.psf"}); //$NON-NLS-1$
-				d.setFilterNames(new String[] {TeamUIMessages.ExportProjectSetMainPage_Project_Set_Files_3});
-				d.setFileName(TeamUIMessages.ExportProjectSetMainPage_default);
-				String fileName = getFileName();
-				if (fileName != null) {
-					int separator = fileName.lastIndexOf(System.getProperty("file.separator").charAt(0)); //$NON-NLS-1$
-					if (separator != -1) {
-						fileName = fileName.substring(0, separator);
-					}
+			FileDialog d = new FileDialog(getShell(), SWT.SAVE);
+			d.setFilterExtensions(new String[] {"*.psf"}); //$NON-NLS-1$
+			d.setFilterNames(new String[] {TeamUIMessages.ExportProjectSetMainPage_Project_Set_Files_3});
+			d.setFileName(TeamUIMessages.ExportProjectSetMainPage_default);
+			String fileName = getFileName();
+			if (fileName != null) {
+				int separator = fileName.lastIndexOf(System.getProperty("file.separator").charAt(0)); //$NON-NLS-1$
+				if (separator != -1) {
+					fileName = fileName.substring(0, separator);
 				}
-				d.setFilterPath(fileName);
-				String f = d.open();
-				if (f != null) {
-					fileCombo.setText(f);
-					file = f;
-				}
+			}
+			d.setFilterPath(fileName);
+			String f = d.open();
+			if (f != null) {
+				fileCombo.setText(f);
+				file = f;
 			}
 		});
 	}
@@ -141,12 +130,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 	private void createExportToWorkspace(Composite composite) {
 		workspaceRadio = new Button(composite, SWT.RADIO);
 		workspaceRadio.setText(TeamUIMessages.ExportProjectSetMainPage_WorkspaceButton);
-		workspaceRadio.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				saveToFileSystem = false;
-				updateEnablement();
-			}
+		workspaceRadio.addListener(SWT.Selection, event -> {
+			saveToFileSystem = false;
+			updateEnablement();
 		});
 
 		final Composite nameGroup = new Composite(composite, SWT.NONE);
@@ -159,12 +145,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 		workspaceText = createTextField(nameGroup);
 		workspaceText.setEditable(false);
-		workspaceText.addListener(SWT.Modify, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				file = workspaceFile.getLocation().toString();
-				updateEnablement();
-			}
+		workspaceText.addListener(SWT.Modify, event -> {
+			file = workspaceFile.getLocation().toString();
+			updateEnablement();
 		});
 		Button wsBrowseButton = new Button(nameGroup, SWT.PUSH);
 		GridData gd = new GridData();
@@ -173,15 +156,12 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		gd.widthHint = Math.max(widthHint, wsBrowseButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		wsBrowseButton.setLayoutData(gd);
 		wsBrowseButton.setText(TeamUIMessages.ExportProjectSetMainPage_Browse);
-		wsBrowseButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				if (isSaveToFileSystem())
-					saveToFileSystem = false;
+		wsBrowseButton.addListener(SWT.Selection, event -> {
+			if (isSaveToFileSystem())
+				saveToFileSystem = false;
 
-				WorkspaceDialog d = new WorkspaceDialog(getShell());
-				d.open();
-			}
+			WorkspaceDialog d = new WorkspaceDialog(getShell());
+			d.open();
 		});
 	}
 
@@ -358,53 +338,44 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 		}
 
 		void setupListeners() {
-			wsTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-				@Override
-				public void selectionChanged(SelectionChangedEvent event) {
-					IStructuredSelection s = (IStructuredSelection) event.getSelection();
-					Object obj = s.getFirstElement();
-					if (obj != null) {
+			wsTreeViewer.addSelectionChangedListener(event -> {
+				IStructuredSelection s = (IStructuredSelection) event.getSelection();
+				Object obj = s.getFirstElement();
+				if (obj != null) {
 
-					}
-					if (obj instanceof IContainer)
-						wsContainer = (IContainer) obj;
-					else if (obj instanceof IFile) {
-						IFile tempFile = (IFile) obj;
-						wsContainer = tempFile.getParent();
-						wsFilenameText.setText(tempFile.getName());
-					}
+				}
+				if (obj instanceof IContainer)
+					wsContainer = (IContainer) obj;
+				else if (obj instanceof IFile) {
+					IFile tempFile = (IFile) obj;
+					wsContainer = tempFile.getParent();
+					wsFilenameText.setText(tempFile.getName());
 				}
 			});
 
-			wsTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
-				@Override
-				public void doubleClick(DoubleClickEvent event) {
-					ISelection s = event.getSelection();
-					if (s instanceof IStructuredSelection) {
-						Object item = ((IStructuredSelection) s).getFirstElement();
-						if (wsTreeViewer.getExpandedState(item))
-							wsTreeViewer.collapseToLevel(item, 1);
-						else
-							wsTreeViewer.expandToLevel(item, 1);
-					}
+			wsTreeViewer.addDoubleClickListener(event -> {
+				ISelection s = event.getSelection();
+				if (s instanceof IStructuredSelection) {
+					Object item = ((IStructuredSelection) s).getFirstElement();
+					if (wsTreeViewer.getExpandedState(item))
+						wsTreeViewer.collapseToLevel(item, 1);
+					else
+						wsTreeViewer.expandToLevel(item, 1);
 				}
 			});
 
-			wsFilenameText.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					String patchName = wsFilenameText.getText();
-					if (patchName.trim().equals("")) { //$NON-NLS-1$
-						okButton.setEnabled(false);
-						setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorNoFilename);
-					} else if (!(ResourcesPlugin.getWorkspace().validateName(patchName, IResource.FILE)).isOK()) {
-						//make sure that the filename does not contain more than one segment
-						okButton.setEnabled(false);
-						setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorFilenameSegments);
-					} else {
-						okButton.setEnabled(true);
-						setErrorMessage(null);
-					}
+			wsFilenameText.addModifyListener(e -> {
+				String patchName = wsFilenameText.getText();
+				if (patchName.trim().equals("")) { //$NON-NLS-1$
+					okButton.setEnabled(false);
+					setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorNoFilename);
+				} else if (!(ResourcesPlugin.getWorkspace().validateName(patchName, IResource.FILE)).isOK()) {
+					//make sure that the filename does not contain more than one segment
+					okButton.setEnabled(false);
+					setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorFilenameSegments);
+				} else {
+					okButton.setEnabled(true);
+					setErrorMessage(null);
 				}
 			});
 		}

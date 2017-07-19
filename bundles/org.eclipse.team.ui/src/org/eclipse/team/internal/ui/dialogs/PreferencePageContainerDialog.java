@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,13 +130,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		setTitle(TeamUIMessages.PreferencePageContainerDialog_6);
 		applyDialogFont(parent);
 
-		composite.addHelpListener(new HelpListener(){
-			@Override
-			public void helpRequested(HelpEvent e) {
-				currentPage.performHelp();
-			}
-
-		});
+		composite.addHelpListener(e -> currentPage.performHelp());
 
 		return composite;
 	}
@@ -249,22 +243,14 @@ public class PreferencePageContainerDialog extends TrayDialog
 		fMessageLabel.setText(" ");//$NON-NLS-1$
 		fMessageLabel.setFont(JFaceResources.getBannerFont());
 
-		final IPropertyChangeListener fontListener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if(JFaceResources.BANNER_FONT.equals(event.getProperty()) ||
-					JFaceResources.DIALOG_FONT.equals(event.getProperty())) {
-					updateMessage();
-				}
+		final IPropertyChangeListener fontListener = event -> {
+			if(JFaceResources.BANNER_FONT.equals(event.getProperty()) ||
+				JFaceResources.DIALOG_FONT.equals(event.getProperty())) {
+				updateMessage();
 			}
 		};
 
-		fMessageLabel.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent event) {
-				JFaceResources.getFontRegistry().removeListener(fontListener);
-			}
-		});
+		fMessageLabel.addDisposeListener(event -> JFaceResources.getFontRegistry().removeListener(fontListener));
 
 		JFaceResources.getFontRegistry().addListener(fontListener);
 

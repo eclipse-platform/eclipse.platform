@@ -85,13 +85,10 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 				return input;
 			}
 		});
-		checkList.addCheckStateListener(new ICheckStateListener() {
-			@Override
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				IProject project = (IProject) event.getElement();
-				if (event.getChecked() && !project.exists())
-					checkList.setChecked(project, false);
-			}
+		checkList.addCheckStateListener(event -> {
+			IProject project = (IProject) event.getElement();
+			if (event.getChecked() && !project.exists())
+				checkList.setChecked(project, false);
 		});
 		checkList
 				.setComparator(new ResourceComparator(ResourceComparator.NAME));

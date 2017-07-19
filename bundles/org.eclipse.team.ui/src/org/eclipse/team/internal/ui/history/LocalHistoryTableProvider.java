@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -47,12 +46,7 @@ public class LocalHistoryTableProvider {
 		private Image dateImage;
 		private Font currentRevisionFont;
 
-		private IPropertyChangeListener themeListener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				LocalHistoryTableProvider.this.viewer.refresh();
-			}
-		};
+		private IPropertyChangeListener themeListener = event -> LocalHistoryTableProvider.this.viewer.refresh();
 
 		public LocalHistoryLabelProvider() {
 			PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener);

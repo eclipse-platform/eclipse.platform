@@ -154,22 +154,14 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		fTable= new FileTypeTable(composite, fItems, false);
 
-		fTable.getViewer().getControl().addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				handleSelection();
-			}
-		});
+		fTable.getViewer().getControl().addListener(SWT.Selection, e -> handleSelection());
 
-		fTable.getViewer().addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				final ISelection selection = event.getSelection();
-				if (selection == null || !(selection instanceof IStructuredSelection)) {
-					return;
-				}
-				fTable.getViewer().editElement(((IStructuredSelection)selection).getFirstElement(), 1);
+		fTable.getViewer().addDoubleClickListener(event -> {
+			final ISelection selection = event.getSelection();
+			if (selection == null || !(selection instanceof IStructuredSelection)) {
+				return;
 			}
+			fTable.getViewer().editElement(((IStructuredSelection)selection).getFirstElement(), 1);
 		});
 
 		final Composite buttonsComposite = new Composite(composite, SWT.NONE);
@@ -197,34 +189,14 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		fChangeButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 		fRemoveButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 
-		addExtensionButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				addExtension();
-			}
-		});
-		addNameButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				addName();
-			}
-		});
+		addExtensionButton.addListener(SWT.Selection, e -> addExtension());
+		addNameButton.addListener(SWT.Selection, e -> addName());
 
 		fChangeButton.setEnabled(false);
-		fChangeButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				changePattern();
-			}
-		});
+		fChangeButton.addListener(SWT.Selection, e -> changePattern());
 
 		fRemoveButton.setEnabled(false);
-		fRemoveButton.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				removePattern();
-			}
-		});
+		fRemoveButton.addListener(SWT.Selection, e -> removePattern());
 
 		Dialog.applyDialogFont(parent);
 

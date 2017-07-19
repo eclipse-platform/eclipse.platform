@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,9 +57,6 @@ public class ResourceMappingSelectionArea extends DialogArea {
         this.supportsSelection = supportSelection;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	public void createArea(Composite parent) {
         Composite composite = createComposite(parent, 1, true);
@@ -82,15 +79,12 @@ public class ResourceMappingSelectionArea extends DialogArea {
         viewer.setLabelProvider(new ResourceMappingLabelProvider());
         viewer.setInput(new AdaptableList(mappings));
         if (isSupportsSelection()) {
-	        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-	            @Override
-				public void selectionChanged(SelectionChangedEvent event) {
-	                ResourceMapping oldSelection = selectedMapping;
-	                selectedMapping = internalGetSelectedMapping();
-	                if (oldSelection != selectedMapping)
-	                    firePropertyChangeChange(SELECTED_MAPPING, oldSelection, selectedMapping);
-	            }
-	        });
+	        viewer.addSelectionChangedListener(event -> {
+			    ResourceMapping oldSelection = selectedMapping;
+			    selectedMapping = internalGetSelectedMapping();
+			    if (oldSelection != selectedMapping)
+			        firePropertyChangeChange(SELECTED_MAPPING, oldSelection, selectedMapping);
+			});
         }
         if (isSupportsChecking())
         	initializeCheckboxViewer(composite);
@@ -98,15 +92,12 @@ public class ResourceMappingSelectionArea extends DialogArea {
 
 	private void initializeCheckboxViewer(Composite composite) {
 		final CheckboxTableViewer checkboxViewer = getCheckboxTableViewer();
-		checkboxViewer.addCheckStateListener(new ICheckStateListener() {
-        	@Override
-			public void checkStateChanged(CheckStateChangedEvent event) {
-        		ResourceMapping[] oldMappings = checkedMappings;
-        		checkedMappings = internalGetCheckedMappings();
-        		if (oldMappings != checkedMappings)
-        			firePropertyChangeChange(CHECKED_MAPPINGS, oldMappings, checkedMappings);
-        	}
-        });
+		checkboxViewer.addCheckStateListener(event -> {
+			ResourceMapping[] oldMappings = checkedMappings;
+			checkedMappings = internalGetCheckedMappings();
+			if (oldMappings != checkedMappings)
+				firePropertyChangeChange(CHECKED_MAPPINGS, oldMappings, checkedMappings);
+		});
 		checkboxViewer.setCheckedElements(mappings);
         checkedMappings = mappings;
 
