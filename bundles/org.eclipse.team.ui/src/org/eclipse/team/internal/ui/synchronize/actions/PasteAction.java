@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,7 @@ public class PasteAction extends SelectionListenerAction {
 		IStorage patchStorage = getPatchStorage();
 		if (patchStorage != null) {
 			IResource resource = null;
-			IResource[] resources = (IResource[]) getSelectedResources()
-					.toArray(new IResource[0]);
+			IResource[] resources = getSelectedResources().toArray(new IResource[0]);
 			if (resources.length > 0) {
 				resource = resources[0];
 			}
@@ -80,7 +79,7 @@ public class PasteAction extends SelectionListenerAction {
 
 		IStorage storage = new IEncodedStorage() {
 			@Override
-			public Object getAdapter(Class adapter) {
+			public <T> T getAdapter(Class<T> adapter) {
 				return null;
 			}
 
@@ -146,12 +145,7 @@ public class PasteAction extends SelectionListenerAction {
 			final Transfer transfer, Shell shell) {
 		// see bug 33028 for explanation why we need this
 		final Object[] result = new Object[1];
-		shell.getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				result[0] = clipboard.getContents(transfer);
-			}
-		});
+		shell.getDisplay().syncExec(() -> result[0] = clipboard.getContents(transfer));
 		return result[0];
 	}
 

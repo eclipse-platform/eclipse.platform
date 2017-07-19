@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,21 +55,15 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ICompareAdapter#hasCompareInput(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
-	 */
 	@Override
 	public boolean hasCompareInput(ISynchronizationContext context, Object object) {
 		return asCompareInput(context, object) != null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingPersistenceAdapter#getName(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
 	@Override
 	public String getName(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			String label = adapter.getLabel(object);
 			if (label != null)
@@ -88,13 +82,10 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		return ""; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingPersistenceAdapter#getFullPath(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
 	@Override
 	public String getPathString(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			List segments = new ArrayList();
 			Object parent = object;
@@ -116,9 +107,6 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 		return getName(mapping);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter#getImageDescriptor(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
@@ -141,7 +129,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	}
 
 	private ImageDescriptor getImageDescriptorFromWorkbenchAdapter(Object object) {
-		IWorkbenchAdapter adapter = (IWorkbenchAdapter) Adapters.adapt(object, IWorkbenchAdapter.class);
+		IWorkbenchAdapter adapter = Adapters.adapt(object, IWorkbenchAdapter.class);
 		if (adapter != null) {
 			return adapter.getImageDescriptor(object);
 		}

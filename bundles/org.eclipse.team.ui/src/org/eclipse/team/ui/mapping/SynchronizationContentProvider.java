@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,25 +42,16 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	private boolean empty;
 	private ICommonContentExtensionSite site;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-	 */
 	@Override
 	public Object[] getChildren(Object parent) {
 		return internalGetChildren(parent, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-	 */
 	@Override
 	public Object[] getElements(Object parent) {
 		return internalGetChildren(parent, true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-	 */
 	@Override
 	public Object getParent(Object element) {
 		element = internalGetElement(element);
@@ -74,9 +65,6 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		return parent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-	 */
 	@Override
 	public boolean hasChildren(Object element) {
 		return internalHasChildren(element);
@@ -253,9 +241,6 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		return context.getDiffTree().getDiffs(traversals).length > 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		ICommonContentExtensionSite extensionSite = getExtensionSite();
@@ -270,18 +255,12 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			configuration.removePropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.viewer = viewer;
 		getDelegateContentProvider().inputChanged(viewer, oldInput, newInput);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.ICommonContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
-	 */
 	@Override
 	public void init(ICommonContentExtensionSite site) {
 		// Set the site
@@ -300,9 +279,6 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			context.getDiffTree().addDiffChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		// TODO: this could happen at the root as well
@@ -382,9 +358,6 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void restoreState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
@@ -393,9 +366,6 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento aMemento) {
 		ITreeContentProvider provider = getDelegateContentProvider();
@@ -404,17 +374,11 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeListener#syncDeltaTreeChanged(org.eclipse.team.core.delta.ISyncDeltaChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		refresh();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
-	 */
 	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Property changes only affect labels
@@ -424,17 +388,13 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * Refresh the subtree associated with this model.
 	 */
 	protected void refresh() {
-		Utils.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				TreeViewer treeViewer = ((TreeViewer)getViewer());
-				// TODO: Need to know if the model root is present in order to refresh properly
-				if (empty)
-					treeViewer.refresh();
-				else
-					treeViewer.refresh(getModelProvider());
-			}
-
+		Utils.syncExec((Runnable) () -> {
+			TreeViewer treeViewer = ((TreeViewer)getViewer());
+			// TODO: Need to know if the model root is present in order to refresh properly
+			if (empty)
+				treeViewer.refresh();
+			else
+				treeViewer.refresh(getModelProvider());
 		}, getViewer().getControl());
 	}
 
@@ -651,7 +611,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	protected boolean isInScope(ISynchronizationScope scope, Object parent, Object element) {
 		ResourceMapping mapping = Utils.getResourceMapping(internalGetElement(element));
 		if (mapping != null) {
-			ResourceMapping[] mappings = ((ISynchronizationScope)scope).getMappings(mapping.getModelProviderId());
+			ResourceMapping[] mappings = scope.getMappings(mapping.getModelProviderId());
 			for (int i = 0; i < mappings.length; i++) {
 				ResourceMapping sm = mappings[i];
 				if (mapping.contains(sm)) {

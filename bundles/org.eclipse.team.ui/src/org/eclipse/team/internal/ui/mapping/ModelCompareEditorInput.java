@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.core.ICache;
 import org.eclipse.team.core.ICacheListener;
 import org.eclipse.team.internal.ui.*;
 import org.eclipse.team.internal.ui.synchronize.*;
@@ -50,12 +49,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		Assert.isNotNull(input);
 		this.participant = participant;
 		this.input = input;
-		contextListener = new ICacheListener() {
-			@Override
-			public void cacheDisposed(ICache cache) {
-				closeEditor(true);
-			}
-		};
+		contextListener = cache -> closeEditor(true);
 		getCompareConfiguration().addPropertyChangeListener(this);
 		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { input.getName() }));
 	}
@@ -69,18 +63,12 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return compareConfiguration;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#contentsCreated()
-	 */
 	@Override
 	protected void contentsCreated() {
 		super.contentsCreated();
 		participant.getContext().getCache().addCacheListener(contextListener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
-	 */
 	@Override
 	protected void handleDispose() {
 		super.handleDispose();
@@ -97,9 +85,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
     	}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#createSaveable()
-	 */
 	@Override
 	protected Saveable createSaveable() {
 		if (input instanceof ISynchronizationCompareInput) {
@@ -111,9 +96,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return super.createSaveable();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#prepareInput(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
@@ -135,7 +117,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	}
 
 	private ISynchronizationCompareInput asModelCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
+		return Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	/**
@@ -154,10 +136,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
 	@Override
 	public String getToolTipText() {
 		String fullPath;
@@ -170,9 +148,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName()), fullPath });
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#fireInputChange()
-	 */
 	@Override
 	protected void fireInputChange() {
 		if (input instanceof ResourceDiffCompareInput) {
@@ -181,20 +156,12 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#registerContextMenu(org.eclipse.jface.action.MenuManager)
-	 */
 	@Override
 	public void registerContextMenu(MenuManager menu, ISelectionProvider provider) {
 		super.registerContextMenu(menu, provider);
 		Saveable saveable = getSaveable();
 		if (saveable instanceof LocalResourceSaveableComparison) {
-			menu.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager manager) {
-					handleMenuAboutToShow(manager);
-				}
-			});
+			menu.addMenuListener(manager -> handleMenuAboutToShow(manager));
 		}
 	}
 
@@ -266,9 +233,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#belongsTo(java.lang.Object)
-	 */
 	@Override
 	public boolean belongsTo(Object family) {
 		return super.belongsTo(family) || family == participant;
@@ -295,9 +259,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
@@ -309,9 +270,6 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return input.hashCode();

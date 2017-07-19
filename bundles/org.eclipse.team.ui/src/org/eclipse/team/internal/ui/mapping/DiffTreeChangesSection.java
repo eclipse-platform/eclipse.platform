@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	}
 
 	private boolean hasChangesFor(String id, ISynchronizationCompareAdapter adapter, ISynchronizationContext context, int[] states, int mask) {
-		ITraversalFactory factory = (ITraversalFactory)Adapters.adapt(adapter, ITraversalFactory.class);
+		ITraversalFactory factory = Adapters.adapt(adapter, ITraversalFactory.class);
 		ResourceTraversal[] traversals;
 		if (factory == null) {
 			traversals = context.getScope().getTraversals(id);
@@ -456,7 +456,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	}
 
 	private SubscriberDiffTreeEventHandler getHandler() {
-		return (SubscriberDiffTreeEventHandler)Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
+		return Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 	}
 
 	private Composite getPointerToModel(Composite parent, final ModelProvider provider, String oldId) {
@@ -511,12 +511,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 
 	private void handleEmptyViewer() {
 		// Override stand behavior to do our best to show something
-		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (!getContainer().isDisposed())
-					updatePage(getEmptyChangesComposite(getContainer()));
-			}
+		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+			if (!getContainer().isDisposed())
+				updatePage(getEmptyChangesComposite(getContainer()));
 		});
 	}
 
@@ -524,12 +521,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	protected void calculateDescription() {
 		if (errors != null && errors.length > 0) {
 			if (!showingError) {
-				TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						updatePage(getErrorComposite(getContainer()));
-						showingError = true;
-					}
+				TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+					updatePage(getErrorComposite(getContainer()));
+					showingError = true;
 				});
 			}
 			return;

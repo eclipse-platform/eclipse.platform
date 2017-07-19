@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,36 +103,27 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 	private ISaveablesLifecycleListener getSaveablesLifecycleListener(
 			IWorkbenchPart part) {
-		ISaveablesLifecycleListener listener = (ISaveablesLifecycleListener) Adapters.adapt(part, ISaveablesLifecycleListener.class);
+		ISaveablesLifecycleListener listener = Adapters.adapt(part, ISaveablesLifecycleListener.class);
 		if (listener == null)
-			listener = (ISaveablesLifecycleListener) part.getSite().getService(
-					ISaveablesLifecycleListener.class);
+			listener = part.getSite().getService(ISaveablesLifecycleListener.class);
 		return listener;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.compare.CompareEditorInput#contentsCreated()
-	 */
 	@Override
 	protected void contentsCreated() {
 		super.contentsCreated();
-		compareInputChangeListener = new ICompareInputChangeListener() {
-			@Override
-			public void compareInputChanged(ICompareInput source) {
-				if (source == getCompareResult()) {
-					boolean closed = false;
-					if (source.getKind() == Differencer.NO_CHANGE) {
-						closed = closeEditor(true);
-					}
-					if (!closed) {
-						// The editor was not closed either because the compare
-						// input still has changes or because the editor input
-						// is dirty. In either case, fire the changes
-						// to the registered listeners
-						propogateInputChange();
-					}
+		compareInputChangeListener = source -> {
+			if (source == getCompareResult()) {
+				boolean closed = false;
+				if (source.getKind() == Differencer.NO_CHANGE) {
+					closed = closeEditor(true);
+				}
+				if (!closed) {
+					// The editor was not closed either because the compare
+					// input still has changes or because the editor input
+					// is dirty. In either case, fire the changes
+					// to the registered listeners
+					propogateInputChange();
 				}
 			}
 		};
@@ -141,12 +132,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		if (getLeftSaveable() instanceof SaveableComparison) {
 			SaveableComparison lscm = (SaveableComparison) fLeftSaveable;
-			fLeftPropertyListener = new IPropertyListener() {
-				@Override
-				public void propertyChanged(Object source, int propId) {
-					if (propId == SaveableComparison.PROP_DIRTY) {
-						setLeftDirty(fLeftSaveable.isDirty());
-					}
+			fLeftPropertyListener = (source, propId) -> {
+				if (propId == SaveableComparison.PROP_DIRTY) {
+					setLeftDirty(fLeftSaveable.isDirty());
 				}
 			};
 			lscm.addPropertyListener(fLeftPropertyListener);
@@ -154,12 +142,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 		if (getRightSaveable() instanceof SaveableComparison) {
 			SaveableComparison rscm = (SaveableComparison) fRightSaveable;
-			fRightPropertyListener = new IPropertyListener() {
-				@Override
-				public void propertyChanged(Object source, int propId) {
-					if (propId == SaveableComparison.PROP_DIRTY) {
-						setRightDirty(fRightSaveable.isDirty());
-					}
+			fRightPropertyListener = (source, propId) -> {
+				if (propId == SaveableComparison.PROP_DIRTY) {
+					setRightDirty(fRightSaveable.isDirty());
 				}
 			};
 			rscm.addPropertyListener(fRightPropertyListener);
@@ -169,11 +154,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		setRightDirty(fRightSaveable.isDirty());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
-	 */
 	@Override
 	protected void handleDispose() {
 		super.handleDispose();
@@ -692,11 +672,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.compare.CompareEditorInput#canRunAsJob()
-	 */
 	@Override
 	public boolean canRunAsJob() {
 		return true;
@@ -705,8 +680,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	private static String getShowInMenuLabel() {
 		String keyBinding = null;
 
-		IBindingService bindingService = (IBindingService) PlatformUI
-				.getWorkbench().getAdapter(IBindingService.class);
+		IBindingService bindingService = PlatformUI.getWorkbench().getAdapter(IBindingService.class);
 		if (bindingService != null)
 			keyBinding = bindingService
 					.getBestActiveBindingFormattedFor(IWorkbenchCommandConstants.NAVIGATE_SHOW_IN_QUICK_MENU);
@@ -802,9 +776,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			// Ignore
 		}
 
-		/*
-		 * @see org.eclipse.ui.Saveable#equals(java.lang.Object)
-		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
@@ -833,7 +804,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		if (provider instanceof ITextViewer) {
 			final ITextViewer v= (ITextViewer)provider;
 			IDocument d= v.getDocument();
-			IDocument other= (IDocument)Adapters.adapt(saveable, IDocument.class);
+			IDocument other= Adapters.adapt(saveable, IDocument.class);
 			if (d == other) {
 				if (element instanceof IResourceProvider) {
 					IResourceProvider rp= (IResourceProvider)element;
@@ -851,12 +822,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 						// XXX: Internal reference will get fixed during 3.7, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=307026
 						submenu2.add(new OpenWithMenu(ws.getPage(), resource) {
-							/*
-							 * (non-Javadoc)
-							 *
-							 * @see org.eclipse.ui.actions.OpenWithMenu#openEditor(org.eclipse.ui.
-							 * IEditorDescriptor, boolean)
-							 */
 							@Override
 							protected void openEditor(IEditorDescriptor editorDescriptor, boolean openUsingDescriptor) {
 								super.openEditor(editorDescriptor, openUsingDescriptor);
@@ -869,11 +834,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 
 						// XXX: Internal reference will get fixed during 3.7, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=307026
 						OpenFileAction openFileAction= new OpenFileAction(ws.getPage()) {
-							/*
-							 * (non-Javadoc)
-							 *
-							 * @see org.eclipse.ui.actions.OpenSystemEditorAction#run()
-							 */
 							@Override
 							public void run() {
 								super.run();

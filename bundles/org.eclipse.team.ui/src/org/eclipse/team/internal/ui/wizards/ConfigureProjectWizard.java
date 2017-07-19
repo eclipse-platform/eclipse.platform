@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,9 +42,6 @@ public class ConfigureProjectWizard extends Wizard {
 		setWindowTitle(TeamUIMessages.ConfigureProjectWizard_title);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#addPages()
-	 */
 	@Override
 	public void addPages() {
 		AdaptableList disabledWizards = new AdaptableList();
@@ -55,9 +52,6 @@ public class ConfigureProjectWizard extends Wizard {
 		addPage(mainPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
-	 */
 	@Override
 	public boolean canFinish() {
 		// If we are on the first page, never allow finish unless the selected wizard has no pages.
@@ -70,9 +64,6 @@ public class ConfigureProjectWizard extends Wizard {
 		return super.canFinish();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
 		// If we are on the first page and the selected wizard has no pages then
@@ -113,7 +104,7 @@ public class ConfigureProjectWizard extends Wizard {
 			ConfigurationWizardElement element = (ConfigurationWizardElement)wizards.getChildren()[0];
 			if (element.wizardHasPages(projects)) {
 				try {
-					wizard = (IWizard)element.createExecutableExtension(projects);
+					wizard = element.createExecutableExtension(projects);
 				} catch (CoreException e) {
 					// Log the exception and fall through to show the wizard
 					TeamUIPlugin.log(e);

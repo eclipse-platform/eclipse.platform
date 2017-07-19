@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,10 +71,6 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		// Nothing to do
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if(menuManager != null) {
@@ -86,7 +82,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 
 		// handlers
 		if (window != null) {
-			IHandlerService hs = (IHandlerService)window.getService(IHandlerService.class);
+			IHandlerService hs = window.getService(IHandlerService.class);
 			if (hs != null) {
 				if (syncAll != null)
 					hs.deactivateHandler(syncAll);
@@ -96,19 +92,11 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
-	 */
 	@Override
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
-	 */
 	@Override
 	public Menu getMenu(Control parent) {
 		Menu fMenu = null;
@@ -131,10 +119,6 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		return fMenu;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
 	@Override
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
@@ -150,7 +134,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		synchronizeAction.setImageDescriptor(TeamImages.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW));
 		synchronizeAction.setActionDefinitionId("org.eclipse.team.ui.synchronizeAll"); //$NON-NLS-1$
 
-		IHandlerService hs = (IHandlerService)window.getService(IHandlerService.class);
+		IHandlerService hs = window.getService(IHandlerService.class);
 		if (hs != null) {
 			// hook up actions to the commands
 			IHandler handler = new AbstractHandler() {
@@ -189,10 +173,6 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
 	@Override
 	public void run(IAction action) {
 		run();
@@ -211,48 +191,30 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsAdded(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
-	 */
 	@Override
 	public void participantsAdded(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(menuManager != null) {
-					menuManager.dispose();
-					menuManager = null;
-				}
-				updateTooltipText();
+		display.asyncExec(() -> {
+			if(menuManager != null) {
+				menuManager.dispose();
+				menuManager = null;
 			}
+			updateTooltipText();
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsRemoved(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
-	 */
 	@Override
 	public void participantsRemoved(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(menuManager != null) {
-					menuManager.dispose();
-					menuManager = null;
-				}
-				updateTooltipText();
+		display.asyncExec(() -> {
+			if(menuManager != null) {
+				menuManager.dispose();
+				menuManager = null;
 			}
+			updateTooltipText();
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-	 *           org.eclipse.jface.viewers.ISelection)
-	 */
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		actionProxy = action;

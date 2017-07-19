@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,34 +72,21 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public AbstractSynchronizeParticipant() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getName()
-	 */
 	@Override
 	public String getName() {
 		return fName;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getImageDescriptor()
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return fImageDescriptor;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getId()
-	 */
 	@Override
 	public String getId() {
 		return fId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getSecondaryId()
-	 */
 	@Override
 	public String getSecondaryId() {
 		return fSecondaryId;
@@ -122,9 +109,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 				: fHelpContextId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#setPinned(boolean)
-	 */
 	@Override
 	public final void setPinned(boolean pinned) {
 		this.pinned = pinned;
@@ -132,9 +116,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		firePropertyChange(this, P_PINNED, Boolean.valueOf(!pinned), Boolean.valueOf(pinned));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#isPinned()
-	 */
 	@Override
 	public final boolean isPinned() {
 		return pinned;
@@ -149,9 +130,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		// Subclasses can re-act to changes in the pinned state
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
@@ -160,9 +138,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		return getId().equals(other.getId()) && Utils.equalObject(getSecondaryId(), other.getSecondaryId());
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return Utils.getKey(getId(), getSecondaryId()).hashCode();
@@ -180,9 +155,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public synchronized void addPropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler == null) {
@@ -191,9 +163,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		fChangeHandler.addPropertyChangeListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		if (fChangeHandler != null) {
@@ -216,9 +185,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		fChangeHandler.firePropertyChange(source, property, oldValue, newValue);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IExecutableExtension#setInitializationData(org.eclipse.core.runtime.IConfigurationElement, java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		//	Save config element.
@@ -307,17 +273,11 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 		pinned = Boolean.valueOf(memento.getString(CTX_PINNED)).booleanValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento memento) {
 		memento.putString(CTX_PINNED, Boolean.toString(pinned));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#createPageConfiguration()
-	 */
 	@Override
 	public final ISynchronizePageConfiguration createPageConfiguration() {
 		SynchronizePageConfiguration configuration = new SynchronizePageConfiguration(this);
@@ -371,14 +331,11 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 */
 	private SyncInfo getSyncInfo(ISynchronizeModelElement element) {
 	    if (element instanceof IAdaptable) {
-		    return (SyncInfo)((IAdaptable)element).getAdapter(SyncInfo.class);
+		    return ((IAdaptable)element).getAdapter(SyncInfo.class);
 	    }
 	    return null;
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getPreferencePages()
-     */
     @Override
 	public PreferencePage[] getPreferencePages() {
         return new PreferencePage[] { new SyncViewerPreferencePage() };

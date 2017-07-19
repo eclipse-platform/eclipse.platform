@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ public class ResourceModelScopeParticipant implements
 				IAdaptable[] elements = set.getElements();
 				for (int j = 0; j < elements.length; j++) {
 					IAdaptable adaptable = elements[j];
-					ResourceMapping m = (ResourceMapping)Adapters.adapt(adaptable, ResourceMapping.class);
+					ResourceMapping m = Adapters.adapt(adaptable, ResourceMapping.class);
 					if (m != null) {
 						IProject[] p = m.getProjects();
 						for (int k = 0; k < p.length; k++) {

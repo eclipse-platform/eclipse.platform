@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,16 +38,16 @@ public abstract class HistoryPageSource implements IHistoryPageSource {
 			if (provider != null) {
 				IFileHistoryProvider fileHistoryProvider = provider.getFileHistoryProvider();
 				if (fileHistoryProvider != null) {
-					IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(fileHistoryProvider, IHistoryPageSource.class);
+					IHistoryPageSource pageSource = Adapters.adapt(fileHistoryProvider, IHistoryPageSource.class);
 					if (pageSource != null)
 						return pageSource;
 				}
-				IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(provider, IHistoryPageSource.class);
+				IHistoryPageSource pageSource = Adapters.adapt(provider, IHistoryPageSource.class);
 				if (pageSource != null)
 					return pageSource;
 			}
 		}
-		IHistoryPageSource pageSource = (IHistoryPageSource)Adapters.adapt(object, IHistoryPageSource.class);
+		IHistoryPageSource pageSource = Adapters.adapt(object, IHistoryPageSource.class);
 		return pageSource;
 	}
 

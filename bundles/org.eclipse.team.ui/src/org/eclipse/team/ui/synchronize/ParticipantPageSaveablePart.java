@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
@@ -70,9 +69,6 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		this.pageConfiguration = pageConfiguration;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.SaveablePartAdapter#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if(titleImage != null) {
@@ -86,9 +82,6 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
-	 */
 	@Override
 	public Image getTitleImage() {
 		if(titleImage == null) {
@@ -97,17 +90,11 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return titleImage;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#getTitle()
-	 */
 	@Override
 	public String getTitle() {
 		return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, participant.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.ISaveablePart#isDirty()
-	 */
 	@Override
 	public boolean isDirty() {
 		if (participant instanceof ModelSynchronizeParticipant) {
@@ -120,9 +107,6 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return super.isDirty();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
-	 */
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		try {
@@ -136,9 +120,6 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void doSave(IProgressMonitor pm) {
 		// TODO needs to work for models
@@ -158,17 +139,11 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#createPage(org.eclipse.swt.widgets.Composite, org.eclipse.jface.action.ToolBarManager)
-	 */
 	@Override
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
-		listener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION)) {
-					updateDescription();
-				}
+		listener = event -> {
+			if (event.getProperty().equals(ISynchronizePageConfiguration.P_PAGE_DESCRIPTION)) {
+				updateDescription();
 			}
 		};
 		pageConfiguration.addPropertyChangeListener(listener);
@@ -195,9 +170,6 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 		return page.getControl();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#getPageSelectionProvider()
-	 */
 	@Override
 	protected final ISelectionProvider getSelectionProvider() {
 		return ((ISynchronizePage)page).getViewer();
@@ -219,19 +191,16 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	 */
 	private void initializeDiffViewer(Viewer viewer) {
 		if (viewer instanceof StructuredViewer) {
-			((StructuredViewer) viewer).addOpenListener(new IOpenListener() {
-				@Override
-				public void open(OpenEvent event) {
-					ISelection s = event.getSelection();
-					final SyncInfoModelElement node = getElement(s);
-					if (node == null) {
-						ICompareInput input = getCompareInput(s);
-						if (input != null) {
-							prepareCompareInput(input);
-						}
-					} else {
-						prepareCompareInput(node);
+			((StructuredViewer) viewer).addOpenListener(event -> {
+				ISelection s = event.getSelection();
+				final SyncInfoModelElement node = getElement(s);
+				if (node == null) {
+					ICompareInput input = getCompareInput(s);
+					if (input != null) {
+						prepareCompareInput(input);
 					}
+				} else {
+					prepareCompareInput(node);
 				}
 			});
 		}
@@ -279,7 +248,7 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 	}
 
 	private ISynchronizationCompareInput asModelCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
+		return Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	private SyncInfoModelElement getElement(ISelection selection) {

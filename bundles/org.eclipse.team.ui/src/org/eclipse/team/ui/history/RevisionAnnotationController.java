@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.revisions.*;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.internal.ui.TeamUIMessages;
@@ -48,31 +46,25 @@ public abstract class RevisionAnnotationController {
 
 	private ISelectionProvider fRulerSelectionProvider;
 	private ISelectionProvider fHistoryListSelectionProvider;
-	private ISelectionChangedListener rulerListener = new ISelectionChangedListener() {
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			ISelection selection= event.getSelection();
-			Revision selected= null;
-			if (selection instanceof IStructuredSelection)
-				selected= (Revision) ((IStructuredSelection) selection).getFirstElement();
+	private ISelectionChangedListener rulerListener = event -> {
+		ISelection selection= event.getSelection();
+		Revision selected= null;
+		if (selection instanceof IStructuredSelection)
+			selected= (Revision) ((IStructuredSelection) selection).getFirstElement();
 
-			if (selected == null)
-				return;
+		if (selected == null)
+			return;
 
-			revisionSelected(selected);
-		}
+		revisionSelected(selected);
 	};
-	private ISelectionChangedListener historyListListener = new ISelectionChangedListener() {
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			ISelection selection= event.getSelection();
-			if (selection instanceof IStructuredSelection) {
-				IStructuredSelection ss = (IStructuredSelection) selection;
-				if (ss.size() == 1) {
-					Object first= ss.getFirstElement();
-					if (first != null)
-						historyEntrySelected(first);
-				}
+	private ISelectionChangedListener historyListListener = event -> {
+		ISelection selection= event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection ss = (IStructuredSelection) selection;
+			if (ss.size() == 1) {
+				Object first= ss.getFirstElement();
+				if (first != null)
+					historyEntrySelected(first);
 			}
 		}
 	};
@@ -274,7 +266,7 @@ public abstract class RevisionAnnotationController {
 		if (editor == null)
 			return null;
 
-		IRevisionRulerColumn column= (IRevisionRulerColumn) editor.getAdapter(IRevisionRulerColumn.class);
+		IRevisionRulerColumn column= editor.getAdapter(IRevisionRulerColumn.class);
 		if (column instanceof IRevisionRulerColumnExtension) {
 			if (column.getControl() != null && column.getControl().isDisposed())
 				return null;
@@ -295,12 +287,7 @@ public abstract class RevisionAnnotationController {
 		fRulerSelectionProvider.addSelectionChangedListener(rulerListener);
 		fHistoryListSelectionProvider.addSelectionChangedListener(historyListListener);
 
-		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				dispose();
-			}
-		});
+		((IRevisionRulerColumn)revisionRuler).getControl().addDisposeListener(e -> dispose());
 	}
 
 	/**
@@ -391,11 +378,11 @@ public abstract class RevisionAnnotationController {
 	 * @return the id of the entry
 	 */
 	protected String getRevisionId(Object historyEntry) {
-		IFileRevision revision= (IFileRevision)Adapters.adapt(historyEntry, IFileRevision.class);
+		IFileRevision revision= Adapters.adapt(historyEntry, IFileRevision.class);
 		if (revision != null) {
 			return revision.getContentIdentifier();
 		}
-		IResourceVariant variant = (IResourceVariant)Adapters.adapt(historyEntry, IResourceVariant.class);
+		IResourceVariant variant = Adapters.adapt(historyEntry, IResourceVariant.class);
 		if (variant != null)
 			return variant.getContentIdentifier();
 		return null;

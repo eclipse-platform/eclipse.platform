@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	public IWizard createExecutableExtension(IProject[] projects) throws CoreException {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IConfigurationWizard wizard = (IConfigurationWizard)createExecutableExtension();
-		IConfigurationWizardExtension extension = (IConfigurationWizardExtension)Adapters.adapt(wizard, IConfigurationWizardExtension.class);
+		IConfigurationWizardExtension extension = Adapters.adapt(wizard, IConfigurationWizardExtension.class);
 		if (extension == null) {
 			if (projects.length == 1) {
 				wizard.init(workbench, projects[0]);
@@ -85,10 +85,11 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	/*
 	 * Method declared on IAdaptable.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) {
-			return this;
+			return (T) this;
 		}
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
@@ -169,17 +170,11 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 		imageDescriptor = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IPluginContribution#getLocalId()
-	 */
 	@Override
 	public String getLocalId() {
 		return configurationElement.getAttribute(ConfigureProjectWizard.ATT_ID);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IPluginContribution#getPluginId()
-	 */
 	@Override
 	public String getPluginId() {
 		return configurationElement.getNamespaceIdentifier();
@@ -193,7 +188,7 @@ public class ConfigurationWizardElement extends WorkbenchAdapter implements IAda
 	 */
 	public boolean wizardHasPages(IProject[] projects) {
 		try {
-			IWizard wizard = (IWizard)createExecutableExtension(projects);
+			IWizard wizard = createExecutableExtension(projects);
 			try {
 				wizard.addPages();
 				return (wizard.getPageCount() > 0);

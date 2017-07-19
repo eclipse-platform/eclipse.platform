@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,9 +119,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return fileElement;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#performSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void performSave(IProgressMonitor monitor) throws CoreException {
 		if (checkForUpdateConflicts()) {
@@ -209,9 +206,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#isDirty()
-	 */
 	@Override
 	public boolean isDirty() {
 		// We need to get the dirty state from the compare editor input
@@ -222,9 +216,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return editorInput.isSaveNeeded();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#setDirty(boolean)
-	 */
 	@Override
 	protected void setDirty(boolean dirty) {
 		if (editorInput instanceof SaveablesCompareEditorInput) {
@@ -237,9 +228,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		editorInput.setDirty(dirty);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SaveableCompareModel#performRevert(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void performRevert(IProgressMonitor monitor) {
 		// Only the left is ever editable
@@ -248,9 +236,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 			 ((LocalResourceTypedElement) left).discardBuffer();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.Saveable#getName()
-	 */
 	@Override
 	public String getName() {
 		// Return the name of the file element as held in the compare input
@@ -265,17 +250,11 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return input.getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.Saveable#getToolTipText()
-	 */
 	@Override
 	public String getToolTipText() {
 		return editorInput.getToolTipText();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.Saveable#getImageDescriptor()
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		Image image = input.getImage();
@@ -284,9 +263,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		String propertyName= e.getProperty();
@@ -321,9 +297,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		}
 	}
 
-	/*
-	 * @see org.eclipse.ui.Saveable#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		if (document != null) {
@@ -359,21 +332,22 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IDocument.class) {
 			if (document != null)
-				return document;
+				return (T) document;
 			if (fileElement instanceof LocalResourceTypedElement) {
 				LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
 				if (lrte.isConnected()) {
-					ISharedDocumentAdapter sda = (ISharedDocumentAdapter)Adapters.adapt(lrte, ISharedDocumentAdapter.class);
+					ISharedDocumentAdapter sda = Adapters.adapt(lrte, ISharedDocumentAdapter.class);
 					if (sda != null) {
 						IEditorInput input = sda.getDocumentKey(lrte);
 						if (input != null) {
 							IDocumentProvider provider = SharedDocumentAdapter.getDocumentProvider(input);
 							if (provider != null)
-								return provider.getDocument(input);
+								return (T) provider.getDocument(input);
 						}
 					}
 				}
@@ -382,7 +356,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		if (adapter == IEditorInput.class) {
 			if (fileElement instanceof LocalResourceTypedElement) {
 				LocalResourceTypedElement lrte = (LocalResourceTypedElement) fileElement;
-				return new FileEditorInput((IFile)lrte.getResource());
+				return (T) new FileEditorInput((IFile)lrte.getResource());
 			}
 		}
 		return super.getAdapter(adapter);

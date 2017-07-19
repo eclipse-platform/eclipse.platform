@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,14 +115,11 @@ public class ModelSynchronizeParticipant extends
 		}
 	};
 
-	private IPropertyListener dirtyListener = new IPropertyListener() {
-		@Override
-		public void propertyChanged(Object source, int propId) {
-			if (source instanceof SaveableComparison && propId == SaveableComparison.PROP_DIRTY) {
-				SaveableComparison scm = (SaveableComparison) source;
-				boolean isDirty = scm.isDirty();
-				firePropertyChange(ModelSynchronizeParticipant.this, PROP_DIRTY, Boolean.valueOf(!isDirty), Boolean.valueOf(isDirty));
-			}
+	private IPropertyListener dirtyListener = (source, propId) -> {
+		if (source instanceof SaveableComparison && propId == SaveableComparison.PROP_DIRTY) {
+			SaveableComparison scm = (SaveableComparison) source;
+			boolean isDirty = scm.isDirty();
+			firePropertyChange(ModelSynchronizeParticipant.this, PROP_DIRTY, Boolean.valueOf(!isDirty), Boolean.valueOf(isDirty));
 		}
 	};
 
@@ -168,9 +165,6 @@ public class ModelSynchronizeParticipant extends
 	public ModelSynchronizeParticipant() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getName()
-	 */
 	@Override
 	public String getName() {
 		String name = super.getName();
@@ -190,9 +184,6 @@ public class ModelSynchronizeParticipant extends
 	    return super.getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	protected void initializeConfiguration(
 			ISynchronizePageConfiguration configuration) {
@@ -220,18 +211,12 @@ public class ModelSynchronizeParticipant extends
 		return new ModelSynchronizeParticipantActionGroup();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#createPage(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	public final IPageBookViewPage createPage(
 			ISynchronizePageConfiguration configuration) {
 		return new ModelSynchronizePage(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)
-	 */
 	@Override
 	public void run(IWorkbenchPart part) {
 		refresh(part != null ? part.getSite() : null, context.getScope().getMappings());
@@ -252,9 +237,6 @@ public class ModelSynchronizeParticipant extends
 		internalRefresh(mappings, null, null, site, listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#dispose()
-	 */
 	@Override
 	public void dispose() {
 		context.dispose();
@@ -432,24 +414,19 @@ public class ModelSynchronizeParticipant extends
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
-			return refreshSchedule.getRefreshable();
+			return (T) refreshSchedule.getRefreshable();
 
 		}
 		if (adapter == SubscriberRefreshSchedule.class) {
-			return refreshSchedule;
+			return (T) refreshSchedule;
 		}
 		return super.getAdapter(adapter);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
@@ -476,9 +453,6 @@ public class ModelSynchronizeParticipant extends
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
@@ -643,9 +617,6 @@ public class ModelSynchronizeParticipant extends
 		return getContext().getScope().getModelProviders();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
-	 */
 	@Override
 	public PreferencePage[] getPreferencePages() {
 		List pages = new ArrayList();
@@ -685,7 +656,7 @@ public class ModelSynchronizeParticipant extends
 	}
 
 	private SubscriberDiffTreeEventHandler getHandler() {
-		return (SubscriberDiffTreeEventHandler)Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
+		return Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 	}
 
 }

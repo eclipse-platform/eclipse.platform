@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,11 +48,8 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		internalSetParent(parent);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
@@ -74,9 +71,6 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.IDiffElement#setParent(org.eclipse.compare.structuremergeviewer.IDiffContainer)
-	 */
 	@Override
 	public void setParent(IDiffContainer parent) {
 		super.setParent(parent);
@@ -131,7 +125,7 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	public ImageDescriptor getImageDescriptor(Object object) {
 		IResource resource = getResource();
 		if(resource != null) {
-			IWorkbenchAdapter adapter = (IWorkbenchAdapter)((IAdaptable) resource).getAdapter(IWorkbenchAdapter.class);
+			IWorkbenchAdapter adapter = ((IAdaptable) resource).getAdapter(IWorkbenchAdapter.class);
 			return adapter.getImageDescriptor(resource);
 		}
 		return null;
@@ -234,9 +228,6 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 		return this==object;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		// Use the name to get the hashCode to ensure that we can find equal elements.

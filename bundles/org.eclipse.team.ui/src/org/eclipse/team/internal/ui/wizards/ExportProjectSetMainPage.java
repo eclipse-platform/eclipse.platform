@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -129,7 +128,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 						tempList.addAll(Arrays.asList(projects));
 				}
 
-				return (IProject[]) tempList.toArray(new IProject[tempList.size()]);
+				return tempList.toArray(new IProject[tempList.size()]);
 			}
 
 			return null;
@@ -207,9 +206,6 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		setDescription(TeamUIMessages.ExportProjectSetMainPage_Initial_description);
 	}
 
-	/*
-	 * @see IDialogPage#createControl(Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		Composite c = SWTUtils.createHVFillComposite(parent, 0);
@@ -340,35 +336,32 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			tableViewer.setContentProvider(new ProjectContentProvider());
 			tableViewer.setLabelProvider(new WorkbenchLabelProvider());
 			tableViewer.setComparator(new ResourceComparator(ResourceComparator.NAME));
-			tableViewer.addCheckStateListener(new ICheckStateListener() {
-				@Override
-				public void checkStateChanged(CheckStateChangedEvent event) {
-					Object temp = event.getElement();
-					if (temp instanceof IProject){
-						IProject project = (IProject) event.getElement();
-						if (event.getChecked()) {
-							selectedProjects.add(project);
-							referenceCountProjects.add(project);
-						} else {
-							selectedProjects.remove(project);
-							referenceCountProjects.remove(project);
+			tableViewer.addCheckStateListener(event -> {
+				Object temp = event.getElement();
+				if (temp instanceof IProject){
+					IProject project = (IProject) event.getElement();
+					if (event.getChecked()) {
+						selectedProjects.add(project);
+						referenceCountProjects.add(project);
+					} else {
+						selectedProjects.remove(project);
+						referenceCountProjects.remove(project);
+					}
+				} else if (temp instanceof IWorkingSet){
+					IWorkingSet workingSet = (IWorkingSet) temp;
+					if (event.getChecked()){
+						IAdaptable[] elements1 = workingSet.getElements();
+						for (int i1 = 0; i1 < elements1.length; i1++) {
+							selectedProjects.add(elements1[i1]);
 						}
-					} else if (temp instanceof IWorkingSet){
-						IWorkingSet workingSet = (IWorkingSet) temp;
-						if (event.getChecked()){
-							IAdaptable[] elements = workingSet.getElements();
-							for (int i = 0; i < elements.length; i++) {
-								selectedProjects.add(elements[i]);
-							}
-						} else {
-							IAdaptable[] elements = workingSet.getElements();
-							for (int i = 0; i < elements.length; i++) {
-								selectedProjects.remove(elements[i]);
-							}
+					} else {
+						IAdaptable[] elements2 = workingSet.getElements();
+						for (int i2 = 0; i2 < elements2.length; i2++) {
+							selectedProjects.remove(elements2[i2]);
 						}
 					}
-					updateEnablement();
 				}
+				updateEnablement();
 			});
 
 			Composite buttonComposite = new Composite(composite, SWT.NONE);
@@ -387,17 +380,14 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, selectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			selectAll.setLayoutData(data);
 			selectAll.setText(TeamUIMessages.ExportProjectSetMainPage_SelectAll);
-			selectAll.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					tableViewer.setAllChecked(true);
-					selectedProjects.removeAll(selectedProjects);
-					Object[] checked = tableViewer.getCheckedElements();
-					for (int i = 0; i < checked.length; i++) {
-						selectedProjects.add(checked[i]);
-					}
-					updateEnablement();
+			selectAll.addListener(SWT.Selection, event -> {
+				tableViewer.setAllChecked(true);
+				selectedProjects.removeAll(selectedProjects);
+				Object[] checked = tableViewer.getCheckedElements();
+				for (int i = 0; i < checked.length; i++) {
+					selectedProjects.add(checked[i]);
 				}
+				updateEnablement();
 			});
 
 			Button deselectAll = new Button(buttonComposite, SWT.PUSH);
@@ -408,13 +398,10 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			deselectAll.setLayoutData(data);
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
-			deselectAll.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					tableViewer.setAllChecked(false);
-					selectedProjects.removeAll(selectedProjects);
-					updateEnablement();
-				}
+			deselectAll.addListener(SWT.Selection, event -> {
+				tableViewer.setAllChecked(false);
+				selectedProjects.removeAll(selectedProjects);
+				updateEnablement();
 			});
 		}
 
@@ -524,24 +511,21 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			wsTable.setLayoutData(data);
 			wsTableViewer.setContentProvider(new ProjectContentProvider());
 			wsTableViewer.setLabelProvider(new WorkbenchLabelProvider());
-			wsTableViewer.addCheckStateListener(new ICheckStateListener() {
-				@Override
-				public void checkStateChanged(CheckStateChangedEvent event) {
-					Object temp = event.getElement();
-					if (temp instanceof IWorkingSet){
-						IWorkingSet workingSet = (IWorkingSet) temp;
-						if (event.getChecked()){
-							workingSetAdded(workingSet);
-							//Add the selected project to the table viewer
-							tableViewer.setInput(selectedProjects);
-						} else {
-							workingSetRemoved(workingSet);
-							//Add the selected project to the table viewer
-							tableViewer.setInput(selectedProjects);
-						}
+			wsTableViewer.addCheckStateListener(event -> {
+				Object temp = event.getElement();
+				if (temp instanceof IWorkingSet){
+					IWorkingSet workingSet = (IWorkingSet) temp;
+					if (event.getChecked()){
+						workingSetAdded(workingSet);
+						//Add the selected project to the table viewer
+						tableViewer.setInput(selectedProjects);
+					} else {
+						workingSetRemoved(workingSet);
+						//Add the selected project to the table viewer
+						tableViewer.setInput(selectedProjects);
 					}
-					updateEnablement();
 				}
+				updateEnablement();
 			});
 
 			wsTableViewer.setInput(TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager());
@@ -565,25 +549,22 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, selectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			selectAll.setLayoutData(data);
 			selectAll.setText(TeamUIMessages.ExportProjectSetMainPage_SelectAll);
-			selectAll.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					wsTableViewer.setAllChecked(true);
+			selectAll.addListener(SWT.Selection, event -> {
+				wsTableViewer.setAllChecked(true);
 
-					selectedProjects.removeAll(selectedProjects);
-					selectedWorkingSet.removeAll(selectedWorkingSet);
-					Object[] checked = wsTableViewer.getCheckedElements();
-					for (int i = 0; i < checked.length; i++) {
-						selectedWorkingSet.add(checked[i]);
-						if (checked[i] instanceof IWorkingSet){
-							IWorkingSet ws = (IWorkingSet) checked[i];
-							IAdaptable[] elements = ws.getElements();
-							addProjects(elements);
-						}
-						tableViewer.setInput(selectedProjects);
+				selectedProjects.removeAll(selectedProjects);
+				selectedWorkingSet.removeAll(selectedWorkingSet);
+				Object[] checked = wsTableViewer.getCheckedElements();
+				for (int i = 0; i < checked.length; i++) {
+					selectedWorkingSet.add(checked[i]);
+					if (checked[i] instanceof IWorkingSet){
+						IWorkingSet ws = (IWorkingSet) checked[i];
+						IAdaptable[] elements = ws.getElements();
+						addProjects(elements);
 					}
-					updateEnablement();
+					tableViewer.setInput(selectedProjects);
 				}
+				updateEnablement();
 			});
 
 			Button deselectAll = new Button(buttonComposite, SWT.PUSH);
@@ -594,16 +575,13 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			deselectAll.setLayoutData(data);
 			deselectAll.setText(TeamUIMessages.ExportProjectSetMainPage_DeselectAll);
-			deselectAll.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					wsTableViewer.setAllChecked(false);
-					selectedWorkingSet.removeAll(selectedWorkingSet);
-					selectedProjects.removeAll(selectedProjects);
-					referenceCountProjects.removeAll(referenceCountProjects);
-					tableViewer.setInput(selectedProjects);
-					updateEnablement();
-				}
+			deselectAll.addListener(SWT.Selection, event -> {
+				wsTableViewer.setAllChecked(false);
+				selectedWorkingSet.removeAll(selectedWorkingSet);
+				selectedProjects.removeAll(selectedProjects);
+				referenceCountProjects.removeAll(referenceCountProjects);
+				tableViewer.setInput(selectedProjects);
+				updateEnablement();
 			});
 
 			Button newWorkingSet = new Button(buttonComposite, SWT.PUSH);
@@ -614,44 +592,39 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			data.widthHint = Math.max(widthHint, deselectAll.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 			newWorkingSet.setLayoutData(data);
 			newWorkingSet.setText(TeamUIMessages.ExportProjectSetMainPage_EditButton);
-			newWorkingSet.addListener(SWT.Selection, new Listener() {
-				@Override
-				public void handleEvent(Event event) {
-					final IWorkingSetManager workingSetManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
-					IWorkingSetSelectionDialog wsWizard = workingSetManager.createWorkingSetSelectionDialog(getShell(), false);
-					if (wsWizard != null) {
-						IPropertyChangeListener propListener = null;
-						try {
-							//add event listener
-							propListener = new  IPropertyChangeListener() {
-								@Override
-								public void propertyChange(PropertyChangeEvent event) {
+			newWorkingSet.addListener(SWT.Selection, event -> {
+				final IWorkingSetManager workingSetManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+				IWorkingSetSelectionDialog wsWizard = workingSetManager.createWorkingSetSelectionDialog(getShell(), false);
+				if (wsWizard != null) {
+					IPropertyChangeListener propListener = null;
+					try {
+						//add event listener
+						propListener = event1 -> {
 
-								}};
+						};
 
-							workingSetManager.addPropertyChangeListener(propListener);
-							wsWizard.open();
-							//recalculate working sets
-							selectedWorkingSet.removeAll(selectedWorkingSet);
-							referenceCountProjects.removeAll(selectedProjects);
-							selectedProjects.removeAll(selectedProjects);
-							wsTableViewer.setInput(workingSetManager);
-							Object[] checked = wsTableViewer.getCheckedElements();
-							for (int i = 0; i < checked.length; i++) {
-								selectedWorkingSet.add(checked[i]);
-								if (checked[i] instanceof IWorkingSet) {
-									IWorkingSet ws = (IWorkingSet) checked[i];
-									IAdaptable[] elements = ws.getElements();
-									addProjects(elements);
-								}
+						workingSetManager.addPropertyChangeListener(propListener);
+						wsWizard.open();
+						//recalculate working sets
+						selectedWorkingSet.removeAll(selectedWorkingSet);
+						referenceCountProjects.removeAll(selectedProjects);
+						selectedProjects.removeAll(selectedProjects);
+						wsTableViewer.setInput(workingSetManager);
+						Object[] checked = wsTableViewer.getCheckedElements();
+						for (int i = 0; i < checked.length; i++) {
+							selectedWorkingSet.add(checked[i]);
+							if (checked[i] instanceof IWorkingSet) {
+								IWorkingSet ws = (IWorkingSet) checked[i];
+								IAdaptable[] elements = ws.getElements();
+								addProjects(elements);
 							}
-
-							wsTableViewer.setInput(workingSetManager);
-							tableViewer.setInput(selectedProjects);
-						} finally {
-							if (propListener != null)
-								workingSetManager.removePropertyChangeListener(propListener);
 						}
+
+						wsTableViewer.setInput(workingSetManager);
+						tableViewer.setInput(selectedProjects);
+					} finally {
+						if (propListener != null)
+							workingSetManager.removePropertyChangeListener(propListener);
 					}
 				}
 			});
@@ -746,7 +719,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			if (!tempSet.isEmpty()) {
 				selectedProjects.removeAll(tempSet);
 				for (Iterator iterator = tempSet.iterator(); iterator.hasNext();) {
-					Object element = (Object) iterator.next();
+					Object element = iterator.next();
 					referenceCountProjects.remove(element);
 				}
 				selectedProjects.addAll(referenceCountProjects);

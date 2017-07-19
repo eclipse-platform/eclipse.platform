@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.compare.internal.CompareEditorInputNavigator;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
@@ -275,12 +274,9 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 		IProgressService manager = PlatformUI.getWorkbench().getProgressService();
 		try {
 			// TODO: we need a better progress story here (i.e. support for cancellation) bug 127075
-			manager.busyCursorWhile(new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-			        prepareInput(input, getCompareConfiguration(), monitor);
-			        hookContentChangeListener(input);
-				}
+			manager.busyCursorWhile(monitor -> {
+			    prepareInput(input, getCompareConfiguration(), monitor);
+			    hookContentChangeListener(input);
 			});
 		} catch (InvocationTargetException e) {
 			Utils.handle(e);
@@ -427,7 +423,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 
 		for (int i=0; i<fDirtyViewers.size(); i++){
 			Object element = iter.next();
-			IFlushable flushable = (IFlushable)Adapters.adapt(element, IFlushable.class);
+			IFlushable flushable = Adapters.adapt(element, IFlushable.class);
 			if (flushable != null)
 				flushable.flush(monitor);
 		}

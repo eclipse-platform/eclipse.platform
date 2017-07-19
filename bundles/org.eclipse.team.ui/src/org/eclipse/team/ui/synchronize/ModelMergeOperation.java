@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 */
 	private static IResourceMappingMerger getMerger(ModelProvider provider) {
 		Assert.isNotNull(provider);
-		return (IResourceMappingMerger)Adapters.adapt(provider, IResourceMappingMerger.class);
+		return Adapters.adapt(provider, IResourceMappingMerger.class);
 	}
 
 	/**
@@ -205,9 +205,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 								true);
 				        createDetailsButton(parent);
 					}
-					/* (non-Javadoc)
-					 * @see org.eclipse.jface.dialogs.ErrorDialog#buttonPressed(int)
-					 */
+
 					@Override
 					protected void buttonPressed(int id) {
 						if (id == IDialogConstants.YES_ID)
@@ -233,12 +231,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 * @param status the status returned from the merger that reported the conflict
 	 */
 	protected void handleMergeFailure(final IStatus status) {
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openInformation(getShell(), TeamUIMessages.MergeIncomingChangesAction_0, status.getMessage());
-			};
-		});
+		Display.getDefault().syncExec(() -> MessageDialog.openInformation(getShell(), TeamUIMessages.MergeIncomingChangesAction_0, status.getMessage()));
 		handlePreviewRequest();
 	}
 
@@ -248,12 +241,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 * Subclasses may override.
 	 */
 	protected void handleNoChanges() {
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				NoChangesDialog.open(getShell(), TeamUIMessages.ResourceMappingMergeOperation_0, TeamUIMessages.ResourceMappingMergeOperation_1, TeamUIMessages.ModelMergeOperation_3, getScope().asInputScope());
-			};
-		});
+		Display.getDefault().syncExec(() -> NoChangesDialog.open(getShell(), TeamUIMessages.ResourceMappingMergeOperation_0, TeamUIMessages.ResourceMappingMergeOperation_1, TeamUIMessages.ModelMergeOperation_3, getScope().asInputScope()));
 	}
 
 	/**
@@ -278,30 +266,27 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			IMergeContext context = (IMergeContext) sc;
 			final ModelProvider[] providers = sortByExtension(context.getScope().getModelProviders());
 			final IStatus[] result = new IStatus[] { Status.OK_STATUS };
-			context.run(new IWorkspaceRunnable() {
-				@Override
-				public void run(IProgressMonitor monitor) throws CoreException {
-					try {
-						int ticks = 100;
-						monitor.beginTask(null, ticks + ((providers.length - 1) * 10));
-						for (int i = 0; i < providers.length; i++) {
-							ModelProvider provider = providers[i];
-							IStatus status = performMerge(provider, Policy.subMonitorFor(monitor, ticks));
-							ticks = 10;
-							if (!status.isOK()) {
-								// Stop at the first failure
-								result[0] = status;
-								return;
-							}
-							try {
-								Job.getJobManager().join(getContext(), monitor);
-							} catch (InterruptedException e) {
-								// Ignore
-							}
+			context.run(monitor1 -> {
+				try {
+					int ticks = 100;
+					monitor1.beginTask(null, ticks + ((providers.length - 1) * 10));
+					for (int i = 0; i < providers.length; i++) {
+						ModelProvider provider = providers[i];
+						IStatus status = performMerge(provider, Policy.subMonitorFor(monitor1, ticks));
+						ticks = 10;
+						if (!status.isOK()) {
+							// Stop at the first failure
+							result[0] = status;
+							return;
 						}
-					} finally {
-						monitor.done();
+						try {
+							Job.getJobManager().join(getContext(), monitor1);
+						} catch (InterruptedException e) {
+							// Ignore
+						}
 					}
+				} finally {
+					monitor1.done();
 				}
 			}, null /* scheduling rule */, IResource.NONE, monitor);
 			return result[0];

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,16 +89,12 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 	public IWizard getSelectedWizard() {
 		return selectedWizard;
 	}
-	/*
-	 * @see WizardPage#canFlipToNextPage
-	 */
+
 	@Override
 	public boolean canFlipToNextPage() {
 		return selectedWizard != null && selectedWizard.getPageCount() > 0;
 	}
-	/*
-	 * @see WizardPage#createControl
-	 */
+
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -123,36 +119,33 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				// Initialize the wizard so we can tell whether to enable the Next button
-				ISelection selection = event.getSelection();
-				if (selection == null || !(selection instanceof IStructuredSelection)) {
-					selectedWizard = null;
-					selectedWizardId = null;
-					setPageComplete(false);
-					return;
-				}
-				IStructuredSelection ss = (IStructuredSelection)selection;
-				if (ss.size() != 1) {
-					selectedWizard = null;
-					selectedWizardId = null;
-					setPageComplete(false);
-					return;
-				}
-				ConfigurationWizardElement selectedElement = (ConfigurationWizardElement)ss.getFirstElement();
-				try {
-					selectedWizard = (IWizard)selectedElement.createExecutableExtension(getUnsharedProjects());
-					selectedWizardId = selectedElement.getID();
-				} catch (CoreException e) {
-					return;
-				}
-				selectedWizard.addPages();
-
-				// Ask the container to update button enablement
-				setPageComplete(true);
+		viewer.addSelectionChangedListener(event -> {
+			// Initialize the wizard so we can tell whether to enable the Next button
+			ISelection selection = event.getSelection();
+			if (selection == null || !(selection instanceof IStructuredSelection)) {
+				selectedWizard = null;
+				selectedWizardId = null;
+				setPageComplete(false);
+				return;
 			}
+			IStructuredSelection ss = (IStructuredSelection)selection;
+			if (ss.size() != 1) {
+				selectedWizard = null;
+				selectedWizardId = null;
+				setPageComplete(false);
+				return;
+			}
+			ConfigurationWizardElement selectedElement = (ConfigurationWizardElement)ss.getFirstElement();
+			try {
+				selectedWizard = selectedElement.createExecutableExtension(getUnsharedProjects());
+				selectedWizardId = selectedElement.getID();
+			} catch (CoreException e) {
+				return;
+			}
+			selectedWizard.addPages();
+
+			// Ask the container to update button enablement
+			setPageComplete(true);
 		});
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override

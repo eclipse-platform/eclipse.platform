@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,9 +46,6 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		subscriber.addListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.DecoratedStateProvider#isDecorated(java.lang.Object)
-	 */
 	@Override
 	public boolean hasDecoratedState(Object element) throws CoreException {
 		ResourceMapping mapping = Utils.getResourceMapping(element);
@@ -91,7 +88,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	}
 
 	private int getSynchronizationState(ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
-		ISynchronizationCompareAdapter compareAdapter = (ISynchronizationCompareAdapter)Adapters.adapt(mapping.getModelProvider(), ISynchronizationCompareAdapter.class);
+		ISynchronizationCompareAdapter compareAdapter = Adapters.adapt(mapping.getModelProvider(), ISynchronizationCompareAdapter.class);
 		try {
 			if (compareAdapter != null) {
 				int state = compareAdapter.getSynchronizationState(this, mapping, stateMask, monitor);
@@ -113,9 +110,6 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		return IDiff.NO_CHANGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getStateDescription(java.lang.Object, int, java.lang.String[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public ITeamStateDescription getStateDescription(Object element, int stateMask,
 			String[] properties, IProgressMonitor monitor) throws CoreException {
@@ -125,9 +119,6 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		return new TeamStateDescription(getSynchronizationState(element, stateMask, monitor));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getResourceMappingContext(java.lang.Object)
-	 */
 	@Override
 	public ResourceMappingContext getResourceMappingContext(Object element) {
 		return new SubscriberResourceMappingContext(subscriber, false);
@@ -151,17 +142,11 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		subscriber.removeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ISubscriberChangeListener#subscriberResourceChanged(org.eclipse.team.core.subscribers.ISubscriberChangeEvent[])
-	 */
 	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 		fireStateChangeEvent(new TeamStateChangeEvent(deltas));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#getDecoratedProperties(java.lang.Object)
-	 */
 	@Override
 	public String[] getDecoratedProperties(Object element) {
 		return new String[0];
