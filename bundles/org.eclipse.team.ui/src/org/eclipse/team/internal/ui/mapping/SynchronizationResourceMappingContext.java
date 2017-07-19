@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,17 +44,11 @@ public final class SynchronizationResourceMappingContext extends
 		this.context = context;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#isThreeWay()
-	 */
 	@Override
 	public boolean isThreeWay() {
 		return context.getType() == ISynchronizationContext.THREE_WAY;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#hasRemoteChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public boolean hasRemoteChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
@@ -66,9 +60,6 @@ public final class SynchronizationResourceMappingContext extends
 		return diff != null && diff.getKind() != IDiff.NO_CHANGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#hasLocalChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(resource);
@@ -80,9 +71,6 @@ public final class SynchronizationResourceMappingContext extends
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#fetchRemoteContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
@@ -100,9 +88,6 @@ public final class SynchronizationResourceMappingContext extends
 		return file;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#fetchBaseContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
 		IDiff diff = context.getDiffTree().getDiff(file);
@@ -124,7 +109,7 @@ public final class SynchronizationResourceMappingContext extends
 
 	@Override
 	public IResource[] fetchMembers(IContainer container, IProgressMonitor monitor) throws CoreException {
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		IResource[] children = container.members();
 		for (int i = 0; i < children.length; i++) {
 			IResource resource = children[i];
@@ -147,7 +132,7 @@ public final class SynchronizationResourceMappingContext extends
 			}
 			result.add(child);
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	@Override
@@ -161,13 +146,13 @@ public final class SynchronizationResourceMappingContext extends
 
 	@Override
 	public IProject[] getProjects() {
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		IResource[] roots = context.getScope().getRoots();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			projects.add(resource.getProject());
 		}
-		return (IProject[]) projects.toArray(new IProject[projects.size()]);
+		return projects.toArray(new IProject[projects.size()]);
 	}
 
 }

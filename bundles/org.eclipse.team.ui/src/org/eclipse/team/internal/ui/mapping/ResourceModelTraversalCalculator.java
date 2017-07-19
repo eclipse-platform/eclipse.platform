@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,7 @@ public class ResourceModelTraversalCalculator {
 	}
 
 	private Object[] getCompressedChildren(IResourceDiffTree diffTree, IProject project, Object[] children) {
-		Set result = new HashSet();
+		Set<Object> result = new HashSet<>();
 		IDiff[] diffs = diffTree.getDiffs(project, IResource.DEPTH_INFINITE);
 		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
@@ -121,7 +121,7 @@ public class ResourceModelTraversalCalculator {
 	 * Only return the files that are direct children of the folder
 	 */
 	private Object[] getCompressedChildren(IResourceDiffTree diffTree, IFolder folder, Object[] children) {
-		Set result = new HashSet();
+		Set<Object> result = new HashSet<>();
 		for (int i = 0; i < children.length; i++) {
 			Object object = children[i];
 			if (object instanceof IResource) {
@@ -143,7 +143,7 @@ public class ResourceModelTraversalCalculator {
 	private Object[] getFlatChildren(IResourceDiffTree diffTree, IResource resource) {
 		Object[] allChildren;
 		IDiff[] diffs = diffTree.getDiffs(resource, IResource.DEPTH_INFINITE);
-		ArrayList result = new ArrayList();
+		ArrayList<Object> result = new ArrayList<>();
 		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
 			result.add(diffTree.getResource(diff));
@@ -153,7 +153,7 @@ public class ResourceModelTraversalCalculator {
 	}
 
 	private Object[] getTreeChildren(IResourceDiffTree diffTree, IResource resource, Object[] children) {
-		Set result = new HashSet();
+		Set<Object> result = new HashSet<>();
 		for (int i = 0; i < children.length; i++) {
 			Object object = children[i];
 			result.add(object);
@@ -168,7 +168,7 @@ public class ResourceModelTraversalCalculator {
 	}
 
 	public static IResource[] getChildren(IResourceDiffTree diffTree, IResource resource) {
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		IPath[] childPaths = diffTree.getChildren(resource.getFullPath());
 		for (int i = 0; i < childPaths.length; i++) {
 			IPath path = childPaths[i];
@@ -186,7 +186,7 @@ public class ResourceModelTraversalCalculator {
 			}
 			result.add(child);
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public ResourceTraversal[] getTraversals(DiffChangeSet dcs, TreePath tp) {
@@ -198,7 +198,7 @@ public class ResourceModelTraversalCalculator {
 		if (tp.getSegmentCount() == 1 && tp.getFirstSegment() == dcs) {
 			return dcs.getResources();
 		}
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		Object o = tp.getLastSegment();
 		if (o instanceof IResource) {
 			IResource resource = (IResource) o;
@@ -211,7 +211,7 @@ public class ResourceModelTraversalCalculator {
 					result.add(r);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public ResourceTraversal[] getTraversals(IResource resource, TreePath tp) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
  */
 public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelProvider implements ISyncInfoSetChangeListener {
 
-	protected final Map resourceMap = Collections.synchronizedMap(new HashMap());
+	protected final Map<IResource, ISynchronizeModelElement> resourceMap = Collections.synchronizedMap(new HashMap<>());
 
     protected static final boolean DEBUG = false;
 
@@ -83,12 +83,9 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 * @return the <code>SyncInfoModelElement</code> for the given resource
 	 */
 	protected ISynchronizeModelElement getModelObject(IResource resource) {
-		return (ISynchronizeModelElement) resourceMap.get(resource);
+		return resourceMap.get(resource);
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#getModelObjects(org.eclipse.core.resources.IResource)
-     */
     @Override
 	protected ISynchronizeModelElement[] getModelObjects(IResource resource) {
         ISynchronizeModelElement element = getModelObject(resource);
@@ -127,7 +124,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 * @param resources the resources to remove
 	 */
 	protected void removeFromViewer(IResource[] resources) {
-	    List elements = new ArrayList();
+	    List<ISynchronizeModelElement> elements = new ArrayList<>();
 	    for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
 			ISynchronizeModelElement element = getModelObject(resource);
@@ -136,13 +133,10 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 			}
         }
 		if (!elements.isEmpty()) {
-		    removeFromViewer((ISynchronizeModelElement[]) elements.toArray(new ISynchronizeModelElement[elements.size()]));
+		    removeFromViewer(elements.toArray(new ISynchronizeModelElement[elements.size()]));
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#clearModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-	 */
 	@Override
 	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
 		super.recursiveClearModelObjects(node);
@@ -160,18 +154,12 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#addToViewer(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-	 */
 	@Override
 	protected void addToViewer(ISynchronizeModelElement node) {
 		associateDiffNode(node);
 		super.addToViewer(node);
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#hasViewerState()
-     */
     @Override
 	protected boolean hasViewerState() {
         return ! resourceMap.isEmpty();
@@ -192,17 +180,11 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 		return new ISynchronizeModelElement[] { element };
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected final void handleChanges(ISyncInfoTreeChangeEvent event, IProgressMonitor monitor) {
         super.handleChanges(event, monitor);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
 	@Override
 	protected void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
 		// Refresh the viewer for each changed resource

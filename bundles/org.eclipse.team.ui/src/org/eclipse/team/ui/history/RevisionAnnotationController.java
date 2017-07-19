@@ -225,7 +225,7 @@ public abstract class RevisionAnnotationController {
 
 	private static IEditorPart[] findOpenEditorsForFile(IWorkbenchPage page, FileEditorInput input) {
         final IEditorReference[] references= page.findEditors(input, null, IWorkbenchPage.MATCH_INPUT);
-        final List editors = new ArrayList();
+        final List<IEditorPart> editors = new ArrayList<>();
 		for (int i= 0; i < references.length; i++) {
 			IEditorReference reference= references[i];
 			IEditorPart editor= reference.getEditor(false);

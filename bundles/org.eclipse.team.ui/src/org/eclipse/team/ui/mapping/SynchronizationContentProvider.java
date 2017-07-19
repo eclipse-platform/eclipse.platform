@@ -449,7 +449,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 * scope of the content provider
 	 */
 	protected Object[] getChildrenInScope(ISynchronizationScope scope, Object parent, Object[] children) {
-		List result = new ArrayList();
+		List<Object> result = new ArrayList<>();
 		for (int i = 0; i < children.length; i++) {
 			Object object = children[i];
 			if (object != null && isInScope(scope, parent, object)) {
@@ -489,7 +489,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 			return children;
 		if (children.length == 0)
 			return setChildren;
-		Set result = new HashSet(children.length);
+		Set<Object> result = new HashSet<>(children.length);
 		for (int i = 0; i < children.length; i++) {
 			result.add(children[i]);
 		}
@@ -500,7 +500,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	}
 
 	private Object[] internalGetChildren(ISynchronizationContext context, Object parent, Object[] children) {
-		List result = new ArrayList(children.length);
+		List<Object> result = new ArrayList<>(children.length);
 		for (int i = 0; i < children.length; i++) {
 			Object object = children[i];
 			// If the parent is a TreePath then the subclass is

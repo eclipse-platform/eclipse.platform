@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public abstract class PsfStore {
 	}
 
 	public void remember(String filename) {
-		Vector filenames = createVector(getHistory());
+		Vector<String> filenames = createVector(getHistory());
 		if (filenames.contains(filename)) {
 			// The item is in the list. Remove it and add it back at the
 			// beginning. If it already was at the beginning this will be a
@@ -65,15 +65,15 @@ public abstract class PsfStore {
 		}
 
 		// Make it an array
-		String[] arr = (String[]) filenames.toArray(new String[filenames.size()]);
+		String[] arr = filenames.toArray(new String[filenames.size()]);
 
 		IDialogSettings section = getSettingsSection();
 		section.put(getListTag(), arr);
 		section.put(getPreviousTag(), filename);
 	}
 
-	private Vector createVector(Object[] arr) {
-		Vector v = new Vector();
+	private Vector<String> createVector(String[] arr) {
+		Vector<String> v = new Vector<>();
 		for (int ix = 0; ix < arr.length; ++ix) {
 			v.add(ix, arr[ix]);
 		}

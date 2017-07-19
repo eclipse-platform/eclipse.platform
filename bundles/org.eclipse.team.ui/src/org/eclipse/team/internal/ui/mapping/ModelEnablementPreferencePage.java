@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import org.eclipse.ui.*;
 
 public class ModelEnablementPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	private Set previosulyEnabled = new HashSet();
+	private Set<ITeamContentProviderDescriptor> previosulyEnabled = new HashSet<>();
 
 	public ModelEnablementPreferencePage() {
 		setTitle(TeamUIMessages.ModelEnablementPreferencePage_0);
@@ -71,7 +71,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 		});
 		tableViewer.setLabelProvider(new LabelProvider() {
-			Map images = new HashMap();
+			Map<ITeamContentProviderDescriptor, Image> images = new HashMap<>();
 			@Override
 			public String getText(Object element) {
 				if (element instanceof ITeamContentProviderDescriptor) {
@@ -97,7 +97,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			public Image getImage(Object element) {
 				if (element instanceof ITeamContentProviderDescriptor) {
 					ITeamContentProviderDescriptor desc = (ITeamContentProviderDescriptor) element;
-					Image image = (Image)images.get(desc);
+					Image image = images.get(desc);
 					if (image == null) {
 						ImageDescriptor idesc = desc.getImageDescriptor();
 						if (idesc != null) {
@@ -155,14 +155,15 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 		tableViewer.setCheckedElements(previosulyEnabled.toArray());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean performOk() {
 		Object[] checked = tableViewer.getCheckedElements();
-		Set nowEnabled = new HashSet();
-		nowEnabled.addAll(Arrays.asList(checked));
+		Set<ITeamContentProviderDescriptor> nowEnabled = new HashSet<>();
+		nowEnabled.addAll((Collection<? extends ITeamContentProviderDescriptor>) Arrays.asList(checked));
 		if (hasDescriptorEnablementChanged(checked)) {
 			TeamUI.getTeamContentProviderManager().setEnabledDescriptors(
-					(ITeamContentProviderDescriptor[]) nowEnabled.toArray(new ITeamContentProviderDescriptor[nowEnabled.size()]));
+					nowEnabled.toArray(new ITeamContentProviderDescriptor[nowEnabled.size()]));
 			previosulyEnabled = nowEnabled;
 		}
 		return true;

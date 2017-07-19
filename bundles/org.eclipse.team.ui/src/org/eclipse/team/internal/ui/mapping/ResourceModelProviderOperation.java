@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	 * @return the file deltas contained in or descended from the selection
 	 */
 	private IDiff[] getFileDeltas(Object[] pathOrElements) {
-		Set result = new HashSet();
+		Set<IDiff> result = new HashSet<>();
 		for (int i = 0; i < pathOrElements.length; i++) {
 			Object pathOrElement = pathOrElements[i];
 			IDiff[] diffs = getFileDeltas(pathOrElement);
@@ -60,11 +60,11 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 				result.add(node);
 			}
 		}
-		return (IDiff[]) result.toArray(new IDiff[result.size()]);
+		return result.toArray(new IDiff[result.size()]);
 	}
 
 	private IDiff[] getFileDeltas(Object pathOrElement) {
-		List result = new ArrayList();
+		List<IDiff> result = new ArrayList<>();
 		ResourceTraversal[] traversals = getTraversals(pathOrElement);
 		if (traversals.length > 0) {
 			ISynchronizationContext context = getContext();
@@ -77,7 +77,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 					result.add(node);
 			}
 		}
-		return (IDiff[]) result.toArray(new IDiff[result.size()]);
+		return result.toArray(new IDiff[result.size()]);
 	}
 
 	/**
@@ -145,9 +145,6 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 	 */
 	protected abstract FastDiffFilter getDiffFilter();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ModelProviderOperation#shouldRun()
-	 */
 	@Override
 	public boolean shouldRun() {
 		Object[] elements = getElements();

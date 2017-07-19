@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,18 +83,12 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 		return makeSyncInfoSetFromSelection(getSyncInfos());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#scheduled(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-	 */
 	@Override
 	public void scheduled(IJobChangeEvent event) {
 		super.scheduled(event);
 		markBusy(elements, true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-	 */
 	@Override
 	public void done(IJobChangeEvent event) {
 		markBusy(elements, false);
@@ -116,14 +110,14 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	 * @return the selected SyncInfo for which this action is enabled.
 	 */
 	private SyncInfo[] getSyncInfos() {
-		List filtered = new ArrayList();
+		List<SyncInfo> filtered = new ArrayList<>();
 		for (int i = 0; i < elements.length; i++) {
 			IDiffElement e = elements[i];
 			if (e instanceof SyncInfoModelElement) {
 				filtered.add(((SyncInfoModelElement)e).getSyncInfo());
 			}
 		}
-		return (SyncInfo[]) filtered.toArray(new SyncInfo[filtered.size()]);
+		return filtered.toArray(new SyncInfo[filtered.size()]);
 	}
 
 	/*

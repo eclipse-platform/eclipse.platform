@@ -60,12 +60,12 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	/**
 	 * Map of participants to dummy participant parts (used to close pages)
 	 */
-	private Map fParticipantToPart;
+	private Map<ISynchronizeParticipant, IWorkbenchPart> fParticipantToPart;
 
 	/**
 	 * Map of parts to participants
 	 */
-	private Map fPartToParticipant;
+	private Map<IWorkbenchPart, ISynchronizeParticipant> fPartToParticipant;
 
 	/**
 	 * Drop down action to switch between participants
@@ -165,7 +165,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	@Override
 	protected void showPageRec(PageRec pageRec) {
 		super.showPageRec(pageRec);
-		activeParticipantRef = (ISynchronizeParticipant)fPartToParticipant.get(pageRec.part);
+		activeParticipantRef = fPartToParticipant.get(pageRec.part);
 		updateActionEnablements();
 		updateTitle();
 	}
@@ -342,8 +342,8 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 */
 	public SynchronizeView() {
 		super();
-		fParticipantToPart = new HashMap();
-		fPartToParticipant = new HashMap();
+		fParticipantToPart = new HashMap<>();
+		fPartToParticipant = new HashMap<>();
 		updateTitle();
 	}
 
@@ -539,7 +539,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	private ISynchronizeParticipantReference[] getParticipants() {
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		// create pages
-		List participants = new ArrayList();
+		List<ISynchronizeParticipantReference> participants = new ArrayList<>();
 		ISynchronizeParticipantReference[] refs = manager.getSynchronizeParticipants();
 		for (int i = 0; i < refs.length; i++) {
 			ISynchronizeParticipantReference ref =refs[i];
@@ -547,7 +547,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				participants.add(ref);
 			}
 		}
-		return (ISynchronizeParticipantReference[]) participants.toArray(new ISynchronizeParticipantReference[participants.size()]);
+		return participants.toArray(new ISynchronizeParticipantReference[participants.size()]);
 	}
 
 	private boolean isAvailable() {
@@ -558,7 +558,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * Method used by test cases to access the page for a participant
 	 */
 	public IPage getPage(ISynchronizeParticipant participant) {
-		IWorkbenchPart part = (IWorkbenchPart)fParticipantToPart.get(participant);
+		IWorkbenchPart part = fParticipantToPart.get(participant);
 		if (part == null) return null;
 		try {
 			return getPageRec(part).page;
@@ -613,7 +613,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 	@Override
 	public Saveable[] getSaveables() {
-		Set result = new HashSet();
+		Set<Saveable> result = new HashSet<>();
 		for (Iterator iter = fPartToParticipant.keySet().iterator(); iter.hasNext();) {
 			SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart) iter.next();
 			Saveable saveable = getSaveable(part.getParticipant());
@@ -621,7 +621,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				result.add(saveable);
 			}
 		}
-		return (Saveable[]) result.toArray(new Saveable[result.size()]);
+		return result.toArray(new Saveable[result.size()]);
 	}
 
 	private Saveable getSaveable(ISynchronizeParticipant participant) {

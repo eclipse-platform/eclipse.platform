@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,9 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 
 	private static ITeamContentProviderManager instance;
 
-	Map descriptors;
+	Map<String, ITeamContentProviderDescriptor> descriptors;
 
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	public static ITeamContentProviderManager getInstance() {
 		if (instance == null)
@@ -39,37 +39,28 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		return instance;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptors()
-	 */
 	@Override
 	public ITeamContentProviderDescriptor[] getDescriptors() {
 		lazyInitialize();
-		return (ITeamContentProviderDescriptor[]) descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
+		return descriptors.values().toArray(new ITeamContentProviderDescriptor[descriptors.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderManager#getContentProviderIds(org.eclipse.team.core.mapping.ISynchronizationScope)
-	 */
 	@Override
 	public String[] getContentProviderIds(ISynchronizationScope scope) {
-		List result = new ArrayList();
+		List<String> result = new ArrayList<>();
 		ITeamContentProviderDescriptor[] descriptors = getDescriptors();
 		for (int i = 0; i < descriptors.length; i++) {
 			ITeamContentProviderDescriptor descriptor = descriptors[i];
 			if (descriptor.isEnabled() && scope.getMappings(descriptor.getModelProviderId()).length > 0)
 				result.add(descriptor.getContentExtensionId());
 		}
-		return (String[]) result.toArray(new String[result.size()]);
+		return result.toArray(new String[result.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderManager#getDescriptor(java.lang.String)
-	 */
 	@Override
 	public ITeamContentProviderDescriptor getDescriptor(String modelProviderId) {
 		lazyInitialize();
-		return (ITeamContentProviderDescriptor)descriptors.get(modelProviderId);
+		return descriptors.get(modelProviderId);
 	}
 
 	protected void lazyInitialize() {
@@ -77,7 +68,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 			return;
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_CONTENT_PROVIDERS);
 		IExtension[] extensions = point.getExtensions();
-		descriptors = new HashMap(extensions.length * 2);
+		descriptors = new HashMap<>(extensions.length * 2);
 		for (int i = 0, imax = extensions.length; i < imax; i++) {
 			ITeamContentProviderDescriptor desc = null;
 			try {
@@ -123,7 +114,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 
 	@Override
 	public void setEnabledDescriptors(ITeamContentProviderDescriptor[] descriptors) {
-		List previouslyEnabled = new ArrayList();
+		List<ITeamContentProviderDescriptor> previouslyEnabled = new ArrayList<>();
 		for (Iterator iter = this.descriptors.values().iterator(); iter.hasNext();) {
 			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor) iter.next();
 			if (descriptor.isEnabled()) {
@@ -135,8 +126,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor)descriptors[i];
 			descriptor.setEnabled(true);
 		}
-		enablementChanged(
-				(ITeamContentProviderDescriptor[]) previouslyEnabled.toArray(new ITeamContentProviderDescriptor[previouslyEnabled.size()]),
+		enablementChanged(previouslyEnabled.toArray(new ITeamContentProviderDescriptor[previouslyEnabled.size()]),
 				descriptors);
 	}
 }

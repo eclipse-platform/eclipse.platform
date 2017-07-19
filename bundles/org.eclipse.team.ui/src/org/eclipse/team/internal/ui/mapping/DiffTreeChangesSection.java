@@ -337,7 +337,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 			public void linkActivated(HyperlinkEvent e) {
 				ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)getConfiguration().getParticipant();
 				ModelProvider[] providers = participant.getEnabledModelProviders();
-				Set toEnable = new HashSet();
+				Set<ITeamContentProviderDescriptor> toEnable = new HashSet<>();
 				toEnable.addAll(Arrays.asList(descriptors));
 				for (int i = 0; i < providers.length; i++) {
 					ModelProvider provider = providers[i];
@@ -346,9 +346,8 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 						toEnable.add(desc);
 					}
 				}
-				TeamUI.getTeamContentProviderManager().setEnabledDescriptors(
-						(ITeamContentProviderDescriptor[]) toEnable
-								.toArray(new ITeamContentProviderDescriptor[toEnable.size()]));
+				TeamUI.getTeamContentProviderManager()
+						.setEnabledDescriptors(toEnable.toArray(new ITeamContentProviderDescriptor[toEnable.size()]));
 				getConfiguration().setProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER, ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE );
 
 			}
@@ -361,14 +360,14 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 	private ITeamContentProviderDescriptor[] getEnabledContentDescriptors() {
 		ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)getConfiguration().getParticipant();
 		ModelProvider[] providers = participant.getEnabledModelProviders();
-		Set result = new HashSet();
+		Set<ITeamContentProviderDescriptor> result = new HashSet<>();
 		for (int i = 0; i < providers.length; i++) {
 			ModelProvider provider = providers[i];
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 			if (desc != null && desc.isEnabled())
 				result.add(desc);
 		}
-		return (ITeamContentProviderDescriptor[]) result.toArray(new ITeamContentProviderDescriptor[result.size()]);
+		return result.toArray(new ITeamContentProviderDescriptor[result.size()]);
 	}
 
 	private Composite getInitializationPane(Composite parent) {

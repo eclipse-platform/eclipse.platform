@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -202,7 +202,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 */
 	protected final IDiffElement[] getFilteredDiffElements() {
 		IDiffElement[] elements = getSelectedDiffElements();
-		List filtered = new ArrayList();
+		List<IDiffElement> filtered = new ArrayList<>();
 		for (int i = 0; i < elements.length; i++) {
 			IDiffElement e = elements[i];
 			if (e instanceof SyncInfoModelElement) {
@@ -212,7 +212,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 				}
 			}
 		}
-		return (IDiffElement[]) filtered.toArray(new IDiffElement[filtered.size()]);
+		return filtered.toArray(new IDiffElement[filtered.size()]);
 	}
 
 	/**

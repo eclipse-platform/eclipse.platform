@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,9 +105,6 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		this.synchronizeConfiguration = configuration;
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.compare.CompareEditorInput#handleDispose()
-     */
     @Override
 	protected void handleDispose() {
     	super.handleDispose();
@@ -123,13 +120,12 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	    	}
     	}
     }
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+
+    @SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter) && resource.getType() == IResource.FILE) {
-			return resource;
+			return (T) resource;
 		}
 		return super.getAdapter(adapter);
 	}
@@ -165,9 +161,6 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#internalPrepareInput(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
@@ -191,19 +184,11 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		return node;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
 	@Override
 	public String getToolTipText() {
 		return NLS.bind(TeamUIMessages.SyncInfoCompareInput_tooltip, new String[] { Utils.shortenText(30, description), node.getResource().getFullPath().toString() });
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object other) {
 		if (other == this)
@@ -219,11 +204,6 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return getSyncInfo().hashCode();
@@ -233,17 +213,11 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		return node.getSyncInfo();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
-	 */
 	@Override
 	public boolean canRunAsJob() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#getNavigator()
-	 */
 	@Override
 	public synchronized ICompareNavigator getNavigator() {
 		if (synchronizeConfiguration != null && isSelectedInSynchronizeView()) {
@@ -269,9 +243,6 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#fireInputChange()
-	 */
 	@Override
 	protected void fireInputChange() {
 		node.fireChange();

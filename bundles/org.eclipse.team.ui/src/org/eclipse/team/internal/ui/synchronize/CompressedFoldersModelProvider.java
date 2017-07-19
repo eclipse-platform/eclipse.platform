@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,18 +35,12 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 			super(parent, resource);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
-		 */
 		@Override
 		public String getName() {
 			IResource resource = getResource();
 			return resource.getProjectRelativePath().toString();
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#getImageDescriptor(java.lang.Object)
-		 */
 		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER);
@@ -62,18 +56,12 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 			super(parent, info);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
-		 */
 		@Override
 		public String getName() {
 			IResource resource = getResource();
 			return resource.getProjectRelativePath().toString();
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#getImageDescriptor(java.lang.Object)
-		 */
 		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPRESSED_FOLDER);
@@ -108,17 +96,11 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
         super(parentProvider, modelRoot, configuration, set);
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.HierarchicalModelProvider#getDescriptor()
-	 */
 	@Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
 		return compressedDescriptor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SyncInfoDiffNodeRoot#getSorter()
-	 */
 	@Override
 	public ViewerSorter getViewerSorter() {
 		return new SynchronizeModelElementSorter() {
@@ -132,9 +114,6 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.HierarchicalModelProvider#createModelObjects(org.eclipse.compare.structuremergeviewer.DiffNode)
-	 */
 	@Override
 	protected IDiffElement[] createModelObjects(ISynchronizeModelElement container) {
 		IResource resource = null;
@@ -157,22 +136,22 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 	private IDiffElement[] getFolderChildren(ISynchronizeModelElement parent, IResource resource) {
 		// Folders will only contain out-of-sync children
 		IResource[] children = getSyncInfoTree().members(resource);
-		List result = new ArrayList();
+		List<IDiffElement> result = new ArrayList<>();
 		for (int i = 0; i < children.length; i++) {
 			IResource child = children[i];
 			if (child.getType() == IResource.FILE) {
 				result.add(createModelObject(parent, child));
 			}
 		}
-		return (IDiffElement[])result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
 	private IDiffElement[] getProjectChildren(ISynchronizeModelElement parent, IProject project) {
 		// The out-of-sync elements could possibly include the project so the code
 		// below is written to ignore the project
 		SyncInfo[] outOfSync = getSyncInfoTree().getSyncInfos(project, IResource.DEPTH_INFINITE);
-		Set result = new HashSet();
-		Set resourcesToShow = new HashSet();
+		Set<IDiffElement> result = new HashSet<>();
+		Set<IResource> resourcesToShow = new HashSet<>();
 		for (int i = 0; i < outOfSync.length; i++) {
 			SyncInfo info = outOfSync[i];
 			IResource local = info.getLocal();
@@ -191,16 +170,9 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 			result.add(createModelObject(parent, resource));
 		}
 
-		return (IDiffElement[])result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.views.HierarchicalModelProvider#createChildNode(org.eclipse.compare.structuremergeviewer.DiffNode, org.eclipse.core.resources.IResource)
-	 */
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.HierarchicalModelProvider#createModelObject(org.eclipse.compare.structuremergeviewer.DiffNode, org.eclipse.core.resources.IResource)
-	 */
 	@Override
 	protected ISynchronizeModelElement createModelObject(ISynchronizeModelElement parent, IResource resource) {
 		if (resource.getType() == IResource.FOLDER) {
@@ -267,15 +239,12 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetContentProvider#handleResourceRemovals(org.eclipse.team.internal.ui.sync.views.SyncSetChangedEvent)
-	 */
 	@Override
 	protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
 		IResource[] roots = event.getRemovedSubtreeRoots();
 
 		// First, deal with any projects that have been removed
-		List removedProjects = new ArrayList();
+		List<IResource> removedProjects = new ArrayList<>();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			if (resource.getType() == IResource.PROJECT) {
@@ -285,8 +254,8 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		}
 
 		IResource[] resources = event.getRemovedResources();
-		List resourcesToRemove = new ArrayList();
-		List resourcesToAdd = new ArrayList();
+		List<IResource> resourcesToRemove = new ArrayList<IResource>();
+		List<SyncInfo> resourcesToAdd = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (!removedProjects.contains(resource.getProject())) {
@@ -306,10 +275,10 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 			}
 		}
 		if (!resourcesToRemove.isEmpty()) {
-		    removeFromViewer((IResource[]) resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
+		    removeFromViewer(resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
 		}
 		if (!resourcesToAdd.isEmpty()) {
-		    addResources((SyncInfo[]) resourcesToAdd.toArray(new SyncInfo[resourcesToAdd.size()]));
+		    addResources(resourcesToAdd.toArray(new SyncInfo[resourcesToAdd.size()]));
 		}
 	}
 
@@ -347,7 +316,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 
 	private SyncInfo[] getSyncInfosForFileMembers(IContainer parent) {
 		// Check if the sync set has any file children of the parent
-	    List result = new ArrayList();
+	    List<SyncInfo> result = new ArrayList<>();
 		IResource[] members = getSyncInfoTree().members(parent);
 		for (int i = 0; i < members.length; i++) {
 			SyncInfo info = getSyncInfoTree().getSyncInfo(members[i]);
@@ -358,6 +327,6 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		    	result.addAll(Arrays.asList(this.getSyncInfosForFileMembers((IContainer)members[i])));
 		    }
 		}
-		return (SyncInfo[]) result.toArray(new SyncInfo[result.size()]);
+		return result.toArray(new SyncInfo[result.size()]);
 	}
 }

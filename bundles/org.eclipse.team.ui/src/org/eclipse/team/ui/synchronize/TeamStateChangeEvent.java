@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ import org.eclipse.team.ui.mapping.ITeamStateChangeEvent;
  */
 public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 
-	private Set changes = new HashSet();
-	private Set addedRoots = new HashSet();
-	private Set removedRoots = new HashSet();
+	private Set<IResource> changes = new HashSet<>();
+	private Set<IResource> addedRoots = new HashSet<>();
+	private Set<IResource> removedRoots = new HashSet<>();
 
 	public TeamStateChangeEvent() {
 		super();
@@ -80,33 +80,21 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 		addedRoots.add(resource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getAddedRoots()
-	 */
 	@Override
 	public IResource[] getAddedRoots() {
-		return (IResource[]) addedRoots.toArray(new IResource[addedRoots.size()]);
+		return addedRoots.toArray(new IResource[addedRoots.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getRemovedRoots()
-	 */
 	@Override
 	public IResource[] getRemovedRoots() {
-		return (IResource[]) removedRoots.toArray(new IResource[removedRoots.size()]);
+		return removedRoots.toArray(new IResource[removedRoots.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#getChangedResources()
-	 */
 	@Override
 	public IResource[] getChangedResources() {
-		return (IResource[]) changes.toArray(new IResource[changes.size()]);
+		return changes.toArray(new IResource[changes.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IDecoratedStateChangeEvent#hasChange(org.eclipse.core.resources.IResource)
-	 */
 	@Override
 	public boolean hasChange(IResource resource) {
 		if (changes.contains(resource))

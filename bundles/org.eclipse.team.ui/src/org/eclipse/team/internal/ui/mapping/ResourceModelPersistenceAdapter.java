@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,6 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	public ResourceModelPersistenceAdapter() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#save(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void save(ResourceMapping[] mappings, IMemento memento) {
 		for (int i = 0; i < mappings.length; i++) {
@@ -60,13 +57,10 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#restore(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public ResourceMapping[] restore(IMemento memento) {
 		IMemento[] children = memento.getChildren(RESOURCES);
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		for (int i = 0; i < children.length; i++) {
 			IMemento child = children[i];
 			Integer typeInt = child.getInteger(RESOURCE_TYPE);
@@ -135,7 +129,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 				TeamUIPlugin.log(e);
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,25 +46,16 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      */
     ISyncInfoSetChangeListener changeSetListener = new ISyncInfoSetChangeListener() {
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-         */
         @Override
 		public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
             handleChangeEvent(set);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-         */
         @Override
 		public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
             handleChangeEvent(event.getSet());
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
-         */
         @Override
 		public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
             // TODO Auto-generated method stub
@@ -132,9 +123,6 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.subscribers.ChangeSetCollector#getChangeSetChangeListener()
-     */
     protected ISyncInfoSetChangeListener getChangeSetChangeListener() {
         return changeSetListener;
     }
@@ -184,8 +172,8 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
      * @param event the set change event.
      */
     public void handleChange(ISyncInfoSetChangeEvent event) {
-        List removals = new ArrayList();
-        List additions = new ArrayList();
+        List<IResource> removals = new ArrayList<>();
+        List<SyncInfo> additions = new ArrayList<>();
         removals.addAll(Arrays.asList(event.getRemovedResources()));
         additions.addAll(Arrays.asList(event.getAddedResources()));
         SyncInfo[] changed = event.getChangedResources();
@@ -195,10 +183,10 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
             removals.add(info.getLocal());
         }
         if (!removals.isEmpty()) {
-            remove((IResource[]) removals.toArray(new IResource[removals.size()]));
+            remove(removals.toArray(new IResource[removals.size()]));
         }
         if (!additions.isEmpty()) {
-            add((SyncInfo[]) additions.toArray(new SyncInfo[additions.size()]));
+            add(additions.toArray(new SyncInfo[additions.size()]));
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.util.Set;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -51,7 +50,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 
 	private AbstractSynchronizeModelProvider provider;
 
-	private Set pendingLabelUpdates = Collections.synchronizedSet(new HashSet());
+	private Set<ISynchronizeModelElement> pendingLabelUpdates = Collections.synchronizedSet(new HashSet<>());
 
 	// Flag to indicate the need for an early dispath in order to show
 	// busy for elements involved in an operation
@@ -107,14 +106,11 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         }
 	}
 
-	private IPropertyChangeListener listener = new IPropertyChangeListener() {
-		@Override
-		public void propertyChange(final PropertyChangeEvent event) {
-			if (event.getProperty() == ISynchronizeModelElement.BUSY_PROPERTY) {
-				Object source = event.getSource();
-				if (source instanceof ISynchronizeModelElement)
-				    updateBusyState((ISynchronizeModelElement)source, ((Boolean)event.getNewValue()).booleanValue());
-			}
+	private IPropertyChangeListener listener = event -> {
+		if (event.getProperty() == ISynchronizeModelElement.BUSY_PROPERTY) {
+			Object source = event.getSource();
+			if (source instanceof ISynchronizeModelElement)
+			    updateBusyState((ISynchronizeModelElement)source, ((Boolean)event.getNewValue()).booleanValue());
 		}
 	};
 
@@ -123,7 +119,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
     /*
      * Map used to keep track of additions so they can be added in batch at the end of the update
      */
-    private Map additionsMap;
+    private Map<ISynchronizeModelElement, Set<ISynchronizeModelElement>> additionsMap;
 
 	/**
      * Create the marker update handler.
@@ -152,14 +148,11 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		return provider.getViewer();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 			String[] markerTypes = getMarkerTypes();
-			Set handledResources = new HashSet();
-			Set changes = new HashSet();
+			Set<IResource> handledResources = new HashSet<>();
+			Set<ISynchronizeModelElement> changes = new HashSet<>();
 
 			// Accumulate all distinct resources that have had problem marker
 			// changes
@@ -182,7 +175,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 				}
 
 			if (!changes.isEmpty()) {
-			    updateMarkersFor((ISynchronizeModelElement[]) changes.toArray(new ISynchronizeModelElement[changes.size()]));
+			    updateMarkersFor(changes.toArray(new ISynchronizeModelElement[changes.size()]));
 		}
 	}
 
@@ -194,9 +187,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         queueEvent(new BusyStateChangeEvent(element, isBusy), false /* not on front of queue */);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#processEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
         switch (event.getType()) {
@@ -247,9 +237,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         return new ISynchronizeModelElement[0];
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
 		// Fire label changed
@@ -257,12 +244,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         if (pendingLabelUpdates.isEmpty()) {
             return false;
         } else {
-			Utils.asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					firePendingLabelUpdates();
-				}
-			}, getViewer());
+			Utils.asyncExec((Runnable) () -> firePendingLabelUpdates(), getViewer());
 			return true;
         }
     }
@@ -399,9 +381,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         provider.getSyncInfoSet().removeSyncSetChangedListener(this);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#getShortDispatchDelay()
-     */
     @Override
 	protected long getShortDispatchDelay() {
         if (dispatchEarly) {
@@ -472,9 +451,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         return provider2.toString();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 		if(provider.isDisposed()) {
@@ -484,9 +460,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void syncInfoChanged(final ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 		if (! (event instanceof ISyncInfoTreeChangeEvent)) {
@@ -509,9 +482,6 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
         }, true /* preserve expansion */);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		// When errors occur we currently don't process them. It may be possible to decorate
@@ -539,19 +509,16 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             }
 	        final Control ctrl = getViewer().getControl();
 	        if (ctrl != null && !ctrl.isDisposed()) {
-	        	ctrl.getDisplay().syncExec(new Runnable() {
-	        		@Override
-					public void run() {
-	        			if (!ctrl.isDisposed()) {
-	        				BusyIndicator.showWhile(ctrl.getDisplay(), new Runnable() {
-	        					@Override
-								public void run() {
-	    						    internalRunViewUpdate(runnable, preserveExpansion);
-	        					}
-	        				});
-	        			}
-	        		}
-	        	});
+	        	ctrl.getDisplay().syncExec(() -> {
+					if (!ctrl.isDisposed()) {
+						BusyIndicator.showWhile(ctrl.getDisplay(), new Runnable() {
+							@Override
+							public void run() {
+							    internalRunViewUpdate(runnable, preserveExpansion);
+							}
+						});
+					}
+				});
 	        }
         }
     }
@@ -579,7 +546,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		            selected = provider.getSelectedResources();
 		        }
                 if (viewer instanceof AbstractTreeViewer && additionsMap == null)
-                    additionsMap = new HashMap();
+                    additionsMap = new HashMap<>();
 		    }
 			runnable.run();
 		} finally {
@@ -591,7 +558,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
                             if (Policy.DEBUG_SYNC_MODELS) {
                                 System.out.println("Adding child view items of " + parent.getName()); //$NON-NLS-1$
                             }
-                            Set toAdd = (Set)additionsMap.get(parent);
+                            Set<ISynchronizeModelElement> toAdd = additionsMap.get(parent);
                             ((AbstractTreeViewer)viewer).add(parent, toAdd.toArray(new Object[toAdd.size()]));
                         }
                         additionsMap = null;
@@ -635,24 +602,18 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
      * Wrap the runnable in an outer runnable that preserves expansion.
      */
     private IWorkspaceRunnable getUIUpdateRunnable(final IWorkspaceRunnable runnable, final boolean preserveExpansion) {
-        return new IWorkspaceRunnable() {
-            @Override
-			public void run(final IProgressMonitor monitor) throws CoreException {
-                final CoreException[] exception = new CoreException[] { null };
-                runViewUpdate(new Runnable() {
-                    @Override
-					public void run() {
-    	                try {
-    		                runnable.run(monitor);
-    	                } catch (CoreException e) {
-                            exception[0] = e;
-                        }
-                    }
-                }, true /* preserve expansion */);
-                if (exception[0] != null)
-                    throw exception[0];
-            }
-        };
+        return monitor -> {
+		    final CoreException[] exception = new CoreException[] { null };
+		    runViewUpdate(() -> {
+			    try {
+			        runnable.run(monitor);
+			    } catch (CoreException e) {
+			        exception[0] = e;
+			    }
+			}, true /* preserve expansion */);
+		    if (exception[0] != null)
+		        throw exception[0];
+		};
     }
 
     /*
@@ -679,29 +640,23 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             private void recordExpandedResources() {
         	    final StructuredViewer viewer = getViewer();
         		if (viewer != null && !viewer.getControl().isDisposed() && viewer instanceof AbstractTreeViewer) {
-        			viewer.getControl().getDisplay().syncExec(new Runnable() {
-        				@Override
-						public void run() {
-        					if (viewer != null && !viewer.getControl().isDisposed()) {
-        					    expanded = provider.getExpandedResources();
-        					    selected = provider.getSelectedResources();
-        					}
-        				}
-        			});
+        			viewer.getControl().getDisplay().syncExec(() -> {
+						if (viewer != null && !viewer.getControl().isDisposed()) {
+						    expanded = provider.getExpandedResources();
+						    selected = provider.getSelectedResources();
+						}
+					});
         		}
             }
             private void updateView() {
                 // Refresh the view and then set the expansion
-                runViewUpdate(new Runnable() {
-                    @Override
-					public void run() {
-                        provider.getViewer().refresh();
-                        if (expanded != null)
-                            provider.expandResources(expanded);
-                        if (selected != null)
-                            provider.selectResources(selected);
-                    }
-                }, false /* do not preserve expansion (since it is done above) */);
+                runViewUpdate(() -> {
+				    provider.getViewer().refresh();
+				    if (expanded != null)
+				        provider.expandResources(expanded);
+				    if (selected != null)
+				        provider.selectResources(selected);
+				}, false /* do not preserve expansion (since it is done above) */);
             }
         };
     }
@@ -740,9 +695,9 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
             if (Policy.DEBUG_SYNC_MODELS) {
                 System.out.println("Queueing view item for addition " + element.getName()); //$NON-NLS-1$
             }
-            Set toAdd = (Set)additionsMap.get(parent);
+            Set<ISynchronizeModelElement> toAdd = additionsMap.get(parent);
             if (toAdd == null) {
-                toAdd = new HashSet();
+                toAdd = new HashSet<>();
                 additionsMap.put(parent, toAdd);
             }
             toAdd.add(element);

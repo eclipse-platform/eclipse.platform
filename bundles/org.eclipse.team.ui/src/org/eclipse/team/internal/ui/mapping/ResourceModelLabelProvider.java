@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,9 +69,6 @@ public class ResourceModelLabelProvider extends
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.SynchronizationOperationLabelProvider#getBaseLabelProvider()
-	 */
 	@Override
 	protected ILabelProvider getDelegateLabelProvider() {
 		if (provider == null)
@@ -79,10 +76,6 @@ public class ResourceModelLabelProvider extends
 		return provider ;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.AbstractSynchronizationLabelProvider#getSyncDelta(java.lang.Object)
-	 */
-	@Override
 	protected IDiff getDiff(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
 		IResourceDiffTree tree = getDiffTree(elementOrPath);
@@ -101,17 +94,11 @@ public class ResourceModelLabelProvider extends
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isIncludeOverlays()
-	 */
 	@Override
 	protected boolean isIncludeOverlays() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#isBusy(java.lang.Object)
-	 */
 	@Override
 	protected boolean isBusy(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
@@ -129,9 +116,6 @@ public class ResourceModelLabelProvider extends
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeLabelProvider#hasDecendantConflicts(java.lang.Object)
-	 */
 	@Override
 	protected boolean hasDecendantConflicts(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
@@ -152,13 +136,10 @@ public class ResourceModelLabelProvider extends
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		String[] markerTypes = new String[] {IMarker.PROBLEM};
-		final Set handledResources = new HashSet();
+		final Set<IResource> handledResources = new HashSet<>();
 
 		// Accumulate all distinct resources that have had problem marker
 		// changes
@@ -175,19 +156,14 @@ public class ResourceModelLabelProvider extends
 			}
 
 		if (!handledResources.isEmpty()) {
-			final IResource[] resources = (IResource[]) handledResources.toArray(new IResource[handledResources.size()]);
+			final IResource[] resources = handledResources.toArray(new IResource[handledResources.size()]);
 		    updateLabels(resources);
 		}
 	}
 
 	protected void updateLabels(final Object[] resources) {
-		Utils.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				contentProvider.getStructuredViewer().update(
-						resources, null);
-			}
-		}, contentProvider.getStructuredViewer());
+		Utils.asyncExec((Runnable) () -> contentProvider.getStructuredViewer().update(
+				resources, null), contentProvider.getStructuredViewer());
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,9 +122,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		scope.addPropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.ISynchronizeViewPage#createPage(org.eclipse.team.ui.sync.ISynchronizeView)
-	 */
 	@Override
 	public final IPageBookViewPage createPage(ISynchronizePageConfiguration configuration) {
 		validateConfiguration(configuration);
@@ -202,9 +199,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return job.run(monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.AbstractSynchronizeViewPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		Job.getJobManager().cancel(this);
@@ -214,9 +208,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		scope.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getName()
-	 */
 	@Override
 	public String getName() {
 		String name = super.getName();
@@ -286,9 +277,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(TeamUI.GLOBAL_IGNORES_CHANGED)) {
@@ -304,9 +292,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
@@ -321,9 +306,6 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
@@ -376,17 +358,11 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return refreshSchedule;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(SynchronizePageConfiguration.P_PARTICIPANT_SYNC_INFO_SET, collector.getSyncInfoSet());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#run(org.eclipse.ui.IWorkbenchPart)
-	 */
 	@Override
 	public void run(IWorkbenchPart part) {
 		refresh(getResources(), null, null, part != null ? part.getSite() : null);
@@ -531,13 +507,11 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		return scope;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IRefreshable.class && refreshSchedule != null) {
-			return refreshSchedule.getRefreshable();
+			return (T) refreshSchedule.getRefreshable();
 
 		}
 		return super.getAdapter(adapter);

@@ -74,15 +74,15 @@ public class ResourceModelScopeParticipant implements
 	public ResourceMapping[] handleContextChange(
 			ISynchronizationScope scope, IResource[] resources,
 			IProject[] projects) {
-		Set result = new HashSet();
+		Set<ResourceMapping> result = new HashSet<>();
 		for (int i = 0; i < projects.length; i++) {
 			IProject project = projects[i];
 			collectMappings(project, result);
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
-	private void collectMappings(IProject project, Set result) {
+	private void collectMappings(IProject project, Set<ResourceMapping> result) {
 		ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -136,13 +136,10 @@ public class ResourceModelScopeParticipant implements
 			PlatformUI.getWorkbench().getWorkingSetManager().removePropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		// Only interested in project additions and removals
-		Set result = new HashSet();
+		Set<ResourceMapping> result = new HashSet<>();
 		IResourceDelta[] children = event.getDelta().getAffectedChildren();
 		for (int i = 0; i < children.length; i++) {
 			IResourceDelta delta = children[i];
@@ -155,7 +152,7 @@ public class ResourceModelScopeParticipant implements
 			}
 		}
 		if (!result.isEmpty())
-			fireChange((ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]));
+			fireChange(result.toArray(new ResourceMapping[result.size()]));
 
 
 	}

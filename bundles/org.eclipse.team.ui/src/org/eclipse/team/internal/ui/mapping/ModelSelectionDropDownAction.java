@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,15 +74,12 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	public ModelSelectionDropDownAction(ISynchronizePageConfiguration configuration) {
 		Utils.initAction(this, "action.pickModels."); //$NON-NLS-1$
 		this.configuration = configuration;
-		listener = new org.eclipse.jface.util.IPropertyChangeListener() {
-			@Override
-			public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
-				if (event.getProperty() == ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER) {
-					update();
-				}
-				if (event.getProperty().equals(ITeamContentProviderManager.PROP_ENABLED_MODEL_PROVIDERS)) {
-					rebuildMenu();
-				}
+		listener = event -> {
+			if (event.getProperty() == ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER) {
+				update();
+			}
+			if (event.getProperty().equals(ITeamContentProviderManager.PROP_ENABLED_MODEL_PROVIDERS)) {
+				rebuildMenu();
 			}
 		};
 		this.configuration.addPropertyChangeListener(listener);
@@ -127,7 +124,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 	}
 
 	private ModelProvider[] getEnabledModelProviders() {
-		Set result = new HashSet();
+		Set<ModelProvider> result = new HashSet<>();
 		ModelProvider[] providers = ((ModelSynchronizeParticipant)configuration.getParticipant()).getEnabledModelProviders();
 		providers = ModelMergeOperation.sortByExtension(providers);
 		for (int i = 0; i < providers.length; i++) {
@@ -137,7 +134,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 				result.add(provider);
 			}
 		}
-		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
+		return result.toArray(new ModelProvider[result.size()]);
 	}
 
 	private void addModelsToMenu(ModelProvider[] modelProviders) {
@@ -208,9 +205,6 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		return p != null && p.equals(ITeamContentProviderManager.FLAT_LAYOUT);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
 	@Override
 	public void run() {
 		ModelProvider next = getNextProvider();
@@ -219,9 +213,6 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		action.run();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScopeChangeListener#scopeChanged(org.eclipse.team.core.mapping.ISynchronizationScope, org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.core.resources.mapping.ResourceTraversal[])
-	 */
 	@Override
 	public void scopeChanged(ISynchronizationScope scope, ResourceMapping[] newMappings, ResourceTraversal[] newTraversals) {
 		if (newMappings.length > 0) {
@@ -231,15 +222,12 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 
 	private void rebuildMenu() {
 		Display display = TeamUIPlugin.getStandardDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(menuManager != null) {
-					menuManager.dispose();
-					menuManager = null;
-				}
-				update();
+		display.asyncExec(() -> {
+			if(menuManager != null) {
+				menuManager.dispose();
+				menuManager = null;
 			}
+			update();
 		});
 	}
 }

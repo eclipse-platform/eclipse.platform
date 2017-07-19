@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
     /*
      * Map active change sets to infos displayed by the participant
      */
-    private final Map activeSets = new HashMap();
+    private final Map<ChangeSet, SyncInfoSet> activeSets = new HashMap<>();
 
     /*
      * Set which contains those changes that are not part of an active set
@@ -106,7 +106,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		public void resourcesChanged(final ChangeSet set, final IPath[] paths) {
             // Look for any resources that were removed from the set but are still out-of sync.
             // Re-add those resources
-            final List outOfSync = new ArrayList();
+            final List<SyncInfo> outOfSync = new ArrayList<>();
             for (int i = 0; i < paths.length; i++) {
 				IPath path = paths[i];
                 if (!((DiffChangeSet)set).contains(path)) {
@@ -120,7 +120,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
                 provider.performUpdate(new IWorkspaceRunnable() {
                     @Override
 					public void run(IProgressMonitor monitor) {
-                        add((SyncInfo[]) outOfSync.toArray(new SyncInfo[outOfSync.size()]));
+                        add(outOfSync.toArray(new SyncInfo[outOfSync.size()]));
                     }
                 }, true, true);
             }
@@ -170,7 +170,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
     public void reset(SyncInfoSet seedSet) {
         // First, clean up
         rootSet.clear();
-        ChangeSet[] sets = (ChangeSet[]) activeSets.keySet().toArray(new ChangeSet[activeSets.size()]);
+        ChangeSet[] sets = activeSets.keySet().toArray(new ChangeSet[activeSets.size()]);
         for (int i = 0; i < sets.length; i++) {
             ChangeSet set = sets[i];
             remove(set);
@@ -219,8 +219,8 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
      * updated properly.
      */
     public void handleChange(ISyncInfoSetChangeEvent event) {
-        List removals = new ArrayList();
-        List additions = new ArrayList();
+        List<IResource> removals = new ArrayList<>();
+        List<SyncInfo> additions = new ArrayList<>();
         removals.addAll(Arrays.asList(event.getRemovedResources()));
         additions.addAll(Arrays.asList(event.getAddedResources()));
         SyncInfo[] changed = event.getChangedResources();
@@ -230,10 +230,10 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
             removals.add(info.getLocal());
         }
         if (!removals.isEmpty()) {
-            remove((IResource[]) removals.toArray(new IResource[removals.size()]));
+            remove(removals.toArray(new IResource[removals.size()]));
         }
         if (!additions.isEmpty()) {
-            add((SyncInfo[]) additions.toArray(new SyncInfo[additions.size()]));
+            add(additions.toArray(new SyncInfo[additions.size()]));
         }
     }
 
@@ -249,9 +249,6 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
         rootSet.removeAll(resources);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#add(org.eclipse.team.core.synchronize.SyncInfo[])
-     */
     protected void add(SyncInfo[] infos) {
         for (int i = 0; i < infos.length; i++) {
             SyncInfo info = infos[i];
@@ -278,14 +275,14 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
     private ChangeSet[] findChangeSets(SyncInfo info) {
         ActiveChangeSetManager manager = getActiveChangeSetManager();
         ChangeSet[] sets = manager.getSets();
-        List result = new ArrayList();
+        List<ChangeSet> result = new ArrayList<>();
         for (int i = 0; i < sets.length; i++) {
             ChangeSet set = sets[i];
             if (set.contains(info.getLocal())) {
                 result.add(set);
             }
         }
-        return (ChangeSet[]) result.toArray(new ChangeSet[result.size()]);
+        return result.toArray(new ChangeSet[result.size()]);
     }
 
     /*
@@ -386,7 +383,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	}
 
 	/* private */ IResource[] getResources(SyncInfoSet set, IPath[] paths) {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < paths.length; i++) {
 			IPath path = paths[i];
 			SyncInfo info = getSyncInfo(set, path);
@@ -394,7 +391,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 				result.add(info.getLocal());
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private SyncInfo getSyncInfo(SyncInfoSet set, IPath path) {
@@ -464,22 +461,18 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
-        provider.performUpdate(new IWorkspaceRunnable() {
-            @Override
-			public void run(IProgressMonitor monitor) {
-                ChangeSet changeSet = getChangeSet(event.getTree());
-                if (changeSet != null) {
-	                SyncInfoSet targetSet = getSyncInfoSet(changeSet);
-	                if (targetSet != null) {
-		                targetSet.removeAll(getResources(targetSet, event.getRemovals()));
-		                targetSet.addAll(asSyncInfoSet(event.getAdditions()));
-		                targetSet.addAll(asSyncInfoSet(event.getChanges()));
-		                rootSet.removeAll(((IResourceDiffTree)event.getTree()).getAffectedResources());
-	                }
-                }
-            }
-
-        }, true /* preserver expansion */, true /* run in UI thread */);
+        provider.performUpdate(monitor1 -> {
+		    ChangeSet changeSet = getChangeSet(event.getTree());
+		    if (changeSet != null) {
+		        SyncInfoSet targetSet = getSyncInfoSet(changeSet);
+		        if (targetSet != null) {
+		            targetSet.removeAll(getResources(targetSet, event.getRemovals()));
+		            targetSet.addAll(asSyncInfoSet(event.getAdditions()));
+		            targetSet.addAll(asSyncInfoSet(event.getChanges()));
+		            rootSet.removeAll(((IResourceDiffTree)event.getTree()).getAffectedResources());
+		        }
+		    }
+		}, true /* preserver expansion */, true /* run in UI thread */);
 	}
 
 	@Override

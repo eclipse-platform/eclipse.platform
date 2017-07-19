@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class TeamStateProvider implements ITeamStateProvider {
 
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<ITeamStateChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Determine if the decorator for the element is enabled by consulting the
@@ -76,17 +76,11 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#addDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
-	 */
 	@Override
 	public void addDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateProvider#removeDecoratedStateChangeListener(org.eclipse.team.ui.mapping.ITeamStateChangeListener)
-	 */
 	@Override
 	public void removeDecoratedStateChangeListener(ITeamStateChangeListener listener) {
 		listeners.remove(listener);
@@ -132,14 +126,14 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	}
 
 	private String[] getProviderIds(IProject[] projects) {
-		Set providerIds = new HashSet();
+		Set<String> providerIds = new HashSet<>();
 		for (int i = 0; i < projects.length; i++) {
 			IProject project = projects[i];
 			String id = getProviderId(project);
 			if (id != null)
 				providerIds.add(id);
 		}
-		return (String[]) providerIds.toArray(new String[providerIds.size()]);
+		return providerIds.toArray(new String[providerIds.size()]);
 	}
 
 	private String getProviderId(IProject project) {

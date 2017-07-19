@@ -103,14 +103,14 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 					IResource resource = (IResource) o;
 					int depth = getTraversalCalculator().getLayoutDepth(resource, path);
 					IDiff[] diffs = set.getDiffTree().getDiffs(resource, depth);
-					Set resources = new HashSet();
+					Set<IResource> resources = new HashSet<>();
 					for (int i = 0; i < diffs.length; i++) {
 						IDiff diff = diffs[i];
 						IResource r = ResourceDiffTree.getResourceFor(diff);
 						if (r != null)
 							resources.add(r);
 					}
-					return new ResourceTraversal[] { new ResourceTraversal((IResource[]) resources.toArray(new IResource[resources.size()]), IResource.DEPTH_ZERO, IResource.NONE) };
+					return new ResourceTraversal[] { new ResourceTraversal(resources.toArray(new IResource[resources.size()]), IResource.DEPTH_ZERO, IResource.NONE) };
 				}
 			}
 			if (getTraversalCalculator().isResourcePath(path)) {

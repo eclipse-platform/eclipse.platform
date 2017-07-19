@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,20 +92,15 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 					}
 					// Hash the projects by provider
 					IProject[] projects = mainPage.getSelectedProjects();
-					Map map = new HashMap();
+					Map<String, Set<IProject>> map = new HashMap<>();
 					for (int i = 0; i < projects.length; i++) {
 						IProject project = projects[i];
 						RepositoryProvider provider = RepositoryProvider.getProvider(project);
 						if (provider != null) {
 							String id = provider.getID();
-							Set list = (Set)map.get(id);
+							Set<IProject> list = map.get(id);
 							if (list == null) {
-								list = new TreeSet(new Comparator() {
-									@Override
-									public int compare(Object o1, Object o2) {
-										return ((IProject) o1).getName().toLowerCase().compareTo(((IProject) o2).getName().toLowerCase());
-									}
-								});
+								list = new TreeSet<>((o1, o2) -> o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase()));
 								map.put(id, list);
 							}
 							list.add(project);
@@ -130,8 +125,8 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							String id = (String)it.next();
 							IMemento memento = xmlMemento.createChild("provider"); //$NON-NLS-1$
 							memento.putString("id", id); //$NON-NLS-1$
-							Set list = (Set)map.get(id);
-							IProject[] projectArray = (IProject[])list.toArray(new IProject[list.size()]);
+							Set<IProject> list = map.get(id);
+							IProject[] projectArray = list.toArray(new IProject[list.size()]);
 							RepositoryProviderType providerType = RepositoryProviderType.getProviderType(id);
 							ProjectSetCapability serializer = providerType.getProjectSetCapability();
 							ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);

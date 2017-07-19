@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -252,12 +252,7 @@ public abstract class CompareInputChangeNotifier implements
 	 */
 	protected void dispatchChanges(final ICompareInput[] inputs, IProgressMonitor monitor) {
 		prepareInputs(inputs, monitor);
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				fireChanges(inputs);
-			}
-		});
+		Display.getDefault().syncExec(() -> fireChanges(inputs));
 	}
 
 	/**
@@ -309,12 +304,9 @@ public abstract class CompareInputChangeNotifier implements
 		eventHandler.queueEvent(new BackgroundEventHandler.RunnableEvent(runnable, false));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		List changedInputs = new ArrayList();
+		List<ICompareInput> changedInputs = new ArrayList<>();
 		ICompareInput[] inputs = getConnectedInputs();
 		for (int i = 0; i < inputs.length; i++) {
 			ICompareInput input = inputs[i];
@@ -335,7 +327,7 @@ public abstract class CompareInputChangeNotifier implements
 			}
 		}
 		if (!changedInputs.isEmpty())
-			handleInputChanges((ICompareInput[]) changedInputs.toArray(new ICompareInput[changedInputs.size()]), true);
+			handleInputChanges(changedInputs.toArray(new ICompareInput[changedInputs.size()]), true);
 	}
 
 	/**
@@ -356,14 +348,14 @@ public abstract class CompareInputChangeNotifier implements
 		if (force) {
 			realChanges = inputs;
 		} else {
-			List result = new ArrayList();
+			List<ICompareInput> result = new ArrayList<>();
 			for (int i = 0; i < inputs.length; i++) {
 				ICompareInput input = inputs[i];
 				if (isChanged(input)) {
 					result.add(input);
 				}
 			}
-			realChanges = (ICompareInput[]) result.toArray(new ICompareInput[result.size()]);
+			realChanges = result.toArray(new ICompareInput[result.size()]);
 		}
 		if (realChanges.length > 0)
 			inputsChanged(realChanges);

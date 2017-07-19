@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 	private IResource[] getTargetResources() {
 		IStructuredSelection selection = getStructuredSelection();
 		Object[] objects = selection.toArray();
-		Set roots = new HashSet();
+		Set<IResource> roots = new HashSet<>();
 		for (int i = 0; i < objects.length; i++) {
 			Object object = objects[i];
 			ResourceMapping mapping = Utils.getResourceMapping(object);
@@ -75,7 +75,7 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 				}
 			}
 		}
-		return (IResource[]) roots.toArray(new IResource[roots.size()]);
+		return roots.toArray(new IResource[roots.size()]);
 	}
 
 	/**
@@ -122,24 +122,14 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
-		Utils.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				updateEnablement(getStructuredSelection());
-			}
-		}, (StructuredViewer)getConfiguration().getPage().getViewer());
+		Utils.syncExec((Runnable) () -> updateEnablement(getStructuredSelection()), (StructuredViewer)getConfiguration().getPage().getViewer());
 
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == ISynchronizePageConfiguration.P_MODE) {
-			Utils.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					updateEnablement(getStructuredSelection());
-				}
-			}, (StructuredViewer)getConfiguration().getPage().getViewer());
+			Utils.syncExec((Runnable) () -> updateEnablement(getStructuredSelection()), (StructuredViewer)getConfiguration().getPage().getViewer());
 		}
 	}
 

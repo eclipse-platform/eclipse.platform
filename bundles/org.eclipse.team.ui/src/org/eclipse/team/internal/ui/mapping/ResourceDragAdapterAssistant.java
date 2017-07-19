@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,22 +36,11 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 
 	private static final Class IRESOURCE_TYPE = IResource.class;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.navigator.CommonDragAdapterAssistant#getSupportedTransferTypes()
-	 */
 	@Override
 	public Transfer[] getSupportedTransferTypes() {
 		return SUPPORTED_TRANSFERS;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.navigator.CommonDragAdapterAssistant#setDragData(org.eclipse.swt.dnd.DragSourceEvent,
-	 *      org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	public boolean setDragData(DragSourceEvent anEvent,
 			IStructuredSelection aSelection) {
@@ -101,7 +90,7 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 	}
 
 	private IResource[] getSelectedResources(IStructuredSelection aSelection) {
-		Set resources = new LinkedHashSet();
+		Set<IResource> resources = new LinkedHashSet<>();
 		IResource resource = null;
 		for (Iterator iter = aSelection.iterator(); iter.hasNext();) {
 			Object selected = iter.next();
@@ -110,7 +99,7 @@ public class ResourceDragAdapterAssistant extends CommonDragAdapterAssistant {
 				resources.add(resource);
 		}
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 
 	private IResource adaptToResource(Object selected) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,12 +125,12 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 	     * @since 2.0
 	     */
 	    public TreePath[] getVisibleExpandedPaths() {
-	        ArrayList v = new ArrayList();
+	        ArrayList<TreePath> v = new ArrayList<>();
 	        internalCollectVisibleExpanded(v, getControl());
-	        return (TreePath[]) v.toArray(new TreePath[v.size()]);
+	        return v.toArray(new TreePath[v.size()]);
 	    }
 
-	    private void internalCollectVisibleExpanded(ArrayList result, Widget widget) {
+	    private void internalCollectVisibleExpanded(ArrayList<TreePath> result, Widget widget) {
 	        Item[] items = getChildren(widget);
 	        for (int i = 0; i < items.length; i++) {
 	            Item item = items[i];
@@ -212,7 +212,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 
 	private static final String PROP_ACTION_SERVICE_ACTION_BARS = "org.eclipse.team.ui.actionServiceActionBars"; //$NON-NLS-1$
 
-	private Set extensions = new HashSet();
+	private Set<INavigatorContentExtension> extensions = new HashSet<>();
 
 	private NavigatorActionService actionService;
 
@@ -263,7 +263,7 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		configuration.setProperty(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER, ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE);
 		ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)configuration.getParticipant();
 		ModelProvider[] providers = participant.getEnabledModelProviders();
-		Set result = new HashSet();
+		Set<String> result = new HashSet<>();
 		Object property = configuration.getProperty(ITeamContentProviderManager.PROP_PAGE_LAYOUT);
 		boolean isFlatLayout = property != null && property.equals(ITeamContentProviderManager.FLAT_LAYOUT);
 		for (int i = 0; i < providers.length; i++) {
@@ -272,18 +272,18 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 			if (desc != null && desc.isEnabled() && (!isFlatLayout || desc.isFlatLayoutSupported()))
 				result.add(desc.getContentExtensionId());
 		}
-		return (String[]) result.toArray(new String[result.size()]);
+		return result.toArray(new String[result.size()]);
 	}
 
 	private static void bindTeamContentProviders(CommonViewer v) {
 		ITeamContentProviderManager teamContentProviderManager = TeamUI.getTeamContentProviderManager();
 		ITeamContentProviderDescriptor[] descriptors = teamContentProviderManager.getDescriptors();
-		Set toBind = new HashSet();
+		Set<String> toBind = new HashSet<>();
 		for (int i = 0; i < descriptors.length; i++) {
 			ITeamContentProviderDescriptor descriptor = descriptors[i];
 			toBind.add(descriptor.getContentExtensionId());
 		}
-		v.getNavigatorContentService().bindExtensions((String[]) toBind.toArray(new String[toBind.size()]), true);
+		v.getNavigatorContentService().bindExtensions(toBind.toArray(new String[toBind.size()]), true);
 	}
 
 	private static ISynchronizationScope getScope(ISynchronizePageConfiguration configuration) {
@@ -423,9 +423,6 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		return getConfiguration().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.internal.extensions.INavigatorContentServiceListener#onLoad(org.eclipse.ui.navigator.internal.extensions.NavigatorContentExtension)
-	 */
 	@Override
 	public void onLoad(INavigatorContentExtension anExtension) {
 		extensions.add(anExtension);
@@ -439,26 +436,17 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		return (ModelSynchronizeParticipant)getConfiguration().getParticipant();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#getContextMenuId(org.eclipse.jface.viewers.StructuredViewer)
-	 */
 	@Override
 	protected String getContextMenuId(StructuredViewer viewer) {
 		return ((CommonViewer)viewer).getNavigatorContentService().getViewerDescriptor().getPopupMenuId();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#registerContextMenu(org.eclipse.jface.viewers.StructuredViewer, org.eclipse.jface.action.MenuManager)
-	 */
 	@Override
 	protected void registerContextMenu(StructuredViewer viewer, MenuManager menuMgr) {
 		actionService.prepareMenuForPlatformContributions(menuMgr,
 				viewer, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#fillContextMenu(org.eclipse.jface.viewers.StructuredViewer, org.eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	protected void fillContextMenu(StructuredViewer viewer, IMenuManager manager) {
 		// Clear any handlers from the menu
@@ -476,9 +464,6 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		super.fillContextMenu(viewer, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#dispose()
-	 */
 	@Override
 	public void dispose() {
 		TeamUI.getTeamContentProviderManager().removePropertyChangeListener(this);
@@ -487,9 +472,6 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#updateActionBars(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	protected void updateActionBars(IStructuredSelection selection) {
 		super.updateActionBars(selection);
@@ -505,17 +487,11 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#createContextMenuManager(java.lang.String)
-	 */
 	@Override
 	protected MenuManager createContextMenuManager(String targetID) {
 		return new CommonMenuManager(targetID);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#addContextMenuGroups(org.eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	protected void addContextMenuGroups(IMenuManager manager) {
 		// Don't do anything. The groups will be added by the action service

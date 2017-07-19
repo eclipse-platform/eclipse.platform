@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -385,11 +385,11 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 
     protected void addChangeSets(IMenuManager manager) {
         ChangeSet[] sets = getActiveChangeSetManager().getSets();
-        Arrays.sort(sets, new Comparator() {
+        Arrays.sort(sets, new Comparator<ChangeSet>() {
         	private Collator collator = Collator.getInstance();
         	@Override
-			public int compare(Object o1, Object o2) {
-        		return collator.compare(((ChangeSet) o1).getName(), ((ChangeSet) o2).getName());
+			public int compare(ChangeSet o1, ChangeSet o2) {
+        		return collator.compare(o1.getName(), o2.getName());
         	}
         });
         ISelection selection = getContext().getSelection();
@@ -481,7 +481,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
     }
 
 	private IDiff[] getDiffs(IResource[] resources) {
-		List diffs = new ArrayList();
+		List<IDiff> diffs = new ArrayList<>();
 		Subscriber s = ((SubscriberParticipant)getConfiguration().getParticipant()).getSubscriber();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
@@ -493,8 +493,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 				TeamUIPlugin.log(e);
 			}
 		}
-		IDiff[] diffArray = (IDiff[]) diffs
-				.toArray(new IDiff[diffs.size()]);
+		IDiff[] diffArray = diffs.toArray(new IDiff[diffs.size()]);
 		return diffArray;
 	}
 }

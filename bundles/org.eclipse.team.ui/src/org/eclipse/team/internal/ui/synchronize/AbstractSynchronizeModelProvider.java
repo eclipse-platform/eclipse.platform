@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 
     private SynchronizePageActionGroup actionGroup;
 
-    private ListenerList listeners;
+    private ListenerList<IPropertyChangeListener> listeners;
 
     private static final boolean DEBUG = false;
 
@@ -386,7 +386,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
      * after validating that the viewer is still valid.
      */
     protected IResource[] getExpandedResources() {
-        Set expanded = new HashSet();
+        Set<IResource> expanded = new HashSet<>();
         IResource[] savedExpansionState = getCachedResources(P_VIEWER_EXPANSION_STATE);
         for (int i = 0; i < savedExpansionState.length; i++) {
             IResource resource = savedExpansionState[i];
@@ -399,7 +399,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
             IResource resource = currentExpansionState[i];
             expanded.add(resource);
         }
-        return (IResource[]) expanded.toArray(new IResource[expanded.size()]);
+        return expanded.toArray(new IResource[expanded.size()]);
     }
 
     /*
@@ -432,7 +432,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
      * after validating that the viewer is still valid.
      */
     protected void expandResources(IResource[] resources) {
-        Set expandedElements = new HashSet();
+        Set<ISynchronizeModelElement> expandedElements = new HashSet<>();
         StructuredViewer viewer = getViewer();
         for (int j = 0; j < resources.length; j++) {
             IResource resource = resources[j];
@@ -454,7 +454,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     }
 
     protected IResource[] getResources(Object[] objects) {
-        Set result = new HashSet();
+        Set<IResource> result = new HashSet<>();
 		if (objects.length > 0) {
 			for (int i = 0; i < objects.length; i++) {
 				if (objects[i] instanceof ISynchronizeModelElement) {
@@ -464,7 +464,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
     }
 
     private void clearResourceCache(String configProperty) {
@@ -474,7 +474,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
     private void cacheResources(IResource[] resources, String configProperty) {
 		if (resources.length > 0) {
 			ISynchronizePageConfiguration config = getConfiguration();
-			ArrayList paths = new ArrayList();
+			ArrayList<String> paths = new ArrayList<>();
 			for (int i = 0; i < resources.length; i++) {
 				IResource resource = resources[i];
 				String path = resource.getFullPath().toString();
@@ -496,7 +496,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         if (paths == null)
             return new IResource[0];
 		IContainer container = ResourcesPlugin.getWorkspace().getRoot();
-		ArrayList resources = new ArrayList();
+		ArrayList<IResource> resources = new ArrayList<>();
 		for (Iterator it = paths.iterator(); it.hasNext();) {
 			String path = (String) it.next();
 			IResource resource = getResourceForPath(container, path);
@@ -504,7 +504,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			    resources.add(resource);
 			}
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
     }
 
     /**
@@ -520,15 +520,12 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			final IResource[][] expandedResources = new IResource[1][0];
 			final IResource[][] selectedResources = new IResource[1][0];
 			final IResource[][] checkedResources = new IResource[1][0];
-			viewer.getControl().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (viewer != null && !viewer.getControl().isDisposed()) {
-					    expandedResources[0] = getExpandedResources();
-					    selectedResources[0] = getSelectedResources();
-					    if (storeChecks)
-					    	checkedResources [0] = getCheckedResources();
-					}
+			viewer.getControl().getDisplay().syncExec(() -> {
+				if (viewer != null && !viewer.getControl().isDisposed()) {
+				    expandedResources[0] = getExpandedResources();
+				    selectedResources[0] = getSelectedResources();
+				    if (storeChecks)
+				    	checkedResources [0] = getCheckedResources();
 				}
 			});
 
@@ -565,7 +562,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 */
     protected void selectResources(IResource[] resourcesToSelect) {
         StructuredViewer viewer = getViewer();
-        final ArrayList selectedElements = new ArrayList();
+        final ArrayList<ISynchronizeModelElement> selectedElements = new ArrayList<>();
         for (int i = 0; i < resourcesToSelect.length; i++) {
             IResource resource = resourcesToSelect[i];
     		ISynchronizeModelElement[] elements = getModelObjects(resource);
@@ -583,7 +580,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * only be invoked from the UI thread.
 	 */
     protected void checkResources(IResource[] resourcesToCheck) {
-    	 Set checkedElements = new HashSet();
+    	 Set<ISynchronizeModelElement> checkedElements = new HashSet<>();
          StructuredViewer viewer = getViewer();
          if (!(viewer instanceof CheckboxTreeViewer))
         	 return;
@@ -630,17 +627,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
         return resource;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.events.TreeListener#treeCollapsed(org.eclipse.swt.events.TreeEvent)
-     */
     @Override
 	public void treeCollapsed(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.swt.events.TreeListener#treeExpanded(org.eclipse.swt.events.TreeEvent)
-     */
     @Override
 	public void treeExpanded(TreeEvent e) {
         clearResourceCache(P_VIEWER_EXPANSION_STATE);
@@ -653,9 +644,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
      */
     protected abstract ISynchronizeModelElement[] getModelObjects(IResource resource);
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#saveState()
-	 */
 	@Override
 	public void saveState() {
 		saveViewerState();
@@ -701,12 +689,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	        set.removeSyncSetChangedListener(this);
 	    }
 	    if (actionGroup != null) {
-	        Utils.syncExec(new Runnable() {
-                @Override
-				public void run() {
-                    actionGroup.dispose();
-                }
-            }, getViewer());
+	        Utils.syncExec((Runnable) () -> actionGroup.dispose(), getViewer());
 	    }
 		this.disposed = true;
 	}
@@ -771,35 +754,21 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 */
 	protected abstract void handleResourceRemovals(ISyncInfoTreeChangeEvent event);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoChanged(org.eclipse.team.core.synchronize.ISyncInfoSetChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
     @Override
 	public void syncInfoChanged(final ISyncInfoSetChangeEvent event, final IProgressMonitor monitor) {
 		if (! (event instanceof ISyncInfoTreeChangeEvent)) {
 			reset();
 		} else {
-		    updateHandler.runViewUpdate(new Runnable() {
-                @Override
-				public void run() {
-                    handleChanges((ISyncInfoTreeChangeEvent)event, monitor);
-                }
-            }, true /* preserve expansion */);
+		    updateHandler.runViewUpdate(() -> handleChanges((ISyncInfoTreeChangeEvent)event, monitor), true /* preserve expansion */);
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetErrors(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
         // Not handled
 
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
         reset();
@@ -847,7 +816,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 * @param nodes the model elements to remove
 	 */
 	protected void removeFromViewer(ISynchronizeModelElement[] nodes) {
-	    List rootsToClear = new ArrayList();
+	    List<ISynchronizeModelElement> rootsToClear = new ArrayList<>();
 	    for (int i = 0; i < nodes.length; i++) {
             ISynchronizeModelElement node = nodes[i];
     	    if (DEBUG) {
@@ -863,7 +832,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			clearModelObjects(rootToClear);
 			rootsToClear.add(rootToClear);
         }
-	    ISynchronizeModelElement[] roots = (ISynchronizeModelElement[]) rootsToClear.toArray(new ISynchronizeModelElement[rootsToClear.size()]);
+	    ISynchronizeModelElement[] roots = rootsToClear.toArray(new ISynchronizeModelElement[rootsToClear.size()]);
 		if (Utils.canUpdateViewer(getViewer())) {
 			doRemove(roots);
 		}
@@ -1027,7 +996,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
         synchronized (this) {
             if (listeners == null) {
-                listeners = new ListenerList(ListenerList.IDENTITY);
+                listeners = new ListenerList<>(ListenerList.IDENTITY);
             }
             listeners.add(listener);
         }

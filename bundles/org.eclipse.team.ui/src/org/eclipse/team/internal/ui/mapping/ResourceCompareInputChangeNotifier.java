@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -156,13 +156,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		}
 
 		public void fireChangeEvent(final Object element) {
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					fireLabelProviderChanged(new LabelProviderChangedEvent(CompareInputLabelProvider.this, element));
-				}
-
-			});
+			Display.getDefault().asyncExec(() -> fireLabelProviderChanged(new LabelProviderChangedEvent(CompareInputLabelProvider.this, element)));
 		}
 	}
 
@@ -208,9 +202,6 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		super.initialize();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -218,12 +209,9 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		labelProvider.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
-		Set changedInputs = new HashSet();
+		Set<ICompareInput> changedInputs = new HashSet<>();
 		IDiff[] added = event.getAdditions();
 		for (int i = 0; i < added.length; i++) {
 			IDiff diff = added[i];
@@ -247,20 +235,14 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		}
 
 		if (!changedInputs.isEmpty())
-			handleInputChanges((ICompareInput[]) changedInputs.toArray(new ICompareInput[changedInputs.size()]), false);
+			handleInputChanges(changedInputs.toArray(new ICompareInput[changedInputs.size()]), false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
-	 */
 	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Property changes are not interesting w.r.t. state changes
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#getResources(org.eclipse.compare.structuremergeviewer.ICompareInput)
-	 */
 	@Override
 	protected IResource[] getResources(ICompareInput input) {
 		IResource resource = getResource(input);
@@ -301,9 +283,6 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.CompareInputChangeNotifier#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void prepareInput(ICompareInput input, IProgressMonitor monitor) {
 		if (input instanceof ResourceDiffCompareInput) {

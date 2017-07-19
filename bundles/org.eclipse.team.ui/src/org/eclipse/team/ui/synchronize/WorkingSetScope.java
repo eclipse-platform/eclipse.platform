@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,9 +67,6 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		PlatformUI.getWorkbench().getWorkingSetManager().addPropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getName()
-	 */
 	@Override
 	public String getName() {
 		if (sets.length == 0) {
@@ -86,24 +83,21 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		return name.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#getRoots()
-	 */
 	@Override
 	public IResource[] getRoots() {
 		if (sets.length == 0) {
 			return null;
 		}
-		HashSet roots = new HashSet();
+		HashSet<IResource> roots = new HashSet<>();
 		for (int i = 0; i < sets.length; i++) {
 			IWorkingSet set = sets[i];
 			IResource[] resources = Utils.getResources(set.getElements());
 			addNonOverlapping(roots, resources);
 	}
-		return (IResource[]) roots.toArray(new IResource[roots.size()]);
+		return roots.toArray(new IResource[roots.size()]);
 	}
 
-	private void addNonOverlapping(HashSet roots, IResource[] resources) {
+	private void addNonOverlapping(HashSet<IResource> roots, IResource[] resources) {
 		for (int i = 0; i < resources.length; i++) {
 			IResource newResource = resources[i];
 			boolean add = true;
@@ -130,9 +124,6 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE) {
@@ -149,9 +140,6 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -159,9 +147,6 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 			PlatformUI.getWorkbench().getWorkingSetManager().removePropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
@@ -172,16 +157,12 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeScope#init(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	protected void init(IMemento memento) {
 		super.init(memento);
 		IMemento[] rootNodes = memento.getChildren(CTX_SETS);
 		if (rootNodes != null) {
-			List sets = new ArrayList();
+			List<IWorkingSet> sets = new ArrayList<>();
 			for (int i = 0; i < rootNodes.length; i++) {
 				IMemento rootNode = rootNodes[i];
 				String setName = rootNode.getString(CTX_SET_NAME);
@@ -190,7 +171,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 					sets.add(set);
 				}
 			}
-			setWorkingSets((IWorkingSet[]) sets.toArray(new IWorkingSet[sets.size()]));
+			setWorkingSets(sets.toArray(new IWorkingSet[sets.size()]));
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others.
+ * Copyright (c) 2009, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,7 +128,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 			IContainer container = (IContainer) resource;
 
 			// workspace container members
-			List existingChildren = new ArrayList();
+			List<IResource> existingChildren = new ArrayList<>();
 
 			if (container.isAccessible())
 				existingChildren.addAll(Arrays.asList(container.members()));
@@ -144,7 +144,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 					}
 				}
 			}
-			return (IResource[]) existingChildren.toArray(new IResource[existingChildren.size()]);
+			return existingChildren.toArray(new IResource[existingChildren.size()]);
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		}
@@ -167,7 +167,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 
 	@Override
 	public IResource[] roots() {
-		Set roots = new HashSet();
+		Set<IResource> roots = new HashSet<>();
 		if (getPatcher().isWorkspacePatch()) {
 			IDiffElement[] children = PatchModelProvider.getPatchWorkspace(this).getChildren();
 			for (int i = 0; i < children.length; i++) {
@@ -180,7 +180,7 @@ public class ApplyPatchSubscriber extends Subscriber {
 		} else {
 			roots.add(getPatcher().getTarget());
 		}
-		return (IResource[]) roots.toArray(new IResource[0]);
+		return roots.toArray(new IResource[0]);
 	}
 
 	public WorkspacePatcher getPatcher() {
