@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,7 +149,7 @@ public class OpenFileSystemRevisionAction extends BaseSelectionListenerAction {
 			IEditorPart part = editorRefs[i].getEditor(false);
 			if (part != null && part.getEditorInput() instanceof FileSystemRevisionEditorInput) {
 				IFileRevision inputRevision = (IFileRevision) input.getAdapter(IFileRevision.class);
-				IFileRevision editorRevision = (IFileRevision) part.getEditorInput().getAdapter(IFileRevision.class);
+				IFileRevision editorRevision = part.getEditorInput().getAdapter(IFileRevision.class);
 
 				if (inputRevision.equals(editorRevision)) {
 					//make the editor that already contains the revision current

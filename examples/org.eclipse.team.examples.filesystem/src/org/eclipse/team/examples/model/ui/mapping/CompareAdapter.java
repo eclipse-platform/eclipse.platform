@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,6 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		this.provider = provider;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#getName(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
 	public String getName(ResourceMapping mapping) {
 		Object o = mapping.getModelObject();
 		if (o instanceof ModelObject) {
@@ -48,9 +45,6 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		return super.getName(mapping);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#getPathString(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
 	public String getPathString(ResourceMapping mapping) {
 		Object o = mapping.getModelObject();
 		if (o instanceof ModelObject) {
@@ -59,9 +53,6 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		return super.getPathString(mapping);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationCompareAdapter#asCompareInput(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
-	 */
 	public ICompareInput asCompareInput(ISynchronizationContext context, Object o) {
 		if (o instanceof ModelObjectElementFile) {
 			ModelObjectElementFile moeFile = (ModelObjectElementFile) o;
@@ -71,9 +62,6 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		return super.asCompareInput(context, o);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter#restore(org.eclipse.ui.IMemento)
-	 */
 	public ResourceMapping[] restore(IMemento memento) {
 		List result = new ArrayList();
 		IMemento[] children = memento.getChildren(CTX_MODEL_MAPPINGS);
@@ -86,9 +74,6 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareAdapter#save(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.ui.IMemento)
-	 */
 	public void save(ResourceMapping[] mappings, IMemento memento) {
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -107,11 +92,11 @@ public class CompareAdapter extends SynchronizationCompareAdapter {
 		if (parent != null) {
 			ModelObjectDefinitionFile modFile = (ModelObjectDefinitionFile)ModelObject.create(getResource(parent));
 			if (modFile != null)
-				return (ResourceMapping)new ModelObjectElementFile(modFile, (IFile)getResource(path)).getAdapter(ResourceMapping.class);
+				return new ModelObjectElementFile(modFile, (IFile)getResource(path)).getAdapter(ResourceMapping.class);
 		} else {
 			ModelObject object = ModelObject.create(getResource(path));
 			if (object != null)
-				return (ResourceMapping)object.getAdapter(ResourceMapping.class);
+				return object.getAdapter(ResourceMapping.class);
 		}
 		return null;
 	}

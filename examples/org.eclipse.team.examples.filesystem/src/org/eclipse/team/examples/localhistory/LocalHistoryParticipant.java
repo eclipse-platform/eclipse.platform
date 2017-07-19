@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 			if(element instanceof ISynchronizeModelElement) {
 				ISynchronizeModelElement node = (ISynchronizeModelElement)element;
 				if(node instanceof IAdaptable) {
-					SyncInfo info = (SyncInfo)((IAdaptable)node).getAdapter(SyncInfo.class);
+					SyncInfo info = ((IAdaptable)node).getAdapter(SyncInfo.class);
 					if(info != null) {
 						LocalHistoryVariant state = (LocalHistoryVariant)info.getRemote();
 						return text+ " ("+ state.getContentIdentifier() + ")";
@@ -74,9 +74,6 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 		setSubscriber(new LocalHistorySubscriber());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscriber.SubscriberParticipant#setSubscriber(org.eclipse.team.core.subscribers.Subscriber)
-	 */
 	protected void setSubscriber(Subscriber subscriber) {
 		super.setSubscriber(subscriber);
 		try {
@@ -99,7 +96,7 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 	
 	protected static SyncInfo getSyncInfo(ISynchronizeModelElement element) {
 	    if (element instanceof IAdaptable) {
-		    return (SyncInfo)((IAdaptable)element).getAdapter(SyncInfo.class);
+		    return ((IAdaptable)element).getAdapter(SyncInfo.class);
 	    }
 	    return null;
 	}

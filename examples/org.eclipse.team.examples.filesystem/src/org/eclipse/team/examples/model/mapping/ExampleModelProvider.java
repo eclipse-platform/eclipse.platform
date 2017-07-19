@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,6 @@ public class ExampleModelProvider extends
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ModelProvider#validateChange(org.eclipse.core.resources.IResourceDelta, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	public IStatus validateChange(IResourceDelta delta, IProgressMonitor monitor) {
 		// Visit the changes in the delta to look for changes we care about
 		final List problems = new ArrayList();
@@ -84,7 +81,7 @@ public class ExampleModelProvider extends
 		if (ModelProject.isModProject(resource.getProject())) {
 			ModelObject object = ModelObject.create(resource);
 			if (object != null)
-				return new ResourceMapping[] { (ResourceMapping)object.getAdapter(ResourceMapping.class) };
+				return new ResourceMapping[] { object.getAdapter(ResourceMapping.class) };
 		}
 		return super.getMappings(resource, context, monitor);
 	}

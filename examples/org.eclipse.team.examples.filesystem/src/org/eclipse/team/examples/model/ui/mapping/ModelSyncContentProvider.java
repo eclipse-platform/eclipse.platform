@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,18 +45,12 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
-	 */
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		delegate = new ModelNavigatorContentProvider(getContext() != null);
 		delegate.init(site);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#dispose()
-	 */
 	public void dispose() {
 		super.dispose();
 		if (delegate != null)
@@ -67,28 +61,19 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return delegate;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelProviderId()
-	 */
 	protected String getModelProviderId() {
 		return ExampleModelProvider.ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getModelRoot()
-	 */
 	protected Object getModelRoot() {
 		return ModelWorkspace.getRoot();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getTraversals(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
-	 */
 	protected ResourceTraversal[] getTraversals(
 			ISynchronizationContext context, Object object) {
 		if (object instanceof ModelObject) {
 			ModelObject mo = (ModelObject) object;
-			ResourceMapping mapping = (ResourceMapping)mo.getAdapter(ResourceMapping.class);
+			ResourceMapping mapping = mo.getAdapter(ResourceMapping.class);
 			ResourceMappingContext rmc = new SynchronizationResourceMappingContext(context);
 			try {
 				// Technically speaking, this may end up being too long running for this
@@ -101,9 +86,6 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return new ResourceTraversal[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#getChildrenInContext(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object, java.lang.Object[])
-	 */
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parent, Object[] children) {
 		Set allChildren = new HashSet();
 		allChildren.addAll(Arrays.asList(super.getChildrenInContext(context, parent, children)));
@@ -138,16 +120,10 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return allChildren.toArray(new Object[allChildren.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedChildren(java.lang.Object, java.util.Set)
-	 */
 	public void getPipelinedChildren(Object aParent, Set theCurrentChildren) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedElements(java.lang.Object, java.util.Set)
-	 */
 	public void getPipelinedElements(Object anInput, Set theCurrentElements) {
 		// Replace any model projects with a ModelProject if the input
 		// is a synchronization context
@@ -176,17 +152,11 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedParent(java.lang.Object, java.lang.Object)
-	 */
 	public Object getPipelinedParent(Object anObject, Object aSuggestedParent) {
 		// We're not changing the parenting of any resources
 		return aSuggestedParent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptAdd(org.eclipse.ui.navigator.PipelinedShapeModification)
-	 */
 	public PipelinedShapeModification interceptAdd(PipelinedShapeModification anAddModification) {
 		if (anAddModification.getParent() instanceof ISynchronizationContext) {
 			for (Iterator iter = anAddModification.getChildren().iterator(); iter.hasNext();) {
@@ -206,40 +176,24 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptRefresh(org.eclipse.ui.navigator.PipelinedViewerUpdate)
-	 */
 	public boolean interceptRefresh(PipelinedViewerUpdate aRefreshSynchronization) {
 		// No need to intercept the refresh
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptRemove(org.eclipse.ui.navigator.PipelinedShapeModification)
-	 */
 	public PipelinedShapeModification interceptRemove(PipelinedShapeModification aRemoveModification) {
 		// No need to intercept the remove
 		return aRemoveModification;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptUpdate(org.eclipse.ui.navigator.PipelinedViewerUpdate)
-	 */
 	public boolean interceptUpdate(PipelinedViewerUpdate anUpdateSynchronization) {
 		// No need to intercept the update
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
 		// Override in order to perform custom viewer updates when the diff tree changes
-		Utils.syncExec(new Runnable() {
-			public void run() {
-				handleChange(event);
-			}
-		}, (StructuredViewer)getViewer());
+		Utils.syncExec((Runnable) () -> handleChange(event), (StructuredViewer)getViewer());
 	}
 
 	void handleChange(IDiffChangeEvent event) {
@@ -350,9 +304,6 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationContentProvider#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
-	 */
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// We're overriding this message so that label updates occur for any elements
 		// whose labels may have changed
@@ -378,13 +329,11 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		if (!updates.isEmpty() || refresh) {
 			final boolean refreshAll = refresh;
 			final StructuredViewer viewer = (StructuredViewer)getViewer();
-			Utils.syncExec(new Runnable() {
-				public void run() {
-					if (refreshAll)
-						viewer.refresh(true);
-					else
-						viewer.update(updates.toArray(new Object[updates.size()]), null);
-				}
+			Utils.syncExec((Runnable) () -> {
+				if (refreshAll)
+					viewer.refresh(true);
+				else
+					viewer.update(updates.toArray(new Object[updates.size()]), null);
 			}, viewer);
 		}
 	}

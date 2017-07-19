@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,6 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		PessimisticFilesystemProviderPlugin.getInstance().addProviderListener(this);
 	}
 
-	/*
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String, Object)
-	 */
 	public String decorateText(String text, Object element) {
 		IResource resource= getResource(element);
 		if (resource == null)
@@ -55,9 +52,6 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		return "(not controlled) " + text;
 	}
 
-	/*
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
-	 */
 	public Image decorateImage(Image image, Object element) {
 		return image;
 	}
@@ -81,7 +75,7 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 			return (IResource) object;
 		}
 		if (object instanceof IAdaptable) {
-			return (IResource) ((IAdaptable) object).getAdapter(IResource.class);
+			return ((IAdaptable) object).getAdapter(IResource.class);
 		}
 		return null;
 	}
@@ -101,17 +95,11 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		}
 	}
 
-	/*
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	public void dispose() {
 		PessimisticFilesystemProviderPlugin.getInstance().removeProviderListener(this);
 		super.dispose();
 	}
 
-	/*
-	 * @see org.eclipse.team.examples.pessimistic.IResourceStateListener#resourcesChanged(IResource[])
-	 */
 	public void stateChanged(IResource[] resources) {
 		if (resources.length > 0) {
 			LabelProviderChangedEvent[] events= new LabelProviderChangedEvent[resources.length];

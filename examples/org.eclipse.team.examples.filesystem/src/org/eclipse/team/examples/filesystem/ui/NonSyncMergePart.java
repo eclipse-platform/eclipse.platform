@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,24 +44,15 @@ public class NonSyncMergePart extends PageSaveablePart {
 		this.page = page;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#createPage(org.eclipse.swt.widgets.Composite, org.eclipse.jface.action.ToolBarManager)
-	 */
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
 		page.createControl(parent);
 		return page.getControl();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#getSelectionProvider()
-	 */
 	protected ISelectionProvider getSelectionProvider() {
 		return page.getViewer();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#getCompareInput(org.eclipse.jface.viewers.ISelection)
-	 */
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
 		if (compareInput != null)
@@ -89,9 +80,6 @@ public class NonSyncMergePart extends PageSaveablePart {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.PageSaveablePart#prepareInput(org.eclipse.compare.structuremergeviewer.ICompareInput, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	protected void prepareInput(ICompareInput input,
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
@@ -109,7 +97,7 @@ public class NonSyncMergePart extends PageSaveablePart {
 	 * Convert the compare input to a synchronize compare input.
 	 */
 	private ISynchronizationCompareInput asSynchronizationCompareInput(ICompareInput input) {
-		return (ISynchronizationCompareInput)Adapters.adapt(input, ISynchronizationCompareInput.class);
+		return Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
 	public void contentChanged(IContentChangeNotifier source) {
@@ -117,16 +105,10 @@ public class NonSyncMergePart extends PageSaveablePart {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#getTitle()
-	 */
 	public String getTitle() {
 		return "File System Provider Merge";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPart#getTitleImage()
-	 */
 	public Image getTitleImage() {
 		return null;
 	}
