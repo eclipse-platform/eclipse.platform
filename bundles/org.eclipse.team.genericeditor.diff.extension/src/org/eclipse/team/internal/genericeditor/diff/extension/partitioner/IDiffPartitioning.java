@@ -13,6 +13,7 @@ package org.eclipse.team.internal.genericeditor.diff.extension.partitioner;
 import org.eclipse.jface.text.IDocument;
 
 public interface IDiffPartitioning {
+	public static final String DIFF_PARTITIONINING = "__DIFF_PARTITIONING"; //$NON-NLS-1$
 	public static final String PARTITION_BODY = "__PARTITION_BODY"; //$NON-NLS-1$
 	public static final String PARTITION_HEADER = "__PARTITION_HEADER"; //$NON-NLS-1$
 	public static final String[] LEGAL_PARTITION_TYPES = new String[] {PARTITION_HEADER,PARTITION_BODY, IDocument.DEFAULT_CONTENT_TYPE };

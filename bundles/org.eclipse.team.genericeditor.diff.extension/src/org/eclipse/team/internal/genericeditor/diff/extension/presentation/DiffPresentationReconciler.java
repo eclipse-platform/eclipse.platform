@@ -63,6 +63,7 @@ public class DiffPresentationReconciler extends PresentationReconciler {
 		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
 		this.setDamager(dr, IDiffPartitioning.PARTITION_BODY);
 		this.setRepairer(dr, IDiffPartitioning.PARTITION_BODY);
+		this.setDocumentPartitioning(IDiffPartitioning.DIFF_PARTITIONINING);
 
 	}
 }
