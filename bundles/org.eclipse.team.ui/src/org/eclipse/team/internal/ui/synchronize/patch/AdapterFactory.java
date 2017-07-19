@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others.
+ * Copyright (c) 2009, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,42 +22,43 @@ public class AdapterFactory implements IAdapterFactory {
 	private IWorkbenchAdapter modelAdapter = new PatchWorkbenchAdapter();
 	private ISynchronizationCompareAdapter compareAdapter;
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == ResourceMapping.class) {
 			if (adaptableObject instanceof PatchProjectDiffNode) {
-				return new DiffProjectResourceMapping(
+				return (T) new DiffProjectResourceMapping(
 						((PatchProjectDiffNode) adaptableObject)
 								.getDiffProject());
 			}
 			if (adaptableObject instanceof PatchFileDiffNode) {
-				return new FilePatchResourceMapping(
+				return (T) new FilePatchResourceMapping(
 						((PatchFileDiffNode) adaptableObject).getDiffResult());
 			}
 			if (adaptableObject instanceof HunkDiffNode) {
-				return new HunkResourceMapping(((HunkDiffNode) adaptableObject)
+				return (T) new HunkResourceMapping(((HunkDiffNode) adaptableObject)
 						.getHunkResult());
 			}
 		}
 		if (adapterType == IWorkbenchAdapter.class)
-			return modelAdapter;
+			return (T) modelAdapter;
 		if (adapterType == ISynchronizationCompareAdapter.class
 				&& adaptableObject instanceof PatchModelProvider) {
 			if (compareAdapter == null) {
 				compareAdapter = new PatchCompareAdapter();
 			}
-			return compareAdapter;
+			return (T) compareAdapter;
 		}
 		if (adapterType == IResource.class) {
 			if (adaptableObject instanceof PatchFileDiffNode) {
-				return ((PatchFileDiffNode) adaptableObject).getResource();
+				return (T) ((PatchFileDiffNode) adaptableObject).getResource();
 			}
 		}
 		return null;
 	}
 
 	@Override
-	public Class[] getAdapterList() {
+	public Class<?>[] getAdapterList() {
 		return new Class[] { ResourceMapping.class, IWorkbenchAdapter.class,
 				IResource.class };
 	}

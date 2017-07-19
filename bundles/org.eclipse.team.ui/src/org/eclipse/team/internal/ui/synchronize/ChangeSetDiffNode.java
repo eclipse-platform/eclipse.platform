@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,6 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
         this.set = set;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.ISynchronizeModelElement#getResource()
-     */
     @Override
 	public IResource getResource() {
         return null;
@@ -41,41 +38,26 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
         return set;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_CHANGE_SET);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
-	 */
 	@Override
 	public String getName() {
 		return set.getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SyncInfoModelElement#toString()
-	 */
 	@Override
 	public String toString() {
 		return getName();
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#hashCode()
-     */
     @Override
 	public int hashCode() {
         return set.hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#equals(java.lang.Object)
-     */
     @Override
 	public boolean equals(Object object) {
         if (object instanceof ChangeSetDiffNode) {
@@ -84,13 +66,11 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
         return super.equals(object);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelElement#getAdapter(java.lang.Class)
-     */
-    @Override
-	public Object getAdapter(Class adapter) {
+    @SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
         if (adapter.equals(ChangeSet.class)) {
-            return set;
+            return (T) set;
         }
         return super.getAdapter(adapter);
     }

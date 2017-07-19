@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,9 +94,6 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		configuration.addActionContribution(new ModeFilterActions());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		composite = new Composite(parent, SWT.NONE);
@@ -141,34 +138,22 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		return viewerAdvisor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#setActionBars(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	public void setActionBars(IActionBars actionBars) {
 		// Delegate menu creation to the advisor
 		viewerAdvisor.setActionBars(actionBars);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#getControl()
-	 */
 	@Override
 	public Control getControl() {
 		return composite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IPage#setFocus()
-	 */
 	@Override
 	public void setFocus() {
 		changesSection.setFocus();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#init(org.eclipse.team.ui.synchronize.ISynchronizePageSite)
-	 */
 	@Override
 	public void init(ISynchronizePageSite site) {
 		this.site = site;
@@ -188,9 +173,6 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#dispose()
-	 */
 	@Override
 	public void dispose() {
 		changesSection.dispose();
@@ -198,17 +180,11 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#getViewer()
-	 */
 	@Override
 	public Viewer getViewer() {
 		return changesViewer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePage#aboutToChangeProperty(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public boolean aboutToChangeProperty(
 			ISynchronizePageConfiguration configuration, String key,
@@ -234,33 +210,25 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 	 *
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class key) {
+	public <T> T getAdapter(Class<T> key) {
 		if (key.equals(ISelectionProvider.class))
-			return changesViewer;
+			return (T) changesViewer;
 		if (key == IShowInSource.class) {
-			return new IShowInSource() {
-				@Override
-				public ShowInContext getShowInContext() {
-					StructuredViewer v = (StructuredViewer)changesViewer;
-					if (v == null) return null;
-					ISelection s = v.getSelection();
-					if (s instanceof IStructuredSelection) {
-						Object[] resources = Utils.getResources(((IStructuredSelection)s).toArray());
-						return new ShowInContext(null, new StructuredSelection(resources));
-					}
-					return null;
+			return (T) (IShowInSource) () -> {
+				StructuredViewer v = (StructuredViewer)changesViewer;
+				if (v == null) return null;
+				ISelection s = v.getSelection();
+				if (s instanceof IStructuredSelection) {
+					Object[] resources = Utils.getResources(((IStructuredSelection)s).toArray());
+					return new ShowInContext(null, new StructuredSelection(resources));
 				}
+				return null;
 			};
 		}
 		if (key == IShowInTargetList.class) {
-			return new IShowInTargetList() {
-				@Override
-				public String[] getShowInTargetIds() {
-					return new String[] { IPageLayout.ID_RES_NAV };
-				}
-
-			};
+			return (T) (IShowInTargetList) () -> new String[] { IPageLayout.ID_RES_NAV };
 		}
 		return null;
 	}

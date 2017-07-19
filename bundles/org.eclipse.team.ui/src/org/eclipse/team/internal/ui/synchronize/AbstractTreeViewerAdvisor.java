@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,18 +41,12 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 
 	private class TreeCompareNavigator extends CompareNavigator {
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.compare.CompareNavigator#getNavigatables()
-		 */
 		@Override
 		protected INavigatable[] getNavigatables() {
 			INavigatable navigatable = getNavigatable();
 			return new INavigatable[] { navigatable };
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.compare.CompareNavigator#selectChange(boolean)
-		 */
 		@Override
 		public boolean selectChange(boolean next) {
 			if (getSubNavigator() != null) {
@@ -94,9 +88,6 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.compare.CompareNavigator#hasChange(boolean)
-		 */
 		@Override
 		public boolean hasChange(boolean next) {
 			if (getSubNavigator() != null) {
@@ -353,16 +344,17 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
  	 * navigation between several objects.
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == ICompareNavigator.class) {
 			if(nav == null) {
 				nav = new TreeCompareNavigator();
 			}
-			return nav;
+			return (T) nav;
 		}
 		if(adapter == INavigatable.class) {
-			return getNavigatable();
+			return (T) getNavigatable();
 		}
 		return null;
 	}

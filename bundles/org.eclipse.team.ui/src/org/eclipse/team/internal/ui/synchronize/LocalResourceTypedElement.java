@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,9 +63,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		exists = resource.exists();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.BufferedContent#setContent(byte[])
-	 */
 	@Override
 	public void setContent(byte[] contents) {
 		fDirty = true;
@@ -112,9 +109,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ResourceNode#getContents()
-	 */
 	@Override
 	public InputStream getContents() throws CoreException {
 		if (exists)
@@ -122,14 +116,12 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ISharedDocumentAdapter.class) {
 			if (isSharedDocumentsEnable())
-				return getSharedDocumentAdapter();
+				return (T) getSharedDocumentAdapter();
 			else
 				return null;
 		}
@@ -176,9 +168,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return sharedDocumentAdapter;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ResourceNode#isEditable()
-	 */
 	@Override
 	public boolean isEditable() {
 		// Do not allow non-existent files to be edited
@@ -217,9 +206,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ResourceNode#createStream()
-	 */
 	@Override
 	protected InputStream createStream() throws CoreException {
 		InputStream inputStream = super.createStream();
@@ -245,9 +231,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return timestamp;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ResourceNode#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return getResource().hashCode();
@@ -303,9 +286,6 @@ public class LocalResourceTypedElement extends ResourceNode implements IAdaptabl
 		return exists;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.BufferedContent#fireContentChanged()
-	 */
 	@Override
 	protected void fireContentChanged() {
 		super.fireContentChanged();

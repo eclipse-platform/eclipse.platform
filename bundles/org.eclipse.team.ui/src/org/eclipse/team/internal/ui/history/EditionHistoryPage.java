@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,7 +123,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 			return null;
 		}
 		@Override
-		public Object getAdapter(Class adapter) {
+		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IFile.class)
 				return null;
 			return super.getAdapter(adapter);
@@ -189,17 +189,11 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#getFile()
-	 */
 	@Override
 	protected IFile getFile() {
 		return file;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#update(org.eclipse.team.core.history.IFileRevision[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void update(IFileRevision[] revisions, IProgressMonitor monitor) {
 		monitor.beginTask(null, 100);
@@ -245,12 +239,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 	}
 
 	private static void sortDescending(IFileRevision[] revisions) {
-		Arrays.sort(revisions, new Comparator<IFileRevision>() {
-			@Override
-			public int compare(IFileRevision d1, IFileRevision d2) {
-				return -Long.compare(d1.getTimestamp(), d2.getTimestamp());
-			}
-		});
+		Arrays.sort(revisions, (d1, d2) -> -Long.compare(d1.getTimestamp(), d2.getTimestamp()));
 	}
 
 	private static boolean contentsEqual(IStructureCreator creator, ITypedElement previousEdition,
@@ -262,9 +251,6 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		return (contents1 != null && contents2 != null && contents1.equals(contents2));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#getCompareInput(java.lang.Object)
-	 */
 	@Override
 	public ICompareInput getCompareInput(Object object) {
 		ITypedElement edition = getEditionFor(object);
@@ -308,18 +294,12 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#isValidInput(java.lang.Object)
-	 */
 	@Override
 	public boolean isValidInput(Object object) {
 		// This page doesn't support input changes
 		return object.equals(element);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		try {
@@ -354,9 +334,6 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#getNoChangesMessage()
-	 */
 	@Override
 	protected String getNoChangesMessage() {
 		if (name != null)
@@ -394,9 +371,6 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#getName()
-	 */
 	@Override
 	public String getName() {
 		if (name != null)
@@ -404,9 +378,6 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		return super.getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#getDescription()
-	 */
 	@Override
 	public String getDescription() {
 		if (name != null)
@@ -414,9 +385,6 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		return super.getDescription();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.history.LocalHistoryPage#createCompareAction()
-	 */
 	@Override
 	protected CompareRevisionAction createCompareAction() {
 		return new CompareEditionAction(this);

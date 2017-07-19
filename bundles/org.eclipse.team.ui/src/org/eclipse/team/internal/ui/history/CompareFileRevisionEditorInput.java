@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2006, 2010 IBM Corporation and others.
+ *  Copyright (c) 2006, 2017 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -96,9 +96,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		setTitle(NLS.bind(TeamUIMessages.SyncInfoCompareInput_title, new String[] { left.getName() }));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#internalPrepareInput(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		ICompareInput input = createCompareInput();
@@ -214,9 +211,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		return ""; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#getToolTipText()
-	 */
 	@Override
 	public String getToolTipText() {
 		Object[] titleObject = new Object[3];
@@ -226,9 +220,6 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#getTitle()
-	 */
 	@Override
 	public String getTitle() {
 		Object[] titleObject = new Object[3];
@@ -238,14 +229,12 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		return NLS.bind(TeamUIMessages.CompareFileRevisionEditorInput_compareResourceAndVersions, titleObject);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IFile.class || adapter == IResource.class) {
 			if (getLocalElement() != null) {
-				return getLocalElement().getResource();
+				return (T) getLocalElement().getResource();
 			}
 			return null;
 		}
@@ -299,26 +288,17 @@ public class CompareFileRevisionEditorInput extends SaveableCompareEditorInput {
 		return TeamUIMessages.CompareFileRevisionEditorInput_2;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.LocalResourceCompareEditorInput#fireInputChange()
-	 */
 	@Override
 	protected void fireInputChange() {
 		((MyDiffNode)getCompareResult()).fireChange();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#contentsCreated()
-	 */
 	@Override
 	protected void contentsCreated() {
 		super.contentsCreated();
 		notifier.initialize();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SaveableCompareEditorInput#handleDispose()
-	 */
 	@Override
 	protected void handleDispose() {
 		super.handleDispose();

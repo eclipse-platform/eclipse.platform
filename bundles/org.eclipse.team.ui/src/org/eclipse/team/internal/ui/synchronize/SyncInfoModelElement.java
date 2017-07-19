@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,9 +101,6 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 		fireChange();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffElement#getKind()
-	 */
 	@Override
 	public int getKind() {
 		SyncInfo info = getSyncInfo();
@@ -124,17 +121,11 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 		this.ancestor = ancestor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getAncestor()
-	 */
 	@Override
 	public ITypedElement getAncestor() {
 		return this.ancestor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
-	 */
 	@Override
 	public String getName() {
 		IResource resource = getResource();
@@ -145,13 +136,11 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == SyncInfo.class) {
-			return getSyncInfo();
+			return (T) getSyncInfo();
 		}
 		return super.getAdapter(adapter);
 	}
@@ -167,9 +156,6 @@ public class SyncInfoModelElement extends SynchronizeModelElement {
 		return info.getLocal();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return getResource().getFullPath().toString();

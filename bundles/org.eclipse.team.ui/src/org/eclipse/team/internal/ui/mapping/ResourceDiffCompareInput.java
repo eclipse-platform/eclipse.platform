@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,30 +169,22 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		super.fireChange();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#prepareInput(org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void prepareInput(CompareConfiguration configuration, IProgressMonitor monitor) throws CoreException {
 		configuration.setLabelProvider(this, ((ResourceCompareInputChangeNotifier)getChangeNotifier()).getLabelProvider());
 		ensureContentsCached(getAncestor(), getRight(), monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#getSaveable()
-	 */
 	@Override
 	public SaveableComparison getSaveable() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IFile.class || adapter == IResource.class) {
-			return ResourceDiffTree.getResourceFor(node);
+			return (T) ResourceDiffTree.getResourceFor(node);
 		}
 		if (adapter == ResourceMapping.class) {
 			IResource resource = ResourceDiffTree.getResourceFor(node);
@@ -201,9 +193,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#getFullPath()
-	 */
 	@Override
 	public String getFullPath() {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
@@ -212,9 +201,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationCompareInput#isCompareInputFor(java.lang.Object)
-	 */
 	@Override
 	public boolean isCompareInputFor(Object object) {
 		final IResource resource = ResourceDiffTree.getResourceFor(node);
@@ -224,9 +210,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IResourceProvider#getResource()
-	 */
 	@Override
 	public IResource getResource() {
 		return ResourceDiffTree.getResourceFor(node);
@@ -242,9 +225,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return ResourceCompareInputChangeNotifier.getChangeNotifier(context);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object other) {
 		if (other == this)
@@ -267,9 +247,6 @@ public class ResourceDiffCompareInput extends AbstractCompareInput implements IS
 		return e1.equals(e2);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return getResource().hashCode();
