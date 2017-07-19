@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,6 @@ import java.util.Collections;
 
 import org.eclipse.core.commands.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.team.core.diff.*;
@@ -72,17 +70,11 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 		Utils.handle(throwable);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return handler.isEnabled();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelProviderAction#getDiffFilter()
-	 */
 	protected FastDiffFilter getDiffFilter() {
 		return new FastDiffFilter() {
 			@Override
@@ -102,15 +94,12 @@ public class MergeIncomingChangesAction extends ModelParticipantAction implement
 	protected void handleTargetSaveableChange() throws InvocationTargetException, InterruptedException {
 		final SaveableComparison currentBuffer = getActiveSaveable();
 		if (currentBuffer != null && currentBuffer.isDirty()) {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						handleTargetSaveableChange(getConfiguration().getSite().getShell(), null, currentBuffer, true, monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+				try {
+					handleTargetSaveableChange(getConfiguration().getSite().getShell(), null, currentBuffer, true,
+							monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		}

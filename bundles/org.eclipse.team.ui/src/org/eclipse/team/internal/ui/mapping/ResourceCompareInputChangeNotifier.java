@@ -16,15 +16,12 @@ import java.util.Set;
 import org.eclipse.compare.*;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.team.core.ICache;
-import org.eclipse.team.core.ICacheListener;
 import org.eclipse.team.core.diff.*;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
@@ -193,12 +190,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	@Override
 	public void initialize() {
 		context.getDiffTree().addDiffChangeListener(this);
-		context.getCache().addCacheListener(new ICacheListener() {
-			@Override
-			public void cacheDisposed(ICache cache) {
-				dispose();
-			}
-		});
+		context.getCache().addCacheListener(cache -> dispose());
 		super.initialize();
 	}
 
@@ -311,12 +303,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 		if (fetchingInput == input)
 			return;
 		fetchingInput= input;
-		runInBackground(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				fetchAuthors(input, monitor);
-			}
-		});
+		runInBackground(monitor -> fetchAuthors(input, monitor));
 	}
 
 	protected void fetchAuthors(ResourceDiffCompareInput input, IProgressMonitor monitor) throws CoreException {

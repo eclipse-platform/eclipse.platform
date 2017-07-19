@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.diff.*;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
@@ -51,12 +48,7 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 
 	private void initialize(ISynchronizePageConfiguration configuration) {
 		configuration.getSite().getSelectionProvider().addSelectionChangedListener(this);
-		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(ModelParticipantAction.this);
-			}
-		});
+		configuration.getPage().getViewer().getControl().addDisposeListener(e -> getConfiguration().getSite().getSelectionProvider().removeSelectionChangedListener(ModelParticipantAction.this));
 	}
 
 	/**
@@ -154,15 +146,12 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 		final SaveableComparison targetSaveable = getTargetSaveable();
 		final SaveableComparison  activeSaveable = getActiveSaveable();
 		if (activeSaveable != null && activeSaveable.isDirty()) {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						handleTargetSaveableChange(configuration.getSite().getShell(), targetSaveable, activeSaveable, true, monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+				try {
+					handleTargetSaveableChange(configuration.getSite().getShell(), targetSaveable, activeSaveable, true,
+							monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		}
@@ -202,24 +191,21 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	 */
 	public static boolean promptToSaveChanges(final Shell shell, final SaveableComparison saveable, final boolean allowCancel) throws InterruptedException {
 		final int[] result = new int[] { 0 };
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				String[] options;
-				if (allowCancel) {
-					options = new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL};
-				} else {
-					options = new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL};
-				}
-				MessageDialog dialog = new MessageDialog(
-						shell,
-						TeamUIMessages.ModelParticipantAction_0, null,
-						NLS.bind(TeamUIMessages.ModelParticipantAction_1, saveable.getName()),
-						MessageDialog.QUESTION,
-						options,
-						result[0]);
-				result[0] = dialog.open();
+		Runnable runnable = () -> {
+			String[] options;
+			if (allowCancel) {
+				options = new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL};
+			} else {
+				options = new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL};
 			}
+			MessageDialog dialog = new MessageDialog(
+					shell,
+					TeamUIMessages.ModelParticipantAction_0, null,
+					NLS.bind(TeamUIMessages.ModelParticipantAction_1, saveable.getName()),
+					MessageDialog.QUESTION,
+					options,
+					result[0]);
+			result[0] = dialog.open();
 		};
 		shell.getDisplay().syncExec(runnable);
 		if (result[0] == 2)

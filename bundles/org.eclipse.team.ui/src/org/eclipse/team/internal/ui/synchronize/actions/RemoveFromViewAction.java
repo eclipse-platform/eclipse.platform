@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package org.eclipse.team.internal.ui.synchronize.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,9 +34,6 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 		setId(TeamUIPlugin.REMOVE_FROM_VIEW_ACTION_ID);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#run()
-	 */
 	@Override
 	public void run() {
 		if (confirmRemove()) {
@@ -46,9 +41,6 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
-	 */
 	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new SynchronizeModelOperation(configuration, elements) {
@@ -69,20 +61,12 @@ public class RemoveFromViewAction extends SynchronizeModelAction {
 				ISynchronizePage page = getConfiguration().getPage();
 				if (page instanceof SubscriberParticipantPage) {
 					final WorkingSetFilteredSyncInfoCollector collector = ((SubscriberParticipantPage)page).getCollector();
-					collector.run(new IWorkspaceRunnable() {
-						@Override
-						public void run(IProgressMonitor monitor) throws CoreException {
-							collector.getWorkingSetSyncInfoSet().removeAll(set.getResources());
-						}
-					});
+					collector.run(monitor -> collector.getWorkingSetSyncInfoSet().removeAll(set.getResources()));
 				}
 			}
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
-	 */
 	@Override
 	protected boolean needsToSaveDirtyEditors() {
 		return false;

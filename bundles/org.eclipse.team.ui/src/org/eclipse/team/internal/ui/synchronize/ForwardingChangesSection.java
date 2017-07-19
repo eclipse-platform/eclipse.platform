@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,6 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 		super(parent, page, configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ChangesSection#initializeChangesViewer()
-	 */
 	@Override
 	protected void initializeChangesViewer() {
 		calculateDescription();
@@ -50,20 +47,12 @@ public abstract class ForwardingChangesSection extends ChangesSection {
 		if (getContainer().isDisposed())
 			return;
 		if(getVisibleChangesCount() == 0) {
-			TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!getContainer().isDisposed())
-						updatePage(getEmptyChangesComposite(getContainer()));
-				}
+			TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+				if (!getContainer().isDisposed())
+					updatePage(getEmptyChangesComposite(getContainer()));
 			});
 		} else {
-			TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					updatePage(null);
-				}
-			});
+			TeamUIPlugin.getStandardDisplay().asyncExec(() -> updatePage(null));
 		}
 	}
 

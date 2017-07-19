@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,6 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		fView.getSite().getKeyBindingService().registerAction(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if(menuManager != null) {
@@ -63,17 +60,11 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		TeamUI.getSynchronizeManager().removeSynchronizeParticipantListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
-	 */
 	@Override
 	public Menu getMenu(Menu parent) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
-	 */
 	@Override
 	public Menu getMenu(Control parent) {
 		Menu fMenu = null;
@@ -107,9 +98,6 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
 	@Override
 	public void run() {
 		ISynchronizeParticipant current = fView.getParticipant();
@@ -121,39 +109,27 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 		update();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsAdded(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
-	 */
 	@Override
 	public void participantsAdded(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(menuManager != null) {
-					menuManager.dispose();
-					menuManager = null;
-				}
-				update();
+		display.asyncExec(() -> {
+			if(menuManager != null) {
+				menuManager.dispose();
+				menuManager = null;
 			}
+			update();
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.ISynchronizeParticipantListener#participantsRemoved(org.eclipse.team.ui.sync.ISynchronizeParticipant[])
-	 */
 	@Override
 	public void participantsRemoved(ISynchronizeParticipant[] consoles) {
 		Display display = TeamUIPlugin.getStandardDisplay();
-		display.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(menuManager != null) {
-					menuManager.dispose();
-					menuManager = null;
-				}
-				update();
+		display.asyncExec(() -> {
+			if(menuManager != null) {
+				menuManager.dispose();
+				menuManager = null;
 			}
+			update();
 		});
 	}
 

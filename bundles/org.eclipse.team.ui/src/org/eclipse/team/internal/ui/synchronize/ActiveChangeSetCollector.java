@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
@@ -58,48 +57,36 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
         @Override
 		public void setAdded(final ChangeSet set) {
             // Remove any resources that are in the new set
-            provider.performUpdate(new IWorkspaceRunnable() {
-                @Override
-				public void run(IProgressMonitor monitor) {
-		            remove(set.getResources());
-		            createSyncInfoSet(set);
-                }
-            }, true, true);
+            provider.performUpdate(monitor -> {
+			    remove(set.getResources());
+			    createSyncInfoSet(set);
+			}, true, true);
         }
 
         @Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
-            provider.performUpdate(new IWorkspaceRunnable() {
-                @Override
-				public void run(IProgressMonitor monitor) {
-                    if (listener != null)
-                        listener.defaultSetChanged(previousDefault, set);
-                }
-            }, true, true);
+            provider.performUpdate(monitor -> {
+			    if (listener != null)
+			        listener.defaultSetChanged(previousDefault, set);
+			}, true, true);
         }
 
         @Override
 		public void setRemoved(final ChangeSet set) {
-            provider.performUpdate(new IWorkspaceRunnable() {
-                @Override
-				public void run(IProgressMonitor monitor) {
-                    remove(set);
-                    if (!set.isEmpty()) {
-                        add(getSyncInfos(set).getSyncInfos());
-                    }
-                }
-            }, true, true);
+            provider.performUpdate(monitor -> {
+			    remove(set);
+			    if (!set.isEmpty()) {
+			        add(getSyncInfos(set).getSyncInfos());
+			    }
+			}, true, true);
         }
 
         @Override
 		public void nameChanged(final ChangeSet set) {
-            provider.performUpdate(new IWorkspaceRunnable() {
-                @Override
-				public void run(IProgressMonitor monitor) {
-                    if (listener != null)
-                        listener.nameChanged(set);
-                }
-            }, true, true);
+            provider.performUpdate(monitor -> {
+			    if (listener != null)
+			        listener.nameChanged(set);
+			}, true, true);
         }
 
         @Override
@@ -117,12 +104,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
                 }
             }
             if (!outOfSync.isEmpty()) {
-                provider.performUpdate(new IWorkspaceRunnable() {
-                    @Override
-					public void run(IProgressMonitor monitor) {
-                        add(outOfSync.toArray(new SyncInfo[outOfSync.size()]));
-                    }
-                }, true, true);
+                provider.performUpdate(monitor -> add(outOfSync.toArray(new SyncInfo[outOfSync.size()])), true, true);
             }
         }
     };

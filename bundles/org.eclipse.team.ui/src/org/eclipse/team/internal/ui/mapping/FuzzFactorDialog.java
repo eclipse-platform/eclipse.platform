@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,8 @@ package org.eclipse.team.internal.ui.mapping;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.compare.internal.patch.WorkspacePatcher;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -68,12 +66,7 @@ public class FuzzFactorDialog extends Dialog {
 				| GridData.HORIZONTAL_ALIGN_FILL);
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		valueText.setLayoutData(data);
-		valueText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				validateInput();
-			}
-		});
+		valueText.addModifyListener(e -> validateInput());
 		fuzzFactor = patcher.getFuzz();
 		if (fuzzFactor >= 0)
 			valueText.setText(new Integer(fuzzFactor).toString());
@@ -149,12 +142,7 @@ public class FuzzFactorDialog extends Dialog {
 		final int[] result = new int[] { -1 };
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true,
-					new IRunnableWithProgress() {
-						@Override
-						public void run(IProgressMonitor monitor) {
-							result[0] = patcher.guessFuzzFactor(monitor);
-						}
-					});
+					monitor -> result[0] = patcher.guessFuzzFactor(monitor));
 		} catch (InvocationTargetException ex) {
 			// NeedWork
 		} catch (InterruptedException ex) {

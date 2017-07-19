@@ -236,17 +236,13 @@ public class Utils {
 			}
 			// pop up progress dialog after a short delay
 			final Exception[] holder = new Exception[1];
-			BusyIndicator.showWhile(parent.getDisplay(), new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						runnable.run(new NullProgressMonitor());
-					} catch (InvocationTargetException e) {
-						holder[0] = e;
-					} catch (InterruptedException e) {
-						holder[0] = e;
-					}
+			BusyIndicator.showWhile(parent.getDisplay(), () -> {
+				try {
+					runnable.run(new NullProgressMonitor());
+				} catch (InvocationTargetException e1) {
+					holder[0] = e1;
+				} catch (InterruptedException e2) {
+					holder[0] = e2;
 				}
 			});
 			if (holder[0] != null) {
@@ -288,12 +284,7 @@ public class Utils {
 			if (display.isDisposed()) return null;
 			if (syncIfNecessary) {
 				final Shell[] result = new Shell[] { null };
-				Runnable r = new Runnable() {
-					@Override
-					public void run() {
-						result[0] = new Shell(Display.getDefault());
-					}
-				};
+				Runnable r = () -> result[0] = new Shell(Display.getDefault());
 				display.syncExec(r);
 				return result[0];
 			}
@@ -306,32 +297,29 @@ public class Utils {
 	 * 16509). @param t
 	 */
 	public static void handle(final Throwable exception) {
-		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				IStatus error = null;
-				Throwable t = exception;
-				if (t instanceof InvocationTargetException) {
-					t = ((InvocationTargetException) t).getTargetException();
-				}
-				if (t instanceof CoreException) {
-					error = ((CoreException) t).getStatus();
-				} else if (t instanceof TeamException) {
-					error = ((TeamException) t).getStatus();
-				} else {
-					error = new Status(IStatus.ERROR, TeamUIPlugin.ID, 1, TeamUIMessages.simpleInternal, t);
-				}
-				Shell shell = new Shell(Display.getDefault());
-				if (error.getSeverity() == IStatus.INFO) {
-					MessageDialog.openInformation(shell, TeamUIMessages.information, error.getMessage());
-				} else {
-					ErrorDialog.openError(shell, TeamUIMessages.exception, null, error);
-				}
-				shell.dispose();
-				// Let's log non-team exceptions
-				if (!(t instanceof TeamException)) {
-					TeamUIPlugin.log(error.getSeverity(), error.getMessage(), t);
-				}
+		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+			IStatus error = null;
+			Throwable t = exception;
+			if (t instanceof InvocationTargetException) {
+				t = ((InvocationTargetException) t).getTargetException();
+			}
+			if (t instanceof CoreException) {
+				error = ((CoreException) t).getStatus();
+			} else if (t instanceof TeamException) {
+				error = ((TeamException) t).getStatus();
+			} else {
+				error = new Status(IStatus.ERROR, TeamUIPlugin.ID, 1, TeamUIMessages.simpleInternal, t);
+			}
+			Shell shell = new Shell(Display.getDefault());
+			if (error.getSeverity() == IStatus.INFO) {
+				MessageDialog.openInformation(shell, TeamUIMessages.information, error.getMessage());
+			} else {
+				ErrorDialog.openError(shell, TeamUIMessages.exception, null, error);
+			}
+			shell.dispose();
+			// Let's log non-team exceptions
+			if (!(t instanceof TeamException)) {
+				TeamUIPlugin.log(error.getSeverity(), error.getMessage(), t);
 			}
 		});
 	}
@@ -852,12 +840,9 @@ public class Utils {
 		if(v == null) return;
 		final Control ctrl = v.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
-			ctrl.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-						BusyIndicator.showWhile(ctrl.getDisplay(), r);
-					}
+			ctrl.getDisplay().asyncExec(() -> {
+				if (!ctrl.isDisposed()) {
+					BusyIndicator.showWhile(ctrl.getDisplay(), r);
 				}
 			});
 		}
@@ -871,12 +856,9 @@ public class Utils {
 
 	public static void syncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
-			ctrl.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-						BusyIndicator.showWhile(ctrl.getDisplay(), r);
-					}
+			ctrl.getDisplay().syncExec(() -> {
+				if (!ctrl.isDisposed()) {
+					BusyIndicator.showWhile(ctrl.getDisplay(), r);
 				}
 			});
 		}
@@ -884,12 +866,9 @@ public class Utils {
 
 	public static void asyncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
-			ctrl.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-						BusyIndicator.showWhile(ctrl.getDisplay(), r);
-					}
+			ctrl.getDisplay().asyncExec(() -> {
+				if (!ctrl.isDisposed()) {
+					BusyIndicator.showWhile(ctrl.getDisplay(), r);
 				}
 			});
 		}

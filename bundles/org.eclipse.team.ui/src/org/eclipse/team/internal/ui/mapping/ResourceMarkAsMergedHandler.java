@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -37,17 +36,11 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
-	 */
 	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = new ResourceModelProviderOperation(getConfiguration(),
 						getStructuredSelection()) {
-				/* (non-Javadoc)
-				 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-				 */
 				@Override
 				public void execute(IProgressMonitor monitor)
 						throws InvocationTargetException, InterruptedException {
@@ -55,14 +48,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 						final IMergeContext context = (IMergeContext) getContext();
 						final IDiff[] deltas = getTargetDiffs();
 						ISchedulingRule rule = getMergeRule(context, deltas);
-						context.run(new IWorkspaceRunnable() {
-							@Override
-							public void run(IProgressMonitor monitor)
-									throws CoreException {
-								markAsMerged(deltas, context, monitor);
-							}
-
-						}, rule, IResource.NONE, monitor);
+						context.run(monitor1 -> markAsMerged(deltas, context, monitor1), rule, IResource.NONE, monitor);
 
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
@@ -90,9 +76,6 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 					context.markAsMerged(deltas, false, monitor);
 				}
 
-				/* (non-Javadoc)
-				 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
-				 */
 				@Override
 				protected FastDiffFilter getDiffFilter() {
 					return new FastDiffFilter() {
@@ -122,9 +105,6 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	public void updateEnablement(IStructuredSelection selection) {
 		synchronized (this) {

@@ -157,12 +157,7 @@ public class ProjectSetImporter {
 									shell, title, null, msg,
 									MessageDialog.QUESTION, buttons, 0);
 
-							shell.getDisplay().syncExec(new Runnable() {
-								@Override
-								public void run() {
-									 dialog.open();
-								}
-							});
+							shell.getDisplay().syncExec(() -> dialog.open());
 
 							switch (dialog.getReturnCode()) {
 							case 0: // overwrite

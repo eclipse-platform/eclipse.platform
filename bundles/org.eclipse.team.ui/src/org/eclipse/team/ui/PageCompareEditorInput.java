@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -138,9 +137,6 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		pagePane.setText(title);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#handleDispose()
-	 */
 	@Override
 	protected void handleDispose() {
 		super.handleDispose();
@@ -237,12 +233,9 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		IProgressService manager = PlatformUI.getWorkbench().getProgressService();
 		try {
 			// TODO: we need a better progress story here (i.e. support for cancellation) bug 127075
-			manager.busyCursorWhile(new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-			        prepareInput(input, getCompareConfiguration(), monitor);
-			        hookContentChangeListener(input);
-				}
+			manager.busyCursorWhile(monitor -> {
+			    prepareInput(input, getCompareConfiguration(), monitor);
+			    hookContentChangeListener(input);
 			});
 		} catch (InvocationTargetException e) {
 			Utils.handle(e);
@@ -251,17 +244,11 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
-	 */
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		setDirty(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#canRunInBackground()
-	 */
 	@Override
 	public boolean canRunAsJob() {
 		return true;

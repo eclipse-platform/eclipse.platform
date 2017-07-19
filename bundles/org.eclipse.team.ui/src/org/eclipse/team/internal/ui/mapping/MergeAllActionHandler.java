@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,6 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		getContext().getDiffTree().addDiffChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
-	 */
 	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
@@ -58,9 +55,6 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		return ((ISynchronizationScope)getConfiguration().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_SCOPE)).getMappings();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		synchronized (this) {
@@ -70,17 +64,11 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 				|| event.getTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) > 0);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
-	 */
 	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#dispose()
-	 */
 	@Override
 	public void dispose() {
 		getContext().getDiffTree().removeDiffChangeListener(this);
@@ -160,15 +148,12 @@ public class MergeAllActionHandler extends MergeActionHandler implements IDiffCh
 		if (count == 0)
 			return false;
 		final boolean[] result = new boolean[] {true};
-		TeamUIPlugin.getStandardDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				String sizeString = Long.toString(count);
-				String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) :
-					NLS.bind(TeamUIMessages.MergeAllActionHandler_2, new String[] { sizeString });
-				result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
-						NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message);
-			}
+		TeamUIPlugin.getStandardDisplay().syncExec(() -> {
+			String sizeString = Long.toString(count);
+			String message = tree.size() > 1 ? NLS.bind(TeamUIMessages.MergeAllActionHandler_1, new String[] { sizeString }) :
+				NLS.bind(TeamUIMessages.MergeAllActionHandler_2, new String[] { sizeString });
+			result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
+					NLS.bind(TeamUIMessages.MergeAllActionHandler_3, new String[] { sizeString }), message);
 		});
 		return result[0];
 	}

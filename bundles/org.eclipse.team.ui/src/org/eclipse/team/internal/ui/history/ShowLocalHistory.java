@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -40,23 +39,17 @@ public class ShowLocalHistory extends ActionDelegate implements IObjectActionDel
 		if (states == null || states.length == 0)
 			return;
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					final IResource resource = (IResource) fSelection.getFirstElement();
-					Runnable r = new Runnable() {
-						@Override
-						public void run() {
-							IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource,  LocalHistoryPageSource.getInstance());
-							IHistoryPage page = view.getHistoryPage();
-							if (page instanceof LocalHistoryPage){
-								LocalHistoryPage historyPage = (LocalHistoryPage) page;
-								historyPage.setClickAction(isCompare());
-							}
-						}
-					};
-					TeamUIPlugin.getStandardDisplay().asyncExec(r);
-				}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				final IResource resource = (IResource) fSelection.getFirstElement();
+				Runnable r = () -> {
+					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), resource,  LocalHistoryPageSource.getInstance());
+					IHistoryPage page = view.getHistoryPage();
+					if (page instanceof LocalHistoryPage){
+						LocalHistoryPage historyPage = (LocalHistoryPage) page;
+						historyPage.setClickAction(isCompare());
+					}
+				};
+				TeamUIPlugin.getStandardDisplay().asyncExec(r);
 			});
 		} catch (InvocationTargetException exception) {
 			ErrorDialog.openError(getShell(), null, null, new Status(IStatus.ERROR, TeamUIPlugin.PLUGIN_ID, IStatus.ERROR, TeamUIMessages.ShowLocalHistory_1, exception.getTargetException()));

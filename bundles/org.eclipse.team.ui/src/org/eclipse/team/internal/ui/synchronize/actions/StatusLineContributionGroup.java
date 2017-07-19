@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,12 +58,7 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 
 	private StatusLineCLabelContribution createStatusLineContribution(String id, final int mode, String label, Image image) {
 		StatusLineCLabelContribution item = new StatusLineCLabelContribution(id, 15);
-		item.addListener(SWT.MouseDown, new Listener() {
-			@Override
-			public void handleEvent(Event event) {
-				configuration.setMode(mode);
-			}
-		});
+		item.addListener(SWT.MouseDown, event -> configuration.setMode(mode));
 		item.setText(label);
 		item.setImage(image);
 		return item;
@@ -86,23 +81,20 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 		final int workspaceOutgoing = ((supportedModes & ISynchronizePageConfiguration.OUTGOING_MODE) != 0) ? countFor(SyncInfo.OUTGOING) : 0;
 		final int workspaceIncoming = ((supportedModes & ISynchronizePageConfiguration.INCOMING_MODE) != 0) ? countFor(SyncInfo.INCOMING) : 0;
 
-		TeamUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (isThreeWay()) {
-					conflicting.setText(new Integer(workspaceConflicting).toString());
-					incoming.setText(new Integer(workspaceIncoming).toString());
-					outgoing.setText(new Integer(workspaceOutgoing).toString());
+		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
+			if (isThreeWay()) {
+				conflicting.setText(new Integer(workspaceConflicting).toString());
+				incoming.setText(new Integer(workspaceIncoming).toString());
+				outgoing.setText(new Integer(workspaceOutgoing).toString());
 
-					conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_conflicting }));
-					outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_outgoing }));
-					incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_incoming }));
+				conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_conflicting }));
+				outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_outgoing }));
+				incoming.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_incoming }));
+			} else {
+				if (total == 1) {
+					totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, new String[] { Integer.toString(total) }));
 				} else {
-					if (total == 1) {
-						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalSingular, new String[] { Integer.toString(total) }));
-					} else {
-						totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, new String[] { Integer.toString(total) }));
-					}
+					totalChanges.setText(NLS.bind(TeamUIMessages.StatisticsPanel_numberTotalPlural, new String[] { Integer.toString(total) }));
 				}
 			}
 		});
@@ -112,11 +104,6 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 
 	protected abstract int countFor(int state);
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		IStatusLineManager mgr = actionBars.getStatusLineManager();

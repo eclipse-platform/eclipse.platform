@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize;
 
-import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.*;
@@ -187,12 +183,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	@Override
 	protected void initializeListeners(final StructuredViewer viewer) {
 		super.initializeListeners(viewer);
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateStatusLine((IStructuredSelection) event.getSelection());
-			}
-		});
+		viewer.addSelectionChangedListener(event -> updateStatusLine((IStructuredSelection) event.getSelection()));
 	}
 
 	/* private */ void updateStatusLine(IStructuredSelection selection) {
@@ -231,39 +222,28 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	public final void setInput(final ISynchronizeModelProvider modelProvider) {
 		final ISynchronizeModelElement modelRoot = modelProvider.getModelRoot();
 		getActionGroup().modelChanged(modelRoot);
-		modelRoot.addCompareInputChangeListener(new ICompareInputChangeListener() {
-			@Override
-			public void compareInputChanged(ICompareInput source) {
-				getActionGroup().modelChanged(modelRoot);
-			}
-		});
+		modelRoot.addCompareInputChangeListener(source -> getActionGroup().modelChanged(modelRoot));
 		final StructuredViewer viewer = getViewer();
 		if (viewer != null) {
 			viewer.setSorter(modelProvider.getViewerSorter());
 			viewer.setInput(modelRoot);
-			modelProvider.addPropertyChangeListener(new IPropertyChangeListener() {
-                @Override
-				public void propertyChange(PropertyChangeEvent event) {
-                    if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
-                        if (viewer != null && !viewer.getControl().isDisposed()) {
-                            viewer.getControl().getDisplay().syncExec(new Runnable() {
-                                @Override
-								public void run() {
-        	                        if (viewer != null && !viewer.getControl().isDisposed()) {
-        	                            ViewerSorter newSorter = modelProvider.getViewerSorter();
-                                        ViewerSorter oldSorter = viewer.getSorter();
-                                        if (newSorter == oldSorter) {
-                                            viewer.refresh();
-                                        } else {
-                                            viewer.setSorter(newSorter);
-                                        }
-        	                        }
-                                }
-                            });
-                        }
-                    }
-                }
-            });
+			modelProvider.addPropertyChangeListener(event -> {
+			    if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
+			        if (viewer != null && !viewer.getControl().isDisposed()) {
+			            viewer.getControl().getDisplay().syncExec(() -> {
+						    if (viewer != null && !viewer.getControl().isDisposed()) {
+						        ViewerSorter newSorter = modelProvider.getViewerSorter();
+						        ViewerSorter oldSorter = viewer.getSorter();
+						        if (newSorter == oldSorter) {
+						            viewer.refresh();
+						        } else {
+						            viewer.setSorter(newSorter);
+						        }
+						    }
+						});
+			        }
+			    }
+			});
 		}
 	}
 

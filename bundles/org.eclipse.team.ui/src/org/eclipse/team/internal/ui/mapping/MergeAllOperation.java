@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,6 @@ public final class MergeAllOperation extends SynchronizationOperation {
 		this.context = context;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void execute(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
@@ -81,33 +78,30 @@ public final class MergeAllOperation extends SynchronizationOperation {
 			}
 			private boolean promptToContinue(final IStatus status) {
 		    	final boolean[] result = new boolean[] { false };
-		    	Runnable runnable = new Runnable() {
-					@Override
-					public void run() {
-						ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
-							@Override
-							protected void createButtonsForButtonBar(Composite parent) {
-						        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
-						                false);
-								createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
-										true);
-						        createDetailsButton(parent);
-							}
-							/* (non-Javadoc)
-							 * @see org.eclipse.jface.dialogs.ErrorDialog#buttonPressed(int)
-							 */
-							@Override
-							protected void buttonPressed(int id) {
-								if (id == IDialogConstants.YES_ID)
-									super.buttonPressed(IDialogConstants.OK_ID);
-								else if (id == IDialogConstants.NO_ID)
-									super.buttonPressed(IDialogConstants.CANCEL_ID);
-								super.buttonPressed(id);
-							}
-						};
-						int code = dialog.open();
-						result[0] = code == 0;
-					}
+		    	Runnable runnable = () -> {
+					ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
+						@Override
+						protected void createButtonsForButtonBar(Composite parent) {
+					        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
+					                false);
+							createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
+									true);
+					        createDetailsButton(parent);
+						}
+						/* (non-Javadoc)
+						 * @see org.eclipse.jface.dialogs.ErrorDialog#buttonPressed(int)
+						 */
+						@Override
+						protected void buttonPressed(int id) {
+							if (id == IDialogConstants.YES_ID)
+								super.buttonPressed(IDialogConstants.OK_ID);
+							else if (id == IDialogConstants.NO_ID)
+								super.buttonPressed(IDialogConstants.CANCEL_ID);
+							super.buttonPressed(id);
+						}
+					};
+					int code = dialog.open();
+					result[0] = code == 0;
 				};
 				getShell().getDisplay().syncExec(runnable);
 				return (result[0]);
@@ -115,17 +109,11 @@ public final class MergeAllOperation extends SynchronizationOperation {
 		}.run(monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
-	 */
 	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
-	 */
 	@Override
 	protected String getJobName() {;
 		return jobName;

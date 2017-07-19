@@ -334,12 +334,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		    // Only refresh the view if there is now background update in
 		    // progress. If there is, the background update will refresh
 		    if (!updateHandler.isPerformingBackgroundUpdate()) {
-				Utils.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						refreshModelRoot();
-					}
-				}, getViewer());
+				Utils.asyncExec((Runnable) () -> refreshModelRoot(), getViewer());
 		    }
 		}
 	}
@@ -1055,9 +1050,6 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		monitor.worked(1);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
 	public String toString() {
         ISynchronizeModelElement element = getModelRoot();

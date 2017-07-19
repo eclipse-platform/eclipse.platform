@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,17 +53,11 @@ public class SaveablePartDialog extends TrayDialog {
 		this.input = input;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent2) {
 		Composite parent = (Composite) super.createDialogArea(parent2);
@@ -75,9 +69,6 @@ public class SaveablePartDialog extends TrayDialog {
 		return parent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.internal.ResizableDialog#close()
-	 */
 	@Override
 	public boolean close() {
 		saveChanges();
@@ -94,12 +85,7 @@ public class SaveablePartDialog extends TrayDialog {
 				IDialogConstants.NO_LABEL}, 0); // YES is the default
 
 		if (input.isDirty() && dialog.open() == IDialogConstants.OK_ID) {
-			BusyIndicator.showWhile(null, new Runnable() {
-				@Override
-				public void run() {
-					input.doSave(new NullProgressMonitor());
-				}
-			});
+			BusyIndicator.showWhile(null, () -> input.doSave(new NullProgressMonitor()));
 		}
 	}
 
@@ -112,9 +98,6 @@ public class SaveablePartDialog extends TrayDialog {
 		return input;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
-	 */
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		IDialogSettings compareSettings = TeamUIPlugin.getPlugin().getDialogSettings();
@@ -135,9 +118,6 @@ public class SaveablePartDialog extends TrayDialog {
 		fContextId= contextId;
 	}
 
-	/*
-	 * @see org.eclipse.jface.window.Window#configureShell(Shell)
-	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -145,9 +125,6 @@ public class SaveablePartDialog extends TrayDialog {
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, fContextId);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#getInitialSize()
-	 */
 	@Override
 	protected Point getInitialSize() {
 		Point initialSize = super.getInitialSize();

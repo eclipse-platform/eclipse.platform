@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,9 +81,6 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 				job.setProperty(IProgressConstants.ICON_PROPERTY, icon);
 		}
 
-		/* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#belongsTo(org.eclipse.team.internal.ui.actions.JobRunnableContext.IContextJob, java.lang.Object)
-         */
         @Override
 		protected boolean belongsTo(IContextJob job, Object family) {
             if (family instanceof IContextJob) {
@@ -96,9 +93,6 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
             return operation.belongsTo(family);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#getCompletionStatus()
-         */
         @Override
 		protected IStatus getCompletionStatus() {
             if (gotoAction != null) {
@@ -107,9 +101,6 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
             return super.getCompletionStatus();
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ui.actions.JobRunnableContext#isUser()
-         */
         @Override
 		protected boolean isUser() {
             return operation.isUserInitiated();
@@ -330,12 +321,7 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 	protected Shell getShell() {
 		final Shell[] shell = new Shell[] { null };
 		if (Display.getCurrent() == null) {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					shell[0] = Utils.getShell(getSite());
-				}
-			});
+			Display.getDefault().syncExec(() -> shell[0] = Utils.getShell(getSite()));
 		} else {
 			shell[0] = Utils.getShell(getSite());
 		}

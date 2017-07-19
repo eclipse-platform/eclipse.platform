@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.*;
@@ -234,12 +233,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 
 			IResourceDelta resourceDelta = root.findMember(file.getFullPath());
 			if (resourceDelta != null){
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						refresh();
-					}
-				});
+				Display.getDefault().asyncExec(() -> refresh());
 			}
 		}
 	}
@@ -370,21 +364,18 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				compareModeAction.setHoverImageDescriptor(TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_COMPARE_VIEW));
 				compareModeAction.setChecked(compareMode == ON);
 
-				getContentsAction = getContextMenuAction(TeamUIMessages.LocalHistoryPage_GetContents, true /* needs progress */, new IWorkspaceRunnable() {
-					@Override
-					public void run(IProgressMonitor monitor) throws CoreException {
-						SubMonitor progress = SubMonitor.convert(monitor, 2);
-						try {
-							if (confirmOverwrite()) {
-								IStorage currentStorage = currentSelection.getStorage(progress.split(1));
-								InputStream in = currentStorage.getContents();
-								file.setContents(in, false, true, progress.split(1));
-							}
-						} catch (TeamException e) {
-							throw new CoreException(e.getStatus());
-						} finally {
-							monitor.done();
+				getContentsAction = getContextMenuAction(TeamUIMessages.LocalHistoryPage_GetContents, true /* needs progress */, monitor -> {
+					SubMonitor progress = SubMonitor.convert(monitor, 2);
+					try {
+						if (confirmOverwrite()) {
+							IStorage currentStorage = currentSelection.getStorage(progress.split(1));
+							InputStream in = currentStorage.getContents();
+							file.setContents(in, false, true, progress.split(1));
 						}
+					} catch (TeamException e) {
+						throw new CoreException(e.getStatus());
+					} finally {
+						monitor.done();
 					}
 				});
 			}
@@ -463,12 +454,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			//Contribute actions to popup menu
 			MenuManager menuMgr = new MenuManager();
 			Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
-			menuMgr.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager menuMgr) {
-					fillTableMenu(menuMgr);
-				}
-			});
+			menuMgr.addMenuListener(menuMgr1 -> fillTableMenu(menuMgr1));
 			menuMgr.setRemoveAllWhenShown(true);
 			treeViewer.getTree().setMenu(menu);
 
@@ -647,14 +633,11 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 
 					currentSelection = (IFileRevision)o;
 					if(needsProgressDialog) {
-						PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-							@Override
-							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-								try {
-									action.run(monitor);
-								} catch (CoreException e) {
-									throw new InvocationTargetException(e);
-								}
+						PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+							try {
+								action.run(monitor);
+							} catch (CoreException e) {
+								throw new InvocationTargetException(e);
 							}
 						});
 					} else {
@@ -690,12 +673,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			IHistoryPageSite parentSite = getHistoryPageSite();
 			final MessageDialog dialog = new MessageDialog(parentSite.getShell(), title, null, msg, MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.CANCEL_LABEL}, 0);
 			final int[] result = new int[1];
-			parentSite.getShell().getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					result[0] = dialog.open();
-				}
-			});
+			parentSite.getShell().getDisplay().syncExec(() -> result[0] = dialog.open());
 			if (result[0] != 0) {
 				// cancel
 				return false;
@@ -784,36 +762,33 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		// Group the revisions (if appropriate) before running in the UI thread
 		final AbstractHistoryCategory[] categories = groupRevisions(revisions, monitor);
 		// Update the tree in the UI thread
-		Utils.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if (Policy.DEBUG_HISTORY) {
-					String time = new SimpleDateFormat("m:ss.SSS").format(new Date(System.currentTimeMillis())); //$NON-NLS-1$
-					System.out.println(time + ": LocalHistoryPage#update, the tree is being updated in the UI thread"); //$NON-NLS-1$
+		Utils.asyncExec((Runnable) () -> {
+			if (Policy.DEBUG_HISTORY) {
+				String time = new SimpleDateFormat("m:ss.SSS").format(new Date(System.currentTimeMillis())); //$NON-NLS-1$
+				System.out.println(time + ": LocalHistoryPage#update, the tree is being updated in the UI thread"); //$NON-NLS-1$
+			}
+			if (categories != null) {
+				Object[] elementsToExpand = mapExpandedElements(categories, treeViewer.getExpandedElements());
+				treeViewer.getTree().setRedraw(false);
+				treeViewer.setInput(categories);
+				//if user is switching modes and already has expanded elements
+				//selected try to expand those, else expand all
+				if (elementsToExpand.length > 0)
+					treeViewer.setExpandedElements(elementsToExpand);
+				else {
+					treeViewer.expandAll();
+					Object[] el = treeViewer.getExpandedElements();
+					if (el != null && el.length > 0) {
+						treeViewer.setSelection(new StructuredSelection(el[0]));
+						treeViewer.getTree().deselectAll();
+					}
 				}
-				if (categories != null) {
-					Object[] elementsToExpand = mapExpandedElements(categories, treeViewer.getExpandedElements());
-					treeViewer.getTree().setRedraw(false);
-					treeViewer.setInput(categories);
-					//if user is switching modes and already has expanded elements
-					//selected try to expand those, else expand all
-					if (elementsToExpand.length > 0)
-						treeViewer.setExpandedElements(elementsToExpand);
-					else {
-						treeViewer.expandAll();
-						Object[] el = treeViewer.getExpandedElements();
-						if (el != null && el.length > 0) {
-							treeViewer.setSelection(new StructuredSelection(el[0]));
-							treeViewer.getTree().deselectAll();
-						}
-					}
-					treeViewer.getTree().setRedraw(true);
+				treeViewer.getTree().setRedraw(true);
+			} else {
+				if (revisions.length > 0) {
+					treeViewer.setInput(revisions);
 				} else {
-					if (revisions.length > 0) {
-						treeViewer.setInput(revisions);
-					} else {
-						treeViewer.setInput(new AbstractHistoryCategory[] {getErrorMessage()});
-					}
+					treeViewer.setInput(new AbstractHistoryCategory[] {getErrorMessage()});
 				}
 			}
 		}, treeViewer);

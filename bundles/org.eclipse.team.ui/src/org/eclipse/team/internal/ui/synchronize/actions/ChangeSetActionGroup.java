@@ -59,39 +59,27 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
             super(TeamUIMessages.ChangeLogModelProvider_0, configuration);
         }
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
-		 */
 		@Override
 		protected boolean needsToSaveDirtyEditors() {
 			return false;
 		}
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
-         */
         @Override
 		protected FastSyncInfoFilter getSyncInfoFilter() {
             return OUTGOING_RESOURCE_FILTER;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
-         */
         @Override
 		protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
             return new SynchronizeModelOperation(configuration, elements) {
                 @Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    syncExec(new Runnable() {
-                        @Override
-						public void run() {
-		                    ActiveChangeSet set = createChangeSet(getDiffs(getSyncInfoSet().getResources()));
-		                    if (set != null) {
-		                        getActiveChangeSetManager().add(set);
-		                    }
-                        }
-                    });
+                    syncExec(() -> {
+					    ActiveChangeSet set = createChangeSet(getDiffs(getSyncInfoSet().getResources()));
+					    if (set != null) {
+					        getActiveChangeSetManager().add(set);
+					    }
+					});
                 }
             };
         }
@@ -103,9 +91,6 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
             super(title);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-         */
         @Override
 		protected boolean updateSelection(IStructuredSelection selection) {
             return getSelectedSet() != null;
@@ -197,9 +182,6 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
             selectionChanged(selection);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
-         */
         @Override
 		protected FastSyncInfoFilter getSyncInfoFilter() {
             return OUTGOING_RESOURCE_FILTER;
@@ -210,9 +192,6 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 			return false;
 		}
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
-         */
         @Override
 		protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
             return new SynchronizeModelOperation(configuration, elements) {
@@ -332,12 +311,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		if (getChangeSetCapability().supportsActiveChangeSets()) {
 			addToChangeSet = new MenuManager(TeamUIMessages.ChangeLogModelProvider_12);
 			addToChangeSet.setRemoveAllWhenShown(true);
-			addToChangeSet.addMenuListener(new IMenuListener() {
-	            @Override
-				public void menuAboutToShow(IMenuManager manager) {
-	                addChangeSets(manager);
-	            }
-	        });
+			addToChangeSet.addMenuListener(manager -> addChangeSets(manager));
 			createChangeSet = new CreateChangeSetAction(configuration);
 			addToChangeSet.add(createChangeSet);
 			addToChangeSet.add(new Separator());
@@ -352,9 +326,6 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		}
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
-     */
     @Override
 	public void fillContextMenu(IMenuManager menu) {
         if (getChangeSetCapability().enableCheckedInChangeSetsFor(getConfiguration())) {
@@ -414,9 +385,6 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
         return getChangeSetCapability().getActiveChangeSetManager();
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
-	 */
 	@Override
 	public void dispose() {
 	    if (addToChangeSet != null) {
@@ -448,12 +416,9 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
     private void syncExec(final Runnable runnable) {
 		final Control ctrl = getConfiguration().getPage().getViewer().getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
-			ctrl.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-					    runnable.run();
-					}
+			ctrl.getDisplay().syncExec(() -> {
+				if (!ctrl.isDisposed()) {
+				    runnable.run();
 				}
 			});
 		}

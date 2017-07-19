@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,16 +38,10 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		this.overwrite = overwrite;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#getOperation()
-	 */
 	@Override
 	protected synchronized SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = new ResourceModelProviderOperation(getConfiguration(), getStructuredSelection()) {
-				/* (non-Javadoc)
-				 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-				 */
 				@Override
 				public void execute(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
@@ -64,9 +58,6 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 						throw new InvocationTargetException(e);
 					}
 				}
-				/* (non-Javadoc)
-				 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
-				 */
 				@Override
 				protected FastDiffFilter getDiffFilter() {
 					return new FastDiffFilter() {
@@ -102,9 +93,6 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		return operation;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.MergeActionHandler#updateEnablement(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	public void updateEnablement(IStructuredSelection selection) {
 		synchronized (this) {
@@ -131,13 +119,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 		final boolean[] confirmed = new boolean[] { false };
 		Shell shell = getConfiguration().getSite().getShell();
 		if (!shell.isDisposed()) {
-			Utils.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					confirmed[0] = promptToConfirm();
-				}
-
-			}, shell);
+			Utils.syncExec((Runnable) () -> confirmed[0] = promptToConfirm(), shell);
 		}
 		return confirmed[0];
 	}
@@ -147,12 +129,7 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 	}
 
 	protected void promptForNoChanges() {
-		Utils.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openInformation(getConfiguration().getSite().getShell(), TeamUIMessages.ResourceMergeHandler_6, TeamUIMessages.ResourceMergeHandler_7);
-			}
-		}, (StructuredViewer)getConfiguration().getPage().getViewer());
+		Utils.syncExec((Runnable) () -> MessageDialog.openInformation(getConfiguration().getSite().getShell(), TeamUIMessages.ResourceMergeHandler_6, TeamUIMessages.ResourceMergeHandler_7), (StructuredViewer)getConfiguration().getPage().getViewer());
 	}
 
 

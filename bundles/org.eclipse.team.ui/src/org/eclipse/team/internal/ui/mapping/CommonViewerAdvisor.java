@@ -230,19 +230,9 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		v.setSorter(new TeamViewerSorter((CommonViewerSorter)v.getSorter()));
 		ISynchronizationScope scope = getScope(configuration);
 		bindTeamContentProviders(v);
-		scope.addScopeChangeListener(new ISynchronizationScopeChangeListener() {
-			@Override
-			public void scopeChanged(final ISynchronizationScope scope,
-					ResourceMapping[] newMappings, ResourceTraversal[] newTraversals) {
-				enableContentProviders(v, configuration);
-				Utils.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						v.refresh();
-					}
-
-				}, v);
-			}
+		scope.addScopeChangeListener((scope1, newMappings, newTraversals) -> {
+			enableContentProviders(v, configuration);
+			Utils.asyncExec((Runnable) () -> v.refresh(), v);
 		});
 		enableContentProviders(v, configuration);
 		configuration.getSite().setSelectionProvider(v);
@@ -378,9 +368,6 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
         viewer.expandToLevel(2);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#initializeViewer(org.eclipse.jface.viewers.StructuredViewer)
-	 */
 	@Override
 	public void initializeViewer(StructuredViewer viewer) {
 		createActionService((CommonViewer)viewer, getConfiguration());
@@ -520,13 +507,10 @@ public class CommonViewerAdvisor extends AbstractTreeViewerAdvisor implements IN
 		} else if (event.getProperty().equals(ModelSynchronizeParticipant.P_VISIBLE_MODEL_PROVIDER)) {
 			enableContentProviders((CommonViewer)getViewer(), getConfiguration());
 			final Viewer viewer = getViewer();
-			Utils.syncExec(new Runnable() {
-				@Override
-				public void run() {
-					Object viewerInput = ModelSynchronizePage.getViewerInput(getConfiguration(), (String)event.getNewValue());
-					if (viewer != null && viewerInput != null) {
-						viewer.setInput(viewerInput);
-					}
+			Utils.syncExec((Runnable) () -> {
+				Object viewerInput = ModelSynchronizePage.getViewerInput(getConfiguration(), (String)event.getNewValue());
+				if (viewer != null && viewerInput != null) {
+					viewer.setInput(viewerInput);
 				}
 			}, (StructuredViewer)viewer);
 		} else if (event.getProperty().equals(ITeamContentProviderManager.PROP_PAGE_LAYOUT)) {

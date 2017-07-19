@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2010 IBM Corporation and others.
+ *  Copyright (c) 2000, 2017 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -134,15 +133,12 @@ public class OpenInCompareAction extends Action {
 			final ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
 			final boolean[] result = new boolean[] { false };
 			try {
-				PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException,
-							InterruptedException {
-						try {
-							result[0] = msp.checkForBufferChange(site.getShell(), (ISynchronizationCompareInput)input, true, monitor);
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
-						}
+				PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+					try {
+						result[0] = msp.checkForBufferChange(site.getShell(), (ISynchronizationCompareInput) input,
+								true, monitor);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
 					}
 				});
 			} catch (InvocationTargetException e) {

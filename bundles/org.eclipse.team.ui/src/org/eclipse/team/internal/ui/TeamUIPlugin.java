@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,14 +107,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		} else {
 			final Object [] ret = new Object[1];
 			final CoreException [] exc = new CoreException[1];
-			BusyIndicator.showWhile(null, new Runnable() {
-				@Override
-				public void run() {
-					try {
-						ret[0] = element.createExecutableExtension(classAttribute);
-					} catch (CoreException e) {
-						exc[0] = e;
-					}
+			BusyIndicator.showWhile(null, () -> {
+				try {
+					ret[0] = element.createExecutableExtension(classAttribute);
+				} catch (CoreException e) {
+					exc[0] = e;
 				}
 			});
 			if (exc[0] != null)

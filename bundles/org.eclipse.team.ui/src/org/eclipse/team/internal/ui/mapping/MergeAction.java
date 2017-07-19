@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.core.commands.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.team.internal.ui.*;
 import org.eclipse.team.ui.mapping.*;
@@ -59,15 +58,12 @@ public class MergeAction extends Action {
 				}
 				final SaveableComparison target = targetBuffer;
 				try {
-					PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,
-								InterruptedException {
-							try {
-								ModelParticipantAction.handleTargetSaveableChange(configuration.getSite().getShell(), target, currentBuffer, true, monitor);
-							} catch (CoreException e) {
-								throw new InvocationTargetException(e);
-							}
+					PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+						try {
+							ModelParticipantAction.handleTargetSaveableChange(configuration.getSite().getShell(),
+									target, currentBuffer, true, monitor);
+						} catch (CoreException e) {
+							throw new InvocationTargetException(e);
 						}
 					});
 				} catch (InvocationTargetException e) {

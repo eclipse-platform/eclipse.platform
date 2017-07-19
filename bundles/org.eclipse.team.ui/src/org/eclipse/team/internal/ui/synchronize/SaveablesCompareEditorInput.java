@@ -24,8 +24,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
@@ -284,11 +282,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 				(ICompareInput) compareResult, this, rightFileElement);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.ISaveablesSource#getActiveSaveables()
-	 */
 	@Override
 	public Saveable[] getActiveSaveables() {
 		if (getCompareResult() == null)
@@ -296,25 +289,11 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		return new Saveable[] { getLeftSaveable(), getRightSaveable() };
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.ISaveablesSource#getSaveables()
-	 */
 	@Override
 	public Saveable[] getSaveables() {
 		return getActiveSaveables();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.CompareEditorInput#findContentViewer(org.eclipse.
-	 * jface.viewers.Viewer,
-	 * org.eclipse.compare.structuremergeviewer.ICompareInput,
-	 * org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Viewer findContentViewer(Viewer pOldViewer, ICompareInput pInput,
 			Composite pParent) {
@@ -330,12 +309,9 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 			dsp.addPropertyChangeListener(lpcl);
 			dsp.addPropertyChangeListener(rpcl);
 			Control c = newViewer.getControl();
-			c.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					dsp.removePropertyChangeListener(lpcl);
-					dsp.removePropertyChangeListener(rpcl);
-				}
+			c.addDisposeListener(e -> {
+				dsp.removePropertyChangeListener(lpcl);
+				dsp.removePropertyChangeListener(rpcl);
 			});
 		}
 		return newViewer;
@@ -411,13 +387,10 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		if (isSaveNeeded() && checkForUnsavedChanges) {
 			return false;
 		} else {
-			Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					IEditorPart part = getPage().findEditor(
-							SaveablesCompareEditorInput.this);
-					getPage().closeEditor(part, false);
-				}
+			Runnable runnable = () -> {
+				IEditorPart part = getPage().findEditor(
+						SaveablesCompareEditorInput.this);
+				getPage().closeEditor(part, false);
 			};
 			if (Display.getCurrent() != null) {
 				runnable.run();
@@ -569,23 +542,13 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		final ITypedElement lLeftElement = getFileElement(getCompareInput()
 				.getLeft(), this);
 		if (lLeftSaveable instanceof LocalResourceSaveableComparison) {
-			pMenuManager.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager manager) {
-					handleMenuAboutToShow(manager, getContainer(), lLeftSaveable, lLeftElement, pSelectionProvider);
-				}
-			});
+			pMenuManager.addMenuListener(manager -> handleMenuAboutToShow(manager, getContainer(), lLeftSaveable, lLeftElement, pSelectionProvider));
 		}
 		final Saveable lRightSaveable = getRightSaveable();
 		final ITypedElement lRightElement = getFileElement(getCompareInput()
 				.getRight(), this);
 		if (lRightSaveable instanceof LocalResourceSaveableComparison) {
-			pMenuManager.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager manager) {
-					handleMenuAboutToShow(manager, getContainer(), lRightSaveable, lRightElement, pSelectionProvider);
-				}
-			});
+			pMenuManager.addMenuListener(manager -> handleMenuAboutToShow(manager, getContainer(), lRightSaveable, lRightElement, pSelectionProvider));
 		}
 	}
 

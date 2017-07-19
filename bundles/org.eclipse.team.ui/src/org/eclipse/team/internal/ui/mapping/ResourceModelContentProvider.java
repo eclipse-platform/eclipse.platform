@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -239,13 +239,10 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	@Override
 	public void propertyChanged(IDiffTree tree, final int property, final IPath[] paths) {
-		Utils.asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				ISynchronizationContext context = getContext();
-				if (context != null) {
-					updateLabels(context, paths);
-				}
+		Utils.asyncExec((Runnable) () -> {
+			ISynchronizationContext context = getContext();
+			if (context != null) {
+				updateLabels(context, paths);
 			}
 		}, (StructuredViewer)getViewer());
 	}
@@ -331,13 +328,9 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	@Override
 	protected void refresh() {
-		Utils.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				TreeViewer treeViewer = ((TreeViewer)getViewer());
-				treeViewer.refresh();
-			}
-
+		Utils.syncExec((Runnable) () -> {
+			TreeViewer treeViewer = ((TreeViewer)getViewer());
+			treeViewer.refresh();
 		}, getViewer().getControl());
 	}
 
@@ -392,12 +385,7 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 
 	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
-		Utils.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				handleChange(event);
-			}
-		}, (StructuredViewer)getViewer());
+		Utils.syncExec((Runnable) () -> handleChange(event), (StructuredViewer)getViewer());
 	}
 
 	private void handleChange(IDiffChangeEvent event) {

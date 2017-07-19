@@ -473,13 +473,10 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
      * Handle the sync info set change event in the UI thread.
      */
     private void handleChanges(final ISyncInfoSetChangeEvent event, final IProgressMonitor monitor) {
-        runViewUpdate(new Runnable() {
-            @Override
-			public void run() {
-				provider.handleChanges((ISyncInfoTreeChangeEvent)event, monitor);
-				firePendingLabelUpdates();
-            }
-        }, true /* preserve expansion */);
+        runViewUpdate(() -> {
+			provider.handleChanges((ISyncInfoTreeChangeEvent)event, monitor);
+			firePendingLabelUpdates();
+		}, true /* preserve expansion */);
     }
 
     @Override
@@ -511,12 +508,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	        if (ctrl != null && !ctrl.isDisposed()) {
 	        	ctrl.getDisplay().syncExec(() -> {
 					if (!ctrl.isDisposed()) {
-						BusyIndicator.showWhile(ctrl.getDisplay(), new Runnable() {
-							@Override
-							public void run() {
-							    internalRunViewUpdate(runnable, preserveExpansion);
-							}
-						});
+						BusyIndicator.showWhile(ctrl.getDisplay(), () -> internalRunViewUpdate(runnable, preserveExpansion));
 					}
 				});
 	        }

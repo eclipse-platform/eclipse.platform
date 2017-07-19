@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,19 +112,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
             final Shell shell = getShell(context);
             final boolean[] ok = new boolean[] { false };
             if (readOnlyFiles.length == 1) {
-                shell.getDisplay().syncExec(new Runnable() {
-                    @Override
-					public void run() {
-                        ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })); //
-                    }
-                });
+                shell.getDisplay().syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
             } else {
-                shell.getDisplay().syncExec(new Runnable() {
-                    @Override
-					public void run() {
-                        ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles);
-                    }
-                });
+                shell.getDisplay().syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
             }
             if (ok[0]) {
                 setWritable(readOnlyFiles);

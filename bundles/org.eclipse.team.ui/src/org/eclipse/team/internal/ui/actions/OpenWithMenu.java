@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -245,46 +245,6 @@ public class OpenWithMenu extends ContributionItem {
 		if (!defaultFound && defaultTextEditor != null) {
 			createMenuItem(menu, defaultTextEditor, preferredEditor);
 		}
-
-		// TODO : We might perhaps enable inplace and system external editors menu items
-		/*// Add system editor
-		IEditorDescriptor descriptor = registry
-				.findEditor(IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
-		final MenuItem systemEditorMenuItem = createMenuItem(menu, descriptor,
-				preferredEditor);
-		systemEditorMenuItem.setEnabled(false);
-
-		// Add system in-place editor
-		descriptor = registry
-				.findEditor(IEditorRegistry.SYSTEM_INPLACE_EDITOR_ID);
-
-		final MenuItem inPlaceEditorMenuItem = (descriptor != null) ? createMenuItem(
-				menu, descriptor, preferredEditor)
-				: null;
-		if (inPlaceEditorMenuItem != null)
-			inPlaceEditorMenuItem.setEnabled(false);
-
-		Job job = new Job("updateOpenWithMenu") { //$NON-NLS-1$
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					final boolean isFile = fileRevision.getStorage(monitor) instanceof IFile;
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							if (inPlaceEditorMenuItem != null
-									&& !inPlaceEditorMenuItem.isDisposed())
-								inPlaceEditorMenuItem.setEnabled(isFile);
-							if (!systemEditorMenuItem.isDisposed())
-								systemEditorMenuItem.setEnabled(isFile);
-						}
-					});
-					return Status.OK_STATUS;
-				} catch (CoreException e) {
-					return new Status(IStatus.WARNING, TeamUIPlugin.ID, null, e);
-				}
-			};
-		};
-		job.setSystem(true);
-		job.schedule();*/
 
 		createDefaultMenuItem(menu, fileRevision, preferredEditor == null);
 

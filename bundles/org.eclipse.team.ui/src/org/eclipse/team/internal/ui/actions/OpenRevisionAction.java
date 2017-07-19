@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.team.internal.ui.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -56,16 +55,13 @@ public class OpenRevisionAction extends BaseSelectionListenerAction {
 			if (revision == null || !revision.exists()) {
 				MessageDialog.openError(page.getSite().getShell(), TeamUIMessages.OpenRevisionAction_DeletedRevTitle, TeamUIMessages.OpenRevisionAction_DeletedRevMessage);
 			} else {
-				IRunnableWithProgress runnable = new IRunnableWithProgress() {
-					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						try {
-							Utils.openEditor(page.getSite().getPage(), revision, monitor);
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
-						}
-
+				IRunnableWithProgress runnable = monitor -> {
+					try {
+						Utils.openEditor(page.getSite().getPage(), revision, monitor);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
 					}
+
 				};
 
 				IProgressService progressService = PlatformUI.getWorkbench().getProgressService();

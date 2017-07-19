@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,12 +95,9 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		}
 	};
 
-	private ISelectionListener selectionListener = new ISelectionListener() {
-		@Override
-		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if(selection instanceof IStructuredSelection)
-				TeamAction.this.selection = (IStructuredSelection)selection;
-		}
+	private ISelectionListener selectionListener = (part, selection) -> {
+		if(selection instanceof IStructuredSelection)
+			TeamAction.this.selection = (IStructuredSelection)selection;
 	};
 
 	/**
@@ -271,16 +268,13 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		final Exception[] exceptions = new Exception[] {null};
 		switch (progressKind) {
 			case PROGRESS_BUSYCURSOR :
-				BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
-					@Override
-					public void run() {
-						try {
-							runnable.run(new NullProgressMonitor());
-						} catch (InvocationTargetException e) {
-							exceptions[0] = e;
-						} catch (InterruptedException e) {
-							exceptions[0] = null;
-						}
+				BusyIndicator.showWhile(Display.getCurrent(), () -> {
+					try {
+						runnable.run(new NullProgressMonitor());
+					} catch (InvocationTargetException e1) {
+						exceptions[0] = e1;
+					} catch (InterruptedException e2) {
+						exceptions[0] = null;
 					}
 				});
 				break;

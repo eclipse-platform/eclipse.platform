@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2015 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ui.*;
@@ -181,20 +179,17 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			logTrace("compareInputChangeListener assigned"); //$NON-NLS-1$
 			logStackTrace();
 		}
-		compareInputChangeListener = new ICompareInputChangeListener() {
-			@Override
-			public void compareInputChanged(ICompareInput source) {
-				if (source == getCompareResult()) {
-					boolean closed = false;
-					if (source.getKind() == Differencer.NO_CHANGE) {
-						closed = closeEditor(true);
-					}
-					if (!closed) {
-						// The editor was closed either because the compare input still has changes
-						// or because the editor input is dirty. In either case, fire the changes
-						// to the registered listeners.
-						propogateInputChange();
-					}
+		compareInputChangeListener = source -> {
+			if (source == getCompareResult()) {
+				boolean closed = false;
+				if (source.getKind() == Differencer.NO_CHANGE) {
+					closed = closeEditor(true);
+				}
+				if (!closed) {
+					// The editor was closed either because the compare input still has changes
+					// or because the editor input is dirty. In either case, fire the changes
+					// to the registered listeners.
+					propogateInputChange();
 				}
 			}
 		};
@@ -202,12 +197,9 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 
 		if (getSaveable() instanceof SaveableComparison) {
 			SaveableComparison scm = (SaveableComparison) saveable;
-			propertyListener = new IPropertyListener() {
-				@Override
-				public void propertyChanged(Object source, int propId) {
-					if (propId == SaveableComparison.PROP_DIRTY) {
-						setDirty(saveable.isDirty());
-					}
+			propertyListener = (source, propId) -> {
+				if (propId == SaveableComparison.PROP_DIRTY) {
+					setDirty(saveable.isDirty());
 				}
 			};
 			scm.addPropertyListener(propertyListener);
@@ -326,16 +318,13 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		if (page == null)
 			return false;
 
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				Shell shell= page.getWorkbenchWindow().getShell();
-				if (shell == null)
-					return;
+		Runnable runnable = () -> {
+			Shell shell= page.getWorkbenchWindow().getShell();
+			if (shell == null)
+				return;
 
-				IEditorPart part= page.findEditor(SaveableCompareEditorInput.this);
-				getPage().closeEditor(part, false);
-			}
+			IEditorPart part= page.findEditor(SaveableCompareEditorInput.this);
+			getPage().closeEditor(part, false);
 		};
 		if (Display.getCurrent() != null) {
 			runnable.run();
@@ -471,12 +460,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 			dsp.addPropertyChangeListener(pcl);
 			Control c= newViewer.getControl();
 			c.addDisposeListener(
-				new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						dsp.removePropertyChangeListener(pcl);
-					}
-				}
+				e -> dsp.removePropertyChangeListener(pcl)
 			);
 		}
 		return newViewer;
@@ -500,12 +484,7 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 		final Saveable saveable = getSaveable();
 		if (saveable instanceof LocalResourceSaveableComparison) {
 			final ITypedElement element= getFileElement(getCompareInput(), this);
-			menu.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager manager) {
-					SaveablesCompareEditorInput.handleMenuAboutToShow(manager, getContainer(), saveable, element, selectionProvider);
-				}
-			});
+			menu.addMenuListener(manager -> SaveablesCompareEditorInput.handleMenuAboutToShow(manager, getContainer(), saveable, element, selectionProvider));
 		}
 	}
 }

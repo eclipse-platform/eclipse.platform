@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -62,9 +61,6 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 		this.runnableContext = runnableContext;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.ITeamRunnableContext#run(org.eclipse.jface.operation.IRunnableWithProgress)
-	 */
 	@Override
 	public void run(IRunnableWithProgress runnable) throws InvocationTargetException, InterruptedException {
 		getRunnableContext().run(true /* fork */, true /* cancelable */, wrapRunnable(runnable));
@@ -72,13 +68,9 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 
 	private IRunnableContext getRunnableContext() {
 		if (runnableContext == null) {
-			return new IRunnableContext() {
-				@Override
-				public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable)
-						throws InvocationTargetException, InterruptedException {
-					IProgressService manager = PlatformUI.getWorkbench().getProgressService();
-					manager.busyCursorWhile(runnable);
-				}
+			return (fork, cancelable, runnable) -> {
+				IProgressService manager = PlatformUI.getWorkbench().getProgressService();
+				manager.busyCursorWhile(runnable);
 			};
 		}
 		return runnableContext;
@@ -89,37 +81,31 @@ public class ProgressDialogRunnableContext implements ITeamRunnableContext {
 	 * and runs in a workspace modify operation if requested.
 	 */
 	private IRunnableWithProgress wrapRunnable(final IRunnableWithProgress runnable) {
-		return new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				try {
-					if (schedulingRule == null && !postponeBuild) {
-						runnable.run(monitor);
-					} else {
-						final Exception[] exception = new Exception[] { null };
-						ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-							@Override
-							public void run(IProgressMonitor pm) throws CoreException {
-								try {
-									runnable.run(pm);
-								} catch (InvocationTargetException e) {
-									exception[0] = e;
-								} catch (InterruptedException e) {
-									exception[0] = e;
-								}
-							}
-						}, schedulingRule, 0 /* allow updates */, monitor);
-						if (exception[0] != null) {
-							if (exception[0] instanceof InvocationTargetException) {
-								throw (InvocationTargetException)exception[0];
-							} else if (exception[0] instanceof InterruptedException) {
-								throw (InterruptedException)exception[0];
-							}
+		return monitor -> {
+			try {
+				if (schedulingRule == null && !postponeBuild) {
+					runnable.run(monitor);
+				} else {
+					final Exception[] exception = new Exception[] { null };
+					ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) pm -> {
+						try {
+							runnable.run(pm);
+						} catch (InvocationTargetException e1) {
+							exception[0] = e1;
+						} catch (InterruptedException e2) {
+							exception[0] = e2;
+						}
+					}, schedulingRule, 0 /* allow updates */, monitor);
+					if (exception[0] != null) {
+						if (exception[0] instanceof InvocationTargetException) {
+							throw (InvocationTargetException)exception[0];
+						} else if (exception[0] instanceof InterruptedException) {
+							throw (InterruptedException)exception[0];
 						}
 					}
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
 				}
+			} catch (CoreException e) {
+				throw new InvocationTargetException(e);
 			}
 		};
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,7 @@ package org.eclipse.team.internal.ui.actions;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.wizards.ConfigureProjectWizard;
@@ -31,17 +29,14 @@ public class ConfigureProjectAction extends TeamAction {
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException,
 			InterruptedException {
-		run(new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				try {
-					if (!isEnabled())
-						return;
-					IProject[] projects = getSelectedProjects();
-					ConfigureProjectWizard.shareProjects(getShell(), projects);
-				} catch (Exception e) {
-					throw new InvocationTargetException(e);
-				}
+		run(monitor -> {
+			try {
+				if (!isEnabled())
+					return;
+				IProject[] projects = getSelectedProjects();
+				ConfigureProjectWizard.shareProjects(getShell(), projects);
+			} catch (Exception e) {
+				throw new InvocationTargetException(e);
 			}
 		}, TeamUIMessages.ConfigureProjectAction_configureProject, PROGRESS_BUSYCURSOR);
 	}
