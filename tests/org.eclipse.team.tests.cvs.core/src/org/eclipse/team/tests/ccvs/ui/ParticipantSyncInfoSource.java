@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,15 +47,12 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 	}
 	
 	protected SyncInfoToDiffConverter getConverter(Subscriber subscriber) {
-		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
+		SyncInfoToDiffConverter converter = Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
 		if (converter == null)
 			converter = SyncInfoToDiffConverter.getDefault();
 		return converter;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#tearDown()
-	 */
 	public void tearDown() {
 		ISynchronizeParticipantReference[] participants = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
 		for (int i = 0; i < participants.length; i++) {
@@ -94,9 +91,6 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 	    // Default is to do nothing. Subclasses may override
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#refresh(org.eclipse.team.core.subscribers.Subscriber, org.eclipse.core.resources.IResource[])
-     */
     public void refresh(Subscriber subscriber, IResource[] resources)
             throws TeamException {
         super.refresh(subscriber, resources);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,9 +130,6 @@ public abstract class BenchmarkTest extends EclipseTest {
     	setModelSync(false);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.tests.ccvs.core.EclipseTest#tearDown()
-     */
     protected void tearDown() throws Exception {
         try {
             if (groups != null) {
@@ -221,8 +218,7 @@ public abstract class BenchmarkTest extends EclipseTest {
     
     protected void openEmptyPerspective() throws WorkbenchException {
         // First close any open perspectives
-    	IHandlerService handlerService = (IHandlerService) PlatformUI.getWorkbench()
-				.getService(IHandlerService.class);
+		IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
 		try {
 			handlerService.executeCommand(
 					"org.eclipse.ui.window.closeAllPerspectives", null);
