@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IProject;
@@ -39,6 +36,9 @@ import org.eclipse.team.internal.ccvs.ui.subscriber.ConfirmMergedOperation;
 import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 import org.eclipse.team.internal.ui.synchronize.SyncInfoModelElement;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
+import org.junit.Assert;
+
+import junit.framework.AssertionFailedError;
 
 /**
  * This class acts as the source for the sync info used by the subscriber tests.
@@ -179,7 +179,7 @@ public class SyncInfoSource {
 			// When running in the suites, we want to avoid intermittent failures.
 			// However, still fail if we expected a change but we get no change since that can
 			// cause work to be lost
-			junit.framework.Assert.assertTrue(errorString, result);
+			Assert.assertTrue(errorString, result);
 		} else if (!result) {
 			System.out.println(errorString);
 			new Exception().printStackTrace();
@@ -271,7 +271,7 @@ public class SyncInfoSource {
 		} catch (InvocationTargetException e) {
 			throw CVSException.wrapException(e);
 		} catch (InterruptedException e) {
-			junit.framework.Assert.fail("Operation was interrupted");
+			Assert.fail("Operation was interrupted");
 		}
 	}
 

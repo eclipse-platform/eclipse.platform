@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,7 @@ package org.eclipse.team.tests.ccvs.core.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -39,7 +37,11 @@ import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteModule;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+import org.junit.Assert;
 import org.osgi.framework.Bundle;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * This class tests the Command framework using simple CVS commands
