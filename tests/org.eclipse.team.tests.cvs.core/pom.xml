@@ -19,5 +19,12 @@
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.tests.cvs.core</artifactId>
   <version>3.4.100-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-test-plugin</packaging>
+
+  <properties>
+    <testSuite>${project.artifactId}</testSuite>
+    <testClass>org.eclipse.team.tests.ccvs.core.AllCoreTests</testClass>
+    <!-- Currently, test fails with tycho-surefire-plugin -->
+    <skipTests>true</skipTests>
+  </properties>
 </project>

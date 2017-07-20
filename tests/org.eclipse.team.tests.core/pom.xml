@@ -20,4 +20,9 @@
   <artifactId>org.eclipse.team.tests.core</artifactId>
   <version>3.8.1-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
+
+  <properties>
+    <testSuite>${project.artifactId}</testSuite>
+    <testClass>org.eclipse.team.tests.core.AllTeamTests</testClass>
+  </properties>
 </project>
