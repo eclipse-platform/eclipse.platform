@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -497,29 +497,27 @@ class ResourceCompareInput extends CompareEditorInput {
 		}
 	}
 
-	/* (non Javadoc)
-	 * see IAdaptable.getAdapter
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter)) {
 		    IProgressMonitor pm= new NullProgressMonitor();
 			// flush changes in any dirty viewer
 			flushViewers(pm);
-		    IFile[] files= (IFile[]) getAdapter(IFile[].class);
+		    IFile[] files= getAdapter(IFile[].class);
 		    if (files != null && files.length > 0)
-		        return files[0];	// can only return one: limitation on IDE.saveAllEditors; see #64617
+		        return (T) files[0];	// can only return one: limitation on IDE.saveAllEditors; see #64617
 		    return null;
 		}
 		if (IFile[].class.equals(adapter)) {
-		    HashSet collector= new HashSet();
+		    HashSet<IFile> collector= new HashSet<>();
 		    collectDirtyResources(fRoot, collector);
-		    return collector.toArray(new IFile[collector.size()]);
+		    return (T) collector.toArray(new IFile[collector.size()]);
 		}
 		return super.getAdapter(adapter);
 	}
 
-	private void collectDirtyResources(Object o, Set collector) {
+	private void collectDirtyResources(Object o, Set<IFile> collector) {
 		if (o instanceof DiffNode) {
 		    DiffNode node= (DiffNode) o;
 
@@ -529,7 +527,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			    if (bn.isDirty()) {
 			        IResource resource= bn.getResource();
 			        if (resource instanceof IFile)
-			            collector.add(resource);
+			            collector.add((IFile) resource);
 			    }
 			}
 
@@ -539,7 +537,7 @@ class ResourceCompareInput extends CompareEditorInput {
 			    if (bn.isDirty()) {
 			        IResource resource= bn.getResource();
 			        if (resource instanceof IFile)
-			            collector.add(resource);
+			            collector.add((IFile) resource);
 			    }
 			}
 

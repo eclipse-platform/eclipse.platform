@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,26 +40,17 @@ import org.eclipse.jface.text.TextViewer;
 public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 
 	private class InternalListener implements ISelectionChangedListener, FocusListener {
-		/*
-	 	 * @see ISelectionChangedListener#selectionChanged
-	 	 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			doSelectionChanged(event);
 		}
 
-	    /*
-	     * @see FocusListener#focusGained
-	     */
 	    @Override
 		public void focusGained(FocusEvent e) {
 	    	// expecting a StyledText widget here
 	    	doFocusChanged(e.widget);
 	    }
 
-	    /*
-	     * @see FocusListener#focusLost
-	     */
 	    @Override
 		public void focusLost(FocusEvent e) {
 	    	// do not reset due to focus behavior on GTK
@@ -78,12 +69,12 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 	private TextViewer[] fViewers;
 
 	private TextViewer fViewerInFocus;
-	private ListenerList fSelectionChangedListeners;
-	private ListenerList fPostSelectionChangedListeners;
+	private ListenerList<ISelectionChangedListener> fSelectionChangedListeners;
+	private ListenerList<ISelectionChangedListener> fPostSelectionChangedListeners;
 
 	public CompareEditorSelectionProvider() {
-		fSelectionChangedListeners = new ListenerList();
-		fPostSelectionChangedListeners = new ListenerList();
+		fSelectionChangedListeners = new ListenerList<>();
+		fPostSelectionChangedListeners = new ListenerList<>();
 		// nothing more to do here, Compare Editor is initializing
 	}
 
@@ -141,9 +132,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		if (fSelectionChangedListeners != null) {
 			SelectionChangedEvent event= new SelectionChangedEvent(this, getSelection());
 
-			Object[] listeners= fSelectionChangedListeners.getListeners();
-			for (int i= 0; i < listeners.length; i++) {
-				ISelectionChangedListener listener= (ISelectionChangedListener) listeners[i];
+			for (ISelectionChangedListener listener : fSelectionChangedListeners) {
 				listener.selectionChanged(event);
 			}
 		}
@@ -153,50 +142,32 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		if (fPostSelectionChangedListeners != null) {
 			SelectionChangedEvent event= new SelectionChangedEvent(this, getSelection());
 
-			Object[] listeners= fPostSelectionChangedListeners.getListeners();
-			for (int i= 0; i < listeners.length; i++) {
-				ISelectionChangedListener listener= (ISelectionChangedListener) listeners[i];
+			for (ISelectionChangedListener listener: fPostSelectionChangedListeners) {
 				listener.selectionChanged(event);
 			}
 		}
 	}
 
-	/*
-	 * @see ISelectionProvider#addSelectionChangedListener
-	 */
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionChangedListeners.add(listener);
 	}
 
-	/*
-	 * @see ISelectionProvider#removeSelectionChangedListener
-	 */
 	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		fSelectionChangedListeners.remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IPostSelectionProvider#addPostSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
 	@Override
 	public void addPostSelectionChangedListener(ISelectionChangedListener listener) {
 		fPostSelectionChangedListeners.add(listener);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IPostSelectionProvider#removePostSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
-	 */
 	@Override
 	public void removePostSelectionChangedListener(ISelectionChangedListener listener) {
 		fPostSelectionChangedListeners.remove(listener);
 	}
 
-	/*
-	 * @see ISelectionProvider#getSelection
-	 */
 	@Override
 	public ISelection getSelection() {
 		if (fViewerInFocus != null) {
@@ -205,9 +176,6 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		return TextSelection.emptySelection();
 	}
 
-	/*
-	 * @see ISelectionProvider#setSelection
-	 */
 	@Override
 	public void setSelection(ISelection selection) {
 		setSelection(selection, true);

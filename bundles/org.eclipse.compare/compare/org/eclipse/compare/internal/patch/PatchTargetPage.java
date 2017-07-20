@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2012 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -31,12 +27,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -93,21 +84,18 @@ public class PatchTargetPage extends WizardPage {
 		Dialog.applyDialogFont(composite);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ICompareContextIds.PATCH_INPUT_WIZARD_PAGE);
 
-		useWorkspaceAsTarget.addListener(SWT.Selection, new Listener() {
-            @Override
-			public void handleEvent(Event event) {
-            	fShowError = true;
-                if (useWorkspaceAsTarget.getSelection()) {
-                    fPatchTargets.getTree().setEnabled(false);
-                    fPatcher.setTarget(ResourcesPlugin.getWorkspace().getRoot());
-                } else {
-                	fPatchTargets.getTree().setEnabled(true);
-                	fPatcher.setTarget(Utilities.getFirstResource(fPatchTargets.getSelection()));
-                }
-                markPreviewPageToRecalucateIfNonWorkspacePatch();
-                updateWidgetEnablements();
-            }
-        });
+		useWorkspaceAsTarget.addListener(SWT.Selection, event -> {
+			fShowError = true;
+		    if (useWorkspaceAsTarget.getSelection()) {
+		        fPatchTargets.getTree().setEnabled(false);
+		        fPatcher.setTarget(ResourcesPlugin.getWorkspace().getRoot());
+		    } else {
+		    	fPatchTargets.getTree().setEnabled(true);
+		    	fPatcher.setTarget(Utilities.getFirstResource(fPatchTargets.getSelection()));
+		    }
+		    markPreviewPageToRecalucateIfNonWorkspacePatch();
+		    updateWidgetEnablements();
+		});
 	}
 
 	private void markPreviewPageToRecalucateIfNonWorkspacePatch() {
@@ -189,21 +177,13 @@ public class PatchTargetPage extends WizardPage {
 		}
 
 		// register listeners
-		fPatchTargets.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				fShowError = true;
-				fPatcher.setTarget(Utilities.getFirstResource(event.getSelection()));
-				updateWidgetEnablements();
-			}
+		fPatchTargets.addSelectionChangedListener(event -> {
+			fShowError = true;
+			fPatcher.setTarget(Utilities.getFirstResource(event.getSelection()));
+			updateWidgetEnablements();
 		});
 
-		fPatchTargets.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				((PatchWizard)getWizard()).showPage(getNextPage());
-			}
-		});
+		fPatchTargets.addDoubleClickListener(event -> ((PatchWizard)getWizard()).showPage(getNextPage()));
 	}
 
 	/**

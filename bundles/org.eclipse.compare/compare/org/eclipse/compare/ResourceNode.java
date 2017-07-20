@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class ResourceNode extends BufferedContent
 							IEditableContent, IModificationDate, IResourceProvider, IEditableContentExtension {
 
 	private IResource fResource;
-	private ArrayList fChildren;
+	private ArrayList<Object> fChildren;
 
 
 	/**
@@ -57,9 +57,6 @@ public class ResourceNode extends BufferedContent
 		return fResource;
 	}
 
-	/* (non Javadoc)
-	 * see IStreamContentAccessor.getContents
-	 */
 	@Override
 	public InputStream getContents() throws CoreException {
 		if (fResource instanceof IStorage)
@@ -67,17 +64,11 @@ public class ResourceNode extends BufferedContent
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see IModificationDate.getModificationDate
-	 */
 	@Override
 	public long getModificationDate() {
 		return fResource.getLocalTimeStamp();
 	}
 
-	/* (non Javadoc)
-	 * see ITypedElement.getName
-	 */
 	@Override
 	public String getName() {
 		if (fResource != null)
@@ -85,9 +76,6 @@ public class ResourceNode extends BufferedContent
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see ITypedElement.getType
-	 */
 	@Override
 	public String getType() {
 		if (fResource instanceof IContainer)
@@ -100,9 +88,6 @@ public class ResourceNode extends BufferedContent
 		return ITypedElement.UNKNOWN_TYPE;
 	}
 
-	/* (non Javadoc)
-	 * see ITypedElement.getImage
-	 */
 	@Override
 	public Image getImage() {
 		return CompareUI.getImage(fResource);
@@ -130,13 +115,10 @@ public class ResourceNode extends BufferedContent
 		return getName().hashCode();
 	}
 
-	/* (non Javadoc)
-	 * see IStructureComparator.getChildren
-	 */
 	@Override
 	public Object[] getChildren() {
 		if (fChildren == null) {
-			fChildren= new ArrayList();
+			fChildren= new ArrayList<>();
 			if (fResource instanceof IContainer) {
 				try {
 					IResource members[]= ((IContainer)fResource).members();
@@ -194,33 +176,21 @@ public class ResourceNode extends BufferedContent
 		return null;
 	}
 
-	/* (non Javadoc)
-	 * see IEditableContent.isEditable
-	 */
 	@Override
 	public boolean isEditable() {
 		return true;
 	}
 
-	/* (non Javadoc)
-	 * see IEditableContent.replace
-	 */
 	@Override
 	public ITypedElement replace(ITypedElement child, ITypedElement other) {
 		return child;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
-	 */
 	@Override
 	public String getCharset() {
 		return Utilities.getCharset(fResource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContentExtension#isReadOnly()
-	 */
 	@Override
 	public boolean isReadOnly() {
 		if (fResource.getType() == IResource.FILE) {
@@ -232,9 +202,6 @@ public class ResourceNode extends BufferedContent
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContentExtension#validateEdit(org.eclipse.swt.widgets.Shell)
-	 */
 	@Override
 	public IStatus validateEdit(Shell shell) {
 		if (isReadOnly())

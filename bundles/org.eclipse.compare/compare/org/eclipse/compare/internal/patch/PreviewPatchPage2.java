@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,22 +33,13 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -105,12 +96,9 @@ public class PreviewPatchPage2 extends WizardPage {
 		Assert.isNotNull(configuration);
 		this.fPatcher = patcher;
 		this.fConfiguration = configuration;
-		this.fConfiguration.addPropertyChangeListener(new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(CompareConfiguration.IGNORE_WHITESPACE)){
-					rebuildTree();
-				}
+		this.fConfiguration.addPropertyChangeListener(event -> {
+			if (event.getProperty().equals(CompareConfiguration.IGNORE_WHITESPACE)){
+				rebuildTree();
 			}
 		});
 	}
@@ -152,17 +140,15 @@ public class PreviewPatchPage2 extends WizardPage {
 		Control c = fInput.createContents(composite);
 		initializeActions();
 		fInput.contributeDiffViewerToolbarItems(getContributedActions(), getPatcher().isWorkspacePatch());
-		fInput.getViewer().addSelectionChangedListener(new ISelectionChangedListener(){
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection s = event.getSelection();
-				if (s != null && !s.isEmpty()) {
-					if (s instanceof IStructuredSelection) {
-						IStructuredSelection ss = (IStructuredSelection) s;
-						updateActions(ss);
-					}
+		fInput.getViewer().addSelectionChangedListener(event -> {
+			ISelection s = event.getSelection();
+			if (s != null && !s.isEmpty()) {
+				if (s instanceof IStructuredSelection) {
+					IStructuredSelection ss = (IStructuredSelection) s;
+					updateActions(ss);
 				}
-			}});
+			}
+		});
 
 		c.setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -233,22 +219,19 @@ public class PreviewPatchPage2 extends WizardPage {
 		};
 		fMoveAction .setToolTipText(PatchMessages.PreviewPatchPage2_RetargetTooltip);
 		fMoveAction.setEnabled(true);
-		fInput.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel= (IStructuredSelection) event.getSelection();
-				Object obj= sel.getFirstElement();
-				boolean enable = false;
-				if (obj instanceof PatchProjectDiffNode) {
-					enable = true;
-				} else if (obj instanceof PatchFileDiffNode) {
-					PatchFileDiffNode node = (PatchFileDiffNode) obj;
-					enable = node.getDiffResult().getDiffProblem();
-				} else if (obj instanceof HunkDiffNode) {
-					enable = true;
-				}
-				fMoveAction.setEnabled(enable);
+		fInput.getViewer().addSelectionChangedListener(event -> {
+			IStructuredSelection sel= (IStructuredSelection) event.getSelection();
+			Object obj= sel.getFirstElement();
+			boolean enable = false;
+			if (obj instanceof PatchProjectDiffNode) {
+				enable = true;
+			} else if (obj instanceof PatchFileDiffNode) {
+				PatchFileDiffNode node = (PatchFileDiffNode) obj;
+				enable = node.getDiffResult().getDiffProblem();
+			} else if (obj instanceof HunkDiffNode) {
+				enable = true;
 			}
+			fMoveAction.setEnabled(enable);
 		});
 
 		fExcludeAction = new Action(PatchMessages.PreviewPatchPage2_0) {
@@ -299,21 +282,18 @@ public class PreviewPatchPage2 extends WizardPage {
 			@Override
 			public void run(){
 				try {
-					getContainer().run(false, true, new IRunnableWithProgress() {
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-							monitor.beginTask(PatchMessages.PreviewPatchPage2_IgnoreWhitespace, IProgressMonitor.UNKNOWN);
-							if (isChecked() != getPatcher().isIgnoreWhitespace()) {
-								if (promptToRebuild(PatchMessages.PreviewPatchPage2_2)) {
-									if (getPatcher().setIgnoreWhitespace(isChecked())){
-										getCompareConfiguration().setProperty(CompareConfiguration.IGNORE_WHITESPACE, Boolean.valueOf(isChecked()));
-									}
-								} else {
-									fIgnoreWhiteSpace.setChecked(!isChecked());
+					getContainer().run(false, true, monitor -> {
+						monitor.beginTask(PatchMessages.PreviewPatchPage2_IgnoreWhitespace, IProgressMonitor.UNKNOWN);
+						if (isChecked() != getPatcher().isIgnoreWhitespace()) {
+							if (promptToRebuild(PatchMessages.PreviewPatchPage2_2)) {
+								if (getPatcher().setIgnoreWhitespace(isChecked())){
+									getCompareConfiguration().setProperty(CompareConfiguration.IGNORE_WHITESPACE, Boolean.valueOf(isChecked()));
 								}
+							} else {
+								fIgnoreWhiteSpace.setChecked(!isChecked());
 							}
-							monitor.done();
 						}
+						monitor.done();
 					});
 				} catch (InvocationTargetException e) { //ignore
 				} catch (InterruptedException e) { //ignore
@@ -328,21 +308,18 @@ public class PreviewPatchPage2 extends WizardPage {
 			@Override
 			public void run(){
 				try {
-					getContainer().run(true, true, new IRunnableWithProgress() {
-						@Override
-						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-							monitor.beginTask(PatchMessages.PreviewPatchPage2_CalculateReverse, IProgressMonitor.UNKNOWN);
-							if (isChecked() != getPatcher().isReversed()) {
-								if (promptToRebuild(PatchMessages.PreviewPatchPage2_3)) {
-									if (getPatcher().setReversed(isChecked())){
-										rebuildTree();
-									}
-								} else {
-									fReversePatch.setChecked(!isChecked());
+					getContainer().run(true, true, monitor -> {
+						monitor.beginTask(PatchMessages.PreviewPatchPage2_CalculateReverse, IProgressMonitor.UNKNOWN);
+						if (isChecked() != getPatcher().isReversed()) {
+							if (promptToRebuild(PatchMessages.PreviewPatchPage2_3)) {
+								if (getPatcher().setReversed(isChecked())){
+									rebuildTree();
 								}
+							} else {
+								fReversePatch.setChecked(!isChecked());
 							}
-							monitor.done();
 						}
+						monitor.done();
 					});
 				} catch (InvocationTargetException e) { //ignore
 				} catch (InterruptedException e) { //ignore
@@ -381,18 +358,15 @@ public class PreviewPatchPage2 extends WizardPage {
 		final Control ctrl = getControl();
 		final boolean[] result = new boolean[] { false };
 		if (ctrl != null && !ctrl.isDisposed()){
-			Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-						// flush any viewers before prompting
-						try {
-							fInput.saveChanges(null);
-						} catch (CoreException e) {
-							CompareUIPlugin.log(e);
-						}
-						result[0] = fInput.confirmRebuild(promptToConfirm);
+			Runnable runnable = () -> {
+				if (!ctrl.isDisposed()) {
+					// flush any viewers before prompting
+					try {
+						fInput.saveChanges(null);
+					} catch (CoreException e) {
+						CompareUIPlugin.log(e);
 					}
+					result[0] = fInput.confirmRebuild(promptToConfirm);
 				}
 			};
 			if (Display.getCurrent() == null)
@@ -406,13 +380,10 @@ public class PreviewPatchPage2 extends WizardPage {
 	private void rebuildTree(){
 		final Control ctrl = getControl();
 		if (ctrl != null && !ctrl.isDisposed()){
-			Runnable runnable = new Runnable() {
-				@Override
-				public void run() {
-					if (!ctrl.isDisposed()) {
-						fInput.buildTree();
-						updateEnablements();
-					}
+			Runnable runnable = () -> {
+				if (!ctrl.isDisposed()) {
+					fInput.buildTree();
+					updateEnablements();
 				}
 			};
 			if (Display.getCurrent() == null)
@@ -497,9 +468,7 @@ public class PreviewPatchPage2 extends WizardPage {
 
 
 		fFuzzField.addModifyListener(
-			new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
+			e -> {
 				if (patcher.getFuzz() != getFuzzFactor()) {
 					if (promptToRebuild(PatchMessages.PreviewPatchPage2_5)) {
 						if (patcher.setFuzz(getFuzzFactor()))
@@ -508,8 +477,7 @@ public class PreviewPatchPage2 extends WizardPage {
 						fFuzzField.setText(Integer.toString(patcher.getFuzz()));
 					}
 				}
-			}
-		});
+			});
 	}
 
 	private void createFuzzFactorChooser(Composite parent) {
@@ -682,12 +650,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		final int[] result= new int[] { -1 };
 		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true,
-					new IRunnableWithProgress() {
-						@Override
-						public void run(IProgressMonitor monitor) {
-							result[0]= patcher.guessFuzzFactor(monitor);
-						}
-				}
+					monitor -> result[0]= patcher.guessFuzzFactor(monitor)
 			);
 		} catch (InvocationTargetException ex) {
 			// NeedWork

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Aleksandra Wozniak and others.
+ * Copyright (c) 2008, 2017 Aleksandra Wozniak and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,22 +44,11 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -270,12 +259,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			super.createText(parent);
 			text.setEditable(true);
 
-			text.addModifyListener(new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					section.setResource(text.getText());
-					updateErrorInfo();
-				}
+			text.addModifyListener(e -> {
+				section.setResource(text.getText());
+				updateErrorInfo();
 			});
 
 			text.addSelectionListener(new SelectionListener() {
@@ -421,16 +407,13 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			final ContentTypeElement[] elements = new ContentTypeElement[] { workspaceContent,
 					externalFileContent, externalFolderContent };
 			for (int i = 0; i < elements.length; i++) {
-				elements[i].getRadioButton().addListener(SWT.Selection, new Listener() {
-					@Override
-					public void handleEvent(Event event) {
-						for (int j = 0; j < elements.length; j++) {
-							if (event.widget != elements[j].getRadioButton())
-								elements[j].setEnabled(false);
-							else {
-								elements[j].setEnabled(true);
-								setResource(elements[j].getResource());
-							}
+				elements[i].getRadioButton().addListener(SWT.Selection, event -> {
+					for (int j = 0; j < elements.length; j++) {
+						if (event.widget != elements[j].getRadioButton())
+							elements[j].setEnabled(false);
+						else {
+							elements[j].setEnabled(true);
+							setResource(elements[j].getResource());
 						}
 					}
 				});

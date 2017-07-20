@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -295,9 +295,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			selectAndReveal(start, length, start, length);
 		}
 
-		/*
-		 * @see org.eclipse.ui.texteditor.AbstractTextEditor#selectAndReveal(int, int, int, int)
-		 */
 		private void selectAndReveal(int selectionStart, int selectionLength, int revealStart, int revealLength) {
 
 			ISelection selection = getSelectionProvider().getSelection();
@@ -320,16 +317,10 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			widget.setRedraw(true);
 		}
 
-		/*
-		 * @see org.eclipse.ui.texteditor.AbstractTextEditor#markInNavigationHistory()
-		 */
 		private void markInNavigationHistory() {
 			getSite().getPage().getNavigationHistory().markLocation(this);
 		}
 
-		/*
-		 * @see org.eclipse.ui.texteditor.AbstractTextEditor#adjustHighlightRange(int, int)
-		 */
 		private void adjustHighlightRange(int offset, int length) {
 
 			if (MergeSourceViewer.this instanceof ITextViewerExtension5) {
@@ -340,9 +331,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			}
 		}
 
-		/*
-		 * @see org.eclipse.ui.texteditor.AbstractTextEditor#isVisible(ISourceViewer, int, int)
-		 */
 		private /*static*/ final boolean isVisible(ITextViewer viewer, int offset, int length) {
 			if (viewer instanceof ITextViewerExtension5) {
 				ITextViewerExtension5 extension= (ITextViewerExtension5) viewer;
@@ -448,7 +436,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		}
 
 		@Override
-		public Object getAdapter(Class adapter) {
+		public <T> T getAdapter(Class<T> adapter) {
 			// defining interface method
 			return null;
 		}
@@ -487,7 +475,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	private SourceViewer fSourceViewer;
 	private Position fRegion;
 	private boolean fEnabled= true;
-	private HashMap fActions= new HashMap();
+	private HashMap<String, IAction> fActions= new HashMap<>();
 	private IDocument fRememberedDocument;
 
 	private boolean fAddSaveAction= true;
@@ -497,7 +485,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	private IPropertyChangeListener fPreferenceChangeListener;
 	private boolean fShowLineNumber=false;
 	private LineNumberRulerColumn fLineNumberColumn;
-	private List textActions = new ArrayList();
+	private List<IAction> textActions = new ArrayList<>();
 	private CommandContributionItem fSaveContributionItem;
 
 	public MergeSourceViewer(SourceViewer sourceViewer,	ResourceBundle bundle, ICompareContainer container) {
@@ -514,12 +502,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		fContainer.registerContextMenu(menu, getSourceViewer());
 
 		// for listening to editor show/hide line number preference value
-		fPreferenceChangeListener= new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				MergeSourceViewer.this.handlePropertyChangeEvent(event);
-			}
-		};
+		fPreferenceChangeListener= event -> MergeSourceViewer.this.handlePropertyChangeEvent(event);
 		EditorsUI.getPreferenceStore().addPropertyChangeListener(fPreferenceChangeListener);
 		fShowLineNumber= EditorsUI.getPreferenceStore().getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER);
 		if(fShowLineNumber){
@@ -773,7 +756,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 
 	public IAction getAction(String actionId) {
-		IAction action= (IAction) fActions.get(actionId);
+		IAction action= fActions.get(actionId);
 		if (action == null) {
 			action= createAction(actionId);
 			if (action == null)
@@ -818,9 +801,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		Iterator e= fActions.values().iterator();
+		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
-			Object next = e.next();
+			IAction next = e.next();
 			if (next instanceof MergeViewerAction) {
 				MergeViewerAction action = (MergeViewerAction) next;
 				if (action.isSelectionDependent())
@@ -835,9 +818,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	}
 
 	void updateContentDependantActions() {
-		Iterator e= fActions.values().iterator();
+		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
-			Object next = e.next();
+			IAction next = e.next();
 			if (next instanceof MergeViewerAction) {
 				MergeViewerAction action = (MergeViewerAction) next;
 				if (action.isContentDependent())
@@ -875,8 +858,8 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
 		menu.add(new Separator("text")); //$NON-NLS-1$
-		for (Iterator iterator = textActions.iterator(); iterator.hasNext();) {
-			IAction action = (IAction) iterator.next();
+		for (Iterator<IAction> iterator = textActions.iterator(); iterator.hasNext();) {
+			IAction action = iterator.next();
 			menu.add(action);
 		}
 
@@ -933,9 +916,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 	 *
 	 */
 	public void updateActions() {
-		Iterator e= fActions.values().iterator();
+		Iterator<IAction> e= fActions.values().iterator();
 		while (e.hasNext()) {
-			Object next = e.next();
+			IAction next = e.next();
 			if (next instanceof MergeViewerAction) {
 				MergeViewerAction action = (MergeViewerAction) next;
 				action.update();
@@ -1076,12 +1059,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		// when the undo history changes. It could be localized to UNDO and REDO.
 		IUndoContext context = getUndoContext();
 		if (context != null && event.getOperation().hasContext(context)) {
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					updateContentDependantActions();
-				}
-			});
+			Display.getDefault().asyncExec(() -> updateContentDependantActions());
 		}
 	}
 
@@ -1099,10 +1077,11 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		return fSourceViewer;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ITextEditor.class) {
-			return new TextEditorAdapter();
+			return (T) new TextEditorAdapter();
 		}
 		return null;
 	}

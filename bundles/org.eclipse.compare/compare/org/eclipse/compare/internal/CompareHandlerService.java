@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,11 @@ import org.eclipse.ui.services.IServiceLocator;
 
 public class CompareHandlerService {
 
-	private final List fActivations = new ArrayList();
+	private final List<IHandlerActivation> fActivations = new ArrayList<>();
 	private final Expression fExpression;
 	private ICompareContainer fContainer;
 	private boolean fDisposed;
-	private List fPaneActivations = new ArrayList();
+	private List<IHandlerActivation> fPaneActivations = new ArrayList<>();
 	private IHandlerService fHandlerService;
 
 	public static CompareHandlerService createFor(ICompareContainer container, Shell shell) {

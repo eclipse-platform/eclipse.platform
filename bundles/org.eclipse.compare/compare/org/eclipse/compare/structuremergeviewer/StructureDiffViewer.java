@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,25 +73,17 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	/*
 	 * A set of background tasks for updating the structure
 	 */
-	private IRunnableWithProgress diffTask = new IRunnableWithProgress() {
-		@Override
-		public void run(IProgressMonitor monitor) throws InvocationTargetException,
-				InterruptedException {
-			monitor.beginTask(CompareMessages.StructureDiffViewer_0, 100);
-			diff(new SubProgressMonitor(monitor, 100));
-			monitor.done();
-		}
+	private IRunnableWithProgress diffTask = monitor -> {
+		monitor.beginTask(CompareMessages.StructureDiffViewer_0, 100);
+		diff(new SubProgressMonitor(monitor, 100));
+		monitor.done();
 	};
 
-	private IRunnableWithProgress inputChangedTask = new IRunnableWithProgress() {
-		@Override
-		public void run(IProgressMonitor monitor) throws InvocationTargetException,
-				InterruptedException {
-			monitor.beginTask(CompareMessages.StructureDiffViewer_1, 100);
-			// TODO: Should we always force
-			compareInputChanged((ICompareInput)getInput(), true, new SubProgressMonitor(monitor, 100));
-			monitor.done();
-		}
+	private IRunnableWithProgress inputChangedTask = monitor -> {
+		monitor.beginTask(CompareMessages.StructureDiffViewer_1, 100);
+		// TODO: Should we always force
+		compareInputChanged((ICompareInput) getInput(), true, new SubProgressMonitor(monitor, 100));
+		monitor.done();
 	};
 
 	/*
@@ -101,13 +93,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	private class StructureInfo {
 		private ITypedElement fInput;
 		private IStructureComparator fStructureComparator;
-		private IRunnableWithProgress refreshTask = new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
-				refresh(monitor);
-			}
-		};
+		private IRunnableWithProgress refreshTask = monitor -> refresh(monitor);
 
 		public boolean setInput(ITypedElement newInput, boolean force, IProgressMonitor monitor) {
 			boolean changed = false;
@@ -222,18 +208,8 @@ public class StructureDiffViewer extends DiffTreeViewer {
 
 		setAutoExpandLevel(3);
 
-		fContentChangedListener= new IContentChangeListener() {
-			@Override
-			public void contentChanged(IContentChangeNotifier changed) {
-				StructureDiffViewer.this.contentChanged(changed);
-			}
-		};
-		fCompareInputChangeListener = new ICompareInputChangeListener() {
-			@Override
-			public void compareInputChanged(ICompareInput input) {
-				StructureDiffViewer.this.compareInputChanged(input, true);
-			}
-		};
+		fContentChangedListener= changed -> StructureDiffViewer.this.contentChanged(changed);
+		fCompareInputChangeListener = input -> StructureDiffViewer.this.compareInputChanged(input, true);
 	}
 
 	/**
@@ -342,16 +318,13 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		CompareConfiguration cc = getCompareConfiguration();
 		// The compare configuration is nulled when the viewer is disposed
 		if (cc != null) {
-			BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-				@Override
-				public void run() {
-					try {
-						inputChangedTask.run(new NullProgressMonitor());
-					} catch (InvocationTargetException e) {
-						CompareUIPlugin.log(e.getTargetException());
-					} catch (InterruptedException e) {
-						// Ignore
-					}
+			BusyIndicator.showWhile(Display.getDefault(), () -> {
+				try {
+					inputChangedTask.run(new NullProgressMonitor());
+				} catch (InvocationTargetException e1) {
+					CompareUIPlugin.log(e1.getTargetException());
+				} catch (InterruptedException e2) {
+					// Ignore
 				}
 			});
 		}
@@ -466,12 +439,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @since 3.3
 	 */
 	protected void preDiffHook(final IStructureComparator ancestor, final IStructureComparator left, final IStructureComparator right, IProgressMonitor monitor) {
-		syncExec(new Runnable() {
-			@Override
-			public void run() {
-				preDiffHook(ancestor, left, right);
-			}
-		});
+		syncExec(() -> preDiffHook(ancestor, left, right));
 	}
 
 	/**
@@ -530,12 +498,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 				refreshAfterDiff(message);
 			} else {
 				final String theMessage = message;
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						refreshAfterDiff(theMessage);
-					}
-				});
+				Display.getDefault().asyncExec(() -> refreshAfterDiff(theMessage));
 			}
 		} finally {
 			endWork(monitor);
@@ -561,13 +524,10 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			CompareConfiguration compareConfiguration = getCompareConfiguration();
 			// A null compare configuration indicates that the viewer was disposed
 			if (compareConfiguration != null) {
-				compareConfiguration.getContainer().run(true, true, new IRunnableWithProgress() {
-					@Override
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						monitor.beginTask(CompareMessages.StructureDiffViewer_2, 100);
-						diffTask.run(new SubProgressMonitor(monitor, 100));
-						monitor.done();
-					}
+				compareConfiguration.getContainer().run(true, true, monitor -> {
+					monitor.beginTask(CompareMessages.StructureDiffViewer_2, 100);
+					diffTask.run(new SubProgressMonitor(monitor, 100));
+					monitor.done();
 				});
 			}
 		} catch (InvocationTargetException e) {
@@ -581,13 +541,10 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	}
 
 	private void handleFailedRefresh(final String message) {
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				if (getControl().isDisposed())
-					return;
-				refreshAfterDiff(message);
-			}
+		Runnable runnable = () -> {
+			if (getControl().isDisposed())
+				return;
+			refreshAfterDiff(message);
 		};
 		if (Display.getCurrent() != null) {
 			runnable.run();
@@ -631,12 +588,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 * @since 3.3
 	 */
 	protected void postDiffHook(final Differencer differencer, final IDiffContainer root, IProgressMonitor monitor) {
-		syncExec(new Runnable() {
-			@Override
-			public void run() {
-				postDiffHook(differencer, root);
-			}
-		});
+		syncExec(() -> postDiffHook(differencer, root));
 	}
 
 	/*

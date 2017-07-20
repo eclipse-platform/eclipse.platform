@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2015 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,7 @@ package org.eclipse.compare.internal.patch;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.CompareUI;
-import org.eclipse.compare.CompareViewerPane;
-import org.eclipse.compare.IContentChangeListener;
-import org.eclipse.compare.IContentChangeNotifier;
+import org.eclipse.compare.*;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
 import org.eclipse.compare.internal.core.patch.DiffProject;
@@ -41,15 +36,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
-import org.eclipse.jface.viewers.IDecoration;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.OpenEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -272,13 +259,10 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 				Object left = hunkNode.getLeft();
 				if (left instanceof UnmatchedHunkTypedElement) {
 					UnmatchedHunkTypedElement element = (UnmatchedHunkTypedElement) left;
-					element.addContentChangeListener(new IContentChangeListener() {
-						@Override
-						public void contentChanged(IContentChangeNotifier source) {
-							if (getViewer() == null || getViewer().getControl().isDisposed())
-								return;
-							getViewer().refresh(true);
-						}
+					element.addContentChangeListener(source -> {
+						if (getViewer() == null || getViewer().getControl().isDisposed())
+							return;
+						getViewer().refresh(true);
 					});
 				}
 			} else if (showMatched) {
@@ -287,9 +271,6 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#createDiffViewer(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public Viewer createDiffViewer(Composite parent) {
 		viewer =  new DiffTreeViewer(parent, getCompareConfiguration()){
@@ -301,25 +282,21 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 
 		viewer.setLabelProvider(new PatcherCompareEditorLabelProvider((ILabelProvider)viewer.getLabelProvider()));
 		viewer.getTree().setData(CompareUI.COMPARE_VIEWER_TITLE, PatchMessages.PatcherCompareEditorInput_PatchContents);
-		viewer.addOpenListener(new IOpenListener() {
-			@Override
-			public void open(OpenEvent event) {
-				IStructuredSelection sel= (IStructuredSelection) event.getSelection();
-				Object obj= sel.getFirstElement();
-				if (obj instanceof HunkDiffNode) {
-					if (((HunkDiffNode) obj).getHunkResult().isOK()) {
-						getCompareConfiguration().setLeftLabel(PatchMessages.PatcherCompareEditorInput_LocalCopy);
-						getCompareConfiguration().setRightLabel(PatchMessages.PreviewPatchPage2_MatchedHunk);
-					} else {
-						getCompareConfiguration().setLeftLabel(PatchMessages.PreviewPatchPage2_PatchedLocalFile);
-						getCompareConfiguration().setRightLabel(PatchMessages.PreviewPatchPage2_OrphanedHunk);
-					}
-				} else {
+		viewer.addOpenListener(event -> {
+			IStructuredSelection sel= (IStructuredSelection) event.getSelection();
+			Object obj= sel.getFirstElement();
+			if (obj instanceof HunkDiffNode) {
+				if (((HunkDiffNode) obj).getHunkResult().isOK()) {
 					getCompareConfiguration().setLeftLabel(PatchMessages.PatcherCompareEditorInput_LocalCopy);
-					getCompareConfiguration().setRightLabel(PatchMessages.PatcherCompareEditorInput_AfterPatch);
+					getCompareConfiguration().setRightLabel(PatchMessages.PreviewPatchPage2_MatchedHunk);
+				} else {
+					getCompareConfiguration().setLeftLabel(PatchMessages.PreviewPatchPage2_PatchedLocalFile);
+					getCompareConfiguration().setRightLabel(PatchMessages.PreviewPatchPage2_OrphanedHunk);
 				}
+			} else {
+				getCompareConfiguration().setLeftLabel(PatchMessages.PatcherCompareEditorInput_LocalCopy);
+				getCompareConfiguration().setRightLabel(PatchMessages.PatcherCompareEditorInput_AfterPatch);
 			}
-
 		});
 		viewer.setFilters(getFilters());
 		viewer.setInput(root);

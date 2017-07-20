@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -346,20 +346,17 @@ public class CompareEditor extends EditorPart
 				} finally {
 					if (monitor.isCanceled())
 						newState[0] = CANCELED;
-					Display.getDefault().syncExec(new Runnable() {
-						@Override
-						public void run() {
-							if (fPageBook.isDisposed())
-								return;
-							// we need to register the saveable if we had a previous input or if
-							// there are knownSaveables (which means that the workbench called
-							// getSaveables and got an empty list
-							if (hadPreviousInput || (knownSaveables != null && !isAllSaveablesKnown())) {
-								registerSaveable();
-							}
-							setState(newState[0]);
-							createCompareControl();
+					Display.getDefault().syncExec(() -> {
+						if (fPageBook.isDisposed())
+							return;
+						// we need to register the saveable if we had a previous input or if
+						// there are knownSaveables (which means that the workbench called
+						// getSaveables and got an empty list
+						if (hadPreviousInput || (knownSaveables != null && !isAllSaveablesKnown())) {
+							registerSaveable();
 						}
+						setState(newState[0]);
+						createCompareControl();
 					});
 					monitor.done();
 				}
@@ -464,14 +461,11 @@ public class CompareEditor extends EditorPart
 	}
 
 	private void setPageLater() {
-		Display.getCurrent().timerExec(1000, new Runnable() {
-			@Override
-			public void run() {
-				synchronized(CompareEditor.this) {
-					if (getState() == INITIALIZING) {
-						setState(STILL_INITIALIZING);
-						createCompareControl();
-					}
+		Display.getCurrent().timerExec(1000, () -> {
+			synchronized(CompareEditor.this) {
+				if (getState() == INITIALIZING) {
+					setState(STILL_INITIALIZING);
+					createCompareControl();
 				}
 			}
 		});

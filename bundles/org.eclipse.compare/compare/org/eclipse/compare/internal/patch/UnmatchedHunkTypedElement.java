@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,6 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 		super(result, false, true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IContentChangeNotifier#addContentChangeListener(org.eclipse.compare.IContentChangeListener)
-	 */
 	@Override
 	public synchronized void addContentChangeListener(IContentChangeListener listener) {
 		if (changeNotifier == null)
@@ -46,36 +43,24 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 		changeNotifier.addContentChangeListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IContentChangeNotifier#removeContentChangeListener(org.eclipse.compare.IContentChangeListener)
-	 */
 	@Override
 	public synchronized void removeContentChangeListener(IContentChangeListener listener) {
 		if (changeNotifier != null)
 			changeNotifier.removeContentChangeListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContent#isEditable()
-	 */
 	@Override
 	public boolean isEditable() {
 		IFile file = ((WorkspaceFileDiffResult)getHunkResult().getDiffResult()).getTargetFile();
 		return file != null && file.isAccessible();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContent#replace(org.eclipse.compare.ITypedElement, org.eclipse.compare.ITypedElement)
-	 */
 	@Override
 	public ITypedElement replace(ITypedElement dest, ITypedElement src) {
 		// Not supported
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEditableContent#setContent(byte[])
-	 */
 	@Override
 	public void setContent(byte[] newContent) {
 		getPatcher().setManuallyMerged(getHunkResult().getHunk(), true);
@@ -92,16 +77,13 @@ public class UnmatchedHunkTypedElement extends HunkTypedElement implements ICont
 		return Patcher.getPatcher(getConfiguration());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.internal.patch.HunkTypedElement#getContents()
-	 */
 	@Override
 	public InputStream getContents() throws CoreException {
 		// If there are cached contents, use them
 		if (getPatcher().hasCachedContents(getDiff()))
 			return new ByteArrayInputStream(getPatcher().getCachedContents(getDiff()));
 		// Otherwise return the after state of the diff result
-		List lines = getHunkResult().getDiffResult().getAfterLines();
+		List<String> lines = getHunkResult().getDiffResult().getAfterLines();
 		String content = LineReader.createString(getHunkResult().getDiffResult().isPreserveLineDelimeters(), lines);
 		byte[] bytes = null;
 		if (getCharset() != null)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,12 +41,12 @@ public class WorkerJob extends Job {
 			return Status.OK_STATUS;
 		if (errors.length == 1)
 			return new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, 0, errors[0].getMessage(), errors[0]);
-		List statii = new ArrayList();
+		List<IStatus> statii = new ArrayList<>();
 		for (int i = 0; i < errors.length; i++) {
 			Throwable throwable = errors[i];
 			statii.add(new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, 0, errors[0].getMessage(), throwable));
 		}
-		return new MultiStatus(CompareUIPlugin.PLUGIN_ID, 0, (IStatus[]) statii.toArray(new IStatus[statii.size()]), CompareMessages.WorkerJob_0, null);
+		return new MultiStatus(CompareUIPlugin.PLUGIN_ID, 0, statii.toArray(new IStatus[statii.size()]), CompareMessages.WorkerJob_0, null);
 	}
 
 	@Override

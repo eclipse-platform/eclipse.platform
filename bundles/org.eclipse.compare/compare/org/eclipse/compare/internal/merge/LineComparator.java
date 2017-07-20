@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,29 +25,23 @@ class LineComparator implements IRangeComparator {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
         String line;
-        ArrayList ar = new ArrayList();
+        ArrayList<String> ar = new ArrayList<>();
         while ((line = br.readLine()) != null) {
             ar.add(line);
         }
         // It is the responsibility of the caller to close the stream
-        fLines = (String[]) ar.toArray(new String[ar.size()]);
+        fLines = ar.toArray(new String[ar.size()]);
     }
 
     String getLine(int ix) {
         return fLines[ix];
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
-     */
     @Override
 	public int getRangeCount() {
         return fLines.length;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int, org.eclipse.compare.rangedifferencer.IRangeComparator, int)
-     */
     @Override
 	public boolean rangesEqual(int thisIndex, IRangeComparator other,
             int otherIndex) {
@@ -56,9 +50,6 @@ class LineComparator implements IRangeComparator {
         return s1.equals(s2);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison(int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)
-     */
     @Override
 	public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
         return false;

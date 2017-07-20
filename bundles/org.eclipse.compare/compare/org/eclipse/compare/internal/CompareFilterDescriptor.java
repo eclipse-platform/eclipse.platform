@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class CompareFilterDescriptor {
 	private ResourceBundle fResourceBundle;
 	private ImageDescriptor fImageDescriptor;
 
-	private class ConfigurationKeysEnumeration implements Enumeration {
+	private class ConfigurationKeysEnumeration implements Enumeration<String> {
 
 		private String[] keySet;
 		private int cursor = 0;
@@ -53,7 +53,7 @@ public class CompareFilterDescriptor {
 		}
 
 		@Override
-		public Object nextElement() {
+		public String nextElement() {
 			return keySet[cursor++];
 		}
 
@@ -68,7 +68,7 @@ public class CompareFilterDescriptor {
 			}
 
 			@Override
-			public Enumeration getKeys() {
+			public Enumeration<String> getKeys() {
 				return new ConfigurationKeysEnumeration(fConfiguration);
 			}
 		};

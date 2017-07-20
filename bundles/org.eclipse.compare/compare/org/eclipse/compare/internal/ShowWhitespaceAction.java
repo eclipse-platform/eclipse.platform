@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 public class ShowWhitespaceAction extends TextEditorPropertyAction {
 
-	private Map fPainters;
+	private Map<MergeSourceViewer, WhitespaceCharacterPainter> fPainters;
 	private boolean isWhitespaceShowing;
 	private boolean[] fNeedsPainters;
 	/** @since 3.7 */
@@ -119,9 +119,9 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		return true;
 	}
 
-	private synchronized Map getPainters() {
+	private synchronized Map<MergeSourceViewer, WhitespaceCharacterPainter> getPainters() {
 		if (fPainters == null)
-			fPainters = new HashMap();
+			fPainters = new HashMap<>();
 		return fPainters;
 	}
 
@@ -129,7 +129,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		if (isWhitespaceShowing)
 			return;
 		try {
-			Map painters = getPainters();
+			Map<MergeSourceViewer, WhitespaceCharacterPainter> painters = getPainters();
 			MergeSourceViewer[] viewers = getViewers();
 			for (int i = 0; i < viewers.length; i++) {
 				if (fNeedsPainters[i]) {
@@ -152,10 +152,10 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 	}
 
 	private void hideWhitespace() {
-		Map painters = getPainters();
-		for (Iterator iterator = painters.keySet().iterator(); iterator.hasNext();) {
-			MergeSourceViewer viewer = (MergeSourceViewer) iterator.next();
-			WhitespaceCharacterPainter painter = (WhitespaceCharacterPainter)painters.get(viewer);
+		Map<MergeSourceViewer, WhitespaceCharacterPainter> painters = getPainters();
+		for (Iterator<MergeSourceViewer> iterator = painters.keySet().iterator(); iterator.hasNext();) {
+			MergeSourceViewer viewer = iterator.next();
+			WhitespaceCharacterPainter painter = painters.get(viewer);
 			if (painter != null) {
 				viewer.getSourceViewer().removePainter(painter);
 				painter.deactivate(true);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -165,12 +164,9 @@ public class Utilities {
 		if (listenerList == null || listenerList.isEmpty())
 			return;
 		// Legacy listeners may expect to get notified in the UI thread
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				for (IPropertyChangeListener listener : listenerList) {
-					SafeRunner.run(() -> listener.propertyChange(event));
-				}
+		Runnable runnable = () -> {
+			for (IPropertyChangeListener listener : listenerList) {
+				SafeRunner.run(() -> listener.propertyChange(event));
 			}
 		};
 		if (Display.getCurrent() == null) {
@@ -565,12 +561,7 @@ public class Utilities {
 		if (Display.getCurrent() != null) {
 			ErrorDialog.openError(shell, title, message, status);
 		} else {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					ErrorDialog.openError(shell, title, message, status);
-				}
-			});
+			Display.getDefault().syncExec(() -> ErrorDialog.openError(shell, title, message, status));
 		}
 	}
 
@@ -804,12 +795,7 @@ public class Utilities {
 		if (Display.getCurrent() != null) {
 			BusyIndicator.showWhile(Display.getCurrent(), runnable);
 		} else {
-			Display.getDefault().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					BusyIndicator.showWhile(Display.getCurrent(), runnable);
-				}
-			});
+			Display.getDefault().syncExec(() -> BusyIndicator.showWhile(Display.getCurrent(), runnable));
 		}
 	}
 
@@ -850,28 +836,25 @@ public class Utilities {
 			throws InvocationTargetException, OperationCanceledException,
 			InterruptedException {
 		final String[] result = new String[1];
-		context.run(true, true, new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				SubMonitor progress = SubMonitor.convert(monitor,
-						PatchMessages.InputPatchPage_URLConnecting, 100);
-				try {
-					URLConnection connection = url.openConnection();
-					progress.worked(10);
-					if (monitor.isCanceled())
-						throw new OperationCanceledException();
-					setReadTimeout(connection, 60 * 1000);
-					progress.setTaskName(PatchMessages.InputPatchPage_URLFetchingContent);
-					String enc = connection.getContentEncoding();
-					if (enc == null)
-						enc = ResourcesPlugin.getEncoding();
-					result[0] = Utilities.readString(
-							connection.getInputStream(), enc,
-							connection.getContentLength(),
-							progress.newChild(90));
-				} catch (IOException e) {
-					throw new InvocationTargetException(e);
-				}
+		context.run(true, true, monitor -> {
+			SubMonitor progress = SubMonitor.convert(monitor,
+					PatchMessages.InputPatchPage_URLConnecting, 100);
+			try {
+				URLConnection connection = url.openConnection();
+				progress.worked(10);
+				if (monitor.isCanceled())
+					throw new OperationCanceledException();
+				setReadTimeout(connection, 60 * 1000);
+				progress.setTaskName(PatchMessages.InputPatchPage_URLFetchingContent);
+				String enc = connection.getContentEncoding();
+				if (enc == null)
+					enc = ResourcesPlugin.getEncoding();
+				result[0] = Utilities.readString(
+						connection.getInputStream(), enc,
+						connection.getContentLength(),
+						progress.newChild(90));
+			} catch (IOException e) {
+				throw new InvocationTargetException(e);
 			}
 		});
 		return result[0];

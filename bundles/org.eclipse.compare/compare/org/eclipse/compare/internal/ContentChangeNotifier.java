@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,26 +22,20 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ContentChangeNotifier implements IContentChangeNotifier {
 
-	private ListenerList fListenerList;
+	private ListenerList<IContentChangeListener> fListenerList;
 	private final IContentChangeNotifier element;
 
 	public ContentChangeNotifier(IContentChangeNotifier element) {
 		this.element = element;
 	}
 
-	/* (non-Javadoc)
-	 * see IContentChangeNotifier.addChangeListener
-	 */
 	@Override
 	public void addContentChangeListener(IContentChangeListener listener) {
 		if (fListenerList == null)
-			fListenerList= new ListenerList();
+			fListenerList= new ListenerList<>();
 		fListenerList.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * see IContentChangeNotifier.removeChangeListener
-	 */
 	@Override
 	public void removeContentChangeListener(IContentChangeListener listener) {
 		if (fListenerList != null) {
@@ -59,23 +53,18 @@ public class ContentChangeNotifier implements IContentChangeNotifier {
 			return;
 		}
 		// Legacy listeners may expect to be notified in the UI thread.
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				Object[] listeners= fListenerList.getListeners();
-				for (int i= 0; i < listeners.length; i++) {
-					final IContentChangeListener contentChangeListener = (IContentChangeListener)listeners[i];
-					SafeRunner.run(new ISafeRunnable() {
-						@Override
-						public void run() throws Exception {
-							contentChangeListener.contentChanged(element);
-						}
-						@Override
-						public void handleException(Throwable exception) {
-							// Logged by safe runner
-						}
-					});
-				}
+		Runnable runnable = () -> {
+			for (final IContentChangeListener contentChangeListener : fListenerList) {
+				SafeRunner.run(new ISafeRunnable() {
+					@Override
+					public void run() throws Exception {
+						contentChangeListener.contentChanged(element);
+					}
+					@Override
+					public void handleException(Throwable exception) {
+						// Logged by safe runner
+					}
+				});
 			}
 		};
 		if (Display.getCurrent() == null) {

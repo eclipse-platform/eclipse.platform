@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,27 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import java.io.*;
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.MessageFormat;
-import java.util.ArrayList;
-import com.ibm.icu.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.ResourceBundle;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-
-import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.Viewer;
-
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.util.*;
 
 import org.eclipse.compare.*;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.*;
+
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.MessageFormat;
+import com.ibm.icu.util.Calendar;
 
 
 public class AddFromHistoryDialog extends ResizableDialog {
@@ -126,7 +124,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 	}
 
 	private CompareConfiguration fCompareConfiguration;
-	private ArrayList fArrayList= new ArrayList();
+	private ArrayList<FileHistory> fArrayList= new ArrayList<>();
 	private FileHistory fCurrentFileHistory;
 
 	// SWT controls
@@ -199,9 +197,9 @@ public class AddFromHistoryDialog extends ResizableDialog {
 
 	HistoryInput[] getSelected() {
 		HistoryInput[] selected= new HistoryInput[fArrayList.size()];
-		Iterator iter= fArrayList.iterator();
+		Iterator<FileHistory> iter= fArrayList.iterator();
 		for (int i= 0; iter.hasNext(); i++) {
-			FileHistory h= (FileHistory) iter.next();
+			FileHistory h= iter.next();
 			selected[i]= h.getHistoryInput();
 		}
 		return selected;
@@ -219,14 +217,11 @@ public class AddFromHistoryDialog extends ResizableDialog {
 					| GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL));
 
 		vsplitter.addDisposeListener(
-			new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					if (fDateImage != null)
-						fDateImage.dispose();
-					if (fTimeImage != null)
-						fTimeImage.dispose();
-				}
+			e -> {
+				if (fDateImage != null)
+					fDateImage.dispose();
+				if (fTimeImage != null)
+					fTimeImage.dispose();
 			}
 		);
 
@@ -255,7 +250,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 						if (e.item instanceof TableItem) {
 							TableItem ti= (TableItem) e.item;
 							if (ti.getChecked())
-								fArrayList.add(ti.getData());
+								fArrayList.add((FileHistory) ti.getData());
 							else
 								fArrayList.remove(ti.getData());
 

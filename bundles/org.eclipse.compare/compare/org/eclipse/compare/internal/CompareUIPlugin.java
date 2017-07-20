@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2015 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,21 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
@@ -66,7 +53,6 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
@@ -557,29 +543,26 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	private void internalOpenEditor(final CompareEditorInput input,
 			final IWorkbenchPage wp, final IReusableEditor editor,
 			final boolean activate) {
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				if (editor != null && !editor.getSite().getShell().isDisposed()) {	// reuse the given editor
-					editor.setInput(input);
-					return;
-				}
+		Runnable runnable = () -> {
+			if (editor != null && !editor.getSite().getShell().isDisposed()) {	// reuse the given editor
+				editor.setInput(input);
+				return;
+			}
 
-				IWorkbenchPage page = wp;
-				if (page == null)
-					page= getActivePage();
-				if (page != null) {
-					// open new CompareEditor on page
-					try {
-						page.openEditor(input, COMPARE_EDITOR, activate);
-					} catch (PartInitException e) {
-						MessageDialog.openError(getShell(), Utilities.getString("CompareUIPlugin.openEditorError"), e.getMessage()); //$NON-NLS-1$
-					}
-				} else {
-					MessageDialog.openError(getShell(),
-							Utilities.getString("CompareUIPlugin.openEditorError"), //$NON-NLS-1$
-							Utilities.getString("CompareUIPlugin.noActiveWorkbenchPage")); //$NON-NLS-1$
+			IWorkbenchPage page = wp;
+			if (page == null)
+				page= getActivePage();
+			if (page != null) {
+				// open new CompareEditor on page
+				try {
+					page.openEditor(input, COMPARE_EDITOR, activate);
+				} catch (PartInitException e) {
+					MessageDialog.openError(getShell(), Utilities.getString("CompareUIPlugin.openEditorError"), e.getMessage()); //$NON-NLS-1$
 				}
+			} else {
+				MessageDialog.openError(getShell(),
+						Utilities.getString("CompareUIPlugin.openEditorError"), //$NON-NLS-1$
+						Utilities.getString("CompareUIPlugin.noActiveWorkbenchPage")); //$NON-NLS-1$
 			}
 		};
 		syncExec(runnable);
@@ -914,12 +897,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 
 		ArrayList<CompareFilterDescriptor> list = new ArrayList<>(result);
-		Collections.sort(list, new Comparator<CompareFilterDescriptor>() {
-			@Override
-			public int compare(CompareFilterDescriptor left, CompareFilterDescriptor right) {
-				return left.getFilterId().compareTo(right.getFilterId());
-			}
-		});
+		Collections.sort(list, (left, right) -> left.getFilterId().compareTo(right.getFilterId()));
 
 		return result.toArray(new CompareFilterDescriptor[result.size()]);
 	}
@@ -1387,12 +1365,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			fFilter= new CompareResourceFilter();
 			final IPreferenceStore ps= getPreferenceStore();
 			fFilter.setFilters(ps.getString(ComparePreferencePage.PATH_FILTER));
-			fPropertyChangeListener= new IPropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent event) {
-					if (ComparePreferencePage.PATH_FILTER.equals(event.getProperty()))
-						fFilter.setFilters(ps.getString(ComparePreferencePage.PATH_FILTER));
-				}
+			fPropertyChangeListener= event -> {
+				if (ComparePreferencePage.PATH_FILTER.equals(event.getProperty()))
+					fFilter.setFilters(ps.getString(ComparePreferencePage.PATH_FILTER));
 			};
 			ps.addPropertyChangeListener(fPropertyChangeListener);
 	    }
@@ -1400,14 +1375,11 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	private void internalOpenDialog(final CompareEditorInput input) {
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				CompareDialog dialog = new CompareDialog(PlatformUI
-						.getWorkbench().getModalDialogShellProvider()
-						.getShell(), input);
-				dialog.open();
-			}
+		Runnable runnable = () -> {
+			CompareDialog dialog = new CompareDialog(PlatformUI
+					.getWorkbench().getModalDialogShellProvider()
+					.getShell(), input);
+			dialog.open();
 		};
 		syncExec(runnable);
 	}
@@ -1423,12 +1395,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	//---- more utilities
 
 	protected void handleNoDifference() {
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				MessageDialog.openInformation(getShell(), Utilities.getString("CompareUIPlugin.dialogTitle"), Utilities.getString("CompareUIPlugin.noDifferences"));  //$NON-NLS-1$//$NON-NLS-2$
-			}
-		};
+		Runnable runnable = () -> MessageDialog.openInformation(getShell(), Utilities.getString("CompareUIPlugin.dialogTitle"), Utilities.getString("CompareUIPlugin.noDifferences"));
 		syncExec(runnable);
 	}
 

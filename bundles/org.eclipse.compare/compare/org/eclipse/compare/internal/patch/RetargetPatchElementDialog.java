@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ class RetargetPatchElementDialog extends Dialog {
 			if (element instanceof IWorkspaceRoot) {
 				// Don't show closed projects
 				IProject[] allProjects= ((IWorkspaceRoot) element).getProjects();
-				ArrayList accessibleProjects= new ArrayList();
+				ArrayList<IProject> accessibleProjects= new ArrayList<>();
 				for (int i= 0; i<allProjects.length; i++) {
 					if (allProjects[i].isOpen()) {
 						accessibleProjects.add(allProjects[i]);
@@ -182,40 +182,34 @@ class RetargetPatchElementDialog extends Dialog {
 	}
 
 	void setupListeners() {
-		fViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection s= (IStructuredSelection) event.getSelection();
-				Object obj= s.getFirstElement();
-				if (obj instanceof IResource){
-					fSelectedResource = (IResource) obj;
-					if (fSelectedNode instanceof PatchProjectDiffNode) {
-						if (fSelectedResource instanceof IProject){
-							Button okButton = getButton(IDialogConstants.OK_ID);
-							okButton.setEnabled(true);
-						}
-					} else if (fSelectedNode instanceof PatchFileDiffNode
-							|| fSelectedNode instanceof HunkDiffNode) {
-						if (fSelectedResource instanceof IFile){
-							Button okButton = getButton(IDialogConstants.OK_ID);
-							okButton.setEnabled(true);
-						}
+		fViewer.addSelectionChangedListener(event -> {
+			IStructuredSelection s= (IStructuredSelection) event.getSelection();
+			Object obj= s.getFirstElement();
+			if (obj instanceof IResource){
+				fSelectedResource = (IResource) obj;
+				if (fSelectedNode instanceof PatchProjectDiffNode) {
+					if (fSelectedResource instanceof IProject){
+						Button okButton1 = getButton(IDialogConstants.OK_ID);
+						okButton1.setEnabled(true);
+					}
+				} else if (fSelectedNode instanceof PatchFileDiffNode
+						|| fSelectedNode instanceof HunkDiffNode) {
+					if (fSelectedResource instanceof IFile){
+						Button okButton2 = getButton(IDialogConstants.OK_ID);
+						okButton2.setEnabled(true);
 					}
 				}
 			}
 		});
 
-		fViewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				ISelection s= event.getSelection();
-				if (s instanceof IStructuredSelection) {
-					Object item= ((IStructuredSelection) s).getFirstElement();
-					if (fViewer.getExpandedState(item))
-						fViewer.collapseToLevel(item, 1);
-					else
-						fViewer.expandToLevel(item, 1);
-				}
+		fViewer.addDoubleClickListener(event -> {
+			ISelection s= event.getSelection();
+			if (s instanceof IStructuredSelection) {
+				Object item= ((IStructuredSelection) s).getFirstElement();
+				if (fViewer.getExpandedState(item))
+					fViewer.collapseToLevel(item, 1);
+				else
+					fViewer.expandToLevel(item, 1);
 			}
 		});
 

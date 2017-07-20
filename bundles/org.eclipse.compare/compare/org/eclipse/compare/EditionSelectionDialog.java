@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,11 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.MessageFormat;
 import com.ibm.icu.util.Calendar;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -49,11 +37,9 @@ import org.eclipse.core.runtime.CoreException;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.*;
+
+import java.util.*;
 
 import org.eclipse.compare.internal.CompareContainer;
 import org.eclipse.compare.internal.CompareUIPlugin;
@@ -175,7 +161,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 
 	// Configuration options
 	private CompareConfiguration fCompareConfiguration;
-	private ArrayList fArrayList= new ArrayList();
+	private ArrayList<Object> fArrayList= new ArrayList<>();
 	/** use a side-by-side compare viewer */
 	private boolean fCompare= true;
 	/** show target on right hand side */
@@ -195,11 +181,11 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * Maps from members to their corresponding editions.
 	 * Has only a single entry if dialog is used in "Replace" (and not "Add") mode.
 	 */
-	private HashMap fMemberEditions;
+	private HashMap<ITypedElement, List<Pair>> fMemberEditions;
 	/**
 	 * Maps from members to their corresponding selected edition.
 	 */
-	private HashMap fMemberSelection;
+	private HashMap<List, ITypedElement> fMemberSelection;
 	/** The editions of the current selected member */
 	private List fCurrentEditions;
 	private Thread fThread;
@@ -466,7 +452,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				return null;	// error
 
 			// extract all elements of container
-			final HashSet current= new HashSet();
+			final HashSet<Object> current= new HashSet<>();
 			IStructureComparator sco= structureCreator.locate(container, target);
 			if (sco != null) {
 				Object[] children= sco.getChildren();
@@ -594,18 +580,18 @@ public class EditionSelectionDialog extends ResizableDialog {
 	 * @since 2.1
 	 */
 	public ITypedElement[] getSelection() {
-		ArrayList result= new ArrayList();
+		ArrayList<ITypedElement> result= new ArrayList<>();
 		if (fMemberSelection != null) {
-			Iterator iter= fArrayList.iterator();
+			Iterator<Object> iter= fArrayList.iterator();
 			while (iter.hasNext()) {
 				Object edition= iter.next();
 				Object item= fMemberSelection.get(edition);
 				if (item != null)
-					result.add(item);
+					result.add((ITypedElement) item);
 			}
 		} else if (fSelectedItem != null)
 			result.add(fSelectedItem);
-		return (ITypedElement[]) result.toArray(new ITypedElement[result.size()]);
+		return result.toArray(new ITypedElement[result.size()]);
 	}
 
  	/**
@@ -744,9 +730,6 @@ public class EditionSelectionDialog extends ResizableDialog {
 		return null;
 	}
 
- 	/* (non Javadoc)
- 	 * Creates SWT control tree.
- 	 */
 	@Override
 	protected synchronized Control createDialogArea(Composite parent2) {
 
@@ -759,21 +742,18 @@ public class EditionSelectionDialog extends ResizableDialog {
 					| GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL));
 
 		vsplitter.addDisposeListener(
-			new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					if (fCompareConfiguration != null) {
-						fCompareConfiguration.dispose();
-						fCompareConfiguration= null;
-					}
-					if (fDateImage != null) {
-						fDateImage.dispose();
-						fDateImage= null;
-					}
-					if (fTimeImage != null) {
-						fTimeImage.dispose();
-						fTimeImage= null;
-					}
+			e -> {
+				if (fCompareConfiguration != null) {
+					fCompareConfiguration.dispose();
+					fCompareConfiguration= null;
+				}
+				if (fDateImage != null) {
+					fDateImage.dispose();
+					fDateImage= null;
+				}
+				if (fTimeImage != null) {
+					fTimeImage.dispose();
+					fTimeImage= null;
 				}
 			}
 		);
@@ -831,12 +811,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 					}
 				};
 				fStructuredComparePane.addSelectionChangedListener(
-					new ISelectionChangedListener() {
-						@Override
-						public void selectionChanged(SelectionChangedEvent e) {
-							feedInput2(e.getSelection());
-						}
-					}
+					e -> feedInput2(e.getSelection())
 				);
 			} else {
 				// only a single pane showing the editions
@@ -886,9 +861,6 @@ public class EditionSelectionDialog extends ResizableDialog {
 		return parent;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		String buttonLabel= Utilities.getString(fBundle, "buttonLabel", IDialogConstants.OK_LABEL); //$NON-NLS-1$
@@ -924,29 +896,19 @@ public class EditionSelectionDialog extends ResizableDialog {
 		if (fEditionTree != null && !fEditionTree.isDisposed()) {
 			Display display= fEditionTree.getDisplay();
 			display.asyncExec(
-				new Runnable() {
-					@Override
-					public void run() {
-						addMemberEdition(pair);
-					}
-				}
+				() -> addMemberEdition(pair)
 			);
 		}
 	}
 
 	private static void internalSort(IModificationDate[] keys) {
-		Arrays.sort(keys, new Comparator() {
-			@Override
-			public int compare(Object o1, Object o2) {
-				IModificationDate d1= (IModificationDate) o1;
-				IModificationDate d2= (IModificationDate) o2;
-				long d= d2.getModificationDate() - d1.getModificationDate();
-				if (d < 0)
-					return -1;
-				if (d > 0)
-					return 1;
-				return 0;
-			}
+		Arrays.sort(keys, (d1, d2) -> {
+			long d= d2.getModificationDate() - d1.getModificationDate();
+			if (d < 0)
+				return -1;
+			if (d > 0)
+				return 1;
+			return 0;
 		});
 	}
 
@@ -980,14 +942,14 @@ public class EditionSelectionDialog extends ResizableDialog {
 		}
 
 		if (fMemberEditions == null)
-			fMemberEditions= new HashMap();
+			fMemberEditions= new HashMap<>();
 		if (fMultiSelect && fMemberSelection == null)
-			fMemberSelection= new HashMap();
+			fMemberSelection= new HashMap<>();
 
 		ITypedElement item= pair.getItem();
-		List editions= (List) fMemberEditions.get(item);
+		List<Pair> editions= fMemberEditions.get(item);
 		if (editions == null) {
-			editions= new ArrayList();
+			editions= new ArrayList<>();
 			fMemberEditions.put(item, editions);
 			if (fMemberTable != null && !fMemberTable.isDisposed()) {
 				ITypedElement te= item;
@@ -1014,7 +976,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			Pair last= fTargetPair;
 			int size= editions.size();
 			if (size > 0)
-				last= (Pair) editions.get(size-1);
+				last= editions.get(size-1);
 			if (last != null && last.equals(pair))
 				return;	// don't add since the new one is equal to old
 		}
@@ -1124,7 +1086,8 @@ public class EditionSelectionDialog extends ResizableDialog {
 	private void handleMemberSelect(Widget w) {
 		Object data= w.getData();
 		if (data instanceof List) {
-			List editions= (List) data;
+			@SuppressWarnings("unchecked")
+			List<Object> editions= (List<Object>) data;
 			if (editions != fCurrentEditions) {
 				fCurrentEditions= editions;
 				fEditionTree.removeAll();
@@ -1133,7 +1096,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				String title= MessageFormat.format(pattern, new Object[] { ((Item)w).getText() });
 				fEditionPane.setText(title);
 
-				Iterator iter= editions.iterator();
+				Iterator<Object> iter= editions.iterator();
 				while (iter.hasNext()) {
 					Object item= iter.next();
 					if (item instanceof Pair)

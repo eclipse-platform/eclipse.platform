@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,6 @@ import org.eclipse.swt.accessibility.AccessibleAdapter;
 import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.ViewForm;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
@@ -97,17 +95,14 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 		addMouseListener(ml);
 		getTopLeft().addMouseListener(ml);
 
-		addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (fToolBarManager != null) {
-					fToolBarManager.removeAll();
-					fToolBarManager.dispose();
-				}
-				fInput= null;
-				fSelectionListeners= null;
-				setImage(null);
+		addDisposeListener(e -> {
+			if (fToolBarManager != null) {
+				fToolBarManager.removeAll();
+				fToolBarManager.dispose();
 			}
+			fInput= null;
+			fSelectionListeners= null;
+			setImage(null);
 		});
 	}
 

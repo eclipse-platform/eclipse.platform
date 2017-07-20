@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
@@ -20,10 +18,7 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.Utilities;
-import org.eclipse.compare.structuremergeviewer.Differencer;
-import org.eclipse.compare.structuremergeviewer.IDiffContainer;
-import org.eclipse.compare.structuremergeviewer.IStructureComparator;
-import org.eclipse.compare.structuremergeviewer.IStructureCreator;
+import org.eclipse.compare.structuremergeviewer.*;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
@@ -79,7 +74,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 
 	static class ZipFolder extends ZipResource {
 
-		private HashMap fChildren= new HashMap(10);
+		private HashMap<String, ZipResource> fChildren= new HashMap<>(10);
 
 		ZipFolder(String name) {
 			super(name);
@@ -93,7 +88,7 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		@Override
 		public Object[] getChildren() {
 			Object[] children= new Object[fChildren.size()];
-			Iterator iter= fChildren.values().iterator();
+			Iterator<ZipResource> iter= fChildren.values().iterator();
 			for (int i= 0; iter.hasNext(); i++)
 				children[i]= iter.next();
 			return children;
@@ -269,8 +264,8 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		}
 
 		if (root.fChildren.size() == 1) {
-			Iterator iter= root.fChildren.values().iterator();
-			return (IStructureComparator) iter.next();
+			Iterator<ZipResource> iter= root.fChildren.values().iterator();
+			return iter.next();
 		}
 		return root;
 	}

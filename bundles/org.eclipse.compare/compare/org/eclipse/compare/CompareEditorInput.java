@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,22 +55,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IOpenListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.OpenEvent;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -252,17 +240,14 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		fCompareConfiguration= configuration;
 		Assert.isNotNull(configuration);
 
-		fDirtyStateListener= new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent e) {
-				String propertyName= e.getProperty();
-				if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
-					boolean changed= false;
-					Object newValue= e.getNewValue();
-					if (newValue instanceof Boolean)
-						changed= ((Boolean) newValue).booleanValue();
-					setDirty(e.getSource(), changed);
-				}
+		fDirtyStateListener= e -> {
+			String propertyName= e.getProperty();
+			if (CompareEditorInput.DIRTY_STATE.equals(propertyName)) {
+				boolean changed= false;
+				Object newValue= e.getNewValue();
+				if (newValue instanceof Boolean)
+					changed= ((Boolean) newValue).booleanValue();
+				setDirty(e.getSource(), changed);
 			}
 		};
 
@@ -292,12 +277,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 		if (adapter == IShowInSource.class) {
 			final IFile file = Adapters.adapt(this, IFile.class);
 			if (file != null)
-				return (T) new IShowInSource() {
-					@Override
-					public ShowInContext getShowInContext() {
-						return new ShowInContext(new FileEditorInput(file), StructuredSelection.EMPTY);
-					}
-				};
+				return (T) (IShowInSource) () -> new ShowInContext(new FileEditorInput(file), StructuredSelection.EMPTY);
 		}
 		if (adapter == OutlineViewerCreator.class) {
 			synchronized (this) {
@@ -552,34 +532,26 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 		feedInput();
 		parent.requestLayout();
-		fComposite.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				/*
-				 * When the UI associated with this compare editor input is
-				 * disposed each composite being part of the UI releases its
-				 * children first. A dispose listener is added to the last
-				 * widget found in that structure. Therefore, compare editor
-				 * input is disposed at the end making it possible to refer
-				 * during widgets disposal.
-				 */
-				Composite composite = (Composite) e.widget;
-				Control control = composite;
-				while (composite.getChildren().length > 0) {
-					control = composite.getChildren()[composite.getChildren().length - 1];
-					if (control instanceof Composite) {
-						composite = (Composite) control;
-					} else {
-						break;
-					}
+		fComposite.addDisposeListener(e -> {
+			/*
+			 * When the UI associated with this compare editor input is
+			 * disposed each composite being part of the UI releases its
+			 * children first. A dispose listener is added to the last
+			 * widget found in that structure. Therefore, compare editor
+			 * input is disposed at the end making it possible to refer
+			 * during widgets disposal.
+			 */
+			Composite composite = (Composite) e.widget;
+			Control control = composite;
+			while (composite.getChildren().length > 0) {
+				control = composite.getChildren()[composite.getChildren().length - 1];
+				if (control instanceof Composite) {
+					composite = (Composite) control;
+				} else {
+					break;
 				}
-				control.addDisposeListener(new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent ev) {
-						handleDispose();
-					}
-				});
 			}
+			control.addDisposeListener(ev -> handleDispose());
 		});
 		if (fHelpContextId != null)
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fComposite, fHelpContextId);
@@ -654,12 +626,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 		// setup the wiring for top left pane
 		fStructureInputPane.addOpenListener(
-			new IOpenListener() {
-				@Override
-				public void open(OpenEvent oe) {
-					feed1(oe.getSelection());
-				}
-			}
+			oe -> feed1(oe.getSelection())
 		);
 		fStructureInputPane.addSelectionChangedListener(
 			new ISelectionChangedListener() {
@@ -674,30 +641,15 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 			}
 		);
 		fStructureInputPane.addDoubleClickListener(
-			new IDoubleClickListener() {
-				@Override
-				public void doubleClick(DoubleClickEvent event) {
-					feedDefault1(event.getSelection());
-				}
-			}
+			event -> feedDefault1(event.getSelection())
 		);
 
 		fStructurePane1.addSelectionChangedListener(
-			new ISelectionChangedListener() {
-				@Override
-				public void selectionChanged(SelectionChangedEvent e) {
-					feed2(e.getSelection());
-				}
-			}
+			e -> feed2(e.getSelection())
 		);
 
 		fStructurePane2.addSelectionChangedListener(
-			new ISelectionChangedListener() {
-				@Override
-				public void selectionChanged(SelectionChangedEvent e) {
-					feed3(e.getSelection());
-				}
-			}
+			e -> feed3(e.getSelection())
 		);
 
 		return h;
@@ -777,28 +729,25 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private void feed1(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
-			new Runnable() {
-				@Override
-				public void run() {
-					if (selection == null || selection.isEmpty()) {
-						Object input= fStructureInputPane.getInput();
-						if (input != null)
-							internalSetContentPaneInput(input);
-						if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
-							return;
-						fStructurePane2.setInput(null); // clear downstream pane
+			() -> {
+				if (selection == null || selection.isEmpty()) {
+					Object input1= fStructureInputPane.getInput();
+					if (input1 != null)
+						internalSetContentPaneInput(input1);
+					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
+						return;
+					fStructurePane2.setInput(null); // clear downstream pane
+					fStructurePane1.setInput(null);
+				} else {
+					Object input2= getElement(selection);
+					internalSetContentPaneInput(input2);
+					if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
+						return;
+					if (structureCompareOnSingleClick() || hasUnusableContentViewer())
+						fStructurePane1.setInput(input2);
+					fStructurePane2.setInput(null); // clear downstream pane
+					if (fStructurePane1.getInput() != input2)
 						fStructurePane1.setInput(null);
-					} else {
-						Object input= getElement(selection);
-						internalSetContentPaneInput(input);
-						if (!Utilities.okToUse(fStructurePane1) || !Utilities.okToUse(fStructurePane2))
-							return;
-						if (structureCompareOnSingleClick() || hasUnusableContentViewer())
-							fStructurePane1.setInput(input);
-						fStructurePane2.setInput(null); // clear downstream pane
-						if (fStructurePane1.getInput() != input)
-							fStructurePane1.setInput(null);
-					}
 				}
 			}
 		);
@@ -806,30 +755,24 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private void feedDefault1(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
-			new Runnable() {
-				@Override
-				public void run() {
-					if (!selection.isEmpty())
-						fStructurePane1.setInput(getElement(selection));
-				}
+			() -> {
+				if (!selection.isEmpty())
+					fStructurePane1.setInput(getElement(selection));
 			}
 		);
 	}
 
 	private void feed2(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
-			new Runnable() {
-				@Override
-				public void run() {
-					if (selection.isEmpty()) {
-						Object input= fStructurePane1.getInput();
-						internalSetContentPaneInput(input);
-						fStructurePane2.setInput(null);
-					} else {
-						Object input= getElement(selection);
-						internalSetContentPaneInput(input);
-						fStructurePane2.setInput(input);
-					}
+			() -> {
+				if (selection.isEmpty()) {
+					Object input1= fStructurePane1.getInput();
+					internalSetContentPaneInput(input1);
+					fStructurePane2.setInput(null);
+				} else {
+					Object input2= getElement(selection);
+					internalSetContentPaneInput(input2);
+					fStructurePane2.setInput(input2);
 				}
 			}
 		);
@@ -837,14 +780,11 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private void feed3(final ISelection selection) {
 		BusyIndicator.showWhile(fComposite.getDisplay(),
-			new Runnable() {
-				@Override
-				public void run() {
-					if (selection.isEmpty())
-						internalSetContentPaneInput(fStructurePane2.getInput());
-					else
-						internalSetContentPaneInput(getElement(selection));
-				}
+			() -> {
+				if (selection.isEmpty())
+					internalSetContentPaneInput(fStructurePane2.getInput());
+				else
+					internalSetContentPaneInput(getElement(selection));
 			}
 		);
 
@@ -974,12 +914,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 			Control c= newViewer.getControl();
 			c.addDisposeListener(
-				new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						dsp.removePropertyChangeListener(fDirtyStateListener);
-					}
-				}
+				e -> dsp.removePropertyChangeListener(fDirtyStateListener)
 			);
 		}
 
@@ -1514,16 +1449,12 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	private boolean saveChanges() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						saveChanges(monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+				try {
+					saveChanges(monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
-
 			});
 			return true;
 		} catch (InterruptedException x) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,12 +196,7 @@ public class CompareStructureViewerSwitchingPane extends
 		menu.addMenuListener(new MenuAdapter() {
 			@Override
 			public void menuHidden(MenuEvent e) {
-				e.display.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						menu.dispose();
-					}
-				});
+				e.display.asyncExec(() -> menu.dispose());
 			}
 		});
 	}

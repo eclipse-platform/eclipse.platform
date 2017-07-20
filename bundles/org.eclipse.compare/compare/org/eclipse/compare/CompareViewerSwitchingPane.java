@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,6 @@ import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -89,18 +87,15 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 		setViewer(new NullViewer(this));
 
 		addDisposeListener(
-			new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					if (fViewer != null)
-						fViewer.removeSelectionChangedListener(CompareViewerSwitchingPane.this);
-					if (fViewer instanceof StructuredViewer) {
-						StructuredViewer sv= (StructuredViewer) fViewer;
-						sv.removeDoubleClickListener(CompareViewerSwitchingPane.this);
-						sv.removeOpenListener(CompareViewerSwitchingPane.this);
-					}
-					fViewer= null;
+			e -> {
+				if (fViewer != null)
+					fViewer.removeSelectionChangedListener(CompareViewerSwitchingPane.this);
+				if (fViewer instanceof StructuredViewer) {
+					StructuredViewer sv= (StructuredViewer) fViewer;
+					sv.removeDoubleClickListener(CompareViewerSwitchingPane.this);
+					sv.removeOpenListener(CompareViewerSwitchingPane.this);
 				}
+				fViewer= null;
 			}
 		);
 	}

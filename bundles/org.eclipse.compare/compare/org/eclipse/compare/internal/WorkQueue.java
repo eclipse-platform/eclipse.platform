@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
  */
 public class WorkQueue {
 
-	private List runnables = new ArrayList();
+	private List<IRunnableWithProgress> runnables = new ArrayList<>();
 
 	public boolean add(IRunnableWithProgress runnable) {
 		if (runnables.contains(runnable))
@@ -50,7 +50,7 @@ public class WorkQueue {
 		return runnables.size();
 	}
 	public IRunnableWithProgress remove() {
-		return (IRunnableWithProgress)runnables.remove(0);
+		return runnables.remove(0);
 	}
 
 

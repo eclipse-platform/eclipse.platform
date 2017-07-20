@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,15 +33,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -174,32 +167,23 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		setPreferenceStore(CompareUIPlugin.getDefault().getPreferenceStore());
 
 		fOverlayStore= new OverlayPreferenceStore(getPreferenceStore(), fKeys);
-		fPreferenceChangeListener= new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				String key= event.getProperty();
-				if (key.equals(INITIALLY_SHOW_ANCESTOR_PANE)) {
-					boolean b= fOverlayStore.getBoolean(INITIALLY_SHOW_ANCESTOR_PANE);
-					if (fCompareConfiguration != null) {
-						fCompareConfiguration.setProperty(INITIALLY_SHOW_ANCESTOR_PANE, Boolean.valueOf(b));
-					}
+		fPreferenceChangeListener= event -> {
+			String key= event.getProperty();
+			if (key.equals(INITIALLY_SHOW_ANCESTOR_PANE)) {
+				boolean b= fOverlayStore.getBoolean(INITIALLY_SHOW_ANCESTOR_PANE);
+				if (fCompareConfiguration != null) {
+					fCompareConfiguration.setProperty(INITIALLY_SHOW_ANCESTOR_PANE, Boolean.valueOf(b));
 				}
 			}
 		};
 		fOverlayStore.addPropertyChangeListener(fPreferenceChangeListener);
 	}
 
-	/*
-	 * @see IWorkbenchPreferencePage#init()
-	 */
 	@Override
 	public void init(IWorkbench workbench) {
 		// empty
 	}
 
-	/*
-	 * @see PreferencePage#performOk()
-	 */
 	@Override
 	public boolean performOk() {
 		fOverlayStore.setValue(ADDED_LINES_REGEX, addedLinesRegex.getText());
@@ -214,9 +198,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		return true;
 	}
 
-	/*
-	 * @see PreferencePage#performDefaults()
-	 */
 	@Override
 	protected void performDefaults() {
 
@@ -226,9 +207,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		super.performDefaults();
 	}
 
-	/*
-	 * @see DialogPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 
@@ -254,9 +232,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setValue(PREF_SAVE_ALL_EDITORS, value);
 	}
 
-	/*
-	 * @see PreferencePage#createContents(Composite)
-	 */
 	@Override
 	protected Control createContents(Composite parent) {
 
@@ -343,16 +318,13 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fFilters.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		fFilters.setText(fOverlayStore.getString(PATH_FILTER));
 		fFilters.addModifyListener(
-			new ModifyListener() {
-				@Override
-				public void modifyText(ModifyEvent e) {
-					String filters= fFilters.getText();
-					String message= CompareResourceFilter.validateResourceFilters(filters);
-					setValid(message == null);
-					setMessage(null);
-					setErrorMessage(message);
-					fOverlayStore.setValue(PATH_FILTER, filters);
-				}
+			e -> {
+				String filters= fFilters.getText();
+				String message= CompareResourceFilter.validateResourceFilters(filters);
+				setValid(message == null);
+				setMessage(null);
+				setErrorMessage(message);
+				fOverlayStore.setValue(PATH_FILTER, filters);
 			}
 		);
 
@@ -438,12 +410,9 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		);
 
 		Control c= fPreviewViewer.getControl();
-		c.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (fCompareConfiguration != null)
-					fCompareConfiguration.dispose();
-			}
+		c.addDisposeListener(e -> {
+			if (fCompareConfiguration != null)
+				fCompareConfiguration.dispose();
 		});
 
 		return  c;

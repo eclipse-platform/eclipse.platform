@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,18 +22,15 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.ibm.icu.text.MessageFormat;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -60,14 +57,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 
@@ -456,14 +446,11 @@ public class InputPatchPage extends WizardPage {
 				updateWidgetEnablements();
 			}
 		});
-		fPatchFileNameField.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				clearErrorMessage();
-				fShowError= true;
-				fPatchRead = false;
-				updateWidgetEnablements();
-			}
+		fPatchFileNameField.addModifyListener(e -> {
+			clearErrorMessage();
+			fShowError= true;
+			fPatchRead = false;
+			updateWidgetEnablements();
 		});
 		fPatchFileBrowseButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -486,14 +473,11 @@ public class InputPatchPage extends WizardPage {
 				updateWidgetEnablements();
 			}
 		});
-		fPatchURLField.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				clearErrorMessage();
-				fShowError = true;
-				fPatchRead = false;
-				updateWidgetEnablements();
-			}
+		fPatchURLField.addModifyListener(e -> {
+			clearErrorMessage();
+			fShowError = true;
+			fPatchRead = false;
+			updateWidgetEnablements();
 		});
 		fUseWorkspaceButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -512,30 +496,24 @@ public class InputPatchPage extends WizardPage {
 			}
 		});
 
-		fTreeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				clearErrorMessage();
-				updateWidgetEnablements();
-			}
+		fTreeViewer.addSelectionChangedListener(event -> {
+			clearErrorMessage();
+			updateWidgetEnablements();
 		});
 
-		fTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				ISelection selection= event.getSelection();
-				if (selection instanceof TreeSelection) {
-					TreeSelection treeSel= (TreeSelection) selection;
-					Object res= treeSel.getFirstElement();
-					if (res != null) {
-						if (res instanceof IProject || res instanceof IFolder) {
-							if (fTreeViewer.getExpandedState(res))
-								fTreeViewer.collapseToLevel(res, 1);
-							else
-								fTreeViewer.expandToLevel(res, 1);
-						} else if (res instanceof IFile)
-							fPatchWizard.showPage(getNextPage());
-					}
+		fTreeViewer.addDoubleClickListener(event -> {
+			ISelection selection= event.getSelection();
+			if (selection instanceof TreeSelection) {
+				TreeSelection treeSel= (TreeSelection) selection;
+				Object res= treeSel.getFirstElement();
+				if (res != null) {
+					if (res instanceof IProject || res instanceof IFolder) {
+						if (fTreeViewer.getExpandedState(res))
+							fTreeViewer.collapseToLevel(res, 1);
+						else
+							fTreeViewer.expandToLevel(res, 1);
+					} else if (res instanceof IFile)
+						fPatchWizard.showPage(getNextPage());
 				}
 			}
 		});
@@ -1010,7 +988,7 @@ public class InputPatchPage extends WizardPage {
 	 * @param newEntry the entry to add to the history
 	 */
 	protected static String[] addToHistory(String[] history, String newEntry) {
-		java.util.ArrayList l= new java.util.ArrayList(java.util.Arrays.asList(history));
+		ArrayList<String> l= new ArrayList<>(Arrays.asList(history));
 
 		l.remove(newEntry);
 		l.add(0,newEntry);
@@ -1020,7 +998,7 @@ public class InputPatchPage extends WizardPage {
 		if (l.size() > COMBO_HISTORY_LENGTH)
 			l.remove(COMBO_HISTORY_LENGTH);
 
-		return (String[]) l.toArray(new String[l.size()]);
+		return l.toArray(new String[l.size()]);
 	}
 
 	public boolean isPatchRead() {

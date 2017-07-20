@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2015 IBM Corporation and others.
+ * Copyright (c) 2009, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,16 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -142,13 +133,10 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		labelOptimized.setImage(CompareUIPlugin.getImageDescriptor(
 				OPTIMIZED_INFO_IMAGE_NAME).createImage());
 		labelOptimized.setVisible(false); // hide by default
-		labelOptimized.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				Image img = labelOptimized.getImage();
-				if ((img != null) && (!img.isDisposed())) {
-					img.dispose();
-				}
+		labelOptimized.addDisposeListener(e -> {
+			Image img = labelOptimized.getImage();
+			if ((img != null) && (!img.isDisposed())) {
+				img.dispose();
 			}
 		});
 
@@ -251,12 +239,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 			@Override
 			public void menuHidden(MenuEvent e) {
 				menuShowing= false;
-				e.display.asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						menu.dispose();
-					}
-				});
+				e.display.asyncExec(() -> menu.dispose());
 			}
 		});
 	}

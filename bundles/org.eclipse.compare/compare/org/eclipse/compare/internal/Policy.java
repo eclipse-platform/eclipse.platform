@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Google, Inc and others.
+ * Copyright (c) 2015, 2017 Google, Inc and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 /**
@@ -21,11 +20,8 @@ public class Policy {
 	// Debug flags
 	public static boolean debugContentMergeViewer = false;
 
-	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
-		@Override
-		public void optionsChanged(DebugOptions options) {
-			boolean DEBUG = options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/debug", false); //$NON-NLS-1$
-			debugContentMergeViewer = DEBUG && options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/content_merge_viewer", false); //$NON-NLS-1$
-		}
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = options -> {
+		boolean DEBUG = options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/debug", false); //$NON-NLS-1$
+		debugContentMergeViewer = DEBUG && options.getBooleanOption(CompareUIPlugin.PLUGIN_ID + "/content_merge_viewer", false); //$NON-NLS-1$
 	};
 }

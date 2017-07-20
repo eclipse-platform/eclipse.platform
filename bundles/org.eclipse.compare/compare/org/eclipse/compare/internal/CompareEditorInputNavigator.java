@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 
 	@Override
 	protected INavigatable[] getNavigatables() {
-		List result = new ArrayList();
+		List<INavigatable> result = new ArrayList<>();
 		Object[] panes = getPanes();
 		for (int i = 0; i < panes.length; i++) {
 			Object pane = panes[i];
@@ -54,12 +54,9 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 			if (navigator != null)
 				result.add(navigator);
 		}
-		return (INavigatable[]) result.toArray(new INavigatable[result.size()]);
+		return result.toArray(new INavigatable[result.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ICompareNavigator#selectChange(boolean)
-	 */
 	@Override
 	public boolean selectChange(boolean next) {
 		// Fix for http://dev.eclipse.org/bugs/show_bug.cgi?id=20106

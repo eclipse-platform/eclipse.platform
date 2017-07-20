@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,9 +88,9 @@ public class Patcher implements IHunkFilter {
 	private IResource fTarget;
 	// patch options
 	private Set disabledElements = new HashSet();
-	private Map diffResults = new HashMap();
-	private final Map contentCache = new HashMap();
-	private Set mergedHunks = new HashSet();
+	private Map<FilePatch2, FileDiffResult> diffResults = new HashMap<>();
+	private final Map<FilePatch2, byte[]> contentCache = new HashMap<>();
+	private Set<Hunk> mergedHunks = new HashSet<>();
 
 	private final PatchConfiguration configuration;
 	private boolean fGenerateRejectFile = false;
@@ -242,7 +242,7 @@ public class Patcher implements IHunkFilter {
 		}
 
 		// get all files to be modified in order to call validateEdit
-		List list= new ArrayList();
+		List<IFile> list= new ArrayList<>();
 		if (singleFile != null)
 			list.add(singleFile);
 		else {
@@ -257,7 +257,7 @@ public class Patcher implements IHunkFilter {
 				}
 			}
 		}
-		if (! validator.validateResources((IFile[])list.toArray(new IFile[list.size()]))) {
+		if (! validator.validateResources(list.toArray(new IFile[list.size()]))) {
 			return;
 		}
 
@@ -282,13 +282,13 @@ public class Patcher implements IHunkFilter {
 								? singleFile
 								: createPath(container, path);
 
-				List failed= new ArrayList();
+				List<Hunk> failed= new ArrayList<>();
 
 				int type= diff.getDiffType(isReversed());
 				switch (type) {
 				case FilePatch2.ADDITION:
 					// patch it and collect rejected hunks
-					List result= apply(diff, file, true, failed);
+					List<String> result= apply(diff, file, true, failed);
 					if (result != null)
 						store(LineReader.createString(isPreserveLineDelimeters(), result), file, new SubProgressMonitor(pm, workTicks));
 					workTicks-= WORK_UNIT;
@@ -341,7 +341,7 @@ public class Patcher implements IHunkFilter {
 		return pp;
 	}
 
-	List apply(FilePatch2 diff, IFile file, boolean create, List failedHunks) {
+	List<String> apply(FilePatch2 diff, IFile file, boolean create, List<Hunk> failedHunks) {
 		FileDiffResult result = getDiffResult(diff);
 		List<String> lines = LineReader.load(file, create);
 		result.patch(lines, null);
@@ -420,15 +420,15 @@ public class Patcher implements IHunkFilter {
 		return true;
 	}
 
-	public static String getRejected(List failedHunks) {
+	public static String getRejected(List<Hunk> failedHunks) {
 		if (failedHunks.size() <= 0)
 			return null;
 
 		String lineSeparator= System.getProperty("line.separator"); //$NON-NLS-1$
 		StringBuilder sb= new StringBuilder();
-		Iterator iter= failedHunks.iterator();
+		Iterator<Hunk> iter= failedHunks.iterator();
 		while (iter.hasNext()) {
-			Hunk hunk= (Hunk) iter.next();
+			Hunk hunk= iter.next();
 			sb.append(hunk.getRejectedDescription());
 			sb.append(lineSeparator);
 			sb.append(hunk.getContent());
@@ -620,7 +620,7 @@ public class Patcher implements IHunkFilter {
 				FilePatch2 d= diffs[i];
 				IFile file= getTargetFile(d);
 				if (file != null && file.exists()) {
-					List lines= LineReader.load(file, false);
+					List<String> lines= LineReader.load(file, false);
 					FileDiffResult result = getDiffResult(d);
 					int f = result.calculateFuzz(lines, monitor);
 					if (f > fuzz)
@@ -647,7 +647,7 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public FileDiffResult getDiffResult(FilePatch2 diff) {
-		FileDiffResult result = (FileDiffResult)diffResults.get(diff);
+		FileDiffResult result = diffResults.get(diff);
 		if (result == null) {
 			result = new WorkspaceFileDiffResult(diff, getConfiguration());
 			diffResults.put(diff, result);
@@ -715,7 +715,7 @@ public class Patcher implements IHunkFilter {
 	 * @return the content lines that are cached for the file diff
 	 */
 	public List<String> getCachedLines(FilePatch2 diff) {
-		byte[] contents = (byte[])contentCache.get(diff);
+		byte[] contents = contentCache.get(diff);
 		if (contents != null) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(contents)));
 			return LineReader.readLines(reader);
@@ -731,7 +731,7 @@ public class Patcher implements IHunkFilter {
 	 * <code>null</code>
 	 */
 	public byte[] getCachedContents(FilePatch2 diff) {
-		return (byte[])contentCache.get(diff);
+		return contentCache.get(diff);
 	}
 
 	/**
@@ -786,8 +786,8 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public boolean hasRejects() {
-		for (Iterator iterator = diffResults.values().iterator(); iterator.hasNext();) {
-			FileDiffResult result = (FileDiffResult) iterator.next();
+		for (Iterator<FileDiffResult> iterator = diffResults.values().iterator(); iterator.hasNext();) {
+			FileDiffResult result = iterator.next();
 			if (result.hasRejects())
 				return true;
 		}

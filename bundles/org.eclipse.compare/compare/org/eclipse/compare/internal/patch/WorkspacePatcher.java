@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,31 +10,13 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.patch;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.compare.internal.core.Messages;
-import org.eclipse.compare.internal.core.patch.DiffProject;
-import org.eclipse.compare.internal.core.patch.FilePatch2;
-import org.eclipse.compare.internal.core.patch.Hunk;
-import org.eclipse.compare.internal.core.patch.PatchReader;
+import org.eclipse.compare.internal.core.patch.*;
 import org.eclipse.compare.patch.IHunk;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceRuleFactory;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
 
@@ -91,14 +73,14 @@ public class WorkspacePatcher extends Patcher {
 			final int WORK_UNIT= 10;
 
 			// get all files to be modified in order to call validateEdit
-			List list= new ArrayList();
+			List<IFile> list= new ArrayList<>();
 			for (int j= 0; j < fDiffProjects.length; j++) {
 				DiffProject diffProject= fDiffProjects[j];
 				if (Utilities.getProject(diffProject).isAccessible())
 					list.addAll(Arrays.asList(getTargetFiles(diffProject)));
 			}
 			// validate the files for editing
-			if (!validator.validateResources((IFile[])list.toArray(new IFile[list.size()]))) {
+			if (!validator.validateResources(list.toArray(new IFile[list.size()]))) {
 				return;
 			}
 
@@ -120,13 +102,13 @@ public class WorkspacePatcher extends Patcher {
 						pm.subTask(path.toString());
 					createPath(file.getProject(), path);
 
-					List failed= new ArrayList();
+					List<Hunk> failed= new ArrayList<>();
 
 					int type= diff.getDiffType(isReversed());
 					switch (type) {
 						case FilePatch2.ADDITION :
 							// patch it and collect rejected hunks
-							List result= apply(diff, file, true, failed);
+							List<String> result= apply(diff, file, true, failed);
 							if (result != null)
 								store(LineReader.createString(isPreserveLineDelimeters(), result), file, new SubProgressMonitor(pm, workTicks));
 							workTicks -= WORK_UNIT;
@@ -186,7 +168,7 @@ public class WorkspacePatcher extends Patcher {
 	 * @return An array of IFiles that are targeted by the Diffs
 	 */
 	public IFile[] getTargetFiles(DiffProject project) {
-		List files= new ArrayList();
+		List<IFile> files= new ArrayList<>();
 		FilePatch2[] diffs = project.getFileDiffs();
 		for (int i = 0; i < diffs.length; i++) {
 			FilePatch2 diff = diffs[i];
@@ -194,7 +176,7 @@ public class WorkspacePatcher extends Patcher {
 				files.add(getTargetFile(diff));
 			}
 		}
-		return (IFile[]) files.toArray(new IFile[files.size()]);
+		return files.toArray(new IFile[files.size()]);
 	}
 
 	@Override
@@ -215,7 +197,7 @@ public class WorkspacePatcher extends Patcher {
 	}
 
 	public ISchedulingRule[] getTargetProjects() {
-		List projects= new ArrayList();
+		List<ISchedulingRule> projects= new ArrayList<>();
 		IResourceRuleFactory ruleFactory= ResourcesPlugin.getWorkspace().getRuleFactory();
 		// Determine the appropriate scheduling rules
 		for (int i= 0; i < fDiffProjects.length; i++) {
@@ -230,7 +212,7 @@ public class WorkspacePatcher extends Patcher {
 			projects.add(multiRule);
 		}
 
-		return (ISchedulingRule[]) projects.toArray(new ISchedulingRule[projects.size()]);
+		return projects.toArray(new ISchedulingRule[projects.size()]);
 	}
 
 	public void setDiffProjects(DiffProject[] newProjectArray) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 package org.eclipse.compare.internal;
 
 import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.IContributorResourceAdapter;
 import org.eclipse.ui.IEditorInput;
@@ -20,27 +18,25 @@ import org.eclipse.ui.IFileEditorInput;
 
 public class AdapterFactory implements IAdapterFactory {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(final Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(final Object adaptableObject, Class<T> adapterType) {
 		if (IContributorResourceAdapter.class.equals(adapterType)
 				&& adaptableObject instanceof CompareEditorInput) {
-			return new IContributorResourceAdapter() {
-				@Override
-				public IResource getAdaptedResource(IAdaptable adaptable) {
-					Object ei = ((CompareEditorInput) adaptableObject)
-							.getAdapter(IEditorInput.class);
-					if (ei instanceof IFileEditorInput) {
-						return ((IFileEditorInput) ei).getFile();
-					}
-					return null;
+			return (T) (IContributorResourceAdapter) adaptable -> {
+				Object ei = ((CompareEditorInput) adaptableObject)
+						.getAdapter(IEditorInput.class);
+				if (ei instanceof IFileEditorInput) {
+					return ((IFileEditorInput) ei).getFile();
 				}
+				return null;
 			};
 		}
 		return null;
 	}
 
 	@Override
-	public Class[] getAdapterList() {
+	public Class<?>[] getAdapterList() {
 		return new Class[] { IContributorResourceAdapter.class };
 	}
 }

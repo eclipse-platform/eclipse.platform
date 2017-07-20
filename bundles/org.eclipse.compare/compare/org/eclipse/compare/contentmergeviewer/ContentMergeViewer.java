@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,20 +57,12 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ContentViewer;
-import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -236,12 +228,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 			fControl.addMouseListener(this);
 			fControl.addMouseMoveListener(this);
 			fControl.addDisposeListener(
-				new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						fControl= null;
-					}
-				}
+				e -> fControl= null
 			);
 		}
 
@@ -357,15 +344,12 @@ public abstract class ContentMergeViewer extends ContentViewer
 	private Cursor fVSashCursor;
 	private Cursor fHVSashCursor;
 
-	private ILabelProviderListener labelChangeListener = new ILabelProviderListener() {
-		@Override
-		public void labelProviderChanged(LabelProviderChangedEvent event) {
-			Object[] elements = event.getElements();
-			for (int i = 0; i < elements.length; i++) {
-				Object object = elements[i];
-				if (object == getInput())
-					updateHeader();
-			}
+	private ILabelProviderListener labelChangeListener = event -> {
+		Object[] elements = event.getElements();
+		for (int i = 0; i < elements.length; i++) {
+			Object object = elements[i];
+			if (object == getInput())
+				updateHeader();
 		}
 	};
 
@@ -561,12 +545,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 */
 	@Override
 	public ISelection getSelection() {
-		return new ISelection() {
-			@Override
-			public boolean isEmpty() {
-				return true;
-			}
-		};
+		return () -> true;
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public abstract class OutlineViewerCreator {
 	 */
 	public static final String PROP_INPUT = "org.eclipse.compare.OutlineInput"; //$NON-NLS-1$
 
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Method called by the editor to create a structure viewer for the current content merge viewer.
@@ -53,10 +53,8 @@ public abstract class OutlineViewerCreator {
 	}
 
 	public void fireInputChange(Object oldInput, Object newInput) {
-		Object[] list = listeners.getListeners();
 		final PropertyChangeEvent event = new PropertyChangeEvent(this, PROP_INPUT, oldInput, newInput);
-		for (int i = 0; i < list.length; i++) {
-			final IPropertyChangeListener listener = (IPropertyChangeListener)list[i];
+		for (final IPropertyChangeListener listener : listeners) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {

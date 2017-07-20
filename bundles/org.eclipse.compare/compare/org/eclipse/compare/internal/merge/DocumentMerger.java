@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2015 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,46 +12,22 @@
 package org.eclipse.compare.internal.merge;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
-import org.eclipse.jface.operation.IRunnableWithProgress;
-
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.BadPositionCategoryException;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextUtilities;
-
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
+import java.util.*;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.contentmergeviewer.ITokenComparator;
-import org.eclipse.compare.internal.CompareContentViewerSwitchingPane;
-import org.eclipse.compare.internal.CompareMessages;
-import org.eclipse.compare.internal.ComparePreferencePage;
-import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.DocLineComparator;
-import org.eclipse.compare.internal.MergeViewerContentProvider;
-import org.eclipse.compare.internal.Utilities;
+import org.eclipse.compare.internal.*;
 import org.eclipse.compare.internal.core.LCS;
-import org.eclipse.compare.rangedifferencer.IRangeComparator;
-import org.eclipse.compare.rangedifferencer.RangeDifference;
-import org.eclipse.compare.rangedifferencer.RangeDifferencer;
+import org.eclipse.compare.rangedifferencer.*;
 import org.eclipse.compare.structuremergeviewer.Differencer;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.text.*;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
 /**
  * A document merger manages the differences between two documents
@@ -70,9 +46,9 @@ public class DocumentMerger {
 	private static final boolean APPEND_CONFLICT= true;
 
 	/** All diffs for calculating scrolling position (includes line ranges without changes) */
-	private ArrayList fAllDiffs;
+	private ArrayList<Diff> fAllDiffs;
 	/** Subset of above: just real differences. */
-	private ArrayList fChangeDiffs;
+	private ArrayList<Diff> fChangeDiffs;
 
 	private IDocumentMergerInput fInput;
 
@@ -242,9 +218,9 @@ public class DocumentMerger {
 
 		public boolean isResolved() {
 			if (!fResolved && fDiffs != null) {
-				Iterator e= fDiffs.iterator();
+				Iterator<Diff> e= fDiffs.iterator();
 				while (e.hasNext()) {
-					Diff d= (Diff) e.next();
+					Diff d= e.next();
 					if (!d.isResolved())
 						return false;
 				}
@@ -304,14 +280,14 @@ public class DocumentMerger {
 
 		public Diff[] getChangeDiffs(int contributor, IRegion region) {
 			if (fDiffs != null && intersectsRegion(contributor, region)) {
-				List result = new ArrayList();
-				for (Iterator iterator = fDiffs.iterator(); iterator.hasNext();) {
-					Diff diff = (Diff) iterator.next();
+				List<Diff> result = new ArrayList<>();
+				for (Iterator<Diff> iterator = fDiffs.iterator(); iterator.hasNext();) {
+					Diff diff = iterator.next();
 					if (diff.intersectsRegion(contributor, region)) {
 						result.add(diff);
 					}
 				}
-				return (Diff[]) result.toArray(new Diff[result.size()]);
+				return result.toArray(new Diff[result.size()]);
 			}
 			return new Diff[0];
 		}
@@ -339,9 +315,9 @@ public class DocumentMerger {
 			return fParent;
 		}
 
-		public Iterator childIterator() {
+		public Iterator<Diff> childIterator() {
 			if (fDiffs == null)
-				return new ArrayList().iterator();
+				return new ArrayList<Diff>().iterator();
 			return fDiffs.iterator();
 		}
 	}
@@ -357,7 +333,7 @@ public class DocumentMerger {
 	 */
 	public void doDiff() throws CoreException {
 
-		fChangeDiffs= new ArrayList();
+		fChangeDiffs= new ArrayList<>();
 		IDocument lDoc = getDocument(MergeViewerContentProvider.LEFT_CONTRIBUTOR);
 		IDocument rDoc = getDocument(MergeViewerContentProvider.RIGHT_CONTRIBUTOR);
 
@@ -403,21 +379,18 @@ public class DocumentMerger {
 
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
-		IRunnableWithProgress runnable= new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
-				monitor.beginTask(CompareMessages.DocumentMerger_0, maxWork(sa, sl, sr));
-				try {
-					result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
-				} catch (OutOfMemoryError ex) {
-					System.gc();
-					throw new InvocationTargetException(ex);
-				}
-				if (monitor.isCanceled())	{ // canceled
-					throw new InterruptedException();
-				}
-				monitor.done();
+		IRunnableWithProgress runnable= monitor -> {
+			monitor.beginTask(CompareMessages.DocumentMerger_0, maxWork(sa, sl, sr));
+			try {
+				result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
+			} catch (OutOfMemoryError ex) {
+				System.gc();
+				throw new InvocationTargetException(ex);
 			}
+			if (monitor.isCanceled())	{ // canceled
+				throw new InterruptedException();
+			}
+			monitor.done();
 		};
 
 		RangeDifference[] e= null;
@@ -431,7 +404,7 @@ public class DocumentMerger {
 				lDoc, lRegion, 0, lDoc.getLength(),
 				rDoc, rRegion, 0, rDoc.getLength());
 
-			fAllDiffs = new ArrayList();
+			fAllDiffs = new ArrayList<>();
 			fAllDiffs.add(diff);
 			throw new CoreException(new Status(IStatus.ERROR, CompareUIPlugin.PLUGIN_ID, 0, CompareMessages.DocumentMerger_1, ex.getTargetException()));
 		} catch (InterruptedException ex) {
@@ -441,7 +414,7 @@ public class DocumentMerger {
 				lDoc, lRegion, 0, lDoc.getLength(),
 				rDoc, rRegion, 0, rDoc.getLength());
 
-			fAllDiffs = new ArrayList();
+			fAllDiffs = new ArrayList<>();
 			fAllDiffs.add(diff);
 			return;
 		}
@@ -455,7 +428,7 @@ public class DocumentMerger {
 					CompareContentViewerSwitchingPane.OPTIMIZED_ALGORITHM_USED,
 					Boolean.FALSE);
 
-		ArrayList newAllDiffs = new ArrayList();
+		ArrayList<Diff> newAllDiffs = new ArrayList<>();
 		for (int i= 0; i < e.length; i++) {
 			RangeDifference es= e[i];
 
@@ -569,21 +542,18 @@ public class DocumentMerger {
 
 		final Object[] result= new Object[1];
 		final DocLineComparator sa= sancestor, sl= sleft, sr= sright;
-		IRunnableWithProgress runnable= new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
-				monitor.beginTask(CompareMessages.DocumentMerger_2, maxWork(sa, sl, sr));
-				try {
-					result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
-				} catch (OutOfMemoryError ex) {
-					System.gc();
-					throw new InvocationTargetException(ex);
-				}
-				if (monitor.isCanceled())	{ // canceled
-					throw new InterruptedException();
-				}
-				monitor.done();
+		IRunnableWithProgress runnable= monitor -> {
+			monitor.beginTask(CompareMessages.DocumentMerger_2, maxWork(sa, sl, sr));
+			try {
+				result[0]= RangeDifferencer.findRanges(monitor, sa, sl, sr);
+			} catch (OutOfMemoryError ex) {
+				System.gc();
+				throw new InvocationTargetException(ex);
 			}
+			if (monitor.isCanceled())	{ // canceled
+				throw new InterruptedException();
+			}
+			monitor.done();
 		};
 		IProgressService progressService= PlatformUI.getWorkbench().getProgressService();
 
@@ -986,8 +956,8 @@ public class DocumentMerger {
 	}
 
     public Diff findDiff(Position p, boolean left) {
-		for (Iterator iterator = fAllDiffs.iterator(); iterator.hasNext();) {
-			Diff diff = (Diff) iterator.next();
+		for (Iterator<Diff> iterator = fAllDiffs.iterator(); iterator.hasNext();) {
+			Diff diff = iterator.next();
 			Position diffPos;
 			if (left) {
 				diffPos = diff.fLeftPos;
@@ -1024,9 +994,9 @@ public class DocumentMerger {
 		int virtualPos= 0;	// virtual position
 		Point region= new Point(0, 0);
 
-		Iterator e= fAllDiffs.iterator();
+		Iterator<Diff> e= fAllDiffs.iterator();
 		while (e.hasNext()) {
-			Diff diff= (Diff) e.next();
+			Diff diff= e.next();
 			Position pos= diff.getPosition(contributor);
 			getLineRange(getDocument(contributor),pos, region);
 			int realHeight= region.y;
@@ -1061,9 +1031,9 @@ public class DocumentMerger {
 		int viewPos= 0;
 		Point region= new Point(0, 0);
 
-		Iterator e= fAllDiffs.iterator();
+		Iterator<Diff> e= fAllDiffs.iterator();
 		while (e.hasNext()) {
-			Diff diff= (Diff) e.next();
+			Diff diff= e.next();
 			Position pos= diff.getPosition(contributor);
 			int viewHeight= getLineRange(getDocument(contributor), pos, region).y;
 			int virtualHeight= diff.getMaxDiffHeight();
@@ -1088,9 +1058,9 @@ public class DocumentMerger {
 	public int getVirtualHeight() {
 		int h= 1;
 		if (fAllDiffs != null) {
-			Iterator e= fAllDiffs.iterator();
+			Iterator<Diff> e= fAllDiffs.iterator();
 			while (e.hasNext()) {
-				Diff diff= (Diff) e.next();
+				Diff diff= e.next();
 				h+= diff.getMaxDiffHeight();
 			}
 		}
@@ -1103,9 +1073,9 @@ public class DocumentMerger {
 	public int getRightHeight() {
 		int h= 1;
 		if (fAllDiffs != null) {
-			Iterator e= fAllDiffs.iterator();
+			Iterator<Diff> e= fAllDiffs.iterator();
 			while (e.hasNext()) {
-				Diff diff= (Diff) e.next();
+				Diff diff= e.next();
 				h+= diff.getRightHeight();
 			}
 		}
@@ -1135,16 +1105,16 @@ public class DocumentMerger {
 	public Diff[] getChangeDiffs(char contributor, IRegion region) {
 		if (fChangeDiffs == null)
 			return new Diff[0];
-		List intersectingDiffs = new ArrayList();
-		for (Iterator iterator = fChangeDiffs.iterator(); iterator.hasNext();) {
-			Diff diff = (Diff) iterator.next();
+		List<Diff> intersectingDiffs = new ArrayList<>();
+		for (Iterator<Diff> iterator = fChangeDiffs.iterator(); iterator.hasNext();) {
+			Diff diff = iterator.next();
 			Diff[] changeDiffs = diff.getChangeDiffs(contributor, region);
 			for (int i = 0; i < changeDiffs.length; i++) {
 				Diff changeDiff = changeDiffs[i];
 				intersectingDiffs.add(changeDiff);
 			}
 		}
-		return (Diff[]) intersectingDiffs.toArray(new Diff[intersectingDiffs.size()]);
+		return intersectingDiffs.toArray(new Diff[intersectingDiffs.size()]);
 	}
 
 	public Diff findDiff(int viewportHeight, boolean synchronizedScrolling, Point size, int my) {
@@ -1155,9 +1125,9 @@ public class DocumentMerger {
 		int yy, hh;
 		int y= 0;
 		if (fAllDiffs != null) {
-			Iterator e= fAllDiffs.iterator();
+			Iterator<Diff> e= fAllDiffs.iterator();
 			while (e.hasNext()) {
-				Diff diff= (Diff) e.next();
+				Diff diff= e.next();
 				int h= synchronizedScrolling ? diff.getMaxDiffHeight()
 											  : diff.getRightHeight();
 				if (useChange(diff.getKind()) && !diff.fIsWhitespace) {
@@ -1180,15 +1150,15 @@ public class DocumentMerger {
 		return fChangeDiffs != null && !fChangeDiffs.isEmpty();
 	}
 
-	public Iterator changesIterator() {
+	public Iterator<Diff> changesIterator() {
 		if (fChangeDiffs == null)
-			return new ArrayList().iterator();
+			return new ArrayList<Diff>().iterator();
 		return fChangeDiffs.iterator();
 	}
 
-	public Iterator rangesIterator() {
+	public Iterator<Diff> rangesIterator() {
 		if (fAllDiffs == null)
-			return new ArrayList().iterator();
+			return new ArrayList<Diff>().iterator();
 		return fAllDiffs.iterator();
 	}
 
@@ -1203,8 +1173,8 @@ public class DocumentMerger {
 	public Diff getWrappedDiff(Diff diff, boolean down) {
 		if (fChangeDiffs != null && fChangeDiffs.size() > 0) {
 			if (down)
-				return (Diff) fChangeDiffs.get(0);
-			return (Diff) fChangeDiffs.get(fChangeDiffs.size()-1);
+				return fChangeDiffs.get(0);
+			return fChangeDiffs.get(fChangeDiffs.size()-1);
 		}
 		return null;
 	}
@@ -1288,8 +1258,8 @@ public class DocumentMerger {
 
 	public Diff findDiff(char contributor, int rangeStart, int rangeEnd) {
 		if (hasChanges()) {
-			for (Iterator iterator = changesIterator(); iterator.hasNext();) {
-				Diff diff = (Diff) iterator.next();
+			for (Iterator<Diff> iterator = changesIterator(); iterator.hasNext();) {
+				Diff diff = iterator.next();
 				if (diff.isDeleted() || diff.getKind() == RangeDifference.NOCHANGE)
 				    continue;
 				if (diff.overlaps(contributor, rangeStart, rangeEnd, getDocument(contributor).getLength()))
@@ -1309,11 +1279,11 @@ public class DocumentMerger {
 		return findNext(contributor, fChangeDiffs, start, end, deep);
 	}
 
-	private Diff findNext(char contributor, List v, int start, int end, boolean deep) {
+	private Diff findNext(char contributor, List<Diff> v, int start, int end, boolean deep) {
 		if (v == null)
 			return null;
 		for (int i= 0; i < v.size(); i++) {
-			Diff diff= (Diff) v.get(i);
+			Diff diff= v.get(i);
 			Position p= diff.getPosition(contributor);
 			if (p != null) {
 				int startOffset= p.getOffset();
@@ -1339,11 +1309,11 @@ public class DocumentMerger {
 		return findPrev(contributor, fChangeDiffs, start, end, deep);
 	}
 
-	private Diff findPrev(char contributor, List v, int start, int end, boolean deep) {
+	private Diff findPrev(char contributor, List<Diff> v, int start, int end, boolean deep) {
 		if (v == null)
 			return null;
 		for (int i= v.size()-1; i >= 0; i--) {
-			Diff diff= (Diff) v.get(i);
+			Diff diff= v.get(i);
 			Position p= diff.getPosition(contributor);
 			if (p != null) {
 				int startOffset= p.getOffset();

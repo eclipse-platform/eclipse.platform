@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,14 @@ public class DocumentManager {
 
 	private static final boolean DEBUG= false;
 
-	private static ArrayList fgKeys= new ArrayList();
-	private static ArrayList fgValues= new ArrayList();
+	private static ArrayList<Object> fgKeys= new ArrayList<>();
+	private static ArrayList<IDocument> fgValues= new ArrayList<>();
 
 	public static IDocument get(Object o) {
 
 		for (int i= 0; i < fgKeys.size(); i++) {
 			if (fgKeys.get(i) == o)
-				return (IDocument) fgValues.get(i);
+				return fgValues.get(i);
 		}
 		return null;
 	}
