@@ -4869,15 +4869,28 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			try {
 				for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
 					Diff diff = (Diff) iterator.next();
-					int kind = diff.getKind();
-					if (kind != RangeDifference.LEFT && kind != RangeDifference.RIGHT) {
+					switch (diff.getKind()) {
+					case RangeDifference.LEFT:
+						if (leftToRight) {
+							if (!compoundChangeStarted) {
+								target.beginCompoundChange();
+								compoundChangeStarted= true;
+							}
+							copy(diff, leftToRight);
+						}
+						break;
+					case RangeDifference.RIGHT:
+						if (!leftToRight) {
+							if (!compoundChangeStarted) {
+								target.beginCompoundChange();
+								compoundChangeStarted= true;
+							}
+							copy(diff, leftToRight);
+						}
+						break;
+					default:
 						continue;
 					}
-					if (!compoundChangeStarted) {
-						target.beginCompoundChange();
-						compoundChangeStarted = true;
-					}
-					copy(diff, leftToRight);
 				}
 			} finally {
 				if (compoundChangeStarted) {
