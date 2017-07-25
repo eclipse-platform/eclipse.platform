@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,7 @@ import org.eclipse.team.core.mapping.provider.MergeStatus;
  */
 public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingMerger#validateMerge(org.eclipse.team.core.mapping.IMergeContext, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus validateMerge(IMergeContext mergeContext, IProgressMonitor monitor) {
 		return Status.OK_STATUS;
 	}
@@ -61,6 +59,7 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
      * model provider.
 	 * @see org.eclipse.team.core.mapping.IResourceMappingMerger#getMergeRule(org.eclipse.team.core.mapping.IMergeContext)
 	 */
+	@Override
 	public ISchedulingRule getMergeRule(IMergeContext context) {
 		ResourceMapping[] mappings = context.getScope().getMappings(getModelProvider().getId());
 		ISchedulingRule rule = null;
@@ -88,6 +87,7 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 	 * @throws CoreException if an error occurred
 	 * @see org.eclipse.team.core.mapping.IResourceMappingMerger#merge(org.eclipse.team.core.mapping.IMergeContext, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStatus merge(IMergeContext mergeContext, IProgressMonitor monitor) throws CoreException {
 		IDiff[] deltas = getSetToMerge(mergeContext);
 		IStatus status = mergeContext.merge(deltas, false /* don't force */, monitor);
@@ -96,7 +96,7 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 
 	private IDiff[] getSetToMerge(IMergeContext mergeContext) {
 		ResourceMapping[] mappings = mergeContext.getScope().getMappings(getModelProvider().getDescriptor().getId());
-		Set result = new HashSet();
+		Set<IDiff> result = new HashSet<>();
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
 			ResourceTraversal[] traversals = mergeContext.getScope().getTraversals(mapping);
@@ -106,7 +106,7 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 				result.add(delta);
 			}
 		}
-		return (IDiff[]) result.toArray(new IDiff[result.size()]);
+		return result.toArray(new IDiff[result.size()]);
 	}
 
 	private IStatus covertFilesToMappings(IStatus status, IMergeContext mergeContext) {

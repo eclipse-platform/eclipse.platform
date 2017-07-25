@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 		super(monitor, ticks, style);
 	}
 
+	@Override
 	public void beginTask(String name, int totalWork) {
 		super.beginTask(name, totalWork);
 		this.totalWork = totalWork;
@@ -61,6 +62,7 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 		this.worked = 0;
 	}
 
+	@Override
 	public void worked(int work) {
 		if (worked >= totalWork) return;
 		if (--nextProgress <= 0) {
@@ -83,6 +85,7 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 	 *
 	 * @see IProgressMonitor#subTask(String)
 	 */
+	@Override
 	public void subTask(String name) {
 		if(name != null && ! name.equals("")) { //$NON-NLS-1$
 			super.subTask(name);

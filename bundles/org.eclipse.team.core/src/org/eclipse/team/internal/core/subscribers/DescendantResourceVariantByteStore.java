@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,13 +50,12 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	 * This method will dispose the remote cache but not the base cache.
 	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
 	 */
+	@Override
 	public void dispose() {
 		remoteStore.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#getBytes(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public byte[] getBytes(IResource resource) throws TeamException {
 		byte[] remoteBytes = remoteStore.getBytes(resource);
 		byte[] baseBytes = baseStore.getBytes(resource);
@@ -84,9 +83,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 		return baseBytes;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#setBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
+	@Override
 	public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 		byte[] baseBytes = baseStore.getBytes(resource);
 		if (baseBytes != null && equals(baseBytes, bytes)) {
@@ -97,9 +94,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#removeBytes(org.eclipse.core.resources.IResource, int)
-	 */
+	@Override
 	public boolean flushBytes(IResource resource, int depth) throws TeamException {
 		return remoteStore.flushBytes(resource, depth);
 	}
@@ -130,9 +125,7 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 	 */
 	protected abstract boolean isDescendant(IResource resource, byte[] baseBytes, byte[] remoteBytes) throws TeamException;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#setVariantDoesNotExist(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean deleteBytes(IResource resource) throws TeamException {
 		return remoteStore.deleteBytes(resource);
 	}
@@ -154,13 +147,11 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 		return remoteStore;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#members(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		IResource[] remoteMembers = getRemoteStore().members(resource);
 		IResource[] baseMembers = getBaseStore().members(resource);
-		Set members = new HashSet();
+		Set<IResource> members = new HashSet<>();
 		for (int i = 0; i < remoteMembers.length; i++) {
 			members.add(remoteMembers[i]);
 		}
@@ -172,12 +163,10 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 				members.add(member);
 			}
 		}
-		return (IResource[]) members.toArray(new IResource[members.size()]);
+		return members.toArray(new IResource[members.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#run(org.eclipse.core.resources.IResource, org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void run(IResource root, IWorkspaceRunnable runnable, IProgressMonitor monitor) throws TeamException {
 		remoteStore.run(root, runnable, monitor);
 	}

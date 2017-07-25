@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,11 +61,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 		this.writeTimeout = writeTimeout;
 		this.closeTimeout = closeTimeout;
 		this.iobuffer = new byte[bufferSize];
-		thread = new Thread(new Runnable() {
-			public void run() {
-				runThread();
-			}
-		}, "TimeoutOutputStream");//$NON-NLS-1$
+		thread = new Thread((Runnable) () -> runThread(), "TimeoutOutputStream");//$NON-NLS-1$
 		thread.setDaemon(true);
 		thread.start();
 	}
@@ -80,6 +76,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	 *         reflect the number of bytes flushed from the buffer
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void close() throws IOException {
 		Thread oldThread;
 		synchronized (this) {
@@ -107,6 +104,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	 *         bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized void write(int b) throws IOException {
 		syncCommit(true);
 		iobuffer[(head + length) % iobuffer.length] = (byte) b;
@@ -120,6 +118,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	 *         reflect the number of bytes sent
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized void write(byte[] buffer, int off, int len) throws IOException {
 		int amount = 0;
 		try {
@@ -144,6 +143,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 	 *         reflect the number of bytes flushed from the buffer
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized void flush() throws IOException {
 		int oldLength = length;
 		flushRequested = true;

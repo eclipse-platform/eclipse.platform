@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.eclipse.team.core.RepositoryProvider;
 public class RepositoryProviderManager implements IRepositoryProviderListener {
 
 	private static RepositoryProviderManager instance;
-	private ListenerList listeners = new ListenerList();
+	private ListenerList<IRepositoryProviderListener> listeners = new ListenerList<>();
 
 	public static synchronized RepositoryProviderManager getInstance() {
 		if (instance == null) {
@@ -26,9 +26,7 @@ public class RepositoryProviderManager implements IRepositoryProviderListener {
 		return instance;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerMapped(org.eclipse.team.core.RepositoryProvider)
-	 */
+	@Override
 	public void providerMapped(RepositoryProvider provider) {
 		Object[] allListeners = listeners.getListeners();
 		for (int i = 0; i < allListeners.length; i++) {
@@ -37,9 +35,7 @@ public class RepositoryProviderManager implements IRepositoryProviderListener {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.IRepositoryProviderListener#providerUnmapped(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public void providerUnmapped(IProject project) {
 		Object[] allListeners = listeners.getListeners();
 		for (int i = 0; i < allListeners.length; i++) {

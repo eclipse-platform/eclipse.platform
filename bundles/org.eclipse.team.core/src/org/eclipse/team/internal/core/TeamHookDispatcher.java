@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,9 +40,7 @@ public class TeamHookDispatcher extends TeamHook {
 		instance = this;
 	}
 
-	/**
-	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFile, int, org.eclipse.core.runtime.IPath)
-	 */
+	@Override
 	public IStatus validateCreateLink(IFile file, int updateFlags, IPath location) {
 		RepositoryProvider provider = getProvider(file);
 		if (provider == null) {
@@ -52,9 +50,7 @@ public class TeamHookDispatcher extends TeamHook {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFile, int, java.net.URI)
-	 */
+	@Override
 	public IStatus validateCreateLink(IFile file, int updateFlags, URI location) {
 		RepositoryProvider provider = getProvider(file);
 		if (provider == null) {
@@ -64,9 +60,7 @@ public class TeamHookDispatcher extends TeamHook {
 		}
 	}
 
-	/**
-	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFolder, int, org.eclipse.core.runtime.IPath)
-	 */
+	@Override
 	public IStatus validateCreateLink(IFolder folder, int updateFlags, IPath location) {
 		RepositoryProvider provider = getProvider(folder);
 		if (provider == null) {
@@ -76,9 +70,7 @@ public class TeamHookDispatcher extends TeamHook {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.team.TeamHook#validateCreateLink(org.eclipse.core.resources.IFolder, int, java.net.URI)
-	 */
+	@Override
 	public IStatus validateCreateLink(IFolder folder, int updateFlags, URI location) {
 		RepositoryProvider provider = getProvider(folder);
 		if (provider == null) {
@@ -97,9 +89,7 @@ public class TeamHookDispatcher extends TeamHook {
 		return RepositoryProvider.getProvider(resource.getProject());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.team.TeamHook#getRuleFactory(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public IResourceRuleFactory getRuleFactory(IProject project) {
 		if (RepositoryProvider.isShared(project)) {
 			RepositoryProvider provider = getProvider(project);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,14 +24,17 @@ public class LocalResourceVariant implements IResourceVariant {
 		this.resource = resource;
 	}
 
+	@Override
 	public byte[] asBytes() {
 		return getContentIdentifier().getBytes();
 	}
 
+	@Override
 	public String getContentIdentifier() {
 		return new Date(resource.getLocalTimeStamp()).toString();
 	}
 
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
 		if (resource.getType() == IResource.FILE) {
 			return (IFile)resource;
@@ -39,10 +42,12 @@ public class LocalResourceVariant implements IResourceVariant {
 		return null;
 	}
 
+	@Override
 	public boolean isContainer() {
 		return resource.getType() != IResource.FILE;
 	}
 
+	@Override
 	public String getName() {
 		return resource.getName();
 	}

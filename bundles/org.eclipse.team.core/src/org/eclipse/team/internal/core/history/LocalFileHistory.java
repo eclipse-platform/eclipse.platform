@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,7 @@ public class LocalFileHistory extends FileHistory {
 		this.includeCurrent = includeCurrent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileHistory#getContributors(org.eclipse.team.core.history.IFileRevision)
-	 */
+	@Override
 	public IFileRevision[] getContributors(IFileRevision revision) {
 
 		IFileRevision[] revisions = getFileRevisions();
@@ -63,9 +61,7 @@ public class LocalFileHistory extends FileHistory {
 		return new IFileRevision[] {fileRevision};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileHistory#getFileRevision(java.lang.String)
-	 */
+	@Override
 	public IFileRevision getFileRevision(String id) {
 		if (revisions != null) {
 			for (int i = 0; i < revisions.length; i++) {
@@ -78,28 +74,24 @@ public class LocalFileHistory extends FileHistory {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileHistory#getFileRevisions()
-	 */
+	@Override
 	public IFileRevision[] getFileRevisions() {
 		if (revisions == null)
 			return new IFileRevision[0];
 		return revisions;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileHistory#getTargets(org.eclipse.team.core.history.IFileRevision)
-	 */
+	@Override
 	public IFileRevision[] getTargets(IFileRevision revision) {
 		IFileRevision[] revisions = getFileRevisions();
-		ArrayList directDescendents = new ArrayList();
+		ArrayList<IFileRevision> directDescendents = new ArrayList<>();
 
 		for (int i = 0; i < revisions.length; i++) {
 			if (((LocalFileRevision) revisions[i]).isDescendentOf(revision)) {
 				directDescendents.add(revisions[i]);
 			}
 		}
-		return (IFileRevision[]) directDescendents.toArray(new IFileRevision[directDescendents.size()]);
+		return directDescendents.toArray(new IFileRevision[directDescendents.size()]);
 	}
 
 	/**

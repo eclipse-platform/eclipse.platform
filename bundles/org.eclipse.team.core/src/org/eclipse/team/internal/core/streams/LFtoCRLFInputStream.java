@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int read() throws IOException {
 		if (mustReturnLF) {
 			mustReturnLF = false;
@@ -60,6 +61,7 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred may be non-zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int read(byte[] buffer, int off, int len) throws IOException {
 		// handle boundary cases cleanly
 		if (len == 0) {
@@ -116,6 +118,7 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred may be non-zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public long skip(long count) throws IOException {
 		int actualCount = 0; // assumes count < Integer.MAX_INT
 		try {
@@ -133,6 +136,7 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	 * possible translation of LFs to CR/LF sequences in these bytes.
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int available() throws IOException {
 		return in.available(); // we can guarantee at least this amount after expansion
 	}
@@ -140,6 +144,7 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */
+	@Override
 	public boolean markSupported() {
 		return false;
 	}

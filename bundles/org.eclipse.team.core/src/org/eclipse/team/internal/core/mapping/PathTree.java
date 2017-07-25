@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ public class PathTree {
 
 	class Node {
 		Object payload;
-		Set descendantsWithPayload;
+		Set<IPath> descendantsWithPayload;
 		int flags;
 		public boolean isEmpty() {
 			return payload == null && (descendantsWithPayload == null || descendantsWithPayload.isEmpty());
@@ -46,8 +46,8 @@ public class PathTree {
 		}
 		public boolean descendantHasFlag(int property) {
 			if (hasDescendants()) {
-				for (Iterator iter = descendantsWithPayload.iterator(); iter.hasNext();) {
-					IPath path = (IPath) iter.next();
+				for (Iterator<IPath> iter = descendantsWithPayload.iterator(); iter.hasNext();) {
+					IPath path = iter.next();
 					Node child = getNode(path);
 					if (child.hasFlag(property)) {
 						return true;
@@ -58,7 +58,7 @@ public class PathTree {
 		}
 	}
 
-	private Map objects = new HashMap();
+	private Map<IPath, Node> objects = new HashMap<>();
 
 	/**
 	 * Return the object at the given path or <code>null</code>
@@ -139,7 +139,7 @@ public class PathTree {
 	public synchronized IPath[] getChildren(IPath path) {
 		// OPTIMIZE: could be optimized so that we don't traverse all the deep
 		// children to find the immediate ones.
-		Set children = new HashSet();
+		Set<IPath> children = new HashSet<>();
 		Node node = getNode(path);
 		if (node != null) {
 			Set possibleChildren = node.descendantsWithPayload;
@@ -159,7 +159,7 @@ public class PathTree {
 				}
 			}
 		}
-		return (IPath[]) children.toArray(new IPath[children.size()]);
+		return children.toArray(new IPath[children.size()]);
 	}
 
 	private boolean addToParents(IPath path, IPath parent) {
@@ -172,9 +172,9 @@ public class PathTree {
 			Node node = getNode(parent);
 			if (node == null)
 				node = addNode(parent);
-			Set children = node.descendantsWithPayload;
+			Set<IPath> children = node.descendantsWithPayload;
 			if (children == null) {
-				children = new HashSet();
+				children = new HashSet<>();
 				node.descendantsWithPayload = children;
 				// this is a new folder in the sync set
 				addedParent = true;
@@ -239,14 +239,14 @@ public class PathTree {
 	 * @return the paths in this tree that contain diffs.
 	 */
 	public synchronized IPath[] getPaths() {
-		List result = new ArrayList();
+		List<IPath> result = new ArrayList<>();
 		for (Iterator iter = objects.keySet().iterator(); iter.hasNext();) {
 			IPath path = (IPath) iter.next();
 			Node node = getNode(path);
 			if (node.getPayload() != null)
 				result.add(path);
 		}
-		return (IPath[]) result.toArray(new IPath[result.size()]);
+		return result.toArray(new IPath[result.size()]);
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class PathTree {
 	 * @return all the values in the tree
 	 */
 	public synchronized Collection values() {
-		List result = new ArrayList();
+		List<Object> result = new ArrayList<>();
 		for (Iterator iter = objects.keySet().iterator(); iter.hasNext();) {
 			IPath path = (IPath) iter.next();
 			Node node = getNode(path);
@@ -273,7 +273,7 @@ public class PathTree {
 	}
 
 	private Node getNode(IPath path) {
-		return (Node)objects.get(path);
+		return objects.get(path);
 	}
 
 	private Node addNode(IPath path) {
@@ -297,12 +297,12 @@ public class PathTree {
 	 * @return the paths whose bit changed
 	 */
 	public synchronized IPath[] setPropogatedProperty(IPath path, int property, boolean value) {
-		Set changed = new HashSet();
+		Set<IPath> changed = new HashSet<>();
 		internalSetPropertyBit(path, property, value, changed);
-		return (IPath[]) changed.toArray(new IPath[changed.size()]);
+		return changed.toArray(new IPath[changed.size()]);
 	}
 
-	private void internalSetPropertyBit(IPath path, int property, boolean value, Set changed) {
+	private void internalSetPropertyBit(IPath path, int property, boolean value, Set<IPath> changed) {
 		if (path.segmentCount() == 0)
 			return;
 		Node node = getNode(path);

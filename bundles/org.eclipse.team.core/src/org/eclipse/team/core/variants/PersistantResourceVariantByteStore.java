@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		getSynchronizer().add(syncName);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
-	 */
+	@Override
 	public void dispose() {
 		getSynchronizer().remove(getSyncName());
 	}
@@ -58,9 +56,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		return syncName;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#getBytes(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public byte[] getBytes(IResource resource) throws TeamException {
 		byte[] syncBytes = internalGetSyncBytes(resource);
 		if (syncBytes != null && equals(syncBytes, NO_REMOTE)) {
@@ -70,9 +66,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		return syncBytes;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#setBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
+	@Override
 	public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 		Assert.isNotNull(bytes);
 		byte[] oldBytes = internalGetSyncBytes(resource);
@@ -85,9 +79,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#flushBytes(org.eclipse.core.resources.IResource, int)
-	 */
+	@Override
 	public boolean flushBytes(IResource resource, int depth) throws TeamException {
 		if (resource.exists() || resource.isPhantom()) {
 			try {
@@ -122,13 +114,12 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	 * <code>getBytes(resource)</code> will return <code>null</code>.
 	 * @return <code>true</code> if this changes the remote sync bytes
 	 */
+	@Override
 	public boolean deleteBytes(IResource resource) throws TeamException {
 		return setBytes(resource, NO_REMOTE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#members(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		if(resource.getType() == IResource.FILE) {
 			return new IResource[0];
@@ -136,14 +127,14 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		try {
 			// Filter and return only resources that have sync bytes in the cache.
 			IResource[] members = ((IContainer)resource).members(true /* include phantoms */);
-			List filteredMembers = new ArrayList(members.length);
+			List<IResource> filteredMembers = new ArrayList<>(members.length);
 			for (int i = 0; i < members.length; i++) {
 				IResource member = members[i];
 				if(getBytes(member) != null) {
 					filteredMembers.add(member);
 				}
 			}
-			return (IResource[]) filteredMembers.toArray(new IResource[filteredMembers.size()]);
+			return filteredMembers.toArray(new IResource[filteredMembers.size()]);
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		}
@@ -161,9 +152,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void run(IResource root, IWorkspaceRunnable runnable, IProgressMonitor monitor)
 			throws TeamException {
 		try {

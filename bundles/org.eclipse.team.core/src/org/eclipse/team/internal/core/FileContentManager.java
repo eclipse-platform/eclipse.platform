@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,11 +38,13 @@ public class FileContentManager implements IFileContentManager {
             fType= type;
         }
 
-        public String getString() {
+        @Override
+		public String getString() {
             return fString;
         }
 
-        public int getType() {
+        @Override
+		public int getType() {
             return fType;
         }
     }
@@ -53,8 +55,9 @@ public class FileContentManager implements IFileContentManager {
             super(key);
         }
 
-        protected Map loadMappingsFromPreferences() {
-            final Map result= super.loadMappingsFromPreferences();
+        @Override
+		protected Map<String, Integer> loadMappingsFromPreferences() {
+            final Map<String, Integer> result= super.loadMappingsFromPreferences();
             if (loadMappingsFromOldWorkspace(result)) {
                 TeamPlugin.getPlugin().savePluginPreferences();
             }
@@ -70,7 +73,7 @@ public class FileContentManager implements IFileContentManager {
          * been added to the map, false otherwise.
          *
          */
-        private boolean loadMappingsFromOldWorkspace(Map map) {
+        private boolean loadMappingsFromOldWorkspace(Map<String, Integer> map) {
             // File name of the persisted file type information
             String STATE_FILE = ".fileTypes"; //$NON-NLS-1$
             IPath pluginStateLocation = TeamPlugin.getPlugin().getStateLocation().append(STATE_FILE);
@@ -100,15 +103,15 @@ public class FileContentManager implements IFileContentManager {
          * @param input the input stream to read the saved state from
          * @throws IOException if an I/O problem occurs
          */
-        private Map readOldFormatExtensionMappings(DataInputStream input) throws IOException {
-            final Map result= new TreeMap();
+        private Map<String, Integer> readOldFormatExtensionMappings(DataInputStream input) throws IOException {
+            final Map<String, Integer> result= new TreeMap<>();
             int numberOfMappings = 0;
             try {
                 numberOfMappings = input.readInt();
             } catch (EOFException e) {
                 // Ignore the exception, it will occur if there are no
                 // patterns stored in the state file.
-                return Collections.EMPTY_MAP;
+                return Collections.emptyMap();
             }
             for (int i = 0; i < numberOfMappings; i++) {
                 final String extension = input.readUTF();
@@ -129,44 +132,53 @@ public class FileContentManager implements IFileContentManager {
         fPluginExtensionMappings= new PluginStringMappings(TeamPlugin.FILE_TYPES_EXTENSION, "extension"); //$NON-NLS-1$
     }
 
-    public int getTypeForName(String filename) {
+    @Override
+	public int getTypeForName(String filename) {
         final int userType= fUserNameMappings.getType(filename);
 //        final int pluginType= fPluginNameMappings.getType(filename);
 //        return userType != Team.UNKNOWN ? userType : pluginType;
         return userType;
     }
 
-    public int getTypeForExtension(String extension) {
+    @Override
+	public int getTypeForExtension(String extension) {
         final int userType= fUserExtensionMappings.getType(extension);
         final int pluginType= fPluginExtensionMappings.getType(extension);
         return userType != Team.UNKNOWN ? userType : pluginType;
     }
 
-    public void addNameMappings(String[] names, int [] types) {
+    @Override
+	public void addNameMappings(String[] names, int [] types) {
         fUserNameMappings.addStringMappings(names, types);
     }
 
-    public void addExtensionMappings(String[] extensions, int [] types) {
+    @Override
+	public void addExtensionMappings(String[] extensions, int [] types) {
         fUserExtensionMappings.addStringMappings(extensions, types);
     }
 
-    public void setNameMappings(String[] names, int [] types) {
+    @Override
+	public void setNameMappings(String[] names, int [] types) {
         fUserNameMappings.setStringMappings(names, types);
     }
 
-    public void setExtensionMappings(String[] extensions, int [] types) {
+    @Override
+	public void setExtensionMappings(String[] extensions, int [] types) {
         fUserExtensionMappings.setStringMappings(extensions, types);
     }
 
-    public IStringMapping[] getNameMappings() {
+    @Override
+	public IStringMapping[] getNameMappings() {
         return getMappings(fUserNameMappings, null);//fPluginNameMappings);
     }
 
-    public IStringMapping[] getExtensionMappings() {
+    @Override
+	public IStringMapping[] getExtensionMappings() {
         return getMappings(fUserExtensionMappings, fPluginExtensionMappings);
     }
 
-    public int getType(IStorage storage) {
+    @Override
+	public int getType(IStorage storage) {
         int type;
 
         final String name= storage.getName();
@@ -194,21 +206,25 @@ public class FileContentManager implements IFileContentManager {
         return textContentType;
     }
 
-    public IStringMapping[] getDefaultNameMappings() {
+    @Override
+	public IStringMapping[] getDefaultNameMappings() {
         // TODO: There is currently no extension point for this
         return new IStringMapping[0];//getStringMappings(fPluginNameMappings.referenceMap());
     }
 
-    public IStringMapping[] getDefaultExtensionMappings() {
+    @Override
+	public IStringMapping[] getDefaultExtensionMappings() {
         return getStringMappings(fPluginExtensionMappings.referenceMap());
     }
 
-    public boolean isKnownExtension(String extension) {
+    @Override
+	public boolean isKnownExtension(String extension) {
         return fUserExtensionMappings.referenceMap().containsKey(extension)
         || fPluginExtensionMappings.referenceMap().containsKey(extension);
     }
 
-    public boolean isKnownFilename(String filename) {
+    @Override
+	public boolean isKnownFilename(String filename) {
         return fUserNameMappings.referenceMap().containsKey(filename);
 //        || fPluginNameMappings.referenceMap().containsKey(filename);
     }
@@ -235,7 +251,7 @@ public class FileContentManager implements IFileContentManager {
     }
 
     private IStringMapping [] getMappings(UserStringMappings userMappings, PluginStringMappings pluginMappings) {
-        final Map mappings= new HashMap();
+        final Map<String, Integer> mappings= new HashMap<>();
         if (pluginMappings != null)
             mappings.putAll(pluginMappings.referenceMap());
         mappings.putAll(userMappings.referenceMap());

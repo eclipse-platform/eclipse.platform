@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,7 @@ import org.eclipse.team.internal.core.*;
  */
 public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#getSyncInfo(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
 		if (!isSupervised(resource)) return null;
 		IResourceVariant remoteResource = getRemoteTree().getResourceVariant(resource);
@@ -61,15 +59,13 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 		return info;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#members(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		if(resource.getType() == IResource.FILE) {
 			return new IResource[0];
 		}
 		try {
-			Set allMembers = new HashSet();
+			Set<IResource> allMembers = new HashSet<>();
 			try {
 				allMembers.addAll(Arrays.asList(((IContainer)resource).members()));
 			} catch (CoreException e) {
@@ -93,19 +89,17 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 					iterator.remove();
 				}
 			}
-			return (IResource[]) allMembers.toArray(new IResource[allMembers.size()]);
+			return allMembers.toArray(new IResource[allMembers.size()]);
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#refresh(org.eclipse.core.resources.IResource[], int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
 		monitor = Policy.monitorFor(monitor);
-		List errors = new ArrayList();
-		List cancels = new ArrayList();
+		List<IStatus> errors = new ArrayList<>();
+		List<IStatus> cancels = new ArrayList<>();
 		try {
 			monitor.beginTask(null, 1000 * resources.length);
 			for (int i = 0; i < resources.length; i++) {
@@ -127,7 +121,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 			if (!cancels.isEmpty()) {
 				errors.addAll(cancels);
 				throw new TeamException(new MultiStatus(TeamPlugin.ID, 0,
-						(IStatus[]) errors.toArray(new IStatus[errors.size()]),
+						errors.toArray(new IStatus[errors.size()]),
 						NLS.bind(
 								Messages.ResourceVariantTreeSubscriber_3,
 								(new Object[] { getName(),
@@ -135,6 +129,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 										Integer.toString(resources.length),
 										Integer.toString(cancels.size()) })),
 						null) {
+					@Override
 					public int getSeverity() {
 						// we want to display status as an error
 						return IStatus.ERROR;
@@ -142,12 +137,12 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 				});
 			}
 			throw new TeamException(new MultiStatus(TeamPlugin.ID, 0,
-					(IStatus[]) errors.toArray(new IStatus[errors.size()]),
+					errors.toArray(new IStatus[errors.size()]),
 					NLS.bind(Messages.ResourceVariantTreeSubscriber_1, (new Object[] {getName(), Integer.toString(numSuccess), Integer.toString(resources.length)})), null));
 		}
 		if (!cancels.isEmpty()) {
 			throw new OperationCanceledException(
-					((IStatus) cancels.get(0)).getMessage());
+					cancels.get(0).getMessage());
 		}
 	}
 
@@ -165,14 +160,14 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 		monitor = Policy.monitorFor(monitor);
 		try {
 			monitor.beginTask(null, 100);
-			Set allChanges = new HashSet();
+			Set<IResource> allChanges = new HashSet<>();
 			if (getResourceComparator().isThreeWay()) {
 				IResource[] baseChanges = getBaseTree().refresh(new IResource[] {resource}, depth, Policy.subMonitorFor(monitor, 25));
 				allChanges.addAll(Arrays.asList(baseChanges));
 			}
 			IResource[] remoteChanges = getRemoteTree().refresh(new IResource[] {resource}, depth, Policy.subMonitorFor(monitor, 75));
 			allChanges.addAll(Arrays.asList(remoteChanges));
-			IResource[] changedResources = (IResource[]) allChanges.toArray(new IResource[allChanges.size()]);
+			IResource[] changedResources = allChanges.toArray(new IResource[allChanges.size()]);
 			fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, changedResources));
 			return Status.OK_STATUS;
 		} catch (TeamException e) {

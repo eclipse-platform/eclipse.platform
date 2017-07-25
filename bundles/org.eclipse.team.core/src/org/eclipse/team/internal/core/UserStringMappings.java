@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
     private final Preferences fPreferences;
     private final String fKey;
 
-    private Map fMap;
+    private Map<String, Integer> fMap;
 
     public UserStringMappings(String key) {
         fKey= key;
@@ -39,7 +39,7 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
         fPreferences.addPropertyChangeListener(this);
     }
 
-    public Map referenceMap() {
+    public Map<String, Integer> referenceMap() {
         if (fMap == null) {
             fMap= loadMappingsFromPreferences();
         }
@@ -48,7 +48,7 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
 
     public void addStringMappings(String[] names, int[] types) {
         Assert.isTrue(names.length == types.length);
-        final Map map= referenceMap();
+        final Map<String, Integer> map= referenceMap();
 
         for (int i = 0; i < names.length; i++) {
             switch (types[i]) {
@@ -69,11 +69,12 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
     public int getType(String string) {
         if (string == null)
             return Team.UNKNOWN;
-        final Integer type= (Integer)referenceMap().get(string);
+        final Integer type= referenceMap().get(string);
         return type != null ? type.intValue() : Team.UNKNOWN;
     }
 
-    public void propertyChange(PropertyChangeEvent event) {
+    @Override
+	public void propertyChange(PropertyChangeEvent event) {
         if(event.getProperty().equals(fKey))
             fMap= null;
     }
@@ -87,15 +88,15 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
             final String filename = (String)e.next();
             buffer.append(filename);
             buffer.append(PREF_TEAM_SEPARATOR);
-            final Integer type = (Integer)fMap.get(filename);
+            final Integer type = fMap.get(filename);
             buffer.append(type);
             buffer.append(PREF_TEAM_SEPARATOR);
         }
         TeamPlugin.getPlugin().getPluginPreferences().setValue(fKey, buffer.toString());
     }
 
-    protected Map loadMappingsFromPreferences() {
-        final Map result= new HashMap();
+    protected Map<String, Integer> loadMappingsFromPreferences() {
+        final Map<String, Integer> result= new HashMap<>();
 
         if (!fPreferences.contains(fKey))
             return result;

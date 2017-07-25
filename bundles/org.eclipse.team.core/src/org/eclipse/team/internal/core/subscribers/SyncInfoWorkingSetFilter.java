@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 
 	private IResource[] resources;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.SyncInfoFilter#select(org.eclipse.team.core.subscribers.SyncInfo)
-	 */
+	@Override
 	public boolean select(SyncInfo info) {
 		// if there's no set, the resource is included
 		if (isEmpty()) return true;
@@ -53,20 +51,17 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 		return (parent.getFullPath().isPrefixOf(child.getFullPath()));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetInputFromSubscriber#getRoots()
-	 */
 	public IResource[] getRoots(Subscriber subscriber) {
 		IResource[] roots = subscriber.roots();
 		if (isEmpty()) return roots;
 
 		// filter the roots by the selected working set
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			result.addAll(Arrays.asList(getIntersectionWithSet(subscriber, resource)));
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	/*
@@ -74,7 +69,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	 * and the receiver's working set.
 	 */
 	private IResource[] getIntersectionWithSet(Subscriber subscriber, IResource resource) {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource setResource = resources[i];
 			if (setResource != null) {
@@ -93,7 +88,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public void setWorkingSet(IResource[] resources) {

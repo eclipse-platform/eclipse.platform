@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
  */
 
 public abstract class RepositoryProviderType extends PlatformObject {
-	private static Map allProviderTypes = new HashMap();
+	private static Map<String, RepositoryProviderType> allProviderTypes = new HashMap<>();
 
 	private String id;
 
@@ -73,7 +73,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	 * @see #getID()
 	 */
 	public static RepositoryProviderType getProviderType(String id) {
-		RepositoryProviderType type = (RepositoryProviderType) allProviderTypes.get(id);
+		RepositoryProviderType type = allProviderTypes.get(id);
 
 		if(type != null)
 			return type;

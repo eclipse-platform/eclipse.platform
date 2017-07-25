@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,9 +54,7 @@ public abstract class SyncInfoFilter {
 			criteria = new ContentComparator(ignoreWhitespace);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.SyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo, org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		public boolean select(SyncInfo info, IProgressMonitor monitor) {
 			IResourceVariant remote = info.getRemote();
 			IResource local = info.getLocal();

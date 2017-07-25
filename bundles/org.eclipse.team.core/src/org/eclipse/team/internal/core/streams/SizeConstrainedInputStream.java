@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 * If discardOnClose, skip()'s over any remaining unread bytes in the constrained region.
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void close() throws IOException {
 		try {
 			if (discardOnClose) {
@@ -68,6 +69,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 * Simulates an end-of-file condition if the end of the constrained region has been reached.
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int available() throws IOException {
 		int amount = in.available();
 		if (amount > bytesRemaining) amount = (int) bytesRemaining;
@@ -81,6 +83,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int read() throws IOException {
 		if (bytesRemaining == 0) return -1;
 		int b = in.read();
@@ -95,6 +98,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred may be non-zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public int read(byte[] buffer, int offset, int length) throws IOException {
 		if (length > bytesRemaining) {
 			if (bytesRemaining == 0) return -1;
@@ -117,6 +121,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred may be non-zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public long skip(long amount) throws IOException {
 		if (amount > bytesRemaining) amount = bytesRemaining;
 		try {
@@ -132,6 +137,7 @@ public class SizeConstrainedInputStream extends FilterInputStream {
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */
+	@Override
 	public boolean markSupported() {
 		return false;
 	}

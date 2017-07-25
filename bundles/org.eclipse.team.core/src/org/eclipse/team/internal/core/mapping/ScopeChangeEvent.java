@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,8 @@ public class ScopeChangeEvent {
 		ResourceMapping[] changedMappings;
 		if (currentMappings.length > originalMappings.length) {
 			// The number of mappings has increased so we should report the new mappings
-			Set originalSet = new HashSet();
-			List result = new ArrayList();
+			Set<ResourceMapping> originalSet = new HashSet<>();
+			List<ResourceMapping> result = new ArrayList<>();
 			for (int i = 0; i < originalMappings.length; i++) {
 				ResourceMapping mapping = originalMappings[i];
 				originalSet.add(mapping);
@@ -73,11 +73,11 @@ public class ScopeChangeEvent {
 					result.add(mapping);
 				}
 			}
-			changedMappings = (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+			changedMappings = result.toArray(new ResourceMapping[result.size()]);
 		} else if (isContracted()) {
 			// The number of mappings may be smaller so report the removed mappings
-			Set finalSet = new HashSet();
-			List result = new ArrayList();
+			Set<ResourceMapping> finalSet = new HashSet<>();
+			List<ResourceMapping> result = new ArrayList<>();
 			for (int i = 0; i < currentMappings.length; i++) {
 				ResourceMapping mapping = currentMappings[i];
 				finalSet.add(mapping);
@@ -88,7 +88,7 @@ public class ScopeChangeEvent {
 					result.add(mapping);
 				}
 			}
-			changedMappings = (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+			changedMappings = result.toArray(new ResourceMapping[result.size()]);
 		} else {
 			changedMappings = new ResourceMapping[0];
 		}

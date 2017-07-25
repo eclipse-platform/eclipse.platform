@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 
 	// List that accumulate changes
 	// SyncInfo
-	private Map changedResources = new HashMap();
-	private Set removedResources = new HashSet();
-	private Map addedResources = new HashMap();
+	private Map<IPath, IDiff> changedResources = new HashMap<>();
+	private Set<IPath> removedResources = new HashSet<>();
+	private Map<IPath, IDiff> addedResources = new HashMap<>();
 
 	private boolean reset = false;
 
-	private List errors = new ArrayList();
+	private List<IStatus> errors = new ArrayList<>();
 
 	/**
 	 * Create a diff change event
@@ -41,32 +41,24 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 		this.tree = tree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeEvent#getTree()
-	 */
+	@Override
 	public IDiffTree getTree() {
 		return tree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeEvent#getAdditions()
-	 */
+	@Override
 	public IDiff[] getAdditions() {
-		return (IDiff[]) addedResources.values().toArray(new IDiff[addedResources.size()]);
+		return addedResources.values().toArray(new IDiff[addedResources.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeEvent#getRemovals()
-	 */
+	@Override
 	public IPath[] getRemovals() {
-		return (IPath[]) removedResources.toArray(new IPath[removedResources.size()]);
+		return removedResources.toArray(new IPath[removedResources.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaChangeEvent#getChanges()
-	 */
+	@Override
 	public IDiff[] getChanges() {
-		return (IDiff[]) changedResources.values().toArray(new IDiff[changedResources.size()]);
+		return changedResources.values().toArray(new IDiff[changedResources.size()]);
 	}
 
 	public void added(IDiff delta) {
@@ -116,8 +108,9 @@ public class DiffChangeEvent implements IDiffChangeEvent {
 		errors .add(status);
 	}
 
+	@Override
 	public IStatus[] getErrors() {
-		return (IStatus[]) errors.toArray(new IStatus[errors.size()]);
+		return errors.toArray(new IStatus[errors.size()]);
 	}
 
 }

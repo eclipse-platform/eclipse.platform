@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,45 +28,37 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 		this.provider = provider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getModelObject()
-	 */
+	@Override
 	public Object getModelObject() {
 		return provider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getModelProviderId()
-	 */
+	@Override
 	public String getModelProviderId() {
 		// Use the resource model provider id. Model providers
 		// can override this by adapting their specific model provider class
 		return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getProjects()
-	 */
+	@Override
 	public IProject[] getProjects() {
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		try {
 			IResource[] resources = provider.getDescriptor().getMatchingResources(projects);
-			Set result = new HashSet();
+			Set<IProject> result = new HashSet<>();
 			for (int i = 0; i < resources.length; i++) {
 				IResource resource = resources[i];
 				if (resource.isAccessible())
 					result.add(resource.getProject());
 			}
-			return (IProject[]) result.toArray(new IProject[result.size()]);
+			return result.toArray(new IProject[result.size()]);
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
 		}
 		return projects;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getTraversals(org.eclipse.core.resources.mapping.ResourceMappingContext, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
@@ -91,6 +83,7 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 		return getProjects();
 	}
 
+	@Override
 	public boolean contains(ResourceMapping mapping) {
 		return (mapping.getModelProviderId().equals(getModelProviderId()));
 	}

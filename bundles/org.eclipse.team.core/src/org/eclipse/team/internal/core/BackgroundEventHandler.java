@@ -59,7 +59,7 @@ public abstract class BackgroundEventHandler {
 	public static final int RUNNABLE_EVENT = 1000;
 
 	// Events that need to be processed
-	private List awaitingProcessing = new ArrayList();
+	private List<Event> awaitingProcessing = new ArrayList<>();
 
 	// The job that runs when events need to be processed
 	private Job eventHandlerJob;
@@ -329,14 +329,14 @@ public abstract class BackgroundEventHandler {
 		if (isShutdown() || isQueueEmpty()) {
 			return null;
 		}
-		return (Event) awaitingProcessing.remove(0);
+		return awaitingProcessing.remove(0);
 	}
 
 	protected synchronized Event peek() {
 		if (isShutdown() || isQueueEmpty()) {
 			return null;
 		}
-		return (Event) awaitingProcessing.get(0);
+		return awaitingProcessing.get(0);
 	}
 
 	/**

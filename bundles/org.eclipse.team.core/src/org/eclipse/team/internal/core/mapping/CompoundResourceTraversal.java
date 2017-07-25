@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,10 +23,10 @@ import org.eclipse.core.runtime.IPath;
  */
 public class CompoundResourceTraversal {
 
-	private Set deepFolders = new HashSet();
-	private Set shallowFolders = new HashSet();
-	private Set zeroFolders = new HashSet();
-	private Set files = new HashSet();
+	private Set<IResource> deepFolders = new HashSet<>();
+	private Set<IResource> shallowFolders = new HashSet<>();
+	private Set<IResource> zeroFolders = new HashSet<>();
+	private Set<IResource> files = new HashSet<>();
 
 	public synchronized void addTraversals(ResourceTraversal[] traversals) {
 		for (int i = 0; i < traversals.length; i++) {
@@ -154,16 +154,16 @@ public class CompoundResourceTraversal {
 		// However, this makes deadlock possible and, in practive, I don't think that
 		// the provided traversal will be modified after it is passed to this method.
 		addResources(
-				(IResource[]) compoundTraversal.deepFolders.toArray(new IResource[compoundTraversal.deepFolders.size()]),
+				compoundTraversal.deepFolders.toArray(new IResource[compoundTraversal.deepFolders.size()]),
 				IResource.DEPTH_INFINITE);
 		addResources(
-				(IResource[]) compoundTraversal.shallowFolders.toArray(new IResource[compoundTraversal.shallowFolders.size()]),
+				compoundTraversal.shallowFolders.toArray(new IResource[compoundTraversal.shallowFolders.size()]),
 				IResource.DEPTH_ONE);
 		addResources(
-				(IResource[]) compoundTraversal.zeroFolders.toArray(new IResource[compoundTraversal.zeroFolders.size()]),
+				compoundTraversal.zeroFolders.toArray(new IResource[compoundTraversal.zeroFolders.size()]),
 				IResource.DEPTH_ZERO);
 		addResources(
-				(IResource[]) compoundTraversal.files.toArray(new IResource[compoundTraversal.files.size()]),
+				compoundTraversal.files.toArray(new IResource[compoundTraversal.files.size()]),
 				IResource.DEPTH_ZERO);
 	}
 
@@ -190,7 +190,7 @@ public class CompoundResourceTraversal {
 	 * Return any resources in the other traversal that are not covered by this traversal
 	 */
 	private IResource[] getUncoveredResources(CompoundResourceTraversal otherTraversal) {
-		Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
 		for (Iterator iter = otherTraversal.files.iterator(); iter.hasNext();) {
 			IResource resource = (IResource) iter.next();
 			if (!isCovered(resource, IResource.DEPTH_ZERO)) {
@@ -215,33 +215,33 @@ public class CompoundResourceTraversal {
 				result.add(resource);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public synchronized ResourceTraversal[] asTraversals() {
-		List result = new ArrayList();
+		List<ResourceTraversal> result = new ArrayList<>();
 		if (!files.isEmpty() || ! zeroFolders.isEmpty()) {
-			Set combined = new HashSet();
+			Set<IResource> combined = new HashSet<>();
 			combined.addAll(files);
 			combined.addAll(zeroFolders);
-			result.add(new ResourceTraversal((IResource[]) combined.toArray(new IResource[combined.size()]), IResource.DEPTH_ZERO, IResource.NONE));
+			result.add(new ResourceTraversal(combined.toArray(new IResource[combined.size()]), IResource.DEPTH_ZERO, IResource.NONE));
 		}
 		if (!shallowFolders.isEmpty()) {
-			result.add(new ResourceTraversal((IResource[]) shallowFolders.toArray(new IResource[shallowFolders.size()]), IResource.DEPTH_ONE, IResource.NONE));
+			result.add(new ResourceTraversal(shallowFolders.toArray(new IResource[shallowFolders.size()]), IResource.DEPTH_ONE, IResource.NONE));
 		}
 		if (!deepFolders.isEmpty()) {
-			result.add(new ResourceTraversal((IResource[]) deepFolders.toArray(new IResource[deepFolders.size()]), IResource.DEPTH_INFINITE, IResource.NONE));
+			result.add(new ResourceTraversal(deepFolders.toArray(new IResource[deepFolders.size()]), IResource.DEPTH_INFINITE, IResource.NONE));
 		}
-		return (ResourceTraversal[]) result.toArray(new ResourceTraversal[result.size()]);
+		return result.toArray(new ResourceTraversal[result.size()]);
 	}
 
 	public synchronized IResource[] getRoots() {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		result.addAll(files);
 		result.addAll(zeroFolders);
 		result.addAll(shallowFolders);
 		result.addAll(deepFolders);
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public synchronized ResourceTraversal[] getUncoveredTraversals(ResourceTraversal[] traversals) {

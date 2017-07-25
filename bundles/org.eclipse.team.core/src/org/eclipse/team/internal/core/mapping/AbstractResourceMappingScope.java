@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,7 @@ import org.eclipse.team.internal.core.subscribers.AbstractSynchronizationScope;
  */
 public abstract class AbstractResourceMappingScope extends AbstractSynchronizationScope {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#getMapping(java.lang.Object)
-	 */
+	@Override
 	public ResourceMapping getMapping(Object modelObject) {
 		ResourceMapping[] mappings = getMappings();
 		for (int i = 0; i < mappings.length; i++) {
@@ -34,11 +32,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#getMappings(java.lang.String)
-	 */
+	@Override
 	public ResourceMapping[] getMappings(String id) {
-		Set result = new HashSet();
+		Set<ResourceMapping> result = new HashSet<>();
 		ResourceMapping[] mappings = getMappings();
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -46,13 +42,11 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 				result.add(mapping);
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getTraversals(java.lang.String)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(String modelProviderId) {
 		ResourceMapping[] mappings = getMappings(modelProviderId);
 		CompoundResourceTraversal traversal = new CompoundResourceTraversal();
@@ -65,11 +59,9 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 		return traversal.asTraversals();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#getModelProviders()
-	 */
+	@Override
 	public ModelProvider[] getModelProviders() {
-		Set result = new HashSet();
+		Set<ModelProvider> result = new HashSet<>();
 		ResourceMapping[] mappings = getMappings();
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -77,7 +69,7 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 			if (modelProvider != null)
 				result.add(modelProvider);
 		}
-		return (ModelProvider[]) result.toArray(new ModelProvider[result.size()]);
+		return result.toArray(new ModelProvider[result.size()]);
 	}
 
 }

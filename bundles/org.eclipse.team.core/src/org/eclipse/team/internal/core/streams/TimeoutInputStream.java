@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ public class TimeoutInputStream extends FilterInputStream {
 		this.closeTimeout = closeTimeout;
 		this.iobuffer = new byte[bufferSize];
 		thread = new Thread(new Runnable() {
+			@Override
 			public void run() {
 				runThread();
 			}
@@ -83,6 +84,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	 * @throws InterruptedIOException if the timeout expired
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void close() throws IOException {
 		Thread oldThread;
 		synchronized (this) {
@@ -108,6 +110,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	 * Returns the number of unread bytes in the buffer.
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized int available() throws IOException {
 		if (length == 0) checkError();
 		return length > 0 ? length : 0;
@@ -119,6 +122,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	 *         bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized int read() throws IOException {
 		if (! syncFill()) return -1; // EOF reached
 		int b = iobuffer[head++] & 255;
@@ -134,6 +138,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	 *         bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized int read(byte[] buffer, int off, int len) throws IOException {
 		if (! syncFill()) return -1; // EOF reached
 		int pos = off;
@@ -153,6 +158,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	 *         bytes specified have been skipped, bytesTransferred may be non-zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public synchronized long skip(long count) throws IOException {
 		long amount = 0;
 		try {
@@ -174,6 +180,7 @@ public class TimeoutInputStream extends FilterInputStream {
 	/**
 	 * Mark is not supported by the wrapper even if the underlying stream does, returns false.
 	 */
+	@Override
 	public boolean markSupported() {
 		return false;
 	}

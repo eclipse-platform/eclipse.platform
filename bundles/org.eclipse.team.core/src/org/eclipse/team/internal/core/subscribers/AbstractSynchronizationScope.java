@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,13 +26,11 @@ import org.eclipse.team.core.mapping.ISynchronizationScopeChangeListener;
  */
 public abstract class AbstractSynchronizationScope implements ISynchronizationScope {
 
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<ISynchronizationScopeChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getRoots()
-	 */
+	@Override
 	public IResource[] getRoots() {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		ResourceTraversal[] traversals = getTraversals();
 		for (int i = 0; i < traversals.length; i++) {
 			ResourceTraversal traversal = traversals[i];
@@ -42,12 +40,10 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 				accumulateRoots(result, resource);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#contains(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean contains(IResource resource) {
 		ResourceTraversal[] traversals = getTraversals();
 		for (int i = 0; i < traversals.length; i++) {
@@ -62,7 +58,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 	 * Add the resource to the list if it isn't there already
 	 * or is not a child of an existing resource.
 	 */
-	private void accumulateRoots(List roots, IResource resource) {
+	private void accumulateRoots(List<IResource> roots, IResource resource) {
 		IPath resourcePath = resource.getFullPath();
 		for (Iterator iter = roots.iterator(); iter.hasNext();) {
 			IResource root = (IResource) iter.next();
@@ -88,9 +84,11 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 		for (int i = 0; i < allListeners.length; i++) {
 			final Object listener = allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					((ISynchronizationScopeChangeListener)listener).scopeChanged(AbstractSynchronizationScope.this, newMappings, newTraversals);
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// Logged by Platform
 				}
@@ -98,16 +96,12 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#addPropertyChangeListener(org.eclipse.core.runtime.Preferences.IPropertyChangeListener)
-	 */
+	@Override
 	public void addScopeChangeListener(ISynchronizationScopeChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#removePropertyChangeListener(org.eclipse.core.runtime.Preferences.IPropertyChangeListener)
-	 */
+	@Override
 	public void removeScopeChangeListener(ISynchronizationScopeChangeListener listener) {
 		listeners.remove(listener);
 	}

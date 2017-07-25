@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,9 +53,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.ITeamResourceChangeListener#teamResourceChanged(org.eclipse.team.core.sync.TeamDelta[])
-	 */
+	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 	    try {
 		    beginInput();
@@ -102,9 +100,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
     }
 
 
-    /*(non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 	    try {
 	        beginInput();

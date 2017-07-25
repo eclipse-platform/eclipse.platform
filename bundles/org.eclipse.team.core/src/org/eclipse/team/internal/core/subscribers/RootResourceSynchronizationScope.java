@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ public class RootResourceSynchronizationScope extends AbstractResourceMappingSco
 		this.roots = roots;
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals() {
 		return new ResourceTraversal[] {new ResourceTraversal(roots, IResource.DEPTH_INFINITE, IResource.NONE)};
 	}
@@ -43,26 +44,30 @@ public class RootResourceSynchronizationScope extends AbstractResourceMappingSco
 		fireTraversalsChangedEvent(getTraversals(), getMappings());
 	}
 
+	@Override
 	public ResourceMapping[] getInputMappings() {
 		return getMappings();
 	}
 
+	@Override
 	public ISynchronizationScope asInputScope() {
 		return this;
 	}
 
+	@Override
 	public ResourceMapping[] getMappings() {
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			Object o = resource.getAdapter(ResourceMapping.class);
 			if (o instanceof ResourceMapping) {
-				result.add(o);
+				result.add((ResourceMapping) o);
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMapping mapping) {
 		Object object = mapping.getModelObject();
 		if (object instanceof IResource) {
@@ -72,22 +77,27 @@ public class RootResourceSynchronizationScope extends AbstractResourceMappingSco
 		return null;
 	}
 
+	@Override
 	public boolean hasAdditionalMappings() {
 		return false;
 	}
 
+	@Override
 	public boolean hasAdditonalResources() {
 		return false;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProjects();
 	}
 
+	@Override
 	public ResourceMappingContext getContext() {
 		return ResourceMappingContext.LOCAL_CONTEXT;
 	}
 
+	@Override
 	public void refresh(ResourceMapping[] mappings) {
 		// Not supported
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 package org.eclipse.team.core.variants;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 
@@ -38,30 +36,22 @@ public abstract class ResourceVariantTree extends AbstractResourceVariantTree {
 		this.store = store;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantTree#members(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		return getByteStore().members(resource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantTree#hasResourceVariant(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean hasResourceVariant(IResource resource) throws TeamException {
 		return getByteStore().getBytes(resource) != null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantTree#flushVariants(org.eclipse.core.resources.IResource, int)
-	 */
+	@Override
 	public void flushVariants(IResource resource, int depth) throws TeamException {
 		getByteStore().flushBytes(resource, depth);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#setVariant(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant)
-	 */
+	@Override
 	protected boolean setVariant(IResource local, IResourceVariant remote) throws TeamException {
 		ResourceVariantByteStore cache = getByteStore();
 		byte[] newRemoteBytes = getBytes(local, remote);
@@ -100,18 +90,12 @@ public abstract class ResourceVariantTree extends AbstractResourceVariantTree {
 		return remote.asBytes();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#collectChanges(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResource[] collectChanges(final IResource local,
 			final IResourceVariant remote, final int depth, IProgressMonitor monitor)
 			throws TeamException {
 		final IResource[][] resources = new IResource[][] { null };
-		getByteStore().run(local, new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				resources[0] = ResourceVariantTree.super.collectChanges(local, remote, depth, monitor);
-			}
-		}, monitor);
+		getByteStore().run(local, monitor1 -> resources[0] = ResourceVariantTree.super.collectChanges(local, remote, depth, monitor1), monitor);
 		return resources[0];
 	}
 }

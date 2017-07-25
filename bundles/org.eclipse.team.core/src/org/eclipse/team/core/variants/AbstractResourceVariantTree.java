@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,8 +46,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * @return the array of resources whose corresponding variants have changed
 	 * @throws TeamException
 	 */
+	@Override
 	public IResource[] refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
-		List changedResources = new ArrayList();
+		List<IResource> changedResources = new ArrayList<>();
 		monitor.beginTask(null, 100 * resources.length);
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
@@ -55,7 +56,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 			changedResources.addAll(Arrays.asList(changed));
 		}
 		monitor.done();
-		return (IResource[]) changedResources.toArray(new IResource[changedResources.size()]);
+		return changedResources.toArray(new IResource[changedResources.size()]);
 	}
 
 	/**
@@ -109,9 +110,9 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * @throws TeamException
 	 */
 	protected IResource[] collectChanges(IResource local, IResourceVariant remote, int depth, IProgressMonitor monitor) throws TeamException {
-		List changedResources = new ArrayList();
+		List<IResource> changedResources = new ArrayList<>();
 		collectChanges(local, remote, changedResources, depth, monitor);
-		return (IResource[]) changedResources.toArray(new IResource[changedResources.size()]);
+		return changedResources.toArray(new IResource[changedResources.size()]);
 	}
 
 	/**
@@ -164,30 +165,30 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 */
 	protected abstract boolean setVariant(IResource local, IResourceVariant remote) throws TeamException;
 
-	private void collectChanges(IResource local, IResourceVariant remote, Collection changedResources, int depth, IProgressMonitor monitor) throws TeamException {
+	private void collectChanges(IResource local, IResourceVariant remote, Collection<IResource> changedResources, int depth, IProgressMonitor monitor) throws TeamException {
 		boolean changed = setVariant(local, remote);
 		if (changed) {
 			changedResources.add(local);
 		}
 		if (depth == IResource.DEPTH_ZERO) return;
-		Map children = mergedMembers(local, remote, monitor);
-		for (Iterator it = children.keySet().iterator(); it.hasNext();) {
-			IResource localChild = (IResource) it.next();
-			IResourceVariant remoteChild = (IResourceVariant)children.get(localChild);
+		Map<IResource, IResourceVariant> children = mergedMembers(local, remote, monitor);
+		for (Iterator<IResource> it = children.keySet().iterator(); it.hasNext();) {
+			IResource localChild = it.next();
+			IResourceVariant remoteChild = children.get(localChild);
 			collectChanges(localChild, remoteChild, changedResources,
 					depth == IResource.DEPTH_INFINITE ? IResource.DEPTH_INFINITE : IResource.DEPTH_ZERO,
 					monitor);
 		}
 
-		IResource[] cleared = collectedMembers(local, (IResource[]) children.keySet().toArray(new IResource[children.keySet().size()]));
+		IResource[] cleared = collectedMembers(local, children.keySet().toArray(new IResource[children.keySet().size()]));
 		changedResources.addAll(Arrays.asList(cleared));
 		monitor.worked(1);
 	}
 
-	private Map mergedMembers(IResource local, IResourceVariant remote, IProgressMonitor progress) throws TeamException {
+	private Map<IResource, IResourceVariant> mergedMembers(IResource local, IResourceVariant remote, IProgressMonitor progress) throws TeamException {
 
 		// {IResource -> IResourceVariant}
-		Map mergedResources = new HashMap();
+		Map<IResource, IResourceVariant> mergedResources = new HashMap<>();
 
 		IResourceVariant[] remoteChildren;
 		if (remote == null) {
@@ -200,12 +201,12 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		IResource[] localChildren = members(local);
 
 		if (remoteChildren.length > 0 || localChildren.length > 0) {
-			Set allSet = new HashSet(20);
-			Map localSet = null;
-			Map remoteSet = null;
+			Set<String> allSet = new HashSet<>(20);
+			Map<String, IResource> localSet = null;
+			Map<String, IResourceVariant> remoteSet = null;
 
 			if (localChildren.length > 0) {
-				localSet = new HashMap(10);
+				localSet = new HashMap<>(10);
 				for (int i = 0; i < localChildren.length; i++) {
 					IResource localChild = localChildren[i];
 					String name = localChild.getName();
@@ -215,7 +216,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 			}
 
 			if (remoteChildren.length > 0) {
-				remoteSet = new HashMap(10);
+				remoteSet = new HashMap<>(10);
 				for (int i = 0; i < remoteChildren.length; i++) {
 					IResourceVariant remoteChild = remoteChildren[i];
 					String name = remoteChild.getName();

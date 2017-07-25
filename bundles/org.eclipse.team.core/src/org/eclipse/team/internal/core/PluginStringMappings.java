@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ public class PluginStringMappings {
     private final String fExtensionID;
     private final String fAttributeName;
 
-    private SortedMap fMappings;
+    private SortedMap<String, Integer> fMappings;
 
     public PluginStringMappings(String extensionID, String stringAttributeName) {
         fExtensionID= extensionID;
@@ -35,9 +35,9 @@ public class PluginStringMappings {
      * Load all the extension patterns contributed by plugins.
      * @return a map with the patterns
      */
-    private SortedMap loadPluginPatterns() {
+    private SortedMap<String, Integer> loadPluginPatterns() {
 
-        final SortedMap result= new TreeMap();
+        final SortedMap<String, Integer> result= new TreeMap<>();
 
         final TeamPlugin plugin = TeamPlugin.getPlugin();
         if (plugin == null)
@@ -69,7 +69,7 @@ public class PluginStringMappings {
         return result;
     }
 
-    public Map referenceMap() {
+    public Map<String, Integer> referenceMap() {
         if (fMappings == null) {
             fMappings= loadPluginPatterns();
         }
@@ -77,7 +77,7 @@ public class PluginStringMappings {
     }
 
     public int getType(String filename) {
-        final Map mappings= referenceMap();
-        return mappings.containsKey(filename) ? ((Integer)mappings.get(filename)).intValue() : Team.UNKNOWN;
+        final Map<String, Integer> mappings= referenceMap();
+        return mappings.containsKey(filename) ? mappings.get(filename).intValue() : Team.UNKNOWN;
     }
 }

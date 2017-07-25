@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,30 +77,22 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 		return CHANGE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.IThreeWayDelta#getLocalChange()
-	 */
+	@Override
 	public ITwoWayDiff getLocalChange() {
 		return localChange;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.IThreeWayDelta#getRemoteChange()
-	 */
+	@Override
 	public ITwoWayDiff getRemoteChange() {
 		return remoteChange;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.IThreeWayDelta#getDirection()
-	 */
+	@Override
 	public int getDirection() {
 		return getStatus() & CONFLICTING;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffNode#toDiffString()
-	 */
+	@Override
 	public String toDiffString() {
 		int kind = getKind();
 		String label = ""; //$NON-NLS-1$
@@ -113,9 +105,7 @@ public class ThreeWayDiff extends Diff implements IThreeWayDiff {
 		return label;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

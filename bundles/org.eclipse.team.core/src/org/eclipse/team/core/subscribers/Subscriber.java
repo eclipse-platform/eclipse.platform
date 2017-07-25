@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
  */
 abstract public class Subscriber {
 
-	private List listeners = new ArrayList(1);
+	private List<ISubscriberChangeListener> listeners = new ArrayList<>(1);
 
 	/**
 	 * Return the name of this subscription, in a format that is
@@ -274,16 +274,18 @@ abstract public class Subscriber {
 		ISubscriberChangeListener[] allListeners;
 		// Copy the listener list so we're not calling client code while synchronized
 		synchronized (listeners) {
-			allListeners = (ISubscriberChangeListener[]) listeners.toArray(new ISubscriberChangeListener[listeners.size()]);
+			allListeners = listeners.toArray(new ISubscriberChangeListener[listeners.size()]);
 		}
 		// Notify the listeners safely so all will receive notification
 		for (int i = 0; i < allListeners.length; i++) {
 			final ISubscriberChangeListener listener = allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
 					// don't log the exception....it is already being logged in
 					// Platform#run
 				}
+				@Override
 				public void run() throws Exception {
 					listener.subscriberResourceChanged(deltas);
 				}
@@ -500,6 +502,7 @@ abstract public class Subscriber {
 		final int[] direction = new int[] { 0 };
 		final int[] kind = new int[] { 0 };
 		accept(traversals, new IDiffVisitor() {
+			@Override
 			public boolean visit(IDiff diff) {
 				if (diff instanceof IThreeWayDiff) {
 					IThreeWayDiff twd = (IThreeWayDiff) diff;

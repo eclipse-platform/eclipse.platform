@@ -67,7 +67,7 @@ public final class Team {
 
     private final static FileContentManager fFileContentManager;
 
-	private static List fBundleImporters;
+	private static List<IBundleImporter> fBundleImporters;
 
     static {
         fFileContentManager= new FileContentManager();
@@ -604,7 +604,7 @@ public final class Team {
 	 */
 	public synchronized static IBundleImporter[] getBundleImporters() {
 		if (fBundleImporters == null) {
-			fBundleImporters = new ArrayList();
+			fBundleImporters = new ArrayList<>();
 			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.EXTENSION_POINT_BUNDLE_IMPORTERS);
 			if (point != null) {
 				IConfigurationElement[] infos = point.getConfigurationElements();
@@ -613,6 +613,6 @@ public final class Team {
 				}
 			}
 		}
-		return (IBundleImporter[]) fBundleImporters.toArray(new IBundleImporter[fBundleImporters.size()]);
+		return fBundleImporters.toArray(new IBundleImporter[fBundleImporters.size()]);
 	}
 }

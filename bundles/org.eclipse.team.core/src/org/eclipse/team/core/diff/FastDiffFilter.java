@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ public abstract class FastDiffFilter extends DiffFilter {
 
 	public static final FastDiffFilter getStateFilter(final int[] states, final int mask) {
 		return new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff node) {
 				int status = ((Diff)node).getStatus();
 				for (int i = 0; i < states.length; i++) {
@@ -40,9 +41,7 @@ public abstract class FastDiffFilter extends DiffFilter {
 		};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.DiffNodeFilter#select(org.eclipse.team.core.diff.IDiffNode, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public final boolean select(IDiff diff, IProgressMonitor monitor) {
 		return select(diff);
 	}

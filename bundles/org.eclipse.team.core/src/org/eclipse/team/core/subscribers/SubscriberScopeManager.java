@@ -27,7 +27,7 @@ import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 public class SubscriberScopeManager extends SynchronizationScopeManager implements ISubscriberChangeListener {
 
 	private final Subscriber subscriber;
-	private Map participants = new HashMap();
+	private Map<ModelProvider, ISynchronizationScopeParticipant> participants = new HashMap<>();
 
 	/**
 	 * Create a manager for the given subscriber and input.
@@ -72,29 +72,23 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 
 	@Override
 	public void initialize(IProgressMonitor monitor) throws CoreException {
-		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				SubscriberScopeManager.super.initialize(monitor);
-				hookupParticipants();
-				getSubscriber().addListener(SubscriberScopeManager.this);
-			}
+		ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+			SubscriberScopeManager.super.initialize(monitor1);
+			hookupParticipants();
+			getSubscriber().addListener(SubscriberScopeManager.this);
 		}, getSchedulingRule(), IResource.NONE, monitor);
 	}
 
 	@Override
 	public ResourceTraversal[] refresh(final ResourceMapping[] mappings, IProgressMonitor monitor) throws CoreException {
-		final List result = new ArrayList(1);
-		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				result.add(SubscriberScopeManager.super.refresh(mappings, monitor));
-				hookupParticipants();
-			}
+		final List<ResourceTraversal[]> result = new ArrayList<>(1);
+		ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+			result.add(SubscriberScopeManager.super.refresh(mappings, monitor1));
+			hookupParticipants();
 		}, getSchedulingRule(), IResource.NONE, monitor);
 		if (result.isEmpty())
 			return new ResourceTraversal[0];
-		return (ResourceTraversal[])result.get(0);
+		return result.get(0);
 	}
 
 	/*
@@ -145,8 +139,8 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 	}
 
 	private void fireChange(final IResource[] resources, final IProject[] projects) {
-		final Set result = new HashSet();
-		ISynchronizationScopeParticipant[] handlers = (ISynchronizationScopeParticipant[]) participants.values().toArray(new ISynchronizationScopeParticipant[participants.size()]);
+		final Set<ResourceMapping> result = new HashSet<>();
+		ISynchronizationScopeParticipant[] handlers = participants.values().toArray(new ISynchronizationScopeParticipant[participants.size()]);
 		for (int i = 0; i < handlers.length; i++) {
 			final ISynchronizationScopeParticipant participant = handlers[i];
 			SafeRunner.run(new ISafeRunnable() {
@@ -165,7 +159,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 			});
 		}
 		if (!result.isEmpty()) {
-			refresh((ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]));
+			refresh(result.toArray(new ResourceMapping[result.size()]));
 		}
 	}
 

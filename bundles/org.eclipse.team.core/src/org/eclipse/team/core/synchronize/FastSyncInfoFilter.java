@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,9 +68,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public AndSyncInfoFilter(FastSyncInfoFilter[] filters) {
 			super(filters);
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			for (int i = 0; i < filters.length; i++) {
 				FastSyncInfoFilter filter = filters[i];
@@ -86,9 +84,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 	 * Selects <code>SyncInfo</code> instances that are auto-mergable.
 	 */
 	public static class AutomergableFilter extends FastSyncInfoFilter {
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			return (info.getKind() & SyncInfo.AUTOMERGE_CONFLICT) != 0;
 		}
@@ -98,9 +94,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 	 * Selects <code>SyncInfo</code> instances that are pseudo-conflicts.
 	 */
 	public static class PseudoConflictFilter extends FastSyncInfoFilter {
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			return info.getKind() != 0 && (info.getKind() & SyncInfo.PSEUDO_CONFLICT) == 0;
 		}
@@ -117,9 +111,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public OrSyncInfoFilter(FastSyncInfoFilter[] filters) {
 			super(filters);
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			for (int i = 0; i < filters.length; i++) {
 				FastSyncInfoFilter filter = filters[i];
@@ -154,9 +146,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public SyncInfoChangeTypeFilter(int change) {
 			this(new int[]{change});
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			int syncKind = info.getKind();
 			for (int i = 0; i < changeFilters.length; i++) {
@@ -191,9 +181,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		public SyncInfoDirectionFilter(int direction) {
 			this(new int[] { direction });
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.synchronize.FastSyncInfoFilter#select(org.eclipse.team.core.synchronize.SyncInfo)
-		 */
+		@Override
 		public boolean select(SyncInfo info) {
 			int syncKind = info.getKind();
 			for (int i = 0; i < directionFilters.length; i++) {
@@ -216,9 +204,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		return info.getKind() != 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.SyncInfoFilter#select(org.eclipse.team.core.subscribers.SyncInfo, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public final boolean select(SyncInfo info, IProgressMonitor monitor) {
 		return select(info);
 	}

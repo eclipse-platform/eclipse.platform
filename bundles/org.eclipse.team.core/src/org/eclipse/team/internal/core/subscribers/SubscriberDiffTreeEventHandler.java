@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,23 +72,17 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			super(subscriber);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#hasMembers(org.eclipse.core.resources.IResource)
-		 */
+		@Override
 		protected boolean hasMembers(IResource resource) {
 			return tree.members(resource).length > 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#remove(org.eclipse.core.resources.IResource)
-		 */
+		@Override
 		protected void remove(IResource resource) {
 			SubscriberDiffTreeEventHandler.this.remove(resource);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#change(org.eclipse.core.resources.IResource, int)
-		 */
+		@Override
 		protected void change(IResource resource, int depth) {
 			SubscriberDiffTreeEventHandler.this.change(resource, depth);
 		}
@@ -109,26 +103,25 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		this.filter = filter;
 	}
 
+	@Override
 	protected void reset(ResourceTraversal[] traversals, int type) {
 		// Reset the exception state since we are reseting
 		exceptionState = EXCEPTION_NONE;
 		if (!manager.isInitialized() && state == STATE_OK_TO_INITIALIZE) {
 			// This means the scope has not been initialized
-			queueEvent(new RunnableEvent(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					// Only initialize the scope if we are in the STARTED state
-					if (state == STATE_OK_TO_INITIALIZE) {
-						try {
-							prepareScope(monitor);
-							state = STATE_COLLECTING_CHANGES;
-						} finally {
-							// If the initialization didn't complete,
-							// return to the STARTED state.
-							if (state != STATE_COLLECTING_CHANGES) {
-								state = STATE_STARTED;
-								if (exceptionState == EXCEPTION_NONE)
-									exceptionState = EXCEPTION_CANCELED;
-							}
+			queueEvent(new RunnableEvent(monitor -> {
+				// Only initialize the scope if we are in the STARTED state
+				if (state == STATE_OK_TO_INITIALIZE) {
+					try {
+						prepareScope(monitor);
+						state = STATE_COLLECTING_CHANGES;
+					} finally {
+						// If the initialization didn't complete,
+						// return to the STARTED state.
+						if (state != STATE_COLLECTING_CHANGES) {
+							state = STATE_STARTED;
+							if (exceptionState == EXCEPTION_NONE)
+								exceptionState = EXCEPTION_CANCELED;
 						}
 					}
 				}
@@ -155,9 +148,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			reset(traversals, SubscriberEvent.INITIALIZE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleChange(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	protected void handleChange(IResource resource) throws CoreException {
 		IDiff node = getSubscriber().getDiff(resource);
 		if (node == null) {
@@ -174,27 +165,23 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		return manager.getScope().contains(resource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#collectAll(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void collectAll(IResource resource, int depth,
 			final IProgressMonitor monitor) {
 		Policy.checkCanceled(monitor);
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		ResourceTraversal[] traversals = new ResourceTraversal[] { new ResourceTraversal(new IResource[] { resource }, depth, IResource.NONE) };
 		try {
-			getSubscriber().accept(traversals, new IDiffVisitor() {
-				public boolean visit(IDiff diff) {
-					Policy.checkCanceled(monitor);
-					monitor.subTask(NLS.bind(Messages.SubscriberDiffTreeEventHandler_0, tree.getResource(diff).getFullPath().toString()));
-					// Queue up any found diffs for inclusion into the output tree
-					queueDispatchEvent(
-							new SubscriberDiffChangedEvent(tree.getResource(diff), SubscriberEvent.CHANGE, IResource.DEPTH_ZERO, diff));
-					// Handle any pending dispatches
-					handlePreemptiveEvents(monitor);
-					handlePendingDispatch(monitor);
-					return true;
-				}
+			getSubscriber().accept(traversals, diff -> {
+				Policy.checkCanceled(monitor);
+				monitor.subTask(NLS.bind(Messages.SubscriberDiffTreeEventHandler_0, tree.getResource(diff).getFullPath().toString()));
+				// Queue up any found diffs for inclusion into the output tree
+				queueDispatchEvent(
+						new SubscriberDiffChangedEvent(tree.getResource(diff), SubscriberEvent.CHANGE, IResource.DEPTH_ZERO, diff));
+				// Handle any pending dispatches
+				handlePreemptiveEvents(monitor);
+				handlePendingDispatch(monitor);
+				return true;
 			});
 		} catch (CoreException e) {
 			if (resource.getProject().isAccessible())
@@ -204,9 +191,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#dispatchEvents(org.eclipse.team.internal.core.subscribers.SubscriberEventHandler.SubscriberEvent[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void dispatchEvents(SubscriberEvent[] events,
 			IProgressMonitor monitor) {
 		try {
@@ -256,25 +241,19 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		return tree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#getSubscriber()
-	 */
+	@Override
 	public Subscriber getSubscriber() {
 		return super.getSubscriber();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#shutdown()
-	 */
+	@Override
 	public void shutdown() {
 		state = STATE_SHUTDOWN;
 		collector.dispose();
 		super.shutdown();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.BackgroundEventHandler#getJobFamiliy()
-	 */
+	@Override
 	protected Object getJobFamiliy() {
 		return family;
 	}
@@ -287,18 +266,14 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		this.family = family;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleException(org.eclipse.core.runtime.CoreException, org.eclipse.core.resources.IResource, int, java.lang.String)
-	 */
+	@Override
 	protected void handleException(CoreException e, IResource resource, int code, String message) {
 		super.handleException(e, resource, code, message);
 		tree.reportError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, code, message, e, resource));
 		exceptionState = EXCEPTION_ERROR;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleCancel(org.eclipse.core.runtime.OperationCanceledException)
-	 */
+	@Override
 	protected void handleCancel(OperationCanceledException e) {
 		super.handleCancel(e);
 		tree.reportError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_CANCELLATION, Messages.SubscriberEventHandler_12, e, ResourcesPlugin.getWorkspace().getRoot()));
@@ -327,6 +302,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		}
 	}
 
+	@Override
 	public synchronized void start() {
 		super.start();
 		if (state == STATE_NEW)
@@ -337,12 +313,14 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		return state;
 	}
 
+	@Override
 	protected boolean isSystemJob() {
 		if (manager != null && !manager.isInitialized())
 			return false;
 		return super.isSystemJob();
 	}
 
+	@Override
 	public synchronized void remove(IResource resource) {
 		// Don't queue changes if we haven't been initialized
 		if (state == STATE_STARTED)
@@ -350,6 +328,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 		super.remove(resource);
 	}
 
+	@Override
 	public void change(IResource resource, int depth) {
 		// Don't queue changes if we haven't been initialized
 		if (state == STATE_STARTED)

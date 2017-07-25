@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import java.util.HashMap;
 public class ScmUrlImportDescription {
 	private String url;
 	private String project;
-	private HashMap properties;
+	private HashMap<String, Object> properties;
 
 	public ScmUrlImportDescription(String url, String project) {
 		this.url = url;
@@ -73,7 +73,7 @@ public class ScmUrlImportDescription {
 	 */
 	public synchronized void setProperty(String key, Object value) {
 		if (properties == null) {
-			properties = new HashMap();
+			properties = new HashMap<>();
 		}
 		if (value == null) {
 			properties.remove(key);

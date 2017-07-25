@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,8 @@ public class ActiveChangeSet extends DiffChangeSet {
      * as never been set, the title is returned as the comment
      * @return the comment to be used when the set is committed
      */
-    public String getComment() {
+    @Override
+	public String getComment() {
         if (comment == null) {
             return getTitle();
         }
@@ -96,7 +97,8 @@ public class ActiveChangeSet extends DiffChangeSet {
     /*
      * Override inherited method to only include outgoing changes
      */
-    protected boolean isValidChange(IDiff diff) {
+    @Override
+	protected boolean isValidChange(IDiff diff) {
         return getManager().isModified(diff);
     }
 
@@ -195,7 +197,7 @@ public class ActiveChangeSet extends DiffChangeSet {
      * @throws CoreException
      */
     public void add(IResource[] resources) throws CoreException {
-        List toAdd = new ArrayList();
+        List<IDiff> toAdd = new ArrayList<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             IDiff diff = getManager().getDiff(resource);
@@ -204,7 +206,7 @@ public class ActiveChangeSet extends DiffChangeSet {
             }
         }
         if (!toAdd.isEmpty()) {
-            add((IDiff[]) toAdd.toArray(new IDiff[toAdd.size()]));
+            add(toAdd.toArray(new IDiff[toAdd.size()]));
         }
     }
 

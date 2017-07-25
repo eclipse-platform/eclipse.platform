@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,7 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 		this.synchronizer = synchronizer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantComparator#compare(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant)
-	 */
+	@Override
 	public boolean compare(IResource local, IResourceVariant remote) {
 		// First, ensure the resources are the same gender
 		if ((local.getType() == IResource.FILE) == remote.isContainer()) {
@@ -59,18 +57,14 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantComparator#compare(org.eclipse.team.core.variants.IResourceVariant, org.eclipse.team.core.variants.IResourceVariant)
-	 */
+	@Override
 	public boolean compare(IResourceVariant base, IResourceVariant remote) {
 		byte[] bytes1 = getBytes(base);
 		byte[] bytes2 = getBytes(remote);
 		return equals(bytes1, bytes2);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariantComparator#isThreeWay()
-	 */
+	@Override
 	public boolean isThreeWay() {
 		return true;
 	}

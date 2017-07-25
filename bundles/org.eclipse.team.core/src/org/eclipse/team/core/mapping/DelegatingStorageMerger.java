@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,9 +69,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 		return instance;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IStorageMerger#merge(java.io.OutputStream, java.lang.String, org.eclipse.core.resources.IStorage, org.eclipse.core.resources.IStorage, org.eclipse.core.resources.IStorage, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus merge(OutputStream output, String outputEncoding,
 			IStorage ancestor, IStorage target, IStorage other,
 			IProgressMonitor monitor) throws CoreException {
@@ -217,9 +215,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IStorageMerger#canMergeWithoutAncestor()
-	 */
+	@Override
 	public boolean canMergeWithoutAncestor() {
 		return false;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,23 +27,17 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 		this.wrappedScope = wrappedScope;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#getInputMappings()
-	 */
+	@Override
 	public ResourceMapping[] getInputMappings() {
 		return wrappedScope.getInputMappings();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#getMappings()
-	 */
+	@Override
 	public ResourceMapping[] getMappings() {
 		return getInputMappings();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#getTraversals()
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals() {
 		CompoundResourceTraversal result = new CompoundResourceTraversal();
 		ResourceMapping[] mappings = getMappings();
@@ -55,9 +49,7 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 		return result.asTraversals();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#getTraversals(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMapping mapping) {
 		if (!contains(mapping)) {
 			return null;
@@ -76,44 +68,32 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingScope#hasAdditionalMappings()
-	 */
+	@Override
 	public boolean hasAdditionalMappings() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#hasAdditonalResources()
-	 */
+	@Override
 	public boolean hasAdditonalResources() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#asInputScope()
-	 */
+	@Override
 	public ISynchronizationScope asInputScope() {
 		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getProjects()
-	 */
+	@Override
 	public IProject[] getProjects() {
 		return wrappedScope.getProjects();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getContext()
-	 */
+	@Override
 	public ResourceMappingContext getContext() {
 		return wrappedScope.getContext();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#refresh(org.eclipse.core.resources.mapping.ResourceMapping[])
-	 */
+	@Override
 	public void refresh(ResourceMapping[] mappings) {
 		wrappedScope.refresh(mappings);
 	}

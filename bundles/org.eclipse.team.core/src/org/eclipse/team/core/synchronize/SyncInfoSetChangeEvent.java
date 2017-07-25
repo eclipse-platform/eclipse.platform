@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,13 +27,13 @@ public class SyncInfoSetChangeEvent implements ISyncInfoSetChangeEvent {
 
 	// List that accumulate changes
 	// SyncInfo
-	private Map changedResources = new HashMap();
-	private Set removedResources = new HashSet();
-	private Map addedResources = new HashMap();
+	private Map<IResource, SyncInfo> changedResources = new HashMap<>();
+	private Set<IResource> removedResources = new HashSet<>();
+	private Map<IResource, SyncInfo> addedResources = new HashMap<>();
 
 	private boolean reset = false;
 
-	private List errors = new ArrayList();
+	private List<ITeamStatus> errors = new ArrayList<>();
 
 	public SyncInfoSetChangeEvent(SyncInfoSet set) {
 		super();
@@ -72,18 +72,22 @@ public class SyncInfoSetChangeEvent implements ISyncInfoSetChangeEvent {
 		changedResources.put(resource, info);
 	}
 
+	@Override
 	public SyncInfo[] getAddedResources() {
-		return (SyncInfo[]) addedResources.values().toArray(new SyncInfo[addedResources.size()]);
+		return addedResources.values().toArray(new SyncInfo[addedResources.size()]);
 	}
 
+	@Override
 	public SyncInfo[] getChangedResources() {
-		return (SyncInfo[]) changedResources.values().toArray(new SyncInfo[changedResources.size()]);
+		return changedResources.values().toArray(new SyncInfo[changedResources.size()]);
 	}
 
+	@Override
 	public IResource[] getRemovedResources() {
-		return (IResource[]) removedResources.toArray(new IResource[removedResources.size()]);
+		return removedResources.toArray(new IResource[removedResources.size()]);
 	}
 
+	@Override
 	public SyncInfoSet getSet() {
 		return set;
 	}
@@ -105,6 +109,6 @@ public class SyncInfoSetChangeEvent implements ISyncInfoSetChangeEvent {
 	}
 
 	public ITeamStatus[] getErrors() {
-		return (ITeamStatus[]) errors.toArray(new ITeamStatus[errors.size()]);
+		return errors.toArray(new ITeamStatus[errors.size()]);
 	}
 }

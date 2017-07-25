@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
 
 public class TextStorageMerger implements IStorageMerger {
 
+	@Override
 	public IStatus merge(OutputStream output, String outputEncoding,
 			IStorage ancestor, IStorage target, IStorage other,
 			IProgressMonitor monitor) throws CoreException {
@@ -88,9 +89,7 @@ public class TextStorageMerger implements IStorageMerger {
 		return Status.OK_STATUS;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IStorageMerger#canMergeWithoutAncestor()
-	 */
+	@Override
 	public boolean canMergeWithoutAncestor() {
 		return false;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,18 +34,20 @@ import org.eclipse.team.internal.core.*;
 public class BatchingLock {
 	// This is a placeholder rule used to indicate that no scheduling rule is needed
 	/* internal use only */ static final ISchedulingRule NULL_SCHEDULING_RULE= new ISchedulingRule() {
+		@Override
 		public boolean contains(ISchedulingRule rule) {
 			return false;
 		}
+		@Override
 		public boolean isConflicting(ISchedulingRule rule) {
 			return false;
 		}
 	};
 
 	public class ThreadInfo {
-		private Set changedResources = new HashSet();
+		private Set<IResource> changedResources = new HashSet<>();
 		private IFlushOperation operation;
-		private List rules = new ArrayList();
+		private List<ISchedulingRule> rules = new ArrayList<>();
 		public ThreadInfo(IFlushOperation operation) {
 			this.operation = operation;
 		}
@@ -127,7 +129,7 @@ public class BatchingLock {
 			} else if (resourceRule instanceof MultiRule) {
 				// Create a MultiRule for all projects from the given rule
 				ISchedulingRule[] rules = ((MultiRule)resourceRule).getChildren();
-				Set projects = new HashSet();
+				Set<ISchedulingRule> projects = new HashSet<>();
 				for (int i = 0; i < rules.length; i++) {
 					ISchedulingRule childRule = rules[i];
 					if (childRule instanceof IResource) {
@@ -137,9 +139,9 @@ public class BatchingLock {
 				if (projects.isEmpty()) {
 					rule = NULL_SCHEDULING_RULE;
 				} else if (projects.size() == 1) {
-					rule = (ISchedulingRule)projects.iterator().next();
+					rule = projects.iterator().next();
 				} else {
-					rule = new MultiRule((ISchedulingRule[]) projects.toArray(new ISchedulingRule[projects.size()]));
+					rule = new MultiRule(projects.toArray(new ISchedulingRule[projects.size()]));
 				}
 			} else {
 				// Rule is not associated with resources so ignore it
@@ -163,7 +165,7 @@ public class BatchingLock {
 			return changedResources.isEmpty();
 		}
 		public IResource[] getChangedResources() {
-			return (IResource[]) changedResources.toArray(new IResource[changedResources.size()]);
+			return changedResources.toArray(new IResource[changedResources.size()]);
 		}
 		public void flush(IProgressMonitor monitor) throws TeamException {
 			try {
@@ -190,7 +192,7 @@ public class BatchingLock {
 		 */
 		private boolean remainingRulesAreNull() {
 			for (int i = 0; i < rules.size() - 1; i++) {
-				ISchedulingRule rule = (ISchedulingRule) rules.get(i);
+				ISchedulingRule rule = rules.get(i);
 				if (rule != NULL_SCHEDULING_RULE) {
 					return false;
 				}
@@ -204,7 +206,7 @@ public class BatchingLock {
 			rules.add(rule);
 		}
 		private ISchedulingRule removeRule() {
-			return (ISchedulingRule)rules.remove(rules.size() - 1);
+			return rules.remove(rules.size() - 1);
 		}
 		public boolean ruleContains(IResource resource) {
 			for (Iterator iter = rules.iterator(); iter.hasNext();) {
@@ -221,7 +223,7 @@ public class BatchingLock {
 		public void flush(ThreadInfo info, IProgressMonitor monitor) throws TeamException;
 	}
 
-	private Map infos = new HashMap();
+	private Map<Thread, ThreadInfo> infos = new HashMap<>();
 
 	/**
 	 * Return the thread info for the current thread
@@ -230,7 +232,7 @@ public class BatchingLock {
 	protected ThreadInfo getThreadInfo() {
 		Thread thisThread = Thread.currentThread();
 		synchronized (infos) {
-			ThreadInfo info = (ThreadInfo)infos.get(thisThread);
+			ThreadInfo info = infos.get(thisThread);
 			return info;
 		}
 	}

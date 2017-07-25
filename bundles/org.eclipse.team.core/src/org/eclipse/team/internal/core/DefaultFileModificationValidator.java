@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 				: Status.OK_STATUS;
 	}
 
+	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 	    IFile[] readOnlyFiles = getReadOnly(files);
 	    if (readOnlyFiles.length == 0)
@@ -75,16 +76,17 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
     }
 
     private IFile[] getReadOnly(IFile[] files) {
-        List result = new ArrayList(files.length);
+        List<IFile> result = new ArrayList<>(files.length);
         for (int i = 0; i < files.length; i++) {
             IFile file = files[i];
             if (file.isReadOnly()) {
                 result.add(file);
             }
         }
-        return (IFile[]) result.toArray(new IFile[result.size()]);
+        return result.toArray(new IFile[result.size()]);
     }
 
+	@Override
 	public IStatus validateSave(IFile file) {
 	    if (!file.isReadOnly())
 	        return Status.OK_STATUS;

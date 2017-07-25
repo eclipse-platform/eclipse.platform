@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,17 +58,13 @@ public class MergeStatus extends Status implements IMergeStatus {
         this.conflictingFiles = files;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IMergeStatus#getConflictingMappings()
-	 */
-    public ResourceMapping[] getConflictingMappings() {
+    @Override
+	public ResourceMapping[] getConflictingMappings() {
         return conflictingMappings;
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IMergeStatus#getConflictingFiles()
-	 */
-    public IFile[] getConflictingFiles() {
+    @Override
+	public IFile[] getConflictingFiles() {
     	return conflictingFiles;
     }
 }

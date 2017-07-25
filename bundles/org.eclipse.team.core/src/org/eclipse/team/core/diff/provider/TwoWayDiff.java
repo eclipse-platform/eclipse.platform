@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,30 +45,22 @@ public class TwoWayDiff extends Diff implements ITwoWayDiff {
 		super(path, (kind & KIND_MASK) | (flags & ~KIND_MASK));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ITwoWayDelta#getFlags()
-	 */
+	@Override
 	public int getFlags() {
 		return getStatus() & ~KIND_MASK;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ITwoWayDelta#getMovedToPath()
-	 */
+	@Override
 	public IPath getToPath() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ITwoWayDelta#getMovedFromPath()
-	 */
+	@Override
 	public IPath getFromPath() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

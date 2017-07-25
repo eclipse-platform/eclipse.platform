@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.team.core.synchronize.SyncInfo;
  */
 public class SyncInfoStatistics {
 	//	{int sync kind -> int number of infos with that sync kind in this sync set}
-	protected Map stats = new HashMap();
+	protected Map<Integer, Long> stats = new HashMap<>();
 
 	/**
 	 * Count this sync kind. Only the type of the sync info is stored.
@@ -29,7 +29,7 @@ public class SyncInfoStatistics {
 	 */
 	public void add(SyncInfo info) {
 		// update statistics
-		Long count = (Long)stats.get(new Integer(info.getKind()));
+		Long count = stats.get(new Integer(info.getKind()));
 		if(count == null) {
 			count = new Long(0);
 		}
@@ -43,7 +43,7 @@ public class SyncInfoStatistics {
 	public void remove(SyncInfo info) {
 		// update stats
 		Integer kind = new Integer(info.getKind());
-		Long count = (Long)stats.get(kind);
+		Long count = stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
 			// programmer error calling remove before add.
@@ -69,7 +69,7 @@ public class SyncInfoStatistics {
 	 */
 	public long countFor(int kind, int mask) {
 		if(mask == 0) {
-			Long count = (Long)stats.get(new Integer(kind));
+			Long count = stats.get(new Integer(kind));
 			return count == null ? 0 : count.longValue();
 		} else {
 			Iterator it = stats.keySet().iterator();
@@ -77,7 +77,7 @@ public class SyncInfoStatistics {
 			while (it.hasNext()) {
 				Integer key = (Integer) it.next();
 				if((key.intValue() & mask) == kind) {
-					count += ((Long)stats.get(key)).intValue();
+					count += stats.get(key).intValue();
 				}
 			}
 			return count;
@@ -95,6 +95,7 @@ public class SyncInfoStatistics {
 	/**
 	 * For debugging
 	 */
+	@Override
 	public String toString() {
 		StringBuffer out = new StringBuffer();
 		Iterator it = stats.keySet().iterator();

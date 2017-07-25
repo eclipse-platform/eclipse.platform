@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ public class StorageMergerRegistry {
 
 	private static StorageMergerRegistry instance;
 
-	private HashMap fIdMap; // maps ids to datas
-	private HashMap fExtensionMap; // maps extensions to datas
-	private HashMap fContentTypeBindings; // maps content type bindings to datas
+	private HashMap<String, Object> fIdMap; // maps ids to datas
+	private HashMap<String, Object> fExtensionMap; // maps extensions to datas
+	private HashMap<IContentType, Object> fContentTypeBindings; // maps content type bindings to datas
 	private boolean fRegistriesInitialized;
 
 	public static StorageMergerRegistry getInstance() {
@@ -109,14 +109,14 @@ public class StorageMergerRegistry {
 		String id = element.getAttribute(ID_ATTRIBUTE);
 		if (id != null) {
 			if (fIdMap == null)
-				fIdMap = new HashMap();
+				fIdMap = new HashMap<>();
 			fIdMap.put(id, data);
 		}
 
 		String types = element.getAttribute(EXTENSIONS_ATTRIBUTE);
 		if (types != null) {
 			if (fExtensionMap == null)
-				fExtensionMap = new HashMap();
+				fExtensionMap = new HashMap<>();
 			StringTokenizer tokenizer = new StringTokenizer(types, ","); //$NON-NLS-1$
 			while (tokenizer.hasMoreElements()) {
 				String extension = tokenizer.nextToken().trim();
@@ -136,7 +136,7 @@ public class StorageMergerRegistry {
 				IContentType ct = Platform.getContentTypeManager().getContentType(type);
 				if (ct != null) {
 					if (fContentTypeBindings == null)
-						fContentTypeBindings = new HashMap();
+						fContentTypeBindings = new HashMap<>();
 					fContentTypeBindings.put(ct, o);
 				} else {
 					logErrorMessage(NLS.bind("Content type id '{0}' not found", type)); //$NON-NLS-1$

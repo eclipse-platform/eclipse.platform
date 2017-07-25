@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.team.internal.core;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.osgi.service.debug.DebugOptions;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 public class Policy {
@@ -23,14 +22,12 @@ public class Policy {
 	public static boolean DEBUG_BACKGROUND_EVENTS = false;
 	public static boolean DEBUG_THREADING = false;
 
-	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = new DebugOptionsListener() {
-		public void optionsChanged(DebugOptions options) {
-			DEBUG = options.getBooleanOption(TeamPlugin.ID + "/debug", false); //$NON-NLS-1$
-			DEBUG_STREAMS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/streams", false); //$NON-NLS-1$
-			DEBUG_REFRESH_JOB = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/refreshjob", false); //$NON-NLS-1$
-			DEBUG_BACKGROUND_EVENTS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/backgroundevents", false); //$NON-NLS-1$
-			DEBUG_THREADING = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/threading", false); //$NON-NLS-1$
-		}
+	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = options -> {
+		DEBUG = options.getBooleanOption(TeamPlugin.ID + "/debug", false); //$NON-NLS-1$
+		DEBUG_STREAMS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/streams", false); //$NON-NLS-1$
+		DEBUG_REFRESH_JOB = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/refreshjob", false); //$NON-NLS-1$
+		DEBUG_BACKGROUND_EVENTS = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/backgroundevents", false); //$NON-NLS-1$
+		DEBUG_THREADING = DEBUG && options.getBooleanOption(TeamPlugin.ID + "/threading", false); //$NON-NLS-1$
 	};
 
 	/**

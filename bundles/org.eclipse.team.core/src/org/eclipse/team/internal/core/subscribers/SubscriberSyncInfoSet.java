@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core.subscribers;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener;
 import org.eclipse.team.core.synchronize.SyncInfoTree;
@@ -38,9 +37,7 @@ public class SubscriberSyncInfoSet extends SyncInfoTree {
 		this.handler = handler;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#connect(org.eclipse.team.core.synchronize.ISyncInfoSetChangeListener, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void connect(ISyncInfoSetChangeListener listener, IProgressMonitor monitor) {
 		if (handler == null) {
 			super.connect(listener, monitor);
@@ -60,18 +57,16 @@ public class SubscriberSyncInfoSet extends SyncInfoTree {
 			// Should only use this connect if the set has a handler
 			throw new UnsupportedOperationException();
 		} else {
-			handler.run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) {
-					try {
-						beginInput();
-						monitor.beginTask(null, 100);
-						removeSyncSetChangedListener(listener);
-						addSyncSetChangedListener(listener);
-						listener.syncInfoSetReset(SubscriberSyncInfoSet.this, Policy.subMonitorFor(monitor, 95));
-					} finally {
-						endInput(Policy.subMonitorFor(monitor, 5));
-						monitor.done();
-					}
+			handler.run(monitor -> {
+				try {
+					beginInput();
+					monitor.beginTask(null, 100);
+					removeSyncSetChangedListener(listener);
+					addSyncSetChangedListener(listener);
+					listener.syncInfoSetReset(SubscriberSyncInfoSet.this, Policy.subMonitorFor(monitor, 95));
+				} finally {
+					endInput(Policy.subMonitorFor(monitor, 5));
+					monitor.done();
 				}
 			}, true /* high priority */);
 		}

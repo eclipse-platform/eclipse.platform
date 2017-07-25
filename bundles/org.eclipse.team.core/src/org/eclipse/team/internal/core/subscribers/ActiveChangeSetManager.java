@@ -145,7 +145,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
      * @throws CoreException
      */
     public ActiveChangeSet createSet(String title, IFile[] files) throws CoreException {
-        List infos = new ArrayList();
+        List<IDiff> infos = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             IFile file = files[i];
             IDiff diff = getDiff(file);
@@ -153,7 +153,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
                 infos.add(diff);
             }
         }
-        return createSet(title, (IDiff[]) infos.toArray(new IDiff[infos.size()]));
+        return createSet(title, infos.toArray(new IDiff[infos.size()]));
     }
 
     /**
@@ -196,7 +196,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	}
 
 	private IPath[] getAllResources(IDiffChangeEvent event) {
-		Set allResources = new HashSet();
+		Set<IPath> allResources = new HashSet<>();
 		IDiff[] addedResources = event.getAdditions();
 		for (int i = 0; i < addedResources.length; i++) {
 			IDiff diff = addedResources[i];
@@ -212,7 +212,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			IPath path = removals[i];
 			allResources.add(path);
 		}
-	    return (IPath[]) allResources.toArray(new IPath[allResources.size()]);
+	    return allResources.toArray(new IPath[allResources.size()]);
 	}
 
 	/**

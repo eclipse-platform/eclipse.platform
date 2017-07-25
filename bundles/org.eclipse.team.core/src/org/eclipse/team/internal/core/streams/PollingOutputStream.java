@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ public class PollingOutputStream extends FilterOutputStream {
 	 *         and no data was sent, bytesTransferred will be zero
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void write(int b) throws IOException {
 		int attempts = 0;
 		for (;;) {
@@ -77,6 +78,7 @@ public class PollingOutputStream extends FilterOutputStream {
 	 *         bytesTransferred will reflect the number of bytes sent
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void write(byte[] buffer, int off, int len) throws IOException {
 		int count = 0;
 		int attempts = 0;
@@ -111,6 +113,7 @@ public class PollingOutputStream extends FilterOutputStream {
 	 *         bytesTransferred will reflect the number of bytes sent
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void flush() throws IOException {
 		int count = 0;
 		int attempts = 0;
@@ -142,6 +145,7 @@ public class PollingOutputStream extends FilterOutputStream {
 	 *         bytesTransferred will reflect the number of bytes sent during the flush()
 	 * @throws IOException if an i/o error occurs
 	 */
+	@Override
 	public void close() throws IOException {
 		int attempts = numAttempts - 1; // fail fast if flush() does times out
  		try {

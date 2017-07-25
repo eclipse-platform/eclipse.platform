@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,10 @@ public class ResourceVariantCache {
 	private static final long CACHE_FILE_LIFESPAN = 60*60*1000; // 1hr
 
 	// Map of registered caches indexed by local name of a QualifiedName
-	private static Map caches = new HashMap(); // String (local name) > RemoteContentsCache
+	private static Map<String, ResourceVariantCache> caches = new HashMap<>(); // String (local name) > RemoteContentsCache
 
 	private String name;
-	private Map cacheEntries;
+	private Map<String, ResourceVariantCacheEntry> cacheEntries;
 	private long lastCacheCleanup;
 	private int cacheDirSize;
 
@@ -87,11 +87,11 @@ public class ResourceVariantCache {
 	 * @return the cache
 	 */
 	public static synchronized ResourceVariantCache getCache(String cacheId) {
-		return (ResourceVariantCache)caches.get(cacheId);
+		return caches.get(cacheId);
 	}
 
 	public static synchronized void shutdown() {
-		String[] keys = (String[])caches.keySet().toArray(new String[caches.size()]);
+		String[] keys = caches.keySet().toArray(new String[caches.size()]);
         for (int i = 0; i < keys.length; i++) {
             String id = keys[i];
 			disableCache(id);
@@ -122,7 +122,7 @@ public class ResourceVariantCache {
 	private synchronized void clearOldCacheEntries() {
 		long current = new Date().getTime();
 		if ((lastCacheCleanup!=-1) && (current - lastCacheCleanup < CACHE_FILE_LIFESPAN)) return;
-		List stale = new ArrayList();
+		List<ResourceVariantCacheEntry> stale = new ArrayList<>();
 		for (Iterator iter = cacheEntries.values().iterator(); iter.hasNext();) {
 			ResourceVariantCacheEntry entry = (ResourceVariantCacheEntry) iter.next();
 			long lastHit = entry.getLastAccessTimeStamp();
@@ -130,14 +130,13 @@ public class ResourceVariantCache {
 				stale.add(entry);
 			}
 		}
-		for (Iterator iter = stale.iterator(); iter.hasNext();) {
-			ResourceVariantCacheEntry entry = (ResourceVariantCacheEntry) iter.next();
+		for (ResourceVariantCacheEntry entry : stale) {
 			entry.dispose();
 		}
 	}
 
 	private synchronized void purgeFromCache(String id) {
-		ResourceVariantCacheEntry entry = (ResourceVariantCacheEntry)cacheEntries.get(id);
+		ResourceVariantCacheEntry entry = cacheEntries.get(id);
 		File f = entry.getFile();
 		try {
 			deleteFile(f);
@@ -164,7 +163,7 @@ public class ResourceVariantCache {
 		if (! file.exists() && ! file.mkdirs()) {
 			TeamPlugin.log(new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() })));
 		}
-		cacheEntries = new HashMap();
+		cacheEntries = new HashMap<>();
 		lastCacheCleanup = -1;
 		cacheDirSize = 0;
 	}
@@ -211,7 +210,7 @@ public class ResourceVariantCache {
 			// This probably means that the cache has been disposed
 			throw new IllegalStateException(NLS.bind(Messages.RemoteContentsCache_cacheDisposed, new String[] { name }));
 		}
-		ResourceVariantCacheEntry entry = (ResourceVariantCacheEntry)cacheEntries.get(id);
+		ResourceVariantCacheEntry entry = cacheEntries.get(id);
 		if (entry != null) {
 			entry.registerHit();
 		}
@@ -243,7 +242,7 @@ public class ResourceVariantCache {
 	 * Method used for testing only
 	 */
 	public ResourceVariantCacheEntry[] getEntries() {
-		return (ResourceVariantCacheEntry[]) cacheEntries.values().toArray(new ResourceVariantCacheEntry[cacheEntries.size()]);
+		return cacheEntries.values().toArray(new ResourceVariantCacheEntry[cacheEntries.size()]);
 	}
 
 }
