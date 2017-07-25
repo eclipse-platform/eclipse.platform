@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,7 @@ public class BundleImporterExtension implements IBundleImporter {
 		this.element = element;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.project.IBundleImporterDelegate#validateImport(java.util.Map[])
-	 */
+	@Override
 	public ScmUrlImportDescription[] validateImport(Map[] manifests) {
 		try {
 			return getDelegate().validateImport(manifests);
@@ -59,18 +57,20 @@ public class BundleImporterExtension implements IBundleImporter {
 	private synchronized IBundleImporterDelegate getDelegate() throws CoreException {
 		if (delegate == null) {
 			delegate =  new BundleImporterDelegate() {
-				private Set supportedValues;
+				private Set<String> supportedValues;
 				private RepositoryProviderType providerType;
+				@Override
 				protected Set getSupportedValues() {
 					if (supportedValues == null) {
 						IConfigurationElement[] supported = element.getChildren("supports"); //$NON-NLS-1$
-						supportedValues = new HashSet(supported.length);
+						supportedValues = new HashSet<>(supported.length);
 						for (int i = 0; i < supported.length; i++) {
 							supportedValues.add(supported[i].getAttribute("prefix")); //$NON-NLS-1$
 						}
 					}
 					return supportedValues;
 				}
+				@Override
 				protected RepositoryProviderType getProviderType() {
 					if (providerType == null)
 						providerType = RepositoryProviderType.getProviderType(element.getAttribute("repository")); //$NON-NLS-1$
@@ -81,30 +81,22 @@ public class BundleImporterExtension implements IBundleImporter {
 		return delegate;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.importing.IBundleImporterDelegate#performImport(org.eclipse.pde.core.importing.BundleImportDescription[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IProject[] performImport(ScmUrlImportDescription[] descriptions, IProgressMonitor monitor) throws CoreException {
 		return getDelegate().performImport(descriptions, monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.project.IBundleImporter#getId()
-	 */
+	@Override
 	public String getId() {
 		return element.getAttribute("id"); //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.project.IBundleImporter#getDescription()
-	 */
+	@Override
 	public String getDescription() {
 		return element.getAttribute("description"); //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.project.IBundleImporter#getName()
-	 */
+	@Override
 	public String getName() {
 		return element.getAttribute("name"); //$NON-NLS-1$
 	}

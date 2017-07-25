@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,23 +76,19 @@ final public class TeamPlugin extends Plugin {
 		plugin = this;
 	}
 
-	/**
-	 * @see Plugin#start(BundleContext)
-	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
 		// register debug options listener
-		Hashtable properties = new Hashtable(2);
+		Hashtable<String, String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
 		Team.startup();
 	}
 
-	/**
-	 * @see Plugin#stop(BundleContext)
-	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			// unregister debug options listener
@@ -202,14 +198,14 @@ final public class TeamPlugin extends Plugin {
 	}
 
 	private static IPath[] getPaths(String metaFilePaths) {
-		List result = new ArrayList();
+		List<IPath> result = new ArrayList<>();
 		StringTokenizer t = new StringTokenizer(metaFilePaths, ","); //$NON-NLS-1$
 		while (t.hasMoreTokens()) {
 			String next = t.nextToken();
 			IPath path = new Path(null, next);
 			result.add(path);
 		}
-		return (IPath[]) result.toArray(new IPath[result.size()]);
+		return result.toArray(new IPath[result.size()]);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.*;
  */
 public abstract class ChangeSetManager {
 
-    private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
-    private Set sets;
+    private ListenerList<IChangeSetChangeListener> listeners = new ListenerList<IChangeSetChangeListener>(ListenerList.IDENTITY);
+    private Set<ChangeSet> sets;
 	private boolean initializing;
 
     /**
@@ -44,10 +44,12 @@ public abstract class ChangeSetManager {
             for (int i = 0; i < listeners.length; i++) {
                 final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
                 SafeRunner.run(new ISafeRunnable() {
-                    public void handleException(Throwable exception) {
+                    @Override
+					public void handleException(Throwable exception) {
                         // Exceptions are logged by the platform
                     }
-                    public void run() throws Exception {
+                    @Override
+					public void run() throws Exception {
                         listener.nameChanged(set);
                     }
                 });
@@ -68,10 +70,12 @@ public abstract class ChangeSetManager {
         for (int i = 0; i < listeners.length; i++) {
             final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
             SafeRunner.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
+                @Override
+				public void handleException(Throwable exception) {
                     // Exceptions are logged by the platform
                 }
-                public void run() throws Exception {
+                @Override
+				public void run() throws Exception {
                     listener.defaultSetChanged(oldSet, defaultSet);
                 }
             });
@@ -100,10 +104,12 @@ public abstract class ChangeSetManager {
 		for (int i = 0; i < listeners.length; i++) {
 		    final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
 		    SafeRunner.run(new ISafeRunnable() {
-		        public void handleException(Throwable exception) {
+		        @Override
+				public void handleException(Throwable exception) {
 		            // Exceptions are logged by the platform
 		        }
-		        public void run() throws Exception {
+		        @Override
+				public void run() throws Exception {
 		            listener.setAdded(set);
 		        }
 		    });
@@ -132,10 +138,12 @@ public abstract class ChangeSetManager {
 		for (int i = 0; i < listeners.length; i++) {
 		    final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
 		    SafeRunner.run(new ISafeRunnable() {
-		        public void handleException(Throwable exception) {
+		        @Override
+				public void handleException(Throwable exception) {
 		            // Exceptions are logged by the platform
 		        }
-		        public void run() throws Exception {
+		        @Override
+				public void run() throws Exception {
 		            listener.setRemoved(set);
 		        }
 		    });
@@ -172,8 +180,8 @@ public abstract class ChangeSetManager {
      * @return the list of active commit sets
      */
     public ChangeSet[] getSets() {
-        Set sets = internalGetSets();
-		return (ChangeSet[]) sets.toArray(new ChangeSet[sets.size()]);
+        Set<ChangeSet> sets = internalGetSets();
+		return sets.toArray(new ChangeSet[sets.size()]);
     }
 
     /**
@@ -195,19 +203,21 @@ public abstract class ChangeSetManager {
         for (int i = 0; i < listeners.length; i++) {
             final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
             SafeRunner.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
+                @Override
+				public void handleException(Throwable exception) {
                     // Exceptions are logged by the platform
                 }
-                public void run() throws Exception {
+                @Override
+				public void run() throws Exception {
                     listener.resourcesChanged(changeSet, allAffectedResources);
                 }
             });
         }
     }
 
-    private Set internalGetSets() {
+    private Set<ChangeSet> internalGetSets() {
     	if (sets == null) {
-    		sets = Collections.synchronizedSet(new HashSet());
+    		sets = Collections.synchronizedSet(new HashSet<>());
     		try {
     			initializing = true;
     			initializeSets();

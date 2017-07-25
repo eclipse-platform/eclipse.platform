@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,17 +58,13 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		this.syncSetInput = new SyncSetInputFromSubscriber(subscriber, this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleException(org.eclipse.core.runtime.CoreException, org.eclipse.core.resources.IResource, int, java.lang.String)
-	 */
+	@Override
 	protected void handleException(CoreException e, IResource resource, int code, String message) {
 		super.handleException(e, resource, code, message);
 		syncSetInput.handleError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, code, message, e, resource));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleCancel(org.eclipse.core.runtime.OperationCanceledException)
-	 */
+	@Override
 	protected void handleCancel(OperationCanceledException e) {
 		super.handleCancel(e);
 		syncSetInput.handleError(new TeamStatus(IStatus.ERROR, TeamPlugin.ID, ITeamStatus.SYNC_INFO_SET_CANCELLATION, Messages.SubscriberEventHandler_12, e, ResourcesPlugin.getWorkspace().getRoot()));
@@ -82,9 +78,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		return syncSetInput;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#handleChange(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	protected void handleChange(IResource resource) throws TeamException {
 		SyncInfo info = syncSetInput.getSubscriber().getSyncInfo(resource);
 		// resource is no longer under the subscriber control
@@ -97,9 +91,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#collectAll(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void collectAll(
 			IResource resource,
 			int depth,
@@ -111,6 +103,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 			// Create a monitor that will handle preemption and dispatch if required
 			IProgressMonitor collectionMonitor = new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN) {
 				boolean dispatching = false;
+				@Override
 				public void subTask(String name) {
 					dispatch();
 					super.subTask(name);
@@ -125,6 +118,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 						dispatching = false;
 					}
 				}
+				@Override
 				public void worked(int work) {
 					dispatch();
 					super.worked(work);
@@ -133,11 +127,13 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 
 			// Create a sync set that queues up resources and errors for dispatch
 			SyncInfoSet collectionSet = new SyncInfoSet() {
+				@Override
 				public void add(SyncInfo info) {
 					super.add(info);
 					queueDispatchEvent(
 							new SubscriberSyncInfoEvent(info.getLocal(), SubscriberEvent.CHANGE, IResource.DEPTH_ZERO, info));
 				}
+				@Override
 				public void addError(ITeamStatus status) {
 					if (status instanceof TeamStatus) {
 						TeamStatus ts = (TeamStatus) status;
@@ -152,6 +148,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 					TeamPlugin.getPlugin().getLog().log(status);
 					syncSetInput.handleError(status);
 				}
+				@Override
 				public void remove(IResource resource) {
 					super.remove(resource);
 					queueDispatchEvent(
@@ -166,9 +163,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#dispatchEvents(org.eclipse.team.internal.core.subscribers.SubscriberEventHandler.SubscriberEvent[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void dispatchEvents(SubscriberEvent[] events, IProgressMonitor monitor) {
 		// this will batch the following set changes until endInput is called.
 		SubscriberSyncInfoSet syncSet = syncSetInput.getSyncSet();
@@ -212,16 +207,10 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		scope.setRoots(roots);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.SubscriberEventHandler#reset(org.eclipse.core.resources.mapping.ResourceTraversal[], org.eclipse.core.resources.mapping.ResourceTraversal[])
-	 */
+	@Override
 	protected synchronized void reset(ResourceTraversal[] oldTraversals, ResourceTraversal[] newTraversals) {
 		// First, reset the sync set input to clear the sync set
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				syncSetInput.reset(monitor);
-			}
-		}, false /* keep ordering the same */);
+		run(monitor -> syncSetInput.reset(monitor), false /* keep ordering the same */);
 		// Then, prime the set from the subscriber
 		super.reset(oldTraversals, newTraversals);
 	}

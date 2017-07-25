@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ class LineComparator implements IRangeComparator {
 			super(in);
 		}
 
+		@Override
 		public int read() throws IOException {
 			int c = super.read();
 			trailingLF = isLineFeed(c);
@@ -49,6 +50,7 @@ class LineComparator implements IRangeComparator {
 		 * FilterInputStream states that it will call read(byte[] buffer, int
 		 * off, int len)
 		 */
+		@Override
 		public int read(byte[] buffer, int off, int len) throws IOException {
 			int length = super.read(buffer, off, len);
 			if (length != -1) {
@@ -103,7 +105,7 @@ class LineComparator implements IRangeComparator {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
 				trailingLineFeedDetector, encoding))) {
 			String line;
-			ArrayList ar = new ArrayList();
+			ArrayList<String> ar = new ArrayList<>();
 			while ((line = br.readLine()) != null) {
 				ar.add(line);
 			}
@@ -114,7 +116,7 @@ class LineComparator implements IRangeComparator {
 			if (trailingLineFeedDetector.hadTrailingLineFeed()) {
 				ar.add(""); //$NON-NLS-1$
 			}
-			fLines = (String[]) ar.toArray(new String[ar.size()]);
+			fLines = ar.toArray(new String[ar.size()]);
 		}
 	}
 
@@ -122,23 +124,12 @@ class LineComparator implements IRangeComparator {
 		return fLines[ix];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.rangedifferencer.IRangeComparator#getRangeCount()
-	 */
+	@Override
 	public int getRangeCount() {
 		return fLines.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.rangedifferencer.IRangeComparator#rangesEqual(int,
-	 * org.eclipse.compare.rangedifferencer.IRangeComparator, int)
-	 */
+	@Override
 	public boolean rangesEqual(int thisIndex, IRangeComparator other,
 			int otherIndex) {
 		String s1 = fLines[thisIndex];
@@ -146,13 +137,7 @@ class LineComparator implements IRangeComparator {
 		return s1.equals(s2);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.rangedifferencer.IRangeComparator#skipRangeComparison
-	 * (int, int, org.eclipse.compare.rangedifferencer.IRangeComparator)
-	 */
+	@Override
 	public boolean skipRangeComparison(int length, int maxLength,
 			IRangeComparator other) {
 		return false;

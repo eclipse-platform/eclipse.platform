@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,16 +52,12 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		getSynchronizer().addListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantTreeSubscriber#getBaseTree()
-	 */
+	@Override
 	protected final IResourceVariantTree getBaseTree() {
 		return baseTree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantTreeSubscriber#getRemoteTree()
-	 */
+	@Override
 	protected final IResourceVariantTree getRemoteTree() {
 		if (remoteTree == null) {
 			remoteTree = createRemoteTree();
@@ -69,9 +65,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		return remoteTree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#getResourceComparator()
-	 */
+	@Override
 	public final IResourceVariantComparator getResourceComparator() {
 		if (comparator == null) {
 			comparator = new ThreeWayResourceComparator(this.getSynchronizer());
@@ -79,9 +73,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 		return comparator;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ISynchronizerChangeListener#syncStateChanged(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	public void syncStateChanged(IResource[] resources) {
 		fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, resources));
 	}
@@ -93,6 +85,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	 * <code>true</code> otherwise.
 	 * @see org.eclipse.team.core.subscribers.Subscriber#isSupervised(IResource)
 	 */
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		if (!isChildOfRoot(resource)) return false;
 		if (getSynchronizer().isIgnored(resource)) return false;

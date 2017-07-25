@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,38 +38,47 @@ public abstract class FileRevision implements IFileRevision {
 			this.file = file;
 		}
 
+		@Override
 		public IStorage getStorage(IProgressMonitor monitor) {
 			return file;
 		}
 
+		@Override
 		public String getName() {
 			return file.getName();
 		}
 
+		@Override
 		public boolean exists() {
 			return file.exists();
 		}
 
+		@Override
 		public long getTimestamp() {
 			return file.getLocalTimeStamp();
 		}
 
+		@Override
 		public URI getURI() {
 			return file.getLocationURI();
 		}
 
+		@Override
 		public IFileRevision withAllProperties(IProgressMonitor monitor) throws CoreException {
 			return this;
 		}
 
+		@Override
 		public boolean isPropertyMissing() {
 			return false;
 		}
 
+		@Override
 		public int hashCode() {
 			return file.hashCode();
 		}
 
+		@Override
 		public boolean equals(Object obj) {
 			if (obj == this)
 				return true;
@@ -89,46 +98,35 @@ public abstract class FileRevision implements IFileRevision {
 	 * local file
 	 * @deprecated This method doesn't do anything useful so it has been deprecated.
 	 */
+	@Deprecated
 	public static IFileRevision getFileRevisionFor(final IFile file) {
 		return new LocalFileRevision(file);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileState#getURI()
-	 */
+	@Override
 	public URI getURI() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileState#getTimestamp()
-	 */
+	@Override
 	public long getTimestamp() {
 		return -1;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileState#exists()
-	 */
+	@Override
 	public boolean exists() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileRevision#getContentIdentifier()
-	 */
+	@Override
 	public String getContentIdentifier() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileRevision#getAuthor()
-	 */
+	@Override
 	public String getAuthor() {
 		return null;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileRevision#getComment()
-	 */
+	@Override
 	public String getComment() {
 		return null;
 	}
@@ -137,13 +135,12 @@ public abstract class FileRevision implements IFileRevision {
 	 * {@inheritDoc}
 	 * @since 3.6
 	 */
+	@Override
 	public ITag[] getBranches() {
 		return new ITag[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileRevision#getTags()
-	 */
+	@Override
 	public ITag[] getTags() {
 		return new ITag[0];
 	}

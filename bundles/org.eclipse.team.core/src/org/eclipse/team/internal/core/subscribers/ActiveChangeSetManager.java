@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,28 +53,22 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.ChangeSetManager#add(org.eclipse.team.internal.core.subscribers.ChangeSet)
-     */
-    public void add(ChangeSet set) {
+    @Override
+	public void add(ChangeSet set) {
         Assert.isTrue(set instanceof ActiveChangeSet);
         super.add(set);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.AbstractChangeSetCollector#handleSetAdded(org.eclipse.team.internal.core.subscribers.ChangeSet)
-     */
-    protected void handleSetAdded(ChangeSet set) {
+    @Override
+	protected void handleSetAdded(ChangeSet set) {
     	Assert.isTrue(set instanceof ActiveChangeSet);
     	((DiffChangeSet)set).getDiffTree().addDiffChangeListener(getDiffTreeListener());
     	super.handleSetAdded(set);
     	handleAddedResources(set, ((ActiveChangeSet)set).internalGetDiffTree().getDiffs());
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.AbstractChangeSetCollector#handleSetRemoved(org.eclipse.team.internal.core.subscribers.ChangeSet)
-     */
-    protected void handleSetRemoved(ChangeSet set) {
+    @Override
+	protected void handleSetRemoved(ChangeSet set) {
     	((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(getDiffTreeListener());
     	super.handleSetRemoved(set);
     }
@@ -89,21 +83,18 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         return this;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 	    IResourceDiffTree tree = (IResourceDiffTree)event.getTree();
 	    handleSyncSetChange(tree, event.getAdditions(), getAllResources(event));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
-	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// ignore
 	}
 
+	@Override
 	public boolean isModified(IFile file) throws CoreException {
 		IDiff diff = getDiff(file);
 		if (diff != null)
@@ -437,10 +428,8 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
         return changeSet;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.IChangeGroupingRequestor#ensureChangesGrouped(org.eclipse.core.resources.IProject, org.eclipse.core.resources.IFile[], java.lang.String)
-     */
-    public void ensureChangesGrouped(IProject project, IFile[] files,
+    @Override
+	public void ensureChangesGrouped(IProject project, IFile[] files,
     		String name) throws CoreException {
 		ActiveChangeSet set = getSet(name);
 		if (set == null) {

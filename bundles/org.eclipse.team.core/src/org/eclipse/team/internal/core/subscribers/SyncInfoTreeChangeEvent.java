@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,8 @@ import org.eclipse.team.core.synchronize.*;
 
 public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements ISyncInfoTreeChangeEvent {
 
-	private Set removedSubtrees = new HashSet();
-	private Set addedSubtrees = new HashSet();
+	private Set<IResource> removedSubtrees = new HashSet<>();
+	private Set<IResource> addedSubtrees = new HashSet<>();
 
 	public SyncInfoTreeChangeEvent(SyncInfoSet set) {
 		super(set);
@@ -35,8 +35,8 @@ public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements I
 			// (in which case it need not be added).
 			// Also, remove any exisiting roots that are children
 			// of the new root
-			for (Iterator iter = removedSubtrees.iterator(); iter.hasNext();) {
-				IResource element = (IResource) iter.next();
+			for (Iterator<IResource> iter = removedSubtrees.iterator(); iter.hasNext();) {
+				IResource element = iter.next();
 				// check if the root is already in the list
 				if (root.equals(element)) return;
 				if (isParent(root, element)) {
@@ -80,14 +80,17 @@ public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements I
 		return false;
 	}
 
+	@Override
 	public IResource[] getAddedSubtreeRoots() {
-		return (IResource[]) addedSubtrees.toArray(new IResource[addedSubtrees.size()]);
+		return addedSubtrees.toArray(new IResource[addedSubtrees.size()]);
 	}
 
+	@Override
 	public IResource[] getRemovedSubtreeRoots() {
-		return (IResource[]) removedSubtrees.toArray(new IResource[removedSubtrees.size()]);
+		return removedSubtrees.toArray(new IResource[removedSubtrees.size()]);
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return super.isEmpty() && removedSubtrees.isEmpty() && addedSubtrees.isEmpty();
 	}

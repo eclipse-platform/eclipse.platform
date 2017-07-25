@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -281,9 +281,7 @@ public class SyncInfo implements IAdaptable {
 		return kind & CHANGE_MASK;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object other) {
 		if(other == this) return true;
 		if(other instanceof SyncInfo) {
@@ -292,9 +290,7 @@ public class SyncInfo implements IAdaptable {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
 	public int hashCode() {
 		return getLocal().hashCode();
 	}
@@ -340,19 +336,16 @@ public class SyncInfo implements IAdaptable {
 		return o1.equals(o2);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IResource.class) {
-			return getLocal();
+			return (T) getLocal();
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	@Override
 	public String toString() {
 		return getLocal().getName() + " " + kindToString(getKind()); //$NON-NLS-1$
 	}

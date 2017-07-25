@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ public class DiffTreeStatistics {
 	/**
 	 * {Integer sync kind -> Long number of infos with that sync kind in this sync set}
 	 */
-	protected Map stats = Collections.synchronizedMap(new HashMap());
+	protected Map<Integer, Long> stats = Collections.synchronizedMap(new HashMap<>());
 
 	/**
 	 * Count this sync state.
@@ -28,7 +28,7 @@ public class DiffTreeStatistics {
 	 */
 	public void add(int state) {
 		// update statistics
-		Long count = (Long)stats.get(new Integer(state));
+		Long count = stats.get(new Integer(state));
 		if(count == null) {
 			count = new Long(0);
 		}
@@ -42,7 +42,7 @@ public class DiffTreeStatistics {
 	public void remove(int state) {
 		// update stats
 		Integer kind = new Integer(state);
-		Long count = (Long)stats.get(kind);
+		Long count = stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
 			// programmer error calling remove before add.
@@ -68,7 +68,7 @@ public class DiffTreeStatistics {
 	 */
 	public long countFor(int state, int mask) {
 		if(mask == 0) {
-			Long count = (Long)stats.get(new Integer(state));
+			Long count = stats.get(new Integer(state));
 			return count == null ? 0 : count.longValue();
 		} else {
 			Set keySet = stats.keySet();
@@ -78,7 +78,7 @@ public class DiffTreeStatistics {
 				while (it.hasNext()) {
 					Integer key = (Integer) it.next();
 					if((key.intValue() & mask) == state) {
-						count += ((Long)stats.get(key)).intValue();
+						count += stats.get(key).intValue();
 					}
 				}
 			}
@@ -97,6 +97,7 @@ public class DiffTreeStatistics {
 	/**
 	 * For debugging
 	 */
+	@Override
 	public String toString() {
 		StringBuffer out = new StringBuffer();
 		Iterator it = stats.keySet().iterator();

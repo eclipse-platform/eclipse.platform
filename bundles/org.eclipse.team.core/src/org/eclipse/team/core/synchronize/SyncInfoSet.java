@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,13 +37,13 @@ import org.eclipse.team.internal.core.subscribers.SyncInfoStatistics;
 public class SyncInfoSet {
 	// fields used to hold resources of interest
 	// {IPath -> SyncInfo}
-	private Map resources = Collections.synchronizedMap(new HashMap());
+	private Map<IPath, SyncInfo> resources = Collections.synchronizedMap(new HashMap<>());
 
 	// keep track of number of sync kinds in the set
 	private SyncInfoStatistics statistics = new SyncInfoStatistics();
 
 	// keep track of errors that occurred while trying to populate the set
-	private Map errors = new HashMap();
+	private Map<IResource, ITeamStatus> errors = new HashMap<>();
 
 	private boolean lockedForModification;
 
@@ -73,7 +73,7 @@ public class SyncInfoSet {
 	 * @return an array of <code>SyncInfo</code>
 	 */
 	public synchronized SyncInfo[] getSyncInfos() {
-		return (SyncInfo[]) resources.values().toArray(new SyncInfo[resources.size()]);
+		return resources.values().toArray(new SyncInfo[resources.size()]);
 	}
 
 	/**
@@ -85,12 +85,12 @@ public class SyncInfoSet {
 	 */
 	public IResource[] getResources() {
 		SyncInfo[] infos = getSyncInfos();
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		for (int i = 0; i < infos.length; i++) {
 			SyncInfo info = infos[i];
 			resources.add(info.getLocal());
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class SyncInfoSet {
 	 * the resource is in-sync or doesn't have synchronization information in this set.
 	 */
 	public synchronized SyncInfo getSyncInfo(IResource resource) {
-		return (SyncInfo)resources.get(resource.getFullPath());
+		return resources.get(resource.getFullPath());
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class SyncInfoSet {
 		Assert.isTrue(!lockedForModification);
 		IResource local = info.getLocal();
 		IPath path = local.getFullPath();
-		SyncInfo oldSyncInfo = (SyncInfo)resources.put(path, info);
+		SyncInfo oldSyncInfo = resources.put(path, info);
 		if(oldSyncInfo == null) {
 			statistics.add(info);
 		} else {
@@ -179,7 +179,7 @@ public class SyncInfoSet {
 	protected synchronized SyncInfo internalRemove(IResource resource) {
 		Assert.isTrue(!lockedForModification);
 		IPath path = resource.getFullPath();
-		SyncInfo info = (SyncInfo)resources.remove(path);
+		SyncInfo info = resources.remove(path);
 		if (info != null) {
 			statistics.remove(info);
 		}
@@ -271,22 +271,20 @@ public class SyncInfoSet {
 	 * @param monitor a progress monitor
 	 */
 	public void connect(final ISyncInfoSetChangeListener listener, IProgressMonitor monitor) {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) {
-				try {
-					monitor.beginTask(null, 100);
-					addSyncSetChangedListener(listener);
-					listener.syncInfoSetReset(SyncInfoSet.this, Policy.subMonitorFor(monitor, 95));
-				} finally {
-					monitor.done();
-				}
+		run(monitor1 -> {
+			try {
+				monitor1.beginTask(null, 100);
+				addSyncSetChangedListener(listener);
+				listener.syncInfoSetReset(SyncInfoSet.this, Policy.subMonitorFor(monitor1, 95));
+			} finally {
+				monitor1.done();
 			}
 		}, monitor);
 	}
 
 	private ILock lock = Job.getJobManager().newLock();
 
-	private Set listeners = Collections.synchronizedSet(new HashSet());
+	private Set<ISyncInfoSetChangeListener> listeners = Collections.synchronizedSet(new HashSet<>());
 
 	private SyncInfoSetChangeEvent changes = createEmptyChangeEvent();
 
@@ -455,7 +453,7 @@ public class SyncInfoSet {
 	 * @return the nodes that match the filter
 	 */
 	public SyncInfo[] getNodes(FastSyncInfoFilter filter) {
-		List result = new ArrayList();
+		List<SyncInfo> result = new ArrayList<>();
 		SyncInfo[] infos = getSyncInfos();
 		for (int i = 0; i < infos.length; i++) {
 			SyncInfo info = infos[i];
@@ -463,7 +461,7 @@ public class SyncInfoSet {
 				result.add(info);
 			}
 		}
-		return (SyncInfo[]) result.toArray(new SyncInfo[result.size()]);
+		return result.toArray(new SyncInfo[result.size()]);
 	}
 
 	/**
@@ -562,9 +560,11 @@ public class SyncInfoSet {
 		for (int i = 0; i < allListeners.length; i++) {
 			final ISyncInfoSetChangeListener listener = allListeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
 					// don't log the exception....it is already being logged in Platform#run
 				}
+				@Override
 				public void run() throws Exception {
 					try {
 						lockedForModification = true;
@@ -592,7 +592,7 @@ public class SyncInfoSet {
 	protected ISyncInfoSetChangeListener[] getListeners() {
 		ISyncInfoSetChangeListener[] allListeners;
 		synchronized(listeners) {
-			allListeners = (ISyncInfoSetChangeListener[]) listeners.toArray(new ISyncInfoSetChangeListener[listeners.size()]);
+			allListeners = listeners.toArray(new ISyncInfoSetChangeListener[listeners.size()]);
 		}
 		return allListeners;
 	}
@@ -641,7 +641,7 @@ public class SyncInfoSet {
 	 * @return the errors
 	 */
 	public ITeamStatus[] getErrors() {
-		return (ITeamStatus[]) errors.values().toArray(new ITeamStatus[errors.size()]);
+		return errors.values().toArray(new ITeamStatus[errors.size()]);
 	}
 
     /**

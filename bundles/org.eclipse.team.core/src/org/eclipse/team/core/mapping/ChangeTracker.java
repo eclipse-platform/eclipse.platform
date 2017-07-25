@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.internal.core.*;
@@ -29,7 +28,7 @@ import org.eclipse.team.internal.core.*;
  */
 public abstract class ChangeTracker {
 
-	private Map trackedProjects = new HashMap(); // Map IProject->IChangeGroupingRequestor
+	private Map<IProject, IChangeGroupingRequestor> trackedProjects = new HashMap<>(); // Map IProject->IChangeGroupingRequestor
 	private boolean disposed;
 	private ChangeListener changeListener = new ChangeListener();
 
@@ -40,6 +39,7 @@ public abstract class ChangeTracker {
 		 * by listening for project changes and project description changes.
 		 * @param event the change event
 		 */
+		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			if (disposed) return;
 			IResourceDelta delta = event.getDelta();
@@ -68,6 +68,7 @@ public abstract class ChangeTracker {
 		 * When a project is shared, start tracking it if it is of interest.
 		 * @param provider the repository provider
 		 */
+		@Override
 		public void providerMapped(RepositoryProvider provider) {
 			if (disposed) return;
 			if (isProjectOfInterest(provider.getProject())) {
@@ -79,6 +80,7 @@ public abstract class ChangeTracker {
 		 * When a project is no longer shared, stop tracking the project.
 		 * @param project the project
 		 */
+		@Override
 		public void providerUnmapped(IProject project) {
 			if (disposed) return;
 			stopTrackingProject(project);
@@ -118,9 +120,10 @@ public abstract class ChangeTracker {
 	}
 
 	private IResource[] getProjectChanges(IProject project, IResourceDelta projectDelta) {
-		final List result = new ArrayList();
+		final List<IResource> result = new ArrayList<>();
 		try {
 			projectDelta.accept(new IResourceDeltaVisitor() {
+				@Override
 				public boolean visit(IResourceDelta delta) throws CoreException {
 					if (isResourceOfInterest(delta.getResource()) & isChangeOfInterest(delta)) {
 						result.add(delta.getResource());
@@ -131,7 +134,7 @@ public abstract class ChangeTracker {
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	/**
@@ -230,11 +233,10 @@ public abstract class ChangeTracker {
 	}
 
 	private IChangeGroupingRequestor getCollector(RepositoryProviderType type) {
-		if (type instanceof IAdaptable) {
-			IAdaptable adaptable = (IAdaptable) type;
-			Object o = adaptable.getAdapter(IChangeGroupingRequestor.class);
-			if (o instanceof IChangeGroupingRequestor) {
-				return (IChangeGroupingRequestor) o;
+		if (type != null) {
+			IChangeGroupingRequestor o = type.getAdapter(IChangeGroupingRequestor.class);
+			if (o != null) {
+				return o;
 			}
 		}
 		return null;
@@ -264,7 +266,7 @@ public abstract class ChangeTracker {
 	}
 
 	private IChangeGroupingRequestor getCollector(IProject project) {
-		return (IChangeGroupingRequestor)trackedProjects.get(project);
+		return trackedProjects.get(project);
 	}
 
 	/**

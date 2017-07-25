@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,20 +48,12 @@ public abstract class Diff implements IDiff {
 		this.status = status;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.team.core.synchronize.ISyncDelta#getFullPath()
-	 */
+	@Override
 	public IPath getPath() {
 		return path;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.team.core.synchronize.ISyncDelta#getKind()
-	 */
+	@Override
 	public int getKind() {
 		return getStatus() & KIND_MASK;
 	}
@@ -78,25 +70,19 @@ public abstract class Diff implements IDiff {
 		return status;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffNode#toDiffString()
-	 */
+	@Override
 	public String toDiffString() {
 		int kind = getKind();
 		String label = SyncInfoToDiffConverter.diffKindToString(kind);
 		return label;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
 	public int hashCode() {
 		return getPath().hashCode();
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

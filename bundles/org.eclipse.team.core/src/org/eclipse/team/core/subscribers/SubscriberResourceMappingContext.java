@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
     private final Subscriber subscriber;
 
     // Lists used to keep track of resources that have been refreshed
-    private Set shallowRefresh = new HashSet();
-    private Set deepRefresh = new HashSet();
+    private Set<IResource> shallowRefresh = new HashSet<>();
+    private Set<IResource> deepRefresh = new HashSet<>();
     private boolean autoRefresh;
 
     /**
@@ -60,10 +60,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
         this.autoRefresh = autoRefresh;
     }
 
-	/* (non-Javadoc)
-     * @see org.eclipse.core.internal.resources.mapping.RemoteResourceMappingContext#hasRemoteChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public final boolean hasRemoteChange(IResource resource, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public final boolean hasRemoteChange(IResource resource, IProgressMonitor monitor) throws CoreException {
     	try {
 			monitor.beginTask(null, 100);
 			ensureRefreshed(resource, IResource.DEPTH_ONE, NONE, monitor);
@@ -77,20 +75,16 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.internal.resources.mapping.RemoteResourceMappingContext#hasLocalChange(org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public boolean hasLocalChange(IResource resource, IProgressMonitor monitor) throws CoreException {
     	SyncInfo syncInfo = subscriber.getSyncInfo(resource);
     	if (syncInfo == null) return false;
     	int direction = SyncInfo.getDirection(syncInfo.getKind());
 		return direction == SyncInfo.OUTGOING || direction == SyncInfo.CONFLICTING;
     }
 
-	/* (non-Javadoc)
-     * @see org.eclipse.core.resources.mapping.ResourceMappingContext#fetchContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public final IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public final IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
     	try {
 			monitor.beginTask(null, 100);
 	    	ensureRefreshed(file, IResource.DEPTH_ZERO, FILE_CONTENTS_REQUIRED, Policy.subMonitorFor(monitor, 10));
@@ -105,10 +99,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.internal.resources.mapping.RemoteResourceMappingContext#fetchBaseContents(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public final IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public final IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
     	try {
 			monitor.beginTask(null, 100);
 	    	ensureRefreshed(file, IResource.DEPTH_ZERO, FILE_CONTENTS_REQUIRED, Policy.subMonitorFor(monitor, 10));
@@ -123,10 +115,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.mapping.ResourceMappingContext#fetchMembers(org.eclipse.core.resources.IContainer, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public final IResource[] fetchMembers(IContainer container, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public final IResource[] fetchMembers(IContainer container, IProgressMonitor monitor) throws CoreException {
     	try {
 			monitor.beginTask(null, 100);
 	    	ensureRefreshed(container, IResource.DEPTH_ONE, NONE, Policy.subMonitorFor(monitor, 100));
@@ -141,10 +131,8 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.mapping.ResourceMappingContext#refresh(org.eclipse.core.resources.mapping.ResourceTraversal[], int, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public final void refresh(ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public final void refresh(ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
     	subscriber.refresh(traversals, monitor);
         for (int i = 0; i < traversals.length; i++) {
 			ResourceTraversal traversal = traversals[i];
@@ -278,27 +266,23 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
         this.autoRefresh = autoRefresh;
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#isThreeWay()
-	 */
+	@Override
 	public boolean isThreeWay() {
 		return subscriber.getResourceComparator().isThreeWay();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.RemoteResourceMappingContext#contentDiffers(org.eclipse.core.resources.IFile, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	public boolean contentDiffers(IFile file, IProgressMonitor monitor) throws CoreException {
 		return hasRemoteChange(file, monitor) || hasLocalChange(file, monitor);
 	}
 
+	@Override
 	public IProject[] getProjects() {
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		IResource[] roots = subscriber.roots();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
 			projects.add(resource.getProject());
 		}
-		return (IProject[]) projects.toArray(new IProject[projects.size()]);
+		return projects.toArray(new IProject[projects.size()]);
 	}
 }

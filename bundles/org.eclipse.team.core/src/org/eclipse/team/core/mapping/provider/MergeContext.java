@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,69 +45,55 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
     	super(manager, type, deltaTree);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.mapping.IMergeContext#reject(org.eclipse.team.core.diff.IDiff[], org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public void reject(final IDiff[] diffs, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				for (int i = 0; i < diffs.length; i++) {
-					IDiff node = diffs[i];
-					reject(node, monitor);
-				}
+    @Override
+	public void reject(final IDiff[] diffs, IProgressMonitor monitor) throws CoreException {
+		run(monitor1 -> {
+			for (int i = 0; i < diffs.length; i++) {
+				IDiff node = diffs[i];
+				reject(node, monitor1);
 			}
 		}, getMergeRule(diffs), IResource.NONE, monitor);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.mapping.IMergeContext#markAsMerged(org.eclipse.team.core.diff.IDiffNode[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public void markAsMerged(final IDiff[] nodes, final boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				for (int i = 0; i < nodes.length; i++) {
-					IDiff node = nodes[i];
-					markAsMerged(node, inSyncHint, monitor);
-				}
+    @Override
+	public void markAsMerged(final IDiff[] nodes, final boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
+		run(monitor1 -> {
+			for (int i = 0; i < nodes.length; i++) {
+				IDiff node = nodes[i];
+				markAsMerged(node, inSyncHint, monitor1);
 			}
 		}, getMergeRule(nodes), IResource.NONE, monitor);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.mapping.IMergeContext#merge(org.eclipse.team.core.delta.ISyncDelta[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public IStatus merge(final IDiff[] deltas, final boolean force, IProgressMonitor monitor) throws CoreException {
-		final List failedFiles = new ArrayList();
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				try {
-					monitor.beginTask(null, deltas.length * 100);
-					for (int i = 0; i < deltas.length; i++) {
-						IDiff delta = deltas[i];
-						IStatus s = merge(delta, force, Policy.subMonitorFor(monitor, 100));
-						if (!s.isOK()) {
-							if (s.getCode() == IMergeStatus.CONFLICTS) {
-								failedFiles.addAll(Arrays.asList(((IMergeStatus)s).getConflictingFiles()));
-							} else {
-								throw new CoreException(s);
-							}
+    @Override
+	public IStatus merge(final IDiff[] deltas, final boolean force, IProgressMonitor monitor) throws CoreException {
+		final List<IFile> failedFiles = new ArrayList<>();
+		run(monitor1 -> {
+			try {
+				monitor1.beginTask(null, deltas.length * 100);
+				for (int i = 0; i < deltas.length; i++) {
+					IDiff delta = deltas[i];
+					IStatus s = merge(delta, force, Policy.subMonitorFor(monitor1, 100));
+					if (!s.isOK()) {
+						if (s.getCode() == IMergeStatus.CONFLICTS) {
+							failedFiles.addAll(Arrays.asList(((IMergeStatus)s).getConflictingFiles()));
+						} else {
+							throw new CoreException(s);
 						}
 					}
-				} finally {
-					monitor.done();
 				}
+			} finally {
+				monitor1.done();
 			}
 		}, getMergeRule(deltas), IWorkspace.AVOID_UPDATE, monitor);
 		if (failedFiles.isEmpty()) {
 			return Status.OK_STATUS;
 		} else {
-			return new MergeStatus(TeamPlugin.ID, Messages.MergeContext_0, (IFile[]) failedFiles.toArray(new IFile[failedFiles.size()]));
+			return new MergeStatus(TeamPlugin.ID, Messages.MergeContext_0, failedFiles.toArray(new IFile[failedFiles.size()]));
 		}
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IMergeContext#merge(org.eclipse.team.core.diff.IDiffNode, boolean, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus merge(IDiff diff, boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		Policy.checkCanceled(monitor);
 		IResource resource = getDiffTree().getResource(diff);
@@ -184,40 +170,38 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 */
 	protected IStatus performThreeWayMerge(final IThreeWayDiff diff, IProgressMonitor monitor) throws CoreException {
 		final IStatus[] result = new IStatus[] { Status.OK_STATUS };
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				monitor.beginTask(null, 100);
-				IResourceDiff localDiff = (IResourceDiff)diff.getLocalChange();
-				IResourceDiff remoteDiff = (IResourceDiff)diff.getRemoteChange();
-				IStorageMerger merger = (IStorageMerger)getAdapter(IStorageMerger.class);
-				if (merger == null)
-					merger = DelegatingStorageMerger.getInstance();
-				IFile file = (IFile)localDiff.getResource();
-				monitor.subTask(NLS.bind(Messages.MergeContext_5, file.getFullPath().toString()));
-				String osEncoding = file.getCharset();
-				IFileRevision ancestorState = localDiff.getBeforeState();
-				IFileRevision remoteState = remoteDiff.getAfterState();
-				IStorage ancestorStorage;
-				if (ancestorState != null)
-					ancestorStorage = ancestorState.getStorage(Policy.subMonitorFor(monitor, 30));
-				else
-					ancestorStorage = null;
-				IStorage remoteStorage = remoteState.getStorage(Policy.subMonitorFor(monitor, 30));
-				OutputStream os = getTempOutputStream(file);
-				try {
-					IStatus status = merger.merge(os, osEncoding, ancestorStorage, file, remoteStorage, Policy.subMonitorFor(monitor, 30));
-					if (status.isOK()) {
-						file.setContents(getTempInputStream(file, os), false, true, Policy.subMonitorFor(monitor, 5));
-						markAsMerged(diff, false, Policy.subMonitorFor(monitor, 5));
-					} else {
-						status = new MergeStatus(status.getPlugin(), status.getMessage(), new IFile[]{file});
-					}
-					result[0] = status;
-		        } finally {
-		            disposeTempOutputStream(file, os);
-		        }
-		        monitor.done();
-			}
+		run(monitor1 -> {
+			monitor1.beginTask(null, 100);
+			IResourceDiff localDiff = (IResourceDiff)diff.getLocalChange();
+			IResourceDiff remoteDiff = (IResourceDiff)diff.getRemoteChange();
+			IStorageMerger merger = getAdapter(IStorageMerger.class);
+			if (merger == null)
+				merger = DelegatingStorageMerger.getInstance();
+			IFile file = (IFile)localDiff.getResource();
+			monitor1.subTask(NLS.bind(Messages.MergeContext_5, file.getFullPath().toString()));
+			String osEncoding = file.getCharset();
+			IFileRevision ancestorState = localDiff.getBeforeState();
+			IFileRevision remoteState = remoteDiff.getAfterState();
+			IStorage ancestorStorage;
+			if (ancestorState != null)
+				ancestorStorage = ancestorState.getStorage(Policy.subMonitorFor(monitor1, 30));
+			else
+				ancestorStorage = null;
+			IStorage remoteStorage = remoteState.getStorage(Policy.subMonitorFor(monitor1, 30));
+			OutputStream os = getTempOutputStream(file);
+			try {
+				IStatus status = merger.merge(os, osEncoding, ancestorStorage, file, remoteStorage, Policy.subMonitorFor(monitor1, 30));
+				if (status.isOK()) {
+					file.setContents(getTempInputStream(file, os), false, true, Policy.subMonitorFor(monitor1, 5));
+					markAsMerged(diff, false, Policy.subMonitorFor(monitor1, 5));
+				} else {
+					status = new MergeStatus(status.getPlugin(), status.getMessage(), new IFile[]{file});
+				}
+				result[0] = status;
+		    } finally {
+		        disposeTempOutputStream(file, os);
+		    }
+		    monitor1.done();
 		}, getMergeRule(diff), IWorkspace.AVOID_UPDATE, monitor);
 		return result[0];
 	}
@@ -342,36 +326,34 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
     protected abstract void makeInSync(IDiff diff, IProgressMonitor monitor) throws CoreException;
 
 	private void performReplace(final IDiff diff, final IFile file, final IFileRevision remote, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				try {
-					monitor.beginTask(null, 100);
-					monitor.subTask(NLS.bind(Messages.MergeContext_6, file.getFullPath().toString()));
-					if ((remote == null || !remote.exists()) && file.exists()) {
-						file.delete(false, true, Policy.subMonitorFor(monitor, 95));
-					} else if (remote != null) {
-						ensureParentsExist(file, monitor);
-						InputStream stream = remote.getStorage(monitor).getContents();
-						stream = new BufferedInputStream(stream);
+		run(monitor1 -> {
+			try {
+				monitor1.beginTask(null, 100);
+				monitor1.subTask(NLS.bind(Messages.MergeContext_6, file.getFullPath().toString()));
+				if ((remote == null || !remote.exists()) && file.exists()) {
+					file.delete(false, true, Policy.subMonitorFor(monitor1, 95));
+				} else if (remote != null) {
+					ensureParentsExist(file, monitor1);
+					InputStream stream = remote.getStorage(monitor1).getContents();
+					stream = new BufferedInputStream(stream);
+					try {
+						if (file.exists()) {
+							file.setContents(stream, false, true, Policy.subMonitorFor(monitor1, 95));
+						} else {
+							file.create(stream, false, Policy.subMonitorFor(monitor1, 95));
+						}
+					} finally {
 						try {
-							if (file.exists()) {
-								file.setContents(stream, false, true, Policy.subMonitorFor(monitor, 95));
-							} else {
-								file.create(stream, false, Policy.subMonitorFor(monitor, 95));
-							}
-						} finally {
-							try {
-								stream.close();
-							} catch (IOException e) {
-								// Ignore
-							}
+							stream.close();
+						} catch (IOException e) {
+							// Ignore
 						}
 					}
-					// Performing a replace should leave the file in-sync
-					makeInSync(diff, Policy.subMonitorFor(monitor, 5));
-				} finally {
-					monitor.done();
 				}
+				// Performing a replace should leave the file in-sync
+				makeInSync(diff, Policy.subMonitorFor(monitor1, 5));
+			} finally {
+				monitor1.done();
 			}
 		}, getMergeRule(diff), IWorkspace.AVOID_UPDATE, monitor);
 	}
@@ -404,6 +386,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 * corresponding <code>run</code> on {@link org.eclipse.core.resources.IWorkspace}.
 	 * @see org.eclipse.team.core.mapping.IMergeContext#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.jobs.ISchedulingRule, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void run(IWorkspaceRunnable runnable, ISchedulingRule rule, int flags, IProgressMonitor monitor) throws CoreException {
 		ResourcesPlugin.getWorkspace().run(runnable, rule, flags, monitor);
 	}
@@ -414,6 +397,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 * Subclass should override to provide the appropriate rule.
 	 * @see org.eclipse.team.core.mapping.IMergeContext#getMergeRule(IDiff)
 	 */
+	@Override
 	public ISchedulingRule getMergeRule(IDiff diff) {
 		IResource resource = getDiffTree().getResource(diff);
 		IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace().getRuleFactory();
@@ -434,9 +418,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		return rule;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IMergeContext#getMergeRule(org.eclipse.team.core.diff.IDiff[])
-	 */
+	@Override
 	public ISchedulingRule getMergeRule(IDiff[] deltas) {
 		ISchedulingRule result = null;
 		for (int i = 0; i < deltas.length; i++) {
@@ -451,16 +433,16 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IMergeContext#getMergeType()
-	 */
+	@Override
 	public int getMergeType() {
 		return getType();
 	}
 
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IStorageMerger.class) {
-			return DelegatingStorageMerger.getInstance();
+			return (T) DelegatingStorageMerger.getInstance();
 		}
 		return super.getAdapter(adapter);
 	}

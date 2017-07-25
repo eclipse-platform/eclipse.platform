@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 		this.subscriberInput = eventHandler.getSyncSetInput();
 		filteredInput = new SyncSetInputFromSyncSet(subscriberInput.getSyncSet(), getEventHandler());
 		filteredInput.setFilter(new SyncInfoFilter() {
+			@Override
 			public boolean select(SyncInfo info, IProgressMonitor monitor) {
 				return true;
 			}
@@ -112,6 +113,7 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 	 * all it's listeners. This method must be called when the collector is no longer
 	 * referenced and could be garbage collected.
 	 */
+	@Override
 	public void dispose() {
 		eventHandler.shutdown();
 		subscriberInput.disconnect();
@@ -127,6 +129,7 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 	 * subscriber. However, the set can be reduced using {@link #setRoots(IResource[])}.
 	 * @return the roots
 	 */
+	@Override
 	public IResource[] getRoots() {
 		if (roots == null) {
 			return super.getRoots();
@@ -141,6 +144,7 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 	 * @return <code>true</code> if the collector is considering all
 	 * roots of the subscriber and <code>false</code> otherwise
 	 */
+	@Override
 	public boolean isAllRootsIncluded() {
 		return roots == null;
 	}
@@ -186,24 +190,18 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 		reset();
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#hasMembers(org.eclipse.core.resources.IResource)
-     */
-    protected boolean hasMembers(IResource resource) {
+    @Override
+	protected boolean hasMembers(IResource resource) {
         return getSubscriberSyncInfoSet().hasMembers(resource);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#remove(org.eclipse.core.resources.IResource)
-     */
-    protected void remove(IResource resource) {
+    @Override
+	protected void remove(IResource resource) {
         eventHandler.remove(resource);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#change(org.eclipse.core.resources.IResource, int)
-     */
-    protected void change(IResource resource, int depth) {
+    @Override
+	protected void change(IResource resource, int depth) {
         eventHandler.change(resource, depth);
     }
 }

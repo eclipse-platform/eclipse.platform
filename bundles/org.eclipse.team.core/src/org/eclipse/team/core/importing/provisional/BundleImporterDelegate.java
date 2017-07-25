@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,9 +43,7 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 
 	protected abstract RepositoryProviderType getProviderType();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.project.IBundleImporterDelegate#validateImport(java.util.Map[])
-	 */
+	@Override
 	public ScmUrlImportDescription[] validateImport(Map[] manifests) {
 		ScmUrlImportDescription[] results = new ScmUrlImportDescription[manifests.length];
 		if (getProviderType() != null) {
@@ -80,23 +78,21 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.pde.core.importing.IBundleImporterDelegate#performImport(org.eclipse.pde.core.importing.BundleImportDescription[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IProject[] performImport(ScmUrlImportDescription[] descriptions, IProgressMonitor monitor) throws CoreException {
-		List references = new ArrayList();
+		List<String> references = new ArrayList<>();
 		ProjectSetCapability psfCapability = getProviderType().getProjectSetCapability();
 		IProject[] result = null;
 		if (psfCapability != null) {
 			// collect and validate all header values
 			for (int i = 0; i < descriptions.length; i++) {
-				ScmUrlImportDescription description = (ScmUrlImportDescription) descriptions[i];
+				ScmUrlImportDescription description = descriptions[i];
 				references.add(psfCapability.asReference(description.getUri(), description.getProject()));
 			}
 			// create projects
 			if (!references.isEmpty()) {
 				SubMonitor subMonitor = SubMonitor.convert(monitor, references.size());
-				result = psfCapability.addToWorkspace((String[]) references.toArray(new String[references.size()]), new ProjectSetSerializationContext(), subMonitor);
+				result = psfCapability.addToWorkspace(references.toArray(new String[references.size()]), new ProjectSetSerializationContext(), subMonitor);
 				subMonitor.done();
 			}
 		}

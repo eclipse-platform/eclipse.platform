@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	public static ResourceMapping[] getMappingsFromProviders(ResourceTraversal[] traversals,
 			ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
-		Set result = new HashSet();
+		Set<ResourceMapping> result = new HashSet<>();
 		IModelProviderDescriptor[] descriptors = ModelProvider
 				.getModelProviderDescriptors();
 		for (int i = 0; i < descriptors.length; i++) {
@@ -88,7 +88,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			result.addAll(Arrays.asList(mappings));
 			Policy.checkCanceled(monitor);
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
 	private static ResourceMapping[] getMappings(IModelProviderDescriptor descriptor,
@@ -119,9 +119,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		scope = createScope(inputMappings);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#isInitialized()
-	 */
+	@Override
 	public boolean isInitialized() {
 		return initialized;
 	}
@@ -135,7 +133,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	 *         the scope
 	 */
 	public ISchedulingRule getSchedulingRule() {
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		ResourceMapping[] mappings = scope.getInputMappings();
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping mapping = mappings[i];
@@ -154,29 +152,27 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 				return ResourcesPlugin.getWorkspace().getRoot();
 			}
 		}
-		return MultiRule.combine((IProject[]) projects.toArray(new IProject[projects.size()]));
+		return MultiRule.combine(projects.toArray(new IProject[projects.size()]));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#initialize(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void initialize(
 			IProgressMonitor monitor) throws CoreException {
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				internalPrepareContext(monitor);
 			}
 		}, getSchedulingRule(), IResource.NONE, monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#refresh(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public ResourceTraversal[] refresh(final ResourceMapping[] mappings, IProgressMonitor monitor) throws CoreException {
 		// We need to lock the workspace when building the scope
 		final ResourceTraversal[][] traversals = new ResourceTraversal[][] { new ResourceTraversal[0] };
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				traversals[0] = internalRefreshScope(mappings, true, monitor);
 			}
@@ -414,7 +410,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		ResourceMapping[] inputMappings = scope.getInputMappings();
 		ResourceMapping[] mappings = scope.getMappings();
 		if (inputMappings.length == mappings.length) {
-			Set testSet = new HashSet();
+			Set<ResourceMapping> testSet = new HashSet<>();
 			for (int i = 0; i < mappings.length; i++) {
 				ResourceMapping mapping = mappings[i];
 				testSet.add(mapping);
@@ -430,23 +426,16 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#getContext()
-	 */
 	public ResourceMappingContext getContext() {
 		return context;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#getScope()
-	 */
+	@Override
 	public ISynchronizationScope getScope() {
 		return scope;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#dispose()
-	 */
+	@Override
 	public void dispose() {
 		if (handler != null)
 			handler.shutdown();

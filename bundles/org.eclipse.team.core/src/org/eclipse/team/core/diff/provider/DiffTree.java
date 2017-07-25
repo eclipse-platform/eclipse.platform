@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class DiffTree implements IDiffTree {
 	 */
 	public static final int START_CLIENT_PROPERTY_RANGE = 1024;
 
-	private ListenerList listeners = new ListenerList();
+	private ListenerList<IDiffChangeListener> listeners = new ListenerList<>();
 
 	private PathTree pathTree = new PathTree();
 
@@ -49,7 +49,7 @@ public class DiffTree implements IDiffTree {
 
 	private  boolean lockedForModification;
 
-	private Map propertyChanges = new HashMap();
+	private Map<Integer, Set<IPath>> propertyChanges = new HashMap<>();
 
 	/**
 	 * Create an empty diff tree.
@@ -58,23 +58,17 @@ public class DiffTree implements IDiffTree {
 		resetChanges();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#addSyncDeltaChangeListener(org.eclipse.team.core.synchronize.ISyncDeltaChangeListener)
-	 */
+	@Override
 	public void addDiffChangeListener(IDiffChangeListener listener) {
 		listeners.add(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#removeSyncDeltaChangeListener(org.eclipse.team.core.synchronize.ISyncDeltaChangeListener)
-	 */
+	@Override
 	public void removeDiffChangeListener(IDiffChangeListener listener) {
 		listeners.remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#accept(org.eclipse.core.runtime.IPath, org.eclipse.team.core.synchronize.ISyncDeltaVisitor)
-	 */
+	@Override
 	public void accept(IPath path, IDiffVisitor visitor, int depth) {
 		IDiff delta = getDiff(path);
 		if (delta == null || visitor.visit(delta)) {
@@ -88,23 +82,17 @@ public class DiffTree implements IDiffTree {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#findMember(org.eclipse.core.runtime.IPath)
-	 */
+	@Override
 	public IDiff getDiff(IPath path) {
 		return (IDiff)pathTree.get(path);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ISyncDeltaTree#getAffectedChildren(org.eclipse.core.runtime.IPath)
-	 */
+	@Override
 	public IPath[] getChildren(IPath path) {
 		return pathTree.getChildren(path);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.delta.ISyncDeltaTree#isEmpty()
-	 */
+	@Override
 	public boolean isEmpty() {
 		return pathTree.isEmpty();
 	}
@@ -229,26 +217,28 @@ public class DiffTree implements IDiffTree {
 
 		final DiffChangeEvent event = getChangeEvent();
 		resetChanges();
-		final Map propertyChanges = this.propertyChanges;
-		this.propertyChanges = new HashMap();
+		final Map<Integer, Set<IPath>> propertyChanges = this.propertyChanges;
+		this.propertyChanges = new HashMap<>();
 
 		if(event.isEmpty() && ! event.isReset() && propertyChanges.isEmpty()) return;
 		Object[] listeners = this.listeners.getListeners();
 		for (int i = 0; i < listeners.length; i++) {
 			final IDiffChangeListener listener = (IDiffChangeListener)listeners[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
 					// don't log the exception....it is already being logged in Platform#run
 				}
+				@Override
 				public void run() throws Exception {
 					try {
 						lockedForModification = true;
 						if (!event.isEmpty() || event.isReset())
 							listener.diffsChanged(event, Policy.subMonitorFor(monitor, 100));
-						for (Iterator iter = propertyChanges.keySet().iterator(); iter.hasNext();) {
-							Integer key = (Integer) iter.next();
-							Set paths = (Set)propertyChanges.get(key);
-							listener.propertyChanged(DiffTree.this, key.intValue(), (IPath[]) paths.toArray(new IPath[paths
+						for (Iterator<Integer> iter = propertyChanges.keySet().iterator(); iter.hasNext();) {
+							Integer key = iter.next();
+							Set<IPath> paths = propertyChanges.get(key);
+							listener.propertyChanged(DiffTree.this, key.intValue(), paths.toArray(new IPath[paths
 									.size()]));
 						}
 
@@ -330,25 +320,18 @@ public class DiffTree implements IDiffTree {
 		return (IDiff[]) pathTree.values().toArray(new IDiff[pathTree.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#countFor(int, int)
-	 */
+	@Override
 	public long countFor(int state, int mask) {
 		if (state == 0)
 			return size();
 		return statistics.countFor(state, mask);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#size()
-	 */
+	@Override
 	public int size() {
 		return pathTree.size();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#setPropertyToRoot(org.eclipse.core.runtime.IPath, int, boolean)
-	 */
 	public void setPropertyToRoot(IDiff node, int property, boolean value) {
 		try {
 			beginInput();
@@ -361,9 +344,9 @@ public class DiffTree implements IDiffTree {
 
 	private void accumulatePropertyChanges(int property, IPath[] paths) {
 		Integer key = new Integer(property);
-		Set changes = (Set)propertyChanges.get(key);
+		Set<IPath> changes = propertyChanges.get(key);
 		if (changes == null) {
-			changes = new HashSet();
+			changes = new HashSet<>();
 			propertyChanges.put(key, changes);
 		}
 		for (int i = 0; i < paths.length; i++) {
@@ -372,16 +355,12 @@ public class DiffTree implements IDiffTree {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#getProperty(org.eclipse.core.runtime.IPath, int)
-	 */
+	@Override
 	public boolean getProperty(IPath path, int property) {
 		return pathTree.getProperty(path, property);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#setBusy(org.eclipse.team.core.diff.IDiffNode[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void setBusy(IDiff[] diffs, IProgressMonitor monitor) {
 		try {
 			beginInput();
@@ -394,9 +373,7 @@ public class DiffTree implements IDiffTree {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#clearBusy(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void clearBusy(IProgressMonitor monitor) {
 		try {
 			beginInput();
@@ -411,20 +388,15 @@ public class DiffTree implements IDiffTree {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffTree#hasDiffsMatching(org.eclipse.core.runtime.IPath, org.eclipse.team.core.diff.FastDiffFilter)
-	 */
+	@Override
 	public boolean hasMatchingDiffs(IPath path, final FastDiffFilter filter) {
 		final RuntimeException found = new RuntimeException();
 		try {
-			accept(path, new IDiffVisitor() {
-				public boolean visit(IDiff delta) {
-					if (filter.select(delta)) {
-						throw found;
-					}
-					return false;
+			accept(path, delta -> {
+				if (filter.select(delta)) {
+					throw found;
 				}
-
+				return false;
 			}, IResource.DEPTH_INFINITE);
 		} catch (RuntimeException e) {
 			if (e == found)

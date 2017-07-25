@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,28 +27,25 @@ import org.eclipse.team.core.ICacheListener;
  */
 public class Cache implements ICache {
 
-	Map properties;
-	ListenerList listeners;
+	Map<String, Object> properties;
+	ListenerList<ICacheListener> listeners;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizeOperationContext#addProperty(java.lang.String, java.lang.Object)
-	 */
+	@Override
 	public synchronized void put(String name, Object value) {
 		if (properties == null) {
-			properties = new HashMap();
+			properties = new HashMap<>();
 		}
 		properties.put(name, value);
 	}
 
+	@Override
 	public synchronized Object get(String name) {
 		if (properties == null)
 			return null;
 		return properties.get(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizeOperationContext#removeProperty(java.lang.String)
-	 */
+	@Override
 	public synchronized void remove(String name) {
 		if (properties != null)
 			properties.remove(name);
@@ -58,43 +55,34 @@ public class Cache implements ICache {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizeOperationContext#addDisposeListener(org.eclipse.team.ui.mapping.IDisposeListener)
-	 */
+	@Override
 	public synchronized void addCacheListener(ICacheListener listener) {
 		if (listeners == null)
-			listeners = new ListenerList(ListenerList.IDENTITY);
+			listeners = new ListenerList<>(ListenerList.IDENTITY);
 		listeners.add(listener);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizeOperationContext#removeDisposeListener(org.eclipse.team.ui.mapping.IDisposeListener)
-	 */
+	@Override
 	public synchronized void removeDisposeListener(ICacheListener listener) {
 		removeCacheListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.ICache#removeCacheListener(org.eclipse.team.core.ICacheListener)
-	 */
+	@Override
 	public synchronized void removeCacheListener(ICacheListener listener) {
 		if (listeners != null)
 			listeners.remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ISynchronizationContext#dispose()
-	 */
 	public void dispose() {
 		if (listeners != null) {
-			Object[] allListeners = listeners.getListeners();
-			for (int i = 0; i < allListeners.length; i++) {
-				final Object listener = allListeners[i];
+			for (ICacheListener listener : listeners) {
 				SafeRunner.run(new ISafeRunnable(){
+					@Override
 					public void run() throws Exception {
-						((ICacheListener)listener).cacheDisposed(Cache.this);
+						listener.cacheDisposed(Cache.this);
 					}
+					@Override
 					public void handleException(Throwable exception) {
 						// Ignore since the platform logs the error
 

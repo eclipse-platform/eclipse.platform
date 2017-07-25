@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.importing.provisional.IBundleImporter;
@@ -40,11 +39,13 @@ public final class Team {
             fMapping= mapping;
         }
 
-        public String getExtension() {
+        @Override
+		public String getExtension() {
             return fMapping.getString();
         }
 
-        public int getType() {
+        @Override
+		public int getType() {
             return fMapping.getType();
         }
 
@@ -61,7 +62,7 @@ public final class Team {
 
 
 	// The ignore list that is read at startup from the persisted file
-	protected static SortedMap globalIgnore, pluginIgnore;
+	protected static SortedMap<String, Boolean> globalIgnore, pluginIgnore;
 	private static StringMatcher[] ignoreMatchers;
 
     private final static FileContentManager fFileContentManager;
@@ -88,6 +89,7 @@ public final class Team {
      *
      * @deprecated Use <code>getFileContentManager().getType(IStorage storage)</code> instead.
 	 */
+	@Deprecated
 	public static int getType(IStorage storage) {
         return fFileContentManager.getType(storage);
 	}
@@ -112,6 +114,7 @@ public final class Team {
 	 * @return <code>true</code> if this file should be ignored, and <code>false</code> otherwise
 	 * @deprecated use isIgnoredHint(IResource) instead
 	 */
+	@Deprecated
 	public static boolean isIgnoredHint(IFile file) {
 		if (file.isDerived()) return true;
 		return matchesEnabledIgnore(file);
@@ -135,6 +138,7 @@ public final class Team {
 	 * @return <code>true</code> if this file should be ignored, and <code>false</code> otherwise
 	 * @deprecated use isIgnoredHint instead
 	 */
+	@Deprecated
 	public static boolean isIgnored(IFile file) {
 		return matchesEnabledIgnore(file);
 	}
@@ -146,6 +150,7 @@ public final class Team {
 	 * @return all known file types
      * @deprecated Use <code>getFileContentManager().getExtensionMappings()</code> instead.
 	 */
+	@Deprecated
 	public static IFileTypeInfo[] getAllTypes() {
         final IStringMapping [] mappings= fFileContentManager.getExtensionMappings();
         final IFileTypeInfo [] infos= new IFileTypeInfo[mappings.length];
@@ -170,8 +175,8 @@ public final class Team {
 
 	private static void initializeIgnores() {
 		if (globalIgnore == null) {
-			globalIgnore = new TreeMap();
-			pluginIgnore = new TreeMap();
+			globalIgnore = new TreeMap<>();
+			pluginIgnore = new TreeMap<>();
 			ignoreMatchers = null;
 			try {
 				readIgnoreState();
@@ -193,9 +198,11 @@ public final class Team {
 			result[i++] = new IIgnoreInfo() {
 				private String p = pattern;
 				private boolean e1 = enabled;
+				@Override
 				public String getPattern() {
 					return p;
 				}
+				@Override
 				public boolean getEnabled() {
 					return e1;
 				}
@@ -207,14 +214,14 @@ public final class Team {
 	private synchronized static StringMatcher[] getStringMatchers() {
 		if (ignoreMatchers==null) {
 			IIgnoreInfo[] ignorePatterns = getAllIgnores();
-			ArrayList matchers = new ArrayList(ignorePatterns.length);
+			ArrayList<StringMatcher> matchers = new ArrayList<>(ignorePatterns.length);
 			for (int i = 0; i < ignorePatterns.length; i++) {
 				if (ignorePatterns[i].getEnabled()) {
 					matchers.add(new StringMatcher(ignorePatterns[i].getPattern(), true, false));
 				}
 			}
 			ignoreMatchers = new StringMatcher[matchers.size()];
-			ignoreMatchers = (StringMatcher[]) matchers.toArray(ignoreMatchers);
+			ignoreMatchers = matchers.toArray(ignoreMatchers);
 		}
 		return ignoreMatchers;
 	}
@@ -234,6 +241,7 @@ public final class Team {
      *
      * @deprecated Use <code>getFileContentManager().setExtensionMappings()</code> instead.
 	 */
+	@Deprecated
 	public static void setAllTypes(String[] extensions, int[] types) {
         fFileContentManager.addExtensionMappings(extensions, types);
 	}
@@ -246,7 +254,7 @@ public final class Team {
 	 */
 	public static void setAllIgnores(String[] patterns, boolean[] enabled) {
 		initializeIgnores();
-		globalIgnore = new TreeMap();
+		globalIgnore = new TreeMap<>();
 		ignoreMatchers = null;
 		for (int i = 0; i < patterns.length; i++) {
 			globalIgnore.put(patterns[i], Boolean.valueOf(enabled[i]));
@@ -259,7 +267,7 @@ public final class Team {
 			String pattern = (String) entry.getKey();
 			Boolean value = (Boolean) entry.getValue();
 			boolean isCustom = (!pluginIgnore.containsKey(pattern)) ||
-				!((Boolean)pluginIgnore.get(pattern)).equals(value);
+				!pluginIgnore.get(pattern).equals(value);
 			if (isCustom) {
 				buf.append(pattern);
 				buf.append(PREF_TEAM_SEPARATOR);
@@ -280,7 +288,7 @@ public final class Team {
 	 *
 	 * Reads the ignores currently defined by extensions.
 	 */
-	private static void initializePluginIgnores(SortedMap pIgnore, SortedMap gIgnore) {
+	private static void initializePluginIgnores(SortedMap<String, Boolean> pIgnore, SortedMap<String, Boolean> gIgnore) {
 		TeamPlugin plugin = TeamPlugin.getPlugin();
 		if (plugin != null) {
 			IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.IGNORE_EXTENSION);
@@ -325,9 +333,9 @@ public final class Team {
 					}
 				}
 
-				Iterator it = pIgnore.keySet().iterator();
+				Iterator<String> it = pIgnore.keySet().iterator();
 				while (it.hasNext()) {
-					Object pattern = it.next();
+					String pattern = it.next();
 					if (!gIgnore.containsKey(pattern)) {
 						gIgnore.put(pattern, pIgnore.get(pattern));
 					}
@@ -366,13 +374,11 @@ public final class Team {
 		if (readBackwardCompatibleIgnoreState()) return;
 		Preferences pref = TeamPlugin.getPlugin().getPluginPreferences();
 		if (!pref.contains(PREF_TEAM_IGNORES)) return;
-		pref.addPropertyChangeListener(new Preferences.IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
-				// when a property is changed, invalidate our cache so that
-				// properties will be recalculated.
-				if(event.getProperty().equals(PREF_TEAM_IGNORES))
-					globalIgnore = null;
-			}
+		pref.addPropertyChangeListener(event -> {
+			// when a property is changed, invalidate our cache so that
+			// properties will be recalculated.
+			if(event.getProperty().equals(PREF_TEAM_IGNORES))
+				globalIgnore = null;
 		});
 		String prefIgnores = pref.getString(PREF_TEAM_IGNORES);
 		StringTokenizer tok = new StringTokenizer(prefIgnores, PREF_TEAM_SEPARATOR);
@@ -447,6 +453,7 @@ public final class Team {
 	 * 		Use {@link org.eclipse.team.core.RepositoryProviderType#getProjectSetCapability()}
 	 * 		to obtain an instance of {@link ProjectSetCapability} instead.
 	 */
+	@Deprecated
 	public static IProjectSetSerializer getProjectSetSerializer(String id) {
 		TeamPlugin plugin = TeamPlugin.getPlugin();
 		if (plugin != null) {
@@ -481,8 +488,8 @@ public final class Team {
 	 * @since 3.0
 	 */
 	public static IIgnoreInfo[] getDefaultIgnores() {
-		SortedMap gIgnore = new TreeMap();
-		SortedMap pIgnore = new TreeMap();
+		SortedMap<String, Boolean> gIgnore = new TreeMap<>();
+		SortedMap<String, Boolean> pIgnore = new TreeMap<>();
 		initializePluginIgnores(pIgnore, gIgnore);
 		return getIgnoreInfo(gIgnore);
 	}
@@ -496,6 +503,7 @@ public final class Team {
 	 * @since 3.0
      * @deprecated Use Team.getFileContentManager().getDefaultExtensionMappings() instead.
 	 */
+	@Deprecated
 	public static IFileTypeInfo[] getDefaultTypes() {
         return asFileTypeInfo(getFileContentManager().getDefaultExtensionMappings());
 	}
@@ -560,7 +568,8 @@ public final class Team {
 	 * @deprecated Use {@link #createMerger(IContentType)} instead.
 	 * @since 3.2
 	 */
-    public IStorageMerger createStorageMerger(IContentType type) {
+    @Deprecated
+	public IStorageMerger createStorageMerger(IContentType type) {
     	return createMerger(type);
     }
 
@@ -574,7 +583,8 @@ public final class Team {
 	 * @deprecated Use {@link #createMerger(String)} instead.
 	 * @since 3.2
 	 */
-    public IStorageMerger createStorageMerger(String extension) {
+    @Deprecated
+	public IStorageMerger createStorageMerger(String extension) {
     	return createMerger(extension);
     }
 

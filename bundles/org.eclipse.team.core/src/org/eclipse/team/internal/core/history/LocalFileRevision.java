@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,41 +62,31 @@ public class LocalFileRevision extends FileRevision {
 		this.state = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.FileRevision#getContentIdentifier()
-	 */
+	@Override
 	public String getContentIdentifier() {
 		if (file != null)
 			return baseRevision == null ?  NLS.bind(Messages.LocalFileRevision_currentVersion, "") : NLS.bind(Messages.LocalFileRevision_currentVersion, baseRevision.getContentIdentifier()); //$NON-NLS-1$
 		return ""; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.FileRevision#getAuthor()
-	 */
+	@Override
 	public String getAuthor() {
 		return ""; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.FileRevision#getComment()
-	 */
+	@Override
 	public String getComment() {
 		if (file != null)
 			return Messages.LocalFileRevision_currentVersionTag;
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.FileRevision#getTags()
-	 */
+	@Override
 	public ITag[] getTags() {
 		return new ITag[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileState#getStorage(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws CoreException {
 		if (file != null) {
 			return file;
@@ -104,9 +94,7 @@ public class LocalFileRevision extends FileRevision {
 		return state;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.history.IFileState#getName()
-	 */
+	@Override
 	public String getName() {
 		if (file != null) {
 			return file.getName();
@@ -115,9 +103,7 @@ public class LocalFileRevision extends FileRevision {
 		return state.getName();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.FileState#getTimestamp()
-	 */
+	@Override
 	public long getTimestamp() {
 		if (file != null) {
 			return file.getLocalTimeStamp();
@@ -131,6 +117,7 @@ public class LocalFileRevision extends FileRevision {
 	 * A LocalFileRevision generally should exist, but if it doesn't, this
 	 * method should tell the truth.
 	 */
+	@Override
 	public boolean exists() {
 		if (file != null) {
 			return file.exists();
@@ -147,11 +134,13 @@ public class LocalFileRevision extends FileRevision {
 		this.baseRevision = baseRevision;
 	}
 
+	@Override
 	public boolean isPropertyMissing() {
 		return true;
 	}
 
 
+	@Override
 	public IFileRevision withAllProperties(IProgressMonitor monitor) {
 		return this;
 	}
@@ -166,6 +155,7 @@ public class LocalFileRevision extends FileRevision {
 		return (this.getTimestamp() > compareRevisionTime);
 	}
 
+	@Override
 	public URI getURI() {
 		if (file != null)
 			return file.getLocationURI();
@@ -185,6 +175,7 @@ public class LocalFileRevision extends FileRevision {
 		return file != null;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -202,6 +193,7 @@ public class LocalFileRevision extends FileRevision {
 		return (s1.getFullPath().equals(s2.getFullPath()) && s1.getModificationTime() == s2.getModificationTime());
 	}
 
+	@Override
 	public int hashCode() {
 		if (file != null)
 			return file.hashCode();

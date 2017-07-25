@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import org.eclipse.team.internal.core.subscribers.SyncInfoTreeChangeEvent;
  */
 public class SyncInfoTree extends SyncInfoSet {
 
-	protected Map parents = Collections.synchronizedMap(new HashMap());
+	protected Map<IPath, Set<IResource>> parents = Collections.synchronizedMap(new HashMap<>());
 
 	/**
 	 * Create an empty sync info tree.
@@ -76,7 +76,7 @@ public class SyncInfoTree extends SyncInfoSet {
 		IContainer parent = (IContainer)resource;
 		if (parent.getType() == IResource.ROOT) return !isEmpty();
 		IPath path = parent.getFullPath();
-		Set allDescendants = (Set)parents.get(path);
+		Set allDescendants = parents.get(path);
 		return (allDescendants != null && !allDescendants.isEmpty());
 	}
 
@@ -108,7 +108,7 @@ public class SyncInfoTree extends SyncInfoSet {
 			}
 		}
 		if (depth == IResource.DEPTH_ONE) {
-			List result = new ArrayList();
+			List<SyncInfo> result = new ArrayList<>();
 			SyncInfo info = getSyncInfo(resource);
 			if (info != null) {
 				result.add(info);
@@ -121,7 +121,7 @@ public class SyncInfoTree extends SyncInfoSet {
 					result.add(info);
 				}
 			}
-			return (SyncInfo[]) result.toArray(new SyncInfo[result.size()]);
+			return result.toArray(new SyncInfo[result.size()]);
 		}
 		// if it's the root then return all out of sync resources.
 		if(resource.getType() == IResource.ROOT) {
@@ -138,7 +138,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	 * @return the <code>SyncInfo</code> for all out-of-sync resources at or below the given resource
 	 */
 	private synchronized SyncInfo[] internalGetDeepSyncInfo(IContainer resource) {
-		List infos = new ArrayList();
+		List<SyncInfo> infos = new ArrayList<>();
 		IResource[] children = internalGetOutOfSyncDescendants(resource);
 		for (int i = 0; i < children.length; i++) {
 			IResource child = children[i];
@@ -149,20 +149,15 @@ public class SyncInfoTree extends SyncInfoSet {
 				TeamPlugin.log(IStatus.INFO, Messages.SyncInfoTree_0 + child.getFullPath(), null);
 			}
 		}
-		return (SyncInfo[]) infos.toArray(new SyncInfo[infos.size()]);
+		return infos.toArray(new SyncInfo[infos.size()]);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#createEmptyChangeEvent()
-	 */
+	@Override
 	protected SyncInfoSetChangeEvent createEmptyChangeEvent() {
 		return new SyncInfoTreeChangeEvent(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#add(org.eclipse.team.core.synchronize.SyncInfo)
-	 */
+	@Override
 	public void add(SyncInfo info) {
 		try {
 			beginInput();
@@ -177,9 +172,7 @@ public class SyncInfoTree extends SyncInfoSet {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#remove(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public void remove(IResource resource) {
 		try {
 			beginInput();
@@ -191,9 +184,7 @@ public class SyncInfoTree extends SyncInfoSet {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfoSet#clear()
-	 */
+	@Override
 	public void clear() {
 		try {
 			beginInput();
@@ -216,9 +207,9 @@ public class SyncInfoTree extends SyncInfoSet {
 			// the file is new
 			addedParent = true;
 		} else {
-			Set children = (Set)parents.get(parent.getFullPath());
+			Set<IResource> children = parents.get(parent.getFullPath());
 			if (children == null) {
-				children = new HashSet();
+				children = new HashSet<>();
 				parents.put(parent.getFullPath(), children);
 				// this is a new folder in the sync set
 				addedParent = true;
@@ -242,7 +233,7 @@ public class SyncInfoTree extends SyncInfoSet {
 			// the file will be removed
 			removedParent = true;
 		} else {
-			Set children = (Set)parents.get(parent.getFullPath());
+			Set<IResource> children = parents.get(parent.getFullPath());
 			if (children != null) {
 				children.remove(resource);
 				if (children.isEmpty()) {
@@ -309,14 +300,14 @@ public class SyncInfoTree extends SyncInfoSet {
 	 */
 	protected synchronized IResource[] internalGetOutOfSyncDescendants(IContainer resource) {
 		// The parent map contains a set of all out-of-sync children
-		Set allChildren = (Set)parents.get(resource.getFullPath());
+		Set<IResource> allChildren = parents.get(resource.getFullPath());
 		if (allChildren == null) return new IResource[0];
-		return (IResource[]) allChildren.toArray(new IResource[allChildren.size()]);
+		return allChildren.toArray(new IResource[allChildren.size()]);
 	}
 
 	private synchronized IResource[] internalMembers(IWorkspaceRoot root) {
 		Set possibleChildren = parents.keySet();
-		Set children = new HashSet();
+		Set<IResource> children = new HashSet<>();
 		for (Iterator it = possibleChildren.iterator(); it.hasNext();) {
 			Object next = it.next();
 			IResource element = root.findMember((IPath)next);
@@ -324,7 +315,7 @@ public class SyncInfoTree extends SyncInfoSet {
 				children.add(element.getProject());
 			}
 		}
-		return (IResource[]) children.toArray(new IResource[children.size()]);
+		return children.toArray(new IResource[children.size()]);
 	}
 
 	/**
@@ -341,9 +332,9 @@ public class SyncInfoTree extends SyncInfoSet {
 		if (parent.getType() == IResource.ROOT) return internalMembers((IWorkspaceRoot)parent);
 		// OPTIMIZE: could be optimized so that we don't traverse all the deep
 		// children to find the immediate ones.
-		Set children = new HashSet();
+		Set<IResource> children = new HashSet<>();
 		IPath path = parent.getFullPath();
-		Set possibleChildren = (Set)parents.get(path);
+		Set possibleChildren = parents.get(path);
 		if(possibleChildren != null) {
 			for (Iterator it = possibleChildren.iterator(); it.hasNext();) {
 				Object next = it.next();
@@ -362,7 +353,7 @@ public class SyncInfoTree extends SyncInfoSet {
 				}
 			}
 		}
-		return (IResource[]) children.toArray(new IResource[children.size()]);
+		return children.toArray(new IResource[children.size()]);
 	}
 
 }

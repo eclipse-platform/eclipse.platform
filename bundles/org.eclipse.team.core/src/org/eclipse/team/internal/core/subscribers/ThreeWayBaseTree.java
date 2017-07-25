@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,24 +36,30 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 		public BaseResourceVariantByteStore(ThreeWaySubscriber subscriber) {
 			this.subscriber = subscriber;
 		}
+		@Override
 		public void dispose() {
 			// Nothing to do
 		}
+		@Override
 		public byte[] getBytes(IResource resource) throws TeamException {
 			return subscriber.getSynchronizer().getBaseBytes(resource);
 		}
+		@Override
 		public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 			// Base bytes are set directly in the synchronizer
 			return false;
 		}
+		@Override
 		public boolean flushBytes(IResource resource, int depth) throws TeamException {
 			// Base bytes are flushed directly in the synchronizer
 			return false;
 		}
+		@Override
 		public boolean deleteBytes(IResource resource) throws TeamException {
 			// Base bytes are deleted directly in the synchronizer
 			return false;
 		}
+		@Override
 		public IResource[] members(IResource resource) throws TeamException {
 			return subscriber.getSynchronizer().members(resource);
 		}
@@ -69,39 +75,29 @@ public final class ThreeWayBaseTree extends ResourceVariantTree {
 		this.subscriber = subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.AbstractResourceVariantTree#refresh(org.eclipse.core.resources.IResource[], int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IResource[] refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
 		return new IResource[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.AbstractResourceVariantTree#fetchMembers(org.eclipse.team.core.synchronize.IResourceVariant, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant[] fetchMembers(IResourceVariant variant, IProgressMonitor progress) throws TeamException {
 		// Refresh not supported
 		return new IResourceVariant[0];
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.AbstractResourceVariantTree#fetchVariant(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant fetchVariant(IResource resource, int depth, IProgressMonitor monitor) throws TeamException {
 		// Refresh not supported
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#roots()
-	 */
+	@Override
 	public IResource[] roots() {
 		return getSubscriber().roots();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#getResourceVariant(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResourceVariant getResourceVariant(IResource resource) throws TeamException {
 		return getSubscriber().getResourceVariant(resource, getByteStore().getBytes(resource));
 	}

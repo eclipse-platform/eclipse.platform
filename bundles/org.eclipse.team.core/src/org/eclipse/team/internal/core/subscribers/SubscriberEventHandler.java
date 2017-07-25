@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -38,7 +37,7 @@ import org.eclipse.team.internal.core.*;
 public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 
 	// Changes accumulated by the event handler
-	private List resultCache = new ArrayList();
+	private List<Event> resultCache = new ArrayList<>();
 
 	private boolean started = false;
 	private boolean initializing = true;
@@ -63,6 +62,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		SubscriberEvent(IResource resource, int type, int depth) {
 			super(resource, type, depth);
 		}
+		@Override
 		protected String getTypeString() {
 			switch (getType()) {
 				case REMOVAL :
@@ -92,13 +92,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 			NLS.bind(Messages.SubscriberEventHandler_errors, new String[] { subscriber.getName() }));
 		this.subscriber = subscriber;
 		this.scope = scope;
-		scopeChangeListener = new ISynchronizationScopeChangeListener() {
-			public void scopeChanged(ISynchronizationScope scope,
-					ResourceMapping[] newMappings,
-					ResourceTraversal[] newTraversals) {
-				reset(new ResourceTraversal[0], scope.getTraversals());
-			}
-		};
+		scopeChangeListener = (scope1, newMappings, newTraversals) -> reset(new ResourceTraversal[0], scope1.getTraversals());
 		this.scope.addScopeChangeListener(scopeChangeListener);
 	}
 
@@ -124,6 +118,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		initializing = false;
 	}
 
+	@Override
 	protected synchronized void queueEvent(Event event, boolean front) {
 		// Only post events if the handler is started
 		if (started) {
@@ -133,6 +128,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	/**
 	 * Schedule the job or process the events now.
 	 */
+	@Override
 	public void schedule() {
 		Job job = getEventHandlerJob();
 		if (job.getState() == Job.NONE) {
@@ -151,9 +147,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.BackgroundEventHandler#jobDone(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-	 */
+	@Override
 	protected void jobDone(IJobChangeEvent event) {
 		super.jobDone(event);
 		progressGroup = null;
@@ -294,6 +288,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		}
 	}
 
+	@Override
 	protected void processEvent(Event event, IProgressMonitor monitor) {
 		try {
 			// Cancellation is dangerous because this will leave the sync info in a bad state.
@@ -367,12 +362,10 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.BackgroundEventHandler#dispatchEvents()
-	 */
+	@Override
 	protected boolean  doDispatchEvents(IProgressMonitor monitor) {
 		if (!resultCache.isEmpty()) {
-			dispatchEvents((SubscriberEvent[]) resultCache.toArray(new SubscriberEvent[resultCache.size()]), monitor);
+			dispatchEvents(resultCache.toArray(new SubscriberEvent[resultCache.size()]), monitor);
 			resultCache.clear();
 			return true;
 		}
@@ -414,9 +407,7 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 		return scope;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.BackgroundEventHandler#shutdown()
-	 */
+	@Override
 	public void shutdown() {
 		super.shutdown();
 		scope.removeScopeChangeListener(scopeChangeListener);

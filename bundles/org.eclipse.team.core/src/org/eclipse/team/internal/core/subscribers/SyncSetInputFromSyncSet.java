@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,15 +29,14 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		inputSyncSet.addSyncSetChangedListener(this);
 	}
 
+	@Override
 	public void disconnect() {
 		if (inputSyncSet == null) return;
 		inputSyncSet.removeSyncSetChangedListener(this);
 		inputSyncSet = null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ccvs.syncviews.views.AbstractSyncSet#initialize(java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void fetchInput(IProgressMonitor monitor) {
 		if (inputSyncSet == null) return;
 		SyncInfo[] infos = inputSyncSet.getSyncInfos();
@@ -46,9 +45,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ccvs.syncviews.views.ISyncSetChangedListener#syncSetChanged(org.eclipse.team.ccvs.syncviews.views.SyncSetChangedEvent)
-	 */
+	@Override
 	public void syncInfoChanged(ISyncInfoSetChangeEvent event, IProgressMonitor monitor) {
 		SyncInfoSet syncSet = getSyncSet();
 		try {
@@ -78,9 +75,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		inputSyncSet.connect(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ISyncInfoSetChangeListener#syncInfoSetReset(org.eclipse.team.core.subscribers.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void syncInfoSetReset(SyncInfoSet set, IProgressMonitor monitor) {
 		if(inputSyncSet == null) {
 			set.removeSyncSetChangedListener(this);
@@ -98,9 +93,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ISyncInfoSetChangeListener#syncInfoSetError(org.eclipse.team.core.subscribers.SyncInfoSet, org.eclipse.team.core.ITeamStatus[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void syncInfoSetErrors(SyncInfoSet set, ITeamStatus[] errors, IProgressMonitor monitor) {
 		SubscriberSyncInfoSet syncSet = getSyncSet();
 		try {

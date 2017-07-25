@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,30 +56,22 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 		Assert.isTrue(resource.getType() != IResource.FILE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IResourceDiff#getBeforeState()
-	 */
+	@Override
 	public IFileRevision getBeforeState() {
 		return before;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IResourceDiff#getAfterState()
-	 */
+	@Override
 	public IFileRevision getAfterState() {
 		return after;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IResourceDiff#getResource()
-	 */
+	@Override
 	public IResource getResource() {
 		return resource;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.provider.Diff#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;

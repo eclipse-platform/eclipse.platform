@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,11 +29,12 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 	 * Ask each provider once for its files.
 	 * Collect the resulting status' and return a MultiStatus.
 	 */
+	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
-		ArrayList returnStati = new ArrayList();
+		ArrayList<IStatus> returnStati = new ArrayList<>();
 
 		//map provider to the files under that provider's control
-		Map providersToFiles = new HashMap(files.length);
+		Map<RepositoryProvider, List<IFile>> providersToFiles = new HashMap<>(files.length);
 
 		//for each file, determine which provider, map providers to files
 		for (int i = 0; i < files.length; i++) {
@@ -41,21 +42,21 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 			RepositoryProvider provider = RepositoryProvider.getProvider(file.getProject());
 
 			if (!providersToFiles.containsKey(provider)) {
-				providersToFiles.put(provider, new ArrayList());
+				providersToFiles.put(provider, new ArrayList<>());
 			}
 
-			((ArrayList)providersToFiles.get(provider)).add(file);
+			providersToFiles.get(provider).add(file);
 		}
 
-		Iterator providersIterator = providersToFiles.keySet().iterator();
+		Iterator<RepositoryProvider> providersIterator = providersToFiles.keySet().iterator();
 
 		boolean allOK = true;
 
 		//for each provider, validate its files
 		while(providersIterator.hasNext()) {
-			RepositoryProvider provider = (RepositoryProvider)providersIterator.next();
-			ArrayList filesList = (ArrayList)providersToFiles.get(provider);
-			IFile[] filesArray = (IFile[])filesList.toArray(new IFile[filesList.size()]);
+			RepositoryProvider provider = providersIterator.next();
+			List<IFile> filesList = providersToFiles.get(provider);
+			IFile[] filesArray = filesList.toArray(new IFile[filesList.size()]);
 			FileModificationValidator validator = getDefaultValidator();
 
 			//if no provider or no validator use the default validator
@@ -72,21 +73,14 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 		}
 
 		if (returnStati.size() == 1) {
-			return (IStatus)returnStati.get(0);
+			return returnStati.get(0);
 		}
 
-		return new MultiStatus(TeamPlugin.ID,
-			0,
-			(IStatus[])returnStati.toArray(new IStatus[returnStati.size()]),
-				allOK
-					? Messages.ok
-					: Messages.FileModificationValidator_editFailed,
-			null);
+		return new MultiStatus(TeamPlugin.ID, 0, returnStati.toArray(new IStatus[returnStati.size()]),
+				allOK ? Messages.ok : Messages.FileModificationValidator_editFailed, null);
 	}
 
-	/*
-	 * @see IFileModificationValidator#validateSave(IFile)
-	 */
+	@Override
 	public IStatus validateSave(IFile file) {
 		RepositoryProvider provider = RepositoryProvider.getProvider(file.getProject());
 		FileModificationValidator validator = getDefaultValidator();

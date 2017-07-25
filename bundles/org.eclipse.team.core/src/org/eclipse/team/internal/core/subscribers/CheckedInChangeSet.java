@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * Return the resources that are contained in this set.
      * @return the resources that are contained in this set
      */
-    public IResource[] getResources() {
+    @Override
+	public IResource[] getResources() {
         return set.getResources();
     }
 
@@ -56,7 +57,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * Return whether the set contains any files.
      * @return whether the set contains any files
      */
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return set.isEmpty();
     }
 
@@ -65,7 +67,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * @param local a local file
      * @return true if the given file is included in this set
      */
-    public boolean contains(IResource local) {
+    @Override
+	public boolean contains(IResource local) {
         return set.getSyncInfo(local) != null;
     }
 
@@ -112,7 +115,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * Remove the resource from the set.
      * @param resource the resource to be removed
      */
-    public void remove(IResource resource) {
+    @Override
+	public void remove(IResource resource) {
         if (contains(resource)) {
             set.remove(resource);
         }
@@ -122,7 +126,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * Remove the resources from the set.
      * @param resources the resources to be removed
      */
-    public void remove(IResource[] resources) {
+    @Override
+	public void remove(IResource[] resources) {
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             remove(resource);
@@ -135,7 +140,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
      * @param depth the depth of the removal (one of
      * <code>IResource.DEPTH_ZERO, IResource.DEPTH_ONE, IResource.DEPTH_INFINITE)</code>
      */
-    public void rootRemoved(IResource resource, int depth) {
+    @Override
+	public void rootRemoved(IResource resource, int depth) {
         SyncInfo[] infos = set.getSyncInfos(resource, depth);
         if (infos.length > 0) {
             IResource[] resources = new IResource[infos.length];
@@ -146,7 +152,8 @@ public abstract class CheckedInChangeSet extends ChangeSet {
         }
     }
 
-    public boolean containsChildren(IResource resource, int depth) {
+    @Override
+	public boolean containsChildren(IResource resource, int depth) {
     	return set.getSyncInfos(resource, depth).length > 0;
     }
 }

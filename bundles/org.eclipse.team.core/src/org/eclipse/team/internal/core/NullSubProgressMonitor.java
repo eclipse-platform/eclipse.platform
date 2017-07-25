@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,33 +31,23 @@ public class NullSubProgressMonitor extends SubProgressMonitor {
 		super(monitor, 0, 0);
 	}
 
-	/**
-	 * @see IProgressMonitor#beginTask(String, int)
-	 */
+	@Override
 	public void beginTask(String name, int totalWork) {
 	}
 
-	/**
-	 * @see IProgressMonitor#done()
-	 */
+	@Override
 	public void done() {
 	}
 
-	/**
-	 * @see IProgressMonitor#internalWorked(double)
-	 */
+	@Override
 	public void internalWorked(double work) {
 	}
 
-	/**
-	 * @see IProgressMonitor#subTask(String)
-	 */
+	@Override
 	public void subTask(String name) {
 	}
 
-	/**
-	 * @see IProgressMonitor#worked(int)
-	 */
+	@Override
 	public void worked(int work) {
 	}
 }

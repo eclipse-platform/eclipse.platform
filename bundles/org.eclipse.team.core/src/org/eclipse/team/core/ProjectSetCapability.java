@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,7 @@ public abstract class ProjectSetCapability {
 	 * projectSetCreated(File, ProjectSetSerializationContext, IProgressMonitor)
 	 * instead
 	 */
+	@Deprecated
 	public void projectSetCreated(File file, Object context, IProgressMonitor monitor) {
 		//default is to do nothing
 	}
@@ -233,7 +234,7 @@ public abstract class ProjectSetCapability {
 
 		// Build a collection of existing projects
 
-		final Collection existingProjects = new ArrayList();
+		final Collection<IProject> existingProjects = new ArrayList<>();
 		for (int i = 0; i < projects.length; i++) {
 			IProject eachProj = projects[i];
 			if (eachProj.exists()) {
@@ -249,7 +250,7 @@ public abstract class ProjectSetCapability {
 
 		IProject[] confirmed =
 			context.confirmOverwrite(
-				(IProject[]) existingProjects.toArray(
+				existingProjects.toArray(
 					new IProject[existingProjects.size()]));
 		if (confirmed == null)
 			return null;
@@ -258,7 +259,7 @@ public abstract class ProjectSetCapability {
 
 		// Return the amended list of projects to be loaded
 
-		Collection result = new ArrayList(projects.length);
+		Collection<IProject> result = new ArrayList<>(projects.length);
 		result.addAll(Arrays.asList(projects));
 		result.removeAll(existingProjects);
 		for (int i = 0; i < confirmed.length; i++) {
@@ -266,7 +267,7 @@ public abstract class ProjectSetCapability {
 			if (existingProjects.contains(eachProj))
 				result.add(eachProj);
 		}
-		return (IProject[]) result.toArray(new IProject[result.size()]);
+		return result.toArray(new IProject[result.size()]);
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,9 +73,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationContext#refresh(org.eclipse.core.resources.mapping.ResourceTraversal[], int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void refresh(ResourceTraversal[] traversals, int flags,
 			IProgressMonitor monitor) throws CoreException {
 		GroupProgressMonitor group = getGroup(monitor);
@@ -96,9 +94,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.provider.SynchronizationContext#dispose()
-	 */
+	@Override
 	public void dispose() {
 		handler.shutdown();
 		super.dispose();
@@ -132,12 +128,11 @@ public abstract class SubscriberMergeContext extends MergeContext {
 		handler.run(runnable, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.PlatformObject#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == SubscriberDiffTreeEventHandler.class)
-			return handler;
+			return (T) handler;
 		return super.getAdapter(adapter);
 	}
 

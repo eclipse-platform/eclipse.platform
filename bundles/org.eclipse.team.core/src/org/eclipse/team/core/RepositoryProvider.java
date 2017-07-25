@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 
 	private final static String TEAM_SETID = "org.eclipse.team.repository-provider"; //$NON-NLS-1$
 
-	private final static List AllProviderTypeIds = initializeAllProviderTypes();
+	private final static List<String> AllProviderTypeIds = initializeAllProviderTypes();
 
 	// the project instance that this nature is assigned to
 	private IProject project;
@@ -167,16 +167,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		// validate that either the provider supports linked resources or the project has no linked resources
 		if (!provider.canHandleLinkedResourceURI()) {
 			try {
-				project.accept(new IResourceProxyVisitor() {
-					public boolean visit(IResourceProxy proxy) throws CoreException {
-						if (proxy.isLinked()) {
-							if (!provider.canHandleLinkedResources() ||
-									proxy.requestFullPath().segmentCount() > 2 ||
-									!EFS.SCHEME_FILE.equals(proxy.requestResource().getLocationURI().getScheme()))
-								throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedURIsExist, new String[] { project.getName(), id }), null));
-						}
-						return true;
+				project.accept(proxy -> {
+					if (proxy.isLinked()) {
+						if (!provider.canHandleLinkedResources() ||
+								proxy.requestFullPath().segmentCount() > 2 ||
+								!EFS.SCHEME_FILE.equals(proxy.requestResource().getLocationURI().getScheme()))
+							throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedURIsExist, new String[] { project.getName(), id }), null));
 					}
+					return true;
 				}, IResource.NONE);
 			} catch (CoreException e) {
 				if (e instanceof TeamException) {
@@ -329,6 +327,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 *
 	 * @see RepositoryProvider#configureProject()
 	 */
+	@Override
 	final public void configure() throws CoreException {
 		try {
 			configureProject();
@@ -369,6 +368,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * @see org.eclipse.core.resources.IFileModificationValidator
 	 * @deprecated use {@link #getFileModificationValidator2()}
 	 */
+	@Deprecated
 	public IFileModificationValidator getFileModificationValidator() {
 		return null;
 	}
@@ -399,9 +399,11 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		if (fileModificationValidator == null)
 			return null;
 		return new FileModificationValidator() {
+			@Override
 			public IStatus validateSave(IFile file) {
 				return fileModificationValidator.validateSave(file);
 			}
+			@Override
 			public IStatus validateEdit(IFile[] files,
 					FileModificationValidationContext context) {
 				// Extract the shell from the context in order to invoke the old API
@@ -450,6 +452,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 *
 	 * @return a string description of this provider
 	 */
+	@Override
 	public String toString() {
 		return NLS.bind(Messages.RepositoryProvider_toString, new String[] { getProject().getName(), getID() });
 	}
@@ -461,7 +464,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 */
 	final public static String[] getAllProviderTypeIds() {
 		IProjectNatureDescriptor[] desc = ResourcesPlugin.getWorkspace().getNatureDescriptors();
-		Set teamSet = new HashSet();
+		Set<String> teamSet = new HashSet<>();
 
 		teamSet.addAll(AllProviderTypeIds);	// add in all the ones we know via extension point
 
@@ -474,7 +477,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				}
 			}
 		}
-		return (String[]) teamSet.toArray(new String[teamSet.size()]);
+		return teamSet.toArray(new String[teamSet.size()]);
 	}
 
 	/**
@@ -659,22 +662,18 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
         }
     }
 
-    /*
-	 * @see IProjectNature#getProject()
-	 */
+	@Override
 	public IProject getProject() {
 		return project;
 	}
 
-	/*
-	 * @see IProjectNature#setProject(IProject)
-	 */
+	@Override
 	public void setProject(IProject project) {
 		this.project = project;
 	}
 
-	private static List initializeAllProviderTypes() {
-		List allIDs = new ArrayList();
+	private static List<String> initializeAllProviderTypes() {
+		List<String> allIDs = new ArrayList<>();
 
 		TeamPlugin plugin = TeamPlugin.getPlugin();
 		if (plugin != null) {
@@ -739,6 +738,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * @deprecated see {@link #validateCreateLink(IResource, int, URI) } instead
 	 * @since 2.1
 	 */
+	@Deprecated
 	public IStatus validateCreateLink(IResource resource, int updateFlags, IPath location) {
 		if (canHandleLinkedResources()) {
 			return Team.OK_STATUS;
@@ -793,6 +793,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 *
 	 * @deprecated see {@link #canHandleLinkedResourceURI() }
 	 */
+	@Deprecated
 	public boolean canHandleLinkedResources() {
 		return canHandleLinkedResourceURI();
 	}
@@ -821,11 +822,8 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		return false;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}
 

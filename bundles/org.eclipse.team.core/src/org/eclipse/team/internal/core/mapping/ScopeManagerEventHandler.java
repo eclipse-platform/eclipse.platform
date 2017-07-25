@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.team.internal.core.Messages;
 public class ScopeManagerEventHandler extends BackgroundEventHandler {
 
 	public static final int REFRESH = 10;
-	private Set toRefresh = new HashSet();
+	private Set<ResourceMapping> toRefresh = new HashSet<>();
 	private ISynchronizationScopeManager manager;
 
 	class ResourceMappingEvent extends Event {
@@ -42,9 +42,10 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 		this.manager = manager;
 	}
 
+	@Override
 	protected boolean doDispatchEvents(IProgressMonitor monitor)
 			throws TeamException {
-		ResourceMapping[] mappings = (ResourceMapping[]) toRefresh.toArray(new ResourceMapping[toRefresh.size()]);
+		ResourceMapping[] mappings = toRefresh.toArray(new ResourceMapping[toRefresh.size()]);
 		toRefresh.clear();
 		if (mappings.length > 0) {
 			try {
@@ -56,6 +57,7 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 		return mappings.length > 0;
 	}
 
+	@Override
 	protected void processEvent(Event event, IProgressMonitor monitor)
 			throws CoreException {
 		if (event instanceof ResourceMappingEvent) {
@@ -72,6 +74,7 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 		queueEvent(new ResourceMappingEvent(mappings), false);
 	}
 
+	@Override
 	protected Object getJobFamiliy() {
 		return manager;
 	}

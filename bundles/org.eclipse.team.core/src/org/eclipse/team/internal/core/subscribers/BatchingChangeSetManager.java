@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 
 	public static class CollectorChangeEvent {
 
-		Set added = new HashSet();
-		Set removed = new HashSet();
-		Map changed = new HashMap();
+		Set<ChangeSet> added = new HashSet<>();
+		Set<ChangeSet> removed = new HashSet<>();
+		Map<ChangeSet, IPath[]> changed = new HashMap<>();
 		private final BatchingChangeSetManager collector;
 
 		public CollectorChangeEvent(BatchingChangeSetManager collector) {
@@ -50,11 +50,11 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 		private void changed(ChangeSet changeSet, IPath[] allAffectedResources) {
 			if (added.contains(changeSet))
 				return;
-			IPath[] paths = (IPath[])changed.get(changeSet);
+			IPath[] paths = changed.get(changeSet);
 			if (paths == null) {
 				changed.put(changeSet, allAffectedResources);
 			} else {
-				Set allPaths = new HashSet();
+				Set<IPath> allPaths = new HashSet<>();
 				for (int i = 0; i < paths.length; i++) {
 					IPath path = paths[i];
 					allPaths.add(path);
@@ -63,7 +63,7 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 					IPath path = allAffectedResources[i];
 					allPaths.add(path);
 				}
-				changed.put(changeSet, (IPath[]) allPaths.toArray(new IPath[allPaths.size()]));
+				changed.put(changeSet, allPaths.toArray(new IPath[allPaths.size()]));
 			}
 		}
 
@@ -72,19 +72,19 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 		}
 
 		public ChangeSet[] getAddedSets() {
-			return (ChangeSet[]) added.toArray(new ChangeSet[added.size()]);
+			return added.toArray(new ChangeSet[added.size()]);
 		}
 
 		public ChangeSet[] getRemovedSets() {
-			return (ChangeSet[]) removed.toArray(new ChangeSet[removed.size()]);
+			return removed.toArray(new ChangeSet[removed.size()]);
 		}
 
 		public ChangeSet[] getChangedSets() {
-			return (ChangeSet[]) changed.keySet().toArray(new ChangeSet[changed.size()]);
+			return changed.keySet().toArray(new ChangeSet[changed.size()]);
 		}
 
 		public IPath[] getChangesFor(ChangeSet set) {
-			return (IPath[])changed.get(set);
+			return changed.get(set);
 		}
 
 		public BatchingChangeSetManager getSource() {
@@ -126,9 +126,11 @@ public class BatchingChangeSetManager extends ChangeSetManager {
             if (listener instanceof IChangeSetCollectorChangeListener) {
 				final IChangeSetCollectorChangeListener csccl = (IChangeSetCollectorChangeListener) listener;
 				SafeRunner.run(new ISafeRunnable() {
+					@Override
 					public void handleException(Throwable exception) {
 						// Exceptions are logged by the platform
 					}
+					@Override
 					public void run() throws Exception {
 						csccl.changeSetChanges(event, monitor);
 					}
@@ -137,7 +139,8 @@ public class BatchingChangeSetManager extends ChangeSetManager {
         }
 	}
 
-    public void add(ChangeSet set) {
+    @Override
+	public void add(ChangeSet set) {
     	try {
     		beginInput();
     		super.add(set);
@@ -147,7 +150,8 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     	}
     }
 
-    public void remove(ChangeSet set) {
+    @Override
+	public void remove(ChangeSet set) {
     	try {
     		beginInput();
     		super.remove(set);
@@ -157,7 +161,8 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     	}
     }
 
-    protected void fireResourcesChangedEvent(ChangeSet changeSet, IPath[] allAffectedResources) {
+    @Override
+	protected void fireResourcesChangedEvent(ChangeSet changeSet, IPath[] allAffectedResources) {
     	super.fireResourcesChangedEvent(changeSet, allAffectedResources);
     	try {
     		beginInput();
@@ -167,7 +172,8 @@ public class BatchingChangeSetManager extends ChangeSetManager {
     	}
     }
 
-    protected void initializeSets() {
+    @Override
+	protected void initializeSets() {
     	// Nothing to do
     }
 }

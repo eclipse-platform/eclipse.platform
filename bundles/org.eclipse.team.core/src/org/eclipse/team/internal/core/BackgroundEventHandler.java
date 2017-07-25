@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,7 @@ public abstract class BackgroundEventHandler {
 		public int getType() {
 			return type;
 		}
+		@Override
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Background Event: "); //$NON-NLS-1$
@@ -129,9 +130,11 @@ public abstract class BackgroundEventHandler {
 		public int getDepth() {
 			return depth;
 		}
+		@Override
 		public IResource getResource() {
 			return resource;
 		}
+		@Override
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("resource: "); //$NON-NLS-1$
@@ -199,20 +202,25 @@ public abstract class BackgroundEventHandler {
 	 */
 	protected void createEventHandlingJob() {
 		eventHandlerJob = new Job(getName()) {
+			@Override
 			public IStatus run(IProgressMonitor monitor) {
 				return processEvents(monitor);
 			}
+			@Override
 			public boolean shouldRun() {
 				return ! isQueueEmpty();
 			}
+			@Override
 			public boolean shouldSchedule() {
 				return ! isQueueEmpty();
 			}
+			@Override
 			public boolean belongsTo(Object family) {
 				return BackgroundEventHandler.this.belongsTo(family);
 			}
 		};
 		eventHandlerJob.addJobChangeListener(new JobChangeAdapter() {
+			@Override
 			public void done(IJobChangeEvent event) {
 				jobDone(event);
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ public class SyncSetInputFromSubscriber extends SyncSetInput  {
 		this.subscriber = subscriber;
 	}
 
+	@Override
 	public void disconnect() {
 	}
 
@@ -35,9 +36,7 @@ public class SyncSetInputFromSubscriber extends SyncSetInput  {
 		return subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.sync.views.SyncSetInput#fetchInput(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void fetchInput(IProgressMonitor monitor) throws TeamException {
 		// don't calculate changes. The SubscriberEventHandler will fetch the
 		// input in a job and update this sync set when the changes are

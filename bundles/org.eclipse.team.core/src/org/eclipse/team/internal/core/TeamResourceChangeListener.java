@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2005 IBM Corporation and others.
+ * Copyright (c) 2004, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*
- * Created on Jan 17, 2005
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
 package org.eclipse.team.internal.core;
 
 import java.util.*;
@@ -29,10 +23,10 @@ import org.eclipse.team.core.RepositoryProviderType;
  */
 public final class TeamResourceChangeListener implements IResourceChangeListener {
 
-	private static final Map metaFilePaths; // Map of String (repository id) -> IPath[]
+	private static final Map<String, IPath[]> metaFilePaths; // Map of String (repository id) -> IPath[]
 
 	static {
-		metaFilePaths = new HashMap();
+		metaFilePaths = new HashMap<>();
 		String[] ids = RepositoryProvider.getAllProviderTypeIds();
 		for (int i = 0; i < ids.length; i++) {
 			String id = ids[i];
@@ -43,6 +37,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		}
 	}
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta[] projectDeltas = event.getDelta().getAffectedChildren();
 		for (int i = 0; i < projectDeltas.length; i++) {
@@ -70,8 +65,8 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 
 	private void handleUnsharedProjectChanges(IProject project, IResourceDelta delta) {
 		String repositoryId = null;
-		Set metaFileContainers = new HashSet();
-		Set badIds = new HashSet();
+		Set<IContainer> metaFileContainers = new HashSet<>();
+		Set<String> badIds = new HashSet<>();
 		IFile[] files = getAddedFiles(delta);
 		for (int i = 0; i < files.length; i++) {
 			IFile file = files[i];
@@ -92,12 +87,12 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		}
 		if (repositoryId != null) {
 			RepositoryProviderType type = RepositoryProviderType.getProviderType(repositoryId);
-			type.metaFilesDetected(project, (IContainer[]) metaFileContainers.toArray(new IContainer[metaFileContainers.size()]));
+			type.metaFilesDetected(project, metaFileContainers.toArray(new IContainer[metaFileContainers.size()]));
 		}
 	}
 
 	private IContainer getContainer(String typeId, IFile file) {
-		IPath[] paths = (IPath[])metaFilePaths.get(typeId);
+		IPath[] paths = metaFilePaths.get(typeId);
 		IPath foundPath = null;
 		IPath projectRelativePath = file.getProjectRelativePath();
 		for (int i = 0; i < paths.length; i++) {
@@ -119,9 +114,9 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	}
 
 	private String getMetaFileType(IFile file) {
-		for (Iterator iter = metaFilePaths.keySet().iterator(); iter.hasNext();) {
-			String id = (String) iter.next();
-			IPath[] paths = (IPath[])metaFilePaths.get(id);
+		for (Iterator<String> iter = metaFilePaths.keySet().iterator(); iter.hasNext();) {
+			String id = iter.next();
+			IPath[] paths = metaFilePaths.get(id);
 			for (int i = 0; i < paths.length; i++) {
 				IPath path = paths[i];
 				if (isSuffix(file.getProjectRelativePath(), path)) {
@@ -144,20 +139,18 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	}
 
 	private IFile[] getAddedFiles(IResourceDelta delta) {
-		final List result = new ArrayList();
+		final List<IFile> result = new ArrayList<>();
 		try {
-			delta.accept(new IResourceDeltaVisitor() {
-				public boolean visit(IResourceDelta delta) throws CoreException {
-					if ((delta.getKind() & IResourceDelta.ADDED) != 0
-							&& delta.getResource().getType() == IResource.FILE) {
-						result.add(delta.getResource());
-					}
-					return true;
+			delta.accept(delta1 -> {
+				if ((delta1.getKind() & IResourceDelta.ADDED) != 0
+						&& delta1.getResource().getType() == IResource.FILE) {
+					result.add((IFile) delta1.getResource());
 				}
+				return true;
 			});
 		} catch (CoreException e) {
 			TeamPlugin.log(IStatus.ERROR, "An error occurred while scanning for meta-file changes", e); //$NON-NLS-1$
 		}
-		return (IFile[]) result.toArray(new IFile[result.size()]);
+		return result.toArray(new IFile[result.size()]);
 	}
 }

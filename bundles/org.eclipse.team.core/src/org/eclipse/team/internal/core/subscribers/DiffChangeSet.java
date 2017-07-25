@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,8 @@ public class DiffChangeSet extends ChangeSet {
      * Return the resources that are contained in this set.
      * @return the resources that are contained in this set
      */
-    public IResource[] getResources() {
+    @Override
+	public IResource[] getResources() {
         return tree.getAffectedResources();
     }
 
@@ -52,7 +53,8 @@ public class DiffChangeSet extends ChangeSet {
      * Return whether the set contains any files.
      * @return whether the set contains any files
      */
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return tree.isEmpty();
     }
 
@@ -61,7 +63,8 @@ public class DiffChangeSet extends ChangeSet {
      * @param local a local file
      * @return true if the given file is included in this set
      */
-    public boolean contains(IResource local) {
+    @Override
+	public boolean contains(IResource local) {
         return tree.getDiff(local) != null;
     }
 
@@ -108,7 +111,8 @@ public class DiffChangeSet extends ChangeSet {
      * Remove the resource from the set.
      * @param resource the resource to be removed
      */
-    public void remove(IResource resource) {
+    @Override
+	public void remove(IResource resource) {
         if (contains(resource)) {
             tree.remove(resource);
         }
@@ -120,7 +124,8 @@ public class DiffChangeSet extends ChangeSet {
      * @param depth the depth of the removal (one of
      * <code>IResource.DEPTH_ZERO, IResource.DEPTH_ONE, IResource.DEPTH_INFINITE)</code>
      */
-    public void rootRemoved(IResource resource, int depth) {
+    @Override
+	public void rootRemoved(IResource resource, int depth) {
     	IDiff[] diffs = tree.getDiffs(resource, depth);
     	if (diffs.length > 0) {
     		try {
@@ -141,6 +146,7 @@ public class DiffChangeSet extends ChangeSet {
 		return getDiffTree().getDiff(path) != null;
 	}
 
+	@Override
 	public boolean containsChildren(IResource resource, int depth) {
 		return getDiffTree().getDiffs(resource, depth).length > 0;
 	}
@@ -157,6 +163,7 @@ public class DiffChangeSet extends ChangeSet {
 		}
 	}
 
+	@Override
 	public void remove(IResource[] resources) {
 		try {
 			tree.beginInput();
@@ -169,6 +176,7 @@ public class DiffChangeSet extends ChangeSet {
 		}
 	}
 
+	@Override
 	public String getComment() {
 		return null;
 	}

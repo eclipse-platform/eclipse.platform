@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,9 +61,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		return subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScopeManager#dispose()
-	 */
+	@Override
 	public void dispose() {
 		for (Iterator iter = participants.values().iterator(); iter.hasNext();) {
 			ISynchronizationScopeParticipant p = (ISynchronizationScopeParticipant) iter.next();
@@ -72,11 +70,10 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.provider.ResourceMappingScopeManager#initialize(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void initialize(IProgressMonitor monitor) throws CoreException {
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				SubscriberScopeManager.super.initialize(monitor);
 				hookupParticipants();
@@ -85,12 +82,11 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		}, getSchedulingRule(), IResource.NONE, monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.provider.ResourceMappingScopeManager#refresh(org.eclipse.core.resources.mapping.ResourceMapping[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public ResourceTraversal[] refresh(final ResourceMapping[] mappings, IProgressMonitor monitor) throws CoreException {
 		final List result = new ArrayList(1);
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				result.add(SubscriberScopeManager.super.refresh(mappings, monitor));
 				hookupParticipants();
@@ -132,12 +128,10 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ISubscriberChangeListener#subscriberResourceChanged(org.eclipse.team.core.subscribers.ISubscriberChangeEvent[])
-	 */
+	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
-		List changedResources = new ArrayList();
-		List changedProjects = new ArrayList();
+		List<IResource> changedResources = new ArrayList<>();
+		List<IProject> changedProjects = new ArrayList<>();
 		for (int i = 0; i < deltas.length; i++) {
 			ISubscriberChangeEvent event = deltas[i];
 			if ((event.getFlags() & (ISubscriberChangeEvent.ROOT_ADDED | ISubscriberChangeEvent.ROOT_REMOVED)) != 0) {
@@ -147,7 +141,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 				changedResources.add(event.getResource());
 			}
 		}
-		fireChange((IResource[]) changedResources.toArray(new IResource[changedResources.size()]), (IProject[]) changedProjects.toArray(new IProject[changedProjects.size()]));
+		fireChange(changedResources.toArray(new IResource[changedResources.size()]), changedProjects.toArray(new IProject[changedProjects.size()]));
 	}
 
 	private void fireChange(final IResource[] resources, final IProject[] projects) {
@@ -156,6 +150,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 		for (int i = 0; i < handlers.length; i++) {
 			final ISynchronizationScopeParticipant participant = handlers[i];
 			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					ResourceMapping[] mappings = participant.handleContextChange(SubscriberScopeManager.this.getScope(), resources, projects);
 					for (int j = 0; j < mappings.length; j++) {
@@ -163,6 +158,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 						result.add(mapping);
 					}
 				}
+				@Override
 				public void handleException(Throwable exception) {
 					// Handled by platform
 				}

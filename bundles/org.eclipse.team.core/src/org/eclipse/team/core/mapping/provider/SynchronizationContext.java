@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,9 +45,7 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		this.diffTree = diffTree;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public ISynchronizationScope getScope() {
 		return getScopeManager().getScope();
 	}
@@ -60,16 +58,12 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		return manager;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public int getType() {
 		return type;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public void dispose() {
 		if (cache != null) {
 			cache.dispose();
@@ -77,9 +71,7 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		manager.dispose();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public synchronized ICache getCache() {
 		if (cache == null) {
 			cache = new Cache();
@@ -87,16 +79,12 @@ public abstract class SynchronizationContext extends PlatformObject implements I
 		return cache;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public IResourceDiffTree getDiffTree() {
 		return diffTree;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public void refresh(ResourceMapping[] mappings, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 		ISynchronizationScopeManager manager = getScopeManager();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,26 +42,22 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
      */
     private class EventHandler extends BackgroundEventHandler {
 
-        private List dispatchEvents = new ArrayList();
+        private List<Event> dispatchEvents = new ArrayList<>();
 
         protected EventHandler(String jobName, String errorTitle) {
             super(jobName, errorTitle);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.BackgroundEventHandler#processEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, org.eclipse.core.runtime.IProgressMonitor)
-         */
-        protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
+        @Override
+		protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
             // Handle everything in the dispatch
             if (isShutdown())
                 throw new OperationCanceledException();
             dispatchEvents.add(event);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
-         */
-        protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
+        @Override
+		protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
             if (dispatchEvents.isEmpty()) {
                 return false;
             }
@@ -104,7 +100,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
          */
         private ResourceDiffTree[] beginDispath() {
             ChangeSet[] sets = getSets();
-            List lockedSets = new ArrayList();
+            List<ResourceDiffTree> lockedSets = new ArrayList<>();
             try {
                 for (int i = 0; i < sets.length; i++) {
                     ActiveChangeSet set = (ActiveChangeSet)sets[i];
@@ -112,7 +108,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
                     lockedSets.add(tree);
                     tree.beginInput();
                 }
-                return (ResourceDiffTree[]) lockedSets.toArray(new ResourceDiffTree[lockedSets.size()]);
+                return lockedSets.toArray(new ResourceDiffTree[lockedSets.size()]);
             } catch (RuntimeException e) {
                 try {
                     for (Iterator iter = lockedSets.iterator(); iter.hasNext();) {
@@ -150,10 +146,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
             monitor.done();
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.BackgroundEventHandler#queueEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, boolean)
-         */
-        protected synchronized void queueEvent(Event event, boolean front) {
+        @Override
+		protected synchronized void queueEvent(Event event, boolean front) {
             // Override to allow access from enclosing class
             super.queueEvent(event, front);
         }
@@ -209,7 +203,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         }
 
         private void removeFromAllSets(IResource resource) {
-            List toRemove = new ArrayList();
+            List<ChangeSet> toRemove = new ArrayList<>();
             ChangeSet[] sets = getSets();
             for (int i = 0; i < sets.length; i++) {
                 ChangeSet set = sets[i];
@@ -220,22 +214,22 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 	                }
                 }
             }
-            for (Iterator iter = toRemove.iterator(); iter.hasNext();) {
-                ActiveChangeSet set = (ActiveChangeSet) iter.next();
+            for (Object element : toRemove) {
+                ActiveChangeSet set = (ActiveChangeSet) element;
                 remove(set);
             }
         }
 
         private ActiveChangeSet[] getContainingSets(IResource resource) {
-            Set result = new HashSet();
+            Set<ActiveChangeSet> result = new HashSet<>();
             ChangeSet[] sets = getSets();
             for (int i = 0; i < sets.length; i++) {
                 ChangeSet set = sets[i];
                 if (set.contains(resource)) {
-                    result.add(set);
+                    result.add((ActiveChangeSet) set);
                 }
             }
-            return (ActiveChangeSet[]) result.toArray(new ActiveChangeSet[result.size()]);
+            return result.toArray(new ActiveChangeSet[result.size()]);
         }
     }
 
@@ -245,23 +239,20 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
             super(subscriber);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#remove(org.eclipse.core.resources.IResource)
-         */
-        protected void remove(IResource resource) {
+        @Override
+		protected void remove(IResource resource) {
         	if (handler != null)
         		handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_REMOVAL, IResource.DEPTH_INFINITE), false);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#change(org.eclipse.core.resources.IResource, int)
-         */
-        protected void change(IResource resource, int depth) {
+        @Override
+		protected void change(IResource resource, int depth) {
         	if (handler != null)
         		handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_CHANGE, depth), false);
         }
 
-        protected boolean hasMembers(IResource resource) {
+        @Override
+		protected boolean hasMembers(IResource resource) {
             return SubscriberChangeSetManager.this.hasMembers(resource);
         }
     }
@@ -271,10 +262,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.ChangeSetManager#initializeSets()
-     */
-    protected void initializeSets() {
+    @Override
+	protected void initializeSets() {
     	load(getPreferences());
     }
 
@@ -297,7 +286,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
      * @return the sync info for the resource
      * @throws CoreException
      */
-    public IDiff getDiff(IResource resource) throws CoreException {
+    @Override
+	public IDiff getDiff(IResource resource) throws CoreException {
         Subscriber subscriber = getSubscriber();
         return subscriber.getDiff(resource);
     }
@@ -310,10 +300,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
         return collector.getSubscriber();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#dispose()
-     */
-    public void dispose() {
+    @Override
+	public void dispose() {
         handler.shutdown();
         collector.dispose();
         super.dispose();
@@ -360,9 +348,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		monitor.worked(1);
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.ActiveChangeSetManager#getName()
-	 */
+	@Override
 	protected String getName() {
 		return getSubscriber().getName();
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,15 +39,19 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 		public RemoteResourceVariantByteStore(ThreeWaySynchronizer synchronizer) {
 			this.synchronizer = synchronizer;
 		}
+		@Override
 		public void dispose() {
 			// Nothing to do as contents are owned by the TargetSynchronizer
 		}
+		@Override
 		public byte[] getBytes(IResource resource) throws TeamException {
 			return getSynchronizer().getRemoteBytes(resource);
 		}
+		@Override
 		public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 			return getSynchronizer().setRemoteBytes(resource, bytes);
 		}
+		@Override
 		public boolean flushBytes(IResource resource, int depth) throws TeamException {
 			// This method is invoked when the remote bytes are stale and should be removed
 			// This is handled by the ThreeWaySynchronizer so nothing needs to be done here.
@@ -56,9 +60,11 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 		public boolean isVariantKnown(IResource resource) throws TeamException {
 			return getSynchronizer().hasSyncBytes(resource);
 		}
+		@Override
 		public boolean deleteBytes(IResource resource) throws TeamException {
 			return getSynchronizer().removeRemoteBytes(resource);
 		}
+		@Override
 		public IResource[] members(IResource resource) throws TeamException {
 			return synchronizer.members(resource);
 		}
@@ -78,16 +84,12 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 		this.subscriber = subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#roots()
-	 */
+	@Override
 	public IResource[] roots() {
 		return getSubscriber().roots();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#getResourceVariant(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResourceVariant getResourceVariant(IResource resource) throws TeamException {
 		return getSubscriber().getResourceVariant(resource, getByteStore().getBytes(resource));
 	}
@@ -100,14 +102,13 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 		return subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#collectChanges(org.eclipse.core.resources.IResource, org.eclipse.team.core.variants.IResourceVariant, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResource[] collectChanges(final IResource local,
 			final IResourceVariant remote, final int depth, IProgressMonitor monitor)
 			throws TeamException {
 		final IResource[][] resources = new IResource[][] { null };
 		getSubscriber().getSynchronizer().run(local, new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				resources[0] = ThreeWayRemoteTree.super.collectChanges(local, remote, depth, monitor);
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 
-	/**
-	 * @see IMoveDeleteHook#deleteFile(IResourceTree, IFile, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteFile(
 		IResourceTree tree,
 		IFile file,
@@ -37,9 +35,7 @@ public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#deleteFolder(IResourceTree, IFolder, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteFolder(
 		IResourceTree tree,
 		IFolder folder,
@@ -48,9 +44,7 @@ public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#deleteProject(IResourceTree, IProject, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteProject(
 		IResourceTree tree,
 		IProject project,
@@ -59,9 +53,7 @@ public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveFile(IResourceTree, IFile, IFile, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveFile(
 		IResourceTree tree,
 		IFile source,
@@ -71,9 +63,7 @@ public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveFolder(IResourceTree, IFolder, IFolder, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveFolder(
 		IResourceTree tree,
 		IFolder source,
@@ -83,9 +73,7 @@ public class DefaultMoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveProject(IResourceTree, IProject, IProjectDescription, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveProject(
 		IResourceTree tree,
 		IProject source,

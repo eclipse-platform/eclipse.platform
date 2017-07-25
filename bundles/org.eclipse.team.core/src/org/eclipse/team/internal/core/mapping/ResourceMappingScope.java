@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 public class ResourceMappingScope extends AbstractResourceMappingScope {
 
 	private ResourceMapping[] inputMappings;
-	private final Map mappingsToTraversals = Collections.synchronizedMap(new HashMap());
+	private final Map<ResourceMapping, ResourceTraversal[]> mappingsToTraversals = Collections.synchronizedMap(new HashMap<>());
 	private boolean hasAdditionalMappings;
 	private boolean hasAdditionalResources;
 	private final CompoundResourceTraversal compoundTraversal = new CompoundResourceTraversal();
@@ -55,39 +55,29 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 		return newTraversals;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#getInputMappings()
-	 */
+	@Override
 	public ResourceMapping[] getInputMappings() {
 		return inputMappings;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#getMappings()
-	 */
+	@Override
 	public ResourceMapping[] getMappings() {
 		if (mappingsToTraversals.isEmpty())
 			return inputMappings;
-		return (ResourceMapping[]) mappingsToTraversals.keySet().toArray(new ResourceMapping[mappingsToTraversals.size()]);
+		return mappingsToTraversals.keySet().toArray(new ResourceMapping[mappingsToTraversals.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#getTraversals()
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals() {
 		return compoundTraversal.asTraversals();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#getTraversals(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMapping mapping) {
-		return (ResourceTraversal[])mappingsToTraversals.get(mapping);
+		return mappingsToTraversals.get(mapping);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.IResourceMappingOperationScope#hasAdditionalMappings()
-	 */
+	@Override
 	public boolean hasAdditionalMappings() {
 		return hasAdditionalMappings;
 	}
@@ -110,9 +100,7 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 		this.hasAdditionalResources = hasAdditionalResources;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#hasAdditonalResources()
-	 */
+	@Override
 	public boolean hasAdditonalResources() {
 		return hasAdditionalResources;
 	}
@@ -121,16 +109,12 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 		return compoundTraversal;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IResourceMappingScope#asInputScope()
-	 */
+	@Override
 	public ISynchronizationScope asInputScope() {
 		return new ResourceMappingInputScope(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getProjects()
-	 */
+	@Override
 	public IProject[] getProjects() {
 		ResourceMappingContext context = getContext();
 		if (context instanceof RemoteResourceMappingContext) {
@@ -140,13 +124,12 @@ public class ResourceMappingScope extends AbstractResourceMappingScope {
 		return ResourcesPlugin.getWorkspace().getRoot().getProjects();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ISynchronizationScope#getContext()
-	 */
+	@Override
 	public ResourceMappingContext getContext() {
 		return manager.getContext();
 	}
 
+	@Override
 	public void refresh(ResourceMapping[] mappings) {
 		manager.refresh(mappings);
 	}

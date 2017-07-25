@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * of this resource variant
 	 */
 	class ResourceVariantStorage implements IEncodedStorage {
+		@Override
 		public InputStream getContents() throws CoreException {
 			if (!isContentsCached()) {
 				// The cache may have been cleared if someone held
@@ -64,18 +65,23 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 			}
 			return getCachedContents();
 		}
+		@Override
 		public IPath getFullPath() {
 			return getDisplayPath();
 		}
+		@Override
 		public String getName() {
 			return CachedResourceVariant.this.getName();
 		}
+		@Override
 		public boolean isReadOnly() {
 			return true;
 		}
-		public Object getAdapter(Class adapter) {
+		@Override
+		public <T> T getAdapter(Class<T> adapter) {
 			return CachedResourceVariant.this.getAdapter(adapter);
 		}
+		@Override
 		public String getCharset() throws CoreException {
 			InputStream contents = getContents();
 			try {
@@ -96,6 +102,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.variants.IResourceVariant#getStorage(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
 		if (isContainer()) return null;
 		ensureContentsCached(monitor);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,14 +23,17 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		this.variant = variant;
 	}
 
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws CoreException {
 		return variant.getStorage(monitor);
 	}
 
+	@Override
 	public String getName() {
 		return variant.getName();
 	}
 
+	@Override
 	public String getContentIdentifier() {
 		return variant.getContentIdentifier();
 	}
@@ -39,20 +42,24 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		return variant;
 	}
 
+	@Override
 	public boolean isPropertyMissing() {
 		return false;
 	}
 
+	@Override
 	public IFileRevision withAllProperties(IProgressMonitor monitor) throws CoreException {
 		return this;
 	}
 
-	public Object getAdapter(Class adapter) {
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IResourceVariant.class)
-			return variant;
+			return (T) variant;
 		Object object = Platform.getAdapterManager().getAdapter(this, adapter);
 		if (object != null)
-			return object;
+			return (T) object;
 		if (variant instanceof IAdaptable ) {
 			IAdaptable  adaptable = (IAdaptable ) variant;
 			return adaptable.getAdapter(adapter);
@@ -60,6 +67,7 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		return null;
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ResourceVariantFileRevision) {
 			ResourceVariantFileRevision fileRevision = (ResourceVariantFileRevision) obj;
@@ -68,6 +76,7 @@ public class ResourceVariantFileRevision extends FileRevision implements IAdapta
 		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		return getVariant().hashCode();
 	}

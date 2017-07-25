@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,28 +27,22 @@ import org.eclipse.team.core.TeamException;
 public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 
 	private static final byte[] NO_REMOTE = new byte[0];
-	private Map membersCache = new HashMap();
+	private Map<IResource, List<IResource>> membersCache = new HashMap<>();
 
-	private Map syncBytesCache = new HashMap();
+	private Map<IResource, byte[]> syncBytesCache = new HashMap<>();
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#deleteBytes(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean deleteBytes(IResource resource) throws TeamException {
 		return flushBytes(resource, IResource.DEPTH_ZERO);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#dispose()
-	 */
+	@Override
 	public void dispose() {
 		syncBytesCache.clear();
 		membersCache.clear();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#flushBytes(org.eclipse.core.resources.IResource, int)
-	 */
+	@Override
 	public boolean flushBytes(IResource resource, int depth) throws TeamException {
 		if (getSyncBytesCache().containsKey(resource)) {
 			if (depth != IResource.DEPTH_ZERO) {
@@ -65,9 +59,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#getBytes(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public byte[] getBytes(IResource resource) throws TeamException {
 		byte[] syncBytes = internalGetSyncBytes(resource);
 		if (syncBytes != null && equals(syncBytes, NO_REMOTE)) {
@@ -85,20 +77,16 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		return syncBytesCache.isEmpty();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#members(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResource[] members(IResource resource) {
-		List members = (List)membersCache.get(resource);
+		List<IResource> members = membersCache.get(resource);
 		if (members == null) {
 			return new IResource[0];
 		}
-		return (IResource[]) members.toArray(new IResource[members.size()]);
+		return members.toArray(new IResource[members.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.ResourceVariantByteStore#setBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
+	@Override
 	public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 		Assert.isNotNull(bytes);
 		byte[] oldBytes = internalGetSyncBytes(resource);
@@ -107,28 +95,28 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		return true;
 	}
 
-	private Map getSyncBytesCache() {
+	private Map<IResource, byte[]> getSyncBytesCache() {
 		return syncBytesCache;
 	}
 
 	private void internalAddToParent(IResource resource) {
 		IContainer parent = resource.getParent();
 		if (parent == null) return;
-		List members = (List)membersCache.get(parent);
+		List<IResource> members = membersCache.get(parent);
 		if (members == null) {
-			members = new ArrayList();
+			members = new ArrayList<>();
 			membersCache.put(parent, members);
 		}
 		members.add(resource);
 	}
 
 	private byte[] internalGetSyncBytes(IResource resource) {
-		return (byte[])getSyncBytesCache().get(resource);
+		return getSyncBytesCache().get(resource);
 	}
 
 	private void internalRemoveFromParent(IResource resource) {
 		IContainer parent = resource.getParent();
-		List members = (List)membersCache.get(parent);
+		List members = membersCache.get(parent);
 		if (members != null) {
 			members.remove(resource);
 			if (members.isEmpty()) {
