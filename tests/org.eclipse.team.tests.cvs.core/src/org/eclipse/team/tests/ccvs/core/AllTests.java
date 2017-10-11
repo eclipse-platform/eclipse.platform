@@ -31,12 +31,15 @@ public class AllTests extends EclipseTest {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite();
-		if (!Util.isMac()) { // Bug 525817: Disable CVS tests on Mac
-			suite.addTest(AllTestsProvider.suite());
-			suite.addTest(AllTestsTeamSubscriber.suite());
-			suite.addTest(AllUITests.suite());
-			suite.addTest(ResourceMapperTests.suite());
-		}
+
+		// Bug 525817: Disable CVS tests on Mac
+		if (Util.isMac())
+			return suite;
+
+		suite.addTest(AllTestsProvider.suite());
+		suite.addTest(AllTestsTeamSubscriber.suite());
+		suite.addTest(AllUITests.suite());
+		suite.addTest(ResourceMapperTests.suite());
 		return new CVSUITestSetup(suite);
 	}
 }
