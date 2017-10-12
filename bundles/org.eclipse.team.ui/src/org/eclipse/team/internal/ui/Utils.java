@@ -784,7 +784,7 @@ public class Utils {
 	}
 
 	public static String convertSelection(IResource[] resources) {
-		StringBuffer  buffer = new StringBuffer();
+		StringBuilder  buffer = new StringBuilder();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if(i > 0) buffer.append(", "); //$NON-NLS-1$
@@ -810,7 +810,7 @@ public class Utils {
 		int subStrLen = (maxWidth - ellipsis.length()) / 2;
 		int addtl = (maxWidth - ellipsis.length()) % 2;
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(textValue.substring(0, subStrLen));
 		sb.append(ellipsis);
 		sb.append(textValue.substring(length - subStrLen - addtl));
@@ -991,7 +991,7 @@ public class Utils {
 	}
 
 	public static String convertSelection(ResourceMapping[] mappings) {
-		StringBuffer  buffer = new StringBuffer();
+		StringBuilder  buffer = new StringBuilder();
 		boolean hadOne = false;
 		for (int i = 0; i < mappings.length; i++) {
 			ResourceMapping resourceMapping = mappings[i];

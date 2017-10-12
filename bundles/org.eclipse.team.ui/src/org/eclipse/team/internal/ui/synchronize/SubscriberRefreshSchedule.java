@@ -217,7 +217,7 @@ public class SubscriberRefreshSchedule {
 			return TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever;
 		}
 		long stopMills = event.getStopTime();
-		StringBuffer text = new StringBuffer();
+		StringBuilder text = new StringBuilder();
 		if(stopMills <= 0) {
 			text.append(TeamUIMessages.SyncViewPreferencePage_lastRefreshRunNever);
 		} else {

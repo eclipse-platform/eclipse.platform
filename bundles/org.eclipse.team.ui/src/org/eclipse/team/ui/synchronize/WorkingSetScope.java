@@ -72,7 +72,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		if (sets.length == 0) {
 			return TeamUIMessages.WorkingSetScope_0;
 		}
-		StringBuffer name = new StringBuffer();
+		StringBuilder name = new StringBuilder();
 		for (int i = 0; i < sets.length; i++) {
 			IWorkingSet set = sets[i];
 			name.append(set.getName());

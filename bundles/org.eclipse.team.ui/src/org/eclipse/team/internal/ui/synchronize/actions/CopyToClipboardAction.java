@@ -69,7 +69,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
      * matches what appears in the tree.
      */
     private String getTextualClipboardContents() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		int i = 0;
 		IStructuredSelection structuredSelection = getStructuredSelection();
 		if (structuredSelection instanceof TreeSelection) {

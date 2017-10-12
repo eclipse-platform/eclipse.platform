@@ -394,7 +394,7 @@ public abstract class RefreshParticipantJob extends Job {
 	}
 
 	private IStatus calculateStatus(IRefreshEvent event) {
-		StringBuffer text = new StringBuffer();
+		StringBuilder text = new StringBuilder();
 		int code = IStatus.OK;
 		int changeCount = event.getChangeDescription().getChangeCount();
 		int numChanges = getChangeCount();

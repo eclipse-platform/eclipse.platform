@@ -352,7 +352,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	}
 
 	private String makeWorkingSetLabel() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < workingSets.length; i++) {
 			IWorkingSet set = workingSets[i];
 			if (i != 0)
