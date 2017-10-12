@@ -120,24 +120,24 @@ public class ProxyData implements IProxyData {
 
 	@Override
 	public String toString() {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("type: "); //$NON-NLS-1$
-		stringBuffer.append(type);
-		stringBuffer.append(" host: "); //$NON-NLS-1$
-		stringBuffer.append(host);
-		stringBuffer.append(" port: "); //$NON-NLS-1$
-		stringBuffer.append(port);
-		stringBuffer.append(" user: "); //$NON-NLS-1$
-		stringBuffer.append(user);
-		stringBuffer.append(" password: "); //$NON-NLS-1$
-		stringBuffer.append(password);
-		stringBuffer.append(" reqAuth: "); //$NON-NLS-1$
-		stringBuffer.append(requiresAuthentication);
-		stringBuffer.append(" source: "); //$NON-NLS-1$
-		stringBuffer.append(source);
-		stringBuffer.append(" dynamic: "); //$NON-NLS-1$
-		stringBuffer.append(dynamic);
-		return stringBuffer.toString();
+		StringBuilder builder = new StringBuilder();
+		builder.append("type: "); //$NON-NLS-1$
+		builder.append(type);
+		builder.append(" host: "); //$NON-NLS-1$
+		builder.append(host);
+		builder.append(" port: "); //$NON-NLS-1$
+		builder.append(port);
+		builder.append(" user: "); //$NON-NLS-1$
+		builder.append(user);
+		builder.append(" password: "); //$NON-NLS-1$
+		builder.append(password);
+		builder.append(" reqAuth: "); //$NON-NLS-1$
+		builder.append(requiresAuthentication);
+		builder.append(" source: "); //$NON-NLS-1$
+		builder.append(source);
+		builder.append(" dynamic: "); //$NON-NLS-1$
+		builder.append(dynamic);
+		return builder.toString();
 	}
 
 	@Override

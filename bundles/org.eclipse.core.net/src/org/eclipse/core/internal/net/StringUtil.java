@@ -84,7 +84,7 @@ public class StringUtil {
 	public static String replace(String source, String from, String to) {
 		if (from.length() == 0)
 			return source;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		int current = 0;
 		int pos = 0;
 		while (pos != -1) {

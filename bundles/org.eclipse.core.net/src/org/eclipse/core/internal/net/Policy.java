@@ -33,7 +33,7 @@ public class Policy {
 	 * @param message
 	 */
 	public static void debug(String message) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(new Date(System.currentTimeMillis()));
 		buffer.append(" - ["); //$NON-NLS-1$
 		buffer.append(Thread.currentThread().getName());

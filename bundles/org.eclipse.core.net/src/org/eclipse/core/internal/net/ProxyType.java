@@ -81,7 +81,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	private PreferenceManager preferenceManager;
 
 	public static String convertHostsToPropertyString(String[] value) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 
 		if (value == null)
 			return ""; //$NON-NLS-1$
