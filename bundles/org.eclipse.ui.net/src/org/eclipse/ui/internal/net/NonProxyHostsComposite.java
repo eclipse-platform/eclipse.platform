@@ -220,7 +220,7 @@ public class NonProxyHostsComposite extends Composite {
 	}
 
 	String getStringList(Iterator iterator) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (iterator.hasNext()) {
 			ProxyBypassData data = (ProxyBypassData) iterator.next();
 			buffer.append(data.getHost());

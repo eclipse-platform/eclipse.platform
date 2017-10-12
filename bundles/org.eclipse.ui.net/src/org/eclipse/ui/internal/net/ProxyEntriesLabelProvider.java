@@ -69,7 +69,7 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 			if (data.getPassword() == null) {
 				return null;
 			}
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < data.getPassword().length(); i++) {
 				sb.append('*');
 			}
