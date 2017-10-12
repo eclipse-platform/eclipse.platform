@@ -103,7 +103,7 @@ public abstract class BackgroundEventHandler {
 		}
 		@Override
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer.append("Background Event: "); //$NON-NLS-1$
 			buffer.append(getTypeString());
 			return buffer.toString();
@@ -136,7 +136,7 @@ public abstract class BackgroundEventHandler {
 		}
 		@Override
 		public String toString() {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			buffer.append("resource: "); //$NON-NLS-1$
 			buffer.append(resource.getFullPath());
 			buffer.append(" type: "); //$NON-NLS-1$

@@ -119,7 +119,7 @@ public class SyncByteConverter {
 	}
 
 	public static byte[] toBytes(String[] slots) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < slots.length; i++) {
 			String string = slots[i];
 			buffer.append(string);

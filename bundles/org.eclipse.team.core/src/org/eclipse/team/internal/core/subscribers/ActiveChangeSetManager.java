@@ -365,7 +365,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * @return Escaped output string
 	 */
 	private static String escapePrefName(String string) {
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		for (int i = 0; i < string.length(); i++) {
 			char c = string.charAt(i);
 			switch (c) {

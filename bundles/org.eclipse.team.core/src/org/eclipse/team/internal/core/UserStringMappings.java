@@ -81,7 +81,7 @@ public class UserStringMappings implements Preferences.IPropertyChangeListener {
 
     public void save() {
         // Now set into preferences
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         final Iterator e = fMap.keySet().iterator();
 
         while (e.hasNext()) {

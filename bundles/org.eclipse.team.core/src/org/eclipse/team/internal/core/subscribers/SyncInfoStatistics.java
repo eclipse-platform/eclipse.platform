@@ -97,7 +97,7 @@ public class SyncInfoStatistics {
 	 */
 	@Override
 	public String toString() {
-		StringBuffer out = new StringBuffer();
+		StringBuilder out = new StringBuilder();
 		Iterator it = stats.keySet().iterator();
 		while (it.hasNext()) {
 			Integer kind = (Integer) it.next();

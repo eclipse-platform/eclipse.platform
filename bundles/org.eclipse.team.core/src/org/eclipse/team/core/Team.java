@@ -260,7 +260,7 @@ public final class Team {
 			globalIgnore.put(patterns[i], Boolean.valueOf(enabled[i]));
 		}
 		// Now set into preferences
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		Iterator e = globalIgnore.entrySet().iterator();
 		while (e.hasNext()) {
 			Map.Entry entry = (Entry) e.next();
@@ -346,7 +346,7 @@ public final class Team {
 
 	private static String collectContributingExtentionsToDisplay(
 			String patternToFind, IExtension[] extensions) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		boolean isFirst = true;
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] configElements = extensions[i]

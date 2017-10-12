@@ -127,7 +127,7 @@ public class ActiveChangeSet extends DiffChangeSet {
             prefs.put(CTX_COMMENT, comment);
         }
         if (!isEmpty()) {
-	        StringBuffer buffer = new StringBuffer();
+	        StringBuilder buffer = new StringBuilder();
 	        IResource[] resources = getResources();
 	        for (int i = 0; i < resources.length; i++) {
                 IResource resource = resources[i];
