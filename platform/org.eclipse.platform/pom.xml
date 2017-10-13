@@ -14,12 +14,12 @@
   <parent>
     <artifactId>eclipse.platform</artifactId>
     <groupId>eclipse.platform</groupId>
-    <version>4.7.1-SNAPSHOT</version>
+    <version>4.7.2-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
   <groupId>org.eclipse.platform</groupId>
   <artifactId>org.eclipse.platform</artifactId>
-  <version>4.7.1-SNAPSHOT</version>
+  <version>4.7.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
