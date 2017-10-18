@@ -91,7 +91,7 @@ public class ProxyBypass {
 	}
 
 	public String[] getNonProxiedHosts() {
-		String ret = StringUtil.replace(proxyBypass, "|", ";"); //$NON-NLS-1$ //$NON-NLS-2$
+		String ret = proxyBypass.replace("|", ";"); //$NON-NLS-1$ //$NON-NLS-2$
 		return StringUtil.split(ret, new String[] { ";" }); //$NON-NLS-1$
 	}
 

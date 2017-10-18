@@ -70,36 +70,6 @@ public class StringUtil {
 		return sequence1.equals(sequence2);
 	}
 
-	/**
-	 * Replace within <code>source</code> the occurrences of <code>from</code>
-	 * with <code>to</code>.<br>
-	 * <b>Note:</b> This has the same behavior as the
-	 * <code>String.replace()</code> method within JDK 1.5.
-	 *
-	 * @param source
-	 * @param from
-	 * @param to
-	 * @return the substituted string
-	 */
-	public static String replace(String source, String from, String to) {
-		if (from.length() == 0)
-			return source;
-		StringBuilder buffer = new StringBuilder();
-		int current = 0;
-		int pos = 0;
-		while (pos != -1) {
-			pos = source.indexOf(from, current);
-			if (pos == -1) {
-				buffer.append(source.substring(current));
-			} else {
-				buffer.append(source.substring(current, pos));
-				buffer.append(to);
-				current = pos + from.length();
-			}
-		}
-		return buffer.toString();
-	}
-
 	public static boolean hostMatchesFilter(String host, String filter) {
 		String suffixMatchingFilter = "*" + filter; //$NON-NLS-1$
 		StringMatcher matcher = new StringMatcher(suffixMatchingFilter, true, false);
