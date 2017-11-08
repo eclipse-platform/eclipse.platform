@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,7 +128,7 @@ public class AntLaunchDelegate extends LaunchConfigurationDelegate {
 					vmver = vmver.substring(0, 3);
 				}
 				// int ver = (int) (CompilerOptions.versionToJdkLevel(vmver) >>> 16);
-				if (JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_7) < 0) {
+				if (JavaCore.compareJavaVersions(vmver, JavaCore.VERSION_1_8) < 0) {
 					boolean useDefault = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
 					if (useDefault) { // Java 1.7 and above is required if Default Ant Home is used
 						IStatus status = new Status(IStatus.ERROR, AntLaunching.PLUGIN_ID, 1, AntLaunchConfigurationMessages.AntLaunchDelegate_Launching__0__2, null);
