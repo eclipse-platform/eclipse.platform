@@ -486,7 +486,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	@Override
 	public void setMode(int mode) {
 		if (isModeSupported(mode))
-			setProperty(P_MODE, new Integer(mode));
+			setProperty(P_MODE, Integer.valueOf(mode));
 	}
 
 	public boolean isModeSupported(int mode) {
@@ -504,7 +504,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 
 	@Override
 	public void setSupportedModes(int modes) {
-		setProperty(P_SUPPORTED_MODES, new Integer(modes));
+		setProperty(P_SUPPORTED_MODES, Integer.valueOf(modes));
 	}
 
 	/**
@@ -537,7 +537,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	 * @param style
 	 */
 	public void setViewerStyle(int style) {
-		setProperty(P_VIEWER_STYLE, new Integer(style));
+		setProperty(P_VIEWER_STYLE, Integer.valueOf(style));
 	}
 
 	@Override

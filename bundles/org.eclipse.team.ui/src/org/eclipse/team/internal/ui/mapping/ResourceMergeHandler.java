@@ -81,12 +81,12 @@ public class ResourceMergeHandler extends ResourceMergeActionHandler {
 					if (overwrite) {
 						if (diffs.length == 1)
 							return TeamUIMessages.ResourceMergeHandler_0;
-						return NLS.bind(TeamUIMessages.ResourceMergeHandler_1, new Integer(diffs.length).toString());
+						return NLS.bind(TeamUIMessages.ResourceMergeHandler_1, Integer.valueOf(diffs.length).toString());
 
 					}
 					if (diffs.length == 1)
 						return TeamUIMessages.ResourceMergeHandler_2;
-					return NLS.bind(TeamUIMessages.ResourceMergeHandler_3, new Integer(diffs.length).toString());
+					return NLS.bind(TeamUIMessages.ResourceMergeHandler_3, Integer.valueOf(diffs.length).toString());
 				}
 			};
 		}

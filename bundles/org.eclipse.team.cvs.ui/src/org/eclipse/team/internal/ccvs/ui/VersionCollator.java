@@ -46,13 +46,13 @@ public class VersionCollator {
 		for (int i = 0; i < size; i++) {
 			char ch = string.charAt(i);
 			if (ch == '.') {
-				list.add(new Integer(buffer.toString()));
+				list.add(Integer.valueOf(buffer.toString()));
 				buffer = new StringBuffer();
 			} else {
 				buffer.append(ch);
 			}
 		}
-		list.add(new Integer(buffer.toString()));
+		list.add(Integer.valueOf(buffer.toString()));
 		int[] result = new int[list.size()];
 		Iterator it = list.iterator();
 		for (int i = 0; i < result.length; i++) {

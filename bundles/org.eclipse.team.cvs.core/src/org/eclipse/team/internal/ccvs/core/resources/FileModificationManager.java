@@ -112,7 +112,7 @@ public class FileModificationManager implements IResourceChangeListener {
 		try {
 			if (mFile instanceof EclipseFile) {
 				IFile file = (IFile)mFile.getIResource();
-				file.setSessionProperty(UPDATE_TIMESTAMP, new Long(file.getModificationStamp()));
+				file.setSessionProperty(UPDATE_TIMESTAMP, Long.valueOf(file.getModificationStamp()));
 			}
 		} catch (CoreException e) {
 			CVSProviderPlugin.log(e);

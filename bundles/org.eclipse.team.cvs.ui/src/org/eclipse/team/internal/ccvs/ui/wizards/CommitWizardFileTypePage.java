@@ -98,7 +98,7 @@ public class CommitWizardFileTypePage extends WizardPage {
 	    for (final Iterator iter = items.iterator(); iter.hasNext();) {
 	        final FileTypeTable.Item item= (FileTypeTable.Item)iter.next();
 	        final Map destination= item.save ? toSave : notToSave;
-	        destination.put(item.name, new Integer(item.mode));
+	        destination.put(item.name, Integer.valueOf(item.mode));
 	    }
     }
 

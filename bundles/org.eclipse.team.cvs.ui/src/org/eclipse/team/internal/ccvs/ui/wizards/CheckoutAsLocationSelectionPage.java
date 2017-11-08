@@ -354,7 +354,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 		if (isSingleFolder()) {
 			dialog.setMessage(NLS.bind(CVSUIMessages.CheckoutAsLocationSelectionPage_messageForSingle, new String[] { getSingleProject().getName() })); 
 		} else {
-			dialog.setMessage(NLS.bind(CVSUIMessages.CheckoutAsLocationSelectionPage_messageForMulti, new String[] { new Integer(remoteFolders.length).toString() })); 
+			dialog.setMessage(NLS.bind(CVSUIMessages.CheckoutAsLocationSelectionPage_messageForMulti, new String[] { Integer.valueOf(remoteFolders.length).toString() })); 
 		}
 	
 		String dirName = locationPathField.getText();

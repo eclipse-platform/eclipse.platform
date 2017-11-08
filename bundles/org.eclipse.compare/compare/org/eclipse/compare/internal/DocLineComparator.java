@@ -215,16 +215,16 @@ public class DocLineComparator implements ITokenComparator {
 							other.extract(otherIndex, includeSeparator), other.fContributor,
 							fCompareFilters);
 					fCompareFilterCache
-							.put(new Integer(thisIndex), extracts[0]);
+							.put(Integer.valueOf(thisIndex), extracts[0]);
 				}
 
 				extracts[1] = (String) other.fCompareFilterCache
-						.get(new Integer(otherIndex));
+						.get(Integer.valueOf(otherIndex));
 				if (extracts[1] == null) {
 					extracts[1] = Utilities.applyCompareFilters(
 							other.extract(otherIndex, includeSeparator), other.fContributor,
 							extract(thisIndex, includeSeparator), fContributor, fCompareFilters);
-					other.fCompareFilterCache.put(new Integer(otherIndex),
+					other.fCompareFilterCache.put(Integer.valueOf(otherIndex),
 							extracts[1]);
 				}
 			} else {

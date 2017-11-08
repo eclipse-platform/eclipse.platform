@@ -64,15 +64,15 @@ public abstract class TagSource {
     public static int[] convertIncludeFlaqsToTagTypes(int includeFlags) {
         List types = new ArrayList();
         if ((includeFlags & TagSelectionArea.INCLUDE_BRANCHES) > 0)
-            types.add(new Integer(CVSTag.BRANCH));
+            types.add(Integer.valueOf(CVSTag.BRANCH));
         if ((includeFlags & TagSelectionArea.INCLUDE_VERSIONS) > 0)
-            types.add(new Integer(CVSTag.VERSION));
+            types.add(Integer.valueOf(CVSTag.VERSION));
         if ((includeFlags & (TagSelectionArea.INCLUDE_HEAD_TAG)) > 0)
-            types.add(new Integer(CVSTag.HEAD));
+            types.add(Integer.valueOf(CVSTag.HEAD));
         if ((includeFlags & (TagSelectionArea.INCLUDE_DATES)) > 0)
-            types.add(new Integer(CVSTag.DATE));
+            types.add(Integer.valueOf(CVSTag.DATE));
         if ((includeFlags & (TagSelectionArea.INCLUDE_BASE_TAG)) > 0)
-            types.add(new Integer(BASE));
+            types.add(Integer.valueOf(BASE));
         int[] result = new int[types.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = ((Integer)types.get(i)).intValue();

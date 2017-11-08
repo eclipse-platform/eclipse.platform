@@ -62,7 +62,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	 */
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
-		return NLS.bind(CVSUIMessages.CommitAction_jobName, new String[] { new Integer(syncSet.size()).toString() }); 
+		return NLS.bind(CVSUIMessages.CommitAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
 	}
 	
 	/* (non-Javadoc)

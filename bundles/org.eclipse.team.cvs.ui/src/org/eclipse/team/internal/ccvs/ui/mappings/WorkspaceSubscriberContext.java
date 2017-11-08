@@ -463,12 +463,12 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			if (deltas.length == 1) {
 				return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_1, getDiffTree().getResource(deltas[0]).getFullPath());
 			}
-			return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_2, new Integer(deltas.length));
+			return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_2, Integer.valueOf(deltas.length));
 		}
 		if (deltas.length == 1) {
 			return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_3, getDiffTree().getResource(deltas[0]).getFullPath());
 		}
-		return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_4, new Integer(deltas.length));
+		return NLS.bind(CVSUIMessages.WorkspaceSubscriberContext_4, Integer.valueOf(deltas.length));
 	}
 
 	private ResourceTraversal[] getTraversals(IDiff[] deltas) {

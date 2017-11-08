@@ -28,11 +28,11 @@ public class DiffTreeStatistics {
 	 */
 	public void add(int state) {
 		// update statistics
-		Long count = stats.get(new Integer(state));
+		Long count = stats.get(Integer.valueOf(state));
 		if(count == null) {
-			count = new Long(0);
+			count = Long.valueOf(0);
 		}
-		stats.put(new Integer(state), new Long(count.longValue() + 1));
+		stats.put(Integer.valueOf(state), Long.valueOf(count.longValue() + 1));
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class DiffTreeStatistics {
 	 */
 	public void remove(int state) {
 		// update stats
-		Integer kind = new Integer(state);
+		Integer kind = Integer.valueOf(state);
 		Long count = stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
@@ -49,7 +49,7 @@ public class DiffTreeStatistics {
 		} else {
 			long newCount = count.intValue() - 1;
 			if(newCount > 0) {
-				stats.put(kind, new Long(newCount));
+				stats.put(kind, Long.valueOf(newCount));
 			} else {
 				stats.remove(kind);
 			}
@@ -68,7 +68,7 @@ public class DiffTreeStatistics {
 	 */
 	public long countFor(int state, int mask) {
 		if(mask == 0) {
-			Long count = stats.get(new Integer(state));
+			Long count = stats.get(Integer.valueOf(state));
 			return count == null ? 0 : count.longValue();
 		} else {
 			Set keySet = stats.keySet();

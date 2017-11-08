@@ -49,7 +49,7 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 	 */
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
-		return NLS.bind(CVSUIMessages.MergeUpdateAction_jobName, new String[] { new Integer(syncSet.size()).toString() }); 
+		return NLS.bind(CVSUIMessages.MergeUpdateAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
 	}
 	
 	/* (non-Javadoc)

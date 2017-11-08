@@ -85,7 +85,7 @@ public class RemoveRootAction extends SelectionListenerAction {
 				if(roots.length == 1){
 					message = NLS.bind(CVSUIMessages.RemoveRootAction_RepositoryRemovalDialogMessageSingle, roots[0].getLocation(true)); 
 				} else {
-					message = NLS.bind(CVSUIMessages.RemoveRootAction_RepositoryRemovalDialogMessageMultiple, new Integer(roots.length));
+					message = NLS.bind(CVSUIMessages.RemoveRootAction_RepositoryRemovalDialogMessageMultiple, Integer.valueOf(roots.length));
 				}
 				proceed[0] = MessageDialog.openQuestion(shell, 
 						CVSUIMessages.RemoveRootAction_RepositoryRemovalDialogTitle, 

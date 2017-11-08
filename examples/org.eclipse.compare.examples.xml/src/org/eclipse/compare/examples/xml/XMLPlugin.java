@@ -174,7 +174,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		
 		fOrderedElements= new HashMap();
 		String OrderedPrefValue= fPrefStore.getString(ORDERED_PREFERENCE_NAME);
-		StringTokenizer orderedTokens= new StringTokenizer(OrderedPrefValue, (new Character(ORDERED_FIELDS_SEPARATOR)).toString());
+		StringTokenizer orderedTokens= new StringTokenizer(OrderedPrefValue, (Character.valueOf(ORDERED_FIELDS_SEPARATOR)).toString());
 		while (orderedTokens.hasMoreTokens()) {
 			String IdMapName= orderedTokens.nextToken();
 			String signature= orderedTokens.nextToken();
@@ -309,7 +309,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 					if (signature != null && !signature.equals("") //$NON-NLS-1$
 						&& attribute != null && !attribute.equals("")) { //$NON-NLS-1$
 						if (idsource != null && idsource.equals(MAPPING_ID_SOURCE_BODY))
-							bodyid= (new Character(XMLStructureCreator.ID_TYPE_BODY)).toString();
+							bodyid= (Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)).toString();
 						idmapHM.put(XMLStructureCreator.ROOT_ID	+ XMLStructureCreator.SIGN_SEPARATOR
 								+ signature	+ XMLStructureCreator.SIGN_SEPARATOR, bodyid + attribute);
 					}

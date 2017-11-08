@@ -139,7 +139,7 @@ public class CheckoutAsMainPage extends CVSWizardPage {
 	 * Create the page contents for a multiple folder checkout
 	 */
 	private void createMultipleFoldersArea(Composite composite) {
-		createLabel(composite, NLS.bind(CVSUIMessages.CheckoutAsMainPage_multipleFolders, new String[] { new Integer(folders.length).toString() })); 
+		createLabel(composite, NLS.bind(CVSUIMessages.CheckoutAsMainPage_multipleFolders, new String[] { Integer.valueOf(folders.length).toString() })); 
 		createCheckoutAsProjectRadioArea(composite);
 		createCheckoutIntoRadioArea(composite);
 		simpleProjectButton.setSelection(true);

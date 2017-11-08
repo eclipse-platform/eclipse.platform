@@ -423,9 +423,9 @@ public abstract class RefreshParticipantJob extends Job {
 			} else {
 				// Refreshed resources contain changes
 				if (numChanges == 1) {
-					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_changesSingular, (new Object[]{getName(), new Integer(numChanges), numIncomingChanges, sep, numOutgoingChanges})));
+					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_changesSingular, (new Object[]{getName(), Integer.valueOf(numChanges), numIncomingChanges, sep, numOutgoingChanges})));
 				} else {
-					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_changesPlural, (new Object[]{getName(), new Integer(numChanges), numIncomingChanges, sep, numOutgoingChanges})));
+					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_changesPlural, (new Object[]{getName(), Integer.valueOf(numChanges), numIncomingChanges, sep, numOutgoingChanges})));
 				}
 			}
 		} else {

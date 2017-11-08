@@ -29,11 +29,11 @@ public class SyncInfoStatistics {
 	 */
 	public void add(SyncInfo info) {
 		// update statistics
-		Long count = stats.get(new Integer(info.getKind()));
+		Long count = stats.get(Integer.valueOf(info.getKind()));
 		if(count == null) {
-			count = new Long(0);
+			count = Long.valueOf(0);
 		}
-		stats.put(new Integer(info.getKind()), new Long(count.longValue() + 1));
+		stats.put(Integer.valueOf(info.getKind()), Long.valueOf(count.longValue() + 1));
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class SyncInfoStatistics {
 	 */
 	public void remove(SyncInfo info) {
 		// update stats
-		Integer kind = new Integer(info.getKind());
+		Integer kind = Integer.valueOf(info.getKind());
 		Long count = stats.get(kind);
 		if(count == null) {
 			// error condition, shouldn't be removing if we haven't added yet
@@ -50,7 +50,7 @@ public class SyncInfoStatistics {
 		} else {
 			long newCount = count.intValue() - 1;
 			if(newCount > 0) {
-				stats.put(kind, new Long(newCount));
+				stats.put(kind, Long.valueOf(newCount));
 			} else {
 				stats.remove(kind);
 			}
@@ -69,7 +69,7 @@ public class SyncInfoStatistics {
 	 */
 	public long countFor(int kind, int mask) {
 		if(mask == 0) {
-			Long count = stats.get(new Integer(kind));
+			Long count = stats.get(Integer.valueOf(kind));
 			return count == null ? 0 : count.longValue();
 		} else {
 			Iterator it = stats.keySet().iterator();

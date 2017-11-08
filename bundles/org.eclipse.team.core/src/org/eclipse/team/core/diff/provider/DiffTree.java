@@ -343,7 +343,7 @@ public class DiffTree implements IDiffTree {
 	}
 
 	private void accumulatePropertyChanges(int property, IPath[] paths) {
-		Integer key = new Integer(property);
+		Integer key = Integer.valueOf(property);
 		Set<IPath> changes = propertyChanges.get(key);
 		if (changes == null) {
 			changes = new HashSet<>();

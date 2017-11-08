@@ -727,9 +727,9 @@ public class CompareConfiguration {
 	 */
 	public void setChangeIgnored(int kind, boolean ignored) {
 		if (ignored) {
-			fIgnoredChanges.add(new Integer(kind));
+			fIgnoredChanges.add(Integer.valueOf(kind));
 		} else {
-			fIgnoredChanges.remove(new Integer(kind));
+			fIgnoredChanges.remove(Integer.valueOf(kind));
 		}
 	}
 
@@ -747,7 +747,7 @@ public class CompareConfiguration {
 	 * @since 3.5
 	 */
 	public boolean isChangeIgnored(int kind) {
-		return fIgnoredChanges.contains(new Integer(kind));
+		return fIgnoredChanges.contains(Integer.valueOf(kind));
 	}
 
 }

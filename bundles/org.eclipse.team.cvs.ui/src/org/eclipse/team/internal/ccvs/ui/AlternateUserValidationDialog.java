@@ -111,7 +111,7 @@ public class AlternateUserValidationDialog extends Dialog {
 					default: {
 						String oldText = passwordText.getText();
 						String x = getXs();
-						numXs.add(numXs.size(), new Integer(x.length()));
+						numXs.add(numXs.size(), Integer.valueOf(x.length()));
 						String newText = oldText + x;
 						passwordText.setText(newText);
 						passwordText.setSelection(newText.length());

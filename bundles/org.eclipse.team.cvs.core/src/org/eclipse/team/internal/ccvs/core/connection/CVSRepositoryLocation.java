@@ -596,7 +596,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				((passwordFixed && !forDisplay)?(COLON + password):"")//$NON-NLS-1$ 
 					+ HOST_SEPARATOR):"") +//$NON-NLS-1$ 
 			host + COLON +
-			((port == USE_DEFAULT_PORT)?"":(new Integer(port).toString())) + //$NON-NLS-1$ 
+			((port == USE_DEFAULT_PORT)?"":(Integer.valueOf(port).toString())) + //$NON-NLS-1$ 
 			root;
 	}
 	
@@ -1113,7 +1113,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, USER_VARIABLE, user);
 		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, PASSWORD_VARIABLE, password);
 		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, HOST_VARIABLE, host);
-		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, PORT_VARIABLE, new Integer(port).toString());
+		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, PORT_VARIABLE, Integer.valueOf(port).toString());
 
 		// Build the command list to be sent to the OS.
 		List<String> commands = new ArrayList<String>();

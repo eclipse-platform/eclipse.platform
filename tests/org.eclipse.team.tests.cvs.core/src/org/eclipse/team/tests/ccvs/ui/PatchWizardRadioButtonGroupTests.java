@@ -272,7 +272,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				Method method = clazz.getMethod("add", partypes);
 				method.setAccessible(true);
 				Object arglist[] = new Object[2];
-				arglist[0] = new Integer(buttonCode);
+				arglist[0] = Integer.valueOf(buttonCode);
 				arglist[1] = button;
 				method.invoke(groupObject, arglist);
 			} catch (SecurityException e) {
@@ -344,7 +344,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				Object arglist[] = new Object[3];
 				arglist[0] = Boolean.valueOf(enabled);
 				arglist[1] = buttonsToChange;
-				arglist[2] = new Integer(defaultSelection);
+				arglist[2] = Integer.valueOf(defaultSelection);
 				method.invoke(groupObject, arglist);
 			} catch (SecurityException e) {
 				fail(e.getMessage());

@@ -175,7 +175,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fMapping.setSignature(fSignatureText.getText());
 		String idtext= fIdAttributeText.getText();
 		if (fIdTypeChildBodyButton.getSelection()) {
-			idtext= new Character(XMLStructureCreator.ID_TYPE_BODY) + idtext;
+			idtext= Character.valueOf(XMLStructureCreator.ID_TYPE_BODY) + idtext;
 		}
 		fMapping.setIdAttribute(idtext);
 		super.okPressed();

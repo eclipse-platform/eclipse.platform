@@ -232,10 +232,10 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
             if (item instanceof FileTypeTable.Extension) {
                 extensionsList.add(item.name);
-                extensionsModesList.add(new Integer(item.mode));
+                extensionsModesList.add(Integer.valueOf(item.mode));
             } else if (item instanceof FileTypeTable.Name) {
                 namesList.add(item.name);
-                namesModesList.add(new Integer(item.mode));
+                namesModesList.add(Integer.valueOf(item.mode));
             }
         }
 

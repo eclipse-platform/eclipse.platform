@@ -21,9 +21,9 @@ import org.eclipse.team.core.Team;
 
 public class UserStringMappings implements Preferences.IPropertyChangeListener {
 
-    public static final Integer BINARY= new Integer(Team.BINARY);
-    public  static final Integer TEXT= new Integer(Team.TEXT);
-    public static final Integer UNKNOWN= new Integer(Team.UNKNOWN);
+    public static final Integer BINARY= Integer.valueOf(Team.BINARY);
+    public  static final Integer TEXT= Integer.valueOf(Team.TEXT);
+    public static final Integer UNKNOWN= Integer.valueOf(Team.UNKNOWN);
 
 
     private static final String PREF_TEAM_SEPARATOR = "\n"; //$NON-NLS-1$

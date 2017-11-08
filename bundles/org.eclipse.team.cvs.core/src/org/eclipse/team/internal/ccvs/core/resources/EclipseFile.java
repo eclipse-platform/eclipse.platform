@@ -359,11 +359,11 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 				} else {
 					List notificationCharacters = new ArrayList();
 					if ((notifications & NOTIFY_ON_EDIT) >0) 
-						notificationCharacters.add(new Character(NotifyInfo.EDIT));
+						notificationCharacters.add(Character.valueOf(NotifyInfo.EDIT));
 					if ((notifications & NOTIFY_ON_UNEDIT) >0) 
-						notificationCharacters.add(new Character(NotifyInfo.UNEDIT));
+						notificationCharacters.add(Character.valueOf(NotifyInfo.UNEDIT));
 					if ((notifications & NOTIFY_ON_COMMIT) >0) 
-						notificationCharacters.add(new Character(NotifyInfo.COMMIT));
+						notificationCharacters.add(Character.valueOf(NotifyInfo.COMMIT));
 					internalFormat = new char[notificationCharacters.size()];
 					for (int i = 0; i < internalFormat.length; i++) {
 						internalFormat[i] = ((Character)notificationCharacters.get(i)).charValue();

@@ -59,9 +59,9 @@ public class AddToVersionControlDialog extends DetailsDialog {
 			 
 		// add a description label
 		if (unaddedResources.length==1) {
-			createWrappingLabel(composite, NLS.bind(CVSUIMessages.AddToVersionControlDialog_thereIsAnUnaddedResource, new String[] { new Integer(unaddedResources.length).toString() }));  
+			createWrappingLabel(composite, NLS.bind(CVSUIMessages.AddToVersionControlDialog_thereIsAnUnaddedResource, new String[] { Integer.valueOf(unaddedResources.length).toString() }));  
 		} else {
-			createWrappingLabel(composite, NLS.bind(CVSUIMessages.AddToVersionControlDialog_thereAreUnaddedResources, new String[] { new Integer(unaddedResources.length).toString() }));  
+			createWrappingLabel(composite, NLS.bind(CVSUIMessages.AddToVersionControlDialog_thereAreUnaddedResources, new String[] { Integer.valueOf(unaddedResources.length).toString() }));  
 		}
 	}
 

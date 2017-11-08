@@ -421,21 +421,21 @@ public class TextMergeViewerTest extends TestCase {
 							Object otherContributor = lineComparison
 									.get(OTHER_CONTRIBUTOR);
 
-							if (thisContributor.equals(new Character('L'))) {
+							if (thisContributor.equals(Character.valueOf('L'))) {
 								assertEquals(thisLine, leftString);
 								assertEquals(otherContributor, new Character(
 										'R'));
 								assertEquals(otherLine, rightString);
 							} else {
 								assertEquals(thisContributor,
-										new Character('R'));
+										Character.valueOf('R'));
 								assertEquals(thisLine, rightString);
 								assertEquals(otherContributor, new Character(
 										'L'));
 								assertEquals(otherLine, leftString);
 							}
 
-							if (thisContributor.equals(new Character('L')))
+							if (thisContributor.equals(Character.valueOf('L')))
 								return new IRegion[] { new Region(0, 1),
 										new Region(1, 1) };
 

@@ -329,7 +329,7 @@ public class StringMatcher {
 						break;
 					}
 					CharacterClass cc = new CharacterClass(negated, fPattern.substring(beginPos, endPos));
-					segmentCCs.put(new Integer(buf.length()), cc);
+					segmentCCs.put(Integer.valueOf(buf.length()), cc);
 					pos = endPos + 1;
 					/* fall through; fSingleWildCard can also represent a character class */
 				case '?':
@@ -402,7 +402,7 @@ public class StringMatcher {
 				if (pchar == fSingleWildCard) {
 					if (ccMap == null)
 						continue;
-					CharacterClass cc = (CharacterClass) ccMap.get(new Integer(ppos));
+					CharacterClass cc = (CharacterClass) ccMap.get(Integer.valueOf(ppos));
 					if (cc == null || cc.match(tchar))
 						continue;
 					else

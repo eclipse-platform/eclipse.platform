@@ -97,7 +97,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 					IDiff[] diffs = getTargetDiffs();
 					if (diffs.length == 1)
 						return TeamUIMessages.ResourceMarkAsMergedHandler_0;
-					return NLS.bind(TeamUIMessages.ResourceMarkAsMergedHandler_1, new Integer(diffs.length).toString());
+					return NLS.bind(TeamUIMessages.ResourceMarkAsMergedHandler_1, Integer.valueOf(diffs.length).toString());
 				}
 			};
 		}

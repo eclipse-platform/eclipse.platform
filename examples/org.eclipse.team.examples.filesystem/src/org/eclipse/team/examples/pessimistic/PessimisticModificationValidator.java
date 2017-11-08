@@ -313,7 +313,7 @@ public class PessimisticModificationValidator
 	 * Convenience method to set the validate edit status for the given resource.
 	 */
 	private static void setValidateEditStatus(Map map, IFile resource, int status) {
-		map.put(resource, new Integer(status));
+		map.put(resource, Integer.valueOf(status));
 	}
 	
 	/*

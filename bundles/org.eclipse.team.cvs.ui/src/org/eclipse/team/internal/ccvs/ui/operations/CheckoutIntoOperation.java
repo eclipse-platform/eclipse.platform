@@ -68,7 +68,7 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 		ICVSRemoteFolder[] remoteFolders = getRemoteFolders();
 		String localFolderName = ""; //$NON-NLS-1$
 		localFolderName = getLocalFolder().getIResource().getFullPath().toString();
-		return NLS.bind(CVSUIMessages.CheckoutIntoOperation_taskname, new String[] { new Integer(remoteFolders.length).toString(), localFolderName });  
+		return NLS.bind(CVSUIMessages.CheckoutIntoOperation_taskname, new String[] { Integer.valueOf(remoteFolders.length).toString(), localFolderName });  
 	}
 
 	/**

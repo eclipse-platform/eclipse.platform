@@ -53,7 +53,7 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 				Display.getCurrent().getActiveShell(),
 				TeamUIMessages.IgnoreLeadingPathSegmentsDialog_title, NLS.bind(
 						TeamUIMessages.IgnoreLeadingPathSegmentsDialog_message,
-						new Integer(maxValue)), new Integer(oldValue)
+						Integer.valueOf(maxValue)), new Integer(oldValue)
 						.toString(), new IInputValidator() {
 					@Override
 					public String isValid(String input) {

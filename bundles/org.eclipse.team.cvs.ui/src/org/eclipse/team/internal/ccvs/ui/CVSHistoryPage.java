@@ -2133,7 +2133,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 		if (historyPageSite instanceof WorkbenchHistoryPageSite){
 			IWorkbenchPart part = ((WorkbenchHistoryPageSite) historyPageSite).getPart();
 			if (part instanceof GenericHistoryView){
-				String revisions = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterOnMessage, new Object[]{new Integer(historyFilter.getMatchCount()),new Integer(before)});
+				String revisions = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterOnMessage, new Object[]{Integer.valueOf(historyFilter.getMatchCount()),new Integer(before)});
 				String old = getName();
 				description = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterDescription, new Object[]{file.getName(), revisions});
 				CVSHistoryPage.this.firePropertyChange(CVSHistoryPage.this, P_NAME, old, getName());

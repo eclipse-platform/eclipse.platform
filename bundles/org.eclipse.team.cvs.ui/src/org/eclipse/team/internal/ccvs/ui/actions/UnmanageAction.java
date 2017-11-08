@@ -66,7 +66,7 @@ public class UnmanageAction extends WorkspaceAction {
 				return NLS.bind(CVSUIMessages.Unmanage_message, new String[] { project.getName() });  
 			}
 			else {
-				return NLS.bind(CVSUIMessages.Unmanage_messageN, new String[] { new Integer(projects.length).toString() });  
+				return NLS.bind(CVSUIMessages.Unmanage_messageN, new String[] { Integer.valueOf(projects.length).toString() });  
 			}
 		}
 		

@@ -318,7 +318,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		if (changesCount == 1) {
 			message = TeamUIMessages.DiffTreeChangesSection_8;
 		} else {
-			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_9, new Integer(changesCount));
+			message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_9, Integer.valueOf(changesCount));
 		}
 		final ITeamContentProviderDescriptor[] descriptors = getEnabledContentDescriptors();
 		if (descriptors.length == 0)

@@ -244,7 +244,7 @@ public class ConfigureRepositoryLocationsTable implements ICellModifier,
 		final Item item = (Item) element;
 
 		if (PROPERTY_ALTERNATIVE_LIST.equals(property)) {
-			return new Integer(item.selected);
+			return Integer.valueOf(item.selected);
 		}
 		return null;
 	}

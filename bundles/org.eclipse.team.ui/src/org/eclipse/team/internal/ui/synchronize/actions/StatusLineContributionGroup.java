@@ -83,9 +83,9 @@ public abstract class StatusLineContributionGroup extends ActionGroup {
 
 		TeamUIPlugin.getStandardDisplay().asyncExec(() -> {
 			if (isThreeWay()) {
-				conflicting.setText(new Integer(workspaceConflicting).toString());
-				incoming.setText(new Integer(workspaceIncoming).toString());
-				outgoing.setText(new Integer(workspaceOutgoing).toString());
+				conflicting.setText(Integer.valueOf(workspaceConflicting).toString());
+				incoming.setText(Integer.valueOf(workspaceIncoming).toString());
+				outgoing.setText(Integer.valueOf(workspaceOutgoing).toString());
 
 				conflicting.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_conflicting }));
 				outgoing.setTooltip(NLS.bind(TeamUIMessages.StatisticsPanel_numbersTooltip, new String[] { TeamUIMessages.StatisticsPanel_outgoing }));

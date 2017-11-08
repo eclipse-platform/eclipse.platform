@@ -198,7 +198,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 	 * Updates the count of bundles that will be imported
 	 */
 	private void updateCount() {
-		counterLabel.setText(NLS.bind(CVSUIMessages.CVSScmUrlImportWizardPage_4, new Integer(descriptions.length)));
+		counterLabel.setText(NLS.bind(CVSUIMessages.CVSScmUrlImportWizardPage_4, Integer.valueOf(descriptions.length)));
 		counterLabel.getParent().layout();
 	}
 

@@ -29,7 +29,7 @@ public class StreamUtil {
 		throws IOException {
 
 		// Only show progress for files larger than 25Kb.
-		Long kilobytesEstimate = new Long(sizeEstimate / 1024);
+		Long kilobytesEstimate = Long.valueOf(sizeEstimate / 1024);
 		boolean showProgress = (progress != null) && (sizeEstimate > 25000);
 		long bytesCopied = 0;
 
@@ -46,7 +46,7 @@ public class StreamUtil {
 					progress.subTask(
 						Policy.bind(
 							"filetransfer.monitor", //$NON-NLS-1$
-							new Object[] { title, new Long(bytesCopied / 1024), kilobytesEstimate }));
+							new Object[] { title, Long.valueOf(bytesCopied / 1024), kilobytesEstimate }));
 				}
 
 				// Read the next chunk.

@@ -281,7 +281,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 	}
 
 	public static void setSortCriteria(ISynchronizePageConfiguration configuration, int criteria) {
-		configuration.setProperty(P_LAST_COMMENTSORT, new Integer(criteria));
+		configuration.setProperty(P_LAST_COMMENTSORT, Integer.valueOf(criteria));
 		IDialogSettings pageSettings = configuration.getSite().getPageSettings();
 		if (pageSettings != null) {
 			pageSettings.put(P_LAST_COMMENTSORT, criteria);

@@ -159,15 +159,15 @@ public class XMLStructureCreator implements IStructureCreator {
 
                 if (isUseIdMap() && idMap.containsKey(fsignature)) {
                     String attrName= (String) idMap.get(fsignature);
-                    elementId= raw + new Character(ID_SEPARATOR) + attrs.getValue(attrName);
+                    elementId= raw + Character.valueOf(ID_SEPARATOR) + attrs.getValue(attrName);
                     elementName= raw + " [" + attrName + "=" + attrs.getValue(attrName) + "]"; //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
                 } else {
                     if (!currentParent.childElements.containsKey(raw)) {
-                        currentParent.childElements.put(raw, new Integer(1));
+                        currentParent.childElements.put(raw, Integer.valueOf(1));
                     } else {
-                        currentParent.childElements.put(raw, new Integer(((Integer) currentParent.childElements.get(raw)).intValue() + 1));
+                        currentParent.childElements.put(raw, Integer.valueOf(((Integer) currentParent.childElements.get(raw)).intValue() + 1));
                     }
-                    elementId= raw + new Character(ID_SEPARATOR) + "[" + currentParent.childElements.get(raw) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
+                    elementId= raw + Character.valueOf(ID_SEPARATOR) + "[" + currentParent.childElements.get(raw) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
                     elementName= MessageFormat.format("{0} [{1}]", raw, currentParent.childElements.get(raw).toString()); //$NON-NLS-1$
                 }
                 int start= r.getOffset() + prevlocator.getColumnNumber() - 1;

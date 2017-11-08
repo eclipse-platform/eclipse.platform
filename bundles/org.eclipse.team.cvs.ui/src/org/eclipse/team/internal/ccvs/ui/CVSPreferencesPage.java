@@ -148,7 +148,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		}
 		
 		protected Object getValue(IPreferenceStore store, String key) {
-			return new Integer(store.getInt(key));			
+			return Integer.valueOf(store.getInt(key));			
 		}
 	}
 	
@@ -221,7 +221,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		}
 
 		protected Object loadValue(IPreferenceStore store, String key) {
-			return new Integer(store.getInt(key));
+			return Integer.valueOf(store.getInt(key));
 		}
 
 		protected void saveValue(IPreferenceStore store, String key, Object value) {
@@ -330,7 +330,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				CVSUIMessages.CVSPreferencesPage_9 */};      
 		COMPRESSION_VALUES= new Integer [COMPRESSION_LABELS.length];
 		for (int i = 0; i < COMPRESSION_VALUES.length; i++) {
-			COMPRESSION_VALUES[i]= new Integer(i);
+			COMPRESSION_VALUES[i]= Integer.valueOf(i);
 		}
 		
 	    final IPerspectiveDescriptor [] perspectives= PlatformUI.getWorkbench().getPerspectiveRegistry().getPerspectives();
@@ -462,7 +462,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				CVSUIMessages.CVSPreferencesPage_26,  
 				IHelpContextIds.PREF_QUIET,
 				new String [] { CVSUIMessages.CVSPreferencesPage_27, CVSUIMessages.CVSPreferencesPage_28, CVSUIMessages.CVSPreferencesPage_29 }, //  
-				new Integer [] { new Integer(0), new Integer(1), new Integer(2)});
+				new Integer [] { Integer.valueOf(0), new Integer(1), new Integer(2)});
 		
 		quietnessCombo.getCombo().addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -531,7 +531,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				CVSUIMessages.CVSPreferencesPage_41,  
 				IHelpContextIds.PREF_SAVE_DIRTY_EDITORS, 
 	    		YES_NO_PROMPT,
-	    		new Integer [] { new Integer(ICVSUIConstants.OPTION_AUTOMATIC),	new Integer(ICVSUIConstants.OPTION_NEVER), 	new Integer(ICVSUIConstants.OPTION_PROMPT)});
+	    		new Integer [] { Integer.valueOf(ICVSUIConstants.OPTION_AUTOMATIC),	new Integer(ICVSUIConstants.OPTION_NEVER), 	new Integer(ICVSUIConstants.OPTION_PROMPT)});
 		
 	    new StringRadioButtons(
 	    		composite, 

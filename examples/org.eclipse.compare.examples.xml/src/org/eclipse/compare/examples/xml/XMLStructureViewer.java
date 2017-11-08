@@ -316,7 +316,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 								idname.indexOf(
 									XMLStructureCreator.ID_SEPARATOR));
 						idname=
-							new Character(XMLStructureCreator.ID_TYPE_BODY)
+							Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)
 								+ idname;
 					}
 					if (idmapHM.containsKey(signature)) {
@@ -451,7 +451,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 							0,
 							idname.indexOf(XMLStructureCreator.ID_SEPARATOR));
 					idname=
-						new Character(XMLStructureCreator.ID_TYPE_BODY)
+						Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)
 							+ idname;
 					idmapHM.put(signature, idname);
 					XMLPlugin.getDefault().setIdMaps(

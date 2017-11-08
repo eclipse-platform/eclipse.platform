@@ -177,13 +177,13 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 
         if (PROPERTY_MODE.equals(property)) {
             if (item.mode == Team.BINARY)
-                return new Integer(COMBO_INDEX_BINARY);
+                return Integer.valueOf(COMBO_INDEX_BINARY);
             if (item.mode == Team.TEXT)
-                return new Integer(COMBO_INDEX_TEXT);
+                return Integer.valueOf(COMBO_INDEX_TEXT);
         }
 
         if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
-            return new Integer(item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE);
+            return Integer.valueOf(item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE);
         }
         return null;
     }

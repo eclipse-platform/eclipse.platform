@@ -116,7 +116,7 @@ public class FileContentManager implements IFileContentManager {
             for (int i = 0; i < numberOfMappings; i++) {
                 final String extension = input.readUTF();
                 final int type = input.readInt();
-                result.put(extension, new Integer(type));
+                result.put(extension, Integer.valueOf(type));
             }
             return result;
         }

@@ -38,7 +38,7 @@ public class CompareRevertOperation extends CVSSubscriberOperation {
 	 */
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
-		return NLS.bind(CVSUIMessages.CompareRevertAction_0, new String[] { new Integer(syncSet.size()).toString() }); 
+		return NLS.bind(CVSUIMessages.CompareRevertAction_0, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
 
 	}
 	

@@ -123,6 +123,6 @@ public class JSchLocation extends PlatformObject implements IJSchLocation{
    */
   public String toString(){
     return user
-        +"@"+host+((port==DEFAULT_PORT) ? "" : ":"+(new Integer(port).toString())); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        +"@"+host+((port==DEFAULT_PORT) ? "" : ":"+(Integer.valueOf(port).toString())); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
   }
 }

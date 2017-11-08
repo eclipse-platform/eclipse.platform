@@ -544,7 +544,7 @@ public class CVSProviderPlugin extends Plugin {
 				dis.readUTF();
 			}
 		} else {
-			Util.logError(NLS.bind(CVSMessages.CVSProviderPlugin_unknownStateFileVersion, new String[] { new Integer(count).toString() }), null); 
+			Util.logError(NLS.bind(CVSMessages.CVSProviderPlugin_unknownStateFileVersion, new String[] { Integer.valueOf(count).toString() }), null); 
 		}
 	}
 		

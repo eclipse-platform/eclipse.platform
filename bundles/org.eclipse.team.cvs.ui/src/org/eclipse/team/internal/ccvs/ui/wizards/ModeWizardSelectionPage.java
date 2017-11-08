@@ -80,7 +80,7 @@ public class ModeWizardSelectionPage extends WizardPage {
 				final KSubstOption mode= ((ModeChange)element).getNewMode();
 				for (int i = 0; i < MODES.length; i++) {
 					if (MODES[i].equals(mode)) {
-						return new Integer(i);
+						return Integer.valueOf(i);
 					}
 				}
 			}

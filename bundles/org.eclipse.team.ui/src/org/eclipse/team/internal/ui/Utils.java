@@ -987,7 +987,7 @@ public class Utils {
 		String desc = convertSelection(mappings);
 		if (desc.length() > 0)
 			return shortenText(30, desc);
-		return NLS.bind(TeamUIMessages.Utils_18, new Integer(mappings.length));
+		return NLS.bind(TeamUIMessages.Utils_18, Integer.valueOf(mappings.length));
 	}
 
 	public static String convertSelection(ResourceMapping[] mappings) {

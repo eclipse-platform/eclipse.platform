@@ -602,7 +602,7 @@ public class SyncFileWriter {
 						} else {
 							file.setContents(new ByteArrayInputStream(os.toByteArray()), IResource.FORCE /*don't keep history but do force*/, null);
 						}			
-						file.setSessionProperty(MODSTAMP_KEY, new Long(file.getModificationStamp()));
+						file.setSessionProperty(MODSTAMP_KEY, Long.valueOf(file.getModificationStamp()));
 					} catch(CVSException e) {
 						throw new CoreException(e.getStatus());
 					}

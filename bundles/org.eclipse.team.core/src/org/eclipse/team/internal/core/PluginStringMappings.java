@@ -60,9 +60,9 @@ public class PluginStringMappings {
                     continue;
 
                 if (type.equals("text")) { //$NON-NLS-1$
-                    result.put(ext, new Integer(Team.TEXT));
+                    result.put(ext, Integer.valueOf(Team.TEXT));
                 } else if (type.equals("binary")) { //$NON-NLS-1$
-                    result.put(ext, new Integer(Team.BINARY));
+                    result.put(ext, Integer.valueOf(Team.BINARY));
                 }
             }
         }

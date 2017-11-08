@@ -506,7 +506,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		if (remoteFolders.length == 1) {
 			return NLS.bind(CVSUIMessages.CheckoutSingleProjectOperation_taskname, new String[] { remoteFolders[0].getName() }); 
 		} else {
-			return NLS.bind(CVSUIMessages.CheckoutMultipleProjectsOperation_taskName, new String[] { new Integer(remoteFolders.length).toString() });  
+			return NLS.bind(CVSUIMessages.CheckoutMultipleProjectsOperation_taskName, new String[] { Integer.valueOf(remoteFolders.length).toString() });  
 		}
 	}
 	
