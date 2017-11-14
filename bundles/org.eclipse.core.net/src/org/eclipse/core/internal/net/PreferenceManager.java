@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 IBM Corporation and others.
+* Copyright (c) 2010, 2017 IBM Corporation and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -28,13 +28,6 @@ public class PreferenceManager {
 	public static final String ROOT = ""; //$NON-NLS-1$
 
 	private static final String PREF_HAS_MIGRATED = "org.eclipse.core.net.hasMigrated"; //$NON-NLS-1$
-
-	/**
-	 * Preference constants used by Update to record the HTTP proxy
-	 */
-	private static String HTTP_PROXY_HOST = "org.eclipse.update.core.proxy.host"; //$NON-NLS-1$
-	private static String HTTP_PROXY_PORT = "org.eclipse.update.core.proxy.port"; //$NON-NLS-1$
-	private static String HTTP_PROXY_ENABLE = "org.eclipse.update.core.proxy.enable"; //$NON-NLS-1$
 
 	private static final int DEFAULT_INT = -1;
 	private static final String DEFAULT_STRING = null;
@@ -313,10 +306,9 @@ public class PreferenceManager {
 			// Only set the migration bit when initializing
 			if (isInitialize)
 				instanceScope.putBoolean(PREF_HAS_MIGRATED, true);
-			Preferences updatePrefs = instanceScope.parent().node("org.eclipse.update.core"); //$NON-NLS-1$
-			String httpProxyHost = getHostToMigrate(updatePrefs, isInitialize /* checkSystemProperties */);
-			int port = getPortToMigrate(updatePrefs, isInitialize /* checkSystemProperties */);
-			boolean httpProxyEnable = getEnablementToMigrate(updatePrefs, isInitialize /* checkSystemProperties */);
+			String httpProxyHost = getHostToMigrate(isInitialize /* checkSystemProperties */);
+			int port = getPortToMigrate(isInitialize /* checkSystemProperties */);
+			boolean httpProxyEnable = getEnablementToMigrate(isInitialize /* checkSystemProperties */);
 			if (httpProxyHost != null) {
 				ProxyData proxyData = new ProxyData(IProxyData.HTTP_PROXY_TYPE,
 						httpProxyHost, port, false, null);
@@ -333,23 +325,21 @@ public class PreferenceManager {
 		}
 	}
 
-	private String getHostToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
-		String httpProxyHost = updatePrefs.get(HTTP_PROXY_HOST, ""); //$NON-NLS-1$
+	private String getHostToMigrate(boolean checkSystemProperties) {
+		String httpProxyHost = ""; //$NON-NLS-1$
 		if (checkSystemProperties && "".equals(httpProxyHost)) { //$NON-NLS-1$
 			httpProxyHost = System.getProperty("http.proxyHost", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if ("".equals(httpProxyHost)) //$NON-NLS-1$
 			httpProxyHost = null;
-		updatePrefs.remove(HTTP_PROXY_HOST);
 		return httpProxyHost;
 	}
 
-	private int getPortToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
-		String httpProxyPort = updatePrefs.get(HTTP_PROXY_PORT, ""); //$NON-NLS-1$
+	private int getPortToMigrate(boolean checkSystemProperties) {
+		String httpProxyPort = ""; //$NON-NLS-1$
 		if (checkSystemProperties && "".equals(httpProxyPort)) { //$NON-NLS-1$
 			httpProxyPort = System.getProperty("http.proxyPort", ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		updatePrefs.remove(HTTP_PROXY_PORT);
 		int port = -1;
 		if (httpProxyPort != null && !"".equals(httpProxyPort)) //$NON-NLS-1$
 			try {
@@ -360,13 +350,10 @@ public class PreferenceManager {
 		return port;
 	}
 
-	private boolean getEnablementToMigrate(Preferences updatePrefs, boolean checkSystemProperties) {
+	private boolean getEnablementToMigrate(boolean checkSystemProperties) {
 		boolean httpProxyEnable = false;
-		if (checkSystemProperties && updatePrefs.get(HTTP_PROXY_ENABLE, null) == null) {
+		if (checkSystemProperties) {
 			httpProxyEnable = Boolean.getBoolean("http.proxySet"); //$NON-NLS-1$
-		} else {
-			httpProxyEnable = updatePrefs.getBoolean(HTTP_PROXY_ENABLE, false);
-			updatePrefs.remove(HTTP_PROXY_ENABLE);
 		}
 		return httpProxyEnable;
 	}

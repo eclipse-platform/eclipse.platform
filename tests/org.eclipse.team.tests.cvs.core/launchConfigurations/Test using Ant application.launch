@@ -138,15 +138,6 @@
 <mapEntry key="org.eclipse.ui/trace/perspective" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/workbench.restore" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/workbench.start" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug" value="true"/>
-<mapEntry key="org.eclipse.update.core/debug/configuration" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/install" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/installhandler" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/parsing" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/reconciler" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/type" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/warning" value="false"/>
-<mapEntry key="org.eclipse.update.core/debug/web" value="false"/>
 </mapAttribute>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>
