@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="org.eclipse.team" name="CVS" alt-style="css/overview.properties" style="css/overview.css" path="overview/@">
+  		<group style-id="content-group" id="content-group">
+       		<link style-id="content-link" label="Team support with CVS" url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.eclipse.platform.doc.user/concepts/concepts-26.htm" id="team">
+          		<text>Find out how to collaborate with other developers using CVS</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>

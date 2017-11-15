@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.cheatsheets.cheatSheetContent">
+      <category
+            id="org.eclipse.platform.team"
+            name="%cheatsheet.category.team">
+      </category>
+      <cheatsheet
+            category="org.eclipse.platform.team"
+            contentFile="$nl$/cheatsheets/cvs_checkout.xml"
+            id="org.eclipse.platform.cvs.checkout"
+            name="%cheatsheet.cvs.checkout.name">
+         <description>
+            %cheatsheet.cvs.checkout.desc
+         </description>
+      </cheatsheet>
+      <cheatsheet
+            category="org.eclipse.platform.team"
+            contentFile="$nl$/cheatsheets/cvs_merge.xml"
+            id="org.eclipse.platform.cvs.merge"
+            name="%cheatsheet.cvs.merge.name">
+         <description>
+            %cheatsheet.cvs.merge.desc
+         </description>
+      </cheatsheet>
+   </extension>
+   <!-- =====================================================  -->
+   <!-- Standby Content Part contributions                     -->
+   <!-- =====================================================  -->
+   <extension point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="$nl$/intro/overviewExtensionContent.xml"/>
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="$nl$/intro/tutorialsExtensionContent.xml"/>
+   </extension>
+</plugin>
