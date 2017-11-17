@@ -280,7 +280,7 @@ public class AttributesImpl implements Attributes {
 	/* Returns a string representation of this object. */
 	@Override
 	public String toString() {
-		StringBuffer str= new StringBuffer();
+		StringBuilder str= new StringBuilder();
 
 		str.append('[');
 		str.append("len="); //$NON-NLS-1$

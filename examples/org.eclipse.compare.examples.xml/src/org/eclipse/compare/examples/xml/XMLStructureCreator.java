@@ -487,7 +487,7 @@ public class XMLStructureCreator implements IStructureCreator {
 
         /* Returns a string of the location. */
         private String getLocationString(SAXParseException ex) {
-            StringBuffer str= new StringBuffer();
+            StringBuilder str= new StringBuilder();
 
             String systemId= ex.getSystemId();
             if (systemId != null) {
@@ -702,7 +702,7 @@ public class XMLStructureCreator implements IStructureCreator {
             return null;
         BufferedReader reader= null;
         try {
-            StringBuffer buffer= new StringBuffer();
+            StringBuilder buffer= new StringBuilder();
             char[] part= new char[2048];
             int read= 0;
             reader= new BufferedReader(new InputStreamReader(is, encoding));
@@ -779,7 +779,7 @@ public class XMLStructureCreator implements IStructureCreator {
 
     protected String removeWhiteSpace(String str) {
         str= trimWhiteSpace(str);
-        StringBuffer retStr= new StringBuffer();
+        StringBuilder retStr= new StringBuilder();
         int start= 0, end= 0;
         outer_while: while (true) {
             while (end < str.length() && !isWhiteSpace(str.charAt(end))) {

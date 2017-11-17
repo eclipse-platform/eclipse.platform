@@ -207,7 +207,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				CompareUI.addStructureViewerAlias(DEFAULT_PREFIX, extension);
 			}
 		}
-		StringBuffer IdMapPrefValue = new StringBuffer();
+		StringBuilder IdMapPrefValue = new StringBuilder();
 		Set idmapKeys = fIdMaps.keySet();
 		for (Iterator iter_idmap = idmapKeys.iterator(); iter_idmap.hasNext(); ) {
 			String IdMapName = (String) iter_idmap.next();
@@ -233,7 +233,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		//stores OrderedElements
 		if (OrderedElements != null) {
 			fOrderedElements= OrderedElements;
-			StringBuffer OrderedPrefValue= new StringBuffer();
+			StringBuilder OrderedPrefValue= new StringBuilder();
 			Set orderedKeys= fOrderedElements.keySet();
 			for (Iterator iter_ordered= orderedKeys.iterator(); iter_ordered.hasNext();) {
 				String IdMapName= (String) iter_ordered.next();
