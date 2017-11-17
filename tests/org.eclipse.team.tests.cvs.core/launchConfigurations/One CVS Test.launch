@@ -271,7 +271,6 @@
 <mapEntry key="org.eclipse.ui/trace/operations" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/operations.verbose" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/sources" value="false"/>
-<mapEntry key="org.eclipse.update.configurator/debug" value="false"/>
 </mapAttribute>
 <booleanAttribute key="useCustomFeatures" value="false"/>
 <booleanAttribute key="useDefaultConfig" value="true"/>

@@ -22,7 +22,6 @@
 <mapEntry key="org.eclipse.core.resources/build/needbuild" value="false"/>
 <mapEntry key="org.eclipse.ui/trace/graphics" value="false"/>
 <mapEntry key="org.eclipse.jdt.core/debug/resolution" value="false"/>
-<mapEntry key="org.eclipse.update.configurator/debug" value="false"/>
 <mapEntry key="org.eclipse.core.resources/perf/snapshot" value="1000"/>
 <mapEntry key="org.eclipse.osgi/monitor/activation" value="false"/>
 <mapEntry key="org.eclipse.jdt.ui/perf/content_assist/extensions" value="1000"/>
