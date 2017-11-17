@@ -56,8 +56,8 @@
   <modules>
     <module>bundles/org.eclipse.compare</module>
     <module>bundles/org.eclipse.compare.win32</module>
-
     <module>bundles/org.eclipse.compare.core</module>
+    <module>bundles/org.eclipse.cvs</module>
     <module>bundles/org.eclipse.core.net</module>
     <module>bundles/org.eclipse.jsch.core</module>
     <module>bundles/org.eclipse.jsch.ui</module>
