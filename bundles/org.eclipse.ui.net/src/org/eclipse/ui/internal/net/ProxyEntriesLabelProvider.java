@@ -14,13 +14,11 @@ import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxySelector;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 
 public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
-		ITableLabelProvider, IColorProvider {
+		ITableLabelProvider {
 
 	public ProxyEntriesLabelProvider() {
 		super();
@@ -97,22 +95,4 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 			column.setResizable(true);
 		}
 	}
-
-	@Override
-	public Color getBackground(Object element) {
-		if (element instanceof ProxyData) {
-			String provider = ((ProxyData) element).getSource();
-			if (!ProxySelector.canSetProxyData(provider)) {
-				return Display.getCurrent().getSystemColor(
-						SWT.COLOR_INFO_BACKGROUND);
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public Color getForeground(Object element) {
-		return null;
-	}
-
 }
