@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ui.internal.net;
 
+import org.eclipse.core.internal.net.ProxyData;
+import org.eclipse.core.internal.net.ProxySelector;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
-
-import org.eclipse.core.internal.net.ProxyData;
-import org.eclipse.core.internal.net.ProxySelector;
-
-import org.eclipse.jface.viewers.BaseLabelProvider;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 
 public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 		ITableLabelProvider, IColorProvider {
@@ -32,10 +26,12 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 		super();
 	}
 
+	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		return null;
 	}
 
+	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		if (element == null) {
 			return null;
@@ -79,6 +75,7 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 		}
 	}
 
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}
@@ -101,6 +98,7 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 		}
 	}
 
+	@Override
 	public Color getBackground(Object element) {
 		if (element instanceof ProxyData) {
 			String provider = ((ProxyData) element).getSource();
@@ -112,6 +110,7 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 		return null;
 	}
 
+	@Override
 	public Color getForeground(Object element) {
 		return null;
 	}

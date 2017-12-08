@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,28 +23,14 @@ import org.eclipse.core.internal.net.StringUtil;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.*;
 
 /**
  * This class is the Composite that consists of controls for proxy bypass hosts
@@ -59,7 +45,7 @@ public class NonProxyHostsComposite extends Composite {
 	private Button removeButton;
 
 	protected String currentProvider;
-	private ArrayList bypassHosts = new ArrayList();
+	private ArrayList<ProxyBypassData> bypassHosts = new ArrayList<>();
 
 	NonProxyHostsComposite(Composite parent, int style) {
 		super(parent, style);
@@ -100,31 +86,37 @@ public class NonProxyHostsComposite extends Composite {
 
 		hostsViewer
 				.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						enableButtons();
 					}
 				});
 		hostsViewer.addCheckStateListener(new ICheckStateListener() {
+			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				setProvider(currentProvider);
 			}
 		});
 		hostsViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				editSelection();
 			}
 		});
 		addButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				addHost();
 			}
 		});
 		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editSelection();
 			}
 		});
 		removeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeSelection();
 			}
@@ -134,6 +126,7 @@ public class NonProxyHostsComposite extends Composite {
 		enableButtons();
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
 		hostsViewer.getTable().setEnabled(enabled);
@@ -155,9 +148,8 @@ public class NonProxyHostsComposite extends Composite {
 	}
 
 	private boolean isSelectionEditable() {
-		IStructuredSelection selection = (IStructuredSelection) hostsViewer
-				.getSelection();
-		Iterator iterator = selection.iterator();
+		IStructuredSelection selection = hostsViewer.getStructuredSelection();
+		Iterator<?> iterator = selection.iterator();
 		boolean editable = iterator.hasNext();
 		while (iterator.hasNext()) {
 			String provider = ((ProxyBypassData) iterator.next()).getSource();
@@ -191,9 +183,9 @@ public class NonProxyHostsComposite extends Composite {
 	}
 
 	protected void removeSelection() {
-		IStructuredSelection selection = (IStructuredSelection) hostsViewer
-				.getSelection();
-		Iterator it = selection.iterator();
+		IStructuredSelection selection = hostsViewer
+				.getStructuredSelection();
+		Iterator<?> it = selection.iterator();
 		while (it.hasNext()) {
 			ProxyBypassData data = (ProxyBypassData) it.next();
 			bypassHosts.remove(data);
@@ -205,8 +197,8 @@ public class NonProxyHostsComposite extends Composite {
 		if (!isSelectionEditable()) {
 			return;
 		}
-		IStructuredSelection selection = (IStructuredSelection) hostsViewer
-				.getSelection();
+		IStructuredSelection selection = hostsViewer.getStructuredSelection();
+		@SuppressWarnings("unchecked")
 		String selectedHosts = getStringList(selection.iterator());
 		String hosts[] = promptForHost(selectedHosts);
 		if (hosts != null) {
@@ -219,15 +211,15 @@ public class NonProxyHostsComposite extends Composite {
 		}
 	}
 
-	String getStringList(Iterator iterator) {
+	String getStringList(Iterator<ProxyBypassData> iterator) {
 		StringBuilder buffer = new StringBuilder();
 		if (iterator.hasNext()) {
-			ProxyBypassData data = (ProxyBypassData) iterator.next();
+			ProxyBypassData data = iterator.next();
 			buffer.append(data.getHost());
 		}
 		while (iterator.hasNext()) {
 			buffer.append(';');
-			ProxyBypassData data = (ProxyBypassData) iterator.next();
+			ProxyBypassData data = iterator.next();
 			buffer.append(data.getHost());
 		}
 		return buffer.toString();
@@ -239,6 +231,7 @@ public class NonProxyHostsComposite extends Composite {
 				NetUIMessages.ProxyBypassDialog_1, selectedHosts, null) {
 			private ControlDecoration decorator;
 
+			@Override
 			protected Control createDialogArea(Composite parent) {
 				Control createDialogArea = super.createDialogArea(parent);
 				decorator = new ControlDecoration(getText(), SWT.TOP | SWT.LEFT);
@@ -250,6 +243,7 @@ public class NonProxyHostsComposite extends Composite {
 				return createDialogArea;
 			}
 
+			@Override
 			public boolean close() {
 				decorator.dispose();
 				return super.close();
@@ -259,13 +253,13 @@ public class NonProxyHostsComposite extends Composite {
 		if (result != Window.CANCEL) {
 			String value = dialog.getValue();
 			String hosts[] = StringUtil.split(value, new String[] { ";", "|" }); //$NON-NLS-1$ //$NON-NLS-2$
-			ArrayList filtered = new ArrayList();
+			ArrayList<String> filtered = new ArrayList<>();
 			for (int i = 0; i < hosts.length; i++) {
 				if (hosts[i].length() != 0) {
 					filtered.add(hosts[i]);
 				}
 			}
-			return (String[]) filtered.toArray(new String[0]);
+			return filtered.toArray(new String[0]);
 		}
 		return null;
 	}
@@ -292,10 +286,10 @@ public class NonProxyHostsComposite extends Composite {
 		} else {
 			currentProvider = item;
 		}
-		ArrayList selected = new ArrayList();
-		Iterator it = bypassHosts.iterator();
+		ArrayList<ProxyBypassData> selected = new ArrayList<>();
+		Iterator<ProxyBypassData> it = bypassHosts.iterator();
 		while (it.hasNext()) {
-			ProxyBypassData data = (ProxyBypassData) it.next();
+			ProxyBypassData data = it.next();
 			if (data.getSource().equalsIgnoreCase(item)) {
 				selected.add(data);
 			}
@@ -306,24 +300,24 @@ public class NonProxyHostsComposite extends Composite {
 
 	public void performApply() {
 		String provider = getEditableProvider();
-		Iterator it = bypassHosts.iterator();
-		ArrayList hosts = new ArrayList();
+		Iterator<ProxyBypassData> it = bypassHosts.iterator();
+		ArrayList<String> hosts = new ArrayList<>();
 		while (it.hasNext()) {
-			ProxyBypassData data = (ProxyBypassData) it.next();
+			ProxyBypassData data = it.next();
 			if (data.getSource().equals(provider)) {
 				hosts.add(data.getHost());
 			}
 		}
-		String data[] = (String[]) hosts.toArray(new String[0]);
+		String data[] = hosts.toArray(new String[0]);
 		ProxySelector.setBypassHosts(provider, data);
 	}
 
 	public void refresh() {
-		ArrayList natives = new ArrayList();
+		ArrayList<ProxyBypassData> natives = new ArrayList<>();
 		String provider = getEditableProvider();
-		Iterator it = bypassHosts.iterator();
+		Iterator<ProxyBypassData> it = bypassHosts.iterator();
 		while (it.hasNext()) {
-			ProxyBypassData data = (ProxyBypassData) it.next();
+			ProxyBypassData data = it.next();
 			if (!data.getSource().equals(provider)) {
 				natives.add(data);
 			}
@@ -339,8 +333,8 @@ public class NonProxyHostsComposite extends Composite {
 		setProvider(currentProvider);
 	}
 
-	private List getProxyBypassData(String provider) {
-		List bypassProxyData = new ArrayList();
+	private List<ProxyBypassData> getProxyBypassData(String provider) {
+		List<ProxyBypassData> bypassProxyData = new ArrayList<>();
 		String[] hosts = ProxySelector.getBypassHosts(provider);
 		for (int j = 0; hosts != null && j < hosts.length; j++) {
 			ProxyBypassData data = new ProxyBypassData(hosts[j], provider);

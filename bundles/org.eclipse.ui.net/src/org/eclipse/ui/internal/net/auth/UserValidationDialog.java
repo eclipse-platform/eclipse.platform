@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ public class UserValidationDialog extends Dialog {
 			final String message) {
 		class UIOperation implements Runnable {
 			public Authentication authentication;
+
+			@Override
 			public void run() {
 				authentication = UserValidationDialog.askForAuthentication(
 						host, message);
@@ -83,12 +85,14 @@ public class UserValidationDialog extends Dialog {
 	}
 	/**
 	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(NetUIMessages.UserValidationDialog_0);
 	}
 	/**
 	 */
+	@Override
 	public void create() {
 		super.create();
 		//give focus to username field
@@ -97,6 +101,7 @@ public class UserValidationDialog extends Dialog {
 	}
 	/**
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -155,6 +160,7 @@ public class UserValidationDialog extends Dialog {
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 */
+	@Override
 	protected void okPressed() {
 		userAuthentication = new Authentication(usernameField.getText(),
 				passwordField.getText());

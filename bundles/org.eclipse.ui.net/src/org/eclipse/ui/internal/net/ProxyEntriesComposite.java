@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,27 +16,14 @@ import java.util.List;
 
 import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.ProxySelector;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ColumnPixelData;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableLayout;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.*;
 
 /**
  * This class is the Composite that consists of the controls for proxy entries
@@ -51,7 +38,7 @@ public class ProxyEntriesComposite extends Composite {
 	private Button removeButton;
 
 	protected String currentProvider;
-	private ArrayList proxyEntries = new ArrayList();
+	private ArrayList<ProxyData> proxyEntries = new ArrayList<>();
 
 	ProxyEntriesComposite(Composite parent, int style) {
 		super(parent, style);
@@ -97,32 +84,22 @@ public class ProxyEntriesComposite extends Composite {
 		removeButton = createButton(NetUIMessages.ProxyPreferencePage_11);
 
 		entriesViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						enableButtons();
-					}
-				});
-		entriesViewer.addCheckStateListener(new ICheckStateListener() {
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				setProvider(currentProvider);
-			}
-		});
-		entriesViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				editSelection();
-			}
-		});
+				.addSelectionChangedListener(event -> enableButtons());
+		entriesViewer.addCheckStateListener(event -> setProvider(currentProvider));
+		entriesViewer.addDoubleClickListener(event -> editSelection());
 		// addButton.addSelectionListener(new SelectionAdapter() {
 		// public void widgetSelected(SelectionEvent e) {
 		// addEntry();
 		// }
 		// });
 		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				editSelection();
 			}
 		});
 		removeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				removeSelection();
 			}
@@ -146,15 +123,13 @@ public class ProxyEntriesComposite extends Composite {
 	}
 
 	private boolean isSelectionEditable() {
-		IStructuredSelection selection = (IStructuredSelection) entriesViewer
-				.getSelection();
+		IStructuredSelection selection = entriesViewer.getStructuredSelection();
 		return isSelectionRemovable() && selection.size() == 1;
 	}
 
 	private boolean isSelectionRemovable() {
-		IStructuredSelection selection = (IStructuredSelection) entriesViewer
-				.getSelection();
-		Iterator iterator = selection.iterator();
+		IStructuredSelection selection = entriesViewer.getStructuredSelection();
+		Iterator<?> iterator = selection.iterator();
 		boolean editable = iterator.hasNext();
 		while (iterator.hasNext()) {
 			String provider = ((ProxyData) iterator.next()).getSource();
@@ -166,16 +141,16 @@ public class ProxyEntriesComposite extends Composite {
 	}
 
 	protected void addEntry() {
-		Iterator it = proxyEntries.iterator();
-		ArrayList added = new ArrayList();
+		Iterator<ProxyData> it = proxyEntries.iterator();
+		ArrayList<String> added = new ArrayList<>();
 		String editableProvider = getEditableProvider();
 		while (it.hasNext()) {
-			ProxyData data = (ProxyData) it.next();
+			ProxyData data = it.next();
 			if (data.getSource().equalsIgnoreCase(editableProvider)) {
 				added.add(data.getType());
 			}
 		}
-		String addedArray[] = (String[]) added.toArray(new String[0]);
+		String addedArray[] = added.toArray(new String[0]);
 		ProxyData data = promptForEntry(null, addedArray,
 				NetUIMessages.ProxyEntryDialog_0);
 		if (data != null) {
@@ -210,25 +185,25 @@ public class ProxyEntriesComposite extends Composite {
 		if (!isSelectionRemovable()) {
 			return;
 		}
-		Iterator itsel = ((IStructuredSelection) entriesViewer.getSelection()).iterator();
+		Iterator<?> itsel = entriesViewer.getStructuredSelection().iterator();
 		ProxyData toEdit = null;
 		if (itsel.hasNext()) {
 			toEdit = ((ProxyData) itsel.next());
 		} else {
 			return;
 		}
-		Iterator it = proxyEntries.iterator();
-		ArrayList added = new ArrayList();
+		Iterator<ProxyData> it = proxyEntries.iterator();
+		ArrayList<String> added = new ArrayList<>();
 		String editableProvider = getEditableProvider();
 		while (it.hasNext()) {
-			ProxyData data = (ProxyData) it.next();
+			ProxyData data = it.next();
 			if (data.getSource().equalsIgnoreCase(editableProvider)) {
 				if (data.getType() != toEdit.getType()) {
 					added.add(data.getType());
 				}
 			}
 		}
-		String addedArray[] = (String[]) added.toArray(new String[0]);
+		String addedArray[] = added.toArray(new String[0]);
 		ProxyData data = promptForEntry(toEdit, addedArray,
 				NetUIMessages.ProxyEntryDialog_1);
 		if (data != null) {
@@ -237,9 +212,8 @@ public class ProxyEntriesComposite extends Composite {
 	}
 
 	protected void removeSelection() {
-		IStructuredSelection selection = (IStructuredSelection) entriesViewer
-				.getSelection();
-		Iterator it = selection.iterator();
+		IStructuredSelection selection = entriesViewer.getStructuredSelection();
+		Iterator<?> it = selection.iterator();
 		while (it.hasNext()) {
 			ProxyData data = (ProxyData) it.next();
 			data.setHost(""); //$NON-NLS-1$
@@ -272,10 +246,10 @@ public class ProxyEntriesComposite extends Composite {
 		} else {
 			currentProvider = item;
 		}
-		ArrayList checked = new ArrayList();
-		Iterator it = proxyEntries.iterator();
+		ArrayList<ProxyData> checked = new ArrayList<>();
+		Iterator<ProxyData> it = proxyEntries.iterator();
 		while (it.hasNext()) {
-			ProxyData data = (ProxyData) it.next();
+			ProxyData data = it.next();
 			if (data.getSource().equalsIgnoreCase(item)) {
 				checked.add(data);
 			}
@@ -285,24 +259,24 @@ public class ProxyEntriesComposite extends Composite {
 
 	public void performApply() {
 		String provider = getEditableProvider();
-		Iterator it = proxyEntries.iterator();
-		ArrayList proxies = new ArrayList();
+		Iterator<ProxyData> it = proxyEntries.iterator();
+		ArrayList<ProxyData> proxies = new ArrayList<>();
 		while (it.hasNext()) {
-			ProxyData data = (ProxyData) it.next();
+			ProxyData data = it.next();
 			if (data.getSource().equals(provider)) {
 				proxies.add(data);
 			}
 		}
-		ProxyData data[] = (ProxyData[]) proxies.toArray(new ProxyData[0]);
+		ProxyData data[] = proxies.toArray(new ProxyData[0]);
 		ProxySelector.setProxyData(provider, data);
 	}
 
 	public void refresh() {
 		String provider = getEditableProvider();
-		Iterator it = proxyEntries.iterator();
-		ArrayList natives = new ArrayList();
+		Iterator<ProxyData> it = proxyEntries.iterator();
+		ArrayList<ProxyData> natives = new ArrayList<>();
 		while (it.hasNext()) {
-			ProxyData data = (ProxyData) it.next();
+			ProxyData data = it.next();
 			if (!data.getSource().equals(provider)) {
 				natives.add(data);
 			}
@@ -318,8 +292,8 @@ public class ProxyEntriesComposite extends Composite {
 		setProvider(currentProvider);
 	}
 
-	private List getProxyData(String provider) {
-		List proxyDatas = new ArrayList();
+	private List<ProxyData> getProxyData(String provider) {
+		List<ProxyData> proxyDatas = new ArrayList<>();
 		ProxyData[] entries = ProxySelector.getProxyData(provider);
 		for (int j = 0; j < entries.length; j++) {
 			entries[j].setSource(provider);

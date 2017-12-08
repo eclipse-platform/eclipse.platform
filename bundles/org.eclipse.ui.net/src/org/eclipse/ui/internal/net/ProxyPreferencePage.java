@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
 
 public class ProxyPreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
@@ -43,6 +38,7 @@ public class ProxyPreferencePage extends PreferencePage implements
 	private ProxyEntriesComposite proxyEntriesComposite;
 	private NonProxyHostsComposite nonProxyHostsComposite;
 
+	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(1, false);
@@ -73,6 +69,7 @@ public class ProxyPreferencePage extends PreferencePage implements
 		providerLabel.setText(NetUIMessages.ProxyPreferencePage_0);
 		providerCombo = new Combo(composite, SWT.READ_ONLY | SWT.DROP_DOWN);
 		providerCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				setProvider(ProxySelector.unlocalizeProvider(providerCombo.getText()));
 			}
@@ -91,10 +88,12 @@ public class ProxyPreferencePage extends PreferencePage implements
 				true, true));
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 		// Nothing to do
 	}
 
+	@Override
 	protected void performApply() {
 		refresh();
 		int sel = providerCombo.getSelectionIndex();
@@ -104,6 +103,7 @@ public class ProxyPreferencePage extends PreferencePage implements
 				.unlocalizeProvider(providerCombo.getItem(sel)));
 	}
 
+	@Override
 	protected void performDefaults() {
 		int index = 1;
 		if (providerCombo.getItemCount() == 3) {
@@ -113,6 +113,7 @@ public class ProxyPreferencePage extends PreferencePage implements
 		setProvider(ProxySelector.unlocalizeProvider(providerCombo.getItem(index)));
 	}
 
+	@Override
 	public boolean performOk() {
 		performApply();
 		return super.performOk();

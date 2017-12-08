@@ -13,3 +13,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.ui.internal.net;x-internal:=true,
  org.eclipse.ui.internal.net.auth;x-internal:=true
+Automatic-Module-Name: org.eclipse.ui.net

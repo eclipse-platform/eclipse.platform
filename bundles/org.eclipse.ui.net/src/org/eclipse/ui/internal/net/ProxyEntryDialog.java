@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,18 +19,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.StatusDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 public class ProxyEntryDialog extends StatusDialog {
 
@@ -66,6 +58,7 @@ public class ProxyEntryDialog extends StatusDialog {
 		return data;
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(4, false));
@@ -120,11 +113,7 @@ public class ProxyEntryDialog extends StatusDialog {
 		passwordText.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true,
 				3, 1));
 
-		ModifyListener validationListener = new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateStatus();
-			}
-		};
+		ModifyListener validationListener = e -> updateStatus();
 		typeText.addModifyListener(validationListener);
 		hostText.addModifyListener(validationListener);
 		portText.addModifyListener(validationListener);
@@ -132,11 +121,13 @@ public class ProxyEntryDialog extends StatusDialog {
 		passwordText.addModifyListener(validationListener);
 		requiresAuthentificationButton
 				.addSelectionListener(new SelectionListener() {
+					@Override
 					public void widgetDefaultSelected(SelectionEvent e) {
 						enableButtons();
 						updateStatus();
 					}
 
+					@Override
 					public void widgetSelected(SelectionEvent e) {
 						enableButtons();
 						updateStatus();
@@ -150,15 +141,18 @@ public class ProxyEntryDialog extends StatusDialog {
 		return composite;
 	}
 
+	@Override
 	public void create() {
 		super.create();
 		validateHostName();
 	}
 
+	@Override
 	public boolean isHelpAvailable() {
 		return false;
 	}
 
+	@Override
 	public boolean isResizable() {
 		return true;
 	}
@@ -199,8 +193,9 @@ public class ProxyEntryDialog extends StatusDialog {
 		return true;
 	}
 
+	@Override
 	protected void okPressed() {
-		((ProxyData) data).setType(typeText.getText());
+		data.setType(typeText.getText());
 		data.setHost(hostText.getText());
 		data.setPort(Integer.parseInt(portText.getText()));
 		if (requiresAuthentificationButton.getSelection()) {
