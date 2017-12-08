@@ -85,24 +85,9 @@ public class NonProxyHostsComposite extends Composite {
 		removeButton = createButton(NetUIMessages.ProxyPreferencePage_17);
 
 		hostsViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						enableButtons();
-					}
-				});
-		hostsViewer.addCheckStateListener(new ICheckStateListener() {
-			@Override
-			public void checkStateChanged(CheckStateChangedEvent event) {
-				setProvider(currentProvider);
-			}
-		});
-		hostsViewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				editSelection();
-			}
-		});
+				.addSelectionChangedListener(event -> enableButtons());
+		hostsViewer.addCheckStateListener(event -> setProvider(currentProvider));
+		hostsViewer.addDoubleClickListener(event -> editSelection());
 		addButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
