@@ -43,3 +43,4 @@ Eclipse-AutoStart: true
 Plugin-Class: org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BundleShape: dir
+Automatic-Module-Name: org.eclipse.team.tests.cvs.core

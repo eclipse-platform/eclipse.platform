@@ -23,3 +23,4 @@ Bundle-Localization: plugin
 Export-Package: org.eclipse.compare.tests,
  org.eclipse.compare.tests.performance
 Eclipse-BundleShape: dir
+Automatic-Module-Name: org.eclipse.compare.tests

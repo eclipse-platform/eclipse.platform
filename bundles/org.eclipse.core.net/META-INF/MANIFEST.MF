@@ -15,3 +15,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.core.internal.net;x-friends:="org.eclipse.ui.net",
  org.eclipse.core.net.proxy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.eclipse.core.net
