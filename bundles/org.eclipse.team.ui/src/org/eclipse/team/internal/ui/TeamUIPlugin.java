@@ -229,7 +229,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		// job since it is not critical to the startup of the team ui plugin.
 		IPreferenceStore store = getPreferenceStore();
 		if (store.getBoolean(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME)) {
-			Job capabilityInitializer = new Job("") { //$NON-NLS-1$
+			Job capabilityInitializer = new Job(TeamUIMessages.LoadingTeamCapabilities) {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					TeamCapabilityHelper.getInstance();
