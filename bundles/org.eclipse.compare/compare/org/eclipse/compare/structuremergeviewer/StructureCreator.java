@@ -378,11 +378,10 @@ public abstract class StructureCreator implements IStructureCreator2 {
 				for (int i= 0; i < children.length; i++) {
 					IStructureComparator child= (IStructureComparator) children[i];
 					if (child instanceof ITypedElement && child instanceof DocumentRangeNode) {
-						String n1= null;
-						if (child instanceof DocumentRangeNode)
-							n1= ((DocumentRangeNode)child).getId();
-						if (n1 == null)
+						String n1= ((DocumentRangeNode)child).getId();
+						if (n1 == null) {
 							n1= ((ITypedElement)child).getName();
+						}
 						String n2= path[index];
 						if (n1.equals(n2)) {
 							if (index == path.length-1)
