@@ -10,11 +10,21 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.operations;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.ui.IWorkbenchPart;
@@ -28,7 +38,11 @@ public class WorkspaceFileDiffOperation extends FileDiffOperation {
 	protected void copyFile() throws CVSException {
 		
 		IWorkspaceRoot root =ResourcesPlugin.getWorkspace().getRoot();
-		IFile finalFile = root.getFileForLocation(new Path(this.file.getPath()));
+		String filePath = this.file.getPath();
+		IFile finalFile = root.getFileForLocation(new Path(filePath));
+		if(finalFile == null) {
+			throw new CVSException("File '" + filePath + "' can not be found in workspace."); //$NON-NLS-1$ //$NON-NLS-2$ 
+		}
 		InputStream fileInputStream = null;
 		try {
 			fileInputStream = new BufferedInputStream(new FileInputStream(tempFile));

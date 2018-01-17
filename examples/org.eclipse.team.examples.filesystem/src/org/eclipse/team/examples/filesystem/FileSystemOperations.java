@@ -438,7 +438,11 @@ public class FileSystemOperations {
 			// Remove any empty folders
 			for (Iterator iter = toDelete.iterator(); iter.hasNext(); ) {
 				File diskFile = (File) iter.next();
-				if (diskFile.listFiles().length == 0) {
+				File[] fileList = diskFile.listFiles();
+				if(fileList == null) {
+					throw new TeamException("Content from directory '" + diskFile.getAbsolutePath() + "' can not be listed."); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+				if (fileList.length == 0) {
 					diskFile.delete();
 					synchronizer.flush(container, IResource.DEPTH_INFINITE);
 				}

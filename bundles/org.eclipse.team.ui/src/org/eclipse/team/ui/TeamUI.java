@@ -13,7 +13,9 @@ package org.eclipse.team.ui;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.history.GenericHistoryView;
@@ -22,7 +24,9 @@ import org.eclipse.team.ui.history.IHistoryPageSource;
 import org.eclipse.team.ui.history.IHistoryView;
 import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
 import org.eclipse.team.ui.synchronize.ISynchronizeManager;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 
 /**
  * TeamUI contains public API for generic UI-based Team functionality.
@@ -106,15 +110,16 @@ public class TeamUI {
 			if (view == null) {
 				page.showView(IHistoryView.VIEW_ID);
 				view = (IHistoryView) TeamUIPlugin.getActivePage().findView(IHistoryView.VIEW_ID);
-				return showInputInView(page, input, view, pageSource);
-			} else {
-				view = ((GenericHistoryView)view).findAppropriateHistoryViewFor(input, pageSource);
-				if (view == null) {
-					view = (IHistoryView) page.showView(IHistoryView.VIEW_ID, IHistoryView.VIEW_ID + System.currentTimeMillis(), IWorkbenchPage.VIEW_CREATE);
-					return showInputInView(page, input, view, pageSource);
-				} else {
+				if(view != null) {
 					return showInputInView(page, input, view, pageSource);
 				}
+			}
+			view = ((GenericHistoryView)view).findAppropriateHistoryViewFor(input, pageSource);
+			if (view == null) {
+				view = (IHistoryView) page.showView(IHistoryView.VIEW_ID, IHistoryView.VIEW_ID + System.currentTimeMillis(), IWorkbenchPage.VIEW_CREATE);
+				return showInputInView(page, input, view, pageSource);
+			} else {
+				return showInputInView(page, input, view, pageSource);
 			}
 		} catch (PartInitException e) {
 		}

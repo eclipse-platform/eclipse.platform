@@ -127,6 +127,9 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 	public FileSystemResourceVariant[] members() {
 		if (isContainer()) {
 			java.io.File[] members = ioFile.listFiles();
+			if (members == null) {
+				members = new java.io.File[0];
+			}
 			FileSystemResourceVariant[] result = new FileSystemResourceVariant[members.length];
 			for (int i = 0; i < members.length; i++) {
 				result[i] = new FileSystemResourceVariant(members[i]);

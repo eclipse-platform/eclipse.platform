@@ -14,19 +14,44 @@ package org.eclipse.team.internal.ccvs.core;
 
 import java.io.File;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
-import org.eclipse.team.core.*;
-import org.eclipse.team.internal.ccvs.core.client.*;
+import org.eclipse.team.core.ProjectSetCapability;
+import org.eclipse.team.core.ProjectSetSerializationContext;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.core.TeamException;
+import org.eclipse.team.internal.ccvs.core.client.Checkout;
+import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Request;
+import org.eclipse.team.internal.ccvs.core.client.Session;
+import org.eclipse.team.internal.ccvs.core.client.Update;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.filesystem.CVSURI;
-import org.eclipse.team.internal.ccvs.core.resources.*;
+import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
+import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
+import org.eclipse.team.internal.ccvs.core.resources.RemoteModule;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 
@@ -578,9 +603,12 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 		}
 	}
 	
-	private static void deepDelete(File resource) {
+	private static void deepDelete(File resource) throws CVSException {
 		if (resource.isDirectory()) {
 			File[] fileList = resource.listFiles();
+			if(fileList == null) {
+				throw new CVSException("Content from directory '" + resource.getAbsolutePath() + "' can not be listed."); //$NON-NLS-1$ //$NON-NLS-2$
+			}
 			for (int i = 0; i < fileList.length; i++) {
 				deepDelete(fileList[i]);
 			}

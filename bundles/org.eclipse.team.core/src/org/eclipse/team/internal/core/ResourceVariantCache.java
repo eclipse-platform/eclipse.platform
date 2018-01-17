@@ -11,7 +11,12 @@
 package org.eclipse.team.internal.core;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ILock;
@@ -155,7 +160,8 @@ public class ResourceVariantCache {
 				deleteFile(file);
 			} catch (TeamException e) {
 				// Check to see if were in an acceptable state
-				if (file.exists() && (!file.isDirectory() || file.listFiles().length != 0)) {
+				File[] fileList = file.listFiles();
+				if (file.exists() && (!file.isDirectory() || (fileList != null && fileList.length != 0))) {
 					TeamPlugin.log(e);
 				}
 			}
@@ -187,6 +193,9 @@ public class ResourceVariantCache {
 	private void deleteFile(File file) throws TeamException {
 		if (file.isDirectory()) {
 			File[] children = file.listFiles();
+			if(children == null) {
+				throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() }));
+			}
 			for (int i = 0; i < children.length; i++) {
 				deleteFile(children[i]);
 			}

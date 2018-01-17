@@ -21,8 +21,7 @@ public class ModelObjectElementFile extends ModelFile {
 	private final ModelObjectDefinitionFile parent;
 
 	public static boolean isMoeFile(IResource resource) {
-		return resource instanceof IFile 
-			&& resource.getFileExtension().equals(MODEL_OBJECT_ELEMENTFILE_EXTENSION);
+		return resource instanceof IFile && MODEL_OBJECT_ELEMENTFILE_EXTENSION.equals(resource.getFileExtension());
 	}
 	
 	public ModelObjectElementFile(ModelObjectDefinitionFile parent, IFile file) {
