@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-
-import junit.framework.TestCase;
 
 import org.eclipse.compare.IStreamMerger;
 import org.eclipse.compare.internal.merge.TextStreamMerger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+
+import junit.framework.TestCase;
 
 public class StreamMergerTest extends TestCase {
 
@@ -40,7 +37,7 @@ public class StreamMergerTest extends TestCase {
 		super(name);
 	}
 
-	public void testIncomingAddition() throws UnsupportedEncodingException {
+	public void testIncomingAddition() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
@@ -55,7 +52,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	public void testIncomingDeletion() throws UnsupportedEncodingException {
+	public void testIncomingDeletion() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
@@ -70,7 +67,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	public void testIncomingReplacement() throws UnsupportedEncodingException {
+	public void testIncomingReplacement() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
@@ -85,7 +82,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	public void testNonConflictingMerge() throws UnsupportedEncodingException {
+	public void testNonConflictingMerge() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ + SEPARATOR + FOO;
@@ -100,7 +97,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + _123 + SEPARATOR + _456 + SEPARATOR + XYZ + SEPARATOR + FOO + SEPARATOR);
 	}
 
-	public void testConflictingReplacement() throws UnsupportedEncodingException {
+	public void testConflictingReplacement() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + FOO + SEPARATOR + XYZ;
@@ -114,7 +111,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(status.getCode(), IStreamMerger.CONFLICT);
 	}
 
-	public void testConflictingAddition() throws UnsupportedEncodingException {
+	public void testConflictingAddition() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
@@ -129,7 +126,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	public void testConflictingDeletion() throws UnsupportedEncodingException {
+	public void testConflictingDeletion() {
 
 		String a= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String t= ABC + SEPARATOR + XYZ;
@@ -144,7 +141,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	private IStatus merge(StringBuffer output, String a, String m, String y) throws UnsupportedEncodingException {
+	private IStatus merge(StringBuffer output, String a, String m, String y) {
 		InputStream ancestor= new ByteArrayInputStream(a.getBytes(StandardCharsets.UTF_8));
 		InputStream target= new ByteArrayInputStream(m.getBytes(StandardCharsets.UTF_8));
 		InputStream other= new ByteArrayInputStream(y.getBytes(StandardCharsets.UTF_8));
@@ -153,8 +150,7 @@ public class StreamMergerTest extends TestCase {
 	}
 
 	private IStatus merge(StringBuffer output, InputStream ancestor,
-			InputStream target, InputStream other)
-			throws UnsupportedEncodingException {
+			InputStream target, InputStream other) {
 		ByteArrayOutputStream os= new ByteArrayOutputStream();
 
 		IStreamMerger merger= new TextStreamMerger();
