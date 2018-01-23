@@ -16,7 +16,9 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 
 public class PsfFilenameStore extends PsfStore {
 
@@ -25,7 +27,7 @@ public class PsfFilenameStore extends PsfStore {
 
 	// If a PSF file was selected when the wizard was opened, then this is it.
 	// This is only a cache; it is not part of the history until the user has used it.
-	private static String _selectedFilename = null;
+	private String _selectedFilename = null;
 
 	private static PsfFilenameStore instance;
 
