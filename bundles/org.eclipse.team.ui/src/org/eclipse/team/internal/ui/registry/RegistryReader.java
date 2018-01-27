@@ -98,7 +98,7 @@ public abstract class RegistryReader {
 	protected void logError(IConfigurationElement element, String text) {
 		IExtension extension = element.getDeclaringExtension();
 		StringBuilder buf = new StringBuilder();
-		buf.append("Plugin " + extension.getNamespaceIdentifier() + ", extension " + extension.getExtensionPointUniqueIdentifier()); //$NON-NLS-2$//$NON-NLS-1$
+		buf.append("Plugin " + extension.getContributor().getName() + ", extension " + extension.getExtensionPointUniqueIdentifier()); //$NON-NLS-2$//$NON-NLS-1$
 		buf.append("\n" + text); //$NON-NLS-1$
 		TeamUIPlugin.log(IStatus.ERROR, buf.toString(), null);
 	}
@@ -134,8 +134,8 @@ public abstract class RegistryReader {
 		Sorter sorter = new Sorter() {
 			@Override
 			public boolean compare(Object extension1, Object extension2) {
-				String s1 = ((IExtension) extension1).getNamespaceIdentifier();
-				String s2 = ((IExtension) extension2).getNamespaceIdentifier();
+				String s1 = ((IExtension) extension1).getContributor().getName();
+				String s2 = ((IExtension) extension2).getContributor().getName();
 				//Return true if elementTwo is 'greater than' elementOne
 				return s2.compareToIgnoreCase(s1) > 0;
 			}

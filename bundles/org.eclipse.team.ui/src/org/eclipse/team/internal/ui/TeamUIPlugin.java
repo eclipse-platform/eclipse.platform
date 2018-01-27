@@ -346,7 +346,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @return the image
 	 */
 	public static ImageDescriptor getImageDescriptorFromExtension(IExtension extension, String subdirectoryAndFilename) {
-		URL fullPathString = FileLocator.find(Platform.getBundle(extension.getNamespaceIdentifier()), new Path(subdirectoryAndFilename), null);
+		URL fullPathString = FileLocator.find(Platform.getBundle(extension.getContributor().getName()), new Path(subdirectoryAndFilename), null);
 		return ImageDescriptor.createFromURL(fullPathString);
 	}
 
