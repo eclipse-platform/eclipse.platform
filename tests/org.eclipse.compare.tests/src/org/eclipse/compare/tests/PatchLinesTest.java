@@ -133,7 +133,7 @@ public class PatchLinesTest extends TestCase {
 	}
 
 	private int getNewLength(IHunk hunk) {
-		Class cls = hunk.getClass();
+		Class<?> cls = hunk.getClass();
 		try {
 			Field fld = cls.getDeclaredField("fNewLength");
 			fld.setAccessible(true);
@@ -152,7 +152,7 @@ public class PatchLinesTest extends TestCase {
 	}
 
 	private int getOldLength(IHunk hunk) {
-		Class cls = hunk.getClass();
+		Class<?> cls = hunk.getClass();
 		try {
 			Field fld = cls.getDeclaredField("fOldLength");
 			fld.setAccessible(true);

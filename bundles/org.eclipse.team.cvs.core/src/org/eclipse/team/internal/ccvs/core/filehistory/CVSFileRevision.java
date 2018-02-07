@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,11 +111,11 @@ public class CVSFileRevision extends FileRevision implements IAdaptable {
 		return new CVSFileRevision(getCVSRemoteFile().getLogEntry(monitor));
 	}
 
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ICVSFile.class)
-			return getCVSRemoteFile();
+			return adapter.cast(getCVSRemoteFile());
 		if (adapter == IResourceVariant.class)
-			return getCVSRemoteFile();
+			return adapter.cast(getCVSRemoteFile());
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 }

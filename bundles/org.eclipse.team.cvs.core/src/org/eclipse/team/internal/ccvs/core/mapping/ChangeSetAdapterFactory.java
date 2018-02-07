@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,23 +15,23 @@ import org.eclipse.core.runtime.IAdapterFactory;
 
 public class ChangeSetAdapterFactory implements IAdapterFactory {
 
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adaptableObject instanceof CVSActiveChangeSet && adapterType == ResourceMapping.class) {
 			CVSActiveChangeSet cs = (CVSActiveChangeSet) adaptableObject;
-			return new ChangeSetResourceMapping(cs);
+			return adapterType.cast(new ChangeSetResourceMapping(cs));
 		}
 		if (adaptableObject instanceof CVSCheckedInChangeSet && adapterType == ResourceMapping.class) {
 			CVSCheckedInChangeSet cs = (CVSCheckedInChangeSet) adaptableObject;
-			return new ChangeSetResourceMapping(cs);
+			return adapterType.cast(new ChangeSetResourceMapping(cs));
 		}
 		if (adaptableObject instanceof UnassignedDiffChangeSet && adapterType == ResourceMapping.class) {
 			UnassignedDiffChangeSet cs = (UnassignedDiffChangeSet) adaptableObject;
-			return new ChangeSetResourceMapping(cs);
+			return adapterType.cast(new ChangeSetResourceMapping(cs));
 		}
 		return null;
 	}
 
-	public Class[] getAdapterList() {
+	public Class<?>[] getAdapterList() {
 		return new Class[] { ResourceMapping.class };
 	}
 

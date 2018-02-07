@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,14 +36,14 @@ public class WorkspaceTest extends ResourceTest {
 	protected static IProgressMonitor DEFAULT_MONITOR = new NullProgressMonitor();
 	protected static final IProgressMonitor DEFAULT_PROGRESS_MONITOR = new NullProgressMonitor();
 
-	public static Test suite(Class c) {
+	public static Test suite(Class<?> c) {
 		String testName = System.getProperty("eclipse.team.testName");
 		if (testName == null) {
 			TestSuite suite = new TestSuite(c);
 			return suite;
 		}
 		try {
-			return (Test)c.getConstructor(new Class[] { String.class }).newInstance(new Object[] {testName});
+			return (Test)c.getConstructor(String.class).newInstance(testName);
 		} catch (Exception e) {
 			fail(e.getMessage());
 			// Above will throw so below is never actually reached

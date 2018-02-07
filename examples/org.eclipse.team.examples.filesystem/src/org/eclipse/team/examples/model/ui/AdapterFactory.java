@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,35 +30,32 @@ public class AdapterFactory implements IAdapterFactory {
 	private CompareAdapter compareAdapter;
 	private static Object historyPageSource = new FileSystemHistoryPageSource();
 	
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof ModelObject)
-			return modelAdapter;
+			return adapterType.cast(modelAdapter);
 		if (adapterType == ResourceMapping.class && adaptableObject instanceof ModelObject)
-			return ModelResourceMapping.create((ModelObject)adaptableObject);
+			return adapterType.cast(ModelResourceMapping.create((ModelObject)adaptableObject));
 		if (adapterType == IResourceMappingMerger.class && adaptableObject instanceof ExampleModelProvider) {
 			if (modelMerger == null) {
 				modelMerger = new ModelMerger((ExampleModelProvider)adaptableObject);
 			}
-			return modelMerger;
+			return adapterType.cast(modelMerger);
 		}
 		if (adapterType == ISynchronizationCompareAdapter.class && adaptableObject instanceof ExampleModelProvider) {
 			if (compareAdapter == null) {
 				compareAdapter = new CompareAdapter((ExampleModelProvider)adaptableObject);
 			}
-			return compareAdapter;
+			return adapterType.cast(compareAdapter);
 		}
 		
 		if (adapterType == IHistoryPageSource.class){
-			return historyPageSource;
+			return adapterType.cast(historyPageSource);
 		}
 		
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
-	 */
-	public Class[] getAdapterList() {
+	public Class<?>[] getAdapterList() {
 		return new Class[] { IWorkbenchAdapter.class, ResourceMapping.class, IResourceMappingMerger.class, ISynchronizationCompareAdapter.class };
 	}
 

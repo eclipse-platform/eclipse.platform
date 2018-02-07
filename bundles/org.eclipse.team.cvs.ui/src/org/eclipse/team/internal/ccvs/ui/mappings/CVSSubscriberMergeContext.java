@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2011 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -240,9 +240,9 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		return (IFile[]) failures.toArray(new IFile[failures.size()]);
 	}
 	
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IStorageMerger.class)
-			return MERGER;
+			return adapter.cast(MERGER);
 		return super.getAdapter(adapter);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,28 +38,25 @@ public class CVSAdapterFactory implements IAdapterFactory {
 	private Object cachedPropertyValue = null;
 	private ChangeSetCompareAdapter compareAdapter;
 
-	/** (Non-javadoc)
-	 * Method declared on IAdapterFactory.
-	 */
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (IWorkbenchAdapter.class == adapterType) {
-			return getWorkbenchAdapter(adaptableObject);
+			return adapterType.cast(getWorkbenchAdapter(adaptableObject));
 		}
 		
 		if(IDeferredWorkbenchAdapter.class == adapterType) {
 			 Object o = getWorkbenchAdapter(adaptableObject);
 			 if(o != null && o instanceof IDeferredWorkbenchAdapter) {
-			 	return o;
+			 	return adapterType.cast(o);
 			 }
 			 return null;
 		}		
 		
 		if (IPropertySource.class == adapterType) {
-			return getPropertySource(adaptableObject);
+			return adapterType.cast(getPropertySource(adaptableObject));
 		}
 		
 		if (IHistoryPageSource.class == adapterType){
-			return historyParticipant;
+			return adapterType.cast(historyParticipant);
 		}
 		
 		if (ITeamStateProvider.class == adapterType) {
@@ -67,13 +64,13 @@ public class CVSAdapterFactory implements IAdapterFactory {
 				if (teamStateProvider == null)
 					teamStateProvider = new CVSTeamStateProvider(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
 			}
-			return teamStateProvider;
+			return adapterType.cast(teamStateProvider);
 		}
 		
 		if (ISynchronizationCompareAdapter.class == adapterType) {
 			if (compareAdapter == null)
 				compareAdapter = new ChangeSetCompareAdapter();
-			return compareAdapter;
+			return adapterType.cast(compareAdapter);
 		}
 		
 		return null;
@@ -92,10 +89,7 @@ public class CVSAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 	
-	/** (Non-javadoc)
-	 * Method declared on IAdapterFactory.
-	 */
-	public Class[] getAdapterList() {
+	public Class<?>[] getAdapterList() {
 		return new Class[] { IWorkbenchAdapter.class, IPropertySource.class,
 				IDeferredWorkbenchAdapter.class, IHistoryPageSource.class,
 				ISynchronizationCompareAdapter.class, ITeamStateProvider.class,

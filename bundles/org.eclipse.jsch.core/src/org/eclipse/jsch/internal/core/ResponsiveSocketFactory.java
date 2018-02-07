@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
   OutputStream out = null;
   private IProgressMonitor monitor;
   private final int timeout;
-  private static Class proxyClass;
+  private static Class<?> proxyClass;
   private static boolean hasProxyClass = true;
   public ResponsiveSocketFactory(IProgressMonitor monitor, int timeout) {
     if (monitor == null)
@@ -131,7 +131,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
   
   /* private */  Socket internalCreateSocket(final String host, final int port)
       throws UnknownHostException, IOException{
-    Class proxyClass = getProxyClass();
+    Class<?> proxyClass = getProxyClass();
     if (proxyClass != null) {
       // We need to disable proxy support for the socket
       try{
@@ -139,8 +139,8 @@ public class ResponsiveSocketFactory implements SocketFactory {
         // Obtain the value of the NO_PROXY static field of the proxy class
         Field field = proxyClass.getField("NO_PROXY"); //$NON-NLS-1$
         Object noProxyObject = field.get(null);
-        Constructor constructor = Socket.class.getConstructor(new Class[] { proxyClass });
-        Object o = constructor.newInstance(new Object[] { noProxyObject });
+        Constructor<Socket> constructor = Socket.class.getConstructor(proxyClass);
+        Object o = constructor.newInstance(noProxyObject);
         if(o instanceof Socket){
           Socket socket=(Socket)o;
           socket.connect(new InetSocketAddress(host, port), timeout * 1000);
@@ -173,7 +173,7 @@ public class ResponsiveSocketFactory implements SocketFactory {
     return new Socket(host, port);
   }
   
-  private synchronized Class getProxyClass() {
+  private synchronized Class<?> getProxyClass() {
     if (hasProxyClass && proxyClass == null) {
       try{
         proxyClass = Class.forName(JAVA_NET_PROXY);

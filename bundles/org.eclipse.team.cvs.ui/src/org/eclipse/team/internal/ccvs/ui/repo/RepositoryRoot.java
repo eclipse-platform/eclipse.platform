@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -739,11 +739,9 @@ public class RepositoryRoot extends PlatformObject {
 		paths.addAll(autoRefreshFiles.keySet());
 		return (String[]) paths.toArray(new String[paths.size()]);
 	}
-	/**
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (ICVSRepositoryLocation.class.equals(adapter)) return getRoot();
+	
+	public <T> T getAdapter(Class<T> adapter) {
+		if (ICVSRepositoryLocation.class.equals(adapter)) return adapter.cast(getRoot());
 		return super.getAdapter(adapter);
 	}
 	

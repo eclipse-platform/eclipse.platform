@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,9 @@ public class CVSLocalFileRevision extends LocalFileRevision implements IAdaptabl
 		super(fileState);
 	}
 
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ICVSFile.class)
-			return CVSWorkspaceRoot.getCVSFileFor(ResourcesPlugin.getWorkspace().getRoot().getFile(URIUtil.toPath(getURI())));
+			return adapter.cast(CVSWorkspaceRoot.getCVSFileFor(ResourcesPlugin.getWorkspace().getRoot().getFile(URIUtil.toPath(getURI()))));
 		
 		return null;
 	}

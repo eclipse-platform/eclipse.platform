@@ -318,11 +318,11 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
       protected Map getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
         return Collections.singletonMap("org.eclipse.ui.DefaultTextEditor", //$NON-NLS-1$
             new IAdaptable() {
-              public Object getAdapter(Class adapter) {
+              public <T> T getAdapter(Class<T> adapter) {
                 if(adapter==IFile.class && getInput() instanceof IFile) {
-                  return getInput();
+                  return adapter.cast(getInput());
                 } else if(adapter==IFileHistory.class && getInput() instanceof IFileHistory) {
-                  return getInput();
+                  return adapter.cast(getInput());
                 }
                 return Platform.getAdapterManager().getAdapter(CVSHistoryPage.this, adapter);
               }
@@ -1825,9 +1825,9 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 		return null;
 	}
 
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if(adapter == IHistoryCompareAdapter.class) {
-			return this;
+			return adapter.cast(this);
 		}
 		return null;
 	}

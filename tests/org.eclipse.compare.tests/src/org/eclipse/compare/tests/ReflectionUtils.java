@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,12 @@ public class ReflectionUtils {
 	public static Object callMethod(Object object, String name, Object args[])
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
-		Class types[] = new Class[args.length];
+		Class<?> types[] = new Class[args.length];
 		for (int i = 0; i < args.length; i++) {
 			types[i] = args[i].getClass();
 		}
 		Method method = null;
-		Class clazz = object.getClass();
+		Class<?> clazz = object.getClass();
 		NoSuchMethodException ex = null;
 		while (method == null && clazz != null) {
 			try {
@@ -56,7 +56,7 @@ public class ReflectionUtils {
 	public static Object getField(Object object, String name, boolean deep)
 			throws IllegalArgumentException, IllegalAccessException,
 			SecurityException, NoSuchFieldException {
-		Class clazz = object.getClass();
+		Class<?> clazz = object.getClass();
 		NoSuchFieldException ex = null;
 		while (clazz != null) {
 			try {

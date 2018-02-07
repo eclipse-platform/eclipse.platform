@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,15 +93,15 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		return ""; //$NON-NLS-1$
 	}
 
-	public Object getAdapter(Class adapter) {
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) {
-			return this;
+			return adapter.cast(this);
 		}
 		if (adapter == IFileRevision.class)
-			return fileRevision;
+			return adapter.cast(fileRevision);
 		else if  (adapter == IFileState.class){
 			if (storage != null && storage instanceof IFileState)
-				return storage;
+				return adapter.cast(storage);
 		} 
 		return super.getAdapter(adapter);
 	}
