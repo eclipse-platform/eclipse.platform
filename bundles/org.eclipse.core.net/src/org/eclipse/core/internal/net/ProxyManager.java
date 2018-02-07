@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2017 IBM Corporation and others.
+ * Copyright (c) 2007, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	private ProxyManager() {
 		try {
 			nativeProxyProvider = (AbstractProxyProvider) Class.forName(
-					"org.eclipse.core.net.ProxyProvider").newInstance(); //$NON-NLS-1$
+					"org.eclipse.core.net.ProxyProvider").getDeclaredConstructor().newInstance(); //$NON-NLS-1$
 		} catch (ClassNotFoundException e) {
 			// no class found
 		} catch (Exception e) {

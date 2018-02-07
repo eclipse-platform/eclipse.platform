@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -292,19 +292,17 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		fFields= new ArrayList();
 		
 		final KSubstOption[] options = KSubstOption.getAllKSubstOptions();
-		final ArrayList KSUBST_MODES= new ArrayList();
+		final ArrayList<KSubstOption> KSUBST_MODES= new ArrayList<>();
 		for (int i = 0; i < options.length; i++) {
 			final KSubstOption option = options[i];
 			if (!option.isBinary()) {
 				KSUBST_MODES.add(option);
 			}
 		}
-		Collections.sort(KSUBST_MODES, new Comparator() {
-			public int compare(Object a, Object b) {
-				final String aKey = ((KSubstOption) a).getLongDisplayText();
-				final String bKey = ((KSubstOption) b).getLongDisplayText();
-				return aKey.compareTo(bKey);
-			}
+		Collections.sort(KSUBST_MODES, (a, b) -> {
+			final String aKey = a.getLongDisplayText();
+			final String bKey = b.getLongDisplayText();
+			return aKey.compareTo(bKey);
 		});
 		
 		KSUBST_LABELS= new String[KSUBST_MODES.size()];
@@ -462,7 +460,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				CVSUIMessages.CVSPreferencesPage_26,  
 				IHelpContextIds.PREF_QUIET,
 				new String [] { CVSUIMessages.CVSPreferencesPage_27, CVSUIMessages.CVSPreferencesPage_28, CVSUIMessages.CVSPreferencesPage_29 }, //  
-				new Integer [] { Integer.valueOf(0), new Integer(1), new Integer(2)});
+				new Integer [] { Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(2)});
 		
 		quietnessCombo.getCombo().addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -531,7 +529,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				CVSUIMessages.CVSPreferencesPage_41,  
 				IHelpContextIds.PREF_SAVE_DIRTY_EDITORS, 
 	    		YES_NO_PROMPT,
-	    		new Integer [] { Integer.valueOf(ICVSUIConstants.OPTION_AUTOMATIC),	new Integer(ICVSUIConstants.OPTION_NEVER), 	new Integer(ICVSUIConstants.OPTION_PROMPT)});
+	    		new Integer [] { Integer.valueOf(ICVSUIConstants.OPTION_AUTOMATIC),	Integer.valueOf(ICVSUIConstants.OPTION_NEVER), 	Integer.valueOf(ICVSUIConstants.OPTION_PROMPT)});
 		
 	    new StringRadioButtons(
 	    		composite, 

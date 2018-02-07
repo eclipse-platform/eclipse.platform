@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -207,7 +207,7 @@ public class DocLineComparator implements ITokenComparator {
 		if (fCompareFilters != null && fCompareFilters.length > 0) {
 			if (fCompareFilterCache != null
 					&& other.fCompareFilterCache != null) {
-				extracts[0] = (String) fCompareFilterCache.get(new Integer(
+				extracts[0] = (String) fCompareFilterCache.get(Integer.valueOf(
 						thisIndex));
 				if (extracts[0] == null) {
 					extracts[0] = Utilities.applyCompareFilters(

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2015 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -235,11 +235,7 @@ public class TextMergeViewerTest extends TestCase {
 	}
 
 	protected void saveViewerContents() {
-		try {
-			viewer.save(new NullProgressMonitor());
-		} catch (CoreException e) {
-			throw new WrappedException(e);
-		}
+		viewer.flush(new NullProgressMonitor());
 	}
 
 	protected IDocument getDocument(boolean left) {
@@ -404,7 +400,7 @@ public class TextMergeViewerTest extends TestCase {
 					IMergeViewerTestAdapter ta = (IMergeViewerTestAdapter) adapter;
 					assertEquals(ta.getChangesCount(), 1);
 
-					Map filters = new HashMap();
+					Map<String, ICompareFilter> filters = new HashMap<>();
 					filters.put("filter.id", new ICompareFilter() {
 						public void setInput(Object input, Object ancestor,
 								Object left, Object right) {
@@ -423,15 +419,13 @@ public class TextMergeViewerTest extends TestCase {
 
 							if (thisContributor.equals(Character.valueOf('L'))) {
 								assertEquals(thisLine, leftString);
-								assertEquals(otherContributor, new Character(
-										'R'));
+								assertEquals(otherContributor, Character.valueOf('R'));
 								assertEquals(otherLine, rightString);
 							} else {
 								assertEquals(thisContributor,
 										Character.valueOf('R'));
 								assertEquals(thisLine, rightString);
-								assertEquals(otherContributor, new Character(
-										'L'));
+								assertEquals(otherContributor, Character.valueOf('L'));
 								assertEquals(otherLine, leftString);
 							}
 

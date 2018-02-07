@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,15 +101,10 @@ public class XMLStructureViewer extends StructureDiffViewer {
 							final ArrayList originalTree=
 								new ArrayList(
 									Arrays.asList(parent.getChildren()));
-							Arrays.sort(elements, new Comparator() {
-								@Override
-								public int compare(Object a, Object b) {
-									return XMLSorter.this.compare(
-										(DiffNode) a,
-										(DiffNode) b,
-										originalTree);
-								}
-							});
+							Arrays.sort(elements, (a, b) -> XMLSorter.this.compare(
+								(DiffNode) a,
+								(DiffNode) b,
+								originalTree));
 							return;
 						}
 					}
@@ -325,11 +320,7 @@ public class XMLStructureViewer extends StructureDiffViewer {
 							action.setEnabled(false);
 						} else {
 							String oldId= (String) idmapHM.get(signature);
-							if (oldId
-								.startsWith(
-									(new Character(XMLStructureCreator
-										.ID_TYPE_BODY))
-										.toString()))
+							if (oldId.startsWith((Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)).toString()))
 								oldId= oldId.substring(1);
 							action.setText(MessageFormat.format("{0} {1}", XMLCompareMessages.XMLStructureViewer_action_setId_text2, oldId));  //$NON-NLS-1$
 							action.setEnabled(true);
@@ -440,19 +431,11 @@ public class XMLStructureViewer extends StructureDiffViewer {
 					XMLNode textNode= (XMLNode) fDiffNode.getId();
 					XMLNode idelem= textNode.getParent();
 					XMLNode elem= idelem.getParent();
-					String signature=
-						elem.getSignature().substring(
-							0,
-							elem.getSignature().indexOf(
-								XMLStructureCreator.SIGN_ELEMENT));
+					String signature = elem.getSignature().substring(0,
+							elem.getSignature().indexOf(XMLStructureCreator.SIGN_ELEMENT));
 					String idname= idelem.getOrigId();
-					idname=
-						idname.substring(
-							0,
-							idname.indexOf(XMLStructureCreator.ID_SEPARATOR));
-					idname=
-						Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)
-							+ idname;
+					idname = idname.substring(0, idname.indexOf(XMLStructureCreator.ID_SEPARATOR));
+					idname = Character.valueOf(XMLStructureCreator.ID_TYPE_BODY) + idname;
 					idmapHM.put(signature, idname);
 					XMLPlugin.getDefault().setIdMaps(
 						fIdMaps,

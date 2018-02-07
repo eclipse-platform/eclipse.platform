@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2012 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2133,7 +2133,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 		if (historyPageSite instanceof WorkbenchHistoryPageSite){
 			IWorkbenchPart part = ((WorkbenchHistoryPageSite) historyPageSite).getPart();
 			if (part instanceof GenericHistoryView){
-				String revisions = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterOnMessage, new Object[]{Integer.valueOf(historyFilter.getMatchCount()),new Integer(before)});
+				String revisions = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterOnMessage, new Object[]{Integer.valueOf(historyFilter.getMatchCount()),Integer.valueOf(before)});
 				String old = getName();
 				description = NLS.bind(CVSUIMessages.CVSHistoryPage_FilterDescription, new Object[]{file.getName(), revisions});
 				CVSHistoryPage.this.firePropertyChange(CVSHistoryPage.this, P_NAME, old, getName());

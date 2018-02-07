@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -49,23 +48,18 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 		int oldValue = subscriber.getPatcher().getStripPrefixSegments();
 		maxValue = subscriber.getPatcher().calculatePrefixSegmentCount() - 1;
 
-		InputDialog dlg = new InputDialog(
-				Display.getCurrent().getActiveShell(),
-				TeamUIMessages.IgnoreLeadingPathSegmentsDialog_title, NLS.bind(
-						TeamUIMessages.IgnoreLeadingPathSegmentsDialog_message,
-						Integer.valueOf(maxValue)), new Integer(oldValue)
-						.toString(), new IInputValidator() {
-					@Override
-					public String isValid(String input) {
-						try {
-							int i = Integer.parseInt(input);
-							if (i < 0 || i > maxValue)
-								return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_numberOutOfRange;
-						} catch (NumberFormatException x) {
-							return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_notANumber;
-						}
-						return null;
+		InputDialog dlg = new InputDialog(Display.getCurrent().getActiveShell(),
+				TeamUIMessages.IgnoreLeadingPathSegmentsDialog_title,
+				NLS.bind(TeamUIMessages.IgnoreLeadingPathSegmentsDialog_message, Integer.valueOf(maxValue)),
+				Integer.valueOf(oldValue).toString(), input -> {
+					try {
+						int i = Integer.parseInt(input);
+						if (i < 0 || i > maxValue)
+							return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_numberOutOfRange;
+					} catch (NumberFormatException x) {
+						return TeamUIMessages.IgnoreLeadingPathSegmentsDialog_notANumber;
 					}
+					return null;
 				});
 
 		if (dlg.open() == Window.OK) {
