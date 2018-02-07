@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class RestoreRemovedItemsAction extends ResourceModelParticipantAction {
 		ISynchronizationContext context = getSynchronizationContext();
 		if(context instanceof SubscriberMergeContext){
 			SubscriberMergeContext smc = (SubscriberMergeContext) context;
-			SubscriberDiffTreeEventHandler handler  = (SubscriberDiffTreeEventHandler) smc.getAdapter(SubscriberDiffTreeEventHandler.class);
+			SubscriberDiffTreeEventHandler handler  = smc.getAdapter(SubscriberDiffTreeEventHandler.class);
 			handler.reset();
 		}
 		super.run();

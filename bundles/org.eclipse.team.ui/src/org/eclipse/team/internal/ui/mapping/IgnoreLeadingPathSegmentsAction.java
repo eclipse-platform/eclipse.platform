@@ -68,8 +68,7 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 			if (newValue != oldValue) {
 				DiffTree tree = (DiffTree)context.getDiffTree();
 				tree.clear();
-				SubscriberDiffTreeEventHandler handler = (SubscriberDiffTreeEventHandler) context
-						.getAdapter(SubscriberDiffTreeEventHandler.class);
+				SubscriberDiffTreeEventHandler handler = context.getAdapter(SubscriberDiffTreeEventHandler.class);
 				handler.reset();
 				subscriber.getPatcher().setStripPrefixSegments(newValue);
 				participant.refresh(configuration.getSite().getWorkbenchSite(),
