@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -156,7 +156,7 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 						if (locations[i] != null) {
 							ICVSRemoteFolder remote = new RemoteFolder(null, locations[i], modules[i], tags[i]);
 							new CheckoutSingleProjectOperation(null /* no part */, remote, projects[i], null /* location */, true)
-								.run(new SubProgressMonitor(monitor, 1000));
+								.run(SubMonitor.convert(monitor, 1000));
 						}
 					}
 				} finally {

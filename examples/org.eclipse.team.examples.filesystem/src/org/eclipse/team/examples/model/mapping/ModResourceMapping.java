@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,22 +35,22 @@ public class ModResourceMapping extends ModelResourceMapping {
 		if (context instanceof RemoteResourceMappingContext) {
 			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;
-			if (remoteContext.hasRemoteChange(getResource(), new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN))) {
+			if (remoteContext.hasRemoteChange(getResource(), SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN))) {
 				IResource[] remoteResources = ModelObjectDefinitionFile.getReferencedResources(
 						getResource().getProject().getName(), 
 						remoteContext.fetchRemoteContents((IFile)getResource(), 
-								new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN)));
+								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
 				for (int i = 0; i < remoteResources.length; i++) {
 					IResource resource = remoteResources[i];
 					resources.add(resource);
 				}
 			}
 			if (remoteContext.isThreeWay() 
-					&& remoteContext.hasLocalChange(getResource(), new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN))) {
+					&& remoteContext.hasLocalChange(getResource(), SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN))) {
 				IResource[] remoteResources = ModelObjectDefinitionFile.getReferencedResources(
 						getResource().getProject().getName(),
 						remoteContext.fetchBaseContents((IFile)getResource(), 
-								new SubProgressMonitor(monitor, IProgressMonitor.UNKNOWN)));
+								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
 				for (int i = 0; i < remoteResources.length; i++) {
 					IResource resource = remoteResources[i];
 					resources.add(resource);

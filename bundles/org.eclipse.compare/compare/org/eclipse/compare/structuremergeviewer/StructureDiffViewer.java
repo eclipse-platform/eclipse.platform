@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
@@ -75,14 +75,14 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	 */
 	private IRunnableWithProgress diffTask = monitor -> {
 		monitor.beginTask(CompareMessages.StructureDiffViewer_0, 100);
-		diff(new SubProgressMonitor(monitor, 100));
+		diff(SubMonitor.convert(monitor, 100));
 		monitor.done();
 	};
 
 	private IRunnableWithProgress inputChangedTask = monitor -> {
 		monitor.beginTask(CompareMessages.StructureDiffViewer_1, 100);
 		// TODO: Should we always force
-		compareInputChanged((ICompareInput) getInput(), true, new SubProgressMonitor(monitor, 100));
+		compareInputChanged((ICompareInput) getInput(), true, SubMonitor.convert(monitor, 100));
 		monitor.done();
 	};
 
@@ -370,7 +370,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 		if (monitor != null) {
 			if (monitor.isCanceled() || getControl().isDisposed())
 				throw new OperationCanceledException();
-			return new SubProgressMonitor(monitor, work);
+			return SubMonitor.convert(monitor, work);
 		}
 		return null;
 	}
@@ -526,7 +526,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 			if (compareConfiguration != null) {
 				compareConfiguration.getContainer().run(true, true, monitor -> {
 					monitor.beginTask(CompareMessages.StructureDiffViewer_2, 100);
-					diffTask.run(new SubProgressMonitor(monitor, 100));
+					diffTask.run(SubMonitor.convert(monitor, 100));
 					monitor.done();
 				});
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,10 +42,10 @@ public class RevertAllOperation extends SynchronizeModelOperation {
 						LocalHistoryVariant state = (LocalHistoryVariant)info.getRemote();
 						IFile file = (IFile)info.getLocal();
 						if(file.exists()) {
-							file.setContents(state.getFileState(), false, true, new SubProgressMonitor(pm, 100));
+							file.setContents(state.getFileState(), false, true, SubMonitor.convert(pm, 100));
 						} else {
 							// TODO: have to pre-create parents if they dont exist
-							file.create(state.getFileState().getContents(), false, new SubProgressMonitor(pm, 100));
+							file.create(state.getFileState().getContents(), false, SubMonitor.convert(pm, 100));
 						}
 					}
 				} catch (CoreException e) {

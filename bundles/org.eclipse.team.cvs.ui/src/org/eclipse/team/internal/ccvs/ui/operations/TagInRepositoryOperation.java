@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class TagInRepositoryOperation extends RemoteOperation implements ITagOpe
 		ICVSRemoteResource[] resources = getRemoteResources();
 		monitor.beginTask(null, 1000 * resources.length);
 		for (int i = 0; i < resources.length; i++) {
-			IStatus status = resources[i].tag(getTag(), getLocalOptions(), new SubProgressMonitor(monitor, 1000));
+			IStatus status = resources[i].tag(getTag(), getLocalOptions(), SubMonitor.convert(monitor, 1000));
 			collectStatus(status);
 		}
 		if (!errorsOccurred()) {

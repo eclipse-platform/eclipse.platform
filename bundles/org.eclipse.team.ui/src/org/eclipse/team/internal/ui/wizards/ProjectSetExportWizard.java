@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -131,7 +131,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 							ProjectSetCapability serializer = providerType.getProjectSetCapability();
 							ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
 							if (serializer != null) {
-								String[] references = serializer.asReference(projectArray, context, new SubProgressMonitor(monitor, 990));
+								String[] references = serializer.asReference(projectArray, context, SubMonitor.convert(monitor, 990));
 								for (int i = 0; i < references.length; i++) {
 									IMemento proj = memento.createChild("project"); //$NON-NLS-1$
 									proj.putString("reference", references[i]); //$NON-NLS-1$
@@ -175,7 +175,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 						if (type != null) {
 							ProjectSetCapability capability = type.getProjectSetCapability();
 							if (capability != null) {
-								capability.projectSetCreated(file, context, new SubProgressMonitor(monitor, 10));
+								capability.projectSetCreated(file, context, SubMonitor.convert(monitor, 10));
 							}
 						}
 					}

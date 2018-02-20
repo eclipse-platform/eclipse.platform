@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,14 +111,14 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
         try {
             monitor.beginTask("", 2000);//$NON-NLS-1$
 
-            projectHandle.create(description, new SubProgressMonitor(monitor,
+            projectHandle.create(description, SubMonitor.convert(monitor,
                     1000));
 
             if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
 
-            projectHandle.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 1000));
+            projectHandle.open(IResource.BACKGROUND_REFRESH, SubMonitor.convert(monitor, 1000));
 
         } finally {
             monitor.done();

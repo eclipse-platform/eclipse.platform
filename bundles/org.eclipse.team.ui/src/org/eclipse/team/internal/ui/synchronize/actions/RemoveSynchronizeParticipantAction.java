@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,7 +176,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 				Saveable model = (Saveable) i.next();
 				if (model.isDirty()) {
 					try {
-						model.doSave(new SubProgressMonitor(monitor, 1));
+						model.doSave(SubMonitor.convert(monitor, 1));
 					} catch (CoreException e) {
 						ErrorDialog.openError(view.getSite().getShell(), null, e.getMessage(), e.getStatus());
 					}

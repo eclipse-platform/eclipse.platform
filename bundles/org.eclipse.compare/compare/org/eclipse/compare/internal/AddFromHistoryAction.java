@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,7 +126,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 						IFileState fileState= selected[i].fFileState;
 						createContainers(file);
 
-						SubProgressMonitor subMonitor= new SubProgressMonitor(pm, 1);
+						SubMonitor subMonitor= SubMonitor.convert(pm, 1);
 						try {
 							file.create(fileState.getContents(), false, subMonitor);
 						} finally {

@@ -539,12 +539,12 @@ public class XMLStructureViewer extends StructureDiffViewer {
 						left,
 						ancestor,
 						true,
-						new SubProgressMonitor(monitor, 1));
+						SubMonitor.convert(monitor, 1));
 					m.match(
 						right,
 						ancestor,
 						true,
-						new SubProgressMonitor(monitor, 1));
+						SubMonitor.convert(monitor, 1));
 				}
 				//				} catch (InterruptedException e) {
 				//					System.out.println("in run");

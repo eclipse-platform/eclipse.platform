@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
@@ -63,8 +63,8 @@ public class FileSystemOperations {
 			progress = Policy.monitorFor(progress);
 			progress.beginTask(Policy.bind("GetAction.working"), 100); //$NON-NLS-1$
 			// Refresh the subscriber so we have the latest remote state
-			FileSystemSubscriber.getInstance().refresh(resources, depth, new SubProgressMonitor(progress, 30));
-			internalGet(resources, depth, overrideOutgoing, new SubProgressMonitor(progress, 70));
+			FileSystemSubscriber.getInstance().refresh(resources, depth, SubMonitor.convert(progress, 30));
+			internalGet(resources, depth, overrideOutgoing, SubMonitor.convert(progress, 70));
 		} finally {
 			progress.done();
 		}
@@ -86,7 +86,7 @@ public class FileSystemOperations {
 			monitor.beginTask(null, 100* traversals.length);
 			for (int i = 0; i < traversals.length; i++) {
 				ResourceTraversal traversal = traversals[i];
-				get(traversal.getResources(), traversal.getDepth(), overrideOutgoing, new SubProgressMonitor(monitor, 100));
+				get(traversal.getResources(), traversal.getDepth(), overrideOutgoing, SubMonitor.convert(monitor, 100));
 			}
 		} finally {
 			monitor.done();
@@ -140,8 +140,8 @@ public class FileSystemOperations {
 			progress = Policy.monitorFor(progress);
 			progress.beginTask(Policy.bind("PutAction.working"), 100); //$NON-NLS-1$
 			// Refresh the subscriber so we have the latest remote state
-			FileSystemSubscriber.getInstance().refresh(resources, depth, new SubProgressMonitor(progress, 30));
-			internalPut(resources, depth, overrideIncoming, new SubProgressMonitor(progress, 70));
+			FileSystemSubscriber.getInstance().refresh(resources, depth, SubMonitor.convert(progress, 30));
+			internalPut(resources, depth, overrideIncoming, SubMonitor.convert(progress, 70));
 		} finally {
 			progress.done();
 		}
@@ -162,7 +162,7 @@ public class FileSystemOperations {
 			monitor.beginTask(null, 100* traversals.length);
 			for (int i = 0; i < traversals.length; i++) {
 				ResourceTraversal traversal = traversals[i];
-				checkin(traversal.getResources(), traversal.getDepth(), overrideIncoming, new SubProgressMonitor(monitor, 100));
+				checkin(traversal.getResources(), traversal.getDepth(), overrideIncoming, SubMonitor.convert(monitor, 100));
 			}
 		} finally {
 			monitor.done();

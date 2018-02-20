@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class CVSFileHistory extends FileHistory {
 			monitor.beginTask(NLS.bind(CVSMessages.CVSFileHistory_0, cvsFile.getRepositoryRelativePath()), 300);
 			try {
 				ILogEntry[] entries = cvsFile
-						.getLogEntries(new SubProgressMonitor(monitor, 200));
+						.getLogEntries(SubMonitor.convert(monitor, 200));
 				
 				if (entries.length == 0){
 					//Get the parent folder
@@ -169,8 +169,8 @@ public class CVSFileHistory extends FileHistory {
 						//get the local revisions
 						IFileState[] localHistoryState;
 						try {
-							localHistoryState = ((IFile) localResource).getHistory(new SubProgressMonitor(monitor, 100));
-							localRevisions = convertToFileRevision(localHistoryState, new SubProgressMonitor(monitor, 100));
+							localHistoryState = ((IFile) localResource).getHistory(SubMonitor.convert(monitor, 100));
+							localRevisions = convertToFileRevision(localHistoryState, SubMonitor.convert(monitor, 100));
 							includesExists = (localRevisions.length > 0);
 						} catch (CoreException e) {
 							TeamException.asTeamException(e);
@@ -323,8 +323,8 @@ public class CVSFileHistory extends FileHistory {
 		includesExists = false;
 		if (localResource != null && localResource instanceof IFile) {
 			//get the local revisions
-			IFileState[] localHistoryState = ((IFile) localResource).getHistory(new SubProgressMonitor(monitor, 100));
-			localRevisions = convertToFileRevision(localHistoryState, new SubProgressMonitor(monitor, 100));
+			IFileState[] localHistoryState = ((IFile) localResource).getHistory(SubMonitor.convert(monitor, 100));
+			localRevisions = convertToFileRevision(localHistoryState, SubMonitor.convert(monitor, 100));
 			includesExists = (localRevisions.length > 0);
 		}
 

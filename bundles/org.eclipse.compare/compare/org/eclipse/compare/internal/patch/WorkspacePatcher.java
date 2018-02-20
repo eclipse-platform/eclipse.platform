@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,18 +110,18 @@ public class WorkspacePatcher extends Patcher {
 							// patch it and collect rejected hunks
 							List<String> result= apply(diff, file, true, failed);
 							if (result != null)
-								store(LineReader.createString(isPreserveLineDelimeters(), result), file, new SubProgressMonitor(pm, workTicks));
+								store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
 						case FilePatch2.DELETION :
-							file.delete(true, true, new SubProgressMonitor(pm, workTicks));
+							file.delete(true, true, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
 						case FilePatch2.CHANGE :
 							// patch it and collect rejected hunks
 							result= apply(diff, file, false, failed);
 							if (result != null)
-								store(LineReader.createString(isPreserveLineDelimeters(), result), file, new SubProgressMonitor(pm, workTicks));
+								store(LineReader.createString(isPreserveLineDelimeters(), result), file, SubMonitor.convert(pm, workTicks));
 							workTicks -= WORK_UNIT;
 							break;
 					}

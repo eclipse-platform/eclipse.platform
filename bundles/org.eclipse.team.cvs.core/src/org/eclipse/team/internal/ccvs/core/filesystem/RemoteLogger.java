@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ public class RemoteLogger {
 		if (tag == null)
 			tag = CVSTag.DEFAULT;
 
-		getRemoteChildren(tag, new SubProgressMonitor(monitor,70));
+		getRemoteChildren(tag, SubMonitor.convert(monitor,70));
 
 		final ICVSRemoteFolder project = this.remoteFolder;
 		//Get the entry paths

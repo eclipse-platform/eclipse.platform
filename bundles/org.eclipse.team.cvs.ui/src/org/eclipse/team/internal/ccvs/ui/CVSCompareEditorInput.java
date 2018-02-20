@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2000, 2008 IBM Corporation and others.
+ *  Copyright (c) 2000, 2018 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -327,7 +327,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 			// do the diff	
 			Object result = null;
 			monitor.beginTask(CVSUIMessages.CVSCompareEditorInput_comparing, 30); 
-			IProgressMonitor sub = new SubProgressMonitor(monitor, 30);
+			IProgressMonitor sub = SubMonitor.convert(monitor, 30);
 			sub.beginTask(CVSUIMessages.CVSCompareEditorInput_comparing, 100); 
 			try {
 				result = d.findDifferences(threeWay, sub, null, ancestor, left, right);

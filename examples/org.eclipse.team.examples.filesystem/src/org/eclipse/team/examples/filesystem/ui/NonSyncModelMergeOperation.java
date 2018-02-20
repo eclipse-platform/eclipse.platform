@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,10 +62,10 @@ public class NonSyncModelMergeOperation extends ModelMergeOperation {
 			context = new FileSystemMergeContext(getScopeManager());
 			// Refresh the context to get the latest remote state
 			context.refresh(getScope().getTraversals(), 
-					RemoteResourceMappingContext.FILE_CONTENTS_REQUIRED, new SubProgressMonitor(monitor, 75));
+					RemoteResourceMappingContext.FILE_CONTENTS_REQUIRED, SubMonitor.convert(monitor, 75));
 			// What for the context to asynchronously update the diff tree
 			try {
-				Job.getJobManager().join(context, new SubProgressMonitor(monitor, 25));
+				Job.getJobManager().join(context, SubMonitor.convert(monitor, 25));
 			} catch (InterruptedException e) {
 				// Ignore
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.team.core.diff.FastDiffFilter;
 import org.eclipse.team.core.diff.IDiff;
@@ -71,7 +71,7 @@ public class ModelMerger extends ResourceMappingMerger {
 			// Only override the merge for three-way synchronizations
 			if (mergeContext.getType() == SynchronizationContext.THREE_WAY) {
 				monitor.beginTask("Merging model elements", 100);
-				status = mergeModelElements(mergeContext, new SubProgressMonitor(monitor, 50));
+				status = mergeModelElements(mergeContext, SubMonitor.convert(monitor, 50));
 				// Stop the merge if there was a failure
 				if (!status.isOK())
 					return status;
@@ -79,7 +79,7 @@ public class ModelMerger extends ResourceMappingMerger {
 				// so the diff tree will be up-to-date when we delegate the rest of the merge
 				// to the superclass
 				try {
-					Job.getJobManager().join(mergeContext, new SubProgressMonitor(monitor, 50));
+					Job.getJobManager().join(mergeContext, SubMonitor.convert(monitor, 50));
 				} catch (InterruptedException e) {
 					// Ignore
 				}
@@ -104,7 +104,7 @@ public class ModelMerger extends ResourceMappingMerger {
 			monitor.beginTask(null, 100 * modeDiffs.length);
 			for (int i = 0; i < modeDiffs.length; i++) {
 				IDiff diff = modeDiffs[i];
-				if (!mergeModelElement(mergeContext, diff, new SubProgressMonitor(monitor, 100))) {
+				if (!mergeModelElement(mergeContext, diff, SubMonitor.convert(monitor, 100))) {
 					failures.add(diff);
 				}
 			}

@@ -577,9 +577,9 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 				monitor.beginTask(null, 100);
 				try {
 					if(confirmOverwrite() && validateChange()) {
-						IStorage currentStorage = currentSelection.getStorage(new SubProgressMonitor(monitor, 50));
+						IStorage currentStorage = currentSelection.getStorage(SubMonitor.convert(monitor, 50));
 						InputStream in = currentStorage.getContents();
-						((IFile)file.getIResource()).setContents(in, false, true, new SubProgressMonitor(monitor, 50));
+						((IFile)file.getIResource()).setContents(in, false, true, SubMonitor.convert(monitor, 50));
 					}
 				} catch (TeamException e) {
 					throw new CoreException(e.getStatus());
