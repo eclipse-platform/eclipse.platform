@@ -91,8 +91,6 @@ public class InputPatchPage extends WizardPage {
 
 	protected final static String INPUTPATCHPAGE_NAME= "InputPatchPage"; //$NON-NLS-1$
 
-	static final char SEPARATOR= System.getProperty("file.separator").charAt(0); //$NON-NLS-1$
-
 	private boolean fShowError= false;
 	private String fPatchSource;
 	private boolean fPatchRead= false;
@@ -621,7 +619,7 @@ public class InputPatchPage extends WizardPage {
 		dialog.setText(PatchMessages.InputPatchPage_SelectPatchFileDialog_title);
 		String patchFilePath= getPatchFilePath();
 		if (patchFilePath != null) {
-			int lastSegment= patchFilePath.lastIndexOf(SEPARATOR);
+			int lastSegment= patchFilePath.lastIndexOf(File.separatorChar);
 			if (lastSegment > 0) {
 				patchFilePath= patchFilePath.substring(0, lastSegment);
 			}

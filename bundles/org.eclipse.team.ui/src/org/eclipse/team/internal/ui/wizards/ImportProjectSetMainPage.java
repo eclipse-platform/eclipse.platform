@@ -158,7 +158,7 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 			d.setFilterNames(new String[] {TeamUIMessages.ImportProjectSetMainPage_Project_Set_Files_2, TeamUIMessages.ImportProjectSetMainPage_allFiles}); //
 			String fileName= getFileName();
 			if (fileName != null && fileName.length() > 0) {
-				int separator= fileName.lastIndexOf(System.getProperty ("file.separator").charAt (0)); //$NON-NLS-1$
+				int separator= fileName.lastIndexOf(File.separatorChar);
 				if (separator != -1) {
 					fileName= fileName.substring(0, separator);
 				}

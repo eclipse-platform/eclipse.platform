@@ -113,7 +113,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 			d.setFileName(TeamUIMessages.ExportProjectSetMainPage_default);
 			String fileName = getFileName();
 			if (fileName != null) {
-				int separator = fileName.lastIndexOf(System.getProperty("file.separator").charAt(0)); //$NON-NLS-1$
+				int separator = fileName.lastIndexOf(File.separatorChar);
 				if (separator != -1) {
 					fileName = fileName.substring(0, separator);
 				}
