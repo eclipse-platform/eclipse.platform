@@ -95,12 +95,12 @@ public abstract class RevisionAnnotationController {
 
 		// No existing editor references found, try to open a new editor for the file
 		try {
-			IEditorDescriptor descrptr = IDE.getEditorDescriptor(file);
+			IEditorDescriptor descrptr = IDE.getEditorDescriptor(file, true, true);
 			// Try to open the associated editor only if its an internal editor
 			// Also, if a non-text editor is already open, there is no need to try and open
 			// an editor since the open will find the non-text editor
 			if (descrptr.isInternal() && openEditors.length == 0){
-				IEditorPart part = page.openEditor(input, IDE.getEditorDescriptor(file).getId(), true, IWorkbenchPage.MATCH_INPUT);
+				IEditorPart part = page.openEditor(input, IDE.getEditorDescriptor(file, true, true).getId(), true, IWorkbenchPage.MATCH_INPUT);
 				AbstractDecoratedTextEditor te = findTextEditorPart(page, part, input);
 				if (te != null)
 					return te;
