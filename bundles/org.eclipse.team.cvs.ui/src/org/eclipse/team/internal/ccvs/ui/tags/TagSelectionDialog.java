@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -38,7 +35,6 @@ import org.eclipse.team.internal.ccvs.ui.*;
 public class TagSelectionDialog extends TrayDialog implements IPropertyChangeListener {
 	
 	private TagSelectionArea tagSelectionArea;
-	private Cursor appBusyCursor;
 	
 	public static final int INCLUDE_HEAD_TAG = TagSourceWorkbenchAdapter.INCLUDE_HEAD_TAG;
 	public static final int INCLUDE_BASE_TAG = TagSourceWorkbenchAdapter.INCLUDE_BASE_TAG;
@@ -103,17 +99,11 @@ public class TagSelectionDialog extends TrayDialog implements IPropertyChangeLis
 		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL);
 	}
 	
-	/* (non-Javadoc)
-	 * Method declared on Window.
-	 */
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(title);
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.jface.window.Window#getInitialSize()
-     */
     protected Point getInitialSize() {
         final Point size= super.getInitialSize();
         size.x= convertWidthInCharsToPixels(SIZING_DIALOG_WIDTH);
@@ -176,11 +166,7 @@ public class TagSelectionDialog extends TrayDialog implements IPropertyChangeLis
 				if(showRecurse) {
 					final Button recurseCheck = new Button(parent, SWT.CHECK);
 					recurseCheck.setText(CVSUIMessages.TagSelectionDialog_recurseOption); 
-					recurseCheck.addListener(SWT.Selection, new Listener() {
-						public void handleEvent(Event event) {
-							recurse = recurseCheck.getSelection();
-						}
-					});
+					recurseCheck.addListener(SWT.Selection, event -> recurse = recurseCheck.getSelection());
 					recurseCheck.setSelection(true);
 				}
 		    }
@@ -252,9 +238,6 @@ public class TagSelectionDialog extends TrayDialog implements IPropertyChangeLis
 		}
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-     */
     public void propertyChange(PropertyChangeEvent event) {
         String property = event.getProperty();
         if (property.equals(TagSelectionArea.SELECTED_TAG)) {
@@ -271,62 +254,46 @@ public class TagSelectionDialog extends TrayDialog implements IPropertyChangeLis
      * @since 3.1
      */
     private IRunnableContext getRunnableContext() {
-    	return new IRunnableContext() {
-			public void run(boolean fork, boolean cancelable, final IRunnableWithProgress runnable) throws InvocationTargetException, InterruptedException {
-				final Job refreshJob = new Job(CVSUIMessages.TagSelectionDialog_7) { 
-		    		protected IStatus run(IProgressMonitor monitor) {
-							if (monitor.isCanceled())
-							return Status.CANCEL_STATUS;
-						try {
-							setBusy(true);
-							runnable.run(monitor);
-						} catch (InvocationTargetException e) {
-							return new CVSStatus(IStatus.ERROR, CVSUIMessages.TagSelectionDialog_8, e); 
-						} catch (InterruptedException e) {
-							return new CVSStatus(IStatus.ERROR, CVSUIMessages.TagSelectionDialog_8, e); 
-						} finally {
-							setBusy(false);
-						}
+    	return (fork, cancelable, runnable) -> {
+			final Job refreshJob = new Job(CVSUIMessages.TagSelectionDialog_7) { 
+				protected IStatus run(IProgressMonitor monitor) {
 						if (monitor.isCanceled())
-							return Status.CANCEL_STATUS;
-						else
-							return Status.OK_STATUS;
+						return Status.CANCEL_STATUS;
+					try {
+						setBusy(true);
+						runnable.run(monitor);
+					} catch (InvocationTargetException e) {
+						return new CVSStatus(IStatus.ERROR, CVSUIMessages.TagSelectionDialog_8, e); 
+					} catch (InterruptedException e) {
+						return new CVSStatus(IStatus.ERROR, CVSUIMessages.TagSelectionDialog_8, e); 
+					} finally {
+						setBusy(false);
 					}
-		    	};
-		    	refreshJob.setUser(false);
-		    	refreshJob.setPriority(Job.DECORATE);
-		    	getShell().addDisposeListener(new DisposeListener() {
-					public void widgetDisposed(DisposeEvent e) {
-						refreshJob.cancel();
-					}
-		    	});
-		    	refreshJob.schedule();
-			}
+					if (monitor.isCanceled())
+						return Status.CANCEL_STATUS;
+					else
+						return Status.OK_STATUS;
+				}
+			};
+			refreshJob.setUser(false);
+			refreshJob.setPriority(Job.DECORATE);
+			getShell().addDisposeListener(e -> refreshJob.cancel());
+			refreshJob.schedule();
 		};
     }
     
     private void setBusy(final boolean busy) {
 		final Shell shell = getShell();
 		if (shell != null && !shell.isDisposed()) {
-			shell.getDisplay().asyncExec(new Runnable() {
-				public void run() {
-                    if (!shell.isDisposed()) {
-    					Cursor cursor = null;
-    					if (busy) {
-    						if (appBusyCursor == null)
-    							appBusyCursor = new Cursor(shell.getDisplay(), SWT.CURSOR_APPSTARTING);
-    						cursor = appBusyCursor;
-    					}
-    					shell.setCursor(cursor);
-                    }
-				}
+			shell.getDisplay().asyncExec(() -> {
+			    if (!shell.isDisposed()) {
+					Cursor cursor = null;
+					if (busy) {
+						cursor = shell.getDisplay().getSystemCursor(SWT.CURSOR_APPSTARTING);
+					}
+					shell.setCursor(cursor);
+			    }
 			});
 		}
-	}
-        
-	public boolean close() {
-		if(appBusyCursor != null)
-			appBusyCursor.dispose();
-		return super.close();
 	}
 }

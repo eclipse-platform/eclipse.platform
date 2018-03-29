@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -339,7 +339,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	private Image fRightArrow;
 	private Image fLeftArrow;
 	private Image fBothArrow;
-	Cursor fNormalCursor;
+	private Cursor fNormalCursor;
 	private Cursor fHSashCursor;
 	private Cursor fVSashCursor;
 	private Cursor fHVSashCursor;
@@ -591,27 +591,27 @@ public abstract class ContentMergeViewer extends ContentViewer
 			case VERTICAL:
 				if (fAncestorVisible) {
 					if (fVSashCursor == null)
-						fVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZENS);
+						fVSashCursor=c.getDisplay().getSystemCursor(SWT.CURSOR_SIZENS);
 					cursor= fVSashCursor;
 				} else {
 					if (fNormalCursor == null)
-						fNormalCursor= new Cursor(c.getDisplay(), SWT.CURSOR_ARROW);
+						fNormalCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
 					cursor= fNormalCursor;
 				}
 				break;
 			case HORIZONTAL:
 				if (fHSashCursor == null)
-					fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
+					fHSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
 				cursor= fHSashCursor;
 				break;
 			case VERTICAL + HORIZONTAL:
 				if (fAncestorVisible) {
 					if (fHVSashCursor == null)
-						fHVSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEALL);
+						fHVSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEALL);
 					cursor= fHVSashCursor;
 				} else {
 					if (fHSashCursor == null)
-						fHSashCursor= new Cursor(c.getDisplay(), SWT.CURSOR_SIZEWE);
+						fHSashCursor= c.getDisplay().getSystemCursor(SWT.CURSOR_SIZEWE);
 					cursor= fHSashCursor;
 				}
 				break;
@@ -1052,23 +1052,6 @@ public abstract class ContentMergeViewer extends ContentViewer
 		if (fBothArrow != null) {
 			fBothArrow.dispose();
 			fBothArrow= null;
-		}
-
-		if (fNormalCursor != null) {
-			fNormalCursor.dispose();
-			fNormalCursor= null;
-		}
-		if (fHSashCursor != null) {
-			fHSashCursor.dispose();
-			fHSashCursor= null;
-		}
-		if (fVSashCursor != null) {
-			fVSashCursor.dispose();
-			fVSashCursor= null;
-		}
-		if (fHVSashCursor != null) {
-			fHVSashCursor.dispose();
-			fHVSashCursor= null;
 		}
 
 		super.handleDispose(event);

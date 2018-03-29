@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -363,7 +363,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	// SWT resources to be disposed
 	private Map<RGB, Color> fColors;
-	private Cursor fBirdsEyeCursor;
 
 	// points for center curves
 	private double[] fBasicCenterCurve;
@@ -1578,8 +1577,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		};
 		fComposite.setData(INavigatable.NAVIGATOR_PROPERTY, nav);
 
-		fBirdsEyeCursor= new Cursor(parent.getDisplay(), SWT.CURSOR_HAND);
-
 		JFaceResources.getFontRegistry().addListener(fPreferenceChangeListener);
 		JFaceResources.getColorRegistry().addListener(fPreferenceChangeListener);
 		updateFont();
@@ -1917,11 +1914,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		disconnect(fRightContributor);
 		disconnect(fAncestorContributor);
 
-		if (fBirdsEyeCursor != null) {
-			fBirdsEyeCursor.dispose();
-			fBirdsEyeCursor= null;
-		}
-
 		if (showWhitespaceAction != null)
 			showWhitespaceAction.dispose();
 
@@ -2124,7 +2116,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					Cursor cursor= null;
 					Diff diff= handlemouseInBirdsEyeView(fBirdsEyeCanvas, e.y);
 					if (diff != null && diff.getKind() != RangeDifference.NOCHANGE)
-						cursor= fBirdsEyeCursor;
+						cursor= e.widget.getDisplay().getSystemCursor(SWT.CURSOR_HAND);
 					if (fLastCursor != cursor) {
 						fBirdsEyeCanvas.setCursor(cursor);
 						fLastCursor= cursor;
@@ -2389,11 +2381,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			};
 			new HoverResizer(canvas, HORIZONTAL);
 
-			if (fNormalCursor == null) fNormalCursor= new Cursor(canvas.getDisplay(), SWT.CURSOR_ARROW);
+			Cursor normalCursor= canvas.getDisplay().getSystemCursor(SWT.CURSOR_ARROW);
 			int style= fIsMac ? SWT.FLAT : SWT.PUSH;
 
 			fLeftToRightButton= new Button(canvas, style);
-			fLeftToRightButton.setCursor(fNormalCursor);
+			fLeftToRightButton.setCursor(normalCursor);
 			fLeftToRightButton.setText(COPY_LEFT_TO_RIGHT_INDICATOR);
 			fLeftToRightButton.setToolTipText(
 					Utilities.getString(getResourceBundle(), "action.CopyDiffLeftToRight.tooltip")); //$NON-NLS-1$
@@ -2409,7 +2401,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			);
 
 			fRightToLeftButton= new Button(canvas, style);
-			fRightToLeftButton.setCursor(fNormalCursor);
+			fRightToLeftButton.setCursor(normalCursor);
 			fRightToLeftButton.setText(COPY_RIGHT_TO_LEFT_INDICATOR);
 			fRightToLeftButton.setToolTipText(
 					Utilities.getString(getResourceBundle(), "action.CopyDiffRightToLeft.tooltip")); //$NON-NLS-1$
