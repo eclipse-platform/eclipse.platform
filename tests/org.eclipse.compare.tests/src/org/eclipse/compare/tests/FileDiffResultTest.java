@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -194,7 +194,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 		FileDiffResult fileDiffResult = new FileDiffResult(myFileDiff,
 				patchConfiguration);
 		try {
-			fileDiffResult.calculateFuzz(new ArrayList(), nullProgressMonitor);
+			fileDiffResult.calculateFuzz(new ArrayList<>(), nullProgressMonitor);
 		} catch (NullPointerException e) {
 			fail();
 		}
@@ -220,7 +220,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 		protected MyFileDiff() {
 			super(null, 0, null, 0);
 			add(Hunk.createHunk(this, new int[] { 0, 0 }, new int[] { 0, 0 },
-					new ArrayList(), false, false, false));
+					new ArrayList<>(), false, false, false));
 		}
 	}
 

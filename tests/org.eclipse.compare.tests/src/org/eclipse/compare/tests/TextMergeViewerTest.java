@@ -251,11 +251,9 @@ public class TextMergeViewerTest extends TestCase {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		String copiedText = "hi there";
 		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null, new EditableTestElement("some text".getBytes()), new EditableTestElement(copiedText.getBytes()));
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(false /* rightToLeft */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(false /* rightToLeft */);
+			saveViewerContents();
 		});
 		assertEquals(copiedText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
@@ -264,11 +262,9 @@ public class TextMergeViewerTest extends TestCase {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		String copiedText = "hi there";
 		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null, new EditableTestElement(copiedText.getBytes()), new EditableTestElement("some text".getBytes()));
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(true /* leftToRight */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(true /* leftToRight */);
+			saveViewerContents();
 		});
 		assertEquals(copiedText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
@@ -276,11 +272,9 @@ public class TextMergeViewerTest extends TestCase {
 	public void testCopyRightToEmptyLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(false /* rightToLeft */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(false /* rightToLeft */);
+			saveViewerContents();
 		});
 		assertEquals(testNode.getRight(), testNode.getLeft());
 	}
@@ -288,11 +282,9 @@ public class TextMergeViewerTest extends TestCase {
 	public void testCopyLeftToEmptyRight() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(true /* leftToRight */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(true /* leftToRight */);
+			saveViewerContents();
 		});
 		assertEquals(testNode.getRight(), testNode.getLeft());
 	}
@@ -300,11 +292,9 @@ public class TextMergeViewerTest extends TestCase {
 	public void testCopyEmptyLeftToRight() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(true /* leftToRight */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(true /* leftToRight */);
+			saveViewerContents();
 		});
 		assertNull(testNode.getLeft());
 		assertNull(testNode.getRight());
@@ -313,11 +303,9 @@ public class TextMergeViewerTest extends TestCase {
 	public void testCopyEmptyRightToLeft() throws Exception {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(false /* rightToLeft */);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(false /* rightToLeft */);
+			saveViewerContents();
 		});
 		assertNull(testNode.getLeft());
 		assertNull(testNode.getRight());
@@ -326,12 +314,10 @@ public class TextMergeViewerTest extends TestCase {
 	public void testModifyLeft() throws Exception {
 		DiffNode testNode = new DiffNode(new EditableTestElement("hi there".getBytes()), null);
 		final String newText = "New text";
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				IDocument doc = getDocument(true /* left */);
-				doc.set(newText);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			IDocument doc = getDocument(true /* left */);
+			doc.set(newText);
+			saveViewerContents();
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
@@ -339,12 +325,10 @@ public class TextMergeViewerTest extends TestCase {
 	public void testModifyRight() throws Exception {
 		DiffNode testNode = new DiffNode(null, new EditableTestElement("hi there".getBytes()));
 		final String newText = "New text";
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				IDocument doc = getDocument(false /* right */);
-				doc.set(newText);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			IDocument doc = getDocument(false /* right */);
+			doc.set(newText);
+			saveViewerContents();
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
@@ -353,13 +337,11 @@ public class TextMergeViewerTest extends TestCase {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.ADDITION, null, null, new EditableTestElement("hi there".getBytes()));
 		final String newText = "New text";
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(false /* rightToLeft */);
-				IDocument doc = getDocument(true /* left */);
-				doc.set(newText);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(false /* rightToLeft */);
+			IDocument doc = getDocument(true /* left */);
+			doc.set(newText);
+			saveViewerContents();
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getLeft()).getContentsAsString());
 	}
@@ -368,13 +350,11 @@ public class TextMergeViewerTest extends TestCase {
 		DiffNode parentNode = new DiffNode(new ParentTestElement(), new ParentTestElement());
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, new EditableTestElement("hi there".getBytes()), null);
 		final String newText = "New text";
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				viewer.copy(true /* leftToRight */);
-				IDocument doc = getDocument(false /* right */);
-				doc.set(newText);
-				saveViewerContents();
-			}
+		runInDialog(testNode, () -> {
+			viewer.copy(true /* leftToRight */);
+			IDocument doc = getDocument(false /* right */);
+			doc.set(newText);
+			saveViewerContents();
 		});
 		assertEquals(newText, ((EditableTestElement)testNode.getRight()).getContentsAsString());
 	}
@@ -392,70 +372,68 @@ public class TextMergeViewerTest extends TestCase {
 		DiffNode testNode = new DiffNode(parentNode, Differencer.CHANGE, null,
 				leftElement, rightElement);
 		final CompareConfiguration cc = new CompareConfiguration();
-		runInDialog(testNode, new Runnable() {
-			public void run() {
-				Object adapter = viewer
-						.getAdapter(IMergeViewerTestAdapter.class);
-				if (adapter instanceof IMergeViewerTestAdapter) {
-					IMergeViewerTestAdapter ta = (IMergeViewerTestAdapter) adapter;
-					assertEquals(ta.getChangesCount(), 1);
+		runInDialog(testNode, () -> {
+			Object adapter = viewer
+					.getAdapter(IMergeViewerTestAdapter.class);
+			if (adapter instanceof IMergeViewerTestAdapter) {
+				IMergeViewerTestAdapter ta = (IMergeViewerTestAdapter) adapter;
+				assertEquals(ta.getChangesCount(), 1);
 
-					Map<String, ICompareFilter> filters = new HashMap<>();
-					filters.put("filter.id", new ICompareFilter() {
-						public void setInput(Object input, Object ancestor,
-								Object left, Object right) {
-							assertTrue(leftElement == left);
-							assertTrue(rightElement == right);
+				Map<String, ICompareFilter> filters = new HashMap<>();
+				filters.put("filter.id", new ICompareFilter() {
+					public void setInput(Object input, Object ancestor,
+							Object left, Object right) {
+						assertTrue(leftElement == left);
+						assertTrue(rightElement == right);
+					}
+
+					public IRegion[] getFilteredRegions(
+							HashMap lineComparison) {
+						Object thisLine = lineComparison.get(THIS_LINE);
+						Object thisContributor = lineComparison
+								.get(THIS_CONTRIBUTOR);
+						Object otherLine = lineComparison.get(OTHER_LINE);
+						Object otherContributor = lineComparison
+								.get(OTHER_CONTRIBUTOR);
+
+						if (thisContributor.equals(Character.valueOf('L'))) {
+							assertEquals(thisLine, leftString);
+							assertEquals(otherContributor, Character.valueOf('R'));
+							assertEquals(otherLine, rightString);
+						} else {
+							assertEquals(thisContributor,
+									Character.valueOf('R'));
+							assertEquals(thisLine, rightString);
+							assertEquals(otherContributor, Character.valueOf('L'));
+							assertEquals(otherLine, leftString);
 						}
 
-						public IRegion[] getFilteredRegions(
-								HashMap lineComparison) {
-							Object thisLine = lineComparison.get(THIS_LINE);
-							Object thisContributor = lineComparison
-									.get(THIS_CONTRIBUTOR);
-							Object otherLine = lineComparison.get(OTHER_LINE);
-							Object otherContributor = lineComparison
-									.get(OTHER_CONTRIBUTOR);
+						if (thisContributor.equals(Character.valueOf('L')))
+							return new IRegion[] { new Region(0, 1),
+									new Region(1, 1) };
 
-							if (thisContributor.equals(Character.valueOf('L'))) {
-								assertEquals(thisLine, leftString);
-								assertEquals(otherContributor, Character.valueOf('R'));
-								assertEquals(otherLine, rightString);
-							} else {
-								assertEquals(thisContributor,
-										Character.valueOf('R'));
-								assertEquals(thisLine, rightString);
-								assertEquals(otherContributor, Character.valueOf('L'));
-								assertEquals(otherLine, leftString);
-							}
+						return new IRegion[] { new Region(0, 2) };
+					}
 
-							if (thisContributor.equals(Character.valueOf('L')))
-								return new IRegion[] { new Region(0, 1),
-										new Region(1, 1) };
+					public boolean isEnabledInitially() {
+						return false;
+					}
 
-							return new IRegion[] { new Region(0, 2) };
-						}
+					public boolean canCacheFilteredRegions() {
+						return true;
+					}
 
-						public boolean isEnabledInitially() {
-							return false;
-						}
+				});
 
-						public boolean canCacheFilteredRegions() {
-							return true;
-						}
+				cc.setProperty(
+						ChangeCompareFilterPropertyAction.COMPARE_FILTERS,
+						filters);
+				assertEquals(ta.getChangesCount(), 0);
 
-					});
-
-					cc.setProperty(
-							ChangeCompareFilterPropertyAction.COMPARE_FILTERS,
-							filters);
-					assertEquals(ta.getChangesCount(), 0);
-
-					cc.setProperty(
-							ChangeCompareFilterPropertyAction.COMPARE_FILTERS,
-							null);
-					assertEquals(ta.getChangesCount(), 1);
-				}
+				cc.setProperty(
+						ChangeCompareFilterPropertyAction.COMPARE_FILTERS,
+						null);
+				assertEquals(ta.getChangesCount(), 1);
 			}
 		}, cc);
 	}
@@ -480,10 +458,8 @@ public class TextMergeViewerTest extends TestCase {
 		DocumentAsTypedElement leftDoc = new DocumentAsTypedElement();
 		DocumentAsTypedElement rightDoc = new DocumentAsTypedElement();
 		DiffNode testNode = new DiffNode(parentNode, Differencer.DELETION, null, leftDoc, rightDoc);
-		runInDialogWithPartioner(testNode, new Runnable() {
-			public void run() {
-				//Not needed
-			}
+		runInDialogWithPartioner(testNode, () -> {
+			//Not needed
 		}, new CompareConfiguration());
 		assertNotNull(leftDoc.getDocumentPartitioner());
 		assertNotNull(rightDoc.getDocumentPartitioner());

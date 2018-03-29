@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 IBM Corporation and others.
+ * Copyright (c) 2008, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ package org.eclipse.compare.tests;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Assert;
 
@@ -99,12 +97,9 @@ public class ContentMergeViewerTest extends TestCase {
 	protected void setUp() throws Exception {
 		result = new boolean[] { false, false };
 		myContentMergeViewer = new MyContentMergeViewer();
-		myContentMergeViewer.addPropertyChangeListener(new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				result[0] = true;
-				result[1] = ((Boolean) event.getNewValue()).booleanValue();
-			}
+		myContentMergeViewer.addPropertyChangeListener(event -> {
+			result[0] = true;
+			result[1] = ((Boolean) event.getNewValue()).booleanValue();
 		});
 	}
 

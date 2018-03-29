@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,54 +10,25 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-import junit.framework.Assert;
+import org.eclipse.compare.internal.core.patch.*;
+import org.eclipse.compare.internal.patch.WorkspacePatcher;
+import org.eclipse.compare.patch.*;
+import org.eclipse.compare.tests.PatchUtils.*;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.runtime.*;
+import org.junit.Assert;
+
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-
-import org.eclipse.compare.internal.core.patch.FilePatch2;
-import org.eclipse.compare.internal.core.patch.FileDiffResult;
-import org.eclipse.compare.internal.core.patch.LineReader;
-import org.eclipse.compare.internal.patch.WorkspacePatcher;
-import org.eclipse.compare.patch.ApplyPatchOperation;
-import org.eclipse.compare.patch.IFilePatch;
-import org.eclipse.compare.patch.IFilePatchResult;
-import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.IHunkFilter;
-import org.eclipse.compare.patch.PatchConfiguration;
-import org.eclipse.compare.tests.PatchUtils.JarEntryStorage;
-import org.eclipse.compare.tests.PatchUtils.PatchTestConfiguration;
-import org.eclipse.compare.tests.PatchUtils.StringStorage;
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 
 public class PatchTest extends TestCase {
 
@@ -111,11 +82,7 @@ public class PatchTest extends TestCase {
 		assertEquals(5, hunks.length);
 		PatchConfiguration pc = new PatchConfiguration();
 		final IHunk toFilterOut = hunks[3];
-		pc.addHunkFilter(new IHunkFilter() {
-			public boolean select(IHunk hunk) {
-				return hunk != toFilterOut;
-			}
-		});
+		pc.addHunkFilter(hunk -> hunk != toFilterOut);
 		IFilePatchResult result = patches[0].apply(expStorage, pc,
 				new NullProgressMonitor());
 		IHunk[] rejects = result.getRejects();
@@ -127,7 +94,7 @@ public class PatchTest extends TestCase {
 		InputStream actual = result.getPatchedContents();
 
 		LineReader lr = new LineReader(PatchUtils.getReader("exp_hunkFilter.txt"));
-		List inLines = lr.readLines();
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		assertEquals(expected, PatchUtils.asString(actual));
@@ -139,8 +106,8 @@ public class PatchTest extends TestCase {
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
 		String header = patches[0].getHeader();
 		LineReader reader = new LineReader(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(header.getBytes()))));
-		List lines = reader.readLines();
-		List expected = new ArrayList();
+		List<String> lines = reader.readLines();
+		List<String> expected = new ArrayList<>();
 		expected.add("Index: old.txt\n");
 		expected.add("UID: 42\n");
 		assertEquals(LineReader.createString(false, expected), LineReader.createString(false, lines));
@@ -204,14 +171,14 @@ public class PatchTest extends TestCase {
 	}
 
 	// Keeps track of the failures
-	private List failures = new ArrayList();
+	private List<AssertionError> failures = new ArrayList<>();
 
 	public void testPatchdataSubfolders() throws IOException, CoreException {
 		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"),
 				new Path(PatchUtils.PATCHDATA).toString());
 		patchdataUrl = FileLocator.resolve(patchdataUrl);
 
-		Map map = null;
+		Map<String, PatchTestConfiguration> map = null;
 		if (patchdataUrl.getProtocol().equals("file")) {
 			map = extractNamesForFileProtocol(patchdataUrl);
 		} else if (patchdataUrl.getProtocol().equals("jar")) {
@@ -221,9 +188,9 @@ public class PatchTest extends TestCase {
 		}
 		assertNotNull(map);
 
-		for (Iterator iterator = map.keySet().iterator(); iterator.hasNext();) {
-			String sf = (String) iterator.next(); // subfolder
-			PatchTestConfiguration ptc = (PatchTestConfiguration) map.get(sf);
+		for (Entry<String, PatchTestConfiguration> entry : map.entrySet()) {
+			String sf = entry.getKey(); // subfolder
+			PatchTestConfiguration ptc = entry.getValue();
 			String[] originalFiles = ptc.originalFileNames;
 			String patch = ptc.patchFileName;
 			String[] expectedFiles = ptc.expectedFileNames;
@@ -237,7 +204,7 @@ public class PatchTest extends TestCase {
 			try {
 				// test with expected result
 				patchWorkspace(msg, originalFiles, patch, expectedFiles, pc);
-			} catch (AssertionFailedError e) {
+			} catch (AssertionError e) {
 				failures.add(e);
 			}
 
@@ -245,11 +212,11 @@ public class PatchTest extends TestCase {
 			if (actualFiles != null) {
 				try {
 					patchWorkspace(msg, originalFiles, patch, actualFiles, pc);
-				} catch (AssertionFailedError e) {
+				} catch (AssertionError e) {
 					// a failure is expected
 					continue; // continue with a next subfolder
 				}
-				failures.add(new AssertionFailedError(
+				failures.add(new AssertionError(
 						"\npatchWorkspace should fail for folder ["
 								+ PatchUtils.PATCHDATA + "/" + sf + "]."));
 			}
@@ -259,12 +226,11 @@ public class PatchTest extends TestCase {
 			return;
 
 		if (failures.size() == 1)
-			throw (AssertionFailedError) failures.get(0);
+			throw failures.get(0);
 
-		StringBuffer sb = new StringBuffer(
+		StringBuilder sb = new StringBuilder(
 				"Failures occured while testing data from patchdata subfolder (Please check log for further details):");
-		for (Iterator iterator = failures.iterator(); iterator.hasNext();) {
-			AssertionFailedError error = (AssertionFailedError) iterator.next();
+		for (AssertionError error : failures) {
 			log("org.eclipse.compare.tests", error);
 			sb.append("\n" + error.getMessage());
 		}
@@ -292,15 +258,15 @@ public class PatchTest extends TestCase {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	private Map extractNamesForJarProtocol(URL patchdataUrl) throws IOException,
+	private Map<String, PatchTestConfiguration> extractNamesForJarProtocol(URL patchdataUrl) throws IOException,
 			CoreException {
 		JarFile jarFile = ((JarURLConnection) patchdataUrl.openConnection()).getJarFile();
 
 		// look for the patchdata folder entry
 		String patchdataName = null;
-		Enumeration entries = jarFile.entries();
+		Enumeration<JarEntry> entries = jarFile.entries();
 		while (entries.hasMoreElements()) {
-			JarEntry entry = (JarEntry) entries.nextElement();
+			JarEntry entry = entries.nextElement();
 			String entryName = entry.getName();
 			if (entryName.endsWith("/" + PatchUtils.PATCHDATA + "/")) {
 				patchdataName = entryName;
@@ -311,10 +277,10 @@ public class PatchTest extends TestCase {
 		if (patchdataName == null)
 			return null;
 
-		Map result = new HashMap();
+		Map<String, PatchTestConfiguration> result = new HashMap<>();
 		entries = jarFile.entries();
 		while (entries.hasMoreElements()) {
-			JarEntry entry = (JarEntry) entries.nextElement();
+			JarEntry entry = entries.nextElement();
 			String entryName = entry.getName();
 			if (entry.isDirectory()) {
 				if (!entryName.equals(patchdataName) && entryName.startsWith(patchdataName)) {
@@ -338,22 +304,17 @@ public class PatchTest extends TestCase {
 		return result;
 	}
 
-	private Map extractNamesForFileProtocol(URL patchdataUrl)
+	private Map<String, PatchTestConfiguration> extractNamesForFileProtocol(URL patchdataUrl)
 			throws CoreException {
 
-		Map result = new HashMap(); // configuration map
+		Map<String, PatchTestConfiguration> result = new HashMap<>(); // configuration map
 
 		IPath patchdataFolderPath = new Path(patchdataUrl.getPath());
 		File patchdataFolderFile = patchdataFolderPath.toFile();
 		assertTrue(patchdataFolderFile.isDirectory());
 		File[] listOfSubfolders = patchdataFolderFile
-				.listFiles(new FileFilter() {
-					public boolean accept(File pathname) {
-						return pathname.isDirectory();
-					}
-				});
-		for (int i = 0; i < listOfSubfolders.length; i++) {
-			File subfolder = listOfSubfolders[i];
+				.listFiles((FileFilter) pathname -> pathname.isDirectory());
+		for (File subfolder : listOfSubfolders) {
 			Path pcPath = new Path(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
 			File pcFile = pcPath.toFile();
 
@@ -375,7 +336,7 @@ public class PatchTest extends TestCase {
 		return result;
 	}
 
-	private void processProperties(Map result, Properties p, String subfolderName) {
+	private void processProperties(Map<String, PatchTestConfiguration> result, Properties p, String subfolderName) {
 		boolean skipTest = Boolean.valueOf(p.getProperty("skipTest", "false")).booleanValue();
 		if (skipTest)
 			return;
@@ -430,7 +391,7 @@ public class PatchTest extends TestCase {
 
 	private void filePatch(final String old, String patch, String expt) throws CoreException, IOException {
 		LineReader lr= new LineReader(PatchUtils.getReader(expt));
-		List inLines= lr.readLines();
+		List<String> inLines= lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		IStorage oldStorage = new StringStorage(old);
@@ -447,7 +408,7 @@ public class PatchTest extends TestCase {
 
 	private void patcherPatch(String old, String patch, String expt) {
 		LineReader lr= new LineReader(PatchUtils.getReader(old));
-		List inLines= lr.readLines();
+		List<String> inLines= lr.readLines();
 
 		WorkspacePatcher patcher= new WorkspacePatcher();
 		try {
@@ -463,15 +424,9 @@ public class PatchTest extends TestCase {
 		diffResult.patch(inLines, null);
 
 		LineReader expectedContents= new LineReader(PatchUtils.getReader(expt));
-		List expectedLines= expectedContents.readLines();
+		List<String> expectedLines= expectedContents.readLines();
 
-		Object[] expected= expectedLines.toArray();
-		Object[] result= inLines.toArray();
-
-		Assert.assertEquals(expected.length, result.length);
-
-		for (int i= 0; i < expected.length; i++)
-			Assert.assertEquals(expected[i], result[i]);
+		Assert.assertArrayEquals(expectedLines.toArray(), inLines.toArray());
 	}
 
 	private void patchWorkspace(String[] originalFiles, String patch,
@@ -519,13 +474,13 @@ public class PatchTest extends TestCase {
 		//with the corresponding outcome file
 		for (int i = 0; i < originalFiles.length; i++) {
 			LineReader lr= new LineReader(PatchUtils.getReader(originalFiles[i]));
-			List inLines= lr.readLines();
+			List<String> inLines= lr.readLines();
 
 			FileDiffResult diffResult = patcher.getDiffResult(diffs[i]);
 			diffResult.patch(inLines, null);
 
 			LineReader expectedContents= new LineReader(PatchUtils.getReader(expectedOutcomeFiles[i]));
-			List expectedLines= expectedContents.readLines();
+			List<String> expectedLines= expectedContents.readLines();
 
 			Object[] expected= expectedLines.toArray();
 
@@ -533,11 +488,7 @@ public class PatchTest extends TestCase {
 			LineReader resultReader = new LineReader(new BufferedReader(new StringReader(resultString)));
 			Object[] result = resultReader.readLines().toArray();
 
-			Assert.assertEquals(msg, expected.length, result.length);
-
-			for (int j= 0; j < expected.length; j++)
-				Assert.assertEquals(msg, expected[j], result[j]);
+			Assert.assertArrayEquals(msg, expected, result);
 		}
 	}
-
 }

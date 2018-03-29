@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,23 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.eclipse.compare.internal.core.patch.Hunk;
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.compare.internal.patch.Utilities;
-import org.eclipse.compare.patch.ApplyPatchOperation;
-import org.eclipse.compare.patch.IFilePatch;
-import org.eclipse.compare.patch.IFilePatch2;
-import org.eclipse.compare.patch.IFilePatchResult;
-import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.PatchBuilder;
-import org.eclipse.compare.patch.PatchConfiguration;
+import org.eclipse.compare.patch.*;
 import org.eclipse.compare.tests.PatchUtils.StringStorage;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.*;
+import org.junit.Assert;
+
+import junit.framework.TestCase;
 
 public class PatchBuilderTest extends TestCase {
 
@@ -85,7 +78,7 @@ public class PatchBuilderTest extends TestCase {
 
 		LineReader lr = new LineReader(PatchUtils
 				.getReader("exp_modifyHunks.txt"));
-		List inLines = lr.readLines();
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		assertEquals(expected, PatchUtils.asString(actual));
@@ -135,7 +128,7 @@ public class PatchBuilderTest extends TestCase {
 		InputStream actual = result.getPatchedContents();
 
 		LineReader lr = new LineReader(PatchUtils.getReader("exp_addHunks.txt"));
-		List inLines = lr.readLines();
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		assertEquals(expected, PatchUtils.asString(actual));
@@ -172,7 +165,7 @@ public class PatchBuilderTest extends TestCase {
 
 		LineReader lr = new LineReader(PatchUtils
 				.getReader("exp_removeHunks.txt"));
-		List inLines = lr.readLines();
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		assertEquals(expected, PatchUtils.asString(actual));
@@ -209,7 +202,7 @@ public class PatchBuilderTest extends TestCase {
 
 		LineReader lr = new LineReader(PatchUtils
 				.getReader("exp_createFilePatch.txt"));
-		List inLines = lr.readLines();
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		assertEquals(expected, PatchUtils.asString(actual));
@@ -227,7 +220,7 @@ public class PatchBuilderTest extends TestCase {
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
 		assertTrue(lines != actual);
-		assertLinesEquals(lines, actual);
+		Assert.assertArrayEquals(lines, actual);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -245,7 +238,7 @@ public class PatchBuilderTest extends TestCase {
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
 		assertTrue(lines != actual);
-		assertLinesEquals(lines, actual);
+		Assert.assertArrayEquals(lines, actual);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -261,7 +254,7 @@ public class PatchBuilderTest extends TestCase {
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
 		assertTrue(lines != actual);
-		assertLinesEquals(lines, actual);
+		Assert.assertArrayEquals(lines, actual);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -277,7 +270,7 @@ public class PatchBuilderTest extends TestCase {
 		Hunk hunk = (Hunk) PatchBuilder.createHunk(0, lines);
 		String[] actual = hunk.getUnifiedLines();
 		assertTrue(lines != actual);
-		assertLinesEquals(lines, actual);
+		Assert.assertArrayEquals(lines, actual);
 
 		assertHunkEquals(hunk, (Hunk) filePatches[0].getHunks()[0]);
 	}
@@ -296,13 +289,6 @@ public class PatchBuilderTest extends TestCase {
 		assertEquals(h1.getLength(true), h2.getLength(true));
 		assertEquals(h1.getHunkType(false), h2.getHunkType(false));
 		assertEquals(h1.getHunkType(true), h2.getHunkType(true));
-	}
-
-	private void assertLinesEquals(String[] expected, String[] actual) {
-		assertEquals(expected.length, actual.length);
-		for (int i = 0; i < expected.length; i++) {
-			assertEquals(expected[i], actual[i]);
-		}
 	}
 
 	private void addLineDelimiters(String[] lines) {

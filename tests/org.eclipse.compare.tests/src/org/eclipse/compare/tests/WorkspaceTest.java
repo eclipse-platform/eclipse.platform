@@ -10,27 +10,15 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
+
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.tests.resources.ResourceTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.tests.resources.ResourceTest;
 
 public class WorkspaceTest extends ResourceTest {
 	protected static IProgressMonitor DEFAULT_MONITOR = new NullProgressMonitor();
@@ -102,11 +90,11 @@ public class WorkspaceTest extends ResourceTest {
 	 * @throws CoreException
 	 */
 	public IResource[] buildResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
-		List resources = new ArrayList(hierarchy.length + 1);
+		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);
 		if (includeContainer)
 			resources.add(container);
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
-		IResource[] result = (IResource[]) resources.toArray(new IResource[resources.size()]);
+		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		ensureExistsInWorkspace(result, true);
 		for (int i = 0; i < result.length; i++) {
 			if (result[i].getType() == IResource.FILE) // 3786 bytes is the average size of Eclipse Java files!
@@ -115,11 +103,11 @@ public class WorkspaceTest extends ResourceTest {
 		return result;
 	}
 	public IResource[] buildEmptyResources(IContainer container, String[] hierarchy, boolean includeContainer) throws CoreException {
-		List resources = new ArrayList(hierarchy.length + 1);
+		List<IResource> resources = new ArrayList<>(hierarchy.length + 1);
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
 		if (includeContainer)
 			resources.add(container);
-		IResource[] result = (IResource[]) resources.toArray(new IResource[resources.size()]);
+		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		ensureExistsInWorkspace(result, true);
 		return result;
 	}
@@ -212,15 +200,15 @@ public class WorkspaceTest extends ResourceTest {
 	// Assert that the two containers have equal contents
 	protected void assertEquals(IContainer container1, IContainer container2) throws CoreException {
 		assertEquals(container1.getName(), container2.getName());
-		List members1 = new ArrayList();
+		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
 
-		List members2 = new ArrayList();
+		List<IResource> members2 = new ArrayList<>();
 		members2.addAll(Arrays.asList(container2.members()));
 
 		assertTrue(members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
-			IResource member1 = (IResource)members1.get(i);
+			IResource member1 = members1.get(i);
 			IResource member2 = container2.findMember(member1.getName());
 			assertNotNull(member2);
 			assertEquals(member1, member2);
@@ -236,17 +224,17 @@ public class WorkspaceTest extends ResourceTest {
 	// Assert that the two projects have equal contents ignoreing the project name
 	// and the .vcm_meta file
 	protected void assertEquals(IProject container1, IProject container2) throws CoreException {
-		List members1 = new ArrayList();
+		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
 		members1.remove(container1.findMember(".project"));
 
-		List members2 = new ArrayList();
+		List<IResource> members2 = new ArrayList<>();
 		members2.addAll(Arrays.asList(container2.members()));
 		members2.remove(container2.findMember(".project"));
 
 		assertTrue("Number of children differs for " + container1.getFullPath(), members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
-			IResource member1 = (IResource)members1.get(i);
+			IResource member1 = members1.get(i);
 			IResource member2 = container2.findMember(member1.getName());
 			assertNotNull(member2);
 			assertEquals(member1, member2);

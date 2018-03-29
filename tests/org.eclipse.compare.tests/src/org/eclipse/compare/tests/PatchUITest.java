@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,37 +14,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.TestCase;
-
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.patch.PatchMessages;
-import org.eclipse.compare.internal.patch.PatchWizard;
-import org.eclipse.compare.internal.patch.PatchWizardDialog;
+import org.eclipse.compare.internal.patch.*;
 import org.eclipse.core.internal.resources.WorkspaceRoot;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.TreePath;
-import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.dnd.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+
+import junit.framework.TestCase;
 
 public class PatchUITest extends TestCase {
 
@@ -89,7 +76,7 @@ public class PatchUITest extends TestCase {
 
 		assertTrue(patchWizardPage.canFlipToNextPage());
 
-		callMethod(wizardDialog, "nextPressed", new Object[] {});
+		callMethod(wizardDialog, "nextPressed");
 
 		processQueuedEvents();
 		assertTrue(wizard.canFinish());
@@ -117,7 +104,7 @@ public class PatchUITest extends TestCase {
 
 		processQueuedEvents();
 		assertTrue(patchWizardPage.canFlipToNextPage());
-		callMethod(wizardDialog, "nextPressed", new Object[] {});
+		callMethod(wizardDialog, "nextPressed");
 
 		assertTrue(wizard.canFinish());
 		wizard.performFinish();
@@ -149,7 +136,7 @@ public class PatchUITest extends TestCase {
 
 		assertTrue(patchWizardPage.canFlipToNextPage());
 
-		callMethod(wizardDialog, "nextPressed", new Object[] {});
+		callMethod(wizardDialog, "nextPressed");
 
 		processQueuedEvents();
 		assertTrue(wizard.canFinish());
@@ -286,7 +273,7 @@ public class PatchUITest extends TestCase {
 		return ret;
 	}
 
-	private Object callMethod(Object object, String name, Object args[]) {
+	private Object callMethod(Object object, String name, Object... args) {
 		Object ret = null;
 		try {
 			ret = ReflectionUtils.callMethod(object, name, args);

@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 public class ReflectionUtils {
 
-	public static Object callMethod(Object object, String name, Object args[])
+	public static Object callMethod(Object object, String name, Object... args)
 			throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		Class<?> types[] = new Class[args.length];
