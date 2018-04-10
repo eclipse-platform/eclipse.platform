@@ -563,7 +563,9 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			if (c != null) {
 				c.setEnabled(enabled);
 				Display d= c.getDisplay();
-				c.setBackground(enabled ? d.getSystemColor(SWT.COLOR_LIST_BACKGROUND) : null);
+				if (enabled) {
+					c.setBackground(d.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+				}
 			}
 		}
 	}
