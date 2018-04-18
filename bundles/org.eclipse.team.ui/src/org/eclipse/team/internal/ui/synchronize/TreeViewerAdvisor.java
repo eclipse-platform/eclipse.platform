@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,21 +169,15 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		return modelManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.StructuredViewerAdvisor#initializeViewer(org.eclipse.jface.viewers.StructuredViewer)
-	 */
 	@Override
 	public boolean validateViewer(StructuredViewer viewer) {
 		return viewer instanceof AbstractTreeViewer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.viewers.StructuredViewerAdvisor#initializeListeners(org.eclipse.jface.viewers.StructuredViewer)
-	 */
 	@Override
 	protected void initializeListeners(final StructuredViewer viewer) {
 		super.initializeListeners(viewer);
-		viewer.addSelectionChangedListener(event -> updateStatusLine((IStructuredSelection) event.getSelection()));
+		viewer.addSelectionChangedListener(event -> updateStatusLine(event.getStructuredSelection()));
 	}
 
 	/* private */ void updateStatusLine(IStructuredSelection selection) {
@@ -261,7 +255,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 
             @Override
 			public void dragStart(DragSourceEvent event) {
-				final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+				final IStructuredSelection selection = viewer.getStructuredSelection();
                 final Object [] array= selection.toArray();
                 event.doit= Utils.getResources(array).length > 0;
 			}
@@ -270,7 +264,7 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 			public void dragSetData(DragSourceEvent event) {
 
                 if (ResourceTransfer.getInstance().isSupportedType(event.dataType)) {
-                    final IStructuredSelection selection= (IStructuredSelection)viewer.getSelection();
+                    final IStructuredSelection selection= viewer.getStructuredSelection();
                     final Object [] array= selection.toArray();
                     event.data= Utils.getResources(array);
                 }
@@ -314,9 +308,6 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		return new DecoratingColorLabelProvider(provider, decorators);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if (statusLine != null) {
@@ -325,9 +316,6 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.StructuredViewerAdvisor#initializeStatusLine(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	protected void initializeStatusLine(IActionBars actionBars) {
 		statusLine = new SyncInfoSetStatusLineContributionGroup(

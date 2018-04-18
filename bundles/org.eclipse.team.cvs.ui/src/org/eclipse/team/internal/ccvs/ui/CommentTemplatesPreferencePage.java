@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 	private Button removeButton;
 	private Text preview;
 
+	@Override
 	protected Control createContents(Composite ancestor) {
 		Composite parent = new Composite(ancestor, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -75,6 +76,7 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 		
 		viewer = new ListViewer(listAndButtons);
 		viewer.setLabelProvider(new LabelProvider() {
+			@Override
 			public String getText(Object element) {
 				String template = (String) element;
 				return Util.flattenText(template);
@@ -82,17 +84,14 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 		});
 		viewer.addSelectionChangedListener(this);
 		viewer.setComparator(new ViewerComparator() {
+			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				String template1 = Util.flattenText((String) e1);
 				String template2 = Util.flattenText((String) e2);
 				return template1.compareToIgnoreCase(template2);
 			}
 		});
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				editTemplate();
-			}
-		});
+		viewer.addDoubleClickListener(event -> editTemplate());
 		List list = viewer.getList();
 		list.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
@@ -124,11 +123,7 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 				newButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		newButton.setLayoutData(data);
 		newButton.setEnabled(true);
-		newButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				newTemplate();
-			}
-		});
+		newButton.addListener(SWT.Selection, event -> newTemplate());
 
 		editButton = new Button(buttons, SWT.PUSH);
 		editButton.setText(CVSUIMessages.CommentTemplatesPreferencePage_Edit);
@@ -139,11 +134,7 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 				editButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		editButton.setLayoutData(data);
 		editButton.setEnabled(false);
-		editButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				editTemplate();
-			}
-		});
+		editButton.addListener(SWT.Selection, e -> editTemplate());
 
 		removeButton = new Button(buttons, SWT.PUSH);
 		removeButton.setText(CVSUIMessages.CommentTemplatesPreferencePage_Remove);
@@ -154,15 +145,12 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		removeButton.setLayoutData(data);
 		removeButton.setEnabled(false);
-		removeButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				remove();
-			}
-		});
+		removeButton.addListener(SWT.Selection, e -> remove());
 	}
 
+	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+		IStructuredSelection selection = event.getStructuredSelection();
 		switch (selection.size()) {
 			case 0:
 				editButton.setEnabled(false);
@@ -196,7 +184,7 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 	}
 
 	void editTemplate() {
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		IStructuredSelection selection = viewer.getStructuredSelection();
 		if (selection.size() == 1) {
 			String oldTemplate = (String) selection.getFirstElement();
 			CommentTemplateEditDialog dialog = new CommentTemplateEditDialog(
@@ -212,10 +200,11 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 	}
 	
 	void remove() {
-		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		IStructuredSelection selection = viewer.getStructuredSelection();
 		viewer.remove(selection.toArray());
 	}
 	
+	@Override
 	public boolean performOk() {
 		int numTemplates = viewer.getList().getItemCount();
 		String[] templates = new String[numTemplates];
@@ -232,10 +221,12 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 		return super.performOk();
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 		// Nothing to do
 	}
 
+	@Override
 	protected void performDefaults() {
 		// default: the list of comments is cleaned
 		viewer.getList().removeAll();

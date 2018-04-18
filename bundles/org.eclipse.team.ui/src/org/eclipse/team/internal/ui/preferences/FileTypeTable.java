@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,9 +65,6 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 
         public Item(String name, boolean contributed) { this.name= name; this.contributed = contributed; save= true; mode= Team.BINARY; }
 
-        /* (non-Javadoc)
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 */
 		@Override
 		public int compareTo(Object o) {
 			return name.compareTo(((Item)o).name);
@@ -196,7 +193,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
     @Override
 	public void modify(Object element, String property, Object value) {
 
-        final IStructuredSelection selection = (IStructuredSelection)fTableViewer.getSelection();
+        final IStructuredSelection selection = fTableViewer.getStructuredSelection();
         final Item item= (Item)selection.getFirstElement();
         if (item == null)
             return;
@@ -270,7 +267,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
     public IStructuredSelection getSelection() {
-        return (IStructuredSelection)fTableViewer.getSelection();
+        return fTableViewer.getStructuredSelection();
     }
 
     public void setInput(List items) {

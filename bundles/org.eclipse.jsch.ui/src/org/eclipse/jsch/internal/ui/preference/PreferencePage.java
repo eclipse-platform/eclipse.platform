@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1385,7 +1385,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
   }
 
   void removeHostKey(){
-    IStructuredSelection selection=(IStructuredSelection)viewer.getSelection();
+    IStructuredSelection selection=viewer.getStructuredSelection();
     HostKeyRepository hkr=getJSch().getHostKeyRepository();
     for(Iterator iterator=selection.iterator(); iterator.hasNext();){
       HostKey hostkey=(HostKey)iterator.next();

@@ -13,13 +13,8 @@ package org.eclipse.team.internal.ccvs.ui;
  
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareEditorInput;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.structuremergeviewer.DiffNode;
-import org.eclipse.compare.structuremergeviewer.Differencer;
-import org.eclipse.compare.structuremergeviewer.IDiffContainer;
-import org.eclipse.compare.structuremergeviewer.IStructureComparator;
+import org.eclipse.compare.*;
+import org.eclipse.compare.structuremergeviewer.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.*;
@@ -272,16 +267,12 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 		}
 	}
 	
-	/* (Non-javadoc)
-	 * Method declared on CompareEditorInput
-	 */
+	@Override
 	public boolean isSaveNeeded() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on CompareEditorInput
-	 */
+	@Override
 	protected Object prepareInput(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		final boolean threeWay = ancestor != null;
 		if (right == null || left == null) {
@@ -292,6 +283,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 		initLabels();
 	
 		final Differencer d = new Differencer() {
+			@Override
 			protected boolean contentsEqual(Object input1, Object input2) {
 				int compare = teamEqual(input1, input2);
 				if (compare == NODE_EQUAL) {
@@ -303,6 +295,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 				//revert to slow content comparison
 				return super.contentsEqual(input1, input2);
 			}
+			@Override
 			protected void updateProgress(IProgressMonitor progressMonitor, Object node) {
 				if (node instanceof ITypedElement) {
 					ITypedElement element = (ITypedElement)node;
@@ -310,6 +303,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 					progressMonitor.worked(1);
 				}
 			}
+			@Override
 			protected Object[] getChildren(Object input) {
 				if (input instanceof IStructureComparator) {
 					Object[] children= ((IStructureComparator)input).getChildren();
@@ -318,6 +312,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 				}
 				return null;
 			}
+			@Override
 			protected Object visit(Object data, int result, Object ancestor, Object left, Object right) {
 				return new DiffNode((IDiffContainer) data, result, (ITypedElement)ancestor, (ITypedElement)left, (ITypedElement)right);
 			}
@@ -406,40 +401,35 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_CONSIDER_CONTENTS);
 	}
 	
+	@Override
 	public Viewer createDiffViewer(Composite parent) {
 		final Viewer viewer = super.createDiffViewer(parent);
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				CompareConfiguration cc = getCompareConfiguration();
-				setLabels(cc, (IStructuredSelection)event.getSelection());
-			}
+		viewer.addSelectionChangedListener(event -> {
+			CompareConfiguration cc = getCompareConfiguration();
+			setLabels(cc, event.getStructuredSelection());
 		});
-		((StructuredViewer)viewer).addOpenListener(new IOpenListener() {
-            public void open(OpenEvent event) {
-                ISelection selection = event.getSelection();
-                if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
-                    Object o = ((IStructuredSelection)selection).getFirstElement();
-                    if (o instanceof DiffNode) {
-                        updateLabelsFor((DiffNode)o);
-                    }
-                }
-            }
-        });
-        ((StructuredViewer)viewer).addDoubleClickListener(new IDoubleClickListener() {
-            public void doubleClick(DoubleClickEvent event) {
-                ISelection selection = event.getSelection();
-                if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
-                    Object o = ((IStructuredSelection)selection).getFirstElement();
-                    if (o instanceof DiffNode) {
-                        DiffNode diffNode = ((DiffNode)o);
-                        if (diffNode.hasChildren()) {
-                            AbstractTreeViewer atv = ((AbstractTreeViewer)viewer);
-                            atv.setExpandedState(o, !atv.getExpandedState(o));
-                        }
-                    }
-                }
-            }
-        });
+		((StructuredViewer)viewer).addOpenListener(event -> {
+		    ISelection selection = event.getSelection();
+		    if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
+		        Object o = ((IStructuredSelection)selection).getFirstElement();
+		        if (o instanceof DiffNode) {
+		            updateLabelsFor((DiffNode)o);
+		        }
+		    }
+		});
+        ((StructuredViewer)viewer).addDoubleClickListener(event -> {
+		    ISelection selection = event.getSelection();
+		    if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
+		        Object o = ((IStructuredSelection)selection).getFirstElement();
+		        if (o instanceof DiffNode) {
+		            DiffNode diffNode = ((DiffNode)o);
+		            if (diffNode.hasChildren()) {
+		                AbstractTreeViewer atv = ((AbstractTreeViewer)viewer);
+		                atv.setExpandedState(o, !atv.getExpandedState(o));
+		            }
+		        }
+		    }
+		});
 		return viewer;
 	}
 	
@@ -466,9 +456,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
         }
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#getToolTipText()
-	 */
+	@Override
 	public String getToolTipText() {
 		if (toolTipText != null) {
 			return toolTipText;

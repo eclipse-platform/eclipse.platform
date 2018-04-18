@@ -16,12 +16,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -80,11 +77,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 				fileHistory.refresh(monitor);
 				//Internal code used for convenience - you can use 
 				//your own here
-				Utils.asyncExec(new Runnable() {
-					public void run() {
-						tableViewer.setInput(fileHistory);
-					}
-				}, tableViewer);
+				Utils.asyncExec((Runnable) () -> tableViewer.setInput(fileHistory), tableViewer);
 			}
 
 			return status;
@@ -143,18 +136,16 @@ public class FileSystemHistoryPage extends HistoryPage {
 		openAction = new OpenFileSystemRevisionAction("Open");  //$NON-NLS-1$
 		tableViewer.getTable().addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				openAction.selectionChanged((IStructuredSelection) tableViewer.getSelection());
+				openAction.selectionChanged(tableViewer.getStructuredSelection());
 			}
 		});
 		openAction.setPage(this);
 		//Contribute actions to popup menu
 		MenuManager menuMgr = new MenuManager();
 		Menu menu = menuMgr.createContextMenu(tableViewer.getTable());
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager menuMgr) {
-				menuMgr.add(new Separator(IWorkbenchActionConstants.GROUP_FILE));
-				menuMgr.add(openAction);
-			}
+		menuMgr.addMenuListener(menuMgr1 -> {
+			menuMgr1.add(new Separator(IWorkbenchActionConstants.GROUP_FILE));
+			menuMgr1.add(openAction);
 		});
 		menuMgr.setRemoveAllWhenShown(true);
 		tableViewer.getTable().setMenu(menu);

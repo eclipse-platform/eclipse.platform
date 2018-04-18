@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -52,11 +51,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 				alternativesMap);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Control contents = super.createContents(parent);
 		setTitle(CVSUIMessages.ConfigureRepositoryLocationsWizard_title);
@@ -67,6 +62,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 		return contents;
 	}
 
+	@Override
 	public boolean close() {
 		if (dlgTitleImage != null) {
 			dlgTitleImage.dispose();
@@ -74,9 +70,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 		return super.close();
 	}
 
-	/*
-	 * (non-Javadoc) Method declared in Window.
-	 */
+	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(CVSUIMessages.ConfigureRepositoryLocationsWizard_title);
@@ -85,9 +79,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 				IHelpContextIds.ALTERNATIVE_REPOSITORY_DIALOG);
 	}
 
-	/**
-	 * @see Dialog#createDialogArea
-	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		initializeDialogUnits(parent);
 
@@ -111,13 +103,9 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 				.setText(CVSUIMessages.ConfigureRepositoryLocationsWizard_showOnlyCompatible);
 		showOnlyCompatibleLocationsButton.setSelection(true);
 		showOnlyCompatibleLocationsButton.addListener(SWT.Selection,
-				new Listener() {
-					public void handleEvent(Event event) {
-						fConfigureRepositoryLocationsTable
-								.setShowOnlyCompatibleLocations(showOnlyCompatibleLocationsButton
-										.getSelection());
-					}
-				});
+				event -> fConfigureRepositoryLocationsTable
+						.setShowOnlyCompatibleLocations(showOnlyCompatibleLocationsButton
+								.getSelection()));
 		showOnlyCompatibleLocationsButton.setLayoutData(new GridData(
 				SWT.BEGINNING, SWT.NONE, false, false));
 		
@@ -126,41 +114,39 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 				.setText(CVSUIMessages.ConfigureRepositoryLocationsWizard_createLocation);
 		createLocationButton
 				.setToolTipText(CVSUIMessages.ConfigureRepositoryLocationsWizard_createLocationTooltip);
-		createLocationButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
+		createLocationButton.addListener(SWT.Selection, event -> {
 
-				CVSRepositoryLocation selectedAlternativeRepository = fConfigureRepositoryLocationsTable
-						.getSelectedAlternativeRepository();
+			CVSRepositoryLocation selectedAlternativeRepository = fConfigureRepositoryLocationsTable
+					.getSelectedAlternativeRepository();
 
-				Properties properties = new Properties();
-				properties
-						.put(
-								"connection", selectedAlternativeRepository.getMethod().getName()); //$NON-NLS-1$
-				properties.put(
-						"user", selectedAlternativeRepository.getUsername()); //$NON-NLS-1$
-				// TODO: retrieve password (if available) and use it to prime
-				// the field
-				// properties.put("password", ""); //$NON-NLS-1$
-				properties.put("host", selectedAlternativeRepository.getHost()); //$NON-NLS-1$
-				int port = selectedAlternativeRepository.getPort();
-				if (port != ICVSRepositoryLocation.USE_DEFAULT_PORT)
-					properties.put("port", String.valueOf(port)); //$NON-NLS-1$
-				properties
-						.put(
-								"root", selectedAlternativeRepository.getRootDirectory()); //$NON-NLS-1$
+			Properties properties = new Properties();
+			properties
+					.put(
+							"connection", selectedAlternativeRepository.getMethod().getName()); //$NON-NLS-1$
+			properties.put(
+					"user", selectedAlternativeRepository.getUsername()); //$NON-NLS-1$
+			// TODO: retrieve password (if available) and use it to prime
+			// the field
+			// properties.put("password", ""); //$NON-NLS-1$
+			properties.put("host", selectedAlternativeRepository.getHost()); //$NON-NLS-1$
+			int port = selectedAlternativeRepository.getPort();
+			if (port != ICVSRepositoryLocation.USE_DEFAULT_PORT)
+				properties.put("port", String.valueOf(port)); //$NON-NLS-1$
+			properties
+					.put(
+							"root", selectedAlternativeRepository.getRootDirectory()); //$NON-NLS-1$
 
-				AlternativeLocationWizard wizard = new AlternativeLocationWizard(
-						properties);
-				wizard.setSwitchPerspectives(false);
-				WizardDialog dialog = new ConfigureRepositoryLocationsWizardDialog(
-						getShell(), wizard);
-				dialog.open();
+			AlternativeLocationWizard wizard = new AlternativeLocationWizard(
+					properties);
+			wizard.setSwitchPerspectives(false);
+			WizardDialog dialog = new ConfigureRepositoryLocationsWizardDialog(
+					getShell(), wizard);
+			dialog.open();
 
-				ICVSRepositoryLocation location = wizard.getLocation();
-				if (location != null)
-					fConfigureRepositoryLocationsTable
-							.addAlternativeRepository(location);
-			}
+			ICVSRepositoryLocation location = wizard.getLocation();
+			if (location != null)
+				fConfigureRepositoryLocationsTable
+						.addAlternativeRepository(location);
 		});
 		createLocationButton.setEnabled(fConfigureRepositoryLocationsTable
 				.getSelection().getFirstElement() != null);
@@ -168,13 +154,10 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 				false, false));
 		
 		fConfigureRepositoryLocationsTable.getViewer().addSelectionChangedListener(
-				new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) event
-								.getSelection();
-						Object firstElement = sel.getFirstElement();
-						createLocationButton.setEnabled(firstElement != null);
-					}
+				event -> {
+					IStructuredSelection sel = event.getStructuredSelection();
+					Object firstElement = sel.getFirstElement();
+					createLocationButton.setEnabled(firstElement != null);
 				});
 
 		return composite;
@@ -184,11 +167,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 		return fConfigureRepositoryLocationsTable.getSelected();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
-	 */
+	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName = getClass().getName() + "_dialogBounds"; //$NON-NLS-1$
 		IDialogSettings settings = CVSUIPlugin.getPlugin().getDialogSettings();
@@ -205,6 +184,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsStrategy()
 	 * @since 3.2
 	 */
+	@Override
 	protected int getDialogBoundsStrategy() {
 		return DIALOG_PERSISTLOCATION | DIALOG_PERSISTSIZE;
 	}
@@ -220,6 +200,7 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 			super(parentShell, newWizard);
 		}
 
+		@Override
 		protected Button createButton(Composite parent, int id, String label,
 				boolean defaultButton) {
 			if (id == IDialogConstants.FINISH_ID)

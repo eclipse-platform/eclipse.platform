@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.tags;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.action.*;
@@ -86,24 +84,16 @@ public class TagSelectionArea extends DialogArea {
     private TagSource tagSource;
     private final Shell shell;
     private TagRefreshButtonArea tagRefreshArea;
-    private final TagSource.ITagSourceChangeListener listener = new TagSource.ITagSourceChangeListener() {
-        public void tagsChanged(TagSource source) {
-			Shell shell = getShell();
-			if (!shell.isDisposed()) {
-	            shell.getDisplay().syncExec(new Runnable() {
-					public void run() {								    
-						refresh();					   
-					}
-				});
-			}
-        }
-    };
-    private final DisposeListener disposeListener = new DisposeListener() {
-        public void widgetDisposed(DisposeEvent e) {
-            if (tagSource != null)
-                tagSource.removeListener(listener);
-        }
-    };
+    private final TagSource.ITagSourceChangeListener listener = source -> {
+		Shell shell = getShell();
+		if (!shell.isDisposed()) {
+	        shell.getDisplay().syncExec(() -> refresh());
+		}
+	};
+    private final DisposeListener disposeListener = e -> {
+	    if (tagSource != null)
+	        tagSource.removeListener(listener);
+	};
 
     private PageBook switcher;
     private TreeViewer tagTree;
@@ -122,10 +112,8 @@ public class TagSelectionArea extends DialogArea {
         setSelection(null);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
-     */
-    public void createArea(Composite parent) {
+    @Override
+	public void createArea(Composite parent) {
         initializeDialogUnits(parent);
         Dialog.applyDialogFont(parent);
         final PixelConverter converter= new PixelConverter(parent);
@@ -169,18 +157,16 @@ public class TagSelectionArea extends DialogArea {
     private void createFilterInput(Composite inner) {
         createWrappingLabel(inner, NLS.bind(CVSUIMessages.TagSelectionArea_2, new String[] { getTagAreaLabel() }), 1); 
         filterText = createText(inner, 1);
-        filterText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                setFilter(filterText.getText());
-            }
-        });
+        filterText.addModifyListener(e -> setFilter(filterText.getText()));
         filterText.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
+            @Override
+			public void keyPressed(KeyEvent e) {
         		if (e.keyCode == SWT.ARROW_DOWN && e.stateMask == 0) {			
         			tagTable.getControl().setFocus();
         		}
             }
-            public void keyReleased(KeyEvent e) {
+            @Override
+			public void keyReleased(KeyEvent e) {
                 // Ignore
             }
         });
@@ -315,12 +301,10 @@ public class TagSelectionArea extends DialogArea {
         parent.addDisposeListener(disposeListener);
         Listener listener = null;
         if ((includeFlags & TagSourceWorkbenchAdapter.INCLUDE_DATES) != 0) {
-            listener = new Listener() {
-                public void handleEvent(Event event) {
-                    CVSTag dateTag = NewDateTagAction.getDateTag(getShell(), getLocation());
-                    addDateTag(dateTag);
-                }
-            };
+            listener = event -> {
+			    CVSTag dateTag = NewDateTagAction.getDateTag(getShell(), getLocation());
+			    addDateTag(dateTag);
+			};
         }
 	    tagRefreshArea = new TagRefreshButtonArea(shell, tagSource, listener);
 	    if (context != null)
@@ -334,12 +318,7 @@ public class TagSelectionArea extends DialogArea {
 			MenuManager menuMgr = new MenuManager();
 			Tree tree = tagTree.getTree();
 			Menu menu = menuMgr.createContextMenu(tree);
-			menuMgr.addMenuListener(new IMenuListener() {
-				public void menuAboutToShow(IMenuManager manager) {
-					addMenuItemActions(manager);
-				}
-	
-			});
+			menuMgr.addMenuListener(manager -> addMenuItemActions(manager));
 			menuMgr.setRemoveAllWhenShown(true);
 			tree.setMenu(menu);
         }
@@ -360,9 +339,11 @@ public class TagSelectionArea extends DialogArea {
 		TreeViewer result = new TreeViewer(tree);
 		initialize(result);
 		result.getControl().addKeyListener(new KeyListener() {
+			@Override
 			public void keyPressed(KeyEvent event) {
 				handleKeyPressed(event);
 			}
+			@Override
 			public void keyReleased(KeyEvent event) {
 				handleKeyReleased(event);
 			}
@@ -391,14 +372,11 @@ public class TagSelectionArea extends DialogArea {
         viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
 		viewer.setComparator(new ProjectElementComparator());
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {				
-				handleSelectionChange();
-			}
-		});
+		viewer.addSelectionChangedListener(event -> handleSelectionChange());
 		// select and close on double click
 		// To do: use defaultselection instead of double click
 		viewer.getControl().addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 			    CVSTag tag = internalGetSelectedTag();
 			    if (tag != null) {
@@ -436,7 +414,7 @@ public class TagSelectionArea extends DialogArea {
 	 */
 	private TagElement[] getSelectedDateTagElement() {
 		ArrayList dateTagElements = null;
-		IStructuredSelection selection = (IStructuredSelection)tagTree.getSelection();
+		IStructuredSelection selection = tagTree.getStructuredSelection();
 		if (selection!=null && !selection.isEmpty()) {
 			dateTagElements = new ArrayList();
 			Iterator elements = selection.iterator();
@@ -475,6 +453,7 @@ public class TagSelectionArea extends DialogArea {
 	}
 	private void addMenuItemActions(IMenuManager manager) {
 		manager.add(new Action(CVSUIMessages.TagSelectionDialog_0) { 
+			@Override
 			public void run() {
 				CVSTag dateTag = NewDateTagAction.getDateTag(getShell(), getLocation());
 				addDateTag(dateTag);
@@ -482,6 +461,7 @@ public class TagSelectionArea extends DialogArea {
 		});
 		if(getSelectedDateTagElement().length > 0){
 			manager.add(new Action(CVSUIMessages.TagSelectionDialog_1) { 
+				@Override
 				public void run() {
 					deleteDateTag();
 				}
@@ -510,9 +490,9 @@ public class TagSelectionArea extends DialogArea {
 	private CVSTag internalGetSelectedTag() {
 	    IStructuredSelection selection;
 	    if (isTreeVisible()) {
-	        selection = (IStructuredSelection)tagTree.getSelection();
+	        selection = tagTree.getStructuredSelection();
 	    } else {
-	        selection = (IStructuredSelection)tagTable.getSelection();
+	        selection = tagTable.getStructuredSelection();
 	    }
 		Object o = selection.getFirstElement();
 		if (o instanceof TagElement)

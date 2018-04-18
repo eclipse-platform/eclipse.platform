@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
@@ -204,11 +203,7 @@ public class NonSyncModelMergePage extends Page {
 	private void hookContextMenu(final TreeViewer viewer) {
 		final MenuManager menuMgr = new MenuManager(); 
 		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				fillContextMenu(manager);
-			}
-		});
+		menuMgr.addMenuListener(manager -> fillContextMenu(manager));
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 	}
@@ -230,18 +225,16 @@ public class NonSyncModelMergePage extends Page {
 		Action markAsMerged = new Action("Mark as Merged") {
 			public void run() {
 				try {
-					final IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
-					PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) throws InvocationTargetException {
-							IDiff[] diffs = getSelectedDiffs(selection, monitor);
-							if (!checkForModelOverlap(diffs, monitor)) {
-								return;
-							}
-							try {
-								context.markAsMerged(diffs, false, monitor);
-							} catch (CoreException e) {
-								throw new InvocationTargetException(e);
-							}
+					final IStructuredSelection selection = viewer.getStructuredSelection();
+					PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+						IDiff[] diffs = getSelectedDiffs(selection, monitor);
+						if (!checkForModelOverlap(diffs, monitor)) {
+							return;
+						}
+						try {
+							context.markAsMerged(diffs, false, monitor);
+						} catch (CoreException e) {
+							throw new InvocationTargetException(e);
 						}
 					});
 				} catch (InvocationTargetException e) {

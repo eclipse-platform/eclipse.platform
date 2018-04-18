@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -84,6 +82,7 @@ public class TagConfigurationDialog extends TrayDialog {
     private final TagSourceWrapper wrappedTagSource;
 	
 	class FileComparator extends ViewerComparator {
+		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			boolean oneIsFile = e1 instanceof CVSFileElement;
 			boolean twoIsFile = e2 instanceof CVSFileElement;
@@ -113,10 +112,8 @@ public class TagConfigurationDialog extends TrayDialog {
             dates.addAll(Arrays.asList(tagSource.getTags(CVSTag.DATE)));
         }
 	    
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getTags(int)
-         */
-        public CVSTag[] getTags(int type) {
+        @Override
+		public CVSTag[] getTags(int type) {
             if (type == CVSTag.HEAD || type == BASE) {
                 return super.getTags(type);
             }
@@ -138,25 +135,19 @@ public class TagConfigurationDialog extends TrayDialog {
             return null;
         }
         
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#refresh(org.eclipse.core.runtime.IProgressMonitor)
-         */
-        public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
+        @Override
+		public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
             // The wrapper is never refreshed
             return new CVSTag[0];
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getLocation()
-         */
-        public ICVSRepositoryLocation getLocation() {
+        @Override
+		public ICVSRepositoryLocation getLocation() {
             return tagSource.getLocation();
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getShortDescription()
-         */
-        public String getShortDescription() {
+        @Override
+		public String getShortDescription() {
             return tagSource.getShortDescription();
         }
 
@@ -193,17 +184,13 @@ public class TagConfigurationDialog extends TrayDialog {
             tagSource.commit(getTags(new int[] { CVSTag.VERSION, CVSTag.BRANCH, CVSTag.DATE }), true /* replace */, monitor);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-         */
-        public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
+        @Override
+		public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
             // Not invoked
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
-         */
-        public ICVSResource[] getCVSResources() {
+        @Override
+		public ICVSResource[] getCVSResources() {
             return tagSource.getCVSResources();
         }
 	}
@@ -221,17 +208,13 @@ public class TagConfigurationDialog extends TrayDialog {
 		}
 	}
 
-	/**
-	 * @see Window#configureShell(Shell)
-	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(NLS.bind(CVSUIMessages.TagConfigurationDialog_1, new String[] { tagSource.getShortDescription() })); 
 	}
 
-	/**
-	 * @see Dialog#createDialogArea(Composite)
-	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite shell = new Composite(parent, SWT.NONE);
 		GridData data = new GridData (GridData.FILL_BOTH);		
@@ -267,11 +250,9 @@ public class TagConfigurationDialog extends TrayDialog {
 		cvsResourceTree.getTree().setLayoutData(data);
 		cvsResourceTree.setComparator(new FileComparator());
 		cvsResourceTree.setInput(TagSourceResourceAdapter.getViewerInput(tagSource));
-		cvsResourceTree.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateShownTags();
-				updateEnablements();
-			}
+		cvsResourceTree.addSelectionChangedListener(event -> {
+			updateShownTags();
+			updateEnablements();
 		});
 
 		comp = new Composite(shell, SWT.NULL);
@@ -296,11 +277,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		cvsTagTree = new CheckboxTableViewer(table);
 		cvsTagTree.setContentProvider(new WorkbenchContentProvider());
 		cvsTagTree.setLabelProvider(new WorkbenchLabelProvider());
-		cvsTagTree.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateEnablements();
-			}
-		});
+		cvsTagTree.addSelectionChangedListener(event -> updateEnablements());
 		
 		Composite selectComp = new Composite(comp, SWT.NONE);
 		GridLayout selectLayout = new GridLayout(2, true);
@@ -311,6 +288,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		selectAllButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		selectAllButton.setText(CVSUIMessages.ReleaseCommentDialog_selectAll); 
 		selectAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int nItems = table.getItemCount();
 				for (int j=0; j<nItems; j++)
@@ -321,6 +299,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		deselectAllButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		deselectAllButton.setText(CVSUIMessages.ReleaseCommentDialog_deselectAll); 
 		deselectAllButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int nItems = table.getItemCount();
 				for (int j=0; j<nItems; j++)
@@ -329,6 +308,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		});
 		
 		cvsTagTree.setComparator(new ViewerComparator() {
+			@Override
 			public int compare(Viewer viewer, Object e1, Object e2) {
 				if (!(e1 instanceof TagElement) || !(e2 instanceof TagElement)) return super.compare(viewer, e1, e2);
 				CVSTag tag1 = ((TagElement)e1).getTag();
@@ -370,11 +350,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		cvsDefinedTagsTree.getTree().setLayoutData(data);
 		cvsDefinedTagsRootElement = new TagSourceWorkbenchAdapter(wrappedTagSource, TagSourceWorkbenchAdapter.INCLUDE_BRANCHES | TagSourceWorkbenchAdapter.INCLUDE_VERSIONS |TagSourceWorkbenchAdapter.INCLUDE_DATES);
 		cvsDefinedTagsTree.setInput(cvsDefinedTagsRootElement);
-		cvsDefinedTagsTree.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateEnablements();
-			}
-		});
+		cvsDefinedTagsTree.addSelectionChangedListener(event -> updateEnablements());
 		cvsDefinedTagsTree.setComparator(new ProjectElementComparator());
 	
 		Composite buttonComposite = new Composite(rememberedTags, SWT.NONE);
@@ -391,51 +367,43 @@ public class TagConfigurationDialog extends TrayDialog {
 		data = getStandardButtonData(addSelectedTagsButton);
 		data.horizontalAlignment = GridData.FILL;
 		addSelectedTagsButton.setLayoutData(data);
-		addSelectedTagsButton.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					rememberCheckedTags();
-					updateShownTags();
-					updateEnablements();
-				}
-			});			
+		addSelectedTagsButton.addListener(SWT.Selection, event -> {
+			rememberCheckedTags();
+			updateShownTags();
+			updateEnablements();
+		});			
 		Button addDatesButton = new Button(buttonComposite, SWT.PUSH);
 		addDatesButton.setText(CVSUIMessages.TagConfigurationDialog_0); 
 		data = getStandardButtonData(addDatesButton);
 		data.horizontalAlignment = GridData.FILL;
 		addDatesButton.setLayoutData(data);
-		addDatesButton.addListener(SWT.Selection, new Listener(){
-			public void handleEvent(Event event){
-				CVSTag dateTag = NewDateTagAction.getDateTag(getShell(), tagSource.getLocation());
-				addDateTagsSelected(dateTag);
-				updateShownTags();
-				updateEnablements();
-			}
+		addDatesButton.addListener(SWT.Selection, event -> {
+			CVSTag dateTag = NewDateTagAction.getDateTag(getShell(), tagSource.getLocation());
+			addDateTagsSelected(dateTag);
+			updateShownTags();
+			updateEnablements();
 		});
 		removeTagButton = new Button (buttonComposite, SWT.PUSH);
 		removeTagButton.setText (CVSUIMessages.TagConfigurationDialog_9); 
 		data = getStandardButtonData(removeTagButton);
 		data.horizontalAlignment = GridData.FILL;		
 		removeTagButton.setLayoutData(data);
-		removeTagButton.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					deleteSelected();
-					updateShownTags();
-					updateEnablements();
-				}
-			});
+		removeTagButton.addListener(SWT.Selection, event -> {
+			deleteSelected();
+			updateShownTags();
+			updateEnablements();
+		});
 			
 		Button removeAllTags = new Button (buttonComposite, SWT.PUSH);
 		removeAllTags.setText (CVSUIMessages.TagConfigurationDialog_10); 
 		data = getStandardButtonData(removeAllTags);
 		data.horizontalAlignment = GridData.FILL;		
 		removeAllTags.setLayoutData(data);
-		removeAllTags.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					removeAllKnownTags();
-					updateShownTags();
-					updateEnablements();
-				}
-			});
+		removeAllTags.addListener(SWT.Selection, event -> {
+			removeAllKnownTags();
+			updateShownTags();
+			updateEnablements();
+		});
 		
 		if(allowSettingAutoRefreshFiles) {
 			Label explanation = new Label(rememberedTags, SWT.WRAP);
@@ -458,9 +426,11 @@ public class TagConfigurationDialog extends TrayDialog {
 				CVSUIPlugin.log(e);
 			}
 			autoRefreshFileList.addSelectionListener(new SelectionListener() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					updateEnablements();
 				}
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					updateEnablements();
 				}
@@ -480,26 +450,20 @@ public class TagConfigurationDialog extends TrayDialog {
 			data = getStandardButtonData(addSelectedFilesButton);
 			data.horizontalAlignment = GridData.FILL;
 			addSelectedFilesButton.setLayoutData(data);
-			addSelectedFilesButton.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event event) {
-						addSelectionToAutoRefreshList();
-					}
-				});			
+			addSelectedFilesButton.addListener(SWT.Selection, event -> addSelectionToAutoRefreshList());			
 				
 			removeFileButton = new Button (buttonComposite2, SWT.PUSH);
 			removeFileButton.setText (CVSUIMessages.TagConfigurationDialog_13); 
 			data = getStandardButtonData(removeFileButton);
 			data.horizontalAlignment = GridData.FILL;		
 			removeFileButton.setLayoutData(data);
-			removeFileButton.addListener(SWT.Selection, new Listener() {
-					public void handleEvent(Event event) {
-						String[] selected = autoRefreshFileList.getSelection();
-						for (int i = 0; i < selected.length; i++) {
-							autoRefreshFileList.remove(selected[i]);
-							autoRefreshFileList.setFocus();
-						}
-					}
-				});			
+			removeFileButton.addListener(SWT.Selection, event -> {
+				String[] selected = autoRefreshFileList.getSelection();
+				for (int i = 0; i < selected.length; i++) {
+					autoRefreshFileList.remove(selected[i]);
+					autoRefreshFileList.setFocus();
+				}
+			});			
             PlatformUI.getWorkbench().getHelpSystem().setHelp(autoRefreshFileList, IHelpContextIds.TAG_CONFIGURATION_REFRESHLIST);
 		}
 			
@@ -520,19 +484,17 @@ public class TagConfigurationDialog extends TrayDialog {
 		final Set tags = new HashSet();
 		if(filesSelection.length!=0) {
 			try {
-				CVSUIPlugin.runWithProgress(getShell(), true /*cancelable*/, new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						monitor.beginTask(CVSUIMessages.TagConfigurationDialog_22, filesSelection.length); 
-						try {
-							for (int i = 0; i < filesSelection.length; i++) {
-								ICVSFile file = filesSelection[i].getCVSFile();
-								tags.addAll(Arrays.asList(getTagsFor(file, Policy.subMonitorFor(monitor, 1))));
-							}
-						} catch (TeamException e) {
-							// ignore the exception
-						} finally {
-							monitor.done();
+				CVSUIPlugin.runWithProgress(getShell(), true /*cancelable*/, monitor -> {
+					monitor.beginTask(CVSUIMessages.TagConfigurationDialog_22, filesSelection.length); 
+					try {
+						for (int i = 0; i < filesSelection.length; i++) {
+							ICVSFile file = filesSelection[i].getCVSFile();
+							tags.addAll(Arrays.asList(getTagsFor(file, Policy.subMonitorFor(monitor, 1))));
 						}
+					} catch (TeamException e) {
+						// ignore the exception
+					} finally {
+						monitor.done();
 					}
 				});
 			} catch (InterruptedException e) {
@@ -555,7 +517,7 @@ public class TagConfigurationDialog extends TrayDialog {
 	}
 	
 	private CVSFileElement[] getSelectedFiles() {
-		IStructuredSelection selection = (IStructuredSelection)cvsResourceTree.getSelection();
+		IStructuredSelection selection = cvsResourceTree.getStructuredSelection();
 		if (!selection.isEmpty()) {
 			final List filesSelection = new ArrayList();
 			Iterator it = selection.iterator();
@@ -571,7 +533,7 @@ public class TagConfigurationDialog extends TrayDialog {
 	}
 	
 	private void addSelectionToAutoRefreshList() {
-		IStructuredSelection selection = (IStructuredSelection)cvsResourceTree.getSelection();
+		IStructuredSelection selection = cvsResourceTree.getStructuredSelection();
 		if (!selection.isEmpty()) {
 			final List filesSelection = new ArrayList();
 			Iterator it = selection.iterator();
@@ -617,7 +579,7 @@ public class TagConfigurationDialog extends TrayDialog {
 	}
 	
 	private void deleteSelected() {
-		IStructuredSelection selection = (IStructuredSelection)cvsDefinedTagsTree.getSelection();
+		IStructuredSelection selection = cvsDefinedTagsTree.getStructuredSelection();
 		List tagsToRemove = new ArrayList();
 		if (!selection.isEmpty()) {
 			Iterator it = selection.iterator();
@@ -646,7 +608,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		}
 	}
 	private boolean isTagSelectedInKnownTagTree() {
-		IStructuredSelection selection = (IStructuredSelection)cvsDefinedTagsTree.getSelection();
+		IStructuredSelection selection = cvsDefinedTagsTree.getStructuredSelection();
 		if (!selection.isEmpty()) {
 			Iterator it = selection.iterator();
 			while(it.hasNext()) {
@@ -681,9 +643,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		}
 	}
 	
-	/**
-	 * @see Dialog#okPressed()
-	 */
+	@Override
 	protected void okPressed() {
 		try {
 			// save auto refresh file names
@@ -708,9 +668,7 @@ public class TagConfigurationDialog extends TrayDialog {
         return null;
     }
 
-    /**
-	 * @see Window#getInitialSize()
-	 */
+    @Override
 	protected Point getInitialSize() {
 		int width, height;
 		if(allowSettingAutoRefreshFiles) {
@@ -731,9 +689,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		return new Point(width, height);
 	}
 	
-	/**
-	 * @see Dialog#cancelPressed()
-	 */
+	@Override
 	protected void cancelPressed() {
 		super.cancelPressed();
 	}
@@ -747,9 +703,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		return data;
 	}
 
-	/**
-	 * @see Window#close()
-	 */
+	@Override
 	public boolean close() {
 		// Close the tray so we only remember the size without the tray
 		if (getTray() != null)

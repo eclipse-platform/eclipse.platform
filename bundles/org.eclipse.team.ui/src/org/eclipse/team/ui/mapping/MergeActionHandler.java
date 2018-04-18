@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	}
 
 	/* private */ void updatedEnablement(SelectionChangedEvent event) {
-		updateEnablement((IStructuredSelection)event.getSelection());
+		updateEnablement(event.getStructuredSelection());
 	}
 
 	/**
@@ -118,9 +118,6 @@ public abstract class MergeActionHandler extends AbstractHandler {
 		return selection;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.AbstractHandler#isEnabled()
-	 */
 	@Override
 	public boolean isEnabled() {
 		return enabled;
@@ -137,9 +134,6 @@ public abstract class MergeActionHandler extends AbstractHandler {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.ExecutionEvent)
-	 */
 	@Override
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		try {

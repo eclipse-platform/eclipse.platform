@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 	protected void expandAllFromSelection() {
 		AbstractTreeViewer tree = viewer;
 		if (tree == null) return;
-		ISelection selection = tree.getSelection();
+		IStructuredSelection selection = tree.getStructuredSelection();
 		if(! selection.isEmpty()) {
-			Iterator elements = ((IStructuredSelection)selection).iterator();
+			Iterator elements = selection.iterator();
 			try {
 				tree.getControl().setRedraw(false);
 				while (elements.hasNext()) {
@@ -46,9 +46,7 @@ public class ExpandAllAction extends Action implements ISelectionChangedListener
 			}
 		}
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
+
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		ISelection selection = event.getSelection();

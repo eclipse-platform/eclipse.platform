@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -390,7 +390,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					compareAction.setCurrentFileRevision(getCurrentFileRevision());
-					compareAction.selectionChanged((IStructuredSelection) treeViewer.getSelection());
+					compareAction.selectionChanged(treeViewer.getStructuredSelection());
 				}
 			});
 
@@ -401,7 +401,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				treeViewer.getTree().addSelectionListener(new SelectionAdapter(){
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						openAction.selectionChanged((IStructuredSelection) treeViewer.getSelection());
+						openAction.selectionChanged(treeViewer.getStructuredSelection());
 					}
 				});
 
@@ -410,7 +410,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 				treeViewer.getTree().addSelectionListener(new SelectionAdapter(){
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						openWithMenu.selectionChanged((IStructuredSelection) treeViewer.getSelection());
+						openWithMenu.selectionChanged(treeViewer.getStructuredSelection());
 					}
 				});
 			}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -900,7 +900,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	}
 
 	private boolean inputIsSelected(IEditorInput input) {
-		IStructuredSelection selection= (IStructuredSelection) getViewer().getSelection();
+		IStructuredSelection selection= getViewer().getStructuredSelection();
 		if (selection.size() != 1)
 			return false;
 		IEditorInput selectionAsInput= getEditorInput(selection.getFirstElement());
@@ -1019,9 +1019,6 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		return selection.getFirstElement();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.IShowInTarget#show(org.eclipse.ui.part.ShowInContext)
-	 */
 	@Override
 	public boolean show(ShowInContext context) {
 		Object selection = getSingleElement(context.getSelection());

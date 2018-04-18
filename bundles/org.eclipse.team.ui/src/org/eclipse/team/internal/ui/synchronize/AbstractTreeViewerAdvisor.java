@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 			if (!noNextChange) {
 				// Check to see if the selected element can be opened.
 				// If it can't, try the next one
-				Object selectedObject = AbstractTreeViewerAdvisor.this.getFirstElement((IStructuredSelection)getViewer().getSelection());
+				Object selectedObject = AbstractTreeViewerAdvisor.this.getFirstElement(getViewer().getStructuredSelection());
 				if (!hasCompareInput(selectedObject)) {
 					return selectChange(next);
 				}
@@ -101,7 +101,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		private CompareNavigator getSubNavigator() {
 			IWorkbenchSite ws = AbstractTreeViewerAdvisor.this.getConfiguration().getSite().getWorkbenchSite();
 			if (ws instanceof IWorkbenchPartSite) {
-				Object selectedObject = AbstractTreeViewerAdvisor.this.getFirstElement((IStructuredSelection)getViewer().getSelection());
+				Object selectedObject = AbstractTreeViewerAdvisor.this.getFirstElement(getViewer().getStructuredSelection());
 				IEditorPart editor = OpenInCompareAction.findOpenCompareEditor((IWorkbenchPartSite)ws, selectedObject, getConfiguration().getParticipant());
 				if(editor != null) {
 					// if an existing editor is open on the current selection, use it
