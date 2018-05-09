@@ -151,8 +151,7 @@ public class Session {
 	
 	public void open(IProgressMonitor monitor, boolean writeAccess) throws CVSException {
 		if (connection != null) throw new IllegalStateException();
-		monitor = Policy.monitorFor(monitor);
-		monitor.beginTask(null, 100);
+		monitor = Policy.subMonitorFor(monitor, 100);
 		boolean opened = false;	
 	
 		try {
