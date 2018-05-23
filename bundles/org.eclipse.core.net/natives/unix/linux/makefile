@@ -1,6 +1,6 @@
 #**********************************************************************
-# Copyright (c) 2008, 2012 Oakland Software Incorporated and others.
-# All rights reserved. This program and the accompanying materials 
+# Copyright (c) 2008, 2018 Oakland Software Incorporated and others.
+# All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-v10.html
@@ -8,8 +8,9 @@
 # Contributors:
 #	Oakland Software Incorporated - initial submission
 #	IBM Corporation - refactoring, bug 245849
+#   Red Hat - GSettings implementation and code clean up (bug 394087)
 #
-#********************************************************************** 
+#**********************************************************************
 #
 # makefile for libgnomeproxy-1.0.0.so
 
@@ -20,10 +21,10 @@ LIB_NAME_FULL = libgnomeproxy-1.0.0.so
 
 OS_TYPE = linux
 JDK_INCLUDE = -I${JAVA_HOME}/include -I${JAVA_HOME}/include/${OS_TYPE}
-INCLUDE = `pkg-config --cflags gconf-2.0`
+INCLUDE = `pkg-config --cflags gio-2.0`
 COMPILER_FLAGS = -O0 -fPIC -g3 -Wall -c -fmessage-length=0 ${TARGET_ENVIRONMENT}
 
-LIBS := `pkg-config --libs gconf-2.0`
+LIBS := `pkg-config --libs gio-2.0`
 LINKER_FLAGS= ${TARGET_ENVIRONMENT}
 
 all: link

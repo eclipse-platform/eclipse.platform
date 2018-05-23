@@ -1,21 +1,21 @@
 /*
- * Copyright 2008, 2012 Oakland Software Incorporated and others
- * All rights reserved. This program and the accompanying materials 
+ * Copyright 2008, 2018 Oakland Software Incorporated and others
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Oakland Software Incorporated - initial API and implementation
- *     IBM Corporation - enabling JNI calls for gconfInit method (bug 232495)	
+ *     IBM Corporation - enabling JNI calls for gconfInit method (bug 232495)
  *     IBM Corporation - gnomeproxy cannot be built with latest versions of glib (bug 385047)
+ *     Red Hat - GSettings implementation and code clean up (bug 394087)
  */
 
 #include <jni.h>
 
 #include <glib.h>
-#include <gconf/gconf-value.h>
-#include <gconf/gconf-client.h>
+#include <gio/gio.h>
 
 #ifdef __linux__
 #include <string.h>
@@ -23,9 +23,11 @@
 #include <strings.h>
 #endif
 
-#include "gnomeproxy.h"
-
-static GConfClient *client= NULL;
+static GSettings *proxySettings = NULL;
+static GSettings *httpProxySettings = NULL;
+static GSettings *httpsProxySettings = NULL;
+static GSettings *socksProxySettings = NULL;
+static GSettings *ftpProxySettings = NULL;
 
 static jclass proxyInfoClass;
 static jclass stringClass;
@@ -37,18 +39,21 @@ static jmethodID portMethod;
 static jmethodID userMethod;
 static jmethodID passwordMethod;
 
-#define CHECK_NULL(X) { if ((X) == NULL) fprintf (stderr,"JNI error at line %d\n", __LINE__); } 
+#define CHECK_NULL(X) { if ((X) == NULL) fprintf (stderr,"JNI error at line %d\n", __LINE__); }
 
 /*
  * Class:     org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider
- * Method:    gconfInit
+ * Method:    gsettingsInit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gconfInit(
+JNIEXPORT void JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gsettingsInit(
 		JNIEnv *env, jclass clazz) {
 
-	g_type_init();
-	client = gconf_client_get_default();
+	proxySettings = g_settings_new ("org.gnome.system.proxy");
+	httpProxySettings = g_settings_new ("org.gnome.system.proxy.http");
+	httpsProxySettings = g_settings_new ("org.gnome.system.proxy.https");
+	socksProxySettings = g_settings_new ("org.gnome.system.proxy.socks");
+	ftpProxySettings = g_settings_new ("org.gnome.system.proxy.ftp");
 	jclass cls= NULL;
 	CHECK_NULL(cls = (*env)->FindClass(env, "org/eclipse/core/internal/net/ProxyData"));
 	proxyInfoClass = (*env)->NewGlobalRef(env, cls);
@@ -72,10 +77,10 @@ JNIEXPORT void JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyPr
 
 /*
  * Class:     org_eclipse_core_internal_net_UnixProxyProvider
- * Method:    getGConfProxyInfo
+ * Method:    getGSettingsProxyInfo
  * Signature: ([Ljava/lang/String);
  */
-JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGConfProxyInfo(
+JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGSettingsProxyInfo(
 		JNIEnv *env, jclass clazz, jstring protocol) {
 
 	jboolean isCopy;
@@ -83,8 +88,8 @@ JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProx
 
 	jobject proxyInfo= NULL;
 
-	if (client == NULL) {
-		Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gconfInit(env, clazz);
+	if (proxySettings == NULL) {
+		Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gsettingsInit(env, clazz);
 	}
 
 	CHECK_NULL(proxyInfo = (*env)->NewObject(env, proxyInfoClass, proxyInfoConstructor, protocol));
@@ -93,78 +98,73 @@ JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProx
 	if (cprotocol == NULL)
 		return NULL;
 
-	//printf("cprotocol: %s\n", cprotocol);
-
-	// use_same_proxy means we use the http value for everything
-	gboolean useSame = gconf_client_get_bool(client,
-			"/system/http_proxy/use_same_proxy", NULL);
+	gboolean useSame = g_settings_get_boolean(proxySettings,
+				"use-same-proxy");
 
 	if (strcasecmp(cprotocol, "http") == 0 || useSame) {
-		gboolean useProxy = gconf_client_get_bool(client,
-				"/system/http_proxy/use_http_proxy", NULL);
+		gboolean useProxy = g_settings_get_boolean(httpProxySettings,
+				"enabled");
 		if (!useProxy) {
 			proxyInfo = NULL;
 			goto exit;
 		}
 
-		gchar *host = gconf_client_get_string(client,
-				"/system/http_proxy/host", NULL);
+		gchar *host = g_settings_get_string(httpProxySettings,
+				"host");
 		jobject jhost = (*env)->NewStringUTF(env, host);
 		(*env)->CallVoidMethod(env, proxyInfo, hostMethod, jhost);
+		g_free(host);
 
-		gint port = gconf_client_get_int(client, "/system/http_proxy/port",
-				NULL);
+		gint port = g_settings_get_int(httpProxySettings, "port");
 		(*env)->CallVoidMethod(env, proxyInfo, portMethod, port);
 
-		gboolean reqAuth = gconf_client_get_bool(client,
-				"/system/http_proxy/use_authentication", NULL);
+		gboolean reqAuth = g_settings_get_boolean(httpProxySettings,
+				"use-authentication");
 		if (reqAuth) {
-
-			gchar *user = gconf_client_get_string(client,
-					"/system/http_proxy/authentication_user", NULL);
+			gchar *user = g_settings_get_string(httpProxySettings,
+					"authentication-user");
 			jobject juser = (*env)->NewStringUTF(env, user);
 			(*env)->CallVoidMethod(env, proxyInfo, userMethod, juser);
 
-			gchar *password = gconf_client_get_string(client,
-					"/system/http_proxy/authentication_password", NULL);
+			gchar *password = g_settings_get_string(httpProxySettings,
+					"authentication-password");
 			jobject jpassword = (*env)->NewStringUTF(env, password);
 			(*env)->CallVoidMethod(env, proxyInfo, passwordMethod,
 					jpassword);
+			g_free(user);
+			g_free(password);
 		}
 		goto exit;
 	}
 
 	// Everything else applies only if the system proxy mode is manual
-	gchar *mode = gconf_client_get_string(client, "/system/proxy/mode", NULL);
+	gchar *mode = g_settings_get_string(proxySettings, "mode");
 	if (strcasecmp(mode, "manual") != 0) {
 		proxyInfo = NULL;
 		goto exit;
 	}
+	g_free(mode);
 
-	char selector[100];
-
+	gchar *host;
+	gint port;
 	if (strcasecmp(cprotocol, "https") == 0) {
-		strcpy(selector, "/system/proxy/secure_");
+		host = g_settings_get_string(httpsProxySettings, "host");
+		port = g_settings_get_int(httpsProxySettings, "port");
 	} else if (strcasecmp(cprotocol, "socks") == 0) {
-		strcpy(selector, "/system/proxy/socks_");
+		host = g_settings_get_string(socksProxySettings, "host");
+		port = g_settings_get_int(socksProxySettings, "port");
 	} else if (strcasecmp(cprotocol, "ftp") == 0) {
-		strcpy(selector, "/system/proxy/ftp_");
+		host = g_settings_get_string(ftpProxySettings, "host");
+		port = g_settings_get_int(ftpProxySettings, "port");
 	} else {
 		proxyInfo = NULL;
 		goto exit;
 	}
 
-	char useSelector[100];
-	strcpy(useSelector, selector);
-
-	gchar *host = gconf_client_get_string(client, strcat(useSelector, "host"),
-			NULL);
 	jobject jhost = (*env)->NewStringUTF(env, host);
 	(*env)->CallVoidMethod(env, proxyInfo, hostMethod, jhost);
-
-	strcpy(useSelector, selector);
-	gint port = gconf_client_get_int(client, strcat(useSelector, "port"), NULL);
 	(*env)->CallVoidMethod(env, proxyInfo, portMethod, port);
+	g_free(host);
 
 	exit: if (isCopy == JNI_TRUE)
 		(*env)->ReleaseStringUTFChars(env, protocol, cprotocol);
@@ -187,31 +187,28 @@ void listProc(gpointer data, gpointer user_data) {
 
 /*
  * Class:     org_eclipse_core_internal_net_UnixProxyProvider
- * Method:    getGConfNonProxyHosts
+ * Method:    getGSettingsNonProxyHosts
  * Signature: ()[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGConfNonProxyHosts(
+JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGSettingsNonProxyHosts(
 		JNIEnv *env, jclass clazz) {
 
-	if (client == NULL) {
-		Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gconfInit(env, clazz);
+	if (proxySettings == NULL) {
+		Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gsettingsInit(env, clazz);
 	}
 
-	GSList *npHosts;
-	int size;
+	gchar **npfHostsArray;
+	GSList *npHosts = NULL;
+	gint size, i;
 
-	npHosts = gconf_client_get_list(client, "/system/http_proxy/ignore_hosts",
-			GCONF_VALUE_STRING, NULL);
-	size = g_slist_length(npHosts);
+	npfHostsArray = g_settings_get_strv(proxySettings, "ignore-hosts");
 
-	// TODO - I'm not sure this is really valid, it's from the JVM implementation
-	// of ProxySelector
-	if (size == 0) {
-		npHosts = gconf_client_get_list(client, "/system/proxy/no_proxy_for",
-				GCONF_VALUE_STRING, NULL);
+	for (i = 0; npfHostsArray[i] != NULL; i++) {
+		npHosts = g_slist_prepend(npHosts, npfHostsArray[i]);
 	}
-	size = g_slist_length(npHosts);
 
+	npHosts = g_slist_reverse(npHosts);
+	size = g_slist_length(npHosts);
 	jobjectArray ret = (*env)->NewObjectArray(env, size, stringClass, NULL);
 
 	ListProcContext lpc;
@@ -220,6 +217,8 @@ JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_net_proxy_unix_Uni
 	lpc.index = 0;
 
 	g_slist_foreach(npHosts, listProc, &lpc);
+	g_strfreev(npfHostsArray);
+	g_slist_free(npHosts);
 	return ret;
 }
 

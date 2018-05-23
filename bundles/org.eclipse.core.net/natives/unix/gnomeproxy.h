@@ -10,26 +10,26 @@ extern "C" {
 /* Inaccessible static: isGnomeLibLoaded */
 /*
  * Class:     org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider
- * Method:    gconfInit
+ * Method:    gsettingsInit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gconfInit
+JNIEXPORT void JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_gsettingsInit
   (JNIEnv *, jclass);
 
 /*
  * Class:     org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider
- * Method:    getGConfProxyInfo
+ * Method:    getGSettingsProxyInfo
  * Signature: (Ljava/lang/String;)Lorg/eclipse/core/internal/net/ProxyData;
  */
-JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGConfProxyInfo
+JNIEXPORT jobject JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGSettingsProxyInfo
   (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider
- * Method:    getGConfNonProxyHosts
+ * Method:    getGSettingsNonProxyHosts
  * Signature: ()[Ljava/lang/String;
  */
-JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGConfNonProxyHosts
+JNIEXPORT jobjectArray JNICALL Java_org_eclipse_core_internal_net_proxy_unix_UnixProxyProvider_getGSettingsNonProxyHosts
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus
