@@ -15,14 +15,13 @@
   <parent>
     <groupId>org.eclipse</groupId>
     <artifactId>eclipse-platform-parent</artifactId>
-    <version>4.8.0-SNAPSHOT</version>
-    
+    <version>4.9.0-SNAPSHOT</version>
     <relativePath>../eclipse-platform-parent</relativePath>
   </parent>
 
   <groupId>eclipse.platform.team</groupId>
   <artifactId>eclipse.platform.team</artifactId>
-  <version>4.8.0-SNAPSHOT</version>
+  <version>4.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -79,11 +78,7 @@
     <module>bundles/org.eclipse.core.net/fragments/org.eclipse.core.net.linux.x86_64</module>
     <module>bundles/org.eclipse.core.net/fragments/org.eclipse.core.net.win32.x86</module>
     <module>bundles/org.eclipse.core.net/fragments/org.eclipse.core.net.win32.x86_64</module>
-    
-    <module>tests/org.eclipse.compare.tests</module>
-    <module>tests/org.eclipse.core.tests.net</module>
-    <module>tests/org.eclipse.jsch.tests</module>
-    <module>tests/org.eclipse.team.tests.cvs.core</module>
-    <module>tests/org.eclipse.team.tests.core</module>
+    <module>tests</module>
+   
   </modules>
 </project>
