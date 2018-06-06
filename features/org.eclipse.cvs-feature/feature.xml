@@ -2,18 +2,18 @@
 <feature
       id="org.eclipse.cvs"
       label="%featureName"
-      version="1.4.500.qualifier"
-      provider-name="%providerName"   
+      version="1.4.600.qualifier"
+      provider-name="%providerName"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
 
    <description>
       %description
    </description>
-   
+
    <copyright>
       %copyright
-   </copyright>   
+   </copyright>
 
    <license url="%licenseURL">
       %license
@@ -31,7 +31,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.team.cvs.ssh2"

@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.core</groupId>
   <artifactId>org.eclipse.core.net.win32.x86</artifactId>
-  <version>1.1.100-SNAPSHOT</version>
+  <version>1.1.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <build>
