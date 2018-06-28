@@ -20,7 +20,7 @@ public class Messages extends NLS{
     // load message values from bundle file
     NLS.initializeMessages(BUNDLE_NAME, Messages.class);
   }
-  
+
   public static String CVSSSH2ServerConnection_open;
   public static String CVSSSH2PreferencePage_18;
   public static String CVSSSH2PreferencePage_19;
@@ -122,7 +122,7 @@ public class Messages extends NLS{
   public static String UserValidationDialog_password;
   public static String UserValidationDialog_user;
 
-  
+
   public static String WorkbenchUserAuthenticator_cancelled;
   public static String WorkbenchUserAuthenticator_1;
   public static String WorkbenchUserAuthenticator_2;

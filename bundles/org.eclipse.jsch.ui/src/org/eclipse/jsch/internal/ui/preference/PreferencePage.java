@@ -116,7 +116,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
   KeyPair kpair=null;
   String kpairComment;
 
-  public static final String AUTH_SCHEME="";//$NON-NLS-1$ 
+  public static final String AUTH_SCHEME="";//$NON-NLS-1$
 
   public PreferencePage(){
     setDescription(Messages.CVSSSH2PreferencePage_18);
@@ -142,15 +142,15 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_133);
     tabItem.setControl(createHostKeyManagementPage(tabFolder));
-    
+
     tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_137);
     tabItem.setControl(createPreferredAuthenticationPage(tabFolder));
-    
+
     tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_144);
     tabItem.setControl(createPreferredKeyExchangePage(tabFolder));
-    
+
     tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_145);
     tabItem.setControl(createPreferredMACPage(tabFolder));
@@ -614,7 +614,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
           }
 
           ByteArrayOutputStream out=new ByteArrayOutputStream();
-          
+
           kpair.writePublicKey(out, kpairComment);
           out.close();
           publicKeyText.setText(out.toString());
@@ -757,7 +757,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
         if(new File(file).exists()){
           if(!MessageDialog.openConfirm(getShell(),
-              Messages.CVSSSH2PreferencePage_confirmation, // 
+              Messages.CVSSSH2PreferencePage_confirmation, //
               NLS.bind(Messages.CVSSSH2PreferencePage_53, new String[] {file}))){
             return;
           }
@@ -899,8 +899,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     columns[1].setText(Messages.CVSSSH2PreferencePage_135);
     columns[2].setText(Messages.CVSSSH2PreferencePage_136);
     viewer.setColumnProperties(new String[] {
-        Messages.CVSSSH2PreferencePage_134, // 
-        Messages.CVSSSH2PreferencePage_135, // 
+        Messages.CVSSSH2PreferencePage_134, //
+        Messages.CVSSSH2PreferencePage_135, //
         Messages.CVSSSH2PreferencePage_136});
     viewer.setLabelProvider(new TableLabelProvider());
     viewer.setContentProvider(new IStructuredContentProvider(){
@@ -955,7 +955,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     return group;
   }
-  
+
   private Control createPreferredAuthenticationPage(Composite parent){
     Composite root = new Composite(parent, SWT.NONE);
     GridLayout layout=new GridLayout();
@@ -965,13 +965,13 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
     layout.numColumns = 2;
     root.setLayout(layout);
-    
+
     Label label=new Label(root, SWT.NONE);
     GridData textLayoutData=new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
     textLayoutData.horizontalSpan = 2;
     label.setLayoutData(textLayoutData);
     label.setText(Messages.CVSSSH2PreferencePage_4);
-    
+
     preferedAuthMethodTable=new Table(root, SWT.CHECK | SWT.BORDER);
     GridData layoutData=new GridData(SWT.FILL, SWT.BEGINNING, true, true);
     layoutData.verticalSpan = 3;
@@ -979,25 +979,25 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layoutData.minimumHeight = 150;
     layoutData.minimumWidth = 200;
     populateAuthMethods();
-    
+
     up=new Button(root, SWT.PUSH);
     up.setText(Messages.CVSSSH2PreferencePage_2);
     up.setEnabled(false);
     setButtonLayoutData(up);
-    
+
     down=new Button(root, SWT.PUSH);
     down.setText(Messages.CVSSSH2PreferencePage_3);
     down.setEnabled(false);
     setButtonLayoutData(down);
-    
+
     preferedAuthMethodTable.addSelectionListener(new SelectionAdapter(){
-      
+
       public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedAuthMethodTable.getItemCount(); i++){
           anySelected |= preferedAuthMethodTable.getItem(i).getChecked();
         }
-        
+
         if(anySelected){
           setErrorMessage(null);
           setValid(true);
@@ -1011,7 +1011,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
             .setEnabled(preferedAuthMethodTable.getSelectionIndex()<preferedAuthMethodTable
                 .getItemCount()-1);
       }
-      
+
     });
     up.addSelectionListener(new SelectionAdapter(){
 
@@ -1023,21 +1023,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         down.setEnabled(true);
         TableItem sourceItem = preferedAuthMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedAuthMethodTable.getItem(selectedIndex-1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedAuthMethodTable.setSelection(targetItem);
       }
     });
-    
+
     down.addSelectionListener(new SelectionAdapter(){
 
       public void widgetSelected(SelectionEvent e){
@@ -1048,21 +1048,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         up.setEnabled(true);
         TableItem sourceItem = preferedAuthMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedAuthMethodTable.getItem(selectedIndex+1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedAuthMethodTable.setSelection(targetItem);
       }
     });
-    
+
     return root;
   }
 
@@ -1070,9 +1070,9 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     preferedAuthMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredAuthMethods().split(","); //$NON-NLS-1$
     Set smethods  = new HashSet(Arrays.asList(methods));
-    
+
     String[] order = Utils.getMethodsOrder().split(","); //$NON-NLS-1$
-    
+
     for(int i=0; i<order.length; i++){
       TableItem tableItem= new TableItem(preferedAuthMethodTable, SWT.NONE);
       tableItem.setText(0, order[i]);
@@ -1081,7 +1081,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
       }
     }
   }
-  
+
   private Control createPreferredKeyExchangePage(Composite parent){
     Composite root = new Composite(parent, SWT.NONE);
     GridLayout layout=new GridLayout();
@@ -1091,13 +1091,13 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
     layout.numColumns = 2;
     root.setLayout(layout);
-    
+
     Label label=new Label(root, SWT.NONE);
     GridData textLayoutData=new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
     textLayoutData.horizontalSpan = 2;
     label.setLayoutData(textLayoutData);
     label.setText(Messages.CVSSSH2PreferencePage_140);
-    
+
     preferedKeyExchangeMethodTable=new Table(root, SWT.CHECK | SWT.BORDER);
     GridData layoutData=new GridData(SWT.FILL, SWT.BEGINNING, true, true);
     layoutData.verticalSpan = 3;
@@ -1105,25 +1105,25 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layoutData.minimumHeight = 150;
     layoutData.minimumWidth = 200;
     populateAuthMethods();
-    
+
     kex_up=new Button(root, SWT.PUSH);
     kex_up.setText(Messages.CVSSSH2PreferencePage_2);
     kex_up.setEnabled(false);
     setButtonLayoutData(kex_up);
-    
+
     kex_down=new Button(root, SWT.PUSH);
     kex_down.setText(Messages.CVSSSH2PreferencePage_3);
     kex_down.setEnabled(false);
     setButtonLayoutData(kex_down);
-    
+
     preferedKeyExchangeMethodTable.addSelectionListener(new SelectionAdapter(){
-      
+
       public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedKeyExchangeMethodTable.getItemCount(); i++){
           anySelected |= preferedKeyExchangeMethodTable.getItem(i).getChecked();
         }
-        
+
         if(anySelected){
           setErrorMessage(null);
           setValid(true);
@@ -1137,7 +1137,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
             .setEnabled(preferedKeyExchangeMethodTable.getSelectionIndex()<preferedKeyExchangeMethodTable
                 .getItemCount()-1);
       }
-      
+
     });
     kex_up.addSelectionListener(new SelectionAdapter(){
 
@@ -1149,21 +1149,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         kex_down.setEnabled(true);
         TableItem sourceItem = preferedKeyExchangeMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedKeyExchangeMethodTable.getItem(selectedIndex-1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedKeyExchangeMethodTable.setSelection(targetItem);
       }
     });
-    
+
     kex_down.addSelectionListener(new SelectionAdapter(){
 
       public void widgetSelected(SelectionEvent e){
@@ -1174,21 +1174,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         kex_up.setEnabled(true);
         TableItem sourceItem = preferedKeyExchangeMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedKeyExchangeMethodTable.getItem(selectedIndex+1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedKeyExchangeMethodTable.setSelection(targetItem);
       }
     });
-    
+
     return root;
   }
 
@@ -1196,9 +1196,9 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     preferedKeyExchangeMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredKEXMethods().split(","); //$NON-NLS-1$
     Set smethods  = new HashSet(Arrays.asList(methods));
-    
+
     String[] order = Utils.getKEXMethodsOrder().split(","); //$NON-NLS-1$
-    
+
     for(int i=0; i<order.length; i++){
       TableItem tableItem= new TableItem(preferedKeyExchangeMethodTable, SWT.NONE);
       tableItem.setText(0, order[i]);
@@ -1207,7 +1207,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
       }
     }
   }
-  
+
   private Control createPreferredMACPage(Composite parent){
     Composite root = new Composite(parent, SWT.NONE);
     GridLayout layout=new GridLayout();
@@ -1217,13 +1217,13 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
     layout.numColumns = 2;
     root.setLayout(layout);
-    
+
     Label label=new Label(root, SWT.NONE);
     GridData textLayoutData=new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false);
     textLayoutData.horizontalSpan = 2;
     label.setLayoutData(textLayoutData);
     label.setText(Messages.CVSSSH2PreferencePage_141);
-    
+
     preferedMACMethodTable=new Table(root, SWT.CHECK | SWT.BORDER);
     GridData layoutData=new GridData(SWT.FILL, SWT.BEGINNING, true, true);
     layoutData.verticalSpan = 3;
@@ -1231,25 +1231,25 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     layoutData.minimumHeight = 150;
     layoutData.minimumWidth = 200;
     populateMACMethods();
-    
+
     mac_up=new Button(root, SWT.PUSH);
     mac_up.setText(Messages.CVSSSH2PreferencePage_2);
     mac_up.setEnabled(false);
     setButtonLayoutData(mac_up);
-    
+
     mac_down=new Button(root, SWT.PUSH);
     mac_down.setText(Messages.CVSSSH2PreferencePage_3);
     mac_down.setEnabled(false);
     setButtonLayoutData(mac_down);
-    
+
     preferedMACMethodTable.addSelectionListener(new SelectionAdapter(){
-      
+
       public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedMACMethodTable.getItemCount(); i++){
           anySelected |= preferedMACMethodTable.getItem(i).getChecked();
         }
-        
+
         if(anySelected){
           setErrorMessage(null);
           setValid(true);
@@ -1263,7 +1263,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
             .setEnabled(preferedMACMethodTable.getSelectionIndex()<preferedMACMethodTable
                 .getItemCount()-1);
       }
-      
+
     });
     mac_up.addSelectionListener(new SelectionAdapter(){
 
@@ -1275,21 +1275,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         mac_down.setEnabled(true);
         TableItem sourceItem = preferedMACMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedMACMethodTable.getItem(selectedIndex-1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedMACMethodTable.setSelection(targetItem);
       }
     });
-    
+
     mac_down.addSelectionListener(new SelectionAdapter(){
 
       public void widgetSelected(SelectionEvent e){
@@ -1300,21 +1300,21 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         mac_up.setEnabled(true);
         TableItem sourceItem = preferedMACMethodTable.getItem(selectedIndex);
         TableItem targetItem = preferedMACMethodTable.getItem(selectedIndex+1);
-        
+
         //switch text
         String stemp = targetItem.getText();
         targetItem.setText(sourceItem.getText());
         sourceItem.setText(stemp);
-        
+
         //switch selection
         boolean btemp = targetItem.getChecked();
         targetItem.setChecked(sourceItem.getChecked());
         sourceItem.setChecked(btemp);
-        
+
         preferedMACMethodTable.setSelection(targetItem);
       }
     });
-    
+
     return root;
   }
 
@@ -1367,9 +1367,9 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     preferedMACMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredMACMethods().split(","); //$NON-NLS-1$
     Set smethods  = new HashSet(Arrays.asList(methods));
-    
+
     String[] order = Utils.getMACMethodsOrder().split(","); //$NON-NLS-1$
-    
+
     for(int i=0; i<order.length; i++){
       TableItem tableItem= new TableItem(preferedMACMethodTable, SWT.NONE);
       tableItem.setText(0, order[i]);
@@ -1403,7 +1403,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         MessageDialog.openInformation(getShell(), Messages.PreferencePage_0, Messages.PreferencePage_1);
         return;
       }
-      
+
       IJSchLocation location=service.getLocation(user, host, port);
       // We hope that prompts for jsch are given by IJSchService, so "null" should be passed.
       Session session = service.createSession(location, null);
@@ -1419,7 +1419,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 	      ChannelSftp c=(ChannelSftp)channel;
 
 	      SftpATTRS attr=null;
-	
+
 	      try{
 	        attr=c.stat(".ssh");} //$NON-NLS-1$
 	      catch(SftpException ee){
@@ -1457,7 +1457,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 	          Messages.CVSSSH2PreferencePage_information,
 	          NLS.bind(Messages.CVSSSH2PreferencePage_109, (user
 	              +"@"+host+(port==22 ? "" : ":"+port)+":~/.ssh/authorized_keys"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	
+
 	      c.quit();
 	      c.disconnect();
       } finally {
@@ -1577,7 +1577,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     }
     Utils.setEnabledPreferredAuthMethods(selected, order);
   }
-  
+
   private void storeSSHAgentSettings(){
     String selected = ""; //$NON-NLS-1$
     for(int i = 0; i < preferedSSHAgentTable.getItemCount(); i++){
@@ -1615,7 +1615,7 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     }
     Utils.setEnabledPreferredKEXMethods(selected, order);
   }
-  
+
   private void storeMACMethodSettings(){
     String selected = null;
     String order = null;

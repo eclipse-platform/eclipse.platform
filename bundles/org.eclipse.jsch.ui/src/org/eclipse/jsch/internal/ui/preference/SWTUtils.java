@@ -22,7 +22,7 @@ import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 public class SWTUtils {
-	
+
 	public static final int MARGINS_DEFAULT= -1;
 	public static final int MARGINS_NONE= 0;
 	public static final int MARGINS_DIALOG= 1;
@@ -31,11 +31,11 @@ public class SWTUtils {
         final PreferenceLinkArea area = new PreferenceLinkArea(parent, SWT.NONE, pageId, text, container, null);
         return area;
 	}
-	
+
     public static GridData createGridData(int width, int height, boolean hFill, boolean vFill) {
         return createGridData(width, height, hFill ? SWT.FILL : SWT.BEGINNING, vFill ? SWT.FILL : SWT.CENTER, hFill, vFill);
     }
-    
+
     public static GridData createGridData(int width, int height, int hAlign, int vAlign, boolean hGrab, boolean vGrab) {
         final GridData gd= new GridData(hAlign, vAlign, hGrab, vGrab);
         gd.widthHint= width;
@@ -46,7 +46,7 @@ public class SWTUtils {
     public static GridData createHFillGridData() {
         return createHFillGridData(1);
     }
-    
+
     public static GridData createHFillGridData(int span) {
         final GridData gd= createGridData(0, SWT.DEFAULT, SWT.FILL, SWT.CENTER, true, false);
         gd.horizontalSpan= span;
@@ -56,7 +56,7 @@ public class SWTUtils {
     public static Composite createHFillComposite(Composite parent, int margins) {
         return createHFillComposite(parent, margins, 1);
     }
-    
+
     public static Composite createHFillComposite(Composite parent, int margins, int columns) {
         final Composite composite= new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
@@ -64,11 +64,11 @@ public class SWTUtils {
         composite.setLayout(createGridLayout(columns, new PixelConverter(parent), margins));
         return composite;
     }
-    
+
     public static Composite createHVFillComposite(Composite parent, int margins) {
         return createHVFillComposite(parent, margins, 1);
     }
-    
+
     public static Composite createHVFillComposite(Composite parent, int margins, int columns) {
         final Composite composite= new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
@@ -77,11 +77,11 @@ public class SWTUtils {
         return composite;
     }
 
-    
+
     public static Group createHFillGroup(Composite parent, String text, int margins) {
         return createHFillGroup(parent, text, margins, 1);
     }
-    
+
     public static Group createHFillGroup(Composite parent, String text, int margins, int rows) {
         final Group group= new Group(parent, SWT.NONE);
         group.setFont(parent.getFont());
@@ -91,11 +91,11 @@ public class SWTUtils {
         group.setLayout(createGridLayout(rows, new PixelConverter(parent), margins));
         return group;
     }
-    
+
     public static Group createHVFillGroup(Composite parent, String text, int margins) {
         return createHVFillGroup(parent, text, margins, 1);
     }
-    
+
     public static Group createHVFillGroup(Composite parent, String text, int margins, int rows) {
         final Group group= new Group(parent, SWT.NONE);
         group.setFont(parent.getFont());
@@ -105,22 +105,22 @@ public class SWTUtils {
         group.setLayout(createGridLayout(rows, new PixelConverter(parent), margins));
         return group;
     }
-    
+
     public static GridData createHVFillGridData() {
         return createHVFillGridData(1);
     }
-    
+
     public static GridData createHVFillGridData(int span) {
         final GridData gd= createGridData(0, 0, true, true);
         gd.horizontalSpan= span;
         return gd;
     }
 
-    
+
     /**
 	 * Create a grid layout with the specified number of columns and the
 	 * standard spacings.
-	 * 
+	 *
 	 * @param numColumns
 	 *                the number of columns
 	 * @param converter
@@ -132,11 +132,11 @@ public class SWTUtils {
 	 */
     public static GridLayout createGridLayout(int numColumns, PixelConverter converter, int margins) {
     	Assert.isTrue(margins == MARGINS_DEFAULT || margins == MARGINS_NONE || margins == MARGINS_DIALOG);
-    	
+
         final GridLayout layout= new GridLayout(numColumns, false);
         layout.horizontalSpacing= converter.convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
         layout.verticalSpacing= converter.convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-        
+
         switch (margins) {
         case MARGINS_NONE:
             layout.marginLeft= layout.marginRight= 0;
@@ -153,8 +153,8 @@ public class SWTUtils {
         layout.marginWidth= layout.marginHeight= 0;
         return layout;
     }
-    
-    
+
+
     public static Label createLabel(Composite parent, String message) {
         return createLabel(parent, message, 1);
     }
@@ -166,7 +166,7 @@ public class SWTUtils {
         label.setLayoutData(createHFillGridData(span));
         return label;
     }
-    
+
     public static Button createCheckBox(Composite parent, String message) {
         return createCheckBox(parent, message, 1);
     }
@@ -177,7 +177,7 @@ public class SWTUtils {
         button.setLayoutData(createHFillGridData(span));
         return button;
     }
-    
+
     public static Button createRadioButton(Composite parent, String message) {
         return createRadioButton(parent, message, 1);
     }
@@ -189,7 +189,7 @@ public class SWTUtils {
         return button;
     }
 
-    
+
     public static Text createText(Composite parent) {
         return createText(parent, 1);
     }
@@ -199,7 +199,7 @@ public class SWTUtils {
         text.setLayoutData(createHFillGridData(span));
         return text;
     }
-    
+
 
     public static Control createPlaceholder(Composite parent, int heightInChars, int span) {
         Assert.isTrue(heightInChars > 0);
@@ -211,16 +211,16 @@ public class SWTUtils {
         return placeHolder;
     }
 
-    
+
     public static Control createPlaceholder(Composite parent, int heightInChars) {
         return createPlaceholder(parent, heightInChars, 1);
     }
-    
+
     public static PixelConverter createDialogPixelConverter(Control control) {
     	Dialog.applyDialogFont(control);
     	return new PixelConverter(control);
     }
-    
+
 	public static int calculateControlSize(PixelConverter converter, Control [] controls) {
 		return calculateControlSize(converter, controls, 0, controls.length - 1);
 	}
@@ -234,7 +234,7 @@ public class SWTUtils {
 		}
 		return minimum;
 	}
-	
+
 	public static void equalizeControls(PixelConverter converter, Control [] controls) {
 		equalizeControls(converter, controls, 0, controls.length - 1);
 	}

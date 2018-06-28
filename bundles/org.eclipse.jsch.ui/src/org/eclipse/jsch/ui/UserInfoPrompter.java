@@ -25,7 +25,7 @@ import com.jcraft.jsch.*;
  * {@link Session}.
  * <p>
  * Clients may instantiate or subclass this class.
- * 
+ *
  * @since 1.0
  * @see IJSchService#createSession(String, int, String)
  * @see IJSchService#connect(Session, int,
@@ -41,7 +41,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
   /**
    * Create a prompter for the given session. This constructor will associate
    * this prompter with the session using {@link Session#setUserInfo(UserInfo)}.
-   * 
+   *
    * @param session
    *          the session
    */
@@ -53,7 +53,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /**
    * Return the session to which this prompter is assigned.
-   * 
+   *
    * @return the session to which this prompter is assigned
    */
   public Session getSession(){
@@ -62,7 +62,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#getPassphrase()
    */
   public String getPassphrase(){
@@ -71,7 +71,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#getPassword()
    */
   public String getPassword(){
@@ -81,7 +81,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
   /**
    * Set the pass phrase to be used when connecting the session. Return
    * <code>null</code> if the pass phrase is not known.
-   * 
+   *
    * @param passphrase
    *          the pass phrase to be used when connecting the session or
    *          <code>null</code>
@@ -93,7 +93,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
   /**
    * Set the password to be used when connecting the session. Return
    * <code>null</code> if the password is not known.
-   * 
+   *
    * @param password
    *          the password to be used when connecting the session or
    *          <code>null</code>
@@ -104,7 +104,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#promptPassphrase(java.lang.String)
    */
   public boolean promptPassphrase(String message){
@@ -117,7 +117,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#promptPassword(java.lang.String)
    */
   public boolean promptPassword(String message){
@@ -161,7 +161,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UIKeyboardInteractive#promptKeyboardInteractive(java.lang.String,
    *      java.lang.String, java.lang.String, java.lang.String[], boolean[])
    */
@@ -229,7 +229,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#promptYesNo(java.lang.String)
    */
   public boolean promptYesNo(String question){
@@ -244,7 +244,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.jcraft.jsch.UserInfo#showMessage(java.lang.String)
    */
   public void showMessage(String message){

@@ -36,13 +36,13 @@ import org.eclipse.jsch.internal.ui.Messages;
 public class KeyboardInteractiveDialog extends TrayDialog{
   // whether or not the user name can be changed
   protected boolean isUsernameMutable=false;
-  
+
   // widgets
   private Text[] texts;
   protected Image keyLockImage;
   protected Button allowCachingButton;
   protected Text usernameField;
-  
+
   protected String defaultUsername;
   protected String comment;
   protected String destination;
@@ -54,7 +54,7 @@ public class KeyboardInteractiveDialog extends TrayDialog{
   private String message;
   private String[] result;
   protected boolean allowCaching=false;
-  
+
   private boolean isPasswordAuth=false;
 
   /**
@@ -83,12 +83,12 @@ public class KeyboardInteractiveDialog extends TrayDialog{
     this.echo=echo;
     this.message=NLS.bind(Messages.KeyboradInteractiveDialog_message,
         new String[] {destination
-            +(name!=null&&name.length()>0 ? ": "+name : "")}); //NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$ 
- 
+            +(name!=null&&name.length()>0 ? ": "+name : "")}); //NON-NLS-1$ //$NON-NLS-1$ //$NON-NLS-2$
+
     if(prompt!=null && prompt.length==1 && prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
       isPasswordAuth=true;
     }
-  
+
   }
 
   /**
@@ -107,8 +107,8 @@ public class KeyboardInteractiveDialog extends TrayDialog{
         IHelpContextIds.KEYBOARD_INTERACTIVE_DIALOG);
   }
 
-  /**                                                                                           
-   * @see Window#create                                                                         
+  /**
+   * @see Window#create
    */
   public void create(){
     super.create();
@@ -123,8 +123,8 @@ public class KeyboardInteractiveDialog extends TrayDialog{
     }
   }
 
-  /**                                                                                           
-   * @see Dialog#createDialogArea                                                               
+  /**
+   * @see Dialog#createDialogArea
    */
   protected Control createDialogArea(Composite parent){
     Composite top=new Composite(parent, SWT.NONE);
@@ -133,18 +133,18 @@ public class KeyboardInteractiveDialog extends TrayDialog{
 
     top.setLayout(layout);
     top.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
+
     Composite imageComposite=new Composite(top, SWT.NONE);
     layout=new GridLayout();
     imageComposite.setLayout(layout);
     imageComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-    
+
     Composite main=new Composite(top, SWT.NONE);
     layout=new GridLayout();
     layout.numColumns=3;
     main.setLayout(layout);
     main.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
+
     Label imageLabel=new Label(imageComposite, SWT.NONE);
     keyLockImage=JSchUIPlugin.getImageDescriptor(IUIConstants.IMG_KEY_LOCK)
         .createImage();
@@ -184,13 +184,13 @@ public class KeyboardInteractiveDialog extends TrayDialog{
       data.widthHint=400;
       label.setLayoutData(data);
     }
-    
+
     if(isPasswordAuth){
       createUsernameFields(main);
     }
-    
+
     createPasswordFields(main);
-    
+
     if(isPasswordAuth){
     allowCachingButton=new Button(main, SWT.CHECK);
     allowCachingButton.setText(Messages.UserValidationDialog_6);
@@ -203,15 +203,15 @@ public class KeyboardInteractiveDialog extends TrayDialog{
       }
     });
     }
-    
+
     Dialog.applyDialogFont(parent);
-    
+
     return main;
   }
 
   /**
    * Creates the three widgets that represent the user name entry area.
-   * 
+   *
    * @param parent  the parent of the widgets
    */
   protected void createUsernameFields(Composite parent){
@@ -223,11 +223,11 @@ public class KeyboardInteractiveDialog extends TrayDialog{
     data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
     usernameField.setLayoutData(data);
   }
-  
-  /**                                                                                           
-   * Creates the widgets that represent the entry area.                          
-   *                                                                                            
-   * @param parent  the parent of the widgets                                                   
+
+  /**
+   * Creates the widgets that represent the entry area.
+   *
+   * @param parent  the parent of the widgets
    */
   protected void createPasswordFields(Composite parent){
     texts=new Text[prompt.length];
@@ -238,21 +238,21 @@ public class KeyboardInteractiveDialog extends TrayDialog{
       if(!echo[i]){
         flag|=SWT.PASSWORD;
       }
-      texts[i]=new Text(parent, flag); 
+      texts[i]=new Text(parent, flag);
       GridData data=new GridData(GridData.FILL_HORIZONTAL);
       data.horizontalSpan=2;
       data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
       texts[i].setLayoutData(data);
       if(!echo[i]){
         texts[i].setEchoChar('*');
-      }     
+      }
     }
   }
 
-  /**                                                                                           
-   * Returns the entered values, or null                                          
-   * if the user canceled.                                                                      
-   *                                                                                            
+  /**
+   * Returns the entered values, or null
+   * if the user canceled.
+   *
    * @return the entered values
    */
   public String[] getResult(){
@@ -267,14 +267,14 @@ public class KeyboardInteractiveDialog extends TrayDialog{
   public boolean getAllowCaching(){
     return allowCaching;
   }
-  
-  /**                                                                                           
-   * Notifies that the ok button of this dialog has been pressed.                               
-   * <p>                                                                                        
-   * The default implementation of this framework method sets                                   
-   * this dialog's return code to <code>Window.OK</code>                                        
-   * and closes the dialog. Subclasses may override.                                            
-   * </p>                                                                                       
+
+  /**
+   * Notifies that the ok button of this dialog has been pressed.
+   * <p>
+   * The default implementation of this framework method sets
+   * this dialog's return code to <code>Window.OK</code>
+   * and closes the dialog. Subclasses may override.
+   * </p>
    */
   protected void okPressed(){
     result=new String[prompt.length];
@@ -288,26 +288,26 @@ public class KeyboardInteractiveDialog extends TrayDialog{
    * Sets whether or not the username field should be mutable.
    * This method must be called before create(), otherwise it
    * will be ignored.
-   * 
+   *
    * @param value  whether the username is mutable
    */
   public void setUsernameMutable(boolean value){
     isUsernameMutable=value;
   }
-  
-  /**                                                                                           
-   * Notifies that the cancel button of this dialog has been pressed.                               
-   * <p>                                                                                        
-   * The default implementation of this framework method sets                                   
-   * this dialog's return code to <code>Window.CANCEL</code>                                        
-   * and closes the dialog. Subclasses may override.                                            
-   * </p>                                                                                       
+
+  /**
+   * Notifies that the cancel button of this dialog has been pressed.
+   * <p>
+   * The default implementation of this framework method sets
+   * this dialog's return code to <code>Window.CANCEL</code>
+   * and closes the dialog. Subclasses may override.
+   * </p>
    */
   protected void cancelPressed(){
     result=null;
     super.cancelPressed();
   }
-  
+
   /* (non-Javadoc)
    * @see org.eclipse.jface.dialogs.Dialog#close()
    */

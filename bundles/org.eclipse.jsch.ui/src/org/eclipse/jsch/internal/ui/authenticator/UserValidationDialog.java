@@ -52,7 +52,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Creates a new UserValidationDialog.
-   * 
+   *
    * @param parentShell
    *          the parent shell
    * @param comment
@@ -180,7 +180,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Creates the three widgets that represent the password entry area.
-   * 
+   *
    * @param parent
    *          the parent of the widgets
    */
@@ -196,7 +196,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Creates the three widgets that represent the user name entry area.
-   * 
+   *
    * @param parent
    *          the parent of the widgets
    */
@@ -212,7 +212,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Returns the password entered by the user, or null if the user canceled.
-   * 
+   *
    * @return the entered password
    */
   public String getPassword(){
@@ -221,7 +221,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Returns the username entered by the user, or null if the user canceled.
-   * 
+   *
    * @return the entered username
    */
   public String getUsername(){
@@ -230,7 +230,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /**
    * Returns <code>true</code> if the save password checkbox was selected.
-   * 
+   *
    * @return <code>true</code> if the save password checkbox was selected and
    *         <code>false</code> otherwise.
    */
@@ -256,7 +256,7 @@ public class UserValidationDialog extends TrayDialog{
   /**
    * Sets whether or not the username field should be mutable. This method must
    * be called before create(), otherwise it will be ignored.
-   * 
+   *
    * @param value
    *          whether the username is mutable
    */
@@ -266,7 +266,7 @@ public class UserValidationDialog extends TrayDialog{
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.eclipse.jface.dialogs.Dialog#close()
    */
   public boolean close(){

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Atsuhiko Yamanaka, JCraft,Inc. - implementation of promptForKeyboradInteractive
@@ -90,7 +90,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
    * results in the supplied string[].  result[0] must
    * contain the username, result[1] must contain the password.
    * If the user canceled, both values must be zero.
-   * 
+   *
    * @param location  the location to obtain the password for
    * @param username  the username
    * @param message  a message to display to the user
@@ -111,8 +111,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
   }
 
   /**
-   * Asks the user to enter values. 
-   * 
+   * Asks the user to enter values.
+   *
    * @param location  the location to obtain the password for
    * @param destination the location
    * @param name the name
@@ -161,7 +161,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
     String comment=location==null ? null : location.getComment();
     String username=location==null ? "" : location.getUsername(); //$NON-NLS-1$
     KeyboardInteractiveDialog dialog=new KeyboardInteractiveDialog(null,
-        comment, destination, name, username, instruction, prompt, echo); 
+        comment, destination, name, username, instruction, prompt, echo);
     dialog.setUsernameMutable(false);
     dialog.open();
     String[] _result=dialog.getResult();
@@ -216,7 +216,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
         openConfirm[0]=MessageDialog.openConfirm(null,
             Messages.WorkbenchUserAuthenticator_1, NLS.bind(
                 Messages.WorkbenchUserAuthenticator_2, new String[] {location
-                    .getHost()})); // 
+                    .getHost()})); //
       }
     });
     if(!openConfirm[0]){
@@ -224,7 +224,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
     }
     return openConfirm[0];
   }
-  
+
   /**
    * Returns the standard display to be used. The method first checks, if
    * the thread calling this method has an associated display. If so, this

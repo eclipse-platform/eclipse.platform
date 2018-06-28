@@ -15,7 +15,7 @@ import org.eclipse.jsch.internal.ui.JSchUIPlugin;
 
 /**
  * Here's how to reference the help context in code:
- * 
+ *
  * WorkbenchHelp.setHelp(actionOrControl, IHelpContextIds.NAME_DEFIED_BELOW);
  * @since 1.1
  */

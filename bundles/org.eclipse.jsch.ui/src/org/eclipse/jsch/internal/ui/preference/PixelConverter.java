@@ -17,9 +17,9 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Control;
 
 public class PixelConverter {
-	
+
 	private final FontMetrics fFontMetrics;
-	
+
 	public PixelConverter(Control control) {
 		GC gc = new GC(control);
         try {
@@ -29,7 +29,7 @@ public class PixelConverter {
             gc.dispose();
         }
 	}
-	
+
 	public int convertHeightInCharsToPixels(int chars) {
 		return Dialog.convertHeightInCharsToPixels(fFontMetrics, chars);
 	}
@@ -41,7 +41,7 @@ public class PixelConverter {
 	public int convertVerticalDLUsToPixels(int dlus) {
 		return Dialog.convertVerticalDLUsToPixels(fFontMetrics, dlus);
 	}
-	
+
 	public int convertWidthInCharsToPixels(int chars) {
 		return Dialog.convertWidthInCharsToPixels(fFontMetrics, chars);
 	}

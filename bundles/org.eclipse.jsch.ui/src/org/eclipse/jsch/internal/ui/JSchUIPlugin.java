@@ -40,7 +40,7 @@ public class JSchUIPlugin extends AbstractUIPlugin{
 
   /**
    * Returns the singleton plug-in instance.
-   * 
+   *
    * @return the plugin instance
    */
   public static JSchUIPlugin getPlugin(){
@@ -69,7 +69,7 @@ public class JSchUIPlugin extends AbstractUIPlugin{
 
   /**
    * Convenience method to get an image descriptor for an extension
-   * 
+   *
    * @param extension  the extension declaring the image
    * @param subdirectoryAndFilename  the path to the image
    * @return the image
@@ -85,13 +85,13 @@ public class JSchUIPlugin extends AbstractUIPlugin{
   private void initializeImages() {
     createImageDescriptor(IUIConstants.IMG_KEY_LOCK);
   }
-  
+
   /**
    * @see Plugin#start(BundleContext)
    */
   public void start(BundleContext context) throws Exception {
     super.start(context);
-    
+
     initializeImages();
 
     IPreferenceStore store = getPreferenceStore();
@@ -102,12 +102,12 @@ public class JSchUIPlugin extends AbstractUIPlugin{
     tracker = new ServiceTracker(getBundle().getBundleContext(),IJSchService.class.getName(), null);
     tracker.open();
   }
-  
+
   public void stop(BundleContext context) throws Exception{
     super.stop(context);
     tracker.close();
   }
-  
+
   public IJSchService getJSchService() {
     return (IJSchService)tracker.getService();
   }

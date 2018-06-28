@@ -19,8 +19,8 @@ public interface IUIConstants{
 
   // preferences
   public final String PREF_FIRST_STARTUP="pref_first_startup"; //$NON-NLS-1$
- 
+
   // images
   public final String IMG_KEY_LOCK="wizban/keylock.gif"; //$NON-NLS-1$
-  
+
 }

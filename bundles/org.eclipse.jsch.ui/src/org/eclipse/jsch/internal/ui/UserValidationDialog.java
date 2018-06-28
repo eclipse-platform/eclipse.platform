@@ -38,7 +38,7 @@ public class UserValidationDialog extends TrayDialog {
 	protected String password = null;
 	protected boolean allowCaching = false;
 	protected Image keyLockImage;
-	
+
 	// whether or not the user name can be changed
 	protected boolean isUsernameMutable = true;
 	protected String username = null;
@@ -46,7 +46,7 @@ public class UserValidationDialog extends TrayDialog {
 
 	/**
 	 * Creates a new UserValidationDialog.
-	 * 
+	 *
 	 * @param parentShell  the parent shell
 	 * @param location  the location
 	 * @param defaultName  the default user name
@@ -64,9 +64,9 @@ public class UserValidationDialog extends TrayDialog {
 	 */
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(Messages.UserValidationDialog_0); 
+		newShell.setText(Messages.UserValidationDialog_0);
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.USER_VALIDATION_DIALOG);	
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.USER_VALIDATION_DIALOG);
 	}
 	/**
 	 * @see Window#create
@@ -75,7 +75,7 @@ public class UserValidationDialog extends TrayDialog {
 		super.create();
 		// add some default values
 		usernameField.setText(defaultUsername);
-	
+
 		if (isUsernameMutable) {
 			// give focus to user name field
 			usernameField.selectAll();
@@ -85,7 +85,7 @@ public class UserValidationDialog extends TrayDialog {
 			passwordField.setFocus();
 		}
 	}
-	
+
 	/**
 	 * @see Dialog#createDialogArea
 	 */
@@ -93,10 +93,10 @@ public class UserValidationDialog extends TrayDialog {
 		Composite top = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
-		
+
 		top.setLayout(layout);
 		top.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	
+
 		Composite imageComposite = new Composite(top, SWT.NONE);
 		layout = new GridLayout();
 		imageComposite.setLayout(layout);
@@ -107,13 +107,13 @@ public class UserValidationDialog extends TrayDialog {
 		layout.numColumns = 3;
 		main.setLayout(layout);
 		main.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		Label imageLabel = new Label(imageComposite, SWT.NONE);
 		keyLockImage = ImageDescriptor.createFromURL(JSchUIPlugin.getPlugin().getImageUrl(IUIConstants.IMG_KEY_LOCK)).createImage();
 		imageLabel.setImage(keyLockImage);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
 		imageLabel.setLayoutData(data);
-		
+
 		if (message != null) {
 			Label messageLabel = new Label(main, SWT.WRAP);
 			messageLabel.setText(message);
@@ -124,11 +124,11 @@ public class UserValidationDialog extends TrayDialog {
 		}
 		if (domain != null) {
 			Label d = new Label(main, SWT.WRAP);
-			d.setText(Messages.UserValidationDialog_1); 
+			d.setText(Messages.UserValidationDialog_1);
 			data = new GridData();
 			d.setLayoutData(data);
 			Label label = new Label(main, SWT.WRAP);
-			label.setText(domain); 
+			label.setText(domain);
 			data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
 			data.horizontalSpan = 2;
 			data.widthHint = 300;
@@ -136,10 +136,10 @@ public class UserValidationDialog extends TrayDialog {
 		}
 		createUsernameFields(main);
 		createPasswordFields(main);
-		
+
 		if(domain != null) {
 			allowCachingButton = new Button(main, SWT.CHECK);
-			allowCachingButton.setText(Messages.UserValidationDialog_2); 
+			allowCachingButton.setText(Messages.UserValidationDialog_2);
 			data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
 			data.horizontalSpan = 3;
 			allowCachingButton.setLayoutData(data);
@@ -149,20 +149,20 @@ public class UserValidationDialog extends TrayDialog {
 				}
 			});
 		}
-		
+
         Dialog.applyDialogFont(parent);
-        
+
 		return main;
 	}
-	
+
 	/**
 	 * Creates the three widgets that represent the password entry area.
-	 * 
+	 *
 	 * @param parent  the parent of the widgets
 	 */
 	protected void createPasswordFields(Composite parent) {
-		new Label(parent, SWT.NONE).setText(Messages.UserValidationDialog_4); 
-		
+		new Label(parent, SWT.NONE).setText(Messages.UserValidationDialog_4);
+
 		passwordField = new Text(parent, SWT.BORDER | SWT.PASSWORD);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
@@ -171,39 +171,39 @@ public class UserValidationDialog extends TrayDialog {
 	}
 	/**
 	 * Creates the three widgets that represent the user name entry area.
-	 * 
+	 *
 	 * @param parent  the parent of the widgets
 	 */
 	protected void createUsernameFields(Composite parent) {
-		new Label(parent, SWT.NONE).setText(Messages.UserValidationDialog_5); 
-		
+		new Label(parent, SWT.NONE).setText(Messages.UserValidationDialog_5);
+
 		usernameField = new Text(parent, SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 2;
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
 		usernameField.setLayoutData(data);
 	}
-	
+
 	/**
 	 * Returns the password entered by the user, or null
 	 * if the user canceled.
-	 * 
+	 *
 	 * @return the entered password
 	 */
 	public String getPassword() {
 		return password;
 	}
-	
+
 	/**
 	 * Returns the user name entered by the user, or null
 	 * if the user canceled.
-	 * 
+	 *
 	 * @return the entered user name
 	 */
 	public String getUsername() {
 		return username;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if the save password checkbox was selected.
 	 * @return <code>true</code> if the save password checkbox was selected and <code>false</code>
@@ -212,7 +212,7 @@ public class UserValidationDialog extends TrayDialog {
 	public boolean getAllowCaching() {
 		return allowCaching;
 	}
-	
+
 	/**
 	 * Notifies that the ok button of this dialog has been pressed.
 	 * <p>
@@ -224,27 +224,27 @@ public class UserValidationDialog extends TrayDialog {
 	protected void okPressed() {
 		password = passwordField.getText();
 		username = usernameField.getText();
-	
+
 		super.okPressed();
 	}
-	
+
 	protected void cancelPressed(){
 	  password = null;
 	  username = null;
 	  super.cancelPressed();
 	}
-	
+
 	/**
 	 * Sets whether or not the user name field should be mutable.
 	 * This method must be called before create(), otherwise it
 	 * will be ignored.
-	 * 
+	 *
 	 * @param value  whether the user name is mutable
 	 */
 	public void setUsernameMutable(boolean value) {
 		isUsernameMutable = value;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#close()
 	 */

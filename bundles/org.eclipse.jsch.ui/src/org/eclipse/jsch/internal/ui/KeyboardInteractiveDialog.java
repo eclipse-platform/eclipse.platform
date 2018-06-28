@@ -46,7 +46,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
   private String message;
   private String[] result;
   protected boolean allowCaching=false;
-  
+
   private boolean isPasswordAuth=false;
 
 
@@ -54,10 +54,10 @@ public class KeyboardInteractiveDialog extends TrayDialog {
    * Creates a new KeyboardInteractiveDialog.
    *
    * @param parentShell the parent shell
-   * @param location 
-   * @param destination 
+   * @param location
+   * @param destination
    * @param name the name
-   * @param userName 
+   * @param userName
    * @param instruction the instruction
    * @param prompt the titles for text fields
    * @param echo '*' should be used or not
@@ -66,7 +66,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 				   String location,
 				   String destination,
 				   String name,
-				   String userName, 
+				   String userName,
 				   String instruction,
 				   String[] prompt,
 				   boolean[] echo){
@@ -79,11 +79,11 @@ public class KeyboardInteractiveDialog extends TrayDialog {
     this.prompt=prompt;
     this.echo=echo;
     if (name!=null && name.length()>0) {
-    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_0, new String[] { destination, name });  
+    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_0, new String[] { destination, name });
     } else {
-    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_1, destination); 
+    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_1, destination);
     }
- 
+
     if(KeyboardInteractiveDialog.isPasswordAuth(prompt)){
         isPasswordAuth=true;
       }
@@ -156,7 +156,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 			data.widthHint = 300;
 			messageLabel.setLayoutData(data);
 		}
-		
+
 		if (domain != null) {
 			Label d = new Label(main, SWT.WRAP);
 			d.setText(Messages.KeyboardInteractiveDialog_3);
@@ -172,7 +172,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 			data.widthHint = 300;
 			label.setLayoutData(data);
 		}
-		
+
 		if (instruction != null && instruction.length() > 0) {
 			Label label = new Label(main, SWT.WRAP);
 			label.setText(instruction);
@@ -182,7 +182,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 			data.widthHint = 300;
 			label.setLayoutData(data);
 		}
-		
+
 		if (isPasswordAuth) {
 			createUsernameFields(main);
 		}
@@ -206,10 +206,10 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 		Dialog.applyDialogFont(parent);
 		return main;
 	}
-  
+
   /**
    * Creates the three widgets that represent the user name entry area.
-   * 
+   *
    * @param parent  the parent of the widgets
    */
   protected void createUsernameFields(Composite parent){
@@ -221,10 +221,10 @@ public class KeyboardInteractiveDialog extends TrayDialog {
     data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
     usernameField.setLayoutData(data);
   }
-  
+
   /**
 	 * Creates the widgets that represent the entry area.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent of the widgets
 	 */
@@ -237,26 +237,26 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 	      if(!echo[i]){
 	        flag|=SWT.PASSWORD;
 	      }
-	      texts[i]=new Text(parent, flag); 
+	      texts[i]=new Text(parent, flag);
 	      GridData data=new GridData(GridData.FILL_HORIZONTAL);
 	      data.horizontalSpan=2;
 	      data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
 	      texts[i].setLayoutData(data);
 	      if(!echo[i]){
 	        texts[i].setEchoChar('*');
-	      }     
+	      }
 	    }
   }
-  /**                                                                                           
-   * Returns the entered values, or null                                          
-   * if the user canceled.                                                                      
-   *                                                                                            
+  /**
+   * Returns the entered values, or null
+   * if the user canceled.
+   *
    * @return the entered values
    */
   public String[] getResult() {
     return result;
   }
-  
+
   /**
    * Returns <code>true</code> if the save password checkbox was selected.
    * @return <code>true</code> if the save password checkbox was selected and <code>false</code>
@@ -265,14 +265,14 @@ public class KeyboardInteractiveDialog extends TrayDialog {
   public boolean getAllowCaching(){
     return allowCaching;
   }
-  
-  /**                                                                                           
-   * Notifies that the ok button of this dialog has been pressed.                               
-   * <p>                                                                                        
-   * The default implementation of this framework method sets                                   
-   * this dialog's return code to <code>Window.OK</code>                                        
-   * and closes the dialog. Subclasses may override.                                            
-   * </p>                                                                                       
+
+  /**
+   * Notifies that the ok button of this dialog has been pressed.
+   * <p>
+   * The default implementation of this framework method sets
+   * this dialog's return code to <code>Window.OK</code>
+   * and closes the dialog. Subclasses may override.
+   * </p>
    */
   protected void okPressed() {
     result=new String[prompt.length];
@@ -281,19 +281,19 @@ public class KeyboardInteractiveDialog extends TrayDialog {
     }
     super.okPressed();
   }
-  /**                                                                                           
-   * Notifies that the cancel button of this dialog has been pressed.                               
-   * <p>                                                                                        
-   * The default implementation of this framework method sets                                   
-   * this dialog's return code to <code>Window.CANCEL</code>                                        
-   * and closes the dialog. Subclasses may override.                                            
-   * </p>                                                                                       
+  /**
+   * Notifies that the cancel button of this dialog has been pressed.
+   * <p>
+   * The default implementation of this framework method sets
+   * this dialog's return code to <code>Window.CANCEL</code>
+   * and closes the dialog. Subclasses may override.
+   * </p>
    */
   protected void cancelPressed() {
     result=null;
     super.cancelPressed();
   }
-    
+
   /* (non-Javadoc)
    * @see org.eclipse.jface.dialogs.Dialog#close()
    */
@@ -303,7 +303,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
     }
     return super.close();
   }
-  
+
   /**
    * Guesses if this dialog is used for password authentication.
    * @param prompt prompts for keyboard-interactive authentication method.
