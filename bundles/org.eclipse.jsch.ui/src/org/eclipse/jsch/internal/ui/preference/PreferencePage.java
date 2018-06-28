@@ -45,6 +45,8 @@ import org.eclipse.jsch.internal.ui.Messages;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -65,8 +67,6 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -128,37 +128,37 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     container.setLayout(layout);
     initializeDialogUnits(container);
 
-    TabFolder tabFolder=new TabFolder(container, SWT.NONE);
+    CTabFolder tabFolder=new CTabFolder(container, SWT.NONE);
     tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-    TabItem tabItem=new TabItem(tabFolder, SWT.NONE);
+    CTabItem tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_19);
     tabItem.setControl(createGeneralPage(tabFolder));
 
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_21);
     tabItem.setControl(createKeyManagementPage(tabFolder));
 
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_133);
     tabItem.setControl(createHostKeyManagementPage(tabFolder));
     
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_137);
     tabItem.setControl(createPreferredAuthenticationPage(tabFolder));
     
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_144);
     tabItem.setControl(createPreferredKeyExchangePage(tabFolder));
     
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_145);
     tabItem.setControl(createPreferredMACPage(tabFolder));
 
-    tabItem=new TabItem(tabFolder, SWT.NONE);
+    tabItem=new CTabItem(tabFolder, SWT.NONE);
     tabItem.setText(Messages.CVSSSH2PreferencePage_146);
     tabItem.setControl(createPreferredSSHAgentPage(tabFolder));
-
+    tabFolder.setSelection(0);
     initControls();
 
     Dialog.applyDialogFont(parent);
