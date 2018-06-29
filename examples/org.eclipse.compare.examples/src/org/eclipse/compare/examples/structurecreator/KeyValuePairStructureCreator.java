@@ -49,9 +49,6 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 			return fValue;
 		}
 				
-		/*
-		 * @see ITypedElement#getName
-		 */
 		@Override
 		public String getName() {
 			return this.getId();
@@ -66,9 +63,6 @@ public class KeyValuePairStructureCreator implements IStructureCreator {
 			return "kvtxt"; //$NON-NLS-1$
 		}
 		
-		/*
-		 * @see ITypedElement#getImage
-		 */
 		@Override
 		public Image getImage() {
 			return CompareUI.getImage(getType());

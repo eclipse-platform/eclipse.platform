@@ -42,12 +42,11 @@ public class Util {
 	private static String readString(InputStream is, String encoding) {
 		if (is == null)
 			return null;
-		BufferedReader reader= null;
-		try {
+		try (BufferedReader reader=new BufferedReader(new InputStreamReader(is, encoding)))
+		{
 			StringBuilder buffer= new StringBuilder();
 			char[] part= new char[2048];
 			int read= 0;
-			reader= new BufferedReader(new InputStreamReader(is, encoding));
 
 			while ((read= reader.read(part)) != -1)
 				buffer.append(part, 0, read);
@@ -56,15 +55,7 @@ public class Util {
 			
 		} catch (IOException ex) {
 			// silently ignored
-		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException ex) {
-					// we don't log IOException when closing a file
-				}
-			}
-		}
+		} 
 		return null;
 	}
 
