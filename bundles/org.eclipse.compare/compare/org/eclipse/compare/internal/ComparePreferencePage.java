@@ -54,7 +54,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 public class ComparePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-	class FakeInput implements ITypedElement, IEncodedStreamContentAccessor {
+	private static class FakeInput implements ITypedElement, IEncodedStreamContentAccessor {
 		static final String UTF_16= "UTF-16"; //$NON-NLS-1$
 		String fContent;
 
@@ -81,6 +81,21 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		public String getCharset() {
 			return UTF_16;
 		}
+
+		private String loadPreviewContentFromFile(String key) {
+
+			String preview= Utilities.getString(key);
+			String separator= System.getProperty("line.separator"); //$NON-NLS-1$
+			StringBuilder buffer= new StringBuilder();
+			for (int i= 0; i < preview.length(); i++) {
+				char c= preview.charAt(i);
+				if (c == '\n')
+					buffer.append(separator);
+				else
+					buffer.append(c);
+			}
+			return buffer.toString();
+		}
 	}
 
 	private static final String PREFIX= CompareUIPlugin.PLUGIN_ID + "."; //$NON-NLS-1$
@@ -103,7 +118,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	public static final String SWAPPED = PREFIX + "Swapped"; //$NON-NLS-1$
 
 
-	private TextMergeViewer fPreviewViewer;
 	private IPropertyChangeListener fPreferenceChangeListener;
 	private CompareConfiguration fCompareConfiguration;
 	private OverlayPreferenceStore fOverlayStore;
@@ -149,10 +163,8 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		store.setDefault(PREF_SAVE_ALL_EDITORS, false);
 		store.setDefault(ADDED_LINES_REGEX, ""); //$NON-NLS-1$
 		store.setDefault(REMOVED_LINES_REGEX, ""); //$NON-NLS-1$
-		//store.setDefault(USE_SPLINES, false);
 		store.setDefault(USE_SINGLE_LINE, true);
 		store.setDefault(HIGHLIGHT_TOKEN_CHANGES, true);
-		//store.setDefault(USE_RESOLVE_UI, false);
 		store.setDefault(CAPPING_DISABLED, false);
 		store.setDefault(PATH_FILTER, ""); //$NON-NLS-1$
 		store.setDefault(ICompareUIConstants.PREF_NAVIGATION_END_ACTION, ICompareUIConstants.PREF_VALUE_PROMPT);
@@ -161,8 +173,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 	}
 
 	public ComparePreferencePage() {
-
-		//setDescription(Utilities.getString("ComparePreferencePage.description"));	//$NON-NLS-1$
 
 		setPreferenceStore(CompareUIPlugin.getDefault().getPreferenceStore());
 
@@ -189,7 +199,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fOverlayStore.setValue(ADDED_LINES_REGEX, addedLinesRegex.getText());
 		fOverlayStore.setValue(REMOVED_LINES_REGEX, removedLinesRegex.getText());
 
-		editors.forEach(editor -> editor.store());
+		editors.forEach(FieldEditor::store);
 		fOverlayStore.propagate();
 
 		ComparePlugin.getDefault().setCappingDisabled(
@@ -222,12 +232,12 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		super.dispose();
 	}
 
-	static public boolean getSaveAllEditors() {
+	public static boolean getSaveAllEditors() {
 		IPreferenceStore store= CompareUIPlugin.getDefault().getPreferenceStore();
 		return store.getBoolean(PREF_SAVE_ALL_EDITORS);
 	}
 
-	static public void setSaveAllEditors(boolean value) {
+	public static void setSaveAllEditors(boolean value) {
 		IPreferenceStore store= CompareUIPlugin.getDefault().getPreferenceStore();
 		store.setValue(PREF_SAVE_ALL_EDITORS, value);
 	}
@@ -246,12 +256,10 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 
 		TabItem item= new TabItem(folder, SWT.NONE);
 		item.setText(Utilities.getString("ComparePreferencePage.generalTab.label"));	//$NON-NLS-1$
-		//item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CFILE));
 		item.setControl(createGeneralPage(folder));
 
 		item= new TabItem(folder, SWT.NONE);
 		item.setText(Utilities.getString("ComparePreferencePage.textCompareTab.label"));	//$NON-NLS-1$
-		//item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_CFILE));
 		item.setControl(createTextComparePage(folder));
 		fTextCompareTab = item;
 
@@ -399,7 +407,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fCompareConfiguration.setRightLabel(Utilities.getString("ComparePreferencePage.right.label"));	//$NON-NLS-1$
 		fCompareConfiguration.setRightEditable(false);
 
-		fPreviewViewer= new TextMergeViewer(parent, SWT.BORDER, fCompareConfiguration);
+		TextMergeViewer fPreviewViewer= new TextMergeViewer(parent, SWT.BORDER, fCompareConfiguration);
 
 		fPreviewViewer.setInput(
 			new DiffNode(Differencer.CONFLICTING,
@@ -434,7 +442,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		if (removedLinesRegex != null)
 			removedLinesRegex.setText(fOverlayStore.getString(REMOVED_LINES_REGEX));
 
-		editors.forEach(editor -> editor.load());
+		editors.forEach(FieldEditor::load);
 	}
 
 	// overlay stuff
@@ -464,21 +472,6 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		fCheckBoxes.put(checkBox, key);
 
 		return checkBox;
-	}
-
-	private String loadPreviewContentFromFile(String key) {
-
-		String preview= Utilities.getString(key);
-		String separator= System.getProperty("line.separator"); //$NON-NLS-1$
-		StringBuilder buffer= new StringBuilder();
-		for (int i= 0; i < preview.length(); i++) {
-			char c= preview.charAt(i);
-			if (c == '\n')
-				buffer.append(separator);
-			else
-				buffer.append(c);
-		}
-		return buffer.toString();
 	}
 
 	@Override
