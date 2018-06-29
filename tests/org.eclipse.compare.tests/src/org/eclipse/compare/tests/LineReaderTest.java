@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.*;
 import java.net.URL;
 import java.util.List;
@@ -17,17 +20,18 @@ import java.util.List;
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class LineReaderTest  {
 
-public class LineReaderTest extends TestCase {
-
+	@Test
 	public void testReadEmpty() {
 		LineReader lr= new LineReader(getReader("empty.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
 		assertEquals(0, inLines.size());
 	}
 
+	@Test
 	public void testReadNormal() {
 		LineReader lr= new LineReader(getReader("normal.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
@@ -44,6 +48,7 @@ public class LineReaderTest extends TestCase {
 		return line;
 	}
 
+	@Test
 	public void testReadUnterminatedLastLine() {
 		LineReader lr= new LineReader(getReader("unterminated.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
