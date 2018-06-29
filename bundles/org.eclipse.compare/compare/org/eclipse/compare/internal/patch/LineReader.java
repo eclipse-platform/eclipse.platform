@@ -26,7 +26,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 
 public class LineReader {
 	/**
@@ -80,9 +79,6 @@ public class LineReader {
 	public static List<String> readLines(BufferedReader reader) {
 		List<String> lines;
 		LineReader lr = new LineReader(reader);
-		if (!Platform.WS_CARBON.equals(Platform.getWS()))
-			// Don't treat single CRs as line feeds to be consistent with command line patch
-			lr.ignoreSingleCR();
 		lines = lr.readLines();
 		return lines;
 	}
