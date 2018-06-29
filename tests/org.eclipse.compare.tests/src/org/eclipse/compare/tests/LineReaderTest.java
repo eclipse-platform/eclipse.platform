@@ -11,14 +11,12 @@
 package org.eclipse.compare.tests;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 import org.eclipse.compare.internal.core.patch.LineReader;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -27,16 +25,16 @@ public class LineReaderTest extends TestCase {
 	public void testReadEmpty() {
 		LineReader lr= new LineReader(getReader("empty.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
-		Assert.assertEquals(0, inLines.size());
+		assertEquals(0, inLines.size());
 	}
 
 	public void testReadNormal() {
 		LineReader lr= new LineReader(getReader("normal.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
-		Assert.assertEquals(3, inLines.size());
-		Assert.assertEquals("[1]\n", convertLineDelimeters(inLines.get(0))); //$NON-NLS-1$
-		Assert.assertEquals("[2]\n", convertLineDelimeters(inLines.get(1))); //$NON-NLS-1$
-		Assert.assertEquals("[3]\n", convertLineDelimeters(inLines.get(2))); //$NON-NLS-1$
+		assertEquals(3, inLines.size());
+		assertEquals("[1]\n", convertLineDelimeters(inLines.get(0))); //$NON-NLS-1$
+		assertEquals("[2]\n", convertLineDelimeters(inLines.get(1))); //$NON-NLS-1$
+		assertEquals("[3]\n", convertLineDelimeters(inLines.get(2))); //$NON-NLS-1$
 	}
 
 	private String convertLineDelimeters(Object object) {
@@ -49,10 +47,10 @@ public class LineReaderTest extends TestCase {
 	public void testReadUnterminatedLastLine() {
 		LineReader lr= new LineReader(getReader("unterminated.txt")); //$NON-NLS-1$
 		List<String> inLines= lr.readLines();
-		Assert.assertEquals(3, inLines.size());
-		Assert.assertEquals("[1]\n", convertLineDelimeters(inLines.get(0))); //$NON-NLS-1$
-		Assert.assertEquals("[2]\n", convertLineDelimeters(inLines.get(1))); //$NON-NLS-1$
-		Assert.assertEquals("[3]", inLines.get(2)); //$NON-NLS-1$
+		assertEquals(3, inLines.size());
+		assertEquals("[1]\n", convertLineDelimeters(inLines.get(0))); //$NON-NLS-1$
+		assertEquals("[2]\n", convertLineDelimeters(inLines.get(1))); //$NON-NLS-1$
+		assertEquals("[3]", inLines.get(2)); //$NON-NLS-1$
 	}
 
 	private BufferedReader getReader(String name) {
@@ -63,9 +61,7 @@ public class LineReaderTest extends TestCase {
 			InputStream resourceAsStream = url.openStream();
 			InputStreamReader reader2 = new InputStreamReader(resourceAsStream);
 			return new BufferedReader(reader2);
-		} catch (MalformedURLException e) {
-			fail(e.getMessage());
-		} catch (IOException e) {
+		} catch ( IOException e) {
 			fail(e.getMessage());
 		}
 		return null;
