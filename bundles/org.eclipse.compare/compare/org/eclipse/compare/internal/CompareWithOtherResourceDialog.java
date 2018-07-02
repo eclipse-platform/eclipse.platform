@@ -17,35 +17,14 @@ import java.io.IOException;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareUI;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.dnd.*;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -287,20 +266,15 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		}
 
 		protected void initDrag() {
-			DragSource source = new DragSource(text, DND.DROP_MOVE
-					| DND.DROP_COPY | DND.DROP_DEFAULT);
-			Transfer[] types = new Transfer[] { TextTransfer.getInstance(),
-					ResourceTransfer.getInstance() };
-			source.setTransfer(types);
+			DragSource source = new DragSource(text, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
+			source.setTransfer(TextTransfer.getInstance(), ResourceTransfer.getInstance());
 			source.addDragListener(new FileTextDragListener(this));
 		}
 
 		protected void initDrop() {
 			DropTarget target = new DropTarget(text, DND.DROP_MOVE
 					| DND.DROP_COPY | DND.DROP_DEFAULT);
-			Transfer[] types = new Transfer[] { TextTransfer.getInstance(),
-					ResourceTransfer.getInstance() };
-			target.setTransfer(types);
+			target.setTransfer(TextTransfer.getInstance(), ResourceTransfer.getInstance());
 			target.addDropListener(new FileTextDropListener(this));
 		}
 
@@ -316,11 +290,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFileMainButton);
-			mainButton.addSelectionListener(new SelectionListener() {
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetSelected(e);
-				}
+			mainButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFile();
@@ -349,11 +319,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		protected void createMainButton(Composite parent) {
 			super.createMainButton(parent);
 			mainButton.setText(CompareMessages.CompareWithOtherResourceDialog_externalFolderMainButton);
-			mainButton.addSelectionListener(new SelectionListener() {
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetSelected(e);
-				}
+			mainButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					IResource r = tmpProject.getExternalFolder();
@@ -408,12 +374,12 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					externalFileContent, externalFolderContent };
 			for (int i = 0; i < elements.length; i++) {
 				elements[i].getRadioButton().addListener(SWT.Selection, event -> {
-					for (int j = 0; j < elements.length; j++) {
-						if (event.widget != elements[j].getRadioButton())
-							elements[j].setEnabled(false);
+					for (ContentTypeElement element : elements) {
+						if (event.widget != element.getRadioButton())
+							element.setEnabled(false);
 						else {
-							elements[j].setEnabled(true);
-							setResource(elements[j].getResource());
+							element.setEnabled(true);
+							setResource(element.getResource());
 						}
 					}
 				});
@@ -463,6 +429,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				workspaceContent.setEnabled(false);
 				externalFileContent.setEnabled(false);
 				externalFolderContent.setEnabled(true);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -485,7 +454,6 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	private class InternalExpandable extends InternalSection {
 
 		private ExpandableComposite expandable;
-		private Button clearButton;
 
 		public InternalExpandable(Composite parent) {
 			createContents(parent);
@@ -509,13 +477,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		}
 
 		private void createClearButton(Composite parent) {
-			clearButton = new Button(parent, SWT.PUSH);
+			Button clearButton = new Button(parent, SWT.PUSH);
 			clearButton.setText(CompareMessages.CompareWithOtherResourceDialog_clear);
-			clearButton.addSelectionListener(new SelectionListener() {
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetSelected(e);
-				}
+			clearButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					clearResource();
@@ -541,7 +505,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 		private static final String TMP_PROJECT_NAME = ".org.eclipse.compare.tmp"; //$NON-NLS-1$
 
-		private final static String TMP_PROJECT_FILE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" //$NON-NLS-1$
+		private static final String TMP_PROJECT_FILE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" //$NON-NLS-1$
 				+ "<projectDescription>\n" //$NON-NLS-1$
 				+ "\t<name>" + TMP_PROJECT_NAME + "\t</name>\n" //$NON-NLS-1$ //$NON-NLS-2$
 				+ "\t<comment></comment>\n" //$NON-NLS-1$
@@ -552,7 +516,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 				+ "\t<natures>\n" + "\t</natures>\n" //$NON-NLS-1$//$NON-NLS-2$
 				+ "</projectDescription>"; //$NON-NLS-1$
 
-		private final static String TMP_FOLDER_NAME = "tmpFolder"; //$NON-NLS-1$
+		private static final String TMP_FOLDER_NAME = "tmpFolder"; //$NON-NLS-1$
 
 		private ExternalResourcesProject() {
 			// nothing to do here
@@ -671,8 +635,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		}
 
 		private IProject getTmpProject() {
-			return ResourcesPlugin.getWorkspace().getRoot().getProject(
-					TMP_PROJECT_NAME);
+			return ResourcesPlugin.getWorkspace().getRoot().getProject(TMP_PROJECT_NAME);
 		}
 	}
 
@@ -685,11 +648,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	/**
 	 * Creates the dialog.
 	 *
-	 * @param shell
-	 *            a shell
-	 * @param selection
-	 *            if the selection is not null, it will be set as initial files
-	 *            for comparison
+	 * @param shell     a shell
+	 * @param selection if the selection is not null, it will be set as initial
+	 *                  files for comparison
 	 * @since 3.4
 	 */
 	protected CompareWithOtherResourceDialog(Shell shell, ISelection selection) {
@@ -698,13 +659,6 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		this.selection = selection;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
-	 * .Composite)
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 
@@ -735,18 +689,10 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	private void adjustSize(boolean expanded) {
 		int minWidth = convertHorizontalDLUsToPixels(MIN_WIDTH);
-		int minHeight = convertVerticalDLUsToPixels(expanded ? MIN_HEIGHT_WITH_ANCESTOR
-				: MIN_HEIGHT_WITHOUT_ANCESTOR);
+		int minHeight = convertVerticalDLUsToPixels(expanded ? MIN_HEIGHT_WITH_ANCESTOR : MIN_HEIGHT_WITHOUT_ANCESTOR);
 		getShell().setMinimumSize(minWidth, minHeight);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
-	 * .swt.widgets.Composite)
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		super.createButtonsForButtonBar(parent);
@@ -771,6 +717,8 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			leftPanel.workspaceContent.setResource(selectedResources[1]);
 			rightPanel.workspaceContent.setResource(selectedResources[2]);
 			break;
+		default:
+			break;
 		}
 		setInitialContentTypes();
 	}
@@ -790,21 +738,17 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 			resources = new IResource[] { ancestorPanel.getResource(),
 					leftPanel.getResource(), rightPanel.getResource() };
 
-		ResourceCompareInput r = new ResourceCompareInput(
-				new CompareConfiguration());
+		ResourceCompareInput r = new ResourceCompareInput(new CompareConfiguration());
 		return r.isEnabled(new StructuredSelection(resources));
 	}
 
 	private void updateErrorInfo() {
 		if (okButton != null) {
-			if (leftPanel.getResource() == null
-					|| rightPanel.getResource() == null) {
-				setMessage(CompareMessages.CompareWithOtherResourceDialog_error_empty,
-						IMessageProvider.ERROR);
+			if (leftPanel.getResource() == null || rightPanel.getResource() == null) {
+				setMessage(CompareMessages.CompareWithOtherResourceDialog_error_empty, IMessageProvider.ERROR);
 				okButton.setEnabled(false);
 			} else if (!isComparePossible()) {
-				setMessage(
-						CompareMessages.CompareWithOtherResourceDialog_error_not_comparable,
+				setMessage(CompareMessages.CompareWithOtherResourceDialog_error_not_comparable,
 						IMessageProvider.ERROR);
 				okButton.setEnabled(false);
 			} else {
@@ -835,14 +779,10 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		return resources;
 	}
 
-	/*
-	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsSettings()
-	 */
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName = getClass().getName() + "_dialogBounds"; //$NON-NLS-1$
-		IDialogSettings settings = CompareUIPlugin.getDefault()
-				.getDialogSettings();
+		IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
 		IDialogSettings section = settings.getSection(sectionName);
 		if (section == null)
 			section = settings.addNewSection(sectionName);
