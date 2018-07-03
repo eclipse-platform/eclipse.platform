@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -1292,31 +1293,36 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		@Override
 		public int findAndSelect(int widgetOffset, String findString,
 				boolean searchForward, boolean caseSensitive, boolean wholeWord) {
-			return getTarget().findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
+			return Optional.ofNullable(getTarget()).map(
+					target -> target.findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord))
+					.orElse(-1);
 		}
 
 		private IFindReplaceTarget getTarget() {
-			return fFocusPart.getSourceViewer().getFindReplaceTarget();
+			return Optional.ofNullable(fFocusPart).map(MergeSourceViewer::getSourceViewer)
+					.map(SourceViewer::getFindReplaceTarget)
+					.orElse(null);
 		}
 
 		@Override
 		public Point getSelection() {
-			return getTarget().getSelection();
+			return Optional.ofNullable(getTarget()).map(target -> target.getSelection())
+					.orElse(new Point(-1, -1));
 		}
 
 		@Override
 		public String getSelectionText() {
-			return getTarget().getSelectionText();
+			return Optional.ofNullable(getTarget()).map(IFindReplaceTarget::getSelectionText).orElse(""); //$NON-NLS-1$
 		}
 
 		@Override
 		public boolean isEditable() {
-			return getTarget().isEditable();
+			return Optional.ofNullable(getTarget()).map(IFindReplaceTarget::isEditable).orElse(false);
 		}
 
 		@Override
 		public void replaceSelection(String text) {
-			getTarget().replaceSelection(text);
+			Optional.ofNullable(getTarget()).ifPresent(target -> target.replaceSelection(text));
 		}
 
 		@Override
@@ -1351,6 +1357,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension2) {
 				return ((IFindReplaceTargetExtension2) findReplaceTarget).validateTargetState();
 			}
+			// TODO not sure if true when findReplaceTarget is null
 			return true;
 		}
 
