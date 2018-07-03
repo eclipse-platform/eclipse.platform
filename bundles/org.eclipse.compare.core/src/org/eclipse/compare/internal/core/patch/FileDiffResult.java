@@ -35,7 +35,7 @@ public class FileDiffResult implements IFilePatchResult {
 	private boolean fMatches= false;
 	private boolean fDiffProblem;
 	private String fErrorMessage;
-	private Map<Hunk, HunkResult> fHunkResults = new HashMap<Hunk, HunkResult>();
+	private Map<Hunk, HunkResult> fHunkResults = new HashMap<>();
 	private List<String> fBeforeLines, fAfterLines;
 	private final PatchConfiguration configuration;
 	private String charset;
@@ -218,7 +218,7 @@ public class FileDiffResult implements IFilePatchResult {
 	public int calculateFuzz(List<String> lines, IProgressMonitor monitor) {
 		if (monitor == null)
 			monitor = new NullProgressMonitor();
-		this.fBeforeLines = new ArrayList<String>(lines);
+		this.fBeforeLines = new ArrayList<>(lines);
 		// TODO: What about deletions?
 		if (this.fDiff.getDiffType(getConfiguration().isReversed()) == FilePatch2.ADDITION) {
 			// Additions don't need to adjust the fuzz factor
@@ -258,7 +258,7 @@ public class FileDiffResult implements IFilePatchResult {
 	}
 
 	public List<Hunk> getFailedHunks() {
-		List<Hunk> failedHunks = new ArrayList<Hunk>();
+		List<Hunk> failedHunks = new ArrayList<>();
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
 			HunkResult result = this.fHunkResults.get(hunks[i]);
@@ -282,7 +282,7 @@ public class FileDiffResult implements IFilePatchResult {
 
 	public HunkResult[] getHunkResults() {
 		// return hunk results in the same order as hunks are placed in file diff
-		List<HunkResult> results = new ArrayList<HunkResult>();
+		List<HunkResult> results = new ArrayList<>();
 		IHunk[] hunks = this.fDiff.getHunks();
 		for (int i = 0; i < hunks.length; i++) {
 			HunkResult result = this.fHunkResults.get(hunks[i]);

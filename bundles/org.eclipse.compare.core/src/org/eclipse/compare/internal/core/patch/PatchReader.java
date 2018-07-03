@@ -76,8 +76,8 @@ public class PatchReader {
 	}
 
 	public void parse(BufferedReader reader) throws IOException {
-		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
-		HashMap<String, DiffProject> diffProjects= new HashMap<String, DiffProject>(4);
+		List<FilePatch2> diffs= new ArrayList<>();
+		HashMap<String, DiffProject> diffProjects= new HashMap<>(4);
 		String line= null;
 		boolean reread= false;
 		String diffArgs= null;
@@ -154,7 +154,7 @@ public class PatchReader {
 	}
 
 	private String readUnifiedDiff(List<FilePatch2> diffs, LineReader lr, String line, String diffArgs, String fileName, DiffProject diffProject) throws IOException {
-		List<FilePatch2> newDiffs= new ArrayList<FilePatch2>();
+		List<FilePatch2> newDiffs= new ArrayList<>();
 		String nextLine= readUnifiedDiff(newDiffs, lr, line, diffArgs, fileName);
 		for (Iterator<FilePatch2> iter= newDiffs.iterator(); iter.hasNext();) {
 			FilePatch2 diff= iter.next();
@@ -165,11 +165,11 @@ public class PatchReader {
 	}
 
 	public void parse(LineReader lr, String line) throws IOException {
-		List<FilePatch2> diffs= new ArrayList<FilePatch2>();
+		List<FilePatch2> diffs= new ArrayList<>();
 		boolean reread= false;
 		String diffArgs= null;
 		String fileName= null;
-		List<String> headerLines = new ArrayList<String>();
+		List<String> headerLines = new ArrayList<>();
 		boolean foundDiff= false;
 
 		// read leading garbage
@@ -244,7 +244,7 @@ public class PatchReader {
 		int[] newRange= new int[2];
 		int remainingOld= -1; // remaining old lines for current hunk
 		int remainingNew= -1; // remaining new lines for current hunk
-		List<String> lines= new ArrayList<String>();
+		List<String> lines= new ArrayList<>();
 
 		boolean encounteredPlus = false;
 		boolean encounteredMinus = false;
@@ -368,8 +368,8 @@ public class PatchReader {
 
 		int[] oldRange= new int[2];
 		int[] newRange= new int[2];
-		List<String> oldLines= new ArrayList<String>();
-		List<String> newLines= new ArrayList<String>();
+		List<String> oldLines= new ArrayList<>();
+		List<String> newLines= new ArrayList<>();
 		List<String> lines= oldLines;
 
 
@@ -468,7 +468,7 @@ public class PatchReader {
 	 * two Lists of lines in the 'classic' format.
 	 */
 	private List<String> unifyLines(List<String> oldLines, List<String> newLines) {
-		List<String> result= new ArrayList<String>();
+		List<String> result= new ArrayList<>();
 
 		String[] ol= oldLines.toArray(new String[oldLines.size()]);
 		String[] nl= newLines.toArray(new String[newLines.size()]);
@@ -692,7 +692,7 @@ public class PatchReader {
 	public FilePatch2[] getAdjustedDiffs() {
 		if (!isWorkspacePatch() || this.fDiffs.length == 0)
 			return this.fDiffs;
-		List<FilePatch2> result = new ArrayList<FilePatch2>();
+		List<FilePatch2> result = new ArrayList<>();
 		for (int i = 0; i < this.fDiffs.length; i++) {
 			FilePatch2 diff = this.fDiffs[i];
 			result.add(diff.asRelativeDiff());
