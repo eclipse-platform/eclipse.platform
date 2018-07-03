@@ -12,7 +12,6 @@ Export-Package: org.eclipse.compare.internal.core;x-friends:="org.eclipse.compar
  org.eclipse.compare.internal.core.patch;x-friends:="org.eclipse.compare",
  org.eclipse.compare.patch; core="split"; mandatory:="core",
  org.eclipse.compare.rangedifferencer
-Import-Package: com.ibm.icu.text;version="3.6.1",
- com.ibm.icu.util;version="3.6.1"
+Import-Package: com.ibm.icu.text;version="3.6.1"
 Bundle-Localization: plugin
 Automatic-Module-Name: org.eclipse.compare.core
