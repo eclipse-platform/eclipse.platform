@@ -1292,32 +1292,36 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		@Override
 		public int findAndSelect(int widgetOffset, String findString,
 				boolean searchForward, boolean caseSensitive, boolean wholeWord) {
-			return fFocusPart.getSourceViewer().getFindReplaceTarget().findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
+			return getTarget().findAndSelect(widgetOffset, findString, searchForward, caseSensitive, wholeWord);
+		}
+
+		private IFindReplaceTarget getTarget() {
+			return fFocusPart.getSourceViewer().getFindReplaceTarget();
 		}
 
 		@Override
 		public Point getSelection() {
-			return fFocusPart.getSourceViewer().getFindReplaceTarget().getSelection();
+			return getTarget().getSelection();
 		}
 
 		@Override
 		public String getSelectionText() {
-			return fFocusPart.getSourceViewer().getFindReplaceTarget().getSelectionText();
+			return getTarget().getSelectionText();
 		}
 
 		@Override
 		public boolean isEditable() {
-			return fFocusPart.getSourceViewer().getFindReplaceTarget().isEditable();
+			return getTarget().isEditable();
 		}
 
 		@Override
 		public void replaceSelection(String text) {
-			fFocusPart.getSourceViewer().getFindReplaceTarget().replaceSelection(text);
+			getTarget().replaceSelection(text);
 		}
 
 		@Override
 		public int findAndSelect(int offset, String findString, boolean searchForward, boolean caseSensitive, boolean wholeWord, boolean regExSearch) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension3) {
 				return ((IFindReplaceTargetExtension3) findReplaceTarget).findAndSelect(offset, findString, searchForward, caseSensitive, wholeWord, regExSearch);
 			}
@@ -1330,7 +1334,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void replaceSelection(String text, boolean regExReplace) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension3) {
 				((IFindReplaceTargetExtension3) findReplaceTarget).replaceSelection(text, regExReplace);
 				return;
@@ -1343,7 +1347,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public boolean validateTargetState() {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension2) {
 				return ((IFindReplaceTargetExtension2) findReplaceTarget).validateTargetState();
 			}
@@ -1352,7 +1356,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void beginSession() {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).beginSession();
 			}
@@ -1360,7 +1364,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void endSession() {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).endSession();
 			}
@@ -1368,7 +1372,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public IRegion getScope() {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				return ((IFindReplaceTargetExtension) findReplaceTarget).getScope();
 			}
@@ -1377,7 +1381,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void setScope(IRegion scope) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).setScope(scope);
 			}
@@ -1385,7 +1389,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public Point getLineSelection() {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				return ((IFindReplaceTargetExtension) findReplaceTarget).getLineSelection();
 			}
@@ -1394,7 +1398,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void setSelection(int offset, int length) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).setSelection(offset, length);
 			}
@@ -1402,7 +1406,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void setScopeHighlightColor(Color color) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).setScopeHighlightColor(color);
 			}
@@ -1410,7 +1414,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public void setReplaceAllMode(boolean replaceAll) {
-			IFindReplaceTarget findReplaceTarget = fFocusPart.getSourceViewer().getFindReplaceTarget();
+			IFindReplaceTarget findReplaceTarget = getTarget();
 			if (findReplaceTarget instanceof IFindReplaceTargetExtension) {
 				((IFindReplaceTargetExtension) findReplaceTarget).setReplaceAllMode(replaceAll);
 			}
