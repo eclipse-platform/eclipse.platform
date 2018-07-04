@@ -811,7 +811,6 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 	@Override
 	public void dispose() {
-		super.dispose();
 		//Remove the drop listener
 		if (dropTarget != null && !dropTarget.isDisposed())
 			dropTarget.removeDropListener(dropAdapter);
@@ -819,6 +818,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		//Remove the selection listener
 		getSite().getPage().removePostSelectionListener(selectionListener);
 		navigateAction.dispose();
+		super.dispose();
 	}
 
 	@Override
