@@ -3837,96 +3837,69 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private void configureCompareFilterActions(Object input, Object ancestor,
 			Object left, Object right) {
-		if (getCompareConfiguration() != null) {
-			CompareFilterDescriptor[] compareFilterDescriptors =
-					CompareUIPlugin.getDefault().findCompareFilters(input);
+		if (getCompareConfiguration() == null) {
+			return;
+		}
 
-			Object current = getCompareConfiguration().getProperty(
-					ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS);
-			boolean currentFiltersMatch = false;
-			if (current != null
-					&& current instanceof List
-					&& ((List<?>) current).size() == compareFilterDescriptors.length) {
-				currentFiltersMatch = true;
-				@SuppressWarnings("unchecked")
-				List<ChangeCompareFilterPropertyAction> currentFilterActions =
-						(List<ChangeCompareFilterPropertyAction>) current;
-				for (int i = 0; i < compareFilterDescriptors.length; i++) {
-					boolean match = false;
-					for (int j = 0; j < currentFilterActions.size(); j++) {
-						if (compareFilterDescriptors[i]
-								.getFilterId()
-								.equals(currentFilterActions.get(j).getFilterId())) {
-							match = true;
-							break;
-						}
-					}
-					if (!match) {
-						currentFiltersMatch = false;
+		CompareFilterDescriptor[] compareFilterDescriptors = CompareUIPlugin.getDefault().findCompareFilters(input);
+		Object current = getCompareConfiguration()
+				.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS);
+		boolean currentFiltersMatch = false;
+		if (current != null && current instanceof List
+				&& ((List<?>) current).size() == compareFilterDescriptors.length) {
+			currentFiltersMatch = true;
+			@SuppressWarnings("unchecked")
+			List<ChangeCompareFilterPropertyAction> currentFilterActions = (List<ChangeCompareFilterPropertyAction>) current;
+			for (int i = 0; i < compareFilterDescriptors.length; i++) {
+				boolean match = false;
+				for (int j = 0; j < currentFilterActions.size(); j++) {
+					if (compareFilterDescriptors[i].getFilterId().equals(currentFilterActions.get(j).getFilterId())) {
+						match = true;
 						break;
 					}
 				}
+				if (!match) {
+					currentFiltersMatch = false;
+					break;
+				}
 			}
+		}
+		if (!currentFiltersMatch) {
+			getCompareConfiguration().setProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING,
+					Boolean.TRUE);
+			disposeCompareFilterActions(true);
+			fCompareFilterActions.clear();
+			for (int i = 0; i < compareFilterDescriptors.length; i++) {
+				ChangeCompareFilterPropertyAction compareFilterAction = new ChangeCompareFilterPropertyAction(
+						compareFilterDescriptors[i], getCompareConfiguration());
+				compareFilterAction.setInput(input, ancestor, left, right);
+				fCompareFilterActions.add(compareFilterAction);
+				fLeft.addTextAction(compareFilterAction);
+				fRight.addTextAction(compareFilterAction);
+				fAncestor.addTextAction(compareFilterAction);
 
-			if (!currentFiltersMatch) {
-				getCompareConfiguration()
-						.setProperty(
-								ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING,
-								Boolean.TRUE);
-				disposeCompareFilterActions(true);
-				fCompareFilterActions.clear();
-				for (int i = 0; i < compareFilterDescriptors.length; i++) {
-					ChangeCompareFilterPropertyAction compareFilterAction = new ChangeCompareFilterPropertyAction(
-							compareFilterDescriptors[i],
-							getCompareConfiguration());
-					compareFilterAction.setInput(input, ancestor, left, right);
-					fCompareFilterActions.add(compareFilterAction);
-					fLeft.addTextAction(compareFilterAction);
-					fRight.addTextAction(compareFilterAction);
-					fAncestor.addTextAction(compareFilterAction);
-
-					if (getCompareConfiguration().getContainer()
-							.getActionBars() != null) {
+				if (getCompareConfiguration().getContainer().getActionBars() != null) {
+					getCompareConfiguration().getContainer().getActionBars().getToolBarManager()
+							.appendToGroup(CompareEditorContributor.FILTER_SEPARATOR, compareFilterAction);
+					if (compareFilterAction.getActionDefinitionId() != null)
 						getCompareConfiguration()
 								.getContainer()
 								.getActionBars()
-								.getToolBarManager()
-								.appendToGroup(
-										CompareEditorContributor.FILTER_SEPARATOR,
+								.setGlobalActionHandler(compareFilterAction.getActionDefinitionId(),
 										compareFilterAction);
-						if (compareFilterAction.getActionDefinitionId() != null)
-							getCompareConfiguration()
-									.getContainer()
-									.getActionBars()
-									.setGlobalActionHandler(
-											compareFilterAction
-													.getActionDefinitionId(),
-											compareFilterAction);
-					}
 				}
-				if (!fCompareFilterActions.isEmpty()
-						&& getCompareConfiguration().getContainer()
-								.getActionBars() != null) {
-					getCompareConfiguration().getContainer().getActionBars()
-							.getToolBarManager().markDirty();
-					getCompareConfiguration().getContainer().getActionBars()
-							.getToolBarManager().update(true);
-					getCompareConfiguration().getContainer().getActionBars()
-							.updateActionBars();
-				}
-				getCompareConfiguration()
-						.setProperty(
-								ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS,
-								fCompareFilterActions);
-				getCompareConfiguration()
-						.setProperty(
-								ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING,
-								null);
-			} else {
-				for (int i = 0; i < fCompareFilterActions.size(); i++) {
-					fCompareFilterActions
-							.get(i).setInput(input, ancestor, left, right);
-				}
+			}
+			if (!fCompareFilterActions.isEmpty() && getCompareConfiguration().getContainer().getActionBars() != null) {
+				getCompareConfiguration().getContainer().getActionBars().getToolBarManager().markDirty();
+				getCompareConfiguration().getContainer().getActionBars().getToolBarManager().update(true);
+				getCompareConfiguration().getContainer().getActionBars().updateActionBars();
+			}
+			getCompareConfiguration().setProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS,
+					fCompareFilterActions);
+			getCompareConfiguration().setProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING, null);
+		} else {
+			for (int i = 0; i < fCompareFilterActions.size(); i++) {
+				fCompareFilterActions.get(i).setInput(input, ancestor, left, right);
 			}
 		}
 	}
