@@ -856,7 +856,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				StyledText textWidget = fSourceViewer.getSourceViewer().getTextWidget();
 				if (textWidget != null && !textWidget.isDisposed()) {
 					if (fNeedsValidation) {
-						fSourceViewer.getSourceViewer().getTextWidget().removeVerifyListener(this);
+						textWidget.removeVerifyListener(this);
 						fNeedsValidation = false;
 					}
 					IDocument oldDoc= internalGetDocument(fSourceViewer);
