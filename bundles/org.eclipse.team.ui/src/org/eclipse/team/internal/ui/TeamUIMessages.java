@@ -746,6 +746,4 @@ public class TeamUIMessages extends NLS {
 
 	public static String NotFound;
 
-	public static String LoadingTeamCapabilities;
-
 }

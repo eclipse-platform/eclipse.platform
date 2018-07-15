@@ -15,7 +15,6 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -162,7 +161,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, GlobalRefreshAction.NO_DEFAULT_PARTICPANT);
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_COMPLETE_PERSPECTIVE, MessageDialogWithToggle.PROMPT);
 		store.setDefault(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT, false);
-		store.setDefault(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME, true);
 
 		// Convert the old compressed folder preference to the new layout preference
 		if (!store.isDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS) && !store.getBoolean(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS)) {
@@ -221,32 +219,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
 		initializeImages(this);
-
-		// This is a backwards compatibility check to ensure that repository
-		// provider capability are enabled automatically if an old workspace is
-		// opened for the first time and contains projects shared with a disabled
-		// capability. We defer the actual processing of the projects to another
-		// job since it is not critical to the startup of the team ui plugin.
-		IPreferenceStore store = getPreferenceStore();
-		if (store.getBoolean(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME)) {
-			Job capabilityInitializer = new Job(TeamUIMessages.LoadingTeamCapabilities) {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					TeamCapabilityHelper.getInstance();
-					getPreferenceStore().setValue(IPreferenceIds.PREF_WORKSPACE_FIRST_TIME, false);
-					return Status.OK_STATUS;
-				}
-				@Override
-				public boolean shouldRun() {
-				    // Only initialize the capability helper if the UI is running (bug 76348)
-				    return PlatformUI.isWorkbenchRunning();
-				}
-			};
-			capabilityInitializer.setSystem(true);
-			capabilityInitializer.setPriority(Job.DECORATE);
-			capabilityInitializer.schedule(1000);
-		}
-
 		StreamMergerDelegate.start();
 	}
 

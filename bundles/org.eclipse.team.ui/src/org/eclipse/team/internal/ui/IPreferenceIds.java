@@ -78,11 +78,6 @@ public interface IPreferenceIds {
 	public static final String SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT = PREFIX + "remove_from_view_without_prompt"; //$NON-NLS-1$
 
 	/*
-	 * Preference to determine if the workspace  is started for the first time.
-	 */
-	public static final String PREF_WORKSPACE_FIRST_TIME = PREFIX + "first_time"; //$NON-NLS-1$
-
-	/*
 	 * Preferences for the Local History Page
 	 */
 	public static final String PREF_GROUPBYDATE_MODE = PREFIX + "group_bydate_mode"; //$NON-NLS-1$
