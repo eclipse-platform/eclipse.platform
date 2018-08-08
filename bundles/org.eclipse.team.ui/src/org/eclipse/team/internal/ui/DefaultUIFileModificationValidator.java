@@ -22,10 +22,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.core.DefaultFileModificationValidator;
 import org.eclipse.team.internal.ui.dialogs.DetailsDialog;
+import org.eclipse.ui.*;
 
 /**
  * Override the default file modification validator to prompt to
@@ -112,9 +112,9 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
             final Shell shell = getShell(context);
             final boolean[] ok = new boolean[] { false };
             if (readOnlyFiles.length == 1) {
-                shell.getDisplay().syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
+                syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
             } else {
-                shell.getDisplay().syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
+                syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
             }
             if (ok[0]) {
                 setWritable(readOnlyFiles);
@@ -130,7 +130,17 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
     private Shell getShell(FileModificationValidationContext context) {
 		if (context.getShell() != null)
 			return (Shell)context.getShell();
-		return Utils.getShell(null, true);
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		if (window != null) {
+			return window.getShell();
+		}
+		return null;
+	}
+
+    private static void syncExec(Runnable runnable) {
+		Display display = PlatformUI.getWorkbench().getDisplay();
+		display.syncExec(runnable);
 	}
 
 	@Override
