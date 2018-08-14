@@ -3,7 +3,7 @@
   	<extensionContent id="org.eclipse.ui.workbench.migration" name="Porting Guide" alt-style="css/whatsnew.properties" style="css/whatsnew.css" path="whatsnew/@">
 		<group filter="plugin=org.eclipse.platform.doc.isv" style-id="content-group" id="content-group">
        		<link label="Migration from the previous release" url="http://org.eclipse.ui.intro/showPage?id=migrate" id="migration" style-id="content-link">
-          		<text>Learn what you need to do to make your old code work in Eclipse Oxygen (4.7)</text>
+          		<text>Learn what you need to do to make your old code work in Eclipse Photon (4.8)</text>
        		</link>
        	</group>
   	</extensionContent>
