@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.Util;
 import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.team.internal.ccvs.ui.Policy;
+import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
 import org.eclipse.team.internal.ccvs.ui.mappings.ModelCompareParticipant;
 import org.eclipse.team.internal.ccvs.ui.operations.RemoteLogOperation;
 import org.eclipse.team.internal.ccvs.ui.operations.RemoteLogOperation.LogEntryCache;
@@ -604,7 +605,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
             		tag = Util.getAccurateFolderTag(local, tag);
             	}
             } else {
-            	tag = Util.getAccurateFileTag(cvsResource);
+            	tag = CVSAction.getAccurateFileTag(cvsResource);
             }
             if(tag == null) {
             	tag = new CVSTag();

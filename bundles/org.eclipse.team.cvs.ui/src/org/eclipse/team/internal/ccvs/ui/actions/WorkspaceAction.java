@@ -45,6 +45,8 @@ import org.eclipse.team.internal.ui.dialogs.PromptingDialog;
  */
 public abstract class WorkspaceAction extends CVSAction {
 
+	protected CVSTag resourceCommonTag = null;
+	
 	public interface IProviderAction {
 		public IStatus execute(CVSTeamProvider provider, IResource[] resources, IProgressMonitor monitor) throws CVSException;
 	}
@@ -459,6 +461,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	 */
 	protected String calculateActionTagValue() {
 		try {
+			resourceCommonTag = null;
 			IResource[] resources = getSelectedResources();
 			CVSTag commonTag = null;
 			boolean sameTagType = true;
@@ -476,7 +479,7 @@ public abstract class WorkspaceAction extends CVSAction {
 						tag = Util.getAccurateFolderTag(resources[i], tag);
 					}
 				} else {
-					tag = Util.getAccurateFileTag(cvsResource);
+					tag = CVSAction.getAccurateFileTag(cvsResource);
 				}
 				if(tag == null) {
 					tag = new CVSTag();
@@ -498,6 +501,9 @@ public abstract class WorkspaceAction extends CVSAction {
 			if(commonTag != null) {
 				int tagType = commonTag.getType();
 				String tagName = commonTag.getName();
+				if(tagType != CVSTag.HEAD) {
+					resourceCommonTag = commonTag;
+				}
 				// multiple tag names but of the same type
 				if(sameTagType && !multipleSameNames) {
 					if(tagType == CVSTag.BRANCH) {

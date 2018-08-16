@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
     
 	public void execute(IAction action)  throws InvocationTargetException, InterruptedException {
 		
-		final ReplaceOperation replaceOperation = new ReplaceOperation(getTargetPart(), getCVSResourceMappings(), null);
+		final ReplaceOperation replaceOperation = new ReplaceOperation(getTargetPart(), getCVSResourceMappings(), resourceCommonTag);
 		if (hasOutgoingChanges(replaceOperation)) {
 			final boolean[] keepGoing = new boolean[] { true };
 			Display.getDefault().syncExec(new Runnable() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.ICVSFile;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-import org.eclipse.team.internal.ccvs.core.util.Util;
+import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
 import org.eclipse.ui.PlatformUI;
 
 import com.ibm.icu.text.DateFormat;
@@ -83,7 +83,7 @@ public class CVSFilePropertiesPage extends CVSPropertiesPage {
 			
 			// Tag
 			createLabel(composite, CVSUIMessages.CVSFilePropertiesPage_tag); 
-			CVSTag tag = Util.getAccurateFileTag(cvsResource);
+			CVSTag tag = CVSAction.getAccurateFileTag(cvsResource);
 			createReadOnlyText(composite, getTagLabel(tag));
 		} catch (TeamException e) {
 			// Display error text

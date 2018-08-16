@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,11 @@ import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.filehistory.CVSFileRevision;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
+import org.eclipse.team.internal.ccvs.core.util.Util;
 import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
+import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
+import org.eclipse.team.internal.ccvs.ui.tags.TagSourceWorkbenchAdapter;
 import org.eclipse.team.internal.ui.*;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 import org.eclipse.team.internal.ui.dialogs.IPromptCondition;
@@ -644,4 +647,18 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
         }
         return props.getCVSResourceFor(resource);
     }
+
+    public static CVSTag getAccurateFileTag(ICVSResource cvsResource) throws CVSException {
+		CVSTag tag = null;
+		if (cvsResource != null) {
+			return Util.getAccurateFileTag(cvsResource,  getTags(cvsResource));
+		}
+		return tag;
+	}
+	
+	public static CVSTag[] getTags(ICVSResource cvsResource) {
+		TagSource tagSource= TagSource.create(new ICVSResource[] { cvsResource });
+		return tagSource.getTags(TagSource.convertIncludeFlaqsToTagTypes(TagSourceWorkbenchAdapter.INCLUDE_ALL_TAGS));
+		
+	}
 }
