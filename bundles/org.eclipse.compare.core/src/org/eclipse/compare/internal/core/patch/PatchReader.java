@@ -89,7 +89,7 @@ public class PatchReader {
 		this.fIsGitPatch = false;
 
 		LineReader lr= new LineReader(reader);
-
+		lr.ignoreSingleCR(); // Don't treat single CRs as line feeds to be consistent with command line patch
 		// Test for our format
 		line= lr.readLine();
 		if (line != null && line.startsWith(PatchReader.MULTIPROJECTPATCH_HEADER)) {

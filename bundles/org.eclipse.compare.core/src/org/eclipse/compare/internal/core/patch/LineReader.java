@@ -53,6 +53,7 @@ public class LineReader {
 	public static List<String> readLines(BufferedReader reader) {
 		List<String> lines;
 		LineReader lr= new LineReader(reader);
+		lr.ignoreSingleCR(); // Don't treat single CRs as line feeds to be consistent with command line patch
 		lines= lr.readLines();
 		return lines;
 	}
