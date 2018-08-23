@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.core.subscribers.Subscriber;
+import org.eclipse.team.internal.ui.history.IFileHistoryConstants;
 import org.eclipse.team.internal.ui.mapping.StreamMergerDelegate;
 import org.eclipse.team.internal.ui.mapping.WorkspaceTeamStateProvider;
 import org.eclipse.team.internal.ui.synchronize.SynchronizeManager;
@@ -161,6 +162,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_DEFAULT_PARTICIPANT_SEC_ID, GlobalRefreshAction.NO_DEFAULT_PARTICPANT);
 		store.setDefault(IPreferenceIds.SYNCHRONIZING_COMPLETE_PERSPECTIVE, MessageDialogWithToggle.PROMPT);
 		store.setDefault(IPreferenceIds.SYNCVIEW_REMOVE_FROM_VIEW_NO_PROMPT, false);
+		store.setDefault(IFileHistoryConstants.PREF_GENERIC_HISTORYVIEW_EDITOR_LINKING, true);
 
 		// Convert the old compressed folder preference to the new layout preference
 		if (!store.isDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS) && !store.getBoolean(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS)) {
