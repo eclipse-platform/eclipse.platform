@@ -529,7 +529,9 @@ public class InputPatchPage extends WizardPage {
 		fWorkspaceSelectLabel.setText(PatchMessages.InputPatchPage_WorkspaceSelectPatch_text);
 
 		fTreeViewer= new TreeViewer(newComp, SWT.BORDER);
-		fTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		layoutData.heightHint = 300;
+		fTreeViewer.getTree().setLayoutData(layoutData);
 
 		fTreeViewer.setLabelProvider(new WorkbenchLabelProvider());
 		fTreeViewer.setContentProvider(new WorkbenchContentProvider());
