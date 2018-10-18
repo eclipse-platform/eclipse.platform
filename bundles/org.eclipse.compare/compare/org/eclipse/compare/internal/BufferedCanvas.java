@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Canvas;
@@ -51,6 +52,9 @@ public abstract class BufferedCanvas extends Canvas {
 			GC gc= new GC(this);
 			doubleBufferPaint(gc);
 			gc.dispose();
+			if (Util.isGtk()) {
+				redraw();
+			}
 		}
 	}
 
