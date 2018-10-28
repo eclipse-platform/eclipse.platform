@@ -92,7 +92,7 @@ Providers may provide an extension for this extension point, and an implementati
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         The following is an example of a import page CVS:
+         The following is an example of an import page CVS:
 &lt;p&gt;
 &lt;pre&gt;
 &lt;extension point=&quot;org.eclipse.team.ui.scmUrlImportPages&quot;&gt;
