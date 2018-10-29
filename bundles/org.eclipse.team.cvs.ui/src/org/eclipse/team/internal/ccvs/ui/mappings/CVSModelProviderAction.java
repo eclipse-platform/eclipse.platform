@@ -45,7 +45,7 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 	protected ResourceMapping[] getResourceMappings(IStructuredSelection selection) {
 		List mappings = new ArrayList();
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
-			Object element = (Object) iter.next();
+			Object element = iter.next();
 			ResourceMapping mapping = Utils.getResourceMapping(element);
 			if (mapping != null)
 				mappings.add(mapping);
@@ -127,6 +127,7 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 		return true;
 	}
 	
+	@Override
 	public void run() {
 		if (saveDirtyEditors())
 			execute();

@@ -40,16 +40,18 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	/*
 	 * @see CVSAction#execute(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 					
 		// Show the compare viewer
 		run(new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 				if (isShowInDialog()) {
 					IFile file = (IFile) getSelectedResources()[0];
 					showCompareInDialog(getShell(), file);
 				} else {
-					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), (IFile)getSelectedResources()[0], null);
+					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), getSelectedResources()[0], null);
 					IHistoryPage page = view.getHistoryPage();
 					if (page instanceof CVSHistoryPage){
 						CVSHistoryPage cvsHistoryPage = (CVSHistoryPage) page;
@@ -67,6 +69,7 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 			cc.setLeftEditable(true);
 			cc.setRightEditable(false);
 			HistoryPageCompareEditorInput input = new HistoryPageCompareEditorInput(cc, pageSource, object) {
+				@Override
 				public void saveChanges(IProgressMonitor monitor) throws CoreException {
 					super.saveChanges(monitor);
 					((CVSHistoryPage)getHistoryPage()).saveChanges(monitor);
@@ -87,6 +90,7 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.CompareWithRevisionAction_compare; 
 	}
@@ -94,6 +98,7 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
 	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		return (!cvsResource.isFolder() && super.isEnabledForCVSResource(cvsResource));
 	}
@@ -101,6 +106,7 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
 	 */
+	@Override
 	protected boolean isEnabledForMultipleResources() {
 		return false;
 	}
@@ -108,14 +114,17 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
 	 */
+	@Override
 	protected boolean isEnabledForAddedResources() {
 		return true;
 	}
 	
+	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
 	
+	@Override
 	protected boolean isEnabledForIgnoredResources() {
 		return true;
 	}

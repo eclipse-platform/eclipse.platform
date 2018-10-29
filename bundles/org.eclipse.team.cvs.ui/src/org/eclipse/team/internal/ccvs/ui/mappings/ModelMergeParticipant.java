@@ -55,6 +55,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 	private final static String CTX_END_TAG_TYPE = "end_tag_type"; //$NON-NLS-1$
 	
 	public class MergeActionGroup extends ModelSynchronizeParticipantActionGroup {
+		@Override
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			if (!configuration.getSite().isModal()) {
@@ -81,6 +82,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		initialize();
 	}
 	
+	@Override
 	protected ModelSynchronizeParticipantActionGroup createMergeActionGroup() {
 		return new MergeActionGroup();
 	}
@@ -88,6 +90,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(ISynchronizePageConfiguration.P_VIEWER_ID, VIEWER_ID);
 		super.initializeConfiguration(configuration);
@@ -99,7 +102,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		try {
 			ISynchronizeParticipantDescriptor descriptor = TeamUI.getSynchronizeManager().getParticipantDescriptor(ID); 
 			setInitializationData(descriptor);
-			CVSMergeSubscriber s = (CVSMergeSubscriber)getSubscriber();
+			CVSMergeSubscriber s = getSubscriber();
 			setSecondaryId(s.getId().getLocalName());
 		} catch (CoreException e) {
 			CVSUIPlugin.log(e);
@@ -110,6 +113,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		return (CVSMergeSubscriber)((MergeSubscriberContext)getContext()).getSubscriber();
 	}
 	
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		if(memento != null) {
 			ISynchronizeParticipantDescriptor descriptor = TeamUI.getSynchronizeManager().getParticipantDescriptor(ID); 
@@ -132,6 +136,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		}
 	}
 	
+	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
 		write(subscriber, memento.createChild(CTX_SUBSCRIBER));
@@ -183,10 +188,12 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		}
 	}
 	
+	@Override
 	protected String getShortTaskName() {
 		return CVSUIMessages.Participant_merging;
 	}
 	
+	@Override
 	public void dispose() {
 		if(TeamUI.getSynchronizeManager().get(getId(), getSecondaryId()) != null) {
 			// If the participant is managed by the synchronize manager then we
@@ -196,11 +203,13 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		super.dispose();
 	}
 	
+	@Override
 	protected ISynchronizationScopeManager createScopeManager(ResourceMapping[] mappings) {
 		return new SubscriberScopeManager(subscriber.getName(), 
 				mappings, subscriber, true);
 	}
 	
+	@Override
 	protected MergeContext restoreContext(ISynchronizationScopeManager manager) throws CoreException {
 		return MergeSubscriberContext.createContext(manager, subscriber);
 	}
@@ -208,8 +217,9 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getName()
 	 */
+	@Override
 	public String getName() {		
-		return NLS.bind(CVSUIMessages.CompareParticipant_0, new String[] { ((CVSMergeSubscriber)getSubscriber()).getName(), Utils.getScopeDescription(getContext().getScope()) });  
+		return NLS.bind(CVSUIMessages.CompareParticipant_0, new String[] { getSubscriber().getName(), Utils.getScopeDescription(getContext().getScope()) });  
 	}
 	
 	/*

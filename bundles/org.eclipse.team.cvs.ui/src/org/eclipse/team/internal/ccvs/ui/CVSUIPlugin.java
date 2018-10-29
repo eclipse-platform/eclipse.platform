@@ -207,6 +207,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	private static boolean promptToRefresh(final Shell shell, final IResource[] resources, final IStatus status) {
 		final boolean[] result = new boolean[] { false};
 		Runnable runnable = new Runnable() {
+			@Override
 			public void run() {
 				Shell shellToUse = shell;
 				if (shell == null) {
@@ -487,6 +488,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 			final String message, final IStatus status, int flags) {
 		// Create a runnable that will display the error status
 		final IOpenableInShell openable = new IOpenableInShell() {
+			@Override
 			public void open(Shell shell) {
 				if (status.getSeverity() == IStatus.INFO
 						&& !status.isMultiStatus()) {
@@ -534,6 +536,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 		// Create a runnable that will display the error status
 		final Shell shell = providedShell;
 		Runnable outerRunnable = new Runnable() {
+			@Override
 			public void run() {
 				Shell displayShell;
 				if (shell == null) {
@@ -570,6 +573,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	/**
 	 * Initializes the preferences for this plugin if necessary.
 	 */
+	@Override
 	protected void initializeDefaultPluginPreferences() {
 		IPreferenceStore store = getPreferenceStore();
 		// Get the plugin preferences for CVS Core
@@ -684,6 +688,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	/**
 	 * @see Plugin#start(BundleContext)
 	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
@@ -724,6 +729,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	/**
 	 * @see Plugin#stop(BundleContext)
 	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			// unregister debug options listener
@@ -755,7 +761,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
         IWorkbench workbench = getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         try {
-			return Utils.openEditor(page, (IFileRevision)file.getAdapter(IFileRevision.class), monitor);
+			return Utils.openEditor(page, file.getAdapter(IFileRevision.class), monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		}

@@ -49,6 +49,7 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void runWithProjectRule(IProject project, SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		final SyncInfo[] infos = set.getSyncInfos();
 		if (infos.length == 0) return;
@@ -62,6 +63,7 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 		ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
         final ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
 		folder.run(new ICVSRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CVSException {
 				monitor.beginTask(null, infos.length * 100);
 				for (int i = 0; i < infos.length; i++) {
@@ -90,7 +92,7 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 	}
 
 	private SyncInfoToDiffConverter getConverter() {
-		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().getAdapter(SyncInfoToDiffConverter.class);
+		SyncInfoToDiffConverter converter = CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().getAdapter(SyncInfoToDiffConverter.class);
 		if (converter == null)
 			return SyncInfoToDiffConverter.getDefault();
 		return converter;
@@ -103,11 +105,13 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 				IDiff node = nodes[i];
 				tree.add(node);
 			}
-			new CacheBaseContentsOperation(getPart(), new ResourceMapping[] { (ResourceMapping)project.getAdapter(ResourceMapping.class) },
+			new CacheBaseContentsOperation(getPart(), new ResourceMapping[] { project.getAdapter(ResourceMapping.class) },
 					tree, true) {
+				@Override
 				protected ResourceMappingContext getResourceMappingContext() {
 					return new SingleProjectSubscriberContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber(), false, project);
 				}
+				@Override
 				protected SynchronizationScopeManager createScopeManager(boolean consultModels) {
 					return new SingleProjectScopeManager(getJobName(), getSelectedMappings(), getResourceMappingContext(), consultModels, project);
 				}
@@ -119,13 +123,15 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 		}
     }
     
-    protected String getErrorTitle() {
+    @Override
+	protected String getErrorTitle() {
 		return CVSUIMessages.RefreshDirtyStateOperation_0; 
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
 	 */
+	@Override
 	protected String getJobName() {
 		return CVSUIMessages.RefreshDirtyStateOperation_1; 
 	}

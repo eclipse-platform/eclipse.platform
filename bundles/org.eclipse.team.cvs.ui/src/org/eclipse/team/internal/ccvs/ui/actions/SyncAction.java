@@ -45,6 +45,7 @@ import org.eclipse.ui.*;
  */
 public class SyncAction extends WorkspaceTraversalAction {
 	
+	@Override
 	public void execute(IAction action) throws InvocationTargetException {
 		// First, see if there is a single file selected
 		if (isOpenEditorForSingleFile()) {
@@ -187,6 +188,7 @@ public class SyncAction extends WorkspaceTraversalAction {
 	public static void showSingleFileComparison(final Shell shell, final Subscriber subscriber, final IResource resource, final IWorkbenchPage page) {
 		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {	
 						subscriber.refresh(new IResource[]{resource}, IResource.DEPTH_ZERO, monitor);
@@ -198,6 +200,7 @@ public class SyncAction extends WorkspaceTraversalAction {
 			final SyncInfo info = subscriber.getSyncInfo(resource);
 			if (info == null) return;
 			shell.getDisplay().syncExec(new Runnable() {
+				@Override
 				public void run() {
 					if (info.getKind() == SyncInfo.IN_SYNC) {
 						MessageDialog.openInformation(shell, CVSUIMessages.SyncAction_noChangesTitle, CVSUIMessages.SyncAction_noChangesMessage); // 
@@ -225,15 +228,18 @@ public class SyncAction extends WorkspaceTraversalAction {
 	 * 
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
 	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		return (super.isEnabledForCVSResource(cvsResource) || (cvsResource.getParent().isCVSFolder() && !cvsResource.isIgnored()));
 	}
 	
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_SYNCHRONIZE;
 	}
 
 	
+	@Override
 	public boolean isEnabled() {
 		if(super.isEnabled()){
 			return true;
@@ -272,7 +278,7 @@ public class SyncAction extends WorkspaceTraversalAction {
 			IAdaptable ad[] = sets[i].getElements();
 			if (ad != null) {
 				for (int j = 0; j < ad.length; j++) {
-					IResource resource = (IResource) ad[j]
+					IResource resource = ad[j]
 							.getAdapter(IResource.class);
 					if (resource != null) {
 						projects.add(resource.getProject());

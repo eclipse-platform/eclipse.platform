@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import java.lang.reflect.InvocationTargetException;
-import com.ibm.icu.text.DateFormat;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IResource;
@@ -34,6 +33,8 @@ import org.eclipse.team.internal.core.subscribers.CheckedInChangeSet;
 import org.eclipse.team.internal.ui.synchronize.ChangeSetDiffNode;
 import org.eclipse.team.ui.synchronize.*;
 
+import com.ibm.icu.text.DateFormat;
+
 class OpenChangeSetAction extends SynchronizeModelAction {
 
     protected OpenChangeSetAction(ISynchronizePageConfiguration configuration) {
@@ -43,17 +44,20 @@ class OpenChangeSetAction extends SynchronizeModelAction {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
      */
-    protected FastSyncInfoFilter getSyncInfoFilter() {
+    @Override
+	protected FastSyncInfoFilter getSyncInfoFilter() {
         return new AndSyncInfoFilter(new FastSyncInfoFilter[] {
                 new FastSyncInfoFilter() {
-                    public boolean select(SyncInfo info) {
+                    @Override
+					public boolean select(SyncInfo info) {
                         return info.getLocal().getType() == IResource.FILE;
                     }
                 },
                 new OrSyncInfoFilter(new FastSyncInfoFilter[] {
                     new SyncInfoDirectionFilter(new int[] { SyncInfo.INCOMING, SyncInfo.CONFLICTING }),
                     new FastSyncInfoFilter() {
-                        public boolean select(SyncInfo info) {
+                        @Override
+						public boolean select(SyncInfo info) {
                             return !info.getComparator().isThreeWay();
                         }
                     }
@@ -66,7 +70,7 @@ class OpenChangeSetAction extends SynchronizeModelAction {
         if (selection.size() == 1) {
             Object o = selection.getFirstElement();
             if (o instanceof IAdaptable) {
-                ChangeSet set = (ChangeSet)((IAdaptable)o).getAdapter(ChangeSet.class);
+                ChangeSet set = ((IAdaptable)o).getAdapter(ChangeSet.class);
                 if (set != null)
                     return set;
             }
@@ -93,7 +97,7 @@ class OpenChangeSetAction extends SynchronizeModelAction {
     private ChangeSet getChangeSet(ISynchronizeModelElement element) {
         if (element == null) return null;
         if (element instanceof IAdaptable) {
-            ChangeSet set = (ChangeSet)((IAdaptable)element).getAdapter(ChangeSet.class);
+            ChangeSet set = ((IAdaptable)element).getAdapter(ChangeSet.class);
             if (set != null)
                 return set;
         }
@@ -103,7 +107,8 @@ class OpenChangeSetAction extends SynchronizeModelAction {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
      */
-    protected boolean updateSelection(IStructuredSelection selection) {
+    @Override
+	protected boolean updateSelection(IStructuredSelection selection) {
         boolean enabled = super.updateSelection(selection);
         if (enabled) {
             // The selection only contains appropriate files so
@@ -117,9 +122,11 @@ class OpenChangeSetAction extends SynchronizeModelAction {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
      */
-    protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
+    @Override
+	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
         return new SynchronizeModelOperation(configuration, elements) {
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            @Override
+			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 SyncInfoSet set = getSyncInfoSet();
                 SyncInfo[] infos = set.getSyncInfos();
                 if (infos.length > 0) {

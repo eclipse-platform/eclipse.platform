@@ -13,12 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.mappings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
@@ -63,15 +58,18 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 			this.kind = kind;
 		}
 
+		@Override
 		protected int calculateKind() throws TeamException {
 			return kind;
 		}
 	}
 	
 	IDiffChangeListener diffTreeListener = new IDiffChangeListener() {
+		@Override
 		public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 			// Ignore
 		}
+		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
             if (event.getTree().isEmpty()) {
                 ChangeSet changeSet = getChangeSet(event.getTree());
@@ -128,7 +126,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
         return configuration;
     }
     
-    protected void handleSetAdded(ChangeSet set) {
+    @Override
+	protected void handleSetAdded(ChangeSet set) {
     	((DiffChangeSet)set).getDiffTree().addDiffChangeListener(diffTreeListener);
     	super.handleSetAdded(set);
     	if (updatedSets != null) {
@@ -137,7 +136,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     	}
     }
     
-    protected void handleSetRemoved(ChangeSet set) {
+    @Override
+	protected void handleSetRemoved(ChangeSet set) {
     	((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(diffTreeListener);
     	super.handleSetRemoved(set);
     }
@@ -197,7 +197,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
         configuration.setProperty(LOG_ENTRY_HANDLER, logEntryHandler);
         // Use an action group to get notified when the configuration is disposed
         configuration.addActionContribution(new SynchronizePageActionGroup() {
-            public void dispose() {
+            @Override
+			public void dispose() {
                 super.dispose();
                 LogEntryCacheUpdateHandler handler = (LogEntryCacheUpdateHandler)configuration.getProperty(LOG_ENTRY_HANDLER);
                 if (handler != null) {
@@ -235,6 +236,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.views.HierarchicalModelProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 	    // No longer listen for log entry changes
 	    // (The handler is disposed with the page)
@@ -407,7 +409,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     }
 
     private SyncInfoToDiffConverter getConverter() {
-		SyncInfoToDiffConverter converter = (SyncInfoToDiffConverter)Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
+		SyncInfoToDiffConverter converter = Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
 		if (converter == null)
 			converter = SyncInfoToDiffConverter.getDefault();
 		return converter;
@@ -463,7 +465,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.subscriber.LogEntryCacheUpdateHandler.ILogsFetchedListener#logEntriesFetched(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void logEntriesFetched(SyncInfoSet set, LogEntryCache logEntryCache, IProgressMonitor monitor) {
+    @Override
+	public void logEntriesFetched(SyncInfoSet set, LogEntryCache logEntryCache, IProgressMonitor monitor) {
         if (disposed) return;
         // Hold on to the cache so we can use it while commit sets are visible
         this.logEntryCache = logEntryCache;

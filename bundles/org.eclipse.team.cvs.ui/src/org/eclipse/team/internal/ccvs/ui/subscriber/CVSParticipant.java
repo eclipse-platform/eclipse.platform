@@ -42,6 +42,7 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
     /* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.subscribers.SubscriberParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
 		// The decorator adds itself to the configuration
@@ -52,7 +53,8 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SubscriberParticipant#updateLabels(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
+    @Override
+	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
         monitor.beginTask(null, 100);
         deriveBaseContentsFromLocal(element, Policy.subMonitorFor(monitor, 10));
         super.prepareCompareInput(element, config, Policy.subMonitorFor(monitor, 80));
@@ -100,7 +102,7 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
     
 	protected static SyncInfo getSyncInfo(ISynchronizeModelElement element) {
 	    if (element instanceof IAdaptable) {
-		    return (SyncInfo)((IAdaptable)element).getAdapter(SyncInfo.class);
+		    return ((IAdaptable)element).getAdapter(SyncInfo.class);
 	    }
 	    return null;
 	}
@@ -144,7 +146,8 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
      */
-    public PreferencePage[] getPreferencePages() {
+    @Override
+	public PreferencePage[] getPreferencePages() {
         return addCVSPreferencePages(super.getPreferencePages());
     }
 
@@ -161,7 +164,8 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getChangeSetCapability()
      */
-    public ChangeSetCapability getChangeSetCapability() {
+    @Override
+	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
             capability = createChangeSetCapability();
         }
@@ -179,7 +183,8 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#isViewerContributionsSupported()
      */
-    protected boolean isViewerContributionsSupported() {
+    @Override
+	protected boolean isViewerContributionsSupported() {
         return true;
     }
 }

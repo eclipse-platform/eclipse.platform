@@ -119,6 +119,7 @@ public class CVSHistoryTableProvider {
 				PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(themeListener= new ThemeListener(provider));
 		}
 		
+		@Override
 		public void dispose() {
 			if (dateImage != null){
 				dateImage.dispose();
@@ -143,6 +144,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
 		 */
+		@Override
 		public String getToolTipText(Object element) {
 			if (column == COL_COMMENT && !isSingleLine(element)) {
 				IFileRevision entry = adaptToFileRevision(element);
@@ -155,6 +157,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.CellLabelProvider#useNativeToolTip(java.lang.Object)
 		 */
+		@Override
 		public boolean useNativeToolTip(Object object) {
 			return column != COL_COMMENT || isSingleLine(object);
 		}
@@ -169,6 +172,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getImage(java.lang.Object)
 		 */
+		@Override
 		public Image getImage(Object element) {
 			return getColumnImage(element, column);
 		}
@@ -207,6 +211,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
 		 */
+		@Override
 		public String getText(Object element) {
 			return getColumnText(element, column);
 		}
@@ -274,6 +279,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 		 */
+		@Override
 		public Color getForeground(Object element) {
 			if (element instanceof AbstractHistoryCategory){
 				ITheme current = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
@@ -291,6 +297,7 @@ public class CVSHistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 		 */
+		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
@@ -299,6 +306,7 @@ public class CVSHistoryTableProvider {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
 		 */
+		@Override
 		public Font getFont(Object element) {
 			if (element instanceof AbstractHistoryCategory) {
 				return getCurrentRevisionFont();
@@ -369,6 +377,7 @@ public class CVSHistoryTableProvider {
 		 * Compares two log entries, sorting first by the main column of this sorter,
 		 * then by subsequent columns, depending on the column sort order.
 		 */
+		@Override
 		public int compare(Viewer compareViewer, Object o1, Object o2) {
 			if (o1 instanceof AbstractHistoryCategory || o2 instanceof AbstractHistoryCategory)
 				return 0;
@@ -490,7 +499,7 @@ public class CVSHistoryTableProvider {
 		if (element instanceof IFileRevision) {
 			entry = (IFileRevision) element;
 		} else if (element instanceof IAdaptable) {
-			entry = (IFileRevision) ((IAdaptable) element).getAdapter(IFileRevision.class);
+			entry = ((IAdaptable) element).getAdapter(IFileRevision.class);
 		} else if (element instanceof AbstractHistoryCategory){
 			if (((AbstractHistoryCategory) element).hasRevisions())
 				entry = ((AbstractHistoryCategory) element).getRevisions()[0];
@@ -524,6 +533,7 @@ public class CVSHistoryTableProvider {
 		viewer.refresh();
 
 		tree.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (currentRevisionFont != null) {
 					currentRevisionFont.dispose();
@@ -728,6 +738,7 @@ public class CVSHistoryTableProvider {
 			 * presses on the same column header will
 			 * toggle sorting order (ascending/descending).
 			 */
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = treeViewer.getTree().indexOf((TreeColumn) e.widget);
@@ -787,6 +798,7 @@ public class CVSHistoryTableProvider {
 		ThemeListener(CVSHistoryTableProvider provider) {
 			this.provider= provider;
 		}
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			provider.viewer.refresh();
 		}

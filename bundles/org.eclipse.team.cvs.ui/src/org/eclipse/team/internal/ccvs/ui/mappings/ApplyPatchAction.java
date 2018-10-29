@@ -33,8 +33,9 @@ public class ApplyPatchAction extends CVSModelProviderAction implements
 		getSynchronizationContext().getDiffTree().addDiffChangeListener(this);
 	}
 
+	@Override
 	protected void execute() {
-		IResource resource = (IResource) Platform.getAdapterManager()
+		IResource resource = Platform.getAdapterManager()
 				.getAdapter(getStructuredSelection().getFirstElement(),
 						IResource.class);
 
@@ -59,6 +60,7 @@ public class ApplyPatchAction extends CVSModelProviderAction implements
 		BusyIndicator.showWhile(Display.getDefault(), op);
 	}
 
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return internalIsEnabled(selection);
 	}
@@ -72,14 +74,17 @@ public class ApplyPatchAction extends CVSModelProviderAction implements
 		return adapter != null;
 	}
 
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		updateEnablement();
 	}
 
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// do nothing
 	}
 
+	@Override
 	protected String getBundleKeyPrefix() {
 		return "ApplyPatchAction."; //$NON-NLS-1$
 	}

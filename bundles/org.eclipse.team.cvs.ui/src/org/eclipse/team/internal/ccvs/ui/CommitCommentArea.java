@@ -24,8 +24,9 @@ import java.util.*;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.commands.ActionHandler;
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.*;
@@ -89,7 +90,7 @@ public class CommitCommentArea extends DialogArea {
     		
             support.install(EditorsUI.getPreferenceStore());
             
-            final IHandlerService handlerService = (IHandlerService)PlatformUI.getWorkbench().getService(IHandlerService.class);
+            final IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
             final IHandlerActivation handlerActivation = installQuickFixActionHandler(handlerService, sourceViewer);
             
             final TextViewerAction cutAction = new TextViewerAction(sourceViewer, ITextOperationTarget.CUT);
@@ -119,6 +120,7 @@ public class CommitCommentArea extends DialogArea {
             quickFixMenu.setVisible(true);
             quickFixMenu.addMenuListener(new IMenuListener() {
 			
+				@Override
 				public void menuAboutToShow(IMenuManager manager) {
 					quickFixMenu.removeAll();
 					
@@ -135,14 +137,16 @@ public class CommitCommentArea extends DialogArea {
             						/* (non-Javadoc)
             						 * @see org.eclipse.jface.action.Action#run()
             						 */
-            						public void run() {
+            						@Override
+									public void run() {
             							proposal.apply(sourceViewer.getDocument());
             						}
             						
             						/* (non-Javadoc)
             						 * @see org.eclipse.jface.action.Action#getImageDescriptor()
             						 */
-            						public ImageDescriptor getImageDescriptor() {
+            						@Override
+									public ImageDescriptor getImageDescriptor() {
             							if (proposal.getImage() != null) {
             								return ImageDescriptor.createFromImage(proposal.getImage());
             							}
@@ -163,10 +167,11 @@ public class CommitCommentArea extends DialogArea {
 				private IHandlerActivation pasteHandlerActivation;
 				private IHandlerActivation selectAllHandlerActivation;
 
+				@Override
 				public void focusGained(FocusEvent e) {
 					cutAction.update();
 					copyAction.update();
-					IHandlerService service = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+					IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
 					this.cutHandlerActivation = service.activateHandler(IWorkbenchCommandConstants.EDIT_CUT, new ActionHandler(cutAction), new ActiveShellExpression(getComposite().getShell()));
 		            this.copyHandlerActivation = service.activateHandler(IWorkbenchCommandConstants.EDIT_COPY, new ActionHandler(copyAction), new ActiveShellExpression(getComposite().getShell()));
 		            this.pasteHandlerActivation = service.activateHandler(IWorkbenchCommandConstants.EDIT_PASTE, new ActionHandler(pasteAction), new ActiveShellExpression(getComposite().getShell()));
@@ -178,8 +183,9 @@ public class CommitCommentArea extends DialogArea {
 				/* (non-Javadoc)
 				 * @see org.eclipse.swt.events.FocusAdapter#focusLost(org.eclipse.swt.events.FocusEvent)
 				 */
+				@Override
 				public void focusLost(FocusEvent e) {
-					IHandlerService service = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+					IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
 					
 					if (cutHandlerActivation != null) {
 						service.deactivateHandler(cutHandlerActivation);
@@ -202,7 +208,8 @@ public class CommitCommentArea extends DialogArea {
             
             sourceViewer.addSelectionChangedListener(new ISelectionChangedListener() {
             	
-            	public void selectionChanged(SelectionChangedEvent event) {
+            	@Override
+				public void selectionChanged(SelectionChangedEvent event) {
             		cutAction.update();
             		copyAction.update();
             	}
@@ -211,6 +218,7 @@ public class CommitCommentArea extends DialogArea {
             
             sourceViewer.getTextWidget().addDisposeListener(new DisposeListener() {
 			
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					support.uninstall();
 					handlerService.deactivateHandler(handlerActivation);
@@ -264,7 +272,8 @@ public class CommitCommentArea extends DialogArea {
             	/* (non-Javadoc)
             	 * @see org.eclipse.jface.action.Action#run()
             	 */
-            	public void run() {
+            	@Override
+				public void run() {
             		textOperationTarget.doOperation(ISourceViewer.QUICK_ASSIST);
             	}
             };
@@ -272,21 +281,24 @@ public class CommitCommentArea extends DialogArea {
     		return new ActionHandler(quickFixAction);
         }
 
-        public void modifyText(ModifyEvent e) {
+        @Override
+		public void modifyText(ModifyEvent e) {
             final String old = fText;
             fText = fTextField.getText();
             if (!fText.equals(old))
             	firePropertyChangeChange(COMMENT_MODIFIED, old, fText);
         }
         
-        public void keyTraversed(TraverseEvent e) {
+        @Override
+		public void keyTraversed(TraverseEvent e) {
             if (e.detail == SWT.TRAVERSE_RETURN && (e.stateMask & SWT.CTRL) != 0) {
                 e.doit = false;
                 firePropertyChangeChange(OK_REQUESTED, null, null);
             }
         }
         
-        public void focusGained(FocusEvent e) {
+        @Override
+		public void focusGained(FocusEvent e) {
 
             if (fText.length() > 0)
                 return;
@@ -301,7 +313,8 @@ public class CommitCommentArea extends DialogArea {
             }
         }
         
-        public void focusLost(FocusEvent e) {
+        @Override
+		public void focusLost(FocusEvent e) {
             
             if (fText.length() > 0)
                 return;
@@ -321,7 +334,8 @@ public class CommitCommentArea extends DialogArea {
             fTextField.setEnabled(enabled);
         }
         
-        public void update(Observable o, Object arg) {
+        @Override
+		public void update(Observable o, Object arg) {
             if (arg instanceof String) {
                 setText((String)arg); // triggers a modify event
             }
@@ -343,10 +357,12 @@ public class CommitCommentArea extends DialogArea {
             fTextField.setFocus();
         }
 
-        public void documentAboutToBeChanged(DocumentEvent event) {
+        @Override
+		public void documentAboutToBeChanged(DocumentEvent event) {
         }
 
-        public void documentChanged(DocumentEvent event) {
+        @Override
+		public void documentChanged(DocumentEvent event) {
         	modifyText(null);
         }
 	}
@@ -393,7 +409,8 @@ public class CommitCommentArea extends DialogArea {
             fCombo.setText(fMessage);
 		}
         
-        public void widgetSelected(SelectionEvent e) {
+        @Override
+		public void widgetSelected(SelectionEvent e) {
             int index = fCombo.getSelectionIndex();
             if (index > 0) {
                 index--;
@@ -410,16 +427,19 @@ public class CommitCommentArea extends DialogArea {
             }
         }
         
-        public void widgetDefaultSelected(SelectionEvent e) {
+        @Override
+		public void widgetDefaultSelected(SelectionEvent e) {
         }
         
-        public void focusGained(FocusEvent e) {
+        @Override
+		public void focusGained(FocusEvent e) {
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
          */
-        public void focusLost(FocusEvent e) {
+        @Override
+		public void focusLost(FocusEvent e) {
             fCombo.removeSelectionListener(this);
             try {
                 fCombo.setText(fMessage);
@@ -455,7 +475,8 @@ public class CommitCommentArea extends DialogArea {
     /**
      * @see org.eclipse.team.internal.ccvs.ui.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
      */
-    public void createArea(Composite parent) {
+    @Override
+	public void createArea(Composite parent) {
         Dialog.applyDialogFont(parent);
         initializeDialogUnits(parent);
         
@@ -472,10 +493,12 @@ public class CommitCommentArea extends DialogArea {
         templatesPrefsLink.setText("<a href=\"configureTemplates\">" + //$NON-NLS-1$
         		CONFIGURE_TEMPLATES_MESSAGE + "</a>"); //$NON-NLS-1$
         templatesPrefsLink.addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				openCommentTemplatesPreferencePage();
 			}
 		
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				openCommentTemplatesPreferencePage();
 			}
@@ -604,7 +627,8 @@ public class CommitCommentArea extends DialogArea {
         return fComposite;
     }
     
-    protected void firePropertyChangeChange(String property, Object oldValue, Object newValue) {
+    @Override
+	protected void firePropertyChangeChange(String property, Object oldValue, Object newValue) {
         super.firePropertyChangeChange(property, oldValue, newValue);
     }
     

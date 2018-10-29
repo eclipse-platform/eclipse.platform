@@ -50,18 +50,23 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 	 * Custom input provider which returns the list of root folders
 	 */
 	private class InputElement implements IWorkbenchAdapter, IAdaptable {
+		@Override
 		public Object[] getChildren(Object o) {
 			return rootFolders;
 		}
+		@Override
 		public ImageDescriptor getImageDescriptor(Object object) {
 			return null;
 		}
+		@Override
 		public String getLabel(Object o) {
 			return null;
 		}
+		@Override
 		public Object getParent(Object o) {
 			return null;
 		}
+		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);
 			return null;
@@ -91,6 +96,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		
 		final Composite composite = new Composite(parent, SWT.NONE);
@@ -109,6 +115,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 		listArea.createArea(composite);
 
 		listArea.addPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				updateEnablement();
 			}
@@ -118,6 +125,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 		workingSetArea = new WorkingSetSelectionArea(getShell(), CVSUIMessages.RefreshRemoteProjectSelectionPage_noWorkingSet, CVSUIMessages.RefreshRemoteProjectSelectionPage_workingSet, settings); // 
 		setWorkingSet(workingSet);
 		workingSetArea.addPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				workingSet = (IWorkingSet)event.getNewValue();
 				handleWorkingSetChange();
@@ -168,6 +176,6 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 	 */
 	public ICVSRemoteResource[] getSelectedRemoteProject() {
 		Object[] checked = listArea.getViewer().getCheckedElements();
-		return (ICVSRemoteResource[]) Arrays.asList(checked).toArray(new ICVSRemoteResource[checked.length]);
+		return Arrays.asList(checked).toArray(new ICVSRemoteResource[checked.length]);
 	}
 }

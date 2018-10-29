@@ -51,6 +51,7 @@ public class CheckoutAsWizard extends Wizard {
 		/**
 		 * @see IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 		 */
+		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta root = event.getDelta();
 			IResourceDelta[] projectDeltas = root.getAffectedChildren();
@@ -94,6 +95,7 @@ public class CheckoutAsWizard extends Wizard {
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
 		ImageDescriptor substImage = CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_CHECKOUT);
@@ -128,6 +130,7 @@ public class CheckoutAsWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		try {
 			if (mainPage.isPerformConfigure()) {
@@ -160,6 +163,7 @@ public class CheckoutAsWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		return (mainPage.isPageComplete() 
 		&& (mainPage.isPerformConfigure()
@@ -170,6 +174,7 @@ public class CheckoutAsWizard extends Wizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
 	 */
+	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		if (page == mainPage) {
 			if (mainPage.isPerformConfigure()) return tagSelectionPage;
@@ -223,7 +228,7 @@ public class CheckoutAsWizard extends Wizard {
 	 * Return the remote folders to be checked out
 	 */
 	private ICVSRemoteFolder[] getRemoteFolders() {
-		ICVSRemoteFolder[] folders = (ICVSRemoteFolder[]) remoteFolders.clone();
+		ICVSRemoteFolder[] folders = remoteFolders.clone();
 		CVSTag selectedTag = getSelectedTag();
 		// see bug 160851
 		if(selectedTag != null){
@@ -257,6 +262,7 @@ public class CheckoutAsWizard extends Wizard {
 		ICVSRemoteFolder folder = getRemoteFolder();
 		final boolean recurse = mainPage.isRecurse();
 		new CheckoutSingleProjectOperation(part, folder, newProject, targetLocation, false, mainPage.getWorkingSets()) {
+				@Override
 				protected boolean isRecursive() {
 					return recurse;
 				}

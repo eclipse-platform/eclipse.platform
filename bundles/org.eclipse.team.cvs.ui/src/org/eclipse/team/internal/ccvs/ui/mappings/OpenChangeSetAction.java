@@ -58,7 +58,7 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
         if (selection.size() == 1) {
             Object o = selection.getFirstElement();
             if (o instanceof IAdaptable) {
-                ChangeSet set = (ChangeSet)((IAdaptable)o).getAdapter(ChangeSet.class);
+                ChangeSet set = ((IAdaptable)o).getAdapter(ChangeSet.class);
                 if (set != null)
                     return set;
             }
@@ -92,6 +92,7 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 		return null;
 	}
     
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
         // The selection only contains appropriate files so
         // only enable if the selection is contained within a single change set
@@ -208,9 +209,11 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
         return (CheckedInChangeSetCollector)getConfiguration().getProperty(CVSChangeSetCollector.CVS_CHECKED_IN_COLLECTOR);
     }
     
-    public void run() {
+    @Override
+	public void run() {
     	try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException,
 						InterruptedException {
 					openEditor(monitor);

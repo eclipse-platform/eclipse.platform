@@ -92,7 +92,8 @@ public class CommitWizard extends ResizableWizard {
         		fModesForNamesForOneTime= modes;
         }
         
-        protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
+        @Override
+		protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
             try {
             	monitor.beginTask(null, (fNewResources.length + fAllResources.length) * 100);
             	if (fNewResources.length > 0) {
@@ -103,7 +104,8 @@ public class CommitWizard extends ResizableWizard {
             	}
                 if (fAllResources.length > 0) {
 	                CommitOperation commitOperation = new CommitOperation(getPart(), RepositoryProviderOperation.asResourceMappers(fAllResources), new Command.LocalOption[0], fComment) {
-	                	public boolean consultModelsForMappings() {
+	                	@Override
+						public boolean consultModelsForMappings() {
 	                		// Do not consult models from the commit wizard
 	                		return false;
 	                	}
@@ -117,11 +119,13 @@ public class CommitWizard extends ResizableWizard {
             }
         }
         
-        protected String getJobName() {
+        @Override
+		protected String getJobName() {
             return CVSUIMessages.CommitWizard_0; 
         }
         
-        protected String getTaskName() {
+        @Override
+		protected String getTaskName() {
             return CVSUIMessages.CommitWizard_1; 
         }
 
@@ -138,6 +142,7 @@ public class CommitWizard extends ResizableWizard {
 		/* (non-Javadoc)
 		 * @see org.eclipse.core.runtime.jobs.IJobChangeListener#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 		 */
+		@Override
 		public void done(IJobChangeEvent event) {
 			super.done(event);
 			if (jobListener != null)
@@ -147,6 +152,7 @@ public class CommitWizard extends ResizableWizard {
 		/* (non-Javadoc)
 		 * @see org.eclipse.core.runtime.jobs.IJobChangeListener#scheduled(org.eclipse.core.runtime.jobs.IJobChangeEvent)
 		 */
+		@Override
 		public void scheduled(IJobChangeEvent event) {
 			super.scheduled(event);
 			if (jobListener != null)
@@ -196,7 +202,7 @@ public class CommitWizard extends ResizableWizard {
 	private void getAllOutOfSync() throws CVSException {
 		try {
 			ISynchronizationContext context = getParticipant().getContext();
-			SubscriberDiffTreeEventHandler handler = (SubscriberDiffTreeEventHandler) Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
+			SubscriberDiffTreeEventHandler handler = Adapters.adapt(context, SubscriberDiffTreeEventHandler.class);
 			handler.initializeIfNeeded();
 			Job.getJobManager().join(context, null);
 		} catch (InterruptedException e) {
@@ -207,6 +213,7 @@ public class CommitWizard extends ResizableWizard {
     public boolean hasOutgoingChanges() {
     	IResourceDiffTree tree = getDiffTree();
 		return tree != null && tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				return AbstractCommitAction.hasLocalChange(diff);
 			}
@@ -216,6 +223,7 @@ public class CommitWizard extends ResizableWizard {
     boolean hasConflicts() {
     	IResourceDiffTree tree = getDiffTree();
 		return tree != null && tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				if (diff instanceof IThreeWayDiff) {
 					IThreeWayDiff twd = (IThreeWayDiff) diff;
@@ -260,14 +268,16 @@ public class CommitWizard extends ResizableWizard {
         return fParticipant;
     }
 
-    public boolean canFinish() {
+    @Override
+	public boolean canFinish() {
         final IWizardPage current= getContainer().getCurrentPage();
         if (current == fFileTypePage && fCommitPage != null)
             return false;
         return super.canFinish();
     }
 
-    public boolean performFinish() {
+    @Override
+	public boolean performFinish() {
         
         final String comment= fCommitPage.getComment(getShell());
         if (comment == null)
@@ -321,12 +331,14 @@ public class CommitWizard extends ResizableWizard {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.wizards.ResizableWizard#performCancel()
      */
-    public boolean performCancel() {
+    @Override
+	public boolean performCancel() {
     	fCommitPage.finish();
     	return super.performCancel();
     }
 
-    public void addPages() {
+    @Override
+	public void addPages() {
         
         final Collection names= new HashSet();
         final Collection extensions= new HashSet();
@@ -343,7 +355,8 @@ public class CommitWizard extends ResizableWizard {
         super.addPages();
     }
 
-    public void dispose() {
+    @Override
+	public void dispose() {
         fParticipant.dispose();
         super.dispose();
     }
@@ -374,7 +387,8 @@ public class CommitWizard extends ResizableWizard {
         try {
         	final IResource [][] resources = new IResource[][] { null };
     		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-    			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+    			@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
     				try {
     					resources[0] = getDeepResourcesToCommit(traversals, monitor);
     				} catch (CoreException e) {

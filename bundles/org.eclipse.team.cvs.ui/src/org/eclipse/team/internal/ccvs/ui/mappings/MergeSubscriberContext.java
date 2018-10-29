@@ -49,16 +49,20 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IMergeContext#markAsMerged(org.eclipse.team.core.diff.IDiffNode, boolean, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void markAsMerged(final IDiff diff, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
 		run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				((CVSMergeSubscriber)getSubscriber()).merged(new IResource[] { getDiffTree().getResource(diff)});
 			}
 		}, getMergeRule(diff), IResource.NONE, monitor);
 	}
 	
+	@Override
 	public void markAsMerged(final IDiff[] diffs, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
 		run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				List result = new ArrayList();
 				for (int i = 0; i < diffs.length; i++) {
@@ -70,6 +74,7 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 		}, getMergeRule(diffs), IResource.NONE, monitor);
 	}
 	
+	@Override
 	public void dispose() {
 		if (cancel)
 			((CVSMergeSubscriber)getSubscriber()).cancel();
@@ -80,9 +85,11 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 		cancel  = b;
 	}
 	
+	@Override
 	public IStatus merge(final IDiff diff, final boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		final IStatus[] status = new IStatus[] { Status.OK_STATUS };
 		run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				IThreeWayDiff currentDiff = (IThreeWayDiff)getSubscriber().getDiff(getDiffTree().getResource(diff));
 				if (!MergeSubscriberContext.this.equals(currentDiff, (IThreeWayDiff)diff)) {
@@ -95,7 +102,7 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 						IThreeWayDiff twd = (IThreeWayDiff) diff;
 						if (twd.getKind() == IDiff.ADD && twd.getDirection() == IThreeWayDiff.INCOMING) {
 							IFileRevision remote = Utils.getRemote(diff);
-							IResourceVariant variant = (IResourceVariant)Adapters.adapt(remote, IResourceVariant.class);
+							IResourceVariant variant = Adapters.adapt(remote, IResourceVariant.class);
 							byte[] syncBytes = variant.asBytes();
 							MutableResourceSyncInfo info = new MutableResourceSyncInfo(resource.getName(), ResourceSyncInfo.ADDED_REVISION);
 							info.setKeywordMode(ResourceSyncInfo.getKeywordMode(syncBytes));

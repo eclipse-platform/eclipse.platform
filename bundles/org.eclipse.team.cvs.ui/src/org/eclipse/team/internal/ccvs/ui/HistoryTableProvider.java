@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
-import com.ibm.icu.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -28,6 +27,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
+
+import com.ibm.icu.text.DateFormat;
 
 /**
  * This class provides the table and it's required components for a file's revision
@@ -60,9 +61,11 @@ public class HistoryTableProvider {
 	 */
 	class HistoryLabelProvider extends LabelProvider implements ITableLabelProvider, IColorProvider, IFontProvider {
 		private DateFormat dateFormat;
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			ILogEntry entry = adaptToLogEntry(element);
 			if (entry == null) return ""; //$NON-NLS-1$
@@ -124,6 +127,7 @@ public class HistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
 		 */
+		@Override
 		public Color getForeground(Object element) {
 			ILogEntry entry = adaptToLogEntry(element);
 			if (entry.isDeletion())  {
@@ -135,6 +139,7 @@ public class HistoryTableProvider {
 		/* (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
 		 */
+		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
@@ -142,6 +147,7 @@ public class HistoryTableProvider {
 		 * (non-Javadoc)
 		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
 		 */
+		@Override
 		public Font getFont(Object element) {
 			ILogEntry entry = adaptToLogEntry(element);
 			if (entry == null)
@@ -192,6 +198,7 @@ public class HistoryTableProvider {
 		 * Compares two log entries, sorting first by the main column of this sorter,
 		 * then by subsequent columns, depending on the column sort order.
 		 */
+		@Override
 		public int compare(Viewer viewer, Object o1, Object o2) {
 			ILogEntry e1 = adaptToLogEntry(o1);
 			ILogEntry e2 = adaptToLogEntry(o2);
@@ -276,7 +283,7 @@ public class HistoryTableProvider {
 		if (element instanceof ILogEntry) {
 			entry = (ILogEntry) element;
 		} else if (element instanceof IAdaptable) {
-			entry = (ILogEntry)((IAdaptable)element).getAdapter(ILogEntry.class);
+			entry = ((IAdaptable)element).getAdapter(ILogEntry.class);
 		}
 		return entry;
 	}
@@ -310,6 +317,7 @@ public class HistoryTableProvider {
 		viewer.setComparator(sorter);
 		
 		table.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if(currentRevisionFont != null) {
 					currentRevisionFont.dispose();
@@ -350,6 +358,7 @@ public class HistoryTableProvider {
 		viewer.setComparator(sorter);
 		
 		table.addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if(currentRevisionFont != null) {
 					currentRevisionFont.dispose();
@@ -430,6 +439,7 @@ public class HistoryTableProvider {
 			 * presses on the same column header will
 			 * toggle sorting order (ascending/descending).
 			 */
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = tableViewer.getTable().indexOf((TableColumn) e.widget);
