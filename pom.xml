@@ -73,9 +73,9 @@
 
     <module>features/org.eclipse.cvs-feature</module>
 
-    <!-- creatively located fragments -->
-    <module>bundles/org.eclipse.core.net/fragments/org.eclipse.core.net.linux.x86_64</module>
-    <module>bundles/org.eclipse.core.net/fragments/org.eclipse.core.net.win32.x86_64</module>
+    <!-- fragments -->
+    <module>bundles/org.eclipse.core.net.linux.x86_64</module>
+    <module>bundles/org.eclipse.core.net.win32.x86_64</module>
     <module>tests</module>
    
   </modules>
