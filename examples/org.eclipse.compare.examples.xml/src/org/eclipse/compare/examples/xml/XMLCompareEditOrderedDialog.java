@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import org.eclipse.compare.examples.xml.ui.StatusDialog;
 import org.eclipse.compare.examples.xml.ui.StatusInfo;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -87,12 +85,7 @@ public class XMLCompareEditOrderedDialog extends StatusDialog {
 		fElementText= new Text(inner, SWT.BORDER);
 		fElementText.setText(fMapping.getElement());
 		fElementText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fElementText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fElementText.addModifyListener(e -> doValidation());
 
 		//Signature
 		label= new Label(inner, SWT.NULL);
@@ -104,12 +97,7 @@ public class XMLCompareEditOrderedDialog extends StatusDialog {
 		GridData data= new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint= convertWidthInCharsToPixels(50);
 		fSignatureText.setLayoutData(data);
-		fSignatureText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fSignatureText.addModifyListener(e -> doValidation());
 		
 		fElementText.setFocus();
 

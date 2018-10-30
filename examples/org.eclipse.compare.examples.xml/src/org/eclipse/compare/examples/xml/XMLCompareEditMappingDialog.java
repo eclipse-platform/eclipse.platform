@@ -15,14 +15,17 @@ package org.eclipse.compare.examples.xml;
 
 import java.util.HashMap;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
-
 import org.eclipse.compare.examples.xml.ui.StatusDialog;
 import org.eclipse.compare.examples.xml.ui.StatusInfo;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * This class is used to add or edit a particular ID Mapping
@@ -87,12 +90,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fElementText= new Text(inner, SWT.BORDER);
 		fElementText.setText(fMapping.getElement());
 		fElementText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fElementText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fElementText.addModifyListener(e -> doValidation());
 
 		//Signature
 		label= new Label(inner, SWT.NULL);
@@ -104,12 +102,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		GridData data= new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint= convertWidthInCharsToPixels(50);
 		fSignatureText.setLayoutData(data);
-		fSignatureText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fSignatureText.addModifyListener(e -> doValidation());
 		
 		//Id Attribute
 		label= new Label(inner, SWT.NULL);
@@ -119,12 +112,7 @@ public class XMLCompareEditMappingDialog extends StatusDialog {
 		fIdAttributeText= new Text(inner, SWT.BORDER);
 
 		fIdAttributeText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fIdAttributeText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fIdAttributeText.addModifyListener(e -> doValidation());
 
 		//Id Source
 		createIdSourceGroup(inner);

@@ -16,8 +16,6 @@ package org.eclipse.compare.examples.xml;
 import java.util.HashMap;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -84,12 +82,7 @@ public class XMLCompareEditCopyIdMapDialog extends StatusDialog {
 
 		fIdMapText= new Text(inner, SWT.BORDER);
 		fIdMapText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fIdMapText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fIdMapText.addModifyListener(e -> doValidation());
 
 		fIdMapText.setFocus();
 		

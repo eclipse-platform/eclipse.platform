@@ -19,10 +19,9 @@ import java.util.Vector;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -65,6 +64,7 @@ public class TagAsVersionDialog extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createMainDialogArea(Composite)
 	 */
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		
 		final int width= convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH + 50);
@@ -77,16 +77,15 @@ public class TagAsVersionDialog extends DetailsDialog {
 		tagCombo.setItems(getTagNameHistory());
 		tagCombo.setText(tagName);
 		tagCombo.addModifyListener(
-			new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
+				e -> {
 					tagName = tagCombo.getText();
 					updateEnablements();
-				}
 			}
 		);
 		
 		moveTagButton= SWTUtils.createCheckBox(parent, CVSUIMessages.TagAction_moveTag); 
 		moveTagButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				moveTag = moveTagButton.getSelection();
 			}
@@ -97,7 +96,8 @@ public class TagAsVersionDialog extends DetailsDialog {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
      */
-    protected String getHelpContextId() {
+    @Override
+	protected String getHelpContextId() {
         return IHelpContextIds.TAG_AS_VERSION_DIALOG;
     }
 
@@ -108,6 +108,7 @@ public class TagAsVersionDialog extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createDropDownDialogArea(Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		
 		final PixelConverter converter= SWTUtils.createDialogPixelConverter(parent);
@@ -123,28 +124,27 @@ public class TagAsVersionDialog extends DetailsDialog {
 		tagArea.setTagAreaLabel(CVSUIMessages.TagAction_existingVersions);  
 		tagArea.setIncludeFilterInputArea(false);
 		tagArea.createArea(composite);
-		tagArea.addPropertyChangeListener(new IPropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(TagSelectionArea.SELECTED_TAG)) {
-                    CVSTag tag = tagArea.getSelection();
-                    if (tag != null) {
-                        tagCombo.setText(tag.getName());
-                    }
-                } else if (event.getProperty().equals(TagSelectionArea.OPEN_SELECTED_TAG)) {
-                    CVSTag tag = tagArea.getSelection();
-                    if (tag != null) {
-                        tagCombo.setText(tag.getName());
-                        okPressed();
-                    }
-                }
-            }
-        });
+		tagArea.addPropertyChangeListener(event -> {
+			if (event.getProperty().equals(TagSelectionArea.SELECTED_TAG)) {
+				CVSTag tag1 = tagArea.getSelection();
+				if (tag1 != null) {
+					tagCombo.setText(tag1.getName());
+				}
+			} else if (event.getProperty().equals(TagSelectionArea.OPEN_SELECTED_TAG)) {
+				CVSTag tag2 = tagArea.getSelection();
+				if (tag2 != null) {
+					tagCombo.setText(tag2.getName());
+					okPressed();
+				}
+			}
+		});
 		return composite;
 	}
 	
 	/**
 	 * Validates tag name
 	 */
+	@Override
 	protected void updateEnablements() {
 		String message = null;
 		if(tagName.length() == 0) {
@@ -183,7 +183,8 @@ public class TagAsVersionDialog extends DetailsDialog {
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
      */
-    protected boolean isMainGrabVertical() {
+    @Override
+	protected boolean isMainGrabVertical() {
         return false;
     }
 
@@ -197,6 +198,7 @@ public class TagAsVersionDialog extends DetailsDialog {
 		return combo;
 	}
 
+	@Override
 	protected void okPressed() {
 		rememberTagName(tagName);
 		super.okPressed();

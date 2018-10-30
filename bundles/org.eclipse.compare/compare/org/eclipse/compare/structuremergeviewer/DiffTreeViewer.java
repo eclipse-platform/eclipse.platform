@@ -16,38 +16,17 @@ package org.eclipse.compare.structuremergeviewer;
 import java.util.Iterator;
 import java.util.ResourceBundle;
 
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareUI;
-import org.eclipse.compare.CompareViewerPane;
-import org.eclipse.compare.INavigatable;
+import org.eclipse.compare.*;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.compare.internal.patch.DiffViewerComparator;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
-import org.eclipse.jface.viewers.OpenEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 /**
  * A tree viewer that works on objects implementing
@@ -266,19 +245,16 @@ public class DiffTreeViewer extends TreeViewer {
 		MenuManager mm= new MenuManager();
 		mm.setRemoveAllWhenShown(true);
 		mm.addMenuListener(
-			new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager mm2) {
+				mm2 -> {
 					fillContextMenu(mm2);
 					if (mm2.isEmpty()) {
 						if (fEmptyMenuAction == null) {
-							fEmptyMenuAction= new Action(Utilities.getString(fBundle, "emptyMenuItem")) { //$NON-NLS-1$
+							fEmptyMenuAction = new Action(Utilities.getString(fBundle, "emptyMenuItem")) { //$NON-NLS-1$
 								// left empty
 							};
 							fEmptyMenuAction.setEnabled(false);
-						}
-						mm2.add(fEmptyMenuAction);
 					}
+						mm2.add(fEmptyMenuAction);
 				}
 			}
 		);

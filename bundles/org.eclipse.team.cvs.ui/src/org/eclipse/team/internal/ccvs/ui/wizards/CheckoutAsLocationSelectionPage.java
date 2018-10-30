@@ -15,7 +15,8 @@
 package org.eclipse.team.internal.ccvs.ui.wizards;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -105,6 +106,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite= createComposite(parent, 1, false);
 		setControl(composite);
@@ -122,6 +124,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
         initializeValues();
 
 		SelectionListener listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				useDefaults = useDefaultsButton.getSelection();
 				browseButton.setEnabled(!useDefaults);
@@ -167,6 +170,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 		this.browseButton = new Button(projectGroup, SWT.PUSH);
 		this.browseButton.setText(CVSUIMessages.CheckoutAsLocationSelectionPage_browseLabel); 
 		this.browseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				handleLocationBrowseButtonPressed();
 			}
@@ -177,11 +181,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 		// Set the initial value first before listener
 		// to avoid handling an event during the creation.
 		setLocationForSelection(true);
-		locationPathField.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				setErrorMessage(checkValidLocation());
-			}
-		});
+		locationPathField.addModifyListener(e -> setErrorMessage(checkValidLocation()));
 		return projectGroup;
 	}
 	

@@ -17,15 +17,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 /**
  * A simple input dialog for soliciting an input string from the user.
@@ -105,7 +98,8 @@ public class CommentTemplateEditDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
-    protected void buttonPressed(int buttonId) {
+    @Override
+	protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
             value = text.getText();
         } else {
@@ -119,7 +113,8 @@ public class CommentTemplateEditDialog extends Dialog {
      * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
-    protected void configureShell(Shell shell) {
+    @Override
+	protected void configureShell(Shell shell) {
         super.configureShell(shell);
         if (title != null)
             shell.setText(title);
@@ -130,7 +125,8 @@ public class CommentTemplateEditDialog extends Dialog {
      * 
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
-    protected void createButtonsForButtonBar(Composite parent) {
+    @Override
+	protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         okButton = createButton(parent, IDialogConstants.OK_ID,
                 IDialogConstants.OK_LABEL, true);
@@ -148,7 +144,8 @@ public class CommentTemplateEditDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
-    protected Control createDialogArea(Composite parent) {
+    @Override
+	protected Control createDialogArea(Composite parent) {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
         // create message
@@ -167,11 +164,7 @@ public class CommentTemplateEditDialog extends Dialog {
                 | GridData.HORIZONTAL_ALIGN_FILL);
 		gd.heightHint = convertHeightInCharsToPixels(5);
 		text.setLayoutData(gd);
-        text.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                validateInput();
-            }
-        });
+		text.addModifyListener(e -> validateInput());
         errorMessageText = new Text(composite, SWT.READ_ONLY);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
@@ -188,7 +181,8 @@ public class CommentTemplateEditDialog extends Dialog {
      * @return the error message label
      * @deprecated use setErrorMessage(String) instead
      */
-    protected Label getErrorMessageLabel() {
+    @Deprecated
+	protected Label getErrorMessageLabel() {
         return null;
     }
 

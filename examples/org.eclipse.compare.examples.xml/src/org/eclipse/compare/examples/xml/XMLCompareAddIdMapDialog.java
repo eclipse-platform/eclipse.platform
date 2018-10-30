@@ -17,8 +17,6 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -83,12 +81,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		data.widthHint = convertWidthInCharsToPixels(30);
 		fIdMapText.setLayoutData(data);
 		fIdMapText.setText(fIdMap.getName());
-		fIdMapText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fIdMapText.addModifyListener(e -> doValidation());
 	
 		label= new Label(inner, SWT.NULL);
 		label.setText(XMLCompareMessages.XMLCompareAddIdMapDialog_extlabel); 
@@ -99,12 +92,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 		data.widthHint = convertWidthInCharsToPixels(30);
 		fIdMapExtText.setLayoutData(data);
 		fIdMapExtText.setText(fIdMap.getExtension());
-		fIdMapExtText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e){
-				doValidation();
-			}
-		});
+		fIdMapExtText.addModifyListener(e -> doValidation());
 
 		
 		fIdMapText.setFocus();

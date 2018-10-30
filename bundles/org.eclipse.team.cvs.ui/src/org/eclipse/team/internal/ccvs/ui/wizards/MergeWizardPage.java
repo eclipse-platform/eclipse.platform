@@ -17,7 +17,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -52,7 +53,8 @@ public class MergeWizardPage extends CVSWizardPage {
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
-    public void createControl(Composite parent) {
+    @Override
+	public void createControl(Composite parent) {
         
         final PixelConverter converter= SWTUtils.createDialogPixelConverter(parent);
         
@@ -91,7 +93,8 @@ public class MergeWizardPage extends CVSWizardPage {
         }
         noPreviewButton = SWTUtils.createRadioButton(composite, CVSUIMessages.MergeWizardPage_1); 
         SelectionAdapter selectionAdapter = new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
                 preview  = previewButton.getSelection();
                 updateEnablements();
             }
@@ -104,6 +107,7 @@ public class MergeWizardPage extends CVSWizardPage {
 	        onlyPreviewConflicts.setEnabled(preview);
 	        onlyPreviewConflicts.setSelection(isOnlyPreviewConflicts);
 	        onlyPreviewConflicts.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					isOnlyPreviewConflicts = onlyPreviewConflicts.getSelection();
 				}
@@ -112,7 +116,8 @@ public class MergeWizardPage extends CVSWizardPage {
     }
     private void createTagRefreshArea(Composite composite) {
 	    tagRefreshArea = new TagRefreshButtonArea(getShell(), getTagSource(), null) {
-	    	public void refresh(boolean background) {
+	    	@Override
+			public void refresh(boolean background) {
 	    		super.refresh(background);
 	    		updateStartTag(startTagField.getText());
 	    		updateEndTag(endTagField.getText());
@@ -126,17 +131,14 @@ public class MergeWizardPage extends CVSWizardPage {
         SWTUtils.createLabel(parent, CVSUIMessages.MergeWizardPage_2, 2); 
         
         endTagField = SWTUtils.createText(parent);
-        endTagField.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                updateEndTag(endTagField.getText());
-            }
-        });
+		endTagField.addModifyListener(e -> updateEndTag(endTagField.getText()));
         final int endTagIncludeFlags = TagSelectionArea.INCLUDE_VERSIONS | TagSelectionArea.INCLUDE_BRANCHES | TagSelectionArea.INCLUDE_HEAD_TAG;
         TagContentAssistProcessor.createContentAssistant(endTagField, tagSource, endTagIncludeFlags);
         endTagBrowseButton = createPushButton(parent, CVSUIMessages.MergeWizardPage_3); 
         
         endTagBrowseButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
                 TagSelectionDialog dialog = new TagSelectionDialog(getShell(), getTagSource(), 
                         CVSUIMessages.MergeWizardPage_4, 
                         CVSUIMessages.MergeWizardPage_5, 
@@ -155,16 +157,13 @@ public class MergeWizardPage extends CVSWizardPage {
     	SWTUtils.createLabel(parent, CVSUIMessages.MergeWizardPage_6, 2); 
 
         startTagField = SWTUtils.createText(parent);
-        startTagField.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                updateStartTag(startTagField.getText());
-            }
-        });
+		startTagField.addModifyListener(e -> updateStartTag(startTagField.getText()));
         TagContentAssistProcessor.createContentAssistant(startTagField, tagSource, TagSelectionArea.INCLUDE_VERSIONS);
 
         startTagBrowseButton = createPushButton(parent, CVSUIMessages.MergeWizardPage_7); 
         startTagBrowseButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
                 TagSelectionDialog dialog = new TagSelectionDialog(getShell(), getTagSource(), 
                         CVSUIMessages.MergeWizardPage_8, 
                         CVSUIMessages.MergeWizardPage_9, 

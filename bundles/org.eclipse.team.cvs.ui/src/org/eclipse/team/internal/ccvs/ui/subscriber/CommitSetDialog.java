@@ -15,12 +15,12 @@
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -73,7 +73,8 @@ public class CommitSetDialog extends TitleAreaDialog {
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
      */
-    protected Control createContents(Composite parent) {
+    @Override
+	protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         setTitle(title);
         setMessage(description);
@@ -83,7 +84,8 @@ public class CommitSetDialog extends TitleAreaDialog {
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
-    protected Control createDialogArea(Composite parent) {
+    @Override
+	protected Control createDialogArea(Composite parent) {
         Composite parentComposite = (Composite) super.createDialogArea(parent);
 
         // create a composite with standard margins and spacing
@@ -110,18 +112,15 @@ public class CommitSetDialog extends TitleAreaDialog {
 		}
 		
 		commitCommentArea.createArea(composite);
-		commitCommentArea.addPropertyChangeListener(new IPropertyChangeListener() {
-
-            public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty() == CommitCommentArea.OK_REQUESTED) {
-					okPressed();
-				} else if (event.getProperty() == CommitCommentArea.COMMENT_MODIFIED) {
-				    comment = (String)event.getNewValue();
-				    if (!customTitleButton.getSelection()) {
-				    	nameText.setText(commitCommentArea.getFirstLineOfComment());
-				    }
-					updateEnablements();
+		commitCommentArea.addPropertyChangeListener(event -> {
+			if (event.getProperty() == CommitCommentArea.OK_REQUESTED) {
+				okPressed();
+			} else if (event.getProperty() == CommitCommentArea.COMMENT_MODIFIED) {
+				comment = (String) event.getNewValue();
+				if (!customTitleButton.getSelection()) {
+					nameText.setText(commitCommentArea.getFirstLineOfComment());
 				}
+				updateEnablements();
 			}
 		});
 
@@ -138,6 +137,7 @@ public class CommitSetDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.window.Window#getInitialSize()
 	 */
+	@Override
 	protected Point getInitialSize() {
 	    final Point size= super.getInitialSize();
 	    size.x= convertWidthInCharsToPixels(DEFAULT_WIDTH_IN_CHARS);
@@ -163,12 +163,10 @@ public class CommitSetDialog extends TitleAreaDialog {
 		
 		nameText = new Text(composite, SWT.BORDER);
 		nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        nameText.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-            	customTitle = nameText.getText();
-                updateEnablements();
-            }
-        });
+		nameText.addModifyListener(e -> {
+			customTitle = nameText.getText();
+			updateEnablements();
+		});
     }
 
     private void initializeValues() {
@@ -193,7 +191,8 @@ public class CommitSetDialog extends TitleAreaDialog {
 		
         customTitleButton = createCheckButton(radioArea, CVSUIMessages.CommitSetDialog_2); 
         SelectionAdapter listener = new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            @Override
+			public void widgetSelected(SelectionEvent e) {
             	if (customTitleButton.getSelection()) {
             		nameText.setText(customTitle);
             	} else {
@@ -264,7 +263,8 @@ public class CommitSetDialog extends TitleAreaDialog {
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
-    protected void okPressed() {
+    @Override
+	protected void okPressed() {
     	String title = null;
     	if (customTitleButton.getSelection()) {
 			title= customTitle;
@@ -296,7 +296,8 @@ public class CommitSetDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.Dialog#createButtonBar(org.eclipse.swt.widgets.Composite)
      */
-    protected Control createButtonBar(Composite parent) {
+    @Override
+	protected Control createButtonBar(Composite parent) {
         Control control = super.createButtonBar(parent);
         updateEnablements();
         return control;
@@ -305,6 +306,7 @@ public class CommitSetDialog extends TitleAreaDialog {
     /* (non-Javadoc)
 	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
 	 */
+	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(title);
