@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.diff.IDiff;
@@ -44,18 +43,17 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.action.Action#run()
 	 */
+	@Override
 	public void execute() {
     	final List resources = new ArrayList();
 		try {
 			final IStructuredSelection selection = getActualSelection();
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						ResourceTraversal[] traversals = getCommitTraversals(selection, monitor);
-						resources.add(getOutgoingChanges(getSynchronizationContext().getDiffTree(), traversals, monitor));
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					ResourceTraversal[] traversals = getCommitTraversals(selection, monitor);
+					resources.add(getOutgoingChanges(getSynchronizationContext().getDiffTree(), traversals, monitor));
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		} catch (InvocationTargetException e) {

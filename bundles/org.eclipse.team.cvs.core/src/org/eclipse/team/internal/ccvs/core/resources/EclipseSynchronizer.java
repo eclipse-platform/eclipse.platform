@@ -515,12 +515,10 @@ public class EclipseSynchronizer implements IFlushOperation {
 	public void flush(final ThreadInfo info, IProgressMonitor monitor) throws CVSException {
 		if (info != null && !info.isEmpty()) {
 			try {
-				ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-					public void run(IProgressMonitor pm) throws CoreException {
-						IStatus status = commitCache(info, pm);
-						if (!status.isOK()) {
-							throw new CVSException(status);
-						}
+				ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) pm -> {
+					IStatus status = commitCache(info, pm);
+					if (!status.isOK()) {
+						throw new CVSException(status);
 					}
 				}, null, 0 /* no flags */, monitor);
 			} catch (CoreException e) {

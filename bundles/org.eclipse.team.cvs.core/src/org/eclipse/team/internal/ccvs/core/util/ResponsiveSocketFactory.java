@@ -60,8 +60,7 @@ public class ResponsiveSocketFactory {
     // Start a thread to open a socket
     final Socket[] socket = new Socket[] { null };
     final Exception[] exception = new Exception[] {null };
-    final Thread thread = new Thread(new Runnable() {
-      public void run() {
+    final Thread thread = new Thread(() -> {
         try {
           Socket newSocket = internalCreateSocket(host, port);
           synchronized (socket) {
@@ -72,13 +71,12 @@ public class ResponsiveSocketFactory {
               socket[0] = newSocket;
             }
           }
-        } catch (UnknownHostException e) {
-          exception[0] = e;
-        } catch (IOException e) {
-          exception[0] = e;
+        } catch (UnknownHostException e1) {
+          exception[0] = e1;
+        } catch (IOException e2) {
+          exception[0] = e2;
         }
-      }
-    });
+      });
     thread.start();
     
     // Wait the appropriate number of seconds

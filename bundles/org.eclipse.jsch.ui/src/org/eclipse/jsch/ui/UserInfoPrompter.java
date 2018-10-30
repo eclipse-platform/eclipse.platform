@@ -17,11 +17,15 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jsch.core.IJSchService;
-import org.eclipse.jsch.internal.ui.*;
+import org.eclipse.jsch.internal.ui.KeyboardInteractiveDialog;
+import org.eclipse.jsch.internal.ui.Messages;
+import org.eclipse.jsch.internal.ui.UserValidationDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.jcraft.jsch.*;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UIKeyboardInteractive;
+import com.jcraft.jsch.UserInfo;
 
 /**
  * A {@link UserInfo} prompter implementation that can be used when connecting a
@@ -68,7 +72,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#getPassphrase()
    */
-  public String getPassphrase(){
+  @Override
+public String getPassphrase(){
     return passphrase;
   }
 
@@ -77,7 +82,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#getPassword()
    */
-  public String getPassword(){
+  @Override
+public String getPassword(){
     return password;
   }
 
@@ -110,7 +116,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#promptPassphrase(java.lang.String)
    */
-  public boolean promptPassphrase(String message){
+  @Override
+public boolean promptPassphrase(String message){
     String _passphrase=promptSecret(message);
     if(_passphrase!=null){
       setPassphrase(_passphrase);
@@ -123,7 +130,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#promptPassword(java.lang.String)
    */
-  public boolean promptPassword(String message){
+  @Override
+public boolean promptPassword(String message){
     String _password=promptSecret(message);
     if(_password!=null){
       setPassword(_password);
@@ -140,11 +148,7 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
     }
     else{
       // sync exec in default thread
-      Display.getDefault().syncExec(new Runnable(){
-        public void run(){
-          result[0]=promptForPassword(message);
-        }
-      });
+			Display.getDefault().syncExec(() -> result[0] = promptForPassword(message));
     }
 
     if(result[0]==null){
@@ -168,7 +172,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    * @see com.jcraft.jsch.UIKeyboardInteractive#promptKeyboardInteractive(java.lang.String,
    *      java.lang.String, java.lang.String, java.lang.String[], boolean[])
    */
-  public String[] promptKeyboardInteractive(String destination, String name,
+  @Override
+public String[] promptKeyboardInteractive(String destination, String name,
       String instruction, String[] prompt, boolean[] echo){
     if(prompt.length==0){
       // No need to prompt, just return an empty String array
@@ -209,12 +214,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
     }
     else{
       // sync exec in default thread
-      Display.getDefault().syncExec(new Runnable(){
-        public void run(){
-          result[0]=internalPromptForUserInteractive(destination, name,
-              instruction, prompt, echo);
-        }
-      });
+			Display.getDefault().syncExec(
+					() -> result[0] = internalPromptForUserInteractive(destination, name, instruction, prompt, echo));
     }
     return result[0];
   }
@@ -235,7 +236,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#promptYesNo(java.lang.String)
    */
-  public boolean promptYesNo(String question){
+  @Override
+public boolean promptYesNo(String question){
     int prompt=prompt(MessageDialog.QUESTION, Messages.UserInfoPrompter_0,
         question, new int[] {IDialogConstants.YES_ID, IDialogConstants.NO_ID},
         0 // yes
@@ -250,7 +252,8 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
    *
    * @see com.jcraft.jsch.UserInfo#showMessage(java.lang.String)
    */
-  public void showMessage(String message){
+  @Override
+public void showMessage(String message){
     prompt(MessageDialog.INFORMATION, Messages.UserInfoPrompter_1, message,
         new int[] {IDialogConstants.OK_ID}, 0);
   }
@@ -279,14 +282,12 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
       }
     }
 
-    display.syncExec(new Runnable(){
-      public void run(){
+		display.syncExec(() -> {
         final MessageDialog dialog=new MessageDialog(new Shell(display), title,
             null /* title image */, message, promptType, buttons,
             defaultResponse);
         retval[0]=dialog.open();
-      }
-    });
+		});
     return retval[0];
   }
 

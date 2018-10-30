@@ -14,24 +14,13 @@
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.internal.ccvs.core.CVSStatus;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
@@ -40,7 +29,8 @@ import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.PruneFolderVisitor;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
@@ -55,6 +45,7 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		// Divide the sync info by project
 		final Map projectSyncInfos = getProjectSyncInfoSetMap();
@@ -80,13 +71,12 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 			// and cache commits to disk are batched
 			EclipseSynchronizer.getInstance().run(
 				project,
-				new ICVSRunnable() {
-					public void run(IProgressMonitor monitor) throws CVSException {
+					monitor1 -> {
 						try {
-							CVSSubscriberOperation.this.runWithProjectRule(project, (SyncInfoSet)projectSyncInfos.get(project), monitor);
+							CVSSubscriberOperation.this.runWithProjectRule(project,
+									(SyncInfoSet) projectSyncInfos.get(project), monitor1);
 						} catch (TeamException e) {
 							throw CVSException.wrapException(e);
-						}
 					}
 				}, Policy.subMonitorFor(monitor, 100));
 		} catch (TeamException e) {
@@ -210,6 +200,7 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 		return null;
 	}
 
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
@@ -254,11 +245,9 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 	 */
 	protected boolean promptForOverwrite(final SyncInfoSet syncSet) {
 		final int[] result = new int[] {Window.CANCEL};
-		TeamUIPlugin.getStandardDisplay().syncExec(new Runnable() {
-			public void run() {
-				UpdateDialog dialog = new UpdateDialog(getShell(), syncSet);
-				result[0] = dialog.open();
-			}
+		TeamUIPlugin.getStandardDisplay().syncExec(() -> {
+			UpdateDialog dialog = new UpdateDialog(getShell(), syncSet);
+			result[0] = dialog.open();
 		});
 		return (result[0] == UpdateDialog.YES);
 	}

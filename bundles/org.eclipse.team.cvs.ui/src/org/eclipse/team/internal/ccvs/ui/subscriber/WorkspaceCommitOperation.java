@@ -33,7 +33,8 @@ import org.eclipse.team.core.synchronize.SyncInfoSet;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ccvs.ui.mappings.ChangeSetComparator;
 import org.eclipse.team.internal.ccvs.ui.operations.*;
@@ -56,6 +57,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.CommitAction_commitFailed; 
 	}
@@ -63,6 +65,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#getJobName()
 	 */
+	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return NLS.bind(CVSUIMessages.CommitAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
@@ -71,6 +74,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
 	 */
+	@Override
 	public boolean shouldRun() {
 		SyncInfoSet set = getSyncInfoSet();
 		return !set.isEmpty();
@@ -79,6 +83,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.actions.SubscriberOperation#getSyncInfoSet()
 	 */
+	@Override
 	protected SyncInfoSet getSyncInfoSet() {
 		if (syncSet == null) {
 			syncSet = super.getSyncInfoSet();
@@ -128,6 +133,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	 *  (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void runWithProjectRule(IProject project, SyncInfoSet syncSet, IProgressMonitor monitor) throws TeamException {
 		
 		final SyncInfo[] changed = syncSet.getSyncInfos();
@@ -217,9 +223,11 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		try {
 			CommitOperation commitOperation = new CommitOperation(getPart(), RepositoryProviderOperation.asResourceMappers(commits),
 					new Command.LocalOption[0], comment) {
+				@Override
 				protected ResourceMappingContext getResourceMappingContext() {
 					return new SingleProjectSubscriberContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber(), false, project);
 				}
+				@Override
 				protected SynchronizationScopeManager createScopeManager(boolean consultModels) {
 					return new SingleProjectScopeManager(getJobName(), getSelectedMappings(), getResourceMappingContext(), consultModels, project);
 				}
@@ -236,9 +244,11 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	private void add(final IProject project, IResource[] additions, IProgressMonitor monitor) throws TeamException {
 		try {
 			new AddOperation(getPart(), RepositoryProviderOperation.asResourceMappers(additions)) {
+				@Override
 				protected ResourceMappingContext getResourceMappingContext() {
 					return new SingleProjectSubscriberContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber(), false, project);
 				}
+				@Override
 				protected SynchronizationScopeManager createScopeManager(boolean consultModels) {
 					return new SingleProjectScopeManager(getJobName(), getSelectedMappings(), getResourceMappingContext(), consultModels, project);
 				}
@@ -266,11 +276,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		};
 		Shell shell = getShell();
 		final ToolTipMessageDialog dialog = new ToolTipMessageDialog(shell, title, null, question, MessageDialog.QUESTION, buttons, tips, 0);
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				dialog.open();
-			}
-		});
+		shell.getDisplay().syncExec(() -> dialog.open());
 		return dialog.getReturnCode();
 	}
 		

@@ -17,14 +17,15 @@
 package org.eclipse.jsch.internal.ui.authenticator;
 
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.dialogs.*;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jsch.core.IJSchLocation;
 import org.eclipse.jsch.internal.core.IUserAuthenticator;
 import org.eclipse.jsch.internal.core.IUserInfo;
 import org.eclipse.jsch.internal.ui.Messages;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * An authenticator that prompts the user for authentication info,
@@ -42,7 +43,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
   /**
    * @see IUserAuthenticator#promptForUserInfo(IJSchLocation, IUserInfo, String)
    */
-  public void promptForUserInfo(final IJSchLocation location,
+  @Override
+public void promptForUserInfo(final IJSchLocation location,
       final IUserInfo userinfo, final String message){
 
     // ask the user for a password
@@ -55,12 +57,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
     }
     else{
       // sync exec in default thread
-      Display.getDefault().syncExec(new Runnable(){
-        public void run(){
-          allowCaching[0]=promptForPassword(location, userinfo.getUsername(),
-              message, userinfo.isUsernameMutable(), result);
-        }
-      });
+			Display.getDefault().syncExec(() -> allowCaching[0] = promptForPassword(location, userinfo.getUsername(),
+					message, userinfo.isUsernameMutable(), result));
     }
 
     if(result[0]==null){
@@ -124,7 +122,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
    * @param echo '*' should be used or not
    * @return the entered values, or null if user canceled.
    */
-  public String[] promptForKeyboradInteractive(
+  @Override
+public String[] promptForKeyboradInteractive(
       final IJSchLocation location, final String destination,
       final String name, final String instruction, final String[] prompt,
       final boolean[] echo){
@@ -137,12 +136,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
     }
     else{
       // sync exec in default thread
-      Display.getDefault().syncExec(new Runnable(){
-        public void run(){
-          result[0]=_promptForUserInteractive(location, destination, name,
-              instruction, prompt, echo, allowCaching);
-        }
-      });
+			Display.getDefault().syncExec(() -> result[0] = _promptForUserInteractive(location, destination, name,
+					instruction, prompt, echo, allowCaching));
     }
     if(result[0]!=null && location!=null &&
         prompt!=null && prompt.length==1 && prompt[0].trim().equalsIgnoreCase("password:")){ //$NON-NLS-1$
@@ -177,7 +172,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
   /* (non-Javadoc)
    * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#prompt(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, int, java.lang.String, java.lang.String, int[], int)
    */
-  public int prompt(IJSchLocation location, final int promptType,
+  @Override
+public int prompt(IJSchLocation location, final int promptType,
       final String title, final String message, final int[] promptResponses,
       final int defaultResponse){
     final Display display=getStandardDisplay();
@@ -201,27 +197,20 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
       }
     }
 
-    display.syncExec(new Runnable(){
-      public void run(){
+		display.syncExec(() -> {
         final MessageDialog dialog=new MessageDialog(new Shell(display), title,
             null, message, promptType, buttons, 1);
         retval[0]=dialog.open();
-      }
-    });
+		});
     return retval[0];
   }
 
-  public boolean promptForHostKeyChange(final IJSchLocation location){
+  @Override
+public boolean promptForHostKeyChange(final IJSchLocation location){
     final boolean[] openConfirm=new boolean[] {false};
     final Display display=getStandardDisplay();
-    display.syncExec(new Runnable(){
-      public void run(){
-        openConfirm[0]=MessageDialog.openConfirm(null,
-            Messages.WorkbenchUserAuthenticator_1, NLS.bind(
-                Messages.WorkbenchUserAuthenticator_2, new String[] {location
-                    .getHost()})); //
-      }
-    });
+		display.syncExec(() -> openConfirm[0] = MessageDialog.openConfirm(null, Messages.WorkbenchUserAuthenticator_1,
+				NLS.bind(Messages.WorkbenchUserAuthenticator_2, new String[] { location.getHost() })));
     if(!openConfirm[0]){
       throw new OperationCanceledException();
     }

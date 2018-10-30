@@ -21,7 +21,6 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.wizard.IWizard;
@@ -69,17 +68,14 @@ public class ModuleSelectionPage extends CVSWizardPage {
 		this.helpContextId = helpContextId;
 	}
 	
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 2, false);
 
 		if (helpContextId != null)
             PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
 		
-		Listener listener = new Listener() {
-			public void handleEvent(Event event) {
-				updateEnablements(false);
-			}
-		};
+		Listener listener = event -> updateEnablements(false);
 		
 		if (project != null) {
 			useProjectNameButton = createRadioButton(composite, CVSUIMessages.ModuleSelectionPage_moduleIsProject, 2); 
@@ -101,11 +97,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 			data.horizontalSpan = 2;
 			data.horizontalIndent = 10;
 			useModuleAndProjectNameButton.setLayoutData(data);
-			useModuleAndProjectNameButton.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					updateText();
-				}
-			});
+			useModuleAndProjectNameButton.addListener(SWT.Selection, event -> updateText());
 		}
 		
 		moduleList = createModuleTree(composite, 2);
@@ -145,6 +137,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 				&& useModuleAndProjectNameButton.getSelection();
 	}
 	
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
@@ -205,13 +198,11 @@ public class ModuleSelectionPage extends CVSWizardPage {
 					if (fetchModules) {
 						// Validate the location first since the module fecthing is
 						// done in a deferred fashion
-						getContainer().run(true, true, new IRunnableWithProgress() {
-							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-								try {
-									validateLocation(monitor);
-								} catch (CVSException e) {
-									throw new InvocationTargetException(e);
-								}
+						getContainer().run(true, true, monitor -> {
+							try {
+								validateLocation(monitor);
+							} catch (CVSException e) {
+								throw new InvocationTargetException(e);
 							}
 						});
 						setModuleListInput();
@@ -300,11 +291,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 	
 	public ICVSRemoteFolder[] getSelectedModules() {
 		final ICVSRemoteFolder[][] folder = new ICVSRemoteFolder[][] { null };
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				folder[0] = internalGetSelectedModules();
-			}
-		});
+		Display.getDefault().syncExec(() -> folder[0] = internalGetSelectedModules());
 		return folder[0];
 	}
 	
@@ -322,6 +309,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 			 * Fix to allow filtering to be used without triggering fetching 
 			 * of the contents of all children (see bug 62268)
 			 */
+			@Override
 			public boolean isExpandable(Object element) {
 				ITreeContentProvider cp = (ITreeContentProvider) getContentProvider();
 				if(cp == null)
@@ -333,16 +321,14 @@ public class ModuleSelectionPage extends CVSWizardPage {
 		result.setContentProvider(new RemoteContentProvider());
 		result.setLabelProvider(new WorkbenchLabelProvider());
 		result.addFilter(new ViewerFilter() {
+			@Override
 			public boolean select(Viewer viewer, Object parentElement, Object element) {
 				return !(element instanceof ICVSRemoteFile);
 			}
 		});
-		result.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateText();
-			}
-		});
+		result.addSelectionChangedListener(event -> updateText());
 		result.getTree().addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseDoubleClick(MouseEvent e) {
 				if (getSelectedModule() != null) {
 					gotoNextPage();

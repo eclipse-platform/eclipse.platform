@@ -62,13 +62,10 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			super(TeamUIMessages.ChangeLogModelProvider_0, configuration);
 		}
 
+		@Override
 		public void run() {
 			final IDiff[] diffs = getLocalChanges(getStructuredSelection());
-			syncExec(new Runnable() {
-				public void run() {
-					createChangeSet(diffs);
-				}
-			});
+			syncExec(() -> createChangeSet(diffs));
 		}
 
 		/* package */void createChangeSet(IDiff[] diffs) {
@@ -78,6 +75,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			}
 		}
 
+		@Override
 		protected boolean isEnabledForSelection(IStructuredSelection selection) {
 			return isContentProviderEnabled()
 					&& containsOnlyLocalChanges(selection);
@@ -118,6 +116,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			selectionChanged(selection);
 		}
 
+		@Override
 		public void run() {
 			IDiff[] diffArray = getLocalChanges(getStructuredSelection());
 			if (set != null) {
@@ -132,6 +131,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			}
 		}
 
+		@Override
 		protected boolean isEnabledForSelection(IStructuredSelection selection) {
 			return isContentProviderEnabled()
 					&& containsOnlyLocalChanges(selection);
@@ -147,6 +147,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
         /* (non-Javadoc)
          * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
 		 */
+		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
 			return getSelectedSet() != null;
 		}
@@ -171,6 +172,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			super(TeamUIMessages.ChangeLogModelProvider_6, configuration);
 		}
 
+		@Override
 		public void run() {
 			ActiveChangeSet set = getSelectedSet();
             if (set == null) return;
@@ -184,6 +186,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			super(TeamUIMessages.ChangeLogModelProvider_7, configuration);
 		}
 
+		@Override
 		public void run() {
 			IDiff[] diffArray = getLocalChanges(getStructuredSelection());
 			ChangeSet[] sets = getActiveChangeSetManager().getSets();
@@ -194,6 +197,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			}
 		}
 
+		@Override
 		protected boolean isEnabledForSelection(IStructuredSelection selection) {
 			return isContentProviderEnabled()
 					&& containsOnlyLocalChanges(selection);
@@ -206,6 +210,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			super(TeamUIMessages.ChangeLogModelProvider_9, configuration);
 		}
 
+		@Override
 		protected boolean updateSelection(IStructuredSelection selection) {
 			if (getSelectedSet() != null) {
 				setText(TeamUIMessages.ChangeLogModelProvider_9);
@@ -218,6 +223,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			return true;
 		}
 
+		@Override
 		public void run() {
 			getActiveChangeSetManager().makeDefault(
 					isChecked() ? getSelectedSet() : null);
@@ -239,6 +245,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			update();
 		}
 
+		@Override
 		public void run() {
 			int sortCriteria = getSortCriteria(internalGetSynchronizePageConfiguration());
 			if (isChecked() && sortCriteria != criteria) {
@@ -295,6 +302,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		super();
 	}
 
+	@Override
 	protected void initialize() {
 		super.initialize();
 		if (getChangeSetCapability().supportsCheckedInChangeSets()) {
@@ -341,6 +349,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		return (IResource[]) result.toArray(new IResource[result.size()]);
 	}
 
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		if (isContentProviderEnabled()) {
 			super.fillContextMenu(menu);
@@ -395,6 +404,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		manager.add(new Separator());
 	}
 
+	@Override
 	public void dispose() {
 		if (addToChangeSet != null) {
 			addToChangeSet.dispose();
@@ -539,6 +549,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 	
 	private FastDiffFilter getNonLocalChangesFilter() {
 		return new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				if (diff instanceof IThreeWayDiff && isVisible(diff)) {
 					IThreeWayDiff twd = (IThreeWayDiff) diff;
@@ -589,6 +600,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT);
 	}
 
+	@Override
 	public void setContext(ActionContext context) {
 		super.setContext(context);
 		if (context != null) {

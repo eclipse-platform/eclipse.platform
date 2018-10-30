@@ -15,7 +15,7 @@
 package org.eclipse.team.internal.ccvs.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import org.eclipse.core.runtime.IProgressMonitor;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.internal.ccvs.core.EditorsInfo;
@@ -30,14 +30,11 @@ import org.eclipse.team.internal.ccvs.ui.EditorsView;
  */
 public class ShowEditorsAction extends WorkspaceAction {
 	
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		final EditorsAction editorsAction = new EditorsAction();
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException, InterruptedException {
-				executeProviderAction(editorsAction, monitor);
-			}
-		}, true /* cancelable */ , PROGRESS_DIALOG);
+		run((IRunnableWithProgress) monitor -> executeProviderAction(editorsAction, monitor), true /* cancelable */ ,
+				PROGRESS_DIALOG);
 		EditorsInfo[] infos = editorsAction.getEditorsInfo();
 		EditorsView view = (EditorsView)showView(EditorsView.VIEW_ID);
 		if (view != null) {
@@ -49,6 +46,7 @@ public class ShowEditorsAction extends WorkspaceAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
 	 */
+	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;
 	}
@@ -56,6 +54,7 @@ public class ShowEditorsAction extends WorkspaceAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
 	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
@@ -63,6 +62,7 @@ public class ShowEditorsAction extends WorkspaceAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
 	 */
+	@Override
 	protected boolean isEnabledForMultipleResources() {
 		// We support one selected Resource,
 		// because the editors command will

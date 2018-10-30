@@ -18,10 +18,10 @@ import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
@@ -187,27 +187,22 @@ public class SyncAction extends WorkspaceTraversalAction {
 	 */
 	public static void showSingleFileComparison(final Shell shell, final Subscriber subscriber, final IResource resource, final IWorkbenchPage page) {
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {	
-						subscriber.refresh(new IResource[]{resource}, IResource.DEPTH_ZERO, monitor);
-					} catch (TeamException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					subscriber.refresh(new IResource[] { resource }, IResource.DEPTH_ZERO, monitor);
+				} catch (TeamException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 			final SyncInfo info = subscriber.getSyncInfo(resource);
 			if (info == null) return;
-			shell.getDisplay().syncExec(new Runnable() {
-				@Override
-				public void run() {
-					if (info.getKind() == SyncInfo.IN_SYNC) {
-						MessageDialog.openInformation(shell, CVSUIMessages.SyncAction_noChangesTitle, CVSUIMessages.SyncAction_noChangesMessage); // 
-					} else {
-						SyncInfoCompareInput input = new SyncInfoCompareInput(subscriber.getName(), info);
-                        OpenInCompareAction.openCompareEditor(input, page);
-					}
+			shell.getDisplay().syncExec(() -> {
+				if (info.getKind() == SyncInfo.IN_SYNC) {
+					MessageDialog.openInformation(shell, CVSUIMessages.SyncAction_noChangesTitle,
+							CVSUIMessages.SyncAction_noChangesMessage); //
+				} else {
+					SyncInfoCompareInput input = new SyncInfoCompareInput(subscriber.getName(), info);
+					OpenInCompareAction.openCompareEditor(input, page);
 				}
 			});
 		} catch (InvocationTargetException e) {

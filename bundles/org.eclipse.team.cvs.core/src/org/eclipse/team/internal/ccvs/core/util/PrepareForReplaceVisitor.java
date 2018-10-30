@@ -172,18 +172,16 @@ public class PrepareForReplaceVisitor implements ICVSResourceVisitor {
 	public void visitResources(IProject project, final ICVSResource[] resources, final String oneArgMessage, int depth, IProgressMonitor pm) throws CVSException {
 		this.depth = depth;
 		deletedFiles = new HashSet();
-		CVSWorkspaceRoot.getCVSFolderFor(project).run(new ICVSRunnable() {
-			public void run(IProgressMonitor pm) throws CVSException {
-				monitor = Policy.infiniteSubMonitorFor(pm, 100);
-				monitor.beginTask(null, 512);
-				for (int i = 0; i < resources.length; i++) {
-					if (oneArgMessage != null) {
-						monitor.subTask(NLS.bind(oneArgMessage, new String[] { resources[i].getIResource().getFullPath().toString() })); 
-					}
-					resources[i].accept(PrepareForReplaceVisitor.this);
+		CVSWorkspaceRoot.getCVSFolderFor(project).run(pm1 -> {
+			monitor = Policy.infiniteSubMonitorFor(pm1, 100);
+			monitor.beginTask(null, 512);
+			for (int i = 0; i < resources.length; i++) {
+				if (oneArgMessage != null) {
+					monitor.subTask(NLS.bind(oneArgMessage, new String[] { resources[i].getIResource().getFullPath().toString() })); 
 				}
-				monitor.done();
+				resources[i].accept(PrepareForReplaceVisitor.this);
 			}
+			monitor.done();
 		}, pm);
 	}
 	

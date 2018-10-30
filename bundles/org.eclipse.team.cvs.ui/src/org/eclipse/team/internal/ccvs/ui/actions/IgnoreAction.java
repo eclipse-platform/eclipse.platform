@@ -48,14 +48,16 @@ public class IgnoreAction extends WorkspaceTraversalAction {
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
          */
-        protected String getTaskName(CVSTeamProvider provider) {
+        @Override
+		protected String getTaskName(CVSTeamProvider provider) {
             return NLS.bind(CVSUIMessages.IgnoreAction_0, new String[] { provider.getProject().getName() }); 
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
          */
-        protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
+        @Override
+		protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 			try {
 			    monitor.beginTask(null, resources.length);
 				for (int i = 0; i < resources.length; i++) {
@@ -77,34 +79,37 @@ public class IgnoreAction extends WorkspaceTraversalAction {
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
          */
-        protected String getTaskName() {
+        @Override
+		protected String getTaskName() {
             return CVSUIMessages.IgnoreAction_1; 
         }
         
     	/* (non-Javadoc)
     	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#consultModelsForMappings()
     	 */
-    	public boolean consultModelsForMappings() {
+    	@Override
+		public boolean consultModelsForMappings() {
     		return false;
     	}
         
     }
 	
+	@Override
 	protected void execute(final IAction action) throws InvocationTargetException, InterruptedException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				IResource[] resources = getSelectedResources();
-				IgnoreResourcesDialog dialog = new IgnoreResourcesDialog(getShell(), resources);
-				if (dialog.open() != Window.OK) return;
-				new IgnoreOperation(getTargetPart(), resources, dialog).run();
-				
-				//if (action != null) action.setEnabled(isEnabled());
-			}
+		run((IRunnableWithProgress) monitor -> {
+			IResource[] resources = getSelectedResources();
+			IgnoreResourcesDialog dialog = new IgnoreResourcesDialog(getShell(), resources);
+			if (dialog.open() != Window.OK)
+				return;
+			new IgnoreOperation(getTargetPart(), resources, dialog).run();
+
+			// if (action != null) action.setEnabled(isEnabled());
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.IgnoreAction_ignore; 
 	}
@@ -112,6 +117,7 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForManagedResources()
 	 */
+	@Override
 	protected boolean isEnabledForManagedResources() {
 		return false;
 	}
@@ -119,6 +125,7 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
 	 */
+	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
@@ -126,6 +133,7 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
 	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		if (super.isEnabledForCVSResource(cvsResource)) {
 			// Perform an extra check against the subscriber to ensure there is no conflict
@@ -146,6 +154,7 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
 	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_IGNORE;
 	}

@@ -234,31 +234,29 @@ public class PessimisticModificationValidator
 			if (shell != null && !shell.isDisposed()) {
 				Display display = shell.getDisplay();
 				final Set[] result = {resources};
-				display.syncExec(new Runnable() {
-					public void run() {
-						ILabelProvider labelProvider= new WorkbenchLabelProvider();
-						Object[] resourceArray= result[0].toArray();
-						ITreeContentProvider contentProvider= new ResourceSetContentProvider(result[0]);
-						CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, labelProvider, contentProvider);
-						dialog.setMessage("Select resources to be checked out.");
-						dialog.setTitle("Check out resources");
-						dialog.setContainerMode(true);
-						dialog.setBlockOnOpen(true);
-						dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-						dialog.setExpandedElements(resourceArray);
-						dialog.setInitialSelections(resourceArray);
-						dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-						int status= dialog.open();
-						result[0]= null;
-						if (status == Window.OK) {
-							Object[] results= dialog.getResult();
-							result[0] = new HashSet(results.length);
-							for (int i= 0; i < results.length; i++) {
-								result[0].add(results[i]);
-							}
-						} else if(status == Window.CANCEL) {
-							statusCode[0] = IStatus.CANCEL;
+				display.syncExec(() -> {
+					ILabelProvider labelProvider= new WorkbenchLabelProvider();
+					Object[] resourceArray= result[0].toArray();
+					ITreeContentProvider contentProvider= new ResourceSetContentProvider(result[0]);
+					CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, labelProvider, contentProvider);
+					dialog.setMessage("Select resources to be checked out.");
+					dialog.setTitle("Check out resources");
+					dialog.setContainerMode(true);
+					dialog.setBlockOnOpen(true);
+					dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+					dialog.setExpandedElements(resourceArray);
+					dialog.setInitialSelections(resourceArray);
+					dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+					int status= dialog.open();
+					result[0]= null;
+					if (status == Window.OK) {
+						Object[] results= dialog.getResult();
+						result[0] = new HashSet(results.length);
+						for (int i= 0; i < results.length; i++) {
+							result[0].add(results[i]);
 						}
+					} else if(status == Window.CANCEL) {
+						statusCode[0] = IStatus.CANCEL;
 					}
 				});
 				resources= result[0];			

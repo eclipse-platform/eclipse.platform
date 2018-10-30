@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -66,20 +65,20 @@ public class OpenRemoteFileAction extends CVSAction {
 	/*
 	 * @see CVSAction#execute(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				ICVSRemoteFile[] files = getSelectedRemoteFiles();
-				for (int i = 0; i < files.length; i++) {
-					ICVSRemoteFile file = files[i];
-					CVSUIPlugin.getPlugin().openEditor(file, monitor);
-				}
+		run((IRunnableWithProgress) monitor -> {
+			ICVSRemoteFile[] files = getSelectedRemoteFiles();
+			for (int i = 0; i < files.length; i++) {
+				ICVSRemoteFile file = files[i];
+				CVSUIPlugin.getPlugin().openEditor(file, monitor);
 			}
 		}, false, PROGRESS_BUSYCURSOR); 
 	}
 	/*
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRemoteFile[] resources = getSelectedRemoteFiles();
 		if (resources.length == 0) return false;

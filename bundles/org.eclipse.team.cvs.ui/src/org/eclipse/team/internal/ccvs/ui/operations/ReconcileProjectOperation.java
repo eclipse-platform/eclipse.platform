@@ -27,7 +27,7 @@ import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.MutableResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 
@@ -47,6 +47,7 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.ReconcileProjectOperation_0, new String[] { getProject().getName(), folder.getRepositoryRelativePath() }); 
 	}
@@ -54,6 +55,7 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.ShareProjectOperation#createRemoteFolder(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected ICVSRemoteFolder createRemoteFolder(IProgressMonitor monitor) throws CVSException {
 		// The folder already exists so just return the handle
 		return folder;
@@ -62,6 +64,7 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.ShareProjectOperation#mapProjectToRemoteFolder(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void mapProjectToRemoteFolder(ICVSRemoteFolder remote, IProgressMonitor monitor) throws TeamException {
 		// Map the project
 		monitor.beginTask(null, 100);
@@ -95,11 +98,8 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 	}
 
 	private void populateWorkspace(final ICVSRemoteFolder remote, IProgressMonitor monitor) throws CVSException {
-		CVSWorkspaceRoot.getCVSFolderFor(getProject()).run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				populateWorkspace(getProject(), remote, monitor);
-			}
-		}, monitor);
+		CVSWorkspaceRoot.getCVSFolderFor(getProject())
+				.run(monitor1 -> populateWorkspace(getProject(), remote, monitor1), monitor);
 		
 	}
 

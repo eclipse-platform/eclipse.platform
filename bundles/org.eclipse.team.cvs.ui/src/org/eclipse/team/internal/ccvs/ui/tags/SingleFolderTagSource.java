@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
@@ -44,7 +43,8 @@ public class SingleFolderTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getTags(int)
      */
-    public CVSTag[] getTags(int type) {
+    @Override
+	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {
             return super.getTags(type);
         }
@@ -62,7 +62,8 @@ public class SingleFolderTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#refresh(org.eclipse.core.runtime.IProgressMonitor)
      */
-    public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
+    @Override
+	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
         CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(getFolder(), bestEffort /* recurse */, true /* notify */, monitor);
         fireChange();
         return tags;
@@ -71,7 +72,8 @@ public class SingleFolderTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getLocation()
      */
-    public ICVSRepositoryLocation getLocation() {
+    @Override
+	public ICVSRepositoryLocation getLocation() {
 		RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
 		ICVSRepositoryLocation location = mgr.getRepositoryLocationFor(getFolder());
 		return location;
@@ -80,30 +82,30 @@ public class SingleFolderTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getShortDescription()
      */
-    public String getShortDescription() {
+    @Override
+	public String getShortDescription() {
         return getFolder().getName();
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
+    @Override
+	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {
             final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
-            manager.run(new IRunnableWithProgress() {
-            	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            		try {
-            		    ICVSFolder folder = getFolder();
-            		    if (replace) {
-            		        CVSTag[] oldTags = manager.getKnownTags(folder);
-            		        manager.removeTags(folder, oldTags);
-            		    }
-            		    manager.addTags(folder, tags);
-            		} catch (CVSException e) {
-            			throw new InvocationTargetException(e);
-            		}
-            	}
-            }, monitor);
+			manager.run(monitor1 -> {
+				try {
+					ICVSFolder folder = getFolder();
+					if (replace) {
+						CVSTag[] oldTags = manager.getKnownTags(folder);
+						manager.removeTags(folder, oldTags);
+					}
+					manager.addTags(folder, tags);
+				} catch (CVSException e) {
+					throw new InvocationTargetException(e);
+				}
+			}, monitor);
         } catch (InvocationTargetException e) {
             throw CVSException.wrapException(e);
         } catch (InterruptedException e) {
@@ -115,20 +117,19 @@ public class SingleFolderTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
      */
-    public ICVSResource[] getCVSResources() {
+    @Override
+	public ICVSResource[] getCVSResources() {
         final ICVSResource[][] resources = new ICVSResource[][] { null };
 		try {
-            getRunnableContext().run(true, true, new IRunnableWithProgress() {
-            	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            		try {
-            		    resources[0] = folder.fetchChildren(monitor);
-            		} catch (TeamException e) {
-            			throw new InvocationTargetException(e);
-            		} finally {
-            		    monitor.done();
-            		}
-            	}
-            });
+			getRunnableContext().run(true, true, monitor -> {
+				try {
+					resources[0] = folder.fetchChildren(monitor);
+				} catch (TeamException e) {
+					throw new InvocationTargetException(e);
+				} finally {
+					monitor.done();
+				}
+			});
 	        return resources[0];
         } catch (InvocationTargetException e) {
             CVSUIPlugin.log(CVSException.wrapException(e));

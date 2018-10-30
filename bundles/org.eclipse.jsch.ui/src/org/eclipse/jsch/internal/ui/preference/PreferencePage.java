@@ -125,7 +125,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     setDescription(Messages.CVSSSH2PreferencePage_18);
   }
 
-  protected Control createContents(Composite parent){
+  @Override
+protected Control createContents(Composite parent){
     Composite container=new Composite(parent, SWT.NULL);
     GridLayout layout=new GridLayout();
     container.setLayout(layout);
@@ -216,7 +217,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     privateKeyAdd.setLayoutData(gd);
 
     ssh2HomeBrowse.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         String home=ssh2HomeText.getText();
 
         if(!new File(home).exists()){
@@ -242,7 +244,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
 
     privateKeyAdd.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         String home=ssh2HomeText.getText();
 
         FileDialog fd=new FileDialog(getShell(), SWT.OPEN|SWT.MULTI);
@@ -340,7 +343,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     keyCommentText.setLayoutData(gd);
 
     keyCommentText.addModifyListener(new ModifyListener(){
-      public void modifyText(ModifyEvent e){
+      @Override
+	public void modifyText(ModifyEvent e){
         if(kpair==null)
           return;
         try{
@@ -375,7 +379,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     keyPassphrase2Text.setLayoutData(gd);
 
     keyPassphrase1Text.addModifyListener(new ModifyListener(){
-      public void modifyText(ModifyEvent e){
+      @Override
+	public void modifyText(ModifyEvent e){
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(kpair!=null&&pass1.equals(pass2)){
@@ -398,7 +403,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
 
     keyPassphrase2Text.addModifyListener(new ModifyListener(){
-      public void modifyText(ModifyEvent e){
+      @Override
+	public void modifyText(ModifyEvent e){
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(kpair!=null&&pass1.equals(pass2)){
@@ -426,7 +432,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
 
     keyPassphrase2Text.addFocusListener(new FocusListener(){
-      public void focusGained(FocusEvent e){
+      @Override
+	public void focusGained(FocusEvent e){
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(pass2.length()<pass1.length()){
@@ -446,7 +453,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         }
       }
 
-      public void focusLost(FocusEvent e){
+      @Override
+	public void focusLost(FocusEvent e){
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(pass1.equals(pass2)){
@@ -479,7 +487,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     saveKeyPair.setLayoutData(gd);
 
     SelectionAdapter keygenadapter=new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         boolean ok=true;
         String _type=""; //$NON-NLS-1$
 
@@ -500,16 +509,13 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
           final KeyPair[] _kpair=new KeyPair[1];
           final int __type=type;
           final JSchException[] _e=new JSchException[1];
-          BusyIndicator.showWhile(getShell().getDisplay(), new Runnable(){
-            public void run(){
-              try{
-                _kpair[0]=KeyPair.genKeyPair(getJSch(), __type);
-              }
-              catch(JSchException e){
-                _e[0]=e;
-              }
-            }
-          });
+					BusyIndicator.showWhile(getShell().getDisplay(), () -> {
+						try {
+							_kpair[0] = KeyPair.genKeyPair(getJSch(), __type);
+						} catch (JSchException e1) {
+							_e[0] = e1;
+						}
+					});
           if(_e[0]!=null){
             throw _e[0];
           }
@@ -543,7 +549,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     keyGenerateRSA.addSelectionListener(keygenadapter);
 
     keyLoad.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         boolean ok=true;
         String home=ssh2HomeText.getText();
         FileDialog fd=new FileDialog(getShell(), SWT.OPEN);
@@ -642,7 +649,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
 
     keyExport.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         if(kpair==null)
           return;
 
@@ -650,20 +658,18 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
         final String[] target=new String[1];
         final String title=Messages.CVSSSH2PreferencePage_106;
-        final String message=Messages.CVSSSH2PreferencePage_107;
-        Display.getDefault().syncExec(new Runnable(){
-          public void run(){
-            Display display=Display.getCurrent();
-            Shell shell=new Shell(display);
-            ExportDialog dialog=new ExportDialog(shell, title, message);
-            dialog.open();
-            shell.dispose();
-            target[0]=dialog.getTarget();
-          }
-        });
-        if(target[0]==null){
-          return;
-        }
+				final String message = Messages.CVSSSH2PreferencePage_107;
+				Display.getDefault().syncExec(() -> {
+					Display display = Display.getCurrent();
+					Shell shell = new Shell(display);
+					ExportDialog dialog = new ExportDialog(shell, title, message);
+					dialog.open();
+					shell.dispose();
+					target[0] = dialog.getTarget();
+				});
+				if (target[0] == null) {
+					return;
+				}
         String user=""; //$NON-NLS-1$
         String host=""; //$NON-NLS-1$
         int port=22;
@@ -713,7 +719,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
 
     saveKeyPair.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         if(kpair==null)
           return;
 
@@ -834,7 +841,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
   Button mac_down;
 
   class TableLabelProvider extends LabelProvider implements ITableLabelProvider{
-    public String getColumnText(Object element, int columnIndex){
+    @Override
+	public String getColumnText(Object element, int columnIndex){
       HostKey entry=(HostKey)element;
       switch(columnIndex){
         case 0:
@@ -848,7 +856,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
       }
     }
 
-    public Image getColumnImage(Object element, int columnIndex){
+    @Override
+	public Image getColumnImage(Object element, int columnIndex){
       return null;
     }
   }
@@ -889,7 +898,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     gd.heightHint=100;
     table.setLayoutData(gd);
     table.addListener(SWT.Selection, new Listener(){
-      public void handleEvent(Event e){
+      @Override
+	public void handleEvent(Event e){
         handleSelection();
       }
     });
@@ -907,15 +917,18 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         Messages.CVSSSH2PreferencePage_136});
     viewer.setLabelProvider(new TableLabelProvider());
     viewer.setContentProvider(new IStructuredContentProvider(){
-      public void dispose(){
+      @Override
+	public void dispose(){
         // nothing to do
       }
 
-      public void inputChanged(Viewer viewer, Object oldInput, Object newInput){
+      @Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput){
         // nothing to do
       }
 
-      public Object[] getElements(Object inputElement){
+      @Override
+	public Object[] getElements(Object inputElement){
         if(inputElement==null)
           return null;
         return (Object[])inputElement;
@@ -943,7 +956,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
         SWT.DEFAULT, SWT.END, SWT.CENTER, false, false));
     removeHostKeyButton.setEnabled(false);
     removeHostKeyButton.addListener(SWT.Selection, new Listener(){
-      public void handleEvent(Event e){
+      @Override
+	public void handleEvent(Event e){
         removeHostKey();
       }
     });
@@ -995,7 +1009,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     preferedAuthMethodTable.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedAuthMethodTable.getItemCount(); i++){
           anySelected |= preferedAuthMethodTable.getItem(i).getChecked();
@@ -1018,7 +1033,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
     up.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedAuthMethodTable.getSelectionIndex();
         if(selectedIndex == 1){ //this is the last possible swap
           up.setEnabled(false);
@@ -1043,7 +1059,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     down.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedAuthMethodTable.getSelectionIndex();
         if(selectedIndex == preferedAuthMethodTable.getItemCount()-2){ //this is the last possible swap
           down.setEnabled(false);
@@ -1121,7 +1138,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     preferedKeyExchangeMethodTable.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedKeyExchangeMethodTable.getItemCount(); i++){
           anySelected |= preferedKeyExchangeMethodTable.getItem(i).getChecked();
@@ -1144,7 +1162,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
     kex_up.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedKeyExchangeMethodTable.getSelectionIndex();
         if(selectedIndex == 1){ //this is the last possible swap
           kex_up.setEnabled(false);
@@ -1169,7 +1188,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     kex_down.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedKeyExchangeMethodTable.getSelectionIndex();
         if(selectedIndex == preferedKeyExchangeMethodTable.getItemCount()-2){ //this is the last possible swap
           kex_down.setEnabled(false);
@@ -1247,7 +1267,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     preferedMACMethodTable.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         boolean anySelected = false;
         for(int i = 0; i < preferedMACMethodTable.getItemCount(); i++){
           anySelected |= preferedMACMethodTable.getItem(i).getChecked();
@@ -1270,7 +1291,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     });
     mac_up.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedMACMethodTable.getSelectionIndex();
         if(selectedIndex == 1){ //this is the last possible swap
           mac_up.setEnabled(false);
@@ -1295,7 +1317,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
 
     mac_down.addSelectionListener(new SelectionAdapter(){
 
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         int selectedIndex=preferedMACMethodTable.getSelectionIndex();
         if(selectedIndex == preferedMACMethodTable.getItemCount()-2){ //this is the last possible swap
           mac_down.setEnabled(false);
@@ -1505,7 +1528,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     mac_down.setEnabled(false);
   }
 
-  public void init(IWorkbench workbench){
+  @Override
+public void init(IWorkbench workbench){
     // super.init(workbench);
     // initControls();
   }
@@ -1523,7 +1547,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     updateControls();
   }
 
-  public boolean performOk(){
+  @Override
+public boolean performOk(){
     boolean result=super.performOk();
     storeAuthenticationMethodSettings();
     storeSSHAgentSettings();
@@ -1641,11 +1666,13 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
     Utils.setEnabledPreferredMACMethods(selected, order);
   }
 
-  public void performApply(){
+  @Override
+public void performApply(){
     performOk();
   }
 
-  protected void performDefaults(){
+  @Override
+protected void performDefaults(){
     super.performDefaults();
     Utils.setEnabledPreferredAuthMethods(Utils.getDefaultAuthMethods(), Utils
         .getDefaultAuthMethods());
@@ -1678,7 +1705,8 @@ public class PreferencePage extends org.eclipse.jface.preference.PreferencePage
       this.message=message;
     }
 
-    public void run(){
+    @Override
+	public void run(){
       Display display=Display.getCurrent();
       Shell shell=new Shell(display);
       PassphraseDialog dialog=new PassphraseDialog(shell, message);

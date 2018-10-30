@@ -23,11 +23,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
-import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.client.*;
+import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.PrepareForReplaceVisitor;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSourceWorkbenchAdapter;
@@ -49,6 +50,7 @@ public class ReplaceOperation extends UpdateOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.ReplaceOperation_taskName; 
 	}
@@ -56,6 +58,7 @@ public class ReplaceOperation extends UpdateOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#executeCommand(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected IStatus executeCommand(
 		final Session session,
 		final CVSTeamProvider provider,
@@ -65,16 +68,13 @@ public class ReplaceOperation extends UpdateOperation {
 		
         final IStatus[] status = new IStatus[] { Status.OK_STATUS };
         try {
-            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    try {
-                        status[0] = internalExecuteCommand(session, provider, resources, recurse, monitor);
-                    } catch (InterruptedException e) {
-                        throw new OperationCanceledException();
-                    }
-                }
-            
-            }, null, IWorkspace.AVOID_UPDATE, monitor);
+			ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+				try {
+					status[0] = internalExecuteCommand(session, provider, resources, recurse, monitor1);
+				} catch (InterruptedException e) {
+					throw new OperationCanceledException();
+				}
+			}, null, IWorkspace.AVOID_UPDATE, monitor);
         } catch (CoreException e) {
             throw CVSException.wrapException(e);
         }
@@ -189,6 +189,7 @@ public class ReplaceOperation extends UpdateOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation#getUpdateCommand()
 	 */
+	@Override
 	protected Update getUpdateCommand() {
 		// Use a special replace command that doesn't set back the timestamps
 		// of files in the passed set if it recreates them.
@@ -198,6 +199,7 @@ public class ReplaceOperation extends UpdateOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
 	 */
+	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.ReplaceOperation_0, new String[] { provider.getProject().getName() }); 
 	}

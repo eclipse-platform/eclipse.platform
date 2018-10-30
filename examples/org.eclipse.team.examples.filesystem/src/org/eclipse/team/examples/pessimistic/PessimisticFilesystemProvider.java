@@ -76,29 +76,27 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			return;
 		}
 		final Set toAdd= new HashSet(resources.length);
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				for (int i = 0; i < resources.length; i++) {
-					IResource resource= resources[i];
-					if (!isControlled(resource)) {
-						toAdd.add(resource);
-					}
+		IWorkspaceRunnable runnable= monitor1 -> {
+			for (int i1 = 0; i1 < resources.length; i1++) {
+				IResource resource= resources[i1];
+				if (!isControlled(resource)) {
+					toAdd.add(resource);
 				}
-				Map byParent= sortByParent(toAdd);
-
-				monitor.beginTask("Adding to control", 1000);
-				for (Iterator i= byParent.keySet().iterator(); i.hasNext();) {
-					IContainer parent= (IContainer) i.next();
-					Set controlledResources= (Set)fControlledResources.get(parent);
-					if (controlledResources == null) {
-						controlledResources= new HashSet(1);
-						fControlledResources.put(parent, controlledResources);
-					}
-					controlledResources.addAll((Set)byParent.get(parent));
-					writeControlFile(parent, monitor);
-				}
-				monitor.done();				
 			}
+			Map byParent= sortByParent(toAdd);
+
+			monitor1.beginTask("Adding to control", 1000);
+			for (Iterator i2= byParent.keySet().iterator(); i2.hasNext();) {
+				IContainer parent= (IContainer) i2.next();
+				Set controlledResources= (Set)fControlledResources.get(parent);
+				if (controlledResources == null) {
+					controlledResources= new HashSet(1);
+					fControlledResources.put(parent, controlledResources);
+				}
+				controlledResources.addAll((Set)byParent.get(parent));
+				writeControlFile(parent, monitor1);
+			}
+			monitor1.done();				
 		};
 		run(runnable, monitor);
 		fireStateChanged(toAdd, false);
@@ -122,41 +120,39 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			return;
 		}
 		final Set toRemove= new HashSet(resources.length);
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				for (int i = 0; i < resources.length; i++) {
-					IResource resource= resources[i];
-					if (isControlled(resource)) {	
-						toRemove.add(resource);
-					}
+		IWorkspaceRunnable runnable= monitor1 -> {
+			for (int i1 = 0; i1 < resources.length; i1++) {
+				IResource resource1= resources[i1];
+				if (isControlled(resource1)) {	
+					toRemove.add(resource1);
 				}
-				Map byParent= sortByParent(toRemove);
-
-				monitor.beginTask("Removing from control", 1000);
-				for (Iterator i= byParent.keySet().iterator(); i.hasNext();) {
-					IContainer parent= (IContainer) i.next();
-					Set controlledResources= (Set)fControlledResources.get(parent);
-					if (controlledResources == null) {
-						deleteControlFile(parent, monitor);
-					} else {
-						Set toRemove= (Set)byParent.get(parent);
-						controlledResources.removeAll(toRemove);
-						if (controlledResources.isEmpty()) {
-							fControlledResources.remove(parent);
-							deleteControlFile(parent, monitor);
-						} else {
-							writeControlFile(parent, monitor);
-						}
-						for (Iterator j= controlledResources.iterator(); j.hasNext();) {
-							IResource resource= (IResource) j.next();
-							if (!resource.exists()) {
-								j.remove();
-							}
-						}
-					}
-				}
-				monitor.done();
 			}
+			Map byParent= sortByParent(toRemove);
+
+			monitor1.beginTask("Removing from control", 1000);
+			for (Iterator i2= byParent.keySet().iterator(); i2.hasNext();) {
+				IContainer parent= (IContainer) i2.next();
+				Set controlledResources= (Set)fControlledResources.get(parent);
+				if (controlledResources == null) {
+					deleteControlFile(parent, monitor1);
+				} else {
+					Set toRemove1= (Set)byParent.get(parent);
+					controlledResources.removeAll(toRemove1);
+					if (controlledResources.isEmpty()) {
+						fControlledResources.remove(parent);
+						deleteControlFile(parent, monitor1);
+					} else {
+						writeControlFile(parent, monitor1);
+					}
+					for (Iterator j= controlledResources.iterator(); j.hasNext();) {
+						IResource resource2= (IResource) j.next();
+						if (!resource2.exists()) {
+							j.remove();
+						}
+					}
+				}
+			}
+			monitor1.done();
 		};
 		run(runnable, monitor);
 		fireStateChanged(toRemove, false);
@@ -184,15 +180,13 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	 * Deletes the control file for the given container.
 	 */
 	private void deleteControlFile(final IContainer container, IProgressMonitor monitor) {
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				IFile controlFile= getControlFile(container, monitor);
-				monitor.beginTask("Deleting control file " + controlFile, 1);
-				if (controlFile.exists()) {
-					controlFile.delete(true, false, monitor);
-				}
-				monitor.done();
+		IWorkspaceRunnable runnable= monitor1 -> {
+			IFile controlFile= getControlFile(container, monitor1);
+			monitor1.beginTask("Deleting control file " + controlFile, 1);
+			if (controlFile.exists()) {
+				controlFile.delete(true, false, monitor1);
 			}
+			monitor1.done();
 		};
 		run(runnable, monitor);
 	}
@@ -371,17 +365,15 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 		set.add(project);
 		fControlledResources.put(project.getParent(), set);
 		try {
-			getProject().accept(new IResourceVisitor() {
-				public boolean visit(IResource resource) {
-					if (resource.getType() == IResource.FILE) {
-						if (CONTROL_FILE_NAME.equals(resource.getName())) {
-							Set controlledResources= readControlFile((IFile)resource);
-							fControlledResources.put(resource.getParent(), controlledResources);
-						}
-						return false;
+			getProject().accept(resource -> {
+				if (resource.getType() == IResource.FILE) {
+					if (CONTROL_FILE_NAME.equals(resource.getName())) {
+						Set controlledResources= readControlFile((IFile)resource);
+						fControlledResources.put(resource.getParent(), controlledResources);
 					}
-					return true;
+					return false;
 				}
+				return true;
 			});
 		} catch (CoreException e) {
 			PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problems traversing resource tree");
@@ -406,20 +398,18 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			return;
 		}
 		final Set modified= new HashSet(1);
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) {
-				monitor.beginTask("Checking in resources", 1000);
-				for(int i= 0; i < resources.length; i++) {
-					IResource resource= resources[i];
-					if (isControlled(resource)) { 
-						if (resource.exists()) {
-							resource.setReadOnly(true);
-							modified.add(resource);
-						}
+		IWorkspaceRunnable runnable= monitor1 -> {
+			monitor1.beginTask("Checking in resources", 1000);
+			for(int i= 0; i < resources.length; i++) {
+				IResource resource= resources[i];
+				if (isControlled(resource)) { 
+					if (resource.exists()) {
+						resource.setReadOnly(true);
+						modified.add(resource);
 					}
 				}
-				monitor.done();
 			}
+			monitor1.done();
 		};
 		run(runnable, monitor);
 		fireStateChanged(modified, false);
@@ -446,20 +436,18 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			return;
 		}
 		final Set modified= new HashSet(1);
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) {
-				monitor.beginTask("Unchecking in resources", 1000);
-				for(int i= 0; i < resources.length; i++) {
-					IResource resource= resources[i];
-					if (isControlled(resource)) {
-						if (resource.exists()) {
-							resource.setReadOnly(true);
-							modified.add(resource);
-						}
+		IWorkspaceRunnable runnable= monitor1 -> {
+			monitor1.beginTask("Unchecking in resources", 1000);
+			for(int i= 0; i < resources.length; i++) {
+				IResource resource= resources[i];
+				if (isControlled(resource)) {
+					if (resource.exists()) {
+						resource.setReadOnly(true);
+						modified.add(resource);
 					}
 				}
-				monitor.done();
 			}
+			monitor1.done();
 		};
 		run(runnable, monitor);
 		fireStateChanged(modified, false);
@@ -483,20 +471,18 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 			return;
 		}
 		final Set modified= new HashSet(1);
-		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) {
-				monitor.beginTask("Checking out resources", 1000);
-				for(int i= 0; i < resources.length; i++) {
-					IResource resource= resources[i];
-					if (isControlled(resource)) {
-						if(resource.exists()) {
-							resource.setReadOnly(false);								
-							modified.add(resource);
-						}
+		IWorkspaceRunnable runnable= monitor1 -> {
+			monitor1.beginTask("Checking out resources", 1000);
+			for(int i= 0; i < resources.length; i++) {
+				IResource resource= resources[i];
+				if (isControlled(resource)) {
+					if(resource.exists()) {
+						resource.setReadOnly(false);								
+						modified.add(resource);
 					}
 				}
-				monitor.done();
 			}
+			monitor1.done();
 		};
 		run(runnable, monitor);
 		fireStateChanged(modified, false);
@@ -660,20 +646,16 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 		}
 
 		if (queueAfterWorkspaceOperation) {
-			Thread t= new Thread(new Runnable() {
-				public void run() {
-					try {
-						ResourcesPlugin.getWorkspace().run(
-							new IWorkspaceRunnable() {
-								public void run(IProgressMonitor monitor) {
-								}
-							}, 
-							null);
-					} catch (CoreException e) {
-						PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problem during empty runnable");
-					}
-					fireStateChanged(resources, false);
+			Thread t= new Thread(() -> {
+				try {
+					ResourcesPlugin.getWorkspace().run(
+						(IWorkspaceRunnable) monitor -> {
+						}, 
+						null);
+				} catch (CoreException e) {
+					PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problem during empty runnable");
 				}
+				fireStateChanged(resources, false);
 			});
 			t.start();
 		} else {
@@ -688,17 +670,15 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	 */
 	private Collection getSubtreeMembers(IResource resource) {
 		final Set resources= new HashSet(1);
-		IResourceVisitor visitor= new IResourceVisitor() {
-			public boolean visit(IResource resource) {
-				switch (resource.getType()) {
-					case IResource.PROJECT:
-					case IResource.FOLDER:
-					case IResource.FILE:
-						resources.add(resource);
-						return true;
-				}
-				return true;
+		IResourceVisitor visitor= resource1 -> {
+			switch (resource1.getType()) {
+				case IResource.PROJECT:
+				case IResource.FOLDER:
+				case IResource.FILE:
+					resources.add(resource1);
+					return true;
 			}
+			return true;
 		};
 		try {
 			resource.accept(visitor);

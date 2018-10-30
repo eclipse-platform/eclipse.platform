@@ -17,7 +17,8 @@ package org.eclipse.team.internal.ccvs.ui;
 import java.util.Map;
 
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
@@ -58,6 +59,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 	/**
 	 * @see IUserAuthenticator#authenticateUser
 	 */
+	@Override
 	public void promptForUserInfo(final ICVSRepositoryLocation location, final IUserInfo userinfo, final String message) throws CVSException {
 		if (!userinfo.isUsernameMutable() && USE_ALTERNATE_PROMPTER) {
 			alternatePromptForUserInfo(userinfo);
@@ -72,13 +74,12 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 		} else {
 			// sync exec in default thread
 			final CVSException[] exception = new CVSException[] { null };
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					try {
-						allowCaching[0] = promptForPassword(location, userinfo.getUsername(), message, userinfo.isUsernameMutable(), result);
-					} catch (CVSException e) {
-						exception[0] = e;
-					}
+			Display.getDefault().syncExec(() -> {
+				try {
+					allowCaching[0] = promptForPassword(location, userinfo.getUsername(), message,
+							userinfo.isUsernameMutable(), result);
+				} catch (CVSException e) {
+					exception[0] = e;
 				}
 			});
 			if (exception[0] != null) {
@@ -166,6 +167,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 	 * @param echo '*' should be used or not
 	 * @param result the entered values, or null if user canceled.
 	 */
+	@Override
 	public String[] promptForKeyboradInteractive(final ICVSRepositoryLocation location,
 						     final String destination,
 						     final String name,
@@ -180,11 +182,8 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 	    } 
 	    else {
 	    	// sync exec in default thread
-	    	Display.getDefault().syncExec(new Runnable() {
-	    		public void run() {
-	    			result[0]=_promptForUserInteractive(location, destination, name, instruction, prompt, echo, allowCaching);
-	    		}
-		    });
+			Display.getDefault().syncExec(() -> result[0] = _promptForUserInteractive(location, destination, name,
+					instruction, prompt, echo, allowCaching));
 	    }
 	    if (result[0] != null && location != null && 
 	    		KeyboardInteractiveDialog.isPasswordAuth(prompt)) {
@@ -265,11 +264,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 			result[0] = alternatePromptForPassword(userinfo.getUsername());
 		} else {
 			// sync exec in default thread
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					result[0] = alternatePromptForPassword(userinfo.getUsername());
-				}
-			});
+			Display.getDefault().syncExec(() -> result[0] = alternatePromptForPassword(userinfo.getUsername()));
 		}
 			
 		if (result[0] == null) {
@@ -282,6 +277,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#prompt(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, int, java.lang.String, java.lang.String, int[], int)
 	 */
+	@Override
 	public int prompt(final ICVSRepositoryLocation location, final int promptType, final String title, final String message, final int[] promptResponses, final int defaultResponse) {
 		final Display display = CVSUIPlugin.getStandardDisplay();
 		final int[] retval = new int[1];
@@ -296,31 +292,22 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 			}
 		}
 		
-		display.syncExec(new Runnable() {
-			public void run() {
-				final MessageDialog dialog = new MessageDialog(
-						new Shell(display),
-						title,
-						null /* title image */,
-						NLS.bind(CVSUIMessages.WorkbenchUserAuthenticator_0, message, location.getLocation(true)),
-						promptType,
-						buttons,
-						1
-				);				
-				retval[0] = dialog.open();
-			}
+		display.syncExec(() -> {
+			final MessageDialog dialog = new MessageDialog(new Shell(display), title, null /* title image */,
+					NLS.bind(CVSUIMessages.WorkbenchUserAuthenticator_0, message, location.getLocation(true)),
+					promptType, buttons, 1);
+			retval[0] = dialog.open();
 		});
 		return retval[0];
 	}
     
-    public boolean promptForHostKeyChange(final ICVSRepositoryLocation location) {
+    @Override
+	public boolean promptForHostKeyChange(final ICVSRepositoryLocation location) {
         final boolean[] openConfirm = new boolean[] { false };
         final Display display = CVSUIPlugin.getStandardDisplay();
-        display.syncExec(new Runnable() {
-            public void run() {
-                openConfirm[0] = MessageDialog.openConfirm(null, CVSUIMessages.WorkbenchUserAuthenticator_1, NLS.bind(CVSUIMessages.WorkbenchUserAuthenticator_2, new String[] { location.getHost() })); // 
-            }
-        });
+		display.syncExec(
+				() -> openConfirm[0] = MessageDialog.openConfirm(null, CVSUIMessages.WorkbenchUserAuthenticator_1,
+						NLS.bind(CVSUIMessages.WorkbenchUserAuthenticator_2, new String[] { location.getHost() })));
         if (!openConfirm[0]) {
             throw new OperationCanceledException();
         }
@@ -332,6 +319,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 	 * 
 	 * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#promptToConfigureRepositoryLocations(java.util.Map)
 	 */
+	@Override
 	public Map promptToConfigureRepositoryLocations(final Map alternativeMap) {
 		final Map[] result = new Map[1];
 		Display display = Display.getCurrent();
@@ -339,11 +327,7 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 			result[0] = openAlternativeRepositoryDialog(alternativeMap);
 		} else {
 			// sync exec in default thread
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					result[0] = openAlternativeRepositoryDialog(alternativeMap);
-				}
-			});
+			Display.getDefault().syncExec(() -> result[0] = openAlternativeRepositoryDialog(alternativeMap));
 		}
 		return result[0];
 	}

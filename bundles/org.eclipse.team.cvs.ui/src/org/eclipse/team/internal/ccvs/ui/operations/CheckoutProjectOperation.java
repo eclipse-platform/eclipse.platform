@@ -30,7 +30,8 @@ import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ui.wizards.WorkingSetsDialog;
 import org.eclipse.ui.*;
@@ -160,20 +161,17 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 				try {
 					Job.getJobManager().beginRule(schedulingRule, pm);
 					// Still use the projects as the inner rule so we get the proper batching of sync info write
-					EclipseSynchronizer.getInstance().run(MultiRule.combine(targetProjects), new ICVSRunnable() {
-						public void run(IProgressMonitor monitor) throws CVSException {
-							result[0] = performCheckout(session, resource, targetProjects, sendModuleName, monitor);
-						}
-					}, Policy.subMonitorFor(pm, 90));
+					EclipseSynchronizer
+							.getInstance().run(
+									MultiRule.combine(targetProjects), monitor -> result[0] = performCheckout(session,
+											resource, targetProjects, sendModuleName, monitor),
+									Policy.subMonitorFor(pm, 90));
 				} finally {
 					Job.getJobManager().endRule(schedulingRule);
 				}
 			} else {
-				EclipseSynchronizer.getInstance().run(schedulingRule, new ICVSRunnable() {
-					public void run(IProgressMonitor monitor) throws CVSException {
-						result[0] = performCheckout(session, resource, targetProjects, sendModuleName, monitor);
-					}
-				}, Policy.subMonitorFor(pm, 90));
+				EclipseSynchronizer.getInstance().run(schedulingRule, monitor -> result[0] = performCheckout(session,
+						resource, targetProjects, sendModuleName, monitor), Policy.subMonitorFor(pm, 90));
 			}
 			IWorkingSet[] ws = getWorkingSets();
 			if (ws != null) {
@@ -504,6 +502,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		}
 	}
 
+	@Override
 	protected String getTaskName() {
 		ICVSRemoteFolder[] remoteFolders = getRemoteFolders();
 		if (remoteFolders.length == 1) {

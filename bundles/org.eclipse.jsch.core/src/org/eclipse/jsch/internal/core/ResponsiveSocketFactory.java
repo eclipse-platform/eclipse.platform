@@ -69,23 +69,21 @@ public class ResponsiveSocketFactory implements SocketFactory {
     // Start a thread to open a socket
     final Socket[] socket = new Socket[] { null };
     final Exception[] exception = new Exception[] {null };
-    final Thread thread = new Thread(new Runnable() {
-      public void run() {
-        try {
-          Socket newSocket = internalCreateSocket(host, port);
-          synchronized (socket) {
-            if (Thread.interrupted()) {
-              // we we're either canceled or timed out so just close the socket
-              newSocket.close();
-            } else {
-              socket[0] = newSocket;
-            }
+    final Thread thread = new Thread(() -> {
+      try {
+        Socket newSocket = internalCreateSocket(host, port);
+        synchronized (socket) {
+          if (Thread.interrupted()) {
+            // we we're either canceled or timed out so just close the socket
+            newSocket.close();
+          } else {
+            socket[0] = newSocket;
           }
-        } catch (UnknownHostException e) {
-          exception[0] = e;
-        } catch (IOException e) {
-          exception[0] = e;
         }
+      } catch (UnknownHostException e1) {
+        exception[0] = e1;
+      } catch (IOException e2) {
+        exception[0] = e2;
       }
     });
     thread.start();

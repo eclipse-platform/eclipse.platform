@@ -132,28 +132,24 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 		}
 
 		if (!fRemoved.isEmpty() || !fAdded.isEmpty()) {
-			final IWorkspaceRunnable workspaceRunnable= new IWorkspaceRunnable() {
-				public void run(final IProgressMonitor monitor) {
-					if (!fRemoved.isEmpty()) {
-						remove(monitor);
-					}
-					
-					if (!fAdded.isEmpty()) {
-						add(monitor);
-					}					
+			final IWorkspaceRunnable workspaceRunnable= monitor -> {
+				if (!fRemoved.isEmpty()) {
+					remove(monitor);
 				}
+				
+				if (!fAdded.isEmpty()) {
+					add(monitor);
+				}					
 			};
 			// must fork since we are in resource callback.
-			Runnable run= new Runnable() {
-				public void run() {
-					try {
-						IWorkspace workspace= ResourcesPlugin.getWorkspace();
-						if (workspace != null) {
-							workspace.run(workspaceRunnable, null);
-						}
-					} catch (CoreException e) {
-						PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problems encountered during attempt to add/remove control.");
+			Runnable run= () -> {
+				try {
+					IWorkspace workspace= ResourcesPlugin.getWorkspace();
+					if (workspace != null) {
+						workspace.run(workspaceRunnable, null);
 					}
+				} catch (CoreException e) {
+					PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problems encountered during attempt to add/remove control.");
 				}
 			};
 			new Thread(run).start();
@@ -188,29 +184,27 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 				final Shell shell= getShell();
 				if (shell != null && !shell.isDisposed()) {
 					final Set resources= new HashSet(fAdded);
-					Runnable run= new Runnable() {
-						public void run() {
-							CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new ResourceSetContentProvider(resources));
-							dialog.setMessage("Select the resources to be added to the control of the repository.");
-							dialog.setTitle("Add resources to control");
-							dialog.setContainerMode(true);
-							dialog.setBlockOnOpen(true);
-							dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-							Object[] resourceArray= resources.toArray();
-							dialog.setExpandedElements(resourceArray);
-							dialog.setInitialSelections(resourceArray);
-							dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-							int status= dialog.open();
-							
-							if (status == Window.OK) {
-								Object[] results= dialog.getResult();
-								if (results != null) {
-									Set resources= new HashSet(results.length);
-									for (int i= 0; i < results.length; i++) {
-										resources.add(results[i]);
-									}
-									addToControl(resources, monitor);
+					Runnable run= () -> {
+						CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new ResourceSetContentProvider(resources));
+						dialog.setMessage("Select the resources to be added to the control of the repository.");
+						dialog.setTitle("Add resources to control");
+						dialog.setContainerMode(true);
+						dialog.setBlockOnOpen(true);
+						dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+						Object[] resourceArray= resources.toArray();
+						dialog.setExpandedElements(resourceArray);
+						dialog.setInitialSelections(resourceArray);
+						dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+						int status= dialog.open();
+						
+						if (status == Window.OK) {
+							Object[] results= dialog.getResult();
+							if (results != null) {
+								Set resources1= new HashSet(results.length);
+								for (int i= 0; i < results.length; i++) {
+									resources1.add(results[i]);
 								}
+								addToControl(resources1, monitor);
 							}
 						}
 					};

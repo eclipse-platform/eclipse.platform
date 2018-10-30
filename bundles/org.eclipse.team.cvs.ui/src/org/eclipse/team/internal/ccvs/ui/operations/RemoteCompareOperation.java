@@ -13,11 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.operations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.compare.CompareUI;
 import org.eclipse.core.runtime.*;
@@ -95,12 +91,8 @@ public class RemoteCompareOperation extends RemoteOperation {
          */
         public void openCompareEditor(final IWorkbenchPage page, final String title, final String toolTip) {
 			if (leftTree == null || rightTree == null) return;
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					CompareUI.openCompareEditorOnPage(
-						new CVSCompareEditorInput(title, toolTip, new ResourceEditionNode(leftTree), new ResourceEditionNode(rightTree)), page);
-				}
-			});
+			Display.getDefault().asyncExec(() -> CompareUI.openCompareEditorOnPage(new CVSCompareEditorInput(title,
+					toolTip, new ResourceEditionNode(leftTree), new ResourceEditionNode(rightTree)), page));
         }
 		
         /**
@@ -177,6 +169,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#fileDiff(java.lang.String, java.lang.String, java.lang.String)
 		 */
+		@Override
 		public void fileDiff(String remoteFilePath, String leftRevision, String rightRevision) {
 			try {
 				addFile(rightTree, right, new Path(null, remoteFilePath), rightRevision);
@@ -193,6 +186,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#newFile(java.lang.String, java.lang.String)
 		 */
+		@Override
 		public void newFile(String remoteFilePath, String rightRevision) {
 			try {
 				addFile(rightTree, right, new Path(null, remoteFilePath), rightRevision);
@@ -204,6 +198,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#deletedFile(java.lang.String)
 		 */
+		@Override
 		public void deletedFile(String remoteFilePath, String leftRevision) {
 			// The leftRevision may be null in which case the tag is used
 			try {
@@ -216,6 +211,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#directory(java.lang.String)
 		 */
+		@Override
 		public void directory(String remoteFolderPath) {
 			try {
 				getFolder(leftTree, left, new Path(null, remoteFolderPath), Path.EMPTY);
@@ -331,6 +327,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException {
 		boolean fetchContents = CVSUIPlugin.getPlugin().getPluginPreferences().getBoolean(ICVSUIConstants.PREF_CONSIDER_CONTENTS);
 		monitor.beginTask(getTaskName(), 50 + (fetchContents ? 100 : 0));
@@ -390,6 +387,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.RemoteCompareOperation_0, (new Object[] {left.getName(), right.getName(), getRemoteResource().getRepositoryRelativePath()})); 
 	}

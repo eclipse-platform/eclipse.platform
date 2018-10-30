@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
@@ -45,6 +44,7 @@ public class CommitAction extends WorkspaceTraversalAction {
 			includeChangeSets = isIncludeChangeSets(getShell(), CVSUIMessages.CommitAction_2);
 		}
 
+		@Override
 		protected ResourceTraversal[] adjustInputTraversals(ResourceTraversal[] traversals) {
 			if (includeChangeSets)
 				return ((CVSActiveChangeSetCollector)CVSUIPlugin.getPlugin().getChangeSetManager()).adjustInputTraversals(traversals);
@@ -55,36 +55,32 @@ public class CommitAction extends WorkspaceTraversalAction {
 	/*
 	 * @see CVSAction#execute(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		final ResourceTraversal[][] traversals = new ResourceTraversal[][] { null };
-		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-            public void run(IProgressMonitor monitor)
-                    throws InvocationTargetException, InterruptedException {
-	            try {
-	            	monitor.beginTask(CVSUIMessages.CommitAction_0, 100);
-	                traversals[0] = getTraversals(Policy.subMonitorFor(monitor, 80));
-	            } catch (CoreException e) {
-	                throw new InvocationTargetException(e);
-	            } finally {
-	            	monitor.done();
-	            }
-            }
-        });
-        run(new IRunnableWithProgress() {
-            public void run(IProgressMonitor monitor)
-                    throws InvocationTargetException, InterruptedException {
-	            try {
-	            	CommitWizard.run(getTargetPart(), getShell(), traversals[0]);
-	            } catch (CoreException e) {
-	                throw new InvocationTargetException(e);
-	            }
-            }
-        }, false, PROGRESS_BUSYCURSOR);
+		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+			try {
+				monitor.beginTask(CVSUIMessages.CommitAction_0, 100);
+				traversals[0] = getTraversals(Policy.subMonitorFor(monitor, 80));
+			} catch (CoreException e) {
+				throw new InvocationTargetException(e);
+			} finally {
+				monitor.done();
+			}
+		});
+		run((IRunnableWithProgress) monitor -> {
+			try {
+				CommitWizard.run(getTargetPart(), getShell(), traversals[0]);
+			} catch (CoreException e) {
+				throw new InvocationTargetException(e);
+			}
+		}, false, PROGRESS_BUSYCURSOR);
 	}
     
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.CommitAction_commitFailed; 
 	}
@@ -92,6 +88,7 @@ public class CommitAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
 	 */
+	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
@@ -99,6 +96,7 @@ public class CommitAction extends WorkspaceTraversalAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
 	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
@@ -106,10 +104,12 @@ public class CommitAction extends WorkspaceTraversalAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
 	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_COMMIT;
 	}
 	
+	@Override
 	protected SynchronizationScopeManager getScopeManager() {
 		return new CommitScopeManager(getCVSResourceMappings(), getResourceMappingContext(), true);
 	}
@@ -127,19 +127,12 @@ public class CommitAction extends WorkspaceTraversalAction {
 		
 	    // Ask the user whether to switch
 		final int[] result = new int[] { 0 };
-		Utils.syncExec(new Runnable() {
-			public void run() {
-				final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(
-						shell,
-						CVSUIMessages.CommitAction_1, 
-						message, 
-						CVSUIMessages.ShowAnnotationOperation_4,   
-						false /* toggle state */,
-						store,
-						ICVSUIConstants.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT);
-				
-				result[0] = m.getReturnCode();
-			}
+		Utils.syncExec((Runnable) () -> {
+			final MessageDialogWithToggle m = MessageDialogWithToggle.openYesNoQuestion(shell,
+					CVSUIMessages.CommitAction_1, message, CVSUIMessages.ShowAnnotationOperation_4,
+					false /* toggle state */, store, ICVSUIConstants.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT);
+
+			result[0] = m.getReturnCode();
 		}, shell);
 		
 		switch (result[0]) {

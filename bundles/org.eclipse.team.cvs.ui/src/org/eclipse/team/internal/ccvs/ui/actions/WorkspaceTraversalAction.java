@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.mapping.ISynchronizationScopeManager;
@@ -108,18 +107,13 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
         // Use a resource mapping context to include any relevant remote resources
         final IResource[][] resources = new IResource[][] { null };
         try {
-            PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    try {
-                        resources[0] = getRootTraversalResources(
-                                manager, 
-                                monitor);
-                    } catch (CoreException e) {
-                        throw new InvocationTargetException(e);
-                    }
-                }
-            
-            });
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					resources[0] = getRootTraversalResources(manager, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				}
+			});
         } catch (InterruptedException e) {
             // Canceled
             return null;
@@ -143,7 +137,8 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
      * 
      * @deprecated need to find a better way to do this
      */
-    public static boolean isLogicalModel(ResourceMapping[] mappings) {
+    @Deprecated
+	public static boolean isLogicalModel(ResourceMapping[] mappings) {
         for (int i = 0; i < mappings.length; i++) {
             ResourceMapping mapping = mappings[i];
             if (! (mapping.getModelObject() instanceof IResource) ) {
@@ -165,20 +160,16 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
     
 	protected boolean hasOutgoingChanges(final RepositoryProviderOperation operation) throws InvocationTargetException, InterruptedException {
 		final boolean[] hasChange = new boolean[] { false };
-		PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
-				try {
-					monitor.beginTask(CVSUIMessages.WorkspaceTraversalAction_0, 100);
-					operation.buildScope(Policy.subMonitorFor(monitor, 50));
-					hasChange[0] = CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().hasLocalChanges(
-							operation.getScope().getTraversals(), 
-							Policy.subMonitorFor(monitor, 50));
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
-				} finally {
-					monitor.done();
-				}
+		PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+			try {
+				monitor.beginTask(CVSUIMessages.WorkspaceTraversalAction_0, 100);
+				operation.buildScope(Policy.subMonitorFor(monitor, 50));
+				hasChange[0] = CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber()
+						.hasLocalChanges(operation.getScope().getTraversals(), Policy.subMonitorFor(monitor, 50));
+			} catch (CoreException e) {
+				throw new InvocationTargetException(e);
+			} finally {
+				monitor.done();
 			}
 		});
 		return hasChange[0];

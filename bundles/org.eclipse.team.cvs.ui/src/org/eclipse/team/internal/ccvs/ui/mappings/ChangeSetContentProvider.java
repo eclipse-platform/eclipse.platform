@@ -47,16 +47,15 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#setAdded(org.eclipse.team.internal.core.subscribers.ChangeSet)
 		 */
+		@Override
 		public void setAdded(final ChangeSet set) {
 			// We only react here for active change sets.
 			// Checked-in change set changes are batched
 			if (set instanceof ActiveChangeSet) {
 				if (isVisibleInMode(set)) {
-					Utils.syncExec(new Runnable() {
-						public void run() {
-							Object input = getViewer().getInput();
-							((AbstractTreeViewer)getViewer()).add(input, set);
-						}
+					Utils.syncExec((Runnable) () -> {
+						Object input = getViewer().getInput();
+						((AbstractTreeViewer) getViewer()).add(input, set);
 					}, (StructuredViewer)getViewer());
 				}
 				handleSetAddition(set);
@@ -70,19 +69,18 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#defaultSetChanged(org.eclipse.team.internal.core.subscribers.ChangeSet, org.eclipse.team.internal.core.subscribers.ChangeSet)
 		 */
+		@Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
 			if (isVisibleInMode(set) || isVisibleInMode(previousDefault)) {
-				Utils.asyncExec(new Runnable() {
-					public void run() {
-						if (set == null) {
-							// unset default changeset
-							((AbstractTreeViewer)getViewer()).update(previousDefault, null);
-						} else if (previousDefault != null) {
-							((AbstractTreeViewer)getViewer()).update(new Object[] {previousDefault, set}, null);
-						} else { 
-							// when called for the first time previous default change set is null
-							((AbstractTreeViewer)getViewer()).update(set, null);
-						}
+				Utils.asyncExec((Runnable) () -> {
+					if (set == null) {
+						// unset default changeset
+						((AbstractTreeViewer) getViewer()).update(previousDefault, null);
+					} else if (previousDefault != null) {
+						((AbstractTreeViewer) getViewer()).update(new Object[] { previousDefault, set }, null);
+					} else {
+						// when called for the first time previous default change set is null
+						((AbstractTreeViewer) getViewer()).update(set, null);
 					}
 				}, (StructuredViewer)getViewer());
 			}
@@ -91,16 +89,14 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#setRemoved(org.eclipse.team.internal.core.subscribers.ChangeSet)
 		 */
+		@Override
 		public void setRemoved(final ChangeSet set) {
 			// We only react here for active change sets.
 			// Checked-in change set changes are batched
 			if (set instanceof ActiveChangeSet) {
 				if (isVisibleInMode(set)) {
-					Utils.syncExec(new Runnable() {
-						public void run() {
-							((AbstractTreeViewer)getViewer()).remove(TreePath.EMPTY.createChildPath(set));
-						}
-					}, (StructuredViewer)getViewer());
+					Utils.syncExec((Runnable) () -> ((AbstractTreeViewer) getViewer())
+							.remove(TreePath.EMPTY.createChildPath(set)), (StructuredViewer) getViewer());
 				}
 				handleSetRemoval(set);
 			}
@@ -121,34 +117,31 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#nameChanged(org.eclipse.team.internal.core.subscribers.ChangeSet)
 		 */
+		@Override
 		public void nameChanged(final ChangeSet set) {
 			if (isVisibleInMode(set)) {
-				Utils.asyncExec(new Runnable() {
-					public void run() {
-						((AbstractTreeViewer)getViewer()).update(set, null);
-					}
-				}, (StructuredViewer)getViewer());
+				Utils.asyncExec((Runnable) () -> ((AbstractTreeViewer) getViewer()).update(set, null),
+						(StructuredViewer) getViewer());
 			}
 		}
 
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#resourcesChanged(org.eclipse.team.internal.core.subscribers.ChangeSet, org.eclipse.core.runtime.IPath[])
 		 */
+		@Override
 		public void resourcesChanged(final ChangeSet set, final IPath[] paths) {
 			// We only react here for active change sets.
 			// Checked-in change set changes are batched
 			if (set instanceof ActiveChangeSet) {
 				if (isVisibleInMode(set)) {
-					Utils.syncExec(new Runnable() {
-						public void run() {
-							if (hasChildrenInContext(set))
-								if (getVisibleSetsInViewer().contains(set))
-									((AbstractTreeViewer)getViewer()).refresh(set, true);
-								else
-									((AbstractTreeViewer)getViewer()).add(getViewer().getInput(), set);
-							else 
-								((AbstractTreeViewer)getViewer()).remove(set);
-						}
+					Utils.syncExec((Runnable) () -> {
+						if (hasChildrenInContext(set))
+							if (getVisibleSetsInViewer().contains(set))
+								((AbstractTreeViewer) getViewer()).refresh(set, true);
+							else
+								((AbstractTreeViewer) getViewer()).add(getViewer().getInput(), set);
+						else
+							((AbstractTreeViewer) getViewer()).remove(set);
 					}, (StructuredViewer)getViewer());
 				}
 				handleSetChange(set, paths);
@@ -178,6 +171,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			}
 		}
 
+		@Override
 		public void changeSetChanges(final CollectorChangeEvent event, IProgressMonitor monitor) {
 			ChangeSet[] addedSets = event.getAddedSets();
 			final ChangeSet[] visibleAddedSets = getVisibleSets(addedSets);
@@ -186,23 +180,21 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			ChangeSet[] changedSets = event.getChangedSets();
 			final ChangeSet[] visibleChangedSets = getVisibleSets(changedSets);
 			if (visibleAddedSets.length > 0 || visibleRemovedSets.length > 0 || visibleChangedSets.length > 0) {
-				Utils.syncExec(new Runnable() {
-					public void run() {
-						try {
-							getViewer().getControl().setRedraw(false);
-							if (visibleAddedSets.length > 0) {
-								Object input = getViewer().getInput();
-								((AbstractTreeViewer)getViewer()).add(input, visibleAddedSets);
-							}
-							if (visibleRemovedSets.length > 0)
-								((AbstractTreeViewer)getViewer()).remove(visibleRemovedSets);
-							for (int i = 0; i < visibleChangedSets.length; i++) {
-								ChangeSet set = visibleChangedSets[i];
-								((AbstractTreeViewer)getViewer()).refresh(set, true);		
-							}
-						} finally {
-							getViewer().getControl().setRedraw(true);
+				Utils.syncExec((Runnable) () -> {
+					try {
+						getViewer().getControl().setRedraw(false);
+						if (visibleAddedSets.length > 0) {
+							Object input = getViewer().getInput();
+							((AbstractTreeViewer) getViewer()).add(input, visibleAddedSets);
 						}
+						if (visibleRemovedSets.length > 0)
+							((AbstractTreeViewer) getViewer()).remove(visibleRemovedSets);
+						for (int i = 0; i < visibleChangedSets.length; i++) {
+							ChangeSet set = visibleChangedSets[i];
+							((AbstractTreeViewer) getViewer()).refresh(set, true);
+						}
+					} finally {
+						getViewer().getControl().setRedraw(true);
 					}
 				}, (StructuredViewer)getViewer());
 			}
@@ -268,6 +260,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
 		 */
+		@Override
 		public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 			// Ignore
 		}
@@ -279,19 +272,18 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
 		 */
+		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 			Object input = getViewer().getInput();
 			if (input instanceof ChangeSetModelProvider && unassignedDiffs != null && event.getTree() == unassignedDiffs.getDiffTree()) {
-				Utils.asyncExec(new Runnable() {
-					public void run() {
-						if (unassignedDiffs.isEmpty() || !hasChildren(TreePath.EMPTY.createChildPath(getUnassignedSet()))) {
-							((AbstractTreeViewer)getViewer()).remove(unassignedDiffs);
-						} else if (!isSetVisible(unassignedDiffs)) {
-							Object input = getViewer().getInput();
-							((AbstractTreeViewer)getViewer()).add(input, unassignedDiffs);
-						} else {
-							((AbstractTreeViewer)getViewer()).refresh(unassignedDiffs);
-						}
+				Utils.asyncExec((Runnable) () -> {
+					if (unassignedDiffs.isEmpty() || !hasChildren(TreePath.EMPTY.createChildPath(getUnassignedSet()))) {
+						((AbstractTreeViewer) getViewer()).remove(unassignedDiffs);
+					} else if (!isSetVisible(unassignedDiffs)) {
+						Object input1 = getViewer().getInput();
+						((AbstractTreeViewer) getViewer()).add(input1, unassignedDiffs);
+					} else {
+						((AbstractTreeViewer) getViewer()).refresh(unassignedDiffs);
 					}
 				}, (StructuredViewer)getViewer());
 			}
@@ -304,6 +296,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getModelProviderId()
 	 */
+	@Override
 	protected String getModelProviderId() {
 		return ChangeSetModelProvider.ID;
 	}
@@ -329,6 +322,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getElements(java.lang.Object)
 	 */
+	@Override
 	public Object[] getElements(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
 			// Do not show change sets when all models are visible because
@@ -374,12 +368,10 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	private void addAllUnassignedToUnassignedSet() {
 		IResourceDiffTree allChanges = getContext().getDiffTree();
 		final List diffs = new ArrayList();
-		allChanges.accept(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new IDiffVisitor() {
-			public boolean visit(IDiff diff) {
-				if (!isContainedInSet(diff))
-					diffs.add(diff);
-				return true;
-			}
+		allChanges.accept(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), diff -> {
+			if (!isContainedInSet(diff))
+				diffs.add(diff);
+			return true;
 		}, IResource.DEPTH_INFINITE);
 		unassignedDiffs.add((IDiff[]) diffs.toArray(new IDiff[diffs.size()]));
 	}
@@ -409,6 +401,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getTraversals(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
 	 */
+	@Override
 	protected ResourceTraversal[] getTraversals(
 			ISynchronizationContext context, Object object) {
 		if (object instanceof ChangeSet) {
@@ -419,6 +412,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return super.getTraversals(context, object);
 	}
 
+	@Override
 	public Object[] getChildren(TreePath parentPath) {
 		if (!isEnabled())
 			return new Object[0];
@@ -524,6 +518,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return false;
 	}
 
+	@Override
 	public boolean hasChildren(TreePath path) {
 		if (path.getSegmentCount() == 1) {
 			Object first = path.getFirstSegment();
@@ -544,6 +539,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return false;
 	}
 
+	@Override
 	public TreePath[] getParents(Object element) {
 		if (element instanceof ChangeSet) {
 			return new TreePath[] { TreePath.EMPTY };
@@ -655,6 +651,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return result;
 	}
 
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		ChangeSetCapability csc = getChangeSetCapability();
@@ -690,6 +687,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		}
 	}
 	
+	@Override
 	public void dispose() {
 		ChangeSetCapability csc = getChangeSetCapability();
 		if (csc.supportsActiveChangeSets()) {
@@ -705,6 +703,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		super.dispose();
 	}
 	
+	@Override
 	public boolean isVisible(IDiff diff) {
 		return super.isVisible(diff);
 	}
@@ -720,6 +719,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return getTheRest();
 	}
 	
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		// Override inherited method to reconcile sub-trees
 		IPath[] removed = event.getRemovals();
@@ -754,14 +754,12 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		if (firstDiffChange) {
 			// One the first diff event, refresh the viewer to ensure outgoing change sets appear
 			firstDiffChange = false;
-			Utils.asyncExec(new Runnable() {
-				public void run() {
-					((AbstractTreeViewer)getViewer()).refresh();
-				}
-			}, (StructuredViewer)getViewer());
+			Utils.asyncExec((Runnable) () -> ((AbstractTreeViewer) getViewer()).refresh(),
+					(StructuredViewer) getViewer());
 		}
 	}
 	
+	@Override
 	protected void updateLabels(ISynchronizationContext context, IPath[] paths) {
 		super.updateLabels(context, paths);
 		ChangeSet[] sets = getSetsShowingPropogatedStateFrom(paths);

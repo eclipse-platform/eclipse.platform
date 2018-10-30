@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.core.RepositoryProvider;
@@ -53,31 +52,26 @@ public class DisconnectAction extends PessimisticProviderAction {
 			}
 		}
 		if (!projects.isEmpty()) {
-			IRunnableWithProgress runnable= new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) {
-					IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
-						public void run(IProgressMonitor monitor)
-							throws CoreException {
-							for (Iterator i= projects.iterator(); i.hasNext();) {
-								IProject project= (IProject) i.next();
-								PessimisticFilesystemProvider provider= getProvider(project);
-								if (provider != null) {
-									try {
-										RepositoryProvider.unmap(project);	
-									} catch (TeamException e) {
-										PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Could not unmap " + project);
-									}						
-								}
-							}
-						}				
-					};
-					try {
-						ResourcesPlugin.getWorkspace().run(runnable, monitor);
-					} catch (CoreException e) {
-						PessimisticFilesystemProviderPlugin.getInstance().logError(e, "Problem during unmap runnable");	
+			IRunnableWithProgress runnable= monitor -> {
+				IWorkspaceRunnable runnable1= monitor1 -> {
+				for (Iterator i= projects.iterator(); i.hasNext();) {
+					IProject project= (IProject) i.next();
+					PessimisticFilesystemProvider provider= getProvider(project);
+					if (provider != null) {
+						try {
+							RepositoryProvider.unmap(project);	
+						} catch (TeamException e1) {
+							PessimisticFilesystemProviderPlugin.getInstance().logError(e1, "Could not unmap " + project);
+						}						
 					}
-					
 				}
+};
+				try {
+					ResourcesPlugin.getWorkspace().run(runnable1, monitor);
+				} catch (CoreException e2) {
+					PessimisticFilesystemProviderPlugin.getInstance().logError(e2, "Problem during unmap runnable");	
+				}
+				
 			};
 			runWithProgressDialog(runnable);
 		}

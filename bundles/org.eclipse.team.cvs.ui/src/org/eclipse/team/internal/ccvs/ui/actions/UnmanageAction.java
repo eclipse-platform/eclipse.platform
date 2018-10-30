@@ -73,6 +73,7 @@ public class UnmanageAction extends WorkspaceAction {
 			}
 		}
 		
+		@Override
 		protected Control createCustomArea(Composite parent) {
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout());
@@ -96,6 +97,7 @@ public class UnmanageAction extends WorkspaceAction {
 		}
 		
 		private SelectionListener selectionListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button button = (Button) e.widget;
 				if (button.getSelection()) {
@@ -114,6 +116,7 @@ public class UnmanageAction extends WorkspaceAction {
 	/*
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		if(confirmDeleteProjects()) {
 			new DisconnectOperation(getTargetPart(), getSelectedProjects(), deleteContent)
@@ -125,11 +128,7 @@ public class UnmanageAction extends WorkspaceAction {
 		final int[] result = new int[] { Window.OK };
 		IProject[] projects = getSelectedProjects();
 		final DeleteProjectDialog dialog = new DeleteProjectDialog(getShell(), projects);
-		getShell().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				result[0] = dialog.open();
-			}
-		});		
+		getShell().getDisplay().syncExec(() -> result[0] = dialog.open());
 		deleteContent = dialog.getDeleteContent();
 		return result[0] == 0;  // YES
 	}
@@ -137,6 +136,7 @@ public class UnmanageAction extends WorkspaceAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.Unmanage_unmanagingError;
 	}
@@ -144,6 +144,7 @@ public class UnmanageAction extends WorkspaceAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
 	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		IResource resource = cvsResource.getIResource();
 		return resource != null && resource.getType() == IResource.PROJECT;

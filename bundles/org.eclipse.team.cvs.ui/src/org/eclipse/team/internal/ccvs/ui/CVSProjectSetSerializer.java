@@ -14,9 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -26,15 +24,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.team.core.IProjectSetSerializer;
-import org.eclipse.team.core.RepositoryProvider;
-import org.eclipse.team.core.TeamException;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSTag;
-import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSFolder;
-import org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder;
-import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
+import org.eclipse.team.core.*;
+import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
@@ -50,6 +41,7 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 	 * 
 	 * "1.0,repoLocation,module,projectName[,tag]"
 	 */
+	@Override
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) throws TeamException {
 		String[] result = new String[providerProjects.length];
 		for (int i = 0; i < providerProjects.length; i++) {
@@ -89,6 +81,7 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 	/**
 	 * @see IProjectSetSerializer#addToWorkspace(String[])
 	 */
+	@Override
 	public IProject[] addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor) throws TeamException {
 		final int size = referenceStrings.length;
 		final IProject[] projects = new IProject[size];
@@ -152,6 +145,7 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 			}
 		}
 		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+			@Override
 			public void execute(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 				monitor.beginTask("", 1000 * num[0]); //$NON-NLS-1$
 				try {
@@ -213,11 +207,7 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 					IDialogConstants.CANCEL_LABEL}, 
 				0);
 		final int[] result = new int[1];
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				result[0] = dialog.open();
-			}
-		});
+		shell.getDisplay().syncExec(() -> result[0] = dialog.open());
 		return result[0];
 	}
 }

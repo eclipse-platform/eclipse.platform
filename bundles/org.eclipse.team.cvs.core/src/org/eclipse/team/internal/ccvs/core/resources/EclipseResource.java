@@ -138,11 +138,7 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 	 * @see ICVSResource#setIgnoredAs(String)
 	 */
 	public void setIgnoredAs(final String pattern) throws CVSException {
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				EclipseSynchronizer.getInstance().addIgnored(resource.getParent(), pattern);
-			}
-		}, null);
+		run(monitor -> EclipseSynchronizer.getInstance().addIgnored(resource.getParent(), pattern), null);
 	}
 
 	/*
@@ -259,13 +255,11 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		try {
 			// Do not use a scheduling rule in the workspace run since one
 			// will be obtained by the EclipseSynchronizer
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					try {
-						EclipseSynchronizer.getInstance().run(getIResource(), job, monitor);
-					} catch(CVSException e) {
-						error[0] = e; 
-					}
+			ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+				try {
+					EclipseSynchronizer.getInstance().run(getIResource(), job, monitor1);
+				} catch(CVSException e) {
+					error[0] = e; 
 				}
 			}, null /* no rule */, 0, monitor);
 		} catch(CoreException e) {

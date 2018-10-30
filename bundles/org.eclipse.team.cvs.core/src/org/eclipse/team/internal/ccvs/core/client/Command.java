@@ -303,38 +303,36 @@ public abstract class Command extends Request {
 		final LocalOption[] localOptions, final String[] arguments, final ICommandOutputListener listener,
 		IProgressMonitor pm) throws CVSException {		
 		final IStatus[] status = new IStatus[1];
-		ICVSRunnable job = new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				// update the global and local options
-				GlobalOption[] gOptions = filterGlobalOptions(session, globalOptions);
-				LocalOption[] lOptions = filterLocalOptions(session, gOptions, localOptions);
-				
-				// print the invocation string to the console
-				if (session.isOutputToConsole() || Policy.isDebugProtocol()) {
-					IPath commandRootPath;
-					IResource resource = session.getLocalRoot().getIResource();
-					if (resource == null) {
-						commandRootPath = Path.EMPTY;
-					} else {
-						commandRootPath = resource.getFullPath();
-					}
-					String line = constructCommandInvocationString(commandRootPath, gOptions, lOptions, arguments);
-					ConsoleListeners.getInstance().commandInvoked(session, line);
-					if (Policy.isDebugProtocol()) Policy.printProtocolLine("CMD> " + line); //$NON-NLS-1$
+		ICVSRunnable job = monitor -> {
+			// update the global and local options
+			GlobalOption[] gOptions = filterGlobalOptions(session, globalOptions);
+			LocalOption[] lOptions = filterLocalOptions(session, gOptions, localOptions);
+			
+			// print the invocation string to the console
+			if (session.isOutputToConsole() || Policy.isDebugProtocol()) {
+				IPath commandRootPath;
+				IResource resource = session.getLocalRoot().getIResource();
+				if (resource == null) {
+					commandRootPath = Path.EMPTY;
+				} else {
+					commandRootPath = resource.getFullPath();
 				}
-				
-				// run the command
-				try {
-				    session.setCurrentCommand(Command.this);
-					status[0] = doExecute(session, gOptions, lOptions, arguments, listener, monitor);
-					notifyConsoleOnCompletion(session, status[0], null);
-				} catch (CVSException e) {
-					notifyConsoleOnCompletion(session, null, e);
-					throw e;
-				} catch (RuntimeException e) {
-					notifyConsoleOnCompletion(session, null, e);
-					throw e;
-				}
+				String line = constructCommandInvocationString(commandRootPath, gOptions, lOptions, arguments);
+				ConsoleListeners.getInstance().commandInvoked(session, line);
+				if (Policy.isDebugProtocol()) Policy.printProtocolLine("CMD> " + line); //$NON-NLS-1$
+			}
+			
+			// run the command
+			try {
+			    session.setCurrentCommand(Command.this);
+				status[0] = doExecute(session, gOptions, lOptions, arguments, listener, monitor);
+				notifyConsoleOnCompletion(session, status[0], null);
+			} catch (CVSException e1) {
+				notifyConsoleOnCompletion(session, null, e1);
+				throw e1;
+			} catch (RuntimeException e2) {
+				notifyConsoleOnCompletion(session, null, e2);
+				throw e2;
 			}
 		};
 		if (isWorkspaceModification()) {

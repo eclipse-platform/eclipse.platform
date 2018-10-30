@@ -451,22 +451,20 @@ public class SyncFileWriter {
 				// important to have both the folder creation and setting of team-private in the
 				// same runnable so that the team-private flag is set before other delta listeners 
 				// sees the CVS folder creation.
-				ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-					public void run(IProgressMonitor monitor) throws CoreException {
-						// Re-check existence in case this method was called without a resource rule
-						if (! cvsSubDir.exists()) {
-							if (existsInFileSystem(cvsSubDir)) {
-								cvsSubDir.refreshLocal(IResource.DEPTH_INFINITE, null);
-								cvsSubDir.setTeamPrivateMember(true);
-							} else {
-								cvsSubDir.create(IResource.TEAM_PRIVATE, true /*make local*/, null);
-							}
+				ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor -> {
+					// Re-check existence in case this method was called without a resource rule
+					if (! cvsSubDir.exists()) {
+						if (existsInFileSystem(cvsSubDir)) {
+							cvsSubDir.refreshLocal(IResource.DEPTH_INFINITE, null);
+							cvsSubDir.setTeamPrivateMember(true);
 						} else {
-							if (!cvsSubDir.isTeamPrivateMember()) {
-								cvsSubDir.setTeamPrivateMember(true);
-							}
+							cvsSubDir.create(IResource.TEAM_PRIVATE, true /*make local*/, null);
 						}
-					} 
+					} else {
+						if (!cvsSubDir.isTeamPrivateMember()) {
+							cvsSubDir.setTeamPrivateMember(true);
+						}
+					}
 				}, folder, 0, null);
 			}
 			return cvsSubDir;
@@ -595,20 +593,18 @@ public class SyncFileWriter {
 			// to include the MODSTAMP value. If not in a runnable then create/setContents
 			// will trigger a delta and the SyncFileWriter change listener won't know that the delta
 			// was a result of our own creation.
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					try {
-						ByteArrayOutputStream os = new ByteArrayOutputStream();
-						writeLinesToStreamAndClose(os, contents);
-						if(!file.exists()) {
-							file.create(new ByteArrayInputStream(os.toByteArray()), IResource.FORCE /*don't keep history but do force*/, null);
-						} else {
-							file.setContents(new ByteArrayInputStream(os.toByteArray()), IResource.FORCE /*don't keep history but do force*/, null);
-						}			
-						file.setSessionProperty(MODSTAMP_KEY, Long.valueOf(file.getModificationStamp()));
-					} catch(CVSException e) {
-						throw new CoreException(e.getStatus());
-					}
+			ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor -> {
+				try {
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					writeLinesToStreamAndClose(os, contents);
+					if(!file.exists()) {
+						file.create(new ByteArrayInputStream(os.toByteArray()), IResource.FORCE /*don't keep history but do force*/, null);
+					} else {
+						file.setContents(new ByteArrayInputStream(os.toByteArray()), IResource.FORCE /*don't keep history but do force*/, null);
+					}			
+					file.setSessionProperty(MODSTAMP_KEY, Long.valueOf(file.getModificationStamp()));
+				} catch(CVSException e) {
+					throw new CoreException(e.getStatus());
 				}
 			}, ResourcesPlugin.getWorkspace().getRuleFactory().createRule(file), 0, null);
 		} catch (CoreException e) {

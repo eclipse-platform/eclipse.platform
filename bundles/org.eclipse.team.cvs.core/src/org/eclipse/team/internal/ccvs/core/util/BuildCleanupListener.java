@@ -24,15 +24,9 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
-import org.eclipse.team.internal.ccvs.core.ICVSFolder;
-import org.eclipse.team.internal.ccvs.core.ICVSRunnable;
-import org.eclipse.team.internal.ccvs.core.Policy;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
 
@@ -141,13 +135,11 @@ public class BuildCleanupListener implements IResourceDeltaVisitor, IResourceCha
 				
 				if(provider!=null) {
 					// Traverse the delta is a runnable so that files are only written at the end
-					folder.run(new ICVSRunnable() {
-						public void run(IProgressMonitor monitor) throws CVSException {
-							try {
-								delta.accept(BuildCleanupListener.this);
-							} catch (CoreException e) {
-								Util.logError(CVSMessages.ResourceDeltaVisitor_visitError, e);
-							}
+					folder.run(monitor -> {
+						try {
+							delta.accept(BuildCleanupListener.this);
+						} catch (CoreException e) {
+							Util.logError(CVSMessages.ResourceDeltaVisitor_visitError, e);
 						}
 					}, Policy.monitorFor(null));
 				}

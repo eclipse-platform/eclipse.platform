@@ -29,8 +29,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
@@ -379,30 +377,28 @@ public class RepositoryManager {
 		loadCommentHistory();
         loadCommentTemplates();
 		CVSProviderPlugin.getPlugin().addRepositoryListener(new ICVSListener() {
+			@Override
 			public void repositoryAdded(ICVSRepositoryLocation root) {
 				rootAdded(root);
 			}
+			@Override
 			public void repositoryRemoved(ICVSRepositoryLocation root) {
 				rootRemoved(root);
 			}
 		});
 		
 		IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
-		store.addPropertyChangeListener(new IPropertyChangeListener() {
-
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY)) {
-					Object newValue = event.getNewValue();
-					if (newValue instanceof String) {
-						try {
-							setMaxComments(Integer.parseInt((String) newValue));
-						} catch (NumberFormatException e) {
-							// fail silently
-						}
+		store.addPropertyChangeListener(event -> {
+			if (event.getProperty().equals(ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY)) {
+				Object newValue = event.getNewValue();
+				if (newValue instanceof String) {
+					try {
+						setMaxComments(Integer.parseInt((String) newValue));
+					} catch (NumberFormatException e) {
+						// fail silently
 					}
 				}
 			}
-			
 		});
 		setMaxComments(store.getInt(ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY));
 	}
@@ -651,11 +647,10 @@ public class RepositoryManager {
 	public String promptForComment(final Shell shell, IResource[] resourcesToCommit, String proposedComment) {
 		final int[] result = new int[1];
 		final ReleaseCommentDialog dialog = new ReleaseCommentDialog(shell, resourcesToCommit, proposedComment, IResource.DEPTH_INFINITE); 
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				result[0] = dialog.open();
-				if (result[0] != Window.OK) return;
-			}
+		shell.getDisplay().syncExec(() -> {
+			result[0] = dialog.open();
+			if (result[0] != Window.OK)
+				return;
 		});
 		if (result[0] != Window.OK) return null;
 		return dialog.getComment();
@@ -675,15 +670,13 @@ public class RepositoryManager {
 		final IResource[][] result = new IResource[1][0];
 		result[0] = null;
 		final AddToVersionControlDialog dialog = new AddToVersionControlDialog(shell, unadded);
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				int code = dialog.open();
-				if (code == IDialogConstants.YES_ID) {
-					result[0] = dialog.getResourcesToAdd();
-				} else if(code == IDialogConstants.NO_ID) {
-					// allow the commit to continue.
-					result[0] = new IResource[0];
-				}
+		shell.getDisplay().syncExec(() -> {
+			int code = dialog.open();
+			if (code == IDialogConstants.YES_ID) {
+				result[0] = dialog.getResourcesToAdd();
+			} else if (code == IDialogConstants.NO_ID) {
+				// allow the commit to continue.
+				result[0] = new IResource[0];
 			}
 		});
 		return result[0];
@@ -856,20 +849,18 @@ public class RepositoryManager {
 			final CVSRepositoryLocation newLocation) {
 		
 		try {
-			run(new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					RepositoryRoot root = getRepositoryRootFor(oldLocation);
-					// Disposing of the old location will result in the deletion of the
-					// cached root through a listener callback
-					KnownRepositories.getInstance().disposeRepository(oldLocation);
-					
-					// Get the new location from the CVS plugin to ensure we use the
-					// instance that will be returned by future calls to getRepository()
-					boolean isNew = !KnownRepositories.getInstance().isKnownRepository(newLocation.getLocation());
-					root.setRepositoryLocation(
-							KnownRepositories.getInstance().addRepository(newLocation, isNew /* broadcast */));
-					add(root);
-				}
+			run(monitor -> {
+				RepositoryRoot root = getRepositoryRootFor(oldLocation);
+				// Disposing of the old location will result in the deletion of the
+				// cached root through a listener callback
+				KnownRepositories.getInstance().disposeRepository(oldLocation);
+
+				// Get the new location from the CVS plugin to ensure we use the
+				// instance that will be returned by future calls to getRepository()
+				boolean isNew = !KnownRepositories.getInstance().isKnownRepository(newLocation.getLocation());
+				root.setRepositoryLocation(
+						KnownRepositories.getInstance().addRepository(newLocation, isNew /* broadcast */));
+				add(root);
 			}, Policy.monitorFor(null));
 		} catch (InvocationTargetException e) {
 			CVSException.wrapException(e);

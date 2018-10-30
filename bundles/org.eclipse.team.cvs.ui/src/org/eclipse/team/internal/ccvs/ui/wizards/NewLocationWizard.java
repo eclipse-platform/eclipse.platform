@@ -17,10 +17,8 @@ package org.eclipse.team.internal.ccvs.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -67,6 +65,7 @@ public class NewLocationWizard extends Wizard implements INewWizard {
 	/**
 	 * Creates the wizard pages
 	 */
+	@Override
 	public void addPages() {
 		mainPage = createMainPage();
 		if (properties != null) {
@@ -85,6 +84,7 @@ public class NewLocationWizard extends Wizard implements INewWizard {
 	/*
 	 * @see IWizard#performFinish
 	 */
+	@Override
 	public boolean performFinish() {
 		final ICVSRepositoryLocation[] location = new ICVSRepositoryLocation[] { null };
 		boolean keepLocation = false;
@@ -96,13 +96,11 @@ public class NewLocationWizard extends Wizard implements INewWizard {
 			
 			if (mainPage.getValidate()) {
 				try {
-					getContainer().run(true, true, new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-							try {
-								location[0].validateConnection(monitor);
-							} catch (TeamException e) {
-								throw new InvocationTargetException(e);
-							}
+					getContainer().run(true, true, monitor -> {
+						try {
+							location[0].validateConnection(monitor);
+						} catch (TeamException e) {
+							throw new InvocationTargetException(e);
 						}
 					});
 					keepLocation = true;
@@ -164,6 +162,7 @@ public class NewLocationWizard extends Wizard implements INewWizard {
 		return keepLocation;	
 	}
 
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// Nothing to do
 	}

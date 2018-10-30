@@ -180,21 +180,19 @@ public class Util {
 		// Start a thread to execute the command and get a handle to the process
 		final Process[] process = new Process[] { null };
 		final Exception[] exception = new Exception[] {null };
-		final Thread thread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					Process newProcess = Runtime.getRuntime().exec(command);
-					synchronized (process) {
-						if (Thread.interrupted()) {
-							// we we're either cancelled or timed out so just destroy the process
-							newProcess.destroy();
-						} else {
-							process[0] = newProcess;
-						}
+		final Thread thread = new Thread(() -> {
+			try {
+				Process newProcess = Runtime.getRuntime().exec(command);
+				synchronized (process) {
+					if (Thread.interrupted()) {
+						// we we're either cancelled or timed out so just destroy the process
+						newProcess.destroy();
+					} else {
+						process[0] = newProcess;
 					}
-				} catch (IOException e) {
-					exception[0] = e;
 				}
+			} catch (IOException e) {
+				exception[0] = e;
 			}
 		});
 		thread.start();

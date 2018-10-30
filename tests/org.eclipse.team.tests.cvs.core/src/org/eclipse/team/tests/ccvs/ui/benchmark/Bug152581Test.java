@@ -73,11 +73,7 @@ public class Bug152581Test extends BenchmarkTest {
 	}
 
 	public void ensureExistsInWorkspace(final IResource resource, final boolean local) {
-		IWorkspaceRunnable body = new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				create(resource, local);
-			}
-		};
+		IWorkspaceRunnable body = monitor -> create(resource, local);
 		try {
 			getWorkspace().run(body, null);
 		} catch (CoreException e) {

@@ -51,26 +51,20 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 	 */
 	@Override
 	public void markAsMerged(final IDiff diff, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				((CVSMergeSubscriber)getSubscriber()).merged(new IResource[] { getDiffTree().getResource(diff)});
-			}
-		}, getMergeRule(diff), IResource.NONE, monitor);
+		run(monitor1 -> ((CVSMergeSubscriber) getSubscriber())
+				.merged(new IResource[] { getDiffTree().getResource(diff) }), getMergeRule(diff), IResource.NONE,
+				monitor);
 	}
 	
 	@Override
 	public void markAsMerged(final IDiff[] diffs, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				List result = new ArrayList();
-				for (int i = 0; i < diffs.length; i++) {
-					IDiff diff = diffs[i];
-					result.add(getDiffTree().getResource(diff));
-				}
-				((CVSMergeSubscriber)getSubscriber()).merged((IResource[]) result.toArray(new IResource[result.size()]));
+		run(monitor1 -> {
+			List result = new ArrayList();
+			for (int i = 0; i < diffs.length; i++) {
+				IDiff diff = diffs[i];
+				result.add(getDiffTree().getResource(diff));
 			}
+			((CVSMergeSubscriber) getSubscriber()).merged((IResource[]) result.toArray(new IResource[result.size()]));
 		}, getMergeRule(diffs), IResource.NONE, monitor);
 	}
 	
@@ -88,31 +82,28 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 	@Override
 	public IStatus merge(final IDiff diff, final boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		final IStatus[] status = new IStatus[] { Status.OK_STATUS };
-		run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				IThreeWayDiff currentDiff = (IThreeWayDiff)getSubscriber().getDiff(getDiffTree().getResource(diff));
-				if (!MergeSubscriberContext.this.equals(currentDiff, (IThreeWayDiff)diff)) {
-					throw new CVSException(NLS.bind(CVSUIMessages.CVSMergeContext_1, diff.getPath()));
-				}
-				status[0] = MergeSubscriberContext.super.merge(diff, ignoreLocalChanges, monitor);
-				if (status[0].isOK()) {
-					IResource resource = ResourceDiffTree.getResourceFor(diff);
-					if (resource.getType() == IResource.FILE && resource.exists() && diff instanceof IThreeWayDiff) {
-						IThreeWayDiff twd = (IThreeWayDiff) diff;
-						if (twd.getKind() == IDiff.ADD && twd.getDirection() == IThreeWayDiff.INCOMING) {
-							IFileRevision remote = Utils.getRemote(diff);
-							IResourceVariant variant = Adapters.adapt(remote, IResourceVariant.class);
-							byte[] syncBytes = variant.asBytes();
-							MutableResourceSyncInfo info = new MutableResourceSyncInfo(resource.getName(), ResourceSyncInfo.ADDED_REVISION);
-							info.setKeywordMode(ResourceSyncInfo.getKeywordMode(syncBytes));
-							info.setTag(getTag(resource.getParent()));
-							CVSWorkspaceRoot.getCVSFileFor((IFile)resource).setSyncInfo(info, ICVSFile.DIRTY);
-						}
+		run(monitor1 -> {
+			IThreeWayDiff currentDiff = (IThreeWayDiff) getSubscriber().getDiff(getDiffTree().getResource(diff));
+			if (!MergeSubscriberContext.this.equals(currentDiff, (IThreeWayDiff) diff)) {
+				throw new CVSException(NLS.bind(CVSUIMessages.CVSMergeContext_1, diff.getPath()));
+			}
+			status[0] = MergeSubscriberContext.super.merge(diff, ignoreLocalChanges, monitor1);
+			if (status[0].isOK()) {
+				IResource resource = ResourceDiffTree.getResourceFor(diff);
+				if (resource.getType() == IResource.FILE && resource.exists() && diff instanceof IThreeWayDiff) {
+					IThreeWayDiff twd = (IThreeWayDiff) diff;
+					if (twd.getKind() == IDiff.ADD && twd.getDirection() == IThreeWayDiff.INCOMING) {
+						IFileRevision remote = Utils.getRemote(diff);
+						IResourceVariant variant = Adapters.adapt(remote, IResourceVariant.class);
+						byte[] syncBytes = variant.asBytes();
+						MutableResourceSyncInfo info = new MutableResourceSyncInfo(resource.getName(),
+								ResourceSyncInfo.ADDED_REVISION);
+						info.setKeywordMode(ResourceSyncInfo.getKeywordMode(syncBytes));
+						info.setTag(getTag(resource.getParent()));
+						CVSWorkspaceRoot.getCVSFileFor((IFile) resource).setSyncInfo(info, ICVSFile.DIRTY);
 					}
 				}
 			}
-		
 		}, getMergeRule(diff), IWorkspace.AVOID_UPDATE, monitor);
 		return status[0];
 	}

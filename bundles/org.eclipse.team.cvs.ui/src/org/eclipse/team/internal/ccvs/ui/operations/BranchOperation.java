@@ -18,18 +18,18 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.*;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
@@ -59,16 +59,14 @@ public class BranchOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
 	 */
+	@Override
 	protected boolean shouldRun() {
 		try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					try {
-						buildScope(monitor);
-					} catch (CVSException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
+				try {
+					buildScope(monitor);
+				} catch (CVSException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		} catch (InvocationTargetException e1) {
@@ -116,6 +114,7 @@ public class BranchOperation extends RepositoryProviderOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(CVSTeamProvider provider, IResource[] providerResources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
 			monitor.beginTask(null, 100);
@@ -215,41 +214,47 @@ public class BranchOperation extends RepositoryProviderOperation {
 	 * It expects to be passed an InfiniteSubProgressMonitor
 	 */
 	private void setTag(final CVSTeamProvider provider, final IResource[] resources, final CVSTag tag, final boolean recurse, IProgressMonitor monitor) throws TeamException {
-		getLocalRoot(provider).run(new ICVSRunnable() {
-			public void run(IProgressMonitor progress) throws CVSException {
-				try {
-					// 512 ticks gives us a maximum of 2048 which seems reasonable for folders and files in a project
-					progress.beginTask(null, 100);
-					final IProgressMonitor monitor = Policy.infiniteSubMonitorFor(progress, 100);
-					monitor.beginTask(NLS.bind(CVSUIMessages.CVSTeamProvider_folderInfo, new String[] { provider.getProject().getName() }), 512); 
-					
-					// Visit all the children folders in order to set the root in the folder sync info
-					for (int i = 0; i < resources.length; i++) {
-						CVSWorkspaceRoot.getCVSResourceFor(resources[i]).accept(new ICVSResourceVisitor() {
-							public void visitFile(ICVSFile file) throws CVSException {
-								monitor.worked(1);
-								//ResourceSyncInfo info = file.getSyncInfo();
-								byte[] syncBytes = file.getSyncBytes();
-								if (syncBytes != null) {
-									monitor.subTask(NLS.bind(CVSUIMessages.CVSTeamProvider_updatingFile, new String[] { file.getName() })); 
-									file.setSyncBytes(ResourceSyncInfo.setTag(syncBytes, tag), ICVSFile.UNKNOWN);
-								}
+		getLocalRoot(provider).run(progress -> {
+			try {
+				// 512 ticks gives us a maximum of 2048 which seems reasonable for folders and
+				// files in a project
+				progress.beginTask(null, 100);
+				final IProgressMonitor monitor1 = Policy.infiniteSubMonitorFor(progress, 100);
+				monitor1.beginTask(NLS.bind(CVSUIMessages.CVSTeamProvider_folderInfo,
+						new String[] { provider.getProject().getName() }), 512);
+
+				// Visit all the children folders in order to set the root in the folder sync
+				// info
+				for (int i = 0; i < resources.length; i++) {
+					CVSWorkspaceRoot.getCVSResourceFor(resources[i]).accept(new ICVSResourceVisitor() {
+						@Override
+						public void visitFile(ICVSFile file) throws CVSException {
+							monitor1.worked(1);
+							// ResourceSyncInfo info = file.getSyncInfo();
+							byte[] syncBytes = file.getSyncBytes();
+							if (syncBytes != null) {
+								monitor1.subTask(NLS.bind(CVSUIMessages.CVSTeamProvider_updatingFile,
+										new String[] { file.getName() }));
+								file.setSyncBytes(ResourceSyncInfo.setTag(syncBytes, tag), ICVSFile.UNKNOWN);
 							}
-							public void visitFolder(ICVSFolder folder) throws CVSException {
-								monitor.worked(1);
-								FolderSyncInfo info = folder.getFolderSyncInfo();
-								if (info != null) {
-									monitor.subTask(NLS.bind(CVSUIMessages.CVSTeamProvider_updatingFolder, new String[] { info.getRepository() })); 
-                                    MutableFolderSyncInfo newInfo = info.cloneMutable();
-                                    newInfo.setTag(tag);
-									folder.setFolderSyncInfo(newInfo);
-								}
+						}
+
+						@Override
+						public void visitFolder(ICVSFolder folder) throws CVSException {
+							monitor1.worked(1);
+							FolderSyncInfo info = folder.getFolderSyncInfo();
+							if (info != null) {
+								monitor1.subTask(NLS.bind(CVSUIMessages.CVSTeamProvider_updatingFolder,
+										new String[] { info.getRepository() }));
+								MutableFolderSyncInfo newInfo = info.cloneMutable();
+								newInfo.setTag(tag);
+								folder.setFolderSyncInfo(newInfo);
 							}
-						}, recurse);
-					}
-				} finally {
-					progress.done();
+						}
+					}, recurse);
 				}
+			} finally {
+				progress.done();
 			}
 		}, monitor);
 	}
@@ -273,6 +278,7 @@ public class BranchOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.BranchOperation_0; 
 	}
@@ -280,6 +286,7 @@ public class BranchOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
 	 */
+	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.BranchOperation_1, new String[] { provider.getProject().getName() }); 
 	}
@@ -341,6 +348,7 @@ public class BranchOperation extends RepositoryProviderOperation {
 		return versionName;
 	}
 	
+	@Override
 	protected boolean isReportableError(IStatus status) {
 		return super.isReportableError(status)
 				|| status.getCode() == CVSStatus.TAG_ALREADY_EXISTS;

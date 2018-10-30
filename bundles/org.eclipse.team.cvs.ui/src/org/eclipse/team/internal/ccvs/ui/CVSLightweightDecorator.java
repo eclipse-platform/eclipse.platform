@@ -88,16 +88,14 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	 * @param colors color ids to cache
 	 */
 	private void ensureFontAndColorsCreated(final String[] fonts, final String[] colors) {
-		CVSUIPlugin.getStandardDisplay().syncExec(new Runnable() {
-			public void run() {
-				ITheme theme  = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
-				for (int i = 0; i < colors.length; i++) {
-					theme.getColorRegistry().get(colors[i]);
-					
-				}
-				for (int i = 0; i < fonts.length; i++) {
-					theme.getFontRegistry().get(fonts[i]);
-				}
+		CVSUIPlugin.getStandardDisplay().syncExec(() -> {
+			ITheme theme = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
+			for (int i1 = 0; i1 < colors.length; i1++) {
+				theme.getColorRegistry().get(colors[i1]);
+
+			}
+			for (int i2 = 0; i2 < fonts.length; i2++) {
+				theme.getFontRegistry().get(fonts[i2]);
 			}
 		});
 	}
@@ -136,6 +134,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	 * 
 	 * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object, org.eclipse.jface.viewers.IDecoration)
 	 */
+	@Override
 	public void decorate(Object element, IDecoration decoration) {
 		
 		// Don't decorate the workspace root
@@ -487,11 +486,9 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	public void refresh(IProject project) {
 		final List resources = new ArrayList();
 		try {
-			project.accept(new IResourceVisitor() {
-				public boolean visit(IResource resource) {
-					resources.add(resource);
-					return true;
-				}
+			project.accept(resource -> {
+				resources.add(resource);
+				return true;
 			});
 			postLabelEvent(new LabelProviderChangedEvent(this, resources.toArray()));
 		} catch (CoreException e) {
@@ -502,6 +499,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceSyncInfoChanged(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	public void resourceSyncInfoChanged(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
 	}
@@ -509,6 +507,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#externalSyncInfoChange(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	public void externalSyncInfoChange(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
 	}
@@ -516,6 +515,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceModificationStateChanged(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	public void resourceModified(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
 	}
@@ -547,12 +547,14 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/**
 	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectConfigured(org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public void projectConfigured(IProject project) {
 		refresh(project);
 	}
 	/**
 	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectDeconfigured(org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public void projectDeconfigured(IProject project) {
 		refresh(project);
 	}
@@ -563,16 +565,13 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	 * @param events  the events to post
 	 */
 	private void postLabelEvent(final LabelProviderChangedEvent event) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				fireLabelProviderChanged(event);
-			}
-		});
+		Display.getDefault().asyncExec(() -> fireLabelProviderChanged(event));
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		PlatformUI.getWorkbench().getThemeManager().getCurrentTheme().removePropertyChangeListener(this);
@@ -615,6 +614,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (isEventOfInterest(event)) {
 			ensureFontAndColorsCreated(fonts, colors);

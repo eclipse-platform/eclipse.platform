@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,6 +37,7 @@ public class ConfigureTagsFromRepoViewOnFolder extends CVSAction {
 	/**
 	 * Returns the selected remote folders
 	 */
+	@Override
 	protected ICVSRemoteFolder[] getSelectedRemoteFolders() {
 		ArrayList resources = null;
 		IStructuredSelection selection = getSelection();
@@ -63,34 +63,33 @@ public class ConfigureTagsFromRepoViewOnFolder extends CVSAction {
 	/*
 	 * @see CVSAction@execute(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				final ICVSRemoteFolder[] roots = getSelectedRemoteFolders();
-				final Shell shell = getShell();
-				shell.getDisplay().syncExec(new Runnable() {
-					public void run() {
-						ICVSFolder[] cvsFolders = new ICVSFolder[roots.length];
-						for (int i = 0; i < roots.length; i++) {
-							cvsFolders[i] = roots[i];
-						}
-						TagConfigurationDialog d = new TagConfigurationDialog(shell, TagSource.create(cvsFolders));
-						d.open();
-					}
-				});
-			}
+		run((IRunnableWithProgress) monitor -> {
+			final ICVSRemoteFolder[] roots = getSelectedRemoteFolders();
+			final Shell shell = getShell();
+			shell.getDisplay().syncExec(() -> {
+				ICVSFolder[] cvsFolders = new ICVSFolder[roots.length];
+				for (int i = 0; i < roots.length; i++) {
+					cvsFolders[i] = roots[i];
+				}
+				TagConfigurationDialog d = new TagConfigurationDialog(shell, TagSource.create(cvsFolders));
+				d.open();
+			});
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
 
 	/*
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		return true;
 	}
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ConfigureTagsFromRepoViewConfigure_Tag_Error_1; 
 	}

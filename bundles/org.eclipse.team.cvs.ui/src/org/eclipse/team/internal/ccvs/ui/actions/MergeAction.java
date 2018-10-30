@@ -25,20 +25,21 @@ public class MergeAction extends WorkspaceTraversalAction {
 	/*
 	 * @see CVSAction#execute()
 	 */
+	@Override
 	public void execute(IAction action) {
 		final Shell shell = getShell();
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				MergeWizard wizard = new MergeWizard(getTargetPart(), getSelectedResources(), getSelectedResourceMappings(CVSProviderPlugin.getTypeId()));
-				WizardDialog dialog = new WizardDialog(shell, wizard);
-				dialog.open();
-			}
+		shell.getDisplay().syncExec(() -> {
+			MergeWizard wizard = new MergeWizard(getTargetPart(), getSelectedResources(),
+					getSelectedResourceMappings(CVSProviderPlugin.getTypeId()));
+			WizardDialog dialog = new WizardDialog(shell, wizard);
+			dialog.open();
 		});
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
 	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_MERGE;
 	}

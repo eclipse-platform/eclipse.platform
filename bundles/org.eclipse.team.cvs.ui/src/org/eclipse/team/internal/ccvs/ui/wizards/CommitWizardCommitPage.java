@@ -92,15 +92,13 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
         if (resources.length > 0)
             fCommentArea.setProject(resources[0].getProject());
         fWizard.getDiffTree().addDiffChangeListener(new IDiffChangeListener() {
+			@Override
 			public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 				// ignore property changes
 			}
+			@Override
 			public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
-				Utils.syncExec(new Runnable() {
-					public void run() {
-						updateEnablements();
-					}
-				}, CommitWizardCommitPage.this.getControl());
+				Utils.syncExec((Runnable) () -> updateEnablements(), CommitWizardCommitPage.this.getControl());
 			}
 		});
     }
@@ -108,7 +106,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
     /* (non-Javadoc)
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
-    public void createControl(Composite parent) {
+    @Override
+	public void createControl(Composite parent) {
         initializeDialogUnits(parent);
         Dialog.applyDialogFont(parent);
         final PixelConverter converter= new PixelConverter(parent);
@@ -197,7 +196,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
             Button showChanges = new Button(changeDesc, SWT.PUSH);
             showChanges.setText(CVSUIMessages.CommitWizardCommitPage_5); 
             showChanges.addSelectionListener(new SelectionAdapter() {
-                public void widgetSelected(SelectionEvent e) {
+                @Override
+				public void widgetSelected(SelectionEvent e) {
                     showChangesPane();
                 }
             });
@@ -247,15 +247,18 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 			super(cc, configuration, participant);
 		}
 
+		@Override
 		protected boolean isOfferToRememberParticipant() {
 			return false;
 		}
 
+		@Override
 		protected CompareViewerSwitchingPane createContentViewerSwitchingPane(
 				Splitter parent, int style, CompareEditorInput cei) {
 			return super.createContentViewerSwitchingPane(placeholder, style, cei);
 		}
 
+		@Override
 		protected void setPageDescription(String title) {
 			super.setPageDescription(TeamUIMessages.ParticipantPageSaveablePart_0);
 		}
@@ -268,6 +271,7 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
     /* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.DialogPage#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		// Disposing of the page pane will dispose of the page and the configuration
@@ -287,7 +291,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
     /* (non-Javadoc)
      * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
      */
-    public boolean isPageComplete() {
+    @Override
+	public boolean isPageComplete() {
 		/* if empty comment is not allowed (see bug 114678) */
 		final IPreferenceStore store = CVSUIPlugin.getPlugin()
 				.getPreferenceStore();
@@ -308,7 +313,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 	 * 
 	 * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
 	 */
-    public void setVisible(boolean visible) {
+    @Override
+	public void setVisible(boolean visible) {
         super.setVisible(visible);
         expand();
         if (visible && fConfiguration != null) {
@@ -393,7 +399,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
         validatePage(true);
     }
     
-    protected IWizardContainer getContainer() {
+    @Override
+	protected IWizardContainer getContainer() {
         return super.getContainer();
     }
 
@@ -404,7 +411,8 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
     /* (non-Javadoc)
      * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
      */
-    public void propertyChange(PropertyChangeEvent event) {
+    @Override
+	public void propertyChange(PropertyChangeEvent event) {
         
         if (event.getProperty().equals(CommitCommentArea.OK_REQUESTED)) {
             final IWizardContainer container= getContainer();

@@ -19,10 +19,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.team.core.RepositoryProvider;
 
 /**
@@ -63,14 +60,12 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 		if (markWritableOnEdit) {
 			try {
 				ResourcesPlugin.getWorkspace().run(
-					new IWorkspaceRunnable() {
-						public void run(IProgressMonitor monitor)	{
-							for (int i = 0, length = files.length; i < length; i++) {
-								try {
-									setReadOnly(files[i], false);
-								} catch (CoreException e) {
-									e.printStackTrace();
-								}
+					(IWorkspaceRunnable) monitor -> {
+						for (int i = 0, length = files.length; i < length; i++) {
+							try {
+								setReadOnly(files[i], false);
+							} catch (CoreException e) {
+								e.printStackTrace();
 							}
 						}
 					},

@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.team.core.diff.*;
 import org.eclipse.team.core.mapping.IResourceDiffTree;
@@ -41,6 +40,7 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return internalIsEnabled(selection);
 	}
@@ -75,20 +75,20 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.mappings.CVSModelProviderAction#getBundleKeyPrefix()
      */
-    protected String getBundleKeyPrefix() {
+    @Override
+	protected String getBundleKeyPrefix() {
     	return "GenerateDiffFileAction."; //$NON-NLS-1$
     }
     
-    public void execute() {
+    @Override
+	public void execute() {
     	final ResourceTraversal [][] traversals = new ResourceTraversal[][] { null };
 		try {
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						traversals[0] = getResourceTraversals(getStructuredSelection(), monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					traversals[0] = getResourceTraversals(getStructuredSelection(), monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		} catch (InvocationTargetException e) {
@@ -106,10 +106,12 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		}
     }
 
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		updateEnablement();
 	}
 
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Nothing to do
 	}

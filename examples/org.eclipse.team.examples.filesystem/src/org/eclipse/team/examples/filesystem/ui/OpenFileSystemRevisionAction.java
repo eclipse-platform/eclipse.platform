@@ -20,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -60,26 +59,24 @@ public class OpenFileSystemRevisionAction extends BaseSelectionListenerAction {
 			if (revision == null || !revision.exists()) {
 				MessageDialog.openError(page.getSite().getShell(), "Deleted Revision", "Can't open a deleted revision");
 			} else {
-				IRunnableWithProgress runnable = new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException {
-						IStorage file;
-						try {
-							file = revision.getStorage(monitor);
-							String id = getEditorID(file.getName(), file.getContents());
+				IRunnableWithProgress runnable = monitor -> {
+					IStorage file;
+					try {
+						file = revision.getStorage(monitor);
+						String id = getEditorID(file.getName(), file.getContents());
 
-							if (file instanceof IFile) {
-								//if this is the current workspace file, open it
-								IDE.openEditor(page.getSite().getPage(), (IFile) file);
-							} else {
-								FileSystemRevisionEditorInput fileRevEditorInput = new FileSystemRevisionEditorInput(revision);
-								if (!editorAlreadyOpenOnContents(fileRevEditorInput))
-									page.getSite().getPage().openEditor(fileRevEditorInput, id);
-							}
-						} catch (CoreException e) {
-							throw new InvocationTargetException(e);
+						if (file instanceof IFile) {
+							//if this is the current workspace file, open it
+							IDE.openEditor(page.getSite().getPage(), (IFile) file);
+						} else {
+							FileSystemRevisionEditorInput fileRevEditorInput = new FileSystemRevisionEditorInput(revision);
+							if (!editorAlreadyOpenOnContents(fileRevEditorInput))
+								page.getSite().getPage().openEditor(fileRevEditorInput, id);
 						}
-
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
 					}
+
 				};
 
 				IProgressService progressService = PlatformUI.getWorkbench().getProgressService();

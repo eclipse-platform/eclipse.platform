@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -62,17 +61,17 @@ public class ShowHistoryAction extends CVSAction {
 	/*
 	 * @see CVSAction#executeIAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				ICVSRemoteFile[] files = getSelectedRemoteFiles();
-				TeamUI.showHistoryFor(getTargetPage(), files[0], null);
-			}
+		run((IRunnableWithProgress) monitor -> {
+			ICVSRemoteFile[] files = getSelectedRemoteFiles();
+			TeamUI.showHistoryFor(getTargetPage(), files[0], null);
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
 	/*
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRemoteFile[] resources = getSelectedRemoteFiles();
 		return resources.length == 1;
@@ -80,6 +79,7 @@ public class ShowHistoryAction extends CVSAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ShowHistoryAction_showHistory; 
 	}

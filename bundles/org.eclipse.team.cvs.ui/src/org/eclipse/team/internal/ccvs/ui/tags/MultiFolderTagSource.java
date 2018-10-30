@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
@@ -43,14 +42,16 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.SingleFolderTagSource#getShortDescription()
      */
-    public String getShortDescription() {
+    @Override
+	public String getShortDescription() {
         return NLS.bind(CVSUIMessages.MultiFolderTagSource_0, new String[] { Integer.toString(folders.length) }); 
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getTags(int)
      */
-    public CVSTag[] getTags(int type) {
+    @Override
+	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {
             return super.getTags(type);
         }
@@ -64,7 +65,8 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.SingleFolderTagSource#refresh(boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
+    @Override
+	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask("", folders.length);  //$NON-NLS-1$
         Set result= new HashSet();
     	for (int i= 0; i < folders.length; i++) {
@@ -80,7 +82,8 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.SingleFolderTagSource#getCVSResources()
      */
-    public ICVSResource[] getCVSResources() {
+    @Override
+	public ICVSResource[] getCVSResources() {
         return folders;
     }
     
@@ -91,26 +94,24 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
+    @Override
+	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {
             final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
-            manager.run(new IRunnableWithProgress() {
-            	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						ICVSFolder[] folders = getFolders();
-						for (int i = 0; i < folders.length; i++) {
-							if (replace) {
-								CVSTag[] oldTags = manager
-										.getKnownTags(folders[i]);
-								manager.removeTags(folders[i], oldTags);
-							}
-							manager.addTags(folders[i], tags);
+			manager.run(monitor1 -> {
+				try {
+					ICVSFolder[] folders = getFolders();
+					for (int i = 0; i < folders.length; i++) {
+						if (replace) {
+							CVSTag[] oldTags = manager.getKnownTags(folders[i]);
+							manager.removeTags(folders[i], oldTags);
 						}
-					} catch (CVSException e) {
-						throw new InvocationTargetException(e);
+						manager.addTags(folders[i], tags);
 					}
+				} catch (CVSException e) {
+					throw new InvocationTargetException(e);
 				}
-            }, monitor);
+			}, monitor);
         } catch (InvocationTargetException e) {
             throw CVSException.wrapException(e);
         } catch (InterruptedException e) {

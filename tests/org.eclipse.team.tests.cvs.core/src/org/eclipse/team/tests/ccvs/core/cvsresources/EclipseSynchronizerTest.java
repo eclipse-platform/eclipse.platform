@@ -33,7 +33,6 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.Team;
@@ -42,7 +41,6 @@ import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSRunnable;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.core.syncinfo.MutableResourceSyncInfo;
@@ -875,25 +873,23 @@ public class EclipseSynchronizerTest extends EclipseTest {
 		// Create a project with dummy sync info
 		final IProject project =  createProject(new String[] {"folder1/file1", "folder1/file2"});
 		
-		sync.run(project, new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				try {
-					IFile file1 = project.getFile("folder1/file1");
-					IFile file2 = project.getFile("folder1/file2");
-					// Delete file 1
-					file1.delete(false, false, null);
-					assertHasSyncInfo(file1);
-					assertHasSyncInfo(file2);
-					sync.deleteResourceSync(file1);
-					assertHasNoSyncInfo(file1);
-					assertHasSyncInfo(file2);
-					// Move file 2
-					file2.move(new Path("file3"), false, false, null);
-					assertHasNoSyncInfo(file1);
-					assertHasSyncInfo(file2);
-				} catch (CoreException e) {
-					throw CVSException.wrapException(e);
-				}
+		sync.run(project, monitor -> {
+			try {
+				IFile file1 = project.getFile("folder1/file1");
+				IFile file2 = project.getFile("folder1/file2");
+				// Delete file 1
+				file1.delete(false, false, null);
+				assertHasSyncInfo(file1);
+				assertHasSyncInfo(file2);
+				sync.deleteResourceSync(file1);
+				assertHasNoSyncInfo(file1);
+				assertHasSyncInfo(file2);
+				// Move file 2
+				file2.move(new Path("file3"), false, false, null);
+				assertHasNoSyncInfo(file1);
+				assertHasSyncInfo(file2);
+			} catch (CoreException e) {
+				throw CVSException.wrapException(e);
 			}
 		}, null);
 	}

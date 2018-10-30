@@ -59,13 +59,16 @@ public class WorkspaceModelParticipant extends
 	public class WorkspaceMergeActionGroup extends ModelSynchronizeParticipantActionGroup {
 		private WorkspaceCommitAction commitToolbar;
 		
+		@Override
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			configuration.setProperty(MERGE_ALL_ACTION_ID, new MergeAllActionHandler(configuration) {
+				@Override
 				protected String getJobName() {
 					String name = getConfiguration().getParticipant().getName();
 					return NLS.bind(CVSUIMessages.WorkspaceModelParticipant_0, Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, name));
 				}
 				
+				@Override
 				protected boolean promptToUpdate() {
 					final IResourceDiffTree tree = getMergeContext().getDiffTree();
 					if (tree.isEmpty()) {
@@ -75,23 +78,28 @@ public class WorkspaceModelParticipant extends
 					if (count == 0)
 						return false;
 					final boolean[] result = new boolean[] {true};
-					TeamUIPlugin.getStandardDisplay().syncExec(new Runnable() {
-						public void run() {
-							String sizeString = Long.toString(count);
-							String message = tree.size() > 1 ? NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateSeveral, new String[] { sizeString }) : NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateOne, new String[] { sizeString }); // 
-							result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(), NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateTitle, new String[] { sizeString }), message); 					 
-				 
-						}
+					TeamUIPlugin.getStandardDisplay().syncExec(() -> {
+						String sizeString = Long.toString(count);
+						String message = tree.size() > 1
+								? NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateSeveral,
+										new String[] { sizeString })
+								: NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateOne, new String[] { sizeString }); //
+						result[0] = MessageDialog.openQuestion(getConfiguration().getSite().getShell(),
+								NLS.bind(CVSUIMessages.UpdateAction_promptForUpdateTitle, new String[] { sizeString }),
+								message);
+
 					});
 					return result[0];
 				}
 				private IMergeContext getMergeContext() {
 					return ((IMergeContext)getConfiguration().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT));
 				}
+				@Override
 				protected boolean needsToSaveDirtyEditors() {
 					int option = CVSUIPlugin.getPlugin().getPreferenceStore().getInt(ICVSUIConstants.PREF_SAVE_DIRTY_EDITORS);
 					return option != ICVSUIConstants.OPTION_NEVER;
 				}
+				@Override
 				protected boolean confirmSaveOfDirtyEditor() {
 					int option = CVSUIPlugin.getPlugin().getPreferenceStore().getInt(ICVSUIConstants.PREF_SAVE_DIRTY_EDITORS);
 					return option == ICVSUIConstants.OPTION_PROMPT;
@@ -154,6 +162,7 @@ public class WorkspaceModelParticipant extends
 		/* (non-Javadoc)
 		 * @see org.eclipse.team.ui.operations.MergeActionGroup#configureMergeAction(java.lang.String, org.eclipse.jface.action.Action)
 		 */
+		@Override
 		protected void configureMergeAction(String mergeActionId, Action action) {
 			if (mergeActionId == SynchronizationActionProvider.MERGE_ACTION_ID) {
 				Utils.initAction(action, "WorkspaceUpdateAction.", Policy.getActionBundle()); //$NON-NLS-1$
@@ -172,6 +181,7 @@ public class WorkspaceModelParticipant extends
 			}
 		}
 		
+		@Override
 		protected void addToContextMenu(String mergeActionId, Action action, IMenuManager manager) {
 			IContributionItem group = null;;
 			if (mergeActionId == SynchronizationActionProvider.MERGE_ACTION_ID) {
@@ -213,6 +223,7 @@ public class WorkspaceModelParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(ISynchronizePageConfiguration.P_VIEWER_ID, VIEWER_ID);
 		super.initializeConfiguration(configuration);
@@ -221,6 +232,7 @@ public class WorkspaceModelParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingSynchronizeParticipant#createMergeActionGroup()
 	 */
+	@Override
 	protected ModelSynchronizeParticipantActionGroup createMergeActionGroup() {
 		return new WorkspaceMergeActionGroup();
 	}
@@ -228,6 +240,7 @@ public class WorkspaceModelParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#restoreContext(org.eclipse.team.core.mapping.IResourceMappingScope, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected MergeContext restoreContext(ISynchronizationScopeManager manager) {
 		return WorkspaceSubscriberContext.createContext(manager, ISynchronizationContext.THREE_WAY);
 	}
@@ -235,23 +248,27 @@ public class WorkspaceModelParticipant extends
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#createScopeManager(org.eclipse.core.resources.mapping.ResourceMapping[])
 	 */
+	@Override
 	protected ISynchronizationScopeManager createScopeManager(ResourceMapping[] mappings) {
 		return WorkspaceSubscriberContext.createWorkspaceScopeManager(mappings, true, isConsultChangeSets);
 	}
 	
-    public ChangeSetCapability getChangeSetCapability() {
+    @Override
+	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
             capability = new WorkspaceChangeSetCapability();
         }
         return capability;
 	}
     
-    public void saveState(IMemento memento) {
+    @Override
+	public void saveState(IMemento memento) {
     	super.saveState(memento);
     	memento.putString(CTX_CONSULT_CHANGE_SETS, Boolean.toString(isConsultChangeSets));
     }
     
-    public void init(String secondaryId, IMemento memento) throws PartInitException {
+    @Override
+	public void init(String secondaryId, IMemento memento) throws PartInitException {
     	try {
     		String consult = memento.getString(CTX_CONSULT_CHANGE_SETS);
     		if (consult != null)

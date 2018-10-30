@@ -35,8 +35,9 @@ import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.Policy;
+import org.eclipse.team.internal.ccvs.ui.ResizableWizardDialog;
 import org.eclipse.team.internal.ccvs.ui.wizards.RestoreFromRepositoryWizard;
 
 /**
@@ -60,6 +61,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		ICVSFolder currentFolder;
 		List atticFiles = new ArrayList();
 		
+		@Override
 		public IStatus messageLine(
 					String line,
 					ICVSRepositoryLocation location,
@@ -116,6 +118,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 			return OK;
 		}
 		
+		@Override
 		public IStatus errorLine(
 			String line,
 			ICVSRepositoryLocation location,
@@ -146,6 +149,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		IContainer resource = (IContainer)getSelectedResources()[0];
 		ICVSFile[] files = fetchDeletedFiles(resource);
@@ -163,6 +167,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		IResource[] resources = getSelectedResources();
 		if (resources.length != 1) return false;
@@ -180,16 +185,14 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		final ICVSFile[][] files = new ICVSFile[1][0];
 		files[0] = null;
 		try {
-			run(new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(parent);
-						FolderSyncInfo info = folder.getFolderSyncInfo();
-						ICVSRepositoryLocation location = KnownRepositories.getInstance().getRepository(info.getRoot());
-						files[0] = fetchFilesInAttic(location, folder, monitor);
-					} catch (CVSException e) {
-						throw new InvocationTargetException(e);
-					}
+			run((IRunnableWithProgress) monitor -> {
+				try {
+					ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(parent);
+					FolderSyncInfo info = folder.getFolderSyncInfo();
+					ICVSRepositoryLocation location = KnownRepositories.getInstance().getRepository(info.getRoot());
+					files[0] = fetchFilesInAttic(location, folder, monitor);
+				} catch (CVSException e) {
+					throw new InvocationTargetException(e);
 				}
 			}, true, PROGRESS_DIALOG);
 		} catch (InvocationTargetException e) {

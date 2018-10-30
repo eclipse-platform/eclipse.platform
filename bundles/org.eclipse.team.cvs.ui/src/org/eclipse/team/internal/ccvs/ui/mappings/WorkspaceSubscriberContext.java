@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.osgi.util.NLS;
@@ -32,7 +32,8 @@ import org.eclipse.team.core.mapping.*;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.subscribers.SubscriberScopeManager;
-import org.eclipse.team.core.synchronize.*;
+import org.eclipse.team.core.synchronize.SyncInfo;
+import org.eclipse.team.core.synchronize.SyncInfoFilter;
 import org.eclipse.team.core.synchronize.SyncInfoFilter.ContentComparisonSyncInfoFilter;
 import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.internal.ccvs.core.*;
@@ -59,6 +60,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			this.consultSets = consultSets;
 		}
 
+		@Override
 		protected ResourceTraversal[] adjustInputTraversals(ResourceTraversal[] traversals) {
 			if (isConsultSets())
 				return ((CVSActiveChangeSetCollector)CVSUIPlugin.getPlugin().getChangeSetManager()).adjustInputTraversals(traversals);
@@ -90,11 +92,13 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.SubscriberMergeContext#getDiffFilter()
 	 */
+	@Override
 	protected DiffFilter getDiffFilter() {
 		final DiffFilter contentFilter = createContentFilter();
 		final DiffFilter regexFilter = createRegexFilter();
 		if (contentFilter != null && regexFilter != null) {
 			return new DiffFilter() {
+				@Override
 				public boolean select(IDiff diff, IProgressMonitor monitor) {
 					return !contentFilter.select(diff, monitor)
 							&& !regexFilter.select(diff, monitor);
@@ -102,12 +106,14 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			};
 		} else if (contentFilter != null) {
 			return new DiffFilter() {
+				@Override
 				public boolean select(IDiff diff, IProgressMonitor monitor) {
 					return !contentFilter.select(diff, monitor);
 				}
 			};
 		} else if (regexFilter != null) {
 			return new DiffFilter() {
+				@Override
 				public boolean select(IDiff diff, IProgressMonitor monitor) {
 					return !regexFilter.select(diff, monitor);
 				}
@@ -125,6 +131,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.SubscriberMergeContext#dispose()
 	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		((IEclipsePreferences) CVSUIPlugin.getPlugin().getInstancePreferences().node("")).removePreferenceChangeListener(this); //$NON-NLS-1$
@@ -156,6 +163,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener#preferenceChange(org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent)
 	 */
+	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (event.getKey().equals(ICVSUIConstants.PREF_CONSIDER_CONTENTS) || event.getKey().equals(ICVSUIConstants.PREF_SYNCVIEW_REGEX_FILTER_PATTERN)) {
 			SubscriberDiffTreeEventHandler handler = getHandler();
@@ -166,6 +174,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 		}
 	}
 
+	@Override
 	public void markAsMerged(IDiff[] nodes, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
 		if (getType() == TWO_WAY) {
 			// For, TWO_WAY merges (i.e. replace) should not adjust sync info
@@ -186,88 +195,86 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 		}
 	}
 
+	@Override
 	public void markAsMerged(final IDiff diff, final boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				// Get the latest sync info for the file (i.e. not what is in the set).
-				// We do this because the client may have modified the file since the
-				// set was populated.
-				IResource resource = getDiffTree().getResource(diff);
-				if (resource.getType() != IResource.FILE) {
-					if (diff instanceof IThreeWayDiff) {
-						IThreeWayDiff twd = (IThreeWayDiff) diff;
-						if (resource.getType() == IResource.FOLDER
-								&& twd.getKind() == IDiff.ADD 
-								&& twd.getDirection() == IThreeWayDiff.INCOMING
-								&& resource.exists()) {
-							// The folder was created by merge
-							SyncInfo info = getSyncInfo(resource);
-							if (info instanceof CVSSyncInfo) {
-								CVSSyncInfo cvsInfo = (CVSSyncInfo) info;
-								cvsInfo.makeInSync();
-							}
+		run(monitor1 -> {
+			// Get the latest sync info for the file (i.e. not what is in the set).
+			// We do this because the client may have modified the file since the
+			// set was populated.
+			IResource resource = getDiffTree().getResource(diff);
+			if (resource.getType() != IResource.FILE) {
+				if (diff instanceof IThreeWayDiff) {
+					IThreeWayDiff twd = (IThreeWayDiff) diff;
+					if (resource.getType() == IResource.FOLDER
+							&& twd.getKind() == IDiff.ADD 
+							&& twd.getDirection() == IThreeWayDiff.INCOMING
+							&& resource.exists()) {
+						// The folder was created by merge
+						SyncInfo info1 = getSyncInfo(resource);
+						if (info1 instanceof CVSSyncInfo) {
+							CVSSyncInfo cvsInfo1 = (CVSSyncInfo) info1;
+							cvsInfo1.makeInSync();
 						}
 					}
-					return;
 				}
-				if (getType() == TWO_WAY) {
-					// For, TWO_WAY merges (i.e. replace) should not adjust sync info
-					// but should remove the node from the tree so that other models do 
-					// not modify the file
-					((DiffTree)getDiffTree()).remove(diff.getPath());
-				} else {
-					SyncInfo info = getSyncInfo(resource);
-					ensureRemotesMatch(resource, diff, info);
-					if (info instanceof CVSSyncInfo) {
-						CVSSyncInfo cvsInfo = (CVSSyncInfo) info;
-						monitor.beginTask(null, 50 + (inSyncHint ? 100 : 0));
-						cvsInfo.makeOutgoing(Policy.subMonitorFor(monitor, 50));
-						if (inSyncHint) {
-							// Compare the contents of the file with the remote
-							// and make the file in-sync if they match
-							ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
-							if (resource.getType() == IResource.FILE && info.getRemote() != null) {
-								if (comparator.compareContents((IFile)resource, info.getRemote(), Policy.subMonitorFor(monitor, 100))) {
-									ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
-									cvsFile.checkedIn(null, false /* not a commit */);
-								}
+				return;
+			}
+			if (getType() == TWO_WAY) {
+				// For, TWO_WAY merges (i.e. replace) should not adjust sync info
+				// but should remove the node from the tree so that other models do 
+				// not modify the file
+				((DiffTree)getDiffTree()).remove(diff.getPath());
+			} else {
+				SyncInfo info2 = getSyncInfo(resource);
+				ensureRemotesMatch(resource, diff, info2);
+				if (info2 instanceof CVSSyncInfo) {
+					CVSSyncInfo cvsInfo2 = (CVSSyncInfo) info2;
+					monitor1.beginTask(null, 50 + (inSyncHint ? 100 : 0));
+					cvsInfo2.makeOutgoing(Policy.subMonitorFor(monitor1, 50));
+					if (inSyncHint) {
+						// Compare the contents of the file with the remote
+						// and make the file in-sync if they match
+						ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
+						if (resource.getType() == IResource.FILE && info2.getRemote() != null) {
+							if (comparator.compareContents((IFile)resource, info2.getRemote(), Policy.subMonitorFor(monitor1, 100))) {
+								ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
+								cvsFile.checkedIn(null, false /* not a commit */);
 							}
 						}
-						monitor.done();
 					}
+					monitor1.done();
 				}
 			}
 		}, getMergeRule(diff), IResource.NONE, monitor);
 	}
 
+	@Override
 	protected void makeInSync(final IDiff diff, IProgressMonitor monitor) throws CoreException {
-		run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				// Get the latest sync info for the file (i.e. not what is in the set).
-				// We do this because the client may have modified the file since the
-				// set was populated.
-				IResource resource = getDiffTree().getResource(diff);
-				if (resource.getType() != IResource.FILE)
-					return;
-				SyncInfo info = getSyncInfo(resource);
-				ensureRemotesMatch(resource, diff, info);
-				IResourceVariant remote = info.getRemote();
-				RemoteFile file = (RemoteFile)remote;
-				if (file != null)
-					remote = file.getCachedHandle();
-				
-				if (info instanceof CVSSyncInfo) {
-					CVSSyncInfo cvsInfo = (CVSSyncInfo) info;		
-					cvsInfo.makeOutgoing(monitor);
-					if (resource.getType() == IResource.FILE && info.getRemote() != null) {
-						ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
-						if (remote != null && remote instanceof RemoteFile){
-							cvsFile.setExecutable(((RemoteFile)remote).isExecutable());
-							cvsFile.setTimeStamp(((RemoteFile) remote).getTimeStamp());
-							cvsFile.setReadOnly(getReadOnly(cvsFile));
-						}
-						cvsFile.checkedIn(null , false /* not a commit */);
+		run(monitor1 -> {
+			// Get the latest sync info for the file (i.e. not what is in the set).
+			// We do this because the client may have modified the file since the
+			// set was populated.
+			IResource resource = getDiffTree().getResource(diff);
+			if (resource.getType() != IResource.FILE)
+				return;
+			SyncInfo info = getSyncInfo(resource);
+			ensureRemotesMatch(resource, diff, info);
+			IResourceVariant remote = info.getRemote();
+			RemoteFile file = (RemoteFile)remote;
+			if (file != null)
+				remote = file.getCachedHandle();
+			
+			if (info instanceof CVSSyncInfo) {
+				CVSSyncInfo cvsInfo = (CVSSyncInfo) info;		
+				cvsInfo.makeOutgoing(monitor1);
+				if (resource.getType() == IResource.FILE && info.getRemote() != null) {
+					ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
+					if (remote != null && remote instanceof RemoteFile){
+						cvsFile.setExecutable(((RemoteFile)remote).isExecutable());
+						cvsFile.setTimeStamp(((RemoteFile) remote).getTimeStamp());
+						cvsFile.setReadOnly(getReadOnly(cvsFile));
 					}
+					cvsFile.checkedIn(null , false /* not a commit */);
 				}
 			}
 		}, getMergeRule(diff), IResource.NONE, monitor);
@@ -315,6 +322,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.MergeContext#merge(org.eclipse.team.core.diff.IDiffNode, boolean, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStatus merge(IDiff delta, boolean force, IProgressMonitor monitor) throws CoreException {
 		if (getMergeType() == ISynchronizationContext.TWO_WAY) {
 			force = true;
@@ -369,6 +377,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.provider.MergeContext#getMergeType()
 	 */
+	@Override
 	public int getMergeType() {
 		return type;
 	}
@@ -376,6 +385,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.subscribers.SubscriberMergeContext#refresh(org.eclipse.core.resources.mapping.ResourceTraversal[], int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void refresh(final ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
 		SubscriberDiffTreeEventHandler handler = getHandler();
 		if (handler != null) {
@@ -384,18 +394,10 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 				handler.setProgressGroupHint(group.getGroup(), group.getTicks());
 			handler.initializeIfNeeded();
 			((CVSWorkspaceSubscriber)getSubscriber()).refreshWithContentFetch(traversals, monitor);
-			runInBackground(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					cacheContents(traversals, getDiffTree(), true, monitor);
-				}
-			});
+			runInBackground(monitor1 -> cacheContents(traversals, getDiffTree(), true, monitor1));
 		} else {
 			super.refresh(traversals, flags, monitor);
-			runInBackground(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					cacheContents(traversals, getDiffTree(), false, monitor);
-				}
-			});
+			runInBackground(monitor1 -> cacheContents(traversals, getDiffTree(), false, monitor1));
 		}
 	}
 	
@@ -416,18 +418,23 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 		// OPTIMIZE: remote state and contents could be obtained in 1
 		// OPTIMIZE: Based could be avoided if we always cached base locally
 		ResourceMapping[] mappings = new ResourceMapping[] { new ResourceMapping() {
+			@Override
 			public Object getModelObject() {
 				return WorkspaceSubscriberContext.this;
 			}
+			@Override
 			public IProject[] getProjects() {
 				return ResourcesPlugin.getWorkspace().getRoot().getProjects();
 			}
+			@Override
 			public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 				return traversals;
 			}
-		    public boolean contains(ResourceMapping mapping) {
+		    @Override
+			public boolean contains(ResourceMapping mapping) {
 		    	return false;
 		    }
+			@Override
 			public String getModelProviderId() {
 				return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 			}
@@ -447,6 +454,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 		}
 	}
 	
+	@Override
 	public IStatus merge(IDiff[] deltas, boolean force, IProgressMonitor monitor) throws CoreException {
 		try {
 			if (deltas.length == 0) 
@@ -497,6 +505,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 		return tree;
 	}
 	
+	@Override
 	protected void performReplace(IDiff diff, IProgressMonitor monitor) throws CoreException {
 		IResource resource = ResourceDiffTree.getResourceFor(diff);
 		if (resource.getType() == IResource.FILE){

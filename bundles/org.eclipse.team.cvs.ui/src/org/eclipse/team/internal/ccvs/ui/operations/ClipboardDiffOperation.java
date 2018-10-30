@@ -17,7 +17,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
@@ -34,6 +35,7 @@ public class ClipboardDiffOperation extends DiffOperation {
 		super(part, mappings, options, isMultiPatch, includeFullPathInformation, patchRoot, DESTINATION_CLIPBOARD);
 	}
 
+	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 	    super.execute(monitor);
 	    
@@ -46,21 +48,18 @@ public class ClipboardDiffOperation extends DiffOperation {
      }
 	
 	 private void copyToClipboard(final ByteArrayOutputStream baos) {
-        getShell().getDisplay().syncExec(new Runnable() {
-        	public void run() {
-        		TextTransfer plainTextTransfer = TextTransfer.getInstance();
-        		Clipboard clipboard = new Clipboard(getShell().getDisplay());		
-        		clipboard.setContents(
-        			new String[]{baos.toString()}, 
-        			new Transfer[]{plainTextTransfer});	
-        		clipboard.dispose();
-        	}
-        });
+		getShell().getDisplay().syncExec(() -> {
+			TextTransfer plainTextTransfer = TextTransfer.getInstance();
+			Clipboard clipboard = new Clipboard(getShell().getDisplay());
+			clipboard.setContents(new String[] { baos.toString() }, new Transfer[] { plainTextTransfer });
+			clipboard.dispose();
+		});
 	 }
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.DiffOperation#openStream()
 	 */
+	@Override
 	protected PrintStream openStream() {
 		return new PrintStream(os);
 	}

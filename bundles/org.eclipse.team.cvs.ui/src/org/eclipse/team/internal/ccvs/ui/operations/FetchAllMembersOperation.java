@@ -114,6 +114,7 @@ public class FetchAllMembersOperation extends RemoteOperation {
 		this.repoLocation = repoLocation;
 	}
 
+	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		//expand each folder selected in the tree
 			ICVSRemoteResource[] restest = getRemoteResources();
@@ -163,11 +164,8 @@ public class FetchAllMembersOperation extends RemoteOperation {
 					prov.addCachedTree(project, remoteTree);
 					final TreeViewer tree = repView.getViewer();
 				
-					Utils.asyncExec( new Runnable() {
-						public void run() {
-							tree.expandToLevel(project, AbstractTreeViewer.ALL_LEVELS);
-						}
-					}, repView.getViewer());
+				Utils.asyncExec((Runnable) () -> tree.expandToLevel(project, AbstractTreeViewer.ALL_LEVELS),
+						repView.getViewer());
 				}
 				
 			} catch (InvocationTargetException e) {
@@ -195,6 +193,7 @@ public class FetchAllMembersOperation extends RemoteOperation {
 		}	
 	}
 	
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.FetchAllMembersOperation_0;
 	}

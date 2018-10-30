@@ -26,7 +26,8 @@ import org.eclipse.team.core.mapping.provider.MergeStatus;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.subscribers.SubscriberMergeContext;
-import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.core.CVSException;
+import org.eclipse.team.internal.ccvs.core.ICVSFile;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
@@ -37,6 +38,7 @@ import org.eclipse.team.internal.core.subscribers.SubscriberDiffTreeEventHandler
 public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 
 	private static final IStorageMerger MERGER = new DelegatingStorageMerger() {
+		@Override
 		protected IStorageMerger createDelegateMerger(IStorage target) throws CoreException {
 			IStorageMerger storageMerger = super.createDelegateMerger(target);
 			if (storageMerger == null) {
@@ -49,6 +51,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 			return storageMerger;
 		}
 
+		@Override
 		protected int getType(IStorage target) {
 			if (target instanceof IFile) {
 				IFile file = (IFile) target;
@@ -79,26 +82,21 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.MergeContext#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.jobs.ISchedulingRule, int, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void run(final IWorkspaceRunnable runnable, final ISchedulingRule rule, int flags, IProgressMonitor monitor) throws CoreException {
-		super.run(new IWorkspaceRunnable() {
-			public void run(IProgressMonitor monitor) throws CoreException {
-				EclipseSynchronizer.getInstance().run(rule, new ICVSRunnable(){
-					public void run(IProgressMonitor monitor) throws CVSException {
-						try {
-							runnable.run(monitor);
-						} catch (CoreException e) {
-							throw CVSException.wrapException(e);
-						}
-					}
-				}, monitor);
+		super.run(monitor1 -> EclipseSynchronizer.getInstance().run(rule, monitor2 -> {
+			try {
+				runnable.run(monitor2);
+			} catch (CoreException e) {
+				throw CVSException.wrapException(e);
 			}
-		
-		}, rule, flags, monitor);
+		}, monitor1), rule, flags, monitor);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.MergeContext#getMergeRule(org.eclipse.core.resources.IResource)
 	 */
+	@Override
 	public ISchedulingRule getMergeRule(IDiff node) {
 		// Return the project since that is what the EclipseSynchronize needs
 		return getDiffTree().getResource(node).getProject();
@@ -107,6 +105,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.provider.MergeContext#makeInSync(org.eclipse.team.core.diff.IDiff, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void makeInSync(IDiff diff, IProgressMonitor monitor) throws CoreException {
 		markAsMerged(diff, true, monitor);
 	}
@@ -114,18 +113,17 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.IMergeContext#reject(org.eclipse.team.core.diff.IDiff, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void reject(IDiff diff, IProgressMonitor monitor) throws CoreException {
 		markAsMerged(diff, false, monitor);
 	}
 	
+	@Override
 	public IStatus merge(final IDiff[] diffs, final boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		final IStatus[] result = new IStatus[] { Status.OK_STATUS };
 		if (diffs.length > 0)
-			run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					result[0] = internalMerge(diffs, ignoreLocalChanges, monitor);
-				}
-			}, getMergeRule(diffs), IWorkspace.AVOID_UPDATE, monitor);
+			run(monitor1 -> result[0] = internalMerge(diffs, ignoreLocalChanges, monitor1), getMergeRule(diffs),
+					IWorkspace.AVOID_UPDATE, monitor);
 		return result[0];
 	}
 
@@ -190,6 +188,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 			if (!folderDiffs.isEmpty()) {
 				// Order the diffs so empty added children will get deleted before their parents are visited
 				Collections.sort(folderDiffs, new Comparator() {
+					@Override
 					public int compare(Object o1, Object o2) {
 						return ((IDiff)o2).getPath().toString().compareTo(((IDiff)o1).getPath().toString());
 					}
@@ -243,6 +242,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		return (IFile[]) failures.toArray(new IFile[failures.size()]);
 	}
 	
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IStorageMerger.class)
 			return adapter.cast(MERGER);

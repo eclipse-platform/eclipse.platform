@@ -24,21 +24,19 @@ import org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation;
 
 public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
     
+	@Override
 	public void execute(IAction action)  throws InvocationTargetException, InterruptedException {
 		
 		final ReplaceOperation replaceOperation = new ReplaceOperation(getTargetPart(), getCVSResourceMappings(), resourceCommonTag);
 		if (hasOutgoingChanges(replaceOperation)) {
 			final boolean[] keepGoing = new boolean[] { true };
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					OutgoingChangesDialog dialog = new OutgoingChangesDialog(getShell(), replaceOperation.getScopeManager(), 
-							CVSUIMessages.ReplaceWithTagAction_2, 
-							CVSUIMessages.ReplaceWithTagAction_0, 
-							CVSUIMessages.ReplaceWithTagAction_1);
-					dialog.setHelpContextId(IHelpContextIds.REPLACE_OUTGOING_CHANGES_DIALOG);
-					int result = dialog.open();
-					keepGoing[0] = result == Window.OK;
-				}
+			Display.getDefault().syncExec(() -> {
+				OutgoingChangesDialog dialog = new OutgoingChangesDialog(getShell(), replaceOperation.getScopeManager(),
+						CVSUIMessages.ReplaceWithTagAction_2, CVSUIMessages.ReplaceWithTagAction_0,
+						CVSUIMessages.ReplaceWithTagAction_1);
+				dialog.setHelpContextId(IHelpContextIds.REPLACE_OUTGOING_CHANGES_DIALOG);
+				int result = dialog.open();
+				keepGoing[0] = result == Window.OK;
 			});
 			if (!keepGoing[0])
 				return;
@@ -49,6 +47,7 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
 	 */
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ReplaceWithRemoteAction_problemMessage; 
 	}
@@ -56,6 +55,7 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
 	 */
+	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;
 	}
@@ -63,6 +63,7 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
 	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
@@ -73,6 +74,7 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
 	 * 
 	 * @see TeamAction#setActionEnablement(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	protected void setActionEnablement(IAction action) {
 		super.setActionEnablement(action);
 		

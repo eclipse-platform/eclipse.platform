@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -64,17 +63,17 @@ public class OpenLogEntryAction extends CVSAction {
 	/*
 	 * @see CVSAction#execute(IAction)
 	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				final ILogEntry[] entries = getSelectedLogEntries();
-				for (int i = 0; i < entries.length; i++) {
-					if (entries[i].isDeletion()) {
-						MessageDialog.openError(getShell(), CVSUIMessages.OpenLogEntryAction_deletedTitle, CVSUIMessages.OpenLogEntryAction_deleted); // 
-					} else {
-						ICVSRemoteFile file = entries[i].getRemoteFile();
-                        CVSUIPlugin.getPlugin().openEditor(file, monitor);
-					}
+		run((IRunnableWithProgress) monitor -> {
+			final ILogEntry[] entries = getSelectedLogEntries();
+			for (int i = 0; i < entries.length; i++) {
+				if (entries[i].isDeletion()) {
+					MessageDialog.openError(getShell(), CVSUIMessages.OpenLogEntryAction_deletedTitle,
+							CVSUIMessages.OpenLogEntryAction_deleted); //
+				} else {
+					ICVSRemoteFile file = entries[i].getRemoteFile();
+					CVSUIPlugin.getPlugin().openEditor(file, monitor);
 				}
 			}
 		}, false, PROGRESS_BUSYCURSOR); 
@@ -82,6 +81,7 @@ public class OpenLogEntryAction extends CVSAction {
 	/*
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		ILogEntry[] entries = getSelectedLogEntries();
 		if (entries.length == 0) return false;

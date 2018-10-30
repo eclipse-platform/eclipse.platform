@@ -15,7 +15,8 @@ package org.eclipse.team.internal.ccvs.ui.repo;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -32,46 +33,45 @@ import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
  */
 public class AddToBranchAction extends CVSAction {
 
-	IInputValidator validator = new IInputValidator() {
-		public String isValid(String newText) {
-			IStatus status = CVSTag.validateTagName(newText);
-			if (status.isOK()) return null;
-			return status.getMessage();
-		}
+	IInputValidator validator = newText -> {
+		IStatus status = CVSTag.validateTagName(newText);
+		if (status.isOK())
+			return null;
+		return status.getMessage();
 	};
 	
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
-				final ICVSRemoteFolder folder = getSelectedRootFolder();
-				if (folder == null) return;
-				Shell shell = getShell();
-				final CVSException[] exception = new CVSException[] { null };
-				shell.getDisplay().syncExec(new Runnable() {
-					public void run() {
-						InputDialog dialog = new InputDialog(getShell(), CVSUIMessages.AddToBranchAction_enterTag, CVSUIMessages.AddToBranchAction_enterTagLong, null, validator); // 
-						if (dialog.open() == Window.OK) {
-							CVSTag tag = new CVSTag(dialog.getValue(), CVSTag.BRANCH);
-							try {
-								CVSUIPlugin.getPlugin().getRepositoryManager().addTags(folder, new CVSTag[] {tag});
-							} catch (CVSException e) {
-								exception[0] = e;
-							}
-						}
+		run((IRunnableWithProgress) monitor -> {
+			final ICVSRemoteFolder folder = getSelectedRootFolder();
+			if (folder == null)
+				return;
+			Shell shell = getShell();
+			final CVSException[] exception = new CVSException[] { null };
+			shell.getDisplay().syncExec(() -> {
+				InputDialog dialog = new InputDialog(getShell(), CVSUIMessages.AddToBranchAction_enterTag,
+						CVSUIMessages.AddToBranchAction_enterTagLong, null, validator); //
+				if (dialog.open() == Window.OK) {
+					CVSTag tag = new CVSTag(dialog.getValue(), CVSTag.BRANCH);
+					try {
+						CVSUIPlugin.getPlugin().getRepositoryManager().addTags(folder, new CVSTag[] { tag });
+					} catch (CVSException e) {
+						exception[0] = e;
 					}
-				});
-				if (exception[0] != null)
-					throw new InvocationTargetException(exception[0]);
-			}
+				}
+			});
+			if (exception[0] != null)
+				throw new InvocationTargetException(exception[0]);
 		}, false, PROGRESS_BUSYCURSOR); 
 	}
 
 	/**
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		return getSelectedRootFolder() != null;
 	}

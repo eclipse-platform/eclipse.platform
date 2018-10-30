@@ -118,12 +118,7 @@ public class NoChangesDialog extends DetailsDialog {
         }
 
         final Image[] image = new Image[1];
-        display.syncExec(new Runnable() {
-            @Override
-			public void run() {
-                image[0] = display.getSystemImage(imageID);
-            }
-        });
+        display.syncExec(() -> image[0] = display.getSystemImage(imageID));
 
         return image[0];
     }

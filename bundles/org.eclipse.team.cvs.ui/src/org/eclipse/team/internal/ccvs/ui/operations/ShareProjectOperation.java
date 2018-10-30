@@ -25,7 +25,8 @@ import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderTree;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 
 /**
@@ -49,6 +50,7 @@ public class ShareProjectOperation extends CVSOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
 			monitor.beginTask(getTaskName(), 100);
@@ -56,13 +58,11 @@ public class ShareProjectOperation extends CVSOperation {
 			final ICVSRemoteFolder remote = createRemoteFolder(Policy.subMonitorFor(monitor, 50));
 			// Map the project to the module in a workspace runnable
 			final TeamException[] exception = new TeamException[] {null};
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					try {
-						mapProjectToRemoteFolder(remote, monitor);
-					} catch (TeamException e) {
-						exception[0] = e;
-					}
+			ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> {
+				try {
+					mapProjectToRemoteFolder(remote, monitor1);
+				} catch (TeamException e) {
+					exception[0] = e;
 				}
 			}, ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(project), 0, Policy.subMonitorFor(monitor, 100));
 			if (exception[0] != null)
@@ -169,6 +169,7 @@ public class ShareProjectOperation extends CVSOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.ShareProjectOperation_0, new String[] { project.getName(), moduleName }); 
 	}
@@ -183,6 +184,7 @@ public class ShareProjectOperation extends CVSOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getShell()
 	 */
+	@Override
 	public Shell getShell() {
 		return shell;
 	}
@@ -197,9 +199,11 @@ public class ShareProjectOperation extends CVSOperation {
             monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
 			folder.accept(new ICVSResourceVisitor() {
+				@Override
 				public void visitFile(ICVSFile file) throws CVSException {
 					// nothing to do for files
 				}
+				@Override
 				public void visitFolder(ICVSFolder folder) throws CVSException {
                     monitor.subTask(NLS.bind(CVSUIMessages.ShareProjectOperation_2, new String[] { folder.getIResource().getFullPath().toString() } ));
 					if (folder.isCVSFolder()) {

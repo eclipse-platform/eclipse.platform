@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
@@ -50,13 +49,12 @@ public class RefreshRemoteProjectWizard extends Wizard {
 		final ICVSRemoteResource[][] rootFolders = new ICVSRemoteResource[1][0];
 		rootFolders[0] = null;
 		try {
-			new ProgressMonitorDialog(shell).run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						rootFolders[0] = CVSUIPlugin.getPlugin().getRepositoryManager().getFoldersForTag(root, CVSTag.DEFAULT, monitor);
-					} catch (CVSException e) {
-						throw new InvocationTargetException(e);
-					}
+			new ProgressMonitorDialog(shell).run(true, true, monitor -> {
+				try {
+					rootFolders[0] = CVSUIPlugin.getPlugin().getRepositoryManager().getFoldersForTag(root,
+							CVSTag.DEFAULT, monitor);
+				} catch (CVSException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 		} catch (InvocationTargetException e) {
@@ -89,6 +87,7 @@ public class RefreshRemoteProjectWizard extends Wizard {
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
 		ImageDescriptor substImage = CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_NEW_LOCATION);
@@ -104,26 +103,25 @@ public class RefreshRemoteProjectWizard extends Wizard {
 	/**
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		final ICVSRemoteResource[] selectedFolders = projectSelectionPage.getSelectedRemoteProject();
 		try {
-			getContainer().run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();
-					// Run in the manager to avoid multiple repo view updates
-					manager.run(new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) throws InvocationTargetException,InterruptedException {
-						    monitor.beginTask(null, 100);
-						    ICVSRemoteResource[] failedFolders = internalRefresh(manager, selectedFolders, false /* recurse */, Policy.subMonitorFor(monitor, 80));
-						    if (failedFolders.length > 0) {
-						        // Go deep any any failed folders.
-						        if (promptForDeepRefresh(failedFolders))
-						            internalRefresh(manager, failedFolders, true /* recurse */, Policy.subMonitorFor(monitor, 20));
-						    }
-						    monitor.done();
-						}
-					}, monitor);
-				}
+			getContainer().run(true, true, monitor -> {
+				final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();
+				// Run in the manager to avoid multiple repo view updates
+				manager.run(monitor1 -> {
+					monitor1.beginTask(null, 100);
+					ICVSRemoteResource[] failedFolders = internalRefresh(manager, selectedFolders, false /* recurse */,
+							Policy.subMonitorFor(monitor1, 80));
+					if (failedFolders.length > 0) {
+						// Go deep any any failed folders.
+						if (promptForDeepRefresh(failedFolders))
+							internalRefresh(manager, failedFolders, true /* recurse */,
+									Policy.subMonitorFor(monitor1, 20));
+					}
+					monitor1.done();
+				}, monitor);
 			});
 			return true;
 		} catch (InvocationTargetException e) {
@@ -157,22 +155,17 @@ public class RefreshRemoteProjectWizard extends Wizard {
 
     private boolean promptForDeepRefresh(final ICVSRemoteResource[] folders) {
         final boolean[] prompt = new boolean[] { false };
-        getShell().getDisplay().syncExec(new Runnable() {
-            public void run() {
-		        MessageDialog dialog = new MessageDialog(getShell(), CVSUIMessages.RefreshRemoteProjectWizard_0, null, 
-		                getNoTagsMessage(folders),
-		                MessageDialog.INFORMATION,
-		                new String[] {
-		            		CVSUIMessages.RefreshRemoteProjectWizard_1, 
-		            		CVSUIMessages.RefreshRemoteProjectWizard_2
-		        		}, 1);
-		        int code = dialog.open();
-		        if (code == 0) {
-		            prompt[0] = true;
-		        }
+		getShell().getDisplay().syncExec(() -> {
+			MessageDialog dialog = new MessageDialog(getShell(), CVSUIMessages.RefreshRemoteProjectWizard_0, null,
+					getNoTagsMessage(folders), MessageDialog.INFORMATION, new String[] {
+							CVSUIMessages.RefreshRemoteProjectWizard_1, CVSUIMessages.RefreshRemoteProjectWizard_2 },
+					1);
+			int code = dialog.open();
+			if (code == 0) {
+				prompt[0] = true;
+			}
 
-            }
-        });
+		});
         return prompt[0];
     }
 

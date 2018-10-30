@@ -44,19 +44,17 @@ public class CompareWithRevisionAction extends WorkspaceAction {
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 					
 		// Show the compare viewer
-		run(new IRunnableWithProgress() {
-			@Override
-			public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
-				if (isShowInDialog()) {
-					IFile file = (IFile) getSelectedResources()[0];
-					showCompareInDialog(getShell(), file);
-				} else {
-					IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), getSelectedResources()[0], null);
-					IHistoryPage page = view.getHistoryPage();
-					if (page instanceof CVSHistoryPage){
-						CVSHistoryPage cvsHistoryPage = (CVSHistoryPage) page;
-						cvsHistoryPage.setClickAction(true);
-					}
+		run((IRunnableWithProgress) monitor -> {
+			if (isShowInDialog()) {
+				IFile file = (IFile) getSelectedResources()[0];
+				showCompareInDialog(getShell(), file);
+			} else {
+				IHistoryView view = TeamUI.showHistoryFor(TeamUIPlugin.getActivePage(), getSelectedResources()[0],
+						null);
+				IHistoryPage page = view.getHistoryPage();
+				if (page instanceof CVSHistoryPage) {
+					CVSHistoryPage cvsHistoryPage = (CVSHistoryPage) page;
+					cvsHistoryPage.setClickAction(true);
 				}
 			}
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);

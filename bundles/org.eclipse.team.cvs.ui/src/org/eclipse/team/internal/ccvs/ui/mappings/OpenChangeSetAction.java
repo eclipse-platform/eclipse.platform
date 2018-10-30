@@ -18,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.RepositoryProvider;
@@ -212,13 +211,7 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
     @Override
 	public void run() {
     	try {
-			PlatformUI.getWorkbench().getProgressService().run(true, true, new IRunnableWithProgress() {
-				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					openEditor(monitor);
-				}
-			});
+			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> openEditor(monitor));
 		} catch (InvocationTargetException e) {
 			Utils.handle(e);
 		} catch (InterruptedException e) {

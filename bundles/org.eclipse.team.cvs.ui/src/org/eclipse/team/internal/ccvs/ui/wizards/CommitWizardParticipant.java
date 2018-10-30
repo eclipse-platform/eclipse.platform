@@ -14,15 +14,11 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.wizards;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.mapping.provider.SynchronizationContext;
@@ -46,27 +42,29 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
      * The actions to be displayed in the context menu.
      */
     private class ActionContribution extends SynchronizePageActionGroup {
-        public void modelChanged(final ISynchronizeModelElement root) {
+        @Override
+		public void modelChanged(final ISynchronizeModelElement root) {
             super.modelChanged(root);
-            Display.getDefault().asyncExec(new Runnable() {
-                public void run() {                
-                    final CommitWizardCommitPage page= fWizard.getCommitPage();
-                    if (page != null)
-                        page.updateForModelChange();
-                }
-            });
+			Display.getDefault().asyncExec(() -> {
+				final CommitWizardCommitPage page = fWizard.getCommitPage();
+				if (page != null)
+					page.updateForModelChange();
+			});
         }
     }
     
     private WorkspaceChangeSetCapability capability;
     
-    public ChangeSetCapability getChangeSetCapability() {
+    @Override
+	public ChangeSetCapability getChangeSetCapability() {
     	if (capability == null) {
             capability = new WorkspaceChangeSetCapability() {
-            	public boolean supportsCheckedInChangeSets() {
+            	@Override
+				public boolean supportsCheckedInChangeSets() {
             		return false;
             	}
-            	public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
+            	@Override
+				public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
             		return false;
             	};
             };
@@ -87,7 +85,8 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
             fWizard= wizard;
         }
         
-        protected CVSDecoration getDecoration(IResource resource) throws CoreException {
+        @Override
+		protected CVSDecoration getDecoration(IResource resource) throws CoreException {
             final CVSDecoration decoration= super.getDecoration(resource);
             final CommitWizardFileTypePage page= fWizard.getFileTypePage();
             
@@ -107,14 +106,16 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
         fWizard= wizard;
     }
     
-    protected ILabelDecorator getLabelDecorator(ISynchronizePageConfiguration configuration) {
+    @Override
+	protected ILabelDecorator getLabelDecorator(ISynchronizePageConfiguration configuration) {
         return new Decorator(configuration, fWizard);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.subscriber.WorkspaceSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
      */
-    protected void initializeConfiguration(final ISynchronizePageConfiguration configuration) {
+    @Override
+	protected void initializeConfiguration(final ISynchronizePageConfiguration configuration) {
         super.initializeConfiguration(configuration);
         configuration.setProperty(ISynchronizePageConfiguration.P_TOOLBAR_MENU, new String[] {ACTION_GROUP, ISynchronizePageConfiguration.NAVIGATE_GROUP});
         configuration.setProperty(ISynchronizePageConfiguration.P_CONTEXT_MENU, ISynchronizePageConfiguration.DEFAULT_CONTEXT_MENU);
@@ -126,23 +127,21 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
         // Wrap the container so that we can update the enablements after the runnable
         // (i.e. the container resets the state to what it was at the beginning of the
         // run even if the state of the page changed. Remove from View changes the state)
-        configuration.setRunnableContext(new IRunnableContext() {
-            public void run(boolean fork, boolean cancelable,
-                    IRunnableWithProgress runnable)
-                    throws InvocationTargetException, InterruptedException {
-                fWizard.getContainer().run(fork, cancelable, runnable);
-                final CommitWizardCommitPage page= fWizard.getCommitPage();
-                if (page != null)
-                    page.updateEnablements();
-            }
-        });
+		configuration.setRunnableContext((fork, cancelable, runnable) -> {
+			fWizard.getContainer().run(fork, cancelable, runnable);
+			final CommitWizardCommitPage page = fWizard.getCommitPage();
+			if (page != null)
+				page.updateEnablements();
+		});
         configuration.setSupportedModes(ISynchronizePageConfiguration.OUTGOING_MODE);
         configuration.setMode(ISynchronizePageConfiguration.OUTGOING_MODE);
         configuration.addActionContribution(new SynchronizePageActionGroup() {
-        	public void initialize(ISynchronizePageConfiguration configuration) {
+        	@Override
+			public void initialize(ISynchronizePageConfiguration configuration) {
         		super.initialize(configuration);
         		showComparePaneAction = new Action(null, Action.AS_CHECK_BOX) {
-        			public void run() {
+        			@Override
+					public void run() {
         				fWizard.getCommitPage().showComparePane(this.isChecked());
         			}
         		};
@@ -152,6 +151,7 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
         	}
 		});
         configuration.setProperty(SynchronizePageConfiguration.P_OPEN_ACTION, new Action() {
+			@Override
 			public void run() {
 				ISelection selection = configuration.getSite().getSelectionProvider().getSelection();
 				if(selection instanceof IStructuredSelection) {
@@ -168,7 +168,8 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#doesSupportSynchronize()
      */
-    public boolean doesSupportSynchronize() {
+    @Override
+	public boolean doesSupportSynchronize() {
         return false;
     }
     
@@ -177,8 +178,10 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
 		return section == null ? false : section.getBoolean(CommitWizardCommitPage.SHOW_COMPARE);
     }
 
+	@Override
 	protected ModelSynchronizeParticipantActionGroup createMergeActionGroup() {
 		return new WorkspaceMergeActionGroup() {
+			@Override
 			protected void addToContextMenu(String mergeActionId, Action action, IMenuManager manager) {
 				if (mergeActionId == SynchronizationActionProvider.MERGE_ACTION_ID
 						|| mergeActionId == SynchronizationActionProvider.OVERWRITE_ACTION_ID
@@ -189,6 +192,7 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
 				super.addToContextMenu(mergeActionId, action, manager);
 			}
 
+			@Override
 			protected void appendToGroup(String menuId, String groupId,	IAction action) {
 				if (menuId == ISynchronizePageConfiguration.P_CONTEXT_MENU
 						&& groupId == WorkspaceModelParticipant.CONTEXT_MENU_COMMIT_GROUP_1) {

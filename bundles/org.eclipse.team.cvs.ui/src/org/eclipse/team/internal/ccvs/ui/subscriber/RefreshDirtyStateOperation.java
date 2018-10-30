@@ -62,22 +62,20 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 	private void performCleanTimestamps(IProject project, final SyncInfo[] infos, IProgressMonitor monitor) throws CVSException {
 		ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
         final ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
-		folder.run(new ICVSRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CVSException {
-				monitor.beginTask(null, infos.length * 100);
-				for (int i = 0; i < infos.length; i++) {
-					SyncInfo info = infos[i];
-					IResource resource = info.getLocal();
-					if (resource.getType() == IResource.FILE) {
-						if (comparator.compareContents((IFile)resource, info.getBase(), Policy.subMonitorFor(monitor, 100))) {
-							ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
-							cvsFile.checkedIn(null, false /* not a commit */);
-						}
+		folder.run(monitor1 -> {
+			monitor1.beginTask(null, infos.length * 100);
+			for (int i = 0; i < infos.length; i++) {
+				SyncInfo info = infos[i];
+				IResource resource = info.getLocal();
+				if (resource.getType() == IResource.FILE) {
+					if (comparator.compareContents((IFile) resource, info.getBase(),
+							Policy.subMonitorFor(monitor1, 100))) {
+						ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile) resource);
+						cvsFile.checkedIn(null, false /* not a commit */);
 					}
 				}
-				monitor.done();
 			}
+			monitor1.done();
 		}, Policy.subMonitorFor(monitor, 100));
 	}
 	

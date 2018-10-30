@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.examples.pessimistic.PessimisticFilesystemProvider;
@@ -52,17 +51,15 @@ public class AddToControlAction extends PessimisticProviderAction {
 		}
 		if (!resourceSet.isEmpty()) {
 			final Map byProject= sortByProject(resourceSet);
-			IRunnableWithProgress runnable= new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) {
-					for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-						IProject project= (IProject) i.next();
-						PessimisticFilesystemProvider provider= getProvider(project);
-						if (provider != null) {
-							Set set= (Set)byProject.get(project);
-							IResource[] resources= new IResource[set.size()];
-							set.toArray(resources);
-							provider.addToControl(resources, monitor);
-						}
+			IRunnableWithProgress runnable= monitor -> {
+				for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
+					IProject project= (IProject) i.next();
+					PessimisticFilesystemProvider provider= getProvider(project);
+					if (provider != null) {
+						Set set= (Set)byProject.get(project);
+						IResource[] resources1= new IResource[set.size()];
+						set.toArray(resources1);
+						provider.addToControl(resources1, monitor);
 					}
 				}
 			};

@@ -348,49 +348,47 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 	 */
 	public void edit(final int notifications, boolean notifyForWritable, IProgressMonitor monitor) throws CVSException {
 		if (!notifyForWritable && !isReadOnly()) return;
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				byte[] syncBytes = getSyncBytes();
-				if (syncBytes == null || ResourceSyncInfo.isAddition(syncBytes)) return;
-				
-				// convert the notifications to internal form
-				char[] internalFormat;
-				if (notifications == NO_NOTIFICATION) {
-					internalFormat = null;
-				} else if (notifications == NOTIFY_ON_ALL) {
-					internalFormat = NotifyInfo.ALL;
-				} else {
-					List notificationCharacters = new ArrayList();
-					if ((notifications & NOTIFY_ON_EDIT) >0) 
-						notificationCharacters.add(Character.valueOf(NotifyInfo.EDIT));
-					if ((notifications & NOTIFY_ON_UNEDIT) >0) 
-						notificationCharacters.add(Character.valueOf(NotifyInfo.UNEDIT));
-					if ((notifications & NOTIFY_ON_COMMIT) >0) 
-						notificationCharacters.add(Character.valueOf(NotifyInfo.COMMIT));
-					internalFormat = new char[notificationCharacters.size()];
-					for (int i = 0; i < internalFormat.length; i++) {
-						internalFormat[i] = ((Character)notificationCharacters.get(i)).charValue();
-					}
+		run(monitor1 -> {
+			byte[] syncBytes = getSyncBytes();
+			if (syncBytes == null || ResourceSyncInfo.isAddition(syncBytes)) return;
+			
+			// convert the notifications to internal form
+			char[] internalFormat;
+			if (notifications == NO_NOTIFICATION) {
+				internalFormat = null;
+			} else if (notifications == NOTIFY_ON_ALL) {
+				internalFormat = NotifyInfo.ALL;
+			} else {
+				List notificationCharacters = new ArrayList();
+				if ((notifications & NOTIFY_ON_EDIT) >0) 
+					notificationCharacters.add(Character.valueOf(NotifyInfo.EDIT));
+				if ((notifications & NOTIFY_ON_UNEDIT) >0) 
+					notificationCharacters.add(Character.valueOf(NotifyInfo.UNEDIT));
+				if ((notifications & NOTIFY_ON_COMMIT) >0) 
+					notificationCharacters.add(Character.valueOf(NotifyInfo.COMMIT));
+				internalFormat = new char[notificationCharacters.size()];
+				for (int i = 0; i < internalFormat.length; i++) {
+					internalFormat[i] = ((Character)notificationCharacters.get(i)).charValue();
 				}
-				
-				// record the notification
-				NotifyInfo notifyInfo = new NotifyInfo(getName(), NotifyInfo.EDIT, new Date(), internalFormat);
-				setNotifyInfo(notifyInfo);
-				
-				// Only record the base if the file is not modified
-				if (!isModified(null)) {
-					EclipseSynchronizer.getInstance().copyFileToBaseDirectory(getIFile(), monitor);
-					setBaserevInfo(new BaserevInfo(getName(), ResourceSyncInfo.getRevision(syncBytes)));
-				}
-				
-				try {
-                    // allow editing
-                    setReadOnly(false);
-                } catch (CVSException e) {
-                    // Just log and keep going
-                    CVSProviderPlugin.log(e);
-                }
 			}
+			
+			// record the notification
+			NotifyInfo notifyInfo = new NotifyInfo(getName(), NotifyInfo.EDIT, new Date(), internalFormat);
+			setNotifyInfo(notifyInfo);
+			
+			// Only record the base if the file is not modified
+			if (!isModified(null)) {
+				EclipseSynchronizer.getInstance().copyFileToBaseDirectory(getIFile(), monitor1);
+				setBaserevInfo(new BaserevInfo(getName(), ResourceSyncInfo.getRevision(syncBytes)));
+			}
+			
+			try {
+		        // allow editing
+		        setReadOnly(false);
+		    } catch (CVSException e) {
+		        // Just log and keep going
+		        CVSProviderPlugin.log(e);
+		    }
 		}, monitor);
 		
 	}
@@ -400,46 +398,44 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 	 */
 	public void unedit(IProgressMonitor monitor) throws CVSException {
 		if (isReadOnly()) return;
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				// record the notification
-				NotifyInfo info = getNotifyInfo();
-				if (info != null && info.getNotificationType() == NotifyInfo.EDIT) {
-					info = null;
-				} else {
-					info = new NotifyInfo(getName(), NotifyInfo.UNEDIT, new Date(), null);
-				}
-				setNotifyInfo(info);
-					
-				if (isModified(null)) {
-					ResourceSyncInfo syncInfo = getSyncInfo();
-					BaserevInfo baserevInfo = getBaserevInfo();
-					EclipseSynchronizer.getInstance().restoreFileFromBaseDirectory(getIFile(), monitor);
-					// reset any changes that may have been merged from the server
-					if (!syncInfo.getRevision().equals(baserevInfo.getRevision())) {
-						MutableResourceSyncInfo newInfo = syncInfo.cloneMutable();
-						newInfo.setRevision(baserevInfo.getRevision());
-						newInfo.setTimeStamp(getTimeStamp());
-						newInfo.setDeleted(false);
-						setSyncInfo(newInfo, ICVSFile.CLEAN);
-					} else {
-						// an unedited file is no longer modified
-						EclipseSynchronizer.getInstance().setModified(EclipseFile.this, CLEAN);
-					}
-				} else {
-					// We still need to report a state change
-					setSyncBytes(getSyncBytes(), ICVSFile.CLEAN);
-				}
-				setBaserevInfo(null);
-					
-				try {
-                    // prevent editing
-                    setReadOnly(true);
-                } catch (CVSException e) {
-                    // Just log and keep going
-                    CVSProviderPlugin.log(e);
-                }
+		run(monitor1 -> {
+			// record the notification
+			NotifyInfo info = getNotifyInfo();
+			if (info != null && info.getNotificationType() == NotifyInfo.EDIT) {
+				info = null;
+			} else {
+				info = new NotifyInfo(getName(), NotifyInfo.UNEDIT, new Date(), null);
 			}
+			setNotifyInfo(info);
+				
+			if (isModified(null)) {
+				ResourceSyncInfo syncInfo = getSyncInfo();
+				BaserevInfo baserevInfo = getBaserevInfo();
+				EclipseSynchronizer.getInstance().restoreFileFromBaseDirectory(getIFile(), monitor1);
+				// reset any changes that may have been merged from the server
+				if (!syncInfo.getRevision().equals(baserevInfo.getRevision())) {
+					MutableResourceSyncInfo newInfo = syncInfo.cloneMutable();
+					newInfo.setRevision(baserevInfo.getRevision());
+					newInfo.setTimeStamp(getTimeStamp());
+					newInfo.setDeleted(false);
+					setSyncInfo(newInfo, ICVSFile.CLEAN);
+				} else {
+					// an unedited file is no longer modified
+					EclipseSynchronizer.getInstance().setModified(EclipseFile.this, CLEAN);
+				}
+			} else {
+				// We still need to report a state change
+				setSyncBytes(getSyncBytes(), ICVSFile.CLEAN);
+			}
+			setBaserevInfo(null);
+				
+			try {
+		        // prevent editing
+		        setReadOnly(true);
+		    } catch (CVSException e) {
+		        // Just log and keep going
+		        CVSProviderPlugin.log(e);
+		    }
 		}, monitor);
 	}
 
@@ -546,11 +542,9 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 	 * @see org.eclipse.team.internal.ccvs.core.ICVSResource#unmanage(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void unmanage(IProgressMonitor monitor) throws CVSException {
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				EclipseFile.super.unmanage(monitor);
-				clearCachedBase();
-			}
+		run(monitor1 -> {
+			EclipseFile.super.unmanage(monitor1);
+			clearCachedBase();
 		}, monitor);
 	}
 	

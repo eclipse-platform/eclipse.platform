@@ -15,7 +15,6 @@ package org.eclipse.team.internal.ccvs.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.internal.ccvs.core.*;
@@ -31,6 +30,7 @@ public class CompareRemoteWithTagAction extends CVSAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		
 		final ICVSRemoteResource[] resources = getSelectedRemoteResources();
@@ -39,15 +39,11 @@ public class CompareRemoteWithTagAction extends CVSAction {
 		// Obtain the tag to compare against
 		final ICVSRemoteResource resource = resources[0];
 		final CVSTag[] tag = new CVSTag[] { null};
-		run(new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) {
-				tag[0] = TagSelectionDialog.getTagToCompareWith(getShell(), TagSource.create(resources),
-				        TagSelectionDialog.INCLUDE_BRANCHES | 
-				        TagSelectionDialog.INCLUDE_VERSIONS |
-				        TagSelectionDialog.INCLUDE_DATES |
-				        TagSelectionDialog.INCLUDE_HEAD_TAG);
-			}
-		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
+		run((IRunnableWithProgress) monitor -> tag[0] = TagSelectionDialog.getTagToCompareWith(getShell(),
+				TagSource.create(resources),
+				TagSelectionDialog.INCLUDE_BRANCHES | TagSelectionDialog.INCLUDE_VERSIONS
+						| TagSelectionDialog.INCLUDE_DATES | TagSelectionDialog.INCLUDE_HEAD_TAG),
+				false /* cancelable */, PROGRESS_BUSYCURSOR);
 		if (tag[0] == null) return;
 		
 		// Run the compare operation in the background
@@ -62,6 +58,7 @@ public class CompareRemoteWithTagAction extends CVSAction {
 	/**
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRemoteResource[] resources = getSelectedRemoteResources();
 		// Only support single select for now.

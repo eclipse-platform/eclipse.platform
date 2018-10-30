@@ -97,7 +97,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -872,14 +871,11 @@ public class EclipseTest extends ResourceTest {
 	protected void assertReadOnly(IResource[] resources, final boolean isReadOnly, final boolean recurse) throws CoreException {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			resource.accept(new IResourceVisitor() {
-				@Override
-				public boolean visit(IResource resource) throws CoreException {
-					if (resource.getType() == IResource.FILE) {
-						assertEquals(isReadOnly, resource.getResourceAttributes().isReadOnly());
-					}
-					return recurse;
+			resource.accept(resource1 -> {
+				if (resource1.getType() == IResource.FILE) {
+					assertEquals(isReadOnly, resource1.getResourceAttributes().isReadOnly());
 				}
+				return recurse;
 			});
 		}
 	}
@@ -1416,16 +1412,13 @@ public class EclipseTest extends ResourceTest {
 	private void ensureNotReadOnly(IResource resource) {
 		if (resource.exists()) {
 			try {
-				resource.accept(new IResourceVisitor() {
-					@Override
-					public boolean visit(IResource resource) throws CoreException {
-						ResourceAttributes attrs = resource.getResourceAttributes();
-						if (resource.exists() && attrs.isReadOnly()) {
-							attrs.setReadOnly(false);
-							resource.setResourceAttributes(attrs);
-						}
-						return true;
+				resource.accept(resource1 -> {
+					ResourceAttributes attrs = resource1.getResourceAttributes();
+					if (resource1.exists() && attrs.isReadOnly()) {
+						attrs.setReadOnly(false);
+						resource1.setResourceAttributes(attrs);
 					}
+					return true;
 				});
 			} catch (CoreException e) {
 				fail("#ensureNotReadOnly " + resource.getFullPath(), e);
@@ -1440,28 +1433,25 @@ public class EclipseTest extends ResourceTest {
 	 */
 	public void ensureDoesNotExistInWorkspace(final IProject[] projects) {
 		final Map<IProject, CoreException> failures = new HashMap<IProject, CoreException>();
-		IWorkspaceRunnable body = new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) {
-				for (int i = 0; i < projects.length; i++) {
-					try {
-						if (projects[i].exists()) {
-							try {
+		IWorkspaceRunnable body = monitor -> {
+			for (int i = 0; i < projects.length; i++) {
+				try {
+					if (projects[i].exists()) {
+						try {
+							projects[i].delete(true, null);
+						} catch (CoreException e1) {
+							// Ignore the exception and try again after making
+							// sure the project doesn't contain any read-only resources
+							ensureNotReadOnly(projects[i]);
+							if (projects[i].exists()) {
+								projects[i].refreshLocal(IResource.DEPTH_INFINITE, null);
 								projects[i].delete(true, null);
-							} catch (CoreException e) {
-								// Ignore the exception and try again after making
-								// sure the project doesn't contain any read-only resources
-								ensureNotReadOnly(projects[i]);
-								if (projects[i].exists()) {
-									projects[i].refreshLocal(IResource.DEPTH_INFINITE, null);
-									projects[i].delete(true, null);
-								}
 							}
 						}
-					} catch (CoreException e) {
-						write(new CVSStatus(IStatus.ERROR, "Could not delete project " + projects[i].getName(), e), 0);
-						failures.put(projects[i], e);
 					}
+				} catch (CoreException e2) {
+					write(new CVSStatus(IStatus.ERROR, "Could not delete project " + projects[i].getName(), e2), 0);
+					failures.put(projects[i], e2);
 				}
 			}
 		};

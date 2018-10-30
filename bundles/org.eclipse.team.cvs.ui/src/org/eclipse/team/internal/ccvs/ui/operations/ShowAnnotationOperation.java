@@ -72,7 +72,8 @@ public class ShowAnnotationOperation extends CVSOperation {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
+    @Override
+	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
     	
 		monitor.beginTask(null, 100);
 
@@ -85,20 +86,18 @@ public class ShowAnnotationOperation extends CVSOperation {
 
 		// Open the view and display it from the UI thread.
 		final Display display= getPart().getSite().getShell().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				try {
-					//is there an open editor for the given input? If yes, use live annotate
-					final AbstractDecoratedTextEditor editor= getEditor(listener);
-					if (editor != null) {
-						editor.showRevisionInformation(information, "org.eclipse.quickdiff.providers.CVSReferenceProvider"); //$NON-NLS-1$
-						final IWorkbenchPage page= getPart().getSite().getPage();
-						showHistoryView(page, editor);
-						page.activate(editor);
-					}
-				} catch (PartInitException e) {
-					CVSException.wrapException(e);
+		display.asyncExec(() -> {
+			try {
+				// is there an open editor for the given input? If yes, use live annotate
+				final AbstractDecoratedTextEditor editor = getEditor(listener);
+				if (editor != null) {
+					editor.showRevisionInformation(information, "org.eclipse.quickdiff.providers.CVSReferenceProvider"); //$NON-NLS-1$
+					final IWorkbenchPage page = getPart().getSite().getPage();
+					showHistoryView(page, editor);
+					page.activate(editor);
 				}
+			} catch (PartInitException e) {
+				CVSException.wrapException(e);
 			}
 		});
 		
@@ -132,7 +131,8 @@ public class ShowAnnotationOperation extends CVSOperation {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
      */
-    protected String getTaskName() {
+    @Override
+	protected String getTaskName() {
         return CVSUIMessages.ShowAnnotationOperation_taskName;
     }
 
@@ -218,19 +218,18 @@ public class ShowAnnotationOperation extends CVSOperation {
 				this.isResizable= isResizable;
 			}
 
+			@Override
 			public IInformationControl createInformationControl(Shell parent) {
-				IInformationPresenter presenter= new IInformationPresenter() {
-					public String updatePresentation(Display display, String hoverInfo, TextPresentation presentation, int maxWidth, int maxHeight) {
-						
-						// decorate header
-						StyleRange styleRange = new StyleRange();
-						styleRange.start = 0;
-						styleRange.length = hoverInfo.indexOf('\n');
-						styleRange.fontStyle = SWT.BOLD;
-						presentation.addStyleRange(styleRange);
-						
-						return hoverInfo;
-					}
+				IInformationPresenter presenter = (display, hoverInfo, presentation, maxWidth, maxHeight) -> {
+
+					// decorate header
+					StyleRange styleRange = new StyleRange();
+					styleRange.start = 0;
+					styleRange.length = hoverInfo.indexOf('\n');
+					styleRange.fontStyle = SWT.BOLD;
+					presentation.addStyleRange(styleRange);
+
+					return hoverInfo;
 				};
 				if (isResizable)
 					return new DefaultInformationControl(parent, (ToolBarManager) null, presenter);
@@ -256,6 +255,7 @@ public class ShowAnnotationOperation extends CVSOperation {
 				revision= new Revision() {
 					private String fCommitter= null;
 					
+					@Override
 					public Object getHoverInfo() {
 						return entry.getAuthor()
 								+ " " + entry.getRevision() + " " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(entry.getDate()) //$NON-NLS-1$ //$NON-NLS-2$
@@ -268,18 +268,22 @@ public class ShowAnnotationOperation extends CVSOperation {
 						return fCommitter;
 					}
 					
+					@Override
 					public String getId() {
 						return revisionString;
 					}
 					
+					@Override
 					public Date getDate() {
 						return entry.getDate();
 					}
 					
+					@Override
 					public RGB getColor() {
 						return colors.getCommitterRGB(getCommitterId());
 					}
 
+					@Override
 					public String getAuthor() {
 						return getCommitterId();
 					}

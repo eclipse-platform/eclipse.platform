@@ -214,19 +214,17 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 	public void setFolderSyncInfo(final FolderSyncInfo folderInfo) throws CVSException {
 		// ignore folder sync on the root (i.e. CVSROOT/config/TopLevelAdmin=yes but we just ignore it)
 		if (resource.getType() == IResource.ROOT) return;
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				EclipseSynchronizer synchronizer = EclipseSynchronizer.getInstance();
-				synchronizer.setFolderSync((IContainer)resource, folderInfo);
-				// the server won't add directories as sync info, therefore it must be done when
-				// a directory is shared with the repository.
-				byte[] newSyncBytes = new ResourceSyncInfo(getName()).getBytes();
-				byte[] oldSyncBytes = getSyncBytes();
-				// only set the bytes if the new differes from the old.
-				// this avoids unnecessary saving of sync files
-				if (oldSyncBytes == null || ! Util.equals(newSyncBytes, oldSyncBytes))
-					setSyncBytes(newSyncBytes);
-			}
+		run((ICVSRunnable) monitor -> {
+			EclipseSynchronizer synchronizer = EclipseSynchronizer.getInstance();
+			synchronizer.setFolderSync((IContainer)resource, folderInfo);
+			// the server won't add directories as sync info, therefore it must be done when
+			// a directory is shared with the repository.
+			byte[] newSyncBytes = new ResourceSyncInfo(getName()).getBytes();
+			byte[] oldSyncBytes = getSyncBytes();
+			// only set the bytes if the new differes from the old.
+			// this avoids unnecessary saving of sync files
+			if (oldSyncBytes == null || ! Util.equals(newSyncBytes, oldSyncBytes))
+				setSyncBytes(newSyncBytes);
 		}, null);
 
 	}
@@ -242,14 +240,12 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 	 * @see ICVSResource#unmanage()
 	 */
 	public void unmanage(IProgressMonitor monitor) throws CVSException {
-		run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-				monitor = Policy.monitorFor(monitor);
-				monitor.beginTask(null, 100);
-				recursiveUnmanage((IContainer) resource, Policy.subMonitorFor(monitor, 99));
-				EclipseFolder.super.unmanage(Policy.subMonitorFor(monitor, 1));
-				monitor.done();	
-			}
+		run((ICVSRunnable) monitor1 -> {
+			monitor1 = Policy.monitorFor(monitor1);
+			monitor1.beginTask(null, 100);
+			recursiveUnmanage((IContainer) resource, Policy.subMonitorFor(monitor1, 99));
+			EclipseFolder.super.unmanage(Policy.subMonitorFor(monitor1, 1));
+			monitor1.done();	
 		}, Policy.subMonitorFor(monitor, 99));
 	}
 	

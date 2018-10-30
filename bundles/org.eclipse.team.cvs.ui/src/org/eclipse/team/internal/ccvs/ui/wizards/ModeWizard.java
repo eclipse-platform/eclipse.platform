@@ -15,36 +15,21 @@ package org.eclipse.team.internal.ccvs.ui.wizards;
 
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
-import org.eclipse.team.internal.ccvs.core.CVSStatus;
-import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSFile;
+import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command.KSubstOption;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 
@@ -106,11 +91,7 @@ public class ModeWizard extends ResizableWizard {
         
         final ModeWizard [] wizard= new ModeWizard[1];
 
-        BusyIndicator.showWhile(shell.getDisplay(), new Runnable() {
-            public void run() {
-                wizard[0]= new ModeWizard(shell, resources);
-            }
-        });
+		BusyIndicator.showWhile(shell.getDisplay(), () -> wizard[0] = new ModeWizard(shell, resources));
         
         open(shell, wizard[0]);
         return wizard[0];
@@ -134,14 +115,16 @@ public class ModeWizard extends ResizableWizard {
                     
     }
     
-    public void addPages() {
+    @Override
+	public void addPages() {
         addPage(fPage);
     }
     
     /* (Non-javadoc)
      * Method declared on IWizard.
      */
-    public boolean needsProgressMonitor() {
+    @Override
+	public boolean needsProgressMonitor() {
         return true;
     }
     
@@ -153,28 +136,26 @@ public class ModeWizard extends ResizableWizard {
         for (int i = 0; i < resources.length; i++) {
             final IResource currentResource = resources[i];
             try {
-                currentResource.accept(new IResourceVisitor() {
-                    public boolean visit(IResource resource) throws CoreException {
-                        try {
-                            if (visited.contains(resource) || resource.getType() != IResource.FILE || !resource.exists()) 
-                                return true;
-                            visited.add(resource);
-                            IFile file = (IFile) resource;
-                            ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(file);
-                            if (!cvsFile.isManaged()) 
-                                return true;
-                            final ResourceSyncInfo info = cvsFile.getSyncInfo();
-                            final KSubstOption mode = info.getKeywordMode();
-                            
-                            changes.add(new ModeChange(file, mode));
-                            
-                        } catch (TeamException e) {
-                            throw new CoreException(e.getStatus());
-                        }
-                        // always return true and let the depth determine if children are visited
-                        return true;
-                    }
-                }, IResource.DEPTH_INFINITE, false); 
+				currentResource.accept((IResourceVisitor) resource -> {
+					try {
+						if (visited.contains(resource) || resource.getType() != IResource.FILE || !resource.exists())
+							return true;
+						visited.add(resource);
+						IFile file = (IFile) resource;
+						ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(file);
+						if (!cvsFile.isManaged())
+							return true;
+						final ResourceSyncInfo info = cvsFile.getSyncInfo();
+						final KSubstOption mode = info.getKeywordMode();
+
+						changes.add(new ModeChange(file, mode));
+
+					} catch (TeamException e) {
+						throw new CoreException(e.getStatus());
+					}
+					// always return true and let the depth determine if children are visited
+					return true;
+				}, IResource.DEPTH_INFINITE, false);
             } catch (CoreException e) {
                 CVSUIPlugin.openError(shell, CVSUIMessages.ModeWizard_2, null, e); 
             }
@@ -182,7 +163,8 @@ public class ModeWizard extends ResizableWizard {
         return changes;
     }
     
-    public boolean performFinish() {
+    @Override
+	public boolean performFinish() {
         try {
             final List messages = new ArrayList();
             final List changes= fPage.getChanges();
@@ -194,7 +176,8 @@ public class ModeWizard extends ResizableWizard {
                 return false;
             
             getContainer().run(false /*fork*/, true /*cancelable*/, new IRunnableWithProgress() {
-                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                @Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     try {
                         final int totalWork= 10000;
                         monitor.beginTask(CVSUIMessages.ModeWizard_3, totalWork); 

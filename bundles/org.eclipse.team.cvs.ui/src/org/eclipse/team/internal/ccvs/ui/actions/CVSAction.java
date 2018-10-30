@@ -16,17 +16,16 @@ package org.eclipse.team.internal.ccvs.ui.actions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.*;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -41,7 +40,7 @@ import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSourceWorkbenchAdapter;
-import org.eclipse.team.internal.ui.*;
+import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.actions.TeamAction;
 import org.eclipse.team.internal.ui.dialogs.IPromptCondition;
 import org.eclipse.ui.*;
@@ -74,32 +73,30 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		// Don't need to specify a the title because it will use this actions
 		// title instead.
 		retargetAction = new RetargetAction(getId(), ""); //$NON-NLS-1$
-		retargetAction.addPropertyChangeListener(new IPropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(IAction.ENABLED)) {
-					Object val = event.getNewValue();
-					if (val instanceof Boolean && action != null) {
-						action.setEnabled(((Boolean) val).booleanValue());
-					}
-				} else if (event.getProperty().equals(IAction.CHECKED)) {
-					Object val = event.getNewValue();
-					if (val instanceof Boolean && action != null) {
-						action.setChecked(((Boolean) val).booleanValue());
-					}
-				} else if (event.getProperty().equals(IAction.TEXT)) {
-					Object val = event.getNewValue();
-					if (val instanceof String && action != null) {
-						action.setText((String) val);
-					}
-				} else if (event.getProperty().equals(IAction.TOOL_TIP_TEXT)) {
-					Object val = event.getNewValue();
-					if (val instanceof String && action != null) {
-						action.setToolTipText((String) val);
-					}
-				} else if (event.getProperty().equals(SubActionBars.P_ACTION_HANDLERS)) {
-					if(action != null && retargetAction != null) {
-						action.setEnabled(retargetAction.isEnabled());
-					}
+		retargetAction.addPropertyChangeListener(event -> {
+			if (event.getProperty().equals(IAction.ENABLED)) {
+				Object val1 = event.getNewValue();
+				if (val1 instanceof Boolean && action != null) {
+					action.setEnabled(((Boolean) val1).booleanValue());
+				}
+			} else if (event.getProperty().equals(IAction.CHECKED)) {
+				Object val2 = event.getNewValue();
+				if (val2 instanceof Boolean && action != null) {
+					action.setChecked(((Boolean) val2).booleanValue());
+				}
+			} else if (event.getProperty().equals(IAction.TEXT)) {
+				Object val3 = event.getNewValue();
+				if (val3 instanceof String && action != null) {
+					action.setText((String) val3);
+				}
+			} else if (event.getProperty().equals(IAction.TOOL_TIP_TEXT)) {
+				Object val4 = event.getNewValue();
+				if (val4 instanceof String && action != null) {
+					action.setToolTipText((String) val4);
+				}
+			} else if (event.getProperty().equals(SubActionBars.P_ACTION_HANDLERS)) {
+				if (action != null && retargetAction != null) {
+					action.setEnabled(retargetAction.isEnabled());
 				}
 			}
 		});
@@ -112,6 +109,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	/**
 	 * Common run method for all CVS actions.
 	 */
+	@Override
 	final public void run(IAction action) {
 		try {
 			if (!beginExecution(action)) return;			
@@ -150,11 +148,13 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * Called when this action is added to a top-level menu or toolbar (e.g. IWorkbenchWindowDelegate)
 	 * @since 3.1
 	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		super.init(window);
 		initializeRetargetAction(window);
 	}
 	
+	@Override
 	public boolean isEnabled() {
 		if(retargetAction != null && retargetAction.getActionHandler() != null) {
 			return retargetAction.isEnabled();
@@ -163,6 +163,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		return false;
 	}
 	
+	@Override
 	public void dispose() {
 		super.dispose();
         IWorkbenchWindow window = getWindow();
@@ -178,6 +179,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
         }
 	}
 	
+	@Override
 	public void selectionChanged(final IAction action, ISelection selection) {
 		if (selection instanceof TextSelection) {
 			// Since we have a text selection, we will assume that the target is the active editor.
@@ -202,6 +204,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		this.action = action;
 	}
 	
+	@Override
 	protected void setActionEnablement(IAction action) {
 		if(retargetAction != null && retargetAction.getActionHandler() != null) {
 			action.setEnabled(retargetAction.isEnabled());
@@ -308,6 +311,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * @param status any status accumulated by the action before the end of 
 	 * the action or the exception occurred.
 	 */
+	@Override
 	protected void handle(Exception exception) {
 		// Get the non-OK status
 		List problems = new ArrayList();
@@ -362,23 +366,17 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		final Exception[] exceptions = new Exception[] {null};
 		
 		// Ensure that no repository view refresh happens until after the action
-		final IRunnableWithProgress innerRunnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-				getRepositoryManager().run(runnable, monitor);
-			}
-		};
+		final IRunnableWithProgress innerRunnable = monitor -> getRepositoryManager().run(runnable, monitor);
 		
 		switch (progressKind) {
 			case PROGRESS_BUSYCURSOR :
-				BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
-					public void run() {
-						try {
-							innerRunnable.run(new NullProgressMonitor());
-						} catch (InvocationTargetException e) {
-							exceptions[0] = e;
-						} catch (InterruptedException e) {
-							exceptions[0] = e;
-						}
+			BusyIndicator.showWhile(Display.getCurrent(), () -> {
+				try {
+					innerRunnable.run(new NullProgressMonitor());
+				} catch (InvocationTargetException e1) {
+					exceptions[0] = e1;
+				} catch (InterruptedException e2) {
+					exceptions[0] = e2;
 					}
 				});
 				break;
@@ -513,9 +511,11 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	public static IPromptCondition getOverwriteLocalChangesPrompt(final IResource[] dirtyResources) {
 		return new IPromptCondition() {
 			List resources = Arrays.asList(dirtyResources);
+			@Override
 			public boolean needsPrompt(IResource resource) {
 				return resources.contains(resource);
 			}
+			@Override
 			public String promptMessage(IResource resource) {
 				return NLS.bind(CVSUIMessages.ReplaceWithAction_localChanges, new String[] { resource.getName() });
 			}
@@ -543,15 +543,13 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 				// prompt if the tags are not equal
 				// consider BASE to be equal the parent tag since we don't make BASE sticky on replace
 				if (!CVSTag.equalTags(tag, parentTag) && !CVSTag.equalTags(tag, CVSTag.BASE)) {
-					shell.getDisplay().syncExec(new Runnable() {
-						public void run() {
-							MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(shell, 
-									CVSUIMessages.CVSAction_mixingTagsTitle,
-									NLS.bind(CVSUIMessages.CVSAction_mixingTags, new String[] { tag.getName() }),
-									CVSUIMessages.CVSAction_doNotShowThisAgain, false, 
-									store, ICVSUIConstants.PREF_PROMPT_ON_MIXED_TAGS);
-							result[0] = dialog.getReturnCode() == 0;
-						}
+					shell.getDisplay().syncExec(() -> {
+						MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(shell,
+								CVSUIMessages.CVSAction_mixingTagsTitle,
+								NLS.bind(CVSUIMessages.CVSAction_mixingTags, new String[] { tag.getName() }),
+								CVSUIMessages.CVSAction_doNotShowThisAgain, false, store,
+								ICVSUIConstants.PREF_PROMPT_ON_MIXED_TAGS);
+						result[0] = dialog.getReturnCode() == 0;
 					});
 					// only prompt once
 					break;										
@@ -572,13 +570,11 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		final int option = CVSUIPlugin.getPlugin().getPreferenceStore().getInt(ICVSUIConstants.PREF_SAVE_DIRTY_EDITORS);
 		final boolean[] okToContinue = new boolean[] {true};
 		if (option != ICVSUIConstants.OPTION_NEVER) {		
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					boolean confirm = option == ICVSUIConstants.OPTION_PROMPT;
-					IResource[] selectedResources = getSelectedResources();
-					if (selectedResources != null) {
-						okToContinue[0] = IDE.saveAllEditors(selectedResources, confirm);
-					}
+			Display.getDefault().syncExec(() -> {
+				boolean confirm = option == ICVSUIConstants.OPTION_PROMPT;
+				IResource[] selectedResources = getSelectedResources();
+				if (selectedResources != null) {
+					okToContinue[0] = IDE.saveAllEditors(selectedResources, confirm);
 				}
 			});
 		} 
@@ -587,6 +583,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	/**
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#handle(java.lang.Exception, java.lang.String, java.lang.String)
 	 */
+	@Override
 	protected void handle(Exception exception, String title, String message) {
 		CVSUIPlugin.openError(getShell(), title, message, exception, CVSUIPlugin.LOG_NONTEAM_EXCEPTIONS);
 	}
@@ -610,6 +607,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#getSelectedResources()
 	 */
+	@Override
 	protected final IResource[] getSelectedResources() {
 		IStructuredSelection selection = getSelection();
         CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
@@ -622,6 +620,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
 	 */
+	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 	}
 	
@@ -631,14 +630,17 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * @param handlerListener
 	 * @since 3.1
 	 */
+	@Override
 	public void removeHandlerListener(IHandlerListener handlerListener) {
 	}
+	@Override
 	public void addHandlerListener(IHandlerListener handlerListener) {
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.commands.IHandler#isHandled()
 	 */
+	@Override
 	public boolean isHandled() {
 		return true;
 	}

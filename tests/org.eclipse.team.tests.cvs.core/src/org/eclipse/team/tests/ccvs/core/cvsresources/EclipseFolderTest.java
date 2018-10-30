@@ -20,12 +20,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.ICVSFolder;
 import org.eclipse.team.internal.ccvs.core.ICVSResource;
-import org.eclipse.team.internal.ccvs.core.ICVSRunnable;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
@@ -82,17 +80,15 @@ public class EclipseFolderTest extends EclipseTest {
 		assertChildrenHaveSync(projectB, true);
 		
 		// test that unmanaging in a CVS runnable flushes too
-		cvsProjectB.run(new ICVSRunnable() {
-			public void run(IProgressMonitor monitor) throws CVSException {
-					try {
-						assertChildrenHaveSync(projectB, true);
-						cvsProjectB.unmanage(null);
-						assertChildrenHaveSync(projectB, false);
-					} catch(CoreException e) {
-						throw CVSException.wrapException(e);
-					}
+		cvsProjectB.run(monitor -> {
+			try {
+				assertChildrenHaveSync(projectB, true);
+				cvsProjectB.unmanage(null);
+				assertChildrenHaveSync(projectB, false);
+			} catch (CoreException e) {
+				throw CVSException.wrapException(e);
 			}
-		}, null);		
+		}, null);	
 		assertChildrenHaveSync(projectB, false);
 	}
 }

@@ -14,8 +14,6 @@
 package org.eclipse.team.core.variants;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 
@@ -110,12 +108,9 @@ public abstract class ThreeWayRemoteTree extends ResourceVariantTree {
 			final IResourceVariant remote, final int depth, IProgressMonitor monitor)
 			throws TeamException {
 		final IResource[][] resources = new IResource[][] { null };
-		getSubscriber().getSynchronizer().run(local, new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				resources[0] = ThreeWayRemoteTree.super.collectChanges(local, remote, depth, monitor);
-			}
-		}, monitor);
+		getSubscriber().getSynchronizer().run(local,
+				monitor1 -> resources[0] = ThreeWayRemoteTree.super.collectChanges(local, remote, depth, monitor1),
+				monitor);
 		return resources[0];
 	}
 }

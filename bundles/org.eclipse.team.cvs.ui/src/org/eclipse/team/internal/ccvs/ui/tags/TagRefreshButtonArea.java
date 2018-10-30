@@ -16,11 +16,9 @@ package org.eclipse.team.internal.ccvs.ui.tags;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -55,7 +53,8 @@ public class TagRefreshButtonArea extends DialogArea {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
      */
-    public void createArea(Composite parent) {
+    @Override
+	public void createArea(Composite parent) {
     	
     	final PixelConverter converter= SWTUtils.createDialogPixelConverter(parent);
     	
@@ -87,18 +86,12 @@ public class TagRefreshButtonArea extends DialogArea {
 		refreshButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.END, SWT.CENTER, false, false));
 		configureTagsButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.END, SWT.CENTER, false, false));
 		
-		refreshButton.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				refresh(false);						
-			}
-		});
+		refreshButton.addListener(SWT.Selection, event -> refresh(false));
 	 	
-		configureTagsButton.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event event) {
-					TagConfigurationDialog d = new TagConfigurationDialog(shell, tagSource);
-					d.open();
-				}
-			});  
+		configureTagsButton.addListener(SWT.Selection, event -> {
+			TagConfigurationDialog d = new TagConfigurationDialog(shell, tagSource);
+			d.open();
+		});
 		
         PlatformUI.getWorkbench().getHelpSystem().setHelp(refreshButton, IHelpContextIds.TAG_CONFIGURATION_REFRESHACTION);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(configureTagsButton, IHelpContextIds.TAG_CONFIGURATION_OVERVIEW);		
@@ -108,33 +101,28 @@ public class TagRefreshButtonArea extends DialogArea {
     
     public void refresh(final boolean background) {
 		try {
-			getRunnableContext().run(true, true, new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						setBusy(true);
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								if (!fMessageLabel.isDisposed())
-									fMessageLabel.setText(CVSUIMessages.TagRefreshButtonArea_6); 
-							}
-						});
-						monitor.beginTask(CVSUIMessages.TagRefreshButtonArea_5, 100); 
-						final CVSTag[] tags = tagSource.refresh(false, Policy.subMonitorFor(monitor, 70));
-						Display.getDefault().asyncExec(new Runnable() {
-							public void run() {
-								if (!fMessageLabel.isDisposed())
-									fMessageLabel.setText(background && tags.length == 0 ? CVSUIMessages.TagRefreshButtonArea_7 : ""); //$NON-NLS-1$ 
-							}
-						});
-						if (!background && tags.length == 0 && promptForBestEffort()) {
-							tagSource.refresh(true, Policy.subMonitorFor(monitor, 30));
-						}
-					} catch (TeamException e) {
-						throw new InvocationTargetException(e);
-					} finally {
-						setBusy(false);
-						monitor.done();
+			getRunnableContext().run(true, true, monitor -> {
+				try {
+					setBusy(true);
+					Display.getDefault().asyncExec(() -> {
+						if (!fMessageLabel.isDisposed())
+							fMessageLabel.setText(CVSUIMessages.TagRefreshButtonArea_6);
+					});
+					monitor.beginTask(CVSUIMessages.TagRefreshButtonArea_5, 100);
+					final CVSTag[] tags = tagSource.refresh(false, Policy.subMonitorFor(monitor, 70));
+					Display.getDefault().asyncExec(() -> {
+						if (!fMessageLabel.isDisposed())
+							fMessageLabel.setText(
+									background && tags.length == 0 ? CVSUIMessages.TagRefreshButtonArea_7 : ""); //$NON-NLS-1$
+					});
+					if (!background && tags.length == 0 && promptForBestEffort()) {
+						tagSource.refresh(true, Policy.subMonitorFor(monitor, 30));
 					}
+				} catch (TeamException e) {
+					throw new InvocationTargetException(e);
+				} finally {
+					setBusy(false);
+					monitor.done();
 				}
 			});
 		} catch (InterruptedException e) {
@@ -146,36 +134,29 @@ public class TagRefreshButtonArea extends DialogArea {
     
     private void setBusy(final boolean busy) {
     	if (shell != null && !shell.isDisposed())
-			shell.getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					if (!refreshButton.isDisposed())
-						refreshButton.setEnabled(!busy);
-				}
+			shell.getDisplay().asyncExec(() -> {
+				if (!refreshButton.isDisposed())
+					refreshButton.setEnabled(!busy);
 			});
     }
 	
     private boolean promptForBestEffort() {
         final boolean[] prompt = new boolean[] { false };
-        shell.getDisplay().syncExec(new Runnable() {
-            public void run() {
-		        MessageDialog dialog = new MessageDialog(shell, CVSUIMessages.TagRefreshButtonArea_0, null, 
-		                getNoTagsFoundMessage(),
-		                MessageDialog.INFORMATION,
-		                new String[] {
-		            		CVSUIMessages.TagRefreshButtonArea_1, 
-		            		CVSUIMessages.TagRefreshButtonArea_2, 
-		            		CVSUIMessages.TagRefreshButtonArea_3
-		        		}, 1);
-		        int code = dialog.open();
-		        if (code == 0) {
-		            prompt[0] = true;
-		        } else if (code == 1) {
-					TagConfigurationDialog d = new TagConfigurationDialog(shell, tagSource);
-					d.open();
-		        }
+		shell.getDisplay().syncExec(() -> {
+			MessageDialog dialog = new MessageDialog(shell, CVSUIMessages.TagRefreshButtonArea_0, null,
+					getNoTagsFoundMessage(), MessageDialog.INFORMATION,
+					new String[] { CVSUIMessages.TagRefreshButtonArea_1, CVSUIMessages.TagRefreshButtonArea_2,
+							CVSUIMessages.TagRefreshButtonArea_3 },
+					1);
+			int code = dialog.open();
+			if (code == 0) {
+				prompt[0] = true;
+			} else if (code == 1) {
+				TagConfigurationDialog d = new TagConfigurationDialog(shell, tagSource);
+				d.open();
+			}
 
-            }
-        });
+		});
         return prompt[0];
     }
     

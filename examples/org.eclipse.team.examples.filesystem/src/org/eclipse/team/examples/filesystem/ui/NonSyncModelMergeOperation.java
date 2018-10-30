@@ -92,11 +92,7 @@ public class NonSyncModelMergeOperation extends ModelMergeOperation {
 	protected void handlePreviewRequest() {
 		// We perform a syncExec so that the job will dispose of the scope manager
 		// after the dialog closes
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				NonSyncMergeDialog.openFor(NonSyncModelMergeOperation.this);
-			}
-		});
+		Display.getDefault().syncExec(() -> NonSyncMergeDialog.openFor(NonSyncModelMergeOperation.this));
 	}
 	
 	/* (non-Javadoc)

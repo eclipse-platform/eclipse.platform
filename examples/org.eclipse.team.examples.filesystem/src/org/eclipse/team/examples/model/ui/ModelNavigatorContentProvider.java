@@ -194,27 +194,21 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 	}
 
 	private void refreshProjects(final ModelProject[] projects) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (!getViewer().getControl().isDisposed()) {
-					for (int i = 0; i < projects.length; i++) {
-						ModelProject project = projects[i];
-						((AbstractTreeViewer)getViewer()).refresh(project, true);
-					}
+		Display.getDefault().asyncExec(() -> {
+			if (!getViewer().getControl().isDisposed()) {
+				for (int i = 0; i < projects.length; i++) {
+					ModelProject project = projects[i];
+					((AbstractTreeViewer)getViewer()).refresh(project, true);
 				}
 			}
-		
 		});
 	}
 
 	private void refreshViewer() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				if (!getViewer().getControl().isDisposed()) {
-					getViewer().refresh();
-				}
+		Display.getDefault().asyncExec(() -> {
+			if (!getViewer().getControl().isDisposed()) {
+				getViewer().refresh();
 			}
-		
 		});
 	}
 

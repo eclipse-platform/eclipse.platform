@@ -206,21 +206,20 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	
 	private static boolean promptToRefresh(final Shell shell, final IResource[] resources, final IStatus status) {
 		final boolean[] result = new boolean[] { false};
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				Shell shellToUse = shell;
-				if (shell == null) {
-					shellToUse = new Shell(Display.getCurrent());
-				}
-				String question;
-				if (resources.length == 1) {
-					question = NLS.bind(CVSUIMessages.CVSUIPlugin_refreshQuestion, new String[] { status.getMessage(), resources[0].getFullPath().toString() }); 
-				} else {
-					question = NLS.bind(CVSUIMessages.CVSUIPlugin_refreshMultipleQuestion, new String[] { status.getMessage() }); 
-				}
-				result[0] = MessageDialog.openQuestion(shellToUse, CVSUIMessages.CVSUIPlugin_refreshTitle, question); 
+		Runnable runnable = () -> {
+			Shell shellToUse = shell;
+			if (shell == null) {
+				shellToUse = new Shell(Display.getCurrent());
 			}
+			String question;
+			if (resources.length == 1) {
+				question = NLS.bind(CVSUIMessages.CVSUIPlugin_refreshQuestion,
+						new String[] { status.getMessage(), resources[0].getFullPath().toString() });
+			} else {
+				question = NLS.bind(CVSUIMessages.CVSUIPlugin_refreshMultipleQuestion,
+						new String[] { status.getMessage() });
+			}
+			result[0] = MessageDialog.openQuestion(shellToUse, CVSUIMessages.CVSUIPlugin_refreshTitle, question);
 		};
 		Display.getDefault().syncExec(runnable);
 		return result[0];
@@ -487,16 +486,11 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	private static IStatus openDialog(Shell providedShell, final String title,
 			final String message, final IStatus status, int flags) {
 		// Create a runnable that will display the error status
-		final IOpenableInShell openable = new IOpenableInShell() {
-			@Override
-			public void open(Shell shell) {
-				if (status.getSeverity() == IStatus.INFO
-						&& !status.isMultiStatus()) {
-					MessageDialog.openInformation(shell,
-							CVSUIMessages.information, status.getMessage());
-				} else {
-					ErrorDialog.openError(shell, title, message, status);
-				}
+		final IOpenableInShell openable = shell -> {
+			if (status.getSeverity() == IStatus.INFO && !status.isMultiStatus()) {
+				MessageDialog.openInformation(shell, CVSUIMessages.information, status.getMessage());
+			} else {
+				ErrorDialog.openError(shell, title, message, status);
 			}
 		};
 		openDialog(providedShell, openable, flags);
@@ -535,20 +529,17 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 		
 		// Create a runnable that will display the error status
 		final Shell shell = providedShell;
-		Runnable outerRunnable = new Runnable() {
-			@Override
-			public void run() {
-				Shell displayShell;
-				if (shell == null) {
-					Display display = Display.getCurrent();
-					displayShell = new Shell(display);
-				} else {
-					displayShell = shell;
-				}
-				openable.open(displayShell);
-				if (shell == null) {
-					displayShell.dispose();
-				}
+		Runnable outerRunnable = () -> {
+			Shell displayShell;
+			if (shell == null) {
+				Display display = Display.getCurrent();
+				displayShell = new Shell(display);
+			} else {
+				displayShell = shell;
+			}
+			openable.open(displayShell);
+			if (shell == null) {
+				displayShell.dispose();
 			}
 		};
 		

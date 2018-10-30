@@ -50,17 +50,15 @@ public abstract class SourceManagementAction extends PessimisticProviderAction {
 		}
 		if (!resourceSet.isEmpty()) {
 			final Map byProject= sortByProject(resourceSet);
-			IRunnableWithProgress runnable= new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) {
-					for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-						IProject project= (IProject) i.next();
-						PessimisticFilesystemProvider provider= getProvider(project);
-						if (provider != null) {
-							Set set= (Set)byProject.get(project);
-							IResource[] resources= new IResource[set.size()];
-							set.toArray(resources);
-							manageResources(provider, resources, monitor);
-						}
+			IRunnableWithProgress runnable= monitor -> {
+				for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
+					IProject project= (IProject) i.next();
+					PessimisticFilesystemProvider provider= getProvider(project);
+					if (provider != null) {
+						Set set= (Set)byProject.get(project);
+						IResource[] resources1= new IResource[set.size()];
+						set.toArray(resources1);
+						manageResources(provider, resources1, monitor);
 					}
 				}
 			};

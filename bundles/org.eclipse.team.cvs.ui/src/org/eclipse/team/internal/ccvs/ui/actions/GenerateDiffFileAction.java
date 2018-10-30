@@ -14,16 +14,14 @@
 package org.eclipse.team.internal.ccvs.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.team.core.subscribers.SubscriberResourceMappingContext;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
@@ -42,17 +40,16 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	/** (Non-javadoc)
 	 * Method declared on IActionDelegate.
 	 */
+	@Override
 	public void execute(IAction action) {
 
 		try {
 			final IResource [][] resources = new IResource[][] { null };
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					try {
-						resources[0] = getDeepResourcesToPatch(monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					resources[0] = getDeepResourcesToPatch(monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
 				}
 			});
 			GenerateDiffFileWizard.run(getTargetPart(), resources[0]);
@@ -106,6 +103,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
 	 */
+	@Override
 	protected boolean isEnabledForMultipleResources() {
 			return true;
 	}
@@ -113,6 +111,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
 	 */
+	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
@@ -121,6 +120,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
 	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_CREATEPATCH;
 	}

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.console;
 
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.*;
@@ -34,6 +32,9 @@ import org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener;
 import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.*;
+
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Console that shows the output of CVS commands. It is shown as a page in the generic 
@@ -92,6 +93,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	 * and <code>dispose()</code>.
 	 */
 	public class MyLifecycle implements org.eclipse.ui.console.IConsoleListener {
+		@Override
 		public void consolesAdded(IConsole[] consoles) {
 			for (int i = 0; i < consoles.length; i++) {
 				IConsole console = consoles[i];
@@ -101,6 +103,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 			}
 
 		}
+		@Override
 		public void consolesRemoved(IConsole[] consoles) {
 			for (int i = 0; i < consoles.length; i++) {
 				IConsole console = consoles[i];
@@ -128,6 +131,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.console.AbstractConsole#init()
 	 */
+	@Override
 	protected void init() {
 		// Called when console is added to the console view
 		super.init();	
@@ -136,12 +140,10 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		initWrapSetting();
 		
 		//	Ensure that initialization occurs in the ui thread
-		CVSUIPlugin.getStandardDisplay().asyncExec(new Runnable() {
-			public void run() {
-				JFaceResources.getFontRegistry().addListener(CVSOutputConsole.this);
-				initializeStreams();
-				dump();
-			}
+		CVSUIPlugin.getStandardDisplay().asyncExec(() -> {
+			JFaceResources.getFontRegistry().addListener(CVSOutputConsole.this);
+			initializeStreams();
+			dump();
 		});
 	}
 	
@@ -228,6 +230,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.console.MessageConsole#dispose()
 	 */
+	@Override
 	protected void dispose() {
 		// Here we can't call super.dispose() because we actually want the partitioner to remain
 		// connected, but we won't show lines until the console is added to the console manager
@@ -259,6 +262,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandInvoked(java.lang.String)
 	 */
+	@Override
 	public void commandInvoked(Session session, String line) {
 	    if (!session.isOutputToConsole()) return;
 		commandStarted = System.currentTimeMillis();
@@ -269,6 +273,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#messageLineReceived(java.lang.String)
 	 */
+	@Override
 	public void messageLineReceived(Session session, String line, IStatus status) {
 	    if (session.isOutputToConsole()) {
 	        appendLine(ConsoleDocument.MESSAGE, "  " + line); //$NON-NLS-1$
@@ -278,6 +283,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#errorLineReceived(java.lang.String)
 	 */
+	@Override
 	public void errorLineReceived(Session session, String line, IStatus status) {
 	    if (session.isOutputToConsole()) {
 	        appendLine(ConsoleDocument.ERROR, "  " + line); //$NON-NLS-1$
@@ -287,6 +293,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandCompleted(org.eclipse.core.runtime.IStatus, java.lang.Exception)
 	 */
+	@Override
 	public void commandCompleted(Session session, IStatus status, Exception exception) {
 	    if (!session.isOutputToConsole()) return;
 		long commandRuntime = System.currentTimeMillis() - commandStarted;
@@ -356,6 +363,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
     /* (non-Javadoc)
 	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getProperty();
 		// colors
@@ -433,7 +441,8 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		}
     }
     
-    public String getHelpContextId() {
+    @Override
+	public String getHelpContextId() {
     	return IHelpContextIds.CONSOLE_VIEW;
     }
 }

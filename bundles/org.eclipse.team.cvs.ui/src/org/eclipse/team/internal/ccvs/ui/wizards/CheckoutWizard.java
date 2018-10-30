@@ -16,8 +16,6 @@ package org.eclipse.team.internal.ccvs.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -51,6 +49,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
+	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
 		
@@ -77,6 +76,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		
 		// Dummy page to allow lazy creation of CheckoutAsWizard
 		dummyPage = new CVSWizardPage("dummyPage") { //$NON-NLS-1$
+			@Override
 			public void createControl(Composite parent) {
 				Composite composite = createComposite(parent, 1, false);
 				setControl(composite);
@@ -92,6 +92,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
 	 */
+	@Override
 	public boolean canFinish() {
 		return (wizard == null && getSelectedModules().length > 0) || 
 			(wizard != null && wizard.canFinish());
@@ -100,6 +101,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
+	@Override
 	public boolean performFinish() {
 		if (wizard != null) {
 			// The finish of the child wizard will get called directly.
@@ -133,6 +135,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.Wizard#performCancel()
 	 */
+	@Override
 	public boolean performCancel() {
 		if (location != null && isNewLocation) {
 			KnownRepositories.getInstance().disposeRepository(location);
@@ -144,6 +147,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
 	 */
+	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		// Assume the page is about to be shown when this method is
 		// invoked
@@ -153,6 +157,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.wizards.ICVSWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage, boolean)
 	 */
+	@Override
 	public IWizardPage getNextPage(IWizardPage page, boolean aboutToShow) {
 		if (page == locationPage) {
 			if (locationPage.getLocation() == null) {
@@ -204,13 +209,12 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 						final ICVSRemoteFolder[] folderResult = new ICVSRemoteFolder [1];
 						final boolean[] booleanResult = new boolean[] { true };
 						
-						getContainer().run(true, true, new IRunnableWithProgress() {
-							public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-								ProjectMetaFileOperation op = new ProjectMetaFileOperation(getPart(), new ICVSRemoteFolder[] {folders[0]}, withName);
-								op.run(monitor);
-								folderResult[0] = op.getUpdatedFolders()[0];
-								booleanResult[0] = op.metaFileExists();
-							}
+						getContainer().run(true, true, monitor -> {
+							ProjectMetaFileOperation op = new ProjectMetaFileOperation(getPart(),
+									new ICVSRemoteFolder[] { folders[0] }, withName);
+							op.run(monitor);
+							folderResult[0] = op.getUpdatedFolders()[0];
+							booleanResult[0] = op.metaFileExists();
 						});
 						hasMetafile = booleanResult[0];
 						if (withName && hasMetafile)
@@ -261,13 +265,11 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		// Otherwise, get the location from the create location page
 		final ICVSRepositoryLocation[] locations = new ICVSRepositoryLocation[] { null };
 		final CVSException[] exception = new CVSException[] { null };
-		getShell().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				try {
-					locations[0] = createLocationPage.getLocation();
-				} catch (CVSException e) {
-					exception[0] = e;
-				}
+		getShell().getDisplay().syncExec(() -> {
+			try {
+				locations[0] = createLocationPage.getLocation();
+			} catch (CVSException e) {
+				exception[0] = e;
 			}
 		});
 		if (exception[0] != null) {
@@ -296,6 +298,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 	}
 

@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
@@ -204,11 +203,9 @@ public class CreatePatchTest extends EclipseTest {
 			assertTrue(totalWaited < 2500);
 		}
 		try {
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) throws CoreException {
-					ret[0] = filterStream(file.getContents(), prefixesToIgnore);
-				}
-			}, file, IResource.NONE, null);
+			ResourcesPlugin.getWorkspace().run(
+					(IWorkspaceRunnable) monitor -> ret[0] = filterStream(file.getContents(), prefixesToIgnore), file,
+					IResource.NONE, null);
 		} catch (CoreException e) {
 			fail(e.getMessage());
 		}

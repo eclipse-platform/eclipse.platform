@@ -14,12 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -57,6 +52,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	/**
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#beginExecution(IAction)
 	 */
+	@Override
 	protected boolean beginExecution(IAction action) throws TeamException {
 		if (super.beginExecution(action)) {
 			// Ensure that the required sync info is loaded
@@ -117,13 +113,11 @@ public abstract class WorkspaceAction extends CVSAction {
 		if (folder.getIResource().getType() == IResource.PROJECT) return;
 		if (CVSWorkspaceRoot.isOrphanedSubtree((IContainer)folder.getIResource())) {
 			try {
-				run(new IRunnableWithProgress() {
-					public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-						try {
-							folder.unmanage(null);
-						} catch (CVSException e) {
-							CVSProviderPlugin.log(e);
-						}
+				run((IRunnableWithProgress) monitor -> {
+					try {
+						folder.unmanage(null);
+					} catch (CVSException e) {
+						CVSProviderPlugin.log(e);
 					}
 				}, true, PROGRESS_BUSYCURSOR);
 			} catch (InvocationTargetException e) {
@@ -209,6 +203,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	 * 
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#setActionEnablement(IAction)
 	 */
+	@Override
 	protected void setActionEnablement(IAction action) {
 		try {
 			boolean requires = requiresLocalSyncInfo();
@@ -246,20 +241,20 @@ public abstract class WorkspaceAction extends CVSAction {
 
 	protected boolean promptToRefresh(final Shell shell, final IResource[] resources, final IStatus status) {
 		final boolean[] result = new boolean[] { false};
-		Runnable runnable = new Runnable() {
-			public void run() {
-				Shell shellToUse = shell;
-				if (shell == null) {
-					shellToUse = new Shell(Display.getCurrent());
-				}
-				String question;
-				if (resources.length == 1) {
-					question = NLS.bind(CVSUIMessages.CVSAction_refreshQuestion, new String[] { status.getMessage(), resources[0].getFullPath().toString() });
-				} else {
-					question = NLS.bind(CVSUIMessages.CVSAction_refreshMultipleQuestion, new String[] { status.getMessage() });
-				}
-				result[0] = MessageDialog.openQuestion(shellToUse, CVSUIMessages.CVSAction_refreshTitle, question);
+		Runnable runnable = () -> {
+			Shell shellToUse = shell;
+			if (shell == null) {
+				shellToUse = new Shell(Display.getCurrent());
 			}
+			String question;
+			if (resources.length == 1) {
+				question = NLS.bind(CVSUIMessages.CVSAction_refreshQuestion,
+						new String[] { status.getMessage(), resources[0].getFullPath().toString() });
+			} else {
+				question = NLS.bind(CVSUIMessages.CVSAction_refreshMultipleQuestion,
+						new String[] { status.getMessage() });
+			}
+			result[0] = MessageDialog.openQuestion(shellToUse, CVSUIMessages.CVSAction_refreshTitle, question);
 		};
 		Display.getDefault().syncExec(runnable);
 		return result[0];
@@ -270,6 +265,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	 * save dirty editors.
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#needsToSaveDirtyEditors()
 	 */
+	@Override
 	protected boolean needsToSaveDirtyEditors() {
 		return true;
 	}
@@ -290,6 +286,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	 * </ol>
 	 * @see TeamAction#isEnabled()
 	 */
+	@Override
 	public boolean isEnabled() {
 		
 		// allow the super to decide enablement. if the super doesn't know it will return false.

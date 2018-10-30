@@ -26,7 +26,6 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.runtime.jobs.*;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -386,16 +385,13 @@ public class CommitWizard extends ResizableWizard {
 	public static void run(IWorkbenchPart part, Shell shell, final ResourceTraversal[] traversals) throws CVSException {
         try {
         	final IResource [][] resources = new IResource[][] { null };
-    		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(new IRunnableWithProgress() {
-    			@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-    				try {
-    					resources[0] = getDeepResourcesToCommit(traversals, monitor);
-    				} catch (CoreException e) {
-    					throw new InvocationTargetException(e);
-    				}
-    			}
-    		});
+			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
+				try {
+					resources[0] = getDeepResourcesToCommit(traversals, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				}
+			});
 			run(part, shell, resources[0]);
 		} catch (OperationCanceledException e) {
 			// Ignore

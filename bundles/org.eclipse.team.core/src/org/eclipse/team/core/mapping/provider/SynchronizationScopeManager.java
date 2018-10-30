@@ -161,12 +161,8 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	@Override
 	public void initialize(
 			IProgressMonitor monitor) throws CoreException {
-		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				internalPrepareContext(monitor);
-			}
-		}, getSchedulingRule(), IResource.NONE, monitor);
+		ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> internalPrepareContext(monitor1),
+				getSchedulingRule(), IResource.NONE, monitor);
 	}
 
 	@Override
@@ -174,12 +170,8 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		// We need to lock the workspace when building the scope
 		final ResourceTraversal[][] traversals = new ResourceTraversal[][] { new ResourceTraversal[0] };
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		workspace.run(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				traversals[0] = internalRefreshScope(mappings, true, monitor);
-			}
-		}, getSchedulingRule(), IResource.NONE, monitor);
+		workspace.run((IWorkspaceRunnable) monitor1 -> traversals[0] = internalRefreshScope(mappings, true, monitor1),
+				getSchedulingRule(), IResource.NONE, monitor);
 		return traversals[0];
 	}
 
