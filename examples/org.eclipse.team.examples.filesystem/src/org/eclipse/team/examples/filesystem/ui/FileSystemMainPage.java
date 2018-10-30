@@ -30,9 +30,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.team.examples.filesystem.Policy;
 
@@ -216,11 +214,9 @@ public class FileSystemMainPage extends WizardPage {
 		
 		locationCombo = createEditableCombo(composite);
 		locationCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		locationCombo.addListener(SWT.Modify, new Listener() {
-			public void handleEvent(Event e) {
-				location = ((Combo)e.widget).getText();
-				FileSystemMainPage.this.validateFields();		
-			}
+		locationCombo.addListener(SWT.Modify, e -> {
+			location = ((Combo)e.widget).getText();
+			FileSystemMainPage.this.validateFields();		
 		});
 		
 		locationCombo.setFocus();
@@ -229,14 +225,12 @@ public class FileSystemMainPage extends WizardPage {
 		Button browse = new Button(composite, SWT.NULL);
 		browse.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		browse.setText(Policy.bind("FileSystemMainPage.browseDir")); //$NON-NLS-1$
-		browse.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				DirectoryDialog d = new DirectoryDialog(getShell());
-				String directory = d.open();
-				if(directory!=null) {
-					locationCombo.setText(directory);
-				}			
-			}
+		browse.addListener(SWT.Selection, event -> {
+			DirectoryDialog d = new DirectoryDialog(getShell());
+			String directory = d.open();
+			if(directory!=null) {
+				locationCombo.setText(directory);
+			}			
 		});
 	
 		initializeValues();

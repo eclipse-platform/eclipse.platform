@@ -77,6 +77,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 	/*
 	 * @see PreferencesPage#createContents
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		initialize();
 		
@@ -97,11 +98,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		labelGroup.setLayout(layout);
-		Listener labelListener = new Listener() {
-			public void handleEvent(Event event) {
-				updateWidgetEnablements();
-			}
-		};
+		Listener labelListener = event -> updateWidgetEnablements();
 		useLocationAsLabel = createRadioButton(labelGroup, CVSUIMessages.CVSRepositoryPropertiesPage_useLocationAsLabel, 3); 
 		useCustomLabel = createRadioButton(labelGroup, CVSUIMessages.CVSRepositoryPropertiesPage_useCustomLabel, 1); 
 		useCustomLabel.addListener(SWT.Selection, labelListener);
@@ -150,6 +147,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 		data.horizontalSpan = 3;
 		allowCachingButton.setLayoutData(data);
 		allowCachingButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				allowCaching = allowCachingButton.getSelection();
 			}
@@ -163,17 +161,11 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 		
 		initializeValues();
 		updateWidgetEnablements();
-		Listener connectionInfoChangedListener = new Listener() {
-			public void handleEvent(Event event) {
-				connectionInfoChanged = true;
-				updateWidgetEnablements();
-			}
+		Listener connectionInfoChangedListener = event -> {
+			connectionInfoChanged = true;
+			updateWidgetEnablements();
 		};
-		passwordText.addListener(SWT.Modify, new Listener() {
-			public void handleEvent(Event event) {
-				passwordChanged = !passwordText.getText().equals(FAKE_PASSWORD);
-			}
-		});
+		passwordText.addListener(SWT.Modify, event -> passwordChanged = !passwordText.getText().equals(FAKE_PASSWORD));
 		userText.addListener(SWT.Modify, connectionInfoChangedListener);
 		methodType.addListener(SWT.Modify, connectionInfoChangedListener);
 		hostText.addListener(SWT.Modify, connectionInfoChangedListener);
@@ -364,6 +356,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 			final boolean[] result = new boolean[] { false };
 			final ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(getShell());
             progressMonitorDialog.run(false, false, new WorkspaceModifyOperation(null) {
+				@Override
 				public void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
 						// Create a new repository location with the new information
@@ -444,6 +437,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 	/*
 	 * @see PreferencesPage#performOk
 	 */
+	@Override
 	public boolean performOk() {
 		if (performConnectionInfoChanges()) {
 			performNonConnectionInfoChanges();
@@ -455,6 +449,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		initializeValues();

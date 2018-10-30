@@ -20,8 +20,9 @@ import java.util.*;
 import java.util.List;
 
 import org.eclipse.core.runtime.*;
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.fieldassist.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -119,6 +120,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 		l.toArray(r);
 		return r;
 	}
+	@Override
 	protected IDialogSettings getDialogSettings() {
 		return settings;
 	}
@@ -147,44 +149,43 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 	 * 
 	 * @param parent  the parent of the created widgets
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 2, false);
 		// set F1 help
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARING_NEW_REPOSITORY_PAGE);
 
-		Listener listener = new Listener() {
-			public void handleEvent(Event event) {
-				if (location != null) {
-					oldLocation = location;
-					location = null;
-				}
-				if (event.widget == hostCombo) {
-					String hostText = hostCombo.getText();
-					if (hostText.length() > 0 && hostText.charAt(0) == ':') {
-						try {
-							CVSRepositoryLocation newLocation = CVSRepositoryLocation.fromString(hostText);
-							connectionMethodCombo.setText(newLocation.getMethod().getName());
-							repositoryPathCombo.setText(newLocation.getRootDirectory());
-							int port = newLocation.getPort();
-							if (port == ICVSRepositoryLocation.USE_DEFAULT_PORT) {
-								useDefaultPort.setSelection(true);
-								useCustomPort.setSelection(false);
-							} else {
-								useCustomPort.setSelection(true);
-								useDefaultPort.setSelection(false);
-								portText.setText(String.valueOf(port));
-							}
-
-							userCombo.setText(newLocation.getUsername());
-							//passwordText.setText(newLocation.xxx);
-							hostCombo.setText(newLocation.getHost());
-						} catch (CVSException e) {
-							CVSUIPlugin.log(e);
+		Listener listener = event -> {
+			if (location != null) {
+				oldLocation = location;
+				location = null;
+			}
+			if (event.widget == hostCombo) {
+				String hostText = hostCombo.getText();
+				if (hostText.length() > 0 && hostText.charAt(0) == ':') {
+					try {
+						CVSRepositoryLocation newLocation = CVSRepositoryLocation.fromString(hostText);
+						connectionMethodCombo.setText(newLocation.getMethod().getName());
+						repositoryPathCombo.setText(newLocation.getRootDirectory());
+						int port = newLocation.getPort();
+						if (port == ICVSRepositoryLocation.USE_DEFAULT_PORT) {
+							useDefaultPort.setSelection(true);
+							useCustomPort.setSelection(false);
+						} else {
+							useCustomPort.setSelection(true);
+							useDefaultPort.setSelection(false);
+							portText.setText(String.valueOf(port));
 						}
+
+						userCombo.setText(newLocation.getUsername());
+						// passwordText.setText(newLocation.xxx);
+						hostCombo.setText(newLocation.getHost());
+					} catch (CVSException e) {
+						CVSUIPlugin.log(e);
 					}
 				}
-				updateWidgetEnablements();
 			}
+			updateWidgetEnablements();
 		};
 
 		Group g = createGroup(composite, CVSUIMessages.ConfigurationWizardMainPage_Location_1);
@@ -256,11 +257,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 
 			validateButton = new Button(validateButtonTabGroup, SWT.CHECK);
 			validateButton.setText(CVSUIMessages.ConfigurationWizardAutoconnectPage_validate);
-			validateButton.addListener(SWT.Selection, new Listener() {
-				public void handleEvent(Event e) {
-					validate = validateButton.getSelection();
-				}
-			});
+			validateButton.addListener(SWT.Selection, e -> validate = validateButton.getSelection());
 		}
 
 		allowCachingButton = new Button(composite, SWT.CHECK);
@@ -269,6 +266,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 		data.horizontalSpan = 2;
 		allowCachingButton.setLayoutData(data);
 		allowCachingButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				allowCaching = allowCachingButton.getSelection();
 			}
@@ -560,6 +558,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 	public boolean getValidate() {
 		return validate;
 	}
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (visible) {

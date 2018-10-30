@@ -59,6 +59,7 @@ public class BranchPromptDialog extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createMainDialogArea(Composite)
 	 */
+	@Override
 	protected void createMainDialogArea(Composite composite) {
 		
 		applyDialogFont(composite);
@@ -73,21 +74,15 @@ public class BranchPromptDialog extends DetailsDialog {
         name.setLayoutData(SWTUtils.createGridData(areaWidth, SWT.DEFAULT, true, false));
         
 		branchText = CVSWizardPage.createTextField(composite);
-		branchText.addListener(SWT.Modify, new Listener() {
-			public void handleEvent(Event event) {
-				branchTag = branchText.getText();				
-				updateEnablements();
-				updateVersionName(branchTag);
-			}
+		branchText.addListener(SWT.Modify, event -> {
+			branchTag = branchText.getText();
+			updateEnablements();
+			updateVersionName(branchTag);
 		});
 		addBranchContentAssist();
 
 		final Button check = SWTUtils.createCheckBox(composite, CVSUIMessages.BranchWizardPage_startWorking); 
-		check.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				update = check.getSelection();
-			}
-		});
+		check.addListener(SWT.Selection, event -> update = check.getSelection());
 		check.setSelection(true);		
 		update = true;
 		
@@ -98,11 +93,9 @@ public class BranchPromptDialog extends DetailsDialog {
 		versionLabel2.setLayoutData(SWTUtils.createGridData(areaWidth, SWT.DEFAULT, true, false));
         
 		versionText = CVSWizardPage.createTextField(composite);
-		versionText.addListener(SWT.Modify, new Listener() {
-			public void handleEvent(Event event) {
-				versionTag = versionText.getText();
-				updateEnablements();
-			}
+		versionText.addListener(SWT.Modify, event -> {
+			versionTag = versionText.getText();
+			updateEnablements();
 		});
 		
 		if(allStickyResources) {
@@ -117,7 +110,8 @@ public class BranchPromptDialog extends DetailsDialog {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
      */
-    protected String getHelpContextId() {
+    @Override
+	protected String getHelpContextId() {
         return IHelpContextIds.BRANCH_DIALOG;
     }
     private void addBranchContentAssist() {
@@ -142,6 +136,7 @@ public class BranchPromptDialog extends DetailsDialog {
 	/**
 	 * @see DetailsDialog#createDropDownDialogArea(Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		
 		applyDialogFont(parent);
@@ -164,6 +159,7 @@ public class BranchPromptDialog extends DetailsDialog {
 	/**
 	 * Validates branch and version names
 	 */
+	@Override
 	protected void updateEnablements() {
 		String message = null;
 		
@@ -214,7 +210,8 @@ public class BranchPromptDialog extends DetailsDialog {
 	/* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
      */
-    protected boolean isMainGrabVertical() {
+    @Override
+	protected boolean isMainGrabVertical() {
         return false;
     }
 

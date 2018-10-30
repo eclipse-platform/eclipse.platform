@@ -15,7 +15,7 @@ package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.layout.GridData;
@@ -50,6 +50,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		Composite composite = createComposite(parent);
 				
@@ -76,6 +77,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 
 		// set the contents of the list
 		listViewer.setLabelProvider(new WorkbenchLabelProvider() {
+			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IResource)
 					return ((IResource)element).getFullPath().toString();
@@ -85,11 +87,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 		});
 		listViewer.setContentProvider(new WorkbenchContentProvider());
 		setViewerInput();
-		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				selectedResources = listViewer.getCheckedElements();
-			}
-		});
+		listViewer.addSelectionChangedListener(event -> selectedResources = listViewer.getCheckedElements());
 		
 		addSelectionButtons(composite);
 		
@@ -112,6 +110,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 	
 		Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID, CVSUIMessages.ReleaseCommentDialog_selectAll, false); 
 		SelectionListener listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				listViewer.setAllChecked(true);
 				selectedResources = null;
@@ -121,6 +120,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 	
 		Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID, CVSUIMessages.ReleaseCommentDialog_deselectAll, false); 
 		listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				listViewer.setAllChecked(false);
 				selectedResources = new Object[0];
@@ -151,6 +151,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 	 * (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.DetailsDialog#updateEnablements()
 	 */
+	@Override
 	protected void updateEnablements() {
 	}
 	
@@ -164,6 +165,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
+	@Override
 	protected void buttonPressed(int id) {
 		if (id == IDialogConstants.OK_ID) {
 			filterSyncSet();
@@ -175,6 +177,7 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 		// Keep only the checked resources
 		if (selectedResources != null) {
 			getSyncSet().selectNodes(new FastSyncInfoFilter() {
+				@Override
 				public boolean select(SyncInfo info) {
 					IResource local = info.getLocal();
 					for (int i = 0; i < selectedResources.length; i++) {

@@ -13,21 +13,16 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.tags;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.contentassist.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.contentassist.*;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.ui.contentassist.ContentAssistHandler;
 
@@ -41,11 +36,7 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
 
     public static void createContentAssistant(Text text, TagSource tagSource, int includeFlags) {
 		final TagContentAssistProcessor tagContentAssistProcessor = new TagContentAssistProcessor(tagSource, includeFlags);
-		text.addDisposeListener(new DisposeListener() {
-            public void widgetDisposed(DisposeEvent e) {
-                tagContentAssistProcessor.dispose();
-            }
-        });
+		text.addDisposeListener(e -> tagContentAssistProcessor.dispose());
         ContentAssistHandler.createHandlerForText(text, createSubjectContentAssistant(tagContentAssistProcessor));
 	}
 
@@ -57,11 +48,7 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
 		//ContentAssistPreference.configure(contentAssistant, JavaPlugin.getDefault().getPreferenceStore());
 		
 		contentAssistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		contentAssistant.setInformationControlCreator(new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent);
-			}
-		});
+		contentAssistant.setInformationControlCreator(parent -> new DefaultInformationControl(parent));
 		
 		return contentAssistant;
 	}
@@ -73,7 +60,8 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
     /* (non-Javadoc)
      * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
      */
-    public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+    @Override
+	public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
         Control c = contentAssistSubjectControl.getControl();
         int docLength = contentAssistSubjectControl.getDocument().getLength();
         if (c instanceof Text) {
@@ -107,14 +95,16 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
     /* (non-Javadoc)
      * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeContextInformation(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
      */
-    public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
+    @Override
+	public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
      */
-    public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
+    @Override
+	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         Assert.isTrue(false, "ITextViewer not supported"); //$NON-NLS-1$
         return null;
     }
@@ -122,35 +112,40 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
      */
-    public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
+    @Override
+	public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
      */
-    public char[] getCompletionProposalAutoActivationCharacters() {
+    @Override
+	public char[] getCompletionProposalAutoActivationCharacters() {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
      */
-    public char[] getContextInformationAutoActivationCharacters() {
+    @Override
+	public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
      */
-    public String getErrorMessage() {
+    @Override
+	public String getErrorMessage() {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
      */
-    public IContextInformationValidator getContextInformationValidator() {
+    @Override
+	public IContextInformationValidator getContextInformationValidator() {
         return null;
     }
     

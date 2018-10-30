@@ -47,6 +47,7 @@ public class ConfigurationWizardAutoconnectPage extends CVSWizardPage {
 	/*
 	 * @see IDialogPage#createControl(Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 2, false);
 		setControl(composite);
@@ -93,11 +94,7 @@ public class ConfigurationWizardAutoconnectPage extends CVSWizardPage {
 		data = new GridData();
 		data.horizontalSpan = 2;
 		check.setText(CVSUIMessages.ConfigurationWizardAutoconnectPage_validate); 
-		check.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				validate = check.getSelection();
-			}
-		});
+		check.addListener(SWT.Selection, event -> validate = check.getSelection());
 		check.setSelection(true);		
 		Dialog.applyDialogFont(parent);	
 	}

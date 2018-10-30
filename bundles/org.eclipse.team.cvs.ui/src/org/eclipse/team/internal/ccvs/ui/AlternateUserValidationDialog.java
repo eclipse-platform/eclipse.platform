@@ -19,20 +19,11 @@ import java.util.List;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 public class AlternateUserValidationDialog extends Dialog {
 	String user;
@@ -53,11 +44,13 @@ public class AlternateUserValidationDialog extends Dialog {
 		initializeImages();
 	}
 	
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.AlternateUserValidationDialog_Enter_Password_2); 
 	}
 	
+	@Override
 	protected Control createContents(Composite parent) {
 		Composite main = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -91,39 +84,38 @@ public class AlternateUserValidationDialog extends Dialog {
 		data.widthHint = 250;
 		passwordText.setLayoutData(data);
 		
-		passwordText.addVerifyListener(new VerifyListener() {
-			public void verifyText(VerifyEvent e) {
-				if (inUpdate) return;
-				e.doit = false;
-				inUpdate = true;
-				switch (e.character) {
-					case 8: {
-						// backspace pressed
-						if (password.length() > 0) {
-							password = password.substring(0, password.length() - 1);
-						}
-						// get rid of bogus Xs
-						int numX = ((Integer)numXs.get(numXs.size() - 1)).intValue();
-						numXs.remove(numXs.size() - 1);
-						String oldText = passwordText.getText();
-						String newText = oldText.substring(0, oldText.length() - numX);
-						passwordText.setText(newText);
-						passwordText.setSelection(newText.length());
-						break;
+		passwordText.addVerifyListener(e -> {
+			if (inUpdate)
+				return;
+			e.doit = false;
+			inUpdate = true;
+			switch (e.character) {
+			case 8: {
+				// backspace pressed
+				if (password.length() > 0) {
+					password = password.substring(0, password.length() - 1);
 					}
-					default: {
-						String oldText = passwordText.getText();
-						String x = getXs();
-						numXs.add(numXs.size(), Integer.valueOf(x.length()));
-						String newText = oldText + x;
-						passwordText.setText(newText);
-						passwordText.setSelection(newText.length());
-						password += e.character;
-					}
-				}
-				inUpdate = false;
-				updateImages();
+				// get rid of bogus Xs
+				int numX = ((Integer) numXs.get(numXs.size() - 1)).intValue();
+				numXs.remove(numXs.size() - 1);
+				String oldText1 = passwordText.getText();
+				String newText1 = oldText1.substring(0, oldText1.length() - numX);
+				passwordText.setText(newText1);
+				passwordText.setSelection(newText1.length());
+				break;
 			}
+			default: {
+				String oldText2 = passwordText.getText();
+				String x = getXs();
+				numXs.add(numXs.size(), Integer.valueOf(x.length()));
+				String newText2 = oldText2 + x;
+				passwordText.setText(newText2);
+				passwordText.setSelection(newText2.length());
+				password += e.character;
+				}
+			}
+			inUpdate = false;
+			updateImages();
 		});
 		/*passwordText.addTraverseListener(new TraverseListener() {
 			public void keyTraversed(TraverseEvent e) {
@@ -144,26 +136,19 @@ public class AlternateUserValidationDialog extends Dialog {
 		data = new GridData();
 		data.widthHint = 70;
 		b.setLayoutData(data);
-		b.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				okPressed();
-			}
-		});
+		b.addListener(SWT.Selection, event -> okPressed());
 		buttonComposite.getShell().setDefaultButton(b);
 		b = new Button(buttonComposite, SWT.PUSH);
 		b.setText(CVSUIMessages.AlternateUserValidationDialog_Cancel_7); 
 		data = new GridData();
 		data.widthHint = 70;
 		b.setLayoutData(data);
-		b.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event event) {
-				cancelPressed();
-			}
-		});
+		b.addListener(SWT.Selection, event -> cancelPressed());
         Dialog.applyDialogFont(parent);
 		return main;
 	}
 
+	@Override
 	public boolean close() {
 		boolean result = super.close();
 		if (images != null) {
@@ -232,6 +217,7 @@ public class AlternateUserValidationDialog extends Dialog {
 		}
 		return "X"; //$NON-NLS-1$
 	}
+	@Override
 	protected void cancelPressed() {
 		password = null;
 		super.cancelPressed();

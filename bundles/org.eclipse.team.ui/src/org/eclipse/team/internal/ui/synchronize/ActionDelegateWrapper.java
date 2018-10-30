@@ -16,8 +16,6 @@ package org.eclipse.team.internal.ui.synchronize;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.ui.*;
 
@@ -62,12 +60,8 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 	 */
 	protected void initialize(final ISynchronizePageConfiguration configuration) {
 		configuration.getSite().getSelectionProvider().addSelectionChangedListener(this);
-		configuration.getPage().getViewer().getControl().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				configuration.getSite().getSelectionProvider().removeSelectionChangedListener(ActionDelegateWrapper.this);
-			}
-		});
+		configuration.getPage().getViewer().getControl().addDisposeListener(e -> configuration.getSite()
+				.getSelectionProvider().removeSelectionChangedListener(ActionDelegateWrapper.this));
 	}
 
 	/* (non-Javadoc)

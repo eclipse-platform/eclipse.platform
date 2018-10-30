@@ -132,7 +132,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		// The list of diffs that add or change the local file
 		List fileChanges = new ArrayList();
 		// The list of folders diffs
-		List folderDiffs = new ArrayList();
+		List<IDiff> folderDiffs = new ArrayList<>();
 		// The list of diffs that will result in the deletion of
 		// the local file
 		List fileDeletions = new ArrayList();
@@ -187,12 +187,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 			}
 			if (!folderDiffs.isEmpty()) {
 				// Order the diffs so empty added children will get deleted before their parents are visited
-				Collections.sort(folderDiffs, new Comparator() {
-					@Override
-					public int compare(Object o1, Object o2) {
-						return ((IDiff)o2).getPath().toString().compareTo(((IDiff)o1).getPath().toString());
-					}
-				});
+				Collections.sort(folderDiffs, (o1, o2) -> o2.getPath().toString().compareTo(o1.getPath().toString()));
 				for (Iterator iter = folderDiffs.iterator(); iter.hasNext();) {
 					IDiff diff = (IDiff) iter.next();
 					IResource resource = ResourceDiffTree.getResourceFor(diff);

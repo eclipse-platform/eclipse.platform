@@ -15,8 +15,6 @@ package org.eclipse.compare.examples.xml.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
@@ -117,12 +115,7 @@ public class MessageLine extends CLabel {
 		} else {
 			if (fErrorColor == null) {
 				fErrorColor= new Color(getDisplay(), fErrorRGB);
-				addDisposeListener(new DisposeListener() {
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						fErrorColor.dispose();
-					}
-				});
+				addDisposeListener(e -> fErrorColor.dispose());
 			}
 			setForeground(fErrorColor);
 			setText(message);

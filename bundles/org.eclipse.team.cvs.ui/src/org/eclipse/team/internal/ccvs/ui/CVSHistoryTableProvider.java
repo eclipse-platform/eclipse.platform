@@ -532,12 +532,9 @@ public class CVSHistoryTableProvider {
 		ColumnViewerToolTipSupport.enableFor(viewer);
 		viewer.refresh();
 
-		tree.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (currentRevisionFont != null) {
-					currentRevisionFont.dispose();
-				}
+		tree.addDisposeListener(e -> {
+			if (currentRevisionFont != null) {
+				currentRevisionFont.dispose();
 			}
 		});
 		

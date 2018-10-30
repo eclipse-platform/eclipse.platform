@@ -244,31 +244,27 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 	public void visit(Session session, ICVSResource[] resources, IProgressMonitor monitor) throws CVSException {
 		
 		// Sort the resources to avoid sending the same directory multiple times
-		List resourceList = new ArrayList(resources.length);
+		List<ICVSResource> resourceList = new ArrayList<>(resources.length);
 		resourceList.addAll(Arrays.asList(resources));
 		final ICVSFolder localRoot = session.getLocalRoot();
-		Collections.sort(resourceList, new Comparator() {
-			public int compare(Object object1, Object object2) {
-				ICVSResource resource1 = (ICVSResource)object1;
-				ICVSResource resource2 = (ICVSResource)object2;
-				try {
-					String path1 = resource1.getParent().getRelativePath(localRoot);
-					String path2 = resource2.getParent().getRelativePath(localRoot);
-					int pathCompare = path1.compareTo(path2);
-					if (pathCompare == 0) {
-						if (resource1.isFolder() == resource2.isFolder()) {
-							return resource1.getName().compareTo(resource2.getName());
-						} else if (resource1.isFolder()) {
-							return 1;
-						} else {
-							return -1;
-						}
+		Collections.sort(resourceList, (resource1, resource2) -> {
+			try {
+				String path1 = resource1.getParent().getRelativePath(localRoot);
+				String path2 = resource2.getParent().getRelativePath(localRoot);
+				int pathCompare = path1.compareTo(path2);
+				if (pathCompare == 0) {
+					if (resource1.isFolder() == resource2.isFolder()) {
+						return resource1.getName().compareTo(resource2.getName());
+					} else if (resource1.isFolder()) {
+						return 1;
 					} else {
-						return pathCompare;
+						return -1;
 					}
-				} catch (CVSException e) {
-					return resource1.getName().compareTo(resource2.getName());
+				} else {
+					return pathCompare;
 				}
+			} catch (CVSException e) {
+				return resource1.getName().compareTo(resource2.getName());
 			}
 		});
 

@@ -109,6 +109,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
@@ -117,6 +118,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.IgnoreResourcesDialog_dialogTitle);
@@ -125,6 +127,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		dlgTitleImage = CVSUIPlugin.getPlugin().getImageDescriptor(
@@ -140,6 +143,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite((Composite) super
 				.createDialogArea(parent), SWT.NONE);
@@ -153,16 +157,8 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 		
         PlatformUI.getWorkbench().getHelpSystem().setHelp(top, IHelpContextIds.ADD_TO_CVSIGNORE);
 		
-		Listener selectionListener = new Listener() {
-			public void handleEvent(Event event) {
-				updateEnablements();
-			}
-		};
-		Listener modifyListener = new Listener() {
-			public void handleEvent(Event event) {
-				validate();
-			}
-		};
+		Listener selectionListener = event -> updateEnablements();
+		Listener modifyListener = event -> validate();
 		
 		addNameEntryButton = createRadioButton(top, CVSUIMessages.IgnoreResourcesDialog_addNameEntryButton); 
 		addNameEntryButton.addListener(SWT.Selection, selectionListener);
@@ -234,6 +230,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	/* (non-Javadoc)
 	 * Method declared on Dialog.
 	 */
+	@Override
 	protected void okPressed() {
 		settings.put(ACTION_KEY, selectedAction);
 		super.okPressed();
@@ -371,7 +368,8 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 		return false;
 	}
 	
-    public boolean close() {
+    @Override
+	public boolean close() {
         if (dlgTitleImage != null) {
 			dlgTitleImage.dispose();
 		}

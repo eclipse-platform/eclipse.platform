@@ -25,33 +25,31 @@ public class CVSRepositoryLocationMatcher {
 	private static final String PSERVER = "pserver"; //$NON-NLS-1$
 	private static final String EXT = "ext"; //$NON-NLS-1$
 
-	private static Comparator COMPATIBLE_LOCATIONS_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			if (o1 instanceof ICVSRepositoryLocation
-					&& o2 instanceof ICVSRepositoryLocation) {
-				ICVSRepositoryLocation rl1 = (ICVSRepositoryLocation) o1;
-				ICVSRepositoryLocation rl2 = (ICVSRepositoryLocation) o2;
-				String name1 = rl1.getMethod().getName();
-				String name2 = rl2.getMethod().getName();
+	private static Comparator COMPATIBLE_LOCATIONS_COMPARATOR = (o1, o2) -> {
+		if (o1 instanceof ICVSRepositoryLocation
+				&& o2 instanceof ICVSRepositoryLocation) {
+			ICVSRepositoryLocation rl1 = (ICVSRepositoryLocation) o1;
+			ICVSRepositoryLocation rl2 = (ICVSRepositoryLocation) o2;
+			String name1 = rl1.getMethod().getName();
+			String name2 = rl2.getMethod().getName();
 
-				if (!name1.equals(name2) && isCompatible(rl1, rl2, false)) {
-					if (name1.equals(EXTSSH))
-						return -1;
-					if (name2.equals(EXTSSH))
-						return 1;
-					if (name1.equals(PSERVER))
-						return -1;
-					if (name2.equals(PSERVER))
-						return 1;
-					if (name1.equals(EXT))
-						return -1;
-					if (name2.equals(EXT))
-						return 1;
-				}
-				return name1.compareTo(name2);
+			if (!name1.equals(name2) && isCompatible(rl1, rl2, false)) {
+				if (name1.equals(EXTSSH))
+					return -1;
+				if (name2.equals(EXTSSH))
+					return 1;
+				if (name1.equals(PSERVER))
+					return -1;
+				if (name2.equals(PSERVER))
+					return 1;
+				if (name1.equals(EXT))
+					return -1;
+				if (name2.equals(EXT))
+					return 1;
 			}
-			return 0;
+			return name1.compareTo(name2);
 		}
+		return 0;
 	};
 
 	public static Map/* <IProject, List<ICVSRepositoryLocation>> */prepareSuggestedRepositoryLocations(

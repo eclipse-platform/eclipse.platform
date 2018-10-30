@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -55,6 +55,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	/**
 	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
@@ -71,13 +72,15 @@ public class AddToVersionControlDialog extends DetailsDialog {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
      */
-    protected String getHelpContextId() {
+    @Override
+	protected String getHelpContextId() {
         return IHelpContextIds.ADD_TO_VERSION_CONTROL_DIALOG;
     }
 
 	/**
 	 * @see org.eclipse.team.internal.ui.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		// create a composite with standard margins and spacing
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -108,6 +111,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 
 		// set the contents of the list
 		listViewer.setLabelProvider(new WorkbenchLabelProvider() {
+			@Override
 			protected String decorateText(String input, Object element) {
 				if (element instanceof IResource)
 					return ((IResource)element).getFullPath().toString();
@@ -122,11 +126,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		} else {
 			listViewer.setCheckedElements(resourcesToAdd);
 		}
-		listViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				resourcesToAdd = listViewer.getCheckedElements();
-			}
-		});
+		listViewer.addSelectionChangedListener(event -> resourcesToAdd = listViewer.getCheckedElements());
 		
 		addSelectionButtons(composite);
 	}
@@ -148,6 +148,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	
 		Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID, CVSUIMessages.ReleaseCommentDialog_selectAll, false); 
 		SelectionListener listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				listViewer.setAllChecked(true);
 				resourcesToAdd = null;
@@ -157,6 +158,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	
 		Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID, CVSUIMessages.ReleaseCommentDialog_deselectAll, false); 
 		listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				listViewer.setAllChecked(false);
 				resourcesToAdd = new Object[0];
@@ -169,6 +171,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	/**
 	 * @see org.eclipse.team.internal.ui.DetailsDialog#updateEnablements()
 	 */
+	@Override
 	protected void updateEnablements() {
 	}
 	
@@ -188,6 +191,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
 		createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
@@ -197,12 +201,14 @@ public class AddToVersionControlDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.DetailsDialog#includeOkButton()
 	 */
+	@Override
 	protected boolean includeOkButton() {
 		return false;
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
 	 */
+	@Override
 	protected void buttonPressed(int id) {
 		// hijack yes and no buttons to set the correct return
 		// codes.

@@ -316,12 +316,9 @@ public class HistoryTableProvider {
 		sorter.setReversed(true);
 		viewer.setComparator(sorter);
 		
-		table.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if(currentRevisionFont != null) {
-					currentRevisionFont.dispose();
-				}
+		table.addDisposeListener(e -> {
+			if (currentRevisionFont != null) {
+				currentRevisionFont.dispose();
 			}
 		});
 		
@@ -357,12 +354,9 @@ public class HistoryTableProvider {
 		sorter.setReversed(true);
 		viewer.setComparator(sorter);
 		
-		table.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if(currentRevisionFont != null) {
-					currentRevisionFont.dispose();
-				}
+		table.addDisposeListener(e -> {
+			if (currentRevisionFont != null) {
+				currentRevisionFont.dispose();
 			}
 		});
 		

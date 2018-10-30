@@ -32,8 +32,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.*;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.*;
@@ -118,46 +116,50 @@ public class CommitCommentArea extends DialogArea {
             
             final SubMenuManager quickFixMenu = new SubMenuManager(contextMenu);
             quickFixMenu.setVisible(true);
-            quickFixMenu.addMenuListener(new IMenuListener() {
-			
-				@Override
-				public void menuAboutToShow(IMenuManager manager) {
-					quickFixMenu.removeAll();
-					
-            		IAnnotationModel annotationModel = sourceViewer.getAnnotationModel();
-            		Iterator annotationIterator = annotationModel.getAnnotationIterator();
-            		while (annotationIterator.hasNext()) {
-            			Annotation annotation = (Annotation) annotationIterator.next();
-            			if (!annotation.isMarkedDeleted() && includes(annotationModel.getPosition(annotation), sourceViewer.getTextWidget().getCaretOffset()) && sourceViewer.getQuickAssistAssistant().canFix(annotation)) {
-            				ICompletionProposal[] computeQuickAssistProposals = sourceViewer.getQuickAssistAssistant().getQuickAssistProcessor().computeQuickAssistProposals(sourceViewer.getQuickAssistInvocationContext());
-            				for (int i = 0; i < computeQuickAssistProposals.length; i++) {
-            					final ICompletionProposal proposal = computeQuickAssistProposals[i];
-            					quickFixMenu.add(new Action(proposal.getDisplayString()) {
-            						
-            						/* (non-Javadoc)
-            						 * @see org.eclipse.jface.action.Action#run()
-            						 */
-            						@Override
-									public void run() {
-            							proposal.apply(sourceViewer.getDocument());
-            						}
-            						
-            						/* (non-Javadoc)
-            						 * @see org.eclipse.jface.action.Action#getImageDescriptor()
-            						 */
-            						@Override
-									public ImageDescriptor getImageDescriptor() {
-            							if (proposal.getImage() != null) {
-            								return ImageDescriptor.createFromImage(proposal.getImage());
-            							}
-            							return null;
-            						}
-            					});
-            				}
-            			}
-            		}
+			quickFixMenu.addMenuListener(manager -> {
+				quickFixMenu.removeAll();
+
+				IAnnotationModel annotationModel1 = sourceViewer.getAnnotationModel();
+				Iterator annotationIterator = annotationModel1.getAnnotationIterator();
+				while (annotationIterator.hasNext()) {
+					Annotation annotation = (Annotation) annotationIterator.next();
+					if (!annotation.isMarkedDeleted()
+							&& includes(annotationModel1.getPosition(annotation),
+									sourceViewer.getTextWidget().getCaretOffset())
+							&& sourceViewer.getQuickAssistAssistant().canFix(annotation)) {
+						ICompletionProposal[] computeQuickAssistProposals = sourceViewer.getQuickAssistAssistant()
+								.getQuickAssistProcessor()
+								.computeQuickAssistProposals(sourceViewer.getQuickAssistInvocationContext());
+						for (int i = 0; i < computeQuickAssistProposals.length; i++) {
+							final ICompletionProposal proposal = computeQuickAssistProposals[i];
+							quickFixMenu.add(new Action(proposal.getDisplayString()) {
+
+								/*
+								 * (non-Javadoc)
+								 * 
+								 * @see org.eclipse.jface.action.Action#run()
+								 */
+								@Override
+								public void run() {
+									proposal.apply(sourceViewer.getDocument());
+								}
+
+								/*
+								 * (non-Javadoc)
+								 * 
+								 * @see org.eclipse.jface.action.Action#getImageDescriptor()
+								 */
+								@Override
+								public ImageDescriptor getImageDescriptor() {
+									if (proposal.getImage() != null) {
+										return ImageDescriptor.createFromImage(proposal.getImage());
+									}
+									return null;
+								}
+							});
+						}
+					}
 				}
-			
 			});
             
             fTextField.addFocusListener(new FocusListener() {
@@ -206,24 +208,14 @@ public class CommitCommentArea extends DialogArea {
 			
 			});
             
-            sourceViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            	
-            	@Override
-				public void selectionChanged(SelectionChangedEvent event) {
-            		cutAction.update();
-            		copyAction.update();
-            	}
-            	
-            });
+			sourceViewer.addSelectionChangedListener(event -> {
+				cutAction.update();
+				copyAction.update();
+			});
             
-            sourceViewer.getTextWidget().addDisposeListener(new DisposeListener() {
-			
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					support.uninstall();
-					handlerService.deactivateHandler(handlerActivation);
-				}
-			
+			sourceViewer.getTextWidget().addDisposeListener(e1 -> {
+				support.uninstall();
+				handlerService.deactivateHandler(handlerActivation);
 			});
             
             fDocument = new Document(initialText);

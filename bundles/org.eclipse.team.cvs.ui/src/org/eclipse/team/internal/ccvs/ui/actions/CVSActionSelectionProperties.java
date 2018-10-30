@@ -13,15 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.actions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -120,15 +112,15 @@ public class CVSActionSelectionProperties {
             return resources;
         }
         // Sort the resources so the shortest paths are first
-        List sorted = new ArrayList();
+		List<IResource> sorted = new ArrayList<>();
         sorted.addAll(Arrays.asList(resources));
-        Collections.sort(sorted, new Comparator() {
-            public int compare(Object arg0, Object arg1) {
-                IResource resource0 = (IResource) arg0;
-                IResource resource1 = (IResource) arg1;
+		Collections.sort(sorted, new Comparator<IResource>() {
+            @Override
+			public int compare(IResource resource0, IResource resource1) {
                 return resource0.getFullPath().segmentCount() - resource1.getFullPath().segmentCount();
             }
-            public boolean equals(Object arg0) {
+            @Override
+			public boolean equals(Object arg0) {
                 return false;
             }
         });
@@ -154,7 +146,7 @@ public class CVSActionSelectionProperties {
                 }
             }
         }
-        return (IResource[]) sorted.toArray(new IResource[sorted.size()]);
+        return sorted.toArray(new IResource[sorted.size()]);
     }
     
 }

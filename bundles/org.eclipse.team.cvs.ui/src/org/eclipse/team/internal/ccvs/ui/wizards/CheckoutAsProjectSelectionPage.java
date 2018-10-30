@@ -85,6 +85,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite composite= createComposite(parent, 2, false);
 		setControl(composite);
@@ -94,22 +95,16 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		if (isSingleFolder()) {
 			createLabel(composite, CVSUIMessages.CheckoutAsProjectSelectionPage_name); 
 			nameField = createTextField(composite);
-			nameField.addListener(SWT.Modify, new Listener() {
-				public void handleEvent(Event event) {
-					folderName = nameField.getText();
-					updateWidgetEnablements();
-				}
+			nameField.addListener(SWT.Modify, event -> {
+				folderName = nameField.getText();
+				updateWidgetEnablements();
 			});
 		}
 		
 		createWrappingLabel(composite, CVSUIMessages.CheckoutAsProjectSelectionPage_treeLabel, 0, 2); 
 		
 		tree = createResourceSelectionTree(composite, IResource.PROJECT | IResource.FOLDER, 2 /* horizontal span */);
-		tree.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				handleResourceSelection(event);
-			}
-		});
+		tree.addSelectionChangedListener(event -> handleResourceSelection(event));
 
 		Composite filterComposite = createComposite(composite, 2, false);
 		GridData data = new GridData();
@@ -120,6 +115,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		createLabel(filterComposite, CVSUIMessages.CheckoutAsProjectSelectionPage_showLabel); 
 		filterList = createCombo(filterComposite);
 		filterList.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleFilterSelection();
 			}

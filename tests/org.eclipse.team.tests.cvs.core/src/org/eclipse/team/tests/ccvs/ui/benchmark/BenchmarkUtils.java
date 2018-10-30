@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -537,18 +536,14 @@ public class BenchmarkUtils {
 	 * folders each time we repeat the test.
 	 */
 	public static IResource[] filterResources(IResource[] resources) throws CoreException {
-		List list = new ArrayList(resources.length);
+		List<IResource> list = new ArrayList<>(resources.length);
 		for (int i = 0; i < resources.length; ++i) {
 			if (isValidResource(resources[i])) list.add(resources[i]);
 		}
 		if (list.size() != resources.length) {
-			resources = (IResource[]) list.toArray(new IResource[list.size()]);
+			resources = list.toArray(new IResource[list.size()]);
 		}
-		Arrays.sort(resources, new Comparator() {
-			public int compare(Object a, Object b) {
-				return ((IResource) a).getName().compareTo(((IResource) b).getName());
-			}
-		});
+		Arrays.sort(resources, (a, b) -> a.getName().compareTo(b.getName()));
 		return resources;
 	}
 	

@@ -53,8 +53,6 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -65,10 +63,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -342,9 +338,7 @@ protected Control createContents(Composite parent){
     gd.horizontalSpan=2;
     keyCommentText.setLayoutData(gd);
 
-    keyCommentText.addModifyListener(new ModifyListener(){
-      @Override
-	public void modifyText(ModifyEvent e){
+		keyCommentText.addModifyListener(e -> {
         if(kpair==null)
           return;
         try{
@@ -357,8 +351,7 @@ protected Control createContents(Composite parent){
         catch(IOException ee){
           // Ignore
         }
-      }
-    });
+		});
 
     keyPassphrase1Label=new Label(group, SWT.NONE);
     keyPassphrase1Label.setText(Messages.CVSSSH2PreferencePage_43);
@@ -378,9 +371,7 @@ protected Control createContents(Composite parent){
     gd.horizontalSpan=2;
     keyPassphrase2Text.setLayoutData(gd);
 
-    keyPassphrase1Text.addModifyListener(new ModifyListener(){
-      @Override
-	public void modifyText(ModifyEvent e){
+		keyPassphrase1Text.addModifyListener(e -> {
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(kpair!=null&&pass1.equals(pass2)){
@@ -399,12 +390,9 @@ protected Control createContents(Composite parent){
         else{
           setErrorMessage(Messages.CVSSSH2PreferencePage_48);
         }
-      }
-    });
+		});
 
-    keyPassphrase2Text.addModifyListener(new ModifyListener(){
-      @Override
-	public void modifyText(ModifyEvent e){
+		keyPassphrase2Text.addModifyListener(e -> {
         String pass1=keyPassphrase1Text.getText();
         String pass2=keyPassphrase2Text.getText();
         if(kpair!=null&&pass1.equals(pass2)){
@@ -428,8 +416,7 @@ protected Control createContents(Composite parent){
         else{
           setErrorMessage(Messages.CVSSSH2PreferencePage_48);
         }
-      }
-    });
+		});
 
     keyPassphrase2Text.addFocusListener(new FocusListener(){
       @Override
@@ -897,12 +884,7 @@ protected Control createContents(Composite parent){
      */
     gd.heightHint=100;
     table.setLayoutData(gd);
-    table.addListener(SWT.Selection, new Listener(){
-      @Override
-	public void handleEvent(Event e){
-        handleSelection();
-      }
-    });
+		table.addListener(SWT.Selection, e -> handleSelection());
     // Create the table columns
     new TableColumn(table, SWT.NULL);
     new TableColumn(table, SWT.NULL);
@@ -955,12 +937,7 @@ protected Control createContents(Composite parent){
     removeHostKeyButton.setLayoutData(SWTUtils.createGridData(buttonWidth,
         SWT.DEFAULT, SWT.END, SWT.CENTER, false, false));
     removeHostKeyButton.setEnabled(false);
-    removeHostKeyButton.addListener(SWT.Selection, new Listener(){
-      @Override
-	public void handleEvent(Event e){
-        removeHostKey();
-      }
-    });
+		removeHostKeyButton.addListener(SWT.Selection, e -> removeHostKey());
 
     Dialog.applyDialogFont(parent);
 

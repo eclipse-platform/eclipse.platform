@@ -18,8 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -51,6 +49,7 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		this.detailsMessage = detailsMessage;
 	}
 
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		Composite composite = SWTUtils.createHVFillComposite(parent, SWTUtils.MARGINS_NONE);
 		composite.setLayout(new GridLayout());
@@ -59,6 +58,7 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		Dialog.applyDialogFont(parent);
 	}
 
+	@Override
 	protected Label createWrappingLabel(Composite parent, String text) {
 		Label label = new Label(parent, SWT.LEFT | SWT.WRAP);
 		label.setText(text);
@@ -73,19 +73,18 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		return label;
 	}
 	
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		Composite composite = SWTUtils.createHVFillComposite(parent, SWTUtils.MARGINS_DIALOG);
 		GridData data = new GridData(GridData.FILL_BOTH);
 		data.heightHint = 200;
 		data.widthHint = 200;
 		composite.setLayoutData(data);
-		composite.addDisposeListener(new DisposeListener() {
-			public void widgetDisposed(DisposeEvent e) {
-				if (pane != null)
-					pane.dispose();
-				if (participant != null)
-					participant.dispose();
-			}
+		composite.addDisposeListener(e -> {
+			if (pane != null)
+				pane.dispose();
+			if (participant != null)
+				participant.dispose();
 		});
 		
 		createWrappingLabel(composite, detailsMessage);
@@ -125,6 +124,7 @@ public class OutgoingChangesDialog extends DetailsDialog {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
 	 */
+	@Override
 	protected boolean isMainGrabVertical() {
 		return false;
 	}
@@ -132,7 +132,8 @@ public class OutgoingChangesDialog extends DetailsDialog {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
      */
-    protected void updateEnablements() {
+    @Override
+	protected void updateEnablements() {
         // Can always finish
         setPageComplete(true);
     }
@@ -140,7 +141,8 @@ public class OutgoingChangesDialog extends DetailsDialog {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeErrorMessage()
      */
-    protected boolean includeErrorMessage() {
+    @Override
+	protected boolean includeErrorMessage() {
         return false;
     }
 
@@ -148,6 +150,7 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		this.helpContextId = helpContextId;	
 	}
 	
+	@Override
 	protected String getHelpContextId() {
 		return helpContextId;
 	}

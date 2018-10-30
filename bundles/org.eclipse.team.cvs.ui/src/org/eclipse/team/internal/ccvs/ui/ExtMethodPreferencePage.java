@@ -43,10 +43,12 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	/*
 	 * @see PreferencePage#createContents(Composite)
 	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		
 		SelectionAdapter selectionListener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				updateEnablements();
 			}
@@ -170,15 +172,13 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, b.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		b.setLayoutData(data);
-		b.addListener(SWT.MouseDown, new Listener() {
-			public void handleEvent (Event event) {
-				FileDialog d = new FileDialog(getShell());
-				d.setText(CVSUIMessages.ExtMethodPreferencePage_Details); 
-				String file = d.open();
-				if(file!=null) {
-					setCvsRshText(file);
-				}
-			}			
+		b.addListener(SWT.MouseDown, event -> {
+			FileDialog d = new FileDialog(getShell());
+			d.setText(CVSUIMessages.ExtMethodPreferencePage_Details);
+			String file = d.open();
+			if (file != null) {
+				setCvsRshText(file);
+			}
 		});
 		
 		new Label(composite, SWT.LEFT).setText(CVSUIMessages.ExtMethodPreferencePage_CVS_RSH_Parameters); 
@@ -220,12 +220,14 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	/*
 	 * @see IWorkbenchPreferencePage#init(IWorkbench)
 	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 	
 	/*
 	 * @see IPreferencePage#performOk()
 	 */
+	@Override
 	public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 		String method;
@@ -249,7 +251,8 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	/* 
      * @see PreferencePage#performDefaults()
      */
-    protected void performDefaults() {
+    @Override
+	protected void performDefaults() {
         IPreferenceStore store = getPreferenceStore();
 		String rsh = store.getDefaultString(ICVSUIConstants.PREF_CVS_RSH);
 		String parameter = store.getDefaultString(ICVSUIConstants.PREF_CVS_RSH_PARAMETERS);
@@ -283,6 +286,7 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	/*
 	 * @see PreferencePage#doGetPreferenceStore()
 	 */
+	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore();
 	}

@@ -443,11 +443,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				}
 			}
 			IConnectionMethod[] methods = connectionMethods.toArray(new IConnectionMethod[0]);
-			Arrays.sort(methods, new Comparator<IConnectionMethod> () {
-				@Override
-				public int compare(IConnectionMethod cm1, IConnectionMethod cm2) {
-					return cm1.getName().compareTo(cm2.getName());
-				}});
+			Arrays.sort(methods, (cm1, cm2) -> cm1.getName().compareTo(cm2.getName()));
 			pluggedInConnectionMethods = methods;
 		}
 		return pluggedInConnectionMethods;
