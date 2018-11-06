@@ -77,11 +77,11 @@ public class ResourceDeltaTest extends EclipseTest {
 		});
 	}
 	
-	public void assertAdditionMarkerFor(IResource resource, boolean exists) throws CoreException {
+	public void assertAdditionMarkerFor(IResource resource, boolean exists) {
 		// Addition markers are no longer used
 	}
 	
-	public void assertDeletionMarkerFor(IResource resource, boolean exists) throws CoreException {
+	public void assertDeletionMarkerFor(IResource resource, boolean exists) {
 	}
 	
 	public void testOrphanedSubtree() throws TeamException, CoreException {

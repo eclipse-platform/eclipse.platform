@@ -169,7 +169,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	protected void addResources(IResource[] resources) throws TeamException, CVSException, CoreException {
 		// first, get affected children
 		IResource[] affectedChildren = collect(resources, new ResourceCondition() {
-			public boolean matches(IResource resource) throws CoreException, TeamException {
+			public boolean matches(IResource resource) throws TeamException {
 				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 				return (!cvsResource.isManaged() && !cvsResource.isIgnored());
 			}

@@ -470,7 +470,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 						SyncInfo.OUTGOING | SyncInfo.DELETION});
 	}
 	
-	public void testDisconnectingProject() throws CoreException, IOException, TeamException, InterruptedException {
+	public void testDisconnectingProject() throws CoreException, IOException, TeamException {
 		// Create a test project (which commits it as well)
 		//		Create a test project
 		IProject project = createProject("testDisconnect", new String[] { "file1.txt", "file2.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
@@ -595,7 +595,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 				});
 	}
 	
-	public void testFileAddedToBranch() throws InvocationTargetException, InterruptedException, CoreException, IOException {
+	public void testFileAddedToBranch() throws InvocationTargetException, InterruptedException, CoreException {
 		// Create a project
 		IProject project = createProject(new String[] { "delete.txt", "file1.txt", "file2.txt", "folder1/", "folder1/a.txt", "folder1/b.txt"});
 		
@@ -712,7 +712,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
     	}
     }
     
-	public void testMergeNewFileToBranch() throws InvocationTargetException, InterruptedException, CoreException, IOException {
+	public void testMergeNewFileToBranch() throws InvocationTargetException, InterruptedException, CoreException {
 		// Create a project
 		IProject project = createProject(new String[] {"file1.txt"});
 		

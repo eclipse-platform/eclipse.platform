@@ -65,7 +65,7 @@ public class BenchmarkUtils {
 	 * @param name the project name
 	 * @return the project handle
 	 */
-	public static IProject getProject(String name) throws CoreException {
+	public static IProject getProject(String name) {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}
 	
@@ -258,8 +258,7 @@ public class BenchmarkUtils {
 	 * @param extension the file extension not including the period, null if none
 	 * @return the new name
 	 */
-	public static String makeUniqueName(SequenceGenerator gen, String prefix, String extension)
-		throws CoreException {
+	public static String makeUniqueName(SequenceGenerator gen, String prefix, String extension) {
 		StringBuffer name = new StringBuffer(prefix);
 		name.append('-');
 		if (gen == null) {
@@ -495,7 +494,7 @@ public class BenchmarkUtils {
 	/**
 	 * Returns true iff file is a valid IFile (that should not be ignored).
 	 */
-	public static boolean isValidFile(IResource file) throws CoreException {
+	public static boolean isValidFile(IResource file) {
 		String name = file.getName();
 		return file instanceof IFile
 			&& ! file.isPhantom()
@@ -507,7 +506,7 @@ public class BenchmarkUtils {
 	/**
 	 * Returns true iff folder is a valid IFolder (that should not be ignored).
 	 */
-	public static boolean isValidFolder(IResource folder) throws CoreException {
+	public static boolean isValidFolder(IResource folder) {
 		String name = folder.getName();
 		return folder instanceof IFolder
 			&& ! folder.isPhantom()
@@ -518,14 +517,14 @@ public class BenchmarkUtils {
 	/**
 	 * Returns true iff container is a valid IFolder or IProject (that should not be ignored).
 	 */
-	public static boolean isValidContainer(IResource container) throws CoreException {
+	public static boolean isValidContainer(IResource container) {
 		return container instanceof IProject || isValidFolder(container);
 	}
 	
 	/**
 	 * Returns true iff resource is a valid IFile, IFolder or IProject (that should not be ignored).
 	 */
-	public static boolean isValidResource(IResource resource) throws CoreException {
+	public static boolean isValidResource(IResource resource) {
 		return isValidFile(resource) || isValidContainer(resource);
 	}
 
@@ -535,7 +534,7 @@ public class BenchmarkUtils {
 	 * pseudo-random numbers, we will always pick the same sequence of files and
 	 * folders each time we repeat the test.
 	 */
-	public static IResource[] filterResources(IResource[] resources) throws CoreException {
+	public static IResource[] filterResources(IResource[] resources) {
 		List<IResource> list = new ArrayList<>(resources.length);
 		for (int i = 0; i < resources.length; ++i) {
 			if (isValidResource(resources[i])) list.add(resources[i]);

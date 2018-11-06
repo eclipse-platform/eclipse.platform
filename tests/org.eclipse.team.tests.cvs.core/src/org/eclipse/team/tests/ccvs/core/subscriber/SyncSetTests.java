@@ -52,7 +52,7 @@ public class SyncSetTests extends CVSSyncSubscriberTest {
 		protected int calculateKind() throws TeamException {
 				return 0;
 		}
-		public TestSyncInfo() throws TeamException {
+		public TestSyncInfo() {
 			super(ResourcesPlugin.getWorkspace().getRoot(), null, null, new IResourceVariantComparator() {
 				public boolean compare(IResource local, IResourceVariant remote) {
 					return false;

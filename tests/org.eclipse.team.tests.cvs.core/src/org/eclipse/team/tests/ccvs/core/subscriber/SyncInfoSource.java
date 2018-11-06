@@ -106,7 +106,7 @@ public class SyncInfoSource {
         subscriber.refresh(resources, IResource.DEPTH_INFINITE, DEFAULT_MONITOR);
     }
     
-	protected void assertProjectRemoved(Subscriber subscriber, IProject project) throws TeamException {
+	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {
 		IResource[] roots = subscriber.roots();
 		for (int i = 0; i < roots.length; i++) {
 			IResource resource = roots[i];
@@ -221,7 +221,7 @@ public class SyncInfoSource {
 		mergeResources(subscriber, infos, allowOverwrite);
 	}
 	
-	private void mergeResources(Subscriber subscriber, SyncInfo[] infos, boolean allowOverwrite) throws TeamException, InvocationTargetException, InterruptedException {
+	private void mergeResources(Subscriber subscriber, SyncInfo[] infos, boolean allowOverwrite) throws InvocationTargetException, InterruptedException {
 		TestMergeUpdateOperation action = new TestMergeUpdateOperation(getElements(infos), allowOverwrite);
 		action.run(DEFAULT_MONITOR);
 	}

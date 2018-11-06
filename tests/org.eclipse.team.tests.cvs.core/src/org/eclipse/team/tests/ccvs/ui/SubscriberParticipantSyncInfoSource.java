@@ -164,7 +164,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#assertProjectRemoved(org.eclipse.team.core.subscribers.TeamSubscriber, org.eclipse.core.resources.IProject)
 	 */
-	protected void assertProjectRemoved(Subscriber subscriber, IProject project) throws TeamException {		
+	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {		
 		super.assertProjectRemoved(subscriber, project);
 		SyncInfoTree set = getCollector(subscriber).getSyncInfoSet();
 		if (set.hasMembers(project)) {

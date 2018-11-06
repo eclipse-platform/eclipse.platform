@@ -77,7 +77,7 @@ public class CVSProviderTest extends EclipseTest {
 		return suite(CVSProviderTest.class);
 	}
 	
-	public void testAdd() throws TeamException, CoreException {
+	public void testAdd() {
 		
 		// Test add with cvsignores
 		/*
@@ -310,7 +310,7 @@ public class CVSProviderTest extends EclipseTest {
 		assertEquals(project, copy);
 	}
 	
-	public void testReadOnly() throws TeamException, CoreException, IOException {
+	public void testReadOnly() {
 		// IProject project = createProject("testReadOnly", new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		// Need to check the project out as read-only
 	}
@@ -365,13 +365,13 @@ public class CVSProviderTest extends EclipseTest {
 		assertEqualsFileContents(file, "The \r\n quick brown \r\n fox \r\r\r\n jumped \r\n\r\n over \r\n the \r\n lazy dog.\r\n");
 	}
 	
-	public void testKeywordSubstitution() throws TeamException, CoreException, IOException {
+	public void testKeywordSubstitution() throws TeamException, CoreException {
 		testKeywordSubstitution(Command.KSUBST_BINARY); // -kb
 		testKeywordSubstitution(Command.KSUBST_TEXT); // -ko
 		testKeywordSubstitution(Command.KSUBST_TEXT_EXPAND); // -kkv
 	}
 
-	private void testKeywordSubstitution(KSubstOption ksubst) throws TeamException, CoreException, IOException {
+	private void testKeywordSubstitution(KSubstOption ksubst) throws TeamException, CoreException {
 		// setup some known file types
 		Team.setAllTypes( new String[] {"xbin", "xtxt"}, new int[] {Team.BINARY, Team.TEXT});
 		

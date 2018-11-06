@@ -67,7 +67,7 @@ public class CheckoutOperationTests extends CVSOperationTest {
 		assertEquals(project, movedProject);
 	}
 	
-	public void testNonRootCheckout() throws CoreException, TeamException, IOException {
+	public void testNonRootCheckout() throws CoreException, TeamException {
 		IProject project = createProject("testNonRootCheckout", new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		
 		// checkout the non-root folder as a project to the default location		

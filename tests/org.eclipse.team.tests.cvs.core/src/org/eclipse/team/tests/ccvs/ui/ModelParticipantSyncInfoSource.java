@@ -338,7 +338,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		}
 	}
 	
-	protected void assertProjectRemoved(Subscriber subscriber, IProject project) throws TeamException {
+	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {
 		super.assertProjectRemoved(subscriber, project);
 		waitForCollectionToFinish(subscriber);
 		ModelSynchronizeParticipant participant = getParticipant(subscriber);

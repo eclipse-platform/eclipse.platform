@@ -81,7 +81,7 @@ public class WatchEditTest extends EclipseTest {
 		assertEquals(project, copy);
 	}
 	
-	public void testCommit() throws CoreException, TeamException, IOException {
+	public void testCommit() throws CoreException, TeamException {
 		// Create a project
 		IProject project = createProject("testCommit", new String[] { "changed.txt", "deleted.txt", "folder1/", "folder1/a.txt" });
 		// XXX project will not be read-only at this point because "cvs add" followed by a "cvs commit" doesn't set the resource "read-only"

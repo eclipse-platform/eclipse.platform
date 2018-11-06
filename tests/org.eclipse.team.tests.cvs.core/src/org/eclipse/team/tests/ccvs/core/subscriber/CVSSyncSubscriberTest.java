@@ -117,7 +117,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 	/* 
 	 * Assert that the named resources have no local resource or sync info
 	 */
-	protected void assertDeleted(String message, IContainer root, String[] resourcePaths) throws CoreException, TeamException {
+	protected void assertDeleted(String message, IContainer root, String[] resourcePaths) {
 		IResource[] resources = getResources(root, resourcePaths);
 		for (int i=0;i<resources.length;i++) {
 			try {
@@ -178,12 +178,12 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 		return (IResource[]) affected.toArray(new IResource[affected.size()]);
 	}
 	
-	protected ISubscriberChangeEvent[] deregisterSubscriberListener(Subscriber subscriber) throws TeamException {
+	protected ISubscriberChangeEvent[] deregisterSubscriberListener(Subscriber subscriber) {
 		subscriber.removeListener(listener);
 		return (ISubscriberChangeEvent[]) accumulatedTeamDeltas.toArray(new SubscriberChangeEvent[accumulatedTeamDeltas.size()]);
 	}
 
-	protected ISubscriberChangeListener registerSubscriberListener(Subscriber subscriber) throws TeamException {
+	protected ISubscriberChangeListener registerSubscriberListener(Subscriber subscriber) {
 		listener = new ISubscriberChangeListener() {
 			public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 				accumulatedTeamDeltas.addAll(Arrays.asList(deltas));
@@ -194,7 +194,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 		return listener;
 	}
 
-	protected void assertProjectRemoved(Subscriber subscriber, IProject project) throws TeamException {
+	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {
 		getSyncInfoSource().assertProjectRemoved(subscriber, project);
 	}
 	
