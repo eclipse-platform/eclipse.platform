@@ -348,8 +348,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private boolean fSubDoc= true;
 	private IPositionUpdater fPositionUpdater;
-	private boolean fIsMotif;
-	private boolean fIsCarbon;
 	private boolean fIsMac;
 
 	private boolean fHasErrors;
@@ -1542,12 +1540,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		fSymbolicFontName= getSymbolicFontName();
 
-		fIsMotif= Util.isMotif();
-		fIsCarbon= Util.isCarbon();
 		fIsMac= Util.isMac();
-
-		if (fIsMotif)
-			fMarginWidth= 0;
 
 		fPreferenceChangeListener= event -> TextMergeViewer.this.handlePropertyChangeEvent(event);
 
@@ -2252,7 +2245,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (Math.min(ly, ry) >= visibleHeight)
 					break;
 
-				int SIZE= fIsCarbon ? 30 : 20;
+				int SIZE = 20;
 				int cx= (w-SIZE)/2;
 				int cy= ((ly+lh/2) + (ry+rh/2) - SIZE)/2;
 				if (my >= cy && my < cy+SIZE && mx >= cx && mx < cx+SIZE) {
@@ -4195,12 +4188,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		g.setBackground(canvas.getBackground());
 		g.fillRectangle(x+1, 0, w-2, size.y);
 
-		if (!fIsMotif) {
-			// draw thin line between center ruler and both texts
-			g.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-			g.fillRectangle(0, 0, 1, size.y);
-			g.fillRectangle(w-1, 0, 1, size.y);
-		}
+		// draw thin line between center ruler and both texts
+		g.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+		g.fillRectangle(0, 0, 1, size.y);
+		g.fillRectangle(w - 1, 0, 1, size.y);
 
 		if (! fHighlightRanges)
 			return;
@@ -4339,14 +4330,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		g.setBackground(canvas.getBackground());
 		g.fillRectangle(x, 0, w, size.y);
 
-		if (!fIsMotif) {
-			// draw thin line between ruler and text
-			g.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
-			if (right)
-				g.fillRectangle(0, 0, 1, size.y);
-			else
-				g.fillRectangle(size.x-1, 0, 1, size.y);
-		}
+		// draw thin line between ruler and text
+		g.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+		if (right)
+			g.fillRectangle(0, 0, 1, size.y);
+		else
+			g.fillRectangle(size.x - 1, 0, 1, size.y);
 
 		if (! fHighlightRanges)
 			return;
@@ -4406,8 +4395,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		int shift= tp.getVerticalScrollOffset() + (2-LW);
 		int maxh= event.y+event.height; 	// visibleHeight
 
-		//if (fIsMotif)
-			shift+= fTopInset;
+		shift += fTopInset;
 
 		Point range= new Point(0, 0);
 
