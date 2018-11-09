@@ -13,20 +13,22 @@
  *******************************************************************************/
 package org.eclipse.team.examples.model.ui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
 import org.eclipse.ui.Saveable;
 import org.eclipse.ui.navigator.SaveablesProvider;
 
 /**
- * Provider used by the Common Navigator framework to link saveables to 
+ * Provider used by the Common Navigator framework to link saveables to
  * model elements.
  */
 public class ModelSaveablesProvider extends SaveablesProvider {
 
-	private List saveables = new ArrayList();
+	private List<Saveable> saveables = new ArrayList<>();
 
+	@Override
 	public Object[] getElements(Saveable saveable) {
 		if (saveable instanceof ModelSaveable) {
 			ModelSaveable ms = (ModelSaveable) saveable;
@@ -35,17 +37,19 @@ public class ModelSaveablesProvider extends SaveablesProvider {
 		return new Object[0];
 	}
 
+	@Override
 	public Saveable getSaveable(Object element) {
-		for (Iterator iterator = saveables.iterator(); iterator.hasNext();) {
-			ModelSaveable saveable = (ModelSaveable) iterator.next();
+		for (Object element2 : saveables) {
+			ModelSaveable saveable = (ModelSaveable) element2;
 			if (saveable.getModelObject().equals(element))
 				return saveable;
 		}
 		return null;
 	}
 
+	@Override
 	public Saveable[] getSaveables() {
-		return (Saveable[]) saveables.toArray(new Saveable[saveables.size()]);
+		return saveables.toArray(new Saveable[saveables.size()]);
 	}
 
 	public void makeDirty(ModelObjectDefinitionFile mo) {

@@ -13,65 +13,97 @@
  *******************************************************************************/
 package org.eclipse.team.examples.model.ui.mapping;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.team.core.diff.*;
+import org.eclipse.team.core.diff.FastDiffFilter;
+import org.eclipse.team.core.diff.IDiff;
+import org.eclipse.team.core.diff.IDiffChangeEvent;
+import org.eclipse.team.core.diff.IDiffTree;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
-import org.eclipse.team.examples.model.*;
+import org.eclipse.team.examples.model.ModelContainer;
+import org.eclipse.team.examples.model.ModelObject;
+import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
+import org.eclipse.team.examples.model.ModelObjectElementFile;
+import org.eclipse.team.examples.model.ModelProject;
+import org.eclipse.team.examples.model.ModelWorkspace;
 import org.eclipse.team.examples.model.mapping.ExampleModelProvider;
 import org.eclipse.team.examples.model.ui.ModelNavigatorContentProvider;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.mapping.SynchronizationResourceMappingContext;
 import org.eclipse.team.ui.mapping.SynchronizationContentProvider;
-import org.eclipse.ui.navigator.*;
+import org.eclipse.ui.navigator.ICommonContentExtensionSite;
+import org.eclipse.ui.navigator.IPipelinedTreeContentProvider;
+import org.eclipse.ui.navigator.PipelinedShapeModification;
+import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 
 /**
  * The content provider that is used for synchronizations.
- * It also makes use of the Common Navigator pipeline 
+ * It also makes use of the Common Navigator pipeline
  * to override the resource content extension so that model projects will
  * replace the corresponding resource project in the Synchronize view.
  */
 public class ModelSyncContentProvider extends SynchronizationContentProvider implements IPipelinedTreeContentProvider {
 
 	private ModelNavigatorContentProvider delegate;
-	
+
 	public ModelSyncContentProvider() {
 		super();
 	}
 
+	@Override
 	public void init(ICommonContentExtensionSite site) {
 		super.init(site);
 		delegate = new ModelNavigatorContentProvider(getContext() != null);
 		delegate.init(site);
 	}
-	
+
+	@Override
 	public void dispose() {
 		super.dispose();
 		if (delegate != null)
 			delegate.dispose();
 	}
-	
+
+	@Override
 	protected ITreeContentProvider getDelegateContentProvider() {
 		return delegate;
 	}
 
+	@Override
 	protected String getModelProviderId() {
 		return ExampleModelProvider.ID;
 	}
 
+	@Override
 	protected Object getModelRoot() {
 		return ModelWorkspace.getRoot();
 	}
 
+	@Override
 	protected ResourceTraversal[] getTraversals(
 			ISynchronizationContext context, Object object) {
 		if (object instanceof ModelObject) {
@@ -88,17 +120,17 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		}
 		return new ResourceTraversal[0];
 	}
-	
+
+	@Override
 	protected Object[] getChildrenInContext(ISynchronizationContext context, Object parent, Object[] children) {
-		Set allChildren = new HashSet();
+		Set<Object> allChildren = new HashSet<>();
 		allChildren.addAll(Arrays.asList(super.getChildrenInContext(context, parent, children)));
 		// We need to override this method in order to ensure that any elements
 		// that exist in the context but do not exist locally are included
 		if (parent instanceof ModelContainer) {
 			ModelContainer mc = (ModelContainer) parent;
 			IDiff[] diffs = context.getDiffTree().getDiffs(mc.getResource(), IResource.DEPTH_ONE);
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (!resource.exists() && ModelObjectDefinitionFile.isModFile(resource)) {
 					ModelObject o = ModelObject.create(resource);
@@ -110,8 +142,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		if (parent instanceof ModelObjectDefinitionFile) {
 			ResourceTraversal[] traversals = getTraversals(context, parent);
 			IDiff[] diffs = context.getDiffTree().getDiffs(traversals);
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (!resource.exists() && ModelObjectElementFile.isMoeFile(resource)) {
 					ModelObject o = new ModelObjectElementFile((ModelObjectDefinitionFile)parent, (IFile)resource);
@@ -123,15 +154,17 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return allChildren.toArray(new Object[allChildren.size()]);
 	}
 
+	@Override
 	public void getPipelinedChildren(Object aParent, Set theCurrentChildren) {
 		// Nothing to do
 	}
 
+	@Override
 	public void getPipelinedElements(Object anInput, Set theCurrentElements) {
 		// Replace any model projects with a ModelProject if the input
 		// is a synchronization context
 		if (anInput instanceof ISynchronizationContext) {
-			List newProjects = new ArrayList();
+			List<ModelObject> newProjects = new ArrayList<>();
 			for (Iterator iter = theCurrentElements.iterator(); iter.hasNext();) {
 				Object element = iter.next();
 				if (element instanceof IProject) {
@@ -155,11 +188,13 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		}
 	}
 
+	@Override
 	public Object getPipelinedParent(Object anObject, Object aSuggestedParent) {
 		// We're not changing the parenting of any resources
 		return aSuggestedParent;
 	}
 
+	@Override
 	public PipelinedShapeModification interceptAdd(PipelinedShapeModification anAddModification) {
 		if (anAddModification.getParent() instanceof ISynchronizationContext) {
 			for (Iterator iter = anAddModification.getChildren().iterator(); iter.hasNext();) {
@@ -179,21 +214,25 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		return null;
 	}
 
+	@Override
 	public boolean interceptRefresh(PipelinedViewerUpdate aRefreshSynchronization) {
 		// No need to intercept the refresh
 		return false;
 	}
 
+	@Override
 	public PipelinedShapeModification interceptRemove(PipelinedShapeModification aRemoveModification) {
 		// No need to intercept the remove
 		return aRemoveModification;
 	}
 
+	@Override
 	public boolean interceptUpdate(PipelinedViewerUpdate anUpdateSynchronization) {
 		// No need to intercept the update
 		return false;
 	}
-	
+
+	@Override
 	public void diffsChanged(final IDiffChangeEvent event, IProgressMonitor monitor) {
 		// Override in order to perform custom viewer updates when the diff tree changes
 		Utils.syncExec((Runnable) () -> handleChange(event), (StructuredViewer)getViewer());
@@ -202,11 +241,10 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 	void handleChange(IDiffChangeEvent event) {
 		Set existingProjects = getVisibleModelProjects();
 		IProject[] changedProjects = getChangedModelProjects(event);
-		List refreshes = new ArrayList(changedProjects.length);
-		List additions = new ArrayList(changedProjects.length);
-		List removals = new ArrayList(changedProjects.length);
-		for (int i = 0; i < changedProjects.length; i++) {
-			IProject project = changedProjects[i];
+		List<ModelObject> refreshes = new ArrayList<>(changedProjects.length);
+		List<ModelObject> additions = new ArrayList<>(changedProjects.length);
+		List<ModelObject> removals = new ArrayList<>(changedProjects.length);
+		for (IProject project : changedProjects) {
 			if (hasVisibleChanges(event.getTree(), project)) {
 				if (existingProjects.contains(project)) {
 					refreshes.add(ModelObject.create(project));
@@ -215,7 +253,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 				}
 			} else if (existingProjects.contains(project)) {
 				removals.add(ModelObject.create(project));
-				
+
 			}
 		}
 		if (!removals.isEmpty() || !additions.isEmpty() || !refreshes.isEmpty()) {
@@ -228,8 +266,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 				if (!removals.isEmpty())
 					viewer.remove(viewer.getInput(), removals.toArray());
 				if (!refreshes.isEmpty()) {
-					for (Iterator iter = refreshes.iterator(); iter.hasNext();) {
-						Object element = iter.next();
+					for (Object element : refreshes) {
 						viewer.refresh(element);
 					}
 				}
@@ -241,6 +278,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 
 	private boolean hasVisibleChanges(IDiffTree tree, IProject project) {
 		return tree.hasMatchingDiffs(project.getFullPath(), new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				return isVisible(diff);
 			}
@@ -251,33 +289,30 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 	 * Return the list of all projects that are model projects
 	 */
 	private IProject[] getChangedModelProjects(IDiffChangeEvent event) {
-		Set result = new HashSet();
+		Set<IProject> result = new HashSet<>();
 		IDiff[] changes = event.getChanges();
-		for (int i = 0; i < changes.length; i++) {
-			IDiff diff = changes[i];
+		for (IDiff diff : changes) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource != null && isModProject(resource.getProject())) {
 				result.add(resource.getProject());
 			}
 		}
 		IDiff[] additions = event.getAdditions();
-		for (int i = 0; i < additions.length; i++) {
-			IDiff diff = additions[i];
+		for (IDiff diff : additions) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource != null && isModProject(resource.getProject())) {
 				result.add(resource.getProject());
 			}
 		}
 		IPath[] removals = event.getRemovals();
-		for (int i = 0; i < removals.length; i++) {
-			IPath path = removals[i];
+		for (IPath path : removals) {
 			if (path.segmentCount() > 0) {
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.segment(0));
 				if (isModProject(project))
 					result.add(project);
 			}
 		}
-		return (IProject[]) result.toArray(new IProject[result.size()]);
+		return result.toArray(new IProject[result.size()]);
 	}
 
 	private boolean isModProject(IProject project) {
@@ -297,8 +332,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		Tree tree = viewer.getTree();
 		TreeItem[] children = tree.getItems();
 		Set result = new HashSet();
-		for (int i = 0; i < children.length; i++) {
-			TreeItem control = children[i];
+		for (TreeItem control : children) {
 			Object data = control.getData();
 			if (data instanceof ModelProject) {
 				result.add(((ModelProject) data).getProject());
@@ -306,16 +340,16 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 		}
 		return result;
 	}
-	
+
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// We're overriding this message so that label updates occur for any elements
 		// whose labels may have changed
 		if (getContext() == null)
 			return;
-		final Set updates = new HashSet();
+		final Set<ModelObject> updates = new HashSet<>();
 		boolean refresh = false;
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			IDiff diff = tree.getDiff(path);
 			if (diff != null) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
@@ -336,7 +370,7 @@ public class ModelSyncContentProvider extends SynchronizationContentProvider imp
 				if (refreshAll)
 					viewer.refresh(true);
 				else
-					viewer.update(updates.toArray(new Object[updates.size()]), null);
+					viewer.update(updates.toArray(new ModelObject[updates.size()]), null);
 			}, viewer);
 		}
 	}

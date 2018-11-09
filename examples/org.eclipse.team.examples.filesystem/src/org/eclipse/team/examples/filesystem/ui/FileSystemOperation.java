@@ -14,13 +14,16 @@
 package org.eclipse.team.examples.filesystem.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
 import org.eclipse.team.core.subscribers.SubscriberScopeManager;
@@ -41,7 +44,7 @@ public abstract class FileSystemOperation extends ModelOperation {
 	public static SubscriberScopeManager createScopeManager(String name, ResourceMapping[] inputMappings) {
 		return new SubscriberScopeManager(name, inputMappings, FileSystemSubscriber.getInstance(), true);
 	}
-	
+
 	/**
 	 * Create a file system operation.
 	 * @param part the part from which the operation was launched
@@ -51,19 +54,16 @@ public abstract class FileSystemOperation extends ModelOperation {
 		super(part, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ModelOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
-			Map providerToTraversals = getProviderToTraversalsMap();
+			Map<FileSystemProvider, CompoundResourceTraversal> providerToTraversals = getProviderToTraversalsMap();
 			monitor.beginTask(getTaskName(), providerToTraversals.size() * 100);
 			monitor.setTaskName(getTaskName());
-			for (Iterator iter = providerToTraversals.keySet().iterator(); iter.hasNext();) {
-				FileSystemProvider provider = (FileSystemProvider) iter.next();
+			for (FileSystemProvider provider : providerToTraversals.keySet()) {
 				ResourceTraversal[] traversals = getTraversals(providerToTraversals, provider);
-				execute(provider, 
-						traversals, 
+				execute(provider,
+						traversals,
 						SubMonitor.convert(monitor, 100));
 			}
 		} catch (CoreException e) {
@@ -77,25 +77,22 @@ public abstract class FileSystemOperation extends ModelOperation {
 	 * Return a map of FileSystemProvider to ResourceTraversals.
 	 * @return a map of FileSystemProvider to ResourceTraversals
 	 */
-	private Map getProviderToTraversalsMap() {
-		HashMap result = new HashMap();
+	private Map<FileSystemProvider, CompoundResourceTraversal> getProviderToTraversalsMap() {
+		HashMap<FileSystemProvider, CompoundResourceTraversal> result = new HashMap<>();
 		ISynchronizationScope scope = getScope();
 		ResourceMapping[] mappings = scope.getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = scope.getTraversals(mapping);
-			for (int j = 0; j < traversals.length; j++) {
-				ResourceTraversal traversal = traversals[j];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (int k = 0; k < resources.length; k++) {
-					IResource resource = resources[k];
+				for (IResource resource : resources) {
 					recordResourceAndDepth(result, resource, traversal.getDepth());
 				}
 			}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Return the file system provider associated with the given project or <code>null</code>
 	 * if the project is not mapped to the file system provider.
@@ -105,11 +102,12 @@ public abstract class FileSystemOperation extends ModelOperation {
 	protected FileSystemProvider getProviderFor(IProject project) {
 		return (FileSystemProvider)RepositoryProvider.getProvider(project, FileSystemPlugin.PROVIDER_ID);
 	}
-	
-	private void recordResourceAndDepth(HashMap providerToTraversals, IResource resource, int depth) {
+
+	private void recordResourceAndDepth(HashMap<FileSystemProvider, CompoundResourceTraversal> providerToTraversals,
+			IResource resource, int depth) {
 		FileSystemProvider provider = getProviderFor(resource.getProject());
 		if (provider != null) {
-			CompoundResourceTraversal traversal = (CompoundResourceTraversal)providerToTraversals.get(provider);
+			CompoundResourceTraversal traversal = providerToTraversals.get(provider);
 			if (traversal == null) {
 				traversal = new CompoundResourceTraversal();
 				providerToTraversals.put(provider, traversal);
@@ -125,8 +123,9 @@ public abstract class FileSystemOperation extends ModelOperation {
 	 * @param provider the provider
 	 * @return the traversals for the given provider
 	 */
-	private ResourceTraversal[] getTraversals(Map providerToTraversals, FileSystemProvider provider) {
-		CompoundResourceTraversal traversal = (CompoundResourceTraversal)providerToTraversals.get(provider);
+	private ResourceTraversal[] getTraversals(Map<FileSystemProvider, CompoundResourceTraversal> providerToTraversals,
+			FileSystemProvider provider) {
+		CompoundResourceTraversal traversal = providerToTraversals.get(provider);
 		return traversal.asTraversals();
 	}
 
@@ -144,10 +143,8 @@ public abstract class FileSystemOperation extends ModelOperation {
 	 * @return the task name for this operation
 	 */
 	protected abstract String getTaskName();
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
-	 */
+
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}

@@ -18,10 +18,18 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
-import org.eclipse.team.examples.model.*;
+import org.eclipse.team.examples.model.ModelObject;
+import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
+import org.eclipse.team.examples.model.ModelObjectElementFile;
+import org.eclipse.team.examples.model.ModelResource;
 
 public class ModResourceMapping extends ModelResourceMapping {
 
@@ -29,63 +37,56 @@ public class ModResourceMapping extends ModelResourceMapping {
 		super(file);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getTraversals(org.eclipse.core.resources.mapping.ResourceMappingContext, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
-		Set resources = getLocalResources();
+		Set<IResource> resources = getLocalResources();
 		if (context instanceof RemoteResourceMappingContext) {
 			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;
 			if (remoteContext.hasRemoteChange(getResource(), SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN))) {
 				IResource[] remoteResources = ModelObjectDefinitionFile.getReferencedResources(
-						getResource().getProject().getName(), 
-						remoteContext.fetchRemoteContents((IFile)getResource(), 
+						getResource().getProject().getName(),
+						remoteContext.fetchRemoteContents((IFile)getResource(),
 								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
-				for (int i = 0; i < remoteResources.length; i++) {
-					IResource resource = remoteResources[i];
+				for (IResource resource : remoteResources) {
 					resources.add(resource);
 				}
 			}
-			if (remoteContext.isThreeWay() 
+			if (remoteContext.isThreeWay()
 					&& remoteContext.hasLocalChange(getResource(), SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN))) {
 				IResource[] remoteResources = ModelObjectDefinitionFile.getReferencedResources(
 						getResource().getProject().getName(),
-						remoteContext.fetchBaseContents((IFile)getResource(), 
+						remoteContext.fetchBaseContents((IFile)getResource(),
 								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
-				for (int i = 0; i < remoteResources.length; i++) {
-					IResource resource = remoteResources[i];
+				for (IResource resource : remoteResources) {
 					resources.add(resource);
 				}
 			}
 			monitor.done();
 		}
-		return new ResourceTraversal[] { 
-				new ResourceTraversal((IResource[]) resources.toArray(new IResource[resources.size()]), 
+		return new ResourceTraversal[] {
+				new ResourceTraversal(resources.toArray(new IResource[resources.size()]),
 						IResource.DEPTH_ZERO, IResource.NONE)
-			};
+		};
 	}
 
 	private IResource getResource() {
 		return ((ModelResource)getModelObject()).getResource();
 	}
-	
-	private Set getLocalResources() throws CoreException {
+
+	private Set<IResource> getLocalResources() throws CoreException {
 		ModelObjectDefinitionFile mdf = (ModelObjectDefinitionFile)getModelObject();
-		Set resources = new HashSet();
+		Set<IResource> resources = new HashSet<>();
 		resources.add(mdf.getResource());
 		ModelObjectElementFile[] files = mdf.getModelObjectElementFiles();
-		for (int i = 0; i < files.length; i++) {
-			ModelObjectElementFile file = files[i];
+		for (ModelObjectElementFile file : files) {
 			resources.add(file.getResource());
 		}
 		return resources;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#contains(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
+
+	@Override
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping instanceof ModelResourceMapping) {
 			ModelObject object = (ModelObject)mapping.getModelObject();

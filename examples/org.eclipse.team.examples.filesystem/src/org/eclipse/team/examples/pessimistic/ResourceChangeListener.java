@@ -12,11 +12,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic;
- 
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,23 +43,23 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 
 /**
- * The <code>ResourceChangeListener</code> listens for resource changes 
- * and (optionally) prompts the user to add the new resources to the 
+ * The <code>ResourceChangeListener</code> listens for resource changes
+ * and (optionally) prompts the user to add the new resources to the
  * control of the repository provider.
  */
 public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceChangeListener {
 	/*
 	 * Set of added resources
 	 */
-	private Set fAdded;
+	private Set<IResource> fAdded;
 	/*
 	 * Set of removed resources
 	 */
-	private Set fRemoved;
-	
+	private Set<IResource> fRemoved;
+
 	public ResourceChangeListener() {
-		fAdded= new HashSet(1);
-		fRemoved= new HashSet(1);
+		fAdded = new HashSet<>(1);
+		fRemoved = new HashSet<>(1);
 	}
 
 	/**
@@ -71,6 +70,7 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	 * </ul>
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
 	 */
+	@Override
 	public boolean visit(IResourceDelta delta) {
 		IResource resource= delta.getResource();
 		if (resource != null) {
@@ -81,37 +81,37 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 					return false;
 				if (provider.isControlled(resource)) {
 					switch (delta.getKind()) {
-						case IResourceDelta.CHANGED:
-						case IResourceDelta.ADDED:
-							return true;
-						case IResourceDelta.REMOVED:
-							fRemoved.add(resource);
-							return false;						
+					case IResourceDelta.CHANGED:
+					case IResourceDelta.ADDED:
+						return true;
+					case IResourceDelta.REMOVED:
+						fRemoved.add(resource);
+						return false;
 					}
 				} else {
 					switch (delta.getKind()) {
-						case IResourceDelta.CHANGED:
-						case IResourceDelta.REMOVED:
-							return true;
-						case IResourceDelta.ADDED:
-							// don't prompt for ignored resources
-							if (!provider.isIgnored(resource)) {
-								fAdded.add(resource);
-							}
-							return true;						
-					}				
+					case IResourceDelta.CHANGED:
+					case IResourceDelta.REMOVED:
+						return true;
+					case IResourceDelta.ADDED:
+						// don't prompt for ignored resources
+						if (!provider.isIgnored(resource)) {
+							fAdded.add(resource);
+						}
+						return true;
+					}
 				}
 			} else {
 				return true;
 			}
-		}					
+		}
 		return false;
 	}
 
 	/*
 	 * Convenience method to return a resource array from a collection
 	 */
-	private IResource[] toResourceArray(Collection collection) {
+	private IResource[] toResourceArray(Collection<IResource> collection) {
 		if (collection.isEmpty()) {
 			return new IResource[0];
 		}
@@ -123,6 +123,7 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	/**
 	 * @see IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
+	@Override
 	public void resourceChanged (IResourceChangeEvent event) {
 		try {
 			event.getDelta().accept(this);
@@ -136,10 +137,10 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 				if (!fRemoved.isEmpty()) {
 					remove(monitor);
 				}
-				
+
 				if (!fAdded.isEmpty()) {
 					add(monitor);
-				}					
+				}
 			};
 			// must fork since we are in resource callback.
 			Runnable run= () -> {
@@ -164,7 +165,7 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 		Preferences preferences= PessimisticFilesystemProviderPlugin.getInstance().getPluginPreferences();
 		return preferences.getInt(IPessimisticFilesystemConstants.PREF_ADD_TO_CONTROL);
 	}
-	
+
 	/*
 	 * Adds the resources to the control of the provider.
 	 * If the add to control preference is:
@@ -175,46 +176,46 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	 */
 	private void add(final IProgressMonitor monitor) {
 		switch (getAddToControlPreference()) {
-			case IPessimisticFilesystemConstants.OPTION_DO_NOTHING:
-				break;
-			case IPessimisticFilesystemConstants.OPTION_AUTOMATIC:
-				addToControl(fAdded, monitor);
-				break;
-			case IPessimisticFilesystemConstants.OPTION_PROMPT:
-				final Shell shell= getShell();
-				if (shell != null && !shell.isDisposed()) {
-					final Set resources= new HashSet(fAdded);
-					Runnable run= () -> {
-						CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new ResourceSetContentProvider(resources));
-						dialog.setMessage("Select the resources to be added to the control of the repository.");
-						dialog.setTitle("Add resources to control");
-						dialog.setContainerMode(true);
-						dialog.setBlockOnOpen(true);
-						dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-						Object[] resourceArray= resources.toArray();
-						dialog.setExpandedElements(resourceArray);
-						dialog.setInitialSelections(resourceArray);
-						dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-						int status= dialog.open();
-						
-						if (status == Window.OK) {
-							Object[] results= dialog.getResult();
-							if (results != null) {
-								Set resources1= new HashSet(results.length);
-								for (int i= 0; i < results.length; i++) {
-									resources1.add(results[i]);
-								}
-								addToControl(resources1, monitor);
+		case IPessimisticFilesystemConstants.OPTION_DO_NOTHING:
+			break;
+		case IPessimisticFilesystemConstants.OPTION_AUTOMATIC:
+			addToControl(fAdded, monitor);
+			break;
+		case IPessimisticFilesystemConstants.OPTION_PROMPT:
+			final Shell shell= getShell();
+			if (shell != null && !shell.isDisposed()) {
+				final Set<IResource> resources = new HashSet<>(fAdded);
+				Runnable run= () -> {
+					CheckedTreeSelectionDialog dialog= new CheckedTreeSelectionDialog(shell, new WorkbenchLabelProvider(), new ResourceSetContentProvider(resources));
+					dialog.setMessage("Select the resources to be added to the control of the repository.");
+					dialog.setTitle("Add resources to control");
+					dialog.setContainerMode(true);
+					dialog.setBlockOnOpen(true);
+					dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+					Object[] resourceArray= resources.toArray();
+					dialog.setExpandedElements(resourceArray);
+					dialog.setInitialSelections(resourceArray);
+					dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
+					int status= dialog.open();
+
+					if (status == Window.OK) {
+						Object[] results= dialog.getResult();
+						if (results != null) {
+							Set<IResource> resources1 = new HashSet<>(results.length);
+							for (Object result : results) {
+								resources1.add((IResource) result);
 							}
+							addToControl(resources1, monitor);
 						}
-					};
-			
-					Display display= shell.getDisplay();
-					display.asyncExec(run);
-				} else {
-					PessimisticFilesystemProviderPlugin.getInstance().logError(null, "Could not aquire a shell");
-				}
-				break;
+					}
+				};
+
+				Display display= shell.getDisplay();
+				display.asyncExec(run);
+			} else {
+				PessimisticFilesystemProviderPlugin.getInstance().logError(null, "Could not aquire a shell");
+			}
+			break;
 		}
 		fAdded.clear();
 	}
@@ -222,28 +223,26 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	/*
 	 * Adds the resources to the control of the provider.
 	 */
-	private void addToControl(Collection resources, final IProgressMonitor monitor) {
-		Map byProject= sortByProject(resources);
-		for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-			IProject project= (IProject) i.next();
+	private void addToControl(Collection<IResource> resources, final IProgressMonitor monitor) {
+		Map<IProject, Set<IResource>> byProject = sortByProject(resources);
+		for (IProject project : byProject.keySet()) {
 			PessimisticFilesystemProvider provider= (PessimisticFilesystemProvider)RepositoryProvider.getProvider(project, PessimisticFilesystemProviderPlugin.NATURE_ID);
 			if (provider != null) {
-				provider.addToControl(toResourceArray((Collection)byProject.get(project)), monitor);
+				provider.addToControl(toResourceArray(byProject.get(project)), monitor);
 			}
-			
+
 		}
 	}
-	
+
 	/*
 	 * Removes the resources from the control of the provider.
 	 */
 	private void remove(IProgressMonitor monitor) {
-		Map byProject= sortByProject(fRemoved);
-		for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-			IProject project= (IProject) i.next();
+		Map<IProject, Set<IResource>> byProject = sortByProject(fRemoved);
+		for (IProject project : byProject.keySet()) {
 			PessimisticFilesystemProvider provider= (PessimisticFilesystemProvider)RepositoryProvider.getProvider(project, PessimisticFilesystemProviderPlugin.NATURE_ID);
 			if (provider != null) {
-				provider.removeFromControl(toResourceArray((Collection)byProject.get(project)), monitor);
+				provider.removeFromControl(toResourceArray(byProject.get(project)), monitor);
 			}
 		}
 		fRemoved.clear();
@@ -252,14 +251,13 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 	/*
 	 * Convenience method to sort the resources by project
 	 */
-	private Map sortByProject(Collection resources) {
-		Map byProject= new HashMap();
-		for (Iterator i= resources.iterator(); i.hasNext();) {
-			IResource resource= (IResource) i.next();
+	private Map<IProject, Set<IResource>> sortByProject(Collection<IResource> resources) {
+		Map<IProject, Set<IResource>> byProject = new HashMap<>();
+		for (IResource resource : resources) {
 			IProject project= resource.getProject();
-			Set set= (Set)byProject.get(project);
+			Set<IResource> set = byProject.get(project);
 			if (set == null) {
-				set= new HashSet(1);
+				set = new HashSet<>(1);
 				byProject.put(project, set);
 			}
 			set.add(resource);
@@ -300,13 +298,13 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 		if (PessimisticFilesystemProviderPlugin.getInstance().isDebugging())
 			System.out.println ("Resource callback registered");
 	}
-	
+
 	/**
 	 * Stops listening for changes.
 	 */
 	public void shutdown() {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (PessimisticFilesystemProviderPlugin.getInstance().isDebugging())
-			System.out.println ("Resource callback unregistered");	
+			System.out.println ("Resource callback unregistered");
 	}
 }

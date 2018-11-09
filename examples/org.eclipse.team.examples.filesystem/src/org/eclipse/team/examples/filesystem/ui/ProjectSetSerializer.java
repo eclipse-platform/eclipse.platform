@@ -18,41 +18,40 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.team.core.*;
-import org.eclipse.team.examples.filesystem.*;
+import org.eclipse.team.core.IProjectSetSerializer;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.examples.filesystem.FileSystemPlugin;
+import org.eclipse.team.examples.filesystem.FileSystemProvider;
+import org.eclipse.team.examples.filesystem.Policy;
 
 /**
  * This is an old-style (pre-3.0) project set serializer used to test backwards compatibility
  */
 public class ProjectSetSerializer implements IProjectSetSerializer {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.IProjectSetSerializer#asReference(org.eclipse.core.resources.IProject[], java.lang.Object, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) {
 		Assert.isTrue(context instanceof Shell);
-		List refs = new ArrayList();
-		for (int i = 0; i < providerProjects.length; i++) {
-			IProject project = providerProjects[i];
+		List<String> refs = new ArrayList<>();
+		for (IProject project : providerProjects) {
 			FileSystemProvider provider = (FileSystemProvider)RepositoryProvider.getProvider(project, FileSystemPlugin.PROVIDER_ID);
 			if (provider != null) {
 				refs.add(asReference(provider));
 			}
 		}
-		return (String[]) refs.toArray(new String[refs.size()]);
+		return refs.toArray(new String[refs.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.IProjectSetSerializer#addToWorkspace(java.lang.String[], java.lang.String, java.lang.Object, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IProject[] addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor) {
 		Assert.isTrue(context instanceof Shell);
-		List projects = new ArrayList();
-		for (int i = 0; i < referenceStrings.length; i++) {
-			String string = referenceStrings[i];
+		List<IProject> projects = new ArrayList<>();
+		for (String string : referenceStrings) {
 			String projectName = getProjectName(string);
 			String path = getPath(string);
 			if (projectName != null && path != null) {
@@ -64,14 +63,14 @@ public class ProjectSetSerializer implements IProjectSetSerializer {
 					projects.add(project);
 				} catch (CoreException e) {
 					ErrorDialog.openError(
-						(Shell)context,
-						Policy.bind("ConfigurationWizard.errorMapping"), //$NON-NLS-1$
-						Policy.bind("ConfigurationWizard.error"), //$NON-NLS-1$
-						e.getStatus());
+							(Shell)context,
+							Policy.bind("ConfigurationWizard.errorMapping"), //$NON-NLS-1$
+							Policy.bind("ConfigurationWizard.error"), //$NON-NLS-1$
+							e.getStatus());
 				}
 			}
 		}
-		return (IProject[]) projects.toArray(new IProject[projects.size()]);
+		return projects.toArray(new IProject[projects.size()]);
 	}
 
 	/**
@@ -81,7 +80,7 @@ public class ProjectSetSerializer implements IProjectSetSerializer {
 	private String asReference(FileSystemProvider provider) {
 		return provider.getProject().getName() + "," + provider.getRoot().toString(); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * @param string
 	 * @return
@@ -91,7 +90,7 @@ public class ProjectSetSerializer implements IProjectSetSerializer {
 		if (i == -1) return null;
 		return string.substring(0, i);
 	}
-	
+
 	/**
 	 * @param string
 	 * @return
@@ -101,7 +100,7 @@ public class ProjectSetSerializer implements IProjectSetSerializer {
 		if (i == -1) return null;
 		return string.substring(i + 1);
 	}
-	
+
 	/**
 	 * @param projectName
 	 * @return

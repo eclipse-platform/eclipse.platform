@@ -13,60 +13,70 @@
  *******************************************************************************/
 package org.eclipse.team.examples.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.mapping.ChangeTracker;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
 
 public class PluginManifestChangeTracker extends ChangeTracker {
-	
-	Set manifestFilePaths;
-	
+
+	Set<IPath> manifestFilePaths;
+
 	public PluginManifestChangeTracker() {
-		manifestFilePaths = new HashSet();
+		manifestFilePaths = new HashSet<>();
 		manifestFilePaths.add(new Path(null, "plugin.xml"));
 		manifestFilePaths.add(new Path(null, "plugin.properties"));
 		manifestFilePaths.add(new Path(null, "build.properties"));
 		manifestFilePaths.add(new Path(null, "META-INF/MANIFEST.MF"));
 	}
 
+	@Override
 	protected boolean isProjectOfInterest(IProject project) {
 		return super.isProjectOfInterest(project) && hasPDENature(project);
 	}
-	
+
 	private boolean hasPDENature(IProject project) {
 		try {
 			return project.getDescription().hasNature("org.eclipse.pde.PluginNature");
 		} catch (CoreException e) {
-			FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0, 
+			FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0,
 					NLS.bind("Could not obtain project description for {0}", project.getName()), e));
 		}
 		return false;
 	}
 
+	@Override
 	protected void handleChanges(IProject project, IResource[] resources) {
 		handleProjectChange(project);
 	}
 
+	@Override
 	protected void handleProjectChange(IProject project) {
-		List changes = new ArrayList();
-		for (Iterator iter = manifestFilePaths.iterator(); iter.hasNext();) {
-			IPath path = (IPath) iter.next();
+		List<IFile> changes = new ArrayList<>();
+		for (IPath path : manifestFilePaths) {
 			IFile file = project.getFile(path);
 			try {
 				if (isModified(file)) {
 					changes.add(file);
 				}
 			} catch (CoreException e) {
-				FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0, 
+				FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0,
 						NLS.bind("Could not obtain diff for {0}", file.getFullPath().toString()), e));
 			}
 		}
 		if (changes.size() > 1) {
-			groupInSet(project, (IFile[]) changes.toArray(new IFile[changes.size()]));
+			groupInSet(project, changes.toArray(new IFile[changes.size()]));
 		}
 	}
 
@@ -75,7 +85,7 @@ public class PluginManifestChangeTracker extends ChangeTracker {
 		try {
 			ensureGrouped(project, name, files);
 		} catch (CoreException e) {
-			FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0, 
+			FileSystemPlugin.log(new Status(e.getStatus().getSeverity(), FileSystemPlugin.ID, 0,
 					NLS.bind("Could not create change set {0}", name), e));
 		}
 	}
@@ -84,6 +94,7 @@ public class PluginManifestChangeTracker extends ChangeTracker {
 		return "Plugin manifest files for " + project.getName();
 	}
 
+	@Override
 	protected boolean isResourceOfInterest(IResource resource) {
 		return manifestFilePaths.contains(resource.getProjectRelativePath());
 	}

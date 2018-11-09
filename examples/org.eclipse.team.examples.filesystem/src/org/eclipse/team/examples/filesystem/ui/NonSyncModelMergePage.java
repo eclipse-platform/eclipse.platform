@@ -14,17 +14,38 @@
 package org.eclipse.team.examples.filesystem.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.resources.mapping.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.mapping.IModelProviderDescriptor;
+import org.eclipse.core.resources.mapping.ModelProvider;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.mapping.IMergeContext;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
@@ -39,15 +60,16 @@ import org.eclipse.ui.part.Page;
  * This class provides the page for the {@link NonSyncMergePart}.
  */
 public class NonSyncModelMergePage extends Page {
-	
+
 	IMergeContext context;
 	TreeViewer viewer;
 	List mappings;
-	
+
 	/*
 	 * Content provider that returns the list of conflicting mappings
 	 */
 	class PageContentProvider implements ITreeContentProvider {
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof IMergeContext) {
 				if (mappings == null)
@@ -57,33 +79,39 @@ public class NonSyncModelMergePage extends Page {
 			}
 			return new Object[0];
 		}
+		@Override
 		public Object getParent(Object element) {
 			if (element instanceof ResourceMapping) {
 				return context;
 			}
 			return null;
 		}
+		@Override
 		public boolean hasChildren(Object element) {
 			if (element instanceof IMergeContext) {
 				return true;
 			}
 			return false;
 		}
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return getChildren(inputElement);
 		}
+		@Override
 		public void dispose() {
 			// Nothing to do
 		}
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
-	
+
 	/*
 	 * Label provider that provides a label and image for conflicting resource mappings
 	 */
 	class PageLabelProvider extends LabelProvider {
+		@Override
 		public String getText(Object element) {
 			if (element instanceof ResourceMapping) {
 				ResourceMapping mapping = (ResourceMapping) element;
@@ -97,6 +125,7 @@ public class NonSyncModelMergePage extends Page {
 			}
 			return super.getText(element);
 		}
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof ICompareInput) {
 				ICompareInput ci = (ICompareInput) element;
@@ -116,7 +145,8 @@ public class NonSyncModelMergePage extends Page {
 	/*
 	 * Sorter that sorts mappings by model and then name
 	 */
-	class PageSorter extends ViewerSorter {
+	class PageSorter extends ViewerComparator {
+		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			if (e1 instanceof ResourceMapping && e2 instanceof ResourceMapping) {
 				ResourceMapping m1 = (ResourceMapping) e1;
@@ -139,45 +169,43 @@ public class NonSyncModelMergePage extends Page {
 			return "";
 		}
 	}
-	
+
 	public NonSyncModelMergePage(IMergeContext context) {
 		super();
 		this.context = context;
 	}
-	
+
 	/**
 	 * Create the list of all mappings that overlap with the out-of-sync files.
 	 */
 	public void computeMappings(IProgressMonitor monitor) {
-	    IModelProviderDescriptor[] descriptors = ModelProvider.getModelProviderDescriptors();
-	    mappings = new ArrayList();
-	    for (int i = 0; i < descriptors.length; i++) {
-	        IModelProviderDescriptor descriptor = descriptors[i];
-	        // Get the subset of files that this model provider cares about
-	        try {
+		IModelProviderDescriptor[] descriptors = ModelProvider.getModelProviderDescriptors();
+		mappings = new ArrayList();
+		for (IModelProviderDescriptor descriptor : descriptors) {
+			// Get the subset of files that this model provider cares about
+			try {
 				IResource[] resources = descriptor.getMatchingResources(getOutOfSyncFiles());
 				if (resources.length > 0) {
-				    ModelProvider provider = descriptor.getModelProvider();
-				    // Get the mappings for those resources
-				    ResourceMapping[] mappings = provider.getMappings(resources, new SynchronizationResourceMappingContext(context), monitor);
-				    this.mappings.addAll(Arrays.asList(mappings ));
+					ModelProvider provider = descriptor.getModelProvider();
+					// Get the mappings for those resources
+					ResourceMapping[] mappings = provider.getMappings(resources, new SynchronizationResourceMappingContext(context), monitor);
+					this.mappings.addAll(Arrays.asList(mappings ));
 				}
 			} catch (CoreException e) {
 				FileSystemPlugin.log(e);
 			}
-	    }
+		}
 	}
 
 	private IResource[] getOutOfSyncFiles() {
 		IDiff[] diffs = getContext().getDiffTree().getDiffs(ResourcesPlugin.getWorkspace().getRoot(), IResource.DEPTH_INFINITE);
-		List result = new ArrayList();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		List<IResource> result = new ArrayList<>();
+		for (IDiff diff : diffs) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource.getType() == IResource.FILE)
 				result.add(resource);
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	/**
@@ -188,14 +216,12 @@ public class NonSyncModelMergePage extends Page {
 		return context;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
 		viewer = new TreeViewer(parent);
 		viewer.setContentProvider(new PageContentProvider());
 		viewer.setLabelProvider(new PageLabelProvider());
-		viewer.setSorter(new PageSorter());
+		viewer.setComparator(new PageSorter());
 		hookContextMenu(viewer);
 		viewer.setInput(context);
 	}
@@ -204,7 +230,7 @@ public class NonSyncModelMergePage extends Page {
 	 * Hook the context menu to display the Overwrite and Mark-as-merged actions
 	 */
 	private void hookContextMenu(final TreeViewer viewer) {
-		final MenuManager menuMgr = new MenuManager(); 
+		final MenuManager menuMgr = new MenuManager();
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(manager -> fillContextMenu(manager));
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -217,7 +243,7 @@ public class NonSyncModelMergePage extends Page {
 	 */
 	protected void fillContextMenu(IMenuManager manager) {
 		/*
-		 * Add a mark as merged action. Because we are not using the 
+		 * Add a mark as merged action. Because we are not using the
 		 * Synchronization framework and, more specifically, the
 		 * Common Navigator content provider for the model providers,
 		 * we do not have access to the merge handlers of the model.
@@ -226,6 +252,7 @@ public class NonSyncModelMergePage extends Page {
 		 * unselected model elements.
 		 */
 		Action markAsMerged = new Action("Mark as Merged") {
+			@Override
 			public void run() {
 				try {
 					final IStructuredSelection selection = viewer.getStructuredSelection();
@@ -256,9 +283,8 @@ public class NonSyncModelMergePage extends Page {
 	}
 
 	private IDiff[] getDiffs(Object[] elements, IProgressMonitor monitor) {
-		Set result = new HashSet();
-		for (int i = 0; i < elements.length; i++) {
-			Object element = elements[i];
+		Set<IDiff> result = new HashSet<>();
+		for (Object element : elements) {
 			try {
 				if (element instanceof ResourceMapping) {
 					ResourceMapping mapping = (ResourceMapping) element;
@@ -269,7 +295,7 @@ public class NonSyncModelMergePage extends Page {
 				FileSystemPlugin.log(e);
 			}
 		}
-		return (IDiff[]) result.toArray(new IDiff[result.size()]);
+		return result.toArray(new IDiff[result.size()]);
 	}
 
 	/**
@@ -278,23 +304,19 @@ public class NonSyncModelMergePage extends Page {
 	 * @return
 	 */
 	protected boolean checkForModelOverlap(IDiff[] diffs, IProgressMonitor monitor) {
-		// TODO: This check should see if the diffs are also part of mappings 
-		// that are not included in the selection. 
+		// TODO: This check should see if the diffs are also part of mappings
+		// that are not included in the selection.
 		return true;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#getControl()
-	 */
+
+	@Override
 	public Control getControl() {
 		if (viewer != null)
 			return viewer.getControl();
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.part.Page#setFocus()
-	 */
+	@Override
 	public void setFocus() {
 		if (viewer != null)
 			viewer.getControl().setFocus();

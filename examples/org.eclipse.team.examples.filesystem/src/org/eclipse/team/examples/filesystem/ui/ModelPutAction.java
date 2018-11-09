@@ -14,7 +14,9 @@
 package org.eclipse.team.examples.filesystem.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +38,7 @@ public class ModelPutAction extends ModelParticipantAction {
 		super(text, configuration);
 	}
 
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		// Only enable the put in outgoing or both modes
 		int mode = getConfiguration().getMode();
@@ -46,19 +49,17 @@ public class ModelPutAction extends ModelParticipantAction {
 	}
 
 	private ResourceMapping[] getResourceMappings(IStructuredSelection selection) {
-		List mappings = new ArrayList();
+		List<ResourceMapping> mappings = new ArrayList<>();
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
 			Object element = iter.next();
 			ResourceMapping mapping = Utils.getResourceMapping(element);
 			if (mapping != null)
 				mappings.add(mapping);
 		}
-		return (ResourceMapping[]) mappings.toArray(new ResourceMapping[mappings.size()]);
+		return mappings.toArray(new ResourceMapping[mappings.size()]);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
+
+	@Override
 	public void run() {
 		ResourceMapping[] resourceMappings = getResourceMappings(getStructuredSelection());
 		SubscriberScopeManager manager = FileSystemOperation.createScopeManager("Put", resourceMappings);

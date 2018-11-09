@@ -29,19 +29,19 @@ public class ModelProject extends ModelContainer {
 		IProjectDescription description = project.getDescription();
 		return description.hasNature(ModelNature.NATURE_ID);
 	}
-	
+
 	public static void makeModProject(IProject project, IProgressMonitor monitor) throws CoreException {
 		IProjectDescription description = project.getDescription();
 		String[] natureIds = description.getNatureIds();
-		List result = new ArrayList();
-		for (int i = 0; i < natureIds.length; i++) {
-			result.add(natureIds[i]);
+		List<String> result = new ArrayList<>();
+		for (String natureId : natureIds) {
+			result.add(natureId);
 		}
 		result.add(ModelNature.NATURE_ID);
-		description.setNatureIds((String[]) result.toArray(new String[result.size()]));
+		description.setNatureIds(result.toArray(new String[result.size()]));
 		project.setDescription(description, monitor);
 	}
-	
+
 	public ModelProject(IProject project) {
 		super(project);
 	}

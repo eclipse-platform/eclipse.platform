@@ -30,7 +30,9 @@ import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.ui.IContributorResourceAdapter;
 import org.eclipse.ui.ide.IContributorResourceAdapter2;
-import org.eclipse.ui.navigator.*;
+import org.eclipse.ui.navigator.CommonActionProvider;
+import org.eclipse.ui.navigator.ICommonActionExtensionSite;
+import org.eclipse.ui.navigator.IExtensionStateModel;
 
 public class ThirdPartyActionProvider extends CommonActionProvider {
 
@@ -39,7 +41,7 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 	public ThirdPartyActionProvider() {
 		// Nothing to do
 	}
-	
+
 	/**
 	 * Return the configuration from the synchronize page that contains
 	 * the common viewer.
@@ -59,7 +61,7 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 	protected final IExtensionStateModel getExtensionStateModel() {
 		return getActionSite().getExtensionStateModel();
 	}
-	
+
 	/**
 	 * Return the synchronization context to which the actions of this provider
 	 * apply.
@@ -69,17 +71,18 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 	protected final ISynchronizationContext getSynchronizationContext() {
 		return (ISynchronizationContext)getExtensionStateModel().getProperty(ITeamContentProviderManager.P_SYNCHRONIZATION_CONTEXT);
 	}
-	
+
+	@Override
 	public void init(ICommonActionExtensionSite aSite) {
 		super.init(aSite);
 		exampleAction = new Action("3rd Party Action") {
+			@Override
 			public void run() {
 				StringBuffer buffer = new StringBuffer();
 				boolean addComma = false;
 				IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 				ResourceMapping[] mappings = getResourceMappings(selection.toArray());
-				for (int i = 0; i < mappings.length; i++) {
-					ResourceMapping mapping = mappings[i];
+				for (ResourceMapping mapping : mappings) {
 					ISynchronizationCompareAdapter adapter = getCompareAdpater(mapping);
 					if (adapter != null) {
 						String name = adapter.getName(mapping);
@@ -94,7 +97,7 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 			}
 		};
 	}
-	
+
 	protected ISynchronizationCompareAdapter getCompareAdpater(ResourceMapping mapping) {
 		if (mapping != null) {
 			ModelProvider provider = mapping.getModelProvider();
@@ -108,22 +111,22 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 		return null;
 	}
 
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		menu.add(exampleAction);
 	}
 
 	private ResourceMapping[] getResourceMappings(Object[] objects) {
-		List result = new ArrayList();
-		for (int i = 0; i < objects.length; i++) {
-			Object object = objects[i];
+		List<ResourceMapping> result = new ArrayList<>();
+		for (Object object : objects) {
 			ResourceMapping mapping = getResourceMapping(object);
 			if (mapping != null)
 				result.add(mapping);
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
-	
+
 	private ResourceMapping getResourceMapping(Object o) {
 		if (o instanceof ResourceMapping) {
 			return (ResourceMapping) o;

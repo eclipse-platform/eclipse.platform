@@ -12,9 +12,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic.ui;
- 
+
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,29 +33,30 @@ public class AddToControlAction extends PessimisticProviderAction {
 	/**
 	 * Collects the selected resources, sorts them by project
 	 * and adds them to their respective repository providers.
-	 * 
+	 *
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		IResource[] resources= getSelectedResources();
 		if (resources == null || resources.length == 0)
 			return;
-		Set resourceSet= new HashSet(resources.length);
-		for(int i= 0; i < resources.length; i++) {
-			IResource resource= resources[i];
+		Set<IResource> resourceSet = new HashSet<>(resources.length);
+		for (IResource resource2 : resources) {
+			IResource resource= resource2;
 			while (resource.getType() != IResource.PROJECT && !isControlled(resource)) {
 				resourceSet.add(resource);
 				resource= resource.getParent();
 			}
 		}
 		if (!resourceSet.isEmpty()) {
-			final Map byProject= sortByProject(resourceSet);
+			final Map<IProject, Set<IResource>> byProject = sortByProject(resourceSet);
 			IRunnableWithProgress runnable= monitor -> {
-				for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-					IProject project= (IProject) i.next();
+				for (Object element : byProject.keySet()) {
+					IProject project= (IProject) element;
 					PessimisticFilesystemProvider provider= getProvider(project);
 					if (provider != null) {
-						Set set= (Set)byProject.get(project);
+						Set<IResource> set = byProject.get(project);
 						IResource[] resources1= new IResource[set.size()];
 						set.toArray(resources1);
 						provider.addToControl(resources1, monitor);
@@ -70,16 +70,17 @@ public class AddToControlAction extends PessimisticProviderAction {
 	/**
 	 * Answers <code>true</code> if the selected resource is not
 	 * a project (or the workspace root) and is not controlled.
-	 * 
+	 *
 	 * @see PessimisticProviderAction#shouldEnableFor(IResource)
 	 */
+	@Override
 	protected boolean shouldEnableFor(IResource resource) {
 		if (resource == null) {
 			return false;
 		}
 		if ((resource.getType() & (IResource.ROOT | IResource.PROJECT)) != 0) {
 			return false;
-		}		
+		}
 		PessimisticFilesystemProvider provider= getProvider(resource);
 		if (provider == null)
 			return false;

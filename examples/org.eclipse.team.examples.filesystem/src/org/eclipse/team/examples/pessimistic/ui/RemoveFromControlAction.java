@@ -14,7 +14,6 @@
 package org.eclipse.team.examples.pessimistic.ui;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,31 +28,30 @@ import org.eclipse.team.examples.pessimistic.PessimisticFilesystemProvider;
  * the control of the provider.
  */
 public class RemoveFromControlAction extends PessimisticProviderAction {
-	
+
 	/**
 	 * Collects the selected resources into sets by project,
 	 * then removes the resources from the provider associated
 	 * with their containing project.
-	 * 
+	 *
 	 * @see org.eclipse.ui.IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		IResource[] resources= getSelectedResources();
 		if (resources == null || resources.length == 0)
 			return;
-		Set resourceSet= new HashSet(resources.length);
-		for(int i= 0; i < resources.length; i++) {
-			IResource resource= resources[i];
+		Set<IResource> resourceSet = new HashSet<>(resources.length);
+		for (IResource resource : resources) {
 			recursivelyAdd(resource, resourceSet);
 		}
 		if (!resourceSet.isEmpty()) {
-			final Map byProject= sortByProject(resourceSet);			
+			final Map<IProject, Set<IResource>> byProject = sortByProject(resourceSet);
 			IRunnableWithProgress runnable= monitor -> {
-				for (Iterator i= byProject.keySet().iterator(); i.hasNext();) {
-					IProject project= (IProject) i.next();
+				for (IProject project : byProject.keySet()) {
 					PessimisticFilesystemProvider provider= getProvider(project);
 					if (provider != null) {
-						Set set= (Set)byProject.get(project);
+						Set<IResource> set = byProject.get(project);
 						IResource[] resources1= new IResource[set.size()];
 						set.toArray(resources1);
 						provider.removeFromControl(resources1, monitor);
@@ -67,9 +65,10 @@ public class RemoveFromControlAction extends PessimisticProviderAction {
 	/**
 	 * Answers <code>true</code> if and only if the resource is not <code>null</code>,
 	 * not a project or the workspace root, and is controlled by the provider.
-	 * 
+	 *
 	 * @see org.eclipse.team.examples.pessimistic.ui.PessimisticProviderAction#shouldEnableFor(IResource)
 	 */
+	@Override
 	protected boolean shouldEnableFor(IResource resource) {
 		if (resource == null) {
 			return false;

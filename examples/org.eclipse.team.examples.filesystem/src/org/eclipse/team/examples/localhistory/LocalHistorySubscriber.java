@@ -33,40 +33,45 @@ import org.eclipse.team.core.variants.IResourceVariantComparator;
 public class LocalHistorySubscriber extends Subscriber {
 
 	private LocalHistoryVariantComparator comparator;
-	
+
 	public LocalHistorySubscriber() {
 		this.comparator = new LocalHistoryVariantComparator();
 	}
-	
+
+	@Override
 	public String getName() {
 		return "Local History Subscriber"; //$NON-NLS-1$
 	}
 
 	/**
-	 * @param resource the resource being tested 
+	 * @param resource the resource being tested
 	 */
+	@Override
 	public boolean isSupervised(IResource resource) {
 		// all resources in the workspace can potentially have resource history
 		return true;
 	}
 
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		try {
 			if(resource.getType() == IResource.FILE)
 				return new IResource[0];
 			IContainer container = (IContainer)resource;
-			List existingChildren = new ArrayList(Arrays.asList(container.members()));
+			List<IResource> existingChildren = new ArrayList<>(Arrays.asList(container.members()));
 			existingChildren.addAll(Arrays.asList(container.findDeletedMembersWithHistory(IResource.DEPTH_INFINITE, null)));
-			return (IResource[]) existingChildren.toArray(new IResource[existingChildren.size()]);
+			return existingChildren.toArray(new IResource[existingChildren.size()]);
 		} catch (CoreException e) {
 			throw TeamException.asTeamException(e);
 		}
 	}
 
+	@Override
 	public IResource[] roots() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProjects();
 	}
 
+	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
 		try {
 			IResourceVariant variant = null;
@@ -76,7 +81,7 @@ public class LocalHistorySubscriber extends Subscriber {
 				if(states.length > 0) {
 					// last state only
 					variant = new LocalHistoryVariant(states[0]);
-				} 
+				}
 			}
 			SyncInfo info = new LocalHistorySyncInfo(resource, variant, comparator);
 			info.init();
@@ -86,6 +91,7 @@ public class LocalHistorySubscriber extends Subscriber {
 		}
 	}
 
+	@Override
 	public IResourceVariantComparator getResourceComparator() {
 		return comparator;
 	}
@@ -99,6 +105,7 @@ public class LocalHistorySubscriber extends Subscriber {
 	 *            progress monitor, or <code>null</code> if progress reporting
 	 *            and cancellation are not desired
 	 */
+	@Override
 	public void refresh(IResource[] resources, int depth, IProgressMonitor monitor) {
 		// do nothing
 	}

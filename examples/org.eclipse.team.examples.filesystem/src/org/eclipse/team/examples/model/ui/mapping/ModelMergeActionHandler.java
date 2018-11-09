@@ -18,9 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.team.core.diff.*;
+import org.eclipse.team.core.diff.FastDiffFilter;
+import org.eclipse.team.core.diff.IDiff;
+import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.mapping.IMergeContext;
 import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
 import org.eclipse.team.examples.model.ModelObjectElementFile;
@@ -40,9 +44,7 @@ public class ModelMergeActionHandler extends MergeActionHandler {
 			super(configuration, selection);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.ui.mapping.SynchronizationOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 			// We need to perform special handling for any MOE file whose parent MOD is not included in the merge
 			try {
@@ -53,8 +55,7 @@ public class ModelMergeActionHandler extends MergeActionHandler {
 				if (!status.isOK())
 					throw new CoreException(status);
 				// For now, just cycle through each lonely MOE and update the parent
-				for (int i = 0; i < moeMerges.length; i++) {
-					ModelObjectElementFile file = moeMerges[i];
+				for (ModelObjectElementFile file : moeMerges) {
 					ModelObjectDefinitionFile modFile = (ModelObjectDefinitionFile)file.getParent();
 					if (file.getResource().exists() && !modFile.hasMoe((IFile)file.getResource()))
 						modFile.addMoe((IFile)file.getResource());
@@ -67,23 +68,21 @@ public class ModelMergeActionHandler extends MergeActionHandler {
 		}
 
 		private ModelObjectElementFile[] getMoeOnlyMerges() {
-			List result = new ArrayList();
+			List<ModelObjectElementFile> result = new ArrayList<>();
 			Object[] elements = getElements();
-			for (int i = 0; i < elements.length; i++) {
-				Object object = elements[i];
+			for (Object object : elements) {
 				if (object instanceof ModelObjectElementFile) {
 					ModelObjectElementFile moeFile = (ModelObjectElementFile) object;
 					result.add(moeFile);
 				}
 			}
-			return (ModelObjectElementFile[]) result.toArray(new ModelObjectElementFile[result.size()]);
+			return result.toArray(new ModelObjectElementFile[result.size()]);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ui.mapping.ResourceModelProviderOperation#getDiffFilter()
-		 */
+		@Override
 		protected FastDiffFilter getDiffFilter() {
 			return new FastDiffFilter() {
+				@Override
 				public boolean select(IDiff node) {
 					if (node instanceof IThreeWayDiff) {
 						IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -107,13 +106,15 @@ public class ModelMergeActionHandler extends MergeActionHandler {
 		this.overwrite = overwrite;
 	}
 
+	@Override
 	protected SynchronizationOperation getOperation() {
 		if (operation == null) {
 			operation = new ModelSynchronizeOperation(getConfiguration(), getStructuredSelection());
 		}
 		return operation;
 	}
-	
+
+	@Override
 	protected void updateEnablement(IStructuredSelection selection) {
 		synchronized (this) {
 			operation = null;

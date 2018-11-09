@@ -31,7 +31,7 @@ import org.eclipse.team.core.TeamException;
  * only has two methods and their implementation is straight forward.
  */
 public final class FileModificationValidator extends org.eclipse.core.resources.team.FileModificationValidator {
-	
+
 	private FileSystemOperations operations;
 
 	/**
@@ -60,17 +60,18 @@ public final class FileModificationValidator extends org.eclipse.core.resources.
 	 * The idea is to prevent anyone from accidentally working on a file that they won't be able to check in changes to.
 	 * @see org.eclipse.core.resources.IFileModificationValidator#validateEdit(IFile[], Object)
 	 */
+	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
-		Collection toBeCheckedOut = new ArrayList();
+		Collection<IResource> toBeCheckedOut = new ArrayList<>();
 
 		//Make a list of all the files that need to be checked out:
-		for (int i = 0; i < files.length; i++) {
-			if (!operations.isCheckedOut(files[i])) {
-				toBeCheckedOut.add(files[i]);
+		for (IFile file : files) {
+			if (!operations.isCheckedOut(file)) {
+				toBeCheckedOut.add(file);
 			}
 		}
-		
-		return checkout((IResource[]) toBeCheckedOut.toArray(new IResource[toBeCheckedOut.size()]));
+
+		return checkout(toBeCheckedOut.toArray(new IResource[toBeCheckedOut.size()]));
 	}
 
 	/**
@@ -78,6 +79,7 @@ public final class FileModificationValidator extends org.eclipse.core.resources.
 	 * It should not attempt to save any files that don't receive an OK status here.
 	 * @see org.eclipse.core.resources.IFileModificationValidator#validateSave(IFile)
 	 */
+	@Override
 	public IStatus validateSave(IFile file) {
 		if (file.isReadOnly()) {
 			return checkout(new IResource[] { file });

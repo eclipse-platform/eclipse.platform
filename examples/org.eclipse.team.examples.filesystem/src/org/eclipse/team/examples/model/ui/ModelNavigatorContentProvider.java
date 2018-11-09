@@ -13,29 +13,50 @@
  *******************************************************************************/
 package org.eclipse.team.examples.model.ui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.examples.filesystem.FileSystemPlugin;
-import org.eclipse.team.examples.model.*;
-import org.eclipse.team.ui.mapping.*;
+import org.eclipse.team.examples.model.ModelObject;
+import org.eclipse.team.examples.model.ModelProject;
+import org.eclipse.team.examples.model.ModelWorkspace;
+import org.eclipse.team.ui.mapping.ITeamStateChangeEvent;
+import org.eclipse.team.ui.mapping.ITeamStateChangeListener;
+import org.eclipse.team.ui.mapping.SynchronizationStateTester;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
-import org.eclipse.ui.navigator.*;
+import org.eclipse.ui.navigator.ICommonContentExtensionSite;
+import org.eclipse.ui.navigator.ICommonContentProvider;
+import org.eclipse.ui.navigator.IPipelinedTreeContentProvider;
+import org.eclipse.ui.navigator.PipelinedShapeModification;
+import org.eclipse.ui.navigator.PipelinedViewerUpdate;
+import org.eclipse.ui.navigator.SaveablesProvider;
 
 /**
  * Model content provider for use with the Common Navigator framework.
- * It makes use of an IWorkbenchAdapter to get the children and parent 
- * of model objects. It also makes use of the Common Navigator pipeline 
+ * It makes use of an IWorkbenchAdapter to get the children and parent
+ * of model objects. It also makes use of the Common Navigator pipeline
  * to override the resource content extension so that model projects will
  * replace the corresponding resource project in the Project Explorer.
  */
 public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
-		implements ICommonContentProvider, IResourceChangeListener, IPipelinedTreeContentProvider, ITeamStateChangeListener, IAdaptable {
+implements ICommonContentProvider, IResourceChangeListener, IPipelinedTreeContentProvider, ITeamStateChangeListener, IAdaptable {
 
 	private ICommonContentExtensionSite extensionSite;
 	private boolean isWorkspaceRoot;
@@ -48,7 +69,7 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		super();
 		updateViewer = true;
 	}
-	
+
 	/**
 	 * Create a contentProvider
 	 * @param updateViewer whether this content provider is reponsible for updating the viewer
@@ -57,9 +78,7 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		this.updateViewer = updateViewer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.ICommonContentProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
-	 */
+	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
 		extensionSite = aConfig;
 		if (updateViewer) {
@@ -70,26 +89,20 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.model.BaseWorkbenchContentProvider#dispose()
-	 */
+	@Override
 	public void dispose() {
 		super.dispose();
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		if (syncStateTester != null)
 			syncStateTester.getTeamStateProvider().removeDecoratedStateChangeListener(this);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
-	 */
+
+	@Override
 	public void restoreState(IMemento aMemento) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#saveState(org.eclipse.ui.IMemento)
-	 */
+	@Override
 	public void saveState(IMemento aMemento) {
 		// Nothing to do
 	}
@@ -101,24 +114,20 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 	public ICommonContentExtensionSite getExtensionSite() {
 		return extensionSite;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.model.BaseWorkbenchContentProvider#getElements(java.lang.Object)
-	 */
+
+	@Override
 	public Object[] getElements(Object element) {
-		// Since we are used in the project explorer, the root may be 
+		// Since we are used in the project explorer, the root may be
 		// an IWorkspaceRoot. We need to change it to the ModelWorkspace
 		if (element instanceof IWorkspaceRoot) {
 			isWorkspaceRoot = true;
 			return super.getElements(ModelObject.create((IWorkspaceRoot)element));
-			
+
 		}
 		return super.getElements(element);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.model.BaseWorkbenchContentProvider#getParent(java.lang.Object)
-	 */
+
+	@Override
 	public Object getParent(Object element) {
 		Object parent = super.getParent(element);
 		if (isWorkspaceRoot && parent instanceof ModelWorkspace) {
@@ -127,77 +136,69 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		return parent;
 	}
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.viewer = viewer;
 		super.inputChanged(viewer, oldInput, newInput);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamStateChangeListener#teamStateChanged(org.eclipse.team.ui.mapping.ITeamStateChangeEvent)
-	 */
+
+	@Override
 	public void teamStateChanged(ITeamStateChangeEvent event) {
 		// We need to listen to team state changes in order to determine when we need
 		// to perform label updates on model elements.
 		// We actually just refresh all projects that contain changes.
 		// This is inefficient but will do for an example
-		Set refreshProjects = new HashSet();
+		Set<ModelProject> refreshProjects = new HashSet<>();
 		IResource[] addedRoots = event.getAddedRoots();
-		for (int i = 0; i < addedRoots.length; i++) {
-			IResource resource = addedRoots[i];
+		for (IResource resource : addedRoots) {
 			if (isModelProject(resource.getProject())) {
-				refreshProjects.add(ModelObject.create(resource.getProject()));
+				refreshProjects.add((ModelProject) ModelObject.create(resource.getProject()));
 			}
 		}
 		IResource[] removedRoots = event.getRemovedRoots();
-		for (int i = 0; i < removedRoots.length; i++) {
-			IResource resource = removedRoots[i];
+		for (IResource resource : removedRoots) {
 			if (isModelProject(resource.getProject())) {
-				refreshProjects.add(ModelObject.create(resource.getProject()));
+				refreshProjects.add((ModelProject) ModelObject.create(resource.getProject()));
 			}
 		}
 		IResource[] changed = event.getChangedResources();
-		for (int i = 0; i < changed.length; i++) {
-			IResource resource = changed[i];
+		for (IResource resource : changed) {
 			if (isModelProject(resource.getProject())) {
-				refreshProjects.add(ModelObject.create(resource.getProject()));
+				refreshProjects.add((ModelProject) ModelObject.create(resource.getProject()));
 			}
 		}
-		
-		refreshProjects((ModelProject[]) refreshProjects.toArray(new ModelProject[refreshProjects.size()]));
+
+		refreshProjects(refreshProjects.toArray(new ModelProject[refreshProjects.size()]));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
-	 */
+
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		if (viewer == null) return;
 		IResourceDelta delta = event.getDelta();
 		IResourceDelta[] children = delta.getAffectedChildren();
 		boolean refreshAll = false;
-		List refreshProjects = new ArrayList();
-		for (int i = 0; i < children.length; i++) {
-			IResourceDelta childDelta = children[i];
+		List<ModelProject> refreshProjects = new ArrayList<>();
+		for (IResourceDelta childDelta : children) {
 			if (isModelProject(childDelta.getResource())) {
 				if (isProjectChange(childDelta)) {
 					refreshAll = true;
 					break;
 				}
-				refreshProjects.add(ModelObject.create(childDelta.getResource()));
+				refreshProjects.add((ModelProject) ModelObject.create(childDelta.getResource()));
 			}
 		}
 		if (refreshAll || !refreshProjects.isEmpty()) {
 			if (refreshAll)
 				refreshViewer();
-			else 
-				refreshProjects((ModelProject[]) refreshProjects.toArray(new ModelProject[refreshProjects.size()]));
+			else
+				refreshProjects(refreshProjects.toArray(new ModelProject[refreshProjects.size()]));
 		}
 	}
 
 	private void refreshProjects(final ModelProject[] projects) {
 		Display.getDefault().asyncExec(() -> {
 			if (!getViewer().getControl().isDisposed()) {
-				for (int i = 0; i < projects.length; i++) {
-					ModelProject project = projects[i];
+				for (ModelProject project : projects) {
 					((AbstractTreeViewer)getViewer()).refresh(project, true);
 				}
 			}
@@ -231,16 +232,12 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		return viewer;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedChildren(java.lang.Object, java.util.Set)
-	 */
+	@Override
 	public void getPipelinedChildren(Object aParent, Set theCurrentChildren) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedElements(java.lang.Object, java.util.Set)
-	 */
+	@Override
 	public void getPipelinedElements(Object anInput, Set theCurrentElements) {
 		// Replace any model projects with a ModelProject
 		if (anInput instanceof IWorkspaceRoot) {
@@ -263,17 +260,13 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#getPipelinedParent(java.lang.Object, java.lang.Object)
-	 */
+	@Override
 	public Object getPipelinedParent(Object anObject, Object aSuggestedParent) {
 		// We're not changing the parenting of any resources
 		return aSuggestedParent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptAdd(org.eclipse.ui.navigator.PipelinedShapeModification)
-	 */
+	@Override
 	public PipelinedShapeModification interceptAdd(PipelinedShapeModification anAddModification) {
 		if (anAddModification.getParent() instanceof IWorkspaceRoot) {
 			for (Iterator iter = anAddModification.getChildren().iterator(); iter.hasNext();) {
@@ -293,30 +286,25 @@ public class ModelNavigatorContentProvider extends BaseWorkbenchContentProvider
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptRefresh(org.eclipse.ui.navigator.PipelinedViewerUpdate)
-	 */
+	@Override
 	public boolean interceptRefresh(PipelinedViewerUpdate aRefreshSynchronization) {
 		// No need to intercept the refresh
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptRemove(org.eclipse.ui.navigator.PipelinedShapeModification)
-	 */
+	@Override
 	public PipelinedShapeModification interceptRemove(PipelinedShapeModification aRemoveModification) {
 		// No need to intercept the remove
 		return aRemoveModification;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IPipelinedTreeContentProvider#interceptUpdate(org.eclipse.ui.navigator.PipelinedViewerUpdate)
-	 */
+	@Override
 	public boolean interceptUpdate(PipelinedViewerUpdate anUpdateSynchronization) {
 		// No need to intercept the update
 		return false;
 	}
 
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == SaveablesProvider.class) {
 			return adapter.cast(saveablesProvider);

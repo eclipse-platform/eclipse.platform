@@ -16,7 +16,11 @@ package org.eclipse.team.examples.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 public abstract class ModelContainer extends ModelResource {
@@ -24,16 +28,16 @@ public abstract class ModelContainer extends ModelResource {
 	protected ModelContainer(IContainer container) {
 		super(container);
 	}
-	
+
 	protected IContainer getContainer() {
 		return (IContainer)getResource();
 	}
-	
+
+	@Override
 	public ModelObject[] getChildren() throws CoreException {
 		IResource[] members = getContainer().members();
-		List result = new ArrayList();
-		for (int i = 0; i < members.length; i++) {
-			IResource resource = members[i];
+		List<ModelObject> result = new ArrayList<>();
+		for (IResource resource : members) {
 			if (resource instanceof IFolder) {
 				result.add(new ModelFolder((IFolder) resource));
 			} else if (ModelObjectDefinitionFile.isModFile(resource)) {
@@ -42,7 +46,7 @@ public abstract class ModelContainer extends ModelResource {
 				result.add(new ModelProject((IProject) resource));
 			}
 		}
-		return (ModelObject[]) result.toArray(new ModelObject[result.size()]);
+		return result.toArray(new ModelObject[result.size()]);
 	}
 
 }

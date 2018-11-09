@@ -12,9 +12,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic.ui;
- 
+
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -34,19 +33,19 @@ public class DisconnectAction extends PessimisticProviderAction {
 	/**
 	 * Collects the selected resources, extracts the projects selected
 	 * and disconnects the projects from their respective providers.
-	 * 
+	 *
 	 * @see IActionDelegate#run(IAction)
 	 */
+	@Override
 	public void run(IAction action) {
 		if (PessimisticFilesystemProviderPlugin.getInstance().isDebugging())
 			System.out.println("Disconnect");
-		
+
 		IResource[] resources= getSelectedResources();
 		if (resources == null || resources.length == 0)
 			return;
-		final Set projects= new HashSet(resources.length);
-		for(int i= 0; i < resources.length; i++) {
-			IResource resource= resources[i];
+		final Set<IProject> projects = new HashSet<>(resources.length);
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.PROJECT) {
 				projects.add(resource.getProject());
 			}
@@ -54,35 +53,36 @@ public class DisconnectAction extends PessimisticProviderAction {
 		if (!projects.isEmpty()) {
 			IRunnableWithProgress runnable= monitor -> {
 				IWorkspaceRunnable runnable1= monitor1 -> {
-				for (Iterator i= projects.iterator(); i.hasNext();) {
-					IProject project= (IProject) i.next();
-					PessimisticFilesystemProvider provider= getProvider(project);
-					if (provider != null) {
-						try {
-							RepositoryProvider.unmap(project);	
-						} catch (TeamException e1) {
-							PessimisticFilesystemProviderPlugin.getInstance().logError(e1, "Could not unmap " + project);
-						}						
+					for (Object element : projects) {
+						IProject project= (IProject) element;
+						PessimisticFilesystemProvider provider= getProvider(project);
+						if (provider != null) {
+							try {
+								RepositoryProvider.unmap(project);
+							} catch (TeamException e1) {
+								PessimisticFilesystemProviderPlugin.getInstance().logError(e1, "Could not unmap " + project);
+							}
+						}
 					}
-				}
-};
+				};
 				try {
 					ResourcesPlugin.getWorkspace().run(runnable1, monitor);
 				} catch (CoreException e2) {
-					PessimisticFilesystemProviderPlugin.getInstance().logError(e2, "Problem during unmap runnable");	
+					PessimisticFilesystemProviderPlugin.getInstance().logError(e2, "Problem during unmap runnable");
 				}
-				
+
 			};
 			runWithProgressDialog(runnable);
 		}
 	}
-	
+
 	/**
-	 * Answers <code>true</code> if and only if the resource is a 
+	 * Answers <code>true</code> if and only if the resource is a
 	 * project and is controlled by the pessimistic filesystem provider.
-	 * 
+	 *
 	 * @see PessimisticProviderAction#shouldEnableFor(IResource)
 	 */
+	@Override
 	protected boolean shouldEnableFor(IResource resource) {
 		if (resource.getType() == IResource.PROJECT) {
 			PessimisticFilesystemProvider provider= getProvider(resource);

@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.team.core.diff.FastDiffFilter;
 import org.eclipse.team.core.diff.IDiff;
-import org.eclipse.team.core.diff.IDiffVisitor;
 import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.core.mapping.IMergeContext;
@@ -48,7 +47,7 @@ import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
 import org.eclipse.team.examples.model.ModelProject;
 
 /**
- * A resource mapping merger for our example model 
+ * A resource mapping merger for our example model
  */
 public class ModelMerger extends ResourceMappingMerger {
 
@@ -61,13 +60,15 @@ public class ModelMerger extends ResourceMappingMerger {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#getModelProvider()
 	 */
+	@Override
 	protected org.eclipse.core.resources.mapping.ModelProvider getModelProvider() {
 		return provider;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#merge(org.eclipse.team.core.mapping.IMergeContext, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public IStatus merge(IMergeContext mergeContext, IProgressMonitor monitor) throws CoreException {
 		try {
 			IStatus status;
@@ -103,10 +104,9 @@ public class ModelMerger extends ResourceMappingMerger {
 	private IStatus mergeModelElements(IMergeContext mergeContext, IProgressMonitor monitor) throws CoreException {
 		try {
 			IDiff[] modeDiffs = getModDiffs(mergeContext);
-			List failures = new ArrayList();
+			List<IDiff> failures = new ArrayList<>();
 			monitor.beginTask(null, 100 * modeDiffs.length);
-			for (int i = 0; i < modeDiffs.length; i++) {
-				IDiff diff = modeDiffs[i];
+			for (IDiff diff : modeDiffs) {
 				if (!mergeModelElement(mergeContext, diff, SubMonitor.convert(monitor, 100))) {
 					failures.add(diff);
 				}
@@ -121,32 +121,29 @@ public class ModelMerger extends ResourceMappingMerger {
 	}
 
 	private ResourceMapping[] getMappings(List failures) {
-		List mappings = new ArrayList();
+		List<ResourceMapping> mappings = new ArrayList<>();
 		for (Iterator iter = failures.iterator(); iter.hasNext();) {
 			IDiff diff = (IDiff) iter.next();
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			ModelObjectDefinitionFile file = (ModelObjectDefinitionFile)ModelObject.create(resource);
 			mappings.add(file.getAdapter(ResourceMapping.class));
 		}
-		return (ResourceMapping[]) mappings.toArray(new ResourceMapping[mappings.size()]);
+		return mappings.toArray(new ResourceMapping[mappings.size()]);
 	}
 
 	/*
 	 * Return all the diffs for MOD files.
 	 */
 	private IDiff[] getModDiffs(IMergeContext mergeContext) {
-		final List result = new ArrayList();
-		mergeContext.getDiffTree().accept(getModelProjectTraversals(mergeContext), new IDiffVisitor() {
-			public boolean visit(IDiff diff) {
-				IResource resource = ResourceDiffTree.getResourceFor(diff);
-				if (ModelObjectDefinitionFile.isModFile(resource)) {
-					result.add(diff);
-				}
-				return true;
+		final List<IDiff> result = new ArrayList<>();
+		mergeContext.getDiffTree().accept(getModelProjectTraversals(mergeContext), diff -> {
+			IResource resource = ResourceDiffTree.getResourceFor(diff);
+			if (ModelObjectDefinitionFile.isModFile(resource)) {
+				result.add(diff);
 			}
-		
+			return true;
 		});
-		return (IDiff[]) result.toArray(new IDiff[result.size()]);
+		return result.toArray(new IDiff[result.size()]);
 	}
 
 	/*
@@ -154,9 +151,8 @@ public class ModelMerger extends ResourceMappingMerger {
 	 */
 	private ResourceTraversal[] getModelProjectTraversals(IMergeContext mergeContext) {
 		IProject[] scopeProjects = mergeContext.getScope().getProjects();
-		List modelProjects = new ArrayList();
-		for (int i = 0; i < scopeProjects.length; i++) {
-			IProject project = scopeProjects[i];
+		List<IResource> modelProjects = new ArrayList<>();
+		for (IProject project : scopeProjects) {
 			try {
 				if (ModelProject.isModProject(project)) {
 					modelProjects.add(project);
@@ -167,9 +163,9 @@ public class ModelMerger extends ResourceMappingMerger {
 		}
 		if (modelProjects.isEmpty())
 			return new ResourceTraversal[0];
-		return new ResourceTraversal[] { 
-			new ResourceTraversal((IResource[]) modelProjects.toArray(new IResource[modelProjects.size()]), 
-					IResource.DEPTH_INFINITE, IResource.NONE)	
+		return new ResourceTraversal[] {
+				new ResourceTraversal(modelProjects.toArray(new IResource[modelProjects.size()]),
+						IResource.DEPTH_INFINITE, IResource.NONE)
 		};
 	}
 
@@ -182,7 +178,7 @@ public class ModelMerger extends ResourceMappingMerger {
 			if (twd.getDirection() == IThreeWayDiff.INCOMING
 					|| twd.getDirection() == IThreeWayDiff.CONFLICTING) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
-				
+
 				// First, check if a change conflicts with a deletion
 				if (twd.getDirection() == IThreeWayDiff.CONFLICTING) {
 					if (!resource.exists())
@@ -190,7 +186,7 @@ public class ModelMerger extends ResourceMappingMerger {
 					if (((IResourceDiff)twd.getRemoteChange()).getAfterState() == null)
 						return false;
 				}
-				
+
 				// First determine the element files and element file changes
 				IResourceDiff remoteChange = (IResourceDiff)twd.getRemoteChange();
 				IResource[] localElements = getReferencedResources(resource);
@@ -199,21 +195,21 @@ public class ModelMerger extends ResourceMappingMerger {
 				IResource[] addedElements = getAddedElements(baseElements, remoteElements);
 				// Trick: The removed elements can be obtained by reversing the base and remote and looking for added
 				IResource[] removedElements = getAddedElements(remoteElements, baseElements);
-				
+
 				// Check to see if any removed elements have changed locally
 				if (hasOutgoingChanges(mergeContext, removedElements)) {
 					return false;
 				}
-				
+
 				// Now try to merge all the element files involved
-				Set elementFiles = new HashSet();
+				Set<IResource> elementFiles = new HashSet<>();
 				elementFiles.addAll(Arrays.asList(baseElements));
 				elementFiles.addAll(Arrays.asList(localElements));
 				elementFiles.addAll(Arrays.asList(remoteElements));
-				if (!mergeElementFiles(mergeContext, (IResource[]) elementFiles.toArray(new IResource[elementFiles.size()]), monitor)) {
+				if (!mergeElementFiles(mergeContext, elementFiles.toArray(new IResource[elementFiles.size()]), monitor)) {
 					return false;
 				}
-				
+
 				// Finally, merge the model definition
 				if (!resource.exists()) {
 					// This is a new model definition so just merge it
@@ -223,11 +219,11 @@ public class ModelMerger extends ResourceMappingMerger {
 				} else {
 					// Update the contents of the model definition file
 					ModelObjectDefinitionFile file = (ModelObjectDefinitionFile)ModelObject.create(resource);
-					elementFiles = new HashSet();
+					elementFiles = new HashSet<>();
 					elementFiles.addAll(Arrays.asList(localElements));
 					elementFiles.addAll(Arrays.asList(addedElements));
 					elementFiles.removeAll(Arrays.asList(removedElements));
-					file.setElements((IResource[]) elementFiles.toArray(new IResource[elementFiles.size()]));
+					file.setElements(elementFiles.toArray(new IResource[elementFiles.size()]));
 					// Let the merge context know we handled the file
 					mergeContext.markAsMerged(diff, false, monitor);
 				}
@@ -243,17 +239,17 @@ public class ModelMerger extends ResourceMappingMerger {
 	}
 
 	private IDiff[] getDiffs(IMergeContext mergeContext, IResource[] resources) {
-		Set diffSet = new HashSet();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		Set<IDiff> diffSet = new HashSet<>();
+		for (IResource resource : resources) {
 			IDiff[] diffs = mergeContext.getDiffTree().getDiffs(resource, IResource.DEPTH_ZERO);
 			diffSet.addAll(Arrays.asList(diffs));
 		}
-		return (IDiff[]) diffSet.toArray(new IDiff[diffSet.size()]);
+		return diffSet.toArray(new IDiff[diffSet.size()]);
 	}
 
 	private boolean hasOutgoingChanges(IMergeContext mergeContext, IResource[] removedElements) {
 		FastDiffFilter fastDiffFilter = new FastDiffFilter() {
+			@Override
 			public boolean select(IDiff diff) {
 				if (diff instanceof IThreeWayDiff) {
 					IThreeWayDiff twd = (IThreeWayDiff) diff;
@@ -262,27 +258,24 @@ public class ModelMerger extends ResourceMappingMerger {
 				return false;
 			}
 		};
-		for (int i = 0; i < removedElements.length; i++) {
-			IResource resource = removedElements[i];
+		for (IResource resource : removedElements) {
 			if  (mergeContext.getDiffTree().hasMatchingDiffs(resource.getFullPath(), fastDiffFilter))
-				return true;	
+				return true;
 		}
 		return false;
 	}
 
 	private IResource[] getAddedElements(IResource[] baseElements, IResource[] remoteElements) {
-		List result = new ArrayList();
-		Set base = new HashSet();
-		for (int i = 0; i < baseElements.length; i++) {
-			IResource resource = baseElements[i];
+		List<IResource> result = new ArrayList<>();
+		Set<IResource> base = new HashSet<>();
+		for (IResource resource : baseElements) {
 			base.add(resource);
 		}
-		for (int i = 0; i < remoteElements.length; i++) {
-			IResource resource = remoteElements[i];
+		for (IResource resource : remoteElements) {
 			if (!base.contains(resource))
 				result.add(resource);
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private IResource[] getReferencedResources(IResource resource) throws CoreException {
@@ -291,11 +284,11 @@ public class ModelMerger extends ResourceMappingMerger {
 		}
 		return new IResource[0];
 	}
-	
+
 	private IResource[] getReferencedResources(String projectName, IFileRevision revision, IProgressMonitor monitor) throws CoreException {
 		if (revision != null) {
 			return ModelObjectDefinitionFile.getReferencedResources(projectName, revision.getStorage(monitor));
-		} 
+		}
 		return new IResource[0];
 	}
 
