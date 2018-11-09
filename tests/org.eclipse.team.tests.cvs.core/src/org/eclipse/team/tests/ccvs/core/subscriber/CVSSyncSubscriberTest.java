@@ -34,7 +34,7 @@ import org.eclipse.team.tests.ccvs.ui.ModelParticipantSyncInfoSource;
 public abstract class CVSSyncSubscriberTest extends EclipseTest {
 
 	private ISubscriberChangeListener listener;
-	private List accumulatedTeamDeltas = new ArrayList();
+	private List<ISubscriberChangeEvent> accumulatedTeamDeltas = new ArrayList<>();
 	private static SyncInfoSource source = new ModelParticipantSyncInfoSource();
 
 	public CVSSyncSubscriberTest() {
@@ -131,13 +131,14 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 	}
 	
 	public static class ResourceCondition {
+		@SuppressWarnings("unused")
 		public boolean matches(IResource resource) throws CoreException, TeamException {
 			return true;
 		}
 	}
 	
 	protected IResource[] collect(IResource[] resources, final ResourceCondition condition, int depth) throws CoreException, TeamException {
-		final Set affected = new HashSet();
+		final Set<IResource> affected = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (resource.exists() || resource.isPhantom()) {
@@ -159,11 +160,11 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 				}
 			}
 		}
-		return (IResource[]) affected.toArray(new IResource[affected.size()]);
+		return affected.toArray(new IResource[affected.size()]);
 	}
 	
 	protected IResource[] collectAncestors(IResource[] resources, ResourceCondition condition) throws CoreException, TeamException {
-		Set affected = new HashSet();
+		Set<IResource> affected = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			while (resource.getType() != IResource.ROOT) {
@@ -175,12 +176,12 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 				resource = resource.getParent();
 			}
 		}
-		return (IResource[]) affected.toArray(new IResource[affected.size()]);
+		return affected.toArray(new IResource[affected.size()]);
 	}
 	
 	protected ISubscriberChangeEvent[] deregisterSubscriberListener(Subscriber subscriber) {
 		subscriber.removeListener(listener);
-		return (ISubscriberChangeEvent[]) accumulatedTeamDeltas.toArray(new SubscriberChangeEvent[accumulatedTeamDeltas.size()]);
+		return accumulatedTeamDeltas.toArray(new SubscriberChangeEvent[accumulatedTeamDeltas.size()]);
 	}
 
 	protected ISubscriberChangeListener registerSubscriberListener(Subscriber subscriber) {

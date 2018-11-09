@@ -106,6 +106,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		public IContainer getResource() {
 			return container;
 		}
+		@Override
 		public boolean equals(Object obj) {
 			if (obj == this)
 				return true;
@@ -115,12 +116,14 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 			}
 			return false;
 		}
+		@Override
 		public int hashCode() {
 			return getResource().hashCode();
 		}
-		public Object getAdapter(Class adapter) {
+		@Override
+		public <T> T getAdapter(Class<T> adapter) {
 			if (adapter == IResource.class || adapter == IContainer.class)
-				return container;
+				return adapter.cast(container);
 			return super.getAdapter(adapter);
 		}
 	}
@@ -130,18 +133,23 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		public ZeroDepthResourceMapping(ZeroDepthContainer container) {
 			this.container = container;
 		}
+		@Override
 		public Object getModelObject() {
 			return container;
 		}
+		@Override
 		public String getModelProviderId() {
 			return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 		}
+		@Override
 		public IProject[] getProjects() {
 			return new IProject[] { container.getResource().getProject() };
 		}
+		@Override
 		public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) {
 			return new ResourceTraversal[] { new ResourceTraversal(new IResource[] { container.getResource() }, IResource.DEPTH_ZERO, IResource.NONE)};
 		}
+		@Override
 		public boolean contains(ResourceMapping mapping) {
 			if (mapping.getModelProviderId().equals(this.getModelProviderId())) {
 				Object object = mapping.getModelObject();
@@ -163,10 +171,10 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 	public static ModelSynchronizeParticipant getParticipant(Subscriber subscriber) {
 		// show the sync view
 		ISynchronizeParticipantReference[] participants = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
-		for (int i = 0; i < participants.length; i++) {
+		for (ISynchronizeParticipantReference participant2 : participants) {
 			ISynchronizeParticipant participant;
 			try {
-				participant = participants[i].getParticipant();
+				participant = participant2.getParticipant();
 			} catch (TeamException e) {
 				return null;
 			}
@@ -183,10 +191,12 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return null;
 	}
 	
+	@Override
 	public void assertSyncEquals(String message, Subscriber subscriber, IResource resource, int syncKind) throws CoreException {
 		assertDiffKindEquals(message, subscriber, resource, SyncInfoToDiffConverter.asDiffFlags(syncKind));	
 	}
 	
+	@Override
 	protected IDiff getDiff(Subscriber subscriber, IResource resource) throws CoreException {
 		waitForCollectionToFinish(subscriber);
 		IDiff subscriberDiff =  subscriber.getDiff(resource);
@@ -195,12 +205,15 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return contextDiff;
 	}
 	
+	@Override
 	public void refresh(Subscriber subscriber, IResource[] resources) throws TeamException {
 		RefreshParticipantJob job = new RefreshModelParticipantJob(getParticipant(subscriber), "Refresh", "Refresh", Utils.getResourceMappings(resources), new IRefreshSubscriberListener() {
+			@Override
 			public void refreshStarted(IRefreshEvent event) {
 				// Do nothing
 			}
 		
+			@Override
 			public IWorkbenchAction refreshDone(IRefreshEvent event) {
 				// Do nothing
 				return null;
@@ -233,8 +246,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 			return false;
 		Job[] jobs = Job.getJobManager().find(family);
 		boolean waited = false;
-		for (int i = 0; i < jobs.length; i++) {
-			Job job = jobs[i];
+		for (Job job : jobs) {
 			while (job.getState() != Job.NONE) {
 				waited = true;
 				while (Display.getCurrent().readAndDispatch()) {}
@@ -329,6 +341,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return p.getContext().getDiffTree().getDiff(resource);
 	}
 
+	@Override
 	protected SyncInfo getSyncInfo(Subscriber subscriber, IResource resource) throws TeamException {
 		try {
 			IDiff diff = getDiff(subscriber, resource);
@@ -338,6 +351,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		}
 	}
 	
+	@Override
 	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {
 		super.assertProjectRemoved(subscriber, project);
 		waitForCollectionToFinish(subscriber);
@@ -365,6 +379,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return null;
 	}
 	
+	@Override
 	public CVSMergeSubscriber createMergeSubscriber(IProject project, CVSTag root, CVSTag branch) {
 		CVSMergeSubscriber mergeSubscriber = super.createMergeSubscriber(project, root, branch);
 		ModelSynchronizeParticipant participant = new ModelMergeParticipant(MergeSubscriberContext.createContext(createScopeManager(project, mergeSubscriber), mergeSubscriber));
@@ -372,6 +387,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return mergeSubscriber;
 	}
 
+	@Override
 	public Subscriber createWorkspaceSubscriber() throws TeamException {
 		ISynchronizeManager synchronizeManager = TeamUI.getSynchronizeManager();
 		ISynchronizeParticipantReference[] participants = synchronizeManager.get(WorkspaceModelParticipant.ID);
@@ -387,6 +403,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return subscriber;
 	}
 
+	@Override
 	public CVSCompareSubscriber createCompareSubscriber(IResource resource, CVSTag tag) {
 		CVSCompareSubscriber s = super.createCompareSubscriber(resource, tag);
 		ModelSynchronizeParticipant participant = new ModelCompareParticipant(CompareSubscriberContext.createContext(createScopeManager(resource, s), s));
@@ -394,12 +411,14 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		return s;
 	}
 	
+	@Override
 	public void disposeSubscriber(Subscriber subscriber) {
 		ISynchronizeParticipant participant = getParticipant(subscriber);
 		ISynchronizeManager synchronizeManager = TeamUI.getSynchronizeManager();
 		synchronizeManager.removeSynchronizeParticipants(new ISynchronizeParticipant[] {participant});
 	}
 	
+	@Override
 	public void mergeResources(Subscriber subscriber, IResource[] resources, boolean allowOverwrite) throws TeamException {
 		// Try a merge first
 		internalMergeResources(subscriber, resources, false);
@@ -415,8 +434,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 
 	private void assertInSync(Subscriber subscriber, IResource[] resources) throws CoreException {
 		waitForCollectionToFinish(subscriber);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			assertSyncEquals("merge failed", subscriber, resource, SyncInfo.IN_SYNC);
 		}
 		
@@ -424,9 +442,11 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 
 	private void internalMergeResources(Subscriber subscriber, IResource[] resources, final boolean allowOverwrite) throws TeamException {
 		ResourceMergeHandler handler = new ResourceMergeHandler(getConfiguration(subscriber), allowOverwrite) {
+			@Override
 			protected boolean promptToConfirm() {
 				return true;
 			}
+			@Override
 			protected void promptForNoChanges() {
 				// Do nothing
 			}
@@ -440,6 +460,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		waitForCollectionToFinish(subscriber);
 	}
 
+	@Override
 	public void markAsMerged(Subscriber subscriber, IResource[] resources) throws InvocationTargetException, InterruptedException, TeamException {
 		ResourceMarkAsMergedHandler handler = new ResourceMarkAsMergedHandler(getConfiguration(subscriber));
 		handler.updateEnablement(new StructuredSelection(resources));
@@ -451,14 +472,17 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		waitForCollectionToFinish(subscriber);
 	}
 	
+	@Override
 	public void updateResources(Subscriber subscriber, IResource[] resources) throws CoreException {
 		mergeResources(subscriber, resources, false);
 	}
 	
+	@Override
 	public void overrideAndUpdateResources(Subscriber subscriber, boolean shouldPrompt, IResource[] resources) throws CoreException {
 		mergeResources(subscriber, resources, true);
 	}
 	
+	@Override
 	public void commitResources(Subscriber subscriber, IResource[] resources) throws CoreException {
 		try {
 			new CommitWizard.AddAndCommitOperation(null, 
@@ -472,22 +496,20 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 	}
 
 	private IResource[] getChangedFiles(Subscriber subscriber, IResource[] resources) throws CoreException {
-		List result = new ArrayList();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		List<IResource> result = new ArrayList<>();
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.FILE) {
 				IDiff diff = subscriber.getDiff(resource);
 				if (diff != null)
 					result.add(resource);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 	
 	private IResource[] getNewResources(Subscriber subscriber, IResource[] resources) throws CoreException {
-		List result = new ArrayList();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		List<IResource> result = new ArrayList<>();
+		for (IResource resource : resources) {
 			IDiff diff = subscriber.getDiff(resource);
 			if (diff instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) diff;
@@ -498,22 +520,22 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private ResourceMapping[] asResourceMappings(IResource[] resources) {
-		List result = new ArrayList();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		List<ResourceMapping> result = new ArrayList<>();
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.FILE) {
 				result.add(Utils.getResourceMapping(resource));
 			} else {
 				result.add(new ZeroDepthResourceMapping(new ZeroDepthContainer((IContainer)resource)));
 			}
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 
+	@Override
 	public void overrideAndCommitResources(Subscriber subscriber, IResource[] resources) throws CoreException {
 		try {
 			markAsMerged(subscriber, resources);
@@ -548,6 +570,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
         throw new AssertionFailedError("The page for " + subscriber.getName() + " could not be retrieved");
 	}
 	
+	@Override
 	public void assertViewMatchesModel(Subscriber subscriber) {
 		waitForCollectionToFinish(subscriber);
 		TreeItem[] rootItems = getTreeItems(subscriber);
@@ -555,8 +578,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		ResourceDiffTree tree = (ResourceDiffTree)p.getContext().getDiffTree();
 		ResourceDiffTree copy = new ResourceDiffTree();
 		IDiff[] diffs = tree.getDiffs();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			copy.add(diff);
 		}
 		assertTreeMatchesDiffs(rootItems, copy);
@@ -573,8 +595,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
         if (items == null || items.length == 0) {
             return;
         }
-        for (int i = 0; i < items.length; i++) {
-			TreeItem item = items[i];
+        for (TreeItem item : items) {
 			assertItemInTree(item, copy);
 		}
 		

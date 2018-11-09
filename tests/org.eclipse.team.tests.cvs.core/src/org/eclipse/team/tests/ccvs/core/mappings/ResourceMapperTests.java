@@ -25,13 +25,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Test;
-
+import org.eclipse.core.internal.resources.mapping.SimpleResourceMapping;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.jface.util.Util;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.TeamStatus;
 import org.eclipse.team.core.diff.IDiff;
-import org.eclipse.team.core.diff.IDiffVisitor;
 import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.mapping.IResourceDiffTree;
 import org.eclipse.team.core.mapping.provider.ResourceDiffTree;
@@ -60,23 +71,7 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
 import org.eclipse.team.tests.ccvs.core.TeamCVSTestPlugin;
 
-import org.eclipse.core.internal.resources.mapping.SimpleResourceMapping;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
-import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.resources.mapping.ResourceTraversal;
-
-import org.eclipse.jface.util.Util;
+import junit.framework.Test;
 
 /**
  * Tests for using CVS operations with deep and shallow resource mappings.
@@ -166,21 +161,18 @@ public class ResourceMapperTests extends EclipseTest {
     private void assertAdded(ResourceMapping mapping, final SyncInfoTree set) throws CoreException {
         // Assert that all resources covered by the mapping are now under version control (i.e. are in-sync)
         // Remove the resources contained in the mapping from the set of unadded resources.
-        visit(mapping, ResourceMappingContext.LOCAL_CONTEXT, new IResourceVisitor() {
-            public boolean visit(IResource resource) throws CoreException {
-                ICVSResource cvsResource = getCVSResource(resource);
-                assertTrue("Resource was not added but should have been: " + resource.getFullPath(), 
-                        (cvsResource.isManaged() 
-                                || (cvsResource.isFolder() 
-                                        && ((ICVSFolder)cvsResource).isCVSFolder())));
-                set.remove(resource);
-                return true;
-            }
-        });
+        visit(mapping, ResourceMappingContext.LOCAL_CONTEXT, (IResourceVisitor) resource -> {
+		    ICVSResource cvsResource = getCVSResource(resource);
+		    assertTrue("Resource was not added but should have been: " + resource.getFullPath(), 
+		            (cvsResource.isManaged() 
+		                    || (cvsResource.isFolder() 
+		                            && ((ICVSFolder)cvsResource).isCVSFolder())));
+		    set.remove(resource);
+		    return true;
+		});
         // Assert that the remaining unadded resources are still unadded
         SyncInfo[] infos = set.getSyncInfos();
-        for (int i = 0; i < infos.length; i++) {
-            SyncInfo info = infos[i];
+        for (SyncInfo info : infos) {
             ICVSResource cvsResource = getCVSResource(info.getLocal());
             assertTrue("Resource was added but should not have been: " + info.getLocal().getFullPath(), !cvsResource.isManaged());
         }
@@ -194,12 +186,12 @@ public class ResourceMapperTests extends EclipseTest {
         // First, make sure the proper resources are tagged in the repo
         assertTagged(mapping, branch);
         // Now make sure the proper local files are tagged
-        final Map remotes = getTaggedRemoteFilesByPath(mapping, branch);
-        final Map locals = getTaggedLocalFilesByPath(mapping, branch);
-        for (Iterator iter = remotes.keySet().iterator(); iter.hasNext();) {
-            String key = (String)iter.next();
+		final Map<String, ICVSResource> remotes = getTaggedRemoteFilesByPath(mapping, branch);
+		final Map<String, ICVSFile> locals = getTaggedLocalFilesByPath(mapping, branch);
+		for (Iterator<String> iter = remotes.keySet().iterator(); iter.hasNext();) {
+            String key = iter.next();
             ICVSRemoteFile remote = (ICVSRemoteFile)remotes.get(key);
-            ICVSFile local = (ICVSFile)locals.get(key);
+            ICVSFile local = locals.get(key);
             assertNotNull("Remotely tagged resource was not tagged locally: " + remote.getRepositoryRelativePath(), local);
             assertEquals(local.getIResource().getParent().getFullPath(), remote, local, false, false /* include tags */);
             assertEquals("Remotely tagged resource was not tagged locally: " + remote.getRepositoryRelativePath(), branch, local.getSyncInfo().getTag());
@@ -207,89 +199,81 @@ public class ResourceMapperTests extends EclipseTest {
             iter.remove();
         }
         // The remote map should be empty after traversal
-        for (Iterator iter = remotes.keySet().iterator(); iter.hasNext();) {
-            String path = (String) iter.next();
+        for (Object element : remotes.keySet()) {
+            String path = (String) element;
             fail("Remote file " + path + " was tagged remotely but not locally.");
         }
         // The local map should be empty after traversal
-        for (Iterator iter = locals.keySet().iterator(); iter.hasNext();) {
-            String path = (String) iter.next();
+        for (Object element : locals.keySet()) {
+            String path = (String) element;
             fail("Local file " + path + " was tagged locally but not remotely.");
         }
     }
 
     private void assertTagged(ResourceMapping mapping, final CVSTag tag) throws CoreException {
-        final Map tagged = getTaggedRemoteFilesByPath(mapping, tag);
+		final Map<String, ICVSResource> tagged = getTaggedRemoteFilesByPath(mapping, tag);
         // Visit all the resources in the traversal and ensure that they are tagged
-        visit(mapping, ResourceMappingContext.LOCAL_CONTEXT, new IResourceVisitor() {
-            public boolean visit(IResource resource) throws CoreException {
-                if (resource.getType() == IResource.FILE) {
-                    ICVSRemoteFile file = popRemote(resource, tagged);
-                    assertNotNull("Resource was not tagged: " + resource.getFullPath(), file);
-                }
-                return true;
-            }
-        });
+        visit(mapping, ResourceMappingContext.LOCAL_CONTEXT, (IResourceVisitor) resource -> {
+		    if (resource.getType() == IResource.FILE) {
+		        ICVSRemoteFile file = popRemote(resource, tagged);
+		        assertNotNull("Resource was not tagged: " + resource.getFullPath(), file);
+		    }
+		    return true;
+		});
         
-        // The tagged map should be empty after traversal
-        for (Iterator iter = tagged.keySet().iterator(); iter.hasNext();) {
-            String path = (String) iter.next();
+		for (String path : tagged.keySet()) {
             fail("Remote file " + path + " was tagged but should not have been.");
-        }
+		}
     }
 
-    private Map getTaggedLocalFilesByPath(ResourceMapping mapping, final CVSTag branch) throws CoreException {
-        final Map tagged = new HashMap();
+	private Map<String, ICVSFile> getTaggedLocalFilesByPath(ResourceMapping mapping, final CVSTag branch)
+			throws CoreException {
+		final Map<String, ICVSFile> tagged = new HashMap<>();
         IProject[] projects = mapping.getProjects();
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
-            project.accept(new IResourceVisitor() {
-                public boolean visit(IResource resource) throws CoreException {
-                    if (resource.getType() == IResource.FILE) {
-                        ICVSFile file = (ICVSFile)getCVSResource(resource);
-                        ResourceSyncInfo info = file.getSyncInfo();
-                        if (info != null && info.getTag() != null && info.getTag().equals(branch)) {
-                            tagged.put(file.getRepositoryRelativePath(), file);
-                        }
-                    }
-                    return true;
-                }
-            });
+        for (IProject project : projects) {
+            project.accept(resource -> {
+			    if (resource.getType() == IResource.FILE) {
+			        ICVSFile file = (ICVSFile)getCVSResource(resource);
+			        ResourceSyncInfo info = file.getSyncInfo();
+			        if (info != null && info.getTag() != null && info.getTag().equals(branch)) {
+			            tagged.put(file.getRepositoryRelativePath(), file);
+			        }
+			    }
+			    return true;
+			});
         }
         return tagged;
     }
     
-    private Map getTaggedRemoteFilesByPath(ResourceMapping mapping, final CVSTag tag) throws CVSException {
+	private Map<String, ICVSResource> getTaggedRemoteFilesByPath(ResourceMapping mapping, final CVSTag tag)
+			throws CVSException {
         IProject[] projects = mapping.getProjects();
         ICVSResource[] remotes = getRemoteTrees(projects, tag);
-        final Map tagged = getFilesByPath(remotes);
+		final Map<String, ICVSResource> tagged = getFilesByPath(remotes);
         return tagged;
     }
 
     private ICVSResource[] getRemoteTrees(IProject[] projects, CVSTag tag) throws CVSException {
-        List result = new ArrayList();
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
+		List<ICVSResource> result = new ArrayList<>();
+        for (IProject project : projects) {
             RemoteFolderTree tree = RemoteFolderTreeBuilder.buildRemoteTree(getRepository(), project, tag, DEFAULT_MONITOR);
             result.add(tree);
         }
-        return (ICVSResource[]) result.toArray(new ICVSResource[result.size()]);
+        return result.toArray(new ICVSResource[result.size()]);
     }
 
-    private Map getFilesByPath(ICVSResource[] remotes) throws CVSException {
-        Map result = new HashMap();
-        for (int i = 0; i < remotes.length; i++) {
-            ICVSResource resource = remotes[i];
+	private Map<String, ICVSResource> getFilesByPath(ICVSResource[] remotes) throws CVSException {
+		Map<String, ICVSResource> result = new HashMap<>();
+        for (ICVSResource resource : remotes) {
             collectFiles(resource, result);
         }
         return result;
     }
 
-    private void collectFiles(ICVSResource resource, Map result) throws CVSException {
+	private void collectFiles(ICVSResource resource, Map<String, ICVSResource> result) throws CVSException {
         if (resource.isFolder()) {
             ICVSResource[] members = ((ICVSFolder)resource).members(ICVSFolder.ALL_EXISTING_MEMBERS);
-            for (int i = 0; i < members.length; i++) {
-                ICVSResource member = members[i];
+            for (ICVSResource member : members) {
                 collectFiles(member, result);
             }
         } else {
@@ -297,7 +281,7 @@ public class ResourceMapperTests extends EclipseTest {
         } 
     }
 
-    private ICVSRemoteFile popRemote(IResource resource, Map tagged) throws CVSException {
+	private ICVSRemoteFile popRemote(IResource resource, Map<String, ICVSResource> tagged) throws CVSException {
         ICVSResource cvsResource = getCVSResource(resource);
         ICVSRemoteFile remote = (ICVSRemoteFile)tagged.get(cvsResource.getRepositoryRelativePath());
         if (remote != null) {
@@ -309,25 +293,28 @@ public class ResourceMapperTests extends EclipseTest {
     private ResourceMapping asResourceMapping(final IResource[] resources, final int depth) {
         return new ResourceMapping() {
         	private Object object = new Object();
-            public Object getModelObject() {
+            @Override
+			public Object getModelObject() {
                 return object;
             }
-            public IProject[] getProjects() {
+            @Override
+			public IProject[] getProjects() {
                 return getProjects(resources);
             }
             private IProject[] getProjects(IResource[] resources) {
-                Set projects = new HashSet();
-                for (int i = 0; i < resources.length; i++) {
-                    IResource resource = resources[i];
+				Set<IProject> projects = new HashSet<>();
+                for (IResource resource : resources) {
                     projects.add(resource.getProject());
                 }
-                return (IProject[]) projects.toArray(new IProject[projects.size()]);
+                return projects.toArray(new IProject[projects.size()]);
             }
-            public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
+            @Override
+			public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
                 return new ResourceTraversal[] {
                         new ResourceTraversal(resources, depth, IResource.NONE)
                     };
             }
+			@Override
 			public String getModelProviderId() {
 				return "org.eclipse.team.tests.cvs.core.modelProvider";
 			}
@@ -336,25 +323,23 @@ public class ResourceMapperTests extends EclipseTest {
     
     private void assertUpdate(ResourceMapping mapper, final SyncInfoTree set) throws Exception {
         final Exception[] exception = new Exception[] { null };
-        visit(mapper, new SyncInfoSetTraveralContext(set), new IResourceVisitor() {
-            public boolean visit(IResource resource) throws CoreException {
-                SyncInfo info = set.getSyncInfo(resource);
-                if (info != null) {
-                    set.remove(resource);
-                    try {
-                        // Assert that the local sync info matches the remote info
-                        assertEquals(resource.getParent().getFullPath(), getCVSResource(resource), (ICVSResource)info.getRemote(), false, false);
-                    } catch (CVSException e) {
-                        exception[0] = e;
-                    } catch (CoreException e) {
-                        exception[0] = e;
-                    } catch (IOException e) {
-                        exception[0] = e;
-                    }
-                }
-                return true;
-            }
-        });
+        visit(mapper, new SyncInfoSetTraveralContext(set), (IResourceVisitor) resource -> {
+		    SyncInfo info = set.getSyncInfo(resource);
+		    if (info != null) {
+		        set.remove(resource);
+		        try {
+		            // Assert that the local sync info matches the remote info
+		            assertEquals(resource.getParent().getFullPath(), getCVSResource(resource), (ICVSResource)info.getRemote(), false, false);
+		        } catch (CVSException e1) {
+		            exception[0] = e1;
+		        } catch (CoreException e2) {
+		            exception[0] = e2;
+		        } catch (IOException e3) {
+		            exception[0] = e3;
+		        }
+		    }
+		    return true;
+		});
         if (exception[0] != null) throw exception[0];
         
         // check the the state of the remaining resources has not changed
@@ -362,16 +347,14 @@ public class ResourceMapperTests extends EclipseTest {
     }
 
     private void assertCommit(ResourceMapping mapper, final SyncInfoTree set) throws CoreException {
-        visit(mapper, new SyncInfoSetTraveralContext(set), new IResourceVisitor() {
-            public boolean visit(IResource resource) throws CoreException {
-                SyncInfo info = set.getSyncInfo(resource);
-                if (info != null) {
-                    set.remove(resource);
-                    assertTrue("Committed resource is not in-sync: " + resource.getFullPath(), getSyncInfo(resource).getKind() == SyncInfo.IN_SYNC);
-                }
-                return true;
-            }
-        });
+        visit(mapper, new SyncInfoSetTraveralContext(set), (IResourceVisitor) resource -> {
+		    SyncInfo info = set.getSyncInfo(resource);
+		    if (info != null) {
+		        set.remove(resource);
+		        assertTrue("Committed resource is not in-sync: " + resource.getFullPath(), getSyncInfo(resource).getKind() == SyncInfo.IN_SYNC);
+		    }
+		    return true;
+		});
         // check the the state of the remaining resources has not changed
         assertUnchanged(set);
     }
@@ -383,8 +366,7 @@ public class ResourceMapperTests extends EclipseTest {
         //TODO: Need to refresh the subscriber since flush of remote state is deep
         CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().refresh(set.getResources(), IResource.DEPTH_ZERO, DEFAULT_MONITOR);
         SyncInfo[] infos = set.getSyncInfos();
-        for (int i = 0; i < infos.length; i++) {
-            SyncInfo info = infos[i];
+        for (SyncInfo info : infos) {
             assertUnchanged(info);
         }
     }
@@ -416,7 +398,8 @@ public class ResourceMapperTests extends EclipseTest {
     private SyncInfoTree getUnaddedResource(ResourceMapping mapping) {
         SyncInfoTree set = getAllOutOfSync(mapping.getProjects());
         set.selectNodes(new FastSyncInfoFilter() {
-            public boolean select(SyncInfo info) {
+            @Override
+			public boolean select(SyncInfo info) {
                 try {
                     if (info.getLocal().getType() != IResource.PROJECT && info.getRemote() == null && info.getBase() == null) {
                         ICVSResource resource = getCVSResource(info.getLocal());
@@ -439,44 +422,42 @@ public class ResourceMapperTests extends EclipseTest {
     
     private IResourceDiffTree getAllDiffs(IProject[] projects) throws CoreException {
         final ResourceDiffTree tree = new ResourceDiffTree();
-        CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().accept(projects, IResource.DEPTH_INFINITE, new IDiffVisitor() {
-			public boolean visit(IDiff delta) {
-				tree.add(delta);
-				return true;
-			}
+        CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().accept(projects, IResource.DEPTH_INFINITE, delta -> {
+			tree.add(delta);
+			return true;
 		});
         return tree;
     }
     
     private void visit(ResourceMapping mapper, ResourceMappingContext context, IResourceVisitor visitor) throws CoreException {
         ResourceTraversal[] traversals = mapper.getTraversals(context, null);
-        for (int i = 0; i < traversals.length; i++) {
-            ResourceTraversal traversal = traversals[i];
+        for (ResourceTraversal traversal : traversals) {
             visit(traversal, context, visitor);
         }
     }
 
     private void visit(ResourceTraversal traversal, ResourceMappingContext context, IResourceVisitor visitor) throws CoreException {
         IResource[] resources = traversal.getResources();
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
+        for (IResource resource : resources) {
             visit(resource, visitor, context, traversal.getDepth());
         }
     }
 
-    private void visit(IResource resource, IResourceVisitor visitor, ResourceMappingContext context, int depth) throws CoreException {
-       if (!visitor.visit(resource) || depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE) return;
-       Set members = new HashSet();
-       members.addAll(Arrays.asList(((IContainer)resource).members(false)));
-       if (context instanceof RemoteResourceMappingContext) {
-           RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;  
-           members.addAll(Arrays.asList(remoteContext.fetchMembers((IContainer)resource, DEFAULT_MONITOR)));
-       }
-       for (Iterator iter = members.iterator(); iter.hasNext();) {
-           IResource member = (IResource) iter.next();
-           visit(member, visitor, context, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
-       }
-    }
+	private void visit(IResource resource, IResourceVisitor visitor, ResourceMappingContext context, int depth)
+			throws CoreException {
+		if (!visitor.visit(resource) || depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE)
+			return;
+		Set<IResource> members = new HashSet<>();
+		members.addAll(Arrays.asList(((IContainer) resource).members(false)));
+		if (context instanceof RemoteResourceMappingContext) {
+			RemoteResourceMappingContext remoteContext = (RemoteResourceMappingContext) context;
+			members.addAll(Arrays.asList(remoteContext.fetchMembers((IContainer) resource, DEFAULT_MONITOR)));
+		}
+		for (IResource member : members) {
+			visit(member, visitor, context,
+					depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
+		}
+	}
     
 	private boolean isTimeout(Throwable e) {
 		if (e == null) {
@@ -737,8 +718,7 @@ public class ResourceMapperTests extends EclipseTest {
 
 	private void ensureRemoteCached(IResourceDiffTree tree) {
 		IResource[] resources = tree.getAffectedResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IDiff node = tree.getDiff(resource);
 			if (node instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -758,8 +738,7 @@ public class ResourceMapperTests extends EclipseTest {
 	
 	private void ensureBaseCached(IResourceDiffTree tree, boolean includeOutgoing) throws TeamException, CoreException {
 		IResource[] resources = tree.getAffectedResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IDiff node = tree.getDiff(resource);
 			if (node instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) node;
@@ -795,8 +774,7 @@ public class ResourceMapperTests extends EclipseTest {
 		ResourceVariantCache cache = ResourceVariantCache.getCache(CVSProviderPlugin.ID);
 		if (cache != null) {
 			ResourceVariantCacheEntry[] entries = cache.getEntries();
-			for (int i = 0; i < entries.length; i++) {
-				ResourceVariantCacheEntry entry = entries[i];
+			for (ResourceVariantCacheEntry entry : entries) {
 				entry.dispose();
 			}
 		}

@@ -68,11 +68,6 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		return suite;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#setUp()
-	 */
 	protected void setUp() throws Exception {
 		Shell shell = new Shell(Display.getCurrent());
 		Composite composite = new Composite(shell, SWT.NONE);
@@ -94,7 +89,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		return null;
 	}
 
-	public void testSingleSelection() throws Exception {
+	public void testSingleSelection() {
 		button1.setEnabled(true);
 		button1.setSelection(true);
 		group.add(FORMAT_UNIFIED, button1);
@@ -114,7 +109,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		assertEquals(false, button3.getSelection());
 	}
 
-	public void testMultipleSelection() throws Exception {
+	public void testMultipleSelection() {
 		button1.setEnabled(true);
 		button1.setSelection(true);
 		group.add(FORMAT_UNIFIED, button1);
@@ -134,7 +129,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		assertEquals(true, button3.getSelection());
 	}
 
-	public void testSelectDisabled1() throws Exception {
+	public void testSelectDisabled1() {
 		button1.setEnabled(true);
 		button1.setSelection(false);
 		group.add(FORMAT_UNIFIED, button1);
@@ -155,7 +150,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		assertTrue(getButtonForCode(group.getSelected()).getSelection());
 	}
 
-	public void testSelectDisabled2() throws Exception {
+	public void testSelectDisabled2() {
 		button1.setSelection(false);
 		group.add(FORMAT_UNIFIED, button1);
 
@@ -182,7 +177,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		assertTrue(getButtonForCode(group.getSelected()).getSelection());
 	}
 
-	public void testSelectDisabled3() throws Exception {
+	public void testSelectDisabled3() {
 		button1.setSelection(true);
 		group.add(FORMAT_UNIFIED, button1);
 
@@ -210,7 +205,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		assertTrue(getButtonForCode(group.getSelected()).getSelection());
 	}
 
-	public void testSetEnablement() throws Exception {
+	public void testSetEnablement() {
 		button1.setSelection(true);
 		group.add(FORMAT_UNIFIED, button1);
 
@@ -241,7 +236,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 	private class MyRadioButtonGroup {
 
 		Object groupObject;
-		Class clazz;
+		Class<?> clazz;
 
 		public MyRadioButtonGroup() {
 
@@ -250,26 +245,18 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 						null, null, false);
 				clazz = Class
 						.forName("org.eclipse.team.internal.ccvs.ui.wizards.GenerateDiffFileWizard$RadioButtonGroup");
-				Constructor[] constructors = clazz.getDeclaredConstructors();
+				Constructor<?>[] constructors = clazz.getDeclaredConstructors();
 				constructors[0].setAccessible(true);
 				groupObject = constructors[0]
 						.newInstance(new Object[] { wizard });
-			} catch (ClassNotFoundException e) {
-				fail(e.getMessage());
-			} catch (InstantiationException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 		}
 
 		public void add(int buttonCode, Button button) {
 			try {
-				Class partypes[] = new Class[2];
+				Class<?> partypes[] = new Class[2];
 				partypes[0] = Integer.TYPE;
 				partypes[1] = Button.class;
 				Method method = clazz.getMethod("add", partypes);
@@ -278,36 +265,20 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				arglist[0] = Integer.valueOf(buttonCode);
 				arglist[1] = button;
 				method.invoke(groupObject, arglist);
-			} catch (SecurityException e) {
-				fail(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 		}
 
 		public int getSelected() {
 			try {
-				Class partypes[] = new Class[0];
+				Class<?> partypes[] = new Class[0];
 				Method method = clazz.getMethod("getSelected", partypes);
 				method.setAccessible(true);
 				Object arglist[] = new Object[0];
 				Object retobj = method.invoke(groupObject, arglist);
 				return ((Integer) retobj).intValue();
-			} catch (SecurityException e) {
-				fail(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 			return 0;
@@ -315,21 +286,13 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 
 		public int selectEnabledOnly() {
 			try {
-				Class partypes[] = new Class[0];
+				Class<?> partypes[] = new Class[0];
 				Method method = clazz.getMethod("selectEnabledOnly", partypes);
 				method.setAccessible(true);
 				Object arglist[] = new Object[0];
 				Object retobj = method.invoke(groupObject, arglist);
 				return ((Integer) retobj).intValue();
-			} catch (SecurityException e) {
-				fail(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 			return 0;
@@ -338,7 +301,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		public void setEnablement(boolean enabled, int[] buttonsToChange,
 				int defaultSelection) {
 			try {
-				Class partypes[] = new Class[3];
+				Class<?> partypes[] = new Class[3];
 				partypes[0] = Boolean.TYPE;
 				partypes[1] = buttonsToChange.getClass();
 				partypes[2] = Integer.TYPE;
@@ -349,22 +312,14 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				arglist[1] = buttonsToChange;
 				arglist[2] = Integer.valueOf(defaultSelection);
 				method.invoke(groupObject, arglist);
-			} catch (SecurityException e) {
-				fail(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 		}
 
 		public void setEnablement(boolean enabled, int[] buttonsToChange) {
 			try {
-				Class partypes[] = new Class[2];
+				Class<?> partypes[] = new Class[2];
 				partypes[0] = Boolean.TYPE;
 				partypes[1] = buttonsToChange.getClass();
 				Method method = clazz.getMethod("setEnablement", partypes);
@@ -373,15 +328,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 				arglist[0] = Boolean.valueOf(enabled);
 				arglist[1] = buttonsToChange;
 				method.invoke(groupObject, arglist);
-			} catch (SecurityException e) {
-				fail(e.getMessage());
-			} catch (NoSuchMethodException e) {
-				fail(e.getMessage());
-			} catch (IllegalArgumentException e) {
-				fail(e.getMessage());
-			} catch (IllegalAccessException e) {
-				fail(e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}
 		}
@@ -389,22 +336,13 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 	}
 
 	static private int getFieldValue(String fieldName) {
-		Class clazz;
 		try {
-			clazz = Class
+			Class<?> clazz = Class
 					.forName("org.eclipse.team.internal.ccvs.ui.wizards.GenerateDiffFileWizard$OptionsPage");
 			Field field = clazz.getField(fieldName);
 			field.setAccessible(true);
 			return ((Integer) field.get(null)).intValue();
-		} catch (ClassNotFoundException e) {
-			fail(e.getMessage());
-		} catch (SecurityException e) {
-			fail(e.getMessage());
-		} catch (NoSuchFieldException e) {
-			fail(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			fail(e.getMessage());
-		} catch (IllegalAccessException e) {
+		} catch (ClassNotFoundException | SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 			fail(e.getMessage());
 		}
 		return -1;

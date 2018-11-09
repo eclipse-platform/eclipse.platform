@@ -92,7 +92,7 @@ public class CreatePatchTest extends EclipseTest {
 	}
 
 	//TODO Temporary switched off, see Bug 400540
-	public void _testCreateWorkspacePatch() throws Exception {
+	public void _testCreateWorkspacePatch() {
 		copyIntoWorkspace("exp_addition.txt", "addition.txt");
 
 		openGenerateDiffFileWizard(new IResource[] { testProject });

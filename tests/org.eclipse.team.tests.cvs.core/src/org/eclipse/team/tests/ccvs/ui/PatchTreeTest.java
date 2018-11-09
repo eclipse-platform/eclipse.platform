@@ -13,13 +13,11 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.ui;
 
-import junit.framework.Test;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
@@ -42,12 +40,14 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import junit.framework.Test;
+
 public class PatchTreeTest extends EclipseTest {
 
 	public void testChangeSetModelSorter() throws CoreException {
 		MyTreeViewer tree = new MyTreeViewer();
 		tree.init();
-		ViewerSorter sorter = tree.getSorter();
+		ViewerComparator sorter = tree.getSorter();
 
 		UnchangedResourceModelElement elementZ = new UnchangedResourceModelElement(
 				null, getUniqueTestProject("z"));

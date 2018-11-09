@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -60,8 +61,8 @@ public class EnablementTest extends EclipseTest {
 		return createProject(actionName, new String[] { "file.txt", "folder1/", "folder1/a.txt" });
 	}
 	
-	protected List getManagedResources(IProject testProject, boolean includeFolders, boolean multiple) {
-		List result = new ArrayList();
+	protected List<IResource> getManagedResources(IProject testProject, boolean includeFolders, boolean multiple) {
+		List<IResource> result = new ArrayList<>();
 		if (includeFolders) {
 			result.add(testProject.getFolder("folder1"));
 		} else {
@@ -73,8 +74,8 @@ public class EnablementTest extends EclipseTest {
 		return result;
 	}
 	
-	protected List getAddedResources(IProject testProject) throws CoreException, TeamException {
-		List result = new ArrayList();
+	protected List<IResource> getAddedResources(IProject testProject) throws CoreException, TeamException {
+		List<IResource> result = new ArrayList<>();
 		IFile file = testProject.getFile("added.txt");
 		if (!file.exists()) {
 			addResources(testProject, new String[] {"added.txt"}, false);
@@ -83,8 +84,8 @@ public class EnablementTest extends EclipseTest {
 		return result;
 	}
 	
-	protected List getIgnoredResources(IProject testProject) throws CoreException, TeamException {
-		List result = new ArrayList();
+	protected List<IResource> getIgnoredResources(IProject testProject) throws CoreException, TeamException {
+		List<IResource> result = new ArrayList<>();
 		IFile file = testProject.getFile("ignored.txt");
 		if (!file.exists()) {
 			file.create(getRandomContents(), false, null);
@@ -100,8 +101,8 @@ public class EnablementTest extends EclipseTest {
 		return result;
 	}
 	
-	protected List getUnmanagedResources(IProject testProject) throws CoreException, TeamException {
-		List result = new ArrayList();
+	protected List<IResource> getUnmanagedResources(IProject testProject) throws CoreException, TeamException {
+		List<IResource> result = new ArrayList<>();
 		IFile file = testProject.getFile("unmanaged.txt");
 		if (!file.exists()) {
 			file.create(getRandomContents(), false, null);
@@ -115,8 +116,8 @@ public class EnablementTest extends EclipseTest {
 	 * @param project
 	 * @return Collection
 	 */
-	protected List getResourceWithUnmanagedParent(IProject project) throws CoreException {
-		List result = new ArrayList();
+	protected List<IResource> getResourceWithUnmanagedParent(IProject project) throws CoreException {
+		List<IResource> result = new ArrayList<>();
 		IFolder folder = project.getFolder("newFolder");
 		if(!folder.exists()) folder.create(false, true, null);
 		IFile file = folder.getFile("unmanaged.txt");
@@ -127,8 +128,8 @@ public class EnablementTest extends EclipseTest {
 		return result;
 	}
 		
-	protected List getOverlappingResources(IProject testProject, boolean includeFiles) {
-		List result = new ArrayList();
+	protected List<IResource> getOverlappingResources(IProject testProject, boolean includeFiles) {
+		List<IResource> result = new ArrayList<>();
 		result.add(testProject);
 		result.add(testProject.getFolder("folder1"));
 		if (includeFiles) {
@@ -137,7 +138,7 @@ public class EnablementTest extends EclipseTest {
 		return result;
 	}
 
-	protected ISelection asSelection(List resources) {
+	protected ISelection asSelection(List<IResource> resources) {
 		return new StructuredSelection(resources);
 	}
 	

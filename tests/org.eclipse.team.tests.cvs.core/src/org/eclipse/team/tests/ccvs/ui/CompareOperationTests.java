@@ -13,21 +13,29 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.ui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
+import org.eclipse.team.internal.ccvs.core.ICVSFile;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteFile;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder;
+import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFolder;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.ui.operations.RemoteCompareOperation;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.ui.IWorkbenchPart;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 public class CompareOperationTests extends CVSOperationTest {
 
@@ -41,6 +49,7 @@ public class CompareOperationTests extends CVSOperationTest {
 		/*
 		 * Override to prevent compare editor from opening and to capture the results
 		 */
+		@Override
 		protected void openCompareEditor(CompareTreeBuilder builder) {
 			this.leftTree = builder.getLeftTree();
 			this.rightTree = builder.getRightTree();
@@ -86,23 +95,20 @@ public class CompareOperationTests extends CVSOperationTest {
 		IResource[] filesWithoutRevisions = getResources(project, filePathsWithoutRevisions);
 		ICVSRemoteFile[] files= getAllFiles(folder);
 		assertTrue("The number of remote files with differences does not match the expected number", files.length == (filePathsWithoutRevisions.length + filePathsWithRevisions.length));
-		for (int i = 0; i < files.length; i++) {
-			ICVSRemoteFile remoteFile = files[i];
-			for (int j = 0; j < filesWithRevisions.length; j++) {
-				IResource local = filesWithRevisions[j];
+		for (ICVSRemoteFile remoteFile : files) {
+			for (IResource local : filesWithRevisions) {
 				ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)local);
 				if (cvsFile.getRepositoryRelativePath().equals(remoteFile.getRepositoryRelativePath())) {
 					ResourceSyncInfo info = cvsFile.getSyncInfo();
 					assertNotNull(info);
 					String localRevision = info.getRevision();
 					assertNotNull(localRevision);
-					String remoteRevision = files[i].getRevision();
+					String remoteRevision = remoteFile.getRevision();
 					assertNotNull(remoteRevision);
 					assertEquals("Revisions do not match for " + local.getProjectRelativePath(), localRevision, remoteRevision);
 				}
 			}
-			for (int j = 0; j < filesWithoutRevisions.length; j++) {
-				IResource local = filesWithoutRevisions[j];
+			for (IResource local : filesWithoutRevisions) {
 				ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor((IFile)local);
 				if (cvsFile.getRepositoryRelativePath().equals(remoteFile.getRepositoryRelativePath())) {
 					ResourceSyncInfo info = cvsFile.getSyncInfo();
@@ -116,19 +122,18 @@ public class CompareOperationTests extends CVSOperationTest {
 	}
 	
 	private ICVSRemoteFile[] getAllFiles(ICVSRemoteFolder folder) {
-		List result = new ArrayList();
+		List<ICVSRemoteFile> result = new ArrayList<>();
 		ICVSRemoteResource[] children = ((RemoteFolder)folder).getChildren();
 		if (children != null) {
-			for (int i = 0; i < children.length; i++) {
-				ICVSRemoteResource resource = children[i];
+			for (ICVSRemoteResource resource : children) {
 				if (resource.isContainer()) {
 					result.addAll(Arrays.asList(getAllFiles((ICVSRemoteFolder)resource)));
 				} else {
-					result.add(resource);
+					result.add((ICVSRemoteFile) resource);
 				}
 			}
 		}
-		return (ICVSRemoteFile[]) result.toArray(new ICVSRemoteFile[result.size()]);
+		return result.toArray(new ICVSRemoteFile[result.size()]);
 	}
 
 	public void testCompareWithLatest() throws TeamException, CoreException {

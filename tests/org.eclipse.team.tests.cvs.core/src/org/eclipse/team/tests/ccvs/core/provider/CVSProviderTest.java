@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Test;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -53,6 +51,8 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.ICVSUIConstants;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+
+import junit.framework.Test;
 
 /*
  * This class tests both the CVSProvider and the CVSTeamProvider
@@ -386,7 +386,7 @@ public class CVSProviderTest extends EclipseTest {
 		assertHasKSubstOption(project, "added.xtxt", CVSProviderPlugin.DEFAULT_TEXT_KSUBST_OPTION);
 		
 		// change keyword substitution
-		Map map = new HashMap();
+		Map<IFile, KSubstOption> map = new HashMap<>();
 		map.put(project.getFile("binary.xbin"), ksubst);
 		map.put(project.getFile("added.xbin"), ksubst);
 		map.put(project.getFile("text.xtxt"), ksubst);
@@ -434,7 +434,7 @@ public class CVSProviderTest extends EclipseTest {
 		assertHasKSubstOption(project, "dummy", Command.KSUBST_BINARY);
 	
 		// change keyword substitution
-		Map map = new HashMap();
+		Map<IFile, KSubstOption> map = new HashMap<>();
 		map.put(project.getFile("dummy"), ksubst);
 		
 		// change from binary to text should commit a new file with 
@@ -515,7 +515,7 @@ public class CVSProviderTest extends EclipseTest {
 			setContentsAndEnsureModified(project.getFile("a.txt"), "line 1");
 		    setContentsAndEnsureModified(project.getFile("b.txt"), ("line 1" + EOL + "line 2" + EOL + "line3"));
 
-			Map kMode = new HashMap();
+		Map<IFile, KSubstOption> kMode = new HashMap<>();
 			kMode.put(project.getFile("a.txt"), Command.KSUBST_TEXT);
 			kMode.put(project.getFile("b.txt"), Command.KSUBST_TEXT);
 			getProvider(project).setKeywordSubstitution(kMode, "", null);

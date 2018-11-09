@@ -38,18 +38,20 @@ public class ModelFile extends ModelObject {
 			IStorage storage) {
 		if (storage == null)
 			return new IResource[0];
-		List result = new ArrayList();
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		List<IResource> result = new ArrayList<>();
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	public ModelFile(IFile file) {
 		super(file);
 	}
 
+	@Override
 	public ModelObject[] getChildren() throws CoreException {
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		String name = super.getName();
 		int index = name.lastIndexOf(".");

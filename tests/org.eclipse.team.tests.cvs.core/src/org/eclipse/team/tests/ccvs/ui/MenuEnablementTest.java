@@ -16,9 +16,6 @@ package org.eclipse.team.tests.ccvs.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -27,9 +24,27 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
-import org.eclipse.team.internal.ccvs.ui.actions.*;
+import org.eclipse.team.internal.ccvs.ui.actions.AddAction;
+import org.eclipse.team.internal.ccvs.ui.actions.BranchAction;
+import org.eclipse.team.internal.ccvs.ui.actions.CommitAction;
+import org.eclipse.team.internal.ccvs.ui.actions.CompareWithRevisionAction;
+import org.eclipse.team.internal.ccvs.ui.actions.CompareWithTagAction;
+import org.eclipse.team.internal.ccvs.ui.actions.GenerateDiffFileAction;
+import org.eclipse.team.internal.ccvs.ui.actions.IgnoreAction;
+import org.eclipse.team.internal.ccvs.ui.actions.MergeAction;
+import org.eclipse.team.internal.ccvs.ui.actions.ReplaceWithRemoteAction;
+import org.eclipse.team.internal.ccvs.ui.actions.ReplaceWithSelectableTagAction;
+import org.eclipse.team.internal.ccvs.ui.actions.SetKeywordSubstitutionAction;
+import org.eclipse.team.internal.ccvs.ui.actions.ShowResourceInHistoryAction;
+import org.eclipse.team.internal.ccvs.ui.actions.SyncAction;
+import org.eclipse.team.internal.ccvs.ui.actions.TagLocalAction;
+import org.eclipse.team.internal.ccvs.ui.actions.UnmanageAction;
+import org.eclipse.team.internal.ccvs.ui.actions.UpdateAction;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.ui.IActionDelegate;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Test the menu enablement code for the CVS menus
@@ -75,7 +90,7 @@ public class MenuEnablementTest extends EnablementTest {
 	 * @param b
 	 */
 	private void assertEnablement(IActionDelegate action, IProject project, int kind, boolean expectedEnablement) throws CoreException, TeamException {
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		boolean multiple = (kind & SINGLE_ONLY) == 0;
 		boolean includeFolders = ((kind & FOLDERS) > 0) || ((kind & FILES) == 0);
 		if ((kind & MANAGED) > 0) {
@@ -124,13 +139,13 @@ public class MenuEnablementTest extends EnablementTest {
 	}
 	
 	private void assertDisabledForFolderFileOverlap(IActionDelegate action, IProject project) {
-		List resources = getOverlappingResources(project, true /* include files */);
+		List<IResource> resources = getOverlappingResources(project, true /* include files */);
 		assertEnablement(action, asSelection(resources), false /* enabled */);
 	}
 	
 	private void assertDisabledForClosedProject(IActionDelegate action, IProject project) throws CoreException {
 		project.close(null);
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		resources.add(project);
 		assertEnablement(action, asSelection(resources), false /* enabled */);
 		project.open(null);
@@ -140,13 +155,13 @@ public class MenuEnablementTest extends EnablementTest {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("Non-CVS");
 		if (!project.exists())
 			project.create(null);
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		resources.add(project);
 		assertEnablement(action, asSelection(resources), false /* enabled */);
 	}
 	
 	private void assertEnabledForFolderOnlyOverlap(IActionDelegate action, IProject project) {
-		List resources = getOverlappingResources(project, false /* include files */);
+		List<IResource> resources = getOverlappingResources(project, false /* include files */);
 		assertEnablement(action, asSelection(resources), true /* enabled */);
 	}
 	
@@ -363,7 +378,7 @@ public class MenuEnablementTest extends EnablementTest {
 		IActionDelegate action = new UnmanageAction();
 		IProject project = createTestProject(action);
 		assertDisabledForCommonReasons(action, project);
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		resources.add(project);
 		ensureAllSyncInfoLoaded(project);
 		assertEnablement(action, asSelection(resources), true);

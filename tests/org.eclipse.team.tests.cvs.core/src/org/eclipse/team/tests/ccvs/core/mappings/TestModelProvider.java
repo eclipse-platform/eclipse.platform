@@ -19,13 +19,15 @@ import org.eclipse.team.core.mapping.ResourceMappingMerger;
 
 public class TestModelProvider extends ModelProvider {
 
-	public Object getAdapter(Class adapter) {
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IResourceMappingMerger.class) {
-			return new ResourceMappingMerger() {			
+			return adapter.cast(new ResourceMappingMerger() {
+				@Override
 				protected ModelProvider getModelProvider() {
 					return TestModelProvider.this;
-				}	
-			};
+				}
+			});
 		}
 		return super.getAdapter(adapter);
 	}

@@ -20,9 +20,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.util.Util;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.subscribers.ISubscriberChangeEvent;
@@ -46,20 +55,8 @@ import org.eclipse.team.tests.ccvs.core.mappings.model.ModelProject;
 import org.eclipse.team.tests.ccvs.core.mappings.model.mapping.ModelResourceMapping;
 import org.eclipse.team.tests.ccvs.ui.ModelParticipantSyncInfoSource;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.ResourcesPlugin;
-
-import org.eclipse.jface.util.Util;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * This class tests the CVSWorkspaceSubscriber
@@ -91,6 +88,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	
+	@Override
 	protected boolean isFailOnSyncInfoMismatch() {
 		return CVSTestSetup.FAIL_ON_BAD_DIFF ;
 	}
@@ -104,6 +102,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	 * The shareProject method is invoked when creating new projects.
 	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#shareProject(org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	protected void shareProject(final IProject project) throws TeamException, CoreException {
 		mapNewProject(project);
 		// Everything should be outgoing addition except he project
@@ -120,27 +119,19 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 			assertTrue(kind == SyncInfo.IN_SYNC);
 			return;
 		}
-		rootResource.accept(new IResourceVisitor() {
-			public boolean visit(IResource resource) throws CoreException {
-				assertSyncEquals(rootResource.getName(), getSubscriber(), resource, kind);
-				return true;
-			}
+		rootResource.accept((IResourceVisitor) resource -> {
+			assertSyncEquals(rootResource.getName(), getSubscriber(), resource, kind);
+			return true;
 		}, depth, true);
 	}
 	
 	private void assertAllSyncEquals(IResource[] resources, int kind, int depth) throws CoreException {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			assertAllSyncEquals(resource, kind, depth);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * 
-	 * Override to check that the proper sync state is achieved.
-	 * 
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#setContentsAndEnsureModified(org.eclipse.core.resources.IFile)
-	 */
+	@Override
 	protected void setContentsAndEnsureModified(IFile file) throws CoreException, TeamException {
 		// The delta will indicate to any interested parties that the sync state of the
 		// file has changed
@@ -163,12 +154,11 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		assertSyncEquals(message, getSubscriber(), resource, syncKind);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#addResources(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	protected void addResources(IResource[] resources) throws TeamException, CVSException, CoreException {
 		// first, get affected children
 		IResource[] affectedChildren = collect(resources, new ResourceCondition() {
+			@Override
 			public boolean matches(IResource resource) throws TeamException {
 				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 				return (!cvsResource.isManaged() && !cvsResource.isIgnored());
@@ -176,22 +166,22 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		}, IResource.DEPTH_INFINITE);
 		// also get affected parents
 		IResource[] affectedParents = collectAncestors(resources, new ResourceCondition() {
+			@Override
 			public boolean matches(IResource resource) throws CoreException, TeamException {
 				if (resource.getType() == IResource.PROJECT) return false;
 				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 				return (!cvsResource.isManaged() && !cvsResource.isIgnored());
 			}
 		});
-		Set affected = new HashSet();
+		Set<IResource> affected = new HashSet<>();
 		affected.addAll(Arrays.asList(affectedChildren));
 		affected.addAll(Arrays.asList(affectedParents));
 		
 		registerSubscriberListener();
 		super.addResources(resources);
 		ISubscriberChangeEvent[] changes = deregisterSubscriberListener();
-		assertSyncChangesMatch(changes, (IResource[]) affected.toArray(new IResource[affected.size()]));
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		assertSyncChangesMatch(changes, affected.toArray(new IResource[affected.size()]));
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.FILE) {
 				assertSyncEquals("Add", resource, SyncInfo.OUTGOING | SyncInfo.ADDITION);
 			} else {
@@ -209,14 +199,14 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#deleteResources(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	protected void deleteResources(IResource[] resources) throws TeamException, CoreException {
 		IResource[] affected = collect(resources, new ResourceCondition(), IResource.DEPTH_INFINITE);
 		registerSubscriberListener();
 		super.deleteResources(resources);
 		ISubscriberChangeEvent[] changes = deregisterSubscriberListener();
 		assertSyncChangesMatch(changes, affected);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			// After deletion, folders should be in-sync while files should be outgoing deletions
 			if (resource.getType() == IResource.FILE) {
 				assertSyncEquals("Delete", resource, SyncInfo.OUTGOING | SyncInfo.DELETION);
@@ -233,8 +223,10 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#commitResources(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	protected void commitResources(IResource[] resources, int depth) throws TeamException, CVSException, CoreException {
 		IResource[] affected = collect(resources, new ResourceCondition() {
+				@Override
 				public boolean matches(IResource resource) throws CoreException, TeamException {
 					ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 					return (!cvsResource.isFolder() && cvsResource.isManaged() && cvsResource.isModified(DEFAULT_MONITOR));
@@ -244,8 +236,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		super.commitResources(resources, depth);
 		ISubscriberChangeEvent[] changes = deregisterSubscriberListener();
 		assertSyncChangesMatch(changes, affected);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (resource.exists())
 				assertSyncEquals("Commit", resource, SyncInfo.IN_SYNC);
 		}
@@ -254,8 +245,10 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#unmanageResources(org.eclipse.core.resources.IResource[])
 	 */
+	@Override
 	protected void unmanageResources(IResource[] resources) throws CoreException, TeamException {
 		IResource[] affected = collect(resources, new ResourceCondition() {
+				@Override
 				public boolean matches(IResource resource) throws CoreException, TeamException {
 					ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 					return (cvsResource.isManaged());
@@ -265,8 +258,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		super.unmanageResources(resources);
 		ISubscriberChangeEvent[] changes = deregisterSubscriberListener();
 		assertSyncChangesMatch(changes, affected);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (resource.exists())
 				assertSyncEquals("Unmanage", resource, SyncInfo.IN_SYNC);
 		}

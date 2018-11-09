@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.zip.ZipException;
 
 import org.eclipse.core.commands.ExecutionException;
@@ -43,7 +42,7 @@ import org.eclipse.ui.handlers.IHandlerService;
  */
 public abstract class BenchmarkTest extends EclipseTest {
 
-	private HashMap groups;
+	private HashMap<String, PerformanceMeter> groups;
     private PerformanceMeter currentMeter;
 
     protected BenchmarkTest() {
@@ -90,21 +89,19 @@ public abstract class BenchmarkTest extends EclipseTest {
     }
 	
 	protected void setupGroups(String[] performance_groups, String globalName, boolean global) {
-        groups = new HashMap();
+		groups = new HashMap<>();
 		Performance perf = Performance.getDefault();
 		PerformanceMeter meter = null;
 		if (global) {
 			// Use one meter for all groups - provides a single timing result
 			meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(this));
-			for (int i = 0; i < performance_groups.length; i++) {
-				String suffix = performance_groups[i];
+			for (String suffix : performance_groups) {
 				groups.put(suffix, meter);
 			}
 			perf.tagAsGlobalSummary(meter, globalName, Dimension.ELAPSED_PROCESS);
 		} else {
 			// Use a meter for each group, provides fine grain results
-			for (int i = 0; i < performance_groups.length; i++) {
-				String suffix = performance_groups[i];
+			for (String suffix : performance_groups) {
 				meter = perf.createPerformanceMeter(perf.getDefaultScenarioId(this) + suffix);
                 Performance.getDefault().setComment(meter, Performance.EXPLAINS_DEGRADATION_COMMENT, "The current setup for the CVS test does not provide reliable timings. Only consistent test failures over time can be considered significant.");
 				groups.put(suffix, meter);
@@ -120,31 +117,30 @@ public abstract class BenchmarkTest extends EclipseTest {
 	 * started and stopped using startGroup/endGroup
 	 */
     protected void commitGroups(boolean global) {
-        for (Iterator iter = groups.values().iterator(); iter.hasNext();) {
-            PerformanceMeter meter = (PerformanceMeter) iter.next();
+		for (PerformanceMeter meter : groups.values()) {
             meter.commit();
             if(global)
             	break;
         }
     }
     
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
     	super.setUp();
     	setModelSync(false);
     }
     
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         try {
             if (groups != null) {
                 Performance perf = Performance.getDefault();
                 try {
-                    for (Iterator iter = groups.values().iterator(); iter.hasNext();) {
-                        PerformanceMeter meter = (PerformanceMeter) iter.next();
-                        perf.assertPerformanceInRelativeBand(meter, Dimension.ELAPSED_PROCESS, -100, 20);
+					for (PerformanceMeter meter : groups.values()) {
+						perf.assertPerformanceInRelativeBand(meter, Dimension.ELAPSED_PROCESS, -100, 20);
                     }
                 } finally {
-                    for (Iterator iter = groups.values().iterator(); iter.hasNext();) {
-                        PerformanceMeter meter = (PerformanceMeter) iter.next();
+					for (PerformanceMeter meter : groups.values()) {
                         meter.dispose();
                     }
                 }
@@ -161,7 +157,7 @@ public abstract class BenchmarkTest extends EclipseTest {
      */
     protected void startGroup(String key) {
         assertNull(currentMeter);
-        currentMeter = (PerformanceMeter)groups.get(key);
+        currentMeter = groups.get(key);
         currentMeter.start();
     }
     
@@ -225,10 +221,7 @@ public abstract class BenchmarkTest extends EclipseTest {
 		try {
 			handlerService.executeCommand(
 					"org.eclipse.ui.window.closeAllPerspectives", null);
-		} catch (ExecutionException e1) {
-		} catch (NotDefinedException e1) {
-		} catch (NotEnabledException e1) {
-		} catch (NotHandledException e1) {
+		} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e1) {
 		}
         // Now open our empty perspective
         PlatformUI.getWorkbench().showPerspective("org.eclipse.team.tests.cvs.ui.perspective1", PlatformUI.getWorkbench().getActiveWorkbenchWindow());

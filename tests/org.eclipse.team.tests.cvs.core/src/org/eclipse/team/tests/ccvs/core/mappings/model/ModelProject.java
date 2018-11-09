@@ -37,12 +37,12 @@ public class ModelProject extends ModelObject {
 			throws CoreException {
 		IProjectDescription description = project.getDescription();
 		String[] natureIds = description.getNatureIds();
-		List result = new ArrayList();
-		for (int i = 0; i < natureIds.length; i++) {
-			result.add(natureIds[i]);
+		List<String> result = new ArrayList<>();
+		for (String natureId : natureIds) {
+			result.add(natureId);
 		}
 		result.add(ModelNature.NATURE_ID);
-		description.setNatureIds((String[]) result.toArray(new String[result
+		description.setNatureIds(result.toArray(new String[result
 				.size()]));
 		project.setDescription(description, monitor);
 	}
@@ -55,11 +55,11 @@ public class ModelProject extends ModelObject {
 		return (IContainer) getResource();
 	}
 
+	@Override
 	public ModelObject[] getChildren() throws CoreException {
 		IResource[] members = getContainer().members();
-		List result = new ArrayList();
-		for (int i = 0; i < members.length; i++) {
-			IResource resource = members[i];
+		List<ModelObject> result = new ArrayList<>();
+		for (IResource resource : members) {
 			if (ModelFile.isModFile(resource)) {
 				result.add(new ModelFile((IFile) resource));
 			} else if (resource instanceof IProject
@@ -67,7 +67,7 @@ public class ModelProject extends ModelObject {
 				result.add(new ModelProject((IProject) resource));
 			}
 		}
-		return (ModelObject[]) result.toArray(new ModelObject[result.size()]);
+		return result.toArray(new ModelObject[result.size()]);
 	}
 
 }

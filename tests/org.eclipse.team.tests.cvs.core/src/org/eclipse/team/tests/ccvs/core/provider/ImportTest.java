@@ -61,17 +61,17 @@ public class ImportTest extends EclipseTest {
 	// Assert that the two containers have equal contents
 	protected void assertEquals(IContainer container1, IContainer container2) throws CoreException {
 		assertEquals(container1.getName(), container2.getName());
-		List members1 = new ArrayList();
+		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
 		members1.remove(container1.findMember("CVS"));
 		
-		List members2 = new ArrayList();
+		List<IResource> members2 = new ArrayList<>();
 		members2.addAll(Arrays.asList(container2.members()));
 		members2.remove(container2.findMember("CVS"));
 		
 		assertTrue(members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
-			IResource member1 = (IResource)members1.get(i);
+			IResource member1 = members1.get(i);
 			IResource member2 = container2.findMember(member1.getName());
 			assertNotNull(member2);
 			assertEquals(member1, member2);
@@ -87,19 +87,19 @@ public class ImportTest extends EclipseTest {
 	// Assert that the two projects have equal contents ignoreing the project name
 	// and the .vcm_meta file
 	protected void assertEquals(IProject container1, IProject container2) throws CoreException {
-		List members1 = new ArrayList();
+		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));
 		members1.remove(container1.findMember(".project"));
 		members1.remove(container1.findMember("CVS"));
 		
-		List members2 = new ArrayList();
+		List<IResource> members2 = new ArrayList<>();
 		members2.addAll(Arrays.asList(container2.members()));
 		members2.remove(container2.findMember(".project"));
 		members2.remove(container2.findMember("CVS"));
 		
 		assertTrue("Number of children differs for " + container1.getFullPath(), members1.size() == members2.size());
 		for (int i=0;i<members1.size();i++) {
-			IResource member1 = (IResource)members1.get(i);
+			IResource member1 = members1.get(i);
 			IResource member2 = container2.findMember(member1.getName());
 			assertNotNull(member2);
 			assertEquals(member1, member2);

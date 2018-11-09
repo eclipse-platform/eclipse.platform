@@ -16,20 +16,15 @@ package org.eclipse.team.tests.ccvs.core.cvsresources;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +43,9 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Tests the EclipseSynchronizer.
@@ -608,8 +606,8 @@ public class EclipseSynchronizerTest extends EclipseTest {
 			"hassync.txt", "deleted_nosync.txt", "deleted.txt", "hassync/", "deleted/", "deleted_nosync/" }, true);
 
 		// initially none of the resources have sync info and they all exist
-		Object[] ignores = new Object[] { project1.getFolder("CVS") };
-		Set expectedMembers = new HashSet(Arrays.asList(project1.members()));
+		IResource[] ignores = new IResource[] { project1.getFolder("CVS") };
+		Set<IResource> expectedMembers = new HashSet<>(Arrays.asList(project1.members()));
 		members = sync.members(project1);
 		assertBijection(expectedMembers.toArray(), members, ignores);
 		
@@ -680,20 +678,19 @@ public class EclipseSynchronizerTest extends EclipseTest {
 	/**
 	 * Assert that there exists a bijection between the elements of the arrays.
 	 */
-	private void assertBijection(Object[] a, Object[] b, Object[] ignores) {
-		List listA = new LinkedList(Arrays.asList(a));
-		List listB = new LinkedList(Arrays.asList(b));
+	private <T> void assertBijection(T[] a, T[] b, T[] ignores) {
+		List<T> listA = new LinkedList<>(Arrays.asList(a));
+		List<T> listB = new LinkedList<>(Arrays.asList(b));
 		if (ignores != null) {
-			for (int i = 0; i < ignores.length; ++i ) {
-				listA.remove(ignores[i]);
-				listB.remove(ignores[i]);
+			for (Object ignore : ignores) {
+				listA.remove(ignore);
+				listB.remove(ignore);
 			}
 		}
 		assertEquals("Should have same number of elements", listA.size(), listB.size());
-		for (Iterator it = listB.iterator(); it.hasNext();) {
-			Object obj = it.next();
-			assertTrue("Should contain the same elements", listA.contains(obj));
-			listA.remove(obj);
+		for (T t : listB) {
+			assertTrue("Should contain the same elements", listA.contains(t));
+			listA.remove(t);
 		}
 	}
 	
@@ -706,22 +703,21 @@ public class EclipseSynchronizerTest extends EclipseTest {
 	 * @param resourcePaths paths of resources to be generated
 	 * @return the create project
 	 */
+	@Override
 	protected IProject createProject(String[] resourcePaths) throws CoreException {
 		// Create the project and build the resources
 		IProject project = getUniqueTestProject(getName());
 		buildResources(project, resourcePaths, true);
 		
 		// Associate dummy sync info with al create resources
-		project.accept(new IResourceVisitor() {
-			public boolean visit(IResource resource) throws CoreException {
-				if (resource.getType() != IResource.PROJECT) {
-					sync.setResourceSync(resource, dummyResourceSync(resource));
-				}
-				if (resource.getType() != IResource.FILE) {
-					sync.setFolderSync((IContainer)resource, dummyFolderSync((IContainer)resource));
-				}
-				return true;
+		project.accept(resource -> {
+			if (resource.getType() != IResource.PROJECT) {
+				sync.setResourceSync(resource, dummyResourceSync(resource));
 			}
+			if (resource.getType() != IResource.FILE) {
+				sync.setFolderSync((IContainer)resource, dummyFolderSync((IContainer)resource));
+			}
+			return true;
 		});
 		
 		// Map the project to CVS so the Move/Delete hook works
@@ -737,8 +733,7 @@ public class EclipseSynchronizerTest extends EclipseTest {
 	 * @throws CVSException
 	 */
 	protected void assertHasSyncInfo(IProject project, String[] resourcePaths) throws CVSException {
-		for (int i = 0; i < resourcePaths.length; i++) {
-			String path = resourcePaths[i];
+		for (String path : resourcePaths) {
 			IResource resource = findResource(project, path);
 			assertHasSyncInfo(resource);
 		}
@@ -779,8 +774,7 @@ public class EclipseSynchronizerTest extends EclipseTest {
 	 * @throws CVSException
 	 */
 	private void assertHasNoSyncInfo(IProject project, String[] resourcePaths) throws CoreException {
-		for (int i = 0; i < resourcePaths.length; i++) {
-			String path = resourcePaths[i];
+		for (String path : resourcePaths) {
 			IResource resource = findResource(project, path);
 			assertHasNoSyncInfo(resource);
 		}
@@ -791,8 +785,7 @@ public class EclipseSynchronizerTest extends EclipseTest {
 		if (resource.getType() != IResource.FILE) {
 			assertNull("Folder should not have folder sync but does: " + resource.getProjectRelativePath(), sync.getFolderSync((IContainer)resource));
 			IResource[] members = ((IContainer)resource).members();
-			for (int i = 0; i < members.length; i++) {
-				IResource child = members[i];
+			for (IResource child : members) {
 				assertHasNoSyncInfo(child);
 			}
 		}

@@ -53,7 +53,7 @@ public class ConcurrencyTests extends EclipseTest {
 	public void testBackgroundMemberFetch() throws CoreException, InvocationTargetException, InterruptedException {
 		IProject project = createProject("testBackgroundMemberFetch", new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder2/", "folder2/a.txt", "folder2/folder3/", "folder2/folder3/b.txt", "folder2/folder3/c.txt"});
 		ICVSRemoteFolder folder = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
-		final List result = new ArrayList(); 
+		final List<Object> result = new ArrayList<>(); 
 		final boolean[] done = new boolean[] { false };
 		IElementCollector collector = new IElementCollector() {
 			public void add(Object element, IProgressMonitor monitor) {
@@ -83,7 +83,7 @@ public class ConcurrencyTests extends EclipseTest {
 			}
 		}
 		assertTrue(result.size() == project.members().length);
-		for (Iterator iter = result.iterator(); iter.hasNext();) {
+		for (Iterator<Object> iter = result.iterator(); iter.hasNext();) {
 			ICVSRemoteResource remote = (ICVSRemoteResource) iter.next();
 			IResource local = project.findMember(remote.getName());
 			assertNotNull(local);

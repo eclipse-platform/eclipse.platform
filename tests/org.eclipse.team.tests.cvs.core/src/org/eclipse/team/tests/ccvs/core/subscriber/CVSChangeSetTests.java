@@ -65,7 +65,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
             String message = messages[i];
             ChangeSetDiffNode node = getCommitSetFor(root, message);
             assertNotNull("The commit set for '" + message + "' is not in the sync view", node);
-            List filesInSet = new ArrayList();
+            List<IResource> filesInSet = new ArrayList<>();
             getFileChildren(node, filesInSet);
             assertTrue("The number of files in the set do not match the expected number", files[i].length == filesInSet.size());
             for (int j = 0; j < files[i].length; j++) {
@@ -80,14 +80,14 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
         SubscriberParticipantPage page = (SubscriberParticipantPage)SubscriberParticipantSyncInfoSource.getSyncViewPage(participant);
         TreeViewer viewer = (TreeViewer)page.getViewer();
         Tree tree = viewer.getTree();
-        List nodeList = new ArrayList();
+        List<ChangeSetDiffNode> nodeList = new ArrayList<>();
         nodeList.addAll(Arrays.asList(nodes));
         TreeItem[] items = tree.getItems();
         removeTreeItemsFromList(nodeList, items);
         assertTrue("Not all nodes are visible in the view", nodeList.isEmpty());
     }
 
-    private void removeTreeItemsFromList(List nodeList, TreeItem[] items) {
+    private void removeTreeItemsFromList(List<?> nodeList, TreeItem[] items) {
         for (int i = 0; i < items.length; i++) {
             TreeItem item = items[i];
             nodeList.remove(item.getData());
@@ -97,7 +97,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
     }
 
     private ChangeSetDiffNode[] getCheckedInChangeSetNodes(ISynchronizeModelElement root) {
-        List result = new ArrayList();
+        List<ChangeSetDiffNode> result = new ArrayList<>();
         IDiffElement[] children = root.getChildren();
         for (int i = 0; i < children.length; i++) {
             IDiffElement element = children[i];
@@ -108,11 +108,11 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
                 }
             }
         }
-        return (ChangeSetDiffNode[]) result.toArray(new ChangeSetDiffNode[result.size()]);
+        return result.toArray(new ChangeSetDiffNode[result.size()]);
     }
     
     private ChangeSetDiffNode[] getActiveChangeSetNodes(ISynchronizeModelElement root) {
-        List result = new ArrayList();
+        List<ChangeSetDiffNode> result = new ArrayList<>();
         IDiffElement[] children = root.getChildren();
         for (int i = 0; i < children.length; i++) {
             IDiffElement element = children[i];
@@ -123,13 +123,13 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
                 }
             }
         }
-        return (ChangeSetDiffNode[]) result.toArray(new ChangeSetDiffNode[result.size()]);
+        return result.toArray(new ChangeSetDiffNode[result.size()]);
     }
 
     /**
      * Adds IFiles to the list
      */
-    private void getFileChildren(ISynchronizeModelElement node, List list) {
+    private void getFileChildren(ISynchronizeModelElement node, List<IResource> list) {
         IResource resource = node.getResource();
         if (resource != null && resource.getType() == IResource.FILE) {
             list.add(resource);
@@ -260,9 +260,9 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
     }
 
     private IResource[] getOutOfSyncResources(ISynchronizeModelElement element) {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<SyncInfo> arrayList = new ArrayList<>();
         getOutOfSync(element, arrayList);
-        SyncInfo[] infos = (SyncInfo[]) arrayList.toArray(new SyncInfo[arrayList.size()]);
+        SyncInfo[] infos = arrayList.toArray(new SyncInfo[arrayList.size()]);
         IResource[] resources = getResources(infos);
         return resources;
     }
@@ -275,7 +275,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
         return resources;
     }
 
-    private void getOutOfSync(ISynchronizeModelElement node, List list) {
+    private void getOutOfSync(ISynchronizeModelElement node, List<SyncInfo> list) {
         SyncInfo info = getSyncInfo(node);
         if (info != null && info.getKind() != SyncInfo.IN_SYNC) {
             list.add(info);
@@ -332,12 +332,12 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
      */
     private void assertInRootSet(IResource[] resources) throws CoreException {
         ISynchronizeModelElement[] nodes = getNonChangeSetRoots(getModelRoot(((SubscriberChangeSetManager)getActiveChangeSetManager()).getSubscriber()));
-        List list = new ArrayList();
+        List<SyncInfo> list = new ArrayList<>();
         for (int i = 0; i < nodes.length; i++) {
             ISynchronizeModelElement element = nodes[i];
             getOutOfSync(element, list);
         }
-        IResource[] outOfSync = getResources((SyncInfo[]) list.toArray(new SyncInfo[list.size()]));
+        IResource[] outOfSync = getResources(list.toArray(new SyncInfo[list.size()]));
         // Only require that the expected resources are there but allow extra.
         // This is required because of junk left over from previous tests.
         // This means there is a bug somewhere. But where?
@@ -346,15 +346,15 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
     }
     
     private ISynchronizeModelElement[] getNonChangeSetRoots(ISynchronizeModelElement modelRoot) {
-        List result = new ArrayList();
+        List<ISynchronizeModelElement> result = new ArrayList<>();
         IDiffElement[] children = modelRoot.getChildren();
         for (int i = 0; i < children.length; i++) {
             IDiffElement element = children[i];
             if (!(element instanceof ChangeSetDiffNode)) {
-                result.add(element);
+                result.add((ISynchronizeModelElement) element);
             }
         }
-        return (ISynchronizeModelElement[]) result.toArray(new ISynchronizeModelElement[result.size()]);
+        return result.toArray(new ISynchronizeModelElement[result.size()]);
     }
 
     public void testSimpleCommit() throws CoreException {

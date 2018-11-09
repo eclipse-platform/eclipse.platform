@@ -17,8 +17,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Test;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -34,11 +32,14 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
 import org.eclipse.team.internal.ccvs.ui.repo.RepositoryRoot;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
 
+import junit.framework.Test;
+
 public class RepositoryRootTest extends EclipseTest {
 
 	private RepositoryRoot repositoryRoot;
 	private RepositoryManager repositoryManager;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		repositoryManager = CVSUIPlugin.getPlugin().getRepositoryManager();
@@ -53,9 +54,9 @@ public class RepositoryRootTest extends EclipseTest {
 
 	private void clearRepositoryRootCache() {
 		String remotePaths[] = repositoryRoot.getKnownRemotePaths();
-		for (int i = 0; i < remotePaths.length; i++) {
-			repositoryRoot.removeTags(remotePaths[i],
-					repositoryRoot.getAllKnownTags(remotePaths[i]));
+		for (String remotePath : remotePaths) {
+			repositoryRoot.removeTags(remotePath,
+					repositoryRoot.getAllKnownTags(remotePath));
 		}
 		assertEquals("Repository cache was not cleaned.", 0,
 				repositoryRoot.getAllKnownTags().length);
@@ -85,21 +86,21 @@ public class RepositoryRootTest extends EclipseTest {
 		return project;
 	}
 
-	private void assertTags(List knownTags, CVSTag[] tagsToHave,
+	private void assertTags(List<CVSTag> knownTags, CVSTag[] tagsToHave,
 			CVSTag[] tagsNotToHave) {
-		for (int i = 0; i < tagsToHave.length; i++) {
-			assertTrue("Missing tag " + tagsToHave[i].getName(),
-					knownTags.contains(tagsToHave[i]));
+		for (CVSTag element : tagsToHave) {
+			assertTrue("Missing tag " + element.getName(),
+					knownTags.contains(element));
 		}
-		for (int i = 0; i < tagsNotToHave.length; i++) {
-			assertFalse("Extraneous tag " + tagsNotToHave[i].getName(),
-					knownTags.contains(tagsNotToHave[i]));
+		for (CVSTag element : tagsNotToHave) {
+			assertFalse("Extraneous tag " + element.getName(),
+					knownTags.contains(element));
 		}
 	}
 
 	private void assertProjectTags(CVSCacheTestData data) throws CVSException {
 		// Root should contain all known tags
-		List knownTags = Arrays.asList(repositoryRoot.getAllKnownTags());
+		List<CVSTag> knownTags = Arrays.asList(repositoryRoot.getAllKnownTags());
 		assertTags(knownTags,
 				new CVSTag[] { data.branch_1, data.branch_2, data.branch_3,
 						data.version_1, data.version_2, data.version_3 },
@@ -181,7 +182,7 @@ public class RepositoryRootTest extends EclipseTest {
 		refreshTags(data.project2);
 		assertProjectTags(data);
 		// verify that parent module has tags from both projects
-		List knownTags = Arrays.asList(repositoryManager
+		List<CVSTag> knownTags = Arrays.asList(repositoryManager
 				.getKnownTags(submoduleFolder));
 		assertTags(knownTags,
 				new CVSTag[] { data.branch_1, data.branch_2, data.branch_3,
@@ -218,7 +219,7 @@ public class RepositoryRootTest extends EclipseTest {
 		assertProjectTags(data);
 		// verify that parent modules have tags from subordinate project, but
 		// not the other project
-		List knownTags = Arrays.asList(repositoryManager
+		List<CVSTag> knownTags = Arrays.asList(repositoryManager
 				.getKnownTags(submoduleFolder1));
 		assertTags(knownTags, new CVSTag[] { data.branch_1, data.branch_2,
 				data.version_1, data.version_2 }, new CVSTag[] { data.branch_3,
@@ -284,7 +285,8 @@ public class RepositoryRootTest extends EclipseTest {
 				subProject2Branch, true);
 		// check if subProjects have tags from superProject but not tags from
 		// each other, check if superProject has tags from all subProjects
-		List knownTags = Arrays.asList(repositoryManager
+		List<CVSTag> knownTags = Arrays
+				.asList(repositoryManager
 				.getKnownTags(CVSWorkspaceRoot.getCVSFolderFor(superProject)));
 		assertTags(knownTags, new CVSTag[] { superProjectBranch,
 				superProjectVersion, subProject1Branch, subProject1Version,
@@ -334,7 +336,7 @@ public class RepositoryRootTest extends EclipseTest {
 		makeBranch(new IResource[] { project }, version1, branch1, true);
 		// verify if project's tags are known for subfolder
 		ICVSFolder cvsFolder = CVSWorkspaceRoot.getCVSFolderFor(folder);
-		List knownTags = Arrays.asList(repositoryManager
+		List<CVSTag> knownTags = Arrays.asList(repositoryManager
 				.getKnownTags(cvsFolder));
 		assertTags(knownTags, new CVSTag[] { branch1, version1 }, new CVSTag[0]);
 		// verify if removing tags from subfolder is correctly handled
@@ -383,10 +385,9 @@ public class RepositoryRootTest extends EclipseTest {
 
 		// cache should contain branches from auto refresh file, but no branches
 		// from other files
-		List knownTags = Arrays.asList(repositoryManager
-				.getKnownTags(CVSWorkspaceRoot.getCVSFolderFor(project)));
-		assertTags(knownTags, new CVSTag[] { branch1, version1 }, new CVSTag[] {
-				branch2, version2 });
+		List<CVSTag> knownTags = Arrays
+				.asList(repositoryManager.getKnownTags(CVSWorkspaceRoot.getCVSFolderFor(project)));
+		assertTags(knownTags, new CVSTag[] { branch1, version1 }, new CVSTag[] { branch2, version2 });
 	}
 
 	public void testProjectWithNoTags() throws CoreException {

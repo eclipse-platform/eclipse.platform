@@ -15,7 +15,6 @@ package org.eclipse.team.tests.ccvs.core.subscriber;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
@@ -51,8 +50,8 @@ import junit.framework.AssertionFailedError;
 public class SyncInfoSource {
 
 	protected static IProgressMonitor DEFAULT_MONITOR = new NullProgressMonitor();
-	protected List mergeSubscribers = new ArrayList();
-	protected List compareSubscribers = new ArrayList();
+	protected List<CVSMergeSubscriber> mergeSubscribers = new ArrayList<>();
+	protected List<CVSCompareSubscriber> compareSubscribers = new ArrayList<>();
 	
 	public CVSMergeSubscriber createMergeSubscriber(IProject project, CVSTag root, CVSTag branch) {
 		return createMergeSubscriber(project, root, branch, false /*default*/);
@@ -74,6 +73,9 @@ public class SyncInfoSource {
 		// Nothing to do
 	}
 	
+	/**
+	 * @throws TeamException  
+	 */
 	public Subscriber createWorkspaceSubscriber() throws TeamException {
 		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
 	}
@@ -117,8 +119,7 @@ public class SyncInfoSource {
 	}
 
 	public void tearDown() {
-		for (Iterator it = mergeSubscribers.iterator(); it.hasNext(); ) {
-			CVSMergeSubscriber s = (CVSMergeSubscriber) it.next();
+		for (CVSMergeSubscriber s : mergeSubscribers) {
 			s.cancel();
 		}
 	}
@@ -145,7 +146,7 @@ public class SyncInfoSource {
 			// Only test if kinds are equal
 			assertDiffKindEquals(message, subscriber, resource, SyncInfoToDiffConverter.asDiffFlags(syncKind));
 		}
-		junit.framework.Assert.assertTrue(message + ": improper sync state for " + resource + " expected " + 
+		Assert.assertTrue(message + ": improper sync state for " + resource + " expected " + 
 				   SyncInfo.kindToString(kindOther) + " but was " +
 				   SyncInfo.kindToString(kind), kind == kindOther);
 		

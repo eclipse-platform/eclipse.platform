@@ -34,8 +34,8 @@ import org.eclipse.team.tests.ccvs.core.EclipseTest;
  */
 public class CommitSetTests extends EclipseTest {
 
-	private List addedSets = new ArrayList();
-	private List removedSets = new ArrayList();
+	private List<ChangeSet> addedSets = new ArrayList<>();
+	private List<ChangeSet> removedSets = new ArrayList<>();
 	private IChangeSetChangeListener listener = new IChangeSetChangeListener() {
         public void setAdded(ChangeSet set) {
             addedSets.add(set);
