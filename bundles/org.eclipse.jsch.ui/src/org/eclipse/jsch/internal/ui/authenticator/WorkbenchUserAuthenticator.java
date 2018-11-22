@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2018 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,6 +19,7 @@ package org.eclipse.jsch.internal.ui.authenticator;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jsch.core.IJSchLocation;
 import org.eclipse.jsch.internal.core.IUserAuthenticator;
 import org.eclipse.jsch.internal.core.IUserInfo;
@@ -26,6 +27,8 @@ import org.eclipse.jsch.internal.ui.Messages;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * An authenticator that prompts the user for authentication info,
@@ -198,7 +201,18 @@ public int prompt(IJSchLocation location, final int promptType,
     }
 
 		display.syncExec(() -> {
-        final MessageDialog dialog=new MessageDialog(new Shell(display), title,
+			Shell shell = null;
+			IWorkbench workbench = PlatformUI.getWorkbench();
+			if (workbench != null) {
+				IShellProvider shellProvider = workbench.getModalDialogShellProvider();
+				if (shellProvider != null) {
+					shell = shellProvider.getShell();
+				}
+			}
+			if (shell == null) {
+				shell = new Shell(display);
+			}
+			final MessageDialog dialog = new MessageDialog(shell, title,
             null, message, promptType, buttons, 1);
         retval[0]=dialog.open();
 		});
