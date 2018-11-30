@@ -60,12 +60,12 @@
                 <phase>process-resources</phase>
                 <configuration>
                   <target>
-                    <exec executable="make" newenvironment="false" dir="../../natives/unix/linux/"/>
-           <copy todir=".">
-           <fileset dir="../../natives/unix/linux/">
-               <include name="libgnomeproxy-*.so"/>
-           </fileset>
-           </copy>
+                    <exec executable="make" newenvironment="false" dir="../org.eclipse.core.net/natives/unix/linux/"/>
+                    <copy todir=".">
+                      <fileset dir="../org.eclipse.core.net/natives/unix/linux/">
+                        <include name="libgnomeproxy-*.so"/>
+                      </fileset>
+                    </copy>
                   </target>
                 </configuration>
                 <goals>
