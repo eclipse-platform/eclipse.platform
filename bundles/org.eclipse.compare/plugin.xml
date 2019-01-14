@@ -367,4 +367,27 @@
       </factory>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+      <includes>
+      <contentExtension
+            pattern="org.eclipse.compare.linkHelper">
+      </contentExtension>
+      </includes>
+      </viewerContentBinding>
+      
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="org.eclipse.compare.internal.CompareLinkHelper"
+            id="org.eclipse.compare.linkHelper">
+         <editorInputEnablement>
+             <instanceof value="org.eclipse.compare.CompareEditorInput"/>
+         </editorInputEnablement>
+      </linkHelper>
+   </extension>
+
 </plugin>
