@@ -16,7 +16,9 @@ package org.eclipse.team.internal.ui.mapping;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.team.internal.core.subscribers.SubscriberDiffTreeEventHandler;
-import org.eclipse.team.internal.ui.synchronize.patch.*;
+import org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchModelSynchronizeParticipant;
+import org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchSubscriber;
+import org.eclipse.team.internal.ui.synchronize.patch.ApplyPatchSubscriberMergeContext;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class ReversePatchAction extends Action {

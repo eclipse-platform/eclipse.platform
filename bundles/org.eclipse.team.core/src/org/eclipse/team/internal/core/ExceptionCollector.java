@@ -13,9 +13,15 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 
 /**
  * Collects exceptions and can be configured to ignore duplicates exceptions. Exceptions can be logged

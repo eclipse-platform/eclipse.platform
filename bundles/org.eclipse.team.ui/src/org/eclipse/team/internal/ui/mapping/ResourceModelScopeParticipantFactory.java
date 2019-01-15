@@ -14,7 +14,9 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import org.eclipse.core.resources.mapping.ModelProvider;
-import org.eclipse.team.core.mapping.*;
+import org.eclipse.team.core.mapping.ISynchronizationScope;
+import org.eclipse.team.core.mapping.ISynchronizationScopeParticipant;
+import org.eclipse.team.core.mapping.ISynchronizationScopeParticipantFactory;
 
 public class ResourceModelScopeParticipantFactory implements
 		ISynchronizationScopeParticipantFactory {

@@ -13,10 +13,9 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-
-import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 
 /**
  * A factory proxy for creating a StructureCreator.

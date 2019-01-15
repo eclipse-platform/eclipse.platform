@@ -13,12 +13,21 @@
  *******************************************************************************/
 package org.eclipse.team.core.importing.provisional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.ManifestElement;
-import org.eclipse.team.core.*;
+import org.eclipse.team.core.ProjectSetCapability;
+import org.eclipse.team.core.ProjectSetSerializationContext;
+import org.eclipse.team.core.RepositoryProviderType;
+import org.eclipse.team.core.ScmUrlImportDescription;
 import org.eclipse.team.internal.core.TeamPlugin;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;

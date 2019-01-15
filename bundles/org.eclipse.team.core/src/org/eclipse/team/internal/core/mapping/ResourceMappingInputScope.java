@@ -14,7 +14,9 @@
 package org.eclipse.team.internal.core.mapping;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.mapping.*;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceMappingContext;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.team.core.mapping.ISynchronizationScope;
 
 /**

@@ -13,7 +13,10 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 

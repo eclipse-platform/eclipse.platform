@@ -13,11 +13,11 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.IViewerCreator;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
-import org.eclipse.compare.*;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * A factory object for the <code>ImageMergeViewer</code>.

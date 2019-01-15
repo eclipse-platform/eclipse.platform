@@ -18,13 +18,19 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.registry.TeamDecoratorDescription;
 import org.eclipse.team.internal.ui.registry.TeamDecoratorManager;
-import org.eclipse.team.ui.mapping.*;
+import org.eclipse.team.ui.mapping.ITeamStateChangeEvent;
+import org.eclipse.team.ui.mapping.ITeamStateChangeListener;
+import org.eclipse.team.ui.mapping.ITeamStateProvider;
+import org.eclipse.team.ui.mapping.SynchronizationStateTester;
 import org.eclipse.ui.PlatformUI;
 
 /**

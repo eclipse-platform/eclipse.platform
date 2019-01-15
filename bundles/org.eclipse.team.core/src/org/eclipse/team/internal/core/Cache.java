@@ -16,7 +16,9 @@ package org.eclipse.team.internal.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.team.core.ICache;
 import org.eclipse.team.core.ICacheListener;
 

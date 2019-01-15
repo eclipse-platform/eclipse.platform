@@ -20,7 +20,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.TeamUI;
-import org.eclipse.team.ui.synchronize.*;
+import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
+import org.eclipse.team.ui.synchronize.ParticipantPageDialog;
+import org.eclipse.team.ui.synchronize.ParticipantPageSaveablePart;
+import org.eclipse.team.ui.synchronize.SubscriberParticipant;
 import org.eclipse.ui.actions.ActionFactory;
 
 public class RefreshUserNotificationPolicyInModalDialog implements IRefreshSubscriberListener {

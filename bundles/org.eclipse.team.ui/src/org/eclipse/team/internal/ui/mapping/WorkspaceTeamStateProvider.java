@@ -16,15 +16,27 @@ package org.eclipse.team.internal.ui.mapping;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.Adapters;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
-import org.eclipse.team.internal.core.*;
+import org.eclipse.team.internal.core.IRepositoryProviderListener;
+import org.eclipse.team.internal.core.RepositoryProviderManager;
+import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.ui.Utils;
-import org.eclipse.team.ui.mapping.*;
+import org.eclipse.team.ui.mapping.ITeamStateChangeEvent;
+import org.eclipse.team.ui.mapping.ITeamStateChangeListener;
+import org.eclipse.team.ui.mapping.ITeamStateDescription;
+import org.eclipse.team.ui.mapping.ITeamStateProvider;
 import org.eclipse.team.ui.synchronize.TeamStateProvider;
 
 /**

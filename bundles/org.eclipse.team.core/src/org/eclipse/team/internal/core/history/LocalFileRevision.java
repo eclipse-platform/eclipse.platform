@@ -16,7 +16,9 @@ package org.eclipse.team.internal.core.history;
 import java.net.URI;
 
 import org.eclipse.core.filesystem.URIUtil;
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;

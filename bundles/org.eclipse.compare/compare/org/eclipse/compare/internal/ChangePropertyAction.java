@@ -16,12 +16,12 @@ package org.eclipse.compare.internal;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.compare.CompareConfiguration;
 
 /**
  * Toggles a boolean property of an <code>CompareConfiguration</code>.

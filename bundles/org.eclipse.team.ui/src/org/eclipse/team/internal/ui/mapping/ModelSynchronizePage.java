@@ -20,11 +20,18 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
-import org.eclipse.team.internal.ui.*;
-import org.eclipse.team.internal.ui.synchronize.*;
+import org.eclipse.team.internal.ui.TeamUIMessages;
+import org.eclipse.team.internal.ui.TeamUIPlugin;
+import org.eclipse.team.internal.ui.Utils;
+import org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage;
+import org.eclipse.team.internal.ui.synchronize.AbstractViewerAdvisor;
+import org.eclipse.team.internal.ui.synchronize.ChangesSection;
+import org.eclipse.team.internal.ui.synchronize.SynchronizeView;
 import org.eclipse.team.internal.ui.synchronize.actions.RefreshActionContribution;
 import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
-import org.eclipse.team.ui.synchronize.*;
+import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
+import org.eclipse.team.ui.synchronize.ISynchronizePageSite;
+import org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant;
 
 /**
  * A synchronize page for displaying a {@link ModelSynchronizeParticipant}.

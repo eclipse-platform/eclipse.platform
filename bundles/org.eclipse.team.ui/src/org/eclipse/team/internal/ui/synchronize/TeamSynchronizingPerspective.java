@@ -15,7 +15,9 @@ package org.eclipse.team.internal.ui.synchronize;
 
 import org.eclipse.team.ui.history.IHistoryView;
 import org.eclipse.team.ui.synchronize.ISynchronizeView;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IFolderLayout;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPerspectiveFactory;
 
 public class TeamSynchronizingPerspective implements IPerspectiveFactory {
 

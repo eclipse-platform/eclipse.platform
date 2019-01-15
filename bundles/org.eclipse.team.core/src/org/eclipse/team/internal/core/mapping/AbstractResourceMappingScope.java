@@ -16,7 +16,9 @@ package org.eclipse.team.internal.core.mapping;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.mapping.*;
+import org.eclipse.core.resources.mapping.ModelProvider;
+import org.eclipse.core.resources.mapping.ResourceMapping;
+import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.team.internal.core.subscribers.AbstractSynchronizationScope;
 
 /**

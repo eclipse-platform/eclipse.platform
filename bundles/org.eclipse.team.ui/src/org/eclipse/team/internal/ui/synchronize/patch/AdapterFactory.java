@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize.patch;
 
-import org.eclipse.compare.internal.patch.*;
+import org.eclipse.compare.internal.patch.HunkDiffNode;
+import org.eclipse.compare.internal.patch.PatchFileDiffNode;
+import org.eclipse.compare.internal.patch.PatchProjectDiffNode;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.IAdapterFactory;

@@ -16,7 +16,9 @@ package org.eclipse.team.internal.ui.history;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.team.ui.history.IHistoryPageSource;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * Fake part to use in page book for the History view

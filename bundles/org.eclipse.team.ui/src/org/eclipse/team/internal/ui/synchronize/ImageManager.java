@@ -14,7 +14,10 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.jface.resource.*;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.LocalResourceManager;
+import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.team.core.mapping.ISynchronizationContext;

@@ -14,7 +14,9 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import org.eclipse.compare.ICompareNavigator;
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.team.internal.ui.TeamUIPlugin;

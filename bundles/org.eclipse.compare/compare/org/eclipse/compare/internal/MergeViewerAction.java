@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.texteditor.IUpdate;
 
 
 public abstract class MergeViewerAction extends Action implements IUpdate {

@@ -15,7 +15,10 @@ package org.eclipse.compare;
 
 import java.util.ResourceBundle;
 
-import org.eclipse.compare.internal.*;
+import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.DocumentManager;
+import org.eclipse.compare.internal.ICompareUIConstants;
+import org.eclipse.compare.internal.StructureCreatorDescriptor;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.runtime.IAdaptable;

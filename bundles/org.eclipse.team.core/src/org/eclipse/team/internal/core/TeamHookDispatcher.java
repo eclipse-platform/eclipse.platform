@@ -15,7 +15,11 @@ package org.eclipse.team.internal.core;
 
 import java.net.URI;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.team.ResourceRuleFactory;
 import org.eclipse.core.resources.team.TeamHook;
 import org.eclipse.core.runtime.IPath;

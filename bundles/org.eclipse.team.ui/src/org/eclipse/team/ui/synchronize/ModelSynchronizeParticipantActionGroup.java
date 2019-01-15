@@ -13,17 +13,26 @@
  *******************************************************************************/
 package org.eclipse.team.ui.synchronize;
 
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.team.core.mapping.IMergeContext;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.internal.ui.Utils;
-import org.eclipse.team.internal.ui.mapping.*;
+import org.eclipse.team.internal.ui.mapping.CommonMenuManager;
+import org.eclipse.team.internal.ui.mapping.MergeAction;
+import org.eclipse.team.internal.ui.mapping.MergeIncomingChangesAction;
+import org.eclipse.team.internal.ui.mapping.ModelSelectionDropDownAction;
 import org.eclipse.team.internal.ui.synchronize.SynchronizePageConfiguration;
 import org.eclipse.team.internal.ui.synchronize.actions.OpenInCompareAction;
 import org.eclipse.team.internal.ui.synchronize.actions.SyncViewerShowPreferencesAction;
 import org.eclipse.team.ui.mapping.SynchronizationActionProvider;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IKeyBindingService;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchSite;
 
 /**
  * Action group that contributes the merge actions to the model

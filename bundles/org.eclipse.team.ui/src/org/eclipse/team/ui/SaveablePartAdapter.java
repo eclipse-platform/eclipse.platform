@@ -15,7 +15,9 @@ package org.eclipse.team.ui;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
  * This adapter provides default implementations for methods on {@link ISaveableWorkbenchPart} and

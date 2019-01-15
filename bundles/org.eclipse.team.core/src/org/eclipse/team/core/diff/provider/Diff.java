@@ -14,7 +14,9 @@
 package org.eclipse.team.core.diff.provider;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.team.core.diff.*;
+import org.eclipse.team.core.diff.IDiff;
+import org.eclipse.team.core.diff.IThreeWayDiff;
+import org.eclipse.team.core.diff.ITwoWayDiff;
 import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 
 /**

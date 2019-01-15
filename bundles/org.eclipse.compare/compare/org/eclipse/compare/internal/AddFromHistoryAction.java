@@ -13,18 +13,22 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import java.util.ResourceBundle;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ResourceBundle;
 
-import org.eclipse.swt.widgets.Shell;
-
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ISelection;
-
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
 
 
 public class AddFromHistoryAction extends BaseCompareAction {

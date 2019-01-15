@@ -13,18 +13,16 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import java.io.InputStream;
 import java.io.BufferedInputStream;
+import java.io.InputStream;
 
-import org.eclipse.swt.graphics.Image;
-
-import org.eclipse.compare.IResourceProvider;
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFileState;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * A combination <code>IFileState</code> and <code>ITypedElement</code> that can be used as

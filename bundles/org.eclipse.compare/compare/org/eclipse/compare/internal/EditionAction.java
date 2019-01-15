@@ -15,30 +15,35 @@ package org.eclipse.compare.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.ResourceBundle;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ResourceBundle;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.graphics.Image;
-
+import org.eclipse.compare.EditionSelectionDialog;
+import org.eclipse.compare.HistoryItem;
+import org.eclipse.compare.IEncodedStreamContentAccessor;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
+import org.eclipse.compare.ResourceNode;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.BadLocationException;
-
-import org.eclipse.ui.*;
-import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-
-import org.eclipse.compare.*;
-import org.eclipse.compare.ITypedElement;
-import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 
 public class EditionAction extends BaseCompareAction {

@@ -16,29 +16,25 @@ package org.eclipse.compare.internal.patch;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.internal.CompareUIPlugin;
+import org.eclipse.compare.internal.ExceptionHandler;
+import org.eclipse.compare.internal.Utilities;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.resources.ResourcesPlugin;
-
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-
-import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.internal.CompareUIPlugin;
-import org.eclipse.compare.internal.ExceptionHandler;
-import org.eclipse.compare.internal.Utilities;
 
 public class PatchWizard extends Wizard {
 

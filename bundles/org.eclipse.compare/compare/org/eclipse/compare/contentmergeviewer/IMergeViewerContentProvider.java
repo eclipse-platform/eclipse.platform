@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.swt.graphics.Image;
 
 
 /**

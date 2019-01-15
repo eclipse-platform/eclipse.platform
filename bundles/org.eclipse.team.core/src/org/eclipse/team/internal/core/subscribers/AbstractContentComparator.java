@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core.subscribers;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;

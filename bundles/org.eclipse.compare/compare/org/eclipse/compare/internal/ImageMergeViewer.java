@@ -13,20 +13,21 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ResourceBundle;
 
+import org.eclipse.compare.CompareConfiguration;
+import org.eclipse.compare.CompareUI;
+import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.core.runtime.CoreException;
-
-import org.eclipse.compare.*;
-import org.eclipse.compare.contentmergeviewer.ContentMergeViewer;
 
 /**
  */

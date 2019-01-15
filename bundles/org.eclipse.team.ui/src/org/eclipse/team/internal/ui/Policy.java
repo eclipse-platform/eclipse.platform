@@ -16,7 +16,10 @@ package org.eclipse.team.internal.ui;
 
 import java.util.ResourceBundle;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.service.debug.DebugOptionsListener;
 
 /**

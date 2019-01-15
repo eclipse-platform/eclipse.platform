@@ -16,7 +16,9 @@ package org.eclipse.compare.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.compare.*;
+import org.eclipse.compare.CompareEditorInput;
+import org.eclipse.compare.CompareNavigator;
+import org.eclipse.compare.INavigatable;
 
 /**
  * Supports cross-pane navigation through the differences contained in a {@link CompareEditorInput}

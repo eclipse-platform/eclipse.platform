@@ -17,6 +17,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
+
 import org.eclipse.team.internal.core.Policy;
 
 /**

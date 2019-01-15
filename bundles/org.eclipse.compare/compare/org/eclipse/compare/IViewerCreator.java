@@ -13,9 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
-import org.eclipse.swt.widgets.Composite;
-
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A factory object for <code>Viewer</code>.

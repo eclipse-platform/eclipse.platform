@@ -13,7 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.core.diff;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A diff tree provides access to a tree of {@link IDiff} instances. For

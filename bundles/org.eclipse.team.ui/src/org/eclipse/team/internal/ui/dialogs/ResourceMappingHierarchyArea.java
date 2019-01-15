@@ -27,7 +27,10 @@ import org.eclipse.team.core.mapping.ISynchronizationScope;
 import org.eclipse.team.internal.ui.mapping.TeamViewerSorter;
 import org.eclipse.team.ui.TeamUI;
 import org.eclipse.team.ui.mapping.ITeamContentProviderManager;
-import org.eclipse.ui.navigator.*;
+import org.eclipse.ui.navigator.CommonViewer;
+import org.eclipse.ui.navigator.CommonViewerSorter;
+import org.eclipse.ui.navigator.INavigatorContentExtension;
+import org.eclipse.ui.navigator.INavigatorContentServiceListener;
 
 public class ResourceMappingHierarchyArea extends DialogArea implements INavigatorContentServiceListener {
 	private static final String TEAM_NAVIGATOR_CONTENT = "org.eclipse.team.ui.navigatorViewer"; //$NON-NLS-1$

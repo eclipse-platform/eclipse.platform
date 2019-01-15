@@ -17,9 +17,14 @@ import org.eclipse.compare.CompareUI;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.ui.*;
+import org.eclipse.team.ui.SaveablePartAdapter;
+import org.eclipse.team.ui.SaveablePartDialog;
+import org.eclipse.team.ui.TeamUI;
 
 /**
  * A dialog that displays the option of adding the participant to the {@link org.eclipse.team.ui.synchronize.ISynchronizeManager}

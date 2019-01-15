@@ -17,7 +17,9 @@ import java.util.Date;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.team.internal.core.subscribers.*;
+import org.eclipse.team.internal.core.subscribers.ActiveChangeSet;
+import org.eclipse.team.internal.core.subscribers.ChangeSet;
+import org.eclipse.team.internal.core.subscribers.CheckedInChangeSet;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
 
 /**

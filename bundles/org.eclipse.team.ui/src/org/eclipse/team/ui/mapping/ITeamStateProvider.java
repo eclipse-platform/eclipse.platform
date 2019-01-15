@@ -15,12 +15,14 @@ package org.eclipse.team.ui.mapping;
 
 import org.eclipse.core.resources.mapping.RemoteResourceMappingContext;
 import org.eclipse.core.resources.mapping.ResourceMappingContext;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdapterManager;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.RepositoryProviderType;
 import org.eclipse.team.core.diff.IDiff;
 import org.eclipse.team.core.diff.IThreeWayDiff;
-import org.eclipse.team.ui.synchronize.TeamStateProvider;
 import org.eclipse.team.ui.synchronize.SubscriberTeamStateProvider;
+import org.eclipse.team.ui.synchronize.TeamStateProvider;
 
 /**
  * A team state provider is used by the {@link SynchronizationStateTester}

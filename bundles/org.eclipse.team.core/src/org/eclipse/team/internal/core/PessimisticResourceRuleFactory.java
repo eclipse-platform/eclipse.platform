@@ -13,7 +13,9 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.team.ResourceRuleFactory;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 

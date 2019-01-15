@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
-import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Position;
 
 
 /**

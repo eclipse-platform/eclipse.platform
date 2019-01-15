@@ -13,13 +13,25 @@
  *******************************************************************************/
 package org.eclipse.team.core.mapping;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.RepositoryProviderType;
-import org.eclipse.team.internal.core.*;
+import org.eclipse.team.internal.core.IRepositoryProviderListener;
+import org.eclipse.team.internal.core.RepositoryProviderManager;
+import org.eclipse.team.internal.core.TeamPlugin;
 
 /**
  * Supports the tracking of related changes for the purpose of grouping then using an {@link IChangeGroupingRequestor}.

@@ -18,11 +18,21 @@ import java.io.OutputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.*;
-import org.eclipse.core.runtime.content.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.team.core.*;
-import org.eclipse.team.internal.core.*;
+import org.eclipse.team.core.IFileContentManager;
+import org.eclipse.team.core.Team;
+import org.eclipse.team.core.TeamException;
+import org.eclipse.team.internal.core.Messages;
+import org.eclipse.team.internal.core.StorageMergerRegistry;
+import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.core.mapping.IStreamMergerDelegate;
 
 /**
