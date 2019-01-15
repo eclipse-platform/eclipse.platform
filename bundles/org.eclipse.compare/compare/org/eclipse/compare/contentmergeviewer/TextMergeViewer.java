@@ -3818,7 +3818,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fHandlerService.registerAction(fIgnoreWhitespace, fIgnoreWhitespace.getActionDefinitionId());
 
 		boolean needsLeftPainter= !isEditorBacked(fLeft.getSourceViewer());
-		boolean needsRightPainter= !isEditorBacked(fLeft.getSourceViewer());
+		boolean needsRightPainter= !isEditorBacked(fRight.getSourceViewer());
 		boolean needsAncestorPainter= !isEditorBacked(fAncestor.getSourceViewer());
 		showWhitespaceAction = new ShowWhitespaceAction(
 				new MergeSourceViewer[] {fLeft, fRight, fAncestor},
