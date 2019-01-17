@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2017 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -198,7 +198,11 @@ public class CompareEditor extends EditorPart
 		}
 
 		if (key == IEditorInput.class) {
-			return (T) Adapters.adapt(getEditorInput(), IEditorInput.class);
+			// return (T) Adapters.adapt(getEditorInput(), IEditorInput.class);
+			// The above call cannot be used because the return type of getEditorInput()
+			// call is IEditorInput and this itself will be returned by the above function.
+			// What we want is to call getAdapter call on this IEditorInput object.
+			return (T) getEditorInput().getAdapter(IEditorInput.class);
 		}
 
 		if (key == ITextEditorExtension3.class) {
