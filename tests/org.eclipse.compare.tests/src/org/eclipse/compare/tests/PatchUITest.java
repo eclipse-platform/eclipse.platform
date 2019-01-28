@@ -100,6 +100,7 @@ public class PatchUITest extends TestCase {
 
 		getButton(patchWizardPage, "fUseClipboardButton").setSelection(false);
 		getButton(patchWizardPage, "fUsePatchFileButton").setSelection(false);
+		getButton(patchWizardPage, "fUseURLButton").setSelection(false);
 		getButton(patchWizardPage, "fUseWorkspaceButton").setSelection(true);
 
 		TreeViewer tree = getTreeViewer(patchWizardPage, "fTreeViewer");
