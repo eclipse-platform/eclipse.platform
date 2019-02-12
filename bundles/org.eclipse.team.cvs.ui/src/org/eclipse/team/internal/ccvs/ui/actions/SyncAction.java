@@ -99,7 +99,7 @@ public class SyncAction extends WorkspaceTraversalAction {
 
 	private IWorkingSet[] getSelectedWorkingSets() {
         ResourceMapping[] mappings = getCVSResourceMappings();
-        List sets = new ArrayList();
+		List<IWorkingSet> sets = new ArrayList<>();
         for (int i = 0; i < mappings.length; i++) {
             ResourceMapping mapping = mappings[i];
             if (mapping.getModelObject() instanceof IWorkingSet) {
@@ -111,7 +111,7 @@ public class SyncAction extends WorkspaceTraversalAction {
         }
         if (sets.isEmpty())
             return null;
-        return (IWorkingSet[]) sets.toArray(new IWorkingSet[sets.size()]);
+        return sets.toArray(new IWorkingSet[sets.size()]);
     }
 
     private boolean includesAllCVSProjects(IResource[] resources) {
@@ -127,14 +127,14 @@ public class SyncAction extends WorkspaceTraversalAction {
 
     private IProject[] getAllCVSProjects() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        Set cvsProjects = new HashSet();
+		Set<IProject> cvsProjects = new HashSet<>();
         for (int i = 0; i < projects.length; i++) {
             IProject project = projects[i];
             if (RepositoryProvider.isShared(project) && RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId()) != null) {
                 cvsProjects.add(project);
             }
         }
-        return (IProject[]) cvsProjects.toArray(new IProject[cvsProjects.size()]);
+        return cvsProjects.toArray(new IProject[cvsProjects.size()]);
     }
 
     /**
@@ -264,7 +264,7 @@ public class SyncAction extends WorkspaceTraversalAction {
 	}
 
 	private Set getProjects(IWorkingSet[] sets) {
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		
 		if(sets == null) 
 			return projects;

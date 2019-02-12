@@ -128,7 +128,7 @@ public class Utils{
       port = IConstants.SSH_DEFAULT_PORT;
     Session session=jsch.getSession(username, hostname, port);
     setProxy(session);
-    Hashtable config=new Hashtable();
+    Hashtable<String, String> config=new Hashtable<>();
     config.put("PreferredAuthentications", //$NON-NLS-1$ 
         getEnabledPreferredAuthMethods());
     config.put("kex", //$NON-NLS-1$ 

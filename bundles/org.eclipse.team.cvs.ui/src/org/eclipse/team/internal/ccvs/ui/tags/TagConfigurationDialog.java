@@ -104,9 +104,9 @@ public class TagConfigurationDialog extends TrayDialog {
 	class TagSourceWrapper extends TagSource {
 
         private final TagSource tagSource;
-        private final List branches = new ArrayList();
-        private final List versions = new ArrayList();
-        private final List dates = new ArrayList();
+		private final List<CVSTag> branches = new ArrayList<>();
+		private final List<CVSTag> versions = new ArrayList<>();
+		private final List<CVSTag> dates = new ArrayList<>();
 
         public TagSourceWrapper(TagSource tagSource) {
             this.tagSource = tagSource;
@@ -120,13 +120,13 @@ public class TagConfigurationDialog extends TrayDialog {
             if (type == CVSTag.HEAD || type == BASE) {
                 return super.getTags(type);
             }
-            List list = getTagList(type);
+			List<CVSTag> list = getTagList(type);
             if (list != null)
-                return (CVSTag[]) list.toArray(new CVSTag[list.size()]);
+                return list.toArray(new CVSTag[list.size()]);
             return tagSource.getTags(type);
         }
 
-        private List getTagList(int type) {
+		private List<CVSTag> getTagList(int type) {
             switch (type) {
             case CVSTag.VERSION: 
                 return versions;
@@ -166,7 +166,7 @@ public class TagConfigurationDialog extends TrayDialog {
         public void add(CVSTag[] tags) {
             for (int i = 0; i < tags.length; i++) {
                 CVSTag tag = tags[i];
-                List list = getTagList(tag.getType());
+				List<CVSTag> list = getTagList(tag.getType());
                 if (list != null)
                     list.add(tag);        
             }
@@ -484,7 +484,7 @@ public class TagConfigurationDialog extends TrayDialog {
 
     private void updateShownTags() {
 		final CVSFileElement[] filesSelection = getSelectedFiles();
-		final Set tags = new HashSet();
+		final Set<CVSTag> tags = new HashSet<>();
 		if(filesSelection.length!=0) {
 			try {
 				CVSUIPlugin.runWithProgress(getShell(), true /*cancelable*/, monitor -> {
@@ -508,7 +508,7 @@ public class TagConfigurationDialog extends TrayDialog {
 			cvsTagTree.getTable().removeAll();
 			for (Iterator it = tags.iterator(); it.hasNext();) {
 				CVSTag tag = (CVSTag) it.next();
-				List knownTags = new ArrayList();
+				List<CVSTag> knownTags = new ArrayList<>();
 				knownTags.addAll(Arrays.asList(wrappedTagSource.getTags(new int[] { CVSTag.VERSION, CVSTag.BRANCH, CVSTag.DATE })));
 				if(!knownTags.contains(tag)) {
 					TagElement tagElem = new TagElement(tag);
@@ -522,15 +522,15 @@ public class TagConfigurationDialog extends TrayDialog {
 	private CVSFileElement[] getSelectedFiles() {
 		IStructuredSelection selection = cvsResourceTree.getStructuredSelection();
 		if (!selection.isEmpty()) {
-			final List filesSelection = new ArrayList();
+			final List<CVSFileElement> filesSelection = new ArrayList<>();
 			Iterator it = selection.iterator();
 			while(it.hasNext()) {
 				Object o = it.next();
 				if(o instanceof CVSFileElement) {
-					filesSelection.add(o);
+					filesSelection.add((CVSFileElement) o);
 				}
 			}
-			return (CVSFileElement[]) filesSelection.toArray(new CVSFileElement[filesSelection.size()]);
+			return filesSelection.toArray(new CVSFileElement[filesSelection.size()]);
 		}
 		return new CVSFileElement[0];
 	}
@@ -538,12 +538,12 @@ public class TagConfigurationDialog extends TrayDialog {
 	private void addSelectionToAutoRefreshList() {
 		IStructuredSelection selection = cvsResourceTree.getStructuredSelection();
 		if (!selection.isEmpty()) {
-			final List filesSelection = new ArrayList();
+			final List<CVSFileElement> filesSelection = new ArrayList<>();
 			Iterator it = selection.iterator();
 			while(it.hasNext()) {
 				Object o = it.next();
 				if(o instanceof CVSFileElement) {
-					filesSelection.add(o);
+					filesSelection.add((CVSFileElement) o);
 				}
 			}
 			if(!filesSelection.isEmpty()) {
@@ -570,20 +570,20 @@ public class TagConfigurationDialog extends TrayDialog {
 	
 	private void rememberCheckedTags() {
 		Object[] checked = cvsTagTree.getCheckedElements();
-		List tagsToAdd = new ArrayList();
+		List<CVSTag> tagsToAdd = new ArrayList<>();
 		for (int i = 0; i < checked.length; i++) {
 			CVSTag tag = ((TagElement)checked[i]).getTag();
 			tagsToAdd.add(tag);
 		}
 		if (!tagsToAdd.isEmpty()) {
-		    wrappedTagSource.add((CVSTag[]) tagsToAdd.toArray(new CVSTag[tagsToAdd.size()]));
+		    wrappedTagSource.add(tagsToAdd.toArray(new CVSTag[tagsToAdd.size()]));
 			cvsDefinedTagsTree.refresh();
 		}
 	}
 	
 	private void deleteSelected() {
 		IStructuredSelection selection = cvsDefinedTagsTree.getStructuredSelection();
-		List tagsToRemove = new ArrayList();
+		List<CVSTag> tagsToRemove = new ArrayList<>();
 		if (!selection.isEmpty()) {
 			Iterator it = selection.iterator();
 			while(it.hasNext()) {
@@ -595,14 +595,14 @@ public class TagConfigurationDialog extends TrayDialog {
 			}
 		}
 		if (!tagsToRemove.isEmpty()) {
-		    wrappedTagSource.remove((CVSTag[]) tagsToRemove.toArray(new CVSTag[tagsToRemove.size()]));
+		    wrappedTagSource.remove(tagsToRemove.toArray(new CVSTag[tagsToRemove.size()]));
 			cvsDefinedTagsTree.refresh();
 			cvsDefinedTagsTree.getTree().setFocus();
 		}
 	}
 	private void addDateTagsSelected(CVSTag tag){
 		if(tag == null) return;
-		List knownTags = new ArrayList();
+		List<CVSTag> knownTags = new ArrayList<>();
 		knownTags.addAll(Arrays.asList(wrappedTagSource.getTags(CVSTag.DATE)));
 		if(!knownTags.contains( tag)){
 			wrappedTagSource.add(new CVSTag[] { tag });

@@ -140,13 +140,13 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		if (changed.length == 0) return;
 		
 		// A list of files to be committed
-		final List commits = new ArrayList(); // of IResource
+		final List<IResource> commits = new ArrayList<>();
 		// New resources that are not yet under CVS control and need a "cvs add"
-		final List additions = new ArrayList(); // of IResource
+		final List<IResource> additions = new ArrayList<>();
 		// A list of incoming or conflicting file changes to be made outgoing changes
-		final List makeOutgoing = new ArrayList(); // of SyncInfo
+		final List<SyncInfo> makeOutgoing = new ArrayList<>();
 		// A list of out-of-sync folders that must be made in-sync
-		final List makeInSync = new ArrayList(); // of SyncInfo
+		final List<SyncInfo> makeInSync = new ArrayList<>();
 		
 		for (int i = 0; i < changed.length; i++) {
 			SyncInfo changedNode = changed[i];
@@ -206,17 +206,17 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		monitor.beginTask(null, 200);
 		
 		if (makeInSync.size() > 0) {
-			makeInSync((SyncInfo[]) makeInSync.toArray(new SyncInfo[makeInSync.size()]), Policy.subMonitorFor(monitor, 25));			
+			makeInSync(makeInSync.toArray(new SyncInfo[makeInSync.size()]), Policy.subMonitorFor(monitor, 25));			
 		}
 
 		if (makeOutgoing.size() > 0) {
-			makeOutgoing((SyncInfo[]) makeOutgoing.toArray(new SyncInfo[makeInSync.size()]), Policy.subMonitorFor(monitor, 25));			
+			makeOutgoing(makeOutgoing.toArray(new SyncInfo[makeInSync.size()]), Policy.subMonitorFor(monitor, 25));			
 		}
 
 		if (additions.size() != 0) {
-			add(project, (IResource[])additions.toArray(new IResource[0]), Policy.subMonitorFor(monitor, 50));
+			add(project, additions.toArray(new IResource[0]), Policy.subMonitorFor(monitor, 50));
 		}
-		commit(project, (IResource[])commits.toArray(new IResource[commits.size()]), Policy.subMonitorFor(monitor, 100));		
+		commit(project, commits.toArray(new IResource[commits.size()]), Policy.subMonitorFor(monitor, 100));		
 	}	
 	
 	private void commit(final IProject project, IResource[] commits, IProgressMonitor monitor) throws TeamException {
@@ -335,7 +335,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		
 		// remove unshared resources that were not selected by the user
 		if (unadded != null && unadded.length > 0) {
-			List resourcesToRemove = new ArrayList(unadded.length);
+			List<IResource> resourcesToRemove = new ArrayList<>(unadded.length);
 			for (int i = 0; i < unadded.length; i++) {
 				IResource unaddedResource = unadded[i];
 				boolean included = false;
@@ -349,7 +349,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 				if (!included)
 					resourcesToRemove.add(unaddedResource);
 			}
-			syncSet.removeAll((IResource[]) resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
+			syncSet.removeAll(resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
 		}
 		return true;
 	}
@@ -358,14 +358,14 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		// TODO: Should only get outgoing additions (since conflicting additions 
 		// could be considered to be under version control already)
 		IResource[] resources = syncSet.getResources();
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (!isAdded(resource)) {
 				result.add(resource);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private boolean isAdded(IResource resource) throws CVSException {

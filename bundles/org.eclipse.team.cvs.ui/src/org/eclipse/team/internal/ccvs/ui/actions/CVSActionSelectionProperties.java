@@ -28,10 +28,10 @@ import org.eclipse.team.internal.ui.Utils;
 public class CVSActionSelectionProperties {
     
     // Use a weak hash map so that the properties ae collected when the selection is no longer referenced
-    private static Map selectionProperties = new WeakHashMap();
+	private static Map<IStructuredSelection, CVSActionSelectionProperties> selectionProperties = new WeakHashMap<>();
     
     private Object[] selection;
-    private Map properties = new HashMap();
+	private Map<String, Object> properties = new HashMap<>();
     
     private static final String SELECTED_RESOURCES = "selectedResources"; //$NON-NLS-1$
     private static final String NONOVERLAPPING_SELECTED_RESOURCES = "nonoverlappingSelectedResources"; //$NON-NLS-1$
@@ -39,7 +39,7 @@ public class CVSActionSelectionProperties {
     
     public static CVSActionSelectionProperties getProperties(IStructuredSelection selection) {
         if (selection == null) return null;
-        CVSActionSelectionProperties props = (CVSActionSelectionProperties)selectionProperties.get(selection);
+        CVSActionSelectionProperties props = selectionProperties.get(selection);
         if (props == null) {
             props = new CVSActionSelectionProperties(selection);
             selectionProperties.put(selection, props);
@@ -125,7 +125,7 @@ public class CVSActionSelectionProperties {
             }
         });
         // Collect all non-overlapping resources
-        List coveredPaths = new ArrayList();
+		List<IPath> coveredPaths = new ArrayList<>();
         for (Iterator iter = sorted.iterator(); iter.hasNext();) {
             IResource resource = (IResource) iter.next();
             IPath resourceFullPath = resource.getFullPath();

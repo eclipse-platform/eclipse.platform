@@ -36,15 +36,16 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 	IWorkingSet workingSet;
 	DeferredTreeContentManager manager;
 
-	HashMap cachedTrees;
+	HashMap<ICVSRemoteFolder, RemoteFolderTree> cachedTrees;
 	
 	public RemoteContentProvider(){
-		cachedTrees = new HashMap();
+		cachedTrees = new HashMap<>();
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		if (viewer instanceof AbstractTreeViewer) {
 			manager = new DeferredTreeContentManager((AbstractTreeViewer) viewer);
@@ -52,6 +53,7 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 		super.inputChanged(viewer, oldInput, newInput);
 	}
 
+	@Override
 	public boolean hasChildren(Object element) {
 		// the + box will always appear, but then disappear
 		// if not needed after you first click on it.
@@ -101,6 +103,7 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.model.WorkbenchContentProvider#getChildren(java.lang.Object)
 	 */
+	@Override
 	public Object[] getChildren(Object element) {
 		//check to see if we already have the children cached in the tree map
 		Object tree = cachedTrees.get(element);

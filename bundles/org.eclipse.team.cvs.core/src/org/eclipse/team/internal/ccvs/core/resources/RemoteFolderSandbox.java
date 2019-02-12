@@ -117,7 +117,7 @@ public class RemoteFolderSandbox extends RemoteFolder {
 
 	public void remove(RemoteFile file) {
 		ICVSRemoteResource[] children = getChildren();
-		ArrayList results = new ArrayList();
+		ArrayList<ICVSRemoteResource> results = new ArrayList<>();
 		for (int i = 0; i < children.length; i++) {
 			if (children[i] != file){
 				results.add(children[i]);

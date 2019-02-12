@@ -147,7 +147,7 @@ public class GenerateDiffFileWizard extends Wizard {
 					if (showClosedProjects)
 						return allProjects;
 
-					ArrayList accessibleProjects = new ArrayList();
+					ArrayList<IProject> accessibleProjects = new ArrayList<>();
 					for (int i = 0; i < allProjects.length; i++) {
 						if (allProjects[i].isOpen()) {
 							accessibleProjects.add(allProjects[i]);
@@ -908,14 +908,14 @@ public class GenerateDiffFileWizard extends Wizard {
 				if (viewer instanceof CheckboxTreeViewer) {
 					Object[] elements = ((CheckboxTreeViewer)viewer).getCheckedElements();
 					IResource[]selectedResources = Utils.getResources(elements);
-					ArrayList result = new ArrayList();
+					ArrayList<IResource> result = new ArrayList<>();
 					for (int i = 0; i < selectedResources.length; i++) {
 						IResource resource = selectedResources[i];
 						if (fConfiguration.getSyncInfoSet().getSyncInfo(resource) != null) {
 							result.add(resource);
 						}
 					}
-					return (IResource[]) result.toArray(new IResource[result.size()]);
+					return result.toArray(new IResource[result.size()]);
 				}
 			}
 			return new IResource[0];
@@ -1014,7 +1014,7 @@ public class GenerateDiffFileWizard extends Wizard {
 
 		public void removeBinaryFiles() {
 			try {
-				final List nonBinaryFiles = new ArrayList();
+				final List<IFile> nonBinaryFiles = new ArrayList<>();
 				fParticipant.getSubscriber().accept(resources, IResource.DEPTH_INFINITE, (IDiffVisitor) diff -> {
 					if (!isBinaryFile(diff)) {
 						IFile file = getFile(diff);
@@ -1023,7 +1023,7 @@ public class GenerateDiffFileWizard extends Wizard {
 					}
 					return true;
 				});
-				resources = (IResource[]) nonBinaryFiles
+				resources = nonBinaryFiles
 				.toArray(new IResource[nonBinaryFiles.size()]);
 			} catch (CoreException e) {
 				CVSUIPlugin.log(e);
@@ -1304,7 +1304,7 @@ public class GenerateDiffFileWizard extends Wizard {
 		 * Return the list of Diff command options configured on this page.
 		 */
 		public LocalOption[] getOptions() {
-			List options = new ArrayList(5);
+			List<LocalOption> options = new ArrayList<>(5);
 			/*  if(includeNewFilesOptions.getSelection()) {
                 options.add(Diff.INCLUDE_NEWFILES);
             }
@@ -1321,7 +1321,7 @@ public class GenerateDiffFileWizard extends Wizard {
 				options.add(Diff.CONTEXT_FORMAT);
 			}
 
-			return (LocalOption[]) options.toArray(new LocalOption[options.size()]);
+			return options.toArray(new LocalOption[options.size()]);
 		}
 		protected void setEnableUnifiedGroup(boolean enabled){
 			unifiedRadioGroup.setEnablement(enabled, new int[] {
@@ -1666,7 +1666,7 @@ public class GenerateDiffFileWizard extends Wizard {
 		/**
 		 * List of buttons in the group. Both radio groups contain 3 elements.
 		 */
-		private List buttons = new ArrayList(3);
+		private List<Button> buttons = new ArrayList<>(3);
 
 		/**
 		 * Index of the selected button.
@@ -1716,7 +1716,7 @@ public class GenerateDiffFileWizard extends Wizard {
 		public int setSelection(int buttonCode, boolean selectEnabledOnly) {
 			deselectAll();
 
-			((Button) buttons.get(buttonCode - 1)).setSelection(true);
+			buttons.get(buttonCode - 1).setSelection(true);
 			selected = buttonCode - 1;
 			if (selectEnabledOnly)
 				selected = selectEnabledOnly() - 1;
@@ -1731,7 +1731,7 @@ public class GenerateDiffFileWizard extends Wizard {
 		public int selectEnabledOnly() {
 			deselectAll();
 
-			Button selectedButton = (Button) buttons.get(selected);
+			Button selectedButton = buttons.get(selected);
 			if (!selectedButton.isEnabled()) {
 				// if the button is disabled, set selection to an enabled one
 				for (Iterator iterator = buttons.iterator(); iterator.hasNext();) {
@@ -1768,11 +1768,11 @@ public class GenerateDiffFileWizard extends Wizard {
 
 			// enable (or disable) given buttons
 			for (int i = 0; i < buttonsToChange.length; i++) {
-				((Button) this.buttons.get(buttonsToChange[i] - 1))
+				this.buttons.get(buttonsToChange[i] - 1)
 				.setEnabled(enabled);
 			}
 			// check whether the selected button is enabled
-			if (!((Button) this.buttons.get(selected)).isEnabled()) {
+			if (!this.buttons.get(selected).isEnabled()) {
 				if (defaultSelection != -1)
 					// set the default selection and check if it's enabled
 					setSelection(defaultSelection, true);

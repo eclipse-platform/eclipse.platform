@@ -194,7 +194,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		if (projects.length == 1) {
 			return ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[0]);
 		} else {
-			Set rules = new HashSet();
+			Set<ISchedulingRule> rules = new HashSet<>();
 			for (int i = 0; i < projects.length; i++) {
 				ISchedulingRule modifyRule = ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[i]);
 				if (modifyRule instanceof IResource && ((IResource)modifyRule).getType() == IResource.ROOT) {
@@ -204,7 +204,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 				}
 				rules.add(modifyRule);
 			}
-			return new MultiRule((ISchedulingRule[]) rules.toArray(new ISchedulingRule[rules.size()]));
+			return new MultiRule(rules.toArray(new ISchedulingRule[rules.size()]));
 		}
 	}
 
@@ -251,7 +251,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 			
 			try {
 				// Build the local options
-				List localOptions = new ArrayList();
+				List<LocalOption> localOptions = new ArrayList<>();
 				// Add the option to load into the target project if one was supplied
 				if (project != null) {
 					localOptions.add(Checkout.makeDirectoryNameOption(project.getName()));
@@ -272,7 +272,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 				// Perform the checkout
 				IStatus status = Command.CHECKOUT.execute(session,
 					Command.NO_GLOBAL_OPTIONS,
-					(LocalOption[])localOptions.toArray(new LocalOption[localOptions.size()]),
+					localOptions.toArray(new LocalOption[localOptions.size()]),
 					new String[]{getRemoteModuleName(resource)},
 					null,
 					Policy.subMonitorFor(pm, 90));
@@ -300,7 +300,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 	 */
 	private IProject[] determineProjects(Session session, final ICVSRemoteFolder remoteFolder, IProject project, IProgressMonitor pm) throws CVSException {
 			
-		Set targetProjectSet = new HashSet();
+		Set<IProject> targetProjectSet = new HashSet<>();
 		String moduleName = getRemoteModuleName(remoteFolder);
 		if (project == null) {
 			
@@ -336,7 +336,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		}
 		
 		// Return the local projects affected by the checkout
-		IProject[] targetProjects = (IProject[]) targetProjectSet.toArray(new IProject[targetProjectSet.size()]);
+		IProject[] targetProjects = targetProjectSet.toArray(new IProject[targetProjectSet.size()]);
 		return targetProjects;
 	}
 

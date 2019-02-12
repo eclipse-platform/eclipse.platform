@@ -70,8 +70,7 @@ public class CompareStructureViewerSwitchingPane extends
 			if (fSelectedViewerDescriptor != null) {
 				ViewerDescriptor[] array = CompareUIPlugin.getDefault().findStructureViewerDescriptor(
 						oldViewer, (ICompareInput)input, getCompareConfiguration());
-				List list = array != null ? Arrays.asList(array)
-						: Collections.EMPTY_LIST;
+				List<ViewerDescriptor> list = array != null ? Arrays.asList(array) : Collections.emptyList();
 				if (list.contains(fSelectedViewerDescriptor)) {
 					// use selected viewer only when appropriate for the new input
 					fCompareEditorInput

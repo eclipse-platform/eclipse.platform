@@ -43,14 +43,14 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 	}
 
 	protected ResourceMapping[] getResourceMappings(IStructuredSelection selection) {
-		List mappings = new ArrayList();
+		List<ResourceMapping> mappings = new ArrayList<>();
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
 			Object element = iter.next();
 			ResourceMapping mapping = Utils.getResourceMapping(element);
 			if (mapping != null)
 				mappings.add(mapping);
 		}
-		return (ResourceMapping[]) mappings.toArray(new ResourceMapping[mappings.size()]);
+		return mappings.toArray(new ResourceMapping[mappings.size()]);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 	protected IResource[] getTargetResources() {
 		IStructuredSelection selection = getStructuredSelection();
 		Object[] objects = selection.toArray();
-		Set roots = new HashSet();
+		Set<IResource> roots = new HashSet<>();
 		for (int i = 0; i < objects.length; i++) {
 			Object object = objects[i];
 			ResourceMapping mapping = Utils.getResourceMapping(object);
@@ -91,7 +91,7 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 				}
 			}
 		}
-		return (IResource[]) roots.toArray(new IResource[roots.size()]);
+		return roots.toArray(new IResource[roots.size()]);
 	}
 
 	/**

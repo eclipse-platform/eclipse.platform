@@ -359,7 +359,7 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 			} else if (notifications == NOTIFY_ON_ALL) {
 				internalFormat = NotifyInfo.ALL;
 			} else {
-				List notificationCharacters = new ArrayList();
+				List<Character> notificationCharacters = new ArrayList<>();
 				if ((notifications & NOTIFY_ON_EDIT) >0) 
 					notificationCharacters.add(Character.valueOf(NotifyInfo.EDIT));
 				if ((notifications & NOTIFY_ON_UNEDIT) >0) 

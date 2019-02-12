@@ -130,12 +130,12 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 	private IStatus internalMerge(final IDiff[] diffs, final boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		
 		// The list of diffs that add or change the local file
-		List fileChanges = new ArrayList();
+		List<IDiff> fileChanges = new ArrayList<>();
 		// The list of folders diffs
 		List<IDiff> folderDiffs = new ArrayList<>();
 		// The list of diffs that will result in the deletion of
 		// the local file
-		List fileDeletions = new ArrayList();
+		List<IDiff> fileDeletions = new ArrayList<>();
 		
 		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
@@ -158,10 +158,10 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		int ticks = (fileDeletions.size() + fileChanges.size()) * 100;
 		try {
 			monitor.beginTask(null, ticks);
-			List result = new ArrayList();
+			List<IStatus> result = new ArrayList<>();
 			if (!fileDeletions.isEmpty()) {
 				IStatus status = CVSSubscriberMergeContext.super.merge(
-						(IDiff[]) fileDeletions.toArray(new IDiff[fileDeletions.size()]), 
+						fileDeletions.toArray(new IDiff[fileDeletions.size()]), 
 						ignoreLocalChanges, 
 						Policy.subMonitorFor(monitor, 100 * fileDeletions.size()));
 				if (!status.isOK()) {
@@ -174,7 +174,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 			}
 			if (!fileChanges.isEmpty()) {
 				IStatus status = CVSSubscriberMergeContext.super.merge(
-						(IDiff[]) fileChanges.toArray(new IDiff[fileChanges.size()]), 
+						fileChanges.toArray(new IDiff[fileChanges.size()]), 
 						ignoreLocalChanges, 
 						Policy.subMonitorFor(monitor, 100 * fileChanges.size()));
 				if (!status.isOK()) {
@@ -198,8 +198,8 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 			if (result.isEmpty())
 				return Status.OK_STATUS;
 			if (result.size() == 1)
-				return (IStatus)result.get(0);
-			return new MergeStatus(CVSUIPlugin.ID, ((IStatus)result.get(0)).getMessage(), getFailedFiles(result));
+				return result.get(0);
+			return new MergeStatus(CVSUIPlugin.ID, result.get(0).getMessage(), getFailedFiles(result));
 		} finally {
 			monitor.done();
 		}
@@ -226,7 +226,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 	}
 
 	private IFile[] getFailedFiles(List result) {
-		List failures = new ArrayList();
+		List<IFile> failures = new ArrayList<>();
 		for (Iterator iter = result.iterator(); iter.hasNext();) {
 			IStatus status = (IStatus) iter.next();
 			if (status instanceof MergeStatus) {
@@ -234,7 +234,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 				failures.addAll(Arrays.asList(ms.getConflictingFiles()));
 			}
 		}
-		return (IFile[]) failures.toArray(new IFile[failures.size()]);
+		return failures.toArray(new IFile[failures.size()]);
 	}
 	
 	@Override

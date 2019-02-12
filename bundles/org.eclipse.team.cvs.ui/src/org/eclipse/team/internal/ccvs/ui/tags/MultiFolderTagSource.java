@@ -55,11 +55,11 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
         if (type == CVSTag.HEAD || type == BASE) {
             return super.getTags(type);
         }
-        Set tags= new HashSet();
+		Set<CVSTag> tags = new HashSet<>();
         for (int i= 0; i < folders.length; i++) {
 			tags.addAll(Arrays.asList(getTags(folders[i], type)));
 		}
-        return (CVSTag[]) tags.toArray(new CVSTag[tags.size()]);
+        return tags.toArray(new CVSTag[tags.size()]);
     }
     
     /* (non-Javadoc)
@@ -68,7 +68,7 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     @Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask("", folders.length);  //$NON-NLS-1$
-        Set result= new HashSet();
+		Set<CVSTag> result = new HashSet<>();
     	for (int i= 0; i < folders.length; i++) {
 			ICVSFolder folder= folders[i];
 			CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(folder, bestEffort /* recurse */, true /* notify */, Policy.subMonitorFor(monitor, 1));
@@ -76,7 +76,7 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
 		}
     	monitor.done();
         fireChange();
-        return (CVSTag[]) result.toArray(new CVSTag[result.size()]);
+        return result.toArray(new CVSTag[result.size()]);
     }
     
     /* (non-Javadoc)

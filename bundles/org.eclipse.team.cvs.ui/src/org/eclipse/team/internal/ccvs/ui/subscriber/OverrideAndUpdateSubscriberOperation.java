@@ -23,9 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.core.synchronize.FastSyncInfoFilter;
-import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.core.synchronize.SyncInfoSet;
+import org.eclipse.team.core.synchronize.*;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.Policy;
@@ -39,6 +37,7 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
 	 */
+	@Override
 	public boolean shouldRun() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return(promptForOverwrite(syncSet));
@@ -46,15 +45,16 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void runWithProjectRule(IProject project, SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		try {
 			SyncInfo[] conflicts = set.getNodes(getConflictingAdditionFilter());
-			List conflictingResources = new ArrayList();
+			List<IResource> conflictingResources = new ArrayList<>();
 			for (int i = 0; i < conflicts.length; i++) {
 				SyncInfo info = conflicts[i];
 				conflictingResources.add(info.getLocal());
 			}
-			new OverrideAndUpdateOperation(getPart(), project, set.getResources(), (IResource[]) conflictingResources.toArray(new IResource[conflictingResources.size()]), null /* tag */, false /* recurse */).run(monitor);
+			new OverrideAndUpdateOperation(getPart(), project, set.getResources(), conflictingResources.toArray(new IResource[conflictingResources.size()]), null /* tag */, false /* recurse */).run(monitor);
 		} catch (InvocationTargetException e) {
 			throw CVSException.wrapException(e);
 		} catch (InterruptedException e) {
@@ -72,6 +72,7 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
 	 */
+	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return NLS.bind(CVSUIMessages.UpdateAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 

@@ -52,10 +52,10 @@ public class CVSRepositoryLocationMatcher {
 		return 0;
 	};
 
-	public static Map/* <IProject, List<ICVSRepositoryLocation>> */prepareSuggestedRepositoryLocations(
-			IProject[] projects, final Map/* <IProject, LoadInfo> */infoMap) {
-		List/* <IProject> */confirmedProjectsList = Arrays.asList(projects);
-		Set/* <ICVSRepositoryLocation> */projectSetRepositoryLocations = new HashSet();
+	public static Map<IProject, List<ICVSRepositoryLocation>> prepareSuggestedRepositoryLocations(
+			IProject[] projects, final Map<IProject, LoadInfo> infoMap) {
+		List<IProject> confirmedProjectsList = Arrays.asList(projects);
+		Set<ICVSRepositoryLocation> projectSetRepositoryLocations = new HashSet<>();
 		for (Iterator i = infoMap.keySet().iterator(); i.hasNext();) {
 			IProject project = (IProject) i.next();
 			if (confirmedProjectsList.contains(project)) {
@@ -69,7 +69,7 @@ public class CVSRepositoryLocationMatcher {
 			return null;
 		}
 
-		List/* <ICVSRepositoryLocation> */knownRepositories = Arrays
+		List<ICVSRepositoryLocation> knownRepositories = Arrays
 				.asList(KnownRepositories.getInstance().getRepositories());
 
 		if (knownRepositories.isEmpty()) {
@@ -80,7 +80,7 @@ public class CVSRepositoryLocationMatcher {
 					.hasNext();) {
 				ICVSRepositoryLocation projectSetRepositoryLocation = (ICVSRepositoryLocation) i
 						.next();
-				ArrayList list = new ArrayList(1);
+				ArrayList<ICVSRepositoryLocation> list = new ArrayList<>(1);
 				list.add(projectSetRepositoryLocation);
 				result.put(projectSetRepositoryLocation, list);
 			}
@@ -88,7 +88,7 @@ public class CVSRepositoryLocationMatcher {
 		} else if (knownRepositories.containsAll(projectSetRepositoryLocations)) {
 			// All repositories are known, no need to prompt for additional
 			// information.
-			return Collections.EMPTY_MAP;
+			return Collections.emptyMap();
 		} else {
 			// Not all repositories from the project set are known.
 			Map result = new HashMap();

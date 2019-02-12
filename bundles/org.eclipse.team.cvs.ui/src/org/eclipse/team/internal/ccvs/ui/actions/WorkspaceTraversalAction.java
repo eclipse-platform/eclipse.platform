@@ -17,8 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.team.core.RepositoryProvider;
@@ -65,7 +64,7 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
     }
     
     private static IResource[] getRootTraversalResources(ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
-    	Set result = new HashSet();
+		Set<IResource> result = new HashSet<>();
     	ResourceTraversal[] traversals = getTraversals(null, manager, monitor);
     	for (int i = 0; i < traversals.length; i++) {
 			ResourceTraversal traversal = traversals[i];
@@ -77,7 +76,7 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
                 }
             }
         }
-        return (IResource[]) result.toArray(new IResource[result.size()]);
+        return result.toArray(new IResource[result.size()]);
     }
 
     protected Subscriber getWorkspaceSubscriber() {
@@ -122,12 +121,12 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
     }
     
     public static IResource[] getProjects(IResource[] resources) {
-        Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             projects.add(resource.getProject());
         }
-        return (IResource[]) projects.toArray(new IResource[projects.size()]);
+        return projects.toArray(new IResource[projects.size()]);
     }
     
     /**

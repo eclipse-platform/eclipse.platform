@@ -21,12 +21,12 @@ import org.eclipse.jface.text.IDocument;
 public class XMLChildren extends XMLNode {
 	
 	public int children;	// counts the number of children
-	public HashMap childElements;	// maps the name of XML child elements to their # of occurence
+	public HashMap<String,Integer> childElements;	// maps the name of XML child elements to their # of occurence
 	
 	public XMLChildren(String XMLType, String id, String value, String signature, IDocument doc, int start, int length) {
 		super(XMLType, id, value, signature, doc, start, length);
 		children= 0;
-		childElements = new HashMap();
+		childElements = new HashMap<>();
 	}
 }
 

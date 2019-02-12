@@ -61,11 +61,13 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	void setProperty(boolean state) {
 		if (fCompareConfiguration != null) {
-			Map filters = new HashMap();
+			Map<String, ICompareFilter> filters = new HashMap<>();
 			if (fCompareConfiguration.getProperty(COMPARE_FILTERS) != null) {
-				filters.putAll((Map) fCompareConfiguration
+				filters.putAll(
+						(Map<String, ICompareFilter>) fCompareConfiguration
 						.getProperty(COMPARE_FILTERS));
 			}
 			if (state) {
@@ -78,10 +80,12 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	boolean getProperty() {
-		Map filters = (Map) fCompareConfiguration.getProperty(COMPARE_FILTERS);
+		Map<String, ICompareFilter> filters = (Map<String, ICompareFilter>) fCompareConfiguration
+				.getProperty(COMPARE_FILTERS);
 		if (filters == null) {
-			filters = new HashMap();
+			filters = new HashMap<>();
 		}
 		return filters.containsKey(fCompareFilterDescriptor.getFilterId());
 	}
@@ -108,11 +112,12 @@ public class ChangeCompareFilterPropertyAction extends Action implements
 		setChecked(getProperty());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty().equals(COMPARE_FILTERS)
 				&& event.getNewValue() instanceof Map) {
-			setChecked(((Map) event.getNewValue())
+			setChecked(((Map<String, ICompareFilter>) event.getNewValue())
 					.containsKey(fCompareFilterDescriptor.getFilterId()));
 		}
 	}

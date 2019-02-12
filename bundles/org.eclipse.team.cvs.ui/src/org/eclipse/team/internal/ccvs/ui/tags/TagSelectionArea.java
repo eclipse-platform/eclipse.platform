@@ -416,10 +416,10 @@ public class TagSelectionArea extends DialogArea {
 	 * Returns the selected date tag elements
 	 */
 	private TagElement[] getSelectedDateTagElement() {
-		ArrayList dateTagElements = null;
+		ArrayList<Object> dateTagElements = null;
 		IStructuredSelection selection = tagTree.getStructuredSelection();
 		if (selection!=null && !selection.isEmpty()) {
-			dateTagElements = new ArrayList();
+			dateTagElements = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = TeamAction.getAdapter(elements.next(), TagElement.class);
@@ -439,7 +439,7 @@ public class TagSelectionArea extends DialogArea {
 	}
 	private void addDateTag(CVSTag tag){
 		if(tag == null) return;
-		List dateTags = new ArrayList();
+		List<CVSTag> dateTags = new ArrayList<>();
 		ICVSRepositoryLocation location = getLocation();
 		dateTags.addAll(Arrays.asList(CVSUIPlugin.getPlugin().getRepositoryManager().getDateTags(location)));
 		if(!dateTags.contains( tag)){

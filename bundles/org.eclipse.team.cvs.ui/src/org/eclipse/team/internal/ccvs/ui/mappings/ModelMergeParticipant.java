@@ -151,7 +151,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 			throw new CVSException(NLS.bind(CVSUIMessages.MergeSynchronizeParticipant_10, new String[] { id.toString() })); 
 		}
 		
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		for (int i = 0; i < rootNodes.length; i++) {
 			IMemento rootNode = rootNodes[i];
 			IPath path = new Path(rootNode.getString(CTX_ROOT_PATH)); 
@@ -166,7 +166,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		if(resources.isEmpty()) {
 			throw new CVSException(NLS.bind(CVSUIMessages.MergeSynchronizeParticipant_12, new String[] { id.toString() })); 
 		}
-		IResource[] roots = (IResource[]) resources.toArray(new IResource[resources.size()]);
+		IResource[] roots = resources.toArray(new IResource[resources.size()]);
 		return new CVSMergeSubscriber(id, roots, start, end);
 	}
 	

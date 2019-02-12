@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.patch;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * A patch configuration allows clients to set parameters that control how a
@@ -32,8 +30,8 @@ public class PatchConfiguration {
 	private int fFuzz;
 	private boolean fIgnoreWhitespace= false;
 	private boolean fReverse= false;
-	private HashMap properties = new HashMap();
-	private List hunkFilters = new ArrayList();
+	private HashMap<String, Object> properties = new HashMap<>();
+	private List<IHunkFilter> hunkFilters = new ArrayList<>();
 
 	/**
 	 * Return whether the patch should be reversed when applied.
@@ -154,7 +152,7 @@ public class PatchConfiguration {
 	 * @since org.eclipse.compare.core 3.5
 	 */
 	public IHunkFilter[] getHunkFilters() {
-		return (IHunkFilter[]) this.hunkFilters.toArray(new IHunkFilter[this.hunkFilters
+		return this.hunkFilters.toArray(new IHunkFilter[this.hunkFilters
 				.size()]);
 	}
 

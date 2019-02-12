@@ -171,7 +171,7 @@ public class PreviewPatchPage2 extends WizardPage {
 	private void updateActions(IStructuredSelection ss) {
 		fExcludeAction.setEnabled(false);
 		fIncludeAction.setEnabled(false);
-		for (Iterator it = ss.iterator(); it.hasNext();) {
+		for (Iterator<?> it = ss.iterator(); it.hasNext();) {
 			Object element = it.next();
 			if (element instanceof PatchDiffNode) {
 				if (((PatchDiffNode) element).isEnabled()) {
@@ -245,7 +245,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				ISelection selection = fInput.getViewer().getSelection();
 				if (selection instanceof TreeSelection){
 					TreeSelection treeSelection = (TreeSelection) selection;
-					Iterator iter = treeSelection.iterator();
+					Iterator<?> iter = treeSelection.iterator();
 					while (iter.hasNext()){
 						Object obj = iter.next();
 						if (obj instanceof PatchDiffNode){
@@ -267,7 +267,7 @@ public class PreviewPatchPage2 extends WizardPage {
 				ISelection selection = fInput.getViewer().getSelection();
 				if (selection instanceof TreeSelection){
 					TreeSelection treeSelection = (TreeSelection) selection;
-					Iterator iter = treeSelection.iterator();
+					Iterator<?> iter = treeSelection.iterator();
 					while (iter.hasNext()){
 						Object obj = iter.next();
 						if (obj instanceof PatchDiffNode){

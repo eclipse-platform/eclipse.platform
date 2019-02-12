@@ -58,7 +58,7 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 
 		Set keySetIdMaps = IdMaps.keySet();
 		Set keySetIdMapsInternal = IdMapsInternal.keySet();
-		ArrayList internalIdMapsAL= new ArrayList();
+		ArrayList<String> internalIdMapsAL= new ArrayList<>();
 		for (Iterator iter_internal = keySetIdMapsInternal.iterator(); iter_internal.hasNext(); ) {
 			String idmap_name = (String)iter_internal.next();
 			internalIdMapsAL.add(idmap_name);
@@ -70,7 +70,7 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		}
 		new MenuItem(menu, SWT.SEPARATOR);
 
-		ArrayList userIdMapsAL= new ArrayList();
+		ArrayList<String> userIdMapsAL= new ArrayList<>();
 		for (Iterator iter_idmaps = keySetIdMaps.iterator(); iter_idmaps.hasNext(); ) {
 			String idmap_name = (String)iter_idmaps.next();
 			userIdMapsAL.add(idmap_name);

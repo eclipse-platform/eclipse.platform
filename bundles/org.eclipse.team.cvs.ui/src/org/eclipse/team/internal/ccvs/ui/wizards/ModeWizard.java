@@ -130,8 +130,8 @@ public class ModeWizard extends ResizableWizard {
     
     protected static List getModeChanges(Shell shell, IResource [] resources) {
         
-        final ArrayList changes= new ArrayList();
-        final HashSet visited= new HashSet();
+		final ArrayList<ModeChange> changes = new ArrayList<>();
+		final HashSet<IResource> visited = new HashSet<>();
         
         for (int i = 0; i < resources.length; i++) {
             final IResource currentResource = resources[i];
@@ -166,7 +166,7 @@ public class ModeWizard extends ResizableWizard {
     @Override
 	public boolean performFinish() {
         try {
-            final List messages = new ArrayList();
+            final List<IStatus> messages = new ArrayList<>();
             final List changes= fPage.getChanges();
             if (changes.size() == 0)
                 return true;
@@ -215,7 +215,7 @@ public class ModeWizard extends ResizableWizard {
                 boolean error = false;
                 final MultiStatus combinedStatus = new MultiStatus(CVSUIPlugin.ID, 0, CVSUIMessages.ModeWizard_4, null); 
                 for (int i = 0; i < messages.size(); i++) {
-                    final IStatus status = (IStatus)messages.get(i);
+                    final IStatus status = messages.get(i);
                     if (status.getSeverity() == IStatus.ERROR || status.getCode() == CVSStatus.SERVER_ERROR) {
                         error = true;
                     }
@@ -248,7 +248,7 @@ public class ModeWizard extends ResizableWizard {
      */
     static Map getProviderMapping(Collection changes) {
         
-        final Map table = new HashMap();
+		final Map<RepositoryProvider, HashMap<?, ?>> table = new HashMap<>();
         
         for (Iterator iter = changes.iterator(); iter.hasNext();) {
             final ModeChange change= (ModeChange)iter.next();
@@ -262,7 +262,7 @@ public class ModeWizard extends ResizableWizard {
             if (!table.containsKey(provider)) {
                 table.put(provider, new HashMap());
             }
-            final Map providerMap = (Map)table.get(provider);
+            final Map providerMap = table.get(provider);
             providerMap.put(file, change.getNewMode());
         }
         return table;

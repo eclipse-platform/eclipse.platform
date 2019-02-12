@@ -80,7 +80,7 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 	protected abstract ResourceTraversal[] getCommitTraversals(IStructuredSelection selection, IProgressMonitor monitor) throws CoreException;
 	
     public static IResource[] getOutgoingChanges(final IResourceDiffTree tree, ResourceTraversal[] traversals, IProgressMonitor monitor) {
-    	final List resources = new ArrayList();
+		final List<IResource> resources = new ArrayList<>();
 		IDiff[] diffs = tree.getDiffs(traversals);
 		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
@@ -90,7 +90,7 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 					resources.add(resource);
 			}
 		}
-		return (IResource[]) resources.toArray(new IResource[resources.size()]);
+		return resources.toArray(new IResource[resources.size()]);
     }
     
 	public static boolean hasLocalChange(IDiff diff) {

@@ -13,24 +13,15 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.operations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSTag;
-import org.eclipse.team.internal.ccvs.core.ICVSRemoteFile;
-import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
-import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
-import org.eclipse.team.internal.ccvs.core.ILogEntry;
-import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.RLog;
-import org.eclipse.team.internal.ccvs.core.client.Session;
+import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.core.client.*;
 import org.eclipse.team.internal.ccvs.core.client.listeners.ILogEntryListener;
 import org.eclipse.team.internal.ccvs.core.client.listeners.LogListener;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
@@ -59,10 +50,13 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 	    /*
 	     * Cache of all log entries
 	     */
-		private Map entries = new HashMap(); /* Map String:remoteFilePath->Map (String:revision -> ILogEntry) */
+		private Map<String, Map<String, ILogEntry>> entries = new HashMap<>(); /*
+																				 * Map String:remoteFilePath->Map
+																				 * (String:revision -> ILogEntry)
+																				 */
 		
-        private Map internalGetLogEntries(String path) {
-            return (Map)entries.get(path);
+		private Map<String, ILogEntry> internalGetLogEntries(String path) {
+            return entries.get(path);
         }
         
         /**
@@ -71,8 +65,8 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
          * @return the log entries for the file
          */
         public ILogEntry[] getLogEntries(String path) {
-            Map map = internalGetLogEntries(path);
-            return (ILogEntry[]) map.values().toArray(new ILogEntry[map.values().size()]);
+			Map<String, ILogEntry> map = internalGetLogEntries(path);
+            return map.values().toArray(new ILogEntry[map.values().size()]);
         }
         
         private ILogEntry internalGetLogEntry(String path, String revision) {
@@ -84,7 +78,7 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
         }
         
         public String[] getCachedFilePaths() {
-            return (String[]) entries.keySet().toArray(new String[entries.size()]);
+            return entries.keySet().toArray(new String[entries.size()]);
         }
         
 		/**
@@ -115,9 +109,9 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 		 * @return the fetched log entries or an empty list is none were found
 		 */
 		public synchronized ILogEntry[] getLogEntries(ICVSRemoteResource resource) {
-		    Map fileEntries = internalGetLogEntries(getFullPath(resource));
+			Map<String, ILogEntry> fileEntries = internalGetLogEntries(getFullPath(resource));
 		    if (fileEntries != null) {
-		        return (ILogEntry[]) fileEntries.values().toArray(new ILogEntry[fileEntries.size()]);
+		        return fileEntries.values().toArray(new ILogEntry[fileEntries.size()]);
 		    }
             return new ILogEntry[0];
 		}
@@ -226,13 +220,14 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.ccvs.core.client.listeners.ILogEntryListener#addEntry(org.eclipse.team.internal.ccvs.core.client.listeners.LogEntry)
          */
-        public void handleLogEntryReceived(ILogEntry entry) {
+        @Override
+		public void handleLogEntryReceived(ILogEntry entry) {
     		ICVSRemoteFile file = entry.getRemoteFile();
     		String fullPath = getFullPath(file);
     		String revision = entry.getRevision();
-            Map fileEntries = internalGetLogEntries(fullPath);
+			Map<String, ILogEntry> fileEntries = internalGetLogEntries(fullPath);
             if (fileEntries == null) {
-                fileEntries = new HashMap();
+				fileEntries = new HashMap<>();
                 entries.put(fullPath, fileEntries);
             }
             fileEntries.put(revision, entry);
@@ -249,6 +244,7 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryLocationOperation#execute(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, org.eclipse.team.internal.ccvs.core.ICVSRemoteResource[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(ICVSRepositoryLocation location, ICVSRemoteResource[] remoteResources, IProgressMonitor monitor) throws CVSException {
 		monitor.beginTask(NLS.bind(CVSUIMessages.RemoteLogOperation_0, new String[] { location.getHost() }), 100); 
 		Session s = new Session(location, CVSWorkspaceRoot.getCVSFolderFor(ResourcesPlugin.getWorkspace().getRoot()), false /* do not output to console */);
@@ -260,14 +256,14 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 		if(tag1 == null || tag2 == null) {
 			// Optimize the cases were we are only fetching the history for a single revision. If it is
 			// already cached, don't fetch it again.
-			ArrayList unCachedRemotes = new ArrayList();
+			ArrayList<ICVSRemoteResource> unCachedRemotes = new ArrayList<>();
 			for (int i = 0; i < remoteResources.length; i++) {
 				ICVSRemoteResource r = remoteResources[i];
 				if(entryCache.getLogEntry(r) == null) {
 					unCachedRemotes.add(r);
 				}
 			}
-			remotes = (ICVSRemoteResource[]) unCachedRemotes.toArray(new ICVSRemoteResource[unCachedRemotes.size()]);
+			remotes = unCachedRemotes.toArray(new ICVSRemoteResource[unCachedRemotes.size()]);
 		}
 		if (remotes.length > 0) {
 			try {
@@ -283,6 +279,7 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.RemoteLogOperation_1; 
 	}

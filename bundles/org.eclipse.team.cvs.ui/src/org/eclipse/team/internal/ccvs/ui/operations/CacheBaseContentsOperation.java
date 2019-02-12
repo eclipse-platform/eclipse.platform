@@ -83,7 +83,7 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 	}
 	
 	private IResource[] getFilesWithLocalChanges(IResource[] resources, boolean recurse) {
-		ArrayList result = new ArrayList();
+		ArrayList<IResource> result = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			IDiff[] nodes = getTree().getDiffs(resource, recurse ? IResource.DEPTH_INFINITE: IResource.DEPTH_ONE);
@@ -94,7 +94,7 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	private boolean isFileWithLocalChange(IDiff node) {

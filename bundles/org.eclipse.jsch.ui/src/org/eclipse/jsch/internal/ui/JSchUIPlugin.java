@@ -17,7 +17,11 @@ package org.eclipse.jsch.internal.ui;
 import java.net.URL;
 import java.util.Hashtable;
 
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jsch.core.IJSchService;
@@ -29,12 +33,12 @@ public class JSchUIPlugin extends AbstractUIPlugin{
   public static final String ID="org.eclipse.jsch.ui"; //$NON-NLS-1$
   public static final String DECORATOR_ID="org.eclipse.jsch.ui.decorator"; //$NON-NLS-1$
 
-  private static Hashtable imageDescriptors=new Hashtable(20);
+  private static Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<>(20);
   /**
    * The singleton plug-in instance
    */
   private static JSchUIPlugin plugin;
-  private ServiceTracker tracker;
+  private ServiceTracker<?, ?> tracker;
 
   public JSchUIPlugin(){
     super();
@@ -57,7 +61,7 @@ public class JSchUIPlugin extends AbstractUIPlugin{
    * @return the image descriptor
    */
   public static ImageDescriptor getImageDescriptor(String id){
-    return (ImageDescriptor)imageDescriptors.get(id);
+    return imageDescriptors.get(id);
   }
 
   /**
@@ -92,7 +96,8 @@ public class JSchUIPlugin extends AbstractUIPlugin{
   /**
    * @see Plugin#start(BundleContext)
    */
-  public void start(BundleContext context) throws Exception {
+  @Override
+public void start(BundleContext context) throws Exception {
     super.start(context);
 
     initializeImages();
@@ -106,7 +111,8 @@ public class JSchUIPlugin extends AbstractUIPlugin{
     tracker.open();
   }
 
-  public void stop(BundleContext context) throws Exception{
+  @Override
+public void stop(BundleContext context) throws Exception{
     super.stop(context);
     tracker.close();
   }

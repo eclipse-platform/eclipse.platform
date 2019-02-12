@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.cvs.ui</artifactId>
-  <version>3.4.300-SNAPSHOT</version>
+  <version>3.4.400-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

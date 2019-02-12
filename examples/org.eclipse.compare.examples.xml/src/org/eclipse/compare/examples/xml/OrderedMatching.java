@@ -31,11 +31,11 @@ public class OrderedMatching extends AbstractMatching {
 		Object[] xc= x.getChildren();
 		Object[] yc= y.getChildren();
 
-		ArrayList xc_elementsAL= new ArrayList();
-		ArrayList xc_attrsAL= new ArrayList();
+		ArrayList<XMLNode> xc_elementsAL= new ArrayList<>();
+		ArrayList<XMLNode> xc_attrsAL= new ArrayList<>();
 
-		ArrayList yc_elementsAL= new ArrayList();
-		ArrayList yc_attrsAL= new ArrayList();
+		ArrayList<XMLNode> yc_elementsAL= new ArrayList<>();
+		ArrayList<XMLNode> yc_attrsAL= new ArrayList<>();
 
 		//find attributes and elements and put them in xc_elementsAL and xc_attrsAL, respectively
 		for (int i= 0; i < xc.length; i++) {
@@ -123,9 +123,9 @@ public class OrderedMatching extends AbstractMatching {
 		boolean rightTreeIsAncestor,
 		IProgressMonitor monitor) {
 
-		fNLeft= new Vector();
+		fNLeft= new Vector<XMLNode>();
 		//numbering LeftTree: Mapping nodes in LeftTree to numbers to be used as array indexes
-		fNRight= new Vector();
+		fNRight= new Vector<XMLNode>();
 		//numbering RightTree: Mapping nodes in RightTree to numbers to be used as array indexes
 		numberNodes(LeftTree, fNLeft);
 		numberNodes(RightTree, fNRight);
@@ -184,16 +184,16 @@ public class OrderedMatching extends AbstractMatching {
 	}
 
 	public int handleAttributes(
-		ArrayList xc_attrs,
-		ArrayList yc_attrs,
-		ArrayList DTMatching) {
+		ArrayList<XMLNode> xc_attrs,
+		ArrayList<XMLNode> yc_attrs,
+		ArrayList<Match> DTMatching) {
 		int distance= 0;
 		x_for : for (
-			Iterator iter_xc= xc_attrs.iterator(); iter_xc.hasNext();) {
-			XMLNode x_attr= (XMLNode) iter_xc.next();
+			Iterator<XMLNode> iter_xc= xc_attrs.iterator(); iter_xc.hasNext();) {
+			XMLNode x_attr= iter_xc.next();
 			String x_attr_name= x_attr.getName();
-			for (Iterator iter_yc= yc_attrs.iterator(); iter_yc.hasNext();) {
-				XMLNode y_attr= (XMLNode) iter_yc.next();
+			for (Iterator<XMLNode> iter_yc= yc_attrs.iterator(); iter_yc.hasNext();) {
+				XMLNode y_attr= iter_yc.next();
 				if (y_attr.getName().equals(x_attr_name)) {
 					if (!y_attr.getValue().equals(x_attr.getValue()))
 						distance += 1;
@@ -206,8 +206,8 @@ public class OrderedMatching extends AbstractMatching {
 			distance += 1;
 		}
 
-		for (Iterator iter_yc= yc_attrs.iterator(); iter_yc.hasNext();) {
-			DTMatching.add(new Match(null, (XMLNode) iter_yc.next()));
+		for (Iterator<XMLNode> iter_yc= yc_attrs.iterator(); iter_yc.hasNext();) {
+			DTMatching.add(new Match(null, iter_yc.next()));
 			distance += 1;
 		}
 

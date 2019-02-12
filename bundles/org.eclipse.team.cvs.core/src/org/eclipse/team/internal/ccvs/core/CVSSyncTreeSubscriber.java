@@ -141,8 +141,8 @@ public abstract class CVSSyncTreeSubscriber extends ResourceVariantTreeSubscribe
 	}
 	
 	protected boolean rootsEqual(Subscriber other) {
-		Set roots1 = new HashSet(Arrays.asList(other.roots()));
-		Set roots2 = new HashSet(Arrays.asList(roots()));
+		Set<IResource> roots1 = new HashSet<>(Arrays.asList(other.roots()));
+		Set<IResource> roots2 = new HashSet<>(Arrays.asList(roots()));
 		if(roots1.size() != roots2.size()) return false;
 		return roots2.containsAll(roots1);
 	}

@@ -60,9 +60,9 @@ public class RepositoryManager {
 	static final String ELEMENT_COMMIT_HISTORY = "CommitComments"; //$NON-NLS-1$
     static final String ELEMENT_COMMENT_TEMPLATES = "CommitCommentTemplates"; //$NON-NLS-1$
 
-	private Map repositoryRoots = new HashMap();
+	private Map<String, RepositoryRoot> repositoryRoots = new HashMap<>();
 	
-	List listeners = new ArrayList();
+	List<IRepositoryListener> listeners = new ArrayList<>();
 
 	// The previously remembered comment
 	static String[] previousComments = new String[0];
@@ -72,7 +72,7 @@ public class RepositoryManager {
 	
 	// Cache of changed repository roots
 	private int notificationLevel = 0;
-	private Map changedRepositories = new HashMap();
+	private Map<String, ICVSRepositoryLocation> changedRepositories = new HashMap<>();
 	
 	public static final int DEFAULT_MAX_COMMENTS = 10;
 	
@@ -102,14 +102,14 @@ public class RepositoryManager {
 	 * @return RepositoryRoot[]
 	 */
 	private RepositoryRoot[] getRepositoryRoots(ICVSRepositoryLocation[] locations) {
-		List roots = new ArrayList();
+		List<RepositoryRoot> roots = new ArrayList<>();
 		for (int i = 0; i < locations.length; i++) {
 			ICVSRepositoryLocation location = locations[i];
 			RepositoryRoot root = getRepositoryRootFor(location);
 			if (root != null)
 				roots.add(root);
 		}
-		return (RepositoryRoot[]) roots.toArray(new RepositoryRoot[roots.size()]);
+		return roots.toArray(new RepositoryRoot[roots.size()]);
 	}
 	
 	public RepositoryRoot[] getKnownRepositoryRoots() {
@@ -122,14 +122,14 @@ public class RepositoryManager {
 	public CVSTag[] getKnownTags(ICVSFolder project, int tagType) {
 		try {
 			CVSTag[] tags = getKnownTags(project);
-			Set result = new HashSet();
+			Set<CVSTag> result = new HashSet<>();
 			for (int i = 0; i < tags.length; i++) {
 				CVSTag tag = tags[i];
 				if (tag.getType() == tagType)
 					result.add(tag);
 			}
 
-			return (CVSTag[])result.toArray(new CVSTag[result.size()]);
+			return result.toArray(new CVSTag[result.size()]);
 		} catch(CVSException e) {
 			CVSUIPlugin.log(e);
 			return new CVSTag[0];
@@ -140,8 +140,8 @@ public class RepositoryManager {
 	 * Get the list of known version tags for a given project.
 	 */
 	public CVSTag[] getKnownTags(ICVSRepositoryLocation location, int tagType) {
-		Set result = new HashSet();
-		RepositoryRoot root = (RepositoryRoot)repositoryRoots.get(location.getLocation(false));
+		Set<CVSTag> result = new HashSet<>();
+		RepositoryRoot root = repositoryRoots.get(location.getLocation(false));
 		if (root != null) {
 			CVSTag[] tags = root.getAllKnownTags();
 			for (int i = 0; i < tags.length; i++) {
@@ -150,7 +150,7 @@ public class RepositoryManager {
 					result.add(tag);
 			}
 		}
-		return (CVSTag[])result.toArray(new CVSTag[0]);
+		return result.toArray(new CVSTag[0]);
 	}
 	
 	/**
@@ -167,12 +167,12 @@ public class RepositoryManager {
 		}
 		ICVSRemoteResource[] folders = getFoldersForTag(repository, CVSTag.DEFAULT, monitor);
 		folders = filterResources(set, folders);
-		Set tags = new HashSet();
+		Set<CVSTag> tags = new HashSet<>();
 		for (int i = 0; i < folders.length; i++) {
 			ICVSRemoteFolder folder = (ICVSRemoteFolder)folders[i];
 			tags.addAll(Arrays.asList(getKnownTags(folder, tagType)));
 		}
-		return (CVSTag[]) tags.toArray(new CVSTag[tags.size()]);
+		return tags.toArray(new CVSTag[tags.size()]);
 	}
 	
 	public CVSTag[] getKnownTags(ICVSFolder project) throws CVSException {
@@ -185,12 +185,12 @@ public class RepositoryManager {
 	 * XXX I hope this methos is not needed in this form
 	 */
 	public Map getKnownProjectsAndVersions(ICVSRepositoryLocation location) {
-		Map knownTags = new HashMap();
+		Map<String, Set<CVSTag>> knownTags = new HashMap<>();
 		RepositoryRoot root = getRepositoryRootFor(location);
 		String[] paths = root.getKnownRemotePaths();
 		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
-			Set result = new HashSet();
+			Set<CVSTag> result = new HashSet<>();
 			result.addAll(Arrays.asList(root.getAllKnownTags(path)));
 			knownTags.put(path, result);
 		}
@@ -219,7 +219,7 @@ public class RepositoryManager {
 				System.arraycopy(modules, 0, result, resources.length, modules.length);
 				return result;
 			}
-			Set result = new HashSet();
+			Set<ICVSRemoteFolder> result = new HashSet<>();
 			// Get the tags for the location
 			RepositoryRoot root = getRepositoryRootFor(location);
 			String[] paths = root.getRemoteChildrenForTag(null, tag);
@@ -229,7 +229,7 @@ public class RepositoryManager {
 						Policy.subMonitorFor(monitor, 100));
 				result.add(remote);
 			}
-			return (ICVSRemoteResource[])result.toArray(new ICVSRemoteResource[result.size()]);
+			return result.toArray(new ICVSRemoteResource[result.size()]);
 		} finally {
 			monitor.done();
 		}
@@ -263,7 +263,7 @@ public class RepositoryManager {
 			return new ICVSRemoteResource[0];
 		}
 		monitor = Policy.monitorFor(monitor);
-		Set result = new HashSet();
+		Set<ICVSRemoteFolder> result = new HashSet<>();
 		RepositoryRoot root = getRepositoryRootFor(location);
 		// if remote folder is null return the subfolders of repository root
 		String[] paths = root.getRemoteChildrenForTag(
@@ -282,7 +282,7 @@ public class RepositoryManager {
 						Policy.subMonitorFor(monitor, 10));
 				result.add(remote);
 			}
-			return (ICVSRemoteResource[]) result
+			return result
 					.toArray(new ICVSRemoteResource[result.size()]);
 		} finally {
 			monitor.done();
@@ -317,7 +317,7 @@ public class RepositoryManager {
 	 * Remove the tags defined for this root and notify any listeners
 	 */
 	public void rootRemoved(ICVSRepositoryLocation root) {
-		RepositoryRoot repoRoot = (RepositoryRoot)repositoryRoots.remove(root.getLocation(false));
+		RepositoryRoot repoRoot = repositoryRoots.remove(root.getLocation(false));
 		if (repoRoot != null)
 			broadcastRepositoryChange(repoRoot);
 	}
@@ -571,12 +571,12 @@ public class RepositoryManager {
 			if (projSize > 0) {
 				for (int j = 0; j < projSize; j++) {
 					String name = dis.readUTF();
-					Set tagSet = new HashSet();
+					Set<CVSTag> tagSet = new HashSet<>();
 					int numTags = dis.readInt();
 					for (int k = 0; k < numTags; k++) {
 						tagSet.add(new CVSTag(dis.readUTF(), CVSTag.VERSION));
 					}
-					CVSTag[] tags = (CVSTag[]) tagSet.toArray(new CVSTag[tagSet.size()]);
+					CVSTag[] tags = tagSet.toArray(new CVSTag[tagSet.size()]);
 					repoRoot.addTags(name, tags);
 				}
 			}
@@ -587,12 +587,12 @@ public class RepositoryManager {
 					if (projSize > 0) {
 						for (int j = 0; j < projSize; j++) {
 							String name = dis.readUTF();
-							Set filenames = new HashSet();
+							Set<String> filenames = new HashSet<>();
 							int numFilenames = dis.readInt();
 							for (int k = 0; k < numFilenames; k++) {
 								filenames.add(name + "/" + dis.readUTF()); //$NON-NLS-1$
 							}
-							repoRoot.setAutoRefreshFiles(name, (String[]) filenames.toArray(new String[filenames.size()]));
+							repoRoot.setAutoRefreshFiles(name, filenames.toArray(new String[filenames.size()]));
 						}
 					}
 				} catch (EOFException e) {
@@ -713,7 +713,7 @@ public class RepositoryManager {
 	}
 	
 	public RepositoryRoot getRepositoryRootFor(ICVSRepositoryLocation location) {
-		RepositoryRoot root = (RepositoryRoot)repositoryRoots.get(location.getLocation(false));
+		RepositoryRoot root = repositoryRoots.get(location.getLocation(false));
 		if (root == null) {
 			root = new RepositoryRoot(location);
 			add(root);
@@ -763,8 +763,8 @@ public class RepositoryManager {
 			notificationLevel = Math.max(0, notificationLevel - 1);
 			if (notificationLevel == 0) {
 				try {
-					Collection roots = changedRepositories.values();
-					broadcastRepositoriesChanged((ICVSRepositoryLocation[]) roots.toArray(new ICVSRepositoryLocation[roots.size()]));
+					Collection<ICVSRepositoryLocation> roots = changedRepositories.values();
+					broadcastRepositoriesChanged(roots.toArray(new ICVSRepositoryLocation[roots.size()]));
 				} finally {
 					changedRepositories.clear();
 				}
@@ -793,7 +793,7 @@ public class RepositoryManager {
 		if (workingSet == null) return resources;
 		// get the projects associated with the working set
 		IAdaptable[] adaptables = workingSet.getElements();
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		for (int i = 0; i < adaptables.length; i++) {
 			IAdaptable adaptable = adaptables[i];
 			Object adapted = adaptable.getAdapter(IResource.class);
@@ -803,7 +803,7 @@ public class RepositoryManager {
 				projects.add(project);
 			}
 		}
-		List result = new ArrayList();
+		List<ICVSRemoteResource> result = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			ICVSRemoteResource resource = resources[i];
 			for (Iterator iter = projects.iterator(); iter.hasNext();) {
@@ -814,7 +814,7 @@ public class RepositoryManager {
 				}
 			}
 		}
-		return (ICVSRemoteResource[]) result.toArray(new ICVSRemoteResource[result.size()]);
+		return result.toArray(new ICVSRemoteResource[result.size()]);
 	}
 	
 	/**

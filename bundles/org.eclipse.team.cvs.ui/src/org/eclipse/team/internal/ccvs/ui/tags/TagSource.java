@@ -15,6 +15,7 @@ package org.eclipse.team.internal.ccvs.ui.tags;
 
 import java.util.*;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.*;
@@ -33,28 +34,34 @@ public abstract class TagSource {
     public static final int BASE = -1;
     
     public static final TagSource EMPTY = new TagSource() {
-        public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
+        @Override
+		public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
             // No-op
         }
-        public ICVSRepositoryLocation getLocation() {
+        @Override
+		public ICVSRepositoryLocation getLocation() {
             // TODO Auto-generated method stub
             return null;
         }
-        public String getShortDescription() {
+        @Override
+		public String getShortDescription() {
             return "Empty"; //$NON-NLS-1$
         }
-        public CVSTag[] getTags(int type) {
+        @Override
+		public CVSTag[] getTags(int type) {
             return new CVSTag[0];
         }
-        public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
+        @Override
+		public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
             return new CVSTag[0];
         }
-        public ICVSResource[] getCVSResources() {
+        @Override
+		public ICVSResource[] getCVSResources() {
             return new ICVSResource[0];
         }
     };
     
-    private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<ITagSourceChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
     
     /**
      * Simple interface for providing notification when the tags
@@ -65,7 +72,7 @@ public abstract class TagSource {
     }
     
     public static int[] convertIncludeFlaqsToTagTypes(int includeFlags) {
-        List types = new ArrayList();
+		List<Integer> types = new ArrayList<>();
         if ((includeFlags & TagSelectionArea.INCLUDE_BRANCHES) > 0)
             types.add(Integer.valueOf(CVSTag.BRANCH));
         if ((includeFlags & TagSelectionArea.INCLUDE_VERSIONS) > 0)
@@ -78,7 +85,7 @@ public abstract class TagSource {
             types.add(Integer.valueOf(BASE));
         int[] result = new int[types.size()];
         for (int i = 0; i < result.length; i++) {
-            result[i] = ((Integer)types.get(i)).intValue();
+            result[i] = types.get(i).intValue();
             
         }
         return result;
@@ -109,11 +116,11 @@ public abstract class TagSource {
     }
 
     private static ICVSFolder[] getFolders(ICVSResource[] resources) {
-    	HashSet result= new HashSet();
+		HashSet<ICVSFolder> result = new HashSet<>();
     	for (int i= 0; i < resources.length; i++) {
     		result.add(getFirstFolder(resources[i]));
 		}
-    	return (ICVSFolder[]) result.toArray(new ICVSFolder[result.size()]);
+    	return result.toArray(new ICVSFolder[result.size()]);
     }
 
     /**
@@ -135,21 +142,21 @@ public abstract class TagSource {
     }
     
     private static IResource[] getProjects(ResourceMapping[] mappers) {
-        Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
         for (int i = 0; i < mappers.length; i++) {
             ResourceMapping mapper = mappers[i];
             projects.addAll(Arrays.asList(mapper.getProjects()));
         }
-        return (IResource[]) projects.toArray(new IResource[projects.size()]);
+        return projects.toArray(new IResource[projects.size()]);
     }
 
     private static IResource[] getProjects(IResource[] resources) {
-        Set result = new HashSet();
+		Set<IProject> result = new HashSet<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             result.add(resource.getProject());
         }
-        return (IResource[]) result.toArray(new IResource[result.size()]);
+        return result.toArray(new IResource[result.size()]);
     }
 
     /**
@@ -162,12 +169,12 @@ public abstract class TagSource {
     }
     
     private static ICVSResource[] getCVSResources(IResource[] resources) {
-        List cvsResources = new ArrayList();
+		List<ICVSResource> cvsResources = new ArrayList<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             cvsResources.add(CVSWorkspaceRoot.getCVSResourceFor(resource));
         }
-        return (ICVSResource[]) cvsResources.toArray(new ICVSResource[cvsResources.size()]);
+        return cvsResources.toArray(new ICVSResource[cvsResources.size()]);
     }
 
     private static ICVSFolder getFirstFolder(ICVSResource resource) {
@@ -195,13 +202,13 @@ public abstract class TagSource {
         if (types.length == 1) {
             return getTags(types[0]);
         }
-        List result = new ArrayList();
+		List<CVSTag> result = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             int type = types[i];
             CVSTag[] tags = getTags(type);
             result.addAll(Arrays.asList(tags));
         }
-        return (CVSTag[]) result.toArray(new CVSTag[result.size()]);
+        return result.toArray(new CVSTag[result.size()]);
     }
 
     /**
@@ -245,10 +252,12 @@ public abstract class TagSource {
         for (int i = 0; i < list.length; i++) {
             final ITagSourceChangeListener listener = (ITagSourceChangeListener)list[i];
             SafeRunner.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
+                @Override
+				public void handleException(Throwable exception) {
                     // logged by run
                 }
-                public void run() throws Exception {
+                @Override
+				public void run() throws Exception {
                     listener.tagsChanged(TagSource.this);
                 }
             });

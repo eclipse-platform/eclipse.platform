@@ -17,7 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -49,6 +50,7 @@ public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter 
 		/*
 		 * The order in the diaog should be HEAD, Branches, Versions, Dates, BASE
 		 */
+		@Override
 		public int category(Object element) {
 			if (element instanceof TagElement) {
 				CVSTag tag = ((TagElement)element).getTag();
@@ -64,6 +66,7 @@ public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter 
 			}
 			return 0;
 		}
+		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			int cat1 = category(e1);
 			int cat2 = category(e2);
@@ -112,8 +115,9 @@ public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter 
 		}
 	}
 	
+	@Override
 	public Object[] getChildren(Object o) {
-		ArrayList children = new ArrayList(4);
+		ArrayList<IAdaptable> children = new ArrayList<>(4);
 		if ((includeFlags & INCLUDE_HEAD_TAG) > 0) {
 			children.add(new TagElement(this, CVSTag.DEFAULT));
 		}
@@ -131,16 +135,20 @@ public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter 
 		}
 		return children.toArray(new Object[children.size()]);
 	}
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);
 		return null;
 	}
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return null;
 	}
+	@Override
 	public String getLabel(Object o) {
 		return null;
 	}
+	@Override
 	public Object getParent(Object o) {
 		return null;
 	}

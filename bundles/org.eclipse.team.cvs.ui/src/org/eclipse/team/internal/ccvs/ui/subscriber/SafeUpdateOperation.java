@@ -221,13 +221,13 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		if (changed.length == 0) return;
 		
 		// The list of sync resources to be updated using "cvs update"
-		List updateShallow = new ArrayList();
+		List<SyncInfo> updateShallow = new ArrayList<>();
 		// A list of sync resource folders which need to be created locally 
 		// (incoming addition or previously pruned)
-		Set parentCreationElements = new HashSet();
+		Set<SyncInfo> parentCreationElements = new HashSet<>();
 		// A list of sync resources that are incoming deletions.
 		// We do these first to avoid case conflicts
-		List updateDeletions = new ArrayList();
+		List<SyncInfo> updateDeletions = new ArrayList<>();
 	
 		for (int i = 0; i < changed.length; i++) {
 			SyncInfo changedNode = changed[i];
@@ -288,13 +288,13 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 			monitor.beginTask(null, 100);
 
 			if (updateDeletions.size() > 0) {
-				runUpdateDeletions((SyncInfo[])updateDeletions.toArray(new SyncInfo[updateDeletions.size()]), Policy.subMonitorFor(monitor, 25));
+				runUpdateDeletions(updateDeletions.toArray(new SyncInfo[updateDeletions.size()]), Policy.subMonitorFor(monitor, 25));
 			}			
 			if (parentCreationElements.size() > 0) {
-				makeInSync((SyncInfo[]) parentCreationElements.toArray(new SyncInfo[parentCreationElements.size()]), Policy.subMonitorFor(monitor, 25));				
+				makeInSync(parentCreationElements.toArray(new SyncInfo[parentCreationElements.size()]), Policy.subMonitorFor(monitor, 25));				
 			}
 			if (updateShallow.size() > 0) {
-				runSafeUpdate(project, (SyncInfo[])updateShallow.toArray(new SyncInfo[updateShallow.size()]), Policy.subMonitorFor(monitor, 50));
+				runSafeUpdate(project, updateShallow.toArray(new SyncInfo[updateShallow.size()]), Policy.subMonitorFor(monitor, 50));
 			}
 		} finally {
 			monitor.done();

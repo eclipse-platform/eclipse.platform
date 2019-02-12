@@ -30,8 +30,8 @@ import org.eclipse.team.core.mapping.ISynchronizationScopeManager;
 import org.eclipse.team.core.mapping.provider.SynchronizationScopeManager;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
@@ -72,13 +72,13 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	    // The provider for this entry
 	    RepositoryProvider provider;
 	    // Files are always shallow
-	    List files = new ArrayList();
+		List<IResource> files = new ArrayList<>();
 	    // Not sure what to do with zero depth folders but we'll record them
-	    List zeroFolders = new ArrayList();
+		List<IResource> zeroFolders = new ArrayList<>();
 	    // Non-recursive folder (-l)
-	    List shallowFolders = new ArrayList();
+		List<IResource> shallowFolders = new ArrayList<>();
 	    // Recursive folders (-R)
-	    List deepFolders = new ArrayList();
+		List<IResource> deepFolders = new ArrayList<>();
         public TraversalMapEntry(RepositoryProvider provider) {
             this.provider = provider;
         }
@@ -127,18 +127,19 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	     * or if there are no shallow or deep folders.
 	     * @return the resources that can be included in a shallow operation
 	     */
-	    public IResource[] getShallowResources() {
+	    @Override
+		public IResource[] getShallowResources() {
 	        if (shallowFolders.isEmpty() && deepFolders.isEmpty() && !files.isEmpty()) {
-	            return (IResource[]) files.toArray(new IResource[files.size()]);
+	            return files.toArray(new IResource[files.size()]);
 	        }
 	        if (!shallowFolders.isEmpty()) {
 	            if (files.isEmpty()) {
-	                return (IResource[]) shallowFolders.toArray(new IResource[shallowFolders.size()]);
+	                return shallowFolders.toArray(new IResource[shallowFolders.size()]);
 	            }
-	            List result = new ArrayList();
+				List<IResource> result = new ArrayList<>();
 	            result.addAll(shallowFolders);
 	            result.addAll(files);
-	            return (IResource[]) result.toArray(new IResource[result.size()]);
+	            return result.toArray(new IResource[result.size()]);
 	        }
 	        return new IResource[0];
 	    }
@@ -147,21 +148,23 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	     * If there are no shallow folders, this will include any files.
 	     * @return
 	     */
-	    public IResource[] getDeepResources() {
+	    @Override
+		public IResource[] getDeepResources() {
 	        if (deepFolders.isEmpty())
 	            return new IResource[0];
 	        if (!shallowFolders.isEmpty())
-	            return (IResource[]) deepFolders.toArray(new IResource[deepFolders.size()]);
-            List result = new ArrayList();
+	            return deepFolders.toArray(new IResource[deepFolders.size()]);
+			List<IResource> result = new ArrayList<>();
             result.addAll(deepFolders);
             result.addAll(files);
-            return (IResource[]) result.toArray(new IResource[result.size()]);
+            return result.toArray(new IResource[result.size()]);
 	    }
 	    /**
 	     * Return the folders that are depth zero
 	     */
-	    public IResource[] getNontraversedFolders() {
-	        return (IResource[]) zeroFolders.toArray(new IResource[zeroFolders.size()]);
+	    @Override
+		public IResource[] getNontraversedFolders() {
+	        return zeroFolders.toArray(new IResource[zeroFolders.size()]);
 	    }
 	}
 
@@ -200,6 +203,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
             monitor.beginTask(null, 100);
@@ -213,6 +217,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
         }
 	}
 	
+	@Override
 	protected void endOperation() throws CVSException {
     	if (manager != null) {
     		manager.dispose();
@@ -323,7 +328,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	 * shared with that provider.
 	 */
 	Map getProviderTraversalMapping(IProgressMonitor monitor) throws CoreException {
-		Map result = new HashMap();
+		Map<RepositoryProvider, TraversalMapEntry> result = new HashMap<>();
 		ResourceMapping[] mappings = getScope().getMappings();
         for (int j = 0; j < mappings.length; j++) {
             ResourceMapping mapping = mappings[j];
@@ -333,7 +338,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
                 IProject project = projects[k];
                 RepositoryProvider provider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
                 if (provider != null) {
-                    TraversalMapEntry entry = (TraversalMapEntry)result.get(provider);
+                    TraversalMapEntry entry = result.get(provider);
                     if (entry == null) {
                         entry = new TraversalMapEntry(provider);
                         result.put(provider, entry);
@@ -391,7 +396,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	 * Get the arguments to be passed to a commit or update
 	 */
 	protected String[] getStringArguments(IResource[] resources) throws CVSException {
-		List arguments = new ArrayList(resources.length);
+		List<String> arguments = new ArrayList<>(resources.length);
 		for (int i=0;i<resources.length;i++) {
 			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
 			if (cvsPath.segmentCount() == 0) {
@@ -400,7 +405,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 				arguments.add(cvsPath.toString());
 			}
 		}
-		return (String[])arguments.toArray(new String[arguments.size()]);
+		return arguments.toArray(new String[arguments.size()]);
 	}
 	
 	protected ICVSRepositoryLocation getRemoteLocation(CVSTeamProvider provider) throws CVSException {
@@ -445,7 +450,8 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.TeamOperation#isKeepOneProgressServiceEntry()
      */
-    public boolean isKeepOneProgressServiceEntry() {
+    @Override
+	public boolean isKeepOneProgressServiceEntry() {
         // Keep the last repository provider operation in the progress service
         return true;
     }
@@ -453,7 +459,8 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.TeamOperation#getGotoAction()
      */
-    protected IAction getGotoAction() {
+    @Override
+	protected IAction getGotoAction() {
         return getShowConsoleAction();
     }
     
@@ -464,13 +471,13 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
      * @throws CoreException 
      */
     protected IResource[] getTraversalRoots() {
-        List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
         ResourceTraversal[] traversals = getTraversals();
         for (int i = 0; i < traversals.length; i++) {
             ResourceTraversal traversal = traversals[i];
             result.addAll(Arrays.asList(traversal.getResources()));
         }
-        return (IResource[]) result.toArray(new IResource[result.size()]);
+        return result.toArray(new IResource[result.size()]);
     }
     
     /**

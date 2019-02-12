@@ -90,7 +90,7 @@ public class Patcher implements IHunkFilter {
 	private FilePatch2[] fDiffs;
 	private IResource fTarget;
 	// patch options
-	private Set disabledElements = new HashSet();
+	private Set<Object> disabledElements = new HashSet<>();
 	private Map<FilePatch2, FileDiffResult> diffResults = new HashMap<>();
 	private final Map<FilePatch2, byte[]> contentCache = new HashMap<>();
 	private Set<Hunk> mergedHunks = new HashSet<>();

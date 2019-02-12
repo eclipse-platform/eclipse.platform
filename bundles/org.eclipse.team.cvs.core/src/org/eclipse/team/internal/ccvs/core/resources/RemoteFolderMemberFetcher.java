@@ -34,10 +34,10 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 	private final RemoteFolder parentFolder;
 	private CVSTag tag;
 	
-	List folders = new ArrayList(); // RemoteFolder
-	List files = new ArrayList(); // RemoteFile
+	List<RemoteFolder> folders = new ArrayList<>();
+	List<RemoteFile> files = new ArrayList<>();
 	boolean exists = true;
-	List exceptions = new ArrayList(); // CVSException
+	List<CVSException> exceptions = new ArrayList<>();
 	
 	protected RemoteFolderMemberFetcher(RemoteFolder parentFolder, CVSTag tag) {
 		this.tag = tag;
@@ -98,7 +98,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		session.open(Policy.subMonitorFor(progress, 10), false /* read-only */);
 		try {
 			// Build the local options
-			final List localOptions = new ArrayList();
+			final List<LocalOption> localOptions = new ArrayList<>();
 			localOptions.add(Update.RETRIEVE_ABSENT_DIRECTORIES);
 			if (tag != null) localOptions.add(Update.makeTagOption(tag));
 			

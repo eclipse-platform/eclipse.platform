@@ -80,13 +80,13 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 	}
 	
 	private void ensureBaseContentsCached(IProject project, SyncInfo[] infos, IProgressMonitor monitor) throws CVSException {
-		List diffs = new ArrayList();
+		List<IDiff> diffs = new ArrayList<>();
 		for (int i = 0; i < infos.length; i++) {
 			SyncInfo info = infos[i];
 			IDiff node = getConverter().getDeltaFor(info);
 			diffs.add(node);
 		}
-		ensureBaseContentsCached(project, (IDiff[]) diffs.toArray(new IDiff[diffs.size()]), monitor);
+		ensureBaseContentsCached(project, diffs.toArray(new IDiff[diffs.size()]), monitor);
 	}
 
 	private SyncInfoToDiffConverter getConverter() {

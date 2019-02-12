@@ -55,7 +55,7 @@ public class AddWizard extends ResizableWizard {
     }
     
     private static IFile[] getUnaddedWithUnknownFileType(final ResourceTraversal[] traversals) throws InvocationTargetException, InterruptedException {
-        final List unadded = new ArrayList();
+		final List<IResource> unadded = new ArrayList<>();
 		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 			final IFileContentManager manager = Team.getFileContentManager();
 			for (int i = 0; i < traversals.length; i++) {
@@ -90,7 +90,7 @@ public class AddWizard extends ResizableWizard {
 				}
             }
 		});
-        return (IFile[]) unadded.toArray(new IFile[unadded.size()]);
+        return unadded.toArray(new IFile[unadded.size()]);
     }
     
     public AddWizard(AddOperation op, IFile[] unknowns) {
@@ -102,10 +102,10 @@ public class AddWizard extends ResizableWizard {
     }
     
     @Override
-	public void addPages() {
+    public void addPages() {
         
-        final Collection names= new HashSet();
-        final Collection extensions= new HashSet();
+        final Collection<String> names= new HashSet<String>();
+        final Collection<String> extensions= new HashSet<String>();
         getUnknownNamesAndExtension(unknowns, names, extensions);
         
         if (names.size() + extensions.size() > 0) {
@@ -116,7 +116,7 @@ public class AddWizard extends ResizableWizard {
         super.addPages();
     }
     
-    private static void getUnknownNamesAndExtension(IFile[] files, Collection names, Collection extensions) {
+    private static void getUnknownNamesAndExtension(IFile[] files, Collection<String> names, Collection<String> extensions) {
         
         final IFileContentManager manager= Team.getFileContentManager();
         

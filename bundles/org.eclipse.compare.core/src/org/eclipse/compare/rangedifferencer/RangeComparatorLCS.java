@@ -18,9 +18,7 @@ import java.util.List;
 
 import org.eclipse.compare.internal.core.LCS;
 import org.eclipse.compare.internal.core.Messages;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.*;
 
 /* package */ class RangeComparatorLCS extends LCS {
 
@@ -73,7 +71,7 @@ import org.eclipse.core.runtime.SubMonitor;
 
 	public RangeDifference[] getDifferences(SubMonitor subMonitor, AbstractRangeDifferenceFactory factory) {
 		try {
-			List differences = new ArrayList();
+			List<RangeDifference> differences = new ArrayList<>();
 			int length = getLength();
 			if (length == 0) {
 				differences.add(factory.createRangeDifference(RangeDifference.CHANGE, 0, this.comparator2.getRangeCount(), 0, this.comparator1.getRangeCount()));
@@ -131,7 +129,7 @@ import org.eclipse.core.runtime.SubMonitor;
 				}
 
 			}
-			return (RangeDifference[]) differences.toArray(new RangeDifference[differences.size()]);
+			return differences.toArray(new RangeDifference[differences.size()]);
 		} finally {
 			subMonitor.done();
 		}

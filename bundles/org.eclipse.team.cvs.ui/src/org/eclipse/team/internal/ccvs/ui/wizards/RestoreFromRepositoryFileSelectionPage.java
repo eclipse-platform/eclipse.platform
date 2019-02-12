@@ -61,8 +61,8 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 	private IContainer folder;
 	private IFile selectedFile;
 	private ILogEntry selectedRevision;
-	private Map entriesCache = new HashMap();
-	private Map filesToRestore = new HashMap();
+	private Map<IFile, ILogEntry[]> entriesCache = new HashMap<>();
+	private Map<IFile, Object> filesToRestore = new HashMap<>();
 
 	private static final int WIZARD_WIDTH = 550;
 	
@@ -435,7 +435,7 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 	}
 
 	private ILogEntry[] getSelectedEntries() {
-		return (ILogEntry[])entriesCache.get(selectedFile);
+		return entriesCache.get(selectedFile);
 	}
 	
 	private IStorage getStorageFromLogEntry(final ILogEntry logEntry) {

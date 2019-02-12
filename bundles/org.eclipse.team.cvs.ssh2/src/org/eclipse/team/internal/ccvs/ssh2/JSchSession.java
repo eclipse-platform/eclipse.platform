@@ -15,6 +15,7 @@
 package org.eclipse.team.internal.ccvs.ssh2;
 
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -28,7 +29,7 @@ import com.jcraft.jsch.*;
 
 class JSchSession {
 	private static final int SSH_DEFAULT_PORT = 22;
-	private static java.util.Hashtable pool = new java.util.Hashtable();
+	private static Hashtable<String, JSchSession> pool = new Hashtable<>();
 	
     private final Session session;
     private final ICVSRepositoryLocation location;
@@ -52,7 +53,7 @@ class JSchSession {
 		String key = getPoolKey(username, hostname, actualPort);
 
 		try {
-			JSchSession jschSession = (JSchSession) pool.get(key);
+			JSchSession jschSession = pool.get(key);
 			if (jschSession != null && !jschSession.getSession().isConnected()) {
 				pool.remove(key);
                 jschSession = null;

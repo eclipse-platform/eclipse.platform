@@ -54,7 +54,7 @@ import org.eclipse.ui.ide.IDE;
  */
 abstract public class CVSAction extends TeamAction implements IEditorActionDelegate {
 	
-	private List accumulatedStatus = new ArrayList();
+	private List<IStatus> accumulatedStatus = new ArrayList<>();
 	private RetargetAction retargetAction;
 	private IAction action;
 	
@@ -255,7 +255,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * will include any OK status that were added using addStatus(IStatus)
 	 */
 	protected IStatus[] getAccumulatedStatus() {
-		return (IStatus[]) accumulatedStatus.toArray(new IStatus[accumulatedStatus.size()]);
+		return accumulatedStatus.toArray(new IStatus[accumulatedStatus.size()]);
 	}
 	
 	/**
@@ -314,7 +314,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	@Override
 	protected void handle(Exception exception) {
 		// Get the non-OK status
-		List problems = new ArrayList();
+		List<IStatus> problems = new ArrayList<>();
 		IStatus[] status = getAccumulatedStatus();
 		if (status != null) {
 			for (int i = 0; i < status.length; i++) {
@@ -338,7 +338,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		}
 		
 		String message = null;
-		IStatus statusToDisplay = getStatusToDisplay((IStatus[]) problems.toArray(new IStatus[problems.size()]));
+		IStatus statusToDisplay = getStatusToDisplay(problems.toArray(new IStatus[problems.size()]));
 		if (statusToDisplay.isOK()) return;
 		if (statusToDisplay.isMultiStatus() && statusToDisplay.getChildren().length == 1) {
 			message = statusToDisplay.getMessage();
@@ -406,10 +406,10 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * Returns the selected CVS resources
 	 */
 	protected ICVSResource[] getSelectedCVSResources() {
-		ArrayList resources = null;
+		ArrayList<Object> resources = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			resources = new ArrayList();
+			resources = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();
@@ -428,7 +428,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 			}
 		}
 		if (resources != null && !resources.isEmpty()) {
-			return (ICVSResource[])resources.toArray(new ICVSResource[resources.size()]);
+			return resources.toArray(new ICVSResource[resources.size()]);
 		}
 		return new ICVSResource[0];
 	}
@@ -437,10 +437,10 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * Get selected CVS remote folders
 	 */
 	protected ICVSRemoteFolder[] getSelectedRemoteFolders() {
-		ArrayList resources = null;
+		ArrayList<Object> resources = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			resources = new ArrayList();
+			resources = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();
@@ -459,7 +459,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 			}
 		}
 		if (resources != null && !resources.isEmpty()) {
-			return (ICVSRemoteFolder[])resources.toArray(new ICVSRemoteFolder[resources.size()]);
+			return resources.toArray(new ICVSRemoteFolder[resources.size()]);
 		}
 		return new ICVSRemoteFolder[0];
 	}
@@ -468,10 +468,10 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	 * Returns the selected remote resources
 	 */
 	protected ICVSRemoteResource[] getSelectedRemoteResources() {
-		ArrayList resources = null;
+		ArrayList<Object> resources = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			resources = new ArrayList();
+			resources = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();

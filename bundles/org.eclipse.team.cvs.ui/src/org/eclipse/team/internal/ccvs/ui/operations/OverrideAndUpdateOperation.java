@@ -41,22 +41,25 @@ public class OverrideAndUpdateOperation extends ReplaceOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation#getResourcesToUpdate(org.eclipse.team.internal.ccvs.core.ICVSResource[])
 	 */
+	@Override
 	protected ICVSResource[] getResourcesToUpdate(ICVSResource[] resources, IProgressMonitor monitor) throws CVSException {
 		// Add the conflicting additions to the list of resources to update
-		Set update = new HashSet();
+		Set<ICVSResource> update = new HashSet<>();
 		ICVSResource[] conflicts = getCVSArguments(conflictingAdditions);
 		update.addAll(Arrays.asList(conflicts));
 		update.addAll(Arrays.asList(super.getResourcesToUpdate(resources, monitor)));
-		return (ICVSResource[]) update.toArray(new ICVSResource[update.size()]);
+		return update.toArray(new ICVSResource[update.size()]);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation#getResourceMappingContext()
 	 */
+	@Override
 	protected ResourceMappingContext getResourceMappingContext() {
 		return new SingleProjectSubscriberContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber(), false, project);
 	}
 	
+	@Override
 	protected SynchronizationScopeManager createScopeManager(boolean consultModels) {
 		return new SingleProjectScopeManager(getJobName(), getSelectedMappings(), getResourceMappingContext(), consultModels, project);
 	}

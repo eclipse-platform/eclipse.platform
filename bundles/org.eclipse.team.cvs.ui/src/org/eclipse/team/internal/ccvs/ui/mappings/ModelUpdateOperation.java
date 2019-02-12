@@ -19,7 +19,8 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.mapping.ISynchronizationContext;
 import org.eclipse.team.core.mapping.provider.SynchronizationContext;
 import org.eclipse.team.core.subscribers.SubscriberScopeManager;
@@ -49,6 +50,7 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
 	 */
+	@Override
 	protected String getJobName() {
 		return CVSUIMessages.UpdateOperation_taskName;
 	}
@@ -56,6 +58,7 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#isPreviewRequested()
 	 */
+	@Override
 	public boolean isPreviewRequested() {
 		return super.isPreviewRequested() || !isAttemptHeadlessMerge();
 	}
@@ -75,6 +78,7 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ResourceMappingMergeOperation#createParticipant()
 	 */
+	@Override
 	protected ModelSynchronizeParticipant createParticipant() {
 		return new WorkspaceModelParticipant(createMergeContext());
 	}
@@ -82,10 +86,12 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.operations.ModelParticipantMergeOperation#createMergeContext()
 	 */
+	@Override
 	protected SynchronizationContext createMergeContext() {
 		return WorkspaceSubscriberContext.createContext(getScopeManager(), getMergeType());
 	}
 	
+	@Override
 	protected void executeMerge(IProgressMonitor monitor) throws CoreException {
 		super.executeMerge(monitor);
 		// Prune any empty folders within the traversals
@@ -93,7 +99,7 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 			CompoundResourceTraversal ct = new CompoundResourceTraversal();
 			ct.addTraversals(getContext().getScope().getTraversals());
 			IResource[] roots = ct.getRoots();
-			List cvsResources = new ArrayList();
+			List<ICVSResource> cvsResources = new ArrayList<>();
 			for (int i = 0; i < roots.length; i++) {
 				IResource resource = roots[i];
 				if (resource.getProject().isAccessible()) {
@@ -102,7 +108,7 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 			}
 			new PruneFolderVisitor().visit(
 				CVSWorkspaceRoot.getCVSFolderFor(ResourcesPlugin.getWorkspace().getRoot()),
-				(ICVSResource[]) cvsResources.toArray(new ICVSResource[cvsResources.size()]));
+				cvsResources.toArray(new ICVSResource[cvsResources.size()]));
 		}
 	}
 }

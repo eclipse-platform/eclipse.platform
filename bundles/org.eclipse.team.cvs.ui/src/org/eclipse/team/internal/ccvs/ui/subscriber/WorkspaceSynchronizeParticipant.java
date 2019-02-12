@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.preferences.*;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.preference.PreferencePage;
@@ -64,6 +64,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		private WorkspaceCommitAction commitToolbar;
 		private WorkspaceUpdateAction updateToolbar;
 		
+		@Override
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			
@@ -147,7 +148,8 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#createChangeSet(org.eclipse.team.core.synchronize.SyncInfo[])
          */
-        public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] infos) {
+        @Override
+		public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] infos) {
 	        ActiveChangeSet set = getActiveChangeSetManager().createSet(CVSUIMessages.WorkspaceChangeSetCapability_1, new IDiff[0]); 
 			CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, getResources(infos), CommitSetDialog.NEW);  
 			dialog.open();
@@ -157,20 +159,21 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         }
 
         private IResource[] getResources(IDiff[] diffs) {
-        	Set result = new HashSet();
+			Set<IResource> result = new HashSet<>();
         	for (int i = 0; i < diffs.length; i++) {
 				IDiff diff = diffs[i];
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (resource != null)
 					result.add(resource);
 			}
-            return (IResource[]) result.toArray(new IResource[result.size()]);
+            return result.toArray(new IResource[result.size()]);
         }
         
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#editChangeSet(org.eclipse.team.core.subscribers.ActiveChangeSet)
          */
-        public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
+        @Override
+		public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
 	        CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, set.getResources(), CommitSetDialog.EDIT);
 			dialog.open();
 			if (dialog.getReturnCode() != Window.OK) return;
@@ -180,7 +183,8 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         /* (non-Javadoc)
          * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#getActiveChangeSetManager()
          */
-        public ActiveChangeSetManager getActiveChangeSetManager() {
+        @Override
+		public ActiveChangeSetManager getActiveChangeSetManager() {
             return CVSUIPlugin.getPlugin().getChangeSetManager();
         }
 	}
@@ -208,6 +212,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 
 	private SyncInfoFilter contentComparison = new SyncInfoFilter() {
 		private SyncInfoFilter contentCompare = new SyncInfoFilter.ContentComparisonSyncInfoFilter();
+		@Override
 		public boolean select(SyncInfo info, IProgressMonitor monitor) {
 			IResource local = info.getLocal();
 			// don't select folders
@@ -221,6 +226,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		final SyncInfoFilter regexFilter = createRegexFilter();
 		if (isConsiderContents() && regexFilter != null) {
 			return new SyncInfoFilter() {
+				@Override
 				public boolean select(SyncInfo info, IProgressMonitor monitor) {
 					return contentComparison.select(info, monitor)
 							&& !regexFilter.select(info, monitor);
@@ -228,12 +234,14 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 			};
 		} else if (isConsiderContents()) {
 			return new SyncInfoFilter() {
+				@Override
 				public boolean select(SyncInfo info, IProgressMonitor monitor) {
 					return contentComparison.select(info, monitor);
 				}
 			};
 		} else if (regexFilter != null) {
 			return new SyncInfoFilter() {
+				@Override
 				public boolean select(SyncInfo info, IProgressMonitor monitor) {
 					// want to select infos which contain at least one unmatched difference
 					return !regexFilter.select(info, monitor);
@@ -256,6 +264,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
 	 */
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
 		setSubscriber(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
@@ -264,6 +273,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.ui.synchronize.subscribers.SubscriberParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
 	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
 		ILabelDecorator labelDecorator = getLabelDecorator(configuration);
@@ -293,6 +303,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	    return new CVSParticipantLabelDecorator(configuration);
 	}
 	
+	@Override
 	protected ISynchronizeParticipantDescriptor getDescriptor() {
 		return TeamUI.getSynchronizeManager().getParticipantDescriptor(ID);
 	}
@@ -300,7 +311,8 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	/* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.SubscriberParticipant#updateLabels(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
+    @Override
+	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
         monitor.beginTask(null, 100);
         CVSParticipant.deriveBaseContentsFromLocal(element, Policy.subMonitorFor(monitor, 10));
         super.prepareCompareInput(element, config, Policy.subMonitorFor(monitor, 80));
@@ -311,14 +323,16 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
      */
-    public PreferencePage[] getPreferencePages() {
+    @Override
+	public PreferencePage[] getPreferencePages() {
         return CVSParticipant.addCVSPreferencePages(super.getPreferencePages());
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getChangeSetCapability()
      */
-    public ChangeSetCapability getChangeSetCapability() {
+    @Override
+	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
             capability = new WorkspaceChangeSetCapability();
         }
@@ -328,7 +342,8 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
     /* (non-Javadoc)
      * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#isViewerContributionsSupported()
      */
-    protected boolean isViewerContributionsSupported() {
+    @Override
+	protected boolean isViewerContributionsSupported() {
         return true;
     }
 
@@ -336,6 +351,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         refresh(resources, getShortTaskName(), getLongTaskName(resources), site);
     }
 
+	@Override
 	public void dispose() {
 		super.dispose();
 		((IEclipsePreferences) CVSUIPlugin.getPlugin().getInstancePreferences().node("")).removePreferenceChangeListener(this); //$NON-NLS-1$
@@ -344,6 +360,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener#preferenceChange(org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent)
 	 */
+	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (event.getKey().equals(ICVSUIConstants.PREF_CONSIDER_CONTENTS) || event.getKey().equals(ICVSUIConstants.PREF_SYNCVIEW_REGEX_FILTER_PATTERN)) {
 			SyncInfoFilter filter = createSyncInfoFilter();

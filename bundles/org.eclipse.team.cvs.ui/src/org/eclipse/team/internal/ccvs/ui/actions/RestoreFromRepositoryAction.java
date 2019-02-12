@@ -59,7 +59,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		private static final String RCS_FILE_POSTFIX = ",v"; //$NON-NLS-1$
 		private static final String LOGGING_PREFIX = "Logging "; //$NON-NLS-1$
 		ICVSFolder currentFolder;
-		List atticFiles = new ArrayList();
+		List<ICVSFile> atticFiles = new ArrayList<>();
 		
 		@Override
 		public IStatus messageLine(
@@ -142,7 +142,7 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		}
 
 		public ICVSFile[] getAtticFilePaths() {
-			return (ICVSFile[]) atticFiles.toArray(new ICVSFile[atticFiles.size()]);
+			return atticFiles.toArray(new ICVSFile[atticFiles.size()]);
 		}
 	}
 	

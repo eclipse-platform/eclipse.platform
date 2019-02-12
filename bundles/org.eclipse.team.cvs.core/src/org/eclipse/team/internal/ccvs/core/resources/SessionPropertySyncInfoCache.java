@@ -145,7 +145,7 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 	/*package*/ IResource[] purgeCache(IContainer container, boolean deep) throws CVSException {
 		if (! container.exists()) return new IResource[0];
 		try {
-			Set flushed = new HashSet();
+			Set<IResource> flushed = new HashSet<>();
 			if (container.getType() != IResource.ROOT) {
 				safeSetSessionProperty(container, IGNORE_SYNC_KEY, null);
 				safeSetSessionProperty(container, FOLDER_SYNC_KEY, null);

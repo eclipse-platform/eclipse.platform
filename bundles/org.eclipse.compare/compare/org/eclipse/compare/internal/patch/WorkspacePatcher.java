@@ -52,7 +52,7 @@ public class WorkspacePatcher extends Patcher {
 	private DiffProject[] fDiffProjects;
 	private boolean fIsWorkspacePatch= false;
 	private boolean fIsGitPatch = false;
-	private final Map retargetedDiffs = new HashMap();
+	private final Map<Object, IPath> retargetedDiffs = new HashMap<>();
 
 	public WorkspacePatcher() {
 		// nothing to do
@@ -270,7 +270,7 @@ public class WorkspacePatcher extends Patcher {
 	}
 
 	public IPath getOriginalPath(Object object) {
-		return (IPath)retargetedDiffs.get(object);
+		return retargetedDiffs.get(object);
 	}
 
 	public void retargetDiff(FilePatch2 diff, IFile file) {

@@ -483,7 +483,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	}
 
 	private ResourceTraversal[] getTraversals(IDiff[] deltas) {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < deltas.length; i++) {
 			IDiff diff = deltas[i];
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
@@ -492,7 +492,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			}
 		}
 		return new ResourceTraversal[] {
-				new ResourceTraversal((IResource[]) result.toArray(new IResource[result.size()]), IResource.DEPTH_ZERO, IResource.NONE)
+				new ResourceTraversal(result.toArray(new IResource[result.size()]), IResource.DEPTH_ZERO, IResource.NONE)
 		};
 	}
 

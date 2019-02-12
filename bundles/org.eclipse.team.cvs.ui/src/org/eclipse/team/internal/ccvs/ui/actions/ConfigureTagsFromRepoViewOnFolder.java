@@ -39,10 +39,10 @@ public class ConfigureTagsFromRepoViewOnFolder extends CVSAction {
 	 */
 	@Override
 	protected ICVSRemoteFolder[] getSelectedRemoteFolders() {
-		ArrayList resources = null;
+		ArrayList<Object> resources = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			resources = new ArrayList();
+			resources = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();
@@ -55,7 +55,7 @@ public class ConfigureTagsFromRepoViewOnFolder extends CVSAction {
 			}
 		}
 		if (resources != null && !resources.isEmpty()) {
-			return (ICVSRemoteFolder[])resources.toArray(new ICVSRemoteFolder[resources.size()]);
+			return resources.toArray(new ICVSRemoteFolder[resources.size()]);
 		}
 		return new ICVSRemoteFolder[0];
 	}

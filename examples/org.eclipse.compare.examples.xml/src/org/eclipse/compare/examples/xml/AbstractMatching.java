@@ -38,7 +38,7 @@ public abstract class AbstractMatching {
 	/* methods used for match */
 
 	/* finds all the leaves of a tree and puts them in a vector */
-	protected void findLeaves(XMLNode root, ArrayList leaves) {
+	protected void findLeaves(XMLNode root, ArrayList<XMLNode> leaves) {
 		if (isLeaf(root)) {
 			leaves.add(root);			
 		} else {
@@ -55,7 +55,7 @@ public abstract class AbstractMatching {
 	}
 
 	/* Numbers all nodes of tree. The number of x is its index in the vector numbering */
-	protected void numberNodes(XMLNode root, Vector numbering) {
+	protected void numberNodes(XMLNode root, Vector<XMLNode> numbering) {
 		if (root != null) {
 			numbering.add(root);
 			Object[] children = root.getChildren();
@@ -186,7 +186,7 @@ public abstract class AbstractMatching {
 		}
 	}
 	
-	protected int handleRangeDifferencer(Object[] xc_elements, Object[] yc_elements, ArrayList DTMatching, int distance) {
+	protected int handleRangeDifferencer(Object[] xc_elements, Object[] yc_elements, ArrayList<Match> DTMatching, int distance) {
 		RangeDifference[] differences= RangeDifferencer.findDifferences(new XMLComparator(xc_elements), new XMLComparator(yc_elements));
 		
 		int cur_pos_left= 0;

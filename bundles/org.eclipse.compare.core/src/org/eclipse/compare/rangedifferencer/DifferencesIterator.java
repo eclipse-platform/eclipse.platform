@@ -22,7 +22,7 @@ import java.util.List;
  */
 /* package */ class DifferencesIterator {
 
-	List fRange;
+	List<RangeDifference> fRange;
 	int fIndex;
 	RangeDifference[] fArray;
 	RangeDifference fDifference;
@@ -34,7 +34,7 @@ import java.util.List;
 
 		this.fArray= differenceRanges;
 		this.fIndex= 0;
-		this.fRange= new ArrayList();
+		this.fRange= new ArrayList<>();
 		if (this.fIndex < this.fArray.length)
 			this.fDifference= this.fArray[this.fIndex++];
 		else

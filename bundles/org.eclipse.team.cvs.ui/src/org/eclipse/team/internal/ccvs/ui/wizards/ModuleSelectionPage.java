@@ -233,7 +233,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 			ISelection selection = moduleList.getSelection();
 			if (!selection.isEmpty() && selection instanceof IStructuredSelection) {
 				IStructuredSelection ss = (IStructuredSelection)selection;
-				ArrayList result = new ArrayList();
+				ArrayList<ICVSRemoteFolder> result = new ArrayList<>();
 				for (Iterator iter = ss.iterator(); iter.hasNext();) {
 					Object element = iter.next();
 					if (element instanceof ICVSRemoteFolder) {
@@ -242,12 +242,12 @@ public class ModuleSelectionPage extends CVSWizardPage {
 							ICVSRemoteFolder remoteFolder = internalCreateModuleHandle(relativePath + SEPARATOR + project.getName())[0];
 							result.add(remoteFolder);
 						} else {
-							result.add(element);
+							result.add((ICVSRemoteFolder) element);
 						}
 					}
 					
 				}
-				return (ICVSRemoteFolder[]) result.toArray(new ICVSRemoteFolder[result.size()]);
+				return result.toArray(new ICVSRemoteFolder[result.size()]);
 			}
 		} else {
 			if (moduleName != null) {
@@ -264,14 +264,14 @@ public class ModuleSelectionPage extends CVSWizardPage {
 		if (location == null) return new ICVSRemoteFolder[0];
 		String[] names = name.split(","); //$NON-NLS-1$
 		int length = names.length;
-		java.util.List folders = new ArrayList();
+		java.util.List<ICVSRemoteFolder> folders = new ArrayList<>();
 		for (int i = 0; i < length; i++) {
 			// call trim() in case the user has added spaces after the commas
 			String trimmedName = names[i].trim();
 			if (trimmedName.length() > 0)
 				folders.add(location.getRemoteFolder(trimmedName, CVSTag.DEFAULT));
 		}
-		return (ICVSRemoteFolder[]) folders.toArray(new ICVSRemoteFolder[folders.size()]);
+		return folders.toArray(new ICVSRemoteFolder[folders.size()]);
 	}
 	
 	/**

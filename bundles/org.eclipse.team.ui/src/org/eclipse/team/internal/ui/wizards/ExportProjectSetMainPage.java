@@ -78,7 +78,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 	Button exportWorkingSets;
 
-	ArrayList passedInSelectedProjects = new ArrayList();
+	ArrayList<IProject> passedInSelectedProjects = new ArrayList<>();
 
 	class ProjectContentProvider implements ITreePathContentProvider{
 
@@ -94,7 +94,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		@Override
 		public TreePath[] getParents(Object element) {
 			if (element instanceof IProject){
-				ArrayList treePaths = new ArrayList();
+				ArrayList<IWorkingSet> treePaths = new ArrayList<>();
 				IWorkingSet[] workingSets = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager().getWorkingSets();
 				for (int i = 0; i < workingSets.length; i++) {
 					IAdaptable[] elements = workingSets[i].getElements();
@@ -105,7 +105,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 						}
 					}
 				}
-				return (TreePath[]) treePaths.toArray(new TreePath[treePaths.size()]);
+				return treePaths.toArray(new TreePath[treePaths.size()]);
 			}
 			return null;
 		}
@@ -201,14 +201,14 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 	}
 
 	private IProject[] getProjectsForAdaptables(IAdaptable[] adaptable) {
-		Set projectSet = new HashSet();
+		Set<IProject> projectSet = new HashSet<>();
 		for (int i = 0; i < adaptable.length; i++) {
 			IProject[] projects = getProjectsForObject(adaptable[i]);
 			if (projects != null)
 				projectSet.addAll(Arrays.asList(projects));
 		}
 		if (!projectSet.isEmpty())
-			return (IProject[]) projectSet.toArray(new IProject[0]);
+			return projectSet.toArray(new IProject[0]);
 
 		return null;
 	}

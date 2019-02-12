@@ -196,7 +196,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 	 * @return IResource
 	 */
 	private IProject[] getProjects(String root, boolean unshared) throws CVSException {
-		List validTargets = new ArrayList();
+		List<IProject> validTargets = new ArrayList<>();
 		try {
 			IResource[] projects = ResourcesPlugin.getWorkspace().getRoot().members();
 			for (int i = 0; i < projects.length; i++) {
@@ -220,7 +220,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		} catch (CoreException e) {
 			throw CVSException.wrapException(e);
 		}
-		return (IProject[]) validTargets.toArray(new IProject[validTargets.size()]);
+		return validTargets.toArray(new IProject[validTargets.size()]);
 	}
 	
 	public IContainer getLocalFolder() {

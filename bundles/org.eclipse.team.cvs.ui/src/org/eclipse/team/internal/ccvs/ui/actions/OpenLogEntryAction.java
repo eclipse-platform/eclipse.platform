@@ -32,10 +32,10 @@ public class OpenLogEntryAction extends CVSAction {
 	 * Returns the selected remote files
 	 */
 	protected ILogEntry[] getSelectedLogEntries() {
-		ArrayList entries = null;
+		ArrayList<Object> entries = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			entries = new ArrayList();
+			entries = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();

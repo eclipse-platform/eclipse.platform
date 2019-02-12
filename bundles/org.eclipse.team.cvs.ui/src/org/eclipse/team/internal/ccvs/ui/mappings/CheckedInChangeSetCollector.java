@@ -84,7 +84,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
             }
 		}
 		private IPath[] getAffectedPaths(IDiffChangeEvent event) {
-			Set result = new HashSet();
+			Set<IPath> result = new HashSet<>();
 			IPath[] removed = event.getRemovals();
 			for (int i = 0; i < removed.length; i++) {
 				IPath path = removed[i];
@@ -100,7 +100,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 				IDiff diff = diffs[j];
 				result.add(diff.getPath());
 			}
-			return (IPath[]) result.toArray(new IPath[result.size()]);
+			return result.toArray(new IPath[result.size()]);
 		}
 	};
 
@@ -109,7 +109,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	private LogEntryCache logEntryCache;
 	private final Subscriber subscriber;
 
-	private HashSet updatedSets;
+	private HashSet<ChangeSet> updatedSets;
     
     public CheckedInChangeSetCollector(ISynchronizePageConfiguration configuration, Subscriber subscriber) {
 		this.configuration = configuration;
@@ -154,8 +154,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     }
     
     public void handleChange(IDiffChangeEvent event) {
-        List removals = new ArrayList();
-        List additions = new ArrayList();
+		List<IPath> removals = new ArrayList<>();
+		List<IDiff> additions = new ArrayList<>();
         removals.addAll(Arrays.asList(event.getRemovals()));
         additions.addAll(Arrays.asList(event.getAdditions()));
         IDiff[] changed = event.getChanges();
@@ -165,10 +165,10 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
             removals.add(diff.getPath());
         }
         if (!removals.isEmpty()) {
-            remove((IPath[]) removals.toArray(new IPath[removals.size()]));
+            remove(removals.toArray(new IPath[removals.size()]));
         }
         if (!additions.isEmpty()) {
-            add((IDiff[]) additions.toArray(new IDiff[additions.size()]));
+            add(additions.toArray(new IDiff[additions.size()]));
         }
     }
     
@@ -262,7 +262,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
     }
 	
     private void beginSetUpdate() {
-		updatedSets = new HashSet();
+		updatedSets = new HashSet<>();
 	}
 
 	private void endSetUpdate(IProgressMonitor monitor) {

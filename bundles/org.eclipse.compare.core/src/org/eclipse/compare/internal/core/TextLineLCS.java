@@ -129,7 +129,7 @@ public class TextLineLCS extends LCS {
 	 * @return the array of TextLine object each corresponding to a line of text
 	 */
 	public static TextLine[] getTextLines(String text) {
-		List lines = new ArrayList();
+		List<TextLine> lines = new ArrayList<>();
 		int begin = 0;
 		int end = getEOL(text, 0);
 		int lineNum = 0;

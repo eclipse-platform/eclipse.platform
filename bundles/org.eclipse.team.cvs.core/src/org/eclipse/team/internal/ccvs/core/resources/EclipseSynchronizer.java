@@ -419,7 +419,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 				setCachedFolderIgnores(folder, ignores);
 				SyncFileWriter.writeCVSIgnoreEntries(folder, ignores);
 				// broadcast changes to unmanaged children - they are the only candidates for being ignored
-				List possibleIgnores = new ArrayList();
+				List<IResource> possibleIgnores = new ArrayList<>();
 				accumulateNonManagedChildren(folder, possibleIgnores);
 				ResourceStateChangeListeners.getListener().resourceSyncInfoChanged((IResource[])possibleIgnores.toArray(new IResource[possibleIgnores.size()]));
 			} finally {
@@ -641,7 +641,7 @@ public class EclipseSynchronizer implements IFlushOperation {
             if (container.exists()) {
     			ISchedulingRule rule = null;
     			try {
-    				Set changed = new HashSet();
+    				Set<IResource> changed = new HashSet<>();
     				rule = beginBatching(container, null);
     				try {
     					beginOperation();
@@ -691,7 +691,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 	}
 	
 	public void syncFilesChangedExternally(IContainer[] changedMetaFiles, IFile[] externalDeletions) throws CVSException {
-		List changed = new ArrayList();
+		List<IResource> changed = new ArrayList<>();
 		for (int i = 0; i < changedMetaFiles.length; i++) {
 			IContainer container = changedMetaFiles[i];
 			if (!isWithinActiveOperationScope(container)) {
@@ -947,7 +947,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 		if (threadInfo.isEmpty()) {
 			return SyncInfoCache.STATUS_OK;
 		}
-		List errors = new ArrayList();
+		List<IStatus> errors = new ArrayList<>();
 		try {
 			/*** prepare operation ***/
 			// find parents of changed resources
@@ -958,7 +958,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 			} else {
 			    changedFolders = new IContainer[0];
 			}
-			Set dirtyParents = new HashSet();
+			Set<IContainer> dirtyParents = new HashSet<>();
 			for (int i = 0; i < changedResources.length; i++) {
 				IResource resource = changedResources[i];
 				IContainer folder = resource.getParent();
@@ -1018,7 +1018,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 					// write sync info for all children in one go
 					try {
                         beginOperation();
-						List infos = new ArrayList();
+						List<byte[]> infos = new ArrayList<>();
 						IResource[] children = folder.members(true);
 						for (int i = 0; i < children.length; i++) {
 							IResource resource = children[i];
@@ -1054,7 +1054,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 			
 			/*** broadcast events ***/
 			monitor.subTask(CVSMessages.EclipseSynchronizer_NotifyingListeners); 
-			Set allChanges = new HashSet();
+			Set<IResource> allChanges = new HashSet<>();
 			allChanges.addAll(Arrays.asList(changedResources));
 			allChanges.addAll(Arrays.asList(changedFolders));
 			allChanges.addAll(dirtyParents);	
@@ -1160,11 +1160,11 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * @param folder the folder to be searched
 	 * @param possibleIgnores the list of IResources that can be ignored
 	 */
-	private void accumulateNonManagedChildren(IContainer folder, List possibleIgnores) throws CVSException {
+	private void accumulateNonManagedChildren(IContainer folder, List<IResource> possibleIgnores) throws CVSException {
 		try {
 			cacheResourceSyncForChildren(folder, true /* can modify workspace */);
 			IResource[] children = folder.members();
-			List folders = new ArrayList();
+			List<IResource> folders = new ArrayList<>();
 			// deal with all files first and then folders to be otimized for caching scheme
 			for (int i = 0; i < children.length; i++) {
 				IResource child = children[i];
@@ -1204,7 +1204,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 			if (info == null) return;
 			infos = new NotifyInfo[] { info };
 		} else {
-			Map infoMap = new HashMap();
+			Map<String, NotifyInfo> infoMap = new HashMap<>();
 			for (int i = 0; i < infos.length; i++) {
 				NotifyInfo notifyInfo = infos[i];
 				infoMap.put(notifyInfo.getName(), notifyInfo);
@@ -1251,7 +1251,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 	public void deleteNotifyInfo(IResource resource) throws CVSException {
 		NotifyInfo[] infos = SyncFileWriter.readAllNotifyInfo(resource.getParent());
 		if (infos == null) return;
-		Map infoMap = new HashMap();
+		Map<String, NotifyInfo> infoMap = new HashMap<>();
 		for (int i = 0; i < infos.length; i++) {
 			NotifyInfo notifyInfo = infos[i];
 			infoMap.put(notifyInfo.getName(), notifyInfo);
@@ -1281,7 +1281,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 		if (infos == null) {
 			infos = new BaserevInfo[] { info };
 		} else {
-			Map infoMap = new HashMap();
+			Map<String, BaserevInfo> infoMap = new HashMap<>();
 			for (int i = 0; i < infos.length; i++) {
 				infoMap.put(infos[i].getName(), infos[i]);
 			}
@@ -1320,7 +1320,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 	public void deleteBaserevInfo(IResource resource) throws CVSException {
 		BaserevInfo[] infos = SyncFileWriter.readAllBaserevInfo(resource.getParent());
 		if (infos == null) return;
-		Map infoMap = new HashMap();
+		Map<String, BaserevInfo> infoMap = new HashMap<>();
 		for (int i = 0; i < infos.length; i++) {
 			infoMap.put(infos[i].getName(), infos[i]);
 		}
@@ -1434,7 +1434,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * thats were the sync info is kept.
 	 */
 	private IContainer[] getParentFolders(IResource[] resources, int depth) throws CVSException {
-		final Set folders = new HashSet();
+		final Set<IResource> folders = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			folders.add(resource.getProject());
@@ -1820,7 +1820,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 	}
 	
 	private ISchedulingRule getProjectRule(IResource[] resources) {
-		HashSet set = new HashSet();
+		HashSet<IProject> set = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			set.add(resource.getProject());

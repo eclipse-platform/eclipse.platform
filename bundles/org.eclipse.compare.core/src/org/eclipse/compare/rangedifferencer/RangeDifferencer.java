@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.compare.internal.core.Messages;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.*;
 
 /**
  * A <code>RangeDifferencer</code> finds the differences between two or three <code>IRangeComparator</code>s.
@@ -168,7 +166,7 @@ public final class RangeDifferencer {
 			DifferencesIterator myIter= new DifferencesIterator(rightAncestorScript);
 			DifferencesIterator yourIter= new DifferencesIterator(leftAncestorScript);
 
-			List diff3= new ArrayList();
+			List<RangeDifference> diff3= new ArrayList<>();
 			diff3.add(factory.createRangeDifference(RangeDifference.ERROR)); // add a sentinel
 
 			int changeRangeStart= 0;
@@ -239,7 +237,7 @@ public final class RangeDifferencer {
 
 			// remove sentinel
 			diff3.remove(0);
-			return (RangeDifference[]) diff3.toArray(EMPTY_RESULT);
+			return diff3.toArray(EMPTY_RESULT);
 		} finally {
 			if (pm != null)
 				pm.done();
@@ -289,7 +287,7 @@ public final class RangeDifferencer {
 	 */
 	public static RangeDifference[] findRanges(AbstractRangeDifferenceFactory factory, IProgressMonitor pm, IRangeComparator left, IRangeComparator right) {
 		RangeDifference[] in= findDifferences(factory, pm, left, right);
-		List out= new ArrayList();
+		List<RangeDifference> out= new ArrayList<>();
 
 		RangeDifference rd;
 
@@ -312,7 +310,7 @@ public final class RangeDifferencer {
 		if (rd.maxLength() > 0)
 			out.add(rd);
 
-		return (RangeDifference[]) out.toArray(EMPTY_RESULT);
+		return out.toArray(EMPTY_RESULT);
 	}
 
 	/**
@@ -369,7 +367,7 @@ public final class RangeDifferencer {
 			return findRanges(factory,pm, left, right);
 
 		RangeDifference[] in= findDifferences(factory, pm, ancestor, left, right);
-		List out= new ArrayList();
+		List<RangeDifference> out= new ArrayList<>();
 
 		RangeDifference rd;
 
@@ -394,7 +392,7 @@ public final class RangeDifferencer {
 		if (rd.maxLength() > 0)
 			out.add(rd);
 
-		return (RangeDifference[]) out.toArray(EMPTY_RESULT);
+		return out.toArray(EMPTY_RESULT);
 	}
 
 	//---- private methods
@@ -403,13 +401,13 @@ public final class RangeDifferencer {
 	 * Creates a <code>RangeDifference3</code> given the
 	 * state of two DifferenceIterators.
 	 */
-	private static RangeDifference createRangeDifference3(AbstractRangeDifferenceFactory configurator, DifferencesIterator myIter, DifferencesIterator yourIter, List diff3,
+	private static RangeDifference createRangeDifference3(AbstractRangeDifferenceFactory configurator, DifferencesIterator myIter, DifferencesIterator yourIter, List<RangeDifference> diff3,
 		IRangeComparator right, IRangeComparator left, int changeRangeStart,  int changeRangeEnd) {
 
 		int rightStart, rightEnd;
 		int leftStart, leftEnd;
 		int kind= RangeDifference.ERROR;
-		RangeDifference last= (RangeDifference) diff3.get(diff3.size() - 1);
+		RangeDifference last= diff3.get(diff3.size() - 1);
 
 		Assert.isTrue((myIter.getCount() != 0 || yourIter.getCount() != 0));	// At least one range array must be non-empty
 		//
@@ -420,8 +418,8 @@ public final class RangeDifferencer {
 			rightEnd= changeRangeEnd - last.ancestorEnd() + last.rightEnd();
 			kind= RangeDifference.LEFT;
 		} else {
-			RangeDifference f= (RangeDifference) myIter.fRange.get(0);
-			RangeDifference l= (RangeDifference) myIter.fRange.get(myIter.fRange.size() - 1);
+			RangeDifference f= myIter.fRange.get(0);
+			RangeDifference l= myIter.fRange.get(myIter.fRange.size() - 1);
 			rightStart= changeRangeStart - f.leftStart + f.rightStart;
 			rightEnd= changeRangeEnd - l.leftEnd() + l.rightEnd();
 		}
@@ -431,8 +429,8 @@ public final class RangeDifferencer {
 			leftEnd= changeRangeEnd - last.ancestorEnd() + last.leftEnd();
 			kind= RangeDifference.RIGHT;
 		} else {
-			RangeDifference f= (RangeDifference) yourIter.fRange.get(0);
-			RangeDifference l= (RangeDifference) yourIter.fRange.get(yourIter.fRange.size() - 1);
+			RangeDifference f= yourIter.fRange.get(0);
+			RangeDifference l= yourIter.fRange.get(yourIter.fRange.size() - 1);
 			leftStart= changeRangeStart - f.leftStart + f.rightStart;
 			leftEnd= changeRangeEnd - l.leftEnd() + l.rightEnd();
 		}

@@ -168,7 +168,7 @@ public class XMLStructureCreator implements IStructureCreator {
                     if (!currentParent.childElements.containsKey(raw)) {
                         currentParent.childElements.put(raw, Integer.valueOf(1));
                     } else {
-                        currentParent.childElements.put(raw, Integer.valueOf(((Integer) currentParent.childElements.get(raw)).intValue() + 1));
+                        currentParent.childElements.put(raw, Integer.valueOf(currentParent.childElements.get(raw).intValue() + 1));
                     }
                     elementId= raw + Character.valueOf(ID_SEPARATOR) + "[" + currentParent.childElements.get(raw) + "]"; //$NON-NLS-2$ //$NON-NLS-1$
                     elementName= MessageFormat.format("{0} [{1}]", raw, currentParent.childElements.get(raw).toString()); //$NON-NLS-1$

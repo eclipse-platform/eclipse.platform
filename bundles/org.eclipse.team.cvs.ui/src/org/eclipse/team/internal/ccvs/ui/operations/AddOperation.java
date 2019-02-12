@@ -13,14 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.operations;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.resources.mapping.ResourceMapping;
@@ -30,9 +23,9 @@ import org.eclipse.team.core.Team;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.KSubstOption;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.connection.CVSServerException;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
@@ -63,6 +56,7 @@ public class AddOperation extends RepositoryProviderOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 	    if (resources.length == 0)
 	        return;
@@ -72,6 +66,7 @@ public class AddOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.AddAction_adding; 
 	}
@@ -79,6 +74,7 @@ public class AddOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
 	 */
+	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.AddOperation_0, new String[] { provider.getProject().getName() }); 
 	}
@@ -111,10 +107,10 @@ public class AddOperation extends RepositoryProviderOperation {
 		// Visit the children of the resources using the depth in order to
 		// determine which folders, text files and binary files need to be added
 		// A TreeSet is needed for the folders so they are in the right order (i.e. parents created before children)
-		final SortedSet folders = new TreeSet();
+		final SortedSet<ICVSResource> folders = new TreeSet<>();
 		// Sets are required for the files to ensure that files will not appear twice if there parent was added as well
 		// and the depth isn't zero
-		final Map /* from KSubstOption to Set */ files = new HashMap();
+		final Map /* from KSubstOption to Set */<KSubstOption, Set> files = new HashMap<>();
 		final CVSException[] eHolder = new CVSException[1];
 		for (int i=0; i<resources.length; i++) {
 			
@@ -133,6 +129,7 @@ public class AddOperation extends RepositoryProviderOperation {
 				// Auto-add children
 				final TeamException[] exception = new TeamException[] { null };
 				currentResource.accept(new IResourceVisitor() {
+					@Override
 					public boolean visit(IResource resource) {
 						try {
 							ICVSResource mResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
@@ -141,7 +138,7 @@ public class AddOperation extends RepositoryProviderOperation {
 							if (! isManaged(mResource) && (currentResource.equals(resource) || ! mResource.isIgnored())) {
 								if (resource.getType() == IResource.FILE) {
 								    KSubstOption ksubst= getKSubstOption((IFile)resource);
-									Set set = (Set) files.get(ksubst);
+									Set set = files.get(ksubst);
 									if (set == null) {
 										set = new HashSet();
 										files.put(ksubst, set);
@@ -182,7 +179,7 @@ public class AddOperation extends RepositoryProviderOperation {
 						session,
 						Command.NO_GLOBAL_OPTIONS,
 						Command.NO_LOCAL_OPTIONS,
-						(ICVSResource[])folders.toArray(new ICVSResource[folders.size()]),
+						folders.toArray(new ICVSResource[folders.size()]),
 						null,
 						Policy.subMonitorFor(progress, 8));
 					if (status.getCode() == CVSStatus.SERVER_ERROR) {
@@ -235,6 +232,7 @@ public class AddOperation extends RepositoryProviderOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getErrorMessage(org.eclipse.core.runtime.IStatus[], int)
 	 */
+	@Override
 	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return CVSUIMessages.AddAction_addFailed; 
 	}

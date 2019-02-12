@@ -30,10 +30,10 @@ public class OpenRemoteFileAction extends CVSAction {
 	 * Returns the selected remote files
 	 */
 	protected ICVSRemoteFile[] getSelectedRemoteFiles() {
-		ArrayList resources = null;
+		ArrayList<Object> resources = null;
 		IStructuredSelection selection = getSelection();
 		if (!selection.isEmpty()) {
-			resources = new ArrayList();
+			resources = new ArrayList<>();
 			Iterator elements = selection.iterator();
 			while (elements.hasNext()) {
 				Object next = elements.next();

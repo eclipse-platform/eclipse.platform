@@ -14,11 +14,7 @@
 
 package org.eclipse.team.internal.ccvs.ui.wizards;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.Dialog;
@@ -34,9 +30,11 @@ import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.client.Command.KSubstOption;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.IHelpContextIds;
 import org.eclipse.team.internal.ui.SWTUtils;
 import org.eclipse.team.internal.ui.preferences.FileTypeTable;
+import org.eclipse.team.internal.ui.preferences.FileTypeTable.Item;
 import org.eclipse.ui.PlatformUI;
 
 /**                
@@ -45,14 +43,14 @@ import org.eclipse.ui.PlatformUI;
 public class CommitWizardFileTypePage extends WizardPage {
 
     private final Collection fExtensions;
-    private final Collection fNames;
+	private final Collection<Item> fNames;
     
     public CommitWizardFileTypePage(Collection unknownExtensions, Collection unknownNames) {
         super(CVSUIMessages.CommitWizardFileTypePage_0); 
         setTitle(CVSUIMessages.CommitWizardFileTypePage_0); 
         setDescription(CVSUIMessages.CommitWizardFileTypePage_2); 
         
-        fNames= new ArrayList();
+		fNames = new ArrayList<>();
         for (final Iterator iter = unknownNames.iterator(); iter.hasNext();) {
             final String name = (String) iter.next();
             fNames.add(new FileTypeTable.Name(name, false));
@@ -65,7 +63,8 @@ public class CommitWizardFileTypePage extends WizardPage {
         }
     }
     
-    public void createControl(Composite parent) {
+    @Override
+	public void createControl(Composite parent) {
         
         initializeDialogUnits(parent);
         

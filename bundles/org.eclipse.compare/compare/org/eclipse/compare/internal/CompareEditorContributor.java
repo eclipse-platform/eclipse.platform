@@ -156,8 +156,8 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 						.getProperty(
 								ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS);
 				if (filterActions instanceof List
-						&& !((List) filterActions).isEmpty()) {
-					Iterator i = ((List) filterActions).iterator();
+						&& !((List<?>) filterActions).isEmpty()) {
+					Iterator<?> i = ((List<?>) filterActions).iterator();
 					while (i.hasNext()) {
 						Object next = i.next();
 						if (next instanceof ChangeCompareFilterPropertyAction) {

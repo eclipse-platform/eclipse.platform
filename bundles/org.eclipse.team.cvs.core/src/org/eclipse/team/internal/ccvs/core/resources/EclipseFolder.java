@@ -43,7 +43,7 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 	 * @see ICVSFolder#members(int)
 	 */
 	public ICVSResource[] members(int flags) throws CVSException {		
-		final List result = new ArrayList();
+		final List<ICVSResource> result = new ArrayList<>();
 		IResource[] resources = EclipseSynchronizer.getInstance().members((IContainer)resource);
 		boolean includeFiles = (((flags & FILE_MEMBERS) != 0) || ((flags & (FILE_MEMBERS | FOLDER_MEMBERS)) == 0));
 		boolean includeFolders = (((flags & FOLDER_MEMBERS) != 0) || ((flags & (FILE_MEMBERS | FOLDER_MEMBERS)) == 0));

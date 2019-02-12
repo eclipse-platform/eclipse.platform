@@ -156,7 +156,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 			};
 			
 			// Build the local options
-			final List localOptions = new ArrayList();
+			final List<LocalOption> localOptions = new ArrayList<>();
 			localOptions.add(Update.RETRIEVE_ABSENT_DIRECTORIES);
 			if (tag != null && tag.getType() != CVSTag.HEAD)
 				localOptions.add(Update.makeTagOption(tag));
@@ -227,7 +227,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 	 * @see ICVSFolder#members(int)
 	 */
 	public ICVSResource[] members(int flags) throws CVSException {		
-		final List result = new ArrayList();
+		final List<ICVSResource> result = new ArrayList<>();
 		ICVSRemoteResource[] resources = getChildren();
 		if (children == null) {
 			return new ICVSResource[0];

@@ -75,11 +75,11 @@ public class RemoteModule extends RemoteFolder {
 			// Read the module name
 			StringTokenizer tokenizer = new StringTokenizer(moduleDefinitionStrings[i]);
 			String moduleName = tokenizer.nextToken();
-			List localOptionsList;
+			List<LocalOption> localOptionsList;
 			String next;
 			try {
 				// Read the options associated with the module
-				localOptionsList = new ArrayList();
+				localOptionsList = new ArrayList<>();
 				next = tokenizer.nextToken();
 				while (next.charAt(0) == '-') {
 					switch (next.charAt(1)) {
@@ -154,7 +154,7 @@ public class RemoteModule extends RemoteFolder {
 				
 				// Record any referenced modules so that can be cross-referenced below
 				if (next.charAt(0) == '&') {
-					List children = new ArrayList(10);
+					List<String> children = new ArrayList<>(10);
 					children.add(next);
 					while (tokenizer.hasMoreTokens())
 						children.add(tokenizer.nextToken());
@@ -212,7 +212,7 @@ public class RemoteModule extends RemoteFolder {
 			String[] children = (String[])referencedModulesTable.get(moduleName);
 			if (children != null) {
 				RemoteModule module = (RemoteModule)modules.get(moduleName);
-				List referencedFolders = new ArrayList();
+				List<RemoteModule> referencedFolders = new ArrayList<>();
 				boolean expandable = true;
 				for (int i = 0; i < children.length; i++) {
 					RemoteModule child = (RemoteModule)modules.get(children[i].substring(1));

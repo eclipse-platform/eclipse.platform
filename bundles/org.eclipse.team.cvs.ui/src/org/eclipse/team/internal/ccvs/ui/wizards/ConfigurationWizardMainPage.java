@@ -114,7 +114,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 	 * @return the history with the new entry appended
 	 */
 	private String[] addToHistory(String[] history, String newEntry) {
-		ArrayList l = new ArrayList(Arrays.asList(history));
+		ArrayList<String> l = new ArrayList<>(Arrays.asList(history));
 		addToHistory(l, newEntry);
 		String[] r = new String[l.size()];
 		l.toArray(r);
@@ -135,7 +135,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 	 * @param history the current history
 	 * @param newEntry the entry to add to the history
 	 */
-	private void addToHistory(List history, String newEntry) {
+	private void addToHistory(List<String> history, String newEntry) {
 		history.remove(newEntry);
 		history.add(0,newEntry);
 

@@ -237,9 +237,9 @@ public class PatchBuilder {
 		}
 	}
 
-	static class HunkComparator implements Comparator {
+	static class HunkComparator implements Comparator<IHunk> {
 		@Override
-		public int compare(Object arg0, Object arg1) {
+		public int compare(IHunk arg0, IHunk arg1) {
 			if ((arg0 != null && arg0 instanceof Hunk)
 					&& (arg1 != null && arg1 instanceof Hunk)) {
 				Hunk hunk0 = (Hunk) arg0;

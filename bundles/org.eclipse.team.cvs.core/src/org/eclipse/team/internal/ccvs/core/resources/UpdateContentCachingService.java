@@ -41,7 +41,7 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 	private final CVSTag tag;
 	private final int depth;
 	private boolean fetchAbsentDirectories = true;
-	private ArrayList removed = new ArrayList();
+	private ArrayList<ICVSResource> removed = new ArrayList<>();
 
 	public class SandboxUpdate extends Update {
 		
@@ -263,7 +263,7 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 	}
 
 	private LocalOption[] getLocalOptions() {
-		ArrayList options = new ArrayList();
+		ArrayList<LocalOption> options = new ArrayList<>();
 		if (tag != null)
 			options.add(Update.makeTagOption(tag));
 		

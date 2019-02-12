@@ -827,7 +827,7 @@ public class ModeWizardSelectionPage extends WizardPage {
 	}
 	
 	public List getChanges() {
-		final List changes= new ArrayList();
+		final List<ModeChange> changes = new ArrayList<>();
 		for (Iterator iter = fChanges.iterator(); iter.hasNext();) {
 			final ModeChange change = (ModeChange) iter.next();
 			if (change.hasChanged())

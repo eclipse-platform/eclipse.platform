@@ -63,7 +63,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 	private TableViewer fViewer;
 	private IWizard wizard;
-	private List createdImages;
+	private List<Image> createdImages;
 
 	class MyContentProvider extends BaseWorkbenchContentProvider {
 		@Override
@@ -92,7 +92,7 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 				SynchronizeWizardDescription descriptor = (SynchronizeWizardDescription)element;
 				ImageDescriptor d = descriptor.getImageDescriptor();
 				if(createdImages == null) {
-					createdImages = new ArrayList(3);
+					createdImages = new ArrayList<>(3);
 				}
 				Image image = d.createImage();
 				createdImages.add(image);

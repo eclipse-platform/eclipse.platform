@@ -100,7 +100,7 @@ public class ResourceContentTests extends TeamTest {
 
 	private void assertContentsMatch(IResource[] resources) {
 		Set paths = getPaths(ResourcesPlugin.getWorkspace().getRoot());
-		Set resourceSet = new HashSet();
+		Set<Object> resourceSet = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			resourceSet.add(resource);
@@ -122,7 +122,7 @@ public class ResourceContentTests extends TeamTest {
 	}
 
 	private Set getPaths(Object root) {
-		Set result = new HashSet();
+		Set<Object> result = new HashSet<>();
 		Object[] elements = provider.getElements(root);
 		for (int i = 0; i < elements.length; i++) {
 			Object object = elements[i];
@@ -135,7 +135,7 @@ public class ResourceContentTests extends TeamTest {
 
 	private Set getPaths(ResourceModelContentProvider provider, TreePath path) {
 		Object[] children = provider.getChildren(path);
-		Set result = new HashSet();
+		Set<TreePath> result = new HashSet<>();
 		if (children.length == 0)
 			result.add(path);
 		for (int i = 0; i < children.length; i++) {
@@ -171,7 +171,7 @@ public class ResourceContentTests extends TeamTest {
 	}
 
 	private IResource[] asResources(IProject project, String[] resourcePaths) {
-		List resources = new ArrayList();
+		List<IResource> resources = new ArrayList<>();
 		for (int i = 0; i < resourcePaths.length; i++) {
 			String path = resourcePaths[i];
 			if (path.endsWith("/")) {

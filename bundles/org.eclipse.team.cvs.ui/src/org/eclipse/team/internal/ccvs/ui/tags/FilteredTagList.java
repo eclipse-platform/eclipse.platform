@@ -39,9 +39,10 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
      */
-    public Object[] getChildren(Object o) {
+    @Override
+	public Object[] getChildren(Object o) {
         CVSTag[] tags = getTags();
-        List filtered = new ArrayList();
+		List<TagElement> filtered = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {
             CVSTag tag = tags[i];
             if (select(tag)) {
@@ -63,28 +64,32 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
      */
-    public ImageDescriptor getImageDescriptor(Object object) {
+    @Override
+	public ImageDescriptor getImageDescriptor(Object object) {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
      */
-    public String getLabel(Object o) {
+    @Override
+	public String getLabel(Object o) {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
      */
-    public Object getParent(Object o) {
+    @Override
+	public Object getParent(Object o) {
         return null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
-    public <T> T getAdapter(Class<T> adapter) {
+    @Override
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);
 		return null;
     }
@@ -98,14 +103,14 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
 
     public CVSTag[] getMatchingTags() {
         CVSTag[] tags = getTags();
-        List filtered = new ArrayList();
+		List<CVSTag> filtered = new ArrayList<>();
         for (int i = 0; i < tags.length; i++) {
             CVSTag tag = tags[i];
             if (select(tag)) {
                 filtered.add(tag);
             }
         }
-        return (CVSTag[])filtered.toArray(new CVSTag[filtered.size()]);
+        return filtered.toArray(new CVSTag[filtered.size()]);
     }
 
 }

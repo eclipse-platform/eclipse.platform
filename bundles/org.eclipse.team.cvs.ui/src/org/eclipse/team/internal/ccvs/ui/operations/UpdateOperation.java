@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.operations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
@@ -25,9 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.subscribers.SubscriberResourceMappingContext;
 import org.eclipse.team.internal.ccvs.core.*;
-import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
-import org.eclipse.team.internal.ccvs.core.client.Update;
+import org.eclipse.team.internal.ccvs.core.client.*;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
@@ -67,6 +63,7 @@ public class UpdateOperation extends SingleCommandOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#executeCommand(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	protected IStatus executeCommand(
 		Session session,
 		CVSTeamProvider provider,
@@ -90,16 +87,17 @@ public class UpdateOperation extends SingleCommandOperation {
 			return execute;
 	}
 
-    protected LocalOption[] getLocalOptions(boolean recurse) {
+    @Override
+	protected LocalOption[] getLocalOptions(boolean recurse) {
         // Build the local options
-        List localOptions = new ArrayList();
+		List<LocalOption> localOptions = new ArrayList<>();
         // Use the appropriate tag options
         if (tag != null) {
         	localOptions.add(Update.makeTagOption(tag));
         }
         // Build the arguments list
         localOptions.addAll(Arrays.asList(super.getLocalOptions(recurse)));
-        LocalOption[] commandOptions = (LocalOption[])localOptions.toArray(new LocalOption[localOptions.size()]);
+        LocalOption[] commandOptions = localOptions.toArray(new LocalOption[localOptions.size()]);
         return commandOptions;
     }
 
@@ -110,6 +108,7 @@ public class UpdateOperation extends SingleCommandOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
 	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.UpdateOperation_taskName; //;
 	}
@@ -117,6 +116,7 @@ public class UpdateOperation extends SingleCommandOperation {
 	/* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
 	 */
+	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.UpdateOperation_0, new String[] { provider.getProject().getName() }); 
 	}
@@ -130,7 +130,8 @@ public class UpdateOperation extends SingleCommandOperation {
 		return null;
 	}
 	
-    protected boolean isReportableError(IStatus status) {
+    @Override
+	protected boolean isReportableError(IStatus status) {
         return super.isReportableError(status)
         	|| status.getCode() == CVSStatus.UNMEGERED_BINARY_CONFLICT
         	|| status.getCode() == CVSStatus.INVALID_LOCAL_RESOURCE_PATH
@@ -140,6 +141,7 @@ public class UpdateOperation extends SingleCommandOperation {
     /* (non-Javadoc)
 	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getErrorMessage(org.eclipse.core.runtime.IStatus[], int)
 	 */
+	@Override
 	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return CVSUIMessages.UpdateAction_update; 
 	}
@@ -147,7 +149,8 @@ public class UpdateOperation extends SingleCommandOperation {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getResourceMappingContext()
      */
-    protected ResourceMappingContext getResourceMappingContext() {
+    @Override
+	protected ResourceMappingContext getResourceMappingContext() {
         return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
     }
 

@@ -62,7 +62,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 
 	 private IResource[] getDeepResourcesToPatch(IProgressMonitor monitor) throws CoreException {
 	        ResourceMapping[] mappings = getCVSResourceMappings();
-	        List roots = new ArrayList();
+		List<IResource> roots = new ArrayList<>();
 	        for (int i = 0; i < mappings.length; i++) {
 	            ResourceMapping mapping = mappings[i];
 	            ResourceTraversal[] traversals = mapping.getTraversals(
@@ -86,10 +86,10 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	                }
 	            }
 	        }
-	        return (IResource[]) roots.toArray(new IResource[roots.size()]);
+	        return roots.toArray(new IResource[roots.size()]);
 	    }
 	 
-	   private void collectShallowFiles(IResource[] resources, List roots) {
+	private void collectShallowFiles(IResource[] resources, List<IResource> roots) {
 	        for (int k = 0; k < resources.length; k++) {
 	            IResource resource = resources[k];
 	            if (resource.getType() == IResource.FILE)

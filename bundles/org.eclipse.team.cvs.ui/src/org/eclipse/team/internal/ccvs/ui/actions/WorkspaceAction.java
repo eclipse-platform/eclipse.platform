@@ -171,13 +171,13 @@ public abstract class WorkspaceAction extends CVSAction {
 			} catch (CVSException e) {
 				if (e.getStatus().getCode() == IResourceStatus.OUT_OF_SYNC_LOCAL) {
 					// determine the projects of the resources involved
-					Set projects = new HashSet();
+					Set<IProject> projects = new HashSet<>();
 					for (int i = 0; i < resources.length; i++) {
 						IResource resource = resources[i];
 						projects.add(resource.getProject());
 					}
 					// prompt to refresh
-					if (promptToRefresh(getShell(), (IResource[]) projects.toArray(new IResource[projects.size()]), e.getStatus())) {
+					if (promptToRefresh(getShell(), projects.toArray(new IResource[projects.size()]), e.getStatus())) {
 						for (Iterator iter = projects.iterator();iter.hasNext();) {
 							IProject project = (IProject) iter.next();
 							try {
@@ -303,8 +303,8 @@ public abstract class WorkspaceAction extends CVSAction {
 		if (!isEnabledForMultipleResources() && resources.length != 1) return false;
 		
 		// validate enabled for each resource in the selection
-		List folderPaths = new ArrayList();
-		List filePaths = new ArrayList();
+		List<IPath> folderPaths = new ArrayList<>();
+		List<IPath> filePaths = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			
@@ -439,8 +439,8 @@ public abstract class WorkspaceAction extends CVSAction {
 		while (iterator.hasNext()) {
 			IProgressMonitor subMonitor = SubMonitor.convert(monitor, 1000);
 			CVSTeamProvider provider = (CVSTeamProvider)iterator.next();
-			List list = (List)table.get(provider);
-			IResource[] providerResources = (IResource[])list.toArray(new IResource[list.size()]);
+			List<?> list = (List) table.get(provider);
+			IResource[] providerResources = list.toArray(new IResource[list.size()]);
 			try {
 				addStatus(action.execute(provider, providerResources, subMonitor));
 			} catch (CVSException e) {
@@ -531,7 +531,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	}
 
 	protected IResource[] checkOverwriteOfDirtyResources(IResource[] resources, IProgressMonitor monitor) throws CVSException, InterruptedException {
-		List dirtyResources = new ArrayList();
+		List<IResource> dirtyResources = new ArrayList<>();
 		IResource[] selectedResources = getSelectedResources();
 		
 		try {
@@ -550,7 +550,7 @@ public abstract class WorkspaceAction extends CVSAction {
 		}
 		
 		PromptingDialog dialog = new PromptingDialog(getShell(), selectedResources,
-				getPromptCondition((IResource[]) dirtyResources.toArray(new IResource[dirtyResources.size()])), CVSUIMessages.ReplaceWithAction_confirmOverwrite);
+				getPromptCondition(dirtyResources.toArray(new IResource[dirtyResources.size()])), CVSUIMessages.ReplaceWithAction_confirmOverwrite);
 		return dialog.promptForMultiple();
 	}
 

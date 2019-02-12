@@ -117,7 +117,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 	private static final String UNIQUE_ID_PREFIX = "merge-"; //$NON-NLS-1$
 	
 	private CVSTag start, end;
-	private List roots;
+	private List<IResource> roots;
 	private CVSResourceVariantTree remoteTree;
 	private MergeBaseTree baseTree;
 	private boolean isModelSync;
@@ -136,7 +136,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		super(id, NLS.bind(CVSMessages.CVSMergeSubscriber_2, new String[] { start.getName(), end.getName() }));
 		this.start = start;
 		this.end = end;
-		this.roots = new ArrayList(Arrays.asList(roots));
+		this.roots = new ArrayList<>(Arrays.asList(roots));
 		initialize();
 	}
 

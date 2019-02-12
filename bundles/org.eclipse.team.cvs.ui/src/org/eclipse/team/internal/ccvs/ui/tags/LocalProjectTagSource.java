@@ -13,11 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.tags;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -64,7 +60,7 @@ public class LocalProjectTagSource extends TagSource {
      */
     private static ICVSRemoteFolder[] getProjectRemoteFolders() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        List result = new ArrayList();
+		List<ICVSRemoteFolder> result = new ArrayList<>();
         for (int i = 0; i < projects.length; i++) {
             IProject project = projects[i];
             try {
@@ -79,13 +75,14 @@ public class LocalProjectTagSource extends TagSource {
                 CVSUIPlugin.log(e);
             }
         }
-        return (ICVSRemoteFolder[]) result.toArray(new ICVSRemoteFolder[result.size()]);
+        return result.toArray(new ICVSRemoteFolder[result.size()]);
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#refresh(boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
+    @Override
+	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
         // This tag source should not be refreshed
         return new CVSTag[0];
     }
@@ -93,40 +90,45 @@ public class LocalProjectTagSource extends TagSource {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getLocation()
      */
-    public ICVSRepositoryLocation getLocation() {
+    @Override
+	public ICVSRepositoryLocation getLocation() {
         return seedFolder.getRepository();
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getShortDescription()
      */
-    public String getShortDescription() {
+    @Override
+	public String getShortDescription() {
         return NLS.bind(CVSUIMessages.LocalProjectTagSource_0, new String[] { Integer.toString(remoteFolders.length) }); 
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
+    @Override
+	public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
         // Does not commit tags
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
      */
-    public ICVSResource[] getCVSResources() {
+    @Override
+	public ICVSResource[] getCVSResources() {
         return remoteFolders;
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getTags(int)
      */
-    public CVSTag[] getTags(int type) {
+    @Override
+	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {
             return super.getTags(type);
         }
         // Accumulate the tags for all folders
-        Set allTags = new HashSet();
+		Set<CVSTag> allTags = new HashSet<>();
         for (int i = 0; i < remoteFolders.length; i++) {
             ICVSRemoteFolder folder = remoteFolders[i];
             CVSTag[] tags = SingleFolderTagSource.getTags(folder, type);
@@ -135,7 +137,7 @@ public class LocalProjectTagSource extends TagSource {
         // Exclude the tags for the seedFolder
         CVSTag[] tags = SingleFolderTagSource.getTags(seedFolder, type);
         allTags.removeAll(Arrays.asList(tags));
-        return (CVSTag[]) allTags.toArray(new CVSTag[allTags.size()]);
+        return allTags.toArray(new CVSTag[allTags.size()]);
     }
 
 }

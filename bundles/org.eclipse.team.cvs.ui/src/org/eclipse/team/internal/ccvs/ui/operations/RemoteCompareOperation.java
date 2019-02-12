@@ -228,7 +228,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		private String[] getOverlappingFilePaths() {
 			String[] leftFiles = getFilePaths(leftTree);
 			String[] rightFiles = getFilePaths(rightTree);
-			Set set = new HashSet();
+			Set<String> set = new HashSet<>();
 			for (int i = 0; i < rightFiles.length; i++) {
 				String rightFile = rightFiles[i];
 				for (int j = 0; j < leftFiles.length; j++) {
@@ -238,7 +238,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 					}
 				}
 			}
-			return (String[]) set.toArray(new String[set.size()]);
+			return set.toArray(new String[set.size()]);
 		}
 
 		private void fetchFileContents(RemoteFolderTree tree, String[] overlappingFilePaths, IProgressMonitor monitor) throws CVSException {
@@ -247,7 +247,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 
 		private String[] getFilePaths(RemoteFolderTree tree) {
 			ICVSRemoteResource[] children = tree.getChildren();
-			List result = new ArrayList();
+			List<String> result = new ArrayList<>();
 			for (int i = 0; i < children.length; i++) {
 				ICVSRemoteResource resource = children[i];
 				if (resource.isContainer()) {
@@ -256,7 +256,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 					result.add(resource.getRepositoryRelativePath());
 				}
 			}
-			return (String[]) result.toArray(new String[result.size()]);
+			return result.toArray(new String[result.size()]);
 		}
 	}
 	

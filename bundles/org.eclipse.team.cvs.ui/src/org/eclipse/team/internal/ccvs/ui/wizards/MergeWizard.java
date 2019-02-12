@@ -16,6 +16,7 @@ package org.eclipse.team.internal.ccvs.ui.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.IStatus;
@@ -24,6 +25,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.team.internal.ccvs.core.CVSMergeSubscriber;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.client.Command;
+import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 import org.eclipse.team.internal.ccvs.core.client.Update;
 import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.team.internal.ccvs.ui.actions.WorkspaceTraversalAction;
@@ -48,6 +50,7 @@ public class MergeWizard extends Wizard {
         this.mappings = mappings;
     }
 
+	@Override
 	public void addPages() {
 	    setNeedsProgressMonitor(true);
 	    TagSource tagSource = TagSource.create(resources);
@@ -57,6 +60,7 @@ public class MergeWizard extends Wizard {
 		addPage(page);
 	}
 
+	@Override
 	public boolean performFinish() {
 		
 		CVSTag startTag = page.getStartTag();
@@ -123,21 +127,21 @@ public class MergeWizard extends Wizard {
 	}
     
 	private IResource[] getProjects(IResource[] resources) {
-		Set projects = new HashSet();
+		Set<IProject> projects = new HashSet<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			projects.add(resource.getProject());
 		}
-		return (IResource[]) projects.toArray(new IResource[projects.size()]);
+		return projects.toArray(new IResource[projects.size()]);
 	}
 
     private Command.LocalOption[] getLocalOptions(CVSTag startTag, CVSTag endTag) {
-        List options = new ArrayList();
+		List<LocalOption> options = new ArrayList<>();
         if (startTag != null) {
             options.add(Command.makeArgumentOption(Update.JOIN, startTag.getName()));
         }
         options.add(Command.makeArgumentOption(Update.JOIN, endTag.getName()));
-        return (Command.LocalOption[]) options.toArray(new Command.LocalOption[options.size()]);
+        return options.toArray(new Command.LocalOption[options.size()]);
     }
 
     private IWorkbenchPart getPart() {

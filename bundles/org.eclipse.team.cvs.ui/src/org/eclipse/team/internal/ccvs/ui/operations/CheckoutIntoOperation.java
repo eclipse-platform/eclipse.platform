@@ -131,7 +131,7 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 	 * could expand to multiple local folders witinb the given parent folder.
 	 */
 	private ICVSFolder[] prepareLocalFolders(Session session, ICVSRemoteFolder remoteFolder, ICVSFolder parentFolder, String localFolderName, IProgressMonitor monitor) throws CVSException {
-		Set targetFolderSet = new HashSet();
+		Set<ICVSFolder> targetFolderSet = new HashSet<>();
 		monitor.beginTask(null, 30);
 		if (localFolderName == null) {
 			
@@ -159,7 +159,7 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 			targetFolderSet.add(parentFolder.getFolder(localFolderName));
 		}
 		
-		final ICVSFolder[] targetFolders = (ICVSFolder[]) targetFolderSet.toArray(new ICVSFolder[targetFolderSet.size()]);
+		final ICVSFolder[] targetFolders = targetFolderSet.toArray(new ICVSFolder[targetFolderSet.size()]);
 		
 		// Ensure that the checkout will not conflict with existing resources
 		IStatus status = validateTargetFolders(remoteFolder, targetFolders, Policy.subMonitorFor(monitor, 10));
@@ -341,7 +341,7 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 			}
 			
 			// Add recurse option
-			List localOptions = new ArrayList();
+			List<LocalOption> localOptions = new ArrayList<>();
 			if (!recurse)
 				localOptions.add(Command.DO_NOT_RECURSE);
 			if (localName != null) {
@@ -362,7 +362,7 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 			// Perform the checkout
 			IStatus status = Command.CHECKOUT.execute(session,
 				Command.NO_GLOBAL_OPTIONS,
-				(LocalOption[])localOptions.toArray(new LocalOption[localOptions.size()]),
+				localOptions.toArray(new LocalOption[localOptions.size()]),
 				new String[] { remoteFolder.getRepositoryRelativePath() },
 				null,
 				Policy.subMonitorFor(monitor, 80));

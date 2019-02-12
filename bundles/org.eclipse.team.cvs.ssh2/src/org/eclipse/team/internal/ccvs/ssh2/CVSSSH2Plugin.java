@@ -58,7 +58,7 @@ public class CVSSSH2Plugin extends Plugin {
 		super.start(context);
 
 		// register debug options listener
-		Hashtable properties = new Hashtable(2);
+		Hashtable<String, String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 

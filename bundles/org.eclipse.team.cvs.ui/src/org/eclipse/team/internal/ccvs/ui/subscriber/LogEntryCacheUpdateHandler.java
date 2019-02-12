@@ -14,11 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import java.lang.ref.SoftReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
@@ -32,7 +28,8 @@ import org.eclipse.team.internal.ccvs.core.resources.RemoteFile;
 import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.core.util.Util;
-import org.eclipse.team.internal.ccvs.ui.*;
+import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
+import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
 import org.eclipse.team.internal.ccvs.ui.mappings.ModelCompareParticipant;
@@ -105,12 +102,12 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
      * This list is only modified and accessed from the event processing
      * thread.
      */
-    private final List updates = new ArrayList();
+	private final List<Event> updates = new ArrayList<>();
     
     /*
      * The accumulated list of fetches that have been requested
      */
-    private final List fetches = new ArrayList();
+	private final List<Event> fetches = new ArrayList<>();
     private final ISynchronizePageConfiguration configuration;
     
     
@@ -141,18 +138,21 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#remove(org.eclipse.core.resources.IResource)
          */
-        protected void remove(IResource resource) {
+        @Override
+		protected void remove(IResource resource) {
             queueEvent(new ResourceEvent(resource, REMOVAL, IResource.DEPTH_INFINITE), false /* do not put in on the front of the queue*/);  
         }
 
         /* (non-Javadoc)
          * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#change(org.eclipse.core.resources.IResource, int)
          */
-        protected void change(IResource resource, int depth) {
+        @Override
+		protected void change(IResource resource, int depth) {
             queueEvent(new ResourceEvent(resource, CHANGE, depth), false /* do not put in on the front of the queue*/); 
         }
 
-        protected boolean hasMembers(IResource resource) {
+        @Override
+		protected boolean hasMembers(IResource resource) {
             return collectedInfos.hasMembers(resource);
         }
     }
@@ -212,14 +212,16 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#getJobFamiliy()
      */
-    protected Object getJobFamiliy() {
+    @Override
+	protected Object getJobFamiliy() {
         return ISynchronizeManager.FAMILY_SYNCHRONIZE_OPERATION;
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#createEventHandlingJob()
      */
-    protected void createEventHandlingJob() {
+    @Override
+	protected void createEventHandlingJob() {
         super.createEventHandlingJob();
         Job job = getEventHandlerJob();
         job.setSystem(false);
@@ -229,7 +231,8 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#processEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
+    @Override
+	protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
         Policy.checkCanceled(monitor);
         switch (event.getType()) {
         	case REMOVAL:
@@ -248,7 +251,8 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
+    @Override
+	protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
         Policy.checkCanceled(monitor);
         boolean dispatched = false;
         monitor.beginTask(null, 50);
@@ -288,7 +292,8 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#shutdown()
      */
-    public void shutdown() {
+    @Override
+	public void shutdown() {
         super.shutdown();
         collector.dispose();
         // Probably not necessary as GC would take care of it but we'll do it anyway
@@ -426,7 +431,8 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     /* (non-Javadoc)
      * @see org.eclipse.team.internal.core.BackgroundEventHandler#queueEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, boolean)
      */
-    protected void queueEvent(Event event, boolean front) {
+    @Override
+	protected void queueEvent(Event event, boolean front) {
         // Override to snure that queues by this handler are serialized
         synchronized(queueLock) {
             Job job = getEventHandlerJob();
@@ -482,14 +488,14 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
      * entry was already cached or the resource has no history.
      */
     private Map getFetchesByProject() {
-        Map result = new HashMap();
+		Map<IProject, SyncInfoSet> result = new HashMap<>();
         for (Iterator iter = fetches.iterator(); iter.hasNext();) {
             FetchRequest request = (FetchRequest) iter.next();
             SyncInfo[] infos = request.getInfos();
             for (int i = 0; i < infos.length; i++) {
                 SyncInfo info = infos[i];
                 IProject project = info.getLocal().getProject();
-                SyncInfoSet infoSet = (SyncInfoSet)result.get(project);
+                SyncInfoSet infoSet = result.get(project);
                 if (infoSet == null) {
                     infoSet = new SyncInfoSet();
                     result.put(project, infoSet);
@@ -580,11 +586,11 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
      * workspace. The map is CVSTag->SyncInfoSet
      */
     private Map getLocalTagMap(SyncInfoSet set) {
-        Map result = new HashMap();
+		Map<CVSTag, SyncInfoSet> result = new HashMap<>();
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             SyncInfo info = (SyncInfo) iter.next();
             CVSTag tag = getLocalTag(info);
-            SyncInfoSet tagSet = (SyncInfoSet)result.get(tag);
+            SyncInfoSet tagSet = result.get(tag);
             if (tagSet == null) {
                 tagSet = new SyncInfoSet();
                 result.put(tag, tagSet);
@@ -637,7 +643,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
     }
 
     private Map getRootToInfoMap(CVSCompareSubscriber compareSubscriber, SyncInfoSet set) {
-        Map rootToInfosMap = new HashMap();
+		Map<IResource, SyncInfoSet> rootToInfosMap = new HashMap<>();
         IResource[] roots = compareSubscriber.roots();
         for (Iterator iter = set.iterator(); iter.hasNext();) {
             SyncInfo info = (SyncInfo) iter.next();
@@ -645,7 +651,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
             for (int j = 0; j < roots.length; j++) {
                 IResource resource = roots[j];
                 if (resource.getFullPath().isPrefixOf(localPath)) {
-                    SyncInfoSet infoList = (SyncInfoSet)rootToInfosMap.get(resource);
+                    SyncInfoSet infoList = rootToInfosMap.get(resource);
                     if (infoList == null) {
                         infoList = new SyncInfoSet();
                         rootToInfosMap.put(resource, infoList);
@@ -669,7 +675,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 	}
 	
 	private ICVSRemoteResource[] getRemotesToFetch(SyncInfo[] infos) {
-		List remotes = new ArrayList();
+		List<ICVSRemoteResource> remotes = new ArrayList<>();
 		for (int i = 0; i < infos.length; i++) {
 			SyncInfo info = infos[i];
 			if (isFetchRequired(info)) {
@@ -679,7 +685,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 				}
 			}
 		}
-		return (ICVSRemoteResource[]) remotes.toArray(new ICVSRemoteResource[remotes.size()]);
+		return remotes.toArray(new ICVSRemoteResource[remotes.size()]);
 	}
 
     /**

@@ -121,7 +121,7 @@ public class FileContentCachingService {
 	 */
 	private String[] getUncachedFiles() {
 		if (fileDiffs.length == 0) return fileDiffs;
-		List existing = new ArrayList();
+		List<String> existing = new ArrayList<>();
 		for (int i = 0; i < fileDiffs.length; i++) {
 			String filePath = fileDiffs[i];
 			try {

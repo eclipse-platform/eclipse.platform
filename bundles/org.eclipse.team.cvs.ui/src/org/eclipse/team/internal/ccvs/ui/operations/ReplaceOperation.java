@@ -136,7 +136,7 @@ public class ReplaceOperation extends UpdateOperation {
 	 */
 	protected ICVSResource[] getResourcesToUpdate(ICVSResource[] resources, IProgressMonitor monitor) throws CVSException {
 		// Accumulate the managed resources from the list of provided resources
-		List managedResources = new ArrayList();
+		List<ICVSResource> managedResources = new ArrayList<>();
 		monitor.beginTask(null, resources.length * 100);
 		for (int i = 0; i < resources.length; i++) {
 			ICVSResource resource = resources[i];
@@ -150,10 +150,11 @@ public class ReplaceOperation extends UpdateOperation {
 			}
 		}
 		monitor.done();
-		return (ICVSResource[]) managedResources.toArray(new ICVSResource[managedResources.size()]);
+		return managedResources.toArray(new ICVSResource[managedResources.size()]);
 	}
 
-	private void addResourceIfTagExists(List managedResources, ICVSResource resource, IProgressMonitor monitor) {
+	private void addResourceIfTagExists(List<ICVSResource> managedResources, ICVSResource resource,
+			IProgressMonitor monitor) {
 		CVSTag tag = getTag();
 		if (tag == null || tag.getType() == CVSTag.DATE || tag.isHeadTag() || tag.isBaseTag()) {
 			// No need to check for date, head or base tags

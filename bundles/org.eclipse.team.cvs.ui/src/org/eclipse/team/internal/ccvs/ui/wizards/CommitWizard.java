@@ -339,8 +339,8 @@ public class CommitWizard extends ResizableWizard {
     @Override
 	public void addPages() {
         
-        final Collection names= new HashSet();
-        final Collection extensions= new HashSet();
+		final Collection<String> names = new HashSet<>();
+		final Collection<String> extensions = new HashSet<>();
         getUnknownNamesAndExtension(fUnaddedDiffs, names, extensions);
         
         if (names.size() + extensions.size() > 0) {
@@ -444,7 +444,8 @@ public class CommitWizard extends ResizableWizard {
         return dialog.open();
     }
     
-    private void getUnknownNamesAndExtension(IResource[] resources, Collection names, Collection extensions) {
+	private void getUnknownNamesAndExtension(IResource[] resources, Collection<String> names,
+			Collection<String> extensions) {
 
     	final IFileContentManager manager= Team.getFileContentManager();
 
@@ -465,22 +466,22 @@ public class CommitWizard extends ResizableWizard {
     }
     
 	private IResource[] getUnaddedResources(IResource[] resources) throws CVSException {
-		List/*<IResource>*/ unadded = new ArrayList/*<IResource>*/();
+		List/* <IResource> */<IResource> unadded = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			if (!isAdded(resources[i])) {
 				unadded.add(resources[i]);
 			}
 		}
-		return (IResource[]) unadded.toArray(new IResource[0]);
+		return unadded.toArray(new IResource[0]);
 	}
 
 	private IResource[] getFiles(IResource[] resources) {
-		final List files = new ArrayList();
+		final List<IResource> files = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			if (resources[i].getType() == IResource.FILE)
 				files.add(resources[i]);
 		}
-		return (IResource[]) files.toArray(new IResource[0]);
+		return files.toArray(new IResource[0]);
 	}
 	
     private static boolean isAdded(IResource resource) throws CVSException {
@@ -492,7 +493,7 @@ public class CommitWizard extends ResizableWizard {
     }
 
     private static IResource[] getDeepResourcesToCommit(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
-        List roots = new ArrayList();
+		List<IResource> roots = new ArrayList<>();
         for (int j = 0; j < traversals.length; j++) {
             ResourceTraversal traversal = traversals[j];
             IResource[] resources = traversal.getResources();
@@ -510,14 +511,14 @@ public class CommitWizard extends ResizableWizard {
                 }
             }
         }
-        return (IResource[]) roots.toArray(new IResource[roots.size()]);
+        return roots.toArray(new IResource[roots.size()]);
     }
 
     private static IResource[] members(IResource resource) throws CoreException {
         return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().members(resource);
     }
 
-    private static void collectShallowFiles(IResource[] resources, List roots) {
+	private static void collectShallowFiles(IResource[] resources, List<IResource> roots) {
         for (int k = 0; k < resources.length; k++) {
             IResource resource = resources[k];
             if (resource.getType() == IResource.FILE)

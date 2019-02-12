@@ -39,7 +39,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 /*package*/ class SynchronizerSyncInfoCache extends SyncInfoCache {
 	
 	// Map of sync bytes that were set without a scheduling rule
-	Map pendingCacheWrites = new HashMap();
+	Map<IResource, Object> pendingCacheWrites = new HashMap<>();
 	private static final Object BYTES_REMOVED = new byte[0];
 
 	public SynchronizerSyncInfoCache() {
@@ -324,7 +324,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 	public IResource[] members(IContainer folder) throws CoreException {
 		IResource[] pendingWrites = getPendingCacheWrites();
 		if (pendingWrites != null){
-			HashSet cachedResources = new HashSet();
+			HashSet<IResource> cachedResources = new HashSet<>();
 			for (int i = 0; i < pendingWrites.length; i++) {
 				IResource resource = pendingWrites[i];
 				if (resource.getParent().equals(folder))

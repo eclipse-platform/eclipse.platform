@@ -32,7 +32,7 @@ import org.eclipse.ui.contentassist.ContentAssistHandler;
 public class TagContentAssistProcessor implements ISubjectControlContentAssistProcessor {
 
     private FilteredTagList tags;
-    private Map images = new HashMap();
+	private Map<ImageDescriptor, Image> images = new HashMap<>();
 
     public static void createContentAssistant(Text text, TagSource tagSource, int includeFlags) {
 		final TagContentAssistProcessor tagContentAssistProcessor = new TagContentAssistProcessor(tagSource, includeFlags);
@@ -70,14 +70,14 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
             tags.setPattern(filter);
             CVSTag[] matching = tags.getMatchingTags();
             if (matching.length > 0) {
-                List proposals = new ArrayList();
+				List<CompletionProposal> proposals = new ArrayList<>();
                 for (int i = 0; i < matching.length; i++) {
                     CVSTag tag = matching[i];
                     String name = tag.getName();
                     ImageDescriptor desc = TagElement.getImageDescriptor(tag);
                     Image image = null;
                     if (desc != null) {
-                        image = (Image)images.get(desc);
+                        image = images.get(desc);
                         if (image == null) {
                             image = desc.createImage();
                             images.put(desc, image);
@@ -86,7 +86,7 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
                     CompletionProposal proposal = new CompletionProposal(name, 0, docLength, name.length(), image, name, null, null);
                     proposals.add(proposal);
                 }
-                return (ICompletionProposal[]) proposals.toArray(new ICompletionProposal[proposals.size()]);
+                return proposals.toArray(new ICompletionProposal[proposals.size()]);
             }
         }
         return null;

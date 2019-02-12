@@ -338,7 +338,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 	}
 
 	private IResource[] getResources(IDiff[] diffArray) {
-		List result = new ArrayList();
+		List<IResource> result = new ArrayList<>();
 		for (int i = 0; i < diffArray.length; i++) {
 			IDiff diff = diffArray[i];
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
@@ -346,7 +346,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 				result.add(resource);
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	@Override
@@ -460,7 +460,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		if (selection instanceof ITreeSelection) {
 			ITreeSelection ts = (ITreeSelection) selection;
 			TreePath[] paths = ts.getPaths();
-			List result = new ArrayList();
+			List<IDiff> result = new ArrayList<>();
 			for (int i = 0; i < paths.length; i++) {
 				TreePath path = paths[i];
 				IDiff[] diffs = getLocalChanges(path);
@@ -469,7 +469,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 					result.add(diff);
 				}
 			}
-			return (IDiff[]) result.toArray(new IDiff[result.size()]);
+			return result.toArray(new IDiff[result.size()]);
 		}
 		return new IDiff[0];
 	}

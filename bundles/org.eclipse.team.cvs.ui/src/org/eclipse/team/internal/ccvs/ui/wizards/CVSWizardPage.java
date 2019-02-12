@@ -249,6 +249,7 @@ public abstract class CVSWizardPage extends WizardPage {
 	 */
 	protected ITreeContentProvider getResourceProvider(final int resourceType) {
 		return new WorkbenchContentProvider() {
+			@Override
 			public Object[] getChildren(Object o) {
 				if (o instanceof IContainer) {
 					IResource[] members = null;
@@ -260,7 +261,7 @@ public abstract class CVSWizardPage extends WizardPage {
 					}
 	
 					//filter out the desired resource types
-					ArrayList results = new ArrayList();
+					ArrayList<IResource> results = new ArrayList<>();
 					for (int i = 0; i < members.length; i++) {
 						//And the test bits with the resource types to see if they are what we want
 						if ((members[i].getType() & resourceType) > 0) {
@@ -295,6 +296,7 @@ public abstract class CVSWizardPage extends WizardPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
 	 */
+	@Override
 	public IWizardPage getNextPage() {
 		ICVSWizard w = getCVSWizard();
 		if (w != null) {
@@ -308,6 +310,7 @@ public abstract class CVSWizardPage extends WizardPage {
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
 	 */
+	@Override
 	public boolean canFlipToNextPage() {
 		ICVSWizard w = getCVSWizard();
 		if (w != null) {

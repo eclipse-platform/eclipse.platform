@@ -106,7 +106,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	}
 
 	// The input for the table viewer
-	private final List fItems;
+	private final List<Item> fItems;
 
 	// Widgets
 	private Button fRemoveButton;
@@ -115,7 +115,7 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
     protected FileTypeTable fTable;
 
     public TextPreferencePage() {
-        fItems= new ArrayList();
+        fItems= new ArrayList<>();
         initializeItems();
     }
 

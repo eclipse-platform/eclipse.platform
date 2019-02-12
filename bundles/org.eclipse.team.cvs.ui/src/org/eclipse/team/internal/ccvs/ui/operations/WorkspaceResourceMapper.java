@@ -45,34 +45,39 @@ public final class WorkspaceResourceMapper extends ResourceMapping {
      * @return a resource mappers that traverses the resources
      */
     public static ResourceMapping[] asResourceMappers(final IResource[] resources, int depth) {
-        List result = new ArrayList();
+		List<WorkspaceResourceMapper> result = new ArrayList<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             result.add(new WorkspaceResourceMapper(resource, depth));
         }
-        return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+        return result.toArray(new ResourceMapping[result.size()]);
     }
     
     public WorkspaceResourceMapper(IResource resource, int depth) {
         this.resource = resource;
         this.depth = depth;
     }
-    public Object getModelObject() {
+    @Override
+	public Object getModelObject() {
         return resource;
     }
-    public IProject[] getProjects() {
+    @Override
+	public IProject[] getProjects() {
         return new IProject[] { resource.getProject() };
     }
-    public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
+    @Override
+	public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
         return asTraversal(resource, depth, context);
     }
     private ResourceTraversal[] asTraversal(IResource resource, final int depth, ResourceMappingContext context) {
         return new ResourceTraversal[] { new ResourceTraversal(new IResource[] { resource }, depth, IResource.NONE)} ;
     }
-    public boolean contains(ResourceMapping mapping) {
+    @Override
+	public boolean contains(ResourceMapping mapping) {
     	return false;
     }
 
+	@Override
 	public String getModelProviderId() {
 		return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
 	}

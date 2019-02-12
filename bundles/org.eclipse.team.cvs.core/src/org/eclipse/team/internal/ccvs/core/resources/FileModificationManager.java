@@ -35,7 +35,7 @@ public class FileModificationManager implements IResourceChangeListener {
 	
 	private static final QualifiedName UPDATE_TIMESTAMP = new QualifiedName(CVSProviderPlugin.ID, "update-timestamp"); //$NON-NLS-1$
 	
-	/* private */Set modifiedResources = new HashSet();
+	/* private */Set<IResource> modifiedResources = new HashSet<>();
 
 	// consider the following changes types and ignore the others (e.g. marker and description changes are ignored)
 	protected int INTERESTING_CHANGES = 	IResourceDelta.CONTENT | 

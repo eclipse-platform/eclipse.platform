@@ -213,8 +213,8 @@ public abstract class DiffOperation extends SingleCommandOperation {
 	protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 		
 		//add this project to the total projects encountered
-		final HashSet newFiles = new HashSet(); //array of ICVSResource - need HashSet to guard for duplicate entries
-		final HashSet existingFiles = new HashSet(); //array of IResource - need HashSet to guard for duplicate entries
+		final HashSet<ICVSFile> newFiles = new HashSet<>(); // need HashSet to guard for duplicate entries
+		final HashSet<IResource> existingFiles = new HashSet<>(); // need HashSet to guard for duplicate entries
 		
 		monitor.beginTask(null,100);
 		final IProgressMonitor subMonitor = Policy.subMonitorFor(monitor,10);
@@ -249,7 +249,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 			}, recurse);
 		}
 
-		final SortedSet allFiles = new TreeSet(COMPARATOR);
+		final SortedSet<Object> allFiles = new TreeSet<Object>(COMPARATOR);
 		allFiles.addAll(existingFiles);
 		allFiles.addAll(newFiles);
 
@@ -292,7 +292,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 			}
 		}
 		
-		List existingFilesSubList = new ArrayList();
+		List<Object> existingFilesSubList = new ArrayList<>();
 		for (Iterator iter = allFiles.iterator(); iter.hasNext();) {
 			Object file = iter.next();
 			if (existingFiles.contains(file)) {
@@ -335,7 +335,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 	 */
 	private void handleCVSException(CVSException ex) {
 		IStatus status = ex.getStatus();
-		List toShow = new ArrayList();
+		List<IStatus> toShow = new ArrayList<>();
 		IStatus children[] = status.getChildren();
 		boolean may = true;
 		for (int i = 0; i < children.length; i++) {
@@ -356,7 +356,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 					new MultiStatus(
 							CVSProviderPlugin.ID,
 							CVSStatus.SERVER_ERROR,
-							(IStatus[]) toShow.toArray(new IStatus[toShow.size()]),
+							toShow.toArray(new IStatus[toShow.size()]),
 							CVSUIMessages.DiffOperation_ErrorsOccurredWhileCreatingThePatch,
 							null));
 			adapter.setProperty(IStatusAdapterConstants.TITLE_PROPERTY, msg);

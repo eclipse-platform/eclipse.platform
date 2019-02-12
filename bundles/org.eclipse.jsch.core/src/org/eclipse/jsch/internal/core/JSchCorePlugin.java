@@ -49,9 +49,9 @@ public class JSchCorePlugin extends Plugin{
   public static final String PT_IDENTITYREPOSITORY="identityrepository"; //$NON-NLS-1$
 
   private static JSchCorePlugin plugin;
-  private ServiceTracker tracker;
+  private ServiceTracker<?, ?> tracker;
 
-  private ServiceRegistration jschService;
+  private ServiceRegistration<?> jschService;
 
   public JSchCorePlugin(){
     plugin=this;
@@ -152,7 +152,7 @@ public class JSchCorePlugin extends Plugin{
     if(extensions.length==0)
       return new IdentityRepository[0];
 
-    ArrayList tmp = new ArrayList();
+    ArrayList<IdentityRepository> tmp = new ArrayList<>();
     for(int i=0; i<extensions.length; i++){
       IExtension extension=extensions[i];
       IConfigurationElement[] configs=extension.getConfigurationElements();
@@ -183,7 +183,7 @@ public class JSchCorePlugin extends Plugin{
 
     IdentityRepository[] repositories = new IdentityRepository[tmp.size()];
     for(int i=0; i<tmp.size(); i++){
-      repositories[i]=(IdentityRepository)tmp.get(i);
+      repositories[i]=tmp.get(i);
     }
     return repositories;
   }
@@ -242,12 +242,12 @@ public class JSchCorePlugin extends Plugin{
 
   public void start(BundleContext context) throws Exception{
     super.start(context);
-    tracker=new ServiceTracker(getBundle().getBundleContext(),
+    tracker=new ServiceTracker<Object, Object>(getBundle().getBundleContext(),
         IProxyService.class.getName(), null);
     tracker.open();
     jschService=getBundle().getBundleContext().registerService(
         IJSchService.class.getName(), JSchProvider.getInstance(),
-        new Hashtable());
+        new Hashtable<String, Object>());
   }
 
   public void stop(BundleContext context) throws Exception{

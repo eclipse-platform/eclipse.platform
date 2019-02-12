@@ -134,7 +134,7 @@ public class CVSFileHistory extends FileHistory {
 
 				} else if (flag == IFileHistoryProvider.SINGLE_LINE_OF_DESCENT) {
 					CVSTag tempTag = cvsFile.getSyncInfo().getTag();
-					ArrayList entriesOfInterest = new ArrayList();
+					ArrayList<ILogEntry> entriesOfInterest = new ArrayList<>();
 					for (int i = 0; i < entries.length; i++) {
 						CVSTag[] tags = entries[i].getTags();
 						for (int j = 0; j < tags.length; j++) {
@@ -260,7 +260,7 @@ public class CVSFileHistory extends FileHistory {
 
 		//the predecessor is the file with a timestamp that is the largest timestamp
 		//from the set of all timestamps smaller than the root file's timestamp
-		ArrayList directDescendents = new ArrayList();
+		ArrayList<IFileRevision> directDescendents = new ArrayList<>();
 
 		for (int i = 0; i < revisions.length; i++) {
 			if (((CVSFileRevision) revisions[i]).isDescendentOf(revision)) {

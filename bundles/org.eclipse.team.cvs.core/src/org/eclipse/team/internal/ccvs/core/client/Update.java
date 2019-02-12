@@ -104,7 +104,7 @@ public class Update extends Command {
 	}
 	
 	protected LocalOption[] filterLocalOptions(Session session, GlobalOption[] globalOptions, LocalOption[] localOptions) {
-		List newOptions = new ArrayList(Arrays.asList(localOptions));
+		List<LocalOption> newOptions = new ArrayList<>(Arrays.asList(localOptions));
 		
 		if (shouldRetrieveAbsentDirectories(session) && ! RETRIEVE_ABSENT_DIRECTORIES.isElementOf(localOptions)) {
 			newOptions.add(Update.RETRIEVE_ABSENT_DIRECTORIES);

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.ui.model.CVSResourceElement;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
@@ -37,10 +38,11 @@ public class TagSourceResourceAdapter implements IAdaptable, IWorkbenchAdapter {
         this.tagSource = tagSource;
     }
   
-    public Object[] getChildren(Object o) {
+    @Override
+	public Object[] getChildren(Object o) {
         ICVSResource[] children = tagSource.getCVSResources();
         if (children.length == 0) return new Object[0];
-        List result = new ArrayList();
+		List<CVSResourceElement> result = new ArrayList<>();
         for (int i = 0; i < children.length; i++) {
             ICVSResource resource = children[i];
             if (resource.isFolder()) {
@@ -52,21 +54,25 @@ public class TagSourceResourceAdapter implements IAdaptable, IWorkbenchAdapter {
         return result.toArray(new Object[result.size()]);
     }
 
-    public ImageDescriptor getImageDescriptor(Object object) {
+    @Override
+	public ImageDescriptor getImageDescriptor(Object object) {
         // No image descriptor
         return null;
     }
 
-    public String getLabel(Object o) {
+    @Override
+	public String getLabel(Object o) {
         return tagSource.getShortDescription();
     }
 
-    public Object getParent(Object o) {
+    @Override
+	public Object getParent(Object o) {
         // No parent
         return null;
     }
 
-    public <T> T getAdapter(Class<T> adapter) {
+    @Override
+	public <T> T getAdapter(Class<T> adapter) {
         if (adapter == IWorkbenchAdapter.class) {
             return adapter.cast(this);
         }

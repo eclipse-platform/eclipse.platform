@@ -171,14 +171,14 @@ public class ShowAnnotationOperation extends CVSOperation {
             final Command.QuietOption quietness = CVSProviderPlugin.getPlugin().getQuietness();
             try {
                 CVSProviderPlugin.getPlugin().setQuietness(Command.VERBOSE);
-                List localOptions = new ArrayList();
+				List<Object> localOptions = new ArrayList<>();
                 if (revision != null) {
                     localOptions.add(Annotate.makeRevisionOption(revision));
                 }
                 if (fBinary) {
                     localOptions.add(Annotate.FORCE_BINARY_ANNOTATE);
                 }
-                final IStatus status = Command.ANNOTATE.execute(session, Command.NO_GLOBAL_OPTIONS, (LocalOption[]) localOptions.toArray(new LocalOption[localOptions.size()]), new ICVSResource[]{cvsResource}, listener, Policy.subMonitorFor(monitor, 90));
+                final IStatus status = Command.ANNOTATE.execute(session, Command.NO_GLOBAL_OPTIONS, localOptions.toArray(new LocalOption[localOptions.size()]), new ICVSResource[]{cvsResource}, listener, Policy.subMonitorFor(monitor, 90));
                 if (status.getCode() == CVSStatus.SERVER_ERROR) {
                     throw new CVSServerException(status);
                 }
@@ -192,7 +192,7 @@ public class ShowAnnotationOperation extends CVSOperation {
     }
 
     private RevisionInformation createRevisionInformation(final AnnotateListener listener, IProgressMonitor monitor) throws CVSException {
-	    Map logEntriesByRevision= new HashMap();
+		Map<String, ILogEntry> logEntriesByRevision = new HashMap<>();
 		if (fCVSResource instanceof ICVSFile) {
 			try {
 				ILogEntry[] logEntries= ((ICVSFile) fCVSResource).getLogEntries(monitor);
@@ -241,14 +241,14 @@ public class ShowAnnotationOperation extends CVSOperation {
 		info.setHoverControlCreator(new AnnotationControlCreator(false));
 		info.setInformationPresenterControlCreator(new AnnotationControlCreator(true));
 		
-		HashMap sets= new HashMap();
+		HashMap<String, Revision> sets = new HashMap<>();
 		List annotateBlocks= listener.getCvsAnnotateBlocks();
 		for (Iterator blocks= annotateBlocks.iterator(); blocks.hasNext();) {
 			final CVSAnnotateBlock block= (CVSAnnotateBlock) blocks.next();
 			final String revisionString= block.getRevision();
-			Revision revision= (Revision) sets.get(revisionString);
+			Revision revision= sets.get(revisionString);
 			if (revision == null) {
-				final ILogEntry entry= (ILogEntry) logEntriesByRevision.get(revisionString);
+				final ILogEntry entry= logEntriesByRevision.get(revisionString);
 				if (entry == null)
 					continue;
 				

@@ -60,7 +60,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 	}
 	
 	private IResource[] getFilesWithUncachedContents(IResource[] resources, boolean recurse) {
-		ArrayList result = new ArrayList();
+		ArrayList<IResource> result = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			IDiff[] nodes = tree.getDiffs(resource, recurse ? IResource.DEPTH_INFINITE: IResource.DEPTH_ONE);
@@ -71,7 +71,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 				}
 			}
 		}
-		return (IResource[]) result.toArray(new IResource[result.size()]);
+		return result.toArray(new IResource[result.size()]);
 	}
 
 	protected boolean needsContents(IDiff node) {
@@ -133,7 +133,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 	 */
 	@Override
 	protected ICVSResource[] getCVSArguments(Session session, IResource[] resources) {
-        List result = new ArrayList();
+		List<ICVSResource> result = new ArrayList<>();
         for (int i = 0; i < resources.length; i++) {
             IResource resource = resources[i];
             try {
@@ -145,7 +145,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 			}
         }
 
-        return (ICVSResource[]) result.toArray(new ICVSResource[result.size()]);
+        return result.toArray(new ICVSResource[result.size()]);
 	}
 	
 	/* (non-Javadoc)

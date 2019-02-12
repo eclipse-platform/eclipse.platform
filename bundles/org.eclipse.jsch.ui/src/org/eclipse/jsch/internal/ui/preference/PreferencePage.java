@@ -1066,7 +1066,7 @@ protected Control createContents(Composite parent){
   private void populateAuthMethods(){
     preferedAuthMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredAuthMethods().split(","); //$NON-NLS-1$
-    Set smethods  = new HashSet(Arrays.asList(methods));
+		Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
     String[] order = Utils.getMethodsOrder().split(","); //$NON-NLS-1$
 
@@ -1195,7 +1195,7 @@ protected Control createContents(Composite parent){
   private void populateKeyExchangeMethods(){
     preferedKeyExchangeMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredKEXMethods().split(","); //$NON-NLS-1$
-    Set smethods  = new HashSet(Arrays.asList(methods));
+    Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
     String[] order = Utils.getKEXMethodsOrder().split(","); //$NON-NLS-1$
 
@@ -1369,7 +1369,7 @@ protected Control createContents(Composite parent){
   private void populateMACMethods(){
     preferedMACMethodTable.removeAll();
     String[] methods = Utils.getEnabledPreferredMACMethods().split(","); //$NON-NLS-1$
-    Set smethods  = new HashSet(Arrays.asList(methods));
+    Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
     String[] order = Utils.getMACMethodsOrder().split(","); //$NON-NLS-1$
 
@@ -1390,7 +1390,7 @@ protected Control createContents(Composite parent){
   void removeHostKey(){
     IStructuredSelection selection=viewer.getStructuredSelection();
     HostKeyRepository hkr=getJSch().getHostKeyRepository();
-    for(Iterator iterator=selection.iterator(); iterator.hasNext();){
+    for(Iterator<?> iterator=selection.iterator(); iterator.hasNext();){
       HostKey hostkey=(HostKey)iterator.next();
       hkr.remove(hostkey.getHost(), hostkey.getType());
       viewer.remove(hostkey);
