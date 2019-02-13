@@ -208,44 +208,51 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import com.ibm.icu.text.MessageFormat;
 
 /**
- * A text merge viewer uses the <code>RangeDifferencer</code> to perform
- * a textual, line-by-line comparison of two (or three) input documents.
- * It is based on the <code>ContentMergeViewer</code> and uses <code>TextViewer</code>s
- * to implement the ancestor, left, and right content areas.
+ * A text merge viewer uses the <code>RangeDifferencer</code> to perform a
+ * textual, line-by-line comparison of two (or three) input documents. It is
+ * based on the <code>ContentMergeViewer</code> and uses
+ * <code>TextViewer</code>s to implement the ancestor, left, and right content
+ * areas.
  * <p>
- * In the three-way compare case ranges of differing lines are highlighted and framed
- * with different colors to show whether the difference is an incoming, outgoing, or conflicting change.
- * The <code>TextMergeViewer</code> supports the notion of a current "differing range"
- * and provides toolbar buttons to navigate from one range to the next (or previous).
+ * In the three-way compare case ranges of differing lines are highlighted and
+ * framed with different colors to show whether the difference is an incoming,
+ * outgoing, or conflicting change. The <code>TextMergeViewer</code> supports
+ * the notion of a current "differing range" and provides toolbar buttons to
+ * navigate from one range to the next (or previous).
  * <p>
- * If there is a current "differing range" and the underlying document is editable
- * the <code>TextMergeViewer</code> enables actions in context menu and toolbar to
- * copy a range from one side to the other side, thereby performing a merge operation.
+ * If there is a current "differing range" and the underlying document is
+ * editable the <code>TextMergeViewer</code> enables actions in context menu and
+ * toolbar to copy a range from one side to the other side, thereby performing a
+ * merge operation.
  * <p>
  * In addition to a line-by-line comparison the <code>TextMergeViewer</code>
- * uses a token based compare on differing lines.
- * The token compare is activated when navigating into
- * a range of differing lines. At first the lines are selected as a block.
- * When navigating into this block the token compare shows for every line
- * the differing token by selecting them.
+ * uses a token based compare on differing lines. The token compare is activated
+ * when navigating into a range of differing lines. At first the lines are
+ * selected as a block. When navigating into this block the token compare shows
+ * for every line the differing token by selecting them.
  * <p>
- * The <code>TextMergeViewer</code>'s default token compare works on characters separated
- * by whitespace. If a different strategy is needed (for example, Java tokens in
- * a Java-aware merge viewer), clients can create their own token
- * comparators by implementing the <code>ITokenComparator</code> interface and overriding the
- * <code>TextMergeViewer.createTokenComparator</code> factory method).
+ * The <code>TextMergeViewer</code>'s default token compare works on characters
+ * separated by whitespace. If a different strategy is needed (for example, Java
+ * tokens in a Java-aware merge viewer), clients can create their own token
+ * comparators by implementing the <code>ITokenComparator</code> interface and
+ * overriding the <code>TextMergeViewer.createTokenComparator</code> factory
+ * method).
  * <p>
  * Access to the <code>TextMergeViewer</code>'s model is by means of an
- * <code>IMergeViewerContentProvider</code>. Its <code>get<it>X</it></code>Content</code> methods must return
- * either an <code>IDocument</code>, an <code>IDocumentRange</code>, or an <code>IStreamContentAccessor</code>.
- * In the <code>IDocumentRange</code> case the <code>TextMergeViewer</code>
- * works on a subrange of a document. In the <code>IStreamContentAccessor</code> case
+ * <code>IMergeViewerContentProvider</code>. Its <code>getXContent</code>
+ * methods must return either an <code>IDocument</code>, an
+ * <code>IDocumentRange</code>, or an <code>IStreamContentAccessor</code>. In
+ * the <code>IDocumentRange</code> case the <code>TextMergeViewer</code> works
+ * on a subrange of a document. In the <code>IStreamContentAccessor</code> case
  * a document is created internally and initialized from the stream.
  * <p>
- * A <code>TextMergeViewer</code> can be used as is. However clients may subclass
- * to customize the behavior. For example a <code>MergeTextViewer</code> for Java would override
- * the <code>configureTextViewer</code> method to configure the <code>TextViewer</code> for Java source code,
- * the <code>createTokenComparator</code> method to create a Java specific tokenizer.
+ * A <code>TextMergeViewer</code> can be used as is. However clients may
+ * subclass to customize the behavior. For example a
+ * <code>MergeTextViewer</code> for Java would override the
+ * <code>configureTextViewer</code> method to configure the
+ * <code>TextViewer</code> for Java source code, the
+ * <code>createTokenComparator</code> method to create a Java specific
+ * tokenizer.
  * <p>
  * In 3.5 a new API has been introduced to let clients provide their own source
  * viewers implementation with an option to configure them basing on a

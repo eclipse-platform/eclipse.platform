@@ -1159,13 +1159,13 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * Saves any unsaved changes.
-	 * Subclasses must override to save any changes.
-	 * This implementation tries to flush changes in all viewers by
-	 * calling <code>ISavable.save</code> on them.
+	 * Saves any unsaved changes. Subclasses must override to save any changes. This
+	 * implementation tries to flush changes in all viewers by calling
+	 * <code>ISavable.save</code> on them.
 	 *
-	 * @param monitor an <code>IProgressMonitor</code> that the implementation of save may use to show progress
-	 * @throws CoreException
+	 * @param monitor an <code>IProgressMonitor</code> that the implementation of
+	 *                save may use to show progress
+	 * @throws CoreException If save fails.
 	 * @since 2.0
 	 */
 	public void saveChanges(IProgressMonitor monitor) throws CoreException {
@@ -1188,7 +1188,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * @param monitor
+	 * @param monitor a progress monitor
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
 	protected void flushLeftViewers(IProgressMonitor monitor) {
@@ -1200,7 +1200,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * @param monitor
+	 * @param monitor a progress monitor
 	 * @noreference This method is not intended to be referenced by clients.
 	 */
 	protected void flushRightViewers(IProgressMonitor monitor) {

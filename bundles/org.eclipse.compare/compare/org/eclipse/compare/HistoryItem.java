@@ -29,7 +29,6 @@ import org.eclipse.swt.graphics.Image;
  * an input to a compare viewer or other places where an <code>IStreamContentAccessor</code>
  * is needed.
  * <p>
- * <p>
  * Clients may instantiate this class; it is not intended to be subclassed.
  * </p>
  * @noextend This class is not intended to be subclassed by clients.

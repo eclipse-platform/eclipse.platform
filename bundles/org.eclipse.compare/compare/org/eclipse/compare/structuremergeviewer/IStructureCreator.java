@@ -20,6 +20,7 @@ package org.eclipse.compare.structuremergeviewer;
  * and to map a node of this structure back to the corresponding input object.
  * <p>
  * Structure creators are used in the following contexts:
+ * </p>
  * <ul>
  * <li>
  * the <code>StructureDiffViewer</code> uses an <code>IStructureCreator</code> to
@@ -32,6 +33,7 @@ package org.eclipse.compare.structuremergeviewer;
  * to map a path back to a range of characters in the textual representation.
  * </li>
  * </ul>
+ * <p>
  * A <code>IStructureCreator</code> provides methods for rewriting the tree produced by the differencing
  * engine to support "smart" structural differencing. E.g. certain patterns of pairs of "addition"
  * and "deletion" nodes can be detected as renames and merged into a single node.
