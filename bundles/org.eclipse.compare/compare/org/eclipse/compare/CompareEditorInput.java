@@ -615,8 +615,9 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 	}
 
 	/**
-	 * @param parent the parent control under which the control must be created
-	 * @param direction the layout direction of the contents, either </code>SWT.HORIZONTAL<code> or </code>SWT.VERTICAL<code>
+	 * @param parent    the parent control under which the control must be created
+	 * @param direction the layout direction of the contents, either
+	 *                  <code>SWT.HORIZONTAL<code> or <code>SWT.VERTICAL<code>
 	 * @return the SWT control hierarchy for the outline part of the compare editor
 	 * @since 3.0
 	 */
