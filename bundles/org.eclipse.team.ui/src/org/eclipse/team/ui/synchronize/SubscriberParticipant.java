@@ -59,13 +59,13 @@ import org.eclipse.ui.progress.IProgressConstants2;
  * The subscriber can be configured to be synchronized in the background based on a schedule. This
  * effectively refreshes the subscriber and updates the dynamic sync set.
  * </p><p>
- * Subclasses will typically want to override the following methods:
+ * Subclasses will typically want to override the following methods:</p>
  * <ul>
  * <li>initializeConfiguration: participants can add toolbar actions, configure the context menu, decorator.
  * <li>saveState and init: persist settings between sessions.
  * </ul>
  * This class is intended to be subclassed.
- * </p>
+ * <br><br>
  * @since 3.0
  */
 public abstract class SubscriberParticipant extends AbstractSynchronizeParticipant implements IPropertyChangeListener {

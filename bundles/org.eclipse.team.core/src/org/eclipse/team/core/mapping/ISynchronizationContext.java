@@ -42,17 +42,17 @@ import org.eclipse.team.core.mapping.provider.SynchronizationContext;
  * both sources in order to guarantee that they update any dependent state
  * appropriately.
  * <p>
- * <a name="async">The diff tree associated with this context may be updated
- * asynchronously in response to calls to any method of this context (e.g.
- * refresh methods) that may result in changes in the synchronization state of
- * resources. It may also get updated as a result of changes triggered from
- * other sources. Hence, the callback from the diff tree to report changes may
- * occur in the same thread as the method call or asynchronously in a separate
- * thread, regardless of who triggered the refresh. Clients of this method (and
- * any other asynchronous method on this context) may determine if all changes
- * have been collected using {@link IJobManager#find(Object)} using this context
- * as the <code>family</code> argument in order to determine if there are any
- * jobs running that are populating the diff tree. Clients may also call
+ * The diff tree associated with this context may be updated asynchronously in
+ * response to calls to any method of this context (e.g. refresh methods) that
+ * may result in changes in the synchronization state of resources. It may also
+ * get updated as a result of changes triggered from other sources. Hence, the
+ * callback from the diff tree to report changes may occur in the same thread as
+ * the method call or asynchronously in a separate thread, regardless of who
+ * triggered the refresh. Clients of this method (and any other asynchronous
+ * method on this context) may determine if all changes have been collected
+ * using {@link IJobManager#find(Object)} using this context as the
+ * <code>family</code> argument in order to determine if there are any jobs
+ * running that are populating the diff tree. Clients may also call
  * {@link IJobManager#join(Object, IProgressMonitor)} if they wish to wait until
  * all background handlers related to this context are finished.
  * </p>

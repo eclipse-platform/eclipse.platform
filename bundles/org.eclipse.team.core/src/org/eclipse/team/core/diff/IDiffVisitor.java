@@ -17,6 +17,8 @@ package org.eclipse.team.core.diff;
  * An objects that visits diffs in a diff tree.
  * <p>
  * Usage:
+ * </p>
+ * 
  * <pre>
  * class Visitor implements IDiffVisitor {
  *     public boolean visit(IDiffNode diff) {
@@ -37,10 +39,10 @@ package org.eclipse.team.core.diff;
  * IDiffTree tree = ...;
  * tree.accept(new Visitor());
  * </pre>
- * </p>
  * <p>
  * Clients may implement this interface.
  * </p>
+ * 
  * @see IDiffTree#accept(org.eclipse.core.runtime.IPath, IDiffVisitor, int)
  *
  * @since 3.2

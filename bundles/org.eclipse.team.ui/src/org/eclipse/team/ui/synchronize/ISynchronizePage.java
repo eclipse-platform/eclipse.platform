@@ -53,7 +53,7 @@ public interface ISynchronizePage {
 	 * @param configuration the synchronize page configuration
 	 * @param key the property key
 	 * @param newValue
-	 * @return <code>true<code> if the property change should continue to be
+	 * @return <code>true</code> if the property change should continue to be
 	 * fired to other listeners or <code>false</code> to veto the property change
 	 * notification.
 	 */

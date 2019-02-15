@@ -43,6 +43,7 @@ import org.eclipse.ui.actions.ActionGroup;
  * configuration has been created by the page but before the page is created.
  * <p>
  * The life cycle of an action group is:
+ * </p>
  * <ul>
  * <li>the <code>initialize(ISynchronizePageConfiguration}</code> method is
  * invoked before the methods to populate menus. This is done to give clients
@@ -67,7 +68,6 @@ import org.eclipse.ui.actions.ActionGroup;
  * a chance to adjust the input to actions that operate on all visible elements.
  * <li>The <code>dispose()</code> method is called when the page is disposed.
  * </ul>
- * </p>
  * @since 3.0
  */
 public abstract class SynchronizePageActionGroup extends ActionGroup {

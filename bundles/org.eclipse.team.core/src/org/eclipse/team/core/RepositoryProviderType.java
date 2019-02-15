@@ -31,20 +31,21 @@ import org.eclipse.team.internal.core.DefaultProjectSetCapability;
 import org.eclipse.team.internal.core.TeamPlugin;
 
 /**
- * This class represents things you can ask/do with a type of provider. This
- * is in the absence of a project, as opposed to RepositoryProvider which
- * requires a concrete project in order to be instantiated.
+ * This class represents things you can ask/do with a type of provider. This is
+ * in the absence of a project, as opposed to RepositoryProvider which requires
+ * a concrete project in order to be instantiated.
  * <p>
- * A repository provider type class is associated with it's provider ID along with it's
- * corresponding repository provider class. To add a
- * repository provider type and have it registered with the platform, a client
- * must minimally:
+ * A repository provider type class is associated with it's provider ID along
+ * with it's corresponding repository provider class. To add a repository
+ * provider type and have it registered with the platform, a client must
+ * minimally:
+ * </p>
  * <ol>
- * 	<li>extend <code>RepositoryProviderType</code>
- * 	<li>add the typeClass field to the repository extension in <code>plugin.xml</code>.
- *     Here is an example extension point definition:
+ * <li>extend <code>RepositoryProviderType</code>
+ * <li>add the typeClass field to the repository extension in
+ * <code>plugin.xml</code>. Here is an example extension point definition:
  *
- *  <code>
+ * <code>
  *	<br>&lt;extension point="org.eclipse.team.core.repository"&gt;
  *  <br>&nbsp;&lt;repository
  *  <br>&nbsp;&nbsp;class="org.eclipse.myprovider.MyRepositoryProvider"
@@ -53,11 +54,12 @@ import org.eclipse.team.internal.core.TeamPlugin;
  *  <br>&nbsp;&lt;/repository&gt;
  *	<br>&lt;/extension&gt;
  *  </code>
- * </ol></p>
+ * </ol>
  *
  * <p>
- * Once a repository provider type is registered with Team, then you
- * can access the singleton instance of the class by invoking <code>RepositoryProviderType.getProviderType()</code>.
+ * Once a repository provider type is registered with Team, then you can access
+ * the singleton instance of the class by invoking
+ * <code>RepositoryProviderType.getProviderType()</code>.
  * </p>
  *
  * @see RepositoryProviderType#getProviderType(String)

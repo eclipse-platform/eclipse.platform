@@ -24,44 +24,46 @@ import org.eclipse.team.core.variants.IResourceVariantComparator;
 import org.eclipse.team.internal.core.Messages;
 
 /**
- * Describes the synchronization of a <b>local</b> resource
- * relative to a <b>remote</b> resource variant. There are two
- * types of comparison: two-way and three-way.
- * The {@link IResourceVariantComparator} is used to decide which
+ * Describes the synchronization of a <b>local</b> resource relative to a
+ * <b>remote</b> resource variant. There are two types of comparison: two-way
+ * and three-way. The {@link IResourceVariantComparator} is used to decide which
  * comparison type to use.
- * </p>
  * <p>
- * For two-way comparisons, a <code>SyncInfo</code> node has a change
- * type. This will be one of <code>IN-SYNC</code>, <code>ADDITION</code>,
- * <code>DELETION</code> or <code>CHANGE</code> determined in the following manner.
+ * For two-way comparisons, a <code>SyncInfo</code> node has a change type. This
+ * will be one of <code>IN-SYNC</code>, <code>ADDITION</code>,
+ * <code>DELETION</code> or <code>CHANGE</code> determined in the following
+ * manner.
+ * </p>
  * <ul>
- * <li>A resource is considered an <code>ADDITION</code> if it exists locally and there is no remote.
- * <li>A resource is considered an <code>DELETION</code> if it does not exists locally and there is remote.
- * <li>A resource is considered a <code>CHANGE</code> if both the local and remote exist but the
- * comparator indicates that they differ. The comparator may be comparing contents or
- * timestamps or some other resource state.
+ * <li>A resource is considered an <code>ADDITION</code> if it exists locally
+ * and there is no remote.
+ * <li>A resource is considered an <code>DELETION</code> if it does not exists
+ * locally and there is remote.
+ * <li>A resource is considered a <code>CHANGE</code> if both the local and
+ * remote exist but the comparator indicates that they differ. The comparator
+ * may be comparing contents or timestamps or some other resource state.
  * <li>A resource is considered <code>IN_SYNC</code> in all other cases.
  * </ul>
- * </p><p>
- * For three-way comparisons, the sync info node has a direction as well as a change
- * type. The direction is one of <code>INCOMING</code>, <code>OUTGOING</code> or <code>CONFLICTING</code>. The comparison
- * of the local and remote resources with a <b>base</b> resource is used to determine
+ * <p>
+ * For three-way comparisons, the sync info node has a direction as well as a
+ * change type. The direction is one of <code>INCOMING</code>,
+ * <code>OUTGOING</code> or <code>CONFLICTING</code>. The comparison of the
+ * local and remote resources with a <b>base</b> resource is used to determine
  * the direction of the change.
- * <ul>
- * <li>Differences between the base and local resources
- * are classified as <b>outgoing changes</b>; if there is
- * a difference, the local resource is considered the
- * <b>outgoing resource</b>.
- * <li>Differences between the base and remote resources
- * are classified as <b>incoming changes</b>; if there is
- * a difference, the remote resource is considered the
- * <b>incoming resource</b>.
- * <li>If there are both incoming and outgoing changes, the resource
- * is considered a <b>conflicting change</b>.
- * </ul>
- * Again, the comparison of resources is done using the variant comparator provided
- * when the sync info was created.
  * </p>
+ * <ul>
+ * <li>Differences between the base and local resources are classified as
+ * <b>outgoing changes</b>; if there is a difference, the local resource is
+ * considered the <b>outgoing resource</b>.
+ * <li>Differences between the base and remote resources are classified as
+ * <b>incoming changes</b>; if there is a difference, the remote resource is
+ * considered the <b>incoming resource</b>.
+ * <li>If there are both incoming and outgoing changes, the resource is
+ * considered a <b>conflicting change</b>.
+ * </ul>
+ * Again, the comparison of resources is done using the variant comparator
+ * provided when the sync info was created.
+ *
  * @since 3.0
  */
 public class SyncInfo implements IAdaptable {

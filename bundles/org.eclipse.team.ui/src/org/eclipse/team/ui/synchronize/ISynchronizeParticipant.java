@@ -46,7 +46,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  * enabled <code>synchronizeWizards</code> it will also appear in the global synchronize action
  * toolbar.
  * <p>
- * A participant is added to the workbench as follows:
+ * A participant is added to the workbench as follows:</p>
  * <ul>
  * <li>A <code>synchronizeParticipant</code> extension is contributed to
  * the team registry. This extension defines the participant id, name, icon, type, and
@@ -56,7 +56,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  * synchronize manager. It then appears in the synchronize view.
  * <li>A synchronization can be persistent and thus re-initialized at startup.
  * <li>A pinned participant will only be removed from the synchronize manager if it is un-pinned.
- * </ul></p>
+ * </ul>
  * <p>
  * Once a participant is added to the synchronize manager its lifecycle will be managed. On shutdown if
  * the participant is persistable, the participant will be asked to persist state via

@@ -25,15 +25,13 @@ import org.eclipse.core.resources.IStorage;
  * point or via this interface.
  *
  * For methods that determine the content type for a given file, the following
- * rules apply: <li>
+ * rules apply:
  * <ul>
- * Mappings for the entire file name take precedence over mappings for the file
- * extension only.
- * </ul>
- * <ul>
- * User-defined mappings take precedence over plugin-contributed mappings
- * </ul>
+ * <li>Mappings for the entire file name take precedence over mappings for the
+ * file extension only.</li>
+ * <li>User-defined mappings take precedence over plugin-contributed mappings
  * </li>
+ * </ul>
  *
  * If a mapping is added for a name or an extension that already has a mapping
  * which has been contributed by a plugin, it overrides the one contributed by

@@ -61,14 +61,15 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * project that is associated with a repository provider. The lifecycle of these
  * instances is is similar to that of the platform's 'nature' mechanism.
  * <p>
- * To create a repository provider and have it registered with the platform, a client
- * must minimally:
+ * To create a repository provider and have it registered with the platform, a
+ * client must minimally:
+ * </p>
  * <ol>
- * 	<li>extend <code>RepositoryProvider</code>
- * 	<li>define a repository extension in <code>plugin.xml</code>.
- *     Here is an example extension point definition:
+ * <li>extend <code>RepositoryProvider</code>
+ * <li>define a repository extension in <code>plugin.xml</code>. Here is an
+ * example extension point definition:
  *
- *  <code>
+ * <code>
  *	<br>&lt;extension point="org.eclipse.team.core.repository"&gt;
  *  <br>&nbsp;&lt;repository
  *  <br>&nbsp;&nbsp;class="org.eclipse.myprovider.MyRepositoryProvider"
@@ -76,11 +77,13 @@ import org.eclipse.team.internal.core.TeamPlugin;
  *  <br>&nbsp;&lt;/repository&gt;
  *	<br>&lt;/extension&gt;
  *  </code>
- * </ol></p>
+ * </ol>
  * <p>
- * Once a repository provider is registered with Team, then you
- * can associate a repository provider with a project by invoking <code>RepositoryProvider.map()</code>.
+ * Once a repository provider is registered with Team, then you can associate a
+ * repository provider with a project by invoking
+ * <code>RepositoryProvider.map()</code>.
  * </p>
+ * 
  * @see RepositoryProvider#map(IProject, String)
  *
  * @since 2.0
