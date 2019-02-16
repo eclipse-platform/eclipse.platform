@@ -162,12 +162,13 @@ public interface IHistoryPage {
 	 * registered.
 	 * <p>
 	 * The changes supported by the page are as follows:
+	 * </p>
 	 * <ul>
 	 * <li><code>P_NAME</code>- indicates the name
 	 * of the page has changed</li>
 	 * <li><code>P_DESCRIPTION</code>- indicates the
 	 * description of the page has changed</li>
-	 * </ul></p>
+	 * </ul>
 	 * <p>
 	 * Clients may define additional properties as required.
 	 * </p>

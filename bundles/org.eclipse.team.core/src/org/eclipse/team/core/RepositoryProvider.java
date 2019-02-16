@@ -520,7 +520,6 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * the project or if the project is closed or does not exist. This method should be called if the caller
 	 * is looking for <b>any</b> repository provider. Otherwise call <code>getProvider(project, id)</code>
 	 * to look for a specific repository provider type.
-	 * </p>
 	 * @param project the project to query for a provider
 	 * @return the repository provider associated with the project
 	 */

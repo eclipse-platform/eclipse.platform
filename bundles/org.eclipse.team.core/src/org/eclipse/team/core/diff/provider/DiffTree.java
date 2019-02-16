@@ -190,22 +190,26 @@ public class DiffTree implements IDiffTree {
 
 	/**
 	 * This method is used to obtain a lock on the set which ensures thread safety
-	 * and batches change notification. If the set is locked by another thread,
-	 * the calling thread will block until the lock
-	 * becomes available. This method uses an <code>org.eclipse.core.runtime.jobs.ILock</code>.
+	 * and batches change notification. If the set is locked by another thread, the
+	 * calling thread will block until the lock becomes available. This method uses
+	 * an <code>org.eclipse.core.runtime.jobs.ILock</code>.
 	 * <p>
-	 * It is important that the lock is released after it is obtained. Calls to <code>endInput</code>
-	 * should be done in a finally block as illustrated in the following code snippet.
+	 * It is important that the lock is released after it is obtained. Calls to
+	 * <code>endInput</code> should be done in a finally block as illustrated in the
+	 * following code snippet.
+	 * </p>
+	 * 
 	 * <pre>
-	 *   try {
-	 *       set.beginInput();
-	 *       // do stuff
-	 *   } finally {
-	 *      set.endInput(progress);
-	 *   }
+	 * try {
+	 * 	set.beginInput();
+	 * 	// do stuff
+	 * } finally {
+	 * 	set.endInput(progress);
+	 * }
 	 * </pre>
-	 * </p><p>
-	 * Calls to <code>beginInput</code> and <code>endInput</code> can be nested and must be matched.
+	 * <p>
+	 * Calls to <code>beginInput</code> and <code>endInput</code> can be nested and
+	 * must be matched.
 	 * </p>
 	 */
 	public void beginInput() {
@@ -428,7 +432,6 @@ public class DiffTree implements IDiffTree {
 	 * Report to any listeners that an error has occurred while populating the
 	 * set. Listeners will be notified that an error occurred and can react
 	 * accordingly.
-	 * </p>
 	 *
 	 * @param status
 	 *            the status that describes the error that occurred.

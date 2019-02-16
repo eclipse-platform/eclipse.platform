@@ -274,7 +274,6 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 *		}
 	 * </pre>
 	 * where <code>PARTICIPANT_ID</code> is the id of the participant as defined in the plugin manifest.
-	 * </p>
 	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(String, org.eclipse.ui.IMemento)
 	 */
 	@Override

@@ -191,7 +191,7 @@ public interface ISynchronizeParticipant extends IExecutableExtension, IAdaptabl
 	 * resources associated with a participant. When a participant is added
 	 * to the {@link ISynchronizeManager} this method is called when the
 	 * manager is shutdown or the participant is removed from the manager.
-	 * </p><p>
+	 * <p>
 	 * Within this method a participant may release any resources, fonts, images, etc.
 	 * held by this part.  It is also very important to remove all listeners.
 	 * </p><p>
@@ -218,12 +218,13 @@ public interface ISynchronizeParticipant extends IExecutableExtension, IAdaptabl
 	 * registered.
 	 * <p>
 	 * The changes supported by the synchronize view are as follows:
+	 * </p>
 	 * <ul>
 	 * <li><code>IBasicPropertyConstants.P_TEXT</code>- indicates the name
 	 * of a synchronize participant has changed</li>
 	 * <li><code>IBasicPropertyConstants.P_IMAGE</code>- indicates the
 	 * image of a synchronize participant has changed</li>
-	 * </ul></p>
+	 * </ul>
 	 * <p>
 	 * Clients may define additional properties as required.
 	 * </p>

@@ -84,21 +84,23 @@ public class SyncInfoTree extends SyncInfoSet {
 	}
 
 	/**
-	 * Return the <code>SyncInfo</code> for each out-of-sync resource in the subtree rooted at the given resource
-	 * to the depth specified. The depth is one of:
+	 * Return the <code>SyncInfo</code> for each out-of-sync resource in the subtree
+	 * rooted at the given resource to the depth specified. The depth is one of:
 	 * <ul>
 	 * <li><code>IResource.DEPTH_ZERO</code>: the resource only,
 	 * <li><code>IResource.DEPTH_ONE</code>: the resource or its direct children,
-	 * <li><code>IResource.DEPTH_INFINITE</code>: the resource and all of it's descendants.
-	 * <ul>
+	 * <li><code>IResource.DEPTH_INFINITE</code>: the resource and all of it's
+	 * descendants.
+	 * </ul>
 	 * If the given resource is out of sync, it will be included in the result.
 	 * <p>
 	 * The default implementation makes use of <code>getSyncInfo(IResource)</code>,
-	 * <code>members(IResource)</code> and <code>getSyncInfos()</code>
-	 * to provide the varying depths. Subclasses may override to optimize.
+	 * <code>members(IResource)</code> and <code>getSyncInfos()</code> to provide
+	 * the varying depths. Subclasses may override to optimize.
 	 * </p>
+	 *
 	 * @param resource the root of the resource subtree
-	 * @param depth the depth of the subtree
+	 * @param depth    the depth of the subtree
 	 * @return the <code>SyncInfo</code> for any out-of-sync resources
 	 */
 	public synchronized SyncInfo[] getSyncInfos(IResource resource, int depth) {
@@ -261,15 +263,17 @@ public class SyncInfoTree extends SyncInfoSet {
 	}
 
 	/**
-	 * Remove from this set the <code>SyncInfo</code> for the given resource and any of its descendants
-	 * within the specified depth. The depth is one of:
+	 * Remove from this set the <code>SyncInfo</code> for the given resource and any
+	 * of its descendants within the specified depth. The depth is one of:
 	 * <ul>
 	 * <li><code>IResource.DEPTH_ZERO</code>: the resource only,
 	 * <li><code>IResource.DEPTH_ONE</code>: the resource or its direct children,
-	 * <li><code>IResource.DEPTH_INFINITE</code>: the resource and all of it's descendants.
-	 * <ul>
+	 * <li><code>IResource.DEPTH_INFINITE</code>: the resource and all of it's
+	 * descendants.
+	 * </ul>
+	 * 
 	 * @param resource the root of the resource subtree
-	 * @param depth the depth of the subtree
+	 * @param depth    the depth of the subtree
 	 */
 	public void remove(IResource resource, int depth) {
 		try {

@@ -133,13 +133,16 @@ public class SyncInfoSet {
 
 	/**
 	 * Return the number of out-of-sync resources in the given set whose sync kind
-	 * matches the given kind and mask (e.g. <code>(SyncInfo#getKind() & mask) == kind</code>).
+	 * matches the given kind and mask (e.g.
+	 * <code>(SyncInfo#getKind() & mask) == kind</code>).
 	 * <p>
 	 * For example, this will return the number of outgoing changes in the set:
-	 * <pre>
-	 *  long outgoing =  countFor(SyncInfo.OUTGOING, SyncInfo.DIRECTION_MASK);
-	 * </pre>
 	 * </p>
+	 *
+	 * <pre>
+	 * long outgoing = countFor(SyncInfo.OUTGOING, SyncInfo.DIRECTION_MASK);
+	 * </pre>
+	 *
 	 * @param kind the sync kind
 	 * @param mask the sync kind mask
 	 * @return the number of matching resources in the set.
@@ -502,22 +505,26 @@ public class SyncInfoSet {
 
 	/**
 	 * This method is used to obtain a lock on the set which ensures thread safety
-	 * and batches change notification. If the set is locked by another thread,
-	 * the calling thread will block until the lock
-	 * becomes available. This method uses an <code>org.eclipse.core.runtime.jobs.ILock</code>.
+	 * and batches change notification. If the set is locked by another thread, the
+	 * calling thread will block until the lock becomes available. This method uses
+	 * an <code>org.eclipse.core.runtime.jobs.ILock</code>.
 	 * <p>
-	 * It is important that the lock is released after it is obtained. Calls to <code>endInput</code>
-	 * should be done in a finally block as illustrated in the following code snippet.
+	 * It is important that the lock is released after it is obtained. Calls to
+	 * <code>endInput</code> should be done in a finally block as illustrated in the
+	 * following code snippet.
+	 * </p>
+	 * 
 	 * <pre>
-	 *   try {
-	 *       set.beginInput();
-	 *       // do stuff
-	 *   } finally {
-	 *      set.endInput(progress);
-	 *   }
+	 * try {
+	 * 	set.beginInput();
+	 * 	// do stuff
+	 * } finally {
+	 * 	set.endInput(progress);
+	 * }
 	 * </pre>
-	 * </p><p>
-	 * Calls to <code>beginInput</code> and <code>endInput</code> can be nested and must be matched.
+	 * <p>
+	 * Calls to <code>beginInput</code> and <code>endInput</code> can be nested and
+	 * must be matched.
 	 * </p>
 	 */
 	public void beginInput() {

@@ -78,43 +78,45 @@ public interface ITwoWayDiff extends IDiff {
 	/**
 	 * Returns flags which describe in more detail how a object has been affected.
 	 * <p>
-	 * The following codes (bit masks) are used when kind is <code>CHANGE</code>, and
-	 * also when the object is involved in a move:
+	 * The following codes (bit masks) are used when kind is <code>CHANGE</code>,
+	 * and also when the object is involved in a move:
+	 * </p>
 	 * <ul>
-	 * <li><code>CONTENT</code> - The bytes contained by the resource have
-	 * 		been altered.</li>
-	 * <li><code>REPLACE</code> - The object
-	 *  was deleted (either by a delete or move), and was subsequently re-created
-	 *  (either by a create, move, or copy).</li>
+	 * <li><code>CONTENT</code> - The bytes contained by the resource have been
+	 * altered.</li>
+	 * <li><code>REPLACE</code> - The object was deleted (either by a delete or
+	 * move), and was subsequently re-created (either by a create, move, or
+	 * copy).</li>
 	 * </ul>
-	 * The following code is only used if kind is <code>REMOVE</code>
-	 * (or <code>CHANGE</code> in conjunction with <code>REPLACE</code>):
+	 * The following code is only used if kind is <code>REMOVE</code> (or
+	 * <code>CHANGE</code> in conjunction with <code>REPLACE</code>):
 	 * <ul>
-	 * <li><code>MOVE_TO</code> - The object has moved.
-	 * 	<code>getToPath</code> will return the path of where it was moved to.</li>
+	 * <li><code>MOVE_TO</code> - The object has moved. <code>getToPath</code> will
+	 * return the path of where it was moved to.</li>
 	 * </ul>
-	 * The following code is only used if kind is <code>ADD</code>
-	 * (or <code>CHANGE</code> in conjunction with <code>REPLACE</code>):
+	 * The following code is only used if kind is <code>ADD</code> (or
+	 * <code>CHANGE</code> in conjunction with <code>REPLACE</code>):
 	 * <ul>
-	 * <li><code>MOVE_FROM</code> - The object has moved.
-	 * 	<code>getFromPath</code> will return the path of where it was moved from.</li>
-	 * <li><code>COPY_FROM</code> - The object has copied.
-	 * 	<code>getFromPath</code> will return the path of where it was copied from.</li>
+	 * <li><code>MOVE_FROM</code> - The object has moved. <code>getFromPath</code>
+	 * will return the path of where it was moved from.</li>
+	 * <li><code>COPY_FROM</code> - The object has copied. <code>getFromPath</code>
+	 * will return the path of where it was copied from.</li>
 	 * </ul>
-	 * A simple move operation would result in the following diff information.
-	 * If a object is moved from A to B (with no other changes to A or B),
-	 * then A will have kind <code>REMOVE</code>, with flag <code>MOVE_TO</code>,
-	 * and <code>getToPath</code> on A will return the path for B.
-	 * B will have kind <code>ADD</code>, with flag <code>MOVE_FROM</code>,
-	 * and <code>getFromPath</code> on B will return the path for A.
-	 * B's other flags will describe any other changes to the resource, as compared
-	 * to its previous location at A.
+	 * <p>
+	 * A simple move operation would result in the following diff information. If a
+	 * object is moved from A to B (with no other changes to A or B), then A will
+	 * have kind <code>REMOVE</code>, with flag <code>MOVE_TO</code>, and
+	 * <code>getToPath</code> on A will return the path for B. B will have kind
+	 * <code>ADD</code>, with flag <code>MOVE_FROM</code>, and
+	 * <code>getFromPath</code> on B will return the path for A. B's other flags
+	 * will describe any other changes to the resource, as compared to its previous
+	 * location at A.
 	 * </p>
 	 * <p>
 	 * Note that the move flags only describe the changes to a single object; they
 	 * don't necessarily imply anything about the parent or children of the object.
-	 * If the children were moved as a consequence of a subtree move operation,
-	 * they will have corresponding move flags as well.
+	 * If the children were moved as a consequence of a subtree move operation, they
+	 * will have corresponding move flags as well.
 	 * </p>
 	 *
 	 * @return the flags
