@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -41,6 +41,11 @@ public class DateTagDialog extends TrayDialog {
 	public class DateArea extends DialogArea {
 		private DateTime date;
 
+		/**
+		 * This is the minimum year that is accepted by {@link DateTime#setYear}.
+		 */
+		private static final int DateTime_MIN_YEAR = 1752;
+
 		public void createArea(Composite parent) {
 			Composite composite = createComposite(parent, 2, false);
 			initializeDialogUnits(composite);
@@ -60,8 +65,16 @@ public class DateTagDialog extends TrayDialog {
 		}
 		
 		public void adjustCalendar(Calendar calendar) {
+			int dateYear = date.getYear();
+			int todaysYear = calendar.get(Calendar.YEAR);
+			if (todaysYear < DateTime_MIN_YEAR) {
+				// year would be ignored by DateTime if it is less than MIN_YEAR
+				// The code below is to specify the correct year as per the calendar chosen
+				int extended_year = calendar.get(Calendar.EXTENDED_YEAR);
+				dateYear = todaysYear + (dateYear - extended_year);
+			}
 			calendar.set(
-					date.getYear(),
+					dateYear,
 					date.getMonth(),
 					date.getDay(),
 					0,0,0);
