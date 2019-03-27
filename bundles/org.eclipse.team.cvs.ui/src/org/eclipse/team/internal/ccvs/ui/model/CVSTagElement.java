@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -31,6 +31,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.FetchMembersOperation.Remote
 import org.eclipse.ui.progress.IDeferredWorkbenchAdapter;
 import org.eclipse.ui.progress.IElementCollector;
 
+import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.TimeZone;
 
@@ -43,15 +44,34 @@ public class CVSTagElement extends CVSModelElement implements IDeferredWorkbench
 	private static final String TIME_ONLY_COLUMN_FORMAT = "HH:mm:ss"; //$NON-NLS-1$
 	private static SimpleDateFormat localLongFormat = new SimpleDateFormat(REPO_VIEW_LONG_FORAMT,Locale.getDefault());
 	private static SimpleDateFormat localShortFormat = new SimpleDateFormat(REPO_VIEW_SHORT_FORMAT,Locale.getDefault());
+	private static DateFormat localLongDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM);
+	private static DateFormat localShortDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+	private static DateFormat localYearDateFormat = DateFormat.getInstanceForSkeleton(DateFormat.YEAR);
 	private static SimpleDateFormat timeColumnFormat = new SimpleDateFormat(TIME_ONLY_COLUMN_FORMAT, Locale.getDefault());
 
 	static synchronized public String toDisplayString(Date date){
+		String year = localYearDateFormat.format(date);
+		boolean permitSimpleDateFormat = true;
+		try {
+			Integer.parseInt(year);			
+		} catch (NumberFormatException e) {
+			// This can happen if the Year is not a number but also includes an Era eg: JapaneseCalendar
+			permitSimpleDateFormat = false;
+		}
+		DateFormat selectedFormat = localLongFormat;
+		if (!permitSimpleDateFormat) {
+			selectedFormat = localLongDateFormat;
+		}
 		String localTime = timeColumnFormat.format(date);
 		timeColumnFormat.setTimeZone(TimeZone.getDefault());
 		if(localTime.equals("00:00:00")){ //$NON-NLS-1$
-			return localShortFormat.format(date);
+			if (permitSimpleDateFormat) {
+				selectedFormat = localShortFormat;
+			} else {
+				selectedFormat = localShortDateFormat;
+			}
 		}
-		return localLongFormat.format(date);
+		return selectedFormat.format(date);
 	}
 	
 	public CVSTagElement(CVSTag tag, ICVSRepositoryLocation root) {
