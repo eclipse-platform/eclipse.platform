@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -335,8 +336,20 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @return the image
 	 */
 	public static ImageDescriptor getImageDescriptorFromExtension(IExtension extension, String subdirectoryAndFilename) {
-		URL fullPathString = FileLocator.find(Platform.getBundle(extension.getContributor().getName()), new Path(subdirectoryAndFilename), null);
-		return ImageDescriptor.createFromURL(fullPathString);
+		URL iconURL = FileLocator.find(Platform.getBundle(extension.getContributor().getName()), new Path(subdirectoryAndFilename), null);
+		if (iconURL != null) {
+			return ImageDescriptor.createFromURL(iconURL);
+		}
+		// try to search as a URL in case it is absolute path
+		try {
+			iconURL = FileLocator.find(new URL(subdirectoryAndFilename));
+			if (iconURL != null) {
+				return ImageDescriptor.createFromURL(iconURL);
+			}
+		} catch (MalformedURLException e) {
+			//ignore
+		}
+		return null;
 	}
 
 	public static final String FILE_DIRTY_OVR = "ovr/dirty_ov.png"; //$NON-NLS-1$
