@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2018 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -37,16 +37,19 @@ public class ResponsiveSocketFactory implements SocketFactory {
     this.monitor = monitor;
     this.timeout=timeout;
   }
+  @Override
   public InputStream getInputStream(Socket socket) throws IOException {
     if (in == null)
       in = socket.getInputStream();
     return in;
   }
+  @Override
   public OutputStream getOutputStream(Socket socket) throws IOException {
     if (out == null)
       out = socket.getOutputStream();
     return out;
   }
+  @Override
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
     Socket socket = null;
     socket = createSocket(host, port, timeout / 1000, monitor);

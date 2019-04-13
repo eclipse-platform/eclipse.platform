@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2013 IBM Corporation and others.
+ * Copyright (c) 2007, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,6 +25,7 @@ public class PreferenceModifyListener extends
     // Nothing to do
   }
   
+  @Override
   public IEclipsePreferences preApply(IEclipsePreferences node){
     // the node does not need to be the root of the hierarchy
     Preferences root=node.node("/"); //$NON-NLS-1$

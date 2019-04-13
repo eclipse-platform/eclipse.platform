@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -49,14 +49,17 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     this.timeout=timeout;
   }
 
+  @Override
   public String getPassword(){
     return password;
   }
 
+  @Override
   public String getPassphrase(){
     return passphrase;
   }
 
+  @Override
   public boolean promptYesNo(String str){
     int prompt=authenticator.prompt(location, IUserAuthenticator.QUESTION,
         Messages.JSchSession_5, str, new int[] {IUserAuthenticator.YES_ID,
@@ -69,18 +72,22 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     final String[] _password=new String[1];
     final String username=location.getUsername();
     IUserInfo info=new IUserInfo(){
+      @Override
       public String getUsername(){
         return username;
       }
 
+      @Override
       public boolean isUsernameMutable(){
         return false;
       }
 
+      @Override
       public void setPassword(String password){
         _password[0]=password;
       }
 
+      @Override
       public void setUsername(String username){
         //
       }
@@ -95,6 +102,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     return _password[0];
   }
 
+  @Override
   public boolean promptPassphrase(String message){
     try{
       startTimer();
@@ -114,6 +122,7 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     }
   }
 
+  @Override
   public boolean promptPassword(String message){
     try{
       startTimer();
@@ -132,12 +141,14 @@ class UserInfoImpl implements com.jcraft.jsch.UserInfo, UIKeyboardInteractive{
     }
   }
 
+  @Override
   public void showMessage(String message){
     authenticator.prompt(location, IUserAuthenticator.INFORMATION,
         Messages.JSchSession_5, message,
         new int[] {IUserAuthenticator.OK_ID}, IUserAuthenticator.OK_ID);
   }
 
+  @Override
   public String[] promptKeyboardInteractive(String destination, String name,
       String instruction, String[] prompt, boolean[] echo){
     if(prompt.length==0){

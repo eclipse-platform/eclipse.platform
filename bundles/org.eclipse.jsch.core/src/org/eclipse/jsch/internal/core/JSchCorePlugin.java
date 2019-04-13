@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2014 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -240,6 +240,7 @@ public class JSchCorePlugin extends Plugin{
     return (IProxyService)tracker.getService();
   }
 
+  @Override
   public void start(BundleContext context) throws Exception{
     super.start(context);
     tracker=new ServiceTracker<Object, Object>(getBundle().getBundleContext(),
@@ -250,6 +251,7 @@ public class JSchCorePlugin extends Plugin{
         new Hashtable<String, Object>());
   }
 
+  @Override
   public void stop(BundleContext context) throws Exception{
     super.stop(context);
     tracker.close();
