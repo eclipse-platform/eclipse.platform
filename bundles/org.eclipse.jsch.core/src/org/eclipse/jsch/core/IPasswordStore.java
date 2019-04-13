@@ -23,20 +23,21 @@ package org.eclipse.jsch.core;
 public interface IPasswordStore{
   /**
    * The cached password should be flushed.
-   * @param location
+   * @param location location string helper
    */
   public void clear(IJSchLocation location);
   
   /**
    * This method will check if the password is cached or not.
-   * @param location
+   * @param location location string helper
    * @return whether the password is cached.
    */
   public boolean isCached(IJSchLocation location);
   
-  /*
+  /**
    * The new password "location.getPassword()" will be
    * cached.
+   * @param location location string helper
    */
   public void update(IJSchLocation location);
 }

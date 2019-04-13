@@ -72,13 +72,13 @@ public interface IJSchLocation{
   /**
    * Sets the comment for this location.  This comment will be displayed
    * in prompting for the password.
-   * @param comment
+   * @param comment Comment to be displayed in password prompt.
    */
   public void setComment(String comment);
 
   /**
    * Return the comment 
-   * @return comment
+   * @return Comment to be displayed in password prompt.
    */
   public String getComment();
 

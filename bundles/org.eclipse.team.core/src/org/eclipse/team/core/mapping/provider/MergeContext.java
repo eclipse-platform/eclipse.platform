@@ -73,9 +73,12 @@ import org.eclipse.team.internal.core.mapping.SyncInfoToDiffConverter;
 public abstract class MergeContext extends SynchronizationContext implements IMergeContext {
 
 	/**
-     * Create a merge context.
-	 * @param type
-     */
+	 * Create a merge context.
+	 *
+	 * @param manager   the manager that defines the scope of the synchronization
+	 * @param type      the type of synchronization (ONE_WAY or TWO_WAY)
+	 * @param deltaTree the sync info tree that contains all out-of-sync resources
+	 */
     protected MergeContext(ISynchronizationScopeManager manager, int type, IResourceDiffTree deltaTree) {
     	super(manager, type, deltaTree);
     }

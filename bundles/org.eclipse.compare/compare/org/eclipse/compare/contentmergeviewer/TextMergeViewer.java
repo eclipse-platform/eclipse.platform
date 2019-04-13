@@ -1931,7 +1931,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 * Called on the viewer disposal.
 	 * Unregisters from the compare configuration.
 	 * Clients may extend if they have to do additional cleanup.
-	 * @param event
 	 */
 	@Override
 	protected void handleDispose(DisposeEvent event) {

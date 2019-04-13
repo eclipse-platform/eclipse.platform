@@ -90,13 +90,13 @@ public abstract class SharedDocumentAdapter implements ISharedDocumentAdapter {
 	/**
 	 * A helper method to save a document.
 	 *
-	 * @param provider the document provider
+	 * @param provider    the document provider
 	 * @param documentKey the document key
-	 * @param document the document
-	 * @param overwrite indicates whether overwrite should be performed
-	 * 			while saving the given element if necessary
-	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @param document    the document
+	 * @param overwrite   indicates whether overwrite should be performed while
+	 *                    saving the given element if necessary
+	 * @param monitor     a progress monitor
+	 * @throws CoreException if document could not be stored to the given element
 	 */
 	protected void saveDocument(IDocumentProvider provider,
 			IEditorInput documentKey, IDocument document, boolean overwrite,

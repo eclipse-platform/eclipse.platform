@@ -31,9 +31,11 @@ public class ThreeWayResourceComparator implements IResourceVariantComparator {
 	private ThreeWaySynchronizer synchronizer;
 
 	/**
-	 * Create a three-way resource comparator that uses the <code>ThreeWaySynchronizer</code>
-	 * to compare a local resource to a resource variant.
-	 * @param synchronizer
+	 * Create a three-way resource comparator that uses the
+	 * <code>ThreeWaySynchronizer</code> to compare a local resource to a resource
+	 * variant.
+	 * 
+	 * @param synchronizer The synchronizer to use.
 	 */
 	public ThreeWayResourceComparator(ThreeWaySynchronizer synchronizer) {
 		this.synchronizer = synchronizer;

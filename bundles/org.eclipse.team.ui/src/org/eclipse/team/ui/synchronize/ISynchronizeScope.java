@@ -58,7 +58,7 @@ public interface ISynchronizeScope {
 	 * Add a property change listener that will get invoked when a
 	 * property of the receiver changes.
 	 *
-	 * @param listener
+	 * @param listener The listener to add.
 	 */
 	public void addPropertyChangeListener(IPropertyChangeListener listener);
 
@@ -66,7 +66,7 @@ public interface ISynchronizeScope {
 	 * Remove a property change listener. Removing an unregistered listener
 	 * has no effect.
 	 *
-	 * @param listener
+	 * @param listener The listener to remove.
 	 */
 	public void removePropertyChangeListener(IPropertyChangeListener listener);
 

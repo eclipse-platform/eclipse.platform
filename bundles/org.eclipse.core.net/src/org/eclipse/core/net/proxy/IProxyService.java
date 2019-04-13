@@ -72,7 +72,7 @@ public interface IProxyService {
 	 * Sets whether system proxies should be used, when the proxy support is
 	 * enabled.
 	 *
-	 * @param enabled
+	 * @param enabled whether system proxies should be used
 	 * @since 1.1
 	 */
 	void setSystemProxiesEnabled(boolean enabled);

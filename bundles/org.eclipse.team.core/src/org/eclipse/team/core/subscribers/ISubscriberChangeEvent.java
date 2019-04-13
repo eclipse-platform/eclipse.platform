@@ -50,15 +50,16 @@ public interface ISubscriberChangeEvent {
 	public static final int ROOT_REMOVED = 0x4;
 
 	/**
-	 * Return the flags that describe the type of change.
-	 * The returned value should be ANDed with the change type
-	 * flags to determine whether the change event is of
-	 * a particular type. For example,
+	 * Return the flags that describe the type of change. The returned value should
+	 * be ANDed with the change type flags to determine whether the change event is
+	 * of a particular type. For example,
+	 * 
 	 * <pre>
-	 *   if (event.getFlags() & ISubscriberChangeEvent.SYNC_CHANGED) {
-	 *      // the sync info for the resource has changed
-	 *   }
+	 * if (event.getFlags() &amp; ISubscriberChangeEvent.SYNC_CHANGED) {
+	 * 	// the sync info for the resource has changed
+	 * }
 	 * </pre>
+	 * 
 	 * @return the flags that describe the type of change
 	 */
 	public abstract int getFlags();

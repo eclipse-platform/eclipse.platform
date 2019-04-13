@@ -171,11 +171,11 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * Refresh this participants synchronization state and displays the result in a model dialog.
 	 * @param shell
 	 *
-	 * @param resources
+	 * @param resources the resources to be refreshed.
 	 * @param jobName
-	 * @param taskName
+	 * @param taskName the task name to be shown to the user
 	 * @param configuration
-	 * @param site
+	 * @param site the site in which to run the refresh
 	 */
 	public final void refreshInDialog(Shell shell, IResource[] resources, String jobName, String taskName, ISynchronizePageConfiguration configuration, IWorkbenchSite site) {
 		IRefreshSubscriberListener listener =  new RefreshUserNotificationPolicyInModalDialog(shell, taskName, configuration, this);
