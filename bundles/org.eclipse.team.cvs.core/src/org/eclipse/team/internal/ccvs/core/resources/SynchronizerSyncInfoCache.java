@@ -202,9 +202,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		return Util.equals(syncBytes, oldBytes);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#getDirtyIndicator(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	String getDirtyIndicator(IResource resource, boolean threadSafeAccess) throws CVSException {		
 		if (resource.getType() == IResource.FILE) {
 			// a phantom file is dirty if it was managed before it was deleted			 
@@ -216,17 +214,13 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#setDirtyIndicator(org.eclipse.core.resources.IResource, java.lang.String)
-	 */
+	@Override
 	void setDirtyIndicator(IResource resource, String indicator) throws CVSException {
 		// We don't cache the dirty count for folders because it would cause
 		// resource delta's in the decorator thread and possible deadlock.
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#cachesDirtyState()
-	 */
+	@Override
 	public boolean cachesDirtyState() {
 		// We don't cache the dirty count for folders because it would cause
 		// resource delta's in the decorator thread and possible deadlock.

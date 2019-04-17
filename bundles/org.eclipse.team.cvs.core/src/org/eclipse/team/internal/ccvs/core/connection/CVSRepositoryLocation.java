@@ -1190,16 +1190,12 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation#getUserAuthenticator()
-	 */
+	@Override
 	public IUserAuthenticator getUserAuthenticator() {
 		return getAuthenticator();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation#setUserAuthenticator()
-	 */
+	@Override
 	public void setUserAuthenticator(IUserAuthenticator authenticator) {
 		CVSRepositoryLocation.authenticator = authenticator;
 	}
@@ -1258,9 +1254,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation#getUserInfoCached()
-	 */
+	@Override
 	public boolean getUserInfoCached() {
 		ISecurePreferences node = getCVSNode();
 		if (node == null)

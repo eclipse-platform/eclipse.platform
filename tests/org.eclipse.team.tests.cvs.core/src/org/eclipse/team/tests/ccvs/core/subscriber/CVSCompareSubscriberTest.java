@@ -16,18 +16,20 @@ package org.eclipse.team.tests.ccvs.core.subscriber;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.core.CVSCompareSubscriber;
+import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.client.Command.KSubstOption;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Tests the CVSMergeSubscriber
@@ -102,9 +104,7 @@ public class CVSCompareSubscriberTest extends CVSSyncSubscriberTest {
 				SyncInfo.ADDITION});
 	}
 
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
+	@Override
 	protected void tearDown() throws Exception {
 		getSyncInfoSource().tearDown();
 		super.tearDown();

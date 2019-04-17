@@ -62,9 +62,7 @@ public class ReentrantLock extends BatchingLock {
 		}
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.subscribers.BatchingLock#createThreadInfo(org.eclipse.team.internal.core.subscribers.BatchingLock.IFlushOperation)
-     */
+	@Override
     protected ThreadInfo createThreadInfo(IFlushOperation operation) {
         return new CVSThreadInfo(operation);
     }

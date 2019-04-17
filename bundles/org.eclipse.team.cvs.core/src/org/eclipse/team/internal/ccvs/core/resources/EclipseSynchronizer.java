@@ -505,13 +505,13 @@ public class EclipseSynchronizer implements IFlushOperation {
         }
 	}
 	
-	/* (non-Javadoc)
-	 * 
+	/* 
 	 * Callback which is invoked when the batching resource lock is released 
 	 * or when a flush is requested (see beginBatching(IResource)).
 	 * 
 	 * @see org.eclipse.team.internal.ccvs.core.syncinfo.ReentrantLock.IRunnableOnExit#run(org.eclipse.team.internal.ccvs.core.syncinfo.ReentrantLock.ThreadInfo, org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void flush(final ThreadInfo info, IProgressMonitor monitor) throws CVSException {
 		if (info != null && !info.isEmpty()) {
 			try {

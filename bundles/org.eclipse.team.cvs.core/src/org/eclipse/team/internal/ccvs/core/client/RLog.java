@@ -121,9 +121,7 @@ public class RLog extends RemoteCommand {
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Request#getRequestId()
-	 */
+	@Override
 	protected String getRequestId() {
 		return "rlog"; //$NON-NLS-1$
 	}

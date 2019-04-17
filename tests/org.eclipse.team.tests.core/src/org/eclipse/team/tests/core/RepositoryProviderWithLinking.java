@@ -27,20 +27,14 @@ public class RepositoryProviderWithLinking extends RepositoryProvider {
 
 	private static boolean canHandleLinkedURI;
 
-	/**
-	 * @see org.eclipse.team.core.RepositoryProvider#configureProject()
-	 */
+	@Override
 	public void configureProject() throws CoreException {
 	}
-	/**
-	 * @see org.eclipse.team.core.RepositoryProvider#getID()
-	 */
+	@Override
 	public String getID() {
 		return TYPE_ID;
 	}
-	/**
-	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	 */
+	@Override
 	public void deconfigure() throws CoreException {
 	}
 
@@ -48,9 +42,7 @@ public class RepositoryProviderWithLinking extends RepositoryProvider {
 		RepositoryProviderWithLinking.canHandleLinking = canHandleLinking;
 	}
 
-	/**
-	 * @see org.eclipse.team.core.RepositoryProvider#canHandleLinkedResources()
-	 */
+	@Override
 	public boolean canHandleLinkedResources() {
 		return canHandleLinking;
 	}
@@ -59,9 +51,7 @@ public class RepositoryProviderWithLinking extends RepositoryProvider {
 		RepositoryProviderWithLinking.canHandleLinkedURI = canHandleLinkedURI;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProvider#canHandleLinkedResourceURI()
-	 */
+	@Override
 	public boolean canHandleLinkedResourceURI() {
 		return RepositoryProviderWithLinking.canHandleLinkedURI;
 	}

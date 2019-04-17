@@ -27,38 +27,28 @@ class TestCommitOperation extends WorkspaceCommitOperation {
 		super(null, elements, override);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#canRunAsJob()
-	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SubscriberCommitOperation#promptForComment(org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager, org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	protected String promptForComment(RepositoryManager manager, IResource[] resourcesToCommit) {
 		return "dummy comment";
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SubscriberCommitOperation#promptForConflicts(org.eclipse.team.core.synchronize.SyncInfoSet)
-	 */
+	@Override
 	protected int promptForConflicts(SyncInfoSet syncSet) {
 		this.prompted = true;
 		return 0; // ok to commit all conflicts
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SubscriberCommitOperation#promptForResourcesToBeAdded(org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager, org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	protected IResource[] promptForResourcesToBeAdded(RepositoryManager manager, IResource[] unadded) {
 		return unadded;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SubscriberCommitOperation#promptForConflictHandling(org.eclipse.team.core.synchronize.SyncInfoSet)
-	 */
+	@Override
 	protected boolean promptForConflictHandling(SyncInfoSet syncSet) {
 		return true;
 	}

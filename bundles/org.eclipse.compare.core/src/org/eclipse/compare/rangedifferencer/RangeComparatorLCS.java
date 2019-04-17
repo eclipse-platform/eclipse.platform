@@ -185,9 +185,6 @@ import org.eclipse.core.runtime.*;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.internal.LCS#longestCommonSubsequence(org.eclipse.core.runtime.SubMonitor)
-	 */
 	@Override
 	public void longestCommonSubsequence(SubMonitor subMonitor) {
 		super.longestCommonSubsequence(subMonitor);

@@ -81,9 +81,7 @@ public class AnnotateListener extends CommandOutputListener {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener#errorLine(java.lang.String, org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, org.eclipse.team.internal.ccvs.core.ICVSFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
 		if(line.startsWith(CVSMessages.AnnotateListener_3)) { 
 			String error = CVSMessages.AnnotateListener_4; 

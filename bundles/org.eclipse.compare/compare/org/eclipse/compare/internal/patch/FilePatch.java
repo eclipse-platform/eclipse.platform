@@ -28,14 +28,6 @@ public class FilePatch extends FilePatch2 implements IFilePatch {
 		super(oldPath, oldDate, newPath, newDate);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.patch.IFilePatch#apply(org.eclipse.core.resources
-	 * .IStorage, org.eclipse.compare.patch.PatchConfiguration,
-	 * org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IFilePatchResult apply(IStorage content,
 			PatchConfiguration configuration, IProgressMonitor monitor) {

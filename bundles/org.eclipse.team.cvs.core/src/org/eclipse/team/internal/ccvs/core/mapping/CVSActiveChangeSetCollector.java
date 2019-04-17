@@ -26,9 +26,7 @@ public class CVSActiveChangeSetCollector extends SubscriberChangeSetManager {
 		super(subscriber);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.ActiveChangeSetManager#doCreateSet(java.lang.String)
-	 */
+	@Override
 	protected ActiveChangeSet doCreateSet(String name) {
 		return new CVSActiveChangeSet(this, name);
 	}

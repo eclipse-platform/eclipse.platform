@@ -121,9 +121,6 @@ public class PatchTargetPage extends WizardPage {
 		return button;
 	}
 
-	/* (non-JavaDoc)
-	 * Method declared in IWizardPage.
-	 */
 	@Override
 	public IWizardPage getNextPage() {
 
@@ -154,9 +151,6 @@ public class PatchTargetPage extends WizardPage {
 		return super.getNextPage();
 	}
 
-	/* (non-JavaDoc)
-	 * Method declared in IWizardPage.
-	 */
 	@Override
 	public boolean canFlipToNextPage() {
 		// we can't call getNextPage to determine if flipping is allowed since computing

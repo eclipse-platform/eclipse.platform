@@ -40,16 +40,12 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		this.cacheFileContentsHint = cacheFileContentsHint;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.RefreshOperation#getSynchronizationCache()
-	 */
+	@Override
 	public ResourceVariantByteStore getByteStore() {
 		return super.getByteStore();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.RefreshOperation#getRemoteSyncBytes(org.eclipse.core.resources.IResource, org.eclipse.team.core.subscribers.ISubscriberResource)
-	 */
+	@Override
 	protected byte[] getBytes(IResource local, IResourceVariant remote) throws TeamException {
 		if (remote != null) {
 			return super.getBytes(local, remote);
@@ -62,9 +58,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.RefreshOperation#getRemoteChildren(org.eclipse.team.core.subscribers.ISubscriberResource, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant[] fetchMembers(IResourceVariant remote, IProgressMonitor progress) throws TeamException {
 		ICVSRemoteResource[] children = remote != null ? (ICVSRemoteResource[])((RemoteResource)remote).members(progress) : new ICVSRemoteResource[0];
 		IResourceVariant[] result = new IResourceVariant[children.length];
@@ -74,16 +68,12 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.RefreshOperation#buildRemoteTree(org.eclipse.core.resources.IResource, int, boolean, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant fetchVariant(IResource resource, int depth, IProgressMonitor monitor) throws TeamException {
 		return (IResourceVariant)CVSWorkspaceRoot.getRemoteTree(resource, getTag(resource), isCacheFileContentsHint(), depth, monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantTreeRefreshOperation#collectChanges(org.eclipse.core.resources.IResource, org.eclipse.team.core.synchronize.IResourceVariant, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IResource[] collectChanges(IResource local,
 			IResourceVariant remote, int depth, IProgressMonitor monitor)
 			throws TeamException {
@@ -114,16 +104,12 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		return (IResource[]) members.toArray(new IResource[members.size()]);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#roots()
-	 */
+	@Override
 	public IResource[] roots() {
 		return subscriber.roots();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.IResourceVariantTree#getResourceVariant(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IResourceVariant getResourceVariant(IResource resource) throws TeamException {
 		byte[] remoteBytes = getByteStore().getBytes(resource);
 		if (remoteBytes == null) {
@@ -203,9 +189,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		getByteStore().dispose();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantTree#setVariant(org.eclipse.core.resources.IResource, org.eclipse.team.core.synchronize.IResourceVariant)
-	 */
+	@Override
 	protected boolean setVariant(IResource local, IResourceVariant remote) throws TeamException {
 		if (local.getType() == IResource.FOLDER && remote != null 
 				&& !hasLocalSyncInfo((IFolder)local)
@@ -257,9 +241,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		return getParentBytes(resource) != null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.AbstractResourceVariantTree#collectedMembers(org.eclipse.core.resources.IResource, org.eclipse.core.resources.IResource[])
-	 */
+    @Override
 	protected IResource[] collectedMembers(IResource local, IResource[] members) throws TeamException {
 		// Look for resources that have sync bytes but are not in the resources we care about
 		IResource[] resources = getStoredMembers(local);
@@ -306,9 +288,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		return new IResource[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#refresh(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResource[] refresh(IResource resource, int depth, IProgressMonitor monitor) throws TeamException {
 		IResource[] changedResources = null;
 		monitor.beginTask(null, 100);

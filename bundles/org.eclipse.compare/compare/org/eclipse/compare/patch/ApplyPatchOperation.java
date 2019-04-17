@@ -195,9 +195,6 @@ public class ApplyPatchOperation implements Runnable {
 		this.patchWizardImage = descriptor;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
 	@Override
 	public void run() {
 		openWizard();

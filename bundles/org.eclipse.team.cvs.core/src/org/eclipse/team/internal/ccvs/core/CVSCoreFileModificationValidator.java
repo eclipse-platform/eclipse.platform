@@ -31,9 +31,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
     
     FileModificationValidator uiValidator;
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.team.FileModificationValidator#validateEdit(org.eclipse.core.resources.IFile[], org.eclipse.core.resources.team.FileModificationValidationContext)
-     */
+    @Override
     public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 	    IFile[] unmanagedReadOnlyFiles = getUnmanagedReadOnlyFiles(files);
 	    if (unmanagedReadOnlyFiles.length > 0) {
@@ -47,9 +45,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 		return edit(readOnlyFiles, context);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IFileModificationValidator#validateSave(org.eclipse.core.resources.IFile)
-     */
+    @Override
     public IStatus validateSave(IFile file) {
 		if (!needsCheckout(file)) {
 		    if (file.isReadOnly()) {

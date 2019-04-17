@@ -122,9 +122,6 @@ class DecoratorOverlayIcon extends CompositeImageDescriptor {
         return size;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.resource.CompositeImageDescriptor#getTransparentPixel()
-     */
     @Override
 	protected int getTransparentPixel() {
     	return base.getImageData().transparentPixel;

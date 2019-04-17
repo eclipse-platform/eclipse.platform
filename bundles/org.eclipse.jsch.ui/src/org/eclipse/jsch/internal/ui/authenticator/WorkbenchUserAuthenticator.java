@@ -172,9 +172,6 @@ public String[] promptForKeyboradInteractive(
   }
 
 
-  /* (non-Javadoc)
-   * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#prompt(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, int, java.lang.String, java.lang.String, int[], int)
-   */
   @Override
 public int prompt(IJSchLocation location, final int promptType,
       final String title, final String message, final int[] promptResponses,

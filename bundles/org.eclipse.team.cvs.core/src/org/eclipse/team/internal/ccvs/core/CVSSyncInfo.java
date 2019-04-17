@@ -51,9 +51,7 @@ public class CVSSyncInfo extends SyncInfo {
 		return subscriber;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.SyncInfo#computeSyncKind(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected int calculateKind() throws TeamException {
 		// special handling for folders, the generic sync algorithm doesn't work well
 		// with CVS because folders are not in namespaces (e.g. they exist in all versions
@@ -353,10 +351,7 @@ public class CVSSyncInfo extends SyncInfo {
 		return info != null ? info.getRevision() : null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfo#getLocalAuthor(org.eclipse.core.runtime.IProgressMonitor)
-	 * @since 3.6
-	 */
+	@Override
 	public String getLocalAuthor(IProgressMonitor monitor) {
 		final ICVSFile cvsFile= getCVSFile();
 		if (cvsFile == null)

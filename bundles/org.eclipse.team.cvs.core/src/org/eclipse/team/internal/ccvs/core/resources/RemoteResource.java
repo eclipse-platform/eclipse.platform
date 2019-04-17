@@ -204,9 +204,7 @@ public abstract class RemoteResource extends CachedResourceVariant implements IC
 		return "Remote " + (isContainer() ? "Folder: " : "File: ") + getName(); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ResourceVariant#getUniquePath()
-	 */
+	@Override
 	public String getCachePath() {
 		ICVSRepositoryLocation location = getRepository();
 		IPath path = new Path(null, location.getHost());
@@ -216,16 +214,12 @@ public abstract class RemoteResource extends CachedResourceVariant implements IC
 		return path.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ResourceVariant#getCacheId()
-	 */
+	@Override
 	protected String getCacheId() {
 		return CVSProviderPlugin.ID;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariant#asBytes()
-	 */
+	@Override
 	public byte[] asBytes() {
 		return getSyncBytes();
 	}

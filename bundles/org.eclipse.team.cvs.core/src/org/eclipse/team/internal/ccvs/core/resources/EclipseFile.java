@@ -453,9 +453,7 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 		return getNotifyInfo();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#checkedIn(java.lang.String)
-	 */
+	@Override
 	public void checkedIn(String entryLine, boolean commit) throws CVSException {
 		ResourceSyncInfo oldInfo = getSyncInfo();
 		ResourceSyncInfo newInfo = null;
@@ -595,9 +593,7 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 		EclipseSynchronizer.getInstance().setModified(this, UNKNOWN);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResource#getRepositoryRelativePath()
-	 */
+	@Override
 	public String getRepositoryRelativePath() throws CVSException {
 		if (!isManaged()) return null;
 		String parentPath = getParent().getRepositoryRelativePath();

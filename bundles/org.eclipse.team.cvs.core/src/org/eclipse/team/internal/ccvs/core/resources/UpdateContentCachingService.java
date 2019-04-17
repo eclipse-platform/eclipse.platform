@@ -45,24 +45,18 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 
 	public class SandboxUpdate extends Update {
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.Update#shouldRetrieveAbsentDirectories(org.eclipse.team.internal.ccvs.core.client.Session)
-		 */
+		@Override
 		protected boolean shouldRetrieveAbsentDirectories(Session session) {
 			return fetchAbsentDirectories;
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.Command#commandFinished(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[], org.eclipse.team.internal.ccvs.core.client.Command.LocalOption[], org.eclipse.team.internal.ccvs.core.ICVSResource[], org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IStatus)
-		 */
+		@Override
 		protected IStatus commandFinished(Session session, GlobalOption[] globalOptions, LocalOption[] localOptions, ICVSResource[] resources, IProgressMonitor monitor, IStatus status) throws CVSException {
 			// Don't do anything (i.e. don't prune)
 			return status;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.Command#doExecute(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[], org.eclipse.team.internal.ccvs.core.client.Command.LocalOption[], java.lang.String[], org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener, org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		protected IStatus doExecute(Session session, GlobalOption[] globalOptions, LocalOption[] localOptions, String[] arguments, ICommandOutputListener listener, IProgressMonitor monitor) throws CVSException {
 			session.registerResponseHandler(new SandboxUpdatedHandler(UpdatedHandler.HANDLE_CREATED));
 			session.registerResponseHandler(new SandboxUpdatedHandler(UpdatedHandler.HANDLE_MERGED));
@@ -80,9 +74,7 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 		public SandboxUpdatedHandler(int type) {
 			super(type);
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.UpdatedHandler#receiveTargetFile(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.ICVSFile, java.lang.String, java.util.Date, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		protected void receiveTargetFile(
 			Session session,
 			ICVSFile mFile,

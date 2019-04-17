@@ -170,9 +170,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IUpdateMessageListener#directoryInformation(org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String, boolean)
-	 */
+	@Override
 	public void directoryInformation(ICVSFolder commandRoot, String stringPath, boolean newDirectory) {
 		try {
 			IPath path = this.parentFolder.getRelativePathFromRootRelativePath(commandRoot, new Path(null, stringPath));
@@ -187,9 +185,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IUpdateMessageListener#directoryDoesNotExist(org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String)
-	 */
+	@Override
 	public void directoryDoesNotExist(ICVSFolder parent, String stringPath) {
 		try {
 			IPath path = this.parentFolder.getRelativePathFromRootRelativePath(parent, new Path(null, stringPath));
@@ -201,9 +197,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IUpdateMessageListener#fileInformation(int, org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String)
-	 */
+	@Override
 	public void fileInformation(int type, ICVSFolder parent, String filename) {
 		try {
 			IPath filePath = new Path(null, filename);
@@ -217,15 +211,11 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IUpdateMessageListener#fileDoesNotExist(org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String)
-	 */
+	@Override
 	public void fileDoesNotExist(ICVSFolder parent, String filename) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IStatusListener#fileStatus(org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String, java.lang.String)
-	 */
+	@Override
 	public void fileStatus(ICVSFolder commandRoot, String path, String remoteRevision) {
 		if (remoteRevision == IStatusListener.FOLDER_REVISION)
 			// Ignore any folders

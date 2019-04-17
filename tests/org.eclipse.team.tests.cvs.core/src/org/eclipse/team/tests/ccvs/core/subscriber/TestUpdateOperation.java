@@ -37,36 +37,33 @@ class TestUpdateOperation extends WorkspaceUpdateOperation {
 		super(null, elements, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#canRunAsJob()
-	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#warnAboutFailedResources(org.eclipse.team.core.synchronize.SyncInfoSet)
-	 */
+	@Override
 	protected void warnAboutFailedResources(SyncInfoSet syncSet) {
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#promptForOverwrite(org.eclipse.team.core.synchronize.SyncInfoSet)
-	 */
+	@Override
 	protected boolean promptForOverwrite(SyncInfoSet syncSet) {
 		EclipseTest.fail("Should never prompt on update, simply update nodes that are valid.");
 		return false;
 	}
 	
+	@Override
 	protected void safeUpdate(IProject project, IResource[] resources, LocalOption[] localOptions, IProgressMonitor monitor) throws TeamException {
 		try {
 			UpdateOnlyMergableOperation operation = new UpdateOnlyMergableOperation(getPart(), project, resources, localOptions) {
+				@Override
 				public ISynchronizationScope buildScope(IProgressMonitor monitor) throws InterruptedException, CVSException {
 			    	if (getScopeManager() == null) {
 			    		// manager = createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings());
 			    		ReflectionUtils.setField(this, "manager", createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings()));
 			    		BuildScopeOperation op = new BuildScopeOperation(getPart(), getScopeManager()) {
+							@Override
 							protected boolean promptForInputChange(String requestPreviewMessage, IProgressMonitor monitor) {
 								return false; // do not prompt
 							}

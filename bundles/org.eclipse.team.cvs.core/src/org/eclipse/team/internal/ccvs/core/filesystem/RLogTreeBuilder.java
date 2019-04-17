@@ -59,7 +59,7 @@ class RLogTreeBuilder {
 		tree.setChildren(new ICVSRemoteResource[0]);
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#newFile(java.lang.String, java.lang.String)
 	 */
 	public void newFile(IPath remoteFilePath, ICVSRemoteFile remoteFile) {

@@ -57,9 +57,6 @@ public class ResourceVariantCacheEntry {
 		registerHit();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.ICacheEntry#getContents()
-	 */
 	public InputStream getContents() throws TeamException {
 		if (state != READY) return null;
 		registerHit();
@@ -168,14 +165,14 @@ public class ResourceVariantCacheEntry {
 
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.sync.ICacheEntry#getState()
 	 */
 	public int getState() {
 		return state;
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.sync.ICacheEntry#getSize()
 	 */
 	public long getSize() {
@@ -187,7 +184,7 @@ public class ResourceVariantCacheEntry {
 		return 0;
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.sync.ICacheEntry#getLastAccessTimeStamp()
 	 */
 	public long getLastAccessTimeStamp() {

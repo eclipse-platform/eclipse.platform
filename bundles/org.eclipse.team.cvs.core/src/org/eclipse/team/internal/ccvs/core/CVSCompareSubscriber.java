@@ -94,38 +94,28 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		return new QualifiedName(QUALIFIED_NAME, UNIQUE_ID_PREFIX + uniqueId); 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getBaseSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getBaseTree() {
 		// No base cache needed since it's a two way compare
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getRemoteSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getRemoteTree() {
 		return tree;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.TeamSubscriber#isThreeWay()
-	 */
+	@Override
 	public boolean isThreeWay() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.TeamSubscriber#roots()
-	 */
+	@Override
 	public IResource[] roots() {
 		return resources;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ITeamResourceChangeListener#teamResourceChanged(org.eclipse.team.core.subscribers.TeamDelta[])
-	 */
+	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 		List outgoingDeltas = new ArrayList(deltas.length);
 		for (int i = 0; i < deltas.length; i++) {
@@ -182,9 +172,7 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		return deltas;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.TeamSubscriber#isSupervised(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		if (super.isSupervised(resource)) {
 			if (!resource.exists() && !getRemoteTree().hasResourceVariant(resource)) {
@@ -203,9 +191,7 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getCacheFileContentsHint()
-	 */
+	@Override
 	protected boolean getCacheFileContentsHint() {
 		return true;
 	}
@@ -214,9 +200,7 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		return tree.getTag(ResourcesPlugin.getWorkspace().getRoot());
 	}
 		
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object other) {
 		if(this == other) return true;
 		if(! (other instanceof CVSCompareSubscriber)) return false;

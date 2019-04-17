@@ -101,9 +101,6 @@ public class PatchWizard extends Wizard {
 		return fPatcher.getTarget();
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on IWizard.
-	 */
 	@Override
 	public void addPages() {
 		if (patch == null)
@@ -116,9 +113,6 @@ public class PatchWizard extends Wizard {
 		addPage(fPreviewPage2);
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on IWizard.
-	 */
 	@Override
 	public boolean performFinish() {
 

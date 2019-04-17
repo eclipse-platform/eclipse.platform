@@ -87,9 +87,6 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 		return result.getConfiguration();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffContainer#add(org.eclipse.compare.structuremergeviewer.IDiffElement)
-	 */
 	@Override
 	public void add(IDiffElement diff) {
 		super.add(diff);
@@ -104,9 +101,6 @@ public class PatchFileDiffNode extends PatchDiffNode implements IContentChangeLi
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IContentChangeListener#contentChanged(org.eclipse.compare.IContentChangeNotifier)
-	 */
 	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		fireChange();

@@ -499,10 +499,6 @@ public class CompareEditor extends EditorPart
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * Always throws an AssertionFailedException.
-	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-	 */
 	@Override
 	public void doSaveAs() {
 		Assert.isTrue(false); // Save As not supported for CompareEditor

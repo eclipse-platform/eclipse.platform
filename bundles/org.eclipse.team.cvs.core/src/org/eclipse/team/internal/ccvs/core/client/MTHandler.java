@@ -21,23 +21,17 @@ public class MTHandler extends ResponseHandler {
 	private String nextLine;
 	private boolean isLineAvailable;
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.ResponseHandler#getInstance()
-	 */
+	@Override
 	ResponseHandler getInstance() {
 		return new MTHandler();
 	}
 
-	/**
-	 * @see ResponseHandler#getResponseID()
-	 */
+	@Override
 	public String getResponseID() {
 		return "MT"; //$NON-NLS-1$
 	}
 
-	/**
-	 * @see ResponseHandler#handle(Session, String, IProgressMonitor)
-	 */
+	@Override
 	public void handle(Session session, String argument, IProgressMonitor monitor)
 		throws CVSException {
 		

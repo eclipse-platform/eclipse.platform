@@ -62,10 +62,6 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		synchronizeWithPreference();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.compare.internal.TextEditorPropertyAction#synchronizeWithPreference()
-	 */
 	@Override
 	protected void synchronizeWithPreference() {
 		boolean checked = false;
@@ -93,10 +89,6 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.compare.internal.TextEditorPropertyAction#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getProperty();

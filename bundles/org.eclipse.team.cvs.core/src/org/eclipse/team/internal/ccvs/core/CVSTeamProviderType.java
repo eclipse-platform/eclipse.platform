@@ -50,16 +50,12 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
 			return projectsToShare.isEmpty();
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.runtime.jobs.Job#shouldSchedule()
-		 */
+		@Override
 		public boolean shouldSchedule() {
 			return !isQueueEmpty();
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.runtime.jobs.Job#shouldRun()
-		 */
+		@Override
 		public boolean shouldRun() {
 			synchronized (projectsToShare) {
 				for (Iterator iter = projectsToShare.iterator(); iter.hasNext();) {
@@ -83,9 +79,7 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
 			}
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		protected IStatus run(IProgressMonitor monitor) {
 			IProject next = null;
 			next = getNextProject();
@@ -152,16 +146,12 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProviderType#getProjectSetCapability()
-	 */
+	@Override
 	public ProjectSetCapability getProjectSetCapability() {
 		return new CVSProjectSetCapability();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProviderType#metaFilesDetected(org.eclipse.core.resources.IProject, org.eclipse.core.resources.IContainer[])
-	 */
+	@Override
 	public void metaFilesDetected(IProject project, IContainer[] containers) {
 		for (int i = 0; i < containers.length; i++) {
 			IContainer container = containers[i];
@@ -185,16 +175,12 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
             getAutoShareJob().share(project);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProviderType#getSubscriber()
-	 */
+	@Override
 	public Subscriber getSubscriber() {
 		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ActiveChangeSetManager.class || adapter == IChangeGroupingRequestor.class)
 			return adapter.cast(CVSProviderPlugin.getPlugin().getChangeSetManager());

@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.ui;
 
-import junit.framework.AssertionFailedError;
-
 import org.eclipse.compare.structuremergeviewer.IDiffContainer;
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IProject;
@@ -59,6 +57,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
 
+import junit.framework.AssertionFailedError;
+
 /**
  * SyncInfoSource that obtains SyncInfo from the SynchronizeView's SyncSet.
  */
@@ -68,6 +68,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		super();
 	}
 	
+	@Override
 	public SyncInfo getSyncInfo(Subscriber subscriber, IResource resource) throws TeamException {
 		// Wait for the collector
 		getCollector(subscriber);
@@ -100,9 +101,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		return info;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#getDiff(org.eclipse.team.core.subscribers.Subscriber, org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public IDiff getDiff(Subscriber subscriber, IResource resource) throws CoreException {
 		SyncInfo info = getSyncInfo(subscriber, resource);
 		if (info == null || info.getKind() == SyncInfo.IN_SYNC) {
@@ -114,10 +113,10 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 	public static SubscriberParticipant getParticipant(Subscriber subscriber) {
 		// show the sync view
 		ISynchronizeParticipantReference[] participants = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
-		for (int i = 0; i < participants.length; i++) {
+		for (ISynchronizeParticipantReference participant2 : participants) {
 			ISynchronizeParticipant participant;
 			try {
-				participant = participants[i].getParticipant();
+				participant = participant2.getParticipant();
 			} catch (TeamException e) {
 				return null;
 			}
@@ -139,21 +138,29 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
         SynchronizeModelManager manager = (SynchronizeModelManager)page.getConfiguration().getProperty(SynchronizePageConfiguration.P_MODEL_MANAGER);
         AbstractSynchronizeModelProvider provider = (AbstractSynchronizeModelProvider)manager.getActiveModelProvider();
         provider.waitUntilDone(new IProgressMonitor() {
+			@Override
 			public void beginTask(String name, int totalWork) {
 			}
+			@Override
 			public void done() {
 			}
+			@Override
 			public void internalWorked(double work) {
 			}
+			@Override
 			public boolean isCanceled() {
 				return false;
 			}
+			@Override
 			public void setCanceled(boolean value) {
 			}
+			@Override
 			public void setTaskName(String name) {
 			}
+			@Override
 			public void subTask(String name) {
 			}
+			@Override
 			public void worked(int work) {
 				while (Display.getCurrent().readAndDispatch()) {}
 			}
@@ -161,9 +168,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		return syncInfoCollector;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#assertProjectRemoved(org.eclipse.team.core.subscribers.TeamSubscriber, org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {		
 		super.assertProjectRemoved(subscriber, project);
 		SyncInfoTree set = getCollector(subscriber).getSyncInfoSet();
@@ -172,9 +177,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#createMergeSubscriber(org.eclipse.core.resources.IProject, org.eclipse.team.internal.ccvs.core.CVSTag, org.eclipse.team.internal.ccvs.core.CVSTag)
-	 */
+	@Override
 	public CVSMergeSubscriber createMergeSubscriber(IProject project, CVSTag root, CVSTag branch, boolean isModelSync) {
 		CVSMergeSubscriber mergeSubscriber = super.createMergeSubscriber(project, root, branch, isModelSync);
 		SubscriberParticipant participant = new MergeSynchronizeParticipant(mergeSubscriber);
@@ -182,6 +185,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		return mergeSubscriber;
 	}
 	
+	@Override
 	public Subscriber createWorkspaceSubscriber() throws TeamException {
 		ISynchronizeManager synchronizeManager = TeamUI.getSynchronizeManager();
 		ISynchronizeParticipantReference[] participants = synchronizeManager.get(WorkspaceSynchronizeParticipant.ID);
@@ -194,9 +198,7 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.subscriber.SyncInfoSource#createCompareSubscriber(org.eclipse.core.resources.IProject, org.eclipse.team.internal.ccvs.core.CVSTag)
-	 */
+	@Override
 	public CVSCompareSubscriber createCompareSubscriber(IResource resource, CVSTag tag) {
 		CVSCompareSubscriber s = super.createCompareSubscriber(resource, tag);
 		SubscriberParticipant participant = new CompareParticipant(s);
@@ -217,8 +219,8 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
             }
         }
         IDiffElement[] children = node.getChildren();
-        for (int i = 0; i < children.length; i++) {
-            ISynchronizeModelElement child = (ISynchronizeModelElement)children[i];
+        for (IDiffElement element : children) {
+            ISynchronizeModelElement child = (ISynchronizeModelElement)element;
             SyncInfo info = findSyncInfo(child, resource);
             if (info != null)
                 return info;
@@ -226,7 +228,8 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
         return null;
     }
     
-    public void assertViewMatchesModel(Subscriber subscriber) {
+    @Override
+	public void assertViewMatchesModel(Subscriber subscriber) {
     	// Getting the collector waits for the subscriber input handlers
     	getCollector(subscriber);
 		ISynchronizeModelElement root = getModelRoot(subscriber);
@@ -279,11 +282,9 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
                     (children == null ? 0: children.length) + " but the view has " + 
                     (items == null ? 0 : items.length));
         }
-        for (int i = 0; i < children.length; i++) {
-            IDiffElement element = children[i];
+        for (IDiffElement element : children) {
             TreeItem foundItem = null;
-            for (int j = 0; j < items.length; j++) {
-                TreeItem item = items[j];
+            for (TreeItem item : items) {
                 if (item.getData() == element) {
                     foundItem = item;
                     break;

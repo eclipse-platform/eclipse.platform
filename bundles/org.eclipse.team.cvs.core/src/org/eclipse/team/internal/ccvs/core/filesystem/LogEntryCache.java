@@ -196,9 +196,7 @@ class LogEntryCache implements ILogEntryListener {
 		entries.remove(remotePath);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.ILogEntryListener#addEntry(org.eclipse.team.internal.ccvs.core.client.listeners.LogEntry)
-	 */
+	@Override
 	public void handleLogEntryReceived(ILogEntry entry) {
 		ICVSRemoteFile file = entry.getRemoteFile();
 		String fullPath = getFullPath(file);

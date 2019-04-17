@@ -297,9 +297,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
     super.cancelPressed();
   }
 
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#close()
-   */
+  @Override
   public boolean close(){
     if(keyLockImage!=null){
       keyLockImage.dispose();

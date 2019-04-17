@@ -67,21 +67,11 @@ public class UserInfoPrompter implements UserInfo, UIKeyboardInteractive{
     return session;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#getPassphrase()
-   */
   @Override
 public String getPassphrase(){
     return passphrase;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#getPassword()
-   */
   @Override
 public String getPassword(){
     return password;
@@ -111,11 +101,6 @@ public String getPassword(){
     this.password=password;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#promptPassphrase(java.lang.String)
-   */
   @Override
 public boolean promptPassphrase(String message){
     String _passphrase=promptSecret(message);
@@ -125,11 +110,6 @@ public boolean promptPassphrase(String message){
     return _passphrase!=null;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#promptPassword(java.lang.String)
-   */
   @Override
 public boolean promptPassword(String message){
     String _password=promptSecret(message);
@@ -166,12 +146,6 @@ public boolean promptPassword(String message){
     return dialog.getPassword();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UIKeyboardInteractive#promptKeyboardInteractive(java.lang.String,
-   *      java.lang.String, java.lang.String, java.lang.String[], boolean[])
-   */
   @Override
 public String[] promptKeyboardInteractive(String destination, String name,
       String instruction, String[] prompt, boolean[] echo){
@@ -231,11 +205,6 @@ public String[] promptKeyboardInteractive(String destination, String name,
     return _result;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#promptYesNo(java.lang.String)
-   */
   @Override
 public boolean promptYesNo(String question){
     int prompt=prompt(MessageDialog.QUESTION, Messages.UserInfoPrompter_0,
@@ -247,11 +216,6 @@ public boolean promptYesNo(String question){
     return prompt==0;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.jcraft.jsch.UserInfo#showMessage(java.lang.String)
-   */
   @Override
 public void showMessage(String message){
     prompt(MessageDialog.INFORMATION, Messages.UserInfoPrompter_1, message,

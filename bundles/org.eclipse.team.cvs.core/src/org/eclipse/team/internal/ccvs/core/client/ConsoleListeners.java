@@ -56,9 +56,7 @@ public class ConsoleListeners implements IConsoleListener {
         }
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandInvoked(java.lang.String)
-     */
+    @Override
     public void commandInvoked(final Session session, final String line) {
         if (listeners.isEmpty()) return;
         IConsoleListener[] listeners = getListeners();
@@ -75,9 +73,7 @@ public class ConsoleListeners implements IConsoleListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#messageLineReceived(java.lang.String)
-     */
+    @Override
     public void messageLineReceived(final Session session, final String line, final IStatus status) {
         if (listeners.isEmpty()) return;
         IConsoleListener[] listeners = getListeners();
@@ -94,9 +90,7 @@ public class ConsoleListeners implements IConsoleListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#errorLineReceived(java.lang.String)
-     */
+    @Override
     public void errorLineReceived(final Session session, final String line, final IStatus status) {
         if (listeners.isEmpty()) return;
         IConsoleListener[] listeners = getListeners();
@@ -113,9 +107,7 @@ public class ConsoleListeners implements IConsoleListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandCompleted(org.eclipse.core.runtime.IStatus, java.lang.Exception)
-     */
+    @Override
     public void commandCompleted(final Session session, final IStatus status, final Exception exception) {
         if (listeners.isEmpty()) return;
         IConsoleListener[] listeners = getListeners();

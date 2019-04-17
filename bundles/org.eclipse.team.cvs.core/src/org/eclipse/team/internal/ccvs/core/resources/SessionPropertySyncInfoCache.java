@@ -377,21 +377,15 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.ISaveParticipant#doneSaving(org.eclipse.core.resources.ISaveContext)
-	 */
+	@Override
 	public void doneSaving(ISaveContext context) {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.ISaveParticipant#prepareToSave(org.eclipse.core.resources.ISaveContext)
-	 */
+	@Override
 	public void prepareToSave(ISaveContext context) throws CoreException {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.ISaveParticipant#rollback(org.eclipse.core.resources.ISaveContext)
-	 */
+	@Override
 	public void rollback(ISaveContext context) {			
 	}
 
@@ -483,9 +477,7 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#cachesDirtyState()
-	 */
+	@Override
 	public boolean cachesDirtyState() {
 		return true;
 	}

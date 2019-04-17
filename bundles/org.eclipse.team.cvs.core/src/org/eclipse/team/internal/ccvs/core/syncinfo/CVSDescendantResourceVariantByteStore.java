@@ -37,9 +37,7 @@ public class CVSDescendantResourceVariantByteStore extends DescendantResourceVar
 		super(baseCache, remoteCache);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.DescendantSynchronizationCache#isDescendant(org.eclipse.core.resources.IResource, byte[], byte[])
-	 */
+	@Override
 	protected boolean isDescendant(IResource resource, byte[] baseBytes, byte[] remoteBytes) throws TeamException {
 		if (resource.getType() != IResource.FILE) return true;
 		try {
@@ -49,9 +47,7 @@ public class CVSDescendantResourceVariantByteStore extends DescendantResourceVar
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.helpers.SynchronizationCache#setSyncBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
+	@Override
 	public boolean setBytes(IResource resource, byte[] bytes) throws TeamException {
 		boolean changed = super.setBytes(resource, bytes);
 		if (resource.getType() == IResource.FILE && getBytes(resource) != null && !parentHasSyncBytes(resource)) {
@@ -72,9 +68,7 @@ public class CVSDescendantResourceVariantByteStore extends DescendantResourceVar
 		return (getBytes(resource.getParent()) != null);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantByteStore#isVariantKnown(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean isVariantKnown(IResource resource) throws TeamException {
 		return ((PersistantResourceVariantByteStore)getRemoteStore()).isVariantKnown(resource);
 	}

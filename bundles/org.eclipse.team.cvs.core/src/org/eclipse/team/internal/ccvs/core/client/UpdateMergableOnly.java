@@ -57,9 +57,7 @@ public class UpdateMergableOnly extends Update {
 			super(UpdatedHandler.HANDLE_MERGED);
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.UpdatedHandler#getTargetFile(org.eclipse.team.internal.ccvs.core.ICVSFolder, java.lang.String, byte[])
-		 */
+		@Override
 		protected ICVSFile getTargetFile(ICVSFolder mParent, String fileName, byte[] entryBytes) throws CVSException {
 			String adjustedFileName = fileName;
 			if (ResourceSyncInfo.isMergedWithConflicts(entryBytes)) {
@@ -70,9 +68,7 @@ public class UpdateMergableOnly extends Update {
 			return super.getTargetFile(mParent, adjustedFileName, entryBytes);
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.UpdatedHandler#receiveTargetFile(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.ICVSFile, java.lang.String, java.util.Date, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
-		 */
+		@Override
 		protected void receiveTargetFile(
 			Session session,
 			ICVSFile mFile,
@@ -129,9 +125,7 @@ public class UpdateMergableOnly extends Update {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Command#doExecute(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[], org.eclipse.team.internal.ccvs.core.client.Command.LocalOption[], java.lang.String[], org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IStatus doExecute(
 		Session session,
 		GlobalOption[] globalOptions,

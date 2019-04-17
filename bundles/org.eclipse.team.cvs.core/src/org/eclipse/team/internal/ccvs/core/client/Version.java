@@ -92,9 +92,7 @@ public class Version extends RemoteCommand {
 		return execute(session, NO_GLOBAL_OPTIONS, NO_LOCAL_OPTIONS, new String[] {}, listener, monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Command#isWorkspaceModification()
-	 */
+	@Override
 	protected boolean isWorkspaceModification() {
 		return false;
 	}

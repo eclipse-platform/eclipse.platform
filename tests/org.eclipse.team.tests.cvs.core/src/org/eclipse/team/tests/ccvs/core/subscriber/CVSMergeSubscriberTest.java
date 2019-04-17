@@ -16,9 +16,6 @@ package org.eclipse.team.tests.ccvs.core.subscriber;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -36,6 +33,9 @@ import org.eclipse.team.internal.ccvs.core.client.Command.KSubstOption;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 
 /**
@@ -355,8 +355,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 		
 		// scrub the project contents
 		IResource[] members = project.members();
-		for (int i = 0; i < members.length; i++) {
-			IResource resource = members[i];
+		for (IResource resource : members) {
 			if (resource.getName().equals(".project"))
 				continue;
 			delete(resource, IResource.FORCE, DEFAULT_MONITOR);
@@ -548,9 +547,7 @@ public class CVSMergeSubscriberTest extends CVSSyncSubscriberTest {
 							  		SyncInfo.IN_SYNC});				
 	} 
 	
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
+	@Override
 	protected void tearDown() throws Exception {
 		getSyncInfoSource().tearDown();
 		super.tearDown();

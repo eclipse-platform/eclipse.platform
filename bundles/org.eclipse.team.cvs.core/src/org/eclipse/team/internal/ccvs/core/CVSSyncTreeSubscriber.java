@@ -57,23 +57,19 @@ public abstract class CVSSyncTreeSubscriber extends ResourceVariantTreeSubscribe
 		this.comparisonCriteria = new CVSRevisionNumberCompareCriteria(isThreeWay());
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#getId()
 	 */
 	public QualifiedName getId() {
 		return id;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#getName()
-	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#getSyncInfo(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
 		if (!isSupervised(resource)) return null;
 		if(resource.getType() == IResource.FILE || !isThreeWay()) {
@@ -85,9 +81,7 @@ public abstract class CVSSyncTreeSubscriber extends ResourceVariantTreeSubscribe
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#isSupervised(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		try {
 			RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId());
@@ -110,16 +104,12 @@ public abstract class CVSSyncTreeSubscriber extends ResourceVariantTreeSubscribe
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.TeamSubscriber#getDefaultComparisonCriteria()
-	 */
+	@Override
 	public IResourceVariantComparator getResourceComparator() {
 		return comparisonCriteria;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.core.subscribers.caches.ResourceVariantTreeSubscriber#getSyncInfo(org.eclipse.core.resources.IResource, org.eclipse.team.core.synchronize.IResourceVariant, org.eclipse.team.core.synchronize.IResourceVariant)
-	 */
+	@Override
 	protected SyncInfo getSyncInfo(IResource local, IResourceVariant base, IResourceVariant remote) throws TeamException {
 		CVSSyncInfo info = new CVSSyncInfo(local, base, remote, this);
 		info.init();

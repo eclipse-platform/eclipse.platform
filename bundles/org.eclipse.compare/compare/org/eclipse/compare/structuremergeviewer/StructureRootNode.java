@@ -71,9 +71,6 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		fAdapter = adapter;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.services.IDisposable#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if (fAdapter != null) {
@@ -116,33 +113,21 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		return child;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getImage()
-	 */
 	@Override
 	public Image getImage() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getName()
-	 */
 	@Override
 	public String getName() {
 		return getId();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getType()
-	 */
 	@Override
 	public String getType() {
 		return FOLDER_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly()
-	 */
 	@Override
 	public boolean isReadOnly() {
 		if (fInput instanceof IEditableContentExtension) {
@@ -152,9 +137,6 @@ public class StructureRootNode extends DocumentRangeNode implements IDisposable,
 		return super.isReadOnly();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit(org.eclipse.swt.widgets.Shell)
-	 */
 	@Override
 	public IStatus validateEdit(Shell shell) {
 		if (fInput instanceof IEditableContentExtension) {

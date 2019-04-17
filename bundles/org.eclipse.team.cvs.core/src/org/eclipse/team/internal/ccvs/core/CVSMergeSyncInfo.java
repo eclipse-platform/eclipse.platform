@@ -26,9 +26,7 @@ public class CVSMergeSyncInfo extends CVSSyncInfo {
 		super(local, base, remote, subscriber);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncInfo#handleDeletionConflicts(int)
-	 */
+	@Override
 	protected int handleDeletionConflicts(int kind) {
 		// (see bug 40053).
 		if(kind == (SyncInfo.CONFLICTING | SyncInfo.DELETION | SyncInfo.PSEUDO_CONFLICT)) {
@@ -53,9 +51,7 @@ public class CVSMergeSyncInfo extends CVSSyncInfo {
 		return kind;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncInfo#makeOutgoing(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus makeOutgoing(IProgressMonitor monitor) throws TeamException {
 		// Make the resource outgoing by marking it as merged with the subscriber
 		CVSMergeSubscriber subscriber = (CVSMergeSubscriber)getSubscriber();

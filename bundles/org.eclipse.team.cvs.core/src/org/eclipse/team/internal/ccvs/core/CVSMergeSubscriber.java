@@ -103,9 +103,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 			return Util.equals(mergedBytes, remoteBytes);
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.syncinfo.CVSResourceVariantTree#dispose()
-		 */
+		@Override
 		public void dispose() {
 			mergedSynchronizer.dispose();
 			super.dispose();
@@ -140,7 +138,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		initialize();
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.internal.ccvs.core.CVSWorkspaceSubscriber#initialize()
 	 */
 	private void initialize() {			
@@ -186,7 +184,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		baseTree.merged(resource, remoteBytes);
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.sync.TeamSubscriber#cancel()
 	 */
 	public void cancel() {	
@@ -195,16 +193,12 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		baseTree.dispose();	
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.TeamSubscriber#roots()
-	 */
+	@Override
 	public IResource[] roots() {
 		return (IResource[]) roots.toArray(new IResource[roots.size()]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.TeamSubscriber#isSupervised(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		return getBaseTree().hasResourceVariant(resource) || getRemoteTree().hasResourceVariant(resource); 
 	}
@@ -281,7 +275,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 	/* 
 	 * Currently only the workspace subscriber knows when a project has been deconfigured. We will listen for these events
 	 * and remove the root then forward to merge subscriber listeners.
-	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.team.core.subscribers.ITeamResourceChangeListener#teamResourceChanged(org.eclipse.team.core.subscribers.TeamDelta[])
 	 */
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {		
@@ -300,16 +294,12 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getBaseSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getBaseTree() {
 		return baseTree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getRemoteSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getRemoteTree() {
 		return remoteTree;
 	}
@@ -351,9 +341,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		return (PersistantResourceVariantByteStore)((CVSResourceVariantTree)getRemoteTree()).getByteStore();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object other) {
 		if(this == other) return true;
 		if(! (other instanceof CVSMergeSubscriber)) return false;

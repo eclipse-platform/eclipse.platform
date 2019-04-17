@@ -114,9 +114,6 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.IResourceVariant#getStorage(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException {
 		if (isContainer()) return null;

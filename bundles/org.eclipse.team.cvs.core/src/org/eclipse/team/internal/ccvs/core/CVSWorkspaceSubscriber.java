@@ -79,7 +79,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	 * 
 	 * [Issue : this will have to change when folders can be shared with
 	 * a team provider instead of the current project restriction]
-	 * (non-Javadoc)
+	 *
 	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#roots()
 	 */
 	public IResource[] roots() {
@@ -97,9 +97,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		return (IProject[]) result.toArray(new IProject[result.size()]);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceSyncInfoChanged(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	public void resourceSyncInfoChanged(IResource[] changedResources) {
 		internalResourceSyncInfoChanged(changedResources, true); 
 	}
@@ -109,16 +107,12 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, changedResources));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#externalSyncInfoChange(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	public void externalSyncInfoChange(IResource[] changedResources) {
 		internalResourceSyncInfoChanged(changedResources, false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceModified(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	public void resourceModified(IResource[] changedResources) {
 		// This is only ever called from a delta POST_CHANGE
 		// which causes problems since the workspace tree is closed
@@ -128,17 +122,13 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		// we don't need to propogate this.
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectConfigured(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public void projectConfigured(IProject project) {
 		SubscriberChangeEvent delta = new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_ADDED, project);
 		fireTeamResourceChange(new SubscriberChangeEvent[] {delta});
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectDeconfigured(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public void projectDeconfigured(IProject project) {
 		try {
 			getRemoteTree().flushVariants(project, IResource.DEPTH_INFINITE);
@@ -158,23 +148,17 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getBaseSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getBaseTree() {
 		return baseTree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSSyncTreeSubscriber#getRemoteSynchronizationCache()
-	 */
+	@Override
 	protected IResourceVariantTree getRemoteTree() {
 		return remoteTree;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#collectOutOfSync(org.eclipse.core.resources.IResource[], int, org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void collectOutOfSync(IResource[] resources, int depth, final SyncInfoSet set, final IProgressMonitor monitor) {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		for (int i = 0; i < resources.length; i++) {
@@ -304,9 +288,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.Subscriber#getState(org.eclipse.core.resources.mapping.ResourceMapping, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public int getState(ResourceMapping mapping, int stateMask, IProgressMonitor monitor) throws CoreException {
 		if ((stateMask & IThreeWayDiff.INCOMING) == 0) {
 			// If we're only interested in outgoing changes, used the cached modified state
@@ -342,7 +324,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		return kind;
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * @see org.eclipse.team.core.subscribers.Subscriber#hasLocalChanges(org.eclipse.core.resources.mapping.ResourceTraversal[], org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public boolean hasLocalChanges(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {

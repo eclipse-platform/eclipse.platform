@@ -31,17 +31,13 @@ public class SyncUpdate extends Update {
 		new FileStructureVisitor(session, localOptions, emptyFolders, true, false).visit(session, resources, monitor);
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.Command#isWorkspaceModification()
-     */
+    @Override
     protected boolean isWorkspaceModification() {
         // The sync-update will not modify the workspace
         return false;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.Command#filterGlobalOptions(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[])
-     */
+    @Override
     protected GlobalOption[] filterGlobalOptions(Session session, GlobalOption[] globalOptions) {
         // Ensure that the DO_NOT_CHANGE (-n) global option is present
 		if (! Command.DO_NOT_CHANGE.isElementOf(globalOptions)) {

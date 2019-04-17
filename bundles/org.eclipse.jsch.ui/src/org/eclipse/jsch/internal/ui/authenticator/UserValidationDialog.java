@@ -267,11 +267,7 @@ public class UserValidationDialog extends TrayDialog{
     isUsernameMutable=value;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.eclipse.jface.dialogs.Dialog#close()
-   */
+  @Override
   public boolean close(){
     if(keyLockImage!=null){
       keyLockImage.dispose();

@@ -401,9 +401,7 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResource#getRepositoryRelativePath()
-	 */
+	@Override
 	public String getRepositoryRelativePath() throws CVSException {
 		FolderSyncInfo info = getFolderSyncInfo();
 		if (info == null) return null;

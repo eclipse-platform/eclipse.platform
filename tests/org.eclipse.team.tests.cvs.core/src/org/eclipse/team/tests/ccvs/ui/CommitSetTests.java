@@ -17,17 +17,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
-import org.eclipse.team.internal.core.subscribers.*;
+import org.eclipse.team.internal.core.subscribers.ActiveChangeSet;
+import org.eclipse.team.internal.core.subscribers.ActiveChangeSetManager;
+import org.eclipse.team.internal.core.subscribers.ChangeSet;
+import org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+
+import junit.framework.Test;
 
 /**
  * Tests for CVS commit sets
@@ -37,21 +42,26 @@ public class CommitSetTests extends EclipseTest {
 	private List<ChangeSet> addedSets = new ArrayList<>();
 	private List<ChangeSet> removedSets = new ArrayList<>();
 	private IChangeSetChangeListener listener = new IChangeSetChangeListener() {
-        public void setAdded(ChangeSet set) {
+        @Override
+		public void setAdded(ChangeSet set) {
             addedSets.add(set);
         }
-        public void setRemoved(ChangeSet set) {
+        @Override
+		public void setRemoved(ChangeSet set) {
             removedSets.add(set);
         }
-        public void nameChanged(ChangeSet set) {
+        @Override
+		public void nameChanged(ChangeSet set) {
             // TODO Auto-generated method stub
 
         }
-        public void defaultSetChanged(ChangeSet oldDefault, ChangeSet set) {
+        @Override
+		public void defaultSetChanged(ChangeSet oldDefault, ChangeSet set) {
             // TODO Auto-generated method stub
             
         }
-        public void resourcesChanged(ChangeSet set, IPath[] paths) {
+        @Override
+		public void resourcesChanged(ChangeSet set, IPath[] paths) {
             // TODO Auto-generated method stub
             
         }
@@ -143,17 +153,13 @@ public class CommitSetTests extends EclipseTest {
         fail("Did not receive expected set removed event");
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.core.tests.harness.EclipseWorkspaceTest#setUp()
-     */
+	@Override
     protected void setUp() throws Exception {
         super.setUp();
         CVSUIPlugin.getPlugin().getChangeSetManager().addListener(listener);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.tests.ccvs.core.EclipseTest#tearDown()
-     */
+	@Override
     protected void tearDown() throws Exception {
         super.tearDown();
         CVSUIPlugin.getPlugin().getChangeSetManager().removeListener(listener);

@@ -25,16 +25,12 @@ public class TestOverrideAndUpdateOperation extends OverrideAndUpdateSubscriberO
 		super(null, elements);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#canRunAsJob()
-	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#promptForOverwrite(org.eclipse.team.core.synchronize.SyncInfoSet)
-	 */
+	@Override
 	protected boolean promptForOverwrite(SyncInfoSet syncSet) {
 		TestOverrideAndUpdateOperation.this.prompted = true;
 		return true;

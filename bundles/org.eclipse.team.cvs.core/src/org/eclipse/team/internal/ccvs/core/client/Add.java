@@ -76,9 +76,7 @@ public class Add extends Command {
 		return status;
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.client.Command#getDefaultCommandOutputListener()
-     */
+	@Override
     protected ICommandOutputListener getDefaultCommandOutputListener() {
         return new CommandOutputListener() {
             public IStatus errorLine(String line,

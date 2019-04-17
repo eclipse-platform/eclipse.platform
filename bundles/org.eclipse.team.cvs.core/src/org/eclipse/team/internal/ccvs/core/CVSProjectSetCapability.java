@@ -646,9 +646,7 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.ProjectSetCapability#asReference(java.net.URI, java.lang.String)
-	 */
+	@Override
 	public String asReference(URI uri, String projectName) {
 		try {
 			CVSURI cvsURI = CVSURI.fromUri(uri);

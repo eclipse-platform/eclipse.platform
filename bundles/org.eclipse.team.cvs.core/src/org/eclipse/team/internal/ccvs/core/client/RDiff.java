@@ -20,9 +20,7 @@ public class RDiff extends RemoteCommand {
 	/*** Local options: specific to rdiff ***/
 	public static final LocalOption SUMMARY = new LocalOption("-s", null); //$NON-NLS-1$
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Request#getRequestId()
-	 */
+	@Override
 	protected String getRequestId() {
 		return "rdiff"; //$NON-NLS-1$
 	}

@@ -31,15 +31,6 @@ import org.eclipse.core.runtime.Status;
  */
 public class TextStreamMerger implements IStreamMerger {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.compare.internal.merge.IAutoMerger#automerge(java.io.OutputStream,
-	 *      org.eclipse.core.resources.IEncodedStorage,
-	 *      org.eclipse.core.resources.IEncodedStorage,
-	 *      org.eclipse.core.resources.IEncodedStorage,
-	 *      org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IStatus merge(OutputStream output, String outputEncoding, InputStream ancestor, String ancestorEncoding, InputStream target, String targetEncoding, InputStream other, String otherEncoding, IProgressMonitor monitor) {
 

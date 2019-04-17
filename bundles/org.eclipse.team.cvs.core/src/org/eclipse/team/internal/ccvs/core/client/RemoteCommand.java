@@ -45,9 +45,7 @@ public abstract class RemoteCommand extends Command {
 		// do nothing
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Command#convertArgumentsForOpenSession(org.eclipse.team.internal.ccvs.core.ICVSResource[], org.eclipse.team.internal.ccvs.core.client.Session)
-	 */
+	@Override
 	protected String[] convertArgumentsForOpenSession(
 		ICVSResource[] arguments,
 		Session openSession)

@@ -91,9 +91,9 @@ public class Splitter extends SashForm {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * Recursively calls setMaximizedControl for all direct parents that are
-	 * itself Splitters.
+	/*
+	 * Recursively calls setMaximizedControl for all direct parents that are itself
+	 * Splitters.
 	 */
 	@Override
 	public void setMaximizedControl(Control control) {
@@ -106,11 +106,11 @@ public class Splitter extends SashForm {
 		Composite parent= getParent();
 		if (parent instanceof Splitter)
 			((Splitter) parent).setMaximizedControl(this);
-		
+
 		layout(true);
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * Returns true if Splitter has no children or if all children are invisible.
 	 */
 	private boolean isEmpty() {
@@ -121,9 +121,9 @@ public class Splitter extends SashForm {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * Returns the visibility state of the given child control. If the
-	 * control is a Sash, this method always returns false.
+	/*
+	 * Returns the visibility state of the given child control. If the control is a
+	 * Sash, this method always returns false.
 	 */
 	private boolean isVisible(Control child) {
 		if (child instanceof Sash)

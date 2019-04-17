@@ -23,16 +23,12 @@ package org.eclipse.team.internal.ccvs.core.client;
  */
 public class Editors extends AbstractMessageCommand {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.Request#getRequestId()
-	 */
+	@Override
 	protected String getRequestId() {
 		return "editors"; //$NON-NLS-1$
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.Command#isWorkspaceModification()
-	 */
+	@Override
 	protected boolean isWorkspaceModification() {
 		return false;
 	}

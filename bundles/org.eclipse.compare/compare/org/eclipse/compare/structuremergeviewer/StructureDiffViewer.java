@@ -264,10 +264,10 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	}
 
     /*
-     * (non-Javadoc) Method declared on StructuredViewer.
-     * Overridden to create the comparable structures from the input object
-	 * and to feed them through the differencing engine. Note: for this viewer
-	 * the value from <code>getInput</code> is not identical to <code>getRoot</code>.
+	 * Method declared on StructuredViewer. Overridden to create the comparable
+	 * structures from the input object and to feed them through the differencing
+	 * engine. Note: for this viewer the value from <code>getInput</code> is not
+	 * identical to <code>getRoot</code>.
 	 */
 	@Override
 	protected void inputChanged(Object input, Object oldInput) {

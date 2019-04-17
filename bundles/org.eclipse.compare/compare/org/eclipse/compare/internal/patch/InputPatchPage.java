@@ -332,9 +332,6 @@ public class InputPatchPage extends WizardPage {
 		}
 	}
 
-	/* (non-JavaDoc)
-	 * Method declared in IWizardPage.
-	 */
 	@Override
 	public boolean canFlipToNextPage() {
 		// we can't call getNextPage to determine if flipping is allowed since computing

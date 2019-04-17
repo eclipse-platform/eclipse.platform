@@ -123,9 +123,7 @@ public class CVSEntryLineTag extends CVSTag {
 		return toEntryLineFormat(false);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.CVSTag#asDate()
-	 */
+	@Override
 	public Date asDate() {
 		return entryLineToDate(name);
 	}

@@ -46,9 +46,6 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 		// empty implementation
 	}
 
-	/* (non-Javadoc)
-	 * see IStreamContentAccessor.getContents
-	 */
 	@Override
 	public InputStream getContents() throws CoreException {
 		if (fContent != null)
@@ -102,9 +99,6 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 		fContent= null;
 	}
 
-	/* (non-Javadoc)
-	 * see IContentChangeNotifier.addChangeListener
-	 */
 	@Override
 	public void addContentChangeListener(IContentChangeListener listener) {
 		if (fChangeNotifier == null)
@@ -112,9 +106,6 @@ public abstract class BufferedContent implements IContentChangeNotifier, IStream
 		fChangeNotifier.addContentChangeListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * see IContentChangeNotifier.removeChangeListener
-	 */
 	@Override
 	public void removeContentChangeListener(IContentChangeListener listener) {
 		if (fChangeNotifier != null) {

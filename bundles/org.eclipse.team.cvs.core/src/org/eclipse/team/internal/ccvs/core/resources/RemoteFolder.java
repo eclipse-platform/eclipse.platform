@@ -565,9 +565,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 		return new ResourceSyncInfo(getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.resources.RemoteResource#getSyncBytes()
-	 */
+	@Override
 	public byte[] getSyncBytes() {
 		try {
 			return folderInfo.getBytes();
@@ -577,23 +575,17 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.sync.IRemoteResource#getContentIdentifier()
-	 */
+	@Override
 	public String getContentIdentifier() {
 		return getTag().getName();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResource#isManaged()
-	 */
+	@Override
 	public boolean isManaged() {
 		return super.isManaged() && isCVSFolder();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.ResourceVariant#fetchContents(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void fetchContents(IProgressMonitor monitor) throws TeamException {
 		// This should not get called for folders
 	}

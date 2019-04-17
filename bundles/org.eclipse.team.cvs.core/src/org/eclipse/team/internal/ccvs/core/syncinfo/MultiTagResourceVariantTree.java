@@ -38,9 +38,7 @@ public class MultiTagResourceVariantTree extends CVSResourceVariantTree {
 		resources.put(resource, tag);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.syncinfo.CVSResourceVariantTree#getTag(org.eclipse.core.resources.IResource)
-	 */
+	@Override
 	public CVSTag getTag(IResource resource) {
 		return (CVSTag)resources.get(resource);
 	}

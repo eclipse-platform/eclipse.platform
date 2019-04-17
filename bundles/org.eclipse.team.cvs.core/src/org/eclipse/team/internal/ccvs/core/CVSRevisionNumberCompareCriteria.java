@@ -72,23 +72,17 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.IComparisonCriteria#compare(org.eclipse.core.resources.IResource, org.eclipse.team.core.subscribers.ISubscriberResource)
-	 */
+	@Override
 	public boolean compare(IResource local, IResourceVariant remote) {
 		return compare(local, (ICVSRemoteResource)remote);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.IComparisonCriteria#compare(org.eclipse.team.core.subscribers.ISubscriberResource, org.eclipse.team.core.subscribers.ISubscriberResource)
-	 */
+	@Override
 	public boolean compare(IResourceVariant base, IResourceVariant remote) {
 		return compare((ICVSRemoteResource)base, (ICVSRemoteResource)remote);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.ISubscriberResourceComparator#isThreeWay()
-	 */
+	@Override
 	public boolean isThreeWay() {
 		return isThreeWay;
 	}

@@ -97,10 +97,12 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		return (CVSSyncTreeSubscriber)getWorkspaceSubscriber();
 	}
 	
-	/* (non-Javadoc)
-	 * 
+	/*
 	 * The shareProject method is invoked when creating new projects.
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#shareProject(org.eclipse.core.resources.IProject)
+	 * 
+	 * @see
+	 * org.eclipse.team.tests.ccvs.core.EclipseTest#shareProject(org.eclipse.core.
+	 * resources.IProject)
 	 */
 	@Override
 	protected void shareProject(final IProject project) throws TeamException, CoreException {
@@ -196,9 +198,6 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		registerSubscriberListener(getSubscriber());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#deleteResources(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	protected void deleteResources(IResource[] resources) throws TeamException, CoreException {
 		IResource[] affected = collect(resources, new ResourceCondition(), IResource.DEPTH_INFINITE);
@@ -220,9 +219,6 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		return deregisterSubscriberListener(getSubscriber());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#commitResources(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	protected void commitResources(IResource[] resources, int depth) throws TeamException, CVSException, CoreException {
 		IResource[] affected = collect(resources, new ResourceCondition() {
@@ -242,9 +238,6 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.tests.ccvs.core.EclipseTest#unmanageResources(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	protected void unmanageResources(IResource[] resources) throws CoreException, TeamException {
 		IResource[] affected = collect(resources, new ResourceCondition() {
