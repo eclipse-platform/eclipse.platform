@@ -37,81 +37,51 @@ public class WorkbenchPartSynchronizePageSite implements ISynchronizePageSite {
 		this.settings = settings;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPart()
-	 */
 	@Override
 	public IWorkbenchPart getPart() {
 		return part;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getShell()
-	 */
 	@Override
 	public Shell getShell() {
 		return part.getSite().getShell();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getSelectionProvider()
-	 */
 	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return site.getSelectionProvider();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setSelectionProvider(org.eclipse.jface.viewers.ISelectionProvider)
-	 */
 	@Override
 	public void setSelectionProvider(ISelectionProvider provider) {
 		site.setSelectionProvider(provider);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getWorkbenchSite()
-	 */
 	@Override
 	public IWorkbenchSite getWorkbenchSite() {
 		return part.getSite();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getKeyBindingService()
-	 */
 	@Override
 	public IKeyBindingService getKeyBindingService() {
 		return part.getSite().getKeyBindingService();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#setFocus()
-	 */
 	@Override
 	public void setFocus() {
 		part.getSite().getPage().activate(part);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getPageSettings()
-	 */
 	@Override
 	public IDialogSettings getPageSettings() {
 		return settings;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#getActionBars()
-	 */
 	@Override
 	public IActionBars getActionBars() {
 		return site.getActionBars();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizePageSite#isModal()
-	 */
 	@Override
 	public boolean isModal() {
 		return false;

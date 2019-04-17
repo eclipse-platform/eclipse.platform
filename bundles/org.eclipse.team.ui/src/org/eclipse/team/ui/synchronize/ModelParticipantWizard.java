@@ -35,9 +35,6 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 		setNeedsProgressMonitor(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
-	 */
 	@Override
 	protected final void createParticipant() {
 		ISynchronizeParticipant participant = createParticipant(selectionPage.getSelectedMappings());
@@ -46,9 +43,6 @@ public abstract class ModelParticipantWizard extends ParticipantSynchronizeWizar
 		participant.run(null /* no site */);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
-	 */
 	@Override
 	protected final WizardPage createScopeSelectionPage() {
 		selectionPage = new ModelElementSelectionPage(getRootResources());

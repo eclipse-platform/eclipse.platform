@@ -87,9 +87,6 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 	    return collector.isDefault(set);
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(org.eclipse.swt.graphics.Image, java.lang.Object)
-     */
     @Override
 	public Image decorateImage(Image image, Object element) {
         return image;

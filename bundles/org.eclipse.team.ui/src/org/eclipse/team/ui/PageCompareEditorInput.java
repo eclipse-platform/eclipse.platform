@@ -64,9 +64,6 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.CompareEditorInput#createStructureInputPane(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected CompareViewerPane createStructureInputPane(Composite parent) {
 		pagePane = new CompareViewerPane(parent, SWT.BORDER | SWT.FLAT) {

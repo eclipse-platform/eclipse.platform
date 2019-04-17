@@ -100,9 +100,6 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 		init(memento);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		synchronized(listeners) {
@@ -110,9 +107,6 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-	 */
 	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		synchronized(listeners) {
@@ -120,9 +114,6 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeScope#dispose()
-	 */
 	@Override
 	public void dispose() {
 		// Do nothing by default

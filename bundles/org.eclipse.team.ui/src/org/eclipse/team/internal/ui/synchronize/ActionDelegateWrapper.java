@@ -70,17 +70,11 @@ public class ActionDelegateWrapper extends Action implements ISelectionChangedLi
 				.getSelectionProvider().removeSelectionChangedListener(ActionDelegateWrapper.this));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-	 */
 	@Override
 	public void selectionChanged(SelectionChangedEvent event) {
 		getDelegate().selectionChanged(this, event.getSelection());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
 	@Override
 	public void run() {
 		getDelegate().run(this);

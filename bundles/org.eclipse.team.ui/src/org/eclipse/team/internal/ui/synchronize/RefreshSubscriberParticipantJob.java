@@ -32,9 +32,6 @@ public class RefreshSubscriberParticipantJob extends RefreshParticipantJob {
 		this.resources = resources;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.RefreshSubscriberJob#getSubscriber()
-	 */
 	protected Subscriber getSubscriber() {
 		return ((SubscriberParticipant)getParticipant()).getSubscriber();
 	}

@@ -35,16 +35,12 @@ public class FileSystemRemoteTree extends ThreeWayRemoteTree {
 		super(subscriber);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#fetchMembers(org.eclipse.team.core.variants.IResourceVariant, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant[] fetchMembers(IResourceVariant variant, IProgressMonitor progress) {
 		return ((FileSystemResourceVariant)variant).members();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.variants.AbstractResourceVariantTree#fetchVariant(org.eclipse.core.resources.IResource, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IResourceVariant fetchVariant(IResource resource, int depth, IProgressMonitor monitor) {
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), FileSystemPlugin.PROVIDER_ID);
 		if (provider != null) {

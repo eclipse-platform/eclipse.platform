@@ -30,9 +30,7 @@ public class FileSystemSyncInfo extends SyncInfo {
 		super(local, base, remote, comparator);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.subscribers.SyncInfo#calculateKind(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected int calculateKind() throws TeamException {
 		if (getLocal().getType() != IResource.FILE) {
 			if (getLocal().exists() && getRemote() != null) {
@@ -42,9 +40,7 @@ public class FileSystemSyncInfo extends SyncInfo {
 		return super.calculateKind();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.synchronize.SyncInfo#getBase()
-	 */
+	@Override
 	public IResourceVariant getBase() {
 		// If the kind has been set and there is an incoming change
 		// return null as the base since the server does not keep the

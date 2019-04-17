@@ -97,9 +97,6 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
 	protected void createMainDialogArea(Composite parent) {
 		GC gc = new GC(parent);
 		gc.setFont(JFaceResources.getDialogFont());
@@ -181,9 +178,6 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		updateEnablements();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
 	public void saveValues() {
 		if (enableBackgroundRefresh.getSelection()) {
 
@@ -227,9 +221,6 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		schedule.getRefreshable().setRefreshSchedule(schedule);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
-	 */
 	public void updateEnablements() {
 		if (!enableBackgroundRefresh.getSelection()) {
 			validator.setComplete(null);

@@ -595,14 +595,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.CompareEditorInput#addCompareInputChangeListener(
-	 * org.eclipse.compare.structuremergeviewer.ICompareInput,
-	 * org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
-	 */
 	@Override
 	public void addCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
@@ -613,14 +605,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.compare.CompareEditorInput#removeCompareInputChangeListener
-	 * (org.eclipse.compare.structuremergeviewer.ICompareInput,
-	 * org.eclipse.compare.structuremergeviewer.ICompareInputChangeListener)
-	 */
 	@Override
 	public void removeCompareInputChangeListener(ICompareInput input,
 			ICompareInputChangeListener listener) {
@@ -652,11 +636,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.compare.CompareEditorInput#getTitleImage()
-	 */
 	@Override
 	public Image getTitleImage() {
 		ImageRegistry reg = TeamUIPlugin.getPlugin().getImageRegistry();
@@ -668,11 +647,6 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		return image;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_SYNC_VIEW);

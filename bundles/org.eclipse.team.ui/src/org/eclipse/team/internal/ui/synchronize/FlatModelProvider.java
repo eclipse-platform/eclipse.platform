@@ -110,9 +110,6 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			return collator.compare(s1, s2);
 		}
 
-		/* (non-Javadoc)
-		 * Method declared on ViewerSorter.
-		 */
 		@Override
 		public int compare(Viewer viewer, Object o1, Object o2) {
 
@@ -196,9 +193,6 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 			sortByResource.add(new ToggleSortOrderAction(TeamUIMessages.FlatModelProvider_9, FlatSorter.PARENT_NAME));
 		}
 
-        /* (non-Javadoc)
-		 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
-		 */
 		@Override
 		public void dispose() {
 			sortByResource.dispose();
@@ -237,25 +231,16 @@ public class FlatModelProvider extends SynchronizeModelProvider {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#createActionGroup()
-     */
     @Override
 	protected SynchronizePageActionGroup createActionGroup() {
         return new FlatActionGroup();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getViewerSorter()
-     */
     @Override
 	public ViewerSorter getViewerSorter() {
 		return new FlatSorter(sortCriteria);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#buildModelObjects(org.eclipse.team.ui.synchronize.ISynchronizeModelElement)
-     */
     @Override
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
         if (node == getModelRoot());
@@ -268,26 +253,17 @@ public class FlatModelProvider extends SynchronizeModelProvider {
         return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceAdditions(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
         addResources(event.getAddedResources());
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceRemovals(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
         IResource[] resources = event.getRemovedResources();
         removeFromViewer(resources);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.ISynchronizeModelProvider#getDescriptor()
-     */
     @Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
         return flatDescriptor;

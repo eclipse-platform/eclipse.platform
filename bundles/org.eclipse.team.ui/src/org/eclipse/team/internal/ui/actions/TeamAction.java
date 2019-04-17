@@ -447,9 +447,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
-	 */
 	@Override
 	public void init(IViewPart view) {
 		if(view != null) {
@@ -595,9 +592,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
         run(action);
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.AbstractHandler#setEnabled(java.lang.Object)
-	 */
 	@Override
 	public void setEnabled(Object evaluationContext) {
 		IWorkbenchWindow activeWorkbenchWindow = (IWorkbenchWindow) HandlerUtil

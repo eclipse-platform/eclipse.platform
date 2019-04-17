@@ -54,9 +54,6 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 		this.includeCancelButton = includeCancelButton;
 	}
 
-	/**
-	 * @see DetailsDialog#createMainDialogArea(Composite)
-	 */
 	@Override
 	protected void createMainDialogArea(Composite composite) {
 		Label label = new Label(composite, SWT.WRAP);
@@ -67,9 +64,6 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 		updateEnablements();
 	}
 
-	/**
-	 * @see DetailsDialog#createDropDownDialogArea(Composite)
-	 */
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		// create a composite with standard margins and spacing
@@ -100,26 +94,16 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 		return composite;
 	}
 
-	/**
-	 * @see DetailsDialog#updateEnablements()
-	 */
 	@Override
 	protected void updateEnablements() {
 		setPageComplete(true);
 	}
 
-	/**
-	 * @see DetailsDialog#includeCancelButton()
-	 */
 	@Override
 	protected boolean includeCancelButton() {
 		return includeCancelButton;
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
-     * @since 3.4
-     */
     @Override
 	protected boolean isMainGrabVertical() {
         return false;

@@ -34,9 +34,6 @@ public class BuildScopeOperation extends ModelOperation {
 		super(part, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {

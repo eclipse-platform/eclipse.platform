@@ -30,17 +30,11 @@ public class WorkspaceScope extends AbstractSynchronizeScope  {
 	public WorkspaceScope() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getName()
-	 */
 	@Override
 	public String getName() {
 		return TeamUIMessages.WorkspaceScope_0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ScopableSubscriberParticipant.ISynchronizeScope#getRoots()
-	 */
 	@Override
 	public IResource[] getRoots() {
 		// Return null which indicates to use the subscriber roots

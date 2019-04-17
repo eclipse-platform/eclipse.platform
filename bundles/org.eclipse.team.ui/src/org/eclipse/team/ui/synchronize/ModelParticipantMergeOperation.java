@@ -65,9 +65,6 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		super(part, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#initializeContext(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void initializeContext(IProgressMonitor monitor) throws CoreException {
 		if (participant == null) {
@@ -89,9 +86,6 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
@@ -102,18 +96,12 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ModelMergeOperation#executeMerge(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void executeMerge(IProgressMonitor monitor) throws CoreException {
 		if (!sentToSyncView)
 			super.executeMerge(monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelMergeOperation#handlePreviewRequest()
-	 */
 	@Override
 	protected void handlePreviewRequest() {
 		Job job = new WorkbenchJob(getJobName()) {
@@ -174,9 +162,6 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#getContext()
-	 */
 	@Override
 	protected ISynchronizationContext getContext() {
 		if (participant != null)
@@ -184,9 +169,6 @@ public abstract class ModelParticipantMergeOperation extends ModelMergeOperation
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#getPreviewRequestMessage()
-	 */
 	@Override
 	protected String getPreviewRequestMessage() {
 		if (!isPreviewRequested()) {

@@ -176,9 +176,6 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 		return getElements();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
-	 */
 	@Override
 	protected boolean canRunAsJob() {
 		return true;

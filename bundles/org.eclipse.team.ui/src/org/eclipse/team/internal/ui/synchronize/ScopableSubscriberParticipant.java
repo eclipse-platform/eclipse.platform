@@ -36,10 +36,6 @@ public abstract class ScopableSubscriberParticipant extends SubscriberParticipan
 		super(scope);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscriber.SubscriberParticipant#setSubscriber(org.eclipse.team.core.subscribers.Subscriber)
-	 */
 	@Override
 	protected void setSubscriber(Subscriber subscriber) {
 		super.setSubscriber(subscriber);

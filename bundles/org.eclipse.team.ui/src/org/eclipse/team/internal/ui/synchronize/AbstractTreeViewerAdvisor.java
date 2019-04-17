@@ -358,7 +358,7 @@ public abstract class AbstractTreeViewerAdvisor extends StructuredViewerAdvisor 
 		return hasChange((TreeViewer)getViewer(), next);
 	}
 
-	/* (non-Javadoc)
+	/*
 	 * Allow adding an advisor to the PartNavigator and support coordinated
  	 * navigation between several objects.
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)

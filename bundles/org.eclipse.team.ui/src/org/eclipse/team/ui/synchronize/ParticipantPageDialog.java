@@ -56,9 +56,6 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 		this.participant = participant;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent2) {
 		Composite parent = (Composite) super.createDialogArea(parent2);
@@ -70,9 +67,6 @@ public class ParticipantPageDialog extends SaveablePartDialog {
 		return parent;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-	 */
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if(buttonId == IDialogConstants.OK_ID && isRememberParticipant()) {

@@ -57,17 +57,11 @@ public class ModelMerger extends ResourceMappingMerger {
 		this.provider = provider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#getModelProvider()
-	 */
 	@Override
 	protected org.eclipse.core.resources.mapping.ModelProvider getModelProvider() {
 		return provider;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.ResourceMappingMerger#merge(org.eclipse.team.core.mapping.IMergeContext, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public IStatus merge(IMergeContext mergeContext, IProgressMonitor monitor) throws CoreException {
 		try {

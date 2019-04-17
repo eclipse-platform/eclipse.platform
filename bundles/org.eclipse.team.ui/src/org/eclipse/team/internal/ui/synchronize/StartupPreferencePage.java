@@ -46,9 +46,6 @@ public class StartupPreferencePage extends FieldEditorPreferencePage implements
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);

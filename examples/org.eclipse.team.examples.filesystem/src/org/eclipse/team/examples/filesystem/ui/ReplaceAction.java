@@ -19,9 +19,7 @@ package org.eclipse.team.examples.filesystem.ui;
  */
 public class ReplaceAction extends GetAction {
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.examples.filesystem.ui.GetAction#isOverwriteOutgoing()
-	 */
+	@Override
 	protected boolean isOverwriteOutgoing() {
 		return true;
 	}

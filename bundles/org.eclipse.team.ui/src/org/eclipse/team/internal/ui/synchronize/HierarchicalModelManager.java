@@ -24,9 +24,6 @@ public class HierarchicalModelManager extends SynchronizeModelManager {
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#getSupportedModelProviders()
-	 */
 	@Override
 	protected ISynchronizeModelProviderDescriptor[] getSupportedModelProviders() {
 		return new ISynchronizeModelProviderDescriptor[] {
@@ -35,9 +32,6 @@ public class HierarchicalModelManager extends SynchronizeModelManager {
 				new CompressedFoldersModelProvider.CompressedFolderModelProviderDescriptor() };
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#createModelProvider(java.lang.String)
-	 */
 	@Override
 	protected ISynchronizeModelProvider createModelProvider(String id) {
 		if(id == null) {

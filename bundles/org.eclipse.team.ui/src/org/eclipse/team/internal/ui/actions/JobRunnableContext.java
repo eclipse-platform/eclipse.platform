@@ -97,9 +97,6 @@ public class JobRunnableContext implements ITeamRunnableContext {
 		this.site = site;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.ITeamRunnableContext#run(java.lang.String, boolean, org.eclipse.jface.operation.IRunnableWithProgress)
-	 */
 	@Override
 	public void run(IRunnableWithProgress runnable) {
 		Job job;

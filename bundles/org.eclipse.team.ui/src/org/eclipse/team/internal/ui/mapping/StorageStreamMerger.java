@@ -96,9 +96,6 @@ public class StorageStreamMerger implements IStorageMerger {
 		return outputEncoding;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IStorageMerger#canMergeWithoutAncestor()
-	 */
 	@Override
 	public boolean canMergeWithoutAncestor() {
 		return false;

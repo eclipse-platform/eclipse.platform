@@ -81,17 +81,11 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 		return bufferedContents;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getImage()
-	 */
 	@Override
 	public Image getImage() {
 		return CompareUI.getImage(getType());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.ITypedElement#getType()
-	 */
 	@Override
 	public String getType() {
 		String name = getName();
@@ -106,9 +100,6 @@ public abstract class StorageTypedElement implements ITypedElement, IEncodedStre
 		return ITypedElement.FOLDER_TYPE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
-	 */
 	@Override
 	public String getCharset() throws CoreException {
 		if (localEncoding != null)

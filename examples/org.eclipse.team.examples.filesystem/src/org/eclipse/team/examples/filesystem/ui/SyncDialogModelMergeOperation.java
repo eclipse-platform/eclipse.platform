@@ -30,9 +30,7 @@ public class SyncDialogModelMergeOperation extends
 		super(part, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ModelParticipantMergeOperation#createMergeContext()
-	 */
+	@Override
 	protected SynchronizationContext createMergeContext() {
 		return new FileSystemMergeContext(getScopeManager());
 	}

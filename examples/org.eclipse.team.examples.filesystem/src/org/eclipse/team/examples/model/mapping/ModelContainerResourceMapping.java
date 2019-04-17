@@ -28,9 +28,7 @@ public class ModelContainerResourceMapping extends ModelResourceMapping {
 		super(container);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getTraversals(org.eclipse.core.resources.mapping.ResourceMappingContext, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) {
 		return new ResourceTraversal[] { 
@@ -44,9 +42,7 @@ public class ModelContainerResourceMapping extends ModelResourceMapping {
 		return ((ModelContainer)getModelObject()).getResource();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#contains(org.eclipse.core.resources.mapping.ResourceMapping)
-	 */
+	@Override
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping instanceof ModelResourceMapping) {
 			ModelObject object = (ModelObject)mapping.getModelObject();

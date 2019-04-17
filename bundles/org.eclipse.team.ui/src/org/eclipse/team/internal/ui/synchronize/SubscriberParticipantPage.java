@@ -120,16 +120,10 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 		configuration.setProperty(SynchronizePageConfiguration.P_WORKING_SET_SYNC_INFO_SET, collector.getWorkingSetSyncInfoSet());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SyncInfoSetSynchronizePage#isThreeWay()
-	 */
 	protected boolean isThreeWay() {
 		return getParticipant().getSubscriber().getResourceComparator().isThreeWay();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.SyncInfoSetSynchronizePage#reset()
-	 */
 	@Override
 	public void reset() {
 		getParticipant().reset();
@@ -149,9 +143,6 @@ public final class SubscriberParticipantPage extends AbstractSynchronizePage {
 		collector.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizePage#createChangesSection(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected ChangesSection createChangesSection(Composite parent) {
 		return new SyncInfoSetChangesSection(parent, this, getConfiguration());

@@ -104,18 +104,12 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#dispose()
-	 */
 	@Override
 	public void dispose() {
 		getConfiguration().removePropertyChangeListener(this);
 		super.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#createModelProvider(java.lang.String)
-	 */
 	@Override
 	protected ISynchronizeModelProvider createModelProvider(String id) {
 	    if (enabled) {
@@ -125,9 +119,6 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 	    }
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#getSelectedProviderId()
-     */
     @Override
 	protected String getSelectedProviderId() {
         String id = super.getSelectedProviderId();
@@ -138,16 +129,10 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
         }
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#saveProviderSettings(java.lang.String)
-     */
     @Override
 	protected void saveProviderSettings(String id) {
         super.saveProviderSettings(id);
@@ -157,9 +142,6 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
 		}
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.SynchronizeModelManager#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-     */
     @Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
         // Load our setting before invoking super since the inherited
@@ -183,9 +165,6 @@ public class ChangeSetModelManager extends HierarchicalModelManager implements I
         }
     }
 
-    /* (non-Javadoc)
-     * This method is public so it can be invoked from test cases
-     */
     @Override
 	public ISynchronizeModelProvider getActiveModelProvider() {
         return super.getActiveModelProvider();

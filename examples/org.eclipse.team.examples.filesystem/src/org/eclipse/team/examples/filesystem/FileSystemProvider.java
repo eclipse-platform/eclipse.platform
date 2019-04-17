@@ -91,6 +91,7 @@ public class FileSystemProvider extends RepositoryProvider {
 	 * 
 	 * @see org.eclipse.team.core.RepositoryProvider#configureProject()
 	 */
+	@Override
 	public void configureProject() {
 		FileSystemSubscriber.getInstance().handleRootChanged(getProject(), true /* added */);
 	}
@@ -101,6 +102,7 @@ public class FileSystemProvider extends RepositoryProvider {
 	 * 
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
+	@Override
 	public void deconfigure() throws CoreException {
 		// Clear the persistant property containing the location
 		getProject().setPersistentProperty(FILESYSTEM_REPO_LOC, null);
@@ -112,6 +114,7 @@ public class FileSystemProvider extends RepositoryProvider {
 	 * 
 	 * @see RepositoryProvider#getID()
 	 */
+	@Override
 	public String getID() {
 		return FileSystemPlugin.PROVIDER_ID;
 	}
@@ -175,16 +178,12 @@ public class FileSystemProvider extends RepositoryProvider {
 		return new FileSystemOperations(this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProvider#getFileModificationValidator()
-	 */
+	@Override
 	public IFileModificationValidator getFileModificationValidator() {
 		return getFileModificationValidator2();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProvider#getFileModificationValidator2()
-	 */
+	@Override
 	public FileModificationValidator getFileModificationValidator2() {
 		return new org.eclipse.team.examples.filesystem.FileModificationValidator(this);
 	}
@@ -229,13 +228,12 @@ public class FileSystemProvider extends RepositoryProvider {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.RepositoryProvider#getRuleFactory()
-	 */
+	@Override
 	public IResourceRuleFactory getRuleFactory() {
 		return RESOURCE_RULE_FACTORY;
 	}
 	
+	@Override
 	public IFileHistoryProvider getFileHistoryProvider() {
 		  if (FileSystemProvider.fileHistoryProvider == null) {
 			  FileSystemProvider.fileHistoryProvider = new FileSystemHistoryProvider();

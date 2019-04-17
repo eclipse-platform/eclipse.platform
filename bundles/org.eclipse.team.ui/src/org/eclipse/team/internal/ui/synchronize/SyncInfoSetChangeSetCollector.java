@@ -230,7 +230,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
         provider.performUpdate(runnable, preserveExpansion, false /* run in the handler thread and refresh at the end */);
     }
 
-    /* (non-javadoc)
+    /*
      * Sets the provider for this collector. This method is for internal use only.
      */
     public final void setProvider(ChangeSetModelProvider provider) {

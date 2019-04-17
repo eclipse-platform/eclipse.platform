@@ -140,9 +140,6 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-	 */
 	public void fillActionBars(IActionBars actionBars, String group) {
 		super.fillActionBars(actionBars);
 		IToolBarManager toolBar = actionBars.getToolBarManager();
@@ -181,9 +178,6 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if(event.getProperty().equals(ISynchronizePageConfiguration.P_MODE)) {
@@ -192,9 +186,6 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.ActionGroup#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();

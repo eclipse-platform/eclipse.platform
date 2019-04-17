@@ -38,9 +38,6 @@ public class UnchangedResourceModelElement extends SynchronizeModelElement {
 		return resource;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.structuremergeviewer.DiffNode#getName()
-	 */
 	@Override
 	public String getName() {
 		return resource.getName();

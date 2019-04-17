@@ -35,9 +35,6 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 	private RefactorActionGroup refactorActions;
 	private SyncViewerShowPreferencesAction showPreferences;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
@@ -58,9 +55,6 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		}
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-     */
     @Override
 	public void fillActionBars(IActionBars actionBars) {
         if (openWithActions != null) openWithActions.fillActionBars(actionBars);
@@ -71,18 +65,12 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
         }
     }
 
-	/* (non-Javadoc)
-     * @see org.eclipse.ui.actions.ActionGroup#updateActionBars()
-     */
     @Override
 	public void updateActionBars() {
         if (openWithActions != null) openWithActions.updateActionBars();
         if (refactorActions != null) refactorActions.updateActionBars();
     }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#fillContextMenu(org.eclipse.jface.action.IMenuManager)
-	 */
 	@Override
 	public void fillContextMenu(IMenuManager manager) {
 
@@ -97,9 +85,6 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -107,9 +92,6 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		if (openWithActions != null) openWithActions.dispose();
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.ui.actions.ActionGroup#setContext(org.eclipse.ui.actions.ActionContext)
-     */
     @Override
 	public void setContext(ActionContext context) {
         if (openWithActions != null) openWithActions.setContext(context);

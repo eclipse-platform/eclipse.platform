@@ -25,9 +25,7 @@ public class ModelSyncActionProvider extends SynchronizationActionProvider {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.SynchronizationActionProvider#initialize()
-	 */
+	@Override
 	protected void initialize() {
 		super.initialize();
 		final ISynchronizePageConfiguration configuration= getSynchronizePageConfiguration();

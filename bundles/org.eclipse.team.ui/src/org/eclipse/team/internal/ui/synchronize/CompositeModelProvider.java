@@ -138,9 +138,6 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
      */
     protected abstract void handleAddition(SyncInfo info);
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceChanges(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected final void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
         SyncInfo[] infos = event.getChangedResources();
@@ -160,9 +157,6 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
         handleAddition(info);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.AbstractSynchronizeModelProvider#handleResourceRemovals(org.eclipse.team.core.synchronize.ISyncInfoTreeChangeEvent)
-     */
     @Override
 	protected final void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
         IResource[] resources = event.getRemovedResources();

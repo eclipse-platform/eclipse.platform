@@ -17,7 +17,7 @@ import org.eclipse.core.resources.mapping.ResourceTraversal;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
-import org.eclipse.team.core.diff.*;
+import org.eclipse.team.core.diff.IThreeWayDiff;
 import org.eclipse.team.core.subscribers.SubscriberScopeManager;
 import org.eclipse.team.examples.filesystem.FileSystemProvider;
 import org.eclipse.team.examples.filesystem.Policy;
@@ -40,9 +40,7 @@ public class PutOperation extends FileSystemOperation {
 		super(part, manager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.examples.filesystem.ui.FileSystemOperation#execute(org.eclipse.team.examples.filesystem.FileSystemProvider, org.eclipse.core.resources.mapping.ResourceTraversal[], org.eclipse.core.runtime.SubProgressMonitor)
-	 */
+	@Override
 	protected void execute(FileSystemProvider provider,
 			ResourceTraversal[] traversals, IProgressMonitor monitor)
 			throws CoreException {
@@ -56,16 +54,14 @@ public class PutOperation extends FileSystemOperation {
 	private boolean hasOutgoingChanges(ResourceTraversal[] traversals) throws CoreException {
 		final RuntimeException found = new RuntimeException();
 		try {
-			FileSystemSubscriber.getInstance().accept(traversals, new IDiffVisitor() {
-				public boolean visit(IDiff diff) {
-					if (diff instanceof IThreeWayDiff) {
-						IThreeWayDiff twd = (IThreeWayDiff) diff;
-						if (twd.getDirection() == IThreeWayDiff.OUTGOING || twd.getDirection() == IThreeWayDiff.CONFLICTING) {
-							throw found;
-						}
+			FileSystemSubscriber.getInstance().accept(traversals, diff -> {
+				if (diff instanceof IThreeWayDiff) {
+					IThreeWayDiff twd = (IThreeWayDiff) diff;
+					if (twd.getDirection() == IThreeWayDiff.OUTGOING || twd.getDirection() == IThreeWayDiff.CONFLICTING) {
+						throw found;
 					}
-					return false;
 				}
+				return false;
 			});
 		} catch (RuntimeException e) {
 			if (e == found)
@@ -75,9 +71,7 @@ public class PutOperation extends FileSystemOperation {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.examples.filesystem.ui.FileSystemOperation#getTaskName()
-	 */
+	@Override
 	protected String getTaskName() {
 		return Policy.bind("PutAction.working"); //$NON-NLS-1$
 	}

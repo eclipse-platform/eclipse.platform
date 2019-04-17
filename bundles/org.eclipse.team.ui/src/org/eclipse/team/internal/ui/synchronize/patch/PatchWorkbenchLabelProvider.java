@@ -24,33 +24,21 @@ public class PatchWorkbenchLabelProvider extends WorkbenchLabelProvider
 
 	private ICommonContentExtensionSite extensionSite;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.ICommonLabelProvider#init(org.eclipse.ui.navigator.ICommonContentExtensionSite)
-	 */
 	@Override
 	public void init(ICommonContentExtensionSite aConfig) {
 		extensionSite = aConfig;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#restoreState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void restoreState(IMemento aMemento) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IMementoAware#saveState(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void saveState(IMemento aMemento) {
 		// Nothing to do
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.navigator.IDescriptionProvider#getDescription(java.lang.Object)
-	 */
 	@Override
 	public String getDescription(Object anElement) {
 		if (anElement instanceof DiffNode) {

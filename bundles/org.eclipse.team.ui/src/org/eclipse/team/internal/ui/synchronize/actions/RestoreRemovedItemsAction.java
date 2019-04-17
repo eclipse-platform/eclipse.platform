@@ -63,9 +63,6 @@ public class RestoreRemovedItemsAction extends SynchronizeModelAction {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#needsToSaveDirtyEditors()
-	 */
 	@Override
 	protected boolean needsToSaveDirtyEditors() {
 		return false;

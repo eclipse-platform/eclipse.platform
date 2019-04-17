@@ -28,9 +28,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		this.decorators = decorators;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(org.eclipse.swt.graphics.Image, java.lang.Object)
-	 */
 	@Override
 	public Image decorateImage(Image image, Object element) {
 		for (int i = 0; i < decorators.length; i++) {
@@ -43,9 +40,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		return image;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public String decorateText(String text, Object element) {
 		for (int i = 0; i < decorators.length; i++) {
@@ -58,9 +52,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		return text;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		for (int i = 0; i < decorators.length; i++) {
@@ -69,9 +60,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IFontDecorator#decorateFont(java.lang.Object)
-	 */
 	@Override
 	public Font decorateFont(Object element) {
 		for (int i = 0; i < decorators.length; i++) {
@@ -83,9 +71,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorDecorator#decorateForeground(java.lang.Object)
-	 */
 	@Override
 	public Color decorateForeground(Object element) {
 		for (int i = 0; i < decorators.length; i++) {
@@ -97,9 +82,6 @@ class MultiLabelDecorator extends LabelProvider implements ILabelDecorator, IFon
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IColorDecorator#decorateBackground(java.lang.Object)
-	 */
 	@Override
 	public Color decorateBackground(Object element) {
 		for (int i = 0; i < decorators.length; i++) {

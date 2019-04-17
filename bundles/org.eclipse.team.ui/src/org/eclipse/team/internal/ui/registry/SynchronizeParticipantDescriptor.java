@@ -87,9 +87,6 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 		return label;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipantDescriptor#isPersistent()
-	 */
 	@Override
 	public boolean isPersistent() {
 		return persistent;

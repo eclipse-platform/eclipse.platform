@@ -51,18 +51,12 @@ public class GlobalSynchronizeWizard extends Wizard {
 		setDialogSettings(wizardSettings);
 	}
 
-	/*
-	 * @see Wizard#addPages
-	 */
 	@Override
 	public void addPages() {
 		mainPage = new GlobalRefreshWizardSelectionPage();
 		addPage(mainPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
-	 */
 	@Override
 	public boolean canFinish() {
 		// If we are on the first page, never allow finish unless the selected
@@ -76,9 +70,6 @@ public class GlobalSynchronizeWizard extends Wizard {
 		return super.canFinish();
 	}
 
-	/*
-	 * @see Wizard#performFinish
-	 */
 	@Override
 	public boolean performFinish() {
 		// If we are on the first page and the selected wizard has no pages then allow it to finish.

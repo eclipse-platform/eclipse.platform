@@ -15,7 +15,10 @@ package org.eclipse.team.examples.model.mapping;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.mapping.ResourceMapping;
-import org.eclipse.team.examples.model.*;
+import org.eclipse.team.examples.model.ModelContainer;
+import org.eclipse.team.examples.model.ModelObject;
+import org.eclipse.team.examples.model.ModelObjectDefinitionFile;
+import org.eclipse.team.examples.model.ModelObjectElementFile;
 
 public abstract class ModelResourceMapping extends ResourceMapping {
 
@@ -38,23 +41,17 @@ public abstract class ModelResourceMapping extends ResourceMapping {
 		this.object = object;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getModelObject()
-	 */
+	@Override
 	public Object getModelObject() {
 		return object;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getModelProviderId()
-	 */
+	@Override
 	public String getModelProviderId() {
 		return ExampleModelProvider.ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.resources.mapping.ResourceMapping#getProjects()
-	 */
+	@Override
 	public IProject[] getProjects() {
 		return new IProject[] { (IProject)object.getProject().getResource() };
 	}

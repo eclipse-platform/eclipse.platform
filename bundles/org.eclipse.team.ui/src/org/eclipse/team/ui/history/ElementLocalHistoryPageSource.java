@@ -44,17 +44,11 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.history.IHistoryPageSource#canShowHistoryFor(java.lang.Object)
-	 */
 	@Override
 	public final boolean canShowHistoryFor(Object object) {
 		return getFile(object) != null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.history.IHistoryPageSource#createPage(java.lang.Object)
-	 */
 	@Override
 	public final Page createPage(Object object) {
 		return new EditionHistoryPage(getFile(object), object);

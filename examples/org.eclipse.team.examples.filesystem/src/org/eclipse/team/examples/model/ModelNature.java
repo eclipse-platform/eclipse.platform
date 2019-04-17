@@ -22,35 +22,27 @@ import org.eclipse.core.resources.IProjectNature;
 public class ModelNature implements IProjectNature {
 
 	public static final String NATURE_ID = "org.eclipse.team.examples.filesystem.modelNature";
-	
-    private IProject project;
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IProjectNature#configure()
-     */
-    public void configure() {
-        // Nothing to do
-    }
+	private IProject project;
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-     */
-    public void deconfigure() {
-        // Nothing to do
-    }
+	@Override
+	public void configure() {
+		// Nothing to do
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IProjectNature#getProject()
-     */
-    public IProject getProject() {
-        return project;
-    }
+	@Override
+	public void deconfigure() {
+		// Nothing to do
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
-     */
-    public void setProject(IProject project) {
-        this.project = project;
-    }
+	@Override
+	public IProject getProject() {
+		return project;
+	}
+
+	@Override
+	public void setProject(IProject project) {
+		this.project = project;
+	}
 
 }

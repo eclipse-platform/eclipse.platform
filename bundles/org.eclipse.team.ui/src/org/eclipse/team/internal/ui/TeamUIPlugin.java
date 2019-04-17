@@ -246,9 +246,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		StreamMergerDelegate.start();
 	}
 
-	/* (non-Javadoc)
-	 * @see Plugin#stop(BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {

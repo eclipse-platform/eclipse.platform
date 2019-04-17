@@ -57,9 +57,6 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 
 	private ImageManager localImageManager;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-	 */
 	@Override
 	public Image getImage(Object element) {
 		Image base = getDelegateImage(element);
@@ -149,9 +146,6 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		return ResourceDiffCompareInput.getCompareKind(node);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-	 */
 	@Override
 	public String getText(Object element) {
 		String base = getDelegateText(element);
@@ -198,34 +192,22 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		return base;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
 	@Override
 	public void addListener(ILabelProviderListener listener) {
 		getDelegateLabelProvider().addListener(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if (localImageManager != null)
 			localImageManager.dispose();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-	 */
 	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		return getDelegateLabelProvider().isLabelProperty(internalGetElement(element), property);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
 	@Override
 	public void removeListener(ILabelProviderListener listener) {
 		getDelegateLabelProvider().removeListener(listener);

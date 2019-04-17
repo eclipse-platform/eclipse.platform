@@ -103,25 +103,16 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		throw new CoreException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, reason, null));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getContentExtensionId()
-	 */
 	@Override
 	public String getContentExtensionId() {
 		return contentExtensionId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getModelProviderId()
-	 */
 	@Override
 	public String getModelProviderId() {
 		return modelProviderId;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#getImageDescriptor()
-	 */
 	@Override
 	public ImageDescriptor getImageDescriptor() {
 		if (imageDescriptor != null)
@@ -133,9 +124,6 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		return imageDescriptor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.registry.ITeamContentProviderDescriptor#createPreferencePage()
-	 */
 	@Override
 	public IPreferencePage createPreferencePage() throws CoreException {
 		if (configElement.getAttribute(ATT_PREFERENCE_PAGE) == null)
@@ -144,9 +132,6 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		return (IPreferencePage) obj;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor#isEnabled()
-	 */
 	@Override
 	public boolean isEnabled() {
 		if (!hasPreferences()) {
@@ -227,9 +212,6 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.mapping.ITeamContentProviderDescriptor#isFlatLayoutSupported()
-	 */
 	@Override
 	public boolean isFlatLayoutSupported() {
 		return supportsFlatLayout;

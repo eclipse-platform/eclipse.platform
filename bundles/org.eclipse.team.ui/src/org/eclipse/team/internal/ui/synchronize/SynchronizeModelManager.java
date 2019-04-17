@@ -77,9 +77,6 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 			setChecked(getSelectedProviderId().equals(descriptor.getId()));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-		 */
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			if (event.getProperty().equals(SynchronizePageConfiguration.P_MODEL)) {
@@ -229,9 +226,6 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#initialize(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
@@ -258,9 +252,6 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#setActionBars(org.eclipse.ui.IActionBars)
-	 */
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		if (toggleModelProviderActions == null) return;
@@ -289,9 +280,6 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.IActionContribution#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if(modelProvider != null) {

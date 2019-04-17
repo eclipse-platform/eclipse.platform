@@ -81,9 +81,6 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		super.updateSelection(selection);

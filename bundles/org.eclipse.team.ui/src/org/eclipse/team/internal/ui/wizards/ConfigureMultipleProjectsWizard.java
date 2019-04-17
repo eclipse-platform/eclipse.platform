@@ -42,9 +42,6 @@ public class ConfigureMultipleProjectsWizard extends Wizard {
 		addPage(projectSelectionPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
 		// Prompt if there are still unshared projects

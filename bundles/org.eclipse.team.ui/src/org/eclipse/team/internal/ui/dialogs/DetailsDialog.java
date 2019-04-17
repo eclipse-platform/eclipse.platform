@@ -87,8 +87,7 @@ abstract public class DetailsDialog extends TrayDialog {
 		setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.APPLICATION_MODAL);
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
+	/*
 	 * Handles the pressing of the Ok or Details button in this dialog.
 	 * If the Ok button was pressed then close this dialog.  If the Details
 	 * button was pressed then toggle the displaying of the error details area.
@@ -104,9 +103,6 @@ abstract public class DetailsDialog extends TrayDialog {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * Method declared in Window.
-	 */
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
@@ -117,9 +113,6 @@ abstract public class DetailsDialog extends TrayDialog {
         }
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Details buttons
@@ -143,8 +136,7 @@ abstract public class DetailsDialog extends TrayDialog {
 		return IDialogConstants.HIDE_DETAILS_LABEL;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
+	/*
 	 * Creates and returns the contents of the upper part
 	 * of the dialog (above the button bar).
 	 */
