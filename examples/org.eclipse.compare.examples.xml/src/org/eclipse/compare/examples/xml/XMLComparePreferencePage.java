@@ -100,9 +100,6 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		fOrderedElementsInternal= plugin.getOrderedElementsInternal();
 	}
 
-	/**
-	 * @see PreferencePage#createContents(Composite)
-	 */
 	@Override
 	protected Control createContents(Composite ancestor) {
 		Composite parent= new Composite(ancestor, SWT.NULL);
@@ -772,9 +769,6 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		idmap.setOrdered(Ordered);
 	}
 
-	/*
-	 * @see IWorkbenchPreferencePage#performDefaults
-	 */	
 	@Override
 	public boolean performOk() {
 		XMLPlugin plugin= XMLPlugin.getDefault();

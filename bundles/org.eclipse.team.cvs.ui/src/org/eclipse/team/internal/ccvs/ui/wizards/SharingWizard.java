@@ -227,9 +227,6 @@ public class SharingWizard extends Wizard implements IConfigurationWizard, ICVSW
 		return null;
 	}
 
-	/*
-	 * @see IWizard#performFinish
-	 */
 	@Override
 	public boolean performFinish() {
 		final boolean[] result = new boolean[] { true };
@@ -371,9 +368,6 @@ public class SharingWizard extends Wizard implements IConfigurationWizard, ICVSW
 		return location;
 	}
 	
-	/*
-	 * @see IConfigurationWizard#init(IWorkbench, IProject)
-	 */
 	@Override
 	public void init(IWorkbench workbench, IProject project) {
 		this.project = project;

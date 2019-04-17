@@ -29,6 +29,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.RemoteCompareOperation;
  */
 public class CompareRemoteResourcesAction extends CVSAction {
 
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ICVSRemoteResource[] editions = getSelectedRemoteResources();
 		if (editions == null || editions.length != 2) {
@@ -52,9 +53,7 @@ public class CompareRemoteResourcesAction extends CVSAction {
 				&& editions[0].getRepositoryRelativePath().equals(editions[1].getRepositoryRelativePath());
 	}
 	
-	/*
-	 * @see TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRemoteResource[] resources = getSelectedRemoteResources();
 		if (resources.length != 2) return false;

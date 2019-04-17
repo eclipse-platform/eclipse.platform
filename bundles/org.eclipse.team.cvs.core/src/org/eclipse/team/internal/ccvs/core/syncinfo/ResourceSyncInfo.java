@@ -316,9 +316,7 @@ public class ResourceSyncInfo {
 		return getName().hashCode();
 	}
 	
-	/*
-	 * @see Object#toString()
-	 */
+	@Override
 	public String toString() {
 		return getEntryLine(true, null /*no timestamp override*/);
 	}

@@ -17,7 +17,6 @@ package org.eclipse.team.internal.ccvs.ui;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -81,9 +80,6 @@ public class UserValidationDialog extends TrayDialog {
 		this.cachingCheckbox=cachingCheckbox;
 	}
 	
-	/**
-	 * @see Window#configureShell
-	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -91,9 +87,7 @@ public class UserValidationDialog extends TrayDialog {
 		// set F1 help
         PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.USER_VALIDATION_DIALOG);	
 	}
-	/**
-	 * @see Window#create
-	 */
+
 	@Override
 	public void create() {
 		super.create();
@@ -110,9 +104,6 @@ public class UserValidationDialog extends TrayDialog {
 		}
 	}
 	
-	/**
-	 * @see Dialog#createDialogArea
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite(parent, SWT.NONE);

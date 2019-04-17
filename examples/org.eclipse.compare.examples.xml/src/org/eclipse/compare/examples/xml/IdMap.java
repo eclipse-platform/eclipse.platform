@@ -80,9 +80,6 @@ public class IdMap {
 		fOrdered= ordered;
 	}
 	
-	/*
-	 * @see Object#equals(Object)
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof IdMap))
@@ -98,9 +95,6 @@ public class IdMap {
 			idmap.getMappings().equals(fMappings);
 	}
 	
-	/*
-	 * @see Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return fName.hashCode() ^ fMappings.hashCode();

@@ -56,9 +56,6 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 		}
 		USE_ALTERNATE_PROMPTER = false;
 	}
-	/**
-	 * @see IUserAuthenticator#authenticateUser
-	 */
 	@Override
 	public void promptForUserInfo(final ICVSRepositoryLocation location, final IUserInfo userinfo, final String message) throws CVSException {
 		if (!userinfo.isUsernameMutable() && USE_ALTERNATE_PROMPTER) {

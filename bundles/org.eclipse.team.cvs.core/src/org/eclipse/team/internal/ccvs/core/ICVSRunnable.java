@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * <p>
  * Clients may implement this interface.
  * </p>
- * @see 
  */
 public interface ICVSRunnable {
 	/**

@@ -30,9 +30,7 @@ import org.eclipse.team.internal.ccvs.core.resources.EclipseSynchronizer;
  */
 public class MoveDeleteHook implements IMoveDeleteHook {
 	
-	/**
-	 * @see IMoveDeleteHook#deleteFile(IResourceTree, IFile, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteFile(
 		final IResourceTree tree,
 		final IFile file,
@@ -74,9 +72,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		return true;
 	}
 	
-	/**
-	 * @see IMoveDeleteHook#deleteFolder(IResourceTree, IFolder, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteFolder(
 		final IResourceTree tree,
 		final IFolder folder,
@@ -110,9 +106,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#deleteProject(IResourceTree, IProject, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean deleteProject(
 		IResourceTree tree,
 		IProject project,
@@ -131,9 +125,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveFile(IResourceTree, IFile, IFile, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveFile(
 			final IResourceTree tree,
 			final IFile source,
@@ -179,9 +171,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		return true;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveFolder(IResourceTree, IFolder, IFolder, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveFolder(
 		final IResourceTree tree,
 		final IFolder source,
@@ -233,9 +223,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		return false;
 	}
 
-	/**
-	 * @see IMoveDeleteHook#moveProject(IResourceTree, IProject, IProjectDescription, int, IProgressMonitor)
-	 */
+	@Override
 	public boolean moveProject(
 		IResourceTree tree,
 		IProject source,

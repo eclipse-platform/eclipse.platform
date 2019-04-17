@@ -82,9 +82,6 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		return remoteFolders[0].getFolderSyncInfo().getRoot();
 	}
 	
-	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite= createComposite(parent, 2, false);

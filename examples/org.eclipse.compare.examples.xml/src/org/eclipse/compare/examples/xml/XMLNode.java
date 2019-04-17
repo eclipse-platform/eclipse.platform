@@ -56,9 +56,6 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 		return fValue;
 	}
 
-	/*
-	 * @see ITypedElement#getName
-	 */
 	@Override
 	public String getName() {
 		if (fName != null)
@@ -83,9 +80,6 @@ public class XMLNode extends DocumentRangeNode implements ITypedElement {
 		fOrderedChild= isOrderedChild;
 	}
 	
-	/*
-	 * @see ITypedElement#getImage
-	 */
 	@Override
 	public Image getImage() {
 		if (fOrderedChild)

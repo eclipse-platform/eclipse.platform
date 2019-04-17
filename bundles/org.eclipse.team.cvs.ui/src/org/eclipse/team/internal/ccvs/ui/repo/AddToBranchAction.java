@@ -40,9 +40,6 @@ public class AddToBranchAction extends CVSAction {
 		return status.getMessage();
 	};
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		run((IRunnableWithProgress) monitor -> {
@@ -68,9 +65,6 @@ public class AddToBranchAction extends CVSAction {
 		}, false, PROGRESS_BUSYCURSOR); 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
 	@Override
 	public boolean isEnabled() {
 		return getSelectedRootFolder() != null;

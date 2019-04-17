@@ -27,9 +27,6 @@ import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
  */
 public class CompareRemoteWithTagAction extends CVSAction {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		
@@ -55,9 +52,6 @@ public class CompareRemoteWithTagAction extends CVSAction {
 		}
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
 	@Override
 	public boolean isEnabled() {
 		ICVSRemoteResource[] resources = getSelectedRemoteResources();

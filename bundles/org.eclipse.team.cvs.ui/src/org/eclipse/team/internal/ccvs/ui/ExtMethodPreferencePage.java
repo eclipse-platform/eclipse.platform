@@ -40,9 +40,6 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	private Combo methodType;
 	private Control internal, external;
 
-	/*
-	 * @see PreferencePage#createContents(Composite)
-	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -217,16 +214,10 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 	 	cvsRsh.setText(s);
 	 }
 	
-	/*
-	 * @see IWorkbenchPreferencePage#init(IWorkbench)
-	 */
 	@Override
 	public void init(IWorkbench workbench) {
 	}
 	
-	/*
-	 * @see IPreferencePage#performOk()
-	 */
 	@Override
 	public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
@@ -248,9 +239,6 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 		return super.performOk();
 	}
     
-	/* 
-     * @see PreferencePage#performDefaults()
-     */
     @Override
 	protected void performDefaults() {
         IPreferenceStore store = getPreferenceStore();
@@ -283,9 +271,6 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 		updateEnablements();
     }
     
-	/*
-	 * @see PreferencePage#doGetPreferenceStore()
-	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore();

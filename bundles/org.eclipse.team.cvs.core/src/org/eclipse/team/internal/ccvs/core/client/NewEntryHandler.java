@@ -21,16 +21,12 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 
 public class NewEntryHandler extends ResponseHandler {
 
-	/*
-	 * @see ResponseHandler#getResponseID()
-	 */
+	@Override
 	public String getResponseID() {
 		return "New-entry"; //$NON-NLS-1$
 	}
 
-	/*
-	 * @see ResponseHandler#handle(Session, String, IProgressMonitor)
-	 */
+	@Override
 	public void handle(Session session, String localDir, IProgressMonitor monitor)
 		throws CVSException {
 			

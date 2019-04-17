@@ -49,9 +49,8 @@ public class EditorsAction implements IProviderAction, IRunnableWithProgress {
 		f_provider = provider;
 		f_resources = resources;
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction.IProviderAction#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+
+	@Override
 	public IStatus execute(CVSTeamProvider provider, IResource[] resources, IProgressMonitor monitor) throws CVSException {
 		f_editorsInfo = provider.editors(resources, monitor);
 		return Team.OK_STATUS;
@@ -63,6 +62,7 @@ public class EditorsAction implements IProviderAction, IRunnableWithProgress {
 			// Open the dialog using a sync exec (there are no guarentees that we
 			// were called from the UI thread
 			CVSUIPlugin.openDialog(shell, new CVSUIPlugin.IOpenableInShell() {
+				@Override
 				public void open(Shell shell) {
 					view.open();
 				}
@@ -77,6 +77,7 @@ public class EditorsAction implements IProviderAction, IRunnableWithProgress {
 	 * 
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
+	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		if (f_provider == null || f_resources == null) {
 			throw new InvocationTargetException(new RuntimeException(NLS.bind(CVSUIMessages.EditorsAction_classNotInitialized, new String[] { this.getClass().getName() }))); 

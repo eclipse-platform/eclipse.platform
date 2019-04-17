@@ -46,9 +46,8 @@ public class RemoteProjectsElement extends CVSTagElement {
 	public void setTag(CVSTag tag) {
 		this.tag = tag;
 	}
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof RemoteProjectsElement)) return false;
 		RemoteProjectsElement element = (RemoteProjectsElement)o;
@@ -58,24 +57,18 @@ public class RemoteProjectsElement extends CVSTagElement {
 		return super.equals(o);
 	}
 
-	/**
-	 * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
-	 */
+	@Override
 	public Object getParent(Object o) {
 		return null;
 	}
 
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
 	public int hashCode() {
 		if (root == null) return tag.hashCode();
 		return super.hashCode();
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.model.CVSModelElement#internalGetChildren(java.lang.Object, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public Object[] fetchChildren(Object o, IProgressMonitor monitor) throws TeamException {
 		if (root == null) return new Object[0];
 		return super.fetchChildren(o, monitor);

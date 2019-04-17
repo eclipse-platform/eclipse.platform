@@ -121,9 +121,6 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 		super(pageName, title, titleImage, description);
 	}
 
-	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite= createComposite(parent, 1, false);

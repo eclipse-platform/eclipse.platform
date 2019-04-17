@@ -45,9 +45,7 @@ public class BuildCleanupListener implements IResourceDeltaVisitor, IResourceCha
 		return destination;
 	}
 	
-	/**
-	 * @see IResourceDeltaVisitor#visit(IResourceDelta)
-	 */
+	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
 		boolean movedFrom = (delta.getFlags() & IResourceDelta.MOVED_FROM) > 0;

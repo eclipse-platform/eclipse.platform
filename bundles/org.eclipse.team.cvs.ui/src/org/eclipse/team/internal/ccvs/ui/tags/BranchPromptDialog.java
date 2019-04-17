@@ -56,9 +56,6 @@ public class BranchPromptDialog extends DetailsDialog {
 		this.versionName = versionName;
 	}	
 
-	/**
-	 * @see DetailsDialog#createMainDialogArea(Composite)
-	 */
 	@Override
 	protected void createMainDialogArea(Composite composite) {
 		
@@ -130,9 +127,6 @@ public class BranchPromptDialog extends DetailsDialog {
 		}
 	}
 	
-	/**
-	 * @see DetailsDialog#createDropDownDialogArea(Composite)
-	 */
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		

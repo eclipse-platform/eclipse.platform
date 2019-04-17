@@ -22,13 +22,12 @@ import org.eclipse.team.internal.ccvs.ui.wizards.ModeWizard;
  */
 public class SetKeywordSubstitutionAction extends WorkspaceTraversalAction {
 
-	/*
-	 * @see IActionDelegate#run(IAction)
-	 */
+	@Override
 	public void execute(IAction action) {
 	    ModeWizard.run(getShell(), getSelectedResources());
 	}
 	
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_SETFILETYPE;
 	}

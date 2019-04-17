@@ -49,9 +49,6 @@ public abstract class WorkspaceAction extends CVSAction {
 		public IStatus execute(CVSTeamProvider provider, IResource[] resources, IProgressMonitor monitor) throws CVSException;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#beginExecution(IAction)
-	 */
 	@Override
 	protected boolean beginExecution(IAction action) throws TeamException {
 		if (super.beginExecution(action)) {

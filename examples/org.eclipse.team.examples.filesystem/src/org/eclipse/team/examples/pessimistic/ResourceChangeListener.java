@@ -120,9 +120,6 @@ public class ResourceChangeListener implements IResourceDeltaVisitor, IResourceC
 		return resources;
 	}
 
-	/**
-	 * @see IResourceChangeListener#resourceChanged(IResourceChangeEvent)
-	 */
 	@Override
 	public void resourceChanged (IResourceChangeEvent event) {
 		try {

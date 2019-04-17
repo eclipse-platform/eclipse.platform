@@ -14,7 +14,8 @@
 package org.eclipse.team.internal.ccvs.ui;
 
  
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 
 /**
  * A default content provider to prevent subclasses from
@@ -29,22 +30,16 @@ public class SimpleContentProvider implements IStructuredContentProvider {
 		super();
 	}
 	
-	/*
-	 * @see SimpleContentProvider#dispose()
-	 */
+	@Override
 	public void dispose() {
 	}
 	
-	/*
-	 * @see SimpleContentProvider#getElements()
-	 */
+	@Override
 	public Object[] getElements(Object element) {
 		return new Object[0];
 	}
 	
-	/*
-	 * @see SimpleContentProvider#inputChanged()
-	 */
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 }

@@ -18,8 +18,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.team.internal.ccvs.core.ICVSFile;
 import org.eclipse.team.internal.ccvs.ui.*;
-import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
-import org.eclipse.team.internal.ccvs.ui.ICVSUIConstants;
 
 /**
  * This wizard allows the user to show deleted resources in the history view
@@ -39,16 +37,12 @@ public class RestoreFromRepositoryWizard extends Wizard {
 		setWindowTitle(CVSUIMessages.RestoreFromRepositoryWizard_fileSelectionPageTitle); 
 	}
 
-	/**
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 */
+	@Override
 	public boolean performFinish() {
 		return fileSelectionPage.restoreSelectedFiles();
 	}
 	
-	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
+	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
 		ImageDescriptor substImage = CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_CHECKOUT);

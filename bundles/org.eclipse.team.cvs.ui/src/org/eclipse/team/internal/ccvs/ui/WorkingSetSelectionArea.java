@@ -55,6 +55,7 @@ public class WorkingSetSelectionArea extends DialogArea {
 	 * renamed in the working set selection dialog.
 	 */
 	private IPropertyChangeListener workingSetChangeListener = new IPropertyChangeListener() {
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			String property = event.getProperty();
 			Object newValue = event.getNewValue();
@@ -90,11 +91,7 @@ public class WorkingSetSelectionArea extends DialogArea {
         this.settings = settings;
 	}
 	
-	/**
-	 * Overrides method in Dialog
-	 *
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(Composite)
-	 */
+	@Override
 	public void createArea(Composite parent) {
         Dialog.applyDialogFont(parent);
 		final Composite composite = createComposite(parent, 2, false);
@@ -109,6 +106,7 @@ public class WorkingSetSelectionArea extends DialogArea {
 		noWorkingSetButton = createRadioButton(composite, noWorkingSetText, 2);
 		workingSetButton = createRadioButton(composite, workingSetText, 2);
 		workingSetButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleWorkingSetButtonSelection();
 			}
@@ -129,6 +127,7 @@ public class WorkingSetSelectionArea extends DialogArea {
 
 		selectButton = createButton(composite, CVSUIMessages.WorkingSetSelectionArea_workingSetOther, GridData.HORIZONTAL_ALIGN_FILL); 
 		selectButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent event) {
 				handleWorkingSetSelection();
 			}
@@ -138,6 +137,7 @@ public class WorkingSetSelectionArea extends DialogArea {
 		initializeWorkingSet();
 		
 		mruList.addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleMruSelection();
 			}

@@ -37,9 +37,7 @@ public class Version extends RemoteCommand {
 	private static final String CVS_NT_PREFIX_1 = "Concurrent Versions System (CVS) NT "; //$NON-NLS-1$
 	private static final String CVS_NT_PREFIX_2 = "Concurrent Versions System (CVSNT) "; //$NON-NLS-1$
 	private static final String CVS_PREFIX = "Concurrent Versions System (CVS) "; //$NON-NLS-1$
-	/**
-	 * @see Request#getRequestId()
-	 */
+	@Override
 	protected String getRequestId() {
 		return "version"; //$NON-NLS-1$
 	}

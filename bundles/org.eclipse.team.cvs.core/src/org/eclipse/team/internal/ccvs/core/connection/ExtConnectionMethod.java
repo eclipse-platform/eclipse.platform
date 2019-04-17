@@ -17,16 +17,12 @@ package org.eclipse.team.internal.ccvs.core.connection;
 import org.eclipse.team.internal.ccvs.core.*;
 
 public class ExtConnectionMethod implements IConnectionMethod {
-	/**
-	 * @see IConnectionMethod#getName
-	 */
+	@Override
 	public String getName() {
 		return "ext"; //$NON-NLS-1$
 	}
 	
-	/**
-	 * @see IConnectionMethod#createConnection
-	 */
+	@Override
 	public IServerConnection createConnection(ICVSRepositoryLocation repositoryRoot, String password) {
 		if(password==null){
 			password=""; //$NON-NLS-1$

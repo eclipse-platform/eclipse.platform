@@ -342,9 +342,6 @@ public class CVSProjectPropertiesPage extends CVSPropertiesPage {
 			handle(e);
 		}
 	}
-	/*
-	 * @see PreferencesPage#performOk
-	 */
 	@Override
 	public boolean performOk() {
 		final boolean[] changeReadOnly = { false };

@@ -71,9 +71,6 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 		helpSystem.setHelp(fToolbarPrevious, ICompareContextIds.PREVIOUS_DIFF_ACTION);
 	}
 
-	/*
-	 * @see EditorActionBarContributor#contributeToToolBar(IToolBarManager)
-	 */
 	@Override
 	public void contributeToToolBar(IToolBarManager tbm) {
 		tbm.add(new Separator(FILTER_SEPARATOR));
@@ -83,9 +80,6 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 		tbm.appendToGroup(BUILTIN_SEPARATOR, fToolbarPrevious);
 	}
 
-	/*
-	 * @see EditorActionBarContributor#contributeToMenu(IMenuManager)
-	 */
 	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
 		// empty implementation

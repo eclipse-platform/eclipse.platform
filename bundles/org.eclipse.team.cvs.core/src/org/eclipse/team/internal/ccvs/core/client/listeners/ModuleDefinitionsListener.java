@@ -38,9 +38,7 @@ public class ModuleDefinitionsListener extends CommandOutputListener {
 		reset();
 	}
 	
-	/*
-	 * @see ICommandOutputListener#messageLine(String, ICVSFolder, IProgressMonitor)
-	 */
+	@Override
 	public IStatus messageLine(
 		String line,
 		ICVSRepositoryLocation location,

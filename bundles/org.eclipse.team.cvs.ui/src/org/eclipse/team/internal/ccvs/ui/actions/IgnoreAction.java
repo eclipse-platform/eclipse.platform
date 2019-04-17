@@ -94,25 +94,17 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 			// if (action != null) action.setEnabled(isEnabled());
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
+
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.IgnoreAction_ignore; 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForManagedResources()
-	 */
 	@Override
 	protected boolean isEnabledForManagedResources() {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
-	 */
 	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;

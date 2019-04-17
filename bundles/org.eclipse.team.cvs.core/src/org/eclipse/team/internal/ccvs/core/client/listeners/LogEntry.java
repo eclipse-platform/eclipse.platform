@@ -67,69 +67,51 @@ public class LogEntry extends PlatformObject implements ILogEntry {
 		this.revisions=revisions;
 	}
 
-	/**
-	 * @see ILogEntry#getRevision()
-	 */
+	@Override
 	public String getRevision() {
 		return file.getRevision();
 	}
 
-	/**
-	 * @see ILogEntry#getAuthor()
-	 */
+	@Override
 	public String getAuthor() {
 		return author;
 	}
 
-	/**
-	 * @see ILogEntry#getDate()
-	 */
+	@Override
 	public Date getDate() {
 		return date;
 	}
 
-	/**
-	 * @see ILogEntry#getComment()
-	 */
+	@Override
 	public String getComment() {
 		return comment;
 	}
 
-	/**
-	 * @see ILogEntry#getState()
-	 */
+	@Override
 	public String getState() {
 		return state;
 	}
 
-	/**
-	 * @see ILogEntry#getBranches()
-	 */
+	@Override
 	public CVSTag[] getBranches() {
 		CVSTag[] result = new CVSTag[branches.length];
 		System.arraycopy(branches, 0, result, 0, branches.length);
 		return result;
 	}
 
-	/**
-	 * @see ILogEntry#getTags()
-	 */
+	@Override
 	public CVSTag[] getTags() {
 		CVSTag[] result = new CVSTag[tags.length];
 		System.arraycopy(tags, 0, result, 0, tags.length);
 		return result;
 	}
 
-	/**
-	 * @see ILogEntry#getRemoteFile()
-	 */
+	@Override
 	public ICVSRemoteFile getRemoteFile() {
 		return file;
 	}
 	
-	/**
-	 * @see ILogEntry#isDeletion()
-	 */
+	@Override
 	public boolean isDeletion() {
 		return getState().equals("dead"); //$NON-NLS-1$
 	}

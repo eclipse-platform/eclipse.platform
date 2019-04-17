@@ -21,9 +21,7 @@ import org.eclipse.team.core.*;
 
 public class RepositoryProviderTypeBic extends RepositoryProviderType {
 	File createdFile;
-	/**
-	 * @see org.eclipse.team.core.RepositoryProviderType#getProjectSetCapability()
-	 */
+
 	public ProjectSetCapability getProjectSetCapability() {
 		return new ProjectSetCapability() {
 			public IProject[] addToWorkspace(String[] referenceStrings,
@@ -40,9 +38,6 @@ public class RepositoryProviderTypeBic extends RepositoryProviderType {
 		};
 	}
 
-	/**
-	 * @return File
-	 */
 	public File getCreatedFile() {
 		return createdFile;
 	}

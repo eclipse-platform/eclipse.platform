@@ -26,9 +26,7 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.TeamUI;
 
 public class ShowResourceInHistoryAction extends WorkspaceAction {
-	/*
-	 * @see IActionDelegate#run(IAction)
-	 */
+
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		run((IRunnableWithProgress) monitor -> {
@@ -39,25 +37,16 @@ public class ShowResourceInHistoryAction extends WorkspaceAction {
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ShowHistoryAction_showHistory; 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
-	 */
 	@Override
 	protected boolean isEnabledForMultipleResources() {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-	 */
 	@Override
 	protected boolean isEnabledForAddedResources() {
 		return true;

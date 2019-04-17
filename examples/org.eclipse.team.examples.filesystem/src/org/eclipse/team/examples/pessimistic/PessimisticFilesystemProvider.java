@@ -322,9 +322,6 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 		return new ByteArrayInputStream(byteOut.toByteArray());
 	}
 
-	/*
-	 * @see IProjectNature#setProject(IProject)
-	 */
 	@Override
 	public void setProject(IProject project) {
 		if (PessimisticFilesystemProviderPlugin.getInstance().isDebugging()) {

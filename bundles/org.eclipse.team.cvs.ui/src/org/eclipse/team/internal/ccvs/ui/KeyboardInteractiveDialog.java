@@ -17,7 +17,6 @@ package org.eclipse.team.internal.ccvs.ui;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -91,9 +90,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
         isPasswordAuth=true;
       }
   }
-  /**
-   * @see Window#configureShell
-   */
+
   @Override
 protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -107,9 +104,7 @@ protected void configureShell(Shell newShell) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell,
 				IHelpContextIds.KEYBOARD_INTERACTIVE_DIALOG);
 	}
-  /**
-	 * @see Window#create
-	 */
+
   @Override
 public void create() {
 		super.create();
@@ -123,9 +118,7 @@ public void create() {
 			texts[0].setFocus();
 		}
 	}
-  /**
-	 * @see Dialog#createDialogArea
-	 */
+
   @Override
 protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite(parent, SWT.NONE);

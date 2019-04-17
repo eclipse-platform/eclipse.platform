@@ -49,9 +49,6 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 	public boolean canHandleLinkedResourceURI() {
 		return true;
 	}
-	/*
-	 * @see IRepositoryProvider#getFileModificationValidator()
-	 */
 	public IFileModificationValidator getFileModificationValidator() {
 		return soleInstance;
 	}

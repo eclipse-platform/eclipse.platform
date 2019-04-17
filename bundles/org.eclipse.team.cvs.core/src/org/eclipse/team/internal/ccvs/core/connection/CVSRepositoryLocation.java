@@ -599,23 +599,17 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 			root;
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getMethod()
-	 */
+	@Override
 	public IConnectionMethod getMethod() {
 		return method;
 	}
 
-	/*
-	 * @see ICVSRepositoryLocation#getPort()
-	 */
+	@Override
 	public int getPort() {
 		return port;
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getEncoding()
-	 */
+	@Override
 	public String getEncoding() {
 		if (hasPreferences()) {
 			return internalGetPreferences().get(PREF_SERVER_ENCODING, getDefaultEncoding());
@@ -624,9 +618,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 	}
 
-	/*
-	 * @see ICVSRepositoryLocation#setEncoding()
-	 */
+	@Override
 	public void setEncoding(String encoding) {
 		if (encoding == null || encoding == getDefaultEncoding()) {
 			if (hasPreferences()) {
@@ -639,9 +631,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 	}	
 
-	/*
-	 * @see ICVSRepositoryLocation#members(CVSTag, boolean, IProgressMonitor)
-	 */
+	@Override
 	public ICVSRemoteResource[] members(CVSTag tag, boolean modules, IProgressMonitor progress) throws CVSException {
 		try {
 			if (modules) {
@@ -668,16 +658,12 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getRemoteFolder(String, CVSTag)
-	 */
+	@Override
 	public ICVSRemoteFolder getRemoteFolder(String remotePath, CVSTag tag) {
 		return new RemoteFolder(null, this, remotePath, tag);		
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getRemoteFile(String, CVSTag)
-	 */
+	@Override
 	public ICVSRemoteFile getRemoteFile(String remotePath, CVSTag tag) {
 		IPath path = new Path(null, remotePath);
 		RemoteFolderTree remoteFolder = new RemoteFolderTree(null, this, path.removeLastSegments(1).toString(), tag);
@@ -686,9 +672,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		return remoteFile;
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getRootDirectory()
-	 */
+	@Override
 	public String getRootDirectory() {
 		return root;
 	}
@@ -703,17 +687,12 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		return CVSProviderPlugin.getPlugin().getTimeout();
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getUserInfo()
-	 */
+	@Override
 	public IUserInfo getUserInfo(boolean makeUsernameMutable) {
 		return new UserInfo(getUsername(), password, makeUsernameMutable ? true : isUsernameMutable());
 	}
 	
-	/*
-	 * @see ICVSRepositoryLocation#getUsername()
-	 * @see IUserInfo#getUsername()
-	 */
+	@Override
 	public String getUsername() {
 		// If the username is mutable, get it from the cache if it's there
 		if (user == null && isUsernameMutable()) {
@@ -722,9 +701,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		return user == null ? "" : user; //$NON-NLS-1$
 	}
 	
-	/*
-	 * @see IUserInfo#isUsernameMutable()
-	 */
+	@Override
 	public boolean isUsernameMutable() {
 		return !userFixed;
 	}
@@ -948,9 +925,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 		return null;
 	}
-	/*
-	 * @see IUserInfo#setPassword(String)
-	 */
+	@Override
 	public void setPassword(String password) {
 		if (passwordFixed)
 			throw new UnsupportedOperationException();
@@ -962,9 +937,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		previousAuthenticationFailed = false;
 	}
 	
-	/*
-	 * @see IUserInfo#setUsername(String)
-	 */
+	@Override
 	public void setUsername(String user) {
 		if (userFixed)
 			throw new UnsupportedOperationException();
@@ -1082,9 +1055,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		}
 	}
 	
-	/**
-	 * @see ICVSRepositoryLocation#flushUserInfo()
-	 */
+	@Override
 	public void flushUserInfo() {
 		removeNode();
 	}

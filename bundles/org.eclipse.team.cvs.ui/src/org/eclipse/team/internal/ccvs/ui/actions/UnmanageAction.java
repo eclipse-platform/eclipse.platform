@@ -113,9 +113,6 @@ public class UnmanageAction extends WorkspaceAction {
 	
 	private boolean deleteContent = false;
 	
-	/*
-	 * @see IActionDelegate#run(IAction)
-	 */
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		if(confirmDeleteProjects()) {
@@ -133,17 +130,11 @@ public class UnmanageAction extends WorkspaceAction {
 		return result[0] == 0;  // YES
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.Unmanage_unmanagingError;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
-	 */
 	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		IResource resource = cvsResource.getIResource();

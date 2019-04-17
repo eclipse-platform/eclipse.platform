@@ -179,9 +179,7 @@ public class Update extends Command {
 		}
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.Command#doExecute(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption, org.eclipse.team.internal.ccvs.core.client.Command.LocalOption, java.lang.String, org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IStatus doExecute(
 			Session session,
 			GlobalOption[] globalOptions,

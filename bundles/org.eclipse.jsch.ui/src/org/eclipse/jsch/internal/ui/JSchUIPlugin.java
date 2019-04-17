@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jsch.core.IJSchService;
@@ -93,9 +92,6 @@ public class JSchUIPlugin extends AbstractUIPlugin{
     createImageDescriptor(IUIConstants.IMG_KEY_LOCK);
   }
 
-  /**
-   * @see Plugin#start(BundleContext)
-   */
   @Override
 public void start(BundleContext context) throws Exception {
     super.start(context);

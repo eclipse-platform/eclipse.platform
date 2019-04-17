@@ -44,16 +44,12 @@ class FileStructureVisitor extends AbstractStructureVisitor {
 		this.sendEmptyFolders = sendEmptyFolders;
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFile(IManagedFile)
-	 */
+	@Override
 	public void visitFile(ICVSFile mFile) throws CVSException {
 		sendFile(mFile);
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFolder(ICVSFolder)
-	 */
+	@Override
 	public void visitFolder(ICVSFolder mFolder) throws CVSException {
 
 		if (sendEmptyFolders) {

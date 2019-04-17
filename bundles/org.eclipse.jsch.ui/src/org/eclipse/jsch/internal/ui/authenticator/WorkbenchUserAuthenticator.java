@@ -43,9 +43,6 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator{
     super();
   }
 
-  /**
-   * @see IUserAuthenticator#promptForUserInfo(IJSchLocation, IUserInfo, String)
-   */
   @Override
 public void promptForUserInfo(final IJSchLocation location,
       final IUserInfo userinfo, final String message){

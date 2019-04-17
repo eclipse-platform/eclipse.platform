@@ -129,9 +129,7 @@ public class MutableResourceSyncInfo extends ResourceSyncInfo {
 		}
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo#setEntryLine(java.lang.String)
-	 */
+	@Override
 	public void setEntryLine(String entryLine) throws CVSException {
 		super.setEntryLine(entryLine);
 	}

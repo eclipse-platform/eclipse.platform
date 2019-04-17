@@ -64,16 +64,13 @@ public class PruneFolderVisitor implements ICVSResourceVisitor {
 			pruneFolderAndParentsIfAppropriate(cvsFolder);
 		}
 	}
-	/**
-	 * @see ICVSResourceVisitor#visitFile(IManagedFile)
-	 */
+	
+	@Override
 	public void visitFile(ICVSFile file) throws CVSException {
 		// nothing to do here
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFolder(ICVSFolder)
-	 */
+	@Override
 	public void visitFolder(ICVSFolder folder) throws CVSException {
 		// First prune any empty children
 		folder.acceptChildren(this);

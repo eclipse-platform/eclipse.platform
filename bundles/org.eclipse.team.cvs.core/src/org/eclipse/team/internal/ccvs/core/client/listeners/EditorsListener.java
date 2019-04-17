@@ -51,9 +51,7 @@ public class EditorsListener extends CommandOutputListener {
 	public EditorsListener() {
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener#messageLine(java.lang.String, org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, org.eclipse.team.internal.ccvs.core.ICVSFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public IStatus messageLine(
 		String line,
 		ICVSRepositoryLocation location,

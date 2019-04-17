@@ -14,7 +14,8 @@
 package org.eclipse.team.internal.ccvs.ui.actions;
 
 import org.eclipse.jface.window.Window;
-import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.team.internal.ccvs.core.CVSTag;
+import org.eclipse.team.internal.ccvs.core.ICVSResource;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.IHelpContextIds;
 import org.eclipse.team.internal.ccvs.ui.operations.ITagOperation;
@@ -22,9 +23,7 @@ import org.eclipse.team.internal.ccvs.ui.tags.TagSelectionDialog;
 
 public class MoveRemoteTagAction extends TagInRepositoryAction {
 
-	/**
-	 * @see TagRemoteAction#promptForTag(ICVSFolder[])
-	 */
+	@Override
 	protected ITagOperation configureOperation() {
 		// Allow the user to select a tag
 		ITagOperation operation = createTagOperation();

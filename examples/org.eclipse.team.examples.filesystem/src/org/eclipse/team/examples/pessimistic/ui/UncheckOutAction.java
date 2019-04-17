@@ -22,9 +22,7 @@ import org.eclipse.team.examples.pessimistic.PessimisticFilesystemProvider;
  * selected all of its children are recursively unchecked out.
  */
 public class UncheckOutAction extends CheckInAction {
-	/**
-	 * @see org.eclipse.team.examples.pessimistic.ui.SourceManagementAction#manageResources(PessimisticFilesystemProvider, IResource[], IProgressMonitor)
-	 */
+	@Override
 	protected void manageResources(PessimisticFilesystemProvider provider, IResource[] resources, IProgressMonitor monitor) {
 		provider.uncheckout(resources, monitor);
 	}

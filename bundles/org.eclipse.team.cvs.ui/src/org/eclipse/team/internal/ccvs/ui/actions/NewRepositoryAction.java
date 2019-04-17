@@ -19,32 +19,25 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.internal.ccvs.ui.wizards.NewLocationWizard;
 import org.eclipse.ui.*;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class NewRepositoryAction implements IWorkbenchWindowActionDelegate, IViewActionDelegate {
 	Shell shell;
 	
-	/**
-	 * @see IWorkbenchWindowActionDelegate#dispose()
-	 */
+	@Override
 	public void dispose() {
 	}
 
-	/**
-	 * @see IWorkbenchWindowActionDelegate#init(IWorkbenchWindow)
-	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		this.shell = window.getShell();
 	}
 	
+	@Override
 	public void init(IViewPart view) {
 		shell = view.getSite().getShell();
 	}
 
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
+	@Override
 	public void run(IAction action) {
 		NewLocationWizard wizard = new NewLocationWizard();
 		wizard.setSwitchPerspectives(false);
@@ -52,9 +45,7 @@ public class NewRepositoryAction implements IWorkbenchWindowActionDelegate, IVie
 		dialog.open();
 	}
 
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

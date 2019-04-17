@@ -26,17 +26,13 @@ class CommentTemplatesContentHandler extends DefaultHandler {
 	public CommentTemplatesContentHandler() {
 	}
 
-	/**
-	 * @see ContentHandler#characters(char[], int, int)
-	 */
+	@Override
 	public void characters(char[] chars, int startIndex, int length) {
 		if (buffer == null) return;
 		buffer.append(chars, startIndex, length);
 	}
 
-	/**
-	 * @see ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-	 */
+	@Override
 	public void startElement(
 			String namespaceURI,
 			String localName,
@@ -54,9 +50,7 @@ class CommentTemplatesContentHandler extends DefaultHandler {
 		}
 	}
 	
-	/**
-	 * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-	 */
+	@Override
 	public void endElement(String namespaceURI, String localName, String qName) {
 		String elementName = getElementName(localName, qName);
 		if (elementName.equals(RepositoryManager.ELEMENT_COMMIT_COMMENT)) {

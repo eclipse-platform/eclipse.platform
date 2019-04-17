@@ -61,9 +61,6 @@ public class TagAsVersionDialog extends DetailsDialog {
 		this.operation = operation;
 	}
 	
-	/**
-	 * @see DetailsDialog#createMainDialogArea(Composite)
-	 */
 	@Override
 	protected void createMainDialogArea(Composite parent) {
 		

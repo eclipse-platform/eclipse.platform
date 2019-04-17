@@ -14,9 +14,12 @@
  *******************************************************************************/
 package org.eclipse.jsch.internal.ui.authenticator;
 
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.window.Window;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.jsch.internal.ui.IUIConstants;
+import org.eclipse.jsch.internal.ui.JSchUIPlugin;
+import org.eclipse.jsch.internal.ui.Messages;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,12 +27,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
-
-import org.eclipse.jsch.internal.ui.IUIConstants;
-import org.eclipse.jsch.internal.ui.JSchUIPlugin;
-import org.eclipse.jsch.internal.ui.Messages;
 
 /**
  * A dialog for prompting for a user name and password
@@ -77,9 +81,7 @@ public class UserValidationDialog extends TrayDialog{
     this.isAllowCaching=isAllowCaching;
   }
 
-  /**
-   * @see Window#configureShell
-   */
+	@Override
   protected void configureShell(Shell newShell){
     super.configureShell(newShell);
     newShell.setText(Messages.UserValidationDialog_required);
@@ -88,10 +90,9 @@ public class UserValidationDialog extends TrayDialog{
         IHelpContextIds.USER_VALIDATION_DIALOG);
   }
 
-  /**
-   * @see Window#create
-   */
-  public void create(){
+
+  @Override
+public void create(){
     super.create();
     // add some default values
     usernameField.setText(defaultUsername);
@@ -107,10 +108,8 @@ public class UserValidationDialog extends TrayDialog{
     }
   }
 
-  /**
-   * @see Dialog#createDialogArea
-   */
-  protected Control createDialogArea(Composite parent){
+  @Override
+protected Control createDialogArea(Composite parent){
     Composite top=new Composite(parent, SWT.NONE);
     GridLayout layout=new GridLayout();
     layout.numColumns=2;
@@ -170,7 +169,8 @@ public class UserValidationDialog extends TrayDialog{
     data.horizontalSpan=3;
     allowCachingButton.setLayoutData(data);
     allowCachingButton.addSelectionListener(new SelectionAdapter(){
-      public void widgetSelected(SelectionEvent e){
+      @Override
+	public void widgetSelected(SelectionEvent e){
         allowCaching=allowCachingButton.getSelection();
       }
     });
@@ -249,7 +249,8 @@ public class UserValidationDialog extends TrayDialog{
    * may override.
    * </p>
    */
-  protected void okPressed(){
+  @Override
+protected void okPressed(){
     password=passwordField.getText();
     username=usernameField.getText();
 

@@ -146,9 +146,6 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		}
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
 	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		IContainer resource = (IContainer)getSelectedResources()[0];
@@ -164,9 +161,6 @@ public class RestoreFromRepositoryAction extends WorkspaceTraversalAction {
 		dialog.open();
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
 	@Override
 	public boolean isEnabled() {
 		IResource[] resources = getSelectedResources();

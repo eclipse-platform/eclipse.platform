@@ -19,16 +19,12 @@ import org.eclipse.team.internal.ccvs.core.CVSException;
 
 public class ModuleExpansionHandler extends ResponseHandler {
 
-	/*
-	 * @see ResponseHandler#getResponseID()
-	 */
+	@Override
 	public String getResponseID() {
 		return "Module-expansion";//$NON-NLS-1$
 	}
 
-	/*
-	 * @see ResponseHandler#handle(Session, String, IProgressMonitor)
-	 */
+	@Override
 	public void handle(Session session, String expansion, IProgressMonitor monitor)
 		throws CVSException {
 			

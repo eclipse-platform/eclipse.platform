@@ -17,9 +17,7 @@ package org.eclipse.team.internal.ccvs.ui.model;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.team.internal.ccvs.ui.ICVSUIConstants;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.eclipse.ui.views.properties.*;
 
 public class CVSRepositoryLocationPropertySource implements IPropertySource {
 	ICVSRepositoryLocation location;
@@ -67,6 +65,7 @@ public class CVSRepositoryLocationPropertySource implements IPropertySource {
 	/**
 	 * Do nothing because properties are read only.
 	 */
+	@Override
 	public Object getEditableValue() {
 		return this;
 	}
@@ -74,13 +73,12 @@ public class CVSRepositoryLocationPropertySource implements IPropertySource {
 	/**
 	 * Return the Property Descriptors for the receiver.
 	 */
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return propertyDescriptors;
 	}
 
-	/*
-	 * @see IPropertySource#getPropertyValue(Object)
-	 */
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(ICVSUIConstants.PROP_HOST)) {
 			return location.getHost();
@@ -108,6 +106,7 @@ public class CVSRepositoryLocationPropertySource implements IPropertySource {
 	 * Answer true if the value of the specified property 
 	 * for this object has been changed from the default.
 	 */
+	@Override
 	public boolean isPropertySet(Object property) {
 		return false;
 	}
@@ -117,11 +116,13 @@ public class CVSRepositoryLocationPropertySource implements IPropertySource {
 	 * 
 	 * @param   property    The property to reset.
 	 */
+	@Override
 	public void resetPropertyValue(Object property) {
 	}
 	/**
 	 * Do nothing because properties are read only.
 	 */
+	@Override
 	public void setPropertyValue(Object name, Object value) {
 	}
 }

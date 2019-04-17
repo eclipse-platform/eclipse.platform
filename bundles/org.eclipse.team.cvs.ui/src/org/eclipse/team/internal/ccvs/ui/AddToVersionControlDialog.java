@@ -52,9 +52,6 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		this.unaddedResources = unaddedResources;
 	}
 
-	/**
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected void createMainDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);

@@ -23,9 +23,7 @@ import org.eclipse.team.internal.ccvs.core.client.CommandOutputListener;
 
 public class TagListener extends CommandOutputListener {
 
-	/*
-	 * @see ICommandOutputListener#messageLine(String, ICVSFolder, IProgressMonitor)
-	 */
+	@Override
 	public IStatus messageLine(
 		String line,
 		ICVSRepositoryLocation location,
@@ -42,9 +40,7 @@ public class TagListener extends CommandOutputListener {
 		return OK;
 	}
 
-	/*
-	 * @see ICommandOutputListener#errorLine(String, ICVSFolder, IProgressMonitor)
-	 */
+	@Override
 	public IStatus errorLine(
 		String line,
 		ICVSRepositoryLocation location,

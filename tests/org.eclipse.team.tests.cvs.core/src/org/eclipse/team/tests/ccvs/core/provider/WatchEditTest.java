@@ -15,16 +15,18 @@ package org.eclipse.team.tests.ccvs.core.provider;
 
 import java.io.IOException;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.tests.ccvs.core.CVSTestSetup;
 import org.eclipse.team.tests.ccvs.core.EclipseTest;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Test the cvs watch/edit functionality
@@ -51,6 +53,7 @@ public class WatchEditTest extends EclipseTest {
 		//return new CVSTestSetup(new WatchEditTest("testReadOnly"));
 	}
 	
+	@Override
 	protected boolean isFailOnSyncInfoMismatch() {
 		// See  bug 198382
 		return CVSTestSetup.FAIL_ON_BAD_DIFF ;
@@ -116,17 +119,13 @@ public class WatchEditTest extends EclipseTest {
 		assertEquals(project, copy);
 	}
 	
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		setReadOnly(true);
 	}
 
-	/**
-	 * @see junit.framework.TestCase#tearDown()
-	 */
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		setReadOnly(false);

@@ -48,9 +48,7 @@ public class CheckoutAsWizard extends Wizard {
 
 	class NewProjectListener implements IResourceChangeListener {
 		private IProject newProject = null;
-		/**
-		 * @see IResourceChangeListener#resourceChanged(IResourceChangeEvent)
-		 */
+
 		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta root = event.getDelta();
@@ -92,9 +90,6 @@ public class CheckoutAsWizard extends Wizard {
 		this.allowProjectConfiguration = allowProjectConfiguration;
 	}
 	
-	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
 	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);

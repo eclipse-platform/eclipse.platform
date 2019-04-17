@@ -36,11 +36,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 public class CVSProjectSetSerializer implements IProjectSetSerializer {
 
-	/**
-	 * @see IProjectSetSerializer#asReference(IProject[])
-	 * 
-	 * "1.0,repoLocation,module,projectName[,tag]"
-	 */
 	@Override
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) throws TeamException {
 		String[] result = new String[providerProjects.length];
@@ -78,9 +73,6 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 		return result;
 	}
 
-	/**
-	 * @see IProjectSetSerializer#addToWorkspace(String[])
-	 */
 	@Override
 	public IProject[] addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor) throws TeamException {
 		final int size = referenceStrings.length;

@@ -31,17 +31,13 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard 
 	 */
 	private IProject project;
 	
-	/*
-	 * @see Wizard#addPages()
-	 */
+	@Override
 	public void addPages() {
 		// workaround the wizard problem
 		addPage(new BlankPage());
 	}
 
-	/*
-	 * @see Wizard#performFinish()
-	 */
+	@Override
 	public boolean performFinish() {
 		try {
 			RepositoryProvider.map(project, PessimisticFilesystemProviderPlugin.NATURE_ID);
@@ -52,9 +48,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard 
 		return true;
 	}
 
-	/*
-	 * @see IConfigurationWizard#init(IWorkbench, IProject)
-	 */	
+	@Override
 	public void init(IWorkbench workbench, IProject project) {
 		this.project = project;
 	}

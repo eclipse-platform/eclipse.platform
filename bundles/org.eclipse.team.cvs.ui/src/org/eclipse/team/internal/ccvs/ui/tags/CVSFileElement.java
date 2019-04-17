@@ -34,18 +34,21 @@ public class CVSFileElement extends CVSResourceElement {
 	/**
 	 * Initial implementation: return null;
 	 */
+	@Override
 	public Object[] fetchChildren(Object o, IProgressMonitor monitor) {
 		return new Object[0];
 	}
 	/**
 	 * Initial implementation: return null.
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(file.getName());
 	}
 	/**
 	 * Initial implementation: return the file's name and version
 	 */
+	@Override
 	public String getLabel(Object o) {
 		try {
 			ResourceSyncInfo info = file.getSyncInfo();
@@ -59,9 +62,8 @@ public class CVSFileElement extends CVSResourceElement {
 			return null;
 		}
 	}
-	/**
-	 * @see IWorkbenchAdapter#getParent(Object)
-	 */
+
+	@Override
 	public Object getParent(Object o) {
 		return null;
 	}
@@ -69,9 +71,8 @@ public class CVSFileElement extends CVSResourceElement {
 	public ICVSFile getCVSFile() {
 		return file;
 	}
-	/**
-	 * @see CVSResourceElement#getCVSResource()
-	 */
+
+	@Override
 	public ICVSResource getCVSResource() {
 		return file;
 	}

@@ -32,9 +32,7 @@ public class UserInfo implements IUserInfo {
 		this.isUsernameMutable = isUsernameMutable;
 	}
 	
-	/*
-	 * @see IUserInfo#getUsername()
-	 */
+	@Override
 	public String getUsername() {
 		return username;
 	}
@@ -43,23 +41,17 @@ public class UserInfo implements IUserInfo {
 		return password;
 	}
 	
-	/*
-	 * @see IUserInfo#isUsernameMutable()
-	 */
+	@Override
 	public boolean isUsernameMutable() {
 		return isUsernameMutable;
 	}
 
-	/*
-	 * @see IUserInfo#setPassword(String)
-	 */
+	@Override
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	/*
-	 * @see IUserInfo#setUsername(String)
-	 */
+	@Override
 	public void setUsername(String username) {
 		this.username = username;
 	}

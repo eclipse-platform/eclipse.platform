@@ -40,9 +40,7 @@ public class CVSHistoryFilter extends ViewerFilter {
 		this.matchCounter = 0;
 	}
 
-	/**
-	 * @see ViewerFilter#select(Viewer, Object, Object)
-	 */
+	@Override
 	public boolean select(Viewer aviewer, Object parentElement, Object element) {
 		if (element instanceof AbstractHistoryCategory)
 			return true;

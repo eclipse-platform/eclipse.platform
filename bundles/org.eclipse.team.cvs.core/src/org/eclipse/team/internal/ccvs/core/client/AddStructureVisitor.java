@@ -28,9 +28,7 @@ class AddStructureVisitor extends AbstractStructureVisitor {
 		super(session, localOptions, false, true);
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFile(IManagedFile)
-	 */
+	@Override
 	public void visitFile(ICVSFile mFile) throws CVSException {
 		
 		// Send the parent folder
@@ -43,9 +41,7 @@ class AddStructureVisitor extends AbstractStructureVisitor {
 		
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFolder(ICVSFolder)
-	 */
+	@Override
 	public void visitFolder(ICVSFolder mFolder) throws CVSException {
 		
 		Assert.isNotNull(mFolder);

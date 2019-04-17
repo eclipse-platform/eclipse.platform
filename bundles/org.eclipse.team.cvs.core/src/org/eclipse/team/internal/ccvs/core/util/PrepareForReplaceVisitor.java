@@ -45,9 +45,7 @@ public class PrepareForReplaceVisitor implements ICVSResourceVisitor {
 		this.session = session;
 	}
 	
-	/**
-	 * @see ICVSResourceVisitor#visitFile(ICVSFile)
-	 */
+	@Override
 	public void visitFile(ICVSFile file) throws CVSException {
 		byte[] syncBytes = file.getSyncBytes();
 		if (syncBytes == null) {
@@ -136,9 +134,7 @@ public class PrepareForReplaceVisitor implements ICVSResourceVisitor {
 		return false;
 	}
 
-	/**
-	 * @see ICVSResourceVisitor#visitFolder(ICVSFolder)
-	 */
+	@Override
 	public void visitFolder(ICVSFolder folder) throws CVSException {
 		// Delete unmanaged folders if the user wants them deleted
 		if (!folder.isCVSFolder()) {

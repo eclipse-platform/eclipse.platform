@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
@@ -230,9 +229,6 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		log(new Status(severity, ID, 0, message, e));
 	}
 
-	/**
-	 * @see Plugin#start(BundleContext)
-	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);

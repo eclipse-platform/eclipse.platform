@@ -36,9 +36,7 @@ import com.ibm.icu.text.DateFormat;
 public class CVSFilePropertiesPage extends CVSPropertiesPage {
 	IFile file;
 
-	/*
-	 * @see PreferencesPage#createContents
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		initialize();
 		noDefaultAndApplyButton();

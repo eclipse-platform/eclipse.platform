@@ -21,17 +21,13 @@ import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
  */
 public class RefreshTagsAction extends CVSRepoViewAction {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	protected void execute(IAction action) {
 		ICVSRepositoryLocation[] locations = getSelectedRepositoryLocations();
 		RefreshRemoteProjectWizard.execute(getShell(), locations[0]);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRepositoryLocation[] locations = getSelectedRepositoryLocations();
 		if (locations.length != 1) return false;

@@ -35,6 +35,7 @@ public class CVSFolderElement extends CVSResourceElement {
 	/**
 	 * Returns CVSResourceElement instances
 	 */
+	@Override
 	public Object[] fetchChildren(Object o, IProgressMonitor monitor) throws TeamException {
 		ICVSResource[] children = folder.fetchChildren(monitor);
 		CVSResourceElement[] elements = new CVSResourceElement[children.length];
@@ -60,24 +61,22 @@ public class CVSFolderElement extends CVSResourceElement {
 	 * Overridden to append the version name to remote folders which
 	 * have version tags and are top-level folders.
 	 */
+	@Override
 	public String getLabel(Object o) {
 		return folder.getName();
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER);
 	}	
 	
-	/**
-	 * @see IWorkbenchAdapter#getParent(Object)
-	 */
+	@Override
 	public Object getParent(Object o) {
 		return new CVSFolderElement(folder.getParent(), includeUnmanaged);
 	}
 	
-	/**
-	 * @see CVSResourceElement#getCVSResource()
-	 */
+	@Override
 	public ICVSResource getCVSResource() {
 		return folder ;
 	}

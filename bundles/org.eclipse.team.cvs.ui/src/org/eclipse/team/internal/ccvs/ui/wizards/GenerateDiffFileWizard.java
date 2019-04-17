@@ -1086,9 +1086,6 @@ public class GenerateDiffFileWizard extends Wizard {
 			this.store = store;
 		}
 
-		/*
-		 * @see IDialogPage#createControl(Composite)
-		 */
 		@Override
 		public void createControl(Composite parent) {
 			Composite composite= new Composite(parent, SWT.NULL);

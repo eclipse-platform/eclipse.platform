@@ -29,16 +29,12 @@ import org.eclipse.team.internal.ccvs.core.ICVSFolder;
  */
 public class NotifiedHandler extends ResponseHandler {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.ResponseHandler#getResponseID()
-	 */
+	@Override
 	public String getResponseID() {
 		return "Notified"; //$NON-NLS-1$
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.ResponseHandler#handle(Session, String, IProgressMonitor)
-	 */
+	@Override
 	public void handle(
 		Session session,
 		String localDir,

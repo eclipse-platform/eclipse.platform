@@ -27,13 +27,12 @@ import org.eclipse.team.internal.ccvs.ui.wizards.UpdateWizard;
  * when a functional synchronize view has been implemented.
  */
 public class UpdateAction extends UpdateSilentAction {
-	/*
-	 * @see IActionDelegate#run(IAction)
-	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		UpdateWizard.run(getTargetPart(), getCVSResourceMappings());
 	}
 	
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_UPDATESWITCH;
 	}

@@ -118,9 +118,6 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		}
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#getCachedSyncBytes(org.eclipse.core.resources.IResource, boolean)
-	 */
 	byte[] getCachedSyncBytes(IResource resource, boolean threadSafeAccess) throws CVSException {
 		try {
 			byte[] bytes = null;
@@ -146,9 +143,6 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		}
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#setCachedSyncBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
 	void setCachedSyncBytes(IResource resource, byte[] syncBytes, boolean canModifyWorkspace) throws CVSException {
 		byte[] oldBytes = getCachedSyncBytes(resource, true);
 		try {
@@ -235,23 +229,15 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#isResourceSyncInfoCached(org.eclipse.core.resources.IContainer)
-	 */
 	boolean isResourceSyncInfoCached(IContainer container) throws CVSException {
 		// the sync info is always cahced when using the synchronizer
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#setResourceSyncInfoCached(org.eclipse.core.resources.IContainer)
-	 */
 	void setResourceSyncInfoCached(IContainer container) throws CVSException {
 		// do nothing
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#isFolderSyncInfoCached(org.eclipse.core.resources.IContainer)
-	 */
+	
 	boolean isFolderSyncInfoCached(IContainer container) throws CVSException {
 		return true;
 	}

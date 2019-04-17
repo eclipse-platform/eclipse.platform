@@ -21,9 +21,7 @@ public class SyncUpdate extends Update {
 
 	public SyncUpdate() { };
 
-	/*
-	 * @see Command#sendFileStructure(ICVSResource,IProgressMonitor,boolean,boolean,boolean)
-	 */
+	@Override
     protected void sendFileStructure(Session session, ICVSResource[] resources,
             LocalOption[] localOptions, boolean emptyFolders, IProgressMonitor monitor) throws CVSException {
 			

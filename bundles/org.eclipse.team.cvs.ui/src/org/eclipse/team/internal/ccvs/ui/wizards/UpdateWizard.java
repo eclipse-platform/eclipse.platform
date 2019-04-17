@@ -48,6 +48,7 @@ public class UpdateWizard extends ResizableWizard {
         open(part.getSite().getShell(), wizard);
     }
     
+	@Override
 	public void addPages() {
 		ImageDescriptor substImage = CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_CHECKOUT);
         tagSelectionPage = new TagSelectionWizardPage("tagPage", CVSUIMessages.UpdateWizard_0, substImage, CVSUIMessages.UpdateWizard_1, TagSource.create(mappers), TagSourceWorkbenchAdapter.INCLUDE_ALL_TAGS); //$NON-NLS-1$  
@@ -83,9 +84,7 @@ public class UpdateWizard extends ResizableWizard {
         return null;
     }
 
-	/*
-	 * @see IWizard#performFinish()
-	 */
+	@Override
 	public boolean performFinish() {
 		try {
 			new UpdateOperation(part, mappers, Command.NO_LOCAL_OPTIONS, tagSelectionPage.getSelectedTag()).run();

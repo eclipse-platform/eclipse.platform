@@ -84,9 +84,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
         return uiValidator;
     }
     
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFileModificationValidator#validateMoveDelete(org.eclipse.core.resources.IFile[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+    @Override
 	public IStatus validateMoveDelete(IFile[] files, IProgressMonitor monitor) {
 		IFile[] readOnlyFiles = getManagedReadOnlyFiles(files);
 		if (readOnlyFiles.length == 0) return Status.OK_STATUS;

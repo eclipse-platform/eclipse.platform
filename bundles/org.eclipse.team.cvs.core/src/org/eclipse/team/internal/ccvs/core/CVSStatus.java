@@ -89,9 +89,7 @@ public class CVSStatus extends TeamStatus {
 		super(severity, CVSProviderPlugin.ID, CVSStatus.ERROR,  message, null, null);
 	}	
 	
-	/**
-	 * @see IStatus#getMessage()
-	 */
+	@Override
 	public String getMessage() {
 		String message = super.getMessage();
 		if (commandRoot != null) {

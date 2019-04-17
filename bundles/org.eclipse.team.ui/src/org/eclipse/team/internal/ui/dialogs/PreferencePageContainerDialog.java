@@ -108,9 +108,6 @@ public class PreferencePageContainerDialog extends TrayDialog
 		this.pages = pages;
 	}
 
-	/**
-	 * @see Dialog#okPressed()
-	 */
 	@Override
 	protected void okPressed() {
 		for (int i = 0; i < pages.length; i++) {
@@ -134,9 +131,6 @@ public class PreferencePageContainerDialog extends TrayDialog
 		}
 	}
 
-	/**
-	 * @see Dialog#createDialogArea(Composite)
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite)super.createDialogArea(parent);
@@ -375,9 +369,6 @@ public class PreferencePageContainerDialog extends TrayDialog
 		}
 	}
 
-	/**
-	 * @see IPreferencePageContainer#updateMessage()
-	 */
 	@Override
 	public void updateMessage() {
 	    if (currentPage != null) {
@@ -407,17 +398,11 @@ public class PreferencePageContainerDialog extends TrayDialog
 	    }
 	}
 
-	/**
-	 * @see IPreferencePageContainer#getPreferenceStore()
-	 */
 	@Override
 	public IPreferenceStore getPreferenceStore() {
 		return null;
 	}
 
-	/**
-	 * @see IPreferencePageContainer#updateButtons()
-	 */
 	@Override
 	public void updateButtons() {
 		if (fOkButton != null) {
@@ -433,17 +418,11 @@ public class PreferencePageContainerDialog extends TrayDialog
 		}
 	}
 
-	/**
-	 * @see IPreferencePageContainer#updateTitle()
-	 */
 	@Override
 	public void updateTitle() {
 		updateMessage();
 	}
 
-	/**
-	 * @see Dialog#createButtonsForButtonBar(Composite)
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		fOkButton= createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);

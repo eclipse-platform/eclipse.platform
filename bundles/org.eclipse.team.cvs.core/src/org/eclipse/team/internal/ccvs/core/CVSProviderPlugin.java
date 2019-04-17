@@ -285,9 +285,7 @@ public class CVSProviderPlugin extends Plugin {
 	    ConsoleListeners.getInstance().addListener(consoleListener);
 	}
 	
-	/**
-	 * @see Plugin#start(BundleContext)
-	 */
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 
@@ -318,9 +316,7 @@ public class CVSProviderPlugin extends Plugin {
 	    tracker.open();
 	}
 	
-	/**
-	 * @see Plugin#stop(BundleContext)
-	 */
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			// unregister debug options listener
@@ -349,9 +345,7 @@ public class CVSProviderPlugin extends Plugin {
 		}
 	}
 		
-	/**
-	 * @see org.eclipse.core.runtime.Plugin#initializeDefaultPluginPreferences()
-	 */
+	@Override
 	protected void initializeDefaultPluginPreferences(){
 		Preferences store = getPluginPreferences();
 		store.setDefault(READ_ONLY, false);

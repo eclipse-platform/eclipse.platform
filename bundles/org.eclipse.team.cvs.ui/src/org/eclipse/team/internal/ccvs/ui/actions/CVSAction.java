@@ -580,9 +580,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		} 
 		return okToContinue[0];
 	}
-	/**
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#handle(java.lang.Exception, java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	protected void handle(Exception exception, String title, String message) {
 		CVSUIPlugin.openError(getShell(), title, message, exception, CVSUIPlugin.LOG_NONTEAM_EXCEPTIONS);

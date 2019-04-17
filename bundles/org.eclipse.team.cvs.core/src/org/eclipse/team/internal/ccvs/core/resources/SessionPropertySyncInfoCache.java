@@ -303,9 +303,6 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#getCachedSyncBytes(org.eclipse.core.resources.IResource, boolean)
-	 */
 	byte[] getCachedSyncBytes(IResource resource, boolean threadSafeAccess) throws CVSException {
 		byte[] bytes = (byte[])safeGetSessionProperty(resource, RESOURCE_SYNC_KEY);
 		// If we are not thread safe, just return whatever was found in the session property
@@ -361,9 +358,6 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 			}
 		}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.resources.SyncInfoCache#setCachedSyncBytes(org.eclipse.core.resources.IResource, byte[])
-	 */
 	void setCachedSyncBytes(IResource resource, byte[] syncBytes, boolean canModifyWorkspace) throws CVSException {
 		// Ensure that the sync bytes do not indicate a deletion
 		if (syncBytes != null && ResourceSyncInfo.isDeletion(syncBytes)) {

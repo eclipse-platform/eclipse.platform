@@ -64,9 +64,6 @@ public class RemoteFolderTree extends RemoteFolder  {
 		super.setChildren(children);
 	}
 	
-	/*
-	 * @see ICVSFolder#acceptChildren(ICVSResourceVisitor)
-	 */
 	public void acceptChildren(ICVSResourceVisitor visitor) throws CVSException {
 		ICVSRemoteResource[] children = getChildren();
 		if (children == null) return;

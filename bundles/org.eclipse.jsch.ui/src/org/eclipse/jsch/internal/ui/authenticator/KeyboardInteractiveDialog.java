@@ -18,7 +18,6 @@ package org.eclipse.jsch.internal.ui.authenticator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jsch.internal.ui.IUIConstants;
 import org.eclipse.jsch.internal.ui.JSchUIPlugin;
 import org.eclipse.jsch.internal.ui.Messages;
@@ -99,9 +98,6 @@ public class KeyboardInteractiveDialog extends TrayDialog{
 
   }
 
-  /**
-   * @see Window#configureShell
-   */
   @Override
 protected void configureShell(Shell newShell){
     super.configureShell(newShell);
@@ -116,9 +112,6 @@ protected void configureShell(Shell newShell){
         IHelpContextIds.KEYBOARD_INTERACTIVE_DIALOG);
   }
 
-  /**
-   * @see Window#create
-   */
   @Override
 public void create(){
     super.create();
@@ -133,9 +126,6 @@ public void create(){
     }
   }
 
-  /**
-   * @see Dialog#createDialogArea
-   */
   @Override
 protected Control createDialogArea(Composite parent){
     Composite top=new Composite(parent, SWT.NONE);

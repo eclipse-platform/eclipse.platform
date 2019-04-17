@@ -57,9 +57,6 @@ extends FileModificationValidator {
 		fProvider= provider;
 	}
 
-	/**
-	 * @see IFileModificationValidator#validateEdit(IFile[], Object)
-	 */
 	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 		if (files.length == 0) {
@@ -146,9 +143,6 @@ extends FileModificationValidator {
 		return new MultiStatus( getUid(), IStatus.OK, children, "Some files were not successfully checked out", null);
 	}
 
-	/**
-	 * @see IFileModificationValidator#validateSave(IFile)
-	 */
 	@Override
 	public IStatus validateSave(IFile file) {
 		int checkedInFilesSaved = getPreferences().getInt(IPessimisticFilesystemConstants.PREF_CHECKED_IN_FILES_SAVED);

@@ -28,6 +28,7 @@ public class CheckOutAction extends SourceManagementAction {
 	 * 
 	 * @see PessimisticProviderAction#shouldEnableFor(IResource)
 	 */
+	@Override
 	protected boolean shouldEnableFor(IResource resource) {
 		if (resource == null)
 			return false;
@@ -41,9 +42,7 @@ public class CheckOutAction extends SourceManagementAction {
 		return !provider.isCheckedout(resource);
 	}
 	
-	/*
-	 * @see SourceControlAction#manageResources(PessimisticFilesystemProvider, IResource[], IProgressMonitor)
-	 */
+	@Override
 	protected void manageResources(PessimisticFilesystemProvider provider, IResource[] resources, IProgressMonitor monitor) {
 		provider.checkout(resources, monitor);
 	}

@@ -88,9 +88,6 @@ public abstract class StatusDialog extends Dialog {
 			fOkButton.setEnabled(!status.matches(IStatus.ERROR));
 	}
 	
-	/* 
-	 * @see Window#create(Shell)
-	 */
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
@@ -98,9 +95,6 @@ public abstract class StatusDialog extends Dialog {
 			shell.setText(fTitle);
 	}
 
-	/*
-	 * @see Window#create()
-	 */	
 	@Override
 	public void create() {
 		super.create();
@@ -115,18 +109,12 @@ public abstract class StatusDialog extends Dialog {
 		}
 	}
 
-	/*
-	 * @see Dialog#createButtonsForButtonBar(Composite)
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		fOkButton= createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 	
-	/*
-	 * @see Dialog#createButtonBar(Composite)
-	 */				
 	@Override
 	protected Control createButtonBar(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NULL);

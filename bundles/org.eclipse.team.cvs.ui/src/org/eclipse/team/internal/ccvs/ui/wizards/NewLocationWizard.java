@@ -81,9 +81,6 @@ public class NewLocationWizard extends Wizard implements INewWizard {
 		return new ConfigurationWizardMainPage("repositoryPage1", CVSUIMessages.NewLocationWizard_heading, CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_NEW_LOCATION)); //$NON-NLS-1$ 
 	}
 	
-	/*
-	 * @see IWizard#performFinish
-	 */
 	@Override
 	public boolean performFinish() {
 		final ICVSRepositoryLocation[] location = new ICVSRepositoryLocation[] { null };

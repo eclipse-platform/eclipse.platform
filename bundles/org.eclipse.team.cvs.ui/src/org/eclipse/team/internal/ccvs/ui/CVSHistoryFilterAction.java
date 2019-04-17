@@ -18,7 +18,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.ui.*;
 
 public class CVSHistoryFilterAction extends Action {
 	private TreeViewer viewer;
@@ -29,16 +28,11 @@ public class CVSHistoryFilterAction extends Action {
 		this.page = page;
 	}
 
-	/**
-	 * @see IViewActionDelegate#init(IViewPart)
-	 */
 	public void init(TreeViewer viewer) {
 		this.viewer = viewer;
 	}
 
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
+	@Override
 	public void run() {
 		CVSHistoryFilterDialog historyDialog = new CVSHistoryFilterDialog(viewer.getControl().getShell());
 		if (filter != null) {
@@ -52,9 +46,6 @@ public class CVSHistoryFilterAction extends Action {
 		page.showFilter(filter);
 	}
 
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

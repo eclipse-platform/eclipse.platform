@@ -83,9 +83,6 @@ public class CVSRemoteFilePropertySource implements IPropertySource {
 		return propertyDescriptors;
 	}
 
-	/*
-	 * @see IPropertySource#getPropertyValue(Object)
-	 */
 	@Override
 	public Object getPropertyValue(Object id) {
 		if (!initialized) {

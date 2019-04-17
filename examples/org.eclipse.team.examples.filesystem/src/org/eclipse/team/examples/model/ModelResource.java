@@ -46,21 +46,22 @@ public abstract class ModelResource extends ModelObject{
 		return resource;
 	}
 	
+	@Override
 	public String getName() {
 		return getResource().getName();
 	}
 	
+	@Override
 	public String getPath() {
 		return getResource().getFullPath().makeRelative().toString();
 	}
 	
+	@Override
 	public ModelObject getParent() {
 		return ModelObject.create(getResource().getParent());
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ModelResource) {
 			ModelResource mr = (ModelResource) obj;
@@ -69,23 +70,17 @@ public abstract class ModelResource extends ModelObject{
 		return super.equals(obj);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
 	public int hashCode() {
 		return getResource().hashCode();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.examples.model.ModelObject#delete()
-	 */
+	@Override
 	public void delete() throws CoreException {
 		getResource().delete(false, null);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.examples.model.ModelObject#getProject()
-	 */
+	@Override
 	public ModelProject getProject() {
 		return (ModelProject)ModelObject.create(getResource().getProject());
 	}

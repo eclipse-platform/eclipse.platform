@@ -74,9 +74,7 @@ public class PServerConnection implements IServerConnection {
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	
-	/**
-	 * @see Connection#doClose()
-	 */
+	@Override
 	public void close() throws IOException {
 		try {
 			if (inputStream != null) inputStream.close();
@@ -95,9 +93,7 @@ public class PServerConnection implements IServerConnection {
 		}
 	}
 
-	/**
-	 * @see Connection#doOpen()
-	 */
+	@Override
 	public void open(IProgressMonitor monitor) throws IOException, CVSAuthenticationException {
 		
 		monitor.subTask(CVSMessages.PServerConnection_authenticating);
@@ -154,15 +150,11 @@ public class PServerConnection implements IServerConnection {
         return proxy;
     }
 
-    /**
-	 * @see Connection#getInputStream()
-	 */
+	@Override
 	public InputStream getInputStream() {
 		return inputStream;
 	}
-	/**
-	 * @see Connection#getOutputStream()
-	 */
+	@Override
 	public OutputStream getOutputStream() {
 		return outputStream;
 	}

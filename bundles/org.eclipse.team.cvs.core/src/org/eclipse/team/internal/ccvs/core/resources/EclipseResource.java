@@ -70,9 +70,7 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		}
 	}
 
-	/*
-	 * @see ICVSResource#exists()
-	 */
+	@Override
 	public boolean exists() {
 		return resource.exists();
 	}
@@ -91,16 +89,12 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		return new EclipseFolder(parent);
 	}
 
-	/*
-	 * @see ICVSResource#getName()
-	 */
+	@Override
 	public String getName() {
 		return resource.getName();
 	}
 
-	/*
-	 * @see ICVSResource#isIgnored()
-	 */
+	@Override
 	public boolean isIgnored() throws CVSException {
 		// a managed resource is never ignored
 		if(isManaged() || resource.getType()==IResource.ROOT || resource.getType()==IResource.PROJECT) {
@@ -134,16 +128,12 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		return info.isVirtualDirectory();
 	}
 	
-	/*
-	 * @see ICVSResource#setIgnoredAs(String)
-	 */
+	@Override
 	public void setIgnoredAs(final String pattern) throws CVSException {
 		run(monitor -> EclipseSynchronizer.getInstance().addIgnored(resource.getParent(), pattern), null);
 	}
 
-	/*
-	 * @see ICVSResource#isManaged()
-	 */
+	@Override
 	public boolean isManaged() throws CVSException {
 		return isManaged(getSyncBytes());
 	}
@@ -175,9 +165,7 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		return resource.getFullPath().toString();
 	}	
 	
-	/*
-	 * @see ICVSResource#isFolder()
-	 */
+	@Override
 	public boolean isFolder() {
 		return false;
 	}
@@ -198,9 +186,7 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		}
 	}
 	
-	/*
-	 * @see ICVSResource#getSyncInfo()
-	 */
+	@Override
 	public ResourceSyncInfo getSyncInfo() throws CVSException {
 		return EclipseSynchronizer.getInstance().getResourceSync(resource);
 	}
@@ -219,24 +205,18 @@ abstract class EclipseResource implements ICVSResource, Comparable {
 		return getPath();
 	}
 	
-	/*
-	 * @see ICVSResource#unmanage()
-	 */
+	@Override
 	public void unmanage(IProgressMonitor monitor) throws CVSException {
 		EclipseSynchronizer.getInstance().deleteResourceSync(resource);
 	}
 	
-	/*
-	 * @see Comparable#compareTo(Object)
-	 */
+	@Override
 	public int compareTo(Object arg0) {
 		EclipseResource other = (EclipseResource)arg0;
 		return resource.getFullPath().toString().compareTo(other.resource.getFullPath().toString());
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResource#getIResource()
-	 */
+	@Override
 	public IResource getIResource() {
 		return resource;
 	}

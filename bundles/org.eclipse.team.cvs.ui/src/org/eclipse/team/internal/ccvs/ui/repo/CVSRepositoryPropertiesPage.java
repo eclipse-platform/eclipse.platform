@@ -74,9 +74,6 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 	private Button useCustomLabel;
 	private Text labelText;
 			
-	/*
-	 * @see PreferencesPage#createContents
-	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		initialize();
@@ -434,9 +431,7 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 	private void performNonConnectionInfoChanges() {
 		recordNewLabel((CVSRepositoryLocation)location);
 	}
-	/*
-	 * @see PreferencesPage#performOk
-	 */
+
 	@Override
 	public boolean performOk() {
 		if (performConnectionInfoChanges()) {

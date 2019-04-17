@@ -183,10 +183,6 @@ public class ConfigureRepositoryLocationsDialog extends TitleAreaDialog {
 		return section;
 	}
 
-	/*
-	 * @see org.eclipse.jface.dialogs.Dialog#getDialogBoundsStrategy()
-	 * @since 3.2
-	 */
 	@Override
 	protected int getDialogBoundsStrategy() {
 		return DIALOG_PERSISTLOCATION | DIALOG_PERSISTSIZE;

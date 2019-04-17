@@ -26,20 +26,19 @@ import org.eclipse.team.internal.ui.actions.TeamAction;
  */
 public class DisconnectAction extends TeamAction {
 	
+	@Override
 	protected void execute(IAction action) {
 		IProject projects[] = getSelectedProjects();
 		try {
-			for (int i = 0; i < projects.length; i++) {
-				RepositoryProvider.unmap(projects[i]);
+			for (IProject project : projects) {
+				RepositoryProvider.unmap(project);
 			}
 		} catch (TeamException e) {
 			ErrorDialog.openError(getShell(), Policy.bind("DisconnectAction.errorTitle"), null, e.getStatus()); //$NON-NLS-1$
 		} 
 	}
 	
-	/**
-	 * @see TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		return true;
 	}

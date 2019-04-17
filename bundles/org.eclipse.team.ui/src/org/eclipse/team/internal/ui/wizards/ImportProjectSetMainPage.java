@@ -96,9 +96,6 @@ public class ImportProjectSetMainPage extends TeamWizardPage {
 
 	}
 
-	/*
-	 * @see IDialogPage#createControl(Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 1);

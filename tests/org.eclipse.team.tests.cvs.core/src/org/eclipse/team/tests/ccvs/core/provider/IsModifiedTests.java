@@ -145,9 +145,6 @@ public class IsModifiedTests extends EclipseTest {
 		}
 	}
 
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -156,9 +153,6 @@ public class IsModifiedTests extends EclipseTest {
 		ResourceStateChangeListeners.getListener().addResourceStateChangeListener(listener);
 	}
 
-	/**
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	protected void tearDown() throws Exception {
 		previouslyModified.clear();

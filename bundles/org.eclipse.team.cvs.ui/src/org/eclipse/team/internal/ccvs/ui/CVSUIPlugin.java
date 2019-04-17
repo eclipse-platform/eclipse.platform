@@ -676,9 +676,6 @@ public class CVSUIPlugin extends AbstractUIPlugin {
         }
 	}
 	
-	/**
-	 * @see Plugin#start(BundleContext)
-	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -717,9 +714,6 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 
 	}
 	
-	/**
-	 * @see Plugin#stop(BundleContext)
-	 */
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {

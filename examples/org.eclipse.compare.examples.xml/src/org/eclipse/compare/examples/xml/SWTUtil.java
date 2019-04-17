@@ -89,30 +89,18 @@ public class SWTUtil {
 		}
 	}	
 	
-	/*
-	 * @see DialogPage#convertHeightInCharsToPixels
-	 */
 	public static int convertHeightInCharsToPixels(int chars, Control control) {
 		return convertVerticalDLUsToPixels(chars * 8, control);
 	}
 
-	/*
-	 * @see DialogPage#convertHorizontalDLUsToPixels
-	 */
 	public static int convertHorizontalDLUsToPixels(int dlus, Control control) {
 		return (int)Math.round(dlus * getHorizontalDialogUnitSize(control));
 	}
 
-	/*
-	 * @see DialogPage#convertVerticalDLUsToPixels
-	 */
 	public static int convertVerticalDLUsToPixels(int dlus, Control control) {
 		return (int)Math.round(dlus * getVerticalDialogUnitSize(control));
 	}
 	
-	/*
-	 * @see DialogPage#convertWidthInCharsToPixels
-	 */
 	public static int convertWidthInCharsToPixels(int chars, Control control) {
 		return convertHorizontalDLUsToPixels(chars * 4, control);
 	}

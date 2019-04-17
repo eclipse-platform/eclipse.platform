@@ -41,9 +41,7 @@ public abstract class CVSFieldEditorPreferencePage extends FieldEditorPreference
 			setDescription(description);
 	}
 
-	/**
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
 		String id = getPageHelpContextId();
@@ -53,9 +51,7 @@ public abstract class CVSFieldEditorPreferencePage extends FieldEditorPreference
 		return control;
 	}
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 
@@ -74,9 +70,7 @@ public abstract class CVSFieldEditorPreferencePage extends FieldEditorPreference
 	 */
 	protected abstract String getPageDescription();
 
-	/**
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
+	@Override
 	public boolean performOk() {
 		if (!super.performOk()) return false;
 		pushPreferences();

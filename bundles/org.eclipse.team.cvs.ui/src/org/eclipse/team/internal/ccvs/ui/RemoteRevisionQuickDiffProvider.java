@@ -131,9 +131,6 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		}
 	};
 
-	/*
-	 * @see org.eclipse.test.quickdiff.DocumentLineDiffer.IQuickDiffReferenceProvider#getReference()
-	 */
 	@Override
 	public IDocument getReference(IProgressMonitor monitor) throws CoreException {
 		if(! fReferenceInitialized) return null;
@@ -168,9 +165,6 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		}
 	}
 
-	/*
-	 * @see org.eclipse.jface.text.source.diff.DocumentLineDiffer.IQuickDiffReferenceProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		fReferenceInitialized = false;
@@ -186,17 +180,11 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().removeListener(teamChangeListener);				
 	}
 
-	/*
-	 * @see org.eclipse.quickdiff.QuickDiffTestPlugin.IQuickDiffProviderImplementation#setId(java.lang.String)
-	 */
 	@Override
 	public void setId(String id) {
 		fId= id;
 	}
 
-	/*
-	 * @see org.eclipse.jface.text.source.diff.DocumentLineDiffer.IQuickDiffReferenceProvider#getId()
-	 */
 	@Override
 	public String getId() {
 		return fId;

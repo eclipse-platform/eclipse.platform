@@ -44,9 +44,6 @@ public class ConfigurationWizardAutoconnectPage extends CVSWizardPage {
 		super(pageName, title, titleImage);
 	}
 
-	/*
-	 * @see IDialogPage#createControl(Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 2, false);

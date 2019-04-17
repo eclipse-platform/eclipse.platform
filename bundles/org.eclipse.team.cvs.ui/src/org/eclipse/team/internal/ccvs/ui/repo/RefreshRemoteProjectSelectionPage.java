@@ -93,9 +93,6 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 		this.rootFolders = rootFolders;
 	}
 
-	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		

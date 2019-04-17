@@ -40,9 +40,7 @@ public class RepositoriesFilterAction extends Action {
 		this.filter = filter;
 	}
 	
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
+	@Override
 	public void run() {
 		RepositoriesFilterDialog historyDialog = new RepositoriesFilterDialog(viewer.getControl().getShell());
 		if (filter != null) {

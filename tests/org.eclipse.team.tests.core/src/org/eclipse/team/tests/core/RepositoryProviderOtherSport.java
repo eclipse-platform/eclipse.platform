@@ -20,21 +20,13 @@ public class RepositoryProviderOtherSport extends RepositoryProvider {
 
 	final public static String NATURE_ID = "org.eclipse.team.tests.core.other";
 
-	/*
-	 * @see RepositoryProvider#configureProject()
-	 */
 	public void configureProject() throws CoreException {
 	}
 
-	/*
-	 * @see RepositoryProvider#getID()
-	 */
 	public String getID() {
 		return NATURE_ID;
 	}
-	/*
-	 * @see IProjectNature#deconfigure()
-	 */
+
 	public void deconfigure() throws CoreException {
 	}
 }

@@ -58,9 +58,7 @@ public class ShowHistoryAction extends CVSAction {
 		}
 		return new ICVSRemoteFile[0];
 	}
-	/*
-	 * @see CVSAction#executeIAction)
-	 */
+
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		run((IRunnableWithProgress) monitor -> {
@@ -68,17 +66,13 @@ public class ShowHistoryAction extends CVSAction {
 			TeamUI.showHistoryFor(getTargetPage(), files[0], null);
 		}, false /* cancelable */, PROGRESS_BUSYCURSOR);
 	}
-	/*
-	 * @see TeamAction#isEnabled()
-	 */
+
 	@Override
 	public boolean isEnabled() {
 		ICVSRemoteFile[] resources = getSelectedRemoteFiles();
 		return resources.length == 1;
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
+
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ShowHistoryAction_showHistory; 

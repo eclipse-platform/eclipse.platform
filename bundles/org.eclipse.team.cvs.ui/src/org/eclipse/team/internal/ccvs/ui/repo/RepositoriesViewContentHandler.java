@@ -13,17 +13,15 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.repo;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class RepositoriesViewContentHandler extends DefaultHandler {
@@ -68,16 +66,12 @@ public class RepositoriesViewContentHandler extends DefaultHandler {
 		this.manager = manager;
 	}
 	
-	/**
-	 * @see ContentHandler#characters(char[], int, int)
-	 */
+	@Override
 	public void characters(char[] chars, int startIndex, int length) throws SAXException {
 		buffer.append(chars, startIndex, length);
 	}
 
-	/**
-	 * @see ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-	 */
+	@Override
 	public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		
 		String elementName = getElementName(namespaceURI, localName, qName);
@@ -119,9 +113,7 @@ public class RepositoriesViewContentHandler extends DefaultHandler {
 		tagStack.pop();
 	}
 		
-	/**
-	 * @see ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-	 */
+	@Override
 	public void startElement(
 			String namespaceURI,
 			String localName,

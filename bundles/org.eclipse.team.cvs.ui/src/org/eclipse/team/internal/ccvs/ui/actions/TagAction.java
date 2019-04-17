@@ -38,9 +38,6 @@ public abstract class TagAction extends WorkspaceTraversalAction {
 	// remember if the execute action was cancelled
 	private boolean wasCancelled = false;
 
-	/**
-	 * @see CVSAction#execute(IAction)
-	 */
 	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		setWasCancelled(false);
@@ -118,9 +115,6 @@ public abstract class TagAction extends WorkspaceTraversalAction {
 		return CVSUIMessages.TagAction_tagWarningTitle; 
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-	 */
 	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;

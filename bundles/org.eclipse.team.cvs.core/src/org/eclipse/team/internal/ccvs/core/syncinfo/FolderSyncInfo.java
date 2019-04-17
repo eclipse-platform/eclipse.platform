@@ -235,9 +235,7 @@ public class FolderSyncInfo {
 			this.tag = new CVSEntryLineTag(tag);
 		}
 	}
-	/*
-	 * @see Object#toString()
-	 */
+	
 	public String toString() {
 		return getRoot() + "/" + getRepository() + "/" + getTag(); //$NON-NLS-1$ //$NON-NLS-2$
 	}

@@ -28,16 +28,12 @@ public class NOOPVisitor extends AbstractStructureVisitor {
 		super(session, localOptions, false, false);
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResourceVisitor#visitFile(ICVSFile)
-	 */
+	@Override
 	public void visitFile(ICVSFile file) throws CVSException {
 		sendPendingNotification(file);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSResourceVisitor#visitFolder(ICVSFolder)
-	 */
+	@Override
 	public void visitFolder(ICVSFolder folder) throws CVSException {
 		if (isRecurse() && folder.isCVSFolder()) {
 			folder.acceptChildren(this);

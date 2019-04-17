@@ -32,16 +32,12 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
  */
 public class TemplateHandler extends ResponseHandler {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.ResponseHandler#getResponseID()
-	 */
+	@Override
 	public String getResponseID() {
 		return "Template"; //$NON-NLS-1$
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.client.ResponseHandler#handle(org.eclipse.team.internal.ccvs.core.client.Session, java.lang.String, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void handle(Session session, String localDir, IProgressMonitor monitor) throws CVSException {
 		session.readLine(); /* read the remote dir which is not needed */
         // Only read the template file if the container exists.

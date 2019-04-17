@@ -36,9 +36,6 @@ public class Mapping {
 		fIdAttribute = idattribute;
 	}
 	
-	/*
-	 * @see Object#equals(Object)
-	 */
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Mapping))
@@ -55,9 +52,6 @@ public class Mapping {
 			mapping.fIdAttribute.equals(fIdAttribute);
 	}
 	
-	/*
-	 * @see Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		return fElement.hashCode() ^ fSignature.hashCode();

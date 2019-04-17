@@ -17,25 +17,19 @@ import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.IConnectionMethod;
 import org.eclipse.team.internal.ccvs.core.IServerConnection;
 public class PServerConnectionMethod implements IConnectionMethod {
-	/**
-	 * @see IConnectionMethod#createConnection(ICVSRepositoryLocation, String)
-	 */
+	@Override
 	public IServerConnection createConnection(ICVSRepositoryLocation location, String password) {
 		if(password==null){
 			password=""; //$NON-NLS-1$
 		}
 		return new PServerConnection(location, password);
 	}
-	/**
-	 * @see IConnectionMethod#getName()
-	 */
+	@Override
 	public String getName() {
 		return "pserver";//$NON-NLS-1$
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.IConnectionMethod#disconnect(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation)
-	 */
+	@Override
 	public void disconnect(ICVSRepositoryLocation location) {
 	}
 }

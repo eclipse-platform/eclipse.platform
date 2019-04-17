@@ -18,7 +18,11 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.team.examples.pessimistic.IPessimisticFilesystemConstants;
 import org.eclipse.team.examples.pessimistic.PessimisticFilesystemProviderPlugin;
 import org.eclipse.ui.IWorkbench;
@@ -114,9 +118,7 @@ public class PessimisticPreferencesPage
 			IPessimisticFilesystemConstants.OPTION_DO_NOTHING, };		
 	
 
-	/*
-	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
-	 */
+	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return PessimisticFilesystemProviderPlugin.getInstance().getPreferenceStore();
 	}
@@ -139,9 +141,7 @@ public class PessimisticPreferencesPage
 		group.setLayoutData(data);
 	}
 
-	/*
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(Composite)
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NULL);
 		setDefaultLayout(composite, 1);
@@ -237,16 +237,12 @@ public class PessimisticPreferencesPage
 		return composite;
 	}
 
-	/*
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
-	 */
+	@Override
 	public void init(IWorkbench workbench) {
 		// do nothing
 	}
 
-	/*
-	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-	 */
+	@Override
 	protected void performDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 
@@ -265,9 +261,7 @@ public class PessimisticPreferencesPage
 		super.performDefaults();
 	}
 
-	/*
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
+	@Override
 	public boolean performOk() {
 		IPreferenceStore store = getPreferenceStore();
 

@@ -168,25 +168,16 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		setWorkspaceSyncState(workspaceSyncState);
 	}
 
-	/**
-	 * @see ICVSResource#accept(ICVSResourceVisitor)
-	 */
 	@Override
 	public void accept(ICVSResourceVisitor visitor) throws CVSException {
 		visitor.visitFile(this);
 	}
 
-	/**
-	 * @see ICVSResource#accept(ICVSResourceVisitor, boolean)
-	 */
 	@Override
 	public void accept(ICVSResourceVisitor visitor, boolean recurse) throws CVSException {
 		visitor.visitFile(this);
 	}
 	
-	/**
-	 * @see ICVSRemoteFile#getContents()
-	 */
 	@Override
 	public InputStream getContents(IProgressMonitor monitor) throws CVSException {
 		try {
@@ -277,9 +268,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		return entry;
 	}
 	
-	/**
-	 * @see ICVSRemoteFile#getLogEntries()
-	 */
 	@Override
 	public ILogEntry[] getLogEntries(IProgressMonitor monitor) throws CVSException {
 		monitor = Policy.monitorFor(monitor);
@@ -309,9 +297,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		}
 	}
 	
-	/**
-	 * @see ICVSRemoteFile#getRevision()
-	 */
 	@Override
 	public String getRevision() {
 		try {
@@ -344,9 +329,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		return file;
 	}
 
-	/**
-	 * @see ICVSFile#getSyncInfo()
-	 */
 	@Override
 	public ResourceSyncInfo getSyncInfo() {
 		try {
@@ -357,9 +339,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		}
 	}
 	
-	/**
-	 * @see ICVSResource#getRemoteLocation(ICVSFolder)
-	 */
 	@Override
 	public String getRemoteLocation(ICVSFolder stopSearching) throws CVSException {
 		return parent.getRemoteLocation(stopSearching) + Session.SERVER_SEPARATOR + getName();
@@ -382,9 +361,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		return parent.getRepository();
 	}
 	
-	/**
-	 * @see IManagedFile#setFileInfo(FileProperties)
-	 */
 	@Override
 	public void setSyncInfo(ResourceSyncInfo fileInfo, int modificationState) {
 		setSyncBytes(fileInfo.getBytes(),modificationState);
@@ -464,9 +440,6 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		// RemoteFiles are not mutable so do not support timestamp changes
 	}
 
-	/**
-	 * @see ICVSFile#moveTo(String)
-	 */
 	@Override
 	public void copyTo(String mFile) {		
 		// Do nothing
@@ -522,49 +495,31 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		return super.equals(target) && remote.getRevision().equals(getRevision());
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#checkout(int)
-	 */
 	@Override
 	public void edit(int notifications, boolean notifyForWritable, IProgressMonitor monitor) {
 		// do nothing
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#uncheckout()
-	 */
 	@Override
 	public void unedit(IProgressMonitor monitor) {
 		// do nothing
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#notificationCompleted()
-	 */
 	@Override
 	public void notificationCompleted() {
 		// do nothing
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#getPendingNotification()
-	 */
 	@Override
 	public NotifyInfo getPendingNotification() {
 		return null;
 	}
 
-	/**
-	 * @see RemoteResource#forTag(ICVSRemoteFolder, CVSTag)
-	 */
 	@Override
 	public ICVSRemoteResource forTag(ICVSRemoteFolder parent, CVSTag tag) {
 		return new RemoteFile((RemoteFolder)parent, getWorkspaceSyncState(), getName(), getRevision(), getKeywordMode(), tag);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSRemoteResource#forTag(org.eclipse.team.internal.ccvs.core.CVSTag)
-	 */
 	@Override
 	public ICVSRemoteResource forTag(CVSTag tag) {
 		RemoteFolderTree remoteFolder = new RemoteFolderTree(null, getRepository(), 
@@ -574,30 +529,18 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		remoteFolder.setChildren(new ICVSRemoteResource[] { remoteFile });
 		return remoteFile;
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#committed(org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo)
-	 */
 	@Override
 	public void checkedIn(String info, boolean commit) {
 		// do nothing
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#isEdited()
-	 */
 	@Override
 	public boolean isEdited() {
 		return false;
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#getSyncBytes()
-	 */
 	@Override
 	public byte[] getSyncBytes() {
 		return syncBytes;
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.ICVSFile#setSyncBytes(byte[])
-	 */
 	@Override
 	public void setSyncBytes(byte[] syncBytes, int modificationState) {
 		if (fetching) {

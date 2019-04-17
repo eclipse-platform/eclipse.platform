@@ -62,9 +62,6 @@ public class OpenRemoteFileAction extends CVSAction {
 		}
 		return new ICVSRemoteFile[0];
 	}
-	/*
-	 * @see CVSAction#execute(IAction)
-	 */
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		run((IRunnableWithProgress) monitor -> {
@@ -75,9 +72,7 @@ public class OpenRemoteFileAction extends CVSAction {
 			}
 		}, false, PROGRESS_BUSYCURSOR); 
 	}
-	/*
-	 * @see TeamAction#isEnabled()
-	 */
+
 	@Override
 	public boolean isEnabled() {
 		ICVSRemoteFile[] resources = getSelectedRemoteFiles();

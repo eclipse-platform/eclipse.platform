@@ -31,7 +31,8 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.part.*;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
 /**
  * This class acts as a superclass to all remote CVS tree views.
@@ -76,9 +77,6 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 		setWorkingSet(set, false);
 	}
 	
-	/**
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -101,9 +99,6 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
             PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), helpID);
 	}
 	
-	/**
-	 * @see WorkbenchPart#setFocus
-	 */
 	@Override
 	public void setFocus() {
 		viewer.getControl().setFocus();
@@ -332,16 +327,10 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 		return viewer;
 	}
 
-	/**
-	 * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
-	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 	}
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
-	 */
 	@Override
 	public void dispose() {
 		getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(this);

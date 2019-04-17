@@ -1194,7 +1194,7 @@ public class CVSWorkspaceSubscriberTest extends CVSSyncSubscriberTest {
 	}
 	
 	/*
-	 * @see https://bugs.eclipse.org/bugs/show_bug.cgi?id=40221
+	 * Test https://bugs.eclipse.org/bugs/show_bug.cgi?id=40221
 	 */
 	public void testConflictingFolderDeletion() throws CoreException {
 		// Create a test project (which commits it as well)

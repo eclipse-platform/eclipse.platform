@@ -60,9 +60,7 @@ public class OpenLogEntryAction extends CVSAction {
 		}
 		return new ILogEntry[0];
 	}
-	/*
-	 * @see CVSAction#execute(IAction)
-	 */
+
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		run((IRunnableWithProgress) monitor -> {
@@ -78,9 +76,7 @@ public class OpenLogEntryAction extends CVSAction {
 			}
 		}, false, PROGRESS_BUSYCURSOR); 
 	}
-	/*
-	 * @see TeamAction#isEnabled()
-	 */
+
 	@Override
 	public boolean isEnabled() {
 		ILogEntry[] entries = getSelectedLogEntries();

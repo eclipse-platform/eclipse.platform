@@ -84,9 +84,6 @@ public class RefreshRemoteProjectWizard extends Wizard {
 		setWindowTitle(CVSUIMessages.RefreshRemoteProjectWizard_title); 
 	}
 	
-	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
 	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
@@ -100,9 +97,6 @@ public class RefreshRemoteProjectWizard extends Wizard {
 		addPage(projectSelectionPage);
 	}
 	
-	/**
-	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
 		final ICVSRemoteResource[] selectedFolders = projectSelectionPage.getSelectedRemoteProject();

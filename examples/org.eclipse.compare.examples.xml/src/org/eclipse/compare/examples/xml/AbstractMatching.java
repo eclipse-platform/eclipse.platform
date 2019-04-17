@@ -106,17 +106,11 @@ public abstract class AbstractMatching {
 			fXML_elements= xml_elements;
 		}
 	
-		/*
-		 * @see IRangeComparator#getRangeCount()
-		 */
 		@Override
 		public int getRangeCount() {
 			return fXML_elements.length;
 		}
 	
-		/*
-		 * @see IRangeComparator#rangesEqual(int, IRangeComparator, int)
-		 */
 		@Override
 		public boolean rangesEqual(
 			int thisIndex,
@@ -148,9 +142,6 @@ public abstract class AbstractMatching {
 			return false;
 		}
 	
-		/*
-		 * @see IRangeComparator#skipRangeComparison(int, int, IRangeComparator)
-		 */
 		@Override
 		public boolean skipRangeComparison(
 			int length,

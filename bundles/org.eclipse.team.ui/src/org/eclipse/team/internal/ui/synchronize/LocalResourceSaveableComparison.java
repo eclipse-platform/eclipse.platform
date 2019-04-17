@@ -317,9 +317,6 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		return input.hashCode();
 	}
 
-	/*
-	 * @see org.eclipse.ui.Saveable#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
