@@ -592,9 +592,9 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		return CVSUIPlugin.getPlugin().getRepositoryManager();
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.actions.TeamAction#getSelectedResources()
-     */
+	/*
+	 * @see org.eclipse.team.internal.ui.actions.TeamAction#getSelectedResources()
+	 */
     protected final IResource[] getSelectedResourcesWithOverlap() {
     	IStructuredSelection selection = getSelection();
         CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
@@ -604,9 +604,6 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
         return props.getAllSelectedResources();
     }
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#getSelectedResources()
-	 */
 	@Override
 	protected final IResource[] getSelectedResources() {
 		IStructuredSelection selection = getSelection();
@@ -617,9 +614,6 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
         return props.getNonoverlappingSelectedResources();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IEditorActionDelegate#setActiveEditor(org.eclipse.jface.action.IAction, org.eclipse.ui.IEditorPart)
-	 */
 	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 	}
@@ -637,9 +631,6 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	public void addHandlerListener(IHandlerListener handlerListener) {
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.commands.IHandler#isHandled()
-	 */
 	@Override
 	public boolean isHandled() {
 		return true;

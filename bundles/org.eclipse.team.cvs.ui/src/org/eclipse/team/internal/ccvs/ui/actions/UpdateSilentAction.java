@@ -30,23 +30,17 @@ import org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation;
  */
 public class UpdateSilentAction extends WorkspaceTraversalAction {
     
-    /*
-     * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-     */
+	@Override
     protected boolean isEnabledForAddedResources() {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-     */
+	@Override
     protected boolean isEnabledForNonExistantResources() {
         return true;
     }
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		if (CVSUIPlugin.getPlugin().getPreferenceStore().getString(ICVSUIConstants.PREF_UPDATE_HANDLING).equals(ICVSUIConstants.PREF_UPDATE_HANDLING_TRADITIONAL)) {
 			new UpdateOperation(getTargetPart(), getCVSResourceMappings(), Command.NO_LOCAL_OPTIONS, null /* no tag */).run();
@@ -55,9 +49,7 @@ public class UpdateSilentAction extends WorkspaceTraversalAction {
 	    }
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_UPDATE;
 	}

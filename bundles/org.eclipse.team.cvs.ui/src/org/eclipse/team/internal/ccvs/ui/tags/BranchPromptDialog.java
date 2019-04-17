@@ -107,9 +107,6 @@ public class BranchPromptDialog extends DetailsDialog {
 		branchText.setFocus();
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
-     */
     @Override
 	protected String getHelpContextId() {
         return IHelpContextIds.BRANCH_DIALOG;
@@ -207,9 +204,6 @@ public class BranchPromptDialog extends DetailsDialog {
 		return update;
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
-     */
     @Override
 	protected boolean isMainGrabVertical() {
         return false;

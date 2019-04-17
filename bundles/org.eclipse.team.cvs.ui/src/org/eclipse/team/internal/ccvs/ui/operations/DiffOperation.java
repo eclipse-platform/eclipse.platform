@@ -595,9 +595,6 @@ public abstract class DiffOperation extends SingleCommandOperation {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#consultModelsForMappings()
-	 */
 	@Override
 	public boolean consultModelsForMappings() {
 		return false;

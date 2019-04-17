@@ -61,9 +61,6 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 		this.localFolderName = localFolder.getName();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		ICVSRemoteFolder[] remoteFolders = getRemoteFolders();
@@ -86,9 +83,6 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 		return recursive;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#checkout(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected IStatus checkout(final ICVSRemoteFolder folder, IProgressMonitor monitor) throws CVSException {
 		final IStatus[] result = new IStatus[] { null };
@@ -107,9 +101,6 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 		return result[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#checkout(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void checkout(final ICVSRemoteFolder[] folders, IProgressMonitor monitor) throws CVSException {
 		// Batch sync info changes with the CVS synchronizer to optimize cache writing
@@ -422,9 +413,6 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 			}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getSchedulingRule()
-	 */
 	@Override
 	protected ISchedulingRule getSchedulingRule() {
 		//use the modfiy rule for the time being

@@ -39,9 +39,7 @@ public class WorkspaceUpdateOperation extends SafeUpdateOperation {
 		super(configuration, elements, promptBeforeUpdate);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#runUpdateDeletions(org.eclipse.team.core.synchronize.SyncInfo[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void runUpdateDeletions(SyncInfo[] nodes, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask(null, nodes.length * 100);
 		for (int i = 0; i < nodes.length; i++) {
@@ -53,16 +51,12 @@ public class WorkspaceUpdateOperation extends SafeUpdateOperation {
 		monitor.done();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#runSafeUpdate(org.eclipse.team.core.synchronize.SyncInfo[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void runSafeUpdate(IProject project, SyncInfo[] nodes, IProgressMonitor monitor) throws TeamException {
 		safeUpdate(project, getIResourcesFrom(nodes), new LocalOption[] { Command.DO_NOT_RECURSE }, monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#overwriteUpdate(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void overwriteUpdate(SyncInfoSet syncSet, IProgressMonitor monitor) throws TeamException {
 		try {
 			new ReplaceOperation(getPart(), syncSet.getResources(), null /* tag */, false /* recurse */)
@@ -76,9 +70,7 @@ public class WorkspaceUpdateOperation extends SafeUpdateOperation {
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#updated(org.eclipse.core.resources.IResource[])
-	 */
+	@Override
 	protected void updated(IResource[] resources) throws TeamException {
 		// Do nothing
 	}

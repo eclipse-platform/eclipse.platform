@@ -45,9 +45,6 @@ public class FileModificationValidator extends CVSCoreFileModificationValidator 
 	public FileModificationValidator() {
 	}
 	
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.core.CVSCoreFileModificationValidator#edit(org.eclipse.core.resources.IFile[], org.eclipse.core.resources.team.FileModificationValidationContext)
-     */
     @Override
 	protected IStatus edit(IFile[] readOnlyFiles, FileModificationValidationContext context) {
         return edit(readOnlyFiles, getShell(context));

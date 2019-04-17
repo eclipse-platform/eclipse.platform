@@ -35,6 +35,7 @@ import org.eclipse.ui.part.IPage;
  */
 public class ReplaceWithRevisionAction extends CompareWithRevisionAction {
 	
+	@Override
 	protected void showCompareInDialog(Shell shell, Object object){
 		IHistoryPageSource pageSource = HistoryPageSource.getHistoryPageSource(object);
 		if (pageSource != null && pageSource.canShowHistoryFor(object)) {
@@ -42,16 +43,19 @@ public class ReplaceWithRevisionAction extends CompareWithRevisionAction {
 			cc.setLeftEditable(false);
 			cc.setRightEditable(false);
 			HistoryPageCompareEditorInput input = new HistoryPageCompareEditorInput(cc, pageSource, object) {
+				@Override
 				public void saveChanges(IProgressMonitor monitor) throws CoreException {
 					super.saveChanges(monitor);
 					((CVSHistoryPage)getHistoryPage()).saveChanges(monitor);
 					setDirty(false);
 				}
+				@Override
 				protected void performReplace(Object o) throws CoreException {
 					FileRevisionTypedElement right = (FileRevisionTypedElement)o;
 					IFile file = (IFile)getCompareResult();
 					file.setContents(right.getContents(), false, true, null);
 				}
+				@Override
 				protected IPage createPage(CompareViewerPane parent,
 						IToolBarManager toolBarManager) {
 					IPage page = super.createPage(parent, toolBarManager);
@@ -64,13 +68,13 @@ public class ReplaceWithRevisionAction extends CompareWithRevisionAction {
 			CompareUI.openCompareDialog(input);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CompareWithRevisionAction#getActionTitle()
-	 */
+
+	@Override
 	protected String getActionTitle() {
 		return CVSUIMessages.ReplaceWithRevisionAction_1; 
 	}
 	
+	@Override
 	protected boolean isShowInDialog() {
 		// Always show a replace in a dialog
 		return true;

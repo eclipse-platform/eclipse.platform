@@ -134,21 +134,11 @@ public class CommitCommentArea extends DialogArea {
 							final ICompletionProposal proposal = computeQuickAssistProposals[i];
 							quickFixMenu.add(new Action(proposal.getDisplayString()) {
 
-								/*
-								 * (non-Javadoc)
-								 * 
-								 * @see org.eclipse.jface.action.Action#run()
-								 */
 								@Override
 								public void run() {
 									proposal.apply(sourceViewer.getDocument());
 								}
 
-								/*
-								 * (non-Javadoc)
-								 * 
-								 * @see org.eclipse.jface.action.Action#getImageDescriptor()
-								 */
 								@Override
 								public ImageDescriptor getImageDescriptor() {
 									if (proposal.getImage() != null) {
@@ -182,9 +172,6 @@ public class CommitCommentArea extends DialogArea {
 		            
 				}
 				
-				/* (non-Javadoc)
-				 * @see org.eclipse.swt.events.FocusAdapter#focusLost(org.eclipse.swt.events.FocusEvent)
-				 */
 				@Override
 				public void focusLost(FocusEvent e) {
 					IHandlerService service = PlatformUI.getWorkbench().getService(IHandlerService.class);
@@ -261,9 +248,6 @@ public class CommitCommentArea extends DialogArea {
          */
         private ActionHandler createQuickFixActionHandler(final ITextOperationTarget textOperationTarget) {
             Action quickFixAction= new Action() {
-            	/* (non-Javadoc)
-            	 * @see org.eclipse.jface.action.Action#run()
-            	 */
             	@Override
 				public void run() {
             		textOperationTarget.doOperation(ISourceViewer.QUICK_ASSIST);
@@ -427,9 +411,6 @@ public class CommitCommentArea extends DialogArea {
 		public void focusGained(FocusEvent e) {
         }
         
-        /* (non-Javadoc)
-         * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
-         */
         @Override
 		public void focusLost(FocusEvent e) {
             fCombo.removeSelectionListener(this);

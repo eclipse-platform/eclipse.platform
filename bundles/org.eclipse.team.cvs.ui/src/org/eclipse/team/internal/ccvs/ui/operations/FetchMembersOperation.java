@@ -102,9 +102,6 @@ public class FetchMembersOperation extends RemoteOperation {
 		this.collector = collector;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		ICVSRemoteFolder remote = getRemoteFolder();
@@ -136,9 +133,6 @@ public class FetchMembersOperation extends RemoteOperation {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.FetchMembersOperation_0, new String[] { getRemoteFolder().getName() }); 

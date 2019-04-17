@@ -47,17 +47,11 @@ public class ReplaceOperation extends UpdateOperation {
         super(part, mappings, new LocalOption[] { Update.IGNORE_LOCAL_CHANGES }, tag);
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.ReplaceOperation_taskName; 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#executeCommand(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected IStatus executeCommand(
 		final Session session,
@@ -187,9 +181,6 @@ public class ReplaceOperation extends UpdateOperation {
 		return Arrays.asList(tags).contains(tag);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation#getUpdateCommand()
-	 */
 	@Override
 	protected Update getUpdateCommand() {
 		// Use a special replace command that doesn't set back the timestamps
@@ -197,9 +188,6 @@ public class ReplaceOperation extends UpdateOperation {
 		return new Replace(prepDeletedFiles);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
-	 */
 	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.ReplaceOperation_0, new String[] { provider.getProject().getName() }); 

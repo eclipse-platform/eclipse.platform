@@ -34,9 +34,7 @@ public class UpdateDialog extends SyncInfoSetDetailsDialog {
 		super(parentShell, CVSUIMessages.UpdateDialog_overwriteTitle, syncSet); // 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.DetailsDialog#createMainDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
@@ -47,20 +45,24 @@ public class UpdateDialog extends SyncInfoSetDetailsDialog {
 		createWrappingLabel(composite, CVSUIMessages.UpdateDialog_overwriteMessage); 
 	}
 
+	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, YES, IDialogConstants.YES_LABEL, false);
 		createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
 		super.createButtonsForButtonBar(parent);
 	}
 	
+	@Override
 	protected boolean includeOkButton() {
 		return false;
 	}
 	
+	@Override
 	protected boolean includeCancelButton() {
 		return false;
 	}
 
+	@Override
 	protected void buttonPressed(int id) {
 		// hijack yes and no buttons to set the correct return
 		// codes.

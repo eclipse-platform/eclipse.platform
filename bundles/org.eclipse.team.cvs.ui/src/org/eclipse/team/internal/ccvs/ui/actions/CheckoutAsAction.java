@@ -25,9 +25,7 @@ import org.eclipse.team.internal.ccvs.ui.wizards.CheckoutAsWizard;
 
 public class CheckoutAsAction extends CVSAction {
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ICVSRemoteFolder[] folders = getSelectedRemoteFolders();
 		boolean withName = CVSUIPlugin.getPlugin().isUseProjectNameOnCheckout();
@@ -46,9 +44,7 @@ public class CheckoutAsAction extends CVSAction {
 		dialog.open();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		return getSelectedRemoteFolders().length > 0;
 	}

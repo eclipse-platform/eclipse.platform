@@ -274,9 +274,6 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 		userinfo.setPassword(result[0]);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#prompt(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, int, java.lang.String, java.lang.String, int[], int)
-	 */
 	@Override
 	public int prompt(final ICVSRepositoryLocation location, final int promptType, final String title, final String message, final int[] promptResponses, final int defaultResponse) {
 		final Display display = CVSUIPlugin.getStandardDisplay();
@@ -314,11 +311,6 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
         return openConfirm[0];
     }
     
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.team.internal.ccvs.core.IUserAuthenticator#promptToConfigureRepositoryLocations(java.util.Map)
-	 */
 	@Override
 	public Map promptToConfigureRepositoryLocations(final Map alternativeMap) {
 		final Map[] result = new Map[1];

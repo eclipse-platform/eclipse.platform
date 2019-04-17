@@ -37,6 +37,7 @@ public class ModelMergeOperation extends AbstractModelMergeOperation {
 	 */
 	public ModelMergeOperation(IWorkbenchPart part, ResourceMapping[] mappings, final CVSMergeSubscriber subscriber, boolean attempAutomerge) {
 		super(part, new SubscriberScopeManager(subscriber.getName(), mappings, subscriber, true){
+			@Override
 			public void dispose() {
 				subscriber.cancel();
 				super.dispose();
@@ -46,32 +47,28 @@ public class ModelMergeOperation extends AbstractModelMergeOperation {
 		this.attempAutomerge = attempAutomerge;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelParticipantMergeOperation#createMergeContext()
-	 */
+	@Override
 	protected SynchronizationContext createMergeContext() {
 		return MergeSubscriberContext.createContext(getScopeManager(), subscriber);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
-	 */
+	@Override
 	protected String getJobName() {
 		return CVSUIMessages.MergeUpdateAction_jobName;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.mappings.AbstractModelMergeOperation#createParticipant()
-	 */
+	@Override
 	protected ModelSynchronizeParticipant createParticipant() {
 		setOwnsManager(false);
 		return new ModelMergeParticipant((MergeSubscriberContext)createMergeContext());
 	}
 	
+	@Override
 	protected boolean isPreviewInDialog() {
 		return false;
 	}
 	
+	@Override
 	public boolean isPreviewRequested() {
 		return !attempAutomerge;
 	}

@@ -27,17 +27,17 @@ public class CreatePatchAction extends CVSParticipantAction {
 		super(configuration);
 	}
 
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.SubscriberAction#getSyncInfoFilter()
-	 */
+	@Override
 	protected FastSyncInfoFilter getSyncInfoFilter() {
 		return new SyncInfoDirectionFilter(new int[] {SyncInfo.CONFLICTING, SyncInfo.OUTGOING});
 	}
 
+	@Override
 	public void runOperation() {
         final SyncInfoSet set = getSyncInfoSet();
         GenerateDiffFileWizard.run(getConfiguration().getSite().getPart(), set.getResources(), false);
@@ -60,7 +60,8 @@ public class CreatePatchAction extends CVSParticipantAction {
         return filtered;
     }
     
-    protected String getBundleKeyPrefix() {
+    @Override
+	protected String getBundleKeyPrefix() {
     	return "GenerateDiffFileAction."; //$NON-NLS-1$
     }
 }

@@ -50,9 +50,6 @@ public class TagRefreshButtonArea extends DialogArea {
         this.tagSource = tagSource;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	public void createArea(Composite parent) {
     	

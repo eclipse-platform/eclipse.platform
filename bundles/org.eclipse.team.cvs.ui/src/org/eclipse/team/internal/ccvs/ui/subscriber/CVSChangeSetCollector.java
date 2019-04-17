@@ -87,25 +87,16 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
         public DefaultCheckedInChangeSet(String name) {
             setName(name);
         }
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.CheckedInChangeSet#getAuthor()
-         */
         @Override
 		public String getAuthor() {
             return ""; //$NON-NLS-1$
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.CheckedInChangeSet#getDate()
-         */
         @Override
 		public Date getDate() {
             return date;
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.ChangeSet#getComment()
-         */
         @Override
 		public String getComment() {
             return ""; //$NON-NLS-1$
@@ -129,25 +120,16 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
     		}
         }
         
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.CheckedInChangeSet#getAuthor()
-         */
         @Override
 		public String getAuthor() {
             return entry.getAuthor();
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.CheckedInChangeSet#getDate()
-         */
         @Override
 		public Date getDate() {
             return entry.getDate();
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.core.subscribers.ChangeSet#getComment()
-         */
         @Override
 		public String getComment() {
             return entry.getComment();
@@ -191,9 +173,6 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
         return logEntryHandler;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.core.subscribers.SyncInfoSetChangeSetCollector#add(org.eclipse.team.core.synchronize.SyncInfo[])
-     */
     @Override
 	protected void add(SyncInfo[] infos) {
         LogEntryCacheUpdateHandler handler = getLogEntryHandler();
@@ -205,9 +184,6 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
             }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#reset(org.eclipse.team.core.synchronize.SyncInfoSet)
-     */
     @Override
 	public void reset(SyncInfoSet seedSet) {
         // Notify that handler to stop any fetches in progress
@@ -218,9 +194,6 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
         super.reset(seedSet);
     }
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.views.HierarchicalModelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 	    // No longer listen for log entry changes
@@ -425,9 +398,6 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 		return !remote.equals(remoteResource);
 	}
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#waitUntilDone(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void waitUntilDone(IProgressMonitor monitor) {
         super.waitUntilDone(monitor);
@@ -447,9 +417,6 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 		monitor.worked(1);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.subscriber.LogEntryCacheUpdateHandler.ILogsFetchedListener#logEntriesFetched(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void logEntriesFetched(SyncInfoSet set, LogEntryCache logEntryCache, IProgressMonitor monitor) {
         if (disposed) return;

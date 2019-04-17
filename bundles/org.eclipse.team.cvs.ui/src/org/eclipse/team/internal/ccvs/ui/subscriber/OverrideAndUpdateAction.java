@@ -15,8 +15,8 @@ package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.team.core.synchronize.FastSyncInfoFilter;
-import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.FastSyncInfoFilter.SyncInfoDirectionFilter;
+import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SynchronizeModelOperation;
 
@@ -31,13 +31,12 @@ public class OverrideAndUpdateAction extends CVSParticipantAction {
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.SubscriberAction#getSyncInfoFilter()
-	 */
+	@Override
 	protected FastSyncInfoFilter getSyncInfoFilter() {
 		return new SyncInfoDirectionFilter(new int[] {SyncInfo.CONFLICTING, SyncInfo.OUTGOING});
 	}
 	
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new OverrideAndUpdateSubscriberOperation(configuration, elements);
 	}

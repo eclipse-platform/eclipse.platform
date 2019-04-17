@@ -46,6 +46,7 @@ public class DateTagDialog extends TrayDialog {
 		 */
 		private static final int DateTime_MIN_YEAR = 1752;
 
+		@Override
 		public void createArea(Composite parent) {
 			Composite composite = createComposite(parent, 2, false);
 			initializeDialogUnits(composite);
@@ -85,9 +86,7 @@ public class DateTagDialog extends TrayDialog {
 		private Button includeTime, localTime, utcTime;
 		private DateTime time;
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ui.dialogs.DialogArea#createArea(org.eclipse.swt.widgets.Composite)
-		 */
+		@Override
 		public void createArea(Composite parent) {
 			Composite composite = createComposite(parent, 2, false);
 			initializeDialogUnits(composite);
@@ -98,6 +97,7 @@ public class DateTagDialog extends TrayDialog {
 			utcTime = createRadioButton(composite, CVSUIMessages.DateTagDialog_4, 2);  
 			
 			includeTime.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					updateWidgetEnablements();
 				}
@@ -139,17 +139,13 @@ public class DateTagDialog extends TrayDialog {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * Method declared on Window.
-	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.DateTagDialog_5); 
 	} 
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite topLevel = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -206,9 +202,7 @@ public class DateTagDialog extends TrayDialog {
 		return calendar.getTime();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-	 */
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
 			dateEntered = privateGetDate();

@@ -22,15 +22,14 @@ import org.eclipse.team.internal.ccvs.ui.operations.FetchAllMembersOperation;
 
 public class FetchAllMembersAction extends CVSAction {
 
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ICVSRemoteFolder[] folders = getSelectedRemoteFolders();
 		ICVSRepositoryLocation repoLocation = getRepositoryManager().getRepositoryLocationFor(folders[0]);
 		new FetchAllMembersOperation (getTargetPart(), folders, repoLocation).run();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		//Only enable for one selection for now
 		return getSelectedRemoteFolders().length == 1;		

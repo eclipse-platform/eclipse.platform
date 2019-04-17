@@ -44,9 +44,6 @@ import org.eclipse.ui.navigator.*;
 public class ChangeSetContentProvider extends ResourceModelContentProvider implements ITreePathContentProvider {
 
 	private final class CollectorListener implements IChangeSetChangeListener, BatchingChangeSetManager.IChangeSetCollectorChangeListener {
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#setAdded(org.eclipse.team.internal.core.subscribers.ChangeSet)
-		 */
 		@Override
 		public void setAdded(final ChangeSet set) {
 			// We only react here for active change sets.
@@ -66,9 +63,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			getUnassignedSet().remove(set.getResources());
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#defaultSetChanged(org.eclipse.team.internal.core.subscribers.ChangeSet, org.eclipse.team.internal.core.subscribers.ChangeSet)
-		 */
 		@Override
 		public void defaultSetChanged(final ChangeSet previousDefault, final ChangeSet set) {
 			if (isVisibleInMode(set) || isVisibleInMode(previousDefault)) {
@@ -86,9 +80,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#setRemoved(org.eclipse.team.internal.core.subscribers.ChangeSet)
-		 */
 		@Override
 		public void setRemoved(final ChangeSet set) {
 			// We only react here for active change sets.
@@ -114,9 +105,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			getUnassignedSet().add((IDiff[]) toAdd.toArray(new IDiff[toAdd.size()]));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#nameChanged(org.eclipse.team.internal.core.subscribers.ChangeSet)
-		 */
 		@Override
 		public void nameChanged(final ChangeSet set) {
 			if (isVisibleInMode(set)) {
@@ -125,9 +113,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.core.subscribers.IChangeSetChangeListener#resourcesChanged(org.eclipse.team.internal.core.subscribers.ChangeSet, org.eclipse.core.runtime.IPath[])
-		 */
 		@Override
 		public void resourcesChanged(final ChangeSet set, final IPath[] paths) {
 			// We only react here for active change sets.
@@ -257,9 +242,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	
 	private IDiffChangeListener diffTreeListener = new IDiffChangeListener() {
 	
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(org.eclipse.team.core.diff.IDiffTree, int, org.eclipse.core.runtime.IPath[])
-		 */
 		@Override
 		public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 			// Ignore
@@ -269,9 +251,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 			return getVisibleSetsInViewer().contains(set);
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffsChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-		 */
 		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 			Object input = getViewer().getInput();
@@ -293,9 +272,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	private CheckedInChangeSetCollector checkedInCollector;
 	private boolean collectorInitialized;
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getModelProviderId()
-	 */
 	@Override
 	protected String getModelProviderId() {
 		return ChangeSetModelProvider.ID;
@@ -319,9 +295,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return (input instanceof ChangeSetModelProvider);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getElements(java.lang.Object)
-	 */
 	@Override
 	public Object[] getElements(Object parent) {
 		if (parent instanceof ISynchronizationContext) {
@@ -398,9 +371,6 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ResourceModelContentProvider#getTraversals(org.eclipse.team.core.mapping.ISynchronizationContext, java.lang.Object)
-	 */
 	@Override
 	protected ResourceTraversal[] getTraversals(
 			ISynchronizationContext context, Object object) {

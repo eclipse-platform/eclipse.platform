@@ -22,9 +22,6 @@ import org.eclipse.team.internal.ccvs.ui.wizards.MergeWizard;
 
 public class MergeAction extends WorkspaceTraversalAction {
 
-	/*
-	 * @see CVSAction#execute()
-	 */
 	@Override
 	public void execute(IAction action) {
 		final Shell shell = getShell();
@@ -36,9 +33,6 @@ public class MergeAction extends WorkspaceTraversalAction {
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
 	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_MERGE;

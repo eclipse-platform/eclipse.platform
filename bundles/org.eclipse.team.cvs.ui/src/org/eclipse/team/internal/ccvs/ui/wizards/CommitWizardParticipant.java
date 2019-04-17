@@ -111,9 +111,6 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
         return new Decorator(configuration, fWizard);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.subscriber.WorkspaceSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-     */
     @Override
 	protected void initializeConfiguration(final ISynchronizePageConfiguration configuration) {
         super.initializeConfiguration(configuration);
@@ -165,9 +162,6 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
         });
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#doesSupportSynchronize()
-     */
     @Override
 	public boolean doesSupportSynchronize() {
         return false;

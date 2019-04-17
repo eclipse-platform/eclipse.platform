@@ -41,6 +41,7 @@ public class WorkspaceCommitAction extends AbstractCommitAction implements IDiff
 		final IDiffTree tree = getDiffTree();
 		tree.addDiffChangeListener(this);
 		getSynchronizationContext().getCache().addCacheListener(new ICacheListener() {
+			@Override
 			public void cacheDisposed(ICache cache) {
 				tree.removeDiffChangeListener(WorkspaceCommitAction.this);
 			}
@@ -49,6 +50,7 @@ public class WorkspaceCommitAction extends AbstractCommitAction implements IDiff
 		
 	}
 	
+	@Override
 	protected String getBundleKeyPrefix() {
 		return "WorkspaceToolbarCommitAction."; //$NON-NLS-1$
 	}
@@ -59,38 +61,35 @@ public class WorkspaceCommitAction extends AbstractCommitAction implements IDiff
 		return tree;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		// Enablement has nothing to do with selection
 		return isEnabled();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#diffChanged(org.eclipse.team.core.diff.IDiffChangeEvent, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		updateEnablement();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.diff.IDiffChangeListener#propertyChanged(int, org.eclipse.core.runtime.IPath[])
-	 */
+	@Override
 	public void propertyChanged(IDiffTree tree, int property, IPath[] paths) {
 		// Do nothing
 	}
 	
+	@Override
 	public void updateEnablement() {
 		boolean enabled = (getDiffTree().countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK) > 0)
 			&& (getDiffTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) == 0);
 		setEnabled(enabled);
 	}
 	
+	@Override
 	protected IResource[] getTargetResources() {
 		return getSynchronizationContext().getScope().getRoots();
 	}
 
+	@Override
 	protected ResourceTraversal[] getCommitTraversals(IStructuredSelection selection, IProgressMonitor monitor)
 			throws CoreException {
 		return getSynchronizationContext().getScope().getTraversals();

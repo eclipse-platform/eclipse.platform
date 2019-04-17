@@ -120,9 +120,6 @@ public class ModeWizard extends ResizableWizard {
         addPage(fPage);
     }
     
-    /* (Non-javadoc)
-     * Method declared on IWizard.
-     */
     @Override
 	public boolean needsProgressMonitor() {
         return true;

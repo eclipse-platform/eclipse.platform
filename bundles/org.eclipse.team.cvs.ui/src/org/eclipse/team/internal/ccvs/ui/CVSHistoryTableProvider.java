@@ -141,9 +141,6 @@ public class CVSHistoryTableProvider {
 			}
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
-		 */
 		@Override
 		public String getToolTipText(Object element) {
 			if (column == COL_COMMENT && !isSingleLine(element)) {
@@ -154,9 +151,6 @@ public class CVSHistoryTableProvider {
 			return null;
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.CellLabelProvider#useNativeToolTip(java.lang.Object)
-		 */
 		@Override
 		public boolean useNativeToolTip(Object object) {
 			return column != COL_COMMENT || isSingleLine(object);
@@ -169,9 +163,6 @@ public class CVSHistoryTableProvider {
 			return true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getImage(java.lang.Object)
-		 */
 		@Override
 		public Image getImage(Object element) {
 			return getColumnImage(element, column);
@@ -208,9 +199,6 @@ public class CVSHistoryTableProvider {
 		}
 
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
-		 */
 		@Override
 		public String getText(Object element) {
 			return getColumnText(element, column);
@@ -276,9 +264,6 @@ public class CVSHistoryTableProvider {
 			return dateFormat;
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-		 */
 		@Override
 		public Color getForeground(Object element) {
 			if (element instanceof AbstractHistoryCategory){
@@ -294,18 +279,11 @@ public class CVSHistoryTableProvider {
 			return null;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-		 */
 		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IFontProvider#getFont(java.lang.Object)
-		 */
 		@Override
 		public Font getFont(Object element) {
 			if (element instanceof AbstractHistoryCategory) {

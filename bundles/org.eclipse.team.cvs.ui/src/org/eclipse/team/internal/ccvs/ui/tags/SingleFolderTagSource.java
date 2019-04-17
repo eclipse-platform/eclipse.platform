@@ -40,9 +40,6 @@ public class SingleFolderTagSource extends TagSource {
         this.folder = folder;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getTags(int)
-     */
     @Override
 	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {
@@ -59,9 +56,6 @@ public class SingleFolderTagSource extends TagSource {
          return folder;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#refresh(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
         CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(getFolder(), bestEffort /* recurse */, true /* notify */, monitor);
@@ -69,9 +63,6 @@ public class SingleFolderTagSource extends TagSource {
         return tags;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getLocation()
-     */
     @Override
 	public ICVSRepositoryLocation getLocation() {
 		RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
@@ -79,17 +70,11 @@ public class SingleFolderTagSource extends TagSource {
 		return location;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getShortDescription()
-     */
     @Override
 	public String getShortDescription() {
         return getFolder().getName();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {
@@ -114,9 +99,6 @@ public class SingleFolderTagSource extends TagSource {
         fireChange();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
-     */
     @Override
 	public ICVSResource[] getCVSResources() {
         final ICVSResource[][] resources = new ICVSResource[][] { null };

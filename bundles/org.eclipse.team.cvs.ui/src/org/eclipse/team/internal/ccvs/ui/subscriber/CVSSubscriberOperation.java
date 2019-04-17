@@ -42,9 +42,6 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 		super(configuration, elements);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		// Divide the sync info by project

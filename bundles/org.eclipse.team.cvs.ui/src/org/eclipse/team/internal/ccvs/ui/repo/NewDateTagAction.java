@@ -29,9 +29,7 @@ import org.eclipse.team.internal.ccvs.ui.DateTagDialog;
  */
 public class NewDateTagAction extends CVSRepoViewAction {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ICVSRepositoryLocation[] locations = getSelectedRepositoryLocations();
 		if (locations.length != 1) return;
@@ -49,9 +47,7 @@ public class NewDateTagAction extends CVSRepoViewAction {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		ICVSRepositoryLocation[] locations = getSelectedRepositoryLocations();
 		if (locations.length != 1) return false;

@@ -50,17 +50,11 @@ public class SingleFileTagSource extends TagSource {
         parentFolderTagSource = TagSource.create(new ICVSResource[] { file.getParent() });
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getTags(int)
-     */
     @Override
 	public CVSTag[] getTags(int type) {
         return parentFolderTagSource.getTags(type);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#refresh(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
         CVSTag[] tags = fetchTagsFor(file, monitor); 
@@ -69,9 +63,6 @@ public class SingleFileTagSource extends TagSource {
         return tags;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getLocation()
-     */
     @Override
 	public ICVSRepositoryLocation getLocation() {
 		RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
@@ -79,26 +70,17 @@ public class SingleFileTagSource extends TagSource {
 		return location;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getShortDescription()
-     */
     @Override
 	public String getShortDescription() {
         return file.getName();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
         parentFolderTagSource.commit(tags, replace, monitor);
         fireChange();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
-     */
     @Override
 	public ICVSResource[] getCVSResources() {
         return new ICVSResource[] { file };

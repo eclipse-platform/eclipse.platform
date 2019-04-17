@@ -41,9 +41,6 @@ class OpenChangeSetAction extends SynchronizeModelAction {
         super(CVSUIMessages.OpenCommitSetAction_20, configuration); 
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSyncInfoFilter()
-     */
     @Override
 	protected FastSyncInfoFilter getSyncInfoFilter() {
         return new AndSyncInfoFilter(new FastSyncInfoFilter[] {
@@ -104,9 +101,6 @@ class OpenChangeSetAction extends SynchronizeModelAction {
         return getChangeSet((ISynchronizeModelElement)element.getParent());
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
 	protected boolean updateSelection(IStructuredSelection selection) {
         boolean enabled = super.updateSelection(selection);
@@ -119,9 +113,6 @@ class OpenChangeSetAction extends SynchronizeModelAction {
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.compare.structuremergeviewer.IDiffElement[])
-     */
     @Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
         return new SynchronizeModelOperation(configuration, elements) {

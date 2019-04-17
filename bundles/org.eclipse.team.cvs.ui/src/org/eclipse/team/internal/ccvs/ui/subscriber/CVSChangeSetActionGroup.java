@@ -24,14 +24,13 @@ public class CVSChangeSetActionGroup extends SynchronizePageActionGroup {
 
     private OpenChangeSetAction openCommitSet;
     
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		openCommitSet = new OpenChangeSetAction(configuration);
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SynchronizePageActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
-     */
+	@Override
     public void fillContextMenu(IMenuManager menu) {
         ISynchronizeParticipant participant = getConfiguration().getParticipant();
         if (participant instanceof IChangeSetProvider) {  

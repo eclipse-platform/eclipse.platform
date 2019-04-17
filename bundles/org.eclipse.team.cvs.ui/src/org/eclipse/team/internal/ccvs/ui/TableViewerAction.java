@@ -38,11 +38,7 @@ public class TableViewerAction extends Action {
 		this.viewer = viewer;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
+	@Override
 	public void run() {
 		if (viewer.getSelection() instanceof StructuredSelection) {
 			StructuredSelection selection = (StructuredSelection) viewer.getSelection();

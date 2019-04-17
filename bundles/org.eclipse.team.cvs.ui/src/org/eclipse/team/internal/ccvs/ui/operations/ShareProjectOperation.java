@@ -47,9 +47,6 @@ public class ShareProjectOperation extends CVSOperation {
 		this.location = location;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
@@ -166,9 +163,6 @@ public class ShareProjectOperation extends CVSOperation {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.ShareProjectOperation_0, new String[] { project.getName(), moduleName }); 
@@ -181,9 +175,6 @@ public class ShareProjectOperation extends CVSOperation {
 		return project;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getShell()
-	 */
 	@Override
 	public Shell getShell() {
 		return shell;

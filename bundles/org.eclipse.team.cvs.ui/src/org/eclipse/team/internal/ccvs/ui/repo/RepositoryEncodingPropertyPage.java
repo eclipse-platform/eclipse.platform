@@ -64,33 +64,25 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			this.defaults = defaults;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#addPropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-		 */
+		@Override
 		public void addPropertyChangeListener(IPropertyChangeListener listener) {
 			// TODO Auto-generated method stub
 			
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#removePropertyChangeListener(org.eclipse.jface.util.IPropertyChangeListener)
-		 */
+		@Override
 		public void removePropertyChangeListener(IPropertyChangeListener listener) {
 			// TODO Auto-generated method stub
 			
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#firePropertyChangeEvent(java.lang.String, java.lang.Object, java.lang.Object)
-		 */
+		@Override
 		public void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#contains(java.lang.String)
-		 */
+		@Override
 		public boolean contains(String name) {
 			try {
 				String[] keys = preferences.keys();
@@ -108,16 +100,12 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		}
 
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getBoolean(java.lang.String)
-		 */
+		@Override
 		public boolean getBoolean(String name) {
 			return preferences.getBoolean(name, getDefaultBoolean(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultBoolean(java.lang.String)
-		 */
+		@Override
 		public boolean getDefaultBoolean(String name) {
 			if (defaults != null) {
 				return defaults.getBoolean(name, false);
@@ -125,9 +113,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return false;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultDouble(java.lang.String)
-		 */
+		@Override
 		public double getDefaultDouble(String name) {
 			if (defaults != null) {
 				return defaults.getDouble(name, 0);
@@ -135,9 +121,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultFloat(java.lang.String)
-		 */
+		@Override
 		public float getDefaultFloat(String name) {
 			if (defaults != null) {
 				return defaults.getFloat(name, 0);
@@ -145,9 +129,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultInt(java.lang.String)
-		 */
+		@Override
 		public int getDefaultInt(String name) {
 			if (defaults != null) {
 				return defaults.getInt(name, 0);
@@ -155,9 +137,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultLong(java.lang.String)
-		 */
+		@Override
 		public long getDefaultLong(String name) {
 			if (defaults != null) {
 				return defaults.getLong(name, 0);
@@ -165,9 +145,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return 0;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDefaultString(java.lang.String)
-		 */
+		@Override
 		public String getDefaultString(String name) {
 			if (defaults != null) {
 				return defaults.get(name, null);
@@ -175,164 +153,120 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 			return null;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getDouble(java.lang.String)
-		 */
+		@Override
 		public double getDouble(String name) {
 			return preferences.getDouble(name, getDefaultDouble(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getFloat(java.lang.String)
-		 */
+		@Override
 		public float getFloat(String name) {
 			return preferences.getFloat(name, getDefaultFloat(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getInt(java.lang.String)
-		 */
+		@Override
 		public int getInt(String name) {
 			return preferences.getInt(name, getDefaultInt(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getLong(java.lang.String)
-		 */
+		@Override
 		public long getLong(String name) {
 			return preferences.getLong(name, getDefaultLong(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#getString(java.lang.String)
-		 */
+		@Override
 		public String getString(String name) {
 			return preferences.get(name, getDefaultString(name));
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#isDefault(java.lang.String)
-		 */
+		@Override
 		public boolean isDefault(String name) {
 			return !contains(name);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#needsSaving()
-		 */
+		@Override
 		public boolean needsSaving() {
 			return dirty;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#putValue(java.lang.String, java.lang.String)
-		 */
+		@Override
 		public void putValue(String name, String value) {
 			preferences.put(name, value);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, double)
-		 */
+		@Override
 		public void setDefault(String name, double value) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, float)
-		 */
+		@Override
 		public void setDefault(String name, float value) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, int)
-		 */
+		@Override
 		public void setDefault(String name, int value) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, long)
-		 */
+		@Override
 		public void setDefault(String name, long value) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, java.lang.String)
-		 */
+		@Override
 		public void setDefault(String name, String defaultObject) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setDefault(java.lang.String, boolean)
-		 */
+		@Override
 		public void setDefault(String name, boolean value) {
 			// Defaults cannot be set this way
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setToDefault(java.lang.String)
-		 */
+		@Override
 		public void setToDefault(String name) {
 			preferences.remove(name);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, double)
-		 */
+		@Override
 		public void setValue(String name, double value) {
 			preferences.putDouble(name, value);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, float)
-		 */
+		@Override
 		public void setValue(String name, float value) {
 			preferences.putFloat(name, value);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, int)
-		 */
+		@Override
 		public void setValue(String name, int value) {
 			preferences.putInt(name, value);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, long)
-		 */
+		@Override
 		public void setValue(String name, long value) {
 			preferences.putLong(name, value);
 			dirty = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, java.lang.String)
-		 */
+		@Override
 		public void setValue(String name, String value) {
 			putValue(name, value);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.preference.IPreferenceStore#setValue(java.lang.String, boolean)
-		 */
+		@Override
 		public void setValue(String name, boolean value) {
 			preferences.putBoolean(name, value);
 			dirty = true;
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		initialize();
 
@@ -351,11 +285,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		
 		Link pageLink = new Link(composite,  SWT.LEFT | SWT.WRAP);
 		pageLink.addSelectionListener(new SelectionAdapter() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-			 */
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 			
 				PreferenceDialog dialog = PreferencesUtil
@@ -394,9 +324,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == FieldEditor.IS_VALID) {
 			setValid(((Boolean)event.getNewValue()).booleanValue());
@@ -407,9 +335,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
+	@Override
 	public boolean performOk() {
 		if (!valueChanged) {
 			// See bug 137073
@@ -430,9 +356,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
-	 */
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		encoding.loadDefault();

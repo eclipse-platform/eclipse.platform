@@ -166,9 +166,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 			tree.setChildren(newChildren);
 		}
         
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#fileDiff(java.lang.String, java.lang.String, java.lang.String)
-		 */
 		@Override
 		public void fileDiff(String remoteFilePath, String leftRevision, String rightRevision) {
 			try {
@@ -183,9 +180,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#newFile(java.lang.String, java.lang.String)
-		 */
 		@Override
 		public void newFile(String remoteFilePath, String rightRevision) {
 			try {
@@ -195,9 +189,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#deletedFile(java.lang.String)
-		 */
 		@Override
 		public void deletedFile(String remoteFilePath, String leftRevision) {
 			// The leftRevision may be null in which case the tag is used
@@ -208,9 +199,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.IFileDiffListener#directory(java.lang.String)
-		 */
 		@Override
 		public void directory(String remoteFolderPath) {
 			try {
@@ -324,9 +312,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 		return getRemoteResources()[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException {
 		boolean fetchContents = CVSUIPlugin.getPlugin().getPluginPreferences().getBoolean(ICVSUIConstants.PREF_CONSIDER_CONTENTS);
@@ -384,9 +369,6 @@ public class RemoteCompareOperation extends RemoteOperation {
 		return new LocalOption[] {RDiff.SUMMARY, RDiff.makeTagOption(left), RDiff.makeTagOption(right)};
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.RemoteCompareOperation_0, (new Object[] {left.getName(), right.getName(), getRemoteResource().getRepositoryRelativePath()})); 

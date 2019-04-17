@@ -293,9 +293,6 @@ public abstract class CVSWizardPage extends WizardPage {
 		this.wizard = wizard;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
-	 */
 	@Override
 	public IWizardPage getNextPage() {
 		ICVSWizard w = getCVSWizard();
@@ -307,9 +304,6 @@ public abstract class CVSWizardPage extends WizardPage {
 		return super.getNextPage();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
-	 */
 	@Override
 	public boolean canFlipToNextPage() {
 		ICVSWizard w = getCVSWizard();

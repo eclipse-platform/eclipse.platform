@@ -69,9 +69,6 @@ public class ShowAnnotationOperation extends CVSOperation {
         fBinary = binary;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
     	
@@ -128,9 +125,6 @@ public class ShowAnnotationOperation extends CVSOperation {
     	return historyView;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-     */
     @Override
 	protected String getTaskName() {
         return CVSUIMessages.ShowAnnotationOperation_taskName;

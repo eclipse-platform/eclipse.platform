@@ -46,9 +46,6 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		setWindowTitle(CVSUIMessages.CheckoutWizard_0); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#addPages()
-	 */
 	@Override
 	public void addPages() {
 		setNeedsProgressMonitor(true);
@@ -89,18 +86,12 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_CHECKOUT);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#canFinish()
-	 */
 	@Override
 	public boolean canFinish() {
 		return (wizard == null && getSelectedModules().length > 0) || 
 			(wizard != null && wizard.canFinish());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
 		if (wizard != null) {
@@ -132,9 +123,6 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.Wizard#performCancel()
-	 */
 	@Override
 	public boolean performCancel() {
 		if (location != null && isNewLocation) {
@@ -144,9 +132,6 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		return wizard == null || wizard.performCancel();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		// Assume the page is about to be shown when this method is
@@ -154,9 +139,6 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		return getNextPage(page, true /* about to show*/);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.wizards.ICVSWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage, boolean)
-	 */
 	@Override
 	public IWizardPage getNextPage(IWizardPage page, boolean aboutToShow) {
 		if (page == locationPage) {
@@ -295,9 +277,6 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		return location;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 	}

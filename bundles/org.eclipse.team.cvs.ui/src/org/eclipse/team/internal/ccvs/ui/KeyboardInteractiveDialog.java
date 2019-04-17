@@ -14,8 +14,9 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -93,7 +94,8 @@ public class KeyboardInteractiveDialog extends TrayDialog {
   /**
    * @see Window#configureShell
    */
-  protected void configureShell(Shell newShell) {
+  @Override
+protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		if (isPasswordAuth) {
 			newShell.setText(CVSUIMessages.UserValidationDialog_required);
@@ -108,7 +110,8 @@ public class KeyboardInteractiveDialog extends TrayDialog {
   /**
 	 * @see Window#create
 	 */
-  public void create() {
+  @Override
+public void create() {
 		super.create();
 
 		if (isPasswordAuth && usernameField != null && userName != null) {
@@ -123,7 +126,8 @@ public class KeyboardInteractiveDialog extends TrayDialog {
   /**
 	 * @see Dialog#createDialogArea
 	 */
-  protected Control createDialogArea(Composite parent) {
+  @Override
+protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -202,6 +206,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 			data.horizontalSpan = 3;
 			allowCachingButton.setLayoutData(data);
 			allowCachingButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					allowCaching = allowCachingButton.getSelection();
 				}
@@ -275,7 +280,8 @@ public class KeyboardInteractiveDialog extends TrayDialog {
    * and closes the dialog. Subclasses may override.                                            
    * </p>                                                                                       
    */
-  protected void okPressed() {
+  @Override
+protected void okPressed() {
     result=new String[prompt.length];
     for(int i=0; i<texts.length; i++){
       result[i]=texts[i].getText();
@@ -290,14 +296,13 @@ public class KeyboardInteractiveDialog extends TrayDialog {
    * and closes the dialog. Subclasses may override.                                            
    * </p>                                                                                       
    */
-  protected void cancelPressed() {
+  @Override
+protected void cancelPressed() {
     result=null;
     super.cancelPressed();
   }
     
-  /* (non-Javadoc)
-   * @see org.eclipse.jface.dialogs.Dialog#close()
-   */
+	@Override
   public boolean close(){
     if(keyLockImage!=null){
       keyLockImage.dispose();

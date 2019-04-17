@@ -71,9 +71,6 @@ public class SharingWizardSyncPage extends CVSWizardPage implements IDiffChangeL
 		this.project = project;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 		
@@ -171,9 +168,6 @@ public class SharingWizardSyncPage extends CVSWizardPage implements IDiffChangeL
 		return ModelSynchronizeWizard.createWorkspaceParticipant(Utils.getResourceMappings(new IProject[] { project }), getShell());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		if (input != null) {
@@ -181,9 +175,6 @@ public class SharingWizardSyncPage extends CVSWizardPage implements IDiffChangeL
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.WizardPage#setPreviousPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
 	@Override
 	public void setPreviousPage(IWizardPage page) {
 		// There's no going back from this page
@@ -206,9 +197,6 @@ public class SharingWizardSyncPage extends CVSWizardPage implements IDiffChangeL
 		return (ModelSynchronizeParticipant)configuration.getParticipant();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#setVisible(boolean)
-	 */
 	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);

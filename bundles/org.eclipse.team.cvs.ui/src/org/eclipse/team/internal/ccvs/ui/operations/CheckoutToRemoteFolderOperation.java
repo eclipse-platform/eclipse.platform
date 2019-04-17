@@ -44,9 +44,7 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 		public CreatedResponseHandler() {
 			super(UpdatedHandler.HANDLE_CREATED);
 		}
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.UpdatedHandler#receiveTargetFile(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.ICVSFile, java.lang.String, java.util.Date, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)
-		 */
+
 		@Override
 		protected void receiveTargetFile(
 			Session session,
@@ -90,9 +88,6 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 	
 	public class SandboxCheckout extends Checkout {
 		
-			/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.Command#commandFinished(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[], org.eclipse.team.internal.ccvs.core.client.Command.LocalOption[], org.eclipse.team.internal.ccvs.core.ICVSResource[], org.eclipse.core.runtime.IProgressMonitor, org.eclipse.core.runtime.IStatus)
-		 */
 		@Override
 		protected IStatus commandFinished(
 			Session session,
@@ -107,9 +102,6 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 			return status;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.team.internal.ccvs.core.client.Command#doExecute(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.client.Command.GlobalOption[], org.eclipse.team.internal.ccvs.core.client.Command.LocalOption[], java.lang.String[], org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListener, org.eclipse.core.runtime.IProgressMonitor)
-		 */
 		@Override
 		protected IStatus doExecute(
 			Session session,
@@ -146,9 +138,6 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 		super(part, new ICVSRemoteFolder[] { remoteFolder });
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#checkout(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected IStatus checkout(
 		ICVSRemoteFolder folder,
@@ -166,9 +155,6 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 		return checkout(folder, sandbox, monitor);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.CheckoutToRemoteFolderOperation_0, new String[] { getRemoteFolders()[0].getName() }); 

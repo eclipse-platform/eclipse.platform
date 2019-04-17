@@ -103,9 +103,6 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 		});
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	public void createControl(Composite parent) {
         initializeDialogUnits(parent);
@@ -268,9 +265,6 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
         return CVSUIPlugin.getPlugin().getPreferenceStore().getInt(ICVSUIConstants.PREF_COMMIT_FILES_DISPLAY_THRESHOLD);
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.DialogPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -288,9 +282,6 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
         return fCommentArea.getCommentWithPrompt(shell);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.wizard.WizardPage#isPageComplete()
-     */
     @Override
 	public boolean isPageComplete() {
 		/* if empty comment is not allowed (see bug 114678) */
@@ -308,11 +299,6 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 		return super.isPageComplete();
 	}
     
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
-	 */
     @Override
 	public void setVisible(boolean visible) {
         super.setVisible(visible);
@@ -408,9 +394,6 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 		return fWizard.getParticipant().getContext().getScope().getTraversals();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-     */
     @Override
 	public void propertyChange(PropertyChangeEvent event) {
         

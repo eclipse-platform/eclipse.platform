@@ -18,8 +18,8 @@ import org.eclipse.core.resources.mapping.ResourceMapping;
 import org.eclipse.core.runtime.*;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.Command;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.ui.Policy;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -34,9 +34,7 @@ public abstract class SingleCommandOperation extends RepositoryProviderOperation
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 		monitor.beginTask(null, 100);
 		Session session = new Session(getRemoteLocation(provider), getLocalRoot(provider), true /* output to console */);
@@ -51,6 +49,7 @@ public abstract class SingleCommandOperation extends RepositoryProviderOperation
 		}
 	}
 
+	@Override
 	protected final ICVSResource[] getCVSArguments(IResource[] resources) {
 		return super.getCVSArguments(resources);
 	}
@@ -59,9 +58,7 @@ public abstract class SingleCommandOperation extends RepositoryProviderOperation
 		return getCVSArguments(resources);
 	}
 
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation.ICVSTraversal, org.eclipse.core.runtime.IProgressMonitor)
-     */
+	@Override
     protected void execute(CVSTeamProvider provider, ICVSTraversal entry, IProgressMonitor monitor) throws CVSException, InterruptedException {
         try {
             // TODO: This does not properly count the number of operations
@@ -91,6 +88,7 @@ public abstract class SingleCommandOperation extends RepositoryProviderOperation
 	 */
 	protected abstract IStatus executeCommand(Session session, CVSTeamProvider provider, ICVSResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException;
 
+	@Override
 	protected LocalOption[] getLocalOptions(boolean recurse) {
         LocalOption[] result = options;
         if (recurse) {

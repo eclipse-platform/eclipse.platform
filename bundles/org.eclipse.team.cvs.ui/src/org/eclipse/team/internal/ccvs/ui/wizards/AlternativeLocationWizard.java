@@ -136,11 +136,6 @@ public class AlternativeLocationWizard extends NewLocationWizard {
 			super(pageName, title, titleImage);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.team.internal.ccvs.ui.wizards.ConfigurationWizardMainPage#validateFields()
-		 */
 		@Override
 		protected void validateFields() {
 			super.validateFields();

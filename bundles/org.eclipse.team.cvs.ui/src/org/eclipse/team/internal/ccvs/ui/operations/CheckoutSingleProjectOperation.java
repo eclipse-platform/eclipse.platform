@@ -46,30 +46,25 @@ public class CheckoutSingleProjectOperation extends CheckoutProjectOperation {
 		return preconfigured;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#needsPromptForOverwrite(org.eclipse.core.resources.IProject)
-	 */
+	@Override
 	public boolean needsPromptForOverwrite(IProject project) {
 		// No need to prompt if the project was preconfigured
 		if (isPreconfigured()) return false;
 		return super.needsPromptForOverwrite(project);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutProjectOperation#performScrubProjects()
-	 */
+	@Override
 	protected boolean performScrubProjects() {
 		// Do not scrub the projects if they were preconfigured.
 		return !isPreconfigured();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#checkout(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IStatus checkout(ICVSRemoteFolder folder, IProgressMonitor monitor) throws CVSException {
 		return checkout(folder, targetProject, monitor);
 	}
 	
+	@Override
 	protected IWorkingSet[] getWorkingSets(){
 		return workingSets;
 	}

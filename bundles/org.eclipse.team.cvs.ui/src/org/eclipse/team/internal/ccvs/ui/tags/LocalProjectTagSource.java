@@ -78,50 +78,32 @@ public class LocalProjectTagSource extends TagSource {
         return result.toArray(new ICVSRemoteFolder[result.size()]);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#refresh(boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
         // This tag source should not be refreshed
         return new CVSTag[0];
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getLocation()
-     */
     @Override
 	public ICVSRepositoryLocation getLocation() {
         return seedFolder.getRepository();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getShortDescription()
-     */
     @Override
 	public String getShortDescription() {
         return NLS.bind(CVSUIMessages.LocalProjectTagSource_0, new String[] { Integer.toString(remoteFolders.length) }); 
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
         // Does not commit tags
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getCVSResources()
-     */
     @Override
 	public ICVSResource[] getCVSResources() {
         return remoteFolders;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.TagSource#getTags(int)
-     */
     @Override
 	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {

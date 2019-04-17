@@ -32,20 +32,17 @@ public abstract class AbstractModelMergeOperation extends ModelParticipantMergeO
 		this.ownsManager = ownsManager;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
-	 */
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ResourceMappingMergeOperation#isPreviewInDialog()
-	 */
+	@Override
 	protected boolean isPreviewInDialog() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore().getString(ICVSUIConstants.PREF_UPDATE_PREVIEW).equals(ICVSUIConstants.PREF_UPDATE_PREVIEW_IN_DIALOG);
 	}
 	
+	@Override
 	protected void endOperation(IProgressMonitor monitor) throws InvocationTargetException {
 		if (ownsManager) {
 			ISynchronizationScopeManager manager = getScopeManager();
@@ -54,6 +51,7 @@ public abstract class AbstractModelMergeOperation extends ModelParticipantMergeO
 		super.endOperation(monitor);
 	}
 	
+	@Override
 	protected ModelSynchronizeParticipant createParticipant() {
 		ModelSynchronizeParticipant participant = super.createParticipant();
 		// Transfer ownership of the manager to the participant

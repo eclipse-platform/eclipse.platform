@@ -57,9 +57,6 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
         tags = new FilteredTagList(tagSource, TagSource.convertIncludeFlaqsToTagTypes(includeFlags));
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
-     */
     @Override
 	public ICompletionProposal[] computeCompletionProposals(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
         Control c = contentAssistSubjectControl.getControl();
@@ -92,58 +89,37 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.contentassist.ISubjectControlContentAssistProcessor#computeContextInformation(org.eclipse.jface.contentassist.IContentAssistSubjectControl, int)
-     */
     @Override
 	public IContextInformation[] computeContextInformation(IContentAssistSubjectControl contentAssistSubjectControl, int documentOffset) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
-     */
     @Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
         Assert.isTrue(false, "ITextViewer not supported"); //$NON-NLS-1$
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
-     */
     @Override
 	public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
-     */
     @Override
 	public char[] getCompletionProposalAutoActivationCharacters() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
-     */
     @Override
 	public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
-     */
     @Override
 	public String getErrorMessage() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
-     */
     @Override
 	public IContextInformationValidator getContextInformationValidator() {
         return null;

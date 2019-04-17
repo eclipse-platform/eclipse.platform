@@ -41,21 +41,18 @@ public class WorkspaceCommitAction extends CVSParticipantAction {
 		setActionDefinitionId(ICVSUIConstants.CMD_COMMIT_ALL);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.SubscriberAction#getSyncInfoFilter()
-	 */
+	@Override
 	protected FastSyncInfoFilter getSyncInfoFilter() {
 		return new SyncInfoDirectionFilter(new int[] { SyncInfo.OUTGOING });
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.SubscriberAction#getSubscriberOperation(org.eclipse.compare.structuremergeviewer.IDiffElement[])
-	 */
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new WorkspaceCommitOperation(configuration, elements, false /* override */);
 	}
     
-    public void runOperation() {
+    @Override
+	public void runOperation() {
         final SyncInfoSet set = getSyncInfoSet();
         final Shell shell= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         try {

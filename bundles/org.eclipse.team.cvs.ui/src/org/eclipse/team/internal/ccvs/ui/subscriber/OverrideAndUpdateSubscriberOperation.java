@@ -34,17 +34,11 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 	protected OverrideAndUpdateSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		super(configuration, elements);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
-	 */
 	@Override
 	public boolean shouldRun() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return(promptForOverwrite(syncSet));
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void runWithProjectRule(IProject project, SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		try {
@@ -69,9 +63,6 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 			});
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
-	 */
 	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();

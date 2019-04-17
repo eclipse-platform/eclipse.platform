@@ -233,9 +233,6 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		return subscriber;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.views.HierarchicalModelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 	    // No longer listen for log entry changes
@@ -442,9 +439,11 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		return !remote.equals(remoteResource);
 	}
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#waitUntilDone(org.eclipse.core.runtime.IProgressMonitor)
-     */
+	/*
+	 * @see
+	 * org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#waitUntilDone(
+	 * org.eclipse.core.runtime.IProgressMonitor)
+	 */
     public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);
 		// wait for the event handler to process changes.
@@ -462,9 +461,6 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		monitor.worked(1);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.subscriber.LogEntryCacheUpdateHandler.ILogsFetchedListener#logEntriesFetched(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void logEntriesFetched(SyncInfoSet set, LogEntryCache logEntryCache, IProgressMonitor monitor) {
         if (disposed) return;

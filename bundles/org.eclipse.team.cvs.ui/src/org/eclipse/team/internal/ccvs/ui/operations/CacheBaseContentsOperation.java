@@ -44,9 +44,6 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 		super(part, mappings, tree);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CacheTreeContentsOperation#getRemoteFileState(org.eclipse.team.core.diff.IThreeWayDiff)
-	 */
 	@Override
 	protected IFileRevision getRemoteFileState(IThreeWayDiff twd) {
 		IResourceDiff diff = (IResourceDiff)twd.getRemoteChange();
@@ -56,17 +53,11 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 		return base;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CacheTreeContentsOperation#isEnabledForDirection(int)
-	 */
 	@Override
 	protected boolean isEnabledForDirection(int direction) {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CacheTreeContentsOperation#buildTree(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
-	 */
 	@Override
 	protected ICVSRemoteResource buildTree(CVSTeamProvider provider) throws TeamException {
 		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().buildBaseTree(provider.getProject(), true, new NullProgressMonitor());

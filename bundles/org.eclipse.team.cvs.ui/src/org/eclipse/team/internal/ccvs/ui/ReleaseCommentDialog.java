@@ -63,23 +63,17 @@ public class ReleaseCommentDialog extends DetailsDialog {
 		}		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeDetailsButton()
-	 */
+	@Override
 	protected boolean includeDetailsButton() {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeErrorMessage()
-	 */
+	@Override
 	protected boolean includeErrorMessage() {
 		return false;
 	}
 	
-	/*
-	 * @see Dialog#createDialogArea(Composite)
-	 */
+	@Override
 	protected void createMainDialogArea(Composite parent) {
 		getShell().setText(CVSUIMessages.ReleaseCommentDialog_title); 
 		Composite composite = new Composite(parent, SWT.NULL);
@@ -88,6 +82,7 @@ public class ReleaseCommentDialog extends DetailsDialog {
 		
 		commitCommentArea.createArea(composite);
 		commitCommentArea.addPropertyChangeListener(new IPropertyChangeListener() {
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty() == CommitCommentArea.OK_REQUESTED)
 					okPressed();
@@ -97,16 +92,12 @@ public class ReleaseCommentDialog extends DetailsDialog {
         Dialog.applyDialogFont(parent);
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
-     */
+	@Override
     protected String getHelpContextId() {
         return IHelpContextIds.RELEASE_COMMENT_DIALOG;
     }
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#getInitialSize()
-	 */
+	@Override
 	protected Point getInitialSize() {
 		try {
 		    return new Point(settings.getInt(WIDTH_KEY), settings.getInt(HEIGHT_KEY));
@@ -122,22 +113,16 @@ public class ReleaseCommentDialog extends DetailsDialog {
 		return commitCommentArea.getComment(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
-	 */
+	@Override
 	protected void updateEnablements() {
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#close()
-	 */
+	@Override
 	public boolean close() {
 		Rectangle bounds = getShell().getBounds();
 		settings.put(HEIGHT_KEY, bounds.height);
@@ -145,9 +130,7 @@ public class ReleaseCommentDialog extends DetailsDialog {
 		return super.close();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createContents(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	protected Control createContents(Composite parent) {
 		Control c =  super.createContents(parent);
 		commitCommentArea.setFocus();

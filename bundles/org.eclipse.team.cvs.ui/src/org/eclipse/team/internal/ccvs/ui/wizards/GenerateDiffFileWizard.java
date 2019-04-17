@@ -1485,9 +1485,6 @@ public class GenerateDiffFileWizard extends Wizard {
 		}
 	}
 
-	/* (Non-javadoc)
-	 * Method declared on IWizard.
-	 */
 	@Override
 	public boolean needsProgressMonitor() {
 		return true;

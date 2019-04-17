@@ -39,17 +39,11 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
         this.folders = folders;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.SingleFolderTagSource#getShortDescription()
-     */
     @Override
 	public String getShortDescription() {
         return NLS.bind(CVSUIMessages.MultiFolderTagSource_0, new String[] { Integer.toString(folders.length) }); 
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#getTags(int)
-     */
     @Override
 	public CVSTag[] getTags(int type) {
         if (type == CVSTag.HEAD || type == BASE) {
@@ -62,9 +56,6 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
         return tags.toArray(new CVSTag[tags.size()]);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.SingleFolderTagSource#refresh(boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask("", folders.length);  //$NON-NLS-1$
@@ -79,9 +70,6 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
         return result.toArray(new CVSTag[result.size()]);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.tags.SingleFolderTagSource#getCVSResources()
-     */
     @Override
 	public ICVSResource[] getCVSResources() {
         return folders;
@@ -91,9 +79,6 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
     	return folders;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.merge.TagSource#commit(org.eclipse.team.internal.ccvs.core.CVSTag[], boolean, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {

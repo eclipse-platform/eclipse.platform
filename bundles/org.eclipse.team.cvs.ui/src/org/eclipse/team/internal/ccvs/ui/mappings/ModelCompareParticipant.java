@@ -28,6 +28,7 @@ public class ModelCompareParticipant extends CVSModelSynchronizeParticipant impl
 	public static final String VIEWER_ID = "org.eclipse.team.cvs.ui.compareSynchronization"; //$NON-NLS-1$
 	
 	public class CompareChangeSetCapability extends ModelParticipantChangeSetCapability {
+		@Override
 		public CheckedInChangeSetCollector createCheckedInChangeSetCollector(ISynchronizePageConfiguration configuration) {
 			return new CheckedInChangeSetCollector(configuration, getSubscriber());
 		}
@@ -45,9 +46,7 @@ public class ModelCompareParticipant extends CVSModelSynchronizeParticipant impl
 		setSecondaryId(Long.toString(System.currentTimeMillis()));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
+	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(ISynchronizePageConfiguration.P_VIEWER_ID, VIEWER_ID);
 		super.initializeConfiguration(configuration);
@@ -57,6 +56,7 @@ public class ModelCompareParticipant extends CVSModelSynchronizeParticipant impl
 		return ((SubscriberMergeContext)getContext()).getSubscriber();
 	}
 	
+	@Override
 	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
             capability = new CompareChangeSetCapability();

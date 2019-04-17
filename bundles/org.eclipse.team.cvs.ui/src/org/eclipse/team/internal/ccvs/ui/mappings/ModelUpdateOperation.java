@@ -47,17 +47,11 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 		super(targetPart, manager, true);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#getJobName()
-	 */
 	@Override
 	protected String getJobName() {
 		return CVSUIMessages.UpdateOperation_taskName;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ResourceMappingOperation#isPreviewRequested()
-	 */
 	@Override
 	public boolean isPreviewRequested() {
 		return super.isPreviewRequested() || !isAttemptHeadlessMerge();
@@ -75,17 +69,11 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 		return ISynchronizationContext.THREE_WAY;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ResourceMappingMergeOperation#createParticipant()
-	 */
 	@Override
 	protected ModelSynchronizeParticipant createParticipant() {
 		return new WorkspaceModelParticipant(createMergeContext());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelParticipantMergeOperation#createMergeContext()
-	 */
 	@Override
 	protected SynchronizationContext createMergeContext() {
 		return WorkspaceSubscriberContext.createContext(getScopeManager(), getMergeType());

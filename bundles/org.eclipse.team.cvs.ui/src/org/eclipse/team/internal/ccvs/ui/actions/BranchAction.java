@@ -29,9 +29,6 @@ import org.eclipse.team.internal.ccvs.ui.operations.BranchOperation;
  */
 public class BranchAction extends WorkspaceTraversalAction {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
 	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ResourceMapping[] resourceMappings = getCVSResourceMappings();
@@ -60,9 +57,6 @@ public class BranchAction extends WorkspaceTraversalAction {
         return mappings.toArray(new ResourceMapping[mappings.size()]);
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
 	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_BRANCH;

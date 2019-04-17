@@ -68,9 +68,6 @@ public class CheckoutAsMainPage extends CVSWizardPage {
 		this.allowProjectConfiguration = allowProjectConfiguration;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	public void createControl(Composite parent) {
 
@@ -236,9 +233,7 @@ public class CheckoutAsMainPage extends CVSWizardPage {
 	public boolean isPerformCheckoutAs() {
 		return simpleProjectButton.getSelection();
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.wizards.CVSWizardPage#createRadioButton(org.eclipse.swt.widgets.Composite, java.lang.String, int)
-	 */
+
 	@Override
 	protected Button createRadioButton(Composite parent, String label, int span) {
 		Button radio = super.createRadioButton(parent, label, span);

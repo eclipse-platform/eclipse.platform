@@ -44,23 +44,17 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 
 	class CVSLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
-		 */
+		@Override
 		public Image getImage(Object element) {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-		 */
+		@Override
 		public String getText(Object element) {
 			return getStyledText(element).getString();
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.StyledCellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
-		 */
+		@Override
 		public void update(ViewerCell cell) {
 			StyledString string = getStyledText(cell.getElement());
 			cell.setText(string.getString());
@@ -101,9 +95,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 		setDescription(CVSUIMessages.CVSScmUrlImportWizardPage_1);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite comp = SWTUtils.createHVFillComposite(parent, SWTUtils.MARGINS_NONE, 1);
 		Composite group = SWTUtils.createHFillComposite(comp, SWTUtils.MARGINS_NONE, 1);
@@ -111,6 +103,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 		Button versions = SWTUtils.createRadioButton(group, CVSUIMessages.CVSScmUrlImportWizardPage_3);
 		useHead = SWTUtils.createRadioButton(group, CVSUIMessages.CVSScmUrlImportWizardPage_2);
 		SelectionListener listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				bundlesViewer.refresh(true);
 			}
@@ -147,9 +140,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IHelpContextIds.CVS_SCM_URL_IMPORT_PAGE);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.IScmUrlImportWizardPage#finish()
-	 */
+	@Override
 	public boolean finish() {
 		boolean head = false;
 		if (getControl() != null) {
@@ -178,16 +169,12 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.IScmUrlImportWizardPage#getSelection()
-	 */
+	@Override
 	public ScmUrlImportDescription[] getSelection() {
 		return descriptions;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.IScmUrlImportWizardPage#getSelection()
-	 */
+	@Override
 	public void setSelection(ScmUrlImportDescription[] descriptions) {
 		this.descriptions = descriptions;
 		// fill viewer

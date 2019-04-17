@@ -496,25 +496,16 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceSyncInfoChanged(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	public void resourceSyncInfoChanged(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#externalSyncInfoChange(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	public void externalSyncInfoChange(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#resourceModificationStateChanged(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	public void resourceModified(IResource[] changedResources) {
 		resourceStateChanged(changedResources);
@@ -544,16 +535,10 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		postLabelEvent(new LabelProviderChangedEvent(this, resourcesToUpdate.toArray()));
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectConfigured(org.eclipse.core.resources.IProject)
-	 */
 	@Override
 	public void projectConfigured(IProject project) {
 		refresh(project);
 	}
-	/**
-	 * @see org.eclipse.team.internal.ccvs.core.IResourceStateChangeListener#projectDeconfigured(org.eclipse.core.resources.IProject)
-	 */
 	@Override
 	public void projectDeconfigured(IProject project) {
 		refresh(project);
@@ -568,9 +553,6 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		Display.getDefault().asyncExec(() -> fireLabelProviderChanged(event));
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -611,9 +593,6 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		exceptions.handleException(e);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (isEventOfInterest(event)) {

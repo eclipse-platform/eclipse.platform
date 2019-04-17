@@ -31,9 +31,7 @@ import org.eclipse.team.internal.ccvs.ui.wizards.AddWizard;
  */
 public class AddAction extends WorkspaceTraversalAction {
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
         if (!promptForAddOfIgnored()) return;
         if (!promptForAdd()) return;
@@ -75,30 +73,22 @@ public class AddAction extends WorkspaceTraversalAction {
 		return true;
 	}
 	
-    /**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForManagedResources()
-	 */
+	@Override
 	protected boolean isEnabledForManagedResources() {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
-	 */
+	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForIgnoredResources()
-	 */
+	@Override
 	protected boolean isEnabledForIgnoredResources() {
 		return true;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
-	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		// Add to version control should never be enabled for linked resources
 		IResource resource = cvsResource.getIResource();
@@ -106,9 +96,7 @@ public class AddAction extends WorkspaceTraversalAction {
 		return super.isEnabledForCVSResource(cvsResource);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
+	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_ADD;
 	}

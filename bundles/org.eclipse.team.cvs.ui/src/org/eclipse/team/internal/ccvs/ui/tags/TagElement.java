@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui.tags;
 
 import java.util.Date;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -40,6 +41,7 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 	 * @deprecated
 	 * @param tag
 	 */
+	@Deprecated
 	public TagElement(CVSTag tag) {
 		this(null, tag);
 	}
@@ -47,17 +49,21 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 	    this.parent = parent;
 		this.tag = tag;
 	}
+	@Override
 	public Object[] getChildren(Object o) {
 		return new Object[0];
 	}
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);
 		return null;
 	}
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return getImageDescriptor(tag);
 	}
-    public String getLabel(Object o) {
+    @Override
+	public String getLabel(Object o) {
 		if(tag.getType() == CVSTag.DATE){
 			Date date = tag.asDate();
 			if (date != null){
@@ -66,6 +72,7 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 		}
 		return tag.getName();
 	}
+	@Override
 	public Object getParent(Object o) {
 		return parent;
 	}
@@ -73,16 +80,12 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 		return tag;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	@Override
 	public int hashCode() {
 		return tag.hashCode();
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof TagElement) {
 			return tag.equals(((TagElement)obj).getTag());

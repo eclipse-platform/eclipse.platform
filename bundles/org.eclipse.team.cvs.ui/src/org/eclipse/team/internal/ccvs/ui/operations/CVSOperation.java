@@ -56,25 +56,16 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 		super(part);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#getJobName()
-	 */
 	@Override
 	protected String getJobName() {
 		return getTaskName();
 	}
 		
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#getOperationIcon()
-	 */
 	@Override
 	protected URL getOperationIcon() {
 		return Platform.find(CVSUIPlugin.getPlugin().getBundle(), new Path(ICVSUIConstants.ICON_PATH + ICVSUIConstants.IMG_CVS_PERSPECTIVE));
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public final void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		startOperation();
@@ -282,9 +273,6 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#getShell()
-	 */
 	@Override
 	public Shell getShell() {
 		// Use the shell assigned to the operation if possible
@@ -304,18 +292,12 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 		this.shell = shell;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#canRunAsJob()
-	 */
 	@Override
 	protected boolean canRunAsJob() {
 		// Put CVS jobs in the background by default.
 		return true;
 	}
 	
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.TeamOperation#isSameFamilyAs(org.eclipse.team.ui.TeamOperation)
-     */
     @Override
 	protected boolean isSameFamilyAs(TeamOperation operation) {
         // Trat all CVS operations as a single family

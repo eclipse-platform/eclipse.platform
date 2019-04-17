@@ -37,9 +37,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class GenerateDiffFileAction extends WorkspaceTraversalAction{
     
-	/** (Non-javadoc)
-	 * Method declared on IActionDelegate.
-	 */
 	@Override
 	public void execute(IAction action) {
 
@@ -100,26 +97,17 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	   private IResource[] members(IResource resource) throws CoreException {
 	        return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().members(resource);
 	    }
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
-	 */
 	@Override
 	protected boolean isEnabledForMultipleResources() {
 			return true;
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
-	 */
 	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
 	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_CREATEPATCH;

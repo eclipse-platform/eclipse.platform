@@ -217,9 +217,6 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
             entries.remove(remotePath);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.ccvs.core.client.listeners.ILogEntryListener#addEntry(org.eclipse.team.internal.ccvs.core.client.listeners.LogEntry)
-         */
         @Override
 		public void handleLogEntryReceived(ILogEntry entry) {
     		ICVSRemoteFile file = entry.getRemoteFile();
@@ -241,9 +238,6 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 		this.entryCache = cache;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryLocationOperation#execute(org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation, org.eclipse.team.internal.ccvs.core.ICVSRemoteResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void execute(ICVSRepositoryLocation location, ICVSRemoteResource[] remoteResources, IProgressMonitor monitor) throws CVSException {
 		monitor.beginTask(NLS.bind(CVSUIMessages.RemoteLogOperation_0, new String[] { location.getHost() }), 100); 
@@ -276,9 +270,6 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 		}
 	}
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.RemoteLogOperation_1; 

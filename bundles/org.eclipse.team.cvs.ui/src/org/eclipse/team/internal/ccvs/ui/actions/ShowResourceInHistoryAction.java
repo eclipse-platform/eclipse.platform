@@ -63,25 +63,16 @@ public class ShowResourceInHistoryAction extends WorkspaceAction {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
 	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
-	 */
 	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		return (!cvsResource.isFolder() && super.isEnabledForCVSResource(cvsResource));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
 	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_HISTORY;

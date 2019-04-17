@@ -24,7 +24,8 @@ import org.eclipse.team.core.subscribers.SubscriberScopeManager;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.ui.CVSUIPlugin;
 import org.eclipse.team.internal.ccvs.ui.ICVSUIConstants;
-import org.eclipse.team.internal.ccvs.ui.mappings.*;
+import org.eclipse.team.internal.ccvs.ui.mappings.CompareSubscriberContext;
+import org.eclipse.team.internal.ccvs.ui.mappings.ModelCompareParticipant;
 import org.eclipse.team.internal.ccvs.ui.subscriber.CompareParticipant;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSelectionDialog;
 import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
@@ -37,6 +38,7 @@ public class CompareWithTagAction extends WorkspaceTraversalAction {
 		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_OPEN_COMPARE_EDITOR_FOR_SINGLE_FILE);
 	}
 	
+	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
         
         // First, determine the tag to compare with
@@ -66,6 +68,7 @@ public class CompareWithTagAction extends WorkspaceTraversalAction {
 				// ignore, the compare will fail if there is a real problem.
 			}
 			SubscriberScopeManager manager = new SubscriberScopeManager(compareSubscriber.getName(), mappings, compareSubscriber, true){
+				@Override
 				public void dispose() {
 					compareSubscriber.dispose();
 					super.dispose();
@@ -110,9 +113,7 @@ public class CompareWithTagAction extends WorkspaceTraversalAction {
 		return tag;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
     }

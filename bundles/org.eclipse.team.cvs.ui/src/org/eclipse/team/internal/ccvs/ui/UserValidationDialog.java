@@ -14,8 +14,9 @@
 package org.eclipse.team.internal.ccvs.ui;
 
 
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -83,6 +84,7 @@ public class UserValidationDialog extends TrayDialog {
 	/**
 	 * @see Window#configureShell
 	 */
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.UserValidationDialog_required); 
@@ -92,6 +94,7 @@ public class UserValidationDialog extends TrayDialog {
 	/**
 	 * @see Window#create
 	 */
+	@Override
 	public void create() {
 		super.create();
 		// add some default values
@@ -110,6 +113,7 @@ public class UserValidationDialog extends TrayDialog {
 	/**
 	 * @see Dialog#createDialogArea
 	 */
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -169,6 +173,7 @@ public class UserValidationDialog extends TrayDialog {
 			data.horizontalSpan = 3;
 			allowCachingButton.setLayoutData(data);
 			allowCachingButton.addSelectionListener(new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					allowCaching = allowCachingButton.getSelection();
 				}
@@ -246,6 +251,7 @@ public class UserValidationDialog extends TrayDialog {
 	 * and closes the dialog. Subclasses may override.
 	 * </p>
 	 */
+	@Override
 	protected void okPressed() {
 		password = passwordField.getText();
 		username = usernameField.getText();
@@ -263,9 +269,7 @@ public class UserValidationDialog extends TrayDialog {
 		isUsernameMutable = value;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#close()
-	 */
+	@Override
 	public boolean close() {
 		if(keyLockImage != null) {
 			keyLockImage.dispose();

@@ -145,9 +145,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	}
 	
 	public class WorkspaceChangeSetCapability extends CVSChangeSetCapability {
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#createChangeSet(org.eclipse.team.core.synchronize.SyncInfo[])
-         */
         @Override
 		public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] infos) {
 	        ActiveChangeSet set = getActiveChangeSetManager().createSet(CVSUIMessages.WorkspaceChangeSetCapability_1, new IDiff[0]); 
@@ -169,9 +166,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
             return result.toArray(new IResource[result.size()]);
         }
         
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#editChangeSet(org.eclipse.team.core.subscribers.ActiveChangeSet)
-         */
         @Override
 		public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
 	        CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, set.getResources(), CommitSetDialog.EDIT);
@@ -180,9 +174,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 			// Nothing to do here as the set was updated by the dialog 
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#getActiveChangeSetManager()
-         */
         @Override
 		public ActiveChangeSetManager getActiveChangeSetManager() {
             return CVSUIPlugin.getPlugin().getChangeSetManager();
@@ -261,18 +252,12 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#init(org.eclipse.ui.IMemento)
-	 */
 	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		super.init(secondaryId, memento);
 		setSubscriber(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscribers.SubscriberParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
@@ -308,9 +293,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		return TeamUI.getSynchronizeManager().getParticipantDescriptor(ID);
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SubscriberParticipant#updateLabels(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
         monitor.beginTask(null, 100);
@@ -320,17 +302,11 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         monitor.done();
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
-     */
     @Override
 	public PreferencePage[] getPreferencePages() {
         return CVSParticipant.addCVSPreferencePages(super.getPreferencePages());
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getChangeSetCapability()
-     */
     @Override
 	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
@@ -339,9 +315,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
         return capability;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#isViewerContributionsSupported()
-     */
     @Override
 	protected boolean isViewerContributionsSupported() {
         return true;
@@ -357,9 +330,6 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		((IEclipsePreferences) CVSUIPlugin.getPlugin().getInstancePreferences().node("")).removePreferenceChangeListener(this); //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener#preferenceChange(org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent)
-	 */
 	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (event.getKey().equals(ICVSUIConstants.PREF_CONSIDER_CONTENTS) || event.getKey().equals(ICVSUIConstants.PREF_SYNCVIEW_REGEX_FILTER_PATTERN)) {

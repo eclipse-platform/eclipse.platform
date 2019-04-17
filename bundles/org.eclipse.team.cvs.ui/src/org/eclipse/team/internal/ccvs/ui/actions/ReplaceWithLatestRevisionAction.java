@@ -19,9 +19,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation;
 
 public class ReplaceWithLatestRevisionAction extends ReplaceWithTagAction {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.ReplaceWithTagAction.getTag(ReplaceOperation)
-	 */
+	@Override
 	protected CVSTag getTag(ReplaceOperation replaceOperation) {
 		return CVSTag.BASE;
 	}

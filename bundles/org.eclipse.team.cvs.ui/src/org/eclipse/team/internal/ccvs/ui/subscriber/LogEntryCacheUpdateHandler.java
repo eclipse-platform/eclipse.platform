@@ -135,17 +135,11 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
             super(subscriber);
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#remove(org.eclipse.core.resources.IResource)
-         */
         @Override
 		protected void remove(IResource resource) {
             queueEvent(new ResourceEvent(resource, REMOVAL, IResource.DEPTH_INFINITE), false /* do not put in on the front of the queue*/);  
         }
 
-        /* (non-Javadoc)
-         * @see org.eclipse.team.internal.core.subscribers.SubscriberResourceCollector#change(org.eclipse.core.resources.IResource, int)
-         */
         @Override
 		protected void change(IResource resource, int depth) {
             queueEvent(new ResourceEvent(resource, CHANGE, depth), false /* do not put in on the front of the queue*/); 
@@ -209,17 +203,11 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         this.listener = listener;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#getJobFamiliy()
-     */
     @Override
 	protected Object getJobFamiliy() {
         return ISynchronizeManager.FAMILY_SYNCHRONIZE_OPERATION;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#createEventHandlingJob()
-     */
     @Override
 	protected void createEventHandlingJob() {
         super.createEventHandlingJob();
@@ -228,9 +216,6 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         job.setUser(false);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#processEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
         Policy.checkCanceled(monitor);
@@ -248,9 +233,6 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#doDispatchEvents(org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
         Policy.checkCanceled(monitor);
@@ -289,9 +271,6 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#shutdown()
-     */
     @Override
 	public void shutdown() {
         super.shutdown();
@@ -428,9 +407,6 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
         }
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.core.BackgroundEventHandler#queueEvent(org.eclipse.team.internal.core.BackgroundEventHandler.Event, boolean)
-     */
     @Override
 	protected void queueEvent(Event event, boolean front) {
         // Override to snure that queues by this handler are serialized

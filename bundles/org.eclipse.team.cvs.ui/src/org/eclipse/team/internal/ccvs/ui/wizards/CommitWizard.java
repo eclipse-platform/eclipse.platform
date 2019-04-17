@@ -137,10 +137,6 @@ public class CommitWizard extends ResizableWizard {
 			this.jobListener = jobListener;
 		}
 		
-		
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.runtime.jobs.IJobChangeListener#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-		 */
 		@Override
 		public void done(IJobChangeEvent event) {
 			super.done(event);
@@ -148,9 +144,6 @@ public class CommitWizard extends ResizableWizard {
 				jobListener.done(event);
 		}
 		
-		/* (non-Javadoc)
-		 * @see org.eclipse.core.runtime.jobs.IJobChangeListener#scheduled(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-		 */
 		@Override
 		public void scheduled(IJobChangeEvent event) {
 			super.scheduled(event);
@@ -327,9 +320,6 @@ public class CommitWizard extends ResizableWizard {
         return super.performFinish();
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.wizards.ResizableWizard#performCancel()
-     */
     @Override
 	public boolean performCancel() {
     	fCommitPage.finish();

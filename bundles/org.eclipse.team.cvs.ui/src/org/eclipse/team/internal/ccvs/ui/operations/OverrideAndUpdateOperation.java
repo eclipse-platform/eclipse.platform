@@ -38,9 +38,6 @@ public class OverrideAndUpdateOperation extends ReplaceOperation {
 		this.conflictingAdditions = conflictingAdditions;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation#getResourcesToUpdate(org.eclipse.team.internal.ccvs.core.ICVSResource[])
-	 */
 	@Override
 	protected ICVSResource[] getResourcesToUpdate(ICVSResource[] resources, IProgressMonitor monitor) throws CVSException {
 		// Add the conflicting additions to the list of resources to update
@@ -51,9 +48,6 @@ public class OverrideAndUpdateOperation extends ReplaceOperation {
 		return update.toArray(new ICVSResource[update.size()]);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.UpdateOperation#getResourceMappingContext()
-	 */
 	@Override
 	protected ResourceMappingContext getResourceMappingContext() {
 		return new SingleProjectSubscriberContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber(), false, project);

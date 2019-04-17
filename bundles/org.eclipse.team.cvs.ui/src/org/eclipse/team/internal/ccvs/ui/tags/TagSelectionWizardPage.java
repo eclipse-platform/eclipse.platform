@@ -65,9 +65,7 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 		this.helpContextId = helpContextId;
 	}
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
 	public void createControl(Composite parent) {
 		
 		final PixelConverter converter= SWTUtils.createDialogPixelConverter(parent);
@@ -83,6 +81,7 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 		
 		if (allowNoTag) {
 			SelectionListener listener = new SelectionAdapter() {
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					useResourceTag = useResourceTagButton.getSelection();
 					updateEnablement();
@@ -107,7 +106,8 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 	    tagArea.setRunnableContext(getContainer());
 		tagArea.createArea(composite);
 		tagArea.addPropertyChangeListener(new IPropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent event) {
+            @Override
+			public void propertyChange(PropertyChangeEvent event) {
                 if (event.getProperty().equals(TagSelectionArea.SELECTED_TAG)) {
                     selectedTag = tagArea.getSelection();
     				updateEnablement();
@@ -147,6 +147,7 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 		allowNoTag = b;
 	}
 	
+	@Override
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 

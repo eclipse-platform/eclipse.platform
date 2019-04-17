@@ -48,19 +48,19 @@ public class CheckoutMultipleProjectsOperation extends CheckoutProjectOperation 
 	 * 
 	 * @param project
 	 */
+	@Override
 	protected IPath getTargetLocationFor(IProject project) {
 		IPath targetLocation = super.getTargetLocationFor(project);
 		if (targetLocation == null) return null;
 		return targetLocation.append(project.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CheckoutOperation#checkout(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IStatus checkout(ICVSRemoteFolder folder, IProgressMonitor monitor) throws CVSException {
 		return checkout(folder, null, monitor);
 	}
 	
+	@Override
 	protected IWorkingSet[] getWorkingSets(){
 		return workingSets;
 	}

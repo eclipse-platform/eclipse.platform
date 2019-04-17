@@ -53,9 +53,7 @@ public class AddOperation extends RepositoryProviderOperation {
     public void addModesForNames(Map modes) {
         fModesForFiles= modes;
 	}
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#execute(org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+
 	@Override
 	protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 	    if (resources.length == 0)
@@ -63,17 +61,11 @@ public class AddOperation extends RepositoryProviderOperation {
 		add(provider, resources, recurse ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE, monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.AddAction_adding; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
-	 */
 	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.AddOperation_0, new String[] { provider.getProject().getName() }); 
@@ -229,9 +221,6 @@ public class AddOperation extends RepositoryProviderOperation {
 		return cvsResource.isManaged() && (!cvsResource.isFolder() || ((ICVSFolder)cvsResource).isCVSFolder());
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getErrorMessage(org.eclipse.core.runtime.IStatus[], int)
-	 */
 	@Override
 	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return CVSUIMessages.AddAction_addFailed; 

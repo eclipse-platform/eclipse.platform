@@ -43,25 +43,16 @@ public class ShowEditorsAction extends WorkspaceAction {
 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-	 */
 	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
 	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForMultipleResources()
-	 */
 	@Override
 	protected boolean isEnabledForMultipleResources() {
 		// We support one selected Resource,

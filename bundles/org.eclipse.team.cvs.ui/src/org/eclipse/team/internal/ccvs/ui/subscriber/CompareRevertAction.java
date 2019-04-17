@@ -26,9 +26,7 @@ public class CompareRevertAction extends CVSParticipantAction {
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.SubscriberAction#getSubscriberOperation(org.eclipse.compare.structuremergeviewer.IDiffElement[])
-	 */
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new CompareRevertOperation(configuration, elements);
 	}

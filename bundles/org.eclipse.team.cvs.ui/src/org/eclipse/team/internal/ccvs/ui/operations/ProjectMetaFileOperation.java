@@ -136,9 +136,7 @@ public class ProjectMetaFileOperation extends CVSOperation {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		checkForMetafileAndUpdateFoldersWithRemoteProjectName(remoteFolders, monitor);
 	}
@@ -162,16 +160,12 @@ public class ProjectMetaFileOperation extends CVSOperation {
 		return remoteFolders;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.ProjectMetaFile_taskName;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#canRunAsJob()
-	 */
+
+	@Override
 	public boolean canRunAsJob() {
 		// This operation should never be run in the background.
 		return false;

@@ -29,6 +29,7 @@ public class CompareWithRemoteAction extends SyncAction {
 	 * Update the text label for the action based on the tags in the selection.
 	 * @see TeamAction#setActionEnablement(org.eclipse.jface.action.IAction)
 	 */
+	@Override
 	protected void setActionEnablement(IAction action) {
 		super.setActionEnablement(action);
 		action.setText(calculateActionTagValue());
@@ -39,13 +40,12 @@ public class CompareWithRemoteAction extends SyncAction {
 	 * 
 	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
 	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		return super.isEnabledForCVSResource(cvsResource) || cvsResource.getParent().isCVSFolder();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}

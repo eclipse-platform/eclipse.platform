@@ -50,9 +50,6 @@ public class MergeWizardPage extends CVSWizardPage {
         this.tagSource = tagSource;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	public void createControl(Composite parent) {
         

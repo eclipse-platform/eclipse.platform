@@ -21,18 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.team.core.Team;
-import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
-import org.eclipse.team.internal.ccvs.core.ICVSFile;
-import org.eclipse.team.internal.ccvs.core.ICVSResource;
+import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 public class UneditAction extends WorkspaceAction {
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		
 		if(! MessageDialog.openConfirm(getShell(), CVSUIMessages.Uneditaction_confirmTitle, CVSUIMessages.Uneditaction_confirmMessage)) { // 
@@ -40,8 +35,10 @@ public class UneditAction extends WorkspaceAction {
 		}
 		
 		run(new WorkspaceModifyOperation(null) {
+			@Override
 			public void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				executeProviderAction(new IProviderAction() {
+					@Override
 					public IStatus execute(CVSTeamProvider provider, IResource[] resources, IProgressMonitor monitor) throws CVSException {
 						provider.unedit(resources, false /* recurse */, true /* notify server */, monitor);
 						return Team.OK_STATUS;
@@ -51,23 +48,17 @@ public class UneditAction extends WorkspaceAction {
 		}, true /* cancelable */, PROGRESS_DIALOG);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-	 */
+	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
+	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForCVSResource(org.eclipse.team.internal.ccvs.core.ICVSResource)
-	 */
+	@Override
 	protected boolean isEnabledForCVSResource(ICVSResource cvsResource) throws CVSException {
 		if (cvsResource.isFolder()) return false;
 		if (super.isEnabledForCVSResource(cvsResource)) {

@@ -86,6 +86,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	 * Updates the document if a sync changes occurs to the associated CVS file.
 	 */
 	private ISubscriberChangeListener teamChangeListener = new ISubscriberChangeListener() {
+		@Override
 		public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 			if(fReferenceInitialized) {
 				for (int i = 0; i < deltas.length; i++) {
@@ -106,21 +107,26 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	 * Updates the document if the document is changed (e.g. replace with)
 	 */
 	private IElementStateListener documentListener = new IElementStateListener() {
+		@Override
 		public void elementDirtyStateChanged(Object element, boolean isDirty) {
 		}
 
+		@Override
 		public void elementContentAboutToBeReplaced(Object element) {
 		}
 
+		@Override
 		public void elementContentReplaced(Object element) {
 			if(fEditor != null && fEditor.getEditorInput() == element) {
 				fetchContentsInJob();
 			}
 		}
 
+		@Override
 		public void elementDeleted(Object element) {
 		}
 
+		@Override
 		public void elementMoved(Object originalElement, Object movedElement) {
 		}
 	};
@@ -128,6 +134,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	/*
 	 * @see org.eclipse.test.quickdiff.DocumentLineDiffer.IQuickDiffReferenceProvider#getReference()
 	 */
+	@Override
 	public IDocument getReference(IProgressMonitor monitor) throws CoreException {
 		if(! fReferenceInitialized) return null;
 		if (fReference == null) {
@@ -136,9 +143,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		return fReference;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.texteditor.quickdiff.IQuickDiffProviderImplementation#setActiveEditor(org.eclipse.ui.texteditor.ITextEditor)
-	 */
+	@Override
 	public void setActiveEditor(ITextEditor targetEditor) {
 		IEditorInput editorInput = targetEditor.getEditorInput();
         if (editorInput == null || ResourceUtil.getFile(editorInput) == null) return;
@@ -152,9 +157,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		fReferenceInitialized= true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.texteditor.quickdiff.IQuickDiffProviderImplementation#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		if (! fReferenceInitialized)
 			return false;
@@ -168,6 +171,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	/*
 	 * @see org.eclipse.jface.text.source.diff.DocumentLineDiffer.IQuickDiffReferenceProvider#dispose()
 	 */
+	@Override
 	public void dispose() {
 		fReferenceInitialized = false;
 		// stop update job
@@ -185,6 +189,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	/*
 	 * @see org.eclipse.quickdiff.QuickDiffTestPlugin.IQuickDiffProviderImplementation#setId(java.lang.String)
 	 */
+	@Override
 	public void setId(String id) {
 		fId= id;
 	}
@@ -192,6 +197,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	/*
 	 * @see org.eclipse.jface.text.source.diff.DocumentLineDiffer.IQuickDiffReferenceProvider#getId()
 	 */
+	@Override
 	public String getId() {
 		return fId;
 	}
@@ -342,6 +348,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 			fUpdateJob.cancel();
 		}
 		fUpdateJob = new Job(CVSUIMessages.RemoteRevisionQuickDiffProvider_fetchingFile) { 
+			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
 					readDocument(monitor);

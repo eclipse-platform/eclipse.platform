@@ -37,9 +37,6 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		getSynchronizationContext().getDiffTree().addDiffChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
 	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return internalIsEnabled(selection);
@@ -72,9 +69,6 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		return (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.mappings.CVSModelProviderAction#getBundleKeyPrefix()
-     */
     @Override
 	protected String getBundleKeyPrefix() {
     	return "GenerateDiffFileAction."; //$NON-NLS-1$

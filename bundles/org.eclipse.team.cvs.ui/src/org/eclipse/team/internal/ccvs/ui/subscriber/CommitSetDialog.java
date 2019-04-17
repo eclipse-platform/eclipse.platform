@@ -70,9 +70,6 @@ public class CommitSetDialog extends TitleAreaDialog {
 		    commitCommentArea.setProject(files[0].getProject());
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
@@ -81,9 +78,6 @@ public class CommitSetDialog extends TitleAreaDialog {
         return contents;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	protected Control createDialogArea(Composite parent) {
         Composite parentComposite = (Composite) super.createDialogArea(parent);
@@ -134,9 +128,6 @@ public class CommitSetDialog extends TitleAreaDialog {
         return composite;
     }
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#getInitialSize()
-	 */
 	@Override
 	protected Point getInitialSize() {
 	    final Point size= super.getInitialSize();
@@ -260,9 +251,6 @@ public class CommitSetDialog extends TitleAreaDialog {
         return commitCommentArea.hasCommitTemplate();
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-     */
     @Override
 	protected void okPressed() {
     	String title = null;
@@ -293,9 +281,6 @@ public class CommitSetDialog extends TitleAreaDialog {
 		return label;
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.jface.dialogs.Dialog#createButtonBar(org.eclipse.swt.widgets.Composite)
-     */
     @Override
 	protected Control createButtonBar(Composite parent) {
         Control control = super.createButtonBar(parent);
@@ -303,9 +288,6 @@ public class CommitSetDialog extends TitleAreaDialog {
         return control;
     }
     
-    /* (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
-	 */
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);

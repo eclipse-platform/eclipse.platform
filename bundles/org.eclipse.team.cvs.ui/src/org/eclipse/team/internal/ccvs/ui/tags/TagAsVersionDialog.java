@@ -93,9 +93,6 @@ public class TagAsVersionDialog extends DetailsDialog {
 
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
-     */
     @Override
 	protected String getHelpContextId() {
         return IHelpContextIds.TAG_AS_VERSION_DIALOG;
@@ -105,9 +102,6 @@ public class TagAsVersionDialog extends DetailsDialog {
 		return moveTag;
 	}
 	
-	/**
-	 * @see DetailsDialog#createDropDownDialogArea(Composite)
-	 */
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		
@@ -180,9 +174,6 @@ public class TagAsVersionDialog extends DetailsDialog {
 		return operation;
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
-     */
     @Override
 	protected boolean isMainGrabVertical() {
         return false;

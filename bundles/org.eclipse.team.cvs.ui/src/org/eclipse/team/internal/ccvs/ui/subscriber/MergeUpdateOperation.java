@@ -44,26 +44,17 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		super(configuration, elements, promptBeforeUpdate);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
-	 */
 	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return NLS.bind(CVSUIMessages.MergeUpdateAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#getOverwriteLocalChanges()
-	 */
 	@Override
 	protected boolean getOverwriteLocalChanges() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#updated(org.eclipse.core.resources.IResource[])
-	 */
 	@Override
 	protected void updated(IResource[] resources) throws TeamException {
 		// Mark all succesfully updated resources as merged
@@ -72,9 +63,6 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#runUpdateDeletions(org.eclipse.team.core.synchronize.SyncInfo[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void runUpdateDeletions(SyncInfo[] nodes, IProgressMonitor monitor) throws TeamException {
 		// When merging, update deletions become outgoing deletions so just delete
@@ -95,9 +83,6 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#runSafeUpdate(org.eclipse.team.core.synchronize.SyncInfo[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void runSafeUpdate(IProject project, SyncInfo[] nodes, IProgressMonitor monitor) throws TeamException {
 		if(nodes.length > 0) {
@@ -159,9 +144,6 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.SafeUpdateOperation#overwriteUpdate(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void overwriteUpdate(SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		SyncInfo[] nodes = set.getSyncInfos();

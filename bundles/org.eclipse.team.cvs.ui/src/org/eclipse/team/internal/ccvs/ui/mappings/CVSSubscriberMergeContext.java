@@ -79,9 +79,6 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		super(subscriber, manager);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.MergeContext#run(org.eclipse.core.resources.IWorkspaceRunnable, org.eclipse.core.runtime.jobs.ISchedulingRule, int, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void run(final IWorkspaceRunnable runnable, final ISchedulingRule rule, int flags, IProgressMonitor monitor) throws CoreException {
 		super.run(monitor1 -> EclipseSynchronizer.getInstance().run(rule, monitor2 -> {
@@ -93,26 +90,17 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		}, monitor1), rule, flags, monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.MergeContext#getMergeRule(org.eclipse.core.resources.IResource)
-	 */
 	@Override
 	public ISchedulingRule getMergeRule(IDiff node) {
 		// Return the project since that is what the EclipseSynchronize needs
 		return getDiffTree().getResource(node).getProject();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.provider.MergeContext#makeInSync(org.eclipse.team.core.diff.IDiff, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void makeInSync(IDiff diff, IProgressMonitor monitor) throws CoreException {
 		markAsMerged(diff, true, monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.core.mapping.IMergeContext#reject(org.eclipse.team.core.diff.IDiff, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void reject(IDiff diff, IProgressMonitor monitor) throws CoreException {
 		markAsMerged(diff, false, monitor);

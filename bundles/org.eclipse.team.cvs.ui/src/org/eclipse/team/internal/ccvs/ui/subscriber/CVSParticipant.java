@@ -39,9 +39,6 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
 	
 	private CVSChangeSetCapability capability;
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscribers.SubscriberParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
@@ -50,9 +47,6 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
 		configuration.addLabelDecorator(labelDecorator);
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.SubscriberParticipant#updateLabels(org.eclipse.team.ui.synchronize.ISynchronizeModelElement, org.eclipse.compare.CompareConfiguration, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
         monitor.beginTask(null, 100);
@@ -143,9 +137,6 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
         }
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getPreferencePages()
-     */
     @Override
 	public PreferencePage[] getPreferencePages() {
         return addCVSPreferencePages(super.getPreferencePages());
@@ -161,9 +152,6 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
         return pages;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#getChangeSetCapability()
-     */
     @Override
 	public ChangeSetCapability getChangeSetCapability() {
         if (capability == null) {
@@ -180,9 +168,6 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
         return new CVSChangeSetCapability();
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#isViewerContributionsSupported()
-     */
     @Override
 	protected boolean isViewerContributionsSupported() {
         return true;

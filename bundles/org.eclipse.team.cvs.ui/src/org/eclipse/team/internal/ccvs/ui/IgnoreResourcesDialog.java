@@ -106,27 +106,18 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 		throw new IllegalStateException();
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.IgnoreResourcesDialog_dialogTitle);
 	}
 	
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected Control createContents(Composite parent) {
 		Control control = super.createContents(parent);
@@ -140,9 +131,6 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 		return control;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite((Composite) super
@@ -227,9 +215,6 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 		return top;
 	}
 
-	/* (non-Javadoc)
-	 * Method declared on Dialog.
-	 */
 	@Override
 	protected void okPressed() {
 		settings.put(ACTION_KEY, selectedAction);

@@ -121,26 +121,17 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		return context[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#isMainGrabVertical()
-	 */
 	@Override
 	protected boolean isMainGrabVertical() {
 		return false;
 	}
 	
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#updateEnablements()
-     */
     @Override
 	protected void updateEnablements() {
         // Can always finish
         setPageComplete(true);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#includeErrorMessage()
-     */
     @Override
 	protected boolean includeErrorMessage() {
         return false;

@@ -128,9 +128,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		CVSUIPlugin.getPlugin().getPreferenceStore().addPropertyChangeListener(CVSOutputConsole.this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.console.AbstractConsole#init()
-	 */
 	@Override
 	protected void init() {
 		// Called when console is added to the console view
@@ -227,9 +224,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		show(false);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.console.MessageConsole#dispose()
-	 */
 	@Override
 	protected void dispose() {
 		// Here we can't call super.dispose() because we actually want the partitioner to remain
@@ -259,9 +253,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		CVSUIPlugin.getPlugin().getPreferenceStore().removePropertyChangeListener(this);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandInvoked(java.lang.String)
-	 */
 	@Override
 	public void commandInvoked(Session session, String line) {
 	    if (!session.isOutputToConsole()) return;
@@ -270,9 +261,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		appendLine(ConsoleDocument.COMMAND, line);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#messageLineReceived(java.lang.String)
-	 */
 	@Override
 	public void messageLineReceived(Session session, String line, IStatus status) {
 	    if (session.isOutputToConsole()) {
@@ -280,9 +268,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	    }
 	}
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#errorLineReceived(java.lang.String)
-	 */
 	@Override
 	public void errorLineReceived(Session session, String line, IStatus status) {
 	    if (session.isOutputToConsole()) {
@@ -290,9 +275,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	    }
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener#commandCompleted(org.eclipse.core.runtime.IStatus, java.lang.Exception)
-	 */
 	@Override
 	public void commandCompleted(Session session, IStatus status, Exception exception) {
 	    if (!session.isOutputToConsole()) return;
@@ -360,9 +342,6 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
         appendLine(ConsoleDocument.COMMAND, buffer.toString());
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		String property = event.getProperty();

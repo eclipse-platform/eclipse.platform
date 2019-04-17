@@ -39,9 +39,7 @@ public class ModelSynchronizeWizard extends ParticipantSynchronizeWizard {
 		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_ENABLE_MODEL_SYNC);
 	}
     
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createParticipant()
-	 */
+	@Override
 	protected void createParticipant() {
 		if (isShowModelSync()) {
 			ISynchronizeParticipant participant = createParticipant(
@@ -60,9 +58,7 @@ public class ModelSynchronizeWizard extends ParticipantSynchronizeWizard {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ParticipantSynchronizeWizard#createScopeSelectionPage()
-	 */
+	@Override
 	protected final WizardPage createScopeSelectionPage() {
 		if (isShowModelSync())
 			selectionPage = new ModelElementSelectionPage(getRootResources());
@@ -102,6 +98,7 @@ public class ModelSynchronizeWizard extends ParticipantSynchronizeWizard {
 		}
 	}
 	
+	@Override
 	protected String getPageTitle() {
 		ISynchronizeParticipantDescriptor desc = TeamUI.getSynchronizeManager().getParticipantDescriptor(WorkspaceModelParticipant.ID);
 		if(desc != null) {
@@ -111,10 +108,12 @@ public class ModelSynchronizeWizard extends ParticipantSynchronizeWizard {
 		}
 	}
 
+	@Override
 	protected IWizard getImportWizard() {
 		return new CheckoutWizard();
 	}
 
+	@Override
 	protected IResource[] getRootResources() {
 		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().roots();
 	}

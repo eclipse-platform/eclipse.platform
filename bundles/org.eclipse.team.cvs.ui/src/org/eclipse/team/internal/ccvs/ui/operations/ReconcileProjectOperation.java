@@ -44,26 +44,17 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 		this.folder = folder;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return NLS.bind(CVSUIMessages.ReconcileProjectOperation_0, new String[] { getProject().getName(), folder.getRepositoryRelativePath() }); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.ShareProjectOperation#createRemoteFolder(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected ICVSRemoteFolder createRemoteFolder(IProgressMonitor monitor) throws CVSException {
 		// The folder already exists so just return the handle
 		return folder;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.ShareProjectOperation#mapProjectToRemoteFolder(org.eclipse.team.internal.ccvs.core.ICVSRemoteFolder, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void mapProjectToRemoteFolder(ICVSRemoteFolder remote, IProgressMonitor monitor) throws TeamException {
 		// Map the project
@@ -74,8 +65,10 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 		monitor.done();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
+	/*
+	 * @see
+	 * org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse
+	 * .core.runtime.IProgressMonitor)
 	 */
 	protected void reconcileSyncInfo(IProgressMonitor monitor) throws CVSException {
 		try {

@@ -60,9 +60,6 @@ public class UpdateOperation extends SingleCommandOperation {
         this.tag = tag;
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#executeCommand(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.core.resources.IResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected IStatus executeCommand(
 		Session session,
@@ -105,17 +102,11 @@ public class UpdateOperation extends SingleCommandOperation {
 		return Command.UPDATE;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
 	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.UpdateOperation_taskName; //;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
-	 */
 	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.UpdateOperation_0, new String[] { provider.getProject().getName() }); 
@@ -138,17 +129,11 @@ public class UpdateOperation extends SingleCommandOperation {
         	|| status.getCode() == CVSStatus.RESPONSE_HANDLING_FAILURE;
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getErrorMessage(org.eclipse.core.runtime.IStatus[], int)
-	 */
 	@Override
 	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return CVSUIMessages.UpdateAction_update; 
 	}
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getResourceMappingContext()
-     */
     @Override
 	protected ResourceMappingContext getResourceMappingContext() {
         return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());

@@ -44,25 +44,16 @@ public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
 		replaceOperation.run();
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ReplaceWithRemoteAction_problemMessage; 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForAddedResources()
-	 */
 	@Override
 	protected boolean isEnabledForAddedResources() {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
 	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;

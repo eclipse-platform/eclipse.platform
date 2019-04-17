@@ -54,6 +54,7 @@ public class RepositoriesSortingActionGroup extends ActionGroup {
 		labelSortingAction = new Action(
 				CVSUIMessages.RepositoriesSortingActionGroup_label,
 				Action.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				if (labelSortingAction.isChecked())
 					setComparatorOrder(RepositoryComparator.ORDER_BY_LABEL);
@@ -62,6 +63,7 @@ public class RepositoriesSortingActionGroup extends ActionGroup {
 		locationSortingAction = new Action(
 				CVSUIMessages.RepositoriesSortingActionGroup_location,
 				Action.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				if (locationSortingAction.isChecked())
 					setComparatorOrder(RepositoryComparator.ORDER_BY_LOCATION);
@@ -70,6 +72,7 @@ public class RepositoriesSortingActionGroup extends ActionGroup {
 		hostSortingAction = new Action(
 				CVSUIMessages.RepositoriesSortingActionGroup_host,
 				Action.AS_RADIO_BUTTON) {
+			@Override
 			public void run() {
 				if (hostSortingAction.isChecked())
 					setComparatorOrder(RepositoryComparator.ORDER_BY_HOST);
@@ -78,6 +81,7 @@ public class RepositoriesSortingActionGroup extends ActionGroup {
 		reverseSortingOrderAction = new Action(
 				CVSUIMessages.RepositoriesSortingActionGroup_descending,
 				Action.AS_CHECK_BOX) {
+			@Override
 			public void run() {
 				reverseSortingOrder();
 			}
@@ -104,11 +108,7 @@ public class RepositoriesSortingActionGroup extends ActionGroup {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars)
-	 */
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		IMenuManager menuManager = actionBars.getMenuManager();
 

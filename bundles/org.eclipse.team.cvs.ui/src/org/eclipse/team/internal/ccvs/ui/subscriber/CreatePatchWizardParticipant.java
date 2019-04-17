@@ -27,9 +27,7 @@ public class CreatePatchWizardParticipant extends WorkspaceSynchronizeParticipan
         fWizard= wizard;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.subscriber.WorkspaceSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-     */
+	@Override
     protected void initializeConfiguration( ISynchronizePageConfiguration configuration) {
         super.initializeConfiguration(configuration);
         configuration.setProperty(ISynchronizePageConfiguration.P_TOOLBAR_MENU, new String[] {ISynchronizePageConfiguration.LAYOUT_GROUP});
@@ -38,9 +36,8 @@ public class CreatePatchWizardParticipant extends WorkspaceSynchronizeParticipan
         configuration.setSupportedModes(ISynchronizePageConfiguration.OUTGOING_MODE);
         configuration.setMode(ISynchronizePageConfiguration.OUTGOING_MODE);
     }
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.AbstractSynchronizeParticipant#doesSupportSynchronize()
-     */
+
+	@Override
     public boolean doesSupportSynchronize() {
         return false;
     }

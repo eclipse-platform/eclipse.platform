@@ -20,8 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.subscribers.SubscriberResourceMappingContext;
 import org.eclipse.team.internal.ccvs.core.*;
-import org.eclipse.team.internal.ccvs.core.client.*;
+import org.eclipse.team.internal.ccvs.core.client.Command;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.ui.CVSUIMessages;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -35,9 +36,7 @@ public class CommitOperation extends SingleCommandOperation {
 		addLocalOption(Command.makeArgumentOption(Command.MESSAGE_OPTION, comment));
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#executeCommand(org.eclipse.team.internal.ccvs.core.client.Session, org.eclipse.team.internal.ccvs.core.CVSTeamProvider, org.eclipse.team.internal.ccvs.core.ICVSResource[], org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	protected IStatus executeCommand(Session session, CVSTeamProvider provider, ICVSResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 		return Command.COMMIT.execute(session,
 				Command.NO_GLOBAL_OPTIONS,
@@ -47,37 +46,27 @@ public class CommitOperation extends SingleCommandOperation {
 				monitor);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getTaskName()
-	 */
+	@Override
 	protected String getTaskName() {
 		return CVSUIMessages.RepositoryManager_committing; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getTaskName(org.eclipse.team.internal.ccvs.core.CVSTeamProvider)
-	 */
+	@Override
 	protected String getTaskName(CVSTeamProvider provider) {
 		return NLS.bind(CVSUIMessages.CommitOperation_0, new String[] { provider.getProject().getName() }); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#getErrorMessage(org.eclipse.core.runtime.IStatus[], int)
-	 */
+	@Override
 	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return CVSUIMessages.CommitAction_commitFailed; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.SingleCommandOperation#isServerModificationOperation()
-	 */
+	@Override
 	protected boolean isServerModificationOperation() {
 		return true;
 	}
 	
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation#getResourceMappingContext()
-     */
+	@Override
     protected ResourceMappingContext getResourceMappingContext() {
         return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
     }

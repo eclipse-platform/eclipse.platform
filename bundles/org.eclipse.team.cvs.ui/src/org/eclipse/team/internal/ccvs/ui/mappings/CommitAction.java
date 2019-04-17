@@ -33,13 +33,12 @@ public class CommitAction extends AbstractCommitAction implements IPropertyChang
 		setActionDefinitionId(ICVSUIConstants.CMD_COMMIT);
 	}
 	
+	@Override
 	protected String getBundleKeyPrefix() {
 		return "WorkspaceCommitAction."; //$NON-NLS-1$
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.mapping.ModelProviderAction#isEnabledForSelection(org.eclipse.jface.viewers.IStructuredSelection)
-	 */
+	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
 		return internalIsEnabled(selection);
 	}
@@ -53,20 +52,20 @@ public class CommitAction extends AbstractCommitAction implements IPropertyChang
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getSource() == getConfiguration() && event.getProperty() == ISynchronizePageConfiguration.P_MODE) {
 			setEnabled(internalIsEnabled(getStructuredSelection()));
 		}
 	}
 
+	@Override
 	protected ResourceTraversal[] getCommitTraversals(IStructuredSelection selection, IProgressMonitor monitor)
 			throws CoreException {
 		return getResourceTraversals(selection, monitor);
 	}
 
+	@Override
 	protected IStructuredSelection getActualSelection() throws CVSException {
 		IStructuredSelection selection = getStructuredSelection();
 		IStructuredSelection actualSelection = internalGetActualSelection();

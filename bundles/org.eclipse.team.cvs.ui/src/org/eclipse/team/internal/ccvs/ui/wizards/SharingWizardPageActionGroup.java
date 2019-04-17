@@ -25,9 +25,7 @@ public class SharingWizardPageActionGroup extends SynchronizePageActionGroup {
 	
 	public static final String ACTION_GROUP = "cvs_sharing_page_actions"; //$NON-NLS-1$
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.subscriber.SynchronizeViewerAdvisor#initializeActions(org.eclipse.jface.viewers.StructuredViewer)
-	 */
+	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
 		configuration.addMenuGroup(ISynchronizePageConfiguration.P_TOOLBAR_MENU, ACTION_GROUP);
@@ -36,6 +34,7 @@ public class SharingWizardPageActionGroup extends SynchronizePageActionGroup {
 				ISynchronizePageConfiguration.P_TOOLBAR_MENU, 
 				ACTION_GROUP,
 				new CVSActionDelegateWrapper(new IgnoreAction(), configuration, null /* no id to avoid conflict with context menu (bug 198319)*/){ 
+					@Override
 					protected String getBundleKeyPrefix() {
 						return "SharingWizardIgnore."; //$NON-NLS-1$
 					}

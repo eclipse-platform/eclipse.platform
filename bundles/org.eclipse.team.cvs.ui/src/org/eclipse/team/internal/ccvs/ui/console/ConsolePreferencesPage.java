@@ -38,6 +38,7 @@ public class ConsolePreferencesPage extends FieldEditorPreferencePage implements
 	private IntegerFieldEditor highWaterMark;
 	private IntegerFieldEditor width;
 
+	@Override
 	protected void createFieldEditors() {
 		final Composite composite = getFieldEditorParent();
 		createLabel(composite, CVSUIMessages.ConsolePreferencesPage_9); 
@@ -85,6 +86,7 @@ public class ConsolePreferencesPage extends FieldEditorPreferencePage implements
 	}
 	
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);
 		highWaterMark.setEnabled(restrictOutput.getBooleanValue(), getFieldEditorParent());
@@ -118,15 +120,11 @@ public class ConsolePreferencesPage extends FieldEditorPreferencePage implements
 		return editor;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-	 */
+	@Override
 	public boolean performOk() {
 		CVSUIPlugin.getPlugin().savePluginPreferences();
 		return super.performOk();

@@ -30,37 +30,27 @@ public class CheckoutWizardAction extends CVSAction implements IWorkbenchWindowA
 	
 	Shell shell;
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate2#dispose()
-	 */
+	@Override
 	public void dispose() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
+	@Override
 	public void init(IWorkbenchWindow window) {
 		this.shell = window.getShell();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#execute(org.eclipse.jface.action.IAction)
-	 */
+	@Override
 	protected void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		CheckoutWizard wizard = new CheckoutWizard();
 		WizardDialog dialog = new WizardDialog(shell, wizard);
 		dialog.open();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamAction#isEnabled()
-	 */
+	@Override
 	public boolean isEnabled() {
 		return true;
 	}

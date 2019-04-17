@@ -54,35 +54,23 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		this.override = override;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.CommitAction_commitFailed; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.TeamOperation#getJobName()
-	 */
 	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();
 		return NLS.bind(CVSUIMessages.CommitAction_jobName, new String[] { Integer.valueOf(syncSet.size()).toString() }); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
-	 */
 	@Override
 	public boolean shouldRun() {
 		SyncInfoSet set = getSyncInfoSet();
 		return !set.isEmpty();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.actions.SubscriberOperation#getSyncInfoSet()
-	 */
 	@Override
 	protected SyncInfoSet getSyncInfoSet() {
 		if (syncSet == null) {
@@ -129,10 +117,6 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		return true;
 	}
 	
-	/*
-	 *  (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void runWithProjectRule(IProject project, SyncInfoSet syncSet, IProgressMonitor monitor) throws TeamException {
 		

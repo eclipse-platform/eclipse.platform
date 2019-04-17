@@ -149,9 +149,6 @@ public class ResourceEditionNode implements IStructureComparator, ITypedElement,
 		return getName().hashCode();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.compare.IEncodedStreamContentAccessor#getCharset()
-	 */
 	@Override
 	public String getCharset() throws CoreException {
 		// Use the local file encoding if there is one

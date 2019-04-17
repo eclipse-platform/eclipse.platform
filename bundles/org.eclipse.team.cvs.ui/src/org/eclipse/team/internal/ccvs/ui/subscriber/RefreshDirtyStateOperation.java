@@ -46,9 +46,6 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 		super(configuration, elements);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.team.core.synchronize.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	protected void runWithProjectRule(IProject project, SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		final SyncInfo[] infos = set.getSyncInfos();
@@ -126,9 +123,6 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 		return CVSUIMessages.RefreshDirtyStateOperation_0; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
-	 */
 	@Override
 	protected String getJobName() {
 		return CVSUIMessages.RefreshDirtyStateOperation_1; 

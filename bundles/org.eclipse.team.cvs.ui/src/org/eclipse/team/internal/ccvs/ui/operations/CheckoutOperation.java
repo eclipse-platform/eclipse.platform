@@ -27,9 +27,7 @@ public abstract class CheckoutOperation extends RemoteOperation {
 		super(part, remoteFolders);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
+	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		ICVSRemoteFolder[] folders = getRemoteFolders();
 		checkout(folders, monitor);
@@ -65,24 +63,18 @@ public abstract class CheckoutOperation extends RemoteOperation {
 	 */
 	protected abstract IStatus checkout(ICVSRemoteFolder folder, IProgressMonitor monitor)  throws CVSException;
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#canRunAsJob()
-	 */
+	@Override
 	public boolean canRunAsJob() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.TeamOperation#isKeepOneProgressServiceEntry()
-     */
+	@Override
     public boolean isKeepOneProgressServiceEntry() {
         // Keep the last repository provider operation in the progress service
         return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.TeamOperation#getGotoAction()
-     */
+	@Override
     protected IAction getGotoAction() {
         return getShowConsoleAction();
     }

@@ -44,21 +44,18 @@ public final class CVSResourceTransfer extends ByteArrayTransfer {
     }
 
     
-    protected int[] getTypeIds() {
+    @Override
+	protected int[] getTypeIds() {
         return new int[] { TYPE };
     }
 
-    protected String[] getTypeNames() {
+    @Override
+	protected String[] getTypeNames() {
         return new String[] { TYPE_NAME };
     }
 
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.dnd.Transfer#javaToNative(java.lang.Object,org.eclipse.swt.dnd.TransferData)
-     */
-    public void javaToNative(Object object, TransferData transferData) {
+    @Override
+	public void javaToNative(Object object, TransferData transferData) {
         if (!isSupportedType(transferData)) {
             DND.error(DND.ERROR_INVALID_DATA);
         }
@@ -69,12 +66,8 @@ public final class CVSResourceTransfer extends ByteArrayTransfer {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.swt.dnd.Transfer#nativeToJava(org.eclipse.swt.dnd.TransferData)
-     */
-    protected Object nativeToJava(TransferData transferData) {
+    @Override
+	protected Object nativeToJava(TransferData transferData) {
         byte[] bytes = (byte[]) super.nativeToJava(transferData);
         return fromByteArray(bytes);
     }

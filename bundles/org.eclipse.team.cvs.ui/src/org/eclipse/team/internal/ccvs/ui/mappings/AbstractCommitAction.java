@@ -40,9 +40,6 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 		super(configuration);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
 	@Override
 	public void execute() {
     	final List resources = new ArrayList();

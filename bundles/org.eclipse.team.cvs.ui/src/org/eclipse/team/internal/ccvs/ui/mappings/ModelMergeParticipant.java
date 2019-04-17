@@ -87,9 +87,6 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		return new MergeActionGroup();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.operations.ModelSynchronizeParticipant#initializeConfiguration(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		configuration.setProperty(ISynchronizePageConfiguration.P_VIEWER_ID, VIEWER_ID);
@@ -214,9 +211,6 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		return MergeSubscriberContext.createContext(manager, subscriber);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.ISynchronizeParticipant#getName()
-	 */
 	@Override
 	public String getName() {		
 		return NLS.bind(CVSUIMessages.CompareParticipant_0, new String[] { getSubscriber().getName(), Utils.getScopeDescription(getContext().getScope()) });  

@@ -69,17 +69,11 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		}
 	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.dialogs.DetailsDialog#getHelpContextId()
-     */
     @Override
 	protected String getHelpContextId() {
         return IHelpContextIds.ADD_TO_VERSION_CONTROL_DIALOG;
     }
 
-	/**
-	 * @see org.eclipse.team.internal.ui.DetailsDialog#createDropDownDialogArea(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {
 		// create a composite with standard margins and spacing
@@ -168,9 +162,6 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		deselectButton.addSelectionListener(listener);
 	}
 	
-	/**
-	 * @see org.eclipse.team.internal.ui.DetailsDialog#updateEnablements()
-	 */
 	@Override
 	protected void updateEnablements() {
 	}
@@ -188,9 +179,6 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
@@ -198,16 +186,11 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		super.createButtonsForButtonBar(parent);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.DetailsDialog#includeOkButton()
-	 */
 	@Override
 	protected boolean includeOkButton() {
 		return false;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-	 */
+
 	@Override
 	protected void buttonPressed(int id) {
 		// hijack yes and no buttons to set the correct return

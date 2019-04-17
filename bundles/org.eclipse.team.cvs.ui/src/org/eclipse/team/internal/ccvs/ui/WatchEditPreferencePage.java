@@ -28,23 +28,17 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 	private RadioGroupFieldEditor actionEditor;
 	private IPreferenceStore store;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.CVSFieldEditorPreferencePage#getPageHelpContextId()
-	 */
+	@Override
 	protected String getPageHelpContextId() {
 		return IHelpContextIds.WATCH_EDIT_PREFERENCE_PAGE;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.CVSFieldEditorPreferencePage#getPageDescription()
-	 */
+	@Override
 	protected String getPageDescription() {
 		return CVSUIMessages.WatchEditPreferencePage_description; //;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
+	@Override
 	protected void createFieldEditors() {
 		addField(new BooleanFieldEditor(
 			ICVSUIConstants.PREF_CHECKOUT_READ_ONLY, 
@@ -97,9 +91,7 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 		return store.getString(ICVSUIConstants.PREF_EDIT_ACTION).equals(ICVSUIConstants.PREF_EDIT_PROMPT_EDIT);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.CVSFieldEditorPreferencePage#pushPreferences()
-	 */
+	@Override
 	protected void pushPreferences() {
 		store = getCVSPreferenceStore();
 		Preferences target = CVSProviderPlugin.getPlugin().getPluginPreferences();
@@ -111,9 +103,7 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 				store.getBoolean(ICVSUIConstants.PREF_ENABLE_WATCH_ON_EDIT));
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getSource() == actionEditor) {
             boolean enabled = event.getNewValue().equals(ICVSUIConstants.PREF_EDIT_PROMPT_EDIT);
@@ -123,10 +113,7 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 		super.propertyChange(event);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
-	 */
+	@Override
 	protected void initialize() {
 		super.initialize();
 		promptEditor.setEnabled(isEditEnabled(), getFieldEditorParent());

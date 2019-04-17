@@ -40,6 +40,7 @@ public class FileDiffOperation extends DiffOperation {
 		this.file = file;
 	}
 
+	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 	    super.execute(monitor);
      
@@ -80,9 +81,7 @@ public class FileDiffOperation extends DiffOperation {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.DiffOperation#openStream()
-	 */
+	@Override
 	protected PrintStream openStream() throws CVSException {
 		try {
 			os = new FileOutputStream(tempFile);

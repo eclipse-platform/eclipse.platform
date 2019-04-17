@@ -127,9 +127,6 @@ public class CheckoutAsWizard extends Wizard {
 		addPage(tagSelectionPage);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
-	 */
 	@Override
 	public boolean performFinish() {
 		try {
@@ -153,16 +150,10 @@ public class CheckoutAsWizard extends Wizard {
 		return false;
 	}
 
-	/**
-	 * @return
-	 */
 	private boolean isSingleFolder() {
 		return remoteFolders.length == 1;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#canFinish()
-	 */
 	@Override
 	public boolean canFinish() {
 		return (mainPage.isPageComplete() 
@@ -171,9 +162,6 @@ public class CheckoutAsWizard extends Wizard {
 			|| (mainPage.isPerformCheckoutAs() && locationSelectionPage.isPageComplete())));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.wizard.IWizard#getNextPage(org.eclipse.jface.wizard.IWizardPage)
-	 */
 	@Override
 	public IWizardPage getNextPage(IWizardPage page) {
 		if (page == mainPage) {

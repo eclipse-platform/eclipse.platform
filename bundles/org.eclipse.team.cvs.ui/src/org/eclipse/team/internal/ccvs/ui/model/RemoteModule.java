@@ -49,7 +49,8 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
      * Returns an object which is an instance of the given class associated with
      * this object. Returns <code>null</code> if no such object can be found.
      */
-    public <T> T getAdapter(Class<T> adapter) {
+    @Override
+	public <T> T getAdapter(Class<T> adapter) {
         if (adapter == IWorkbenchAdapter.class)
             return adapter.cast(this);
         if (adapter == IDeferredWorkbenchAdapter.class)
@@ -66,7 +67,8 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
      *            new image is returned, and the caller is responsible for
      *            disposing it.
      */
-    public ImageDescriptor getImageDescriptor(Object object) {
+    @Override
+	public ImageDescriptor getImageDescriptor(Object object) {
         return CVSUIPlugin.getPlugin().getImageDescriptor(
                 ICVSUIConstants.IMG_PROJECT_VERSION);
     }
@@ -75,14 +77,16 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
      * Returns the name of this element. This will typically be used to assign a
      * label to this object when displayed in the UI.
      */
-    public String getLabel(Object o) {
+    @Override
+	public String getLabel(Object o) {
         return folder.getName();
     }
 
     /**
      * Returns the logical parent of the given object in its tree.
      */
-    public Object getParent(Object o) {
+    @Override
+	public Object getParent(Object o) {
         return parent;
     }
 
@@ -93,10 +97,11 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
         return folder.getRepository();
     }
 
-    /**
-     * (Non-javadoc) For debugging purposes only.
-     */
-    public String toString() {
+	/*
+	 * For debugging purposes only.
+	 */
+    @Override
+	public String toString() {
         return "RemoteModule(" + folder.getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
@@ -113,7 +118,8 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
      * @see org.eclipse.team.internal.ccvs.ui.model.CVSModelElement#internalGetChildren(java.lang.Object,
      *      org.eclipse.core.runtime.IProgressMonitor)
      */
-    public Object[] fetchChildren(Object o, IProgressMonitor monitor)
+    @Override
+	public Object[] fetchChildren(Object o, IProgressMonitor monitor)
             throws TeamException {
         RepositoryManager manager = CVSUIPlugin.getPlugin()
                 .getRepositoryManager();
@@ -131,7 +137,8 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
         return versions;
     }
 
-    public void fetchDeferredChildren(Object o, IElementCollector collector,
+    @Override
+	public void fetchDeferredChildren(Object o, IElementCollector collector,
             IProgressMonitor monitor) {
         try {
             collector.add(fetchChildren(o, monitor), monitor);
@@ -140,11 +147,13 @@ public class RemoteModule extends CVSModelElement implements IAdaptable,
         }
     }
 
-    public boolean isContainer() {
+    @Override
+	public boolean isContainer() {
         return true;
     }
 
-    public ISchedulingRule getRule(Object element) {
+    @Override
+	public ISchedulingRule getRule(Object element) {
         return new RepositoryLocationSchedulingRule(folder.getRepository()); 
     }
 }

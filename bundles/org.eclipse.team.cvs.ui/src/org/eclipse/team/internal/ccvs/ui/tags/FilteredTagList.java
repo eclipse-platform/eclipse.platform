@@ -36,9 +36,6 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
         this.types = types;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
-     */
     @Override
 	public Object[] getChildren(Object o) {
         CVSTag[] tags = getTags();
@@ -61,33 +58,21 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
         return tagSource.getTags(types);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
-     */
     @Override
 	public ImageDescriptor getImageDescriptor(Object object) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
-     */
     @Override
 	public String getLabel(Object o) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
-     */
     @Override
 	public Object getParent(Object o) {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
     @Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);

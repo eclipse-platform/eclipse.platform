@@ -15,10 +15,8 @@ package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.team.core.synchronize.FastSyncInfoFilter;
+import org.eclipse.team.core.synchronize.FastSyncInfoFilter.*;
 import org.eclipse.team.core.synchronize.SyncInfo;
-import org.eclipse.team.core.synchronize.FastSyncInfoFilter.AndSyncInfoFilter;
-import org.eclipse.team.core.synchronize.FastSyncInfoFilter.SyncInfoChangeTypeFilter;
-import org.eclipse.team.core.synchronize.FastSyncInfoFilter.SyncInfoDirectionFilter;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SynchronizeModelOperation;
 
@@ -31,9 +29,7 @@ public class RefreshDirtyStateAction extends CVSParticipantAction {
 		super(configuration);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.sync.SubscriberAction#getSyncInfoFilter()
-	 */
+	@Override
 	protected FastSyncInfoFilter getSyncInfoFilter() {
 		// Only interested in outgoing changes
 		return new AndSyncInfoFilter(new FastSyncInfoFilter[] {
@@ -42,9 +38,7 @@ public class RefreshDirtyStateAction extends CVSParticipantAction {
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.synchronize.SynchronizeModelAction#getSubscriberOperation(org.eclipse.ui.IWorkbenchPart, org.eclipse.compare.structuremergeviewer.IDiffElement[])
-	 */
+	@Override
 	protected SynchronizeModelOperation getSubscriberOperation(
 			ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new RefreshDirtyStateOperation(configuration, elements);

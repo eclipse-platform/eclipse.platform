@@ -56,9 +56,6 @@ public class ClipboardDiffOperation extends DiffOperation {
 		});
 	 }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.DiffOperation#openStream()
-	 */
 	@Override
 	protected PrintStream openStream() {
 		return new PrintStream(os);

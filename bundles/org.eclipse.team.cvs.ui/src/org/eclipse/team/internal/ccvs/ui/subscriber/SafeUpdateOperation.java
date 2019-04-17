@@ -62,9 +62,6 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		this.promptBeforeUpdate = promptBeforeUpdate;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.ui.TeamOperation#shouldRun()
-	 */
 	@Override
 	public boolean shouldRun() {
 		return promptIfNeeded();
@@ -127,9 +124,6 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		return rule;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberOperation#run(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		skipped.clear();
@@ -141,9 +135,6 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#run(org.eclipse.team.ui.sync.SyncInfoSet, org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void runWithProjectRule(IProject project, SyncInfoSet syncSet, IProgressMonitor monitor) throws TeamException {
 		try {
@@ -460,9 +451,6 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		return CVSUIMessages.UpdateAction_update; 
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.subscriber.CVSSubscriberAction#getJobName(org.eclipse.team.ui.sync.SyncInfoSet)
-	 */
 	@Override
 	protected String getJobName() {
 		SyncInfoSet syncSet = getSyncInfoSet();

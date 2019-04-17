@@ -52,9 +52,6 @@ public class CommitAction extends WorkspaceTraversalAction {
 		}
 	}
 
-	/*
-	 * @see CVSAction#execute(IAction)
-	 */
 	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		final ResourceTraversal[][] traversals = new ResourceTraversal[][] { null };
@@ -77,33 +74,21 @@ public class CommitAction extends WorkspaceTraversalAction {
 		}, false, PROGRESS_BUSYCURSOR);
 	}
     
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.CommitAction_commitFailed; 
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForUnmanagedResources()
-	 */
 	@Override
 	protected boolean isEnabledForUnmanagedResources() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
 	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getId()
-	 */
 	@Override
 	public String getId() {
 		return ICVSUIConstants.CMD_COMMIT;

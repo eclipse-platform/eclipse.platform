@@ -200,9 +200,6 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 		this.selectedMappings = selectedMappings;
     }
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.operations.CVSOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
-	 */
 	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
@@ -447,18 +444,12 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 		}
 	}
 	
-	/* (non-Javadoc)
-     * @see org.eclipse.team.ui.TeamOperation#isKeepOneProgressServiceEntry()
-     */
     @Override
 	public boolean isKeepOneProgressServiceEntry() {
         // Keep the last repository provider operation in the progress service
         return true;
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.TeamOperation#getGotoAction()
-     */
     @Override
 	protected IAction getGotoAction() {
         return getShowConsoleAction();

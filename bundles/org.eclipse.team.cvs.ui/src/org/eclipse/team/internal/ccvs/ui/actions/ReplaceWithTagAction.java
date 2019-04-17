@@ -29,9 +29,6 @@ import org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation;
  */
 public abstract class ReplaceWithTagAction extends WorkspaceTraversalAction {
     
-	/*
-	 * Method declared on IActionDelegate.
-	 */
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		final ReplaceOperation replaceOperation= createReplaceOperation();
@@ -90,17 +87,11 @@ public abstract class ReplaceWithTagAction extends WorkspaceTraversalAction {
 		return new ReplaceOperation(getTargetPart(), getCVSResourceMappings(), null);
 	}
 
-	/**
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.CVSAction#getErrorTitle()
-	 */
 	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.ReplaceWithTagAction_replace; 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.WorkspaceAction#isEnabledForNonExistantResources()
-	 */
 	@Override
 	protected boolean isEnabledForNonExistantResources() {
 		return true;

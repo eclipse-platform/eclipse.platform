@@ -23,9 +23,7 @@ import org.eclipse.team.internal.ccvs.ui.tags.TagSource;
 
 public class ReplaceWithSelectableTagAction extends ReplaceWithTagAction {
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.ReplaceWithTagAction.getTag(ReplaceOperation)
-	 */
+	@Override
 	protected CVSTag getTag(final ReplaceOperation replaceOperation) {
 		TagSelectionDialog dialog = new TagSelectionDialog(getShell(), TagSource.create(replaceOperation.getScope().getMappings()), 
 			CVSUIMessages.ReplaceWithTagAction_message, 
@@ -40,9 +38,7 @@ public class ReplaceWithSelectableTagAction extends ReplaceWithTagAction {
 		return dialog.getResult();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ccvs.ui.actions.ReplaceWithTagAction#getReplaceOperation()
-	 */
+	@Override
 	protected ReplaceOperation createReplaceOperation() {
 		ReplaceOperation replaceOperation= super.createReplaceOperation();
 		replaceOperation.ignoreResourcesWithMissingTag();

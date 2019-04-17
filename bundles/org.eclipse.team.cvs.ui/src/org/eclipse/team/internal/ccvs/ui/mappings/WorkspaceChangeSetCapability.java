@@ -30,26 +30,17 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class WorkspaceChangeSetCapability extends ModelParticipantChangeSetCapability {
 
-    /* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ChangeSetCapability#supportsActiveChangeSets()
-	 */
 	@Override
 	public boolean supportsActiveChangeSets() {
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.eclipse.team.internal.ui.synchronize.ChangeSetCapability#enableActiveChangeSetsFor(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration)
-	 */
 	@Override
 	public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
         return supportsActiveChangeSets() && 
     	configuration.getMode() != ISynchronizePageConfiguration.INCOMING_MODE;
 	}
 	
-    /* (non-Javadoc)
-     * @see org.eclipse.team.internal.ui.synchronize.ChangeSetCapability#createChangeSet(org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration, org.eclipse.team.core.diff.IDiff[])
-     */
     @Override
 	public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] infos) {
         ActiveChangeSet set = getActiveChangeSetManager().createSet(CVSUIMessages.WorkspaceChangeSetCapability_1, new IDiff[0]); 
@@ -71,9 +62,6 @@ public class WorkspaceChangeSetCapability extends ModelParticipantChangeSetCapab
         return result.toArray(new IResource[result.size()]);
     }
     
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#editChangeSet(org.eclipse.team.core.subscribers.ActiveChangeSet)
-     */
     @Override
 	public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
         CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, set.getResources(), CommitSetDialog.EDIT);
@@ -82,9 +70,6 @@ public class WorkspaceChangeSetCapability extends ModelParticipantChangeSetCapab
 		// Nothing to do here as the set was updated by the dialog 
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.team.ui.synchronize.ChangeSetCapability#getActiveChangeSetManager()
-     */
     @Override
 	public ActiveChangeSetManager getActiveChangeSetManager() {
         return CVSUIPlugin.getPlugin().getChangeSetManager();
