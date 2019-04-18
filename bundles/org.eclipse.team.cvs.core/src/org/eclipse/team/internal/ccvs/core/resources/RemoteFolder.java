@@ -164,7 +164,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 				IStatus status = Command.UPDATE.execute(
 					session,
 					new GlobalOption[] { Command.DO_NOT_CHANGE },
-					(LocalOption[]) localOptions.toArray(new LocalOption[localOptions.size()]),
+					localOptions.toArray(new LocalOption[localOptions.size()]),
 					new ICVSResource[] { child }, new UpdateListener(listener),
 					Policy.subMonitorFor(progress, 70));
 				if (status.getCode() == CVSStatus.SERVER_ERROR) {
@@ -246,7 +246,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 						
 			}		
 		}
-		return (ICVSResource[]) result.toArray(new ICVSResource[result.size()]);
+		return result.toArray(new ICVSResource[result.size()]);
 	}
 	
 	@Override
@@ -501,7 +501,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 	
 	@Override
 	public ICVSRemoteResource forTag(CVSTag tagName) {
-		return (ICVSRemoteFolder)forTag(null, tagName);
+		return forTag(null, tagName);
 	}
 
 	@Override

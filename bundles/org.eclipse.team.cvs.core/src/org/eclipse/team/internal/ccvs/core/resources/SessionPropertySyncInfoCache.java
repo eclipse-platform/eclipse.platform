@@ -163,7 +163,7 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 					flushed.addAll(Arrays.asList(flushedChildren));
 				}
 			}
-			return (IResource[]) flushed.toArray(new IResource[flushed.size()]);
+			return flushed.toArray(new IResource[flushed.size()]);
 		} catch (CoreException e) {
 			throw CVSException.wrapException(e);
 		}

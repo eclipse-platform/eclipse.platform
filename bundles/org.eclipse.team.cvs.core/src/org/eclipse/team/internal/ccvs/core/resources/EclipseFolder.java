@@ -80,7 +80,7 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
                 }
 			}		
 		}	
-		return (ICVSResource[]) result.toArray(new ICVSResource[result.size()]);
+		return result.toArray(new ICVSResource[result.size()]);
 	}
 
 	@Override

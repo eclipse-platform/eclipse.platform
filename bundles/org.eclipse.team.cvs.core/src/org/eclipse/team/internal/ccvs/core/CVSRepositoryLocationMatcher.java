@@ -59,7 +59,7 @@ public class CVSRepositoryLocationMatcher {
 		for (Iterator i = infoMap.keySet().iterator(); i.hasNext();) {
 			IProject project = (IProject) i.next();
 			if (confirmedProjectsList.contains(project)) {
-				LoadInfo loadInfo = (LoadInfo) infoMap.get(project);
+				LoadInfo loadInfo = infoMap.get(project);
 				projectSetRepositoryLocations.add(loadInfo.repositoryLocation);
 			}
 		}

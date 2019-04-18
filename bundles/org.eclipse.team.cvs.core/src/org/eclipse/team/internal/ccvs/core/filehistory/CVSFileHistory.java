@@ -267,7 +267,7 @@ public class CVSFileHistory extends FileHistory {
 				directDescendents.add(revisions[i]);
 			}
 		}
-		return (IFileRevision[]) directDescendents.toArray(new IFileRevision[directDescendents.size()]);
+		return directDescendents.toArray(new IFileRevision[directDescendents.size()]);
 	}
 
 	private IFileRevision[] convertToFileRevision(IFileState[] localRevisions, IProgressMonitor monitor) {

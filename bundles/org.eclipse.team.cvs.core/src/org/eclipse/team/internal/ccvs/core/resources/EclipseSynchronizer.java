@@ -421,7 +421,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 				// broadcast changes to unmanaged children - they are the only candidates for being ignored
 				List<IResource> possibleIgnores = new ArrayList<>();
 				accumulateNonManagedChildren(folder, possibleIgnores);
-				ResourceStateChangeListeners.getListener().resourceSyncInfoChanged((IResource[])possibleIgnores.toArray(new IResource[possibleIgnores.size()]));
+				ResourceStateChangeListeners.getListener().resourceSyncInfoChanged(possibleIgnores.toArray(new IResource[possibleIgnores.size()]));
 			} finally {
 				endOperation();
 			}
@@ -681,7 +681,7 @@ public class EclipseSynchronizer implements IFlushOperation {
     				}
     				if (!changed.isEmpty()) {
     					ResourceStateChangeListeners.getListener().resourceSyncInfoChanged(
-    						(IResource[]) changed.toArray(new IResource[changed.size()]));
+    						changed.toArray(new IResource[changed.size()]));
     				}
     			} finally {
     				if (rule != null) endBatching(rule, null);
@@ -708,7 +708,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 		}
 		if (!changed.isEmpty()) {
 			ResourceStateChangeListeners.getListener().externalSyncInfoChange(
-					(IResource[]) changed.toArray(new IResource[changed.size()]));
+					changed.toArray(new IResource[changed.size()]));
 		}
 	}
 	
@@ -1030,7 +1030,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 						// do not overwrite the sync info for linked resources
 						if (infos.size() > 0 || !isLinkedResource(folder))
 							SyncFileWriter.writeAllResourceSync(folder,
-								(byte[][]) infos.toArray(new byte[infos.size()][]));
+								infos.toArray(new byte[infos.size()][]));
 					} catch(CVSException e) {
 						try {
 							sessionPropertyCache.purgeCache(folder, false /* depth 1 */);
@@ -1058,7 +1058,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 			allChanges.addAll(Arrays.asList(changedResources));
 			allChanges.addAll(Arrays.asList(changedFolders));
 			allChanges.addAll(dirtyParents);	
-			IResource[] resources = (IResource[]) allChanges.toArray(
+			IResource[] resources = allChanges.toArray(
 				new IResource[allChanges.size()]);
 			broadcastResourceStateChanges(resources);
 			if ( ! errors.isEmpty()) {
@@ -1067,7 +1067,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 											CVSMessages.EclipseSynchronizer_ErrorCommitting, 
 											null);
 				for (int i = 0; i < errors.size(); i++) {
-					status.merge((IStatus)errors.get(i));
+					status.merge(errors.get(i));
 				}
 				return status;
 			}
@@ -1457,7 +1457,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 				}
 			}
 		}
-		return (IContainer[]) folders.toArray(new IContainer[folders.size()]);
+		return folders.toArray(new IContainer[folders.size()]);
 	}
 	
 	/**
@@ -1825,7 +1825,7 @@ public class EclipseSynchronizer implements IFlushOperation {
 			IResource resource = resources[i];
 			set.add(resource.getProject());
 		}
-		IProject[] projects = (IProject[]) set.toArray(new IProject[set.size()]);
+		IProject[] projects = set.toArray(new IProject[set.size()]);
 		if (projects.length == 1) {
 			return projects[0];
 		}

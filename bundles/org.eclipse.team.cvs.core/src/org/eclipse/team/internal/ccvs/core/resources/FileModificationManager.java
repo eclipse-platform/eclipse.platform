@@ -95,7 +95,7 @@ public class FileModificationManager implements IResourceChangeListener {
 			});
 			if (!modifiedResources.isEmpty()) {
 				ResourceStateChangeListeners.getListener().resourceModified(
-					(IResource[])modifiedResources.toArray(new IResource[modifiedResources.size()]));
+					modifiedResources.toArray(new IResource[modifiedResources.size()]));
 				modifiedResources.clear();
 			}
 		} catch (CoreException e) {

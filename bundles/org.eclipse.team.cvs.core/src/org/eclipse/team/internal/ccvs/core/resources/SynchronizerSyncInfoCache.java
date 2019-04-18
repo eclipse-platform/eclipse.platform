@@ -313,7 +313,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 			
 			if (cachedResources.size() != 0){
 				IResource[] resources = folder.members(true);
-				IResource[] cachedResourcesArray = (IResource[]) cachedResources.toArray(new IResource[cachedResources.size()]);
+				IResource[] cachedResourcesArray = cachedResources.toArray(new IResource[cachedResources.size()]);
 				IResource[]finalResources = new IResource[resources.length + cachedResourcesArray.length];
 				System.arraycopy(resources, 0, finalResources, 0, resources.length);
 				System.arraycopy(cachedResourcesArray, 0, finalResources, resources.length, cachedResourcesArray.length);
@@ -397,7 +397,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		synchronized (pendingCacheWrites) {
 			if (pendingCacheWrites.isEmpty())
 				return null;
-			return (IResource[]) pendingCacheWrites.keySet().toArray(new IResource[pendingCacheWrites.size()]);
+			return pendingCacheWrites.keySet().toArray(new IResource[pendingCacheWrites.size()]);
 		}
 	}
 }

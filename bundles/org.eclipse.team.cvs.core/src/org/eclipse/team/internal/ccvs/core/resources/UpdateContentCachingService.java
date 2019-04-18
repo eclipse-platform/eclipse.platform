@@ -266,7 +266,7 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 			options.add(Update.RETRIEVE_ABSENT_DIRECTORIES);
 		
 		if (!options.isEmpty())
-			return (LocalOption[]) options.toArray(new LocalOption[options.size()]);
+			return options.toArray(new LocalOption[options.size()]);
 		
 		return Command.NO_LOCAL_OPTIONS;
 	}

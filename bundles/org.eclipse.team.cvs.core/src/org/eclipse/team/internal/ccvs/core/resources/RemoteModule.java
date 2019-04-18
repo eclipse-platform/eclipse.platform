@@ -111,7 +111,7 @@ public class RemoteModule extends RemoteFolder {
 				CVSProviderPlugin.log(IStatus.WARNING, NLS.bind(CVSMessages.RemoteModule_invalidDefinition, new String[] { moduleDefinitionStrings[i], repository.getLocation(true) }), null); 
 				continue;
 			}
-			LocalOption[] localOptions = (LocalOption[]) localOptionsList.toArray(new LocalOption[localOptionsList.size()]);
+			LocalOption[] localOptions = localOptionsList.toArray(new LocalOption[localOptionsList.size()]);
 			
 			if (Checkout.ALIAS.isElementOf(localOptions)) {
 				
@@ -233,7 +233,7 @@ public class RemoteModule extends RemoteFolder {
 					}
 				}
 				if (expandable) {
-					module.setReferencedModules((ICVSRemoteResource[]) referencedFolders.toArray(new ICVSRemoteResource[referencedFolders.size()]));
+					module.setReferencedModules(referencedFolders.toArray(new ICVSRemoteResource[referencedFolders.size()]));
 				} else {
 					module.setExpandable(false);
 				}

@@ -115,6 +115,6 @@ public class RemoteFolderSandbox extends RemoteFolder {
 				results.add(children[i]);
 			}
 		}
-		setChildren((ICVSRemoteResource[]) results.toArray(new ICVSRemoteResource[results.size()]));		
+		setChildren(results.toArray(new ICVSRemoteResource[results.size()]));		
 	}
 }

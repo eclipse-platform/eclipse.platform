@@ -105,7 +105,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 			return Command.UPDATE.execute(
 				session,
 				new GlobalOption[] { Command.DO_NOT_CHANGE },
-				(LocalOption[])localOptions.toArray(new LocalOption[localOptions.size()]),
+				localOptions.toArray(new LocalOption[localOptions.size()]),
 				new ICVSResource[] { parentFolder },
 				new UpdateListener(this),
 			Policy.subMonitorFor(progress, 90));
@@ -159,11 +159,11 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		// Report any internal exceptions that occurred fetching the members
 		if ( ! exceptions.isEmpty()) {
 			if (exceptions.size() == 1) {
-				throw (CVSException)exceptions.get(0);
+				throw exceptions.get(0);
 			} else {
 				MultiStatus multi = new MultiStatus(CVSProviderPlugin.ID, 0, errorTitle, null);
 				for (int i = 0; i < exceptions.size(); i++) {
-					multi.merge(((CVSException)exceptions.get(i)).getStatus());
+					multi.merge(exceptions.get(i).getStatus());
 				}
 				throw new CVSException(multi);
 			}
@@ -285,7 +285,7 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 	 * @return
 	 */
 	protected ICVSFile[] getFiles() {
-		return (ICVSFile[]) files.toArray(new ICVSFile[files.size()]);
+		return files.toArray(new ICVSFile[files.size()]);
 	}
 	
 	/**

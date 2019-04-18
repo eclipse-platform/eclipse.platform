@@ -116,7 +116,7 @@ public class Update extends Command {
 				newOptions.add(Command.PRUNE_EMPTY_DIRECTORIES);
 			}
 		}
-		localOptions = (LocalOption[]) newOptions.toArray(new LocalOption[newOptions.size()]);
+		localOptions = newOptions.toArray(new LocalOption[newOptions.size()]);
 		return super.filterLocalOptions(session, globalOptions, localOptions);
 	}
 	

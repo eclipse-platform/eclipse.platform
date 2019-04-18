@@ -277,7 +277,7 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 			this.monitor.beginTask(null, resourceHint);
 			session.setSendFileTitleKey(getSendFileMessage());
 			for (int i = 0; i < resourceList.size(); i++) {
-				((ICVSResource)resourceList.get(i)).accept(this);
+				resourceList.get(i).accept(this);
 			}
 		} finally {
 			monitor.done();

@@ -135,6 +135,6 @@ public class FileContentCachingService {
 				// The child does not exists so exclude it
 			}
 		}
-		return (String[]) existing.toArray(new String[existing.size()]);
+		return existing.toArray(new String[existing.size()]);
 	}
 }

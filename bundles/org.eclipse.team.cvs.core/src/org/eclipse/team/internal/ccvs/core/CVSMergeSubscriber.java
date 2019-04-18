@@ -195,7 +195,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 
 	@Override
 	public IResource[] roots() {
-		return (IResource[]) roots.toArray(new IResource[roots.size()]);
+		return roots.toArray(new IResource[roots.size()]);
 	}
 
 	@Override
