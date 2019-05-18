@@ -93,11 +93,11 @@ public class CVSParticipantLabelDecorator extends LabelProvider implements IProp
 		return Utils.getResource(internalGetElement(element));
 	}
 
-    protected CVSDecoration getDecoration(IResource resource) throws CoreException {
-        return CVSLightweightDecorator.decorate(resource, tester);
-    }
+	protected CVSDecoration getDecoration(IResource resource) throws CoreException {
+		return CVSLightweightDecorator.decorate(resource, tester);
+	}
 
-    public Image decorateImage(Image base, Object element) {
+	public Image decorateImage(Image base, Object element) {
 		return base;
 	}
 	public void propertyChange(PropertyChangeEvent event) {
@@ -110,8 +110,8 @@ public class CVSParticipantLabelDecorator extends LabelProvider implements IProp
 	}
 	
 	protected boolean needsRefresh(PropertyChangeEvent event) {
-	    final String property= event.getProperty();
-	    return property.equals(CVSUIPlugin.P_DECORATORS_CHANGED) || property.equals(TeamUI.GLOBAL_FILE_TYPES_CHANGED);
+		final String property= event.getProperty();
+		return property.equals(CVSUIPlugin.P_DECORATORS_CHANGED) || property.equals(TeamUI.GLOBAL_FILE_TYPES_CHANGED);
 	}
 	public void dispose() {
 		CVSUIPlugin.removePropertyChangeListener(this);

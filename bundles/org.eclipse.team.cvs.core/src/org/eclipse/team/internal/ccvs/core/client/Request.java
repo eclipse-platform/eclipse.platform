@@ -114,7 +114,7 @@ public abstract class Request {
 		// move some rather than remaining still and then jumping to 100).
 		final int TOTAL_WORK = 300;
 		monitor.beginTask(CVSMessages.Command_receivingResponses, TOTAL_WORK); 
-        monitor.subTask(CVSMessages.Command_receivingResponses); 
+		monitor.subTask(CVSMessages.Command_receivingResponses); 
 		int halfWay = TOTAL_WORK / 2;
 		int currentIncrement = 4;
 		int nextProgress = currentIncrement;
@@ -168,18 +168,18 @@ public abstract class Request {
 				}
 					
 				if (!session.hasErrors()) {
-				    session.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR, CVSMessages.Command_noMoreInfoAvailable,session.getLocalRoot()));
+					session.addError(new CVSStatus(IStatus.ERROR, CVSStatus.SERVER_ERROR, CVSMessages.Command_noMoreInfoAvailable,session.getLocalRoot()));
 				}
 				IStatus status = new MultiStatus(CVSProviderPlugin.ID, CVSStatus.SERVER_ERROR, 
-				        session.getErrors(),
+						session.getErrors(),
 					argument, null);
 				if (serious) {
 					throw new CVSServerException(status);
 				} else {
 					// look for particularly bad errors in the accumulated statuses
-				    IStatus[] errors = session.getErrors();
-				    for (int i = 0; i < errors.length; i++) {
-                        IStatus s = errors[i];
+					IStatus[] errors = session.getErrors();
+					for (int i = 0; i < errors.length; i++) {
+						IStatus s = errors[i];
 						if (s.getCode() == CVSStatus.PROTOCOL_ERROR) {
 							throw new CVSServerException(status);
 						}
@@ -242,7 +242,7 @@ public abstract class Request {
 	protected String getServerErrorMessage() {
 		return NLS.bind(CVSMessages.Command_serverError, new String[] { getDisplayText() });
 	}
-    protected String getDisplayText() {
-        return getRequestId();
-    }
+	protected String getDisplayText() {
+		return getRequestId();
+	}
 }

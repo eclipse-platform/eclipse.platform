@@ -25,12 +25,12 @@ public class PixelConverter {
 
 	public PixelConverter(Control control) {
 		GC gc = new GC(control);
-        try {
-            gc.setFont(control.getFont());
-            fFontMetrics= gc.getFontMetrics();
-        } finally {
-            gc.dispose();
-        }
+		try {
+			gc.setFont(control.getFont());
+			fFontMetrics= gc.getFontMetrics();
+		} finally {
+			gc.dispose();
+		}
 	}
 
 	public int convertHeightInCharsToPixels(int chars) {

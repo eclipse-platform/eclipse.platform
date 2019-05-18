@@ -20,7 +20,7 @@ import org.eclipse.ui.*;
 
 
 public class CVSPerspective implements IPerspectiveFactory {
-    
+	
 	public final static String ID = "org.eclipse.team.cvs.ui.cvsPerspective"; //$NON-NLS-1$
 
 	@Override

@@ -290,7 +290,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 					// Save options in hash table
 					StringTokenizer stOpt = new StringTokenizer(
 						location.substring(optionStart+1, end),
-            					"=;" //$NON-NLS-1$
+								"=;" //$NON-NLS-1$
 					);
 					while (stOpt.hasMoreTokens()) {
 						hmOptions.put(stOpt.nextToken(), stOpt.nextToken());
@@ -343,11 +343,11 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 			end= location.indexOf(COLON, start);
 			int hostEnd = end;
 			if (end == -1) {
-			    // The last colon is optional so look for the slash that starts the path
-			    end = location.indexOf('/', start);
-			    hostEnd = end;
-			    // Decrement the end since the slash is part of the path
-			    if (end != -1) end--;
+				// The last colon is optional so look for the slash that starts the path
+				end = location.indexOf('/', start);
+				hostEnd = end;
+				// Decrement the end since the slash is part of the path
+				if (end != -1) end--;
 			}
 			String host = (hmOptions.containsKey("hostname")) ? hmOptions.get("hostname").toString() : location.substring(start, hostEnd); //$NON-NLS-1$ //$NON-NLS-2$
 			int port = USE_DEFAULT_PORT;
@@ -721,8 +721,8 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	 * for any connection made to this remote location.
 	 */
 	public Connection openConnection(IProgressMonitor monitor) throws CVSException {
-        // Get the lock for the host to ensure that we are not connecting to the same host concurrently.
-        Policy.checkCanceled(monitor);
+		// Get the lock for the host to ensure that we are not connecting to the same host concurrently.
+		Policy.checkCanceled(monitor);
 		ILock hostLock;
 		synchronized(hostLocks) {
 			hostLock = hostLocks.get(getHost());
@@ -732,11 +732,11 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 			}
 		}
 		try {
-		    boolean acquired = false;
-		    int count = 0;
-		    int timeout = CVSProviderPlugin.getPlugin().getTimeout();
-		    while (!acquired) {
-		    	try {
+			boolean acquired = false;
+			int count = 0;
+			int timeout = CVSProviderPlugin.getPlugin().getTimeout();
+			while (!acquired) {
+				try {
 					acquired = hostLock.acquire(1000);
 				} catch (InterruptedException e) {
 					// Ignore
@@ -746,7 +746,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				}
 				count++;
 				Policy.checkCanceled(monitor);
-		    }
+			}
 			// Allow two ticks in case of a retry
 			monitor.beginTask(NLS.bind(CVSMessages.CVSRepositoryLocation_openingConnection, new String[] { getHost() }), 2);
 			ensureLocationCached();
@@ -773,9 +773,9 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 					//	password = "";//$NON-NLS-1$ 
 					Connection connection = createConnection(password, monitor);
 					if (cacheNeedsUpdate)
-					    updateCachedLocation();
+						updateCachedLocation();
 					previousAuthenticationFailed = false;
-                    return connection;
+					return connection;
 				} catch (CVSAuthenticationException ex) {
 					previousAuthenticationFailed = true;
 					if (ex.getRetryStatus() == CVSAuthenticationException.RETRY) {
@@ -789,7 +789,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				}
 			}
 		} finally {
-            hostLock.release();
+			hostLock.release();
 			monitor.done();
 		}
 	}
@@ -805,76 +805,76 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		authenticator.promptForUserInfo(this, this, message);
 	}
 
-    /*
+	/*
 	 * Ensure that this location is in the known repositories list
 	 * and that the authentication information matches what is in the
 	 * cache, if this instance is not the instance in the cache.
-     */
-    private void ensureLocationCached() {
-        String location = getLocation();
-        KnownRepositories repositories = KnownRepositories.getInstance();
-        if (repositories.isKnownRepository(location)) {
-            try {
-                // The repository is already known.
-                // Ensure that the authentication information of this 
-                // location matches that of the known location
-                setAuthenticationInformation((CVSRepositoryLocation)repositories.getRepository(location));
-            } catch (CVSException e) {
-                // Log the exception and continue
-                CVSProviderPlugin.log(e);
-            }
-        } else {
-            // The repository is not known so record it so any authentication
-            // information the user may provide is remembered
-        	repositories.addRepository(this, true /* broadcast */);
-        }
-    }
+	 */
+	private void ensureLocationCached() {
+		String location = getLocation();
+		KnownRepositories repositories = KnownRepositories.getInstance();
+		if (repositories.isKnownRepository(location)) {
+			try {
+				// The repository is already known.
+				// Ensure that the authentication information of this 
+				// location matches that of the known location
+				setAuthenticationInformation((CVSRepositoryLocation)repositories.getRepository(location));
+			} catch (CVSException e) {
+				// Log the exception and continue
+				CVSProviderPlugin.log(e);
+			}
+		} else {
+			// The repository is not known so record it so any authentication
+			// information the user may provide is remembered
+			repositories.addRepository(this, true /* broadcast */);
+		}
+	}
 
 	/*
 	 * Set the authentication information of this instance such that it matches the
 	 * provided instances.
-     */
-    private void setAuthenticationInformation(CVSRepositoryLocation other) {
-        if (other != this) {
-            // The instances differ so copy from the other location to this one
-            if (other.getUserInfoCached()) {
-                // The user info is cached for the other instance
-                // so null all the values in this instance so the 
-                // information is obtained from the cache
-                this.allowCaching = true;
-                if (!userFixed) this.user = null;
-                if (!passwordFixed) this.password = null;
-            } else {
-                // The user info is not cached for the other instance so
-                // copy the authentication information into this instance
-                setAllowCaching(false); /* this will clear any cached values */
-                // Only copy the username and password if they are not fixed.
-                // (If they are fixed, they would be included in the location
-                // identifier and therefore must already match)
-                if (!other.userFixed)
-                    this.user = other.user;
-                if (!other.passwordFixed)
-                    this.password = other.password;
-            }
-        }
-    }
+	 */
+	private void setAuthenticationInformation(CVSRepositoryLocation other) {
+		if (other != this) {
+			// The instances differ so copy from the other location to this one
+			if (other.getUserInfoCached()) {
+				// The user info is cached for the other instance
+				// so null all the values in this instance so the 
+				// information is obtained from the cache
+				this.allowCaching = true;
+				if (!userFixed) this.user = null;
+				if (!passwordFixed) this.password = null;
+			} else {
+				// The user info is not cached for the other instance so
+				// copy the authentication information into this instance
+				setAllowCaching(false); /* this will clear any cached values */
+				// Only copy the username and password if they are not fixed.
+				// (If they are fixed, they would be included in the location
+				// identifier and therefore must already match)
+				if (!other.userFixed)
+					this.user = other.user;
+				if (!other.passwordFixed)
+					this.password = other.password;
+			}
+		}
+	}
 
-    /*
-     * The connection was successfully made. Update the cached
-     * repository location if it is a different instance than
-     * this location.
-     */
-    private void updateCachedLocation() {
-        try {
-            CVSRepositoryLocation known = (CVSRepositoryLocation)KnownRepositories.getInstance().getRepository(getLocation());
-            known.setAuthenticationInformation(this);
-        } catch (CVSException e) {
-            // Log the exception and continue
-            CVSProviderPlugin.log(e);
-        }
-    }
-    
-    /*
+	/*
+	 * The connection was successfully made. Update the cached
+	 * repository location if it is a different instance than
+	 * this location.
+	 */
+	private void updateCachedLocation() {
+		try {
+			CVSRepositoryLocation known = (CVSRepositoryLocation)KnownRepositories.getInstance().getRepository(getLocation());
+			known.setAuthenticationInformation(this);
+		} catch (CVSException e) {
+			// Log the exception and continue
+			CVSProviderPlugin.log(e);
+		}
+	}
+	
+	/*
 	 * Implementation of inherited toString()
 	 */
 	public String toString() {
@@ -950,13 +950,13 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	
 	public void setAllowCaching(boolean value) {
 		allowCaching = value;
-        if (allowCaching) {
-            updateCache();
-        } else {
-        	if (password == null)
-        		password = retrievePassword();
-            removeNode();
-        }
+		if (allowCaching) {
+			updateCache();
+		} else {
+			if (password == null)
+				password = retrievePassword();
+			removeNode();
+		}
 	}
 	
 	public void updateCache() {

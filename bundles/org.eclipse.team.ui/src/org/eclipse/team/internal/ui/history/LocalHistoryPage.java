@@ -272,7 +272,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			IResourceDelta root = event.getDelta();
 
 			if (file == null)
-				 return;
+				return;
 
 			IResourceDelta resourceDelta = root.findMember(file.getFullPath());
 			if (resourceDelta != null){
@@ -424,7 +424,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			}
 
 			//TODO: Doc help
-	        //PlatformUI.getWorkbench().getHelpSystem().setHelp(getContentsAction, );
+			//PlatformUI.getWorkbench().getHelpSystem().setHelp(getContentsAction, );
 
 			// Click Compare action
 			compareAction = createCompareAction();
@@ -633,11 +633,11 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 		return null;
 	}
 
-    @Override
+	@Override
 	public void dispose() {
-    	shutdown = true;
+		shutdown = true;
 
-    	if (resourceListener != null){
+		if (resourceListener != null){
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
 			resourceListener = null;
 		}
@@ -658,7 +658,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			currentFileRevision = new LocalFileRevision(file);
 
 		return currentFileRevision;
-    }
+	}
 
 	private Action getContextMenuAction(String title, final boolean needsProgressDialog, final IWorkspaceRunnable action) {
 		return new Action(title) {

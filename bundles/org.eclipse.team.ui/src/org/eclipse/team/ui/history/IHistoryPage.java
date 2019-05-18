@@ -60,19 +60,19 @@ import org.eclipse.ui.SubActionBars;
  */
 public interface IHistoryPage {
 
-    /**
-     * Property name constant (value <code>"org.eclipse.team.ui.name"</code>)
-     * for the page's name.
-     * @since 3.3
-     */
-    public static final String P_NAME = TeamUIPlugin.ID + ".name"; //$NON-NLS-1$
+	/**
+	 * Property name constant (value <code>"org.eclipse.team.ui.name"</code>)
+	 * for the page's name.
+	 * @since 3.3
+	 */
+	public static final String P_NAME = TeamUIPlugin.ID + ".name"; //$NON-NLS-1$
 
-    /**
-     * Property name constant (value <code>"org.eclipse.team.ui.description"</code>)
-     * for an page's description.
-     * @since 3.3
-     */
-    public static final String P_DESCRIPTION = TeamUIPlugin.ID + ".description"; //$NON-NLS-1$
+	/**
+	 * Property name constant (value <code>"org.eclipse.team.ui.description"</code>)
+	 * for an page's description.
+	 * @since 3.3
+	 */
+	public static final String P_DESCRIPTION = TeamUIPlugin.ID + ".description"; //$NON-NLS-1$
 
 	/**
 	 * Fetches and populates the history page for the given Object. Clients

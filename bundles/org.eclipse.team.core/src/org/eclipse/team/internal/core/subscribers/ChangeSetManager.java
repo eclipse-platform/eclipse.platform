@@ -27,219 +27,219 @@ import org.eclipse.core.runtime.SafeRunner;
  */
 public abstract class ChangeSetManager {
 
-    private ListenerList<IChangeSetChangeListener> listeners = new ListenerList<IChangeSetChangeListener>(ListenerList.IDENTITY);
-    private Set<ChangeSet> sets;
+	private ListenerList<IChangeSetChangeListener> listeners = new ListenerList<IChangeSetChangeListener>(ListenerList.IDENTITY);
+	private Set<ChangeSet> sets;
 	private boolean initializing;
 
-    /**
-     * Return the list of listeners registered with this change set manager.
-     * @return the list of listeners registered with this change set manager
-     */
-    protected Object[] getListeners() {
-        return listeners.getListeners();
-    }
+	/**
+	 * Return the list of listeners registered with this change set manager.
+	 * @return the list of listeners registered with this change set manager
+	 */
+	protected Object[] getListeners() {
+		return listeners.getListeners();
+	}
 
-    /**
-     * Method that can be invoked by subclasses when the name of
-     * a managed change set changes.
-     * @param set the set whose title has changed
-     */
-    protected void fireNameChangedEvent(final ChangeSet set) {
-    	if (initializing)
-    		return;
-        if (contains(set)) {
-            Object[] listeners = getListeners();
-            for (int i = 0; i < listeners.length; i++) {
-                final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-                SafeRunner.run(new ISafeRunnable() {
-                    @Override
+	/**
+	 * Method that can be invoked by subclasses when the name of
+	 * a managed change set changes.
+	 * @param set the set whose title has changed
+	 */
+	protected void fireNameChangedEvent(final ChangeSet set) {
+		if (initializing)
+			return;
+		if (contains(set)) {
+			Object[] listeners = getListeners();
+			for (int i = 0; i < listeners.length; i++) {
+				final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+				SafeRunner.run(new ISafeRunnable() {
+					@Override
 					public void handleException(Throwable exception) {
-                        // Exceptions are logged by the platform
-                    }
-                    @Override
+						// Exceptions are logged by the platform
+					}
+					@Override
 					public void run() throws Exception {
-                        listener.nameChanged(set);
-                    }
-                });
-            }
-        }
-    }
+						listener.nameChanged(set);
+					}
+				});
+			}
+		}
+	}
 
-    /**
-     * Method which allows subclasses to notify listeners that the default
-     * set has changed.
-     * @param oldSet the previous default
-     * @param defaultSet the new default
-     */
-    protected void fireDefaultChangedEvent(final ChangeSet oldSet, final ChangeSet defaultSet) {
-    	if (initializing)
-    		return;
-        Object[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-            SafeRunner.run(new ISafeRunnable() {
-                @Override
+	/**
+	 * Method which allows subclasses to notify listeners that the default
+	 * set has changed.
+	 * @param oldSet the previous default
+	 * @param defaultSet the new default
+	 */
+	protected void fireDefaultChangedEvent(final ChangeSet oldSet, final ChangeSet defaultSet) {
+		if (initializing)
+			return;
+		Object[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
-                    // Exceptions are logged by the platform
-                }
-                @Override
+					// Exceptions are logged by the platform
+				}
+				@Override
 				public void run() throws Exception {
-                    listener.defaultSetChanged(oldSet, defaultSet);
-                }
-            });
-        }
-    }
+					listener.defaultSetChanged(oldSet, defaultSet);
+				}
+			});
+		}
+	}
 
-    /**
-     * Add the set to the list of active sets.
-     * @param set the set to be added
-     */
-    public void add(final ChangeSet set) {
-        if (!contains(set)) {
-        	internalGetSets().add(set);
-            handleSetAdded(set);
-        }
-    }
+	/**
+	 * Add the set to the list of active sets.
+	 * @param set the set to be added
+	 */
+	public void add(final ChangeSet set) {
+		if (!contains(set)) {
+			internalGetSets().add(set);
+			handleSetAdded(set);
+		}
+	}
 
-    /**
-     * Handle the set addition by notifying listeners.
-     * @param set the added set
-     */
+	/**
+	 * Handle the set addition by notifying listeners.
+	 * @param set the added set
+	 */
 	protected void handleSetAdded(final ChangeSet set) {
-    	if (initializing)
-    		return;
+		if (initializing)
+			return;
 		Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
-		    final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-		    SafeRunner.run(new ISafeRunnable() {
-		        @Override
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
-		            // Exceptions are logged by the platform
-		        }
-		        @Override
+					// Exceptions are logged by the platform
+				}
+				@Override
 				public void run() throws Exception {
-		            listener.setAdded(set);
-		        }
-		    });
+					listener.setAdded(set);
+				}
+			});
 		}
 	}
 
-    /**
-     * Remove the set from the list of active sets.
-     * @param set the set to be removed
-     */
-    public void remove(final ChangeSet set) {
-        if (contains(set)) {
-        	internalGetSets().remove(set);
-            handleSetRemoved(set);
-        }
-    }
+	/**
+	 * Remove the set from the list of active sets.
+	 * @param set the set to be removed
+	 */
+	public void remove(final ChangeSet set) {
+		if (contains(set)) {
+			internalGetSets().remove(set);
+			handleSetRemoved(set);
+		}
+	}
 
-    /**
-     * Handle the set removal by notifying listeners.
-     * @param set the removed set
-     */
+	/**
+	 * Handle the set removal by notifying listeners.
+	 * @param set the removed set
+	 */
 	protected void handleSetRemoved(final ChangeSet set) {
-    	if (initializing)
-    		return;
+		if (initializing)
+			return;
 		Object[] listeners = getListeners();
 		for (int i = 0; i < listeners.length; i++) {
-		    final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-		    SafeRunner.run(new ISafeRunnable() {
-		        @Override
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
-		            // Exceptions are logged by the platform
-		        }
-		        @Override
+					// Exceptions are logged by the platform
+				}
+				@Override
 				public void run() throws Exception {
-		            listener.setRemoved(set);
-		        }
-		    });
+					listener.setRemoved(set);
+				}
+			});
 		}
 	}
 
-    /**
-     * Return whether the manager contains the given commit set
-     * @param set the commit set being tested
-     * @return whether the set is contained in the manager's list of active sets
-     */
-    public boolean contains(ChangeSet set) {
-        return internalGetSets().contains(set);
-    }
+	/**
+	 * Return whether the manager contains the given commit set
+	 * @param set the commit set being tested
+	 * @return whether the set is contained in the manager's list of active sets
+	 */
+	public boolean contains(ChangeSet set) {
+		return internalGetSets().contains(set);
+	}
 
-    /**
-     * Add the listener to the set of registered listeners.
-     * @param listener the listener to be added
-     */
-    public void addListener(IChangeSetChangeListener listener) {
-        listeners.add(listener);
-    }
+	/**
+	 * Add the listener to the set of registered listeners.
+	 * @param listener the listener to be added
+	 */
+	public void addListener(IChangeSetChangeListener listener) {
+		listeners.add(listener);
+	}
 
-    /**
-     * Remove the listener from the set of registered listeners.
-     * @param listener the listener to remove
-     */
-    public void removeListener(IChangeSetChangeListener listener) {
-        listeners.remove(listener);
-    }
+	/**
+	 * Remove the listener from the set of registered listeners.
+	 * @param listener the listener to remove
+	 */
+	public void removeListener(IChangeSetChangeListener listener) {
+		listeners.remove(listener);
+	}
 
-    /**
-     * Return the list of active commit sets.
-     * @return the list of active commit sets
-     */
-    public ChangeSet[] getSets() {
-        Set<ChangeSet> sets = internalGetSets();
+	/**
+	 * Return the list of active commit sets.
+	 * @return the list of active commit sets
+	 */
+	public ChangeSet[] getSets() {
+		Set<ChangeSet> sets = internalGetSets();
 		return sets.toArray(new ChangeSet[sets.size()]);
-    }
+	}
 
-    /**
-     * Dispose of any resources maintained by the manager
-     */
-    public void dispose() {
-        // Nothing to do
-    }
+	/**
+	 * Dispose of any resources maintained by the manager
+	 */
+	public void dispose() {
+		// Nothing to do
+	}
 
-    /**
-     * Fire resource change notifications to the listeners.
-     * @param changeSet
-     * @param allAffectedResources
-     */
-    protected void fireResourcesChangedEvent(final ChangeSet changeSet, final IPath[] allAffectedResources) {
-    	if (initializing)
-    		return;
-        Object[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-            SafeRunner.run(new ISafeRunnable() {
-                @Override
+	/**
+	 * Fire resource change notifications to the listeners.
+	 * @param changeSet
+	 * @param allAffectedResources
+	 */
+	protected void fireResourcesChangedEvent(final ChangeSet changeSet, final IPath[] allAffectedResources) {
+		if (initializing)
+			return;
+		Object[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			SafeRunner.run(new ISafeRunnable() {
+				@Override
 				public void handleException(Throwable exception) {
-                    // Exceptions are logged by the platform
-                }
-                @Override
+					// Exceptions are logged by the platform
+				}
+				@Override
 				public void run() throws Exception {
-                    listener.resourcesChanged(changeSet, allAffectedResources);
-                }
-            });
-        }
-    }
+					listener.resourcesChanged(changeSet, allAffectedResources);
+				}
+			});
+		}
+	}
 
-    private Set<ChangeSet> internalGetSets() {
-    	if (sets == null) {
-    		sets = Collections.synchronizedSet(new HashSet<>());
-    		try {
-    			initializing = true;
-    			initializeSets();
-    		} finally {
-    			initializing = false;
-    		}
-    	}
-    	return sets;
-    }
+	private Set<ChangeSet> internalGetSets() {
+		if (sets == null) {
+			sets = Collections.synchronizedSet(new HashSet<>());
+			try {
+				initializing = true;
+				initializeSets();
+			} finally {
+				initializing = false;
+			}
+		}
+		return sets;
+	}
 
-    /**
-     * Initialize the sets contained in this manager.
-     * This method is called the first time the sets are accessed.
-     */
+	/**
+	 * Initialize the sets contained in this manager.
+	 * This method is called the first time the sets are accessed.
+	 */
 	protected abstract void initializeSets();
 
 	public boolean isInitialized() {

@@ -82,7 +82,7 @@ public interface ISynchronizePageConfiguration {
 	 * determines which object contribution actions appear in the
 	 * context menu for the page. This defaults to the id of the
 	 * participant but can be set to another id or <code>null</code>
-     * @since 3.1
+	 * @since 3.1
 	 */
 	public static final String P_OBJECT_CONTRIBUTION_ID = TeamUIPlugin.ID +  ".P_OBJECT_CONTRIBUTION_ID"; //$NON-NLS-1$
 
@@ -142,7 +142,7 @@ public interface ISynchronizePageConfiguration {
 	/**
 	 * The id of the sort group that determines where sort
 	 * actions or submenus appear.
-     * @since 3.1
+	 * @since 3.1
 	 */
 	public final static String SORT_GROUP = "sort"; //$NON-NLS-1$
 
@@ -174,7 +174,7 @@ public interface ISynchronizePageConfiguration {
 	 * The id of the group that determines where workbench object contributions
 	 * should appear. This group will only be used if there is an
 	 * OBJECT_CONTRIBUTION_ID set in the configuration
-     * @since 3.1
+	 * @since 3.1
 	 */
 	public static final String OBJECT_CONTRIBUTIONS_GROUP = IWorkbenchActionConstants.MB_ADDITIONS;
 

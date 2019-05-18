@@ -129,28 +129,28 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 	@Override
 	protected ICVSResource[] getCVSArguments(Session session, IResource[] resources) {
 		List<ICVSResource> result = new ArrayList<>();
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
-            try {
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			try {
 				ICVSResource file = session.getLocalRoot().getChild(resource.getProjectRelativePath().toString());
 				result.add(file);
 			} catch (CVSException e) {
 				// Log and continue
 				CVSUIPlugin.log(e);
 			}
-        }
+		}
 
-        return result.toArray(new ICVSResource[result.size()]);
+		return result.toArray(new ICVSResource[result.size()]);
 	}
 	
 	@Override
 	protected IStatus executeCommand(Session session, CVSTeamProvider provider, ICVSResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 		return Command.UPDATE.execute(
-                session,
-                Command.NO_GLOBAL_OPTIONS,
-                getLocalOptions(true),
-                resources,
-                new UpdateListener(new IUpdateMessageListener() {
+				session,
+				Command.NO_GLOBAL_OPTIONS,
+				getLocalOptions(true),
+				resources,
+				new UpdateListener(new IUpdateMessageListener() {
 					@Override
 					public void fileInformation(int type, ICVSFolder parent, String filename) {
 						// Do nothing
@@ -169,7 +169,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 						// Do nothing
 					}
 				}),
-                monitor);
+				monitor);
 	}
 
 	@Override

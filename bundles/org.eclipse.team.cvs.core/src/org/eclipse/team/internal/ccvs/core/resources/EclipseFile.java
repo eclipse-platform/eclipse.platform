@@ -59,12 +59,12 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 	}
 
 	public InputStream getContents() throws CVSException {
- 		try {
+		try {
 			return getIFile().getContents();
 		} catch (CoreException e) {
- 			throw CVSException.wrapException(resource, NLS.bind(CVSMessages.EclipseFile_Problem_accessing_resource, new String[] { resource.getFullPath().toString(), e.getStatus().getMessage() }), e); // 
- 		}
- 	}
+			throw CVSException.wrapException(resource, NLS.bind(CVSMessages.EclipseFile_Problem_accessing_resource, new String[] { resource.getFullPath().toString(), e.getStatus().getMessage() }), e); // 
+		}
+	}
 	
 	@Override
 	public Date getTimeStamp() {
@@ -204,10 +204,10 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 		if (attributes != null) {
 			attributes.setReadOnly(readOnly);
 			try {
-                resource.setResourceAttributes(attributes);
-            } catch (CoreException e) {
-                throw CVSException.wrapException(e);
-            }
+				resource.setResourceAttributes(attributes);
+			} catch (CoreException e) {
+				throw CVSException.wrapException(e);
+			}
 		}
 	}
 
@@ -222,10 +222,10 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 		if (attributes != null) {
 			attributes.setExecutable(executable);
 			try {
-                resource.setResourceAttributes(attributes);
-            } catch (CoreException e) {
-                throw CVSException.wrapException(e);
-            }
+				resource.setResourceAttributes(attributes);
+			} catch (CoreException e) {
+				throw CVSException.wrapException(e);
+			}
 		}
 	}
 
@@ -355,12 +355,12 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 			}
 			
 			try {
-		        // allow editing
-		        setReadOnly(false);
-		    } catch (CVSException e) {
-		        // Just log and keep going
-		        CVSProviderPlugin.log(e);
-		    }
+				// allow editing
+				setReadOnly(false);
+			} catch (CVSException e) {
+				// Just log and keep going
+				CVSProviderPlugin.log(e);
+			}
 		}, monitor);
 		
 	}
@@ -400,12 +400,12 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 			setBaserevInfo(null);
 				
 			try {
-		        // prevent editing
-		        setReadOnly(true);
-		    } catch (CVSException e) {
-		        // Just log and keep going
-		        CVSProviderPlugin.log(e);
-		    }
+				// prevent editing
+				setReadOnly(true);
+			} catch (CVSException e) {
+				// Just log and keep going
+				CVSProviderPlugin.log(e);
+			}
 		}, monitor);
 	}
 
@@ -442,28 +442,28 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 			modificationState = ICVSFile.DIRTY;
 		} else {
 			// cvs commit: commit of a changed file
-		    // cvs update: update of a file whose contents match the server contents
-		    Date timeStamp;
-		    if (commit) {
-		        // This is a commit. Put the file timestamp in the entry
-		        timeStamp = getTimeStamp();
-		    } else {
-		        // This is an update. We need to change the tiemstamp in the
-                // entry file to match the file timestamp returned by Java
-		        timeStamp = oldInfo.getTimeStamp();
-		        if (timeStamp == null) {
-		            timeStamp = getTimeStamp();
-		        } else {
-                    // First, set the timestamp of the file to the timestamp from the entry
-                    // There is a chance this will do nothing as the call to Java on some
-                    // file systems munges the timestamps
-		            setTimeStamp(timeStamp);
-                    // To compensate for the above, reset the timestamp in the entry
-                    // to match the timestamp in the file
-                    timeStamp = getTimeStamp();
-		        }
-		    }
-	        newInfo = new ResourceSyncInfo(entryLine, timeStamp);
+			// cvs update: update of a file whose contents match the server contents
+			Date timeStamp;
+			if (commit) {
+				// This is a commit. Put the file timestamp in the entry
+				timeStamp = getTimeStamp();
+			} else {
+				// This is an update. We need to change the tiemstamp in the
+				// entry file to match the file timestamp returned by Java
+				timeStamp = oldInfo.getTimeStamp();
+				if (timeStamp == null) {
+					timeStamp = getTimeStamp();
+				} else {
+					// First, set the timestamp of the file to the timestamp from the entry
+					// There is a chance this will do nothing as the call to Java on some
+					// file systems munges the timestamps
+					setTimeStamp(timeStamp);
+					// To compensate for the above, reset the timestamp in the entry
+					// to match the timestamp in the file
+					timeStamp = getTimeStamp();
+				}
+			}
+			newInfo = new ResourceSyncInfo(entryLine, timeStamp);
 			
 		}
 		//see bug 106876
@@ -483,23 +483,23 @@ public class EclipseFile extends EclipseResource implements ICVSFile {
 		if (base != null) {
 			setBaserevInfo(null);
 			try {
-                setReadOnly(true);
-            } catch (CVSException e) {
-                // Just log and keep going
-                CVSProviderPlugin.log(e);
-            }
+				setReadOnly(true);
+			} catch (CVSException e) {
+				// Just log and keep going
+				CVSProviderPlugin.log(e);
+			}
 		} else {
-            // Check to see if watch-edit is enabled for the project
-            CVSTeamProvider provider = (CVSTeamProvider)RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId());
-            if (provider != null && provider.isWatchEditEnabled()) {
-                try {
-                    setReadOnly(true);
-                } catch (CVSException e) {
-                    // Just log and keep going
-                    CVSProviderPlugin.log(e);
-                }
-            }
-        }
+			// Check to see if watch-edit is enabled for the project
+			CVSTeamProvider provider = (CVSTeamProvider)RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId());
+			if (provider != null && provider.isWatchEditEnabled()) {
+				try {
+					setReadOnly(true);
+				} catch (CVSException e) {
+					// Just log and keep going
+					CVSProviderPlugin.log(e);
+				}
+			}
+		}
 	}
 
 	@Override

@@ -54,7 +54,7 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.FolderSyncInfo;
 	 * holds a scheduling rule that encompasses the resource and the workspace is
 	 * open for modification.
 	 * @param container the container
-     * @param threadSafeAccess if false, the return value can only be used if not null
+	 * @param threadSafeAccess if false, the return value can only be used if not null
 	 * @param canModifyWorkspace indicates if it is OK to modify the ISycnrhonizer
 	 *
 	 * @return the folder sync info for the folder, or null if none.

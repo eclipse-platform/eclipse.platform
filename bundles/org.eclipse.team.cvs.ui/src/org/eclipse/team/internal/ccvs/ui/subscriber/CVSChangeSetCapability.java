@@ -24,27 +24,27 @@ import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
 public class CVSChangeSetCapability extends ChangeSetCapability {
 
 	@Override
-    public boolean supportsCheckedInChangeSets() {
-        return true;
-    }
+	public boolean supportsCheckedInChangeSets() {
+		return true;
+	}
 
 	@Override
-    public boolean supportsActiveChangeSets() {
-        return getActiveChangeSetManager() != null;
-    }
+	public boolean supportsActiveChangeSets() {
+		return getActiveChangeSetManager() != null;
+	}
 
 	@Override
-    public SyncInfoSetChangeSetCollector createSyncInfoSetChangeSetCollector(ISynchronizePageConfiguration configuration) {
-        return new CVSChangeSetCollector(configuration);
-    }
-    
+	public SyncInfoSetChangeSetCollector createSyncInfoSetChangeSetCollector(ISynchronizePageConfiguration configuration) {
+		return new CVSChangeSetCollector(configuration);
+	}
+	
 	@Override
-    public SynchronizePageActionGroup getActionGroup() {
-        return new CVSChangeSetActionGroup();
-    }
-    
+	public SynchronizePageActionGroup getActionGroup() {
+		return new CVSChangeSetActionGroup();
+	}
+	
 	@Override
-    public boolean enableChangeSetsByDefault() {
-        return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_COMMIT_SET_DEFAULT_ENABLEMENT);
-    }
+	public boolean enableChangeSetsByDefault() {
+		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_COMMIT_SET_DEFAULT_ENABLEMENT);
+	}
 }

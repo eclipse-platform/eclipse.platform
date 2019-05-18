@@ -70,8 +70,8 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 	protected void updateEnablements() {
 	}
 
-    @Override
+	@Override
 	protected String getHelpContextId() {
-        return IHelpContextIds.CONFIGURE_REFRESH_SCHEDULE_DIALOG;
-    }
+		return IHelpContextIds.CONFIGURE_REFRESH_SCHEDULE_DIALOG;
+	}
 }

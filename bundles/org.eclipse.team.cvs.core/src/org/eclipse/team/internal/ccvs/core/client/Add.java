@@ -67,8 +67,8 @@ public class Add extends Command {
 					status = mergeStatus(status, new CVSStatus(IStatus.ERROR, NLS.bind(CVSMessages.Add_invalidParent, new String[] { mFolder.getRelativePath(session.getLocalRoot()) }))); 
 				} else {
 					String repository = info.getRepository() + "/" + mFolder.getName();	 //$NON-NLS-1$
-                    MutableFolderSyncInfo newInfo = info.cloneMutable();
-                    newInfo.setRepository(repository);
+					MutableFolderSyncInfo newInfo = info.cloneMutable();
+					newInfo.setRepository(repository);
 					mFolder.setFolderSyncInfo(newInfo);
 				}
 			}
@@ -77,22 +77,22 @@ public class Add extends Command {
 	}
 	
 	@Override
-    protected ICommandOutputListener getDefaultCommandOutputListener() {
-        return new CommandOutputListener() {
-            public IStatus errorLine(String line,
-                    ICVSRepositoryLocation location, ICVSFolder commandRoot,
-                    IProgressMonitor monitor) {
-                
-                String serverMessage = getServerMessage(line, location);
-                if (serverMessage != null) {
-                    if (serverMessage.indexOf("cvs commit") != -1 && serverMessage.indexOf("add") != -1 && serverMessage.indexOf("permanently") != -1) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        return OK;
-                    if (serverMessage.startsWith("scheduling file") && serverMessage.indexOf("for addition") != -1) //$NON-NLS-1$ //$NON-NLS-2$
-                        return OK;
-                }
-                return super.errorLine(line, location, commandRoot, monitor);
-            }
-        };
-    }
+	protected ICommandOutputListener getDefaultCommandOutputListener() {
+		return new CommandOutputListener() {
+			public IStatus errorLine(String line,
+					ICVSRepositoryLocation location, ICVSFolder commandRoot,
+					IProgressMonitor monitor) {
+				
+				String serverMessage = getServerMessage(line, location);
+				if (serverMessage != null) {
+					if (serverMessage.indexOf("cvs commit") != -1 && serverMessage.indexOf("add") != -1 && serverMessage.indexOf("permanently") != -1) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						return OK;
+					if (serverMessage.startsWith("scheduling file") && serverMessage.indexOf("for addition") != -1) //$NON-NLS-1$ //$NON-NLS-2$
+						return OK;
+				}
+				return super.errorLine(line, location, commandRoot, monitor);
+			}
+		};
+	}
 
 }

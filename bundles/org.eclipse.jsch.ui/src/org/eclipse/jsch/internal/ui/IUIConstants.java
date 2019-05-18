@@ -15,15 +15,15 @@
 package org.eclipse.jsch.internal.ui;
 
 public interface IUIConstants{
-  public final String PREFIX=JSchUIPlugin.ID+"."; //$NON-NLS-1$
+	public final String PREFIX=JSchUIPlugin.ID+"."; //$NON-NLS-1$
 
-  // image path
-  public final String ICON_PATH="$nl$/icons/full/"; //$NON-NLS-1$
+	// image path
+	public final String ICON_PATH="$nl$/icons/full/"; //$NON-NLS-1$
 
-  // preferences
-  public final String PREF_FIRST_STARTUP="pref_first_startup"; //$NON-NLS-1$
+	// preferences
+	public final String PREF_FIRST_STARTUP="pref_first_startup"; //$NON-NLS-1$
 
-  // images
-  public final String IMG_KEY_LOCK="wizban/keylock.gif"; //$NON-NLS-1$
+	// images
+	public final String IMG_KEY_LOCK="wizban/keylock.gif"; //$NON-NLS-1$
 
 }

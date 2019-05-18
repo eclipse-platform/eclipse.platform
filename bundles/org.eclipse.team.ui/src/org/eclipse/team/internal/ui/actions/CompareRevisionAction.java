@@ -93,7 +93,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		}
 
 		if (file1 == null || file2 == null ||
-		   !file1.exists() || !file2.exists()){
+			!file1.exists() || !file2.exists()){
 			MessageDialog.openError(page.getSite().getShell(), TeamUIMessages.OpenRevisionAction_DeletedRevTitle, TeamUIMessages.CompareRevisionAction_DeleteCompareMessage);
 			return;
 		}
@@ -113,7 +113,7 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		}
 		ITypedElement right = new FileRevisionTypedElement(file2, getLocalEncoding());
 
-	    openInCompare(left, right);
+		openInCompare(left, right);
 	}
 
 	private String getLocalEncoding() {

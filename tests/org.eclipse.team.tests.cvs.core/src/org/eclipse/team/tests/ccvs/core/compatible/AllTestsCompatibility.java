@@ -22,7 +22,7 @@ public class AllTestsCompatibility extends TestSuite {
 		suite.addTest(BasicTest.suite());
 		suite.addTest(ConflictTest.suite());
 		suite.addTest(ModuleTest.suite());
-    	return new CompatibleTestSetup(suite);
+		return new CompatibleTestSetup(suite);
 	}	
 	
 	public AllTestsCompatibility(String name) {

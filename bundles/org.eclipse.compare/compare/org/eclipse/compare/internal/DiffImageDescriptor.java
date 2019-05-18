@@ -133,7 +133,7 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 				/* && i1.palette == i2.palette */
 				&& i1.transparentPixel == i2.transparentPixel
 				&& i1.maskPad == i2.maskPad
-	            && i1.alpha == i2.alpha
+				&& i1.alpha == i2.alpha
 				&& i1.type == i2.type && i1.x == i2.x && i1.y == i2.y
 				&& i1.disposalMethod == i2.disposalMethod && i1.delayTime == i2.delayTime
 				&& equals(i1.data,i2.data) && equals(i1.maskData, i2.maskData)

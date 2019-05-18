@@ -24,7 +24,7 @@ import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 	
 	private RadioGroupFieldEditor promptEditor;
-    private RadioGroupFieldEditor updateEditor;
+	private RadioGroupFieldEditor updateEditor;
 	private RadioGroupFieldEditor actionEditor;
 	private IPreferenceStore store;
 
@@ -56,7 +56,7 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 			CVSUIMessages.WatchEditPreferencePage_validateEditSaveAction, 
 			1,
 			new String[][] {{CVSUIMessages.WatchEditPreferencePage_edit, ICVSUIConstants.PREF_EDIT_PROMPT_EDIT},
-                            {CVSUIMessages.WatchEditPreferencePage_editInBackground, ICVSUIConstants.PREF_EDIT_IN_BACKGROUND},
+							{CVSUIMessages.WatchEditPreferencePage_editInBackground, ICVSUIConstants.PREF_EDIT_IN_BACKGROUND},
 							{CVSUIMessages.WatchEditPreferencePage_highjack, ICVSUIConstants.PREF_EDIT_PROMPT_HIGHJACK},
 							}, 	// 
 			getFieldEditorParent(), true);
@@ -71,20 +71,20 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 							{CVSUIMessages.WatchEditPreferencePage_neverPrompt, ICVSUIConstants.PREF_EDIT_PROMPT_NEVER}, 
 							},	// 
 			getFieldEditorParent(), true);
-        
-        updateEditor = new RadioGroupFieldEditor(
-                ICVSUIConstants.PREF_UPDATE_PROMPT,
-                CVSUIMessages.WatchEditPreferencePage_updatePrompt, 
-                1,
-                new String[][] {{CVSUIMessages.WatchEditPreferencePage_autoUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_AUTO}, 
-                                {CVSUIMessages.WatchEditPreferencePage_promptUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_IF_OUTDATED}, 
-                                {CVSUIMessages.WatchEditPreferencePage_neverUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_NEVER}, 
-                                },  // 
-                getFieldEditorParent(), true);
-        
+		
+		updateEditor = new RadioGroupFieldEditor(
+				ICVSUIConstants.PREF_UPDATE_PROMPT,
+				CVSUIMessages.WatchEditPreferencePage_updatePrompt, 
+				1,
+				new String[][] {{CVSUIMessages.WatchEditPreferencePage_autoUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_AUTO}, 
+								{CVSUIMessages.WatchEditPreferencePage_promptUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_IF_OUTDATED}, 
+								{CVSUIMessages.WatchEditPreferencePage_neverUpdate, ICVSUIConstants.PREF_UPDATE_PROMPT_NEVER}, 
+								},  // 
+				getFieldEditorParent(), true);
+		
 		store = getCVSPreferenceStore();
 		addField(promptEditor);
-        addField(updateEditor);
+		addField(updateEditor);
 	}
 
 	private boolean isEditEnabled() {
@@ -106,10 +106,10 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getSource() == actionEditor) {
-            boolean enabled = event.getNewValue().equals(ICVSUIConstants.PREF_EDIT_PROMPT_EDIT);
+			boolean enabled = event.getNewValue().equals(ICVSUIConstants.PREF_EDIT_PROMPT_EDIT);
 			promptEditor.setEnabled(enabled, getFieldEditorParent());
-            updateEditor.setEnabled(enabled, getFieldEditorParent());
-        }
+			updateEditor.setEnabled(enabled, getFieldEditorParent());
+		}
 		super.propertyChange(event);
 	}
 
@@ -117,6 +117,6 @@ public class WatchEditPreferencePage extends CVSFieldEditorPreferencePage {
 	protected void initialize() {
 		super.initialize();
 		promptEditor.setEnabled(isEditEnabled(), getFieldEditorParent());
-        updateEditor.setEnabled(isEditEnabled(), getFieldEditorParent());
+		updateEditor.setEnabled(isEditEnabled(), getFieldEditorParent());
 	}
 }

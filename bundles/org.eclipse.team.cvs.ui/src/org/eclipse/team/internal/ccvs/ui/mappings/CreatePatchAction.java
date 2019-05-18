@@ -50,7 +50,7 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		}
 		return getSynchronizationContext().getDiffTree().countFor(IThreeWayDiff.CONFLICTING, IThreeWayDiff.DIRECTION_MASK) > 0;
 	}
-    
+	
 	private IResource[] getVisibleResources(ResourceTraversal[] traversals) {
 		final Set resources = new HashSet();
 		final IResourceDiffTree diffTree = getSynchronizationContext().getDiffTree();
@@ -69,14 +69,14 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		return (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
 
-    @Override
+	@Override
 	protected String getBundleKeyPrefix() {
-    	return "GenerateDiffFileAction."; //$NON-NLS-1$
-    }
-    
-    @Override
+		return "GenerateDiffFileAction."; //$NON-NLS-1$
+	}
+	
+	@Override
 	public void execute() {
-    	final ResourceTraversal [][] traversals = new ResourceTraversal[][] { null };
+		final ResourceTraversal [][] traversals = new ResourceTraversal[][] { null };
 		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 				try {
@@ -98,7 +98,7 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 				GenerateDiffFileWizard.run(getConfiguration().getSite().getPart(), resources, false);
 			}
 		}
-    }
+	}
 
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {

@@ -30,8 +30,8 @@ public class LogEntry extends PlatformObject implements ILogEntry {
 	private String state;
 	private CVSTag[] tags;
 	private CVSTag[] branches;
-    private String[] revisions;
-    
+	private String[] revisions;
+	
 	/*
 	 * Flatten the text in the multi-line comment
 	 */

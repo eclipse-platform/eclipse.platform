@@ -300,7 +300,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		pageLink.setLayoutData(label.getLayoutData());	
 		pageLink.setText(CVSUIMessages.RepositoryEncodingPropertyPage_4);
 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.REPOSITORY_ENCODING_PROPERTY_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.REPOSITORY_ENCODING_PROPERTY_PAGE);
 		Dialog.applyDialogFont(parent);
 		return composite;
 	}

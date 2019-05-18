@@ -20,11 +20,11 @@ package org.eclipse.team.internal.ui.synchronize;
  */
 public interface IChangeSetProvider {
 
-    /**
-     * Return the change set capability for this participant or <code>null</code>
-     * if change sets are not supported.
-     * @return the change set capability for this participant
-     * @since 3.1
-     */
-    public ChangeSetCapability getChangeSetCapability();
+	/**
+	 * Return the change set capability for this participant or <code>null</code>
+	 * if change sets are not supported.
+	 * @return the change set capability for this participant
+	 * @since 3.1
+	 */
+	public ChangeSetCapability getChangeSetCapability();
 }

@@ -80,8 +80,8 @@ public class CVSDateFormatter {
 	 * Timezone string is of the following format: [-|+]MMSS
 	 */
 	static private TimeZone getTimeZone(String dateFromServer) {
-	    if (dateFromServer.lastIndexOf("0000") != -1)  //$NON-NLS-1$
-	        return TimeZone.getTimeZone("GMT");//$NON-NLS-1$ 
+		if (dateFromServer.lastIndexOf("0000") != -1)  //$NON-NLS-1$
+			return TimeZone.getTimeZone("GMT");//$NON-NLS-1$ 
 		String tz = null;
 		StringBuffer resultTz = new StringBuffer("GMT");//$NON-NLS-1$
 		if (dateFromServer.indexOf("-") != -1) {//$NON-NLS-1$

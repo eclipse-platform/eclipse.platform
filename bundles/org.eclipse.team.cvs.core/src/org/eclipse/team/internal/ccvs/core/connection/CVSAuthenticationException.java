@@ -25,7 +25,7 @@ public class CVSAuthenticationException extends CVSException {
 	
 	private int retryStatus = 0;
 
-    /**
+	/**
 	 * Code indicating that authentication can be retried after 
 	 * prompting the user for corrected authentication information
 	 */
@@ -67,7 +67,7 @@ public class CVSAuthenticationException extends CVSException {
 		this(new CVSStatus(IStatus.ERROR, CVSStatus.AUTHENTICATION_FAILURE,NLS.bind(CVSMessages.CVSAuthenticationException_detail, (new Object[] { detail })),cvsLocation)); //
 		this.retryStatus = retryStatus;
 	}	
-    
+	
 	/**
 	 * Creates a new <code>CVSAuthenticationException</code>
 	 * 
@@ -76,10 +76,10 @@ public class CVSAuthenticationException extends CVSException {
 	 * @param the location of the CVS server
 	 * @param the exception 
 	 */	
-    public CVSAuthenticationException(String detail, int retryStatus,ICVSRepositoryLocation cvsLocation, Exception e) {
-        this(new CVSStatus(IStatus.ERROR, CVSStatus.AUTHENTICATION_FAILURE , NLS.bind(CVSMessages.CVSAuthenticationException_detail, (new Object[] { detail })), e, cvsLocation)); //
-        this.retryStatus = retryStatus;
-    }
+	public CVSAuthenticationException(String detail, int retryStatus,ICVSRepositoryLocation cvsLocation, Exception e) {
+		this(new CVSStatus(IStatus.ERROR, CVSStatus.AUTHENTICATION_FAILURE , NLS.bind(CVSMessages.CVSAuthenticationException_detail, (new Object[] { detail })), e, cvsLocation)); //
+		this.retryStatus = retryStatus;
+	}
 
 	public int getRetryStatus() {
 		return retryStatus;

@@ -291,13 +291,13 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	public final ISynchronizePageConfiguration createPageConfiguration() {
 		SynchronizePageConfiguration configuration = new SynchronizePageConfiguration(this);
 		if (isViewerContributionsSupported()) {
-		    configuration.setProperty(ISynchronizePageConfiguration.P_OBJECT_CONTRIBUTION_ID, getId());
+			configuration.setProperty(ISynchronizePageConfiguration.P_OBJECT_CONTRIBUTION_ID, getId());
 		}
 		initializeConfiguration(configuration);
 		return configuration;
 	}
 
-    /**
+	/**
 	 * This method is invoked after a page configuration is created but before it is returned by the
 	 * <code>createPageConfiguration</code> method. Subclasses can implement this method to
 	 * tailor the configuration in ways appropriate to the participant.
@@ -323,13 +323,13 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 */
 	@Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
-	    SyncInfo sync = getSyncInfo(element);
-	    if (sync != null)
-	        Utils.updateLabels(sync, config, monitor);
-	    if (element instanceof SyncInfoModelElement) {
+		SyncInfo sync = getSyncInfo(element);
+		if (sync != null)
+			Utils.updateLabels(sync, config, monitor);
+		if (element instanceof SyncInfoModelElement) {
 			SyncInfoModelElement node = (SyncInfoModelElement)element;
-            (node).cacheContents(monitor);
-	    }
+			(node).cacheContents(monitor);
+		}
 	}
 
 	/*
@@ -339,16 +339,16 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * @return the sync info for the element or <code>null</code>
 	 */
 	private SyncInfo getSyncInfo(ISynchronizeModelElement element) {
-	    if (element instanceof IAdaptable) {
-		    return ((IAdaptable)element).getAdapter(SyncInfo.class);
-	    }
-	    return null;
+		if (element instanceof IAdaptable) {
+			return ((IAdaptable)element).getAdapter(SyncInfo.class);
+		}
+		return null;
 	}
 
-    @Override
+	@Override
 	public PreferencePage[] getPreferencePages() {
-        return new PreferencePage[] { new SyncViewerPreferencePage() };
-    }
+		return new PreferencePage[] { new SyncViewerPreferencePage() };
+	}
 
 	/**
 	 * Return whether this participant supports the contribution of actions to
@@ -377,11 +377,11 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	 * </pre>
 	 *
 	 *
-     * @return whether this participant supports the contribution of actions to
+	 * @return whether this participant supports the contribution of actions to
 	 * the context menu using the <code>org.eclipse.ui.popupMenus</code> extension point
-     * @since 3.1
-     */
-    protected boolean isViewerContributionsSupported() {
-        return false;
-    }
+	 * @since 3.1
+	 */
+	protected boolean isViewerContributionsSupported() {
+		return false;
+	}
 }

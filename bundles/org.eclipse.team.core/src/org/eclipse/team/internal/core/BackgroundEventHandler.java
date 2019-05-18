@@ -101,7 +101,7 @@ public abstract class BackgroundEventHandler {
 	 * General event class. The type is specific to subclasses.
 	 */
 	public static class Event {
-	    private int type;
+		private int type;
 		public Event(int type) {
 			this.type = type;
 		}
@@ -116,7 +116,7 @@ public abstract class BackgroundEventHandler {
 			return buffer.toString();
 		}
 		public IResource getResource() {
-		    return null;
+			return null;
 		}
 		protected String getTypeString() {
 			return String.valueOf(type);
@@ -130,7 +130,7 @@ public abstract class BackgroundEventHandler {
 		private IResource resource;
 		private int depth;
 		public ResourceEvent(IResource resource, int type, int depth) {
-		    super(type);
+			super(type);
 			this.resource = resource;
 			this.depth = depth;
 		}
@@ -249,14 +249,14 @@ public abstract class BackgroundEventHandler {
 	/**
 	 * Return the family that the background job for this
 	 * event handler belongs to.
-     * @return the family that the background job for this
+	 * @return the family that the background job for this
 	 * event handler belongs to
-     */
-    protected Object getJobFamiliy() {
-        return null;
-    }
+	 */
+	protected Object getJobFamiliy() {
+		return null;
+	}
 
-    /**
+	/**
 	 * This method is invoked when the processing job completes. The
 	 * default behavior of the handler is to restart the job if the queue
 	 * is no longer empty and to clear the queue if the handler was shut down.
@@ -467,28 +467,28 @@ public abstract class BackgroundEventHandler {
 		return WAIT_DELAY;
 	}
 
-    /**
+	/**
 	 * Return the value that is used to determine how often
 	 * the events are dispatched (i.e. how often the UI is
 	 * updated) for the first 3 cycles. The default value is 1.5 seconds.
 	 * After the first 3 cycles, a longer delay is used
-     * @return the dispatch delay used for the first 3 cycles.
-     */
-    protected long getShortDispatchDelay() {
-        return DISPATCH_DELAY;
-    }
+	 * @return the dispatch delay used for the first 3 cycles.
+	 */
+	protected long getShortDispatchDelay() {
+		return DISPATCH_DELAY;
+	}
 
 	/**
 	 * Return the value that is used to determine how often
 	 * the events are dispatched (i.e. how often the UI is
 	 * updated) after the first 3 cycles. The default value is 10 seconds.
-     * @return the dispatch delay used after the first 3 cycles.
-     */
-    protected long getLongDispatchDelay() {
-        return LONG_DISPATCH_DELAY;
-    }
+	 * @return the dispatch delay used after the first 3 cycles.
+	 */
+	protected long getLongDispatchDelay() {
+		return LONG_DISPATCH_DELAY;
+	}
 
-    /**
+	/**
 	 * Handle the exception by recording it in the errors list.
 	 * @param e
 	 */

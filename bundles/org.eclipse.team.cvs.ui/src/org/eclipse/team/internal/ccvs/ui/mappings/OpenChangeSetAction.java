@@ -45,25 +45,25 @@ import com.ibm.icu.text.DateFormat;
 
 class OpenChangeSetAction extends ResourceModelParticipantAction {
 
-    protected OpenChangeSetAction(ISynchronizePageConfiguration configuration) {
-        super(CVSUIMessages.OpenCommitSetAction_20, configuration);
+	protected OpenChangeSetAction(ISynchronizePageConfiguration configuration) {
+		super(CVSUIMessages.OpenCommitSetAction_20, configuration);
 		ISelection selection = configuration.getSite().getSelectionProvider().getSelection();
 		if (selection != null)
 			selectionChanged(selection);
-    }
-    
-    private ChangeSet getChangeSet(IStructuredSelection selection) {
-        // First, check to see if a change set is selected directly
-        if (selection.size() == 1) {
-            Object o = selection.getFirstElement();
-            if (o instanceof IAdaptable) {
-                ChangeSet set = ((IAdaptable)o).getAdapter(ChangeSet.class);
-                if (set != null)
-                    return set;
-            }
-        }
-        // Failing that, check to see if all the selected elements and their children are in the same change set
-        if (selection instanceof TreeSelection) {
+	}
+	
+	private ChangeSet getChangeSet(IStructuredSelection selection) {
+		// First, check to see if a change set is selected directly
+		if (selection.size() == 1) {
+			Object o = selection.getFirstElement();
+			if (o instanceof IAdaptable) {
+				ChangeSet set = ((IAdaptable)o).getAdapter(ChangeSet.class);
+				if (set != null)
+					return set;
+			}
+		}
+		// Failing that, check to see if all the selected elements and their children are in the same change set
+		if (selection instanceof TreeSelection) {
 			TreeSelection ts = (TreeSelection) selection;
 			TreePath[] paths = ts.getPaths();
 			if (paths.length > 0) {
@@ -79,8 +79,8 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 				return set;
 			}
 		}
-        return null;
-    }
+		return null;
+	}
 
 	private ChangeSet getChangeSet(TreePath treePath) {
 		Object test = treePath.getFirstSegment();
@@ -90,70 +90,70 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 		}
 		return null;
 	}
-    
+	
 	@Override
 	protected boolean isEnabledForSelection(IStructuredSelection selection) {
-        // The selection only contains appropriate files so
-        // only enable if the selection is contained within a single change set
-        ChangeSet set = getChangeSet(selection);
-        return set != null;
+		// The selection only contains appropriate files so
+		// only enable if the selection is contained within a single change set
+		ChangeSet set = getChangeSet(selection);
+		return set != null;
 	}
 
-    public void openEditor(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        try {
+	public void openEditor(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		try {
 			IDiff[] diffs = getSelectedDiffs(monitor);
 			if (diffs.length > 0) {
-			    ICVSRepositoryLocation location = getLocation(diffs[0]);
-			    if (location == null) {
-			        throw new CVSException(CVSUIMessages.OpenCommitSetAction_21); 
-			    }
-			    CompareTreeBuilder builder = new CompareTreeBuilder(location, null, null);
-			    if (buildTrees(builder, diffs)) {
-			        builder.cacheContents(monitor);
-			        builder.openCompareEditor(getConfiguration().getSite().getPart().getSite().getPage(), getCompareTitle(), getCompareToolTip());
-			    }
+				ICVSRepositoryLocation location = getLocation(diffs[0]);
+				if (location == null) {
+					throw new CVSException(CVSUIMessages.OpenCommitSetAction_21); 
+				}
+				CompareTreeBuilder builder = new CompareTreeBuilder(location, null, null);
+				if (buildTrees(builder, diffs)) {
+					builder.cacheContents(monitor);
+					builder.openCompareEditor(getConfiguration().getSite().getPart().getSite().getPage(), getCompareTitle(), getCompareToolTip());
+				}
 			}
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		}
-    }
-    
-    private IDiff[] getSelectedDiffs(IProgressMonitor monitor) throws CoreException {
-    	ResourceTraversal[] traversals = getResourceTraversals(getStructuredSelection(), monitor);
-    	DiffChangeSet set = (DiffChangeSet)getChangeSet(getStructuredSelection());
+	}
+	
+	private IDiff[] getSelectedDiffs(IProgressMonitor monitor) throws CoreException {
+		ResourceTraversal[] traversals = getResourceTraversals(getStructuredSelection(), monitor);
+		DiffChangeSet set = (DiffChangeSet)getChangeSet(getStructuredSelection());
 		return set.getDiffTree().getDiffs(traversals);
 	}
 
 	/*
-     * Build the trees that will be compared
-     */
-    private boolean buildTrees(CompareTreeBuilder builder, IDiff[] diffs) {
-    	for (int i = 0; i < diffs.length; i++) {
+	 * Build the trees that will be compared
+	 */
+	private boolean buildTrees(CompareTreeBuilder builder, IDiff[] diffs) {
+		for (int i = 0; i < diffs.length; i++) {
 			IDiff diff = diffs[i];
 			if (isFileChange(diff)) {
-	            IFileRevision remoteRevision = Utils.getRemote(diff);
-	            IResourceVariant remote = SyncInfoToDiffConverter.asResourceVariant(remoteRevision);
-	            if (remote == null) {
-	                IFileRevision predecessorRevision = Utils.getBase(diff);
-	                IResourceVariant predecessor = SyncInfoToDiffConverter.asResourceVariant(predecessorRevision);
-	                if (predecessor instanceof ICVSRemoteFile) {
-	                    builder.addToTrees((ICVSRemoteFile)predecessor, null);
-	                }
-	            } else if (remote instanceof ICVSRemoteFile) {
-	                try {
-	                    ICVSRemoteFile predecessor = getImmediatePredecessor(remote);
-	                    builder.addToTrees(predecessor, (ICVSRemoteFile)remote);
-	                } catch (TeamException e) {
-	                    Utils.handle(e);
-	                    return false;
-	                }
-	            }
+				IFileRevision remoteRevision = Utils.getRemote(diff);
+				IResourceVariant remote = SyncInfoToDiffConverter.asResourceVariant(remoteRevision);
+				if (remote == null) {
+					IFileRevision predecessorRevision = Utils.getBase(diff);
+					IResourceVariant predecessor = SyncInfoToDiffConverter.asResourceVariant(predecessorRevision);
+					if (predecessor instanceof ICVSRemoteFile) {
+						builder.addToTrees((ICVSRemoteFile)predecessor, null);
+					}
+				} else if (remote instanceof ICVSRemoteFile) {
+					try {
+						ICVSRemoteFile predecessor = getImmediatePredecessor(remote);
+						builder.addToTrees(predecessor, (ICVSRemoteFile)remote);
+					} catch (TeamException e) {
+						Utils.handle(e);
+						return false;
+					}
+				}
 			}
-        }
-        return true;
-    }
-    
-    private boolean isFileChange(IDiff diff) {
+		}
+		return true;
+	}
+	
+	private boolean isFileChange(IDiff diff) {
 		IResource resource = ResourceDiffTree.getResourceFor(diff);
 		if (resource.getType() == IResource.FILE) {
 			if (diff instanceof IThreeWayDiff) {
@@ -166,9 +166,9 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 	}
 
 	private ICVSRepositoryLocation getLocation(IDiff diff) {
-    	IResource resource = ResourceDiffTree.getResourceFor(diff);
-    	RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
-    	if (provider instanceof CVSTeamProvider) {
+		IResource resource = ResourceDiffTree.getResourceFor(diff);
+		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
+		if (provider instanceof CVSTeamProvider) {
 			CVSTeamProvider ctp = (CVSTeamProvider) provider;
 			try {
 				return ctp.getCVSWorkspaceRoot().getRemoteLocation();
@@ -176,46 +176,46 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 				CVSUIPlugin.log(e);
 			}
 		}
-        return null;
-    }
-    
-    private String getCompareTitle() {
-        ChangeSet set = getChangeSet(getStructuredSelection());
-        if (set instanceof CVSCheckedInChangeSet) {
-        	CVSCheckedInChangeSet cics = (CVSCheckedInChangeSet)set;
-            String date = DateFormat.getDateTimeInstance().format(cics.getDate());
-            return NLS.bind(CVSUIMessages.OpenChangeSetAction_0, new String[] {cics.getAuthor(), date});
-        }
-        return CVSUIMessages.OpenChangeSetAction_1;
-    }
-    
-    private String getCompareToolTip() {
-    	ChangeSet set = getChangeSet(getStructuredSelection());
-    	if (set != null)
-    		return set.getName();
-    	return null;
-    }
-    
-    private ICVSRemoteFile getImmediatePredecessor(IResourceVariant remote) throws TeamException {
-    	CheckedInChangeSetCollector changeSetCollector = getChangeSetCollector();
-        if (changeSetCollector != null) {
-	        return changeSetCollector.getImmediatePredecessor((ICVSRemoteFile)remote);
-        }
-        return null;
-    }
+		return null;
+	}
+	
+	private String getCompareTitle() {
+		ChangeSet set = getChangeSet(getStructuredSelection());
+		if (set instanceof CVSCheckedInChangeSet) {
+			CVSCheckedInChangeSet cics = (CVSCheckedInChangeSet)set;
+			String date = DateFormat.getDateTimeInstance().format(cics.getDate());
+			return NLS.bind(CVSUIMessages.OpenChangeSetAction_0, new String[] {cics.getAuthor(), date});
+		}
+		return CVSUIMessages.OpenChangeSetAction_1;
+	}
+	
+	private String getCompareToolTip() {
+		ChangeSet set = getChangeSet(getStructuredSelection());
+		if (set != null)
+			return set.getName();
+		return null;
+	}
+	
+	private ICVSRemoteFile getImmediatePredecessor(IResourceVariant remote) throws TeamException {
+		CheckedInChangeSetCollector changeSetCollector = getChangeSetCollector();
+		if (changeSetCollector != null) {
+			return changeSetCollector.getImmediatePredecessor((ICVSRemoteFile)remote);
+		}
+		return null;
+	}
 
-    private CheckedInChangeSetCollector getChangeSetCollector() {
-        return (CheckedInChangeSetCollector)getConfiguration().getProperty(CVSChangeSetCollector.CVS_CHECKED_IN_COLLECTOR);
-    }
-    
-    @Override
+	private CheckedInChangeSetCollector getChangeSetCollector() {
+		return (CheckedInChangeSetCollector)getConfiguration().getProperty(CVSChangeSetCollector.CVS_CHECKED_IN_COLLECTOR);
+	}
+	
+	@Override
 	public void run() {
-    	try {
+		try {
 			PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> openEditor(monitor));
 		} catch (InvocationTargetException e) {
 			Utils.handle(e);
 		} catch (InterruptedException e) {
 			// Ignore
 		}
-    }
+	}
 }

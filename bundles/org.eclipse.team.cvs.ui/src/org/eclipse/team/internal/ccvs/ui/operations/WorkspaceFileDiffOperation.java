@@ -70,7 +70,7 @@ public class WorkspaceFileDiffOperation extends FileDiffOperation {
 						tempFile.delete();
 				}
 			}
-	    }
+		}
 	}
 
 }

@@ -23,11 +23,11 @@ public interface ITagOperation {
 	public abstract void setTag(CVSTag tag);
 	public abstract void run() throws InvocationTargetException, InterruptedException;
 	/**
-     * Return whether the tag operation contains any resource that would be operated on.
-     * @return whether the tag operation contains any resource that would be operated on
+	 * Return whether the tag operation contains any resource that would be operated on.
+	 * @return whether the tag operation contains any resource that would be operated on
 	 */
 	public abstract boolean isEmpty();
 	public abstract void moveTag();
 	public abstract void doNotRecurse();
-    public abstract TagSource getTagSource();
+	public abstract TagSource getTagSource();
 }

@@ -117,7 +117,7 @@ public final class ParticipantPagePane {
 		try {
 			((ISynchronizePage)fPage).init(pageConfiguration.getSite());
 		} catch (PartInitException e1) {
-		   TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.ParticipantPagePane_0, e1);
+			TeamUIPlugin.log(IStatus.ERROR, TeamUIMessages.ParticipantPagePane_0, e1);
 		}
 
 		fPage.createControl(fEditionPane);

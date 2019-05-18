@@ -22,8 +22,8 @@ import org.eclipse.team.ui.synchronize.*;
  */
 public class CVSChangeSetActionGroup extends SynchronizePageActionGroup {
 
-    private OpenChangeSetAction openCommitSet;
-    
+	private OpenChangeSetAction openCommitSet;
+	
 	@Override
 	public void initialize(ISynchronizePageConfiguration configuration) {
 		super.initialize(configuration);
@@ -31,15 +31,15 @@ public class CVSChangeSetActionGroup extends SynchronizePageActionGroup {
 	}
 	
 	@Override
-    public void fillContextMenu(IMenuManager menu) {
-        ISynchronizeParticipant participant = getConfiguration().getParticipant();
-        if (participant instanceof IChangeSetProvider) {  
-            if (((IChangeSetProvider)participant).getChangeSetCapability().enableCheckedInChangeSetsFor(getConfiguration())) {
-        		appendToGroup(
-        				menu, 
-        				ISynchronizePageConfiguration.FILE_GROUP, 
-        				openCommitSet);
-            }
-        }
-    }
+	public void fillContextMenu(IMenuManager menu) {
+		ISynchronizeParticipant participant = getConfiguration().getParticipant();
+		if (participant instanceof IChangeSetProvider) {  
+			if (((IChangeSetProvider)participant).getChangeSetCapability().enableCheckedInChangeSetsFor(getConfiguration())) {
+				appendToGroup(
+						menu, 
+						ISynchronizePageConfiguration.FILE_GROUP, 
+						openCommitSet);
+			}
+		}
+	}
 }

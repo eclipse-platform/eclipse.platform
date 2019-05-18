@@ -23,10 +23,10 @@ import org.eclipse.team.internal.ccvs.core.*;
 
 public class CVSEntryLineTag extends CVSTag {
 	
-    /*
-     * This is the format of a date as it appears in the entry line. The date in an entry
-     * line is always in GMT.
-     */
+	/*
+	 * This is the format of a date as it appears in the entry line. The date in an entry
+	 * line is always in GMT.
+	 */
 	private static final String ENTRY_LINE_DATE_TAG_FORMAT = "yyyy.MM.dd.HH.mm.ss"; //$NON-NLS-1$
 	
 	/*
@@ -62,7 +62,7 @@ public class CVSEntryLineTag extends CVSTag {
 	
 	static synchronized public Date entryLineToDate(String text){
 		try {
-		    entryLineDateTagFormatter.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
+			entryLineDateTagFormatter.setTimeZone(TimeZone.getTimeZone("GMT")); //$NON-NLS-1$
 			return entryLineDateTagFormatter.parse(text);
 		} catch (ParseException e) {
 			CVSProviderPlugin.log(new CVSStatus(IStatus.ERROR, CVSStatus.ERROR, "Tag name " + text + " is not of the expected format " + ENTRY_LINE_DATE_TAG_FORMAT, e)); //$NON-NLS-1$ //$NON-NLS-2$

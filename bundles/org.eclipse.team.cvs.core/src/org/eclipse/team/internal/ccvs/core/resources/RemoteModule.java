@@ -54,11 +54,11 @@ public class RemoteModule extends RemoteFolder {
 		}
 	}
 	
-    private static ICVSFolder getRemoteRootFolder(ICVSRepositoryLocation repository) {
-        return new RemoteFolder(null, repository, "/", null); //$NON-NLS-1$
-    }
+	private static ICVSFolder getRemoteRootFolder(ICVSRepositoryLocation repository) {
+		return new RemoteFolder(null, repository, "/", null); //$NON-NLS-1$
+	}
 
-    /**
+	/**
 	 * Create a set of RemoteModules from the provided module definition strings returned from the server
 	 * 
 	 * At the moment, we are very restrictive on the types of modules we support.
@@ -191,7 +191,7 @@ public class RemoteModule extends RemoteFolder {
 								// XXX Unsupported for now
 								expandable = false;
 							} else {
-								 referencedFolders.add(child);
+								referencedFolders.add(child);
 							}
 						}
 					}

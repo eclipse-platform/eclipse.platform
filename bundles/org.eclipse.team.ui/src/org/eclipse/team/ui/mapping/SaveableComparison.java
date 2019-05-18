@@ -34,10 +34,10 @@ import org.eclipse.ui.Saveable;
  */
 public abstract class SaveableComparison extends Saveable {
 
-    /**
-     * The property id for <code>isDirty</code>.
-     */
-    public static final int PROP_DIRTY = IWorkbenchPartConstants.PROP_DIRTY;
+	/**
+	 * The property id for <code>isDirty</code>.
+	 */
+	public static final int PROP_DIRTY = IWorkbenchPartConstants.PROP_DIRTY;
 
 	private boolean dirty;
 	private ListenerList<IPropertyListener> listeners = new ListenerList<>(ListenerList.IDENTITY);

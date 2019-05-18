@@ -379,7 +379,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 *
 	 * @since 3.1
 	 */
-    public ISynchronizePageConfiguration getConfiguration() {
-        return configuration;
-    }
+	public ISynchronizePageConfiguration getConfiguration() {
+		return configuration;
+	}
 }

@@ -166,12 +166,12 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		} catch(CoreException e) {
 			handleException(element, e);
 		} catch (IllegalStateException e) {
-		    // This is thrown by Core if the workspace is in an illegal state
-		    // If we are not active, ignore it. Otherwise, propagate it.
-		    // (see bug 78303)
-		    if (Platform.getBundle(CVSUIPlugin.ID).getState() == Bundle.ACTIVE) {
-		        throw e;
-		    }
+			// This is thrown by Core if the workspace is in an illegal state
+			// If we are not active, ignore it. Otherwise, propagate it.
+			// (see bug 78303)
+			if (Platform.getBundle(CVSUIPlugin.ID).getState() == Bundle.ACTIVE) {
+				throw e;
+			}
 		}
 	}
 
@@ -185,29 +185,29 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/*
 	 * Return whether any of the projects of the mapping are mapped to CVS
 	 */
-    private boolean isMappedToCVS(ResourceMapping mapping) {
-        IProject[] projects = mapping.getProjects();
-        boolean foundOne = false;
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
-            if (project != null) {
-	            RepositoryProvider provider = RepositoryProvider.getProvider(project);
+	private boolean isMappedToCVS(ResourceMapping mapping) {
+		IProject[] projects = mapping.getProjects();
+		boolean foundOne = false;
+		for (int i = 0; i < projects.length; i++) {
+			IProject project = projects[i];
+			if (project != null) {
+				RepositoryProvider provider = RepositoryProvider.getProvider(project);
 				if (provider instanceof CVSTeamProvider) {
 					foundOne = true;
-	            } else if (provider != null) {
-	            	return false;
-	            }
-            }
-        }
-        return foundOne;
-    }
-    
-    public static CVSDecoration decorate(Object element, SynchronizationStateTester tester) throws CoreException {
-    	IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
-        CVSDecoration result = new CVSDecoration();
-        
-        // First, decorate the synchronization state
-    	int state = IDiff.NO_CHANGE;
+				} else if (provider != null) {
+					return false;
+				}
+			}
+		}
+		return foundOne;
+	}
+	
+	public static CVSDecoration decorate(Object element, SynchronizationStateTester tester) throws CoreException {
+		IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
+		CVSDecoration result = new CVSDecoration();
+		
+		// First, decorate the synchronization state
+		int state = IDiff.NO_CHANGE;
 		if (isSupervised(element)) {
 			// TODO: Not quite right
 			result.setHasRemote(true);
@@ -217,9 +217,9 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 						: 0, 
 					new NullProgressMonitor());
 			result.setStateFlags(state);
-        } else {
-        	result.setIgnored(true);
-        }
+		} else {
+			result.setIgnored(true);
+		}
 		// Tag
 		if (!result.isIgnored()) {
 			CVSTag tag = getTagToShow(element);
@@ -243,9 +243,9 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 			decorate(resource, result);
 		}
 		tester.elementDecorated(element, result.asTeamStateDescription(null));
-        return result;
-    }
-    
+		return result;
+	}
+	
 	private static boolean isSupervised(Object element) throws CoreException {
 		IResource[] resources = getTraversalRoots(element);
 		for (int i = 0; i < resources.length; i++) {
@@ -342,13 +342,13 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		}
 		if (!cvsDecoration.isIgnored()) {
 			// Dirty
-            if (includeDirtyCheck) {
-    			boolean computeDeepDirtyCheck = store.getBoolean(ICVSUIConstants.PREF_CALCULATE_DIRTY);
-    			int type = resource.getType();
-    			if (type == IResource.FILE || computeDeepDirtyCheck) {
-    				cvsDecoration.setDirty(CVSLightweightDecorator.isDirty(resource));
-    			}
-            }
+			if (includeDirtyCheck) {
+				boolean computeDeepDirtyCheck = store.getBoolean(ICVSUIConstants.PREF_CALCULATE_DIRTY);
+				int type = resource.getType();
+				if (type == IResource.FILE || computeDeepDirtyCheck) {
+					cvsDecoration.setDirty(CVSLightweightDecorator.isDirty(resource));
+				}
+			}
 		}
 		decorate(resource, cvsDecoration);
 		return cvsDecoration;
@@ -462,7 +462,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/*
 	 * Add resource and its parents to the List
 	 */
-	 
+	
 	private void addWithParents(IResource resource, Set resources) {
 		IResource current = resource;
 
@@ -482,7 +482,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	/*
 	 * Update the decorators for every resource in project
 	 */
-	 
+	
 	public void refresh(IProject project) {
 		final List resources = new ArrayList();
 		try {
@@ -597,22 +597,22 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	public void propertyChange(PropertyChangeEvent event) {
 		if (isEventOfInterest(event)) {
 			ensureFontAndColorsCreated(fonts, colors);
-		    refresh();
+			refresh();
 		}	
 	}
 
-    private boolean isEventOfInterest(PropertyChangeEvent event) {
-        String prop = event.getProperty();
-        return prop.equals(TeamUI.GLOBAL_IGNORES_CHANGED) 
-        	|| prop.equals(TeamUI.GLOBAL_FILE_TYPES_CHANGED) 
-        	|| prop.equals(CVSUIPlugin.P_DECORATORS_CHANGED)
+	private boolean isEventOfInterest(PropertyChangeEvent event) {
+		String prop = event.getProperty();
+		return prop.equals(TeamUI.GLOBAL_IGNORES_CHANGED) 
+			|| prop.equals(TeamUI.GLOBAL_FILE_TYPES_CHANGED) 
+			|| prop.equals(CVSUIPlugin.P_DECORATORS_CHANGED)
 			|| prop.equals(CVSDecoratorConfiguration.OUTGOING_CHANGE_BACKGROUND_COLOR)
 			|| prop.equals(CVSDecoratorConfiguration.OUTGOING_CHANGE_FOREGROUND_COLOR)
 			|| prop.equals(CVSDecoratorConfiguration.OUTGOING_CHANGE_FONT)
 			|| prop.equals(CVSDecoratorConfiguration.IGNORED_FOREGROUND_COLOR)
 			|| prop.equals(CVSDecoratorConfiguration.IGNORED_BACKGROUND_COLOR)
 			|| prop.equals(CVSDecoratorConfiguration.IGNORED_FONT);
-    }
+	}
 	
 	private static CVSWorkspaceSubscriber getSubscriber() {
 		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();

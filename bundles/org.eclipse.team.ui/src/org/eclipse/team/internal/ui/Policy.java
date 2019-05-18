@@ -33,19 +33,19 @@ public class Policy {
 	public static boolean DEBUG_DND = false;
 	public static boolean DEBUG_COMPARE_EDITOR_INPUT = false;
 
-    private static String ACTION_BUNDLE = "org.eclipse.team.internal.ui.actions.actions"; //$NON-NLS-1$
-    private static ResourceBundle actionBundle = null;
+	private static String ACTION_BUNDLE = "org.eclipse.team.internal.ui.actions.actions"; //$NON-NLS-1$
+	private static ResourceBundle actionBundle = null;
 
-    /*
-     * Returns a resource bundle, creating one if it none is available.
-     */
-    public static ResourceBundle getActionBundle() {
-        // thread safety
-        ResourceBundle tmpBundle = actionBundle;
-        if (tmpBundle != null)
-            return tmpBundle;
-        return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
-    }
+	/*
+	 * Returns a resource bundle, creating one if it none is available.
+	 */
+	public static ResourceBundle getActionBundle() {
+		// thread safety
+		ResourceBundle tmpBundle = actionBundle;
+		if (tmpBundle != null)
+			return tmpBundle;
+		return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
+	}
 
 	static final DebugOptionsListener DEBUG_OPTIONS_LISTENER = options -> {
 		boolean DEBUG = options.getBooleanOption(TeamUIPlugin.ID + "/debug", false); //$NON-NLS-1$

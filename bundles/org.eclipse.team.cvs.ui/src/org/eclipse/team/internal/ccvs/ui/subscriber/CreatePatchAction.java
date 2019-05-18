@@ -39,29 +39,29 @@ public class CreatePatchAction extends CVSParticipantAction {
 
 	@Override
 	public void runOperation() {
-        final SyncInfoSet set = getSyncInfoSet();
-        GenerateDiffFileWizard.run(getConfiguration().getSite().getPart(), set.getResources(), false);
-    }
+		final SyncInfoSet set = getSyncInfoSet();
+		GenerateDiffFileWizard.run(getConfiguration().getSite().getPart(), set.getResources(), false);
+	}
 	
 	/*
-     * Return the selected SyncInfo for which this action is enabled.
-     * 
-     * @return the selected SyncInfo for which this action is enabled.
-     */
-    private SyncInfoSet getSyncInfoSet() {
-        IDiffElement [] elements= getFilteredDiffElements();
-        SyncInfoSet filtered = new SyncInfoSet();
-        for (int i = 0; i < elements.length; i++) {
-            IDiffElement e = elements[i];
-            if (e instanceof SyncInfoModelElement) {
-                filtered.add(((SyncInfoModelElement)e).getSyncInfo());
-            }
-        }
-        return filtered;
-    }
-    
-    @Override
+	 * Return the selected SyncInfo for which this action is enabled.
+	 * 
+	 * @return the selected SyncInfo for which this action is enabled.
+	 */
+	private SyncInfoSet getSyncInfoSet() {
+		IDiffElement [] elements= getFilteredDiffElements();
+		SyncInfoSet filtered = new SyncInfoSet();
+		for (int i = 0; i < elements.length; i++) {
+			IDiffElement e = elements[i];
+			if (e instanceof SyncInfoModelElement) {
+				filtered.add(((SyncInfoModelElement)e).getSyncInfo());
+			}
+		}
+		return filtered;
+	}
+	
+	@Override
 	protected String getBundleKeyPrefix() {
-    	return "GenerateDiffFileAction."; //$NON-NLS-1$
-    }
+		return "GenerateDiffFileAction."; //$NON-NLS-1$
+	}
 }

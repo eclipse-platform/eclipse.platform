@@ -63,10 +63,10 @@ public class ListSelectionArea extends DialogArea {
 	@Override
 	public void createArea(Composite parent) {
 
-	    Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 
-        final Composite composite = createComposite(parent, 1, true);
-        
+		final Composite composite = createComposite(parent, 1, true);
+		
 		initializeDialogUnits(composite);
 
 		if (message != null)
@@ -156,7 +156,7 @@ public class ListSelectionArea extends DialogArea {
 	protected List getInitialElementSelections(){
 		return initialSelections;
 	}
-    
+	
 	/**
 	 * Returns the listViewer.
 	 * @return CheckboxTableViewer

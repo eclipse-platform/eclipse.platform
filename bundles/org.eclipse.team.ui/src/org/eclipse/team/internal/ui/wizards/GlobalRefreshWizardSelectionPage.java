@@ -59,7 +59,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  */
 public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDoubleClickListener, ISelectionChangedListener {
 
-    private final static String DEFAULT_SELECTION= TeamUIPlugin.ID + "GlobalRefreshWizardSelectionPage.default_selection"; //$NON-NLS-1$
+	private final static String DEFAULT_SELECTION= TeamUIPlugin.ID + "GlobalRefreshWizardSelectionPage.default_selection"; //$NON-NLS-1$
 
 	private TableViewer fViewer;
 	private IWizard wizard;
@@ -119,25 +119,25 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	}
 
 	/**
-     * Save the page settings into the dialog settings
-     */
-    public void savePageSettings() {
-        if (fViewer.getControl().isDisposed())
-	        return;
+	 * Save the page settings into the dialog settings
+	 */
+	public void savePageSettings() {
+		if (fViewer.getControl().isDisposed())
+			return;
 
-	    final IStructuredSelection selection= fViewer.getStructuredSelection();
-	    final Object selected= selection.getFirstElement();
-	    if (!(selected instanceof SynchronizeWizardDescription))
-	        return;
-	    getDialogSettings().put(DEFAULT_SELECTION, ((SynchronizeWizardDescription)selected).getId());
-    }
+		final IStructuredSelection selection= fViewer.getStructuredSelection();
+		final Object selected= selection.getFirstElement();
+		if (!(selected instanceof SynchronizeWizardDescription))
+			return;
+		getDialogSettings().put(DEFAULT_SELECTION, ((SynchronizeWizardDescription)selected).getId());
+	}
 
 	@Override
 	public void createControl(Composite parent2) {
 		Composite top = new Composite(parent2, SWT.NULL);
 		top.setLayout(new GridLayout());
 		setControl(top);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(top, IHelpContextIds.REFRESH_WIZARD_SELECTION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(top, IHelpContextIds.REFRESH_WIZARD_SELECTION_PAGE);
 
 		Label l = new Label(top, SWT.NULL);
 		l.setText(TeamUIMessages.GlobalRefreshParticipantSelectionPage_3);
@@ -153,10 +153,10 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 		Object toSelect= getDefaultSelection();
 		if (toSelect == null) {
-		    toSelect= fViewer.getElementAt(0);
+			toSelect= fViewer.getElementAt(0);
 		}
 		if (toSelect != null) {
-		    fViewer.setSelection(new StructuredSelection(toSelect), true);
+			fViewer.setSelection(new StructuredSelection(toSelect), true);
 		}
 		fViewer.getTable().setFocus();
 		Dialog.applyDialogFont(parent2);
@@ -164,24 +164,24 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 	private SynchronizeWizardDescription getDefaultSelection() {
 
-        if (!(TeamUI.getSynchronizeManager() instanceof SynchronizeManager))
-            return null;
+		if (!(TeamUI.getSynchronizeManager() instanceof SynchronizeManager))
+			return null;
 
-        final String defaultSelection= getDialogSettings().get(DEFAULT_SELECTION);
-        if (defaultSelection == null)
-            return null;
+		final String defaultSelection= getDialogSettings().get(DEFAULT_SELECTION);
+		if (defaultSelection == null)
+			return null;
 
-        final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager();
-        final SynchronizeWizardDescription [] wizards= syncManager.getWizardDescriptors();
-        for (int i = 0; i < wizards.length; i++) {
-            if (defaultSelection.equals(wizards[i].getId())) {
-                return wizards[i];
-            }
-        }
-        return null;
-    }
+		final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager();
+		final SynchronizeWizardDescription [] wizards= syncManager.getWizardDescriptors();
+		for (int i = 0; i < wizards.length; i++) {
+			if (defaultSelection.equals(wizards[i].getId())) {
+				return wizards[i];
+			}
+		}
+		return null;
+	}
 
-    @Override
+	@Override
 	public void doubleClick(DoubleClickEvent event) {
 		selectionChanged(
 			new SelectionChangedEvent(

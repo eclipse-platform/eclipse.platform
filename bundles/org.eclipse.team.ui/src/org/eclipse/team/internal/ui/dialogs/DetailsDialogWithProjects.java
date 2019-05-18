@@ -104,9 +104,9 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 		return includeCancelButton;
 	}
 
-    @Override
+	@Override
 	protected boolean isMainGrabVertical() {
-        return false;
-    }
+		return false;
+	}
 
 }

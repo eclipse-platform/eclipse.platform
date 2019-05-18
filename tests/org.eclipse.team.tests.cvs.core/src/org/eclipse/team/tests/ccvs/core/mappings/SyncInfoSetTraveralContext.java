@@ -39,45 +39,45 @@ import org.eclipse.team.core.variants.IResourceVariant;
  * locally.
  */
 public class SyncInfoSetTraveralContext extends RemoteResourceMappingContext {
-    
-    SyncInfoTree set;
-    
-    public SyncInfoSetTraveralContext(SyncInfoSet set) {
-        this.set = new SyncInfoTree();
-        this.set.addAll(set);
-    }
+	
+	SyncInfoTree set;
+	
+	public SyncInfoSetTraveralContext(SyncInfoSet set) {
+		this.set = new SyncInfoTree();
+		this.set.addAll(set);
+	}
 
-    protected SyncInfo getSyncInfo(IFile file) {
-        return set.getSyncInfo(file);
-    }
-    
-    public boolean contentDiffers(IFile file, IProgressMonitor monitor) {
-        return getSyncInfo(file) != null;
-    }
+	protected SyncInfo getSyncInfo(IFile file) {
+		return set.getSyncInfo(file);
+	}
+	
+	public boolean contentDiffers(IFile file, IProgressMonitor monitor) {
+		return getSyncInfo(file) != null;
+	}
 
-    @Override
+	@Override
 	public IStorage fetchRemoteContents(IFile file, IProgressMonitor monitor) throws CoreException {
-        SyncInfo info = getSyncInfo(file);
-        if (info == null)
-            return null;
-        IResourceVariant remote = info.getRemote();
-        if (remote == null)
-            return null;
-        return remote.getStorage(monitor);
-    }
+		SyncInfo info = getSyncInfo(file);
+		if (info == null)
+			return null;
+		IResourceVariant remote = info.getRemote();
+		if (remote == null)
+			return null;
+		return remote.getStorage(monitor);
+	}
 
-    @Override
+	@Override
 	public IResource[] fetchMembers(IContainer container, IProgressMonitor monitor) throws CoreException {
 		Set<IResource> members = new HashSet<>();
-        members.addAll(Arrays.asList(container.members(false)));
-        members.addAll(Arrays.asList(set.members(container)));
-        return members.toArray(new IResource[members.size()]);
-    }
+		members.addAll(Arrays.asList(container.members(false)));
+		members.addAll(Arrays.asList(set.members(container)));
+		return members.toArray(new IResource[members.size()]);
+	}
 
-    @Override
+	@Override
 	public void refresh(ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
-        // Do nothing
-    }
+		// Do nothing
+	}
 
 	@Override
 	public boolean isThreeWay() {
@@ -105,13 +105,13 @@ public class SyncInfoSetTraveralContext extends RemoteResourceMappingContext {
 
 	@Override
 	public IStorage fetchBaseContents(IFile file, IProgressMonitor monitor) throws CoreException {
-        SyncInfo info = getSyncInfo(file);
-        if (info == null)
-            return null;
-        IResourceVariant base = info.getBase();
-        if (base == null)
-            return null;
-        return base.getStorage(monitor);
+		SyncInfo info = getSyncInfo(file);
+		if (info == null)
+			return null;
+		IResourceVariant base = info.getBase();
+		if (base == null)
+			return null;
+		return base.getStorage(monitor);
 	}
 
 	@Override

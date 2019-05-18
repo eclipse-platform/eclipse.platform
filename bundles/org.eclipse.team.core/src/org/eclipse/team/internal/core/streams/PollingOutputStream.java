@@ -151,11 +151,11 @@ public class PollingOutputStream extends FilterOutputStream {
 	@Override
 	public void close() throws IOException {
 		int attempts = numAttempts - 1; // fail fast if flush() does times out
- 		try {
- 			out.flush();
+		try {
+			out.flush();
 			attempts = 0;
- 		} finally {
- 			boolean stop = false;
+		} finally {
+			boolean stop = false;
 			while (!stop) {
 				try {
 					out.close();
@@ -167,7 +167,7 @@ public class PollingOutputStream extends FilterOutputStream {
 					if (Policy.DEBUG_STREAMS) System.out.println("close retry=" + attempts); //$NON-NLS-1$
 				}
 			}
- 		}
+		}
 	}
 
 	/**

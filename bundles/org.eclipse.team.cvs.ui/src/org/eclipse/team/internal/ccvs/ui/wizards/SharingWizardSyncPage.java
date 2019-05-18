@@ -90,7 +90,7 @@ public class SharingWizardSyncPage extends CVSWizardPage implements IDiffChangeL
 		
 		updatePage();
 		
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARING_SYNC_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARING_SYNC_PAGE);
 		Dialog.applyDialogFont(parent);	
 	}
 	

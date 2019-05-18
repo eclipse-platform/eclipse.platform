@@ -28,13 +28,13 @@ import org.eclipse.team.ui.synchronize.ModelSynchronizeParticipant;
 public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizeParticipant {
 
 	public static PreferencePage[] addCVSPreferencePages(PreferencePage[] inheritedPages) {
-	    PreferencePage[] pages = new PreferencePage[inheritedPages.length + 1];
-	    for (int i = 0; i < inheritedPages.length; i++) {
-	        pages[i] = inheritedPages[i];
-	    }
-	    pages[pages.length - 1] = new ComparePreferencePage();
-	    pages[pages.length - 1].setTitle(CVSUIMessages.CVSParticipant_2); 
-	    return pages;
+		PreferencePage[] pages = new PreferencePage[inheritedPages.length + 1];
+		for (int i = 0; i < inheritedPages.length; i++) {
+			pages[i] = inheritedPages[i];
+		}
+		pages[pages.length - 1] = new ComparePreferencePage();
+		pages[pages.length - 1].setTitle(CVSUIMessages.CVSParticipant_2); 
+		return pages;
 	}
 
 	public CVSModelSynchronizeParticipant() {
@@ -46,7 +46,7 @@ public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizePar
 	}
 
 	public PreferencePage[] getPreferencePages() {
-	    return addCVSPreferencePages(super.getPreferencePages());
+		return addCVSPreferencePages(super.getPreferencePages());
 	}
 	
 	public ModelProvider[] getEnabledModelProviders() {
@@ -71,7 +71,7 @@ public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizePar
 	}
 
 	protected  ILabelDecorator getLabelDecorator(ISynchronizePageConfiguration configuration) {
-	    return new CVSParticipantLabelDecorator(configuration);
+		return new CVSParticipantLabelDecorator(configuration);
 	}
 	
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {

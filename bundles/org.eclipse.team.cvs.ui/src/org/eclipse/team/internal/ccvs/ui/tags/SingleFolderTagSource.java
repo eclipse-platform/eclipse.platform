@@ -28,57 +28,57 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SingleFolderTagSource extends TagSource {
 
-    public static CVSTag[] getTags(ICVSFolder folder, int type) {
-        if (type == CVSTag.HEAD)
-            return new CVSTag[] { CVSTag.DEFAULT } ;
-        return CVSUIPlugin.getPlugin().getRepositoryManager().getKnownTags(folder, type);
-    }
-    
-    private ICVSFolder folder;
-    
-    /* package */ SingleFolderTagSource(ICVSFolder folder) {
-        this.folder = folder;
-    }
+	public static CVSTag[] getTags(ICVSFolder folder, int type) {
+		if (type == CVSTag.HEAD)
+			return new CVSTag[] { CVSTag.DEFAULT } ;
+		return CVSUIPlugin.getPlugin().getRepositoryManager().getKnownTags(folder, type);
+	}
+	
+	private ICVSFolder folder;
+	
+	/* package */ SingleFolderTagSource(ICVSFolder folder) {
+		this.folder = folder;
+	}
 
-    @Override
+	@Override
 	public CVSTag[] getTags(int type) {
-        if (type == CVSTag.HEAD || type == BASE) {
-            return super.getTags(type);
-        }
-        return getTags(getFolder(), type);
-    }
+		if (type == CVSTag.HEAD || type == BASE) {
+			return super.getTags(type);
+		}
+		return getTags(getFolder(), type);
+	}
 
-    /**
-     * Return the folder the tags are obtained from
-     * @return the folder the tags are obtained from
-     */
-    public ICVSFolder getFolder() {
-         return folder;
-    }
+	/**
+	 * Return the folder the tags are obtained from
+	 * @return the folder the tags are obtained from
+	 */
+	public ICVSFolder getFolder() {
+		return folder;
+	}
 
-    @Override
+	@Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
-        CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(getFolder(), bestEffort /* recurse */, true /* notify */, monitor);
-        fireChange();
-        return tags;
-    }
+		CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(getFolder(), bestEffort /* recurse */, true /* notify */, monitor);
+		fireChange();
+		return tags;
+	}
 
-    @Override
+	@Override
 	public ICVSRepositoryLocation getLocation() {
 		RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
 		ICVSRepositoryLocation location = mgr.getRepositoryLocationFor(getFolder());
 		return location;
-    }
+	}
 
-    @Override
+	@Override
 	public String getShortDescription() {
-        return getFolder().getName();
-    }
+		return getFolder().getName();
+	}
 
-    @Override
+	@Override
 	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {
-            final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
+			final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
 			manager.run(monitor1 -> {
 				try {
 					ICVSFolder folder = getFolder();
@@ -91,17 +91,17 @@ public class SingleFolderTagSource extends TagSource {
 					throw new InvocationTargetException(e);
 				}
 			}, monitor);
-        } catch (InvocationTargetException e) {
-            throw CVSException.wrapException(e);
-        } catch (InterruptedException e) {
-            // Ignore
-        }
-        fireChange();
-    }
+		} catch (InvocationTargetException e) {
+			throw CVSException.wrapException(e);
+		} catch (InterruptedException e) {
+			// Ignore
+		}
+		fireChange();
+	}
 
-    @Override
+	@Override
 	public ICVSResource[] getCVSResources() {
-        final ICVSResource[][] resources = new ICVSResource[][] { null };
+		final ICVSResource[][] resources = new ICVSResource[][] { null };
 		try {
 			getRunnableContext().run(true, true, monitor -> {
 				try {
@@ -112,17 +112,17 @@ public class SingleFolderTagSource extends TagSource {
 					monitor.done();
 				}
 			});
-	        return resources[0];
-        } catch (InvocationTargetException e) {
-            CVSUIPlugin.log(CVSException.wrapException(e));
-        } catch (InterruptedException e) {
-            // Ignore
-        }
-        return new ICVSResource[] { folder };
-    }
-    
-    private IRunnableContext getRunnableContext() {
-        return PlatformUI.getWorkbench().getProgressService();
-    }
+			return resources[0];
+		} catch (InvocationTargetException e) {
+			CVSUIPlugin.log(CVSException.wrapException(e));
+		} catch (InterruptedException e) {
+			// Ignore
+		}
+		return new ICVSResource[] { folder };
+	}
+	
+	private IRunnableContext getRunnableContext() {
+		return PlatformUI.getWorkbench().getProgressService();
+	}
 
 }

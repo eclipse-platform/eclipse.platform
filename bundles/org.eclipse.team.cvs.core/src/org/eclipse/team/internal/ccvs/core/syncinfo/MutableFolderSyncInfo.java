@@ -47,15 +47,15 @@ public class MutableFolderSyncInfo extends FolderSyncInfo {
 		this.repository = repository;
 	}
 
-    public void setStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
-    
-    public FolderSyncInfo asImmutable() {
-        return new FolderSyncInfo(getRepository(), getRoot(), getTag(), getIsStatic());
-    }
+	public void setStatic(boolean isStatic) {
+		this.isStatic = isStatic;
+	}
+	
+	public FolderSyncInfo asImmutable() {
+		return new FolderSyncInfo(getRepository(), getRoot(), getTag(), getIsStatic());
+	}
 
-    public void setRoot(String root) {
-        this.root = root;
-    }
+	public void setRoot(String root) {
+		this.root = root;
+	}
 }

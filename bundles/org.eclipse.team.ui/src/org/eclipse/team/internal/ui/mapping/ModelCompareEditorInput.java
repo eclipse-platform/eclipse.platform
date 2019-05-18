@@ -102,15 +102,15 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		super.handleDispose();
 		participant.getContext().getCache().removeCacheListener(contextListener);
 		getCompareConfiguration().removePropertyChangeListener(this);
-    	ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
-    	if (navigator != null && navigator == super.getNavigator()) {
-    		synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
+		ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
+		if (navigator != null && navigator == super.getNavigator()) {
+			synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
 				@Override
 				protected INavigatable[] getNavigatables() {
 					return new INavigatable[0];
 				}
 			});
-    	}
+		}
 	}
 
 	@Override
@@ -127,8 +127,8 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 	@Override
 	protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 			throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
-        monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
+		monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
+		monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
 		getCompareConfiguration().setLeftEditable(isLeftEditable(input));
 		getCompareConfiguration().setRightEditable(false);
 		try {
@@ -139,8 +139,8 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		} finally {
-            monitor.done();
-        }
+			monitor.done();
+		}
 		return input;
 	}
 

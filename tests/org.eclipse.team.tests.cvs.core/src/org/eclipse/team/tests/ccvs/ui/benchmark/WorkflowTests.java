@@ -30,24 +30,24 @@ public class WorkflowTests extends BenchmarkTest {
 	private int FILE_SIZE_MEAN = 16384;
 	private int FILE_SIZE_VARIANCE = 12288;
 	private int PROB_BINARY = 5;
-    private static final String SHARE_PROJECT = "Share";
-    private static final String CHECKOUT_PROJECT = "Checkout";
-    private static final String COMMIT1 = "Commit1";
-    private static final String COMMIT2 = "Commit2";
-    private static final String COMMIT3 = "Commit3";
-    private static final String COMMIT4 = "Commit4";
-    private static final String UPDATE1 = "Update1";
-    private static final String UPDATE2 = "Update2";
-    private static final String UPDATE3 = "Update3";
-    private static final String UPDATE4 = "Update4";
-    private static final String REPLACE1 = "Replace1";
-    private static final String REPLACE2 = "Replace2";
-    private static final String REPLACE3 = "Replace3";
-    private static final String TAG1 = "Tag1";
-    private static final String[] PERFORMANCE_GROUPS = new String[] {
-        SHARE_PROJECT, CHECKOUT_PROJECT, COMMIT1, COMMIT2, COMMIT3, COMMIT4, 
-        UPDATE1, UPDATE2, UPDATE3, UPDATE4, REPLACE1, REPLACE2, REPLACE3, TAG1
-    };
+	private static final String SHARE_PROJECT = "Share";
+	private static final String CHECKOUT_PROJECT = "Checkout";
+	private static final String COMMIT1 = "Commit1";
+	private static final String COMMIT2 = "Commit2";
+	private static final String COMMIT3 = "Commit3";
+	private static final String COMMIT4 = "Commit4";
+	private static final String UPDATE1 = "Update1";
+	private static final String UPDATE2 = "Update2";
+	private static final String UPDATE3 = "Update3";
+	private static final String UPDATE4 = "Update4";
+	private static final String REPLACE1 = "Replace1";
+	private static final String REPLACE2 = "Replace2";
+	private static final String REPLACE3 = "Replace3";
+	private static final String TAG1 = "Tag1";
+	private static final String[] PERFORMANCE_GROUPS = new String[] {
+		SHARE_PROJECT, CHECKOUT_PROJECT, COMMIT1, COMMIT2, COMMIT3, COMMIT4, 
+		UPDATE1, UPDATE2, UPDATE3, UPDATE4, REPLACE1, REPLACE2, REPLACE3, TAG1
+	};
 
 	public WorkflowTests() {
 		super();
@@ -60,29 +60,29 @@ public class WorkflowTests extends BenchmarkTest {
 	public static Test suite() {
 		return suite(WorkflowTests.class);
 	}
-    
-    public void testBigWorkflowNoUI() throws Exception {
-        runWorkflowTests("testBigWithNoUI", BenchmarkTestSetup.BIG_ZIP_FILE, "CVS Workflow No UI", BenchmarkTestSetup.LOOP_COUNT, false, new SyncInfoSource());
-    }
 	
-    protected void waitForBuild() {
-    	super.waitForBuild();
-    	// Ensure that we can obtrain the worksapce lock before continuing
-    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	try {
-    		Job.getJobManager().beginRule(root, null);
-    	} finally {
-    		Job.getJobManager().endRule(root);
-    	}
-    }
-    
+	public void testBigWorkflowNoUI() throws Exception {
+		runWorkflowTests("testBigWithNoUI", BenchmarkTestSetup.BIG_ZIP_FILE, "CVS Workflow No UI", BenchmarkTestSetup.LOOP_COUNT, false, new SyncInfoSource());
+	}
+	
+	protected void waitForBuild() {
+		super.waitForBuild();
+		// Ensure that we can obtrain the worksapce lock before continuing
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		try {
+			Job.getJobManager().beginRule(root, null);
+		} finally {
+			Job.getJobManager().endRule(root);
+		}
+	}
+	
 	/**
 	 * Runs a series of incoming and outgoing workflow-related tests.
 	 */
 	protected void runWorkflowTests(String name, File initialContents, String globalName, int loopCount, boolean global, SyncInfoSource source) throws Exception {
-        openEmptyPerspective();
-	    setupGroups(PERFORMANCE_GROUPS, globalName, global);
-	    for (int i = 0; i < loopCount; i++) {
+		openEmptyPerspective();
+		setupGroups(PERFORMANCE_GROUPS, globalName, global);
+		for (int i = 0; i < loopCount; i++) {
 			final SequenceGenerator gen = new SequenceGenerator();
 			IProject outProject = createAndImportProject(name, initialContents);
 			
@@ -183,7 +183,7 @@ public class WorkflowTests extends BenchmarkTest {
 			startGroup(REPLACE3);
 			replace(new IResource[] { inProject }, null, true);
 			endGroup();
-	    }
-	    commitGroups(global);
+		}
+		commitGroups(global);
 	}
 }

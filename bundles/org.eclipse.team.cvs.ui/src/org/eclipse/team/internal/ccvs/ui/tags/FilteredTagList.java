@@ -27,75 +27,75 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
 
-    private final TagSource tagSource;
-    private final int[] types;
-    private StringMatcher matcher;
+	private final TagSource tagSource;
+	private final int[] types;
+	private StringMatcher matcher;
 
-    public FilteredTagList(TagSource tagSource, int[] types) {
-        this.tagSource = tagSource;
-        this.types = types;
-    }
-    
-    @Override
+	public FilteredTagList(TagSource tagSource, int[] types) {
+		this.tagSource = tagSource;
+		this.types = types;
+	}
+	
+	@Override
 	public Object[] getChildren(Object o) {
-        CVSTag[] tags = getTags();
+		CVSTag[] tags = getTags();
 		List<TagElement> filtered = new ArrayList<>();
-        for (int i = 0; i < tags.length; i++) {
-            CVSTag tag = tags[i];
-            if (select(tag)) {
-                filtered.add(new TagElement(this, tag));
-            }
-        }
-        return filtered.toArray(new Object[filtered.size()]);
-    }
+		for (int i = 0; i < tags.length; i++) {
+			CVSTag tag = tags[i];
+			if (select(tag)) {
+				filtered.add(new TagElement(this, tag));
+			}
+		}
+		return filtered.toArray(new Object[filtered.size()]);
+	}
 
-    private boolean select(CVSTag tag) {
-        if (matcher == null) return true;
-        return matcher.match(tag.getName());
-    }
+	private boolean select(CVSTag tag) {
+		if (matcher == null) return true;
+		return matcher.match(tag.getName());
+	}
 
-    private CVSTag[] getTags() {
-        return tagSource.getTags(types);
-    }
+	private CVSTag[] getTags() {
+		return tagSource.getTags(types);
+	}
 
-    @Override
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
-        return null;
-    }
+		return null;
+	}
 
-    @Override
+	@Override
 	public String getLabel(Object o) {
-        return null;
-    }
+		return null;
+	}
 
-    @Override
+	@Override
 	public Object getParent(Object o) {
-        return null;
-    }
+		return null;
+	}
 
-    @Override
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) return adapter.cast(this);
 		return null;
-    }
-    
-    public void setPattern(String pattern) {
-        if (!pattern.endsWith("*")) { //$NON-NLS-1$
-            pattern += "*"; //$NON-NLS-1$
-        }
-        matcher = new StringMatcher(pattern, true, false);
-    }
+	}
+	
+	public void setPattern(String pattern) {
+		if (!pattern.endsWith("*")) { //$NON-NLS-1$
+			pattern += "*"; //$NON-NLS-1$
+		}
+		matcher = new StringMatcher(pattern, true, false);
+	}
 
-    public CVSTag[] getMatchingTags() {
-        CVSTag[] tags = getTags();
+	public CVSTag[] getMatchingTags() {
+		CVSTag[] tags = getTags();
 		List<CVSTag> filtered = new ArrayList<>();
-        for (int i = 0; i < tags.length; i++) {
-            CVSTag tag = tags[i];
-            if (select(tag)) {
-                filtered.add(tag);
-            }
-        }
-        return filtered.toArray(new CVSTag[filtered.size()]);
-    }
+		for (int i = 0; i < tags.length; i++) {
+			CVSTag tag = tags[i];
+			if (select(tag)) {
+				filtered.add(tag);
+			}
+		}
+		return filtered.toArray(new CVSTag[filtered.size()]);
+	}
 
 }

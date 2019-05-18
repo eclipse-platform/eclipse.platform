@@ -31,24 +31,24 @@ class JSchSession {
 	private static final int SSH_DEFAULT_PORT = 22;
 	private static Hashtable<String, JSchSession> pool = new Hashtable<>();
 	
-    private final Session session;
-    private final ICVSRepositoryLocation location;
+	private final Session session;
+	private final ICVSRepositoryLocation location;
 
-    protected static int getCVSTimeoutInMillis() {
-        //return CVSProviderPlugin.getPlugin().getTimeout() * 1000;
-    	// TODO Hard-code the timeout for now since JSch doesn't respect CVS timeout
-    	// See bug 92887
-    	return 60000;
-    }
+	protected static int getCVSTimeoutInMillis() {
+		//return CVSProviderPlugin.getPlugin().getTimeout() * 1000;
+		// TODO Hard-code the timeout for now since JSch doesn't respect CVS timeout
+		// See bug 92887
+		return 60000;
+	}
 
-    public static boolean isAuthenticationFailure(JSchException ee) {
-        return ee.getMessage().equals("Auth fail"); //$NON-NLS-1$
-    }
-    
-    static JSchSession getSession(final ICVSRepositoryLocation location, String username, String password, String hostname, int port, IProgressMonitor monitor) throws JSchException {
-    	int actualPort = port;
-        if (actualPort == ICVSRepositoryLocation.USE_DEFAULT_PORT)
-        	actualPort = getPort(location);
+	public static boolean isAuthenticationFailure(JSchException ee) {
+		return ee.getMessage().equals("Auth fail"); //$NON-NLS-1$
+	}
+	
+	static JSchSession getSession(final ICVSRepositoryLocation location, String username, String password, String hostname, int port, IProgressMonitor monitor) throws JSchException {
+		int actualPort = port;
+		if (actualPort == ICVSRepositoryLocation.USE_DEFAULT_PORT)
+			actualPort = getPort(location);
 		
 		String key = getPoolKey(username, hostname, actualPort);
 
@@ -56,47 +56,47 @@ class JSchSession {
 			JSchSession jschSession = pool.get(key);
 			if (jschSession != null && !jschSession.getSession().isConnected()) {
 				pool.remove(key);
-                jschSession = null;
+				jschSession = null;
 			}
 
 			if (jschSession == null) {
-                IJSchService service = getJSchService();
-                IJSchLocation jlocation=service.getLocation(username, hostname, actualPort);
+				IJSchService service = getJSchService();
+				IJSchLocation jlocation=service.getLocation(username, hostname, actualPort);
 
-                // As for the connection method "pserverssh2", 
-                // there is not a place to save the given password for ssh2.
-                if (!location.getMethod().getName().equals("pserverssh2")) { //$NON-NLS-1$
-                    IPasswordStore pstore = new IPasswordStore() {
-                        public void clear(IJSchLocation l) {
-                            location.flushUserInfo();
-                        }
-                        public boolean isCached(IJSchLocation l) {
-                            return location.getUserInfoCached();
-                        }
-                        public void update(IJSchLocation l) {
-                            location.setPassword(l.getPassword());
-                            location.setAllowCaching(true);
-                        }
-                    };
-                    jlocation.setPasswordStore(pstore);
-                }
-                jlocation.setComment(NLS.bind(CVSSSH2Messages.JSchSession_3, new String[] {location.toString()}));
-                
-                Session session = null;
-                try {
-                    session = createSession(service, jlocation, password, monitor);
-                } catch (JSchException e) {
-                	throw e;
-                }
-                if (session == null)
-                	throw new JSchException(CVSSSH2Messages.JSchSession_4);
-                if (session.getTimeout() != location.getTimeout() * 1000)
-                	session.setTimeout(location.getTimeout() * 1000);
-                JSchSession schSession = new JSchSession(session, location);
-                pool.put(key, schSession);
-                return schSession;
+				// As for the connection method "pserverssh2", 
+				// there is not a place to save the given password for ssh2.
+				if (!location.getMethod().getName().equals("pserverssh2")) { //$NON-NLS-1$
+					IPasswordStore pstore = new IPasswordStore() {
+						public void clear(IJSchLocation l) {
+							location.flushUserInfo();
+						}
+						public boolean isCached(IJSchLocation l) {
+							return location.getUserInfoCached();
+						}
+						public void update(IJSchLocation l) {
+							location.setPassword(l.getPassword());
+							location.setAllowCaching(true);
+						}
+					};
+					jlocation.setPasswordStore(pstore);
+				}
+				jlocation.setComment(NLS.bind(CVSSSH2Messages.JSchSession_3, new String[] {location.toString()}));
+				
+				Session session = null;
+				try {
+					session = createSession(service, jlocation, password, monitor);
+				} catch (JSchException e) {
+					throw e;
+				}
+				if (session == null)
+					throw new JSchException(CVSSSH2Messages.JSchSession_4);
+				if (session.getTimeout() != location.getTimeout() * 1000)
+					session.setTimeout(location.getTimeout() * 1000);
+				JSchSession schSession = new JSchSession(session, location);
+				pool.put(key, schSession);
+				return schSession;
 			}
-            return jschSession;
+			return jschSession;
 		} catch (JSchException e) {
 			pool.remove(key);
 			if(e.toString().indexOf("Auth cancel")!=-1){  //$NON-NLS-1$
@@ -106,35 +106,35 @@ class JSchSession {
 		}
 	}
 
-    private static Session createSession(IJSchService service, IJSchLocation location, String password, IProgressMonitor monitor) throws JSchException {
-    	if (password != null)
-    		location.setPassword(password);
-    	Session session = service.createSession(location, null);
-        session.setTimeout(getCVSTimeoutInMillis());
-        if (password != null)
+	private static Session createSession(IJSchService service, IJSchLocation location, String password, IProgressMonitor monitor) throws JSchException {
+		if (password != null)
+			location.setPassword(password);
+		Session session = service.createSession(location, null);
+		session.setTimeout(getCVSTimeoutInMillis());
+		if (password != null)
 			session.setPassword(password);
-        service.connect(session, getCVSTimeoutInMillis(), monitor);
-        return session;
-    }
+		service.connect(session, getCVSTimeoutInMillis(), monitor);
+		return session;
+	}
 
-    private static IJSchService getJSchService(){
-        return CVSSSH2Plugin.getDefault().getJSchService();
-    }
+	private static IJSchService getJSchService(){
+		return CVSSSH2Plugin.getDefault().getJSchService();
+	}
 
-    private static String getPoolKey(String username, String hostname, int port) {
-        return username + "@" + hostname + ":" + port; //$NON-NLS-1$ //$NON-NLS-2$
-    }
+	private static String getPoolKey(String username, String hostname, int port) {
+		return username + "@" + hostname + ":" + port; //$NON-NLS-1$ //$NON-NLS-2$
+	}
 
-    private static String getPoolKey(ICVSRepositoryLocation location){
-        return location.getUsername() + "@" + location.getHost() + ":" + getPort(location); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+	private static String getPoolKey(ICVSRepositoryLocation location){
+		return location.getUsername() + "@" + location.getHost() + ":" + getPort(location); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 
 	private static int getPort(ICVSRepositoryLocation location) {
-        int port = location.getPort();
-        if (port == ICVSRepositoryLocation.USE_DEFAULT_PORT)
-            port = SSH_DEFAULT_PORT;
-        return port;
-    }
+		int port = location.getPort();
+		if (port == ICVSRepositoryLocation.USE_DEFAULT_PORT)
+			port = SSH_DEFAULT_PORT;
+		return port;
+	}
 
 	static void shutdown() {
 		if (getJSch() != null && pool.size() > 0) {
@@ -153,21 +153,21 @@ class JSchSession {
 	static JSch getJSch() {
 		return getJSchService().getJSch();
 	}
-  
-    private JSchSession(Session session, ICVSRepositoryLocation location) {
-        this.session = session;
-        this.location = location;
-    }
+	
+	private JSchSession(Session session, ICVSRepositoryLocation location) {
+		this.session = session;
+		this.location = location;
+	}
 
-    public Session getSession() {
-        return session;
-    }
+	public Session getSession() {
+		return session;
+	}
 
-    public void dispose() {
-        if (session.isConnected()) {
-            session.disconnect();
-        }
-        pool.remove(getPoolKey(location));
-    }
+	public void dispose() {
+		if (session.isConnected()) {
+			session.disconnect();
+		}
+		pool.remove(getPoolKey(location));
+	}
 
 }

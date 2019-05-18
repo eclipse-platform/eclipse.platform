@@ -20,10 +20,10 @@ import org.eclipse.team.internal.ccvs.core.ILogEntry;
  */
 public interface ILogEntryListener {
 
-    /**
-     * A log entry was received for the current file
-     * @param entry the received log entry.
-     */
-    void handleLogEntryReceived(ILogEntry entry);
-    
+	/**
+	 * A log entry was received for the current file
+	 * @param entry the received log entry.
+	 */
+	void handleLogEntryReceived(ILogEntry entry);
+	
 }

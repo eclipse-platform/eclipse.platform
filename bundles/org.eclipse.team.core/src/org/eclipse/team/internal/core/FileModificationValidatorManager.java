@@ -102,9 +102,9 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 	}
 
 	private synchronized FileModificationValidator getDefaultValidator() {
-	    if (defaultValidator == null) {
-	        defaultValidator = new DefaultFileModificationValidator();
-	    }
-	    return defaultValidator;
+		if (defaultValidator == null) {
+			defaultValidator = new DefaultFileModificationValidator();
+		}
+		return defaultValidator;
 	}
 }

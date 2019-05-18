@@ -116,49 +116,49 @@ public abstract class RefreshParticipantJob extends Job {
 	 * that have occurred during the refresh
 	 */
 	private final class GotoActionWrapper extends WorkbenchAction {
-        private ActionFactory.IWorkbenchAction gotoAction;
-        private IStatus status;
-        @Override
+		private ActionFactory.IWorkbenchAction gotoAction;
+		private IStatus status;
+		@Override
 		public void run() {
-            if (status != null && !status.isOK()) {
-                ErrorDialog.openError(Utils.getShell(null), null, TeamUIMessages.RefreshSubscriberJob_3, status);
-            } else if(gotoAction != null) {
-        		gotoAction.run();
-        	}
-        }
-        @Override
+			if (status != null && !status.isOK()) {
+				ErrorDialog.openError(Utils.getShell(null), null, TeamUIMessages.RefreshSubscriberJob_3, status);
+			} else if(gotoAction != null) {
+				gotoAction.run();
+			}
+		}
+		@Override
 		public boolean isEnabled() {
-        	if(gotoAction != null) {
-        		return gotoAction.isEnabled();
-        	}
-        	return true;
-        }
-        @Override
+			if(gotoAction != null) {
+				return gotoAction.isEnabled();
+			}
+			return true;
+		}
+		@Override
 		public String getText() {
-        	if(gotoAction != null) {
-        		return gotoAction.getText();
-        	}
-        	return null;
-        }
-        @Override
+			if(gotoAction != null) {
+				return gotoAction.getText();
+			}
+			return null;
+		}
+		@Override
 		public String getToolTipText() {
-            if (status != null && !status.isOK()) {
-                return status.getMessage();
-            }
-        	if(gotoAction != null) {
-        		return gotoAction.getToolTipText();
-        	}
-        	return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, RefreshParticipantJob.this.getName());
-        }
-        @Override
+			if (status != null && !status.isOK()) {
+				return status.getMessage();
+			}
+			if(gotoAction != null) {
+				return gotoAction.getToolTipText();
+			}
+			return Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, RefreshParticipantJob.this.getName());
+		}
+		@Override
 		public void dispose() {
-        	super.dispose();
-        	if(gotoAction != null) {
-        		gotoAction.dispose();
-        	}
-        }
-        public void setGotoAction(ActionFactory.IWorkbenchAction gotoAction) {
-            this.gotoAction = gotoAction;
+			super.dispose();
+			if(gotoAction != null) {
+				gotoAction.dispose();
+			}
+		}
+		public void setGotoAction(ActionFactory.IWorkbenchAction gotoAction) {
+			this.gotoAction = gotoAction;
 			setEnabled(isEnabled());
 			setToolTipText(getToolTipText());
 			gotoAction.addPropertyChangeListener(event -> {
@@ -167,13 +167,13 @@ public abstract class RefreshParticipantJob extends Job {
 					GotoActionWrapper.this.setEnabled(bool.booleanValue());
 				}
 			});
-        }
-        public void setStatus(IStatus status) {
-            this.status = status;
-        }
-    }
+		}
+		public void setStatus(IStatus status) {
+			this.status = status;
+		}
+	}
 
-    /**
+	/**
 	 * Notification for safely notifying listeners of refresh lifecycle.
 	 */
 	private abstract class Notification implements ISafeRunnable {
@@ -349,21 +349,21 @@ public abstract class RefreshParticipantJob extends Job {
 					}
 				}
 			} catch(CoreException e) {
-			    // Determine the status to be returned and the GOTO action
-			    status = e.getStatus();
-			    if (!isUser()) {
-		            // Use the GOTO action to show the error and return OK
-		            Object prop = getProperty(IProgressConstants.ACTION_PROPERTY);
-		            if (prop instanceof GotoActionWrapper) {
-		                GotoActionWrapper wrapper = (GotoActionWrapper)prop;
-		                wrapper.setStatus(e.getStatus());
-		                status = new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, e.getStatus().getMessage(), e);
-		            }
-			    }
-		        if (!isUser() && status.getSeverity() == IStatus.ERROR) {
-		            // Never prompt for errors on non-user jobs
-		            setProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY, Boolean.TRUE);
-		        }
+				// Determine the status to be returned and the GOTO action
+				status = e.getStatus();
+				if (!isUser()) {
+					// Use the GOTO action to show the error and return OK
+					Object prop = getProperty(IProgressConstants.ACTION_PROPERTY);
+					if (prop instanceof GotoActionWrapper) {
+						GotoActionWrapper wrapper = (GotoActionWrapper)prop;
+						wrapper.setStatus(e.getStatus());
+						status = new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, e.getStatus().getMessage(), e);
+					}
+				}
+				if (!isUser() && status.getSeverity() == IStatus.ERROR) {
+					// Never prompt for errors on non-user jobs
+					setProperty(IProgressConstants.NO_IMMEDIATE_ERROR_PROMPT_PROPERTY, Boolean.TRUE);
+				}
 			} finally {
 				event.setStopTime(System.currentTimeMillis());
 			}
@@ -383,7 +383,7 @@ public abstract class RefreshParticipantJob extends Job {
 			return event.getStatus();
 		} finally {
 			if (acquired) lock.release();
-            monitor.done();
+			monitor.done();
 		}
 	}
 
@@ -422,12 +422,12 @@ public abstract class RefreshParticipantJob extends Job {
 			code = IRefreshEvent.STATUS_CHANGES;
 
 			int incomingChanges = getIncomingChangeCount();
-             String numIncomingChanges = incomingChanges==0 ? ""  //$NON-NLS-1$
-                 : NLS.bind(TeamUIMessages.RefreshCompleteDialog_incomingChanges, Integer.toString(incomingChanges));
+			String numIncomingChanges = incomingChanges==0 ? ""  //$NON-NLS-1$
+				: NLS.bind(TeamUIMessages.RefreshCompleteDialog_incomingChanges, Integer.toString(incomingChanges));
 
 			int outgoingChanges = getOutgoingChangeCount();
 			String numOutgoingChanges = outgoingChanges==0 ? ""  //$NON-NLS-1$
-                : NLS.bind(TeamUIMessages.RefreshCompleteDialog_outgoingChanges, Integer.toString(outgoingChanges));
+				: NLS.bind(TeamUIMessages.RefreshCompleteDialog_outgoingChanges, Integer.toString(outgoingChanges));
 
 			String sep = incomingChanges>0 && outgoingChanges>0 ? "; " : "";  //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -436,9 +436,9 @@ public abstract class RefreshParticipantJob extends Job {
 				code = IRefreshEvent.STATUS_NEW_CHANGES;
 				String numNewChanges = Integer.toString(changeCount);
 				if (changeCount == 1) {
-				    text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_newChangesSingular, (new Object[]{getName(), numNewChanges, numIncomingChanges, sep, numOutgoingChanges})));
+					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_newChangesSingular, (new Object[]{getName(), numNewChanges, numIncomingChanges, sep, numOutgoingChanges})));
 				} else {
-				    text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_newChangesPlural, (new Object[]{getName(), numNewChanges, numIncomingChanges, sep, numOutgoingChanges})));
+					text.append(NLS.bind(TeamUIMessages.RefreshCompleteDialog_newChangesPlural, (new Object[]{getName(), numNewChanges, numIncomingChanges, sep, numOutgoingChanges})));
 				}
 			} else {
 				// Refreshed resources contain changes
@@ -487,7 +487,7 @@ public abstract class RefreshParticipantJob extends Job {
 								Job update = new UIJob("") { //$NON-NLS-1$
 									@Override
 									public IStatus runInUIThread(IProgressMonitor monitor) {
-									    runnable.run();
+										runnable.run();
 										return Status.OK_STATUS;
 									}
 								};

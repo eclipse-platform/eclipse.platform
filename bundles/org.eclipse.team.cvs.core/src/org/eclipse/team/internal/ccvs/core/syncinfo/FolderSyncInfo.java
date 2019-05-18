@@ -39,14 +39,14 @@ public class FolderSyncInfo {
 	protected String repository;
 	
 	// :pserver:user@host:/home/user/repo
-    protected String root;
+	protected String root;
 	
 	// sticky tag (e.g. version, date, or branch tag applied to folder)
 	private CVSEntryLineTag tag;
 	
 	// if true then it means only part of the folder was fetched from the repository, and CVS will not create 
 	// additional files in that folder.
-    protected boolean isStatic;
+	protected boolean isStatic;
 
 	/**
 	 * Construct a folder sync object.
@@ -133,17 +133,17 @@ public class FolderSyncInfo {
 				// If the username is missing, we have to find the third ':'.
 				index = root.indexOf(CVSRepositoryLocation.COLON);
 				if (index == 0) {
-				    // This indicates that the conection method is present.
-				    // It is surrounded by two colons so skip them.
+					// This indicates that the conection method is present.
+					// It is surrounded by two colons so skip them.
 					index = root.indexOf(CVSRepositoryLocation.COLON, index + 1);
 					index = root.indexOf(CVSRepositoryLocation.COLON, index + 1);
 				}
 				if (index == -1) {
-				    // The host colon is missing.
-				    // Look for a slash to find the path
-				    index = root.indexOf(ResourceSyncInfo.SEPARATOR);
-				    // Decrement the index since the slash is part of the path
-				    if (index != -1) index--;
+					// The host colon is missing.
+					// Look for a slash to find the path
+					index = root.indexOf(ResourceSyncInfo.SEPARATOR);
+					// Decrement the index since the slash is part of the path
+					if (index != -1) index--;
 				}
 			} else {
 				// If the username was there, we find the first ':' past the '@'
@@ -323,7 +323,7 @@ public class FolderSyncInfo {
 		return getRepository().equals(VIRTUAL_DIRECTORY);
 	}
 
-    public FolderSyncInfo asImmutable() {
-        return this;
-    }
+	public FolderSyncInfo asImmutable() {
+		return this;
+	}
 }

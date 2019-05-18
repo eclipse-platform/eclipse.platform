@@ -59,25 +59,25 @@ class RemovedHandler extends ResponseHandler {
 		
 		// delete then unmanage the file
 		try {
-            if (mFile.isReadOnly()) mFile.setReadOnly(false);
-	        mFile.delete();
-	        mFile.unmanage(null);
-        } catch (CVSException e) {
-        	IStatus status = new CVSStatus(IStatus.ERROR, CVSStatus.RESPONSE_HANDLING_FAILURE, NLS.bind(CVSMessages.RemovedHandler_0, new String[] { getPath(mFile) }), e, session.getLocalRoot());
-            session.handleResponseError(status); 
-        }
+			if (mFile.isReadOnly()) mFile.setReadOnly(false);
+			mFile.delete();
+			mFile.unmanage(null);
+		} catch (CVSException e) {
+			IStatus status = new CVSStatus(IStatus.ERROR, CVSStatus.RESPONSE_HANDLING_FAILURE, NLS.bind(CVSMessages.RemovedHandler_0, new String[] { getPath(mFile) }), e, session.getLocalRoot());
+			session.handleResponseError(status); 
+		}
 	}
 
-    private String getPath(ICVSFile file) {
-        IResource resource = file.getIResource();
-        if (resource != null) {
-            return resource.getFullPath().toString();
-        }
-        try {
-            return file.getRepositoryRelativePath();
-        } catch (CVSException e1) {
-            return file.getName();
-        }
-    }
+	private String getPath(ICVSFile file) {
+		IResource resource = file.getIResource();
+		if (resource != null) {
+			return resource.getFullPath().toString();
+		}
+		try {
+			return file.getRepositoryRelativePath();
+		} catch (CVSException e1) {
+			return file.getName();
+		}
+	}
 }
 

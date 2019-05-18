@@ -17,11 +17,11 @@ import org.eclipse.team.internal.ccvs.core.CVSException;
 public class CVSClientException extends CVSException {
 	
 	/**
-     * Comment for <code>serialVersionUID</code>
-     */
-    private static final long serialVersionUID = 1L;
+	 * Comment for <code>serialVersionUID</code>
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public CVSClientException(String message) {
+	public CVSClientException(String message) {
 		super(message);
 	}
 

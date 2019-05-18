@@ -49,20 +49,20 @@ public class StartupPreferencePage extends FieldEditorPreferencePage implements
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_STARTUP_PREFERENCE_PAGE);
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_STARTUP_PREFERENCE_PAGE);
 	}
 
 	@Override
 	protected void createFieldEditors() {
-	    addField(new RadioGroupFieldEditor(PROP_STARTUP_ACTION,
-	            TeamUIMessages.StartupPreferencePage_2, 1,
-	            new String[][] {
-	            	{TeamUIMessages.StartupPreferencePage_3, STARTUP_ACTION_POPULATE},
-	            	{TeamUIMessages.StartupPreferencePage_4, STARTUP_ACTION_SYNCHRONIZE},
-	            	{TeamUIMessages.StartupPreferencePage_5, STARTUP_ACTION_NONE}
-	    		},
-	    		getFieldEditorParent(), true /* use a group */));
+		addField(new RadioGroupFieldEditor(PROP_STARTUP_ACTION,
+				TeamUIMessages.StartupPreferencePage_2, 1,
+				new String[][] {
+					{TeamUIMessages.StartupPreferencePage_3, STARTUP_ACTION_POPULATE},
+					{TeamUIMessages.StartupPreferencePage_4, STARTUP_ACTION_SYNCHRONIZE},
+					{TeamUIMessages.StartupPreferencePage_5, STARTUP_ACTION_NONE}
+				},
+				getFieldEditorParent(), true /* use a group */));
 	}
 
 }

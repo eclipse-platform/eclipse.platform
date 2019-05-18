@@ -100,8 +100,8 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	// lock to ensure that map/unmap and getProvider support concurrency
 	private static final ILock mappingLock = Job.getJobManager().newLock();
 
-    // Session property used to identify projects that are not mapped
-    private static final Object NOT_MAPPED = new Object();
+	// Session property used to identify projects that are not mapped
+	private static final Object NOT_MAPPED = new Object();
 
 	/**
 	 * Instantiate a new RepositoryProvider with concrete class by given providerID
@@ -330,10 +330,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 */
 	private static RepositoryProvider lookupProviderProp(IProject project) throws CoreException {
 		Object provider = project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY);
-        if (provider instanceof RepositoryProvider) {
-            return (RepositoryProvider) provider;
-        }
-        return null;
+		if (provider instanceof RepositoryProvider) {
+			return (RepositoryProvider) provider;
+		}
+		return null;
 	}
 
 
@@ -394,12 +394,12 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 
 	/**
 	 * Returns an <code>IFileModificationValidator</code> for pre-checking operations
- 	 * that modify the contents of files.
- 	 * Returns <code>null</code> if the provider does not wish to participate in
- 	 * file modification validation.
+	 * that modify the contents of files.
+	 * Returns <code>null</code> if the provider does not wish to participate in
+	 * file modification validation.
 	 * @return an <code>IFileModificationValidator</code> for pre-checking operations
- 	 * that modify the contents of files
- 	 *
+	 * that modify the contents of files
+	 *
 	 * @see org.eclipse.core.resources.IFileModificationValidator
 	 * @deprecated use {@link #getFileModificationValidator2()}
 	 */
@@ -460,7 +460,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	 * @since 3.2
 	 */
 	public IFileHistoryProvider getFileHistoryProvider(){
-	   return null;
+		return null;
 	}
 
 	/**
@@ -532,10 +532,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				RepositoryProvider provider = lookupProviderProp(project);
 				if(provider != null)
 					return provider;
-                // Do a quick check to see it the project is known to be unshared.
-                // This is done to avoid accessing the persistent property store
-                if (isMarkedAsUnshared(project))
-                    return null;
+				// Do a quick check to see it the project is known to be unshared.
+				// This is done to avoid accessing the persistent property store
+				if (isMarkedAsUnshared(project))
+					return null;
 
 				// -----------------------------
 				//Next, check if it has the ID as a persistent property, if yes then instantiate provider
@@ -603,10 +603,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 						return null;
 					}
 				}
-                // Do a quick check to see it the project is known to be unshared.
-                // This is done to avoid accessing the persistent property store
-                if (isMarkedAsUnshared(project))
-                    return null;
+				// Do a quick check to see it the project is known to be unshared.
+				// This is done to avoid accessing the persistent property store
+				if (isMarkedAsUnshared(project))
+					return null;
 
 				// There isn't one so check the persistent property
 				String existingID = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
@@ -666,14 +666,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		if (!project.isAccessible()) return false;
 		try {
 			if (lookupProviderProp(project) != null) return true;
-            // Do a quick check to see it the project is known to be unshared.
-            // This is done to avoid accessing the persistent property store
-            if (isMarkedAsUnshared(project))
-                return false;
+			// Do a quick check to see it the project is known to be unshared.
+			// This is done to avoid accessing the persistent property store
+			if (isMarkedAsUnshared(project))
+				return false;
 			boolean shared = project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY) != null;
-            if (!shared)
-                markAsUnshared(project);
-            return shared;
+			if (!shared)
+				markAsUnshared(project);
+			return shared;
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
 			return false;
@@ -681,20 +681,20 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 	}
 
 	private static boolean isMarkedAsUnshared(IProject project) {
-        try {
-            return project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY) == NOT_MAPPED;
-        } catch (CoreException e) {
-            return false;
-        }
-    }
+		try {
+			return project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY) == NOT_MAPPED;
+		} catch (CoreException e) {
+			return false;
+		}
+	}
 
-    private static void markAsUnshared(IProject project) {
-        try {
-            project.setSessionProperty(TeamPlugin.PROVIDER_PROP_KEY, NOT_MAPPED);
-        } catch (CoreException e) {
-            // Just ignore the error as this is just an optimization
-        }
-    }
+	private static void markAsUnshared(IProject project) {
+		try {
+			project.setSessionProperty(TeamPlugin.PROVIDER_PROP_KEY, NOT_MAPPED);
+		} catch (CoreException e) {
+			// Just ignore the error as this is just an optimization
+		}
+	}
 
 	@Override
 	public IProject getProject() {

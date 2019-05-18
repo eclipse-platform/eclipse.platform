@@ -726,8 +726,8 @@ public class CVSHistoryTableProvider {
 					treeViewer.getTree().setSortDirection(oldSorter.isReversed() ? SWT.DOWN : SWT.UP);
 					treeViewer.refresh();
 				} else {
-				    treeViewer.getTree().setSortColumn(treeColumn);
-                    treeViewer.getTree().setSortDirection(SWT.UP);
+					treeViewer.getTree().setSortColumn(treeColumn);
+					treeViewer.getTree().setSortDirection(SWT.UP);
 					treeViewer.setComparator(new HistoryComparator(column));
 				}
 			}

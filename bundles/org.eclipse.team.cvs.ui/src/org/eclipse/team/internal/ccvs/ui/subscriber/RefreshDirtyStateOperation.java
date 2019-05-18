@@ -50,15 +50,15 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 	protected void runWithProjectRule(IProject project, SyncInfoSet set, IProgressMonitor monitor) throws TeamException {
 		final SyncInfo[] infos = set.getSyncInfos();
 		if (infos.length == 0) return;
-        monitor.beginTask(null, 200);
-        ensureBaseContentsCached(project, infos, Policy.subMonitorFor(monitor, 100));
-        performCleanTimestamps(project, infos, monitor);
-        monitor.done();
+		monitor.beginTask(null, 200);
+		ensureBaseContentsCached(project, infos, Policy.subMonitorFor(monitor, 100));
+		performCleanTimestamps(project, infos, monitor);
+		monitor.done();
 	}
 
 	private void performCleanTimestamps(IProject project, final SyncInfo[] infos, IProgressMonitor monitor) throws CVSException {
 		ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
-        final ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
+		final ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
 		folder.run(monitor1 -> {
 			monitor1.beginTask(null, infos.length * 100);
 			for (int i = 0; i < infos.length; i++) {
@@ -116,9 +116,9 @@ public class RefreshDirtyStateOperation extends CVSSubscriberOperation {
 		} catch (InterruptedException e) {
 			throw new OperationCanceledException();
 		}
-    }
-    
-    @Override
+	}
+	
+	@Override
 	protected String getErrorTitle() {
 		return CVSUIMessages.RefreshDirtyStateOperation_0; 
 	}

@@ -179,8 +179,8 @@ public class Checkout extends Command {
 		
 		return RemoteModule.createRemoteModules(moduleDefinitionListener.getModuleExpansions(), session.getCVSRepositoryLocation(), tag);
 	}
-    
-    protected String getDisplayText() {
-        return "checkout"; //$NON-NLS-1$
-    }
+	
+	protected String getDisplayText() {
+		return "checkout"; //$NON-NLS-1$
+	}
 }

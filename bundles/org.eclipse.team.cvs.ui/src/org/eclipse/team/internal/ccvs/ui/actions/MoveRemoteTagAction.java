@@ -48,13 +48,13 @@ public class MoveRemoteTagAction extends TagInRepositoryAction {
 		return operation;
 	}
 
-    private boolean isFolderSelected() {
-        ICVSResource[] resources = getSelectedCVSResources();
-        for (int i = 0; i < resources.length; i++) {
-            ICVSResource resource = resources[i];
-            if (resource.isFolder()) 
-                return true;
-        }
-        return false;
-    }
+	private boolean isFolderSelected() {
+		ICVSResource[] resources = getSelectedCVSResources();
+		for (int i = 0; i < resources.length; i++) {
+			ICVSResource resource = resources[i];
+			if (resource.isFolder()) 
+				return true;
+		}
+		return false;
+	}
 }

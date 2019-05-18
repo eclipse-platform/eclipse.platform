@@ -26,11 +26,11 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 public class TagRootElement implements IWorkbenchAdapter, IAdaptable {
 	private TagSource tagSource;
 	private int typeOfTagRoot;
-    private final Object parent;
+	private final Object parent;
 	
 	public TagRootElement(Object parent, TagSource tagSource, int typeOfTagRoot) {
 		this.parent = parent;
-        this.typeOfTagRoot = typeOfTagRoot;
+		this.typeOfTagRoot = typeOfTagRoot;
 		this.tagSource = tagSource;
 	}
 	

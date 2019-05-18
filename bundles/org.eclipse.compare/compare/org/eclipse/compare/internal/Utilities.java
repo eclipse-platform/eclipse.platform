@@ -429,7 +429,7 @@ public class Utilities {
 					for (Iterator it = validPaths.iterator(); it.hasNext();) {
 						IPath path = (IPath) it.next();
 						if(path.isPrefixOf(resourceFullPath) ||
-					       resourceFullPath.isPrefixOf(path)) {
+							resourceFullPath.isPrefixOf(path)) {
 							return false;
 						}
 					}

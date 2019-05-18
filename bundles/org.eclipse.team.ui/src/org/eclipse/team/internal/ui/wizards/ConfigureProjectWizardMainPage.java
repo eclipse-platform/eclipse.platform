@@ -121,7 +121,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		setControl(composite);
 
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARE_PROJECT_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARE_PROJECT_PAGE);
 
 		Label label = new Label(composite, SWT.LEFT);
 		label.setText(description);
@@ -201,7 +201,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 			viewer.setInput(wizards);
 		}
 		initializeWizardSelection();
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	/* package */ IProject[] getUnsharedProjects() {

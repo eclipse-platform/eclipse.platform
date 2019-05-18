@@ -40,23 +40,23 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.*;
  * use by the repository and sync view.
  */
 public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
-    /*
-     * Listener for accumulating the entries fetched using the "cvs log" command
-     */
+	/*
+	 * Listener for accumulating the entries fetched using the "cvs log" command
+	 */
 	private final class LogEntryListener implements ILogEntryListener {
-        private final List<ILogEntry> entries = new ArrayList<>();
-        @Override
+		private final List<ILogEntry> entries = new ArrayList<>();
+		@Override
 		public void handleLogEntryReceived(ILogEntry entry) {
-            if (entry.getRemoteFile().getRepositoryRelativePath().equals(getRepositoryRelativePath())) {
-                entries.add(entry);
-            }
-        }
-        public ILogEntry[] getEntries() {
-            return entries.toArray(new ILogEntry[entries.size()]);
-        }
-    }
+			if (entry.getRemoteFile().getRepositoryRelativePath().equals(getRepositoryRelativePath())) {
+				entries.add(entry);
+			}
+		}
+		public ILogEntry[] getEntries() {
+			return entries.toArray(new ILogEntry[entries.size()]);
+		}
+	}
 
-    // sync info in byte form
+	// sync info in byte form
 	private byte[] syncBytes;
 	// cache the log entry for the remote file
 	private ILogEntry entry;
@@ -204,7 +204,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 	
 	private void internalFetchContents(IProgressMonitor monitor) throws CVSException {
 		monitor.beginTask(CVSMessages.RemoteFile_getContents, 100);
-        monitor.subTask(CVSMessages.RemoteFile_getContents);
+		monitor.subTask(CVSMessages.RemoteFile_getContents);
 		if (getRevision().equals(ResourceSyncInfo.ADDED_REVISION)) {
 			// The revision of the remote file is not known so we need to use the tag to get the status of the file
 			CVSTag tag = getSyncInfo().getTag();
@@ -242,7 +242,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 			session.open(Policy.subMonitorFor(monitor, 10), false /* read-only */);
 			try {
 				try {
-				    LogEntryListener listener = new LogEntryListener();
+					LogEntryListener listener = new LogEntryListener();
 					IStatus status = Command.LOG.execute(
 						session,
 						Command.NO_GLOBAL_OPTIONS,
@@ -423,7 +423,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		// RemoteFiles are always read only
- 	}
+	}
 
 	@Override
 	public boolean isReadOnly() {
@@ -465,7 +465,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 	 * 
 	 * The revision of the remote file is used as the base for the tagging operation
 	 */
-	 @Override
+	@Override
 	public IStatus tag(final CVSTag tag, final LocalOption[] localOptions, IProgressMonitor monitor) throws CVSException {
 		monitor = Policy.monitorFor(monitor);
 		monitor.beginTask(null, 100);
@@ -483,7 +483,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 		} finally {
 			session.close();
 		}
-	 }
+	}
 	
 	@Override
 	public boolean equals(Object target) {
@@ -602,7 +602,7 @@ public class RemoteFile extends RemoteResource implements ICVSRemoteFile  {
 	 * @throws TeamException
 	 */
 	public void setContents(IFile file, IProgressMonitor monitor) throws TeamException, CoreException {
-	    setContents(file.getContents(), monitor);
+		setContents(file.getContents(), monitor);
 	}
 
 	@Override

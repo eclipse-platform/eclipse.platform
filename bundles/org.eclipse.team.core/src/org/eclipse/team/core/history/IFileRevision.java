@@ -102,8 +102,8 @@ public interface IFileRevision {
 	 * Returns the branches names of file revision.
 	 *
 	 * @return an array of ITag's if branch names exist for this revision
-     * or an empty ITag array if no names exist
-     * @since 3.6
+	 * or an empty ITag array if no names exist
+	 * @since 3.6
 	 */
 	public ITag[] getBranches();
 

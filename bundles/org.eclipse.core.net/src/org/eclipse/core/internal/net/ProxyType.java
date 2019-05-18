@@ -57,27 +57,27 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public static final int NEVER_SET = 2;
 	public static int socksSystemPropertySetting;
 
-    /**
-     * Absolute path to the node for the cached proxy information
-     */
-    private static final String PREFERENCES_CONTEXT = "/org.eclipse.core.net.proxy.auth"; //$NON-NLS-1$
+	/**
+	 * Absolute path to the node for the cached proxy information
+	 */
+	private static final String PREFERENCES_CONTEXT = "/org.eclipse.core.net.proxy.auth"; //$NON-NLS-1$
 	/*
 	 * Fields used to cache authentication information in the keyring
 	 */
-    private static final String INFO_PROXY_USER = "user"; //$NON-NLS-1$
-    private static final String INFO_PROXY_PASS = "pass"; //$NON-NLS-1$
-    static {
-        String value = System.getProperty(PROP_SOCKS_SYSTEM_PROPERTY_HANDLING);
-        if (value == null) {
-        	socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
-        } else if (value.equals("always")) { //$NON-NLS-1$
-        	socksSystemPropertySetting = ALWAYS_SET;
-        } else if (value.equals("never")) { //$NON-NLS-1$
-        	socksSystemPropertySetting = NEVER_SET;
-        } else {
-        	socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
-        }
-    }
+	private static final String INFO_PROXY_USER = "user"; //$NON-NLS-1$
+	private static final String INFO_PROXY_PASS = "pass"; //$NON-NLS-1$
+	static {
+		String value = System.getProperty(PROP_SOCKS_SYSTEM_PROPERTY_HANDLING);
+		if (value == null) {
+			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
+		} else if (value.equals("always")) { //$NON-NLS-1$
+			socksSystemPropertySetting = ALWAYS_SET;
+		} else if (value.equals("never")) { //$NON-NLS-1$
+			socksSystemPropertySetting = NEVER_SET;
+		} else {
+			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
+		}
+	}
 
 	private String name;
 	private boolean updatingPreferences;
@@ -532,7 +532,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		return node;
 	}
 
-    private void loadProxyAuth(IProxyData data) {
+	private void loadProxyAuth(IProxyData data) {
 		ISecurePreferences node = getNode();
 		if (node == null)
 			return;

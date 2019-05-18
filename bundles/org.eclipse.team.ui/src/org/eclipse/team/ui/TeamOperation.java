@@ -66,20 +66,20 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 	 */
 	private static class TeamOperationJobContext extends JobRunnableContext {
 
-	    private final TeamOperation operation;
-        private IAction gotoAction;
+		private final TeamOperation operation;
+		private IAction gotoAction;
 
-	    public TeamOperationJobContext(TeamOperation operation) {
-	        super(operation.getJobName(), operation, operation.getSite());
-	        this.operation = operation;
-	    }
+		public TeamOperationJobContext(TeamOperation operation) {
+			super(operation.getJobName(), operation, operation.getSite());
+			this.operation = operation;
+		}
 
 		@Override
 		protected void configureJob(Job job) {
-		    super.configureJob(job);
-		    if (operation.isKeepOneProgressServiceEntry())
-		        job.setProperty(IProgressConstants.KEEPONE_PROPERTY, Boolean.TRUE);
-		    else if(operation.getKeepOperation())
+			super.configureJob(job);
+			if (operation.isKeepOneProgressServiceEntry())
+				job.setProperty(IProgressConstants.KEEPONE_PROPERTY, Boolean.TRUE);
+			else if(operation.getKeepOperation())
 				job.setProperty(IProgressConstants.KEEP_PROPERTY, Boolean.TRUE);
 			gotoAction = operation.getGotoAction();
 			if(gotoAction != null)
@@ -89,30 +89,30 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 				job.setProperty(IProgressConstants.ICON_PROPERTY, icon);
 		}
 
-        @Override
+		@Override
 		protected boolean belongsTo(IContextJob job, Object family) {
-            if (family instanceof IContextJob) {
-                IContextJob otherJob = (IContextJob)family;
-                IRunnableWithProgress runnable = otherJob.getRunnable();
-                if (runnable instanceof TeamOperation) {
-                    return operation.isSameFamilyAs((TeamOperation)runnable);
-                }
-            }
-            return operation.belongsTo(family);
-        }
+			if (family instanceof IContextJob) {
+				IContextJob otherJob = (IContextJob)family;
+				IRunnableWithProgress runnable = otherJob.getRunnable();
+				if (runnable instanceof TeamOperation) {
+					return operation.isSameFamilyAs((TeamOperation)runnable);
+				}
+			}
+			return operation.belongsTo(family);
+		}
 
-        @Override
+		@Override
 		protected IStatus getCompletionStatus() {
-            if (gotoAction != null) {
-                return new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, gotoAction.getText(), null);
-            }
-            return super.getCompletionStatus();
-        }
+			if (gotoAction != null) {
+				return new Status(IStatus.OK, TeamUIPlugin.ID, IStatus.OK, gotoAction.getText(), null);
+			}
+			return super.getCompletionStatus();
+		}
 
-        @Override
+		@Override
 		protected boolean isUser() {
-            return operation.isUserInitiated();
-        }
+			return operation.isUserInitiated();
+		}
 	}
 
 	/**
@@ -124,7 +124,7 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 		this(part, null);
 	}
 
-    /**
+	/**
 	 * Create an team operation that will run in the given context.
 	 * @param context a runnable context
 	 */
@@ -251,75 +251,75 @@ public abstract class TeamOperation extends JobChangeAdapter implements IRunnabl
 	}
 
 	/**
-     * This method is called to allow subclasses to have the results of the
-     * operation remain available to the user in the progress service even after
-     * the job is done. This method is only relevant if the operation is run as
-     * a job (i.e., <code>canRunAsJob</code> returns <code>true</code>).
-     *
-     * @return <code>true</code> to keep the operation and <code>false</code>
-     *         otherwise.
-     */
+	 * This method is called to allow subclasses to have the results of the
+	 * operation remain available to the user in the progress service even after
+	 * the job is done. This method is only relevant if the operation is run as
+	 * a job (i.e., <code>canRunAsJob</code> returns <code>true</code>).
+	 *
+	 * @return <code>true</code> to keep the operation and <code>false</code>
+	 *         otherwise.
+	 */
 	protected boolean getKeepOperation() {
 		return false;
 	}
 
 	/**
-     * This method is similar to <code>getKeepOperation</code> but will
-     * only keep one entry of a particular type available.
-     * This method is only relevant if the operation is run as
-     * a job (i.e., <code>canRunAsJob</code> returns <code>true</code>).
-     * Subclasses that override this method should also override
-     * <code>isSameFamilyAs</code> in order to match operations of the same type.
-     *
-     * @return <code>true</code> to keep the operation and <code>false</code>
-     *         otherwise.
-     * @since 3.1
-     */
-    public boolean isKeepOneProgressServiceEntry() {
-        return false;
-    }
+	 * This method is similar to <code>getKeepOperation</code> but will
+	 * only keep one entry of a particular type available.
+	 * This method is only relevant if the operation is run as
+	 * a job (i.e., <code>canRunAsJob</code> returns <code>true</code>).
+	 * Subclasses that override this method should also override
+	 * <code>isSameFamilyAs</code> in order to match operations of the same type.
+	 *
+	 * @return <code>true</code> to keep the operation and <code>false</code>
+	 *         otherwise.
+	 * @since 3.1
+	 */
+	public boolean isKeepOneProgressServiceEntry() {
+		return false;
+	}
 
-    /**
-     * Return whether this Team operation belongs to the same family
-     * as the given operation for the purpose of showing only one
-     * operation of the same type in the progress service when
-     * <code>isKeepOneProgressServiceEntry</code> is overridden to
-     * return <code>true</code>. By default,
-     * <code>false</code> is returned. Subclasses may override.
-     * @param operation a team operation
-     * @since 3.1
-     */
-    protected boolean isSameFamilyAs(TeamOperation operation) {
-        return false;
-    }
+	/**
+	 * Return whether this Team operation belongs to the same family
+	 * as the given operation for the purpose of showing only one
+	 * operation of the same type in the progress service when
+	 * <code>isKeepOneProgressServiceEntry</code> is overridden to
+	 * return <code>true</code>. By default,
+	 * <code>false</code> is returned. Subclasses may override.
+	 * @param operation a team operation
+	 * @since 3.1
+	 */
+	protected boolean isSameFamilyAs(TeamOperation operation) {
+		return false;
+	}
 
-    /**
-     * Return whether the job that is running this operation should be considered
-     * a member member of the given family. Subclasses can override this method in
-     * order to support the family based functionality provided by the {@link IJobManager}.
-     * By default, <code>false</code> is always returned. Subclasses that override the
-     * <code>isKeepOneProgressServiceEntry</code> method do not need to override
-     * this method, but instead should override <code>isSameFamilyAs</code>.
-     *
-     * @param family the family being tested.
-     * @return whether the job that is running this operation should be considered
-     * a member member of the given family.
-     * @since 3.1
-     */
-    public boolean belongsTo(Object family) {
-        return false;
-    }
+	/**
+	 * Return whether the job that is running this operation should be considered
+	 * a member member of the given family. Subclasses can override this method in
+	 * order to support the family based functionality provided by the {@link IJobManager}.
+	 * By default, <code>false</code> is always returned. Subclasses that override the
+	 * <code>isKeepOneProgressServiceEntry</code> method do not need to override
+	 * this method, but instead should override <code>isSameFamilyAs</code>.
+	 *
+	 * @param family the family being tested.
+	 * @return whether the job that is running this operation should be considered
+	 * a member member of the given family.
+	 * @since 3.1
+	 */
+	public boolean belongsTo(Object family) {
+		return false;
+	}
 
-    /**
-     * Indicates whether the operation was user initiated. The
-     * progress for user initiated jobs may be presented differently
-     * than non-user initiated operations if they are run as jobs.
-     * @return whether the operation is user initiated
-     * @since 3.1
-     */
-    public boolean isUserInitiated() {
-        return true;
-    }
+	/**
+	 * Indicates whether the operation was user initiated. The
+	 * progress for user initiated jobs may be presented differently
+	 * than non-user initiated operations if they are run as jobs.
+	 * @return whether the operation is user initiated
+	 * @since 3.1
+	 */
+	public boolean isUserInitiated() {
+		return true;
+	}
 
 	/**
 	 * Return a shell that can be used by the operation to display dialogs, etc.

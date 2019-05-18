@@ -55,26 +55,26 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		}
 	}
 
-    @Override
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
-        if (openWithActions != null) openWithActions.fillActionBars(actionBars);
-        if (refactorActions != null) refactorActions.fillActionBars(actionBars);
-        if (actionBars != null && showPreferences != null) {
-        	IMenuManager menu = actionBars.getMenuManager();
-        	appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
-        }
-    }
+		if (openWithActions != null) openWithActions.fillActionBars(actionBars);
+		if (refactorActions != null) refactorActions.fillActionBars(actionBars);
+		if (actionBars != null && showPreferences != null) {
+			IMenuManager menu = actionBars.getMenuManager();
+			appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
+		}
+	}
 
-    @Override
+	@Override
 	public void updateActionBars() {
-        if (openWithActions != null) openWithActions.updateActionBars();
-        if (refactorActions != null) refactorActions.updateActionBars();
-    }
+		if (openWithActions != null) openWithActions.updateActionBars();
+		if (refactorActions != null) refactorActions.updateActionBars();
+	}
 
 	@Override
 	public void fillContextMenu(IMenuManager manager) {
 
-        final IContributionItem fileGroup = findGroup(manager, ISynchronizePageConfiguration.FILE_GROUP);
+		final IContributionItem fileGroup = findGroup(manager, ISynchronizePageConfiguration.FILE_GROUP);
 		if (openWithActions != null && fileGroup != null) {
 			openWithActions.fillContextMenu(manager, fileGroup.getId());
 		}
@@ -92,9 +92,9 @@ public class DefaultSynchronizePageActions extends SynchronizePageActionGroup {
 		if (openWithActions != null) openWithActions.dispose();
 	}
 
-    @Override
+	@Override
 	public void setContext(ActionContext context) {
-        if (openWithActions != null) openWithActions.setContext(context);
-        if (refactorActions != null) refactorActions.setContext(context);
-    }
+		if (openWithActions != null) openWithActions.setContext(context);
+		if (refactorActions != null) refactorActions.setContext(context);
+	}
 }

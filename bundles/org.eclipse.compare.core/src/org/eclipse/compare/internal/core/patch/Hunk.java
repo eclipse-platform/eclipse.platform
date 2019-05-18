@@ -63,9 +63,9 @@ public class Hunk implements IHunk {
 	public Hunk(FilePatch2 parent, int hunkType, int oldStart, int oldLength,
 			int newStart, int newLength, String[] lines) {
 		this.fParent = parent;
-        if (this.fParent != null) {
-            this.fParent.add(this);
-        }
+		if (this.fParent != null) {
+			this.fParent.add(this);
+		}
 		this.hunkType = hunkType;
 		this.fOldLength = oldLength;
 		this.fOldStart = oldStart;
@@ -74,9 +74,9 @@ public class Hunk implements IHunk {
 		this.fLines = lines;
 	}
 
-    public Hunk(FilePatch2 parent, Hunk toCopy) {
-    	this(parent, toCopy.hunkType, toCopy.fOldStart, toCopy.fOldLength, toCopy.fNewStart, toCopy.fNewLength, toCopy.fLines);
-    }
+	public Hunk(FilePatch2 parent, Hunk toCopy) {
+		this(parent, toCopy.hunkType, toCopy.fOldStart, toCopy.fOldLength, toCopy.fNewStart, toCopy.fNewLength, toCopy.fLines);
+	}
 
 	/*
 	 * Returns the contents of this hunk.

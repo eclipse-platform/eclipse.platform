@@ -22,7 +22,7 @@ public abstract class ModelParticipantChangeSetCapability extends ChangeSetCapab
 
 	@Override
 	public boolean enableChangeSetsByDefault() {
-	    return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_COMMIT_SET_DEFAULT_ENABLEMENT);
+		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_COMMIT_SET_DEFAULT_ENABLEMENT);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public abstract class ModelParticipantChangeSetCapability extends ChangeSetCapab
 
 	@Override
 	public boolean enableCheckedInChangeSetsFor(ISynchronizePageConfiguration configuration) {
-	    return supportsCheckedInChangeSets() && 
+		return supportsCheckedInChangeSets() && 
 			configuration.getMode() != ISynchronizePageConfiguration.OUTGOING_MODE;
 	}
 

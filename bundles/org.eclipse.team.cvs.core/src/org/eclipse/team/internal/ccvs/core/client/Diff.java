@@ -42,21 +42,21 @@ public class Diff extends Command {
 	 * so when there is a difference between the checked files.	
 	 */
 	protected IStatus doExecute(Session session, GlobalOption[] globalOptions, LocalOption[] localOptions,
-								  String[] arguments, ICommandOutputListener listener, IProgressMonitor monitor) throws CVSException {
+								String[] arguments, ICommandOutputListener listener, IProgressMonitor monitor) throws CVSException {
 		try {
 			IStatus status = super.doExecute(session, globalOptions, localOptions, arguments, listener, monitor);
-            if (status.getCode() == CVSStatus.SERVER_ERROR) {
-                if (status.isMultiStatus()) {
-                    IStatus[] children = status.getChildren();
-                    for (int i = 0; i < children.length; i++) {
-                        IStatus child = children[i];
-                        if (child.getMessage().indexOf("[diff aborted]") != -1) { //$NON-NLS-1$
-                            throw new CVSServerException(status);
-                        }
-                    }
-                }
-            }
-            return status;
+			if (status.getCode() == CVSStatus.SERVER_ERROR) {
+				if (status.isMultiStatus()) {
+					IStatus[] children = status.getChildren();
+					for (int i = 0; i < children.length; i++) {
+						IStatus child = children[i];
+						if (child.getMessage().indexOf("[diff aborted]") != -1) { //$NON-NLS-1$
+							throw new CVSServerException(status);
+						}
+					}
+				}
+			}
+			return status;
 		} catch (CVSServerException e) {
 			if (e.containsErrors()) throw e;
 			return e.getStatus();

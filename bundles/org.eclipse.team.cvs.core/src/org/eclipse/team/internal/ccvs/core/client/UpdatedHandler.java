@@ -92,27 +92,27 @@ public class UpdatedHandler extends ResponseHandler {
 		boolean executable = permissionsLine.indexOf(EXECUTE_FLAG) != -1;
 		
 		try {
-            // The file may have been set as read-only by a previous checkout/update
-            if (mFile.isReadOnly()) mFile.setReadOnly(false);
-        } catch (CVSException e) {
-            // Just log and keep going
-            CVSProviderPlugin.log(e);
-        }
+			// The file may have been set as read-only by a previous checkout/update
+			if (mFile.isReadOnly()) mFile.setReadOnly(false);
+		} catch (CVSException e) {
+			// Just log and keep going
+			CVSProviderPlugin.log(e);
+		}
 		
 		try {
-            receiveTargetFile(session, mFile, entryLine, modTime, binary, readOnly, executable, monitor);
-        } catch (CVSException e) {
-            // An error occurred while recieving the file.
-            // If it is due to an invalid file name,
-            // accumulate the error and continue.
-            // Otherwise, exit
-            if (!handleInvalidResourceName(session, mFile, e)) {
-                throw e;
-            }
-        }
+			receiveTargetFile(session, mFile, entryLine, modTime, binary, readOnly, executable, monitor);
+		} catch (CVSException e) {
+			// An error occurred while recieving the file.
+			// If it is due to an invalid file name,
+			// accumulate the error and continue.
+			// Otherwise, exit
+			if (!handleInvalidResourceName(session, mFile, e)) {
+				throw e;
+			}
+		}
 	}
 
-    protected ICVSFile getTargetFile(ICVSFolder mParent, String fileName, byte[] entryBytes) throws CVSException {
+	protected ICVSFile getTargetFile(ICVSFolder mParent, String fileName, byte[] entryBytes) throws CVSException {
 		return mParent.getFile(fileName);
 	}
 	
@@ -148,12 +148,12 @@ public class UpdatedHandler extends ResponseHandler {
 		}
 		mFile.setSyncInfo(newInfoWithTimestamp, modificationState);
 		try {
-            if (readOnly) mFile.setReadOnly(true);
+			if (readOnly) mFile.setReadOnly(true);
 			if (executable) mFile.setExecutable(true);
-        } catch (CVSException e) {
-            // Just log and keep going
-            CVSProviderPlugin.log(e);
-        }
+		} catch (CVSException e) {
+			// Just log and keep going
+			CVSProviderPlugin.log(e);
+		}
 	}
 
 	public int getHandlerType() {

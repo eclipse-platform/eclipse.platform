@@ -96,7 +96,7 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 		// F1 Help
 		String helpID = getHelpContextId();
 		if (helpID != null)
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), helpID);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), helpID);
 	}
 	
 	@Override
@@ -233,23 +233,23 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 		bars.updateActionBars();
 	}
 	
-    /**
-     * Returns the action group.
-     * 
-     * @return the action group
-     */
-    private WorkingSetFilterActionGroup getWorkingSetActionGroup() {
-        return workingSetActionGroup;
-    }
+	/**
+	 * Returns the action group.
+	 * 
+	 * @return the action group
+	 */
+	private WorkingSetFilterActionGroup getWorkingSetActionGroup() {
+		return workingSetActionGroup;
+	}
 
-    /**
-     * Sets the action group.
-     * 
-     * @param actionGroup the action group
-     */
-    private void setActionGroup(WorkingSetFilterActionGroup actionGroup) {
-        this.workingSetActionGroup = actionGroup;
-    }
+	/**
+	 * Sets the action group.
+	 * 
+	 * @param actionGroup the action group
+	 */
+	private void setActionGroup(WorkingSetFilterActionGroup actionGroup) {
+		this.workingSetActionGroup = actionGroup;
+	}
 	
 	/**
 	 * Add the menu actions that were contributed in plugin.xml
@@ -286,9 +286,9 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 		((RemoteContentProvider)viewer.getContentProvider()).cancelJobs(CVSUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryRoots());
 		((RemoteContentProvider)viewer.getContentProvider()).purgeCache();
 		CVSUIPlugin.getPlugin().getRepositoryManager().purgeCache();
-        viewer.getControl().setRedraw(false);
+		viewer.getControl().setRedraw(false);
 		viewer.refresh();
-        viewer.getControl().setRedraw(true);
+		viewer.getControl().setRedraw(true);
 	}
 	
 	public void collapseAll() {
@@ -334,9 +334,9 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 	@Override
 	public void dispose() {
 		getSite().getWorkbenchWindow().getSelectionService().removePostSelectionListener(this);
-        if (getWorkingSetActionGroup() != null) {
-            getWorkingSetActionGroup().dispose();
-        }
+		if (getWorkingSetActionGroup() != null) {
+			getWorkingSetActionGroup().dispose();
+		}
 		super.dispose();
 		viewer = null;
 	}

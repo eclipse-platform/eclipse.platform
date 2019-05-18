@@ -22,26 +22,26 @@ public class SyncUpdate extends Update {
 	public SyncUpdate() { };
 
 	@Override
-    protected void sendFileStructure(Session session, ICVSResource[] resources,
-            LocalOption[] localOptions, boolean emptyFolders, IProgressMonitor monitor) throws CVSException {
+	protected void sendFileStructure(Session session, ICVSResource[] resources,
+			LocalOption[] localOptions, boolean emptyFolders, IProgressMonitor monitor) throws CVSException {
 			
 		checkResourcesManaged(session, resources);
 		new FileStructureVisitor(session, localOptions, emptyFolders, true, false).visit(session, resources, monitor);
 	}
 	
-    @Override
-    protected boolean isWorkspaceModification() {
-        // The sync-update will not modify the workspace
-        return false;
-    }
-    
-    @Override
-    protected GlobalOption[] filterGlobalOptions(Session session, GlobalOption[] globalOptions) {
-        // Ensure that the DO_NOT_CHANGE (-n) global option is present
+	@Override
+	protected boolean isWorkspaceModification() {
+		// The sync-update will not modify the workspace
+		return false;
+	}
+	
+	@Override
+	protected GlobalOption[] filterGlobalOptions(Session session, GlobalOption[] globalOptions) {
+		// Ensure that the DO_NOT_CHANGE (-n) global option is present
 		if (! Command.DO_NOT_CHANGE.isElementOf(globalOptions)) {
 			globalOptions = Command.DO_NOT_CHANGE.addToEnd(globalOptions);
 		}
-        return super.filterGlobalOptions(session, globalOptions);
-    }
+		return super.filterGlobalOptions(session, globalOptions);
+	}
 
 }

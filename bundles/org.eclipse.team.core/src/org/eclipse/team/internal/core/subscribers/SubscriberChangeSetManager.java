@@ -42,288 +42,288 @@ import org.osgi.service.prefs.Preferences;
  */
 public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 
-    private static final String PREF_CHANGE_SETS = "changeSets"; //$NON-NLS-1$
+	private static final String PREF_CHANGE_SETS = "changeSets"; //$NON-NLS-1$
 
-    private static final int RESOURCE_REMOVAL = 1;
-    private static final int RESOURCE_CHANGE = 2;
+	private static final int RESOURCE_REMOVAL = 1;
+	private static final int RESOURCE_CHANGE = 2;
 
-    private EventHandler handler;
-    private ResourceCollector collector;
+	private EventHandler handler;
+	private ResourceCollector collector;
 
-    /*
-     * Background event handler for serializing and batching change set changes
-     */
-    private class EventHandler extends BackgroundEventHandler {
+	/*
+	 * Background event handler for serializing and batching change set changes
+	 */
+	private class EventHandler extends BackgroundEventHandler {
 
-        private List<Event> dispatchEvents = new ArrayList<>();
+		private List<Event> dispatchEvents = new ArrayList<>();
 
-        protected EventHandler(String jobName, String errorTitle) {
-            super(jobName, errorTitle);
-        }
+		protected EventHandler(String jobName, String errorTitle) {
+			super(jobName, errorTitle);
+		}
 
-        @Override
+		@Override
 		protected void processEvent(Event event, IProgressMonitor monitor) throws CoreException {
-            // Handle everything in the dispatch
-            if (isShutdown())
-                throw new OperationCanceledException();
-            dispatchEvents.add(event);
-        }
+			// Handle everything in the dispatch
+			if (isShutdown())
+				throw new OperationCanceledException();
+			dispatchEvents.add(event);
+		}
 
-        @Override
+		@Override
 		protected boolean doDispatchEvents(IProgressMonitor monitor) throws TeamException {
-            if (dispatchEvents.isEmpty()) {
-                return false;
-            }
-            if (isShutdown())
-                throw new OperationCanceledException();
-            ResourceDiffTree[] locked = null;
-            try {
-                locked = beginDispath();
-                for (Iterator iter = dispatchEvents.iterator(); iter.hasNext();) {
-                    Event event = (Event) iter.next();
-	                switch (event.getType()) {
-	                case RESOURCE_REMOVAL:
-	                    handleRemove(event.getResource());
-	                    break;
-	                case RESOURCE_CHANGE:
-	                    handleChange(event.getResource(), ((ResourceEvent)event).getDepth());
-	                    break;
-	                default:
-	                    break;
-	                }
-                    if (isShutdown())
-                        throw new OperationCanceledException();
-                }
-            } catch (CoreException e) {
+			if (dispatchEvents.isEmpty()) {
+				return false;
+			}
+			if (isShutdown())
+				throw new OperationCanceledException();
+			ResourceDiffTree[] locked = null;
+			try {
+				locked = beginDispath();
+				for (Iterator iter = dispatchEvents.iterator(); iter.hasNext();) {
+					Event event = (Event) iter.next();
+					switch (event.getType()) {
+					case RESOURCE_REMOVAL:
+						handleRemove(event.getResource());
+						break;
+					case RESOURCE_CHANGE:
+						handleChange(event.getResource(), ((ResourceEvent)event).getDepth());
+						break;
+					default:
+						break;
+					}
+					if (isShutdown())
+						throw new OperationCanceledException();
+				}
+			} catch (CoreException e) {
 				throw TeamException.asTeamException(e);
 			} finally {
-                try {
-                    endDispatch(locked, monitor);
-                } finally {
-                    dispatchEvents.clear();
-                }
-            }
-            return true;
-        }
+				try {
+					endDispatch(locked, monitor);
+				} finally {
+					dispatchEvents.clear();
+				}
+			}
+			return true;
+		}
 
-        /*
-         * Begin input on all the sets and return the sync sets that were
-         * locked. If this method throws an exception then the client
-         * can assume that no sets were locked
-         */
-        private ResourceDiffTree[] beginDispath() {
-            ChangeSet[] sets = getSets();
-            List<ResourceDiffTree> lockedSets = new ArrayList<>();
-            try {
-                for (int i = 0; i < sets.length; i++) {
-                    ActiveChangeSet set = (ActiveChangeSet)sets[i];
-                    ResourceDiffTree tree = set.internalGetDiffTree();
-                    lockedSets.add(tree);
-                    tree.beginInput();
-                }
-                return lockedSets.toArray(new ResourceDiffTree[lockedSets.size()]);
-            } catch (RuntimeException e) {
-                try {
-                    for (Iterator iter = lockedSets.iterator(); iter.hasNext();) {
-                    	ResourceDiffTree tree = (ResourceDiffTree) iter.next();
-                        try {
-                            tree.endInput(null);
-                        } catch (Throwable e1) {
-                            // Ignore so that original exception is not masked
-                        }
-                    }
-                } catch (Throwable e1) {
-                    // Ignore so that original exception is not masked
-                }
-                throw e;
-            }
-        }
+		/*
+		 * Begin input on all the sets and return the sync sets that were
+		 * locked. If this method throws an exception then the client
+		 * can assume that no sets were locked
+		 */
+		private ResourceDiffTree[] beginDispath() {
+			ChangeSet[] sets = getSets();
+			List<ResourceDiffTree> lockedSets = new ArrayList<>();
+			try {
+				for (int i = 0; i < sets.length; i++) {
+					ActiveChangeSet set = (ActiveChangeSet)sets[i];
+					ResourceDiffTree tree = set.internalGetDiffTree();
+					lockedSets.add(tree);
+					tree.beginInput();
+				}
+				return lockedSets.toArray(new ResourceDiffTree[lockedSets.size()]);
+			} catch (RuntimeException e) {
+				try {
+					for (Iterator iter = lockedSets.iterator(); iter.hasNext();) {
+						ResourceDiffTree tree = (ResourceDiffTree) iter.next();
+						try {
+							tree.endInput(null);
+						} catch (Throwable e1) {
+							// Ignore so that original exception is not masked
+						}
+					}
+				} catch (Throwable e1) {
+					// Ignore so that original exception is not masked
+				}
+				throw e;
+			}
+		}
 
-        private void endDispatch(ResourceDiffTree[] locked, IProgressMonitor monitor) {
-            if (locked == null) {
-                // The begin failed so there's nothing to unlock
-                return;
-            }
-            monitor.beginTask(null, 100 * locked.length);
-            for (int i = 0; i < locked.length; i++) {
-            	ResourceDiffTree tree = locked[i];
-                try {
-                    tree.endInput(Policy.subMonitorFor(monitor, 100));
-                } catch (RuntimeException e) {
-                    // Don't worry about ending every set if an error occurs.
-                    // Instead, log the error and suggest a restart.
-                    TeamPlugin.log(IStatus.ERROR, Messages.SubscriberChangeSetCollector_0, e);
-                    throw e;
-                }
-            }
-            monitor.done();
-        }
+		private void endDispatch(ResourceDiffTree[] locked, IProgressMonitor monitor) {
+			if (locked == null) {
+				// The begin failed so there's nothing to unlock
+				return;
+			}
+			monitor.beginTask(null, 100 * locked.length);
+			for (int i = 0; i < locked.length; i++) {
+				ResourceDiffTree tree = locked[i];
+				try {
+					tree.endInput(Policy.subMonitorFor(monitor, 100));
+				} catch (RuntimeException e) {
+					// Don't worry about ending every set if an error occurs.
+					// Instead, log the error and suggest a restart.
+					TeamPlugin.log(IStatus.ERROR, Messages.SubscriberChangeSetCollector_0, e);
+					throw e;
+				}
+			}
+			monitor.done();
+		}
 
-        @Override
+		@Override
 		protected synchronized void queueEvent(Event event, boolean front) {
-            // Override to allow access from enclosing class
-            super.queueEvent(event, front);
-        }
+			// Override to allow access from enclosing class
+			super.queueEvent(event, front);
+		}
 
-        /*
-         * Handle the removal
-         */
-        private void handleRemove(IResource resource) {
-            ChangeSet[] sets = getSets();
-            for (int i = 0; i < sets.length; i++) {
-                ChangeSet set = sets[i];
-                // This will remove any descendants from the set and callback to
-                // resourcesChanged which will batch changes
-                if (!set.isEmpty()) {
-	                set.rootRemoved(resource, IResource.DEPTH_INFINITE);
-	                if (set.isEmpty()) {
-	                    remove(set);
-	                }
-                }
-            }
-        }
+		/*
+		 * Handle the removal
+		 */
+		private void handleRemove(IResource resource) {
+			ChangeSet[] sets = getSets();
+			for (int i = 0; i < sets.length; i++) {
+				ChangeSet set = sets[i];
+				// This will remove any descendants from the set and callback to
+				// resourcesChanged which will batch changes
+				if (!set.isEmpty()) {
+					set.rootRemoved(resource, IResource.DEPTH_INFINITE);
+					if (set.isEmpty()) {
+						remove(set);
+					}
+				}
+			}
+		}
 
-        /*
-         * Handle the change
-         */
-        private void handleChange(IResource resource, int depth) throws CoreException {
-            IDiff diff = getDiff(resource);
-            if (isModified(diff)) {
-                ActiveChangeSet[] containingSets = getContainingSets(resource);
-                if (containingSets.length == 0) {
-	                // Consider for inclusion in the default set
-	                // if the resource is not already a member of another set
-                    if (getDefaultSet() != null) {
-                    	getDefaultSet().add(diff);
-                     }
-                } else {
-                    for (int i = 0; i < containingSets.length; i++) {
-                        ActiveChangeSet set = containingSets[i];
-                        // Update the sync info in the set
-                        set.add(diff);
-                    }
-                }
-            } else {
-                removeFromAllSets(resource);
-            }
-            if (depth != IResource.DEPTH_ZERO) {
-                IResource[] members = getSubscriber().members(resource);
-                for (int i = 0; i < members.length; i++) {
-                    IResource member = members[i];
-                    handleChange(member, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
-                }
-            }
-        }
+		/*
+		 * Handle the change
+		 */
+		private void handleChange(IResource resource, int depth) throws CoreException {
+			IDiff diff = getDiff(resource);
+			if (isModified(diff)) {
+				ActiveChangeSet[] containingSets = getContainingSets(resource);
+				if (containingSets.length == 0) {
+					// Consider for inclusion in the default set
+					// if the resource is not already a member of another set
+					if (getDefaultSet() != null) {
+						getDefaultSet().add(diff);
+					}
+				} else {
+					for (int i = 0; i < containingSets.length; i++) {
+						ActiveChangeSet set = containingSets[i];
+						// Update the sync info in the set
+						set.add(diff);
+					}
+				}
+			} else {
+				removeFromAllSets(resource);
+			}
+			if (depth != IResource.DEPTH_ZERO) {
+				IResource[] members = getSubscriber().members(resource);
+				for (int i = 0; i < members.length; i++) {
+					IResource member = members[i];
+					handleChange(member, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
+				}
+			}
+		}
 
-        private void removeFromAllSets(IResource resource) {
-            List<ChangeSet> toRemove = new ArrayList<>();
-            ChangeSet[] sets = getSets();
-            for (int i = 0; i < sets.length; i++) {
-                ChangeSet set = sets[i];
-                if (set.contains(resource)) {
-                    set.remove(resource);
-	                if (set.isEmpty()) {
-	                    toRemove.add(set);
-	                }
-                }
-            }
-            for (Object element : toRemove) {
-                ActiveChangeSet set = (ActiveChangeSet) element;
-                remove(set);
-            }
-        }
+		private void removeFromAllSets(IResource resource) {
+			List<ChangeSet> toRemove = new ArrayList<>();
+			ChangeSet[] sets = getSets();
+			for (int i = 0; i < sets.length; i++) {
+				ChangeSet set = sets[i];
+				if (set.contains(resource)) {
+					set.remove(resource);
+					if (set.isEmpty()) {
+						toRemove.add(set);
+					}
+				}
+			}
+			for (Object element : toRemove) {
+				ActiveChangeSet set = (ActiveChangeSet) element;
+				remove(set);
+			}
+		}
 
-        private ActiveChangeSet[] getContainingSets(IResource resource) {
-            Set<ActiveChangeSet> result = new HashSet<>();
-            ChangeSet[] sets = getSets();
-            for (int i = 0; i < sets.length; i++) {
-                ChangeSet set = sets[i];
-                if (set.contains(resource)) {
-                    result.add((ActiveChangeSet) set);
-                }
-            }
-            return result.toArray(new ActiveChangeSet[result.size()]);
-        }
-    }
+		private ActiveChangeSet[] getContainingSets(IResource resource) {
+			Set<ActiveChangeSet> result = new HashSet<>();
+			ChangeSet[] sets = getSets();
+			for (int i = 0; i < sets.length; i++) {
+				ChangeSet set = sets[i];
+				if (set.contains(resource)) {
+					result.add((ActiveChangeSet) set);
+				}
+			}
+			return result.toArray(new ActiveChangeSet[result.size()]);
+		}
+	}
 
-    private class ResourceCollector extends SubscriberResourceCollector {
+	private class ResourceCollector extends SubscriberResourceCollector {
 
-        public ResourceCollector(Subscriber subscriber) {
-            super(subscriber);
-        }
+		public ResourceCollector(Subscriber subscriber) {
+			super(subscriber);
+		}
 
-        @Override
+		@Override
 		protected void remove(IResource resource) {
-        	if (handler != null)
-        		handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_REMOVAL, IResource.DEPTH_INFINITE), false);
-        }
+			if (handler != null)
+				handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_REMOVAL, IResource.DEPTH_INFINITE), false);
+		}
 
-        @Override
+		@Override
 		protected void change(IResource resource, int depth) {
-        	if (handler != null)
-        		handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_CHANGE, depth), false);
-        }
+			if (handler != null)
+				handler.queueEvent(new BackgroundEventHandler.ResourceEvent(resource, RESOURCE_CHANGE, depth), false);
+		}
 
-        @Override
+		@Override
 		protected boolean hasMembers(IResource resource) {
-            return SubscriberChangeSetManager.this.hasMembers(resource);
-        }
-    }
+			return SubscriberChangeSetManager.this.hasMembers(resource);
+		}
+	}
 
-    public SubscriberChangeSetManager(Subscriber subscriber) {
-        collector = new ResourceCollector(subscriber);
-        handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
-    }
+	public SubscriberChangeSetManager(Subscriber subscriber) {
+		collector = new ResourceCollector(subscriber);
+		handler = new EventHandler(NLS.bind(Messages.SubscriberChangeSetCollector_1, new String[] { subscriber.getName() }), NLS.bind(Messages.SubscriberChangeSetCollector_2, new String[] { subscriber.getName() })); //
+	}
 
-    @Override
+	@Override
 	protected void initializeSets() {
-    	load(getPreferences());
-    }
+		load(getPreferences());
+	}
 
-    public boolean hasMembers(IResource resource) {
-        ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
-            ActiveChangeSet set = (ActiveChangeSet)sets[i];
-            if (set.getDiffTree().getChildren(resource.getFullPath()).length > 0)
-            	return true;
-        }
-        if (getDefaultSet() != null)
-            return (getDefaultSet().getDiffTree().getChildren(resource.getFullPath()).length > 0);
-        return false;
-    }
+	public boolean hasMembers(IResource resource) {
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
+			ActiveChangeSet set = (ActiveChangeSet)sets[i];
+			if (set.getDiffTree().getChildren(resource.getFullPath()).length > 0)
+				return true;
+		}
+		if (getDefaultSet() != null)
+			return (getDefaultSet().getDiffTree().getChildren(resource.getFullPath()).length > 0);
+		return false;
+	}
 
-    /**
-     * Return the sync info for the given resource obtained
-     * from the subscriber.
-     * @param resource the resource
-     * @return the sync info for the resource
-     * @throws CoreException
-     */
-    @Override
+	/**
+	 * Return the sync info for the given resource obtained
+	 * from the subscriber.
+	 * @param resource the resource
+	 * @return the sync info for the resource
+	 * @throws CoreException
+	 */
+	@Override
 	public IDiff getDiff(IResource resource) throws CoreException {
-        Subscriber subscriber = getSubscriber();
-        return subscriber.getDiff(resource);
-    }
+		Subscriber subscriber = getSubscriber();
+		return subscriber.getDiff(resource);
+	}
 
-    /**
-     * Return the subscriber associated with this collector.
-     * @return the subscriber associated with this collector
-     */
-    public Subscriber getSubscriber() {
-        return collector.getSubscriber();
-    }
+	/**
+	 * Return the subscriber associated with this collector.
+	 * @return the subscriber associated with this collector
+	 */
+	public Subscriber getSubscriber() {
+		return collector.getSubscriber();
+	}
 
-    @Override
+	@Override
 	public void dispose() {
-        handler.shutdown();
-        collector.dispose();
-        super.dispose();
-        save(getPreferences());
-    }
+		handler.shutdown();
+		collector.dispose();
+		super.dispose();
+		save(getPreferences());
+	}
 
-    private Preferences getPreferences() {
-        return getParentPreferences().node(getSubscriberIdentifier());
-    }
+	private Preferences getPreferences() {
+		return getParentPreferences().node(getSubscriberIdentifier());
+	}
 
 	private static Preferences getParentPreferences() {
 		return getTeamPreferences().node(PREF_CHANGE_SETS);
@@ -333,21 +333,21 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		return InstanceScope.INSTANCE.getNode(TeamPlugin.getPlugin().getBundle().getSymbolicName());
 	}
 
-    /**
-     * Return the id that will uniquely identify the subscriber across
-     * restarts.
-     * @return the id that will uniquely identify the subscriber across
-     */
-    protected String getSubscriberIdentifier() {
-        return getSubscriber().getName();
-    }
+	/**
+	 * Return the id that will uniquely identify the subscriber across
+	 * restarts.
+	 * @return the id that will uniquely identify the subscriber across
+	 */
+	protected String getSubscriberIdentifier() {
+		return getSubscriber().getName();
+	}
 
-    /**
-     * Wait until the collector is done processing any events.
-     * This method is for testing purposes only.
-     * @param monitor
-     */
-    public void waitUntilDone(IProgressMonitor monitor) {
+	/**
+	 * Wait until the collector is done processing any events.
+	 * This method is for testing purposes only.
+	 * @param monitor
+	 */
+	public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);
 		// wait for the event handler to process changes.
 		while(handler.getEventHandlerJob().getState() != Job.NONE) {
@@ -359,7 +359,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 			Policy.checkCanceled(monitor);
 		}
 		monitor.worked(1);
-    }
+	}
 
 	@Override
 	protected String getName() {

@@ -24,12 +24,12 @@ public class DiffPartitioner implements IDocumentSetupParticipant{
 	public void setup(IDocument document) {
 		IPartitionTokenScanner scanner = new DiffPartitionScanner();
 		FastPartitioner partitioner = new FastPartitioner(scanner, IDiffPartitioning.LEGAL_PARTITION_TYPES);
-	    if (document instanceof IDocumentExtension3) {
-	        final IDocumentExtension3 extension3 = (IDocumentExtension3) document;
-	        extension3.setDocumentPartitioner(IDiffPartitioning.DIFF_PARTITIONINING, partitioner);
-	    } else {
-	    	document.setDocumentPartitioner(partitioner);
-	    }
-	    partitioner.connect(document);
+		if (document instanceof IDocumentExtension3) {
+			final IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+			extension3.setDocumentPartitioner(IDiffPartitioning.DIFF_PARTITIONINING, partitioner);
+		} else {
+			document.setDocumentPartitioner(partitioner);
+		}
+		partitioner.connect(document);
 	}
 }

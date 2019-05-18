@@ -121,15 +121,15 @@ public class LineReader {
 		this.fIgnoreSingleCR= true;
 	}
 
-    /**
-     * Reads a line of text. A line is considered to be terminated by any one
-     * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
-     * followed immediately by a line-feed.
-     * @return A string containing the contents of the line including
-     *	the line-termination characters, or <code>null</code> if the end of the
-     *	stream has been reached
-     * @exception IOException If an I/O error occurs
-     */
+	/**
+	 * Reads a line of text. A line is considered to be terminated by any one
+	 * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
+	 * followed immediately by a line-feed.
+	 * @return A string containing the contents of the line including
+	 *	the line-termination characters, or <code>null</code> if the end of the
+	 *	stream has been reached
+	 * @exception IOException If an I/O error occurs
+	 */
 	String readLine() throws IOException {
 		try {
 			while (!this.fSawEOF) {

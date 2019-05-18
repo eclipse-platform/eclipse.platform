@@ -33,7 +33,7 @@ import org.eclipse.team.internal.ui.dialogs.DetailsDialog;
 
 public class TagAsVersionDialog extends DetailsDialog {
 
-    private static final int TAG_AREA_HEIGHT_HINT = 200;
+	private static final int TAG_AREA_HEIGHT_HINT = 200;
 
 	private static final int HISTORY_LENGTH = 10;
 
@@ -51,9 +51,9 @@ public class TagAsVersionDialog extends DetailsDialog {
 	private String tagName = ""; //$NON-NLS-1$
 	private boolean moveTag = false;
 
-    private TagSource tagSource;
+	private TagSource tagSource;
 
-    private TagSelectionArea tagArea;
+	private TagSelectionArea tagArea;
 	
 	public TagAsVersionDialog(Shell parentShell, String title, ITagOperation operation) {
 		super(parentShell, title);
@@ -90,10 +90,10 @@ public class TagAsVersionDialog extends DetailsDialog {
 
 	}
 
-    @Override
+	@Override
 	protected String getHelpContextId() {
-        return IHelpContextIds.TAG_AS_VERSION_DIALOG;
-    }
+		return IHelpContextIds.TAG_AS_VERSION_DIALOG;
+	}
 
 	public boolean shouldMoveTag()  {
 		return moveTag;
@@ -105,11 +105,11 @@ public class TagAsVersionDialog extends DetailsDialog {
 		final PixelConverter converter= SWTUtils.createDialogPixelConverter(parent);
 		
 		final Composite composite = new Composite(parent, SWT.NONE);
-	    composite.setLayout(SWTUtils.createGridLayout(1, converter, SWTUtils.MARGINS_DIALOG));
-	    
-	    final GridData gridData = new GridData(GridData.FILL_BOTH);
-	    gridData.heightHint = TAG_AREA_HEIGHT_HINT;
-	    composite.setLayoutData(gridData);
+		composite.setLayout(SWTUtils.createGridLayout(1, converter, SWTUtils.MARGINS_DIALOG));
+		
+		final GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.heightHint = TAG_AREA_HEIGHT_HINT;
+		composite.setLayoutData(gridData);
 		
 		tagArea = new TagSelectionArea(getShell(), tagSource, TagSelectionArea.INCLUDE_VERSIONS, null);
 		tagArea.setTagAreaLabel(CVSUIMessages.TagAction_existingVersions);  
@@ -149,7 +149,7 @@ public class TagAsVersionDialog extends DetailsDialog {
 		setPageComplete(message == null);
 		setErrorMessage(message);
 		if (tagArea != null) {
-		    tagArea.setFilter(tagName);
+			tagArea.setFilter(tagName);
 		}
 	}
 	
@@ -171,10 +171,10 @@ public class TagAsVersionDialog extends DetailsDialog {
 		return operation;
 	}
 	
-    @Override
+	@Override
 	protected boolean isMainGrabVertical() {
-        return false;
-    }
+		return false;
+	}
 
 	protected Combo createDropDownCombo(Composite parent) {
 		Combo combo = new Combo(parent, SWT.DROP_DOWN);

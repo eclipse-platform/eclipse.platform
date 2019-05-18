@@ -44,8 +44,8 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 	protected boolean sendQuestionable;
 	protected boolean sendModifiedContents;
 	private boolean sendBinary;
-    
-    private boolean recurse = true;
+	
+	private boolean recurse = true;
 
 	public AbstractStructureVisitor(Session session, LocalOption[] localOptions, boolean sendQuestionable, boolean sendModifiedContents) {
 		this(session, localOptions, sendQuestionable, sendModifiedContents, true);
@@ -56,8 +56,8 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 		this.sendQuestionable = sendQuestionable;
 		this.sendModifiedContents = sendModifiedContents;
 		this.sendBinary = sendBinary;
-        if (Command.DO_NOT_RECURSE.isElementOf(localOptions))
-            recurse = false;
+		if (Command.DO_NOT_RECURSE.isElementOf(localOptions))
+			recurse = false;
 	}
 		
 	/** 
@@ -107,7 +107,7 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 		if (isLastSent(mFolder)) return;
 		
 		// Do not send virtual directories
-        if (isCVSFolder && info.isVirtualDirectory()) {
+		if (isCVSFolder && info.isVirtualDirectory()) {
 			return;
 		}
 
@@ -171,7 +171,7 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 		boolean isManaged = syncBytes != null;
 		
 		if (isManaged) {
-		    sendPendingNotification(mFile);
+			sendPendingNotification(mFile);
 		} else {
 			// If the file is not managed, send a questionable to the server if the file exists locally
 			// A unmanaged, locally non-existant file results from the explicit use of the file name as a command argument
@@ -190,15 +190,15 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 		boolean sendContents = mFile.exists() && mFile.isModified(monitor)
 			&& !mFile.getSyncInfo().isNeedsMerge(mFile.getTimeStamp());
 		if (ResourceSyncInfo.isDeletion(syncBytes)) {
-		    sendEntryLineToServer(mFile, syncBytes);
+			sendEntryLineToServer(mFile, syncBytes);
 		} else if (sendContents) {
-		    // Perform the send of modified contents in a sheduling rule to ensure that
-		    // the contents are not modified while we are sending them
-		    final IResource resource = mFile.getIResource();
-            try {
-                if (resource != null)
-                    Job.getJobManager().beginRule(resource, monitor);
-		        
+			// Perform the send of modified contents in a sheduling rule to ensure that
+			// the contents are not modified while we are sending them
+			final IResource resource = mFile.getIResource();
+			try {
+				if (resource != null)
+					Job.getJobManager().beginRule(resource, monitor);
+				
 				sendEntryLineToServer(mFile, syncBytes);
 				if (mFile.exists() && mFile.isModified(null)) {
 					boolean binary = ResourceSyncInfo.isBinary(syncBytes);
@@ -210,26 +210,26 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 				} else {
 					session.sendUnchanged(mFile);
 				}
-		    } finally {
-		        if (resource != null)
-		            Job.getJobManager().endRule(resource);
-		    }
+			} finally {
+				if (resource != null)
+					Job.getJobManager().endRule(resource);
+			}
 		} else {
-		    sendEntryLineToServer(mFile, syncBytes);
+			sendEntryLineToServer(mFile, syncBytes);
 			session.sendUnchanged(mFile);
 		}
 		
 		monitor.worked(1);
 	}
 
-    private void sendEntryLineToServer(ICVSFile mFile, byte[] syncBytes) throws CVSException {
-        if (syncBytes != null) {
-            String syncBytesToServer = ResourceSyncInfo.getTimestampToServer(syncBytes, mFile.getTimeStamp());
-            session.sendEntry(syncBytes, syncBytesToServer);
-        }
-    }
+	private void sendEntryLineToServer(ICVSFile mFile, byte[] syncBytes) throws CVSException {
+		if (syncBytes != null) {
+			String syncBytesToServer = ResourceSyncInfo.getTimestampToServer(syncBytes, mFile.getTimeStamp());
+			session.sendEntry(syncBytes, syncBytesToServer);
+		}
+	}
 
-    protected void sendPendingNotification(ICVSFile mFile) throws CVSException {
+	protected void sendPendingNotification(ICVSFile mFile) throws CVSException {
 		NotifyInfo notify = mFile.getPendingNotification();
 		if (notify != null) {
 			sendFolder(mFile.getParent());
@@ -284,16 +284,16 @@ abstract class AbstractStructureVisitor implements ICVSResourceVisitor {
 		}
 	}
 	
-    /**
-     * Return a send file message that contains one argument slot
-     * for the file name.
-     * @return a send file message that contains one argument slot
-     * for the file name
-     */
+	/**
+	 * Return a send file message that contains one argument slot
+	 * for the file name.
+	 * @return a send file message that contains one argument slot
+	 * for the file name
+	 */
 	protected String getSendFileMessage() {
 		return CVSMessages.AbstractStructureVisitor_sendingFile;
 	}
-    public boolean isRecurse() {
-        return recurse;
-    }
+	public boolean isRecurse() {
+		return recurse;
+	}
 }

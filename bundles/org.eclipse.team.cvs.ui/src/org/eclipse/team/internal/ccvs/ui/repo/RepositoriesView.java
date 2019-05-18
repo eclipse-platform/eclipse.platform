@@ -88,57 +88,57 @@ public class RepositoriesView extends RemoteViewPart {
 			display.asyncExec(() -> RepositoriesView.this.refreshViewer());
 		}
 	};
-    
-    private static final class RepositoryDragSourceListener implements DragSourceListener {
-        private IStructuredSelection selection;
+	
+	private static final class RepositoryDragSourceListener implements DragSourceListener {
+		private IStructuredSelection selection;
 
-        @Override
+		@Override
 		public void dragStart(DragSourceEvent event) {
-            if(selection!=null) {            
-                final Object[] array = selection.toArray();
-                // event.doit = Utils.getResources(array).length > 0;
-                for (int i = 0; i < array.length; i++) {
-                    if (array[i] instanceof ICVSRemoteFile) {
-                        event.doit = true;
-                        return;
-                    }
-                }
-                event.doit = false;
-            }
-        }
+			if(selection!=null) {            
+				final Object[] array = selection.toArray();
+				// event.doit = Utils.getResources(array).length > 0;
+				for (int i = 0; i < array.length; i++) {
+					if (array[i] instanceof ICVSRemoteFile) {
+						event.doit = true;
+						return;
+					}
+				}
+				event.doit = false;
+			}
+		}
 
-        @Override
+		@Override
 		public void dragSetData(DragSourceEvent event) {
-            if (selection!=null && CVSResourceTransfer.getInstance().isSupportedType(event.dataType)) {
-                final Object[] array = selection.toArray();
-                for (int i = 0; i < array.length; i++) {
-                    if (array[i] instanceof ICVSRemoteFile) {
-                        event.data = array[i];
-                        return;
-                    }
-                }
-            } else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
-            	final Object[] array = selection.toArray();
-                 for (int i = 0; i < array.length; i++) {
-                     if (array[i] instanceof ICVSRemoteFile) {
-                         event.data = new PluginTransferData("org.eclipse.team.cvs.ui.cvsRemoteDrop", CVSResourceTransfer.getInstance().toByteArray((ICVSRemoteFile) array[i])); //$NON-NLS-1$
-                         return;
-                     }
-                 }
-                
-             }
-        }
-        
-        @Override
+			if (selection!=null && CVSResourceTransfer.getInstance().isSupportedType(event.dataType)) {
+				final Object[] array = selection.toArray();
+				for (int i = 0; i < array.length; i++) {
+					if (array[i] instanceof ICVSRemoteFile) {
+						event.data = array[i];
+						return;
+					}
+				}
+			} else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
+				final Object[] array = selection.toArray();
+				for (int i = 0; i < array.length; i++) {
+					if (array[i] instanceof ICVSRemoteFile) {
+						event.data = new PluginTransferData("org.eclipse.team.cvs.ui.cvsRemoteDrop", CVSResourceTransfer.getInstance().toByteArray((ICVSRemoteFile) array[i])); //$NON-NLS-1$
+						return;
+					}
+				}
+				
+			}
+		}
+		
+		@Override
 		public void dragFinished( DragSourceEvent event) {
-        }
+		}
 
-        public void updateSelection( IStructuredSelection selection) {
-            this.selection = selection;
-        }
-    }
-    
-    RepositoryDragSourceListener repositoryDragSourceListener;
+		public void updateSelection( IStructuredSelection selection) {
+			this.selection = selection;
+		}
+	}
+	
+	RepositoryDragSourceListener repositoryDragSourceListener;
 
 	/**
 	 * Constructor for RepositoriesView.
@@ -190,7 +190,7 @@ public class RepositoriesView extends RemoteViewPart {
 				dialog.open();
 			}
 		};
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(newAction, IHelpContextIds.NEW_REPOSITORY_LOCATION_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(newAction, IHelpContextIds.NEW_REPOSITORY_LOCATION_ACTION);
 		
 		if (includeAnonConnection()) {
 			newAnonAction = new Action(CVSUIMessages.RepositoriesView_newAnonCVS, CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_NEWLOCATION)) { 
@@ -207,7 +207,7 @@ public class RepositoriesView extends RemoteViewPart {
 					dialog.open();
 				}
 			};
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(newAnonAction, IHelpContextIds.NEW_DEV_ECLIPSE_REPOSITORY_LOCATION_ACTION);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(newAnonAction, IHelpContextIds.NEW_DEV_ECLIPSE_REPOSITORY_LOCATION_ACTION);
 		}
 		
 		// Properties
@@ -239,22 +239,22 @@ public class RepositoriesView extends RemoteViewPart {
 				}
 			}
 		};
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(removeRootAction, IHelpContextIds.REMOVE_REPOSITORY_LOCATION_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(removeRootAction, IHelpContextIds.REMOVE_REPOSITORY_LOCATION_ACTION);
 		IActionBars bars = getViewSite().getActionBars();
 		bars.setGlobalActionHandler(ActionFactory.DELETE.getId(), removeAction);
 		
 		// Sort By action group
 		IPropertyChangeListener comparatorUpdater = event -> {
-		    String property = event.getProperty();
-		    if (RepositoriesSortingActionGroup.CHANGE_COMPARATOR
-		            .equals(property)) {
-		        Object newValue = event.getNewValue();
-		        getViewer().refresh();
-		        saveSelectedComparator((RepositoryComparator) newValue);
-		    }
+			String property = event.getProperty();
+			if (RepositoriesSortingActionGroup.CHANGE_COMPARATOR
+					.equals(property)) {
+				Object newValue = event.getNewValue();
+				getViewer().refresh();
+				saveSelectedComparator((RepositoryComparator) newValue);
+			}
 		};
-        setActionGroup(new RepositoriesSortingActionGroup(shell,
-        		comparatorUpdater));
+		setActionGroup(new RepositoriesSortingActionGroup(shell,
+				comparatorUpdater));
 		// restore comparator selection
 		getRepositoriesSortingActionGroup().setSelectedComparator(
 				savedComparator);
@@ -296,23 +296,23 @@ public class RepositoriesView extends RemoteViewPart {
 		}
 	}
 	
-    /**
-     * Returns the action group.
-     * 
-     * @return the action group
-     */
-    private RepositoriesSortingActionGroup getRepositoriesSortingActionGroup() {
-        return repositoriesSortingActionGroup;
-    }
+	/**
+	 * Returns the action group.
+	 * 
+	 * @return the action group
+	 */
+	private RepositoriesSortingActionGroup getRepositoriesSortingActionGroup() {
+		return repositoriesSortingActionGroup;
+	}
 
-    /**
-     * Sets the action group.
-     * 
-     * @param actionGroup the action group
-     */
-    private void setActionGroup(RepositoriesSortingActionGroup actionGroup) {
-        this.repositoriesSortingActionGroup = actionGroup;
-    }
+	/**
+	 * Sets the action group.
+	 * 
+	 * @param actionGroup the action group
+	 */
+	private void setActionGroup(RepositoriesSortingActionGroup actionGroup) {
+		this.repositoriesSortingActionGroup = actionGroup;
+	}
 
 	/**
 	 * Method includeEclipseConnection.
@@ -367,9 +367,9 @@ public class RepositoriesView extends RemoteViewPart {
 		else
 			dialogSettings.put(FILTER_SHOW_MODULES, (String) null);
 		CVSUIPlugin.getPlugin().getRepositoryManager().removeRepositoryListener(listener);
-        if (getRepositoriesSortingActionGroup() != null) {
-            getRepositoriesSortingActionGroup().dispose();
-        }
+		if (getRepositoriesSortingActionGroup() != null) {
+			getRepositoriesSortingActionGroup().dispose();
+		}
 		super.dispose();
 	}
 	
@@ -389,11 +389,11 @@ public class RepositoriesView extends RemoteViewPart {
 			IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 			handleChange(selection);	
 		});
-        
-        repositoryDragSourceListener = new RepositoryDragSourceListener();
-        viewer.addDragSupport( DND.DROP_LINK | DND.DROP_DEFAULT, 
-                new Transfer[] { CVSResourceTransfer.getInstance(),PluginTransfer.getInstance()}, 
-                repositoryDragSourceListener);
+		
+		repositoryDragSourceListener = new RepositoryDragSourceListener();
+		viewer.addDragSupport( DND.DROP_LINK | DND.DROP_DEFAULT, 
+				new Transfer[] { CVSResourceTransfer.getInstance(),PluginTransfer.getInstance()}, 
+				repositoryDragSourceListener);
 	}
 	
 	@Override
@@ -414,7 +414,7 @@ public class RepositoriesView extends RemoteViewPart {
 		IStructuredSelection s = (IStructuredSelection)selection;
 		
 		if (s.size() > 1)
-            return NLS.bind(CVSUIMessages.RepositoriesView_NItemsSelected, new String[] { String.valueOf(s.size()) }); 
+			return NLS.bind(CVSUIMessages.RepositoriesView_NItemsSelected, new String[] { String.valueOf(s.size()) }); 
 		Object element = TeamAction.getAdapter(s.getFirstElement(), ICVSResource.class);
 		if (element instanceof ICVSRemoteResource) {
 			ICVSRemoteResource res = (ICVSRemoteResource)element;
@@ -464,8 +464,8 @@ public class RepositoriesView extends RemoteViewPart {
 		removeRootAction.updateSelection(selection);
 		removeDateTagAction.updateSelection(selection);
 		removeAction.setEnabled(removeRootAction.isEnabled() || removeDateTagAction.isEnabled());
-        
-        repositoryDragSourceListener.updateSelection(selection);
+		
+		repositoryDragSourceListener.updateSelection(selection);
 	}
 	
 	public void showFilter(RepositoriesFilter filter) {
@@ -475,5 +475,5 @@ public class RepositoriesView extends RemoteViewPart {
 		getViewer().addFilter(filter);
 		toggleFilterAction.setEnabled(true);
 	}
-    
+	
 }

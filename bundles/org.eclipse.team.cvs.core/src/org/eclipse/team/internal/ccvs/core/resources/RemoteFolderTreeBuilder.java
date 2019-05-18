@@ -126,7 +126,7 @@ public class RemoteFolderTreeBuilder {
 			IProgressMonitor subProgress = Policy.infiniteSubMonitorFor(progress, 100);
 			subProgress.beginTask(null, 512);  
 			subProgress.subTask(NLS.bind(CVSMessages.RemoteFolderTreeBuilder_buildingBase, new String[] { root.getName() })); 
-	 		return builder.buildBaseTree(null, root, subProgress);
+			return builder.buildBaseTree(null, root, subProgress);
 		} finally {
 			progress.done();
 		}
@@ -138,11 +138,11 @@ public class RemoteFolderTreeBuilder {
 	
 	public static RemoteFolderTree buildRemoteTree(CVSRepositoryLocation repository, ICVSFolder root, CVSTag tag, IProgressMonitor monitor) throws CVSException {
 		RemoteFolderTreeBuilder builder = new RemoteFolderTreeBuilder(repository, root, tag);
- 		return builder.buildTree(new ICVSResource[] { root }, monitor);
+		return builder.buildTree(new ICVSResource[] { root }, monitor);
 	}
 	public static RemoteFile buildRemoteTree(CVSRepositoryLocation repository, ICVSFile file, CVSTag tag, IProgressMonitor monitor) throws CVSException {
 		RemoteFolderTreeBuilder builder = new RemoteFolderTreeBuilder(repository, file.getParent(), tag);
- 		return builder.buildTree(file, monitor);
+		return builder.buildTree(file, monitor);
 	}
 	
 	/* package */ RemoteFolderTree buildTree(ICVSResource[] resources, IProgressMonitor monitor) throws CVSException {
@@ -215,24 +215,24 @@ public class RemoteFolderTreeBuilder {
 		Session session;
 		FolderSyncInfo folderSyncInfo = root.getFolderSyncInfo();
 		if (folderSyncInfo == null) {
-		    // We've lost the mapping in the local workspace.
-		    // This could be due to the project being deleted.
-		    if (root.exists()) {
-		        IResource resource = root.getIResource();
-		        String path;
-		        if (resource == null) {
-		            path = root.getName();
-		        } else {
-		            path = resource.getFullPath().toString();
-		        }
-		        IStatus status = new CVSStatus(IStatus.ERROR, CVSStatus.ERROR, NLS.bind(CVSMessages.RemoteFolderTreeBuilder_0, new String[] { path }), root);
-                throw new CVSException(status); 
-		    } else {
-		        // Just return. The remote tree will be null
-		        return;
-		    }
+			// We've lost the mapping in the local workspace.
+			// This could be due to the project being deleted.
+			if (root.exists()) {
+				IResource resource = root.getIResource();
+				String path;
+				if (resource == null) {
+					path = root.getName();
+				} else {
+					path = resource.getFullPath().toString();
+				}
+				IStatus status = new CVSStatus(IStatus.ERROR, CVSStatus.ERROR, NLS.bind(CVSMessages.RemoteFolderTreeBuilder_0, new String[] { path }), root);
+				throw new CVSException(status); 
+			} else {
+				// Just return. The remote tree will be null
+				return;
+			}
 		}
-        remoteRoot =
+		remoteRoot =
 			new RemoteFolderTree(null, root.getName(), repository,
 				folderSyncInfo.getRepository(),
 				tagForRemoteFolder(root, tag));
@@ -374,7 +374,7 @@ public class RemoteFolderTreeBuilder {
 		// Create a remote folder tree corresponding to the local resource
 		FolderSyncInfo folderSyncInfo = local.getFolderSyncInfo();
 		if (folderSyncInfo == null) return null;
-        RemoteFolder remote = createRemoteFolder(local, parent, folderSyncInfo);
+		RemoteFolder remote = createRemoteFolder(local, parent, folderSyncInfo);
 
 		// Create a List to contain the created children
 		List<RemoteResource> children = new ArrayList<>();
@@ -387,7 +387,7 @@ public class RemoteFolderTreeBuilder {
 				monitor.worked(1);
 				RemoteFolder tree = buildBaseTree(remote, folder, monitor);
 				if (tree != null)
-				    children.add(tree);
+					children.add(tree);
 			}
 		}
 		

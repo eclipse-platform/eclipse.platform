@@ -292,12 +292,12 @@ public class PatchTest extends TestCase {
 					if (patchConf != null) {
 						JarEntryStorage jes = new JarEntryStorage(entry,jarFile);
 						Properties properties = new Properties();
-					    try {
-					        properties.load(jes.getContents());
-					    } catch (IOException e) {
-					    	fail("IOException occured while loading the Patch Configuration file for "+entryName.toString());
-					    }
-					    processProperties(result, properties, entryName);
+						try {
+							properties.load(jes.getContents());
+						} catch (IOException e) {
+							fail("IOException occured while loading the Patch Configuration file for "+entryName.toString());
+						}
+						processProperties(result, properties, entryName);
 					} else {
 						processProperties(result, defaultPatchProperties, entryName);
 					}
@@ -325,13 +325,13 @@ public class PatchTest extends TestCase {
 				continue;
 			if (pcFile.exists()) {
 				Properties properties = new Properties();
-			    try {
-			        properties.load(new FileInputStream(pcFile));
-			    } catch (IOException e) {
-			    	fail("IOException occured while loading the Patch Configuration file for "
+				try {
+					properties.load(new FileInputStream(pcFile));
+				} catch (IOException e) {
+					fail("IOException occured while loading the Patch Configuration file for "
 							+ subfolder.toString());
-			    }
-			    processProperties(result, properties, subfolder.getName());
+				}
+				processProperties(result, properties, subfolder.getName());
 			} else {
 				processProperties(result, defaultPatchProperties, subfolder.getName());
 			}

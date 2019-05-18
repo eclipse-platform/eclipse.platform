@@ -83,26 +83,26 @@ public abstract class CVSModelElement implements IWorkbenchAdapter, IAdaptable {
 	 * @param description the description to be displayed
 	 * @param e the exception that occurred
 	 */
-    protected void handle(final String title, final String description, final Throwable e) {
-       CVSUIPlugin.openError(null, title, description, e, CVSUIPlugin.LOG_NONTEAM_EXCEPTIONS | CVSUIPlugin.PERFORM_SYNC_EXEC);
-    }
-    
-    /**
-     * Helper method error handler that displays a generic dialog title and message when displaying an error to the user.
-     * @param t the exception that occurred.
-     */
-    protected void handle(Throwable t) {
-        handle(CVSUIMessages.CVSModelElement_0, CVSUIMessages.CVSModelElement_1, t); // 
-    }
-    
-    /**
-     * Handle an exception that occurred while fetching the children for a deferred workbench adapter.
-     * @param collector the collector for the adapter
-     * @param e the exception that occurred
-     */
-    protected void handle(IElementCollector collector, Throwable t) {
-        // TODO: For now, just display a dialog (see bug 65008 and 65741)
-        handle(t);
-    }
+	protected void handle(final String title, final String description, final Throwable e) {
+		CVSUIPlugin.openError(null, title, description, e, CVSUIPlugin.LOG_NONTEAM_EXCEPTIONS | CVSUIPlugin.PERFORM_SYNC_EXEC);
+	}
+	
+	/**
+	 * Helper method error handler that displays a generic dialog title and message when displaying an error to the user.
+	 * @param t the exception that occurred.
+	 */
+	protected void handle(Throwable t) {
+		handle(CVSUIMessages.CVSModelElement_0, CVSUIMessages.CVSModelElement_1, t); // 
+	}
+	
+	/**
+	 * Handle an exception that occurred while fetching the children for a deferred workbench adapter.
+	 * @param collector the collector for the adapter
+	 * @param e the exception that occurred
+	 */
+	protected void handle(IElementCollector collector, Throwable t) {
+		// TODO: For now, just display a dialog (see bug 65008 and 65741)
+		handle(t);
+	}
 
 }

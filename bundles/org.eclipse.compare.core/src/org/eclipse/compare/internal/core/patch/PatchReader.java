@@ -671,7 +671,7 @@ public class PatchReader {
 		while (st.hasMoreElements()) {
 			String token= st.nextToken().trim();
 			if (token.length() > 0)
- 				l.add(token);
+				l.add(token);
 		}
 		return l.toArray(new String[l.size()]);
 	}

@@ -183,22 +183,22 @@ public class ResourceSyncInfoTest extends EclipseTest {
 	}
 	
 	public void testRepositoryLocationFormats() throws CVSException {
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host:/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host:/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host:/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host:1234/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host:1234/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host:1234/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host/home/path"), "/home/path");
-	    assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@domain:password@host/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host:/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host:/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host:/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host:1234/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host:1234/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host:1234/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@host/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user:password@host/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:host/home/path"), "/home/path");
+		assertPathCorrect(CVSRepositoryLocation.fromString(":pserver:user@domain:password@host/home/path"), "/home/path");
 	}
 
-    private void assertPathCorrect(CVSRepositoryLocation location, String string) throws CVSException {
-        assertEquals(location.getRootDirectory(), string);
-        FolderSyncInfo info = new FolderSyncInfo("childPath", location.getLocation(), null, false);
-        assertEquals(info.getRemoteLocation(), string + '/' + "childPath");
-        
-    }
+	private void assertPathCorrect(CVSRepositoryLocation location, String string) throws CVSException {
+		assertEquals(location.getRootDirectory(), string);
+		FolderSyncInfo info = new FolderSyncInfo("childPath", location.getLocation(), null, false);
+		assertEquals(info.getRemoteLocation(), string + '/' + "childPath");
+		
+	}
 }

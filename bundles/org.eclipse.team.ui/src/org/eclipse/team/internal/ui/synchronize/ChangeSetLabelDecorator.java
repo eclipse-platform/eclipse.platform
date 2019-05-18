@@ -38,21 +38,21 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 	private Font boldFont;
 	private ActiveChangeSetManager collector;
 
-    public ChangeSetLabelDecorator(ISynchronizePageConfiguration configuration) {
-        ISynchronizeParticipant participant = configuration.getParticipant();
-        if (participant instanceof IChangeSetProvider) {
-            this.collector = ((IChangeSetProvider)participant).getChangeSetCapability().getActiveChangeSetManager();
-        }
-    }
+	public ChangeSetLabelDecorator(ISynchronizePageConfiguration configuration) {
+		ISynchronizeParticipant participant = configuration.getParticipant();
+		if (participant instanceof IChangeSetProvider) {
+			this.collector = ((IChangeSetProvider)participant).getChangeSetCapability().getActiveChangeSetManager();
+		}
+	}
 
-    @Override
+	@Override
 	public String decorateText(String input, Object element) {
 		String text = input;
 		if (element instanceof ChangeSetDiffNode) {
-		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
-		    if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
-		        text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, new String[] { text });
-		    }
+			ChangeSet set = ((ChangeSetDiffNode)element).getSet();
+			if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
+				text = NLS.bind(TeamUIMessages.CommitSetDiffNode_0, new String[] { text });
+			}
 		}
 		return text;
 	}
@@ -67,9 +67,9 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 	@Override
 	public Font decorateFont(Object element) {
 		if (element instanceof ChangeSetDiffNode) {
-		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
-		    if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
-		    	if (boldFont == null) {
+			ChangeSet set = ((ChangeSetDiffNode)element).getSet();
+			if (set instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)set)) {
+				if (boldFont == null) {
 					Font defaultFont = JFaceResources.getDefaultFont();
 					FontData[] data = defaultFont.getFontData();
 					for (int i = 0; i < data.length; i++) {
@@ -78,18 +78,18 @@ public class ChangeSetLabelDecorator extends LabelProvider implements ILabelDeco
 					boldFont = new Font(TeamUIPlugin.getStandardDisplay(), data);
 				}
 				return boldFont;
-		    }
+			}
 		}
 		return null;
 	}
 
 	private boolean isDefaultActiveSet(ActiveChangeSet set) {
-	    return collector.isDefault(set);
+		return collector.isDefault(set);
 	}
 
-    @Override
+	@Override
 	public Image decorateImage(Image image, Object element) {
-        return image;
-    }
+		return image;
+	}
 
 }

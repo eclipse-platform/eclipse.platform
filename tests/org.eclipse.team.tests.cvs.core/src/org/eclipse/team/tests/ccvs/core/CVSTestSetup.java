@@ -33,10 +33,10 @@ public class CVSTestSetup extends TestSetup {
 	public static final int WAIT_FACTOR;
 	public static final int COMPRESSION_LEVEL;
 	public static final boolean FAIL_IF_EXCEPTION_LOGGED;
-    public static final boolean RECORD_PROTOCOL_TRAFFIC;
-    public static final boolean ENSURE_SEQUENTIAL_ACCESS;
-    public static final boolean FAIL_ON_BAD_DIFF;
-    public static final int TIMEOUT = 600;
+	public static final boolean RECORD_PROTOCOL_TRAFFIC;
+	public static final boolean ENSURE_SEQUENTIAL_ACCESS;
+	public static final boolean FAIL_ON_BAD_DIFF;
+	public static final int TIMEOUT = 600;
 	
 	public static CVSRepositoryLocation repository;
 	public static CVSTestLogListener logListener;
@@ -52,9 +52,9 @@ public class CVSTestSetup extends TestSetup {
 		WAIT_FACTOR = Integer.parseInt(System.getProperty("eclipse.cvs.waitFactor", "1"));
 		COMPRESSION_LEVEL = Integer.parseInt(System.getProperty("eclipse.cvs.compressionLevel", "0"));
 		FAIL_IF_EXCEPTION_LOGGED = Boolean.valueOf(System.getProperty("eclipse.cvs.failLog", "true")).booleanValue();
-        RECORD_PROTOCOL_TRAFFIC = Boolean.valueOf(System.getProperty("eclipse.cvs.recordProtocolTraffic", "false")).booleanValue();
-        ENSURE_SEQUENTIAL_ACCESS = Boolean.valueOf(System.getProperty("eclipse.cvs.sequentialAccess", "false")).booleanValue();
-        FAIL_ON_BAD_DIFF = Boolean.valueOf(System.getProperty("eclipse.cvs.failOnBadDiff", "false")).booleanValue();
+		RECORD_PROTOCOL_TRAFFIC = Boolean.valueOf(System.getProperty("eclipse.cvs.recordProtocolTraffic", "false")).booleanValue();
+		ENSURE_SEQUENTIAL_ACCESS = Boolean.valueOf(System.getProperty("eclipse.cvs.sequentialAccess", "false")).booleanValue();
+		FAIL_ON_BAD_DIFF = Boolean.valueOf(System.getProperty("eclipse.cvs.failOnBadDiff", "false")).booleanValue();
 	}
 
 	public static void loadProperties() {

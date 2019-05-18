@@ -213,8 +213,8 @@ public class RemoteResourceTest extends EclipseTest {
 	 * Test the fetching of the contents of an empty file
 	 */
 	public void testEmptyFile() throws TeamException, CoreException, IOException {
-	 	
-	 	// Create a project with an empty file
+		
+		// Create a project with an empty file
 		IProject project = createProject("testEmptyFile", new String[] { "file.txt"});
 		IFile file = project.getFile("file.txt");
 		setContentsAndEnsureModified(file, "");
@@ -227,14 +227,14 @@ public class RemoteResourceTest extends EclipseTest {
 			count++;
 		}
 		assertTrue("Remote file should be empty", count==0);
-	 }
-	 
-	 /*
-	  * Test the fetching of the contents from multiple remote revisions of a file
-	  */
-	 public void testFileRevisions() throws TeamException, CoreException, IOException {
-	 	
-	 	// Create a project with an empty file
+	}
+	
+	/*
+	 * Test the fetching of the contents from multiple remote revisions of a file
+	 */
+	public void testFileRevisions() throws TeamException, CoreException, IOException {
+		
+		// Create a project with an empty file
 		IProject project = createProject("testFileRevisions", new String[] { "file.txt"});
 		setContentsAndEnsureModified(project.getFile("file.txt"), "hi there");
 		commitResources(project, new String[] {"file.txt"});
@@ -268,7 +268,7 @@ public class RemoteResourceTest extends EclipseTest {
 				assertEquals("the contents of revision 1.3 are not equal", contents, "bye there");
 			}
 		}
-	 }
+	}
 
 	public void testFileRevisionsForBranches() throws TeamException, CoreException {
 		// Create a project with an empty file
@@ -490,21 +490,21 @@ public class RemoteResourceTest extends EclipseTest {
 		assertEquals(CVSTag.VENDOR_REVISION, logEntry.getBranches()[0].getBranchRevision());
 	}
 
-	 public void testExists() throws TeamException, CoreException {
-	 	IProject project = createProject("testExists", new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder2/", "folder2/a.txt", "folder2/folder3/", "folder2/folder3/b.txt", "folder2/folder3/c.txt"});
-	 	ICVSRemoteResource resource1 = CVSWorkspaceRoot.getRemoteResourceFor(project.getFile("file1.txt"));
-	 	assertTrue(resource1.exists(DEFAULT_MONITOR));
-	 	ICVSRemoteResource resource2 = CVSWorkspaceRoot.getRemoteResourceFor(project.getFolder("folder2/folder3/"));
-	 	assertTrue(resource2.exists(DEFAULT_MONITOR));
-	 	deleteResources(project, new String[] {"file1.txt", "folder2/folder3/b.txt", "folder2/folder3/c.txt" }, true);
-	 	assertTrue( ! resource1.exists(DEFAULT_MONITOR));
-	 	assertTrue(resource2.exists(DEFAULT_MONITOR));
-	 	if (CVSTestSetup.INITIALIZE_REPO) {
-	 		CVSTestSetup.executeRemoteCommand(getRepository(), "rm -rf " + ((ICVSFolder)resource2).getFolderSyncInfo().getRemoteLocation());
-	 		assertTrue( ! resource2.exists(DEFAULT_MONITOR));
-	 	}
-	 }
-	 
+	public void testExists() throws TeamException, CoreException {
+		IProject project = createProject("testExists", new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder2/", "folder2/a.txt", "folder2/folder3/", "folder2/folder3/b.txt", "folder2/folder3/c.txt"});
+		ICVSRemoteResource resource1 = CVSWorkspaceRoot.getRemoteResourceFor(project.getFile("file1.txt"));
+		assertTrue(resource1.exists(DEFAULT_MONITOR));
+		ICVSRemoteResource resource2 = CVSWorkspaceRoot.getRemoteResourceFor(project.getFolder("folder2/folder3/"));
+		assertTrue(resource2.exists(DEFAULT_MONITOR));
+		deleteResources(project, new String[] {"file1.txt", "folder2/folder3/b.txt", "folder2/folder3/c.txt" }, true);
+		assertTrue( ! resource1.exists(DEFAULT_MONITOR));
+		assertTrue(resource2.exists(DEFAULT_MONITOR));
+		if (CVSTestSetup.INITIALIZE_REPO) {
+			CVSTestSetup.executeRemoteCommand(getRepository(), "rm -rf " + ((ICVSFolder)resource2).getFolderSyncInfo().getRemoteLocation());
+			assertTrue( ! resource2.exists(DEFAULT_MONITOR));
+		}
+	}
+	
 //	 /**
 //	  * Test building a sync tree using the RemoteFolderTreeBuilder using a remote resource as the
 //	  * starting point instead of a local one.
@@ -521,26 +521,26 @@ public class RemoteResourceTest extends EclipseTest {
 //		checkoutProject(project, name, null);
 //		assertEquals(Path.EMPTY, CVSWorkspaceRoot.getCVSResourceFor(project), tree, false, true);
 //	 }
-	 
-	 public void testCheckoutIntoRemoteFolder() throws CoreException, IOException, CVSException, InvocationTargetException, InterruptedException {
-	 	IProject project = createProject(new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder2/folder3/b.txt", "folder2/folder3/c.txt"});
-	 	
-	 	ICVSRemoteFolder remote = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
-	 	remote = checkoutRemote(remote);
-	 	assertEquals(Path.EMPTY, CVSWorkspaceRoot.getCVSResourceFor(project), remote, false, true);
-	 	
-	 	// Try a version
-	 	CVSTag tag = new CVSTag("v1", CVSTag.VERSION);
-	 	tagProject(project, tag, false);
-	 	IProject copy = checkoutCopy(project, tag);
-	 	setContentsAndEnsureModified(project.getFile("file1.txt"));
-	 	commitProject(project);
-	 	remote = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
-	 	((RemoteFolder)remote).setTag(tag);
-	 	remote = checkoutRemote(remote);
-	 	assertEquals(Path.EMPTY, CVSWorkspaceRoot.getCVSResourceFor(copy), remote, false, true);
-	 }
-	 
+	
+	public void testCheckoutIntoRemoteFolder() throws CoreException, IOException, CVSException, InvocationTargetException, InterruptedException {
+		IProject project = createProject(new String[] { "file1.txt", "folder1/", "folder1/a.txt", "folder2/folder3/b.txt", "folder2/folder3/c.txt"});
+		
+		ICVSRemoteFolder remote = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
+		remote = checkoutRemote(remote);
+		assertEquals(Path.EMPTY, CVSWorkspaceRoot.getCVSResourceFor(project), remote, false, true);
+		
+		// Try a version
+		CVSTag tag = new CVSTag("v1", CVSTag.VERSION);
+		tagProject(project, tag, false);
+		IProject copy = checkoutCopy(project, tag);
+		setContentsAndEnsureModified(project.getFile("file1.txt"));
+		commitProject(project);
+		remote = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
+		((RemoteFolder)remote).setTag(tag);
+		remote = checkoutRemote(remote);
+		assertEquals(Path.EMPTY, CVSWorkspaceRoot.getCVSResourceFor(copy), remote, false, true);
+	}
+	
 	public void testBug244425() throws CVSException, CoreException,
 			IOException {
 		IProject projectHead = createProject("test", new String[] { "a/",

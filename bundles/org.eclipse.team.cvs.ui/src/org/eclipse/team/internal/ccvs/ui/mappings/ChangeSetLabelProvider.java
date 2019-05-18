@@ -205,9 +205,9 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 	
 	public Font getFont(Object element) {
 		element = internalGetElement(element);
-	    if (element instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)element)) {
+		if (element instanceof ActiveChangeSet && isDefaultActiveSet((ActiveChangeSet)element)) {
 			return JFaceResources.getFontRegistry().getBold(JFaceResources.DEFAULT_FONT);
-	    }
+		}
 		return super.getFont(element);
 	}
 

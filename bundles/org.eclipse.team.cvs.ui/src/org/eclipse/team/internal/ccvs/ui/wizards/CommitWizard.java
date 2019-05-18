@@ -55,84 +55,84 @@ import org.eclipse.ui.PlatformUI;
  * of a set of <code>SyncInfo</code>.
  */
 public class CommitWizard extends ResizableWizard {
-    
+	
 	public static final String COMMIT_WIZARD_DIALOG_SETTINGS = "CommitWizard"; //$NON-NLS-1$
 	
-    /**
-     * An operation to add and commit resources to a CVS repository.
-     */
-    public static class AddAndCommitOperation extends CVSOperation {
-        
-        private final IResource[] fAllResources;
-        private final String fComment;
-        
-        private Map fModesForExtensionsForOneTime;
-        private Map fModesForNamesForOneTime;
-        
-        private IResource[] fNewResources;
+	/**
+	 * An operation to add and commit resources to a CVS repository.
+	 */
+	public static class AddAndCommitOperation extends CVSOperation {
+		
+		private final IResource[] fAllResources;
+		private final String fComment;
+		
+		private Map fModesForExtensionsForOneTime;
+		private Map fModesForNamesForOneTime;
+		
+		private IResource[] fNewResources;
 		private IJobChangeListener jobListener;
-        
-        public AddAndCommitOperation(IWorkbenchPart part, IResource[] allResources, IResource[] newResources, String comment) {
-            super(part);
-            fAllResources = allResources;
-            fNewResources = newResources;
-            fModesForExtensionsForOneTime = Collections.EMPTY_MAP;
-            fModesForNamesForOneTime= Collections.EMPTY_MAP;
-            fComment = comment;
-        }
-        
-        public void setModesForExtensionsForOneTime(Map modes) {
-        	if (modes != null)
-        		fModesForExtensionsForOneTime= modes;
-        }
-        
-        public void setModesForNamesForOneTime(Map modes) {
-        	if (modes != null)
-        		fModesForNamesForOneTime= modes;
-        }
-        
-        @Override
+		
+		public AddAndCommitOperation(IWorkbenchPart part, IResource[] allResources, IResource[] newResources, String comment) {
+			super(part);
+			fAllResources = allResources;
+			fNewResources = newResources;
+			fModesForExtensionsForOneTime = Collections.EMPTY_MAP;
+			fModesForNamesForOneTime= Collections.EMPTY_MAP;
+			fComment = comment;
+		}
+		
+		public void setModesForExtensionsForOneTime(Map modes) {
+			if (modes != null)
+				fModesForExtensionsForOneTime= modes;
+		}
+		
+		public void setModesForNamesForOneTime(Map modes) {
+			if (modes != null)
+				fModesForNamesForOneTime= modes;
+		}
+		
+		@Override
 		protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
-            try {
-            	monitor.beginTask(null, (fNewResources.length + fAllResources.length) * 100);
-            	if (fNewResources.length > 0) {
-	                final AddOperation op= new AddOperation(getPart(), RepositoryProviderOperation.asResourceMappers(fNewResources));
-	                op.addModesForExtensions(fModesForExtensionsForOneTime);
-	                op.addModesForNames(fModesForNamesForOneTime);
-	                op.run(Policy.subMonitorFor(monitor, fNewResources.length * 100));
-            	}
-                if (fAllResources.length > 0) {
-	                CommitOperation commitOperation = new CommitOperation(getPart(), RepositoryProviderOperation.asResourceMappers(fAllResources), new Command.LocalOption[0], fComment) {
-	                	@Override
+			try {
+				monitor.beginTask(null, (fNewResources.length + fAllResources.length) * 100);
+				if (fNewResources.length > 0) {
+					final AddOperation op= new AddOperation(getPart(), RepositoryProviderOperation.asResourceMappers(fNewResources));
+					op.addModesForExtensions(fModesForExtensionsForOneTime);
+					op.addModesForNames(fModesForNamesForOneTime);
+					op.run(Policy.subMonitorFor(monitor, fNewResources.length * 100));
+				}
+				if (fAllResources.length > 0) {
+					CommitOperation commitOperation = new CommitOperation(getPart(), RepositoryProviderOperation.asResourceMappers(fAllResources), new Command.LocalOption[0], fComment) {
+						@Override
 						public boolean consultModelsForMappings() {
-	                		// Do not consult models from the commit wizard
-	                		return false;
-	                	}
-	                };
+							// Do not consult models from the commit wizard
+							return false;
+						}
+					};
 					commitOperation.run(Policy.subMonitorFor(monitor, fAllResources.length * 100));
-                }
-            } catch (InvocationTargetException e) {
-                throw CVSException.wrapException(e);
-            } finally {
-            	monitor.done();
-            }
-        }
-        
-        @Override
+				}
+			} catch (InvocationTargetException e) {
+				throw CVSException.wrapException(e);
+			} finally {
+				monitor.done();
+			}
+		}
+		
+		@Override
 		protected String getJobName() {
-            return CVSUIMessages.CommitWizard_0; 
-        }
-        
-        @Override
+			return CVSUIMessages.CommitWizard_0; 
+		}
+		
+		@Override
 		protected String getTaskName() {
-            return CVSUIMessages.CommitWizard_1; 
-        }
+			return CVSUIMessages.CommitWizard_1; 
+		}
 
-        /*
-         * Set the job listener. It will only recieve scheduled and done
-         * events as these are what are used by a sync model operation
-         * to show busy state in the sync view.
-         */
+		/*
+		 * Set the job listener. It will only recieve scheduled and done
+		 * events as these are what are used by a sync model operation
+		 * to show busy state in the sync view.
+		 */
 		protected void setJobChangeListener(IJobChangeListener jobListener) {
 			this.jobListener = jobListener;
 		}
@@ -150,36 +150,36 @@ public class CommitWizard extends ResizableWizard {
 			if (jobListener != null)
 				jobListener.scheduled(event);
 		}
-    }
-    
-    private final IResource[] fResources;
-    private IResource[] fUnaddedDiffs;
-    private final ModelSynchronizeParticipant fParticipant;
-    
-    private CommitWizardFileTypePage fFileTypePage;
-    private CommitWizardCommitPage fCommitPage;
+	}
+	
+	private final IResource[] fResources;
+	private IResource[] fUnaddedDiffs;
+	private final ModelSynchronizeParticipant fParticipant;
+	
+	private CommitWizardFileTypePage fFileTypePage;
+	private CommitWizardCommitPage fCommitPage;
 	private IJobChangeListener jobListener;
 	private IWorkbenchPart part;
-    
-    public CommitWizard(SyncInfoSet infos) throws CVSException {
-        this(infos.getResources());
-    }
-    
-    public CommitWizard(final IResource [] resources) throws CVSException {
-        
-        super(COMMIT_WIZARD_DIALOG_SETTINGS, CVSUIPlugin.getPlugin().getDialogSettings());
-        
-        setNeedsProgressMonitor(true);
-        setWindowTitle(CVSUIMessages.CommitWizard_2); 
-        setDefaultPageImageDescriptor(CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_NEW_LOCATION));
-        
-        fResources= resources;
-        ResourceMapping[] mappings = Utils.getResourceMappings(resources);
-        fParticipant = createWorkspaceParticipant(mappings, getShell());
+	
+	public CommitWizard(SyncInfoSet infos) throws CVSException {
+		this(infos.getResources());
+	}
+	
+	public CommitWizard(final IResource [] resources) throws CVSException {
+		
+		super(COMMIT_WIZARD_DIALOG_SETTINGS, CVSUIPlugin.getPlugin().getDialogSettings());
+		
+		setNeedsProgressMonitor(true);
+		setWindowTitle(CVSUIMessages.CommitWizard_2); 
+		setDefaultPageImageDescriptor(CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_NEW_LOCATION));
+		
+		fResources= resources;
+		ResourceMapping[] mappings = Utils.getResourceMappings(resources);
+		fParticipant = createWorkspaceParticipant(mappings, getShell());
 
-        getAllOutOfSync();
-        fUnaddedDiffs = getUnaddedResources(getDiffTree().getAffectedResources());
-    }
+		getAllOutOfSync();
+		fUnaddedDiffs = getUnaddedResources(getDiffTree().getAffectedResources());
+	}
 
 	private ModelSynchronizeParticipant createWorkspaceParticipant(ResourceMapping[] selectedMappings, Shell shell) {
 		ISynchronizationScopeManager manager = WorkspaceSubscriberContext.createWorkspaceScopeManager(selectedMappings, true, CommitAction.isIncludeChangeSets(shell, CVSUIMessages.SyncAction_1));
@@ -202,18 +202,18 @@ public class CommitWizard extends ResizableWizard {
 		}
 	}
 
-    public boolean hasOutgoingChanges() {
-    	IResourceDiffTree tree = getDiffTree();
+	public boolean hasOutgoingChanges() {
+		IResourceDiffTree tree = getDiffTree();
 		return tree != null && tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
 			@Override
 			public boolean select(IDiff diff) {
 				return AbstractCommitAction.hasLocalChange(diff);
 			}
 		});
-    }
-    
-    boolean hasConflicts() {
-    	IResourceDiffTree tree = getDiffTree();
+	}
+	
+	boolean hasConflicts() {
+		IResourceDiffTree tree = getDiffTree();
 		return tree != null && tree.hasMatchingDiffs(ResourcesPlugin.getWorkspace().getRoot().getFullPath(), new FastDiffFilter() {
 			@Override
 			public boolean select(IDiff diff) {
@@ -225,156 +225,156 @@ public class CommitWizard extends ResizableWizard {
 			}
 		});
 	}
-    
-    public int getHighestProblemSeverity() {
+	
+	public int getHighestProblemSeverity() {
 		IResource[] resources = getDiffTree().getAffectedResources();
-    	int mostSeriousSeverity = -1;
-    	
-    	for (int i = 0; i < resources.length; i++) {
-    		IResource resource = resources[i];
-    		try {
-    			int severity = resource.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
-    			if (severity > mostSeriousSeverity) {
+		int mostSeriousSeverity = -1;
+		
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			try {
+				int severity = resource.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
+				if (severity > mostSeriousSeverity) {
 					mostSeriousSeverity = severity;
 				}
 			} catch (CoreException e) {
 			}
-    	}
-    	
-    	return mostSeriousSeverity;
-    }
+		}
+		
+		return mostSeriousSeverity;
+	}
 
 	IResourceDiffTree getDiffTree() {
 		return fParticipant.getContext().getDiffTree();
 	}
 
-    public CommitWizardFileTypePage getFileTypePage() {
-        return fFileTypePage;
-    }
+	public CommitWizardFileTypePage getFileTypePage() {
+		return fFileTypePage;
+	}
 
-    public CommitWizardCommitPage getCommitPage() {
-        return fCommitPage;
-    }
+	public CommitWizardCommitPage getCommitPage() {
+		return fCommitPage;
+	}
 
 	public ModelSynchronizeParticipant getParticipant() {
-        return fParticipant;
-    }
+		return fParticipant;
+	}
 
-    @Override
+	@Override
 	public boolean canFinish() {
-        final IWizardPage current= getContainer().getCurrentPage();
-        if (current == fFileTypePage && fCommitPage != null)
-            return false;
-        return super.canFinish();
-    }
+		final IWizardPage current= getContainer().getCurrentPage();
+		if (current == fFileTypePage && fCommitPage != null)
+			return false;
+		return super.canFinish();
+	}
 
-    @Override
+	@Override
 	public boolean performFinish() {
-        
-        final String comment= fCommitPage.getComment(getShell());
-        if (comment == null)
-            return false;
-        
-        IResource[] resources = AbstractCommitAction.getOutgoingChanges(getDiffTree(), fCommitPage.getTraversalsToCommit(), null);
-        if (resources.length == 0)
+		
+		final String comment= fCommitPage.getComment(getShell());
+		if (comment == null)
+			return false;
+		
+		IResource[] resources = AbstractCommitAction.getOutgoingChanges(getDiffTree(), fCommitPage.getTraversalsToCommit(), null);
+		if (resources.length == 0)
 			return true;
-        
-        final IResource[] unadded;
-        try {
-            unadded = getUnaddedResources(resources);
-        } catch (CVSException e1) {
-            return false;
-        }
-        
-        final IResource[] files = getFiles(resources);
-        
-        final AddAndCommitOperation operation= new AddAndCommitOperation(getPart(), files, unadded, comment);
-        if (jobListener != null)
-        	operation.setJobChangeListener(jobListener);
-        
-        if (fFileTypePage != null) {
-            final Map extensionsToSave= new HashMap();
-            final Map extensionsNotToSave= new HashMap();
-            
-            fFileTypePage.getModesForExtensions(extensionsToSave, extensionsNotToSave);
-            CommitWizardFileTypePage.saveExtensionMappings(extensionsToSave);
-            operation.setModesForExtensionsForOneTime(extensionsNotToSave);
-            
-            final Map namesToSave= new HashMap();
-            final Map namesNotToSave= new HashMap();
-            
-            fFileTypePage.getModesForNames(namesToSave, namesNotToSave);
-            CommitWizardFileTypePage.saveNameMappings(namesToSave);
-            operation.setModesForNamesForOneTime(namesNotToSave);
-        }
-        
-        try {
-            operation.run();
-        } catch (InvocationTargetException e) {
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        }
-        
-        fCommitPage.finish();
-        return super.performFinish();
-    }
-    
-    @Override
+		
+		final IResource[] unadded;
+		try {
+			unadded = getUnaddedResources(resources);
+		} catch (CVSException e1) {
+			return false;
+		}
+		
+		final IResource[] files = getFiles(resources);
+		
+		final AddAndCommitOperation operation= new AddAndCommitOperation(getPart(), files, unadded, comment);
+		if (jobListener != null)
+			operation.setJobChangeListener(jobListener);
+		
+		if (fFileTypePage != null) {
+			final Map extensionsToSave= new HashMap();
+			final Map extensionsNotToSave= new HashMap();
+			
+			fFileTypePage.getModesForExtensions(extensionsToSave, extensionsNotToSave);
+			CommitWizardFileTypePage.saveExtensionMappings(extensionsToSave);
+			operation.setModesForExtensionsForOneTime(extensionsNotToSave);
+			
+			final Map namesToSave= new HashMap();
+			final Map namesNotToSave= new HashMap();
+			
+			fFileTypePage.getModesForNames(namesToSave, namesNotToSave);
+			CommitWizardFileTypePage.saveNameMappings(namesToSave);
+			operation.setModesForNamesForOneTime(namesNotToSave);
+		}
+		
+		try {
+			operation.run();
+		} catch (InvocationTargetException e) {
+			return false;
+		} catch (InterruptedException e) {
+			return false;
+		}
+		
+		fCommitPage.finish();
+		return super.performFinish();
+	}
+	
+	@Override
 	public boolean performCancel() {
-    	fCommitPage.finish();
-    	return super.performCancel();
-    }
+		fCommitPage.finish();
+		return super.performCancel();
+	}
 
-    @Override
+	@Override
 	public void addPages() {
-        
+		
 		final Collection<String> names = new HashSet<>();
 		final Collection<String> extensions = new HashSet<>();
-        getUnknownNamesAndExtension(fUnaddedDiffs, names, extensions);
-        
-        if (names.size() + extensions.size() > 0) {
-            fFileTypePage= new CommitWizardFileTypePage(extensions, names); 
-            addPage(fFileTypePage);
-        }
-        
-        fCommitPage= new CommitWizardCommitPage(fResources, this);
-        addPage(fCommitPage);
-        
-        super.addPages();
-    }
+		getUnknownNamesAndExtension(fUnaddedDiffs, names, extensions);
+		
+		if (names.size() + extensions.size() > 0) {
+			fFileTypePage= new CommitWizardFileTypePage(extensions, names); 
+			addPage(fFileTypePage);
+		}
+		
+		fCommitPage= new CommitWizardCommitPage(fResources, this);
+		addPage(fCommitPage);
+		
+		super.addPages();
+	}
 
-    @Override
+	@Override
 	public void dispose() {
-        fParticipant.dispose();
-        super.dispose();
-    }
-    
-    public static void run(IWorkbenchPart part, Shell shell, IResource [] resources) throws CVSException {
-        try {
+		fParticipant.dispose();
+		super.dispose();
+	}
+	
+	public static void run(IWorkbenchPart part, Shell shell, IResource [] resources) throws CVSException {
+		try {
 			CommitWizard commitWizard = new CommitWizard(resources);
 			commitWizard.setPart(part);
 			run(shell, commitWizard);
 		} catch (OperationCanceledException e) {
 			// Ignore
 		}
-    }
-    
-    private void setPart(IWorkbenchPart part) {
+	}
+	
+	private void setPart(IWorkbenchPart part) {
 		this.part = part;
 	}
 
 	public static void run(Shell shell, SyncInfoSet infos, IJobChangeListener jobListener) throws CVSException {
-        try {
+		try {
 			run(shell, new CommitWizard(infos, jobListener));
 		} catch (OperationCanceledException e) {
 			// Ignore
 		}
-    }
+	}
 	
 	public static void run(IWorkbenchPart part, Shell shell, final ResourceTraversal[] traversals) throws CVSException {
-        try {
-        	final IResource [][] resources = new IResource[][] { null };
+		try {
+			final IResource [][] resources = new IResource[][] { null };
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 				try {
 					resources[0] = getDeepResourcesToCommit(traversals, monitor);
@@ -393,17 +393,17 @@ public class CommitWizard extends ResizableWizard {
 	}
 
 	private IWorkbenchPart getPart() {
-    	if (part != null)
-    		return part;
-        return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart();
-    }
-    
-    private static void run(Shell shell, CommitWizard wizard) {
-        if (!wizard.hasOutgoingChanges()) {
-            MessageDialog.openInformation(shell, CVSUIMessages.CommitWizard_6, CVSUIMessages.CommitWizard_7); // 
-        } else {
-        	int highestProblemSeverity = wizard.getHighestProblemSeverity();
-        	IPreferenceStore preferenceStore = CVSUIPlugin.getPlugin().getPreferenceStore();
+		if (part != null)
+			return part;
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().getActivePart();
+	}
+	
+	private static void run(Shell shell, CommitWizard wizard) {
+		if (!wizard.hasOutgoingChanges()) {
+			MessageDialog.openInformation(shell, CVSUIMessages.CommitWizard_6, CVSUIMessages.CommitWizard_7); // 
+		} else {
+			int highestProblemSeverity = wizard.getHighestProblemSeverity();
+			IPreferenceStore preferenceStore = CVSUIPlugin.getPlugin().getPreferenceStore();
 			switch (highestProblemSeverity) {
 			case IMarker.SEVERITY_WARNING:
 				String allowCommitsWithWarnings = preferenceStore.getString(ICVSUIConstants.PREF_ALLOW_COMMIT_WITH_WARNINGS);
@@ -424,37 +424,37 @@ public class CommitWizard extends ResizableWizard {
 				}
 				break;
 			}
-        	open(shell, wizard);
-        }
-    }
+			open(shell, wizard);
+		}
+	}
 
-    protected static int open(Shell shell, ResizableWizard wizard) {
-        final WizardDialog dialog= new WizardDialog(shell, wizard);
-        dialog.setPageSize(wizard.loadSize());
-        return dialog.open();
-    }
-    
+	protected static int open(Shell shell, ResizableWizard wizard) {
+		final WizardDialog dialog= new WizardDialog(shell, wizard);
+		dialog.setPageSize(wizard.loadSize());
+		return dialog.open();
+	}
+	
 	private void getUnknownNamesAndExtension(IResource[] resources, Collection<String> names,
 			Collection<String> extensions) {
 
-    	final IFileContentManager manager= Team.getFileContentManager();
+		final IFileContentManager manager= Team.getFileContentManager();
 
-    	for (int i = 0; i < resources.length; i++) {
+		for (int i = 0; i < resources.length; i++) {
 
-    		IResource local = resources[i];
-    		if (local instanceof IFile && manager.getType((IFile)local) == Team.UNKNOWN) {
-    			final String extension= local.getFileExtension();
-    			if (extension != null && !manager.isKnownExtension(extension)) {
-    				extensions.add(extension);
-    			}
+			IResource local = resources[i];
+			if (local instanceof IFile && manager.getType((IFile)local) == Team.UNKNOWN) {
+				final String extension= local.getFileExtension();
+				if (extension != null && !manager.isKnownExtension(extension)) {
+					extensions.add(extension);
+				}
 
-    			final String name= local.getName();
-    			if (extension == null && name != null && !manager.isKnownFilename(name))
-    				names.add(name);
-    		}
-    	}
-    }
-    
+				final String name= local.getName();
+				if (extension == null && name != null && !manager.isKnownFilename(name))
+					names.add(name);
+			}
+		}
+	}
+	
 	private IResource[] getUnaddedResources(IResource[] resources) throws CVSException {
 		List/* <IResource> */<IResource> unadded = new ArrayList<>();
 		for (int i = 0; i < resources.length; i++) {
@@ -474,46 +474,46 @@ public class CommitWizard extends ResizableWizard {
 		return files.toArray(new IResource[0]);
 	}
 	
-    private static boolean isAdded(IResource resource) throws CVSException {
-        final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
-        if (cvsResource.isFolder()) {
-            return ((ICVSFolder)cvsResource).isCVSFolder();
-        }
-        return cvsResource.isManaged();
-    }
+	private static boolean isAdded(IResource resource) throws CVSException {
+		final ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
+		if (cvsResource.isFolder()) {
+			return ((ICVSFolder)cvsResource).isCVSFolder();
+		}
+		return cvsResource.isManaged();
+	}
 
-    private static IResource[] getDeepResourcesToCommit(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
+	private static IResource[] getDeepResourcesToCommit(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
 		List<IResource> roots = new ArrayList<>();
-        for (int j = 0; j < traversals.length; j++) {
-            ResourceTraversal traversal = traversals[j];
-            IResource[] resources = traversal.getResources();
-            if (traversal.getDepth() == IResource.DEPTH_INFINITE) {
-                roots.addAll(Arrays.asList(resources));
-            } else if (traversal.getDepth() == IResource.DEPTH_ZERO) {
-                collectShallowFiles(resources, roots);
-            } else if (traversal.getDepth() == IResource.DEPTH_ONE) {
-                collectShallowFiles(resources, roots);
-                for (int k = 0; k < resources.length; k++) {
-                    IResource resource = resources[k];
-                    if (resource.getType() != IResource.FILE) {
-                        collectShallowFiles(members(resource), roots);
-                    }
-                }
-            }
-        }
-        return roots.toArray(new IResource[roots.size()]);
-    }
+		for (int j = 0; j < traversals.length; j++) {
+			ResourceTraversal traversal = traversals[j];
+			IResource[] resources = traversal.getResources();
+			if (traversal.getDepth() == IResource.DEPTH_INFINITE) {
+				roots.addAll(Arrays.asList(resources));
+			} else if (traversal.getDepth() == IResource.DEPTH_ZERO) {
+				collectShallowFiles(resources, roots);
+			} else if (traversal.getDepth() == IResource.DEPTH_ONE) {
+				collectShallowFiles(resources, roots);
+				for (int k = 0; k < resources.length; k++) {
+					IResource resource = resources[k];
+					if (resource.getType() != IResource.FILE) {
+						collectShallowFiles(members(resource), roots);
+					}
+				}
+			}
+		}
+		return roots.toArray(new IResource[roots.size()]);
+	}
 
-    private static IResource[] members(IResource resource) throws CoreException {
-        return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().members(resource);
-    }
+	private static IResource[] members(IResource resource) throws CoreException {
+		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber().members(resource);
+	}
 
 	private static void collectShallowFiles(IResource[] resources, List<IResource> roots) {
-        for (int k = 0; k < resources.length; k++) {
-            IResource resource = resources[k];
-            if (resource.getType() == IResource.FILE)
-                roots.add(resource);
-        }
-    }
+		for (int k = 0; k < resources.length; k++) {
+			IResource resource = resources[k];
+			if (resource.getType() == IResource.FILE)
+				roots.add(resource);
+		}
+	}
 }    
 

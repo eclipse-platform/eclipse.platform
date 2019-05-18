@@ -54,21 +54,21 @@ public abstract class RemoteCommand extends Command {
 			// Convert arguments
 			List stringArguments = new ArrayList(arguments.length);
 			for (int i = 0; i < arguments.length; i++) {
-			    ICVSResource resource = arguments[i];
-			    String remotePath;
-                if (isDefinedModule(resource)) {
-			        remotePath = resource.getName();
-			    } else {
-			        remotePath = resource.getRepositoryRelativePath();
-                    
-			    }
-                stringArguments.add(remotePath);
+				ICVSResource resource = arguments[i];
+				String remotePath;
+				if (isDefinedModule(resource)) {
+					remotePath = resource.getName();
+				} else {
+					remotePath = resource.getRepositoryRelativePath();
+					
+				}
+				stringArguments.add(remotePath);
 			}
 			return (String[]) stringArguments.toArray(new String[stringArguments.size()]);
 	}
 
-    private boolean isDefinedModule(ICVSResource resource) {
-        return resource instanceof ICVSRemoteFolder && ((ICVSRemoteFolder)resource).isDefinedModule();
-    }
+	private boolean isDefinedModule(ICVSResource resource) {
+		return resource instanceof ICVSRemoteFolder && ((ICVSRemoteFolder)resource).isDefinedModule();
+	}
 
 }

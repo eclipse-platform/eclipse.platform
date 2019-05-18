@@ -20,14 +20,14 @@ import org.eclipse.team.internal.ccvs.core.client.listeners.ICommandOutputListen
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 
 public class CommandOutputListener implements ICommandOutputListener {
-    
-    /*
-     * Failure string that is returned from the server when pserver is used and the root directory
-     * is not readable. The problem can be fixed by making the directory readable or by using -f in 
-     * the pserver configuration file. We will ignore the error since it does not affect the command.
-     */
-    public static final String ROOT_CVSIGNORE_READ_FAILURE = "cvs server: cannot open /root/.cvsignore: Permission denied"; //$NON-NLS-1$
-    
+	
+	/*
+	 * Failure string that is returned from the server when pserver is used and the root directory
+	 * is not readable. The problem can be fixed by making the directory readable or by using -f in 
+	 * the pserver configuration file. We will ignore the error since it does not affect the command.
+	 */
+	public static final String ROOT_CVSIGNORE_READ_FAILURE = "cvs server: cannot open /root/.cvsignore: Permission denied"; //$NON-NLS-1$
+	
 	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
 		return OK;
 	}
@@ -37,8 +37,8 @@ public class CommandOutputListener implements ICommandOutputListener {
 			return new CVSStatus(IStatus.ERROR, CVSStatus.PROTOCOL_ERROR, protocolError, commandRoot);
 		}
 		if (line.equals(ROOT_CVSIGNORE_READ_FAILURE) || getServerMessage(ROOT_CVSIGNORE_READ_FAILURE, location).equals(getServerMessage(line, location))) {
-		    // Don't report this as an error since it does not affect the command
-		    return new CVSStatus(IStatus.WARNING, CVSStatus.ERROR_LINE, line, commandRoot);
+			// Don't report this as an error since it does not affect the command
+			return new CVSStatus(IStatus.WARNING, CVSStatus.ERROR_LINE, line, commandRoot);
 		}
 		return new CVSStatus(IStatus.ERROR, CVSStatus.ERROR_LINE, line, commandRoot);
 	}

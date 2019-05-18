@@ -117,11 +117,11 @@ public class CVSAnnotateBlock {
 			line = CVSMessages.CVSAnnotateBlock_5; 
 		}
 		return NLS.bind(CVSMessages.CVSAnnotateBlock_6, (new Object[] { 
-        	user,
-        	revision,
-        	String.valueOf(delta),
-        	line
-        }));
+			user,
+			revision,
+			String.valueOf(delta),
+			line
+		}));
 	}
 
 	/**

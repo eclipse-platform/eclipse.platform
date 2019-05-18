@@ -15,7 +15,7 @@ package org.eclipse.jsch.internal.ui;
 
 public interface IHelpContextIds{
 
-  public final String USER_VALIDATION_DIALOG="org.eclipse.team.cvs.ui.user_validation_dialog_contex"; //$NON-NLS-1$
-  public final String KEYBOARD_INTERACTIVE_DIALOG="org.eclipse.team.cvs.ui.keyboard_interactive_dialog_context"; //$NON-NLS-1$
+	public final String USER_VALIDATION_DIALOG="org.eclipse.team.cvs.ui.user_validation_dialog_contex"; //$NON-NLS-1$
+	public final String KEYBOARD_INTERACTIVE_DIALOG="org.eclipse.team.cvs.ui.keyboard_interactive_dialog_context"; //$NON-NLS-1$
 
 }

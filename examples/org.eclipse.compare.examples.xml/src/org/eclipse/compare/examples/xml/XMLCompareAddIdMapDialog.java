@@ -112,7 +112,7 @@ public class XMLCompareAddIdMapDialog extends StatusDialog {
 			status.setError(XMLCompareMessages.XMLCompareAddIdMapDialog_error_invalidname); 
 		else if ( (!fEdit && (fIdMaps.containsKey(newText) || fIdMapsInternal.containsKey(newText)) )
 					|| (fEdit && !newText.equals(fIdMap.getName()) && (fIdMaps.containsKey(newText) || fIdMapsInternal.containsKey(newText)) )
-				 )
+				)
 			status.setError(XMLCompareMessages.XMLCompareAddIdMapDialog_error_idmapExists); 
 		newText= fIdMapExtText.getText().toLowerCase();
 		if (newText.length() > 0) {

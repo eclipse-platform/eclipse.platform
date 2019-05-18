@@ -53,31 +53,31 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			int type = resource.getType();
-            if ((includeFiles && (type==IResource.FILE)) 
+			if ((includeFiles && (type==IResource.FILE)) 
 					|| (includeFolders && (type==IResource.FOLDER))) {
-                boolean exists = resource.exists();
-                if ((includeExisting && exists) || (includePhantoms && !exists)) {
-                    ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
-                    boolean includeResource = false;
-                    if ((includeManaged && includeUnmanaged && includeIgnored)) {
-                        includeResource = true;
-                    } else {
-        				boolean isManaged = cvsResource.isManaged();
-                        if (isManaged && includeManaged) {
-                            includeResource = true;
-                        } else if (exists) {
-            				boolean isIgnored = cvsResource.isIgnored();
-                            if (isIgnored && includeIgnored) {
-                                includeResource = true;
-                            } else if (! isManaged && ! isIgnored && includeUnmanaged) {
-                                includeResource = true;
-            				}
-                        }
-                    }
-                    if (includeResource) {
-                        result.add(cvsResource);
-                    }
-                }
+				boolean exists = resource.exists();
+				if ((includeExisting && exists) || (includePhantoms && !exists)) {
+					ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
+					boolean includeResource = false;
+					if ((includeManaged && includeUnmanaged && includeIgnored)) {
+						includeResource = true;
+					} else {
+						boolean isManaged = cvsResource.isManaged();
+						if (isManaged && includeManaged) {
+							includeResource = true;
+						} else if (exists) {
+							boolean isIgnored = cvsResource.isIgnored();
+							if (isIgnored && includeIgnored) {
+								includeResource = true;
+							} else if (! isManaged && ! isIgnored && includeUnmanaged) {
+								includeResource = true;
+							}
+						}
+					}
+					if (includeResource) {
+						result.add(cvsResource);
+					}
+				}
 			}		
 		}	
 		return result.toArray(new ICVSResource[result.size()]);
@@ -234,12 +234,12 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 				monitor.worked(1);
 				IResource resource = members[i];
 				if (resource.getType() == IResource.FILE) {
-                    ResourceAttributes attrs = resource.getResourceAttributes();
-                    if (attrs != null && attrs.isReadOnly()) {
-                        attrs.setReadOnly(false);
-                        resource.setResourceAttributes(attrs);
-                    }
-                } else {
+					ResourceAttributes attrs = resource.getResourceAttributes();
+					if (attrs != null && attrs.isReadOnly()) {
+						attrs.setReadOnly(false);
+						resource.setResourceAttributes(attrs);
+					}
+				} else {
 					recursiveUnmanage((IContainer) resource, monitor);
 				}
 			}
@@ -260,12 +260,12 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 	
 	@Override
 	public ICVSResource getChild(String namedPath) throws CVSException {
-	    if (namedPath.equals(Session.CURRENT_LOCAL_FOLDER)) {
-	        return this;
-	    }
+		if (namedPath.equals(Session.CURRENT_LOCAL_FOLDER)) {
+			return this;
+		}
 		IPath path = new Path(null, namedPath);
 		if(path.segmentCount()==0) {
-			 return this;
+			return this;
 		}
 		IResource child = ((IContainer)resource).findMember(path, true /* include phantoms */);
 		if(child!=null) {

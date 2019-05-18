@@ -97,11 +97,11 @@ public class StorageMergerRegistry {
 		// collect all IStreamMergers
 		IConfigurationElement[] elements= registry.getConfigurationElementsFor(TeamPlugin.ID, STORAGE_MERGER_EXTENSION_POINT);
 		for (int i= 0; i < elements.length; i++) {
-		    IConfigurationElement element= elements[i];
-	    		if (STORAGE_MERGER.equals(element.getName()))
-	    			register(element, new StorageMergerDescriptor(element));
-	    		else if (CONTENT_TYPE_BINDING.equals(element.getName()))
-	    		    createBinding(element, STORAGE_MERGER_ID_ATTRIBUTE);
+			IConfigurationElement element= elements[i];
+				if (STORAGE_MERGER.equals(element.getName()))
+					register(element, new StorageMergerDescriptor(element));
+				else if (CONTENT_TYPE_BINDING.equals(element.getName()))
+					createBinding(element, STORAGE_MERGER_ID_ATTRIBUTE);
 		}
 	}
 

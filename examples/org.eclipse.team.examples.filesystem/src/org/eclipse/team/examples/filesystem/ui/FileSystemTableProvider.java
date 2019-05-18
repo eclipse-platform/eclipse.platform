@@ -154,7 +154,7 @@ public class FileSystemTableProvider {
 		 */
 		public int compare(Viewer compareViewer, Object o1, Object o2) {
 			/*if (o1 instanceof AbstractCVSHistoryCategory || o2 instanceof AbstractCVSHistoryCategory)
-			 return 0;*/
+			return 0;*/
 
 			IFileRevision e1 = adaptToFileRevision(o1);
 			IFileRevision e2 = adaptToFileRevision(o2);

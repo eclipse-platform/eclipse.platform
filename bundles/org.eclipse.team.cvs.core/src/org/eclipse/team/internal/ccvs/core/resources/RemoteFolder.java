@@ -412,9 +412,9 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 	 * @see ICVSRemoteFolder#setTag(String)
 	 */
 	public void setTag(CVSTag tag) {
-        MutableFolderSyncInfo newInfo = folderInfo.cloneMutable();
-        newInfo.setTag(tag);
-        setFolderSyncInfo(newInfo);
+		MutableFolderSyncInfo newInfo = folderInfo.cloneMutable();
+		newInfo.setTag(tag);
+		setFolderSyncInfo(newInfo);
 	}
 
 	@Override
@@ -451,8 +451,8 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 		} finally {
 			session.close();
 		}
-	 }
-	 
+	}
+	
 	@Override
 	public ICVSResource[] fetchChildren(IProgressMonitor monitor) throws CVSException {
 		try {

@@ -70,12 +70,12 @@ public class SyncFileWriter {
 	 * If the folder does not have a CVS subdirectory then <code>null</code> is returned.
 	 */
 	public static byte[][] readAllResourceSync(IContainer parent) throws CVSException {
-        IFolder cvsSubDir = getCVSSubdirectory(parent);
-        
-        if (!folderExists(cvsSubDir)){
-        	return null;
-        }
-        
+		IFolder cvsSubDir = getCVSSubdirectory(parent);
+		
+		if (!folderExists(cvsSubDir)){
+			return null;
+		}
+		
 		if (Policy.DEBUG_METAFILE_CHANGES) {
 			System.out.println("Reading Entries file for " + parent.getFullPath()); //$NON-NLS-1$
 		}
@@ -126,14 +126,14 @@ public class SyncFileWriter {
 	}
 	
 	private static boolean folderExists(IFolder cvsSubDir) throws CVSException {
-	    try {
-	    	URI uri = cvsSubDir.getLocationURI();
-	    	if (uri != null){
+		try {
+			URI uri = cvsSubDir.getLocationURI();
+			if (uri != null){
 				IFileStore store = EFS.getStore(uri);
 				if (store != null){
 					return store.fetchInfo().exists();
 				}
-	    	}
+			}
 		} catch (CoreException e) {
 			throw CVSException.wrapException(e);
 		} 
@@ -171,11 +171,11 @@ public class SyncFileWriter {
 	public static FolderSyncInfo readFolderSync(IContainer folder) throws CVSException {
 		IFolder cvsSubDir = getCVSSubdirectory(folder);
 		
-        if (!folderExists(cvsSubDir)){
-        	return null;
-        }
+		if (!folderExists(cvsSubDir)){
+			return null;
+		}
 
-        if (Policy.DEBUG_METAFILE_CHANGES) {
+		if (Policy.DEBUG_METAFILE_CHANGES) {
 			System.out.println("Reading Root/Repository files for " + folder.getFullPath()); //$NON-NLS-1$
 		}
 		
@@ -328,10 +328,10 @@ public class SyncFileWriter {
 	public static NotifyInfo[] readAllNotifyInfo(IContainer parent) throws CVSException {
 		IFolder cvsSubDir = getCVSSubdirectory(parent);
 
-        if (!folderExists(cvsSubDir)){
-        	return null;
-        }
-        
+		if (!folderExists(cvsSubDir)){
+			return null;
+		}
+		
 		// process Notify file contents
 		String[] entries = readLines(cvsSubDir.getFile(NOTIFY));
 		if (entries == null) return null;
@@ -340,13 +340,13 @@ public class SyncFileWriter {
 			String line = entries[i];
 			if(!"".equals(line)) { //$NON-NLS-1$
 				try {
-                    NotifyInfo info = new NotifyInfo(parent, line);
-                    infos.put(info.getName(), info);
-                } catch (CVSException e) {
-                    // We couldn't parse the notify info
-                    // Log it and ignore
-                    CVSProviderPlugin.log(e);
-                }			
+					NotifyInfo info = new NotifyInfo(parent, line);
+					infos.put(info.getName(), info);
+				} catch (CVSException e) {
+					// We couldn't parse the notify info
+					// Log it and ignore
+					CVSProviderPlugin.log(e);
+				}			
 			}
 		}
 		
@@ -393,11 +393,11 @@ public class SyncFileWriter {
 	 */
 	public static BaserevInfo[] readAllBaserevInfo(IContainer parent) throws CVSException {
 		IFolder cvsSubDir = getCVSSubdirectory(parent);
-        
-        if (!folderExists(cvsSubDir)){
-        	return null;
-        }
-        
+		
+		if (!folderExists(cvsSubDir)){
+			return null;
+		}
+		
 		// process Notify file contents
 		String[] entries = readLines(cvsSubDir.getFile(BASEREV));
 		if (entries == null) return null;
@@ -504,8 +504,8 @@ public class SyncFileWriter {
 				} finally {
 					reader.close();
 				}
-            }
-            return null;
+			}
+			return null;
 		} catch (IOException e) {
 			throw CVSException.wrapException(e);
 		} catch (CoreException e) {
@@ -524,7 +524,7 @@ public class SyncFileWriter {
 
 	private static InputStream getInputStream(IFile file) throws CoreException, FileNotFoundException {
 		if (file.exists()) {
-		    return file.getContents(true);
+			return file.getContents(true);
 		}
 		
 		URI uri = file.getLocationURI();
@@ -692,11 +692,11 @@ public class SyncFileWriter {
 		if (attrs != null && attrs.isReadOnly() != readOnly) {
 			attrs.setReadOnly(readOnly);
 			try {
-		        source.setResourceAttributes(attrs);
-		    } catch (CoreException e) {
-		    	// Just log the failure since the move may succeed anyway
-		        CVSProviderPlugin.log(e);
-		    }
+				source.setResourceAttributes(attrs);
+			} catch (CoreException e) {
+				// Just log the failure since the move may succeed anyway
+				CVSProviderPlugin.log(e);
+			}
 		}
 	}
 	

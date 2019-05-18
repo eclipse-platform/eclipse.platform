@@ -32,11 +32,11 @@ public class PatchWizardDialog extends WizardDialog {
 
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
-        IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
-        IDialogSettings section = settings.getSection(PATCH_WIZARD_SETTINGS_SECTION);
-        if (section == null) {
-            section = settings.addNewSection(PATCH_WIZARD_SETTINGS_SECTION);
-        }
-        return section;
+		IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
+		IDialogSettings section = settings.getSection(PATCH_WIZARD_SETTINGS_SECTION);
+		if (section == null) {
+			section = settings.addNewSection(PATCH_WIZARD_SETTINGS_SECTION);
+		}
+		return section;
 	}
 }

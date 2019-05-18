@@ -30,30 +30,30 @@ import org.eclipse.team.internal.ccvs.ui.operations.RepositoryProviderOperation;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class IgnoreAction extends WorkspaceTraversalAction {
-    
-    /**
-     * Define an operation that can be run in the background.
-     * We divide the ignores by provider to obtain project
-     * locks while modifying the .cvsignore files
-     */
-    class IgnoreOperation extends RepositoryProviderOperation {
+	
+	/**
+	 * Define an operation that can be run in the background.
+	 * We divide the ignores by provider to obtain project
+	 * locks while modifying the .cvsignore files
+	 */
+	class IgnoreOperation extends RepositoryProviderOperation {
 
-        private final IgnoreResourcesDialog dialog;
+		private final IgnoreResourcesDialog dialog;
 
-        public IgnoreOperation(IWorkbenchPart part, IResource[] resources, IgnoreResourcesDialog dialog) {
-            super(part, resources);
-            this.dialog = dialog;
-        }
+		public IgnoreOperation(IWorkbenchPart part, IResource[] resources, IgnoreResourcesDialog dialog) {
+			super(part, resources);
+			this.dialog = dialog;
+		}
 
-        @Override
+		@Override
 		protected String getTaskName(CVSTeamProvider provider) {
-            return NLS.bind(CVSUIMessages.IgnoreAction_0, new String[] { provider.getProject().getName() }); 
-        }
+			return NLS.bind(CVSUIMessages.IgnoreAction_0, new String[] { provider.getProject().getName() }); 
+		}
 
-        @Override
+		@Override
 		protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 			try {
-			    monitor.beginTask(null, resources.length);
+				monitor.beginTask(null, resources.length);
 				for (int i = 0; i < resources.length; i++) {
 					IResource resource = resources[i];
 					String pattern = dialog.getIgnorePatternFor(resource);
@@ -65,22 +65,22 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 				collectStatus(e.getStatus());
 				return;
 			} finally {
-			    monitor.done();
+				monitor.done();
 			}
 			collectStatus(Status.OK_STATUS);
-        }
+		}
 
-        @Override
+		@Override
 		protected String getTaskName() {
-            return CVSUIMessages.IgnoreAction_1; 
-        }
-        
-    	@Override
+			return CVSUIMessages.IgnoreAction_1; 
+		}
+		
+		@Override
 		public boolean consultModelsForMappings() {
-    		return false;
-    	}
-        
-    }
+			return false;
+		}
+		
+	}
 	
 	@Override
 	protected void execute(final IAction action) throws InvocationTargetException, InterruptedException {

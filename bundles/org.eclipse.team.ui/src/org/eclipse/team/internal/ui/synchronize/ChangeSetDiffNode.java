@@ -25,21 +25,21 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
  */
 public class ChangeSetDiffNode extends SynchronizeModelElement {
 
-    private final ChangeSet set;
+	private final ChangeSet set;
 
-    public ChangeSetDiffNode(IDiffContainer parent, ChangeSet set) {
-        super(parent);
-        this.set = set;
-    }
+	public ChangeSetDiffNode(IDiffContainer parent, ChangeSet set) {
+		super(parent);
+		this.set = set;
+	}
 
-    @Override
+	@Override
 	public IResource getResource() {
-        return null;
-    }
+		return null;
+	}
 
-    public ChangeSet getSet() {
-        return set;
-    }
+	public ChangeSet getSet() {
+		return set;
+	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
@@ -56,25 +56,25 @@ public class ChangeSetDiffNode extends SynchronizeModelElement {
 		return getName();
 	}
 
-    @Override
+	@Override
 	public int hashCode() {
-        return set.hashCode();
-    }
+		return set.hashCode();
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object object) {
-        if (object instanceof ChangeSetDiffNode) {
-            return((ChangeSetDiffNode)object).getSet() == set;
-        }
-        return super.equals(object);
-    }
+		if (object instanceof ChangeSetDiffNode) {
+			return((ChangeSetDiffNode)object).getSet() == set;
+		}
+		return super.equals(object);
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-        if (adapter.equals(ChangeSet.class)) {
-            return (T) set;
-        }
-        return super.getAdapter(adapter);
-    }
+		if (adapter.equals(ChangeSet.class)) {
+			return (T) set;
+		}
+		return super.getAdapter(adapter);
+	}
 }

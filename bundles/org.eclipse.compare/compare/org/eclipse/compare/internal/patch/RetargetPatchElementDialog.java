@@ -49,7 +49,7 @@ class RetargetPatchElementDialog extends Dialog {
 	private static class RetargetPatchContentProvider extends BaseWorkbenchContentProvider {
 		private final PatchDiffNode node;
 		public RetargetPatchContentProvider(PatchDiffNode node) {
-			 this.node = node;
+			this.node = node;
 		}
 		@Override
 		public Object[] getChildren(Object element) {
@@ -104,8 +104,8 @@ class RetargetPatchElementDialog extends Dialog {
 
 		GridLayout layout= new GridLayout();
 		layout.numColumns= 1;
-        layout.marginHeight= convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-        layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		layout.marginHeight= convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
 		composite.setLayout(layout);
 		final GridData data= new GridData(SWT.FILL, SWT.FILL, true, true);
 		composite.setLayoutData(data);

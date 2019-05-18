@@ -72,7 +72,7 @@ public abstract class TagAction extends WorkspaceTraversalAction {
 		IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
 		ITagOperation operation = createTagOperation();
 		if (operation.isEmpty()) {
-		    return null;
+			return null;
 		}
 		if (!performPrompting(operation)) {
 			return null;

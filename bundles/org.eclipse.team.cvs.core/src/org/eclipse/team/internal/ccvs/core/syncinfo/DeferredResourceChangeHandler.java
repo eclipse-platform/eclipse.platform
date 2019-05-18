@@ -87,11 +87,11 @@ public class DeferredResourceChangeHandler extends BackgroundEventHandler {
 		// Handle ignore file changes
 		boolean workDone = !changedIgnoreFiles.isEmpty() || !recreatedResources.isEmpty();
 		try {
-            EclipseSynchronizer.getInstance().ignoreFilesChanged(getParents(changedIgnoreFiles));
-        } catch (CVSException e) {
-            // Log and continue
-            CVSProviderPlugin.log(e);
-        }
+			EclipseSynchronizer.getInstance().ignoreFilesChanged(getParents(changedIgnoreFiles));
+		} catch (CVSException e) {
+			// Log and continue
+			CVSProviderPlugin.log(e);
+		}
 		changedIgnoreFiles.clear();
 		// Handle recreations by project to reduce locking granularity
 		Map recreations = getResourcesByProject((IResource[]) recreatedResources.toArray(new IResource[recreatedResources.size()]));

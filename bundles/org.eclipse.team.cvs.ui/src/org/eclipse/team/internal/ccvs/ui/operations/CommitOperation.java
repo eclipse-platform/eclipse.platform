@@ -67,7 +67,7 @@ public class CommitOperation extends SingleCommandOperation {
 	}
 	
 	@Override
-    protected ResourceMappingContext getResourceMappingContext() {
-        return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
-    }
+	protected ResourceMappingContext getResourceMappingContext() {
+		return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
+	}
 }

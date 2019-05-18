@@ -111,37 +111,37 @@ public class ProjectSetImporter {
 			} else {
 				UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(shell, filename);
 				List<TeamException> errors = new ArrayList<TeamException>();
-			  	IMemento[] providers = xmlMemento.getChildren("provider"); //$NON-NLS-1$
-			  	for (int i = 0; i < providers.length; i++) {
+				IMemento[] providers = xmlMemento.getChildren("provider"); //$NON-NLS-1$
+				for (int i = 0; i < providers.length; i++) {
 					ArrayList<String> referenceStrings= new ArrayList<>();
 					IMemento[] projects = providers[i].getChildren("project"); //$NON-NLS-1$
 					for (int j = 0; j < projects.length; j++) {
 						referenceStrings.add(projects[j].getString("reference")); //$NON-NLS-1$
 					}
 					try {
-                        String id = providers[i].getString("id"); //$NON-NLS-1$
-                        TeamCapabilityHelper.getInstance().processRepositoryId(id,
-                        		PlatformUI.getWorkbench().getActivitySupport());
-                        RepositoryProviderType providerType = RepositoryProviderType.getProviderType(id);
-                        if (providerType == null) {
-                            // The provider type is absent. Perhaps there is another provider that can import this type
-                            providerType = TeamPlugin.getAliasType(id);
-                        }
-                        if (providerType == null) {
-                            throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null));
-                        }
-                    	ProjectSetCapability serializer = providerType.getProjectSetCapability();
-                    	ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
-                    	if (serializer != null) {
-                    		IProject[] allProjects = serializer.addToWorkspace(referenceStrings.toArray(new String[referenceStrings.size()]), context, monitor);
-                    		if (allProjects != null)
-                    			newProjects.addAll(Arrays.asList(allProjects));
-                    	}
-                    } catch (TeamException e) {
-                        errors.add(e);
-                    }
+						String id = providers[i].getString("id"); //$NON-NLS-1$
+						TeamCapabilityHelper.getInstance().processRepositoryId(id,
+								PlatformUI.getWorkbench().getActivitySupport());
+						RepositoryProviderType providerType = RepositoryProviderType.getProviderType(id);
+						if (providerType == null) {
+							// The provider type is absent. Perhaps there is another provider that can import this type
+							providerType = TeamPlugin.getAliasType(id);
+						}
+						if (providerType == null) {
+							throw new TeamException(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, NLS.bind(TeamUIMessages.ProjectSetImportWizard_0, new String[] { id }), null));
+						}
+						ProjectSetCapability serializer = providerType.getProjectSetCapability();
+						ProjectSetCapability.ensureBackwardsCompatible(providerType, serializer);
+						if (serializer != null) {
+							IProject[] allProjects = serializer.addToWorkspace(referenceStrings.toArray(new String[referenceStrings.size()]), context, monitor);
+							if (allProjects != null)
+								newProjects.addAll(Arrays.asList(allProjects));
+						}
+					} catch (TeamException e) {
+						errors.add(e);
+					}
 				}
-			  	if (!errors.isEmpty()) {
+				if (!errors.isEmpty()) {
 					TeamException[] exceptions= errors.toArray(new TeamException[errors.size()]);
 					IStatus[] status= new IStatus[exceptions.length];
 					for (int i= 0; i < exceptions.length; i++) {
@@ -150,14 +150,14 @@ public class ProjectSetImporter {
 					throw new TeamException(new MultiStatus(TeamUIPlugin.ID, 0, status, TeamUIMessages.ProjectSetImportWizard_1, null));
 				}
 
-			  	//try working sets
-			  	IMemento[] sets = xmlMemento.getChildren("workingSets"); //$NON-NLS-1$
-			  	IWorkingSetManager wsManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
-			  	boolean replaceAll = false;
-			  	boolean mergeAll = false;
-			  	boolean skipAll = false;
+				//try working sets
+				IMemento[] sets = xmlMemento.getChildren("workingSets"); //$NON-NLS-1$
+				IWorkingSetManager wsManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+				boolean replaceAll = false;
+				boolean mergeAll = false;
+				boolean skipAll = false;
 
-			  	for (int i = 0; i < sets.length; i++) {
+				for (int i = 0; i < sets.length; i++) {
 					IWorkingSet newWs = wsManager.createWorkingSet(sets[i]);
 					if (newWs != null) {
 						IWorkingSet oldWs = wsManager.getWorkingSet(newWs

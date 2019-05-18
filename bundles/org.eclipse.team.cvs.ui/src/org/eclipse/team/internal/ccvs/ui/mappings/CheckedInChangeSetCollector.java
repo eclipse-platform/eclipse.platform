@@ -43,10 +43,10 @@ import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
 public class CheckedInChangeSetCollector extends BatchingChangeSetManager implements ILogsFetchedListener {
 
 	/*
-     * Constant used to store the log entry handler in the configuration so it can
-     * be kept around over layout changes
-     */
-    private static final String LOG_ENTRY_HANDLER = CVSUIPlugin.ID + ".LogEntryHandler"; //$NON-NLS-1$
+	 * Constant used to store the log entry handler in the configuration so it can
+	 * be kept around over layout changes
+	 */
+	private static final String LOG_ENTRY_HANDLER = CVSUIPlugin.ID + ".LogEntryHandler"; //$NON-NLS-1$
 	
 	/* *****************************************************************************
 	 * Special sync info that has its kind already calculated.
@@ -71,17 +71,17 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		}
 		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
-            if (event.getTree().isEmpty()) {
-                ChangeSet changeSet = getChangeSet(event.getTree());
-                if (changeSet != null) {
-                    remove(changeSet);
-                }
-            } else {
-            	ChangeSet changeSet = getChangeSet(event.getTree());
-            	if (changeSet != null) {
-            		fireResourcesChangedEvent(changeSet, getAffectedPaths(event));
-            	}
-            }
+			if (event.getTree().isEmpty()) {
+				ChangeSet changeSet = getChangeSet(event.getTree());
+				if (changeSet != null) {
+					remove(changeSet);
+				}
+			} else {
+				ChangeSet changeSet = getChangeSet(event.getTree());
+				if (changeSet != null) {
+					fireResourcesChangedEvent(changeSet, getAffectedPaths(event));
+				}
+			}
 		}
 		private IPath[] getAffectedPaths(IDiffChangeEvent event) {
 			Set<IPath> result = new HashSet<>();
@@ -110,115 +110,115 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	private final Subscriber subscriber;
 
 	private HashSet<ChangeSet> updatedSets;
-    
-    public CheckedInChangeSetCollector(ISynchronizePageConfiguration configuration, Subscriber subscriber) {
+	
+	public CheckedInChangeSetCollector(ISynchronizePageConfiguration configuration, Subscriber subscriber) {
 		this.configuration = configuration;
 		this.subscriber = subscriber;
 	}
-    
-    /**
-     * Return the configuration for the page that is displaying the model created 
-     * using this collector.
-     * @return the configuration for the page that is displaying the model created 
-     * using this collector
-     */
-    public final ISynchronizePageConfiguration getConfiguration() {
-        return configuration;
-    }
-    
-    @Override
+	
+	/**
+	 * Return the configuration for the page that is displaying the model created 
+	 * using this collector.
+	 * @return the configuration for the page that is displaying the model created 
+	 * using this collector
+	 */
+	public final ISynchronizePageConfiguration getConfiguration() {
+		return configuration;
+	}
+	
+	@Override
 	protected void handleSetAdded(ChangeSet set) {
-    	((DiffChangeSet)set).getDiffTree().addDiffChangeListener(diffTreeListener);
-    	super.handleSetAdded(set);
-    	if (updatedSets != null) {
-    		updatedSets.add(set);
-    		((DiffTree)((DiffChangeSet)set).getDiffTree()).beginInput();
-    	}
-    }
-    
-    @Override
+		((DiffChangeSet)set).getDiffTree().addDiffChangeListener(diffTreeListener);
+		super.handleSetAdded(set);
+		if (updatedSets != null) {
+			updatedSets.add(set);
+			((DiffTree)((DiffChangeSet)set).getDiffTree()).beginInput();
+		}
+	}
+	
+	@Override
 	protected void handleSetRemoved(ChangeSet set) {
-    	((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(diffTreeListener);
-    	super.handleSetRemoved(set);
-    }
-    
-    protected ChangeSet getChangeSet(IDiffTree tree) {
-        ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
-        	ChangeSet changeSet = sets[i];
-            if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
-                return changeSet;
-            }
-        }
-        return null;
-    }
-    
-    public void handleChange(IDiffChangeEvent event) {
+		((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(diffTreeListener);
+		super.handleSetRemoved(set);
+	}
+	
+	protected ChangeSet getChangeSet(IDiffTree tree) {
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
+			ChangeSet changeSet = sets[i];
+			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
+				return changeSet;
+			}
+		}
+		return null;
+	}
+	
+	public void handleChange(IDiffChangeEvent event) {
 		List<IPath> removals = new ArrayList<>();
 		List<IDiff> additions = new ArrayList<>();
-        removals.addAll(Arrays.asList(event.getRemovals()));
-        additions.addAll(Arrays.asList(event.getAdditions()));
-        IDiff[] changed = event.getChanges();
-        for (int i = 0; i < changed.length; i++) {
-            IDiff diff = changed[i];
-            additions.add(diff);
-            removals.add(diff.getPath());
-        }
-        if (!removals.isEmpty()) {
-            remove(removals.toArray(new IPath[removals.size()]));
-        }
-        if (!additions.isEmpty()) {
-            add(additions.toArray(new IDiff[additions.size()]));
-        }
-    }
-    
-    protected void remove(IPath[] paths) {
-    	ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
-        	DiffChangeSet set = (DiffChangeSet)sets[i];
-            set.remove(paths);
-        }
-    }
-    
-    public synchronized LogEntryCacheUpdateHandler getLogEntryHandler() {
-        LogEntryCacheUpdateHandler handler = (LogEntryCacheUpdateHandler)getConfiguration().getProperty(LOG_ENTRY_HANDLER);
-        if (handler == null) {
-            handler = initializeLogEntryHandler(getConfiguration());
-        }
-        handler.setListener(this);
-        return handler;
-    }
-    
-    /*
-     * Initialize the log entry handler and place it in the configuration
-     */
-    private LogEntryCacheUpdateHandler initializeLogEntryHandler(final ISynchronizePageConfiguration configuration) {
-        final LogEntryCacheUpdateHandler logEntryHandler = new LogEntryCacheUpdateHandler(configuration);
-        configuration.setProperty(LOG_ENTRY_HANDLER, logEntryHandler);
-        // Use an action group to get notified when the configuration is disposed
-        configuration.addActionContribution(new SynchronizePageActionGroup() {
-            @Override
+		removals.addAll(Arrays.asList(event.getRemovals()));
+		additions.addAll(Arrays.asList(event.getAdditions()));
+		IDiff[] changed = event.getChanges();
+		for (int i = 0; i < changed.length; i++) {
+			IDiff diff = changed[i];
+			additions.add(diff);
+			removals.add(diff.getPath());
+		}
+		if (!removals.isEmpty()) {
+			remove(removals.toArray(new IPath[removals.size()]));
+		}
+		if (!additions.isEmpty()) {
+			add(additions.toArray(new IDiff[additions.size()]));
+		}
+	}
+	
+	protected void remove(IPath[] paths) {
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
+			DiffChangeSet set = (DiffChangeSet)sets[i];
+			set.remove(paths);
+		}
+	}
+	
+	public synchronized LogEntryCacheUpdateHandler getLogEntryHandler() {
+		LogEntryCacheUpdateHandler handler = (LogEntryCacheUpdateHandler)getConfiguration().getProperty(LOG_ENTRY_HANDLER);
+		if (handler == null) {
+			handler = initializeLogEntryHandler(getConfiguration());
+		}
+		handler.setListener(this);
+		return handler;
+	}
+	
+	/*
+	 * Initialize the log entry handler and place it in the configuration
+	 */
+	private LogEntryCacheUpdateHandler initializeLogEntryHandler(final ISynchronizePageConfiguration configuration) {
+		final LogEntryCacheUpdateHandler logEntryHandler = new LogEntryCacheUpdateHandler(configuration);
+		configuration.setProperty(LOG_ENTRY_HANDLER, logEntryHandler);
+		// Use an action group to get notified when the configuration is disposed
+		configuration.addActionContribution(new SynchronizePageActionGroup() {
+			@Override
 			public void dispose() {
-                super.dispose();
-                LogEntryCacheUpdateHandler handler = (LogEntryCacheUpdateHandler)configuration.getProperty(LOG_ENTRY_HANDLER);
-                if (handler != null) {
-                    handler.shutdown();
-                    configuration.setProperty(LOG_ENTRY_HANDLER, null);
-                }
-            }
-        });
-        return logEntryHandler;
-    }
+				super.dispose();
+				LogEntryCacheUpdateHandler handler = (LogEntryCacheUpdateHandler)configuration.getProperty(LOG_ENTRY_HANDLER);
+				if (handler != null) {
+					handler.shutdown();
+					configuration.setProperty(LOG_ENTRY_HANDLER, null);
+				}
+			}
+		});
+		return logEntryHandler;
+	}
 
-    protected void add(IDiff[] diffs) {
-        LogEntryCacheUpdateHandler handler = getLogEntryHandler();
-        if (handler != null)
-            try {
-                handler.fetch(getSyncInfos(diffs));
-            } catch (CVSException e) {
-                CVSUIPlugin.log(e);
-            }
-    }
+	protected void add(IDiff[] diffs) {
+		LogEntryCacheUpdateHandler handler = getLogEntryHandler();
+		if (handler != null)
+			try {
+				handler.fetch(getSyncInfos(diffs));
+			} catch (CVSException e) {
+				CVSUIPlugin.log(e);
+			}
+	}
 	
 	private SyncInfo[] getSyncInfos(IDiff[] diffs) {
 		SyncInfoSet set = new SyncInfoSet();
@@ -235,11 +235,11 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 
 	@Override
 	public void dispose() {
-	    // No longer listen for log entry changes
-	    // (The handler is disposed with the page)
-	    disposed = true;
-        LogEntryCacheUpdateHandler handler = getLogEntryHandler();
-        if (handler != null) handler.setListener(null);
+		// No longer listen for log entry changes
+		// (The handler is disposed with the page)
+		disposed = true;
+		LogEntryCacheUpdateHandler handler = getLogEntryHandler();
+		if (handler != null) handler.setListener(null);
 		getConfiguration().setProperty(CVSChangeSetCollector.CVS_CHECKED_IN_COLLECTOR, null);
 		logEntryCache = null;
 		super.dispose();
@@ -248,17 +248,17 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	/**
 	 * Fetch the log histories for the remote changes and use this information
 	 * to add each resource to an appropriate commit set.
-     */
-    private void handleRemoteChanges(final SyncInfo[] infos, final LogEntryCache logEntries, final IProgressMonitor monitor) {
-    	try {
-    		beginSetUpdate();
-    		addLogEntries(infos, logEntries, monitor);
-    	} finally {
-    		endSetUpdate(monitor);
-    	}
-    }
+	 */
+	private void handleRemoteChanges(final SyncInfo[] infos, final LogEntryCache logEntries, final IProgressMonitor monitor) {
+		try {
+			beginSetUpdate();
+			addLogEntries(infos, logEntries, monitor);
+		} finally {
+			endSetUpdate(monitor);
+		}
+	}
 	
-    private void beginSetUpdate() {
+	private void beginSetUpdate() {
 		updatedSets = new HashSet<>();
 	}
 
@@ -299,15 +299,15 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	 * @param log the cvs log for this node
 	 */
 	private void addSyncInfoToCommentNode(SyncInfo info, LogEntryCache logs) {
-	    LogEntryCacheUpdateHandler handler = getLogEntryHandler();
-	    if (handler != null) {
+		LogEntryCacheUpdateHandler handler = getLogEntryHandler();
+		if (handler != null) {
 			ICVSRemoteResource remoteResource = handler.getRemoteResource(info);
 			if(handler.getSubscriber() instanceof CVSCompareSubscriber && remoteResource != null) {
 				addMultipleRevisions(info, logs, remoteResource);
 			} else {
 				addSingleRevision(info, logs, remoteResource);
 			}
-	    }
+		}
 	}
 	
 	/*
@@ -319,7 +319,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	 */
 	private void addSingleRevision(SyncInfo info, LogEntryCache logs, ICVSRemoteResource remoteResource) {
 		ILogEntry logEntry = logs.getLogEntry(remoteResource);
-	    if (remoteResource != null && !remoteResource.isFolder()) {
+		if (remoteResource != null && !remoteResource.isFolder()) {
 			// For incoming deletions grab the comment for the latest on the same branch
 			// which is now in the attic.
 			try {
@@ -337,11 +337,11 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 			} catch (TeamException e) {
 				// continue and skip deletion checks
 			}
-	    }
+		}
 		addRemoteChange(info, remoteResource, logEntry);
 	}
 	
-    /*
+	/*
 	 * Add multiple log entries to the model.
 	 * 
 	 * @param info
@@ -369,43 +369,43 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		return false;
 	}
 	
-    /*
-     * Add the remote change to an incoming commit set
-     */
-    private void addRemoteChange(SyncInfo info, ICVSRemoteResource remoteResource, ILogEntry logEntry) {
-        if (disposed) return;
-        LogEntryCacheUpdateHandler handler = getLogEntryHandler();
-        if(handler != null && remoteResource != null && logEntry != null && handler.isRemoteChange(info)) {
-	        if(requiresCustomSyncInfo(info, remoteResource, logEntry)) {
-	        	info = new CVSUpdatableSyncInfo(info.getKind(), info.getLocal(), info.getBase(), (RemoteResource)logEntry.getRemoteFile(), getSubscriber());
-	        	try {
-	        		info.init();
-	        	} catch (TeamException e) {
-	        		// this shouldn't happen, we've provided our own calculate kind
-	        	}
-	        }
-	        IDiff diff = getConverter().getDeltaFor(info);
-	        // Only add the info if the base and remote differ
-	        IResourceVariant base = info.getBase();
-	        IResourceVariant remote = info.getRemote();
-	        if ((base == null && remote != null) || (remote == null && base != null) || (remote != null && base != null && !base.equals(remote))) {
-	            synchronized(this) {
-	            	CVSCheckedInChangeSet set = getChangeSetFor(logEntry);
-			        if (set == null) {
-			            set = createChangeSetFor(logEntry);
-			        	add(set);
-			        }
+	/*
+	 * Add the remote change to an incoming commit set
+	 */
+	private void addRemoteChange(SyncInfo info, ICVSRemoteResource remoteResource, ILogEntry logEntry) {
+		if (disposed) return;
+		LogEntryCacheUpdateHandler handler = getLogEntryHandler();
+		if(handler != null && remoteResource != null && logEntry != null && handler.isRemoteChange(info)) {
+			if(requiresCustomSyncInfo(info, remoteResource, logEntry)) {
+				info = new CVSUpdatableSyncInfo(info.getKind(), info.getLocal(), info.getBase(), (RemoteResource)logEntry.getRemoteFile(), getSubscriber());
+				try {
+					info.init();
+				} catch (TeamException e) {
+					// this shouldn't happen, we've provided our own calculate kind
+				}
+			}
+			IDiff diff = getConverter().getDeltaFor(info);
+			// Only add the info if the base and remote differ
+			IResourceVariant base = info.getBase();
+			IResourceVariant remote = info.getRemote();
+			if ((base == null && remote != null) || (remote == null && base != null) || (remote != null && base != null && !base.equals(remote))) {
+				synchronized(this) {
+					CVSCheckedInChangeSet set = getChangeSetFor(logEntry);
+					if (set == null) {
+						set = createChangeSetFor(logEntry);
+						add(set);
+					}
 					set.add(diff);
-	            }
-	        }
-        } else {
-            // The info was not retrieved for the remote change for some reason.
-            // Add the node to the root
-            //addToDefaultSet(DEFAULT_INCOMING_SET_NAME, info);
-        }
-    }
+				}
+			}
+		} else {
+			// The info was not retrieved for the remote change for some reason.
+			// Add the node to the root
+			//addToDefaultSet(DEFAULT_INCOMING_SET_NAME, info);
+		}
+	}
 
-    private SyncInfoToDiffConverter getConverter() {
+	private SyncInfoToDiffConverter getConverter() {
 		SyncInfoToDiffConverter converter = Adapters.adapt(subscriber, SyncInfoToDiffConverter.class);
 		if (converter == null)
 			converter = SyncInfoToDiffConverter.getDefault();
@@ -414,22 +414,22 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 
 	private CVSCheckedInChangeSet createChangeSetFor(ILogEntry logEntry) {
 		return new CVSCheckedInChangeSet(logEntry);
-    }
+	}
 
-    private CVSCheckedInChangeSet getChangeSetFor(ILogEntry logEntry) {
-    	ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
-        	ChangeSet set = sets[i];
-            if (set instanceof CVSCheckedInChangeSet &&
-                    set.getComment().equals(logEntry.getComment()) &&
-                    ((CVSCheckedInChangeSet)set).getAuthor().equals(logEntry.getAuthor())) {
-                return (CVSCheckedInChangeSet)set;
-            }
-        }
-        return null;
-    }
-    
-    private boolean requiresCustomSyncInfo(SyncInfo info, ICVSRemoteResource remoteResource, ILogEntry logEntry) {
+	private CVSCheckedInChangeSet getChangeSetFor(ILogEntry logEntry) {
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
+			ChangeSet set = sets[i];
+			if (set instanceof CVSCheckedInChangeSet &&
+					set.getComment().equals(logEntry.getComment()) &&
+					((CVSCheckedInChangeSet)set).getAuthor().equals(logEntry.getAuthor())) {
+				return (CVSCheckedInChangeSet)set;
+			}
+		}
+		return null;
+	}
+	
+	private boolean requiresCustomSyncInfo(SyncInfo info, ICVSRemoteResource remoteResource, ILogEntry logEntry) {
 		// Only interested in non-deletions
 		if (logEntry.isDeletion()) return false;
 		// Only require a custom sync info if the remote of the sync info
@@ -438,17 +438,17 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		if (remote == null) return true;
 		return !remote.equals(remoteResource);
 	}
-    
+	
 	/*
 	 * @see
 	 * org.eclipse.team.ui.synchronize.SyncInfoSetChangeSetCollector#waitUntilDone(
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
-    public void waitUntilDone(IProgressMonitor monitor) {
+	public void waitUntilDone(IProgressMonitor monitor) {
 		monitor.worked(1);
 		// wait for the event handler to process changes.
-        LogEntryCacheUpdateHandler handler = getLogEntryHandler();
-        if (handler != null) {
+		LogEntryCacheUpdateHandler handler = getLogEntryHandler();
+		if (handler != null) {
 			while(handler.getEventHandlerJob().getState() != Job.NONE) {
 				monitor.worked(1);
 				try {
@@ -457,26 +457,26 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 				}
 				Policy.checkCanceled(monitor);
 			}
-        }
+		}
 		monitor.worked(1);
-    }
+	}
 
-    @Override
+	@Override
 	public void logEntriesFetched(SyncInfoSet set, LogEntryCache logEntryCache, IProgressMonitor monitor) {
-        if (disposed) return;
-        // Hold on to the cache so we can use it while commit sets are visible
-        this.logEntryCache = logEntryCache;
-        try {
-        	beginInput();
-        	handleRemoteChanges(set.getSyncInfos(), logEntryCache, monitor);
-        } finally {
-        	endInput(monitor);
-        }
-    }
+		if (disposed) return;
+		// Hold on to the cache so we can use it while commit sets are visible
+		this.logEntryCache = logEntryCache;
+		try {
+			beginInput();
+			handleRemoteChanges(set.getSyncInfos(), logEntryCache, monitor);
+		} finally {
+			endInput(monitor);
+		}
+	}
 
-    public ICVSRemoteFile getImmediatePredecessor(ICVSRemoteFile file) throws TeamException {
-        if (logEntryCache != null)
-            return logEntryCache.getImmediatePredecessor(file);
-        return null;
-    }
+	public ICVSRemoteFile getImmediatePredecessor(ICVSRemoteFile file) throws TeamException {
+		if (logEntryCache != null)
+			return logEntryCache.getImmediatePredecessor(file);
+		return null;
+	}
 }

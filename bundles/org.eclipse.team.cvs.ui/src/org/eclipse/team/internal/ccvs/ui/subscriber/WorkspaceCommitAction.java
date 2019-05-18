@@ -50,34 +50,34 @@ public class WorkspaceCommitAction extends CVSParticipantAction {
 	protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 		return new WorkspaceCommitOperation(configuration, elements, false /* override */);
 	}
-    
-    @Override
+	
+	@Override
 	public void runOperation() {
-        final SyncInfoSet set = getSyncInfoSet();
-        final Shell shell= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        try {
-        	// Include the subscriber operation as a job listener so that the busy feedback for the 
-        	// commit will appear in the synchronize view
-            CommitWizard.run(shell, set, getSubscriberOperation(getConfiguration(), getFilteredDiffElements()));
-        } catch (CVSException e) {
-            CVSUIPlugin.log(e);
-        }
-    }
+		final SyncInfoSet set = getSyncInfoSet();
+		final Shell shell= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		try {
+			// Include the subscriber operation as a job listener so that the busy feedback for the 
+			// commit will appear in the synchronize view
+			CommitWizard.run(shell, set, getSubscriberOperation(getConfiguration(), getFilteredDiffElements()));
+		} catch (CVSException e) {
+			CVSUIPlugin.log(e);
+		}
+	}
 
-    /*
-     * Return the selected SyncInfo for which this action is enabled.
-     * 
-     * @return the selected SyncInfo for which this action is enabled.
-     */
-    private SyncInfoSet getSyncInfoSet() {
-        IDiffElement [] elements= getFilteredDiffElements();
-        SyncInfoSet filtered = new SyncInfoSet();
-        for (int i = 0; i < elements.length; i++) {
-            IDiffElement e = elements[i];
-            if (e instanceof SyncInfoModelElement) {
-                filtered.add(((SyncInfoModelElement)e).getSyncInfo());
-            }
-        }
-        return filtered;
-    }
+	/*
+	 * Return the selected SyncInfo for which this action is enabled.
+	 * 
+	 * @return the selected SyncInfo for which this action is enabled.
+	 */
+	private SyncInfoSet getSyncInfoSet() {
+		IDiffElement [] elements= getFilteredDiffElements();
+		SyncInfoSet filtered = new SyncInfoSet();
+		for (int i = 0; i < elements.length; i++) {
+			IDiffElement e = elements[i];
+			if (e instanceof SyncInfoModelElement) {
+				filtered.add(((SyncInfoModelElement)e).getSyncInfo());
+			}
+		}
+		return filtered;
+	}
 }

@@ -253,17 +253,17 @@ public interface ISynchronizeParticipant extends IExecutableExtension, IAdaptabl
 	 * @since 3.1
 	 */
 	public void prepareCompareInput(
-	        ISynchronizeModelElement element,
-	        CompareConfiguration configuration,
-	        IProgressMonitor monitor)
+			ISynchronizeModelElement element,
+			CompareConfiguration configuration,
+			IProgressMonitor monitor)
 				throws TeamException;
 
-    /**
-     * Return the list of preference pages that are associated with this participant
-     * @return the list of preference pages that are associated with this participant
-     * @since 3.1
-     */
-    public PreferencePage[] getPreferencePages();
+	/**
+	 * Return the list of preference pages that are associated with this participant
+	 * @return the list of preference pages that are associated with this participant
+	 * @since 3.1
+	 */
+	public PreferencePage[] getPreferencePages();
 
 	/**
 	 * Returns the help context id of this participant.

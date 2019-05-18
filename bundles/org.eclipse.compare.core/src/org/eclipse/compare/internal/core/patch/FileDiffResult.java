@@ -68,7 +68,7 @@ public class FileDiffResult implements IFilePatchResult {
 	 * @param content the contents being patched or <code>null</code> for an addition
 	 * @param monitor a progress monitor or <code>null</code> if no progress monitoring is desired
 	 */
-	 public void refresh(ReaderCreator content, IProgressMonitor monitor) {
+	public void refresh(ReaderCreator content, IProgressMonitor monitor) {
 		this.fMatches= false;
 		this.fDiffProblem= false;
 		boolean create= false;

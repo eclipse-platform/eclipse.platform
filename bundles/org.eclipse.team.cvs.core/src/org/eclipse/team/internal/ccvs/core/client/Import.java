@@ -39,13 +39,13 @@ public class Import extends Command {
 		IProgressMonitor monitor) throws CVSException {
 			
 		// If the branch option is not provided, a default value of 1.1.1 is used.
-	 	// This is done to maintain reference client compatibility
-	 	if (findOption(localOptions, "-b") == null) { //$NON-NLS-1$
-	 		LocalOption[] newLocalOptions = new LocalOption[localOptions.length + 1];
+		// This is done to maintain reference client compatibility
+		if (findOption(localOptions, "-b") == null) { //$NON-NLS-1$
+			LocalOption[] newLocalOptions = new LocalOption[localOptions.length + 1];
 			newLocalOptions[0] = new LocalOption("-b", "1.1.1");  //$NON-NLS-1$ //$NON-NLS-2$
 			System.arraycopy(localOptions, 0, newLocalOptions, 1, localOptions.length);
 			localOptions = newLocalOptions;
-	 	}
+		}
 		return super.doExecute(session, globalOptions, localOptions, arguments, listener, monitor);
 	}
 	

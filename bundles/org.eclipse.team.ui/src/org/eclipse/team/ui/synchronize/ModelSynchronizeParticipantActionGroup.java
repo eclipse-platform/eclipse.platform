@@ -120,10 +120,10 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	@Override
 	public void fillActionBars(IActionBars actionBars) {
 		super.fillActionBars(actionBars);
-        if (actionBars != null && showPreferences != null) {
-        	IMenuManager menu = actionBars.getMenuManager();
-        	appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
-        }
+		if (actionBars != null && showPreferences != null) {
+			IMenuManager menu = actionBars.getMenuManager();
+			appendToGroup(menu, ISynchronizePageConfiguration.PREFERENCES_GROUP, showPreferences);
+		}
 	}
 
 	@Override
@@ -134,22 +134,22 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			addMergeActions(cmm);
 		}
 		Object[] elements = ((IStructuredSelection)getContext().getSelection()).toArray();
-    	if (elements.length > 0 && openInCompareAction != null) {
-    		IContributionItem fileGroup = findGroup(menu, ISynchronizePageConfiguration.FILE_GROUP);
-    		if (fileGroup != null) {
-    			ModelSynchronizeParticipant msp = ((ModelSynchronizeParticipant)getConfiguration().getParticipant());
-    			boolean allElementsHaveCompareInput = true;
-    			for (int i = 0; i < elements.length; i++) {
-    				if (!msp.hasCompareInputFor(elements[i])) {
-    					allElementsHaveCompareInput = false;
-    					break;
-    				}
-    			}
-    			if (allElementsHaveCompareInput) {
-    				menu.appendToGroup(fileGroup.getId(), openInCompareAction);
-    			}
-    		}
-    	}
+		if (elements.length > 0 && openInCompareAction != null) {
+			IContributionItem fileGroup = findGroup(menu, ISynchronizePageConfiguration.FILE_GROUP);
+			if (fileGroup != null) {
+				ModelSynchronizeParticipant msp = ((ModelSynchronizeParticipant)getConfiguration().getParticipant());
+				boolean allElementsHaveCompareInput = true;
+				for (int i = 0; i < elements.length; i++) {
+					if (!msp.hasCompareInputFor(elements[i])) {
+						allElementsHaveCompareInput = false;
+						break;
+					}
+				}
+				if (allElementsHaveCompareInput) {
+					menu.appendToGroup(fileGroup.getId(), openInCompareAction);
+				}
+			}
+		}
 	}
 
 	/*

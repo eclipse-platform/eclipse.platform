@@ -34,9 +34,9 @@ public class ShowAnnotationAction extends WorkspaceAction {
 	 * Action to open a CVS Annotate View
 	 */
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
-	    final ICVSResource resource= getSingleSelectedCVSResource();
-	    if (resource == null)
-	        return;
+		final ICVSResource resource= getSingleSelectedCVSResource();
+		if (resource == null)
+			return;
 		execute(resource);
 	}
 	
@@ -52,9 +52,9 @@ public class ShowAnnotationAction extends WorkspaceAction {
 	public void execute(final ICVSResource cvsResource) throws InvocationTargetException, InterruptedException {
 		final String revision= getRevision(cvsResource);
 		if (revision == null)
-		    return;
+			return;
 		boolean binary = isBinary(cvsResource);
-        if (binary) {
+		if (binary) {
 			final IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
 			final String option = store.getString(ICVSUIConstants.PREF_ANNOTATE_PROMPTFORBINARY);
 			if (option.equals(MessageDialogWithToggle.PROMPT)) {
@@ -67,24 +67,24 @@ public class ShowAnnotationAction extends WorkspaceAction {
 			} else if (option.equals(MessageDialogWithToggle.NEVER))
 				return;
 		}
-        
+		
 		new ShowAnnotationOperation(getTargetPart(), cvsResource, revision, binary).run();
 	}
 
-    private boolean isBinary(ICVSResource cvsResource) {
-        if (cvsResource.isFolder()) return false;
-        
-        try {
-            byte[] syncBytes = ((ICVSFile)cvsResource).getSyncBytes();
-                if (syncBytes == null)
-                    return false;
-            return ResourceSyncInfo.isBinary(syncBytes);
-        } catch (CVSException e) {
-            return false;
-        }
-    }
+	private boolean isBinary(ICVSResource cvsResource) {
+		if (cvsResource.isFolder()) return false;
+		
+		try {
+			byte[] syncBytes = ((ICVSFile)cvsResource).getSyncBytes();
+				if (syncBytes == null)
+					return false;
+			return ResourceSyncInfo.isBinary(syncBytes);
+		} catch (CVSException e) {
+			return false;
+		}
+	}
 
-    /**
+	/**
 	 * Only enabled for single resource selection
 	 */
 	public boolean isEnabled() {
@@ -134,7 +134,7 @@ public class ShowAnnotationAction extends WorkspaceAction {
 		return null;
 	}
 
-    
+	
 	/**
 	 * Get the revision for the CVS resource. Throws an InvocationTargetException
 	 * if the revision could not be determined.
@@ -144,16 +144,16 @@ public class ShowAnnotationAction extends WorkspaceAction {
 	 * @throws InvocationTargetException
 	 */
 	private String getRevision(ICVSResource cvsResource) throws InvocationTargetException {
-        final ResourceSyncInfo info;
-        try {
-            info= cvsResource.getSyncInfo();
-            if (info == null)
-                throw new CVSException(NLS.bind(CVSUIMessages.ShowAnnotationAction_noSyncInfo, new String[] { cvsResource.getName() }));
-        } catch (CVSException e) {
-            throw new InvocationTargetException(e);
-        }
-        return info.getRevision();
-    }
+		final ResourceSyncInfo info;
+		try {
+			info= cvsResource.getSyncInfo();
+			if (info == null)
+				throw new CVSException(NLS.bind(CVSUIMessages.ShowAnnotationAction_noSyncInfo, new String[] { cvsResource.getName() }));
+		} catch (CVSException e) {
+			throw new InvocationTargetException(e);
+		}
+		return info.getRevision();
+	}
 	
 	public String getId() {
 		return ICVSUIConstants.CMD_ANNOTATE;

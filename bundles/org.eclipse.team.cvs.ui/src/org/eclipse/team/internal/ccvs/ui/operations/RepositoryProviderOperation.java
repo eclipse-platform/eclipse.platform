@@ -53,255 +53,255 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	private ISynchronizationScopeManager manager;
 	private final ResourceMapping[] selectedMappings;
 	
-    /**
-     * Interface that is available to subclasses which identifies
-     * the depth for various resources. The files will be included
-     * in whichever group (deep or shallow) has resources.
-     */
-    public interface ICVSTraversal {
-        IResource[] getShallowResources();
-        IResource[] getDeepResources();
-        IResource[] getNontraversedFolders();
-    }
-    
+	/**
+	 * Interface that is available to subclasses which identifies
+	 * the depth for various resources. The files will be included
+	 * in whichever group (deep or shallow) has resources.
+	 */
+	public interface ICVSTraversal {
+		IResource[] getShallowResources();
+		IResource[] getDeepResources();
+		IResource[] getNontraversedFolders();
+	}
+	
 	/*
 	 * A map entry for a provider that divides the traversals to be performed by depth.
 	 * There are really only 
 	 */
 	private static class TraversalMapEntry implements ICVSTraversal {
-	    // The provider for this entry
-	    RepositoryProvider provider;
-	    // Files are always shallow
+		// The provider for this entry
+		RepositoryProvider provider;
+		// Files are always shallow
 		List<IResource> files = new ArrayList<>();
-	    // Not sure what to do with zero depth folders but we'll record them
+		// Not sure what to do with zero depth folders but we'll record them
 		List<IResource> zeroFolders = new ArrayList<>();
-	    // Non-recursive folder (-l)
+		// Non-recursive folder (-l)
 		List<IResource> shallowFolders = new ArrayList<>();
-	    // Recursive folders (-R)
+		// Recursive folders (-R)
 		List<IResource> deepFolders = new ArrayList<>();
-        public TraversalMapEntry(RepositoryProvider provider) {
-            this.provider = provider;
-        }
-        /**
-         * Add the resources from the traversals to the entry
-         * @param traversals the traversals
-         */
-        public void add(ResourceTraversal[] traversals) {
-            for (int i = 0; i < traversals.length; i++) {
-                ResourceTraversal traversal = traversals[i];
-                add(traversal);
-            }
-        }
-	    /**
-	     * Add the resources from the traversal to the entry
-	     * @param traversal the traversal
-	     */
-	    public void add(ResourceTraversal traversal) {
-	        IResource[] resources = traversal.getResources();
-	        for (int i = 0; i < resources.length; i++) {
-                IResource resource = resources[i];
-                if (resource.getProject().equals(provider.getProject())) {
-	                if (resource.getType() == IResource.FILE) {
-	                    files.add(resource);
-	                } else {
-				        switch (traversal.getDepth()) {
-			            case IResource.DEPTH_ZERO:
-			                zeroFolders.add(resource);
-			                break;
-			            case IResource.DEPTH_ONE:
-			                shallowFolders.add(resource);
-			                break;
-			            case IResource.DEPTH_INFINITE:
-			                deepFolders.add(resource);
-			                break;
-			            default:
-			                deepFolders.add(resource);
-			            }
-	                }
-                }
-            }
-	    }
-	    /**
-	     * Return the resources that can be included in a shallow operation.
-	     * Include files with the shallow resources if there are shallow folders
-	     * or if there are no shallow or deep folders.
-	     * @return the resources that can be included in a shallow operation
-	     */
-	    @Override
+		public TraversalMapEntry(RepositoryProvider provider) {
+			this.provider = provider;
+		}
+		/**
+		 * Add the resources from the traversals to the entry
+		 * @param traversals the traversals
+		 */
+		public void add(ResourceTraversal[] traversals) {
+			for (int i = 0; i < traversals.length; i++) {
+				ResourceTraversal traversal = traversals[i];
+				add(traversal);
+			}
+		}
+		/**
+		 * Add the resources from the traversal to the entry
+		 * @param traversal the traversal
+		 */
+		public void add(ResourceTraversal traversal) {
+			IResource[] resources = traversal.getResources();
+			for (int i = 0; i < resources.length; i++) {
+				IResource resource = resources[i];
+				if (resource.getProject().equals(provider.getProject())) {
+					if (resource.getType() == IResource.FILE) {
+						files.add(resource);
+					} else {
+						switch (traversal.getDepth()) {
+						case IResource.DEPTH_ZERO:
+							zeroFolders.add(resource);
+							break;
+						case IResource.DEPTH_ONE:
+							shallowFolders.add(resource);
+							break;
+						case IResource.DEPTH_INFINITE:
+							deepFolders.add(resource);
+							break;
+						default:
+							deepFolders.add(resource);
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * Return the resources that can be included in a shallow operation.
+		 * Include files with the shallow resources if there are shallow folders
+		 * or if there are no shallow or deep folders.
+		 * @return the resources that can be included in a shallow operation
+		 */
+		@Override
 		public IResource[] getShallowResources() {
-	        if (shallowFolders.isEmpty() && deepFolders.isEmpty() && !files.isEmpty()) {
-	            return files.toArray(new IResource[files.size()]);
-	        }
-	        if (!shallowFolders.isEmpty()) {
-	            if (files.isEmpty()) {
-	                return shallowFolders.toArray(new IResource[shallowFolders.size()]);
-	            }
+			if (shallowFolders.isEmpty() && deepFolders.isEmpty() && !files.isEmpty()) {
+				return files.toArray(new IResource[files.size()]);
+			}
+			if (!shallowFolders.isEmpty()) {
+				if (files.isEmpty()) {
+					return shallowFolders.toArray(new IResource[shallowFolders.size()]);
+				}
 				List<IResource> result = new ArrayList<>();
-	            result.addAll(shallowFolders);
-	            result.addAll(files);
-	            return result.toArray(new IResource[result.size()]);
-	        }
-	        return new IResource[0];
-	    }
-	    /**
-	     * Return the resources to be included in a deep operation.
-	     * If there are no shallow folders, this will include any files.
-	     * @return
-	     */
-	    @Override
+				result.addAll(shallowFolders);
+				result.addAll(files);
+				return result.toArray(new IResource[result.size()]);
+			}
+			return new IResource[0];
+		}
+		/**
+		 * Return the resources to be included in a deep operation.
+		 * If there are no shallow folders, this will include any files.
+		 * @return
+		 */
+		@Override
 		public IResource[] getDeepResources() {
-	        if (deepFolders.isEmpty())
-	            return new IResource[0];
-	        if (!shallowFolders.isEmpty())
-	            return deepFolders.toArray(new IResource[deepFolders.size()]);
+			if (deepFolders.isEmpty())
+				return new IResource[0];
+			if (!shallowFolders.isEmpty())
+				return deepFolders.toArray(new IResource[deepFolders.size()]);
 			List<IResource> result = new ArrayList<>();
-            result.addAll(deepFolders);
-            result.addAll(files);
-            return result.toArray(new IResource[result.size()]);
-	    }
-	    /**
-	     * Return the folders that are depth zero
-	     */
-	    @Override
+			result.addAll(deepFolders);
+			result.addAll(files);
+			return result.toArray(new IResource[result.size()]);
+		}
+		/**
+		 * Return the folders that are depth zero
+		 */
+		@Override
 		public IResource[] getNontraversedFolders() {
-	        return zeroFolders.toArray(new IResource[zeroFolders.size()]);
-	    }
+			return zeroFolders.toArray(new IResource[zeroFolders.size()]);
+		}
 	}
 
-    
-    /**
-     * Convert the provided resources to one or more resource mappers
-     * that traverse the elements deeply. The model element of the resource
-     * mappers will be an IStructuredSelection.
-     * @param resources the resources
-     * @return a resource mappers that traverses the resources
-     */
-    public static ResourceMapping[] asResourceMappers(final IResource[] resources) {
-        return asResourceMappers(resources, IResource.DEPTH_INFINITE);
-    }
-    
-    /**
-     * Convert the provided resources to one or more resource mappers
-     * that traverse the elements deeply. The model element of the resource
-     * mappers will be an IStructuredSelection.
-     * @param resources the resources
-     * @return a resource mappers that traverses the resources
-     */
-    public static ResourceMapping[] asResourceMappers(final IResource[] resources, int depth) {
-        return WorkspaceResourceMapper.asResourceMappers(resources, depth);
-    }
-    
+	
+	/**
+	 * Convert the provided resources to one or more resource mappers
+	 * that traverse the elements deeply. The model element of the resource
+	 * mappers will be an IStructuredSelection.
+	 * @param resources the resources
+	 * @return a resource mappers that traverses the resources
+	 */
+	public static ResourceMapping[] asResourceMappers(final IResource[] resources) {
+		return asResourceMappers(resources, IResource.DEPTH_INFINITE);
+	}
+	
+	/**
+	 * Convert the provided resources to one or more resource mappers
+	 * that traverse the elements deeply. The model element of the resource
+	 * mappers will be an IStructuredSelection.
+	 * @param resources the resources
+	 * @return a resource mappers that traverses the resources
+	 */
+	public static ResourceMapping[] asResourceMappers(final IResource[] resources, int depth) {
+		return WorkspaceResourceMapper.asResourceMappers(resources, depth);
+	}
+	
 	public RepositoryProviderOperation(IWorkbenchPart part, final IResource[] resources) {
 		this(part, asResourceMappers(resources));
 	}
 
-    public RepositoryProviderOperation(IWorkbenchPart part, ResourceMapping[] selectedMappings) {
-        super(part);
+	public RepositoryProviderOperation(IWorkbenchPart part, ResourceMapping[] selectedMappings) {
+		super(part);
 		this.selectedMappings = selectedMappings;
-    }
+	}
 
 	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		try {
-            monitor.beginTask(null, 100);
-            buildScope(monitor);
-            Map table = getProviderTraversalMapping(Policy.subMonitorFor(monitor, 30));
-            execute(table, Policy.subMonitorFor(monitor, 30));
-        } catch (CoreException e) {
-            throw CVSException.wrapException(e);
-        } finally {
-            monitor.done();
-        }
+			monitor.beginTask(null, 100);
+			buildScope(monitor);
+			Map table = getProviderTraversalMapping(Policy.subMonitorFor(monitor, 30));
+			execute(table, Policy.subMonitorFor(monitor, 30));
+		} catch (CoreException e) {
+			throw CVSException.wrapException(e);
+		} finally {
+			monitor.done();
+		}
 	}
 	
 	@Override
 	protected void endOperation() throws CVSException {
-    	if (manager != null) {
-    		manager.dispose();
-    		manager = null;
-    	}
+		if (manager != null) {
+			manager.dispose();
+			manager = null;
+		}
 		super.endOperation();
 	}
 
-    public ISynchronizationScope buildScope(IProgressMonitor monitor) throws InterruptedException, CVSException {
-    	if (manager == null) {
-    		manager = createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings());
-    		BuildScopeOperation op = new BuildScopeOperation(getPart(), manager);
+	public ISynchronizationScope buildScope(IProgressMonitor monitor) throws InterruptedException, CVSException {
+		if (manager == null) {
+			manager = createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings());
+			BuildScopeOperation op = new BuildScopeOperation(getPart(), manager);
 			try {
 				op.run(monitor);
 			} catch (InvocationTargetException e) {
 				throw CVSException.wrapException(e);
 			}
-    	}
-    	return manager.getScope();
+		}
+		return manager.getScope();
 	}
 
-    /**
-     * Create the scope manager to be used by this operation.
-     * @param consultModels whether models should be consulted to include additional mappings
-     * @return a scope manager
-     */
+	/**
+	 * Create the scope manager to be used by this operation.
+	 * @param consultModels whether models should be consulted to include additional mappings
+	 * @return a scope manager
+	 */
 	protected SynchronizationScopeManager createScopeManager(boolean consultModels) {
 		return new SynchronizationScopeManager(getJobName(), getSelectedMappings(), getResourceMappingContext(), consultModels);
 	}
 
 	private void execute(Map providerTraversal, IProgressMonitor monitor) throws CVSException, InterruptedException {
-        Set keySet = providerTraversal.keySet();
-        monitor.beginTask(null, keySet.size() * 1000);
-        Iterator iterator = keySet.iterator();
-        while (iterator.hasNext()) {
-        	CVSTeamProvider provider = (CVSTeamProvider)iterator.next();
-        	monitor.setTaskName(getTaskName(provider));
-        	TraversalMapEntry entry = (TraversalMapEntry)providerTraversal.get(provider);
-        	execute(provider, entry, Policy.subMonitorFor(monitor, 1000));
-        }
-    }
+		Set keySet = providerTraversal.keySet();
+		monitor.beginTask(null, keySet.size() * 1000);
+		Iterator iterator = keySet.iterator();
+		while (iterator.hasNext()) {
+			CVSTeamProvider provider = (CVSTeamProvider)iterator.next();
+			monitor.setTaskName(getTaskName(provider));
+			TraversalMapEntry entry = (TraversalMapEntry)providerTraversal.get(provider);
+			execute(provider, entry, Policy.subMonitorFor(monitor, 1000));
+		}
+	}
 
-    /**
-     * Execute the operation on the given set of traversals
-     * @param provider
-     * @param entry
-     * @param subMonitor
-     * @throws CVSException
-     * @throws InterruptedException
-     */
-    protected void execute(CVSTeamProvider provider, ICVSTraversal entry, IProgressMonitor monitor) throws CVSException, InterruptedException {
-        IResource[] deepResources = entry.getDeepResources();
-        IResource[] shallowResources = entry.getShallowResources();
-        IResource[] nontraversedFolders = entry.getNontraversedFolders();
-        try {
-	        monitor.beginTask(getTaskName(provider), (deepResources.length > 0 ? 100 : 0) + (shallowResources.length > 0 ? 100 : 0) + (nontraversedFolders.length > 0 ? 10 : 0));
-	        if (deepResources.length == 0 && shallowResources.length == 0 && nontraversedFolders.length == 0)
-	        	return;
-	        final ISchedulingRule rule = getSchedulingRule(provider);
-	        try {
-	        	Job.getJobManager().beginRule(rule, monitor);
-	            if (deepResources.length > 0)
-	                execute(provider, deepResources, true /* recurse */, Policy.subMonitorFor(monitor, 100));
-	            if (shallowResources.length > 0)
-	                execute(provider, shallowResources, false /* recurse */, Policy.subMonitorFor(monitor, 100));
-	            if (nontraversedFolders.length > 0) {
-	                handleNontraversedFolders(provider, nontraversedFolders, Policy.subMonitorFor(monitor, 10));
-	            }
-	        } finally {
-	        	Job.getJobManager().endRule(rule);
-	        }
-        } finally {
-            monitor.done();
-        }
-    }
+	/**
+	 * Execute the operation on the given set of traversals
+	 * @param provider
+	 * @param entry
+	 * @param subMonitor
+	 * @throws CVSException
+	 * @throws InterruptedException
+	 */
+	protected void execute(CVSTeamProvider provider, ICVSTraversal entry, IProgressMonitor monitor) throws CVSException, InterruptedException {
+		IResource[] deepResources = entry.getDeepResources();
+		IResource[] shallowResources = entry.getShallowResources();
+		IResource[] nontraversedFolders = entry.getNontraversedFolders();
+		try {
+			monitor.beginTask(getTaskName(provider), (deepResources.length > 0 ? 100 : 0) + (shallowResources.length > 0 ? 100 : 0) + (nontraversedFolders.length > 0 ? 10 : 0));
+			if (deepResources.length == 0 && shallowResources.length == 0 && nontraversedFolders.length == 0)
+				return;
+			final ISchedulingRule rule = getSchedulingRule(provider);
+			try {
+				Job.getJobManager().beginRule(rule, monitor);
+				if (deepResources.length > 0)
+					execute(provider, deepResources, true /* recurse */, Policy.subMonitorFor(monitor, 100));
+				if (shallowResources.length > 0)
+					execute(provider, shallowResources, false /* recurse */, Policy.subMonitorFor(monitor, 100));
+				if (nontraversedFolders.length > 0) {
+					handleNontraversedFolders(provider, nontraversedFolders, Policy.subMonitorFor(monitor, 10));
+				}
+			} finally {
+				Job.getJobManager().endRule(rule);
+			}
+		} finally {
+			monitor.done();
+		}
+	}
 	
 	/**
-     * Handle any non-traversed (depth-zero) folders that were in the logical modle that primed this operation.
-     * @param provider the repository provider associated with the project containing the folders
-     * @param nontraversedFolders the folders
-     * @param monitor a progress monitor
-     */
-    protected void handleNontraversedFolders(CVSTeamProvider provider, IResource[] nontraversedFolders, IProgressMonitor monitor) throws CVSException {
-        // Default is do nothing
-    }
+	 * Handle any non-traversed (depth-zero) folders that were in the logical modle that primed this operation.
+	 * @param provider the repository provider associated with the project containing the folders
+	 * @param nontraversedFolders the folders
+	 * @param monitor a progress monitor
+	 */
+	protected void handleNontraversedFolders(CVSTeamProvider provider, IResource[] nontraversedFolders, IProgressMonitor monitor) throws CVSException {
+		// Default is do nothing
+	}
 
-    /**
+	/**
 	 * Return the taskname to be shown in the progress monitor while operating
 	 * on the given provider.
 	 * @param provider the provider being processed
@@ -327,37 +327,37 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	Map getProviderTraversalMapping(IProgressMonitor monitor) throws CoreException {
 		Map<RepositoryProvider, TraversalMapEntry> result = new HashMap<>();
 		ResourceMapping[] mappings = getScope().getMappings();
-        for (int j = 0; j < mappings.length; j++) {
-            ResourceMapping mapping = mappings[j];
-            IProject[] projects = mapping.getProjects();
-            ResourceTraversal[] traversals = getScope().getTraversals(mapping);
-            for (int k = 0; k < projects.length; k++) {
-                IProject project = projects[k];
-                RepositoryProvider provider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
-                if (provider != null) {
-                    TraversalMapEntry entry = result.get(provider);
-                    if (entry == null) {
-                        entry = new TraversalMapEntry(provider);
-                        result.put(provider, entry);
-                    }
-                    entry.add(traversals);
-                } 
-            }
-        }
+		for (int j = 0; j < mappings.length; j++) {
+			ResourceMapping mapping = mappings[j];
+			IProject[] projects = mapping.getProjects();
+			ResourceTraversal[] traversals = getScope().getTraversals(mapping);
+			for (int k = 0; k < projects.length; k++) {
+				IProject project = projects[k];
+				RepositoryProvider provider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
+				if (provider != null) {
+					TraversalMapEntry entry = result.get(provider);
+					if (entry == null) {
+						entry = new TraversalMapEntry(provider);
+						result.put(provider, entry);
+					}
+					entry.add(traversals);
+				} 
+			}
+		}
 		return result;
 	}
 
-    /**
-     * Return the resource mapping context that is to be used by this operation.
-     * By default, <code>null</code> is returned but subclasses may override
-     * to provide a specific context.
-     * @return the resource mapping context for this operation
-     */
+	/**
+	 * Return the resource mapping context that is to be used by this operation.
+	 * By default, <code>null</code> is returned but subclasses may override
+	 * to provide a specific context.
+	 * @return the resource mapping context for this operation
+	 */
 	protected ResourceMappingContext getResourceMappingContext() {
-        return ResourceMappingContext.LOCAL_CONTEXT;
-    }
+		return ResourceMappingContext.LOCAL_CONTEXT;
+	}
 
-    /**
+	/**
 	 * Execute the operation on the resources for the given provider.
 	 * @param provider the provider for the project that contains the resources
 	 * @param resources the resources to be operated on
@@ -368,19 +368,19 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	 */
 	protected abstract void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException;
 
-    /**
-     * Return the local options for this operation including the 
-     * option to provide the requested traversal.
-     * @param recurse deep or shallow
-     * @return the local options for the operation
-     */
-    protected LocalOption[] getLocalOptions(boolean recurse) {
-        if (!recurse) {
-            return new LocalOption[] { Command.DO_NOT_RECURSE };
-        }
-        return Command.NO_LOCAL_OPTIONS;
-    }
-    
+	/**
+	 * Return the local options for this operation including the 
+	 * option to provide the requested traversal.
+	 * @param recurse deep or shallow
+	 * @return the local options for the operation
+	 */
+	protected LocalOption[] getLocalOptions(boolean recurse) {
+		if (!recurse) {
+			return new LocalOption[] { Command.DO_NOT_RECURSE };
+		}
+		return Command.NO_LOCAL_OPTIONS;
+	}
+	
 	protected ICVSResource[] getCVSArguments(IResource[] resources) {
 		ICVSResource[] cvsResources = new ICVSResource[resources.length];
 		for (int i = 0; i < cvsResources.length; i++) {
@@ -444,46 +444,46 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 		}
 	}
 	
-    @Override
+	@Override
 	public boolean isKeepOneProgressServiceEntry() {
-        // Keep the last repository provider operation in the progress service
-        return true;
-    }
-    
-    @Override
+		// Keep the last repository provider operation in the progress service
+		return true;
+	}
+	
+	@Override
 	protected IAction getGotoAction() {
-        return getShowConsoleAction();
-    }
-    
-    /**
-     * Return the root resources for all the traversals of this operation.
-     * This method may only be invoked after {@link #buildScope(IProgressMonitor) }.
-     * @return the root resources for all the traversals of this operation
-     * @throws CoreException 
-     */
-    protected IResource[] getTraversalRoots() {
+		return getShowConsoleAction();
+	}
+	
+	/**
+	 * Return the root resources for all the traversals of this operation.
+	 * This method may only be invoked after {@link #buildScope(IProgressMonitor) }.
+	 * @return the root resources for all the traversals of this operation
+	 * @throws CoreException 
+	 */
+	protected IResource[] getTraversalRoots() {
 		List<IResource> result = new ArrayList<>();
-        ResourceTraversal[] traversals = getTraversals();
-        for (int i = 0; i < traversals.length; i++) {
-            ResourceTraversal traversal = traversals[i];
-            result.addAll(Arrays.asList(traversal.getResources()));
-        }
-        return result.toArray(new IResource[result.size()]);
-    }
-    
-    /**
-     * Return the traversals that will be used by this operation.
-     * This method can only be called after {@link #buildScope(IProgressMonitor) }.
-     * @return the traversals that will be used by this operation
-     * @throws CoreException
-     */
-    public ResourceTraversal[] getTraversals() {
-        return getScope().getTraversals();
-    }
-    
-    public boolean consultModelsForMappings() {
-    	return true;
-    }
+		ResourceTraversal[] traversals = getTraversals();
+		for (int i = 0; i < traversals.length; i++) {
+			ResourceTraversal traversal = traversals[i];
+			result.addAll(Arrays.asList(traversal.getResources()));
+		}
+		return result.toArray(new IResource[result.size()]);
+	}
+	
+	/**
+	 * Return the traversals that will be used by this operation.
+	 * This method can only be called after {@link #buildScope(IProgressMonitor) }.
+	 * @return the traversals that will be used by this operation
+	 * @throws CoreException
+	 */
+	public ResourceTraversal[] getTraversals() {
+		return getScope().getTraversals();
+	}
+	
+	public boolean consultModelsForMappings() {
+		return true;
+	}
 
 	public ResourceMapping[] getSelectedMappings() {
 		return selectedMappings;

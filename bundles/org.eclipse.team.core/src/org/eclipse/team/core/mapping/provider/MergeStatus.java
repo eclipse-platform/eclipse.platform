@@ -34,40 +34,40 @@ import org.eclipse.team.core.mapping.IMergeStatus;
  */
 public class MergeStatus extends Status implements IMergeStatus {
 
-    private ResourceMapping[] conflictingMappings;
+	private ResourceMapping[] conflictingMappings;
 	private IFile[] conflictingFiles;
 
-    /**
-     * Create a merge status for reporting that some of the resource mappings
-     * for which a merge was attempted were not auto-mergable.
-     * @param pluginId the plugin id
-     * @param message the message for the status
-     * @param conflictingMappings the mappings which were not auto-mergable
-     */
-    public MergeStatus(String pluginId, String message, ResourceMapping[] conflictingMappings) {
-        super(IStatus.ERROR, pluginId, CONFLICTS, message, null);
-        this.conflictingMappings = conflictingMappings;
-    }
-
-    /**
-     * Create a merge status for reporting that some of the files
-     * for which a merge was attempted were not auto-mergable.
-     * @param pluginId the plugin id
-     * @param message the message for the status
-     * @param files the files which were not auto-mergable
-     */
-    public MergeStatus(String pluginId, String message, IFile[] files) {
-        super(IStatus.ERROR, pluginId, CONFLICTS, message, null);
-        this.conflictingFiles = files;
+	/**
+	 * Create a merge status for reporting that some of the resource mappings
+	 * for which a merge was attempted were not auto-mergable.
+	 * @param pluginId the plugin id
+	 * @param message the message for the status
+	 * @param conflictingMappings the mappings which were not auto-mergable
+	 */
+	public MergeStatus(String pluginId, String message, ResourceMapping[] conflictingMappings) {
+		super(IStatus.ERROR, pluginId, CONFLICTS, message, null);
+		this.conflictingMappings = conflictingMappings;
 	}
 
-    @Override
-	public ResourceMapping[] getConflictingMappings() {
-        return conflictingMappings;
-    }
+	/**
+	 * Create a merge status for reporting that some of the files
+	 * for which a merge was attempted were not auto-mergable.
+	 * @param pluginId the plugin id
+	 * @param message the message for the status
+	 * @param files the files which were not auto-mergable
+	 */
+	public MergeStatus(String pluginId, String message, IFile[] files) {
+		super(IStatus.ERROR, pluginId, CONFLICTS, message, null);
+		this.conflictingFiles = files;
+	}
 
-    @Override
+	@Override
+	public ResourceMapping[] getConflictingMappings() {
+		return conflictingMappings;
+	}
+
+	@Override
 	public IFile[] getConflictingFiles() {
-    	return conflictingFiles;
-    }
+		return conflictingFiles;
+	}
 }

@@ -82,10 +82,10 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 		}
 		return matcher;
 	}
-    
-    /* package */ boolean isIgnoresCached(IContainer container) throws CVSException {
-        return safeGetSessionProperty(container, IGNORE_SYNC_KEY) != null;
-    }
+	
+	/* package */ boolean isIgnoresCached(IContainer container) throws CVSException {
+		return safeGetSessionProperty(container, IGNORE_SYNC_KEY) != null;
+	}
 
 	/*package*/ boolean isFolderSyncInfoCached(IContainer container) throws CVSException {
 		Object info = safeGetSessionProperty(container, FOLDER_SYNC_KEY);
@@ -115,9 +115,9 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 	 */
 	FolderSyncInfo getCachedFolderSync(IContainer container, boolean threadSafeAccess) throws CVSException {
 		FolderSyncInfo info = (FolderSyncInfo)safeGetSessionProperty(container, FOLDER_SYNC_KEY);
-        // If we are not thread safe, just return whatever was found in the session property
-        if (!threadSafeAccess)
-            return info == NULL_FOLDER_SYNC_INFO ? null : info;
+		// If we are not thread safe, just return whatever was found in the session property
+		if (!threadSafeAccess)
+			return info == NULL_FOLDER_SYNC_INFO ? null : info;
 		if (info == null) {
 			// Defer to the synchronizer in case the folder was recreated
 			info = synchronizerCache.getCachedFolderSync(container, true);
@@ -258,10 +258,10 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 				} else {
 					di = RECOMPUTE_INDICATOR;
 				}
-                // Only set the session property if we are thread safe
-                if (threadSafeAccess) {
-                    setDirtyIndicator(container, di);
-                }
+				// Only set the session property if we are thread safe
+				if (threadSafeAccess) {
+					setDirtyIndicator(container, di);
+				}
 			}
 			return di;
 		} catch (CoreException e) {
@@ -306,8 +306,8 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 	byte[] getCachedSyncBytes(IResource resource, boolean threadSafeAccess) throws CVSException {
 		byte[] bytes = (byte[])safeGetSessionProperty(resource, RESOURCE_SYNC_KEY);
 		// If we are not thread safe, just return whatever was found in the session property
-        if (!threadSafeAccess)
-            return bytes;
+		if (!threadSafeAccess)
+			return bytes;
 		if (bytes == null) {
 			// Defer to the synchronizer in case the file was recreated
 			bytes = synchronizerCache.getCachedSyncBytes(resource, true);

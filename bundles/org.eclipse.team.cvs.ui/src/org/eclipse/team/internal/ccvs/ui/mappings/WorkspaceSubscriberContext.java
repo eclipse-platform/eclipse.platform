@@ -412,10 +412,10 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) throws CoreException {
 				return traversals;
 			}
-		    @Override
+			@Override
 			public boolean contains(ResourceMapping mapping) {
-		    	return false;
-		    }
+				return false;
+			}
 			@Override
 			public String getModelProviderId() {
 				return ModelProvider.RESOURCE_MODEL_PROVIDER_ID;
@@ -494,12 +494,12 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			IFile file = (IFile) resource;
 			ICVSFile mFile = CVSWorkspaceRoot.getCVSFileFor(file);
 			try {
-	            // The file may have been set as read-only by a previous checkout/update
-	            if (mFile.isReadOnly()) mFile.setReadOnly(false);
-	        } catch (CVSException e) {
-	            // Just log and keep going
-	            CVSProviderPlugin.log(e);
-	        }
+				// The file may have been set as read-only by a previous checkout/update
+				if (mFile.isReadOnly()) mFile.setReadOnly(false);
+			} catch (CVSException e) {
+				// Just log and keep going
+				CVSProviderPlugin.log(e);
+			}
 		}
 		super.performReplace(diff, monitor);
 

@@ -27,7 +27,7 @@ public class AllXMLCompareTests {
 	public static Test suite ( ) {
 		TestSuite suite= new TestSuite("All XML Compare Tests"); //$NON-NLS-1$
 		suite.addTest(TestXMLStructureCreator.suite());
-	    return suite;
+		return suite;
 	}
 }
 

@@ -46,18 +46,18 @@ public class AddOperation extends RepositoryProviderOperation {
 		fModesForFiles= Collections.EMPTY_MAP;
 	}
 
-    public void addModesForExtensions(Map modes) {
+	public void addModesForExtensions(Map modes) {
 		fModesForExtensions= modes;
-    }
-    
-    public void addModesForNames(Map modes) {
-        fModesForFiles= modes;
+	}
+	
+	public void addModesForNames(Map modes) {
+		fModesForFiles= modes;
 	}
 
 	@Override
 	protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
-	    if (resources.length == 0)
-	        return;
+		if (resources.length == 0)
+			return;
 		add(provider, resources, recurse ? IResource.DEPTH_INFINITE : IResource.DEPTH_ONE, monitor);
 	}
 	
@@ -129,7 +129,7 @@ public class AddOperation extends RepositoryProviderOperation {
 							// added explicitly (is equal currentResource) or is not ignored
 							if (! isManaged(mResource) && (currentResource.equals(resource) || ! mResource.isIgnored())) {
 								if (resource.getType() == IResource.FILE) {
-								    KSubstOption ksubst= getKSubstOption((IFile)resource);
+									KSubstOption ksubst= getKSubstOption((IFile)resource);
 									Set set = files.get(ksubst);
 									if (set == null) {
 										set = new HashSet();
@@ -148,7 +148,7 @@ public class AddOperation extends RepositoryProviderOperation {
 						}
 					}
 
- 				}, depth, false);
+				}, depth, false);
 				if (exception[0] != null) {
 					throw exception[0];
 				}
@@ -208,13 +208,13 @@ public class AddOperation extends RepositoryProviderOperation {
 	}
 	
 	/*
-     * Return true if the resource is a project that is already a CVS folder
-     */
-    protected boolean isManagedProject(IResource resource, ICVSResource resource2) throws CVSException {
-        return resource.getType() == IResource.PROJECT && ((ICVSFolder)resource2).isCVSFolder();
-    }
+	 * Return true if the resource is a project that is already a CVS folder
+	 */
+	protected boolean isManagedProject(IResource resource, ICVSResource resource2) throws CVSException {
+		return resource.getType() == IResource.PROJECT && ((ICVSFolder)resource2).isCVSFolder();
+	}
 
-    /*
+	/*
 	 * Consider a folder managed only if it's also a CVS folder
 	 */
 	protected boolean isManaged(ICVSResource cvsResource) throws CVSException {
@@ -226,19 +226,19 @@ public class AddOperation extends RepositoryProviderOperation {
 		return CVSUIMessages.AddAction_addFailed; 
 	}
 	
-    protected KSubstOption getKSubstOption(IFile file) {
-        final String extension= file.getFileExtension();
-        final Integer mode;
-        if (extension == null) {
-            mode= (Integer)fModesForFiles.get(file.getName());
-        } else { 
-            mode= (Integer)fModesForExtensions.get(extension);
-        }
-        if (mode != null) {
-            return mode.intValue() == Team.BINARY ? Command.KSUBST_BINARY : KSubstOption.getDefaultTextMode();            
-        } else {
-            return KSubstOption.fromFile(file);
-        }
-    }
+	protected KSubstOption getKSubstOption(IFile file) {
+		final String extension= file.getFileExtension();
+		final Integer mode;
+		if (extension == null) {
+			mode= (Integer)fModesForFiles.get(file.getName());
+		} else { 
+			mode= (Integer)fModesForExtensions.get(extension);
+		}
+		if (mode != null) {
+			return mode.intValue() == Team.BINARY ? Command.KSUBST_BINARY : KSubstOption.getDefaultTextMode();            
+		} else {
+			return KSubstOption.fromFile(file);
+		}
+	}
 
 }

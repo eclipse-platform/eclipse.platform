@@ -92,15 +92,15 @@ public class PatchTargetPage extends WizardPage {
 
 		useWorkspaceAsTarget.addListener(SWT.Selection, event -> {
 			fShowError = true;
-		    if (useWorkspaceAsTarget.getSelection()) {
-		        fPatchTargets.getTree().setEnabled(false);
-		        fPatcher.setTarget(ResourcesPlugin.getWorkspace().getRoot());
-		    } else {
-		    	fPatchTargets.getTree().setEnabled(true);
-		    	fPatcher.setTarget(Utilities.getFirstResource(fPatchTargets.getSelection()));
-		    }
-		    markPreviewPageToRecalucateIfNonWorkspacePatch();
-		    updateWidgetEnablements();
+			if (useWorkspaceAsTarget.getSelection()) {
+				fPatchTargets.getTree().setEnabled(false);
+				fPatcher.setTarget(ResourcesPlugin.getWorkspace().getRoot());
+			} else {
+				fPatchTargets.getTree().setEnabled(true);
+				fPatcher.setTarget(Utilities.getFirstResource(fPatchTargets.getSelection()));
+			}
+			markPreviewPageToRecalucateIfNonWorkspacePatch();
+			updateWidgetEnablements();
 		});
 	}
 

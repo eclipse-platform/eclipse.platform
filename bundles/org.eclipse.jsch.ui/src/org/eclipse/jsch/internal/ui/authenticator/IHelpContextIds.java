@@ -24,10 +24,10 @@ import org.eclipse.jsch.internal.ui.JSchUIPlugin;
  */
 public interface IHelpContextIds{
 
-  public static final String PREFIX=JSchUIPlugin.ID+"."; //$NON-NLS-1$
+	public static final String PREFIX=JSchUIPlugin.ID+"."; //$NON-NLS-1$
 
-  public static final String KEYBOARD_INTERACTIVE_DIALOG=PREFIX
-  +"keyboard_interactive_dialog_context"; //$NON-NLS-1$
-  public static final String USER_VALIDATION_DIALOG=PREFIX
-  +"user_validation_dialog_context"; //$NON-NLS-1$
+	public static final String KEYBOARD_INTERACTIVE_DIALOG=PREFIX
+	+"keyboard_interactive_dialog_context"; //$NON-NLS-1$
+	public static final String USER_VALIDATION_DIALOG=PREFIX
+	+"user_validation_dialog_context"; //$NON-NLS-1$
 }

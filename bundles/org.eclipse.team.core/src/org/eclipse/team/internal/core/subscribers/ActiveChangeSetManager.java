@@ -48,61 +48,61 @@ import org.osgi.service.prefs.Preferences;
  */
 public abstract class ActiveChangeSetManager extends ChangeSetManager implements IDiffChangeListener, IChangeGroupingRequestor {
 
-    private static final String CTX_DEFAULT_SET = "defaultSet"; //$NON-NLS-1$
+	private static final String CTX_DEFAULT_SET = "defaultSet"; //$NON-NLS-1$
 
-    private ActiveChangeSet defaultSet;
+	private ActiveChangeSet defaultSet;
 
 	/**
-     * Return the Change Set whose sync info set is the
-     * one given.
-     * @param tree a diff tree
-     * @return the change set for the given diff tree
-     */
-    protected ChangeSet getChangeSet(IResourceDiffTree tree) {
-        ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
+	 * Return the Change Set whose sync info set is the
+	 * one given.
+	 * @param tree a diff tree
+	 * @return the change set for the given diff tree
+	 */
+	protected ChangeSet getChangeSet(IResourceDiffTree tree) {
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
 			ChangeSet changeSet = sets[i];
-            if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
-                return changeSet;
-            }
-        }
-        return null;
-    }
+			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
+				return changeSet;
+			}
+		}
+		return null;
+	}
 
-    @Override
+	@Override
 	public void add(ChangeSet set) {
-        Assert.isTrue(set instanceof ActiveChangeSet);
-        super.add(set);
-    }
+		Assert.isTrue(set instanceof ActiveChangeSet);
+		super.add(set);
+	}
 
-    @Override
+	@Override
 	protected void handleSetAdded(ChangeSet set) {
-    	Assert.isTrue(set instanceof ActiveChangeSet);
-    	((DiffChangeSet)set).getDiffTree().addDiffChangeListener(getDiffTreeListener());
-    	super.handleSetAdded(set);
-    	handleAddedResources(set, ((ActiveChangeSet)set).internalGetDiffTree().getDiffs());
-    }
+		Assert.isTrue(set instanceof ActiveChangeSet);
+		((DiffChangeSet)set).getDiffTree().addDiffChangeListener(getDiffTreeListener());
+		super.handleSetAdded(set);
+		handleAddedResources(set, ((ActiveChangeSet)set).internalGetDiffTree().getDiffs());
+	}
 
-    @Override
+	@Override
 	protected void handleSetRemoved(ChangeSet set) {
-    	((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(getDiffTreeListener());
-    	super.handleSetRemoved(set);
-    }
+		((DiffChangeSet)set).getDiffTree().removeDiffChangeListener(getDiffTreeListener());
+		super.handleSetRemoved(set);
+	}
 
-    /**
-     * Return the listener that is registered with the diff trees associated with
-     * the sets for this manager.
-     * @return the listener that is registered with the diff trees associated with
-     * the sets for this manager
-     */
-    protected IDiffChangeListener getDiffTreeListener() {
-        return this;
-    }
+	/**
+	 * Return the listener that is registered with the diff trees associated with
+	 * the sets for this manager.
+	 * @return the listener that is registered with the diff trees associated with
+	 * the sets for this manager
+	 */
+	protected IDiffChangeListener getDiffTreeListener() {
+		return this;
+	}
 
 	@Override
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
-	    IResourceDiffTree tree = (IResourceDiffTree)event.getTree();
-	    handleSyncSetChange(tree, event.getAdditions(), getAllResources(event));
+		IResourceDiffTree tree = (IResourceDiffTree)event.getTree();
+		handleSyncSetChange(tree, event.getAdditions(), getAllResources(event));
 	}
 
 	@Override
@@ -123,18 +123,18 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * @param diff the diff
 	 * @return whether the given diff represents a local change
 	 */
-    public boolean isModified(IDiff diff) {
-        if (diff != null) {
-        	if (diff instanceof IThreeWayDiff) {
+	public boolean isModified(IDiff diff) {
+		if (diff != null) {
+			if (diff instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) diff;
 				int dir = twd.getDirection();
 				return dir == IThreeWayDiff.OUTGOING || dir == IThreeWayDiff.CONFLICTING;
 			} else {
 				return diff.getKind() != IDiff.NO_CHANGE;
 			}
-        }
-        return false;
-    }
+		}
+		return false;
+	}
 
 	/**
 	 * Return the set with the given name.
@@ -152,48 +152,48 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		return null;
 	}
 
-    /**
-     * Create a change set containing the given files if
-     * they have been modified locally.
-     * @param title the title of the commit set
-     * @param files the files contained in the set
-     * @return the created set
-     * @throws CoreException
-     */
-    public ActiveChangeSet createSet(String title, IFile[] files) throws CoreException {
-        List<IDiff> infos = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            IFile file = files[i];
-            IDiff diff = getDiff(file);
-            if (diff != null) {
-                infos.add(diff);
-            }
-        }
-        return createSet(title, infos.toArray(new IDiff[infos.size()]));
-    }
+	/**
+	 * Create a change set containing the given files if
+	 * they have been modified locally.
+	 * @param title the title of the commit set
+	 * @param files the files contained in the set
+	 * @return the created set
+	 * @throws CoreException
+	 */
+	public ActiveChangeSet createSet(String title, IFile[] files) throws CoreException {
+		List<IDiff> infos = new ArrayList<>();
+		for (int i = 0; i < files.length; i++) {
+			IFile file = files[i];
+			IDiff diff = getDiff(file);
+			if (diff != null) {
+				infos.add(diff);
+			}
+		}
+		return createSet(title, infos.toArray(new IDiff[infos.size()]));
+	}
 
-    /**
-     * Create a commit set with the given title and files. The created
-     * set is not added to the control of the commit set manager
-     * so no events are fired. The set can be added using the
-     * <code>add</code> method.
-     * @param title the title of the commit set
-     * @param diffs the files contained in the set
-     * @return the created set
-     */
-    public ActiveChangeSet createSet(String title, IDiff[] diffs) {
-        ActiveChangeSet commitSet = doCreateSet(title);
-        if (diffs != null && diffs.length > 0) {
-            commitSet.add(diffs);
-        }
-        return commitSet;
-    }
+	/**
+	 * Create a commit set with the given title and files. The created
+	 * set is not added to the control of the commit set manager
+	 * so no events are fired. The set can be added using the
+	 * <code>add</code> method.
+	 * @param title the title of the commit set
+	 * @param diffs the files contained in the set
+	 * @return the created set
+	 */
+	public ActiveChangeSet createSet(String title, IDiff[] diffs) {
+		ActiveChangeSet commitSet = doCreateSet(title);
+		if (diffs != null && diffs.length > 0) {
+			commitSet.add(diffs);
+		}
+		return commitSet;
+	}
 
-    /**
-     * Create a change set with the given name.
-     * @param name the name of the change set
-     * @return the created change set
-     */
+	/**
+	 * Create a change set with the given name.
+	 * @param name the name of the change set
+	 * @return the created change set
+	 */
 	protected ActiveChangeSet doCreateSet(String name) {
 		return new ActiveChangeSet(this, name);
 	}
@@ -208,7 +208,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * be in multiple sets.
 	 */
 	protected boolean isSingleSetPerResource() {
-	    return true;
+		return true;
 	}
 
 	private IPath[] getAllResources(IDiffChangeEvent event) {
@@ -228,7 +228,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			IPath path = removals[i];
 			allResources.add(path);
 		}
-	    return allResources.toArray(new IPath[allResources.size()]);
+		return allResources.toArray(new IPath[allResources.size()]);
 	}
 
 	/**
@@ -237,29 +237,29 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * @param diffs the diffs
 	 */
 	protected void handleAddedResources(ChangeSet set, IDiff[] diffs) {
-	    if (isSingleSetPerResource() && ((ActiveChangeSet)set).isUserCreated()) {
-	        IResource[] resources = new IResource[diffs.length];
-	        for (int i = 0; i < resources.length; i++) {
+		if (isSingleSetPerResource() && ((ActiveChangeSet)set).isUserCreated()) {
+			IResource[] resources = new IResource[diffs.length];
+			for (int i = 0; i < resources.length; i++) {
 				resources[i] = ((DiffChangeSet)set).getDiffTree().getResource(diffs[i]);
 			}
-	        // Remove the added files from any other set that contains them
-	        ChangeSet[] sets = getSets();
-	        for (int i = 0; i < sets.length; i++) {
-	            ChangeSet otherSet = sets[i];
+			// Remove the added files from any other set that contains them
+			ChangeSet[] sets = getSets();
+			for (int i = 0; i < sets.length; i++) {
+				ChangeSet otherSet = sets[i];
 				if (otherSet != set && ((ActiveChangeSet)otherSet).isUserCreated()) {
-	                otherSet.remove(resources);
-	            }
-	        }
-	    }
+					otherSet.remove(resources);
+				}
+			}
+		}
 	}
 
 	private void handleSyncSetChange(IResourceDiffTree tree, IDiff[] addedDiffs, IPath[] allAffectedResources) {
-	    ChangeSet changeSet = getChangeSet(tree);
-	    if (tree.isEmpty() && changeSet != null) {
-	        remove(changeSet);
-	    }
-	    fireResourcesChangedEvent(changeSet, allAffectedResources);
-	    handleAddedResources(changeSet, addedDiffs);
+		ChangeSet changeSet = getChangeSet(tree);
+		if (tree.isEmpty() && changeSet != null) {
+			remove(changeSet);
+		}
+		fireResourcesChangedEvent(changeSet, allAffectedResources);
+		handleAddedResources(changeSet, addedDiffs);
 	}
 
 	/**
@@ -271,13 +271,13 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 *            <code>null</code> to unset the default set
 	 */
 	public void makeDefault(ActiveChangeSet set) {
-	    // The default set must be an active set
+		// The default set must be an active set
 		if (set != null && !contains(set)) {
 			add(set);
 		}
-	    ActiveChangeSet oldSet = defaultSet;
-	    defaultSet = set;
-	    fireDefaultChangedEvent(oldSet, defaultSet);
+		ActiveChangeSet oldSet = defaultSet;
+		defaultSet = set;
+		fireDefaultChangedEvent(oldSet, defaultSet);
 	}
 
 	/**
@@ -287,17 +287,17 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 * @return whether the set is the default set
 	 */
 	public boolean isDefault(ActiveChangeSet set) {
-	    return set == defaultSet;
+		return set == defaultSet;
 	}
 
-    /**
-     * Return the set which is currently the default or
-     * <code>null</code> if there is no default set.
-     * @return the default change set
-     */
-    public ActiveChangeSet getDefaultSet() {
-        return defaultSet;
-    }
+	/**
+	 * Return the set which is currently the default or
+	 * <code>null</code> if there is no default set.
+	 * @return the default change set
+	 */
+	public ActiveChangeSet getDefaultSet() {
+		return defaultSet;
+	}
 
 	/**
 	 * If the given traversals contain any resources in the active change sets, ensure
@@ -336,42 +336,42 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		// No need to save the sets if the manager has never been initialized
 		if (!isInitialized())
 			return;
-        // Clear the persisted state before saving the new state
-        try {
-            String[] oldSetNames = prefs.childrenNames();
-            for (int i = 0; i < oldSetNames.length; i++) {
-                String string = oldSetNames[i];
-                prefs.node(string).removeNode();
-            }
-        } catch (BackingStoreException e) {
-            TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, new String[] { getName() }), e);
-        }
-        ChangeSet[] sets = getSets();
-        for (int i = 0; i < sets.length; i++) {
-            ChangeSet set = sets[i];
+		// Clear the persisted state before saving the new state
+		try {
+			String[] oldSetNames = prefs.childrenNames();
+			for (int i = 0; i < oldSetNames.length; i++) {
+				String string = oldSetNames[i];
+				prefs.node(string).removeNode();
+			}
+		} catch (BackingStoreException e) {
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, new String[] { getName() }), e);
+		}
+		ChangeSet[] sets = getSets();
+		for (int i = 0; i < sets.length; i++) {
+			ChangeSet set = sets[i];
 			if (set instanceof ActiveChangeSet && !set.isEmpty()) {
-			    // Since the change set title is stored explicitly, the name of
-			    // the child preference node doesn't matter as long as it
-			    // doesn't contain / and no two change sets get the same name.
-			    String childPrefName = escapePrefName(((ActiveChangeSet)set).getTitle());
-			    Preferences child = prefs.node(childPrefName);
-			    ((ActiveChangeSet)set).save(child);
+				// Since the change set title is stored explicitly, the name of
+				// the child preference node doesn't matter as long as it
+				// doesn't contain / and no two change sets get the same name.
+				String childPrefName = escapePrefName(((ActiveChangeSet)set).getTitle());
+				Preferences child = prefs.node(childPrefName);
+				((ActiveChangeSet)set).save(child);
 			}
 		}
 		if (getDefaultSet() != null) {
-		    prefs.put(CTX_DEFAULT_SET, getDefaultSet().getTitle());
+			prefs.put(CTX_DEFAULT_SET, getDefaultSet().getTitle());
 		} else {
 			// unset default changeset
 			prefs.remove(CTX_DEFAULT_SET);
 		}
 		try {
-            prefs.flush();
-        } catch (BackingStoreException e) {
-            TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e);
-        }
-    }
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_3, new String[] { getName() }), e);
+		}
+	}
 
-    /**
+	/**
 	 * Escape the given string for safe use as a preference node name by
 	 * translating / to \s (so it's a single path component) and \ to \\ (to
 	 * preserve uniqueness).
@@ -406,23 +406,23 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	protected void load(Preferences prefs) {
 		String defaultSetTitle = prefs.get(CTX_DEFAULT_SET, null);
-        try {
+		try {
 			String[] childNames = prefs.childrenNames();
 			for (int i = 0; i < childNames.length; i++) {
-			    String string = childNames[i];
-			    Preferences childPrefs = prefs.node(string);
-			    ActiveChangeSet set = createSet(childPrefs);
-			    if (!set.isEmpty()) {
-			    	if (getDefaultSet() == null && defaultSetTitle != null && set.getTitle().equals(defaultSetTitle)) {
-			    	    makeDefault(set);
-			    	}
-			    	add(set);
-			    }
+				String string = childNames[i];
+				Preferences childPrefs = prefs.node(string);
+				ActiveChangeSet set = createSet(childPrefs);
+				if (!set.isEmpty()) {
+					if (getDefaultSet() == null && defaultSetTitle != null && set.getTitle().equals(defaultSetTitle)) {
+						makeDefault(set);
+					}
+					add(set);
+				}
 			}
 		} catch (BackingStoreException e) {
 			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_4, new String[] { getName() }), e);
 		}
-    }
+	}
 
 	/**
 	 * Return the name of this change set manager.
@@ -430,23 +430,23 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	protected abstract String getName();
 
-    /**
-     * Create a change set from the given preferences that were
-     * previously saved.
-     * @param childPrefs the previously saved preferences
-     * @return the created change set
-     */
-    protected ActiveChangeSet createSet(Preferences childPrefs) {
-        // Don't specify a title when creating the change set; instead, let the
-        // change set read its title from the preferences.
-        ActiveChangeSet changeSet = doCreateSet(null);
-        changeSet.init(childPrefs);
-        return changeSet;
-    }
+	/**
+	 * Create a change set from the given preferences that were
+	 * previously saved.
+	 * @param childPrefs the previously saved preferences
+	 * @return the created change set
+	 */
+	protected ActiveChangeSet createSet(Preferences childPrefs) {
+		// Don't specify a title when creating the change set; instead, let the
+		// change set read its title from the preferences.
+		ActiveChangeSet changeSet = doCreateSet(null);
+		changeSet.init(childPrefs);
+		return changeSet;
+	}
 
-    @Override
+	@Override
 	public void ensureChangesGrouped(IProject project, IFile[] files,
-    		String name) throws CoreException {
+			String name) throws CoreException {
 		ActiveChangeSet set = getSet(name);
 		if (set == null) {
 			set = createSet(name, files);
@@ -456,5 +456,5 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			set.setUserCreated(false);
 			set.add(files);
 		}
-    }
+	}
 }

@@ -270,37 +270,37 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	 * @return the comment, or null to cancel
 	 */
 	protected String promptForComment(RepositoryManager manager, IResource[] resourcesToCommit) {
-	    String proposedComment = getProposedComment(resourcesToCommit);
+		String proposedComment = getProposedComment(resourcesToCommit);
 		return manager.promptForComment(getShell(), resourcesToCommit, proposedComment);
 	}
 
-    private String getProposedComment(IResource[] resourcesToCommit) {
-    	StringBuffer comment = new StringBuffer();
-        ChangeSet[] sets = CVSUIPlugin.getPlugin().getChangeSetManager().getSets();
-        Arrays.sort(sets, new ChangeSetComparator());
-        int numMatchedSets = 0;
-        for (int i = 0; i < sets.length; i++) {
-            ChangeSet set = sets[i];
-            if (containsOne(set, resourcesToCommit)) {
-            	if(numMatchedSets > 0) comment.append(System.getProperty("line.separator")); //$NON-NLS-1$
-                comment.append(set.getComment());
-                numMatchedSets++;
-            }
-        }
-        return comment.toString();
-    }
-    
-    private boolean containsOne(ChangeSet set, IResource[] resourcesToCommit) {
-    	 for (int j = 0; j < resourcesToCommit.length; j++) {
-            IResource resource = resourcesToCommit[j];
-            if (set.contains(resource)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private String getProposedComment(IResource[] resourcesToCommit) {
+		StringBuffer comment = new StringBuffer();
+		ChangeSet[] sets = CVSUIPlugin.getPlugin().getChangeSetManager().getSets();
+		Arrays.sort(sets, new ChangeSetComparator());
+		int numMatchedSets = 0;
+		for (int i = 0; i < sets.length; i++) {
+			ChangeSet set = sets[i];
+			if (containsOne(set, resourcesToCommit)) {
+				if(numMatchedSets > 0) comment.append(System.getProperty("line.separator")); //$NON-NLS-1$
+				comment.append(set.getComment());
+				numMatchedSets++;
+			}
+		}
+		return comment.toString();
+	}
+	
+	private boolean containsOne(ChangeSet set, IResource[] resourcesToCommit) {
+		for (int j = 0; j < resourcesToCommit.length; j++) {
+			IResource resource = resourcesToCommit[j];
+			if (set.contains(resource)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    protected IResource[] promptForResourcesToBeAdded(RepositoryManager manager, IResource[] unadded) {
+	protected IResource[] promptForResourcesToBeAdded(RepositoryManager manager, IResource[] unadded) {
 		return manager.promptForResourcesToBeAdded(getShell(), unadded);
 	}
 	

@@ -369,8 +369,8 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 				CompareMessages.ComparePreferencePage_0, 1,
 				new String[][] {
 					new String[] { CompareMessages.ComparePreferencePage_1, ICompareUIConstants.PREF_VALUE_PROMPT },
-				    new String[] { CompareMessages.ComparePreferencePage_2, ICompareUIConstants.PREF_VALUE_LOOP },
-				    new String[] { CompareMessages.ComparePreferencePage_3, ICompareUIConstants.PREF_VALUE_NEXT },
+					new String[] { CompareMessages.ComparePreferencePage_2, ICompareUIConstants.PREF_VALUE_LOOP },
+					new String[] { CompareMessages.ComparePreferencePage_3, ICompareUIConstants.PREF_VALUE_NEXT },
 					new String[] { CompareMessages.ComparePreferencePage_4, ICompareUIConstants.PREF_VALUE_DO_NOTHING}
 				},
 		radioGroup, true);

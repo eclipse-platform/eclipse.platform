@@ -69,7 +69,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		}
 
 		/* package */void createChangeSet(IDiff[] diffs) {
-            ActiveChangeSet set =  getChangeSetCapability().createChangeSet(getConfiguration(), diffs);
+			ActiveChangeSet set =  getChangeSetCapability().createChangeSet(getConfiguration(), diffs);
 			if (set != null) {
 				getActiveChangeSetManager().add(set);
 			}
@@ -110,8 +110,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 
 		private final ActiveChangeSet set;
 
-        public AddToChangeSetAction(ISynchronizePageConfiguration configuration, ActiveChangeSet set, ISelection selection) {
-            super(set == null ? TeamUIMessages.ChangeSetActionGroup_2 : escapeActionText(set.getTitle()), configuration); 
+		public AddToChangeSetAction(ISynchronizePageConfiguration configuration, ActiveChangeSet set, ISelection selection) {
+			super(set == null ? TeamUIMessages.ChangeSetActionGroup_2 : escapeActionText(set.getTitle()), configuration); 
 			this.set = set;
 			selectionChanged(selection);
 		}
@@ -140,7 +140,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 
 	private abstract class ChangeSetAction extends BaseSelectionListenerAction {
 
-        public ChangeSetAction(String title, ISynchronizePageConfiguration configuration) {
+		public ChangeSetAction(String title, ISynchronizePageConfiguration configuration) {
 			super(title);
 		}
 
@@ -172,8 +172,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		@Override
 		public void run() {
 			ActiveChangeSet set = getSelectedSet();
-            if (set == null) return;
-            getChangeSetCapability().editChangeSet(internalGetSynchronizePageConfiguration(), set);
+			if (set == null) return;
+			getChangeSetCapability().editChangeSet(internalGetSynchronizePageConfiguration(), set);
 		}
 	}
 
@@ -246,7 +246,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		public void run() {
 			int sortCriteria = getSortCriteria(internalGetSynchronizePageConfiguration());
 			if (isChecked() && sortCriteria != criteria) {
-			    setSortCriteria(internalGetSynchronizePageConfiguration(), criteria);
+				setSortCriteria(internalGetSynchronizePageConfiguration(), criteria);
 				update();
 				((SynchronizePageConfiguration)internalGetSynchronizePageConfiguration()).getPage().getViewer().refresh();
 			}
@@ -257,7 +257,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		}
 	}
 
-    public static int getSortCriteria(ISynchronizePageConfiguration configuration) {
+	public static int getSortCriteria(ISynchronizePageConfiguration configuration) {
 		int sortCriteria = ChangeSetSorter.DATE;
 		if (configuration != null) {
 			Object o = configuration.getProperty(P_LAST_COMMENTSORT);
@@ -436,7 +436,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 	}
 
 	public ChangeSetCapability getChangeSetCapability() {
-        ISynchronizeParticipant participant = getSynchronizePageConfiguration().getParticipant();
+		ISynchronizeParticipant participant = getSynchronizePageConfiguration().getParticipant();
 		if (participant instanceof IChangeSetProvider) {
 			IChangeSetProvider provider = (IChangeSetProvider) participant;
 			return provider.getChangeSetCapability();
@@ -602,11 +602,11 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		super.setContext(context);
 		if (context != null) {
 			if (editChangeSet != null)
-		        editChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
+				editChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
 			if (removeChangeSet != null)
-	            removeChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
+				removeChangeSet.selectionChanged((IStructuredSelection)getContext().getSelection());
 			if (makeDefault != null)
-		        makeDefault.selectionChanged((IStructuredSelection)getContext().getSelection());
+				makeDefault.selectionChanged((IStructuredSelection)getContext().getSelection());
 		}
 	}
 

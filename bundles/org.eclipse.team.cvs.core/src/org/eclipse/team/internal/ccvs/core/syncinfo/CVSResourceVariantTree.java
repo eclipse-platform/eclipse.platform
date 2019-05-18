@@ -160,9 +160,9 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 			bytes = null;
 		} else {
 			// Use the folder sync from the workspace and the tag from the store
-            MutableFolderSyncInfo newInfo = info.cloneMutable();
-            newInfo.setTag(tag);
-            newInfo.setStatic(false);
+			MutableFolderSyncInfo newInfo = info.cloneMutable();
+			newInfo.setTag(tag);
+			newInfo.setStatic(false);
 			bytes = newInfo.getBytes();
 		}
 		return bytes;
@@ -206,42 +206,42 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 						e);
 				throw new CVSException(status);
 			}
-            MutableFolderSyncInfo newInfo = info.cloneMutable();
-            newInfo.setTag(tag);
+			MutableFolderSyncInfo newInfo = info.cloneMutable();
+			newInfo.setTag(tag);
 			ICVSFolder cvsFolder = CVSWorkspaceRoot.getCVSFolderFor((IFolder)local);
 			cvsFolder.setFolderSyncInfo(newInfo);
 		}
-        if (remote == null && !isManaged(local)) {
-            // Do not record the lack of existence of a remote for unmanaged local files
-            // Instead, just flush the remote bytes if there are any
-        	boolean changed = getByteStore().getBytes(local) != null;
-            flushVariants(local, IResource.DEPTH_ZERO);
-            return changed;
-        } else {
-    		boolean changed = super.setVariant(local, remote);
-    		if (local.getType() == IResource.FILE && getByteStore().getBytes(local) != null && !parentHasSyncBytes(local)) {
-    			// Log a warning if there is no sync bytes available for the resource's
-    			// parent but there is valid sync bytes for the child
-    			CVSProviderPlugin.log(new TeamException(NLS.bind(CVSMessages.ResourceSynchronizer_missingParentBytesOnSet, new String[] { getSyncName(getByteStore()), local.getFullPath().toString() }))); 
-    		}
-    		return changed;
-        }
+		if (remote == null && !isManaged(local)) {
+			// Do not record the lack of existence of a remote for unmanaged local files
+			// Instead, just flush the remote bytes if there are any
+			boolean changed = getByteStore().getBytes(local) != null;
+			flushVariants(local, IResource.DEPTH_ZERO);
+			return changed;
+		} else {
+			boolean changed = super.setVariant(local, remote);
+			if (local.getType() == IResource.FILE && getByteStore().getBytes(local) != null && !parentHasSyncBytes(local)) {
+				// Log a warning if there is no sync bytes available for the resource's
+				// parent but there is valid sync bytes for the child
+				CVSProviderPlugin.log(new TeamException(NLS.bind(CVSMessages.ResourceSynchronizer_missingParentBytesOnSet, new String[] { getSyncName(getByteStore()), local.getFullPath().toString() }))); 
+			}
+			return changed;
+		}
 	}
 	
 	private boolean isManaged(IResource local) {
-        try {
-            return CVSWorkspaceRoot.getCVSResourceFor(local).isManaged();
-        } catch (CVSException e) {
-            return false;
-        }
-    }
+		try {
+			return CVSWorkspaceRoot.getCVSResourceFor(local).isManaged();
+		} catch (CVSException e) {
+			return false;
+		}
+	}
 
-    private boolean parentHasSyncBytes(IResource resource) throws TeamException {
+	private boolean parentHasSyncBytes(IResource resource) throws TeamException {
 		if (resource.getType() == IResource.PROJECT) return true;
 		return getParentBytes(resource) != null;
 	}
 	
-    @Override
+	@Override
 	protected IResource[] collectedMembers(IResource local, IResource[] members) throws TeamException {
 		// Look for resources that have sync bytes but are not in the resources we care about
 		IResource[] resources = getStoredMembers(local);
@@ -307,17 +307,17 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 			}	
 			count++;
 			if (count >= 10) {
-			    waitTime = 1000;
+				waitTime = 1000;
 			} else if (count >= 5) {
-			    waitTime = 100;
+				waitTime = 100;
 			}
 			Policy.checkCanceled(monitor);
 		}
 		try {
 			changedResources = super.refresh(resource, depth, Policy.subMonitorFor(monitor, 99));
 		} catch (TeamException e) {
-		    // Try to properly handle exceptions that are due to project modifications
-		    // performed while the refresh was happening
+			// Try to properly handle exceptions that are due to project modifications
+			// performed while the refresh was happening
 			if (!resource.getProject().isAccessible()) {
 				// The project is closed so silently skip it
 				return new IResource[0];

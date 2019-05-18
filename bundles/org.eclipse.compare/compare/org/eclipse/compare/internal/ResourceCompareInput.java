@@ -504,44 +504,44 @@ class ResourceCompareInput extends CompareEditorInput {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter)) {
-		    IProgressMonitor pm= new NullProgressMonitor();
+			IProgressMonitor pm= new NullProgressMonitor();
 			// flush changes in any dirty viewer
 			flushViewers(pm);
-		    IFile[] files= getAdapter(IFile[].class);
-		    if (files != null && files.length > 0)
-		        return (T) files[0];	// can only return one: limitation on IDE.saveAllEditors; see #64617
-		    return null;
+			IFile[] files= getAdapter(IFile[].class);
+			if (files != null && files.length > 0)
+				return (T) files[0];	// can only return one: limitation on IDE.saveAllEditors; see #64617
+			return null;
 		}
 		if (IFile[].class.equals(adapter)) {
-		    HashSet<IFile> collector= new HashSet<>();
-		    collectDirtyResources(fRoot, collector);
-		    return (T) collector.toArray(new IFile[collector.size()]);
+			HashSet<IFile> collector= new HashSet<>();
+			collectDirtyResources(fRoot, collector);
+			return (T) collector.toArray(new IFile[collector.size()]);
 		}
 		return super.getAdapter(adapter);
 	}
 
 	private void collectDirtyResources(Object o, Set<IFile> collector) {
 		if (o instanceof DiffNode) {
-		    DiffNode node= (DiffNode) o;
+			DiffNode node= (DiffNode) o;
 
 			ITypedElement left= node.getLeft();
 			if (left instanceof BufferedResourceNode) {
-			    BufferedResourceNode bn= (BufferedResourceNode) left;
-			    if (bn.isDirty()) {
-			        IResource resource= bn.getResource();
-			        if (resource instanceof IFile)
-			            collector.add((IFile) resource);
-			    }
+				BufferedResourceNode bn= (BufferedResourceNode) left;
+				if (bn.isDirty()) {
+					IResource resource= bn.getResource();
+					if (resource instanceof IFile)
+						collector.add((IFile) resource);
+				}
 			}
 
 			ITypedElement right= node.getRight();
 			if (right instanceof BufferedResourceNode) {
-			    BufferedResourceNode bn= (BufferedResourceNode) right;
-			    if (bn.isDirty()) {
-			        IResource resource= bn.getResource();
-			        if (resource instanceof IFile)
-			            collector.add((IFile) resource);
-			    }
+				BufferedResourceNode bn= (BufferedResourceNode) right;
+				if (bn.isDirty()) {
+					IResource resource= bn.getResource();
+					if (resource instanceof IFile)
+						collector.add((IFile) resource);
+				}
 			}
 
 			IDiffElement[] children= node.getChildren();
@@ -549,7 +549,7 @@ class ResourceCompareInput extends CompareEditorInput {
 				for (int i= 0; i < children.length; i++) {
 					IDiffElement element= children[i];
 					if (element instanceof DiffNode)
-					    collectDirtyResources(element, collector);
+						collectDirtyResources(element, collector);
 				}
 			}
 		}

@@ -188,11 +188,11 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 		// Convert the old compressed folder preference to the new layout preference
 		if (!store.isDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS) && !store.getBoolean(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS)) {
-		    // Set the compress folder preference to the default true) \
-		    // so will will ignore it in the future
-		    store.setToDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS);
-		    // Set the layout to tree (which was used when compress folder was false)
-		    store.setDefault(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT, IPreferenceIds.TREE_LAYOUT);
+			// Set the compress folder preference to the default true) \
+			// so will will ignore it in the future
+			store.setToDefault(IPreferenceIds.SYNCVIEW_COMPRESS_FOLDERS);
+			// Set the layout to tree (which was used when compress folder was false)
+			store.setDefault(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT, IPreferenceIds.TREE_LAYOUT);
 		}
 	}
 
@@ -302,12 +302,12 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		plugin.privateCreateImageDescriptor(id);
 	}
 	private void privateCreateImageDescriptor(String id) {
-        ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(id));
-        imageDescriptors.put(id, desc);
+		ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(id));
+		imageDescriptors.put(id, desc);
 	}
 	private void privateCreateImageDescriptor(String id, String imageUrl) {
-        ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(imageUrl));
-        imageDescriptors.put(id, desc);
+		ImageDescriptor desc = ImageDescriptor.createFromURL(getImageUrl(imageUrl));
+		imageDescriptors.put(id, desc);
 	}
 
 	/**
@@ -423,9 +423,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		createImageDescriptor(plugin, ITeamUIImages.IMG_LOCALREVISION_TABLE);
 	}
 
-    private URL getImageUrl(String relative) {
-        return FileLocator.find(Platform.getBundle(PLUGIN_ID), new Path(ICON_PATH + relative), null);
-    }
+	private URL getImageUrl(String relative) {
+		return FileLocator.find(Platform.getBundle(PLUGIN_ID), new Path(ICON_PATH + relative), null);
+	}
 
 	/**
 	 * Returns the standard display to be used. The method first checks, if the

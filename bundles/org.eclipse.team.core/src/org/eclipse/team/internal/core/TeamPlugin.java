@@ -77,9 +77,9 @@ final public class TeamPlugin extends Plugin {
 	// The id of the default file modification validator extension point
 	public static final String DEFAULT_FILE_MODIFICATION_VALIDATOR_EXTENSION = "defaultFileModificationValidator"; //$NON-NLS-1$
 
-    // The id used to associate a provider with a project
-    public final static QualifiedName PROVIDER_PROP_KEY =
-        new QualifiedName("org.eclipse.team.core", "repository");  //$NON-NLS-1$  //$NON-NLS-2$
+	// The id used to associate a provider with a project
+	public final static QualifiedName PROVIDER_PROP_KEY =
+		new QualifiedName("org.eclipse.team.core", "repository");  //$NON-NLS-1$  //$NON-NLS-2$
 
 	// The id for the Bundle Import extension point
 	public static final String EXTENSION_POINT_BUNDLE_IMPORTERS = ID + ".bundleImporters"; //$NON-NLS-1$
@@ -187,13 +187,13 @@ final public class TeamPlugin extends Plugin {
 			for (int i = 0; i < extensions.length; i++) {
 				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
 				for (int j = 0; j < configElements.length; j++) {
-				    String aliasId = configElements[j].getAttribute("canImportId"); //$NON-NLS-1$
-				    if (aliasId != null && aliasId.equals(id)) {
+					String aliasId = configElements[j].getAttribute("canImportId"); //$NON-NLS-1$
+					if (aliasId != null && aliasId.equals(id)) {
 						String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
 						if (extensionId != null) {
 							return RepositoryProviderType.getProviderType(extensionId);
 						}
-				    }
+					}
 				}
 			}
 		}
@@ -208,11 +208,11 @@ final public class TeamPlugin extends Plugin {
 				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
 				for (int j = 0; j < configElements.length; j++) {
 					String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
-				    String metaFilePaths = configElements[j].getAttribute("metaFilePaths"); //$NON-NLS-1$
-				    if (extensionId != null && extensionId.equals(id) && metaFilePaths != null) {
+					String metaFilePaths = configElements[j].getAttribute("metaFilePaths"); //$NON-NLS-1$
+					if (extensionId != null && extensionId.equals(id) && metaFilePaths != null) {
 						return getPaths(metaFilePaths);
 
-				    }
+					}
 				}
 			}
 		}

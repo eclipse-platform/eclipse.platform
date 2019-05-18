@@ -61,20 +61,20 @@ class StaticHandler extends ResponseHandler {
 		Assert.isTrue(repositoryDir.endsWith("/")); //$NON-NLS-1$
 		repositoryDir = repositoryDir.substring(0, repositoryDir.length() - 1);
 		try {
-            ICVSFolder folder = createFolder(session, localDir, repositoryDir);
-            FolderSyncInfo syncInfo = folder.getFolderSyncInfo();
-            // Added to ignore sync info for workspace root
-            if (syncInfo == null) return;
-            MutableFolderSyncInfo newInfo = syncInfo.cloneMutable();
-            newInfo.setStatic(setStaticDirectory);
-            // only set the sync info if it has changed
-            if (!syncInfo.equals(newInfo))
-            	folder.setFolderSyncInfo(newInfo);
-        } catch (CVSException e) {
-            if (!handleInvalidResourceName(session, session.getLocalRoot().getFolder(localDir), e)) {
-                throw e;
-            }
-        }
+			ICVSFolder folder = createFolder(session, localDir, repositoryDir);
+			FolderSyncInfo syncInfo = folder.getFolderSyncInfo();
+			// Added to ignore sync info for workspace root
+			if (syncInfo == null) return;
+			MutableFolderSyncInfo newInfo = syncInfo.cloneMutable();
+			newInfo.setStatic(setStaticDirectory);
+			// only set the sync info if it has changed
+			if (!syncInfo.equals(newInfo))
+				folder.setFolderSyncInfo(newInfo);
+		} catch (CVSException e) {
+			if (!handleInvalidResourceName(session, session.getLocalRoot().getFolder(localDir), e)) {
+				throw e;
+			}
+		}
 	}
 }
 

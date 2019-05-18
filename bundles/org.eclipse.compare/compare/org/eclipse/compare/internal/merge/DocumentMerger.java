@@ -976,7 +976,7 @@ public class DocumentMerger {
 		return region;
 	}
 
-    public Diff findDiff(Position p, boolean left) {
+	public Diff findDiff(Position p, boolean left) {
 		for (Iterator<Diff> iterator = fAllDiffs.iterator(); iterator.hasNext();) {
 			Diff diff = iterator.next();
 			Position diffPos;
@@ -1150,7 +1150,7 @@ public class DocumentMerger {
 			while (e.hasNext()) {
 				Diff diff= e.next();
 				int h= synchronizedScrolling ? diff.getMaxDiffHeight()
-											  : diff.getRightHeight();
+											: diff.getRightHeight();
 				if (useChange(diff.getKind()) && !diff.fIsWhitespace) {
 
 					yy= (y*size.y)/virtualHeight;
@@ -1282,7 +1282,7 @@ public class DocumentMerger {
 			for (Iterator<Diff> iterator = changesIterator(); iterator.hasNext();) {
 				Diff diff = iterator.next();
 				if (diff.isDeleted() || diff.getKind() == RangeDifference.NOCHANGE)
-				    continue;
+					continue;
 				if (diff.overlaps(contributor, rangeStart, rangeEnd, getDocument(contributor).getLength()))
 					return diff;
 			}

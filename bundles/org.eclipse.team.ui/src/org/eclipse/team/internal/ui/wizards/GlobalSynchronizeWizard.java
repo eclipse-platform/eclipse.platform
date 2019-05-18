@@ -30,7 +30,7 @@ import org.eclipse.ui.IWorkbench;
  */
 public class GlobalSynchronizeWizard extends Wizard {
 
-    private final static String DIALOG_SETTINGS_SECTION= "SynchronizeWizard"; //$NON-NLS-1$
+	private final static String DIALOG_SETTINGS_SECTION= "SynchronizeWizard"; //$NON-NLS-1$
 
 	protected IWorkbench workbench;
 	protected GlobalRefreshWizardSelectionPage mainPage;
@@ -45,8 +45,8 @@ public class GlobalSynchronizeWizard extends Wizard {
 		final IDialogSettings pluginSettings= TeamUIPlugin.getPlugin().getDialogSettings();
 		IDialogSettings wizardSettings= pluginSettings.getSection(DIALOG_SETTINGS_SECTION);
 		if (wizardSettings == null) {
-		    pluginSettings.addNewSection(DIALOG_SETTINGS_SECTION);
-		    wizardSettings= pluginSettings.getSection(DIALOG_SETTINGS_SECTION);
+			pluginSettings.addNewSection(DIALOG_SETTINGS_SECTION);
+			wizardSettings= pluginSettings.getSection(DIALOG_SETTINGS_SECTION);
 		}
 		setDialogSettings(wizardSettings);
 	}
@@ -77,7 +77,7 @@ public class GlobalSynchronizeWizard extends Wizard {
 			IWizard noPageWizard = mainPage.getSelectedWizard();
 			if (noPageWizard != null) {
 				if (noPageWizard.canFinish()) {
-				    mainPage.savePageSettings();
+					mainPage.savePageSettings();
 					return noPageWizard.performFinish();
 				}
 			}

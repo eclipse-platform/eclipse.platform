@@ -136,21 +136,21 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		private void handleSetChange(final ChangeSet set, final IPath[] paths) {
 			try {
 				getTheRest().beginInput();
-			    for (int i = 0; i < paths.length; i++) {
+				for (int i = 0; i < paths.length; i++) {
 					IPath path = paths[i];
-			        boolean isContained = ((DiffChangeSet)set).contains(path);
+					boolean isContained = ((DiffChangeSet)set).contains(path);
 					if (isContained) {
 						IDiff diff = ((DiffChangeSet)set).getDiffTree().getDiff(path);
 						if (diff != null) {
 							getTheRest().remove(ResourceDiffTree.getResourceFor(diff));
 						}
 					} else {
-			            IDiff diff = getContext().getDiffTree().getDiff(path);
-			            if (diff != null && !isContainedInSet(diff)) {
-			                getTheRest().add(diff);
-			            }
-			        }   
-			    }
+						IDiff diff = getContext().getDiffTree().getDiff(path);
+						if (diff != null && !isContainedInSet(diff)) {
+							getTheRest().add(diff);
+						}
+					}   
+				}
 			} finally {
 				getTheRest().endInput(null);
 			}
@@ -738,7 +738,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	}
 	
 	
-    private ChangeSet[] getSetsShowingPropogatedStateFrom(IPath[] paths) {
+	private ChangeSet[] getSetsShowingPropogatedStateFrom(IPath[] paths) {
 		Set result = new HashSet();
 		for (int i = 0; i < paths.length; i++) {
 			IPath path = paths[i];
@@ -750,7 +750,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		}
 		return (ChangeSet[]) result.toArray(new ChangeSet[result.size()]);
 	}
-    
+	
 	protected DiffChangeSet[] getSetsShowingPropogatedStateFrom(IPath path) {
 		List result = new ArrayList();
 		DiffChangeSet[] allSets = getAllSets();
@@ -764,13 +764,13 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 	}
 
 	public ChangeSetCapability getChangeSetCapability() {
-        ISynchronizeParticipant participant = getConfiguration().getParticipant();
-        if (participant instanceof IChangeSetProvider) {
-            IChangeSetProvider provider = (IChangeSetProvider) participant;
-            return provider.getChangeSetCapability();
-        }
-        return null;
-    }
+		ISynchronizeParticipant participant = getConfiguration().getParticipant();
+		if (participant instanceof IChangeSetProvider) {
+			IChangeSetProvider provider = (IChangeSetProvider) participant;
+			return provider.getChangeSetCapability();
+		}
+		return null;
+	}
 	
 	private Set getVisibleSetsInViewer() {
 		TreeViewer viewer = (TreeViewer)getViewer();

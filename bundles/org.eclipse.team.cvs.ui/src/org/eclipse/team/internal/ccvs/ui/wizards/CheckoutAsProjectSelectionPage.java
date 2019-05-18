@@ -87,7 +87,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		Composite composite= createComposite(parent, 2, false);
 		setControl(composite);
 		
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.CHECKOUT_PROJECT_SELECTION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.CHECKOUT_PROJECT_SELECTION_PAGE);
 		
 		if (isSingleFolder()) {
 			createLabel(composite, CVSUIMessages.CheckoutAsProjectSelectionPage_name); 
@@ -123,7 +123,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		initializeValues();
 		updateWidgetEnablements();
 		tree.getControl().setFocus();
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	/**

@@ -34,7 +34,7 @@ import org.eclipse.team.ui.synchronize.SubscriberParticipant;
 
 public class ShowSynchronizeParticipantAction extends Action implements IPropertyChangeListener {
 
-    private ISynchronizeParticipantReference fPage;
+	private ISynchronizeParticipantReference fPage;
 	private ISynchronizeView fView;
 
 	@Override
@@ -59,22 +59,22 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 		super(Utils.shortenText(SynchronizeView.MAX_NAME_LENGTH, ref.getDisplayName()), IAction.AS_RADIO_BUTTON);
 		fPage = ref;
 		fView = view;
-        setImageDescriptor( new ParticipantOverlay( ref));
+		setImageDescriptor( new ParticipantOverlay( ref));
 
-        try {
-          fPage.getParticipant().addPropertyChangeListener( this);
-        } catch( TeamException e) {
-          Utils.handle(e);
-        }
+		try {
+			fPage.getParticipant().addPropertyChangeListener( this);
+		} catch( TeamException e) {
+			Utils.handle(e);
+		}
 	}
 
 	@Override
 	public void propertyChange( PropertyChangeEvent event) {
-      String property = event.getProperty();
-      if( AbstractSynchronizeParticipant.P_PINNED.equals( property) ||
-          AbstractSynchronizeParticipant.P_SCHEDULED.equals(property)) {
-        setImageDescriptor(new ParticipantOverlay( fPage));
-      }
+		String property = event.getProperty();
+		if( AbstractSynchronizeParticipant.P_PINNED.equals( property) ||
+			AbstractSynchronizeParticipant.P_SCHEDULED.equals(property)) {
+			setImageDescriptor(new ParticipantOverlay( fPage));
+		}
 	}
 
 
@@ -100,18 +100,18 @@ public class ShowSynchronizeParticipantAction extends Action implements IPropert
 			if (this.participant.isPinned()) {
 				drawImage(pinnedData, this.imageData.width - pinnedData.width, 0);
 			}
-            if (this.participant instanceof SubscriberParticipant) {
-                SubscriberParticipant participant = ( SubscriberParticipant) this.participant;
-                SubscriberRefreshSchedule schedule = participant.getRefreshSchedule();
-                if(schedule!=null && schedule.isEnabled()) {
-                  drawImage(scheduledData, 0, 0);
-                }
-            } else {
-    			SubscriberRefreshSchedule schedule = Adapters.adapt(participant, SubscriberRefreshSchedule.class);
-                if(schedule!=null && schedule.isEnabled()) {
-                    drawImage(scheduledData, 0, 0);
-                }
-            }
+			if (this.participant instanceof SubscriberParticipant) {
+				SubscriberParticipant participant = ( SubscriberParticipant) this.participant;
+				SubscriberRefreshSchedule schedule = participant.getRefreshSchedule();
+				if(schedule!=null && schedule.isEnabled()) {
+					drawImage(scheduledData, 0, 0);
+				}
+			} else {
+				SubscriberRefreshSchedule schedule = Adapters.adapt(participant, SubscriberRefreshSchedule.class);
+				if(schedule!=null && schedule.isEnabled()) {
+					drawImage(scheduledData, 0, 0);
+				}
+			}
 		}
 
 		@Override

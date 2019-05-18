@@ -47,11 +47,11 @@ public class CVSAdapterFactory implements IAdapterFactory {
 		}
 		
 		if(IDeferredWorkbenchAdapter.class == adapterType) {
-			 Object o = getWorkbenchAdapter(adaptableObject);
-			 if(o != null && o instanceof IDeferredWorkbenchAdapter) {
-			 	return adapterType.cast(o);
-			 }
-			 return null;
+			Object o = getWorkbenchAdapter(adaptableObject);
+			if(o != null && o instanceof IDeferredWorkbenchAdapter) {
+				return adapterType.cast(o);
+			}
+			return null;
 		}		
 		
 		if (IPropertySource.class == adapterType) {

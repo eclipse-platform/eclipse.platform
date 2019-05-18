@@ -245,9 +245,9 @@ public class SyncFileChangeListener implements IResourceChangeListener {
 	protected boolean isMetaFile(IResource resource) {
 		IContainer parent = resource.getParent();		
 		return resource.getType() == IResource.FILE &&
-				   parent!=null && 
-				   parent.getName().equals(SyncFileWriter.CVS_DIRNAME) &&
-				   (parent.isTeamPrivateMember() || !parent.exists());
+					parent!=null && 
+					parent.getName().equals(SyncFileWriter.CVS_DIRNAME) &&
+					(parent.isTeamPrivateMember() || !parent.exists());
 	}
 	
 	/*

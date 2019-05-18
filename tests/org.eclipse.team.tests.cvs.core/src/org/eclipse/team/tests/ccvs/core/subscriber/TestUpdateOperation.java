@@ -59,10 +59,10 @@ class TestUpdateOperation extends WorkspaceUpdateOperation {
 			UpdateOnlyMergableOperation operation = new UpdateOnlyMergableOperation(getPart(), project, resources, localOptions) {
 				@Override
 				public ISynchronizationScope buildScope(IProgressMonitor monitor) throws InterruptedException, CVSException {
-			    	if (getScopeManager() == null) {
-			    		// manager = createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings());
-			    		ReflectionUtils.setField(this, "manager", createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings()));
-			    		BuildScopeOperation op = new BuildScopeOperation(getPart(), getScopeManager()) {
+					if (getScopeManager() == null) {
+						// manager = createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings());
+						ReflectionUtils.setField(this, "manager", createScopeManager(consultModelsWhenBuildingScope && consultModelsForMappings()));
+						BuildScopeOperation op = new BuildScopeOperation(getPart(), getScopeManager()) {
 							@Override
 							protected boolean promptForInputChange(String requestPreviewMessage, IProgressMonitor monitor) {
 								return false; // do not prompt
@@ -73,8 +73,8 @@ class TestUpdateOperation extends WorkspaceUpdateOperation {
 						} catch (InvocationTargetException e) {
 							throw CVSException.wrapException(e);
 						}
-			    	}
-			    	return getScope();
+					}
+					return getScope();
 				}
 			};
 			operation.run(monitor);

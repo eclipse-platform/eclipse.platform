@@ -126,7 +126,7 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 		Composite composite= createComposite(parent, 1, false);
 		setControl(composite);
 		
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.RESTORE_FROM_REPOSITORY_FILE_SELECTION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.RESTORE_FROM_REPOSITORY_FILE_SELECTION_PAGE);
 		
 		// Top and bottom panes: top is the two selection panes, bottom is the file content viewer
 		Splitter vsplitter= new Splitter(composite,  SWT.VERTICAL);
@@ -165,7 +165,7 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 
 		initializeValues();
 		updateWidgetEnablements();
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	protected CheckboxTableViewer createRevisionSelectionTable(CompareViewerPane composite, HistoryTableProvider tableProvider) {

@@ -166,16 +166,16 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 	 * @param configuration
 	 */
 	protected SynchronizeModelManager createModelManager(ISynchronizePageConfiguration configuration) {
-        ISynchronizeParticipant participant = configuration.getParticipant();
-        if (participant instanceof IChangeSetProvider) {
-            IChangeSetProvider provider = (IChangeSetProvider) participant;
-    	    ChangeSetCapability changeSetCapability = provider.getChangeSetCapability();
-            if (changeSetCapability != null) {
-    	        if (changeSetCapability.supportsActiveChangeSets() || changeSetCapability.supportsCheckedInChangeSets()) {
-    	            return new ChangeSetModelManager(configuration);
-    	        }
-    	    }
-        }
+		ISynchronizeParticipant participant = configuration.getParticipant();
+		if (participant instanceof IChangeSetProvider) {
+			IChangeSetProvider provider = (IChangeSetProvider) participant;
+			ChangeSetCapability changeSetCapability = provider.getChangeSetCapability();
+			if (changeSetCapability != null) {
+				if (changeSetCapability.supportsActiveChangeSets() || changeSetCapability.supportsCheckedInChangeSets()) {
+					return new ChangeSetModelManager(configuration);
+				}
+			}
+		}
 		return new HierarchicalModelManager(configuration);
 	}
 
@@ -240,21 +240,21 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 			viewer.setSorter(modelProvider.getViewerSorter());
 			viewer.setInput(modelRoot);
 			modelProvider.addPropertyChangeListener(event -> {
-			    if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
-			        if (viewer != null && !viewer.getControl().isDisposed()) {
-			            viewer.getControl().getDisplay().syncExec(() -> {
-						    if (viewer != null && !viewer.getControl().isDisposed()) {
-						        ViewerSorter newSorter = modelProvider.getViewerSorter();
-						        ViewerSorter oldSorter = viewer.getSorter();
-						        if (newSorter == oldSorter) {
-						            viewer.refresh();
-						        } else {
-						            viewer.setSorter(newSorter);
-						        }
-						    }
+				if (event.getProperty() == ISynchronizeModelProvider.P_VIEWER_SORTER) {
+					if (viewer != null && !viewer.getControl().isDisposed()) {
+						viewer.getControl().getDisplay().syncExec(() -> {
+							if (viewer != null && !viewer.getControl().isDisposed()) {
+								ViewerSorter newSorter = modelProvider.getViewerSorter();
+								ViewerSorter oldSorter = viewer.getSorter();
+								if (newSorter == oldSorter) {
+									viewer.refresh();
+								} else {
+									viewer.setSorter(newSorter);
+								}
+							}
 						});
-			        }
-			    }
+					}
+				}
 			});
 		}
 	}
@@ -271,24 +271,24 @@ public class TreeViewerAdvisor extends AbstractTreeViewerAdvisor {
 
 		final DragSourceListener listener = new DragSourceListener() {
 
-            @Override
+			@Override
 			public void dragStart(DragSourceEvent event) {
 				final IStructuredSelection selection = viewer.getStructuredSelection();
-                final Object [] array= selection.toArray();
-                event.doit= Utils.getResources(array).length > 0;
+				final Object [] array= selection.toArray();
+				event.doit= Utils.getResources(array).length > 0;
 			}
 
-            @Override
+			@Override
 			public void dragSetData(DragSourceEvent event) {
 
-                if (ResourceTransfer.getInstance().isSupportedType(event.dataType)) {
-                    final IStructuredSelection selection= viewer.getStructuredSelection();
-                    final Object [] array= selection.toArray();
-                    event.data= Utils.getResources(array);
-                }
-            }
+				if (ResourceTransfer.getInstance().isSupportedType(event.dataType)) {
+					final IStructuredSelection selection= viewer.getStructuredSelection();
+					final Object [] array= selection.toArray();
+					event.data= Utils.getResources(array);
+				}
+			}
 
-            @Override
+			@Override
 			public void dragFinished(DragSourceEvent event) {}
 		};
 

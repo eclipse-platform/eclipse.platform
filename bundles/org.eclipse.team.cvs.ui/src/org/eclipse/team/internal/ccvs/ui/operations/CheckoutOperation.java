@@ -69,13 +69,13 @@ public abstract class CheckoutOperation extends RemoteOperation {
 	}
 	
 	@Override
-    public boolean isKeepOneProgressServiceEntry() {
-        // Keep the last repository provider operation in the progress service
-        return true;
-    }
-    
+	public boolean isKeepOneProgressServiceEntry() {
+		// Keep the last repository provider operation in the progress service
+		return true;
+	}
+	
 	@Override
-    protected IAction getGotoAction() {
-        return getShowConsoleAction();
-    }
+	protected IAction getGotoAction() {
+		return getShowConsoleAction();
+	}
 }

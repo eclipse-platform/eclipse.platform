@@ -102,7 +102,7 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 		//check to see if we already have the children cached in the tree map
 		Object tree = cachedTrees.get(element);
 		if (tree != null) {
-		  	return ((RemoteFolderTree) tree).getChildren();
+			return ((RemoteFolderTree) tree).getChildren();
 		}
 		
 		if (manager != null) {

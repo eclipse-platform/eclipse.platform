@@ -49,22 +49,22 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 
 	@Override
 	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
-	    IFile[] readOnlyFiles = getReadOnly(files);
-	    if (readOnlyFiles.length == 0)
-	        return Status.OK_STATUS;
-	    synchronized (this) {
-	        if (uiValidator == null)
-	            uiValidator = loadUIValidator();
-	    }
-	    if (uiValidator != null) {
-	        return uiValidator.validateEdit(files, context);
-	    }
-	    // There was no plugged in validator so fail gracefully
+		IFile[] readOnlyFiles = getReadOnly(files);
+		if (readOnlyFiles.length == 0)
+			return Status.OK_STATUS;
+		synchronized (this) {
+			if (uiValidator == null)
+				uiValidator = loadUIValidator();
+		}
+		if (uiValidator != null) {
+			return uiValidator.validateEdit(files, context);
+		}
+		// There was no plugged in validator so fail gracefully
 		return getStatus(files);
 	}
 
-    protected IStatus getStatus(IFile[] files) {
-        if (files.length == 1) {
+	protected IStatus getStatus(IFile[] files) {
+		if (files.length == 1) {
 			return getDefaultStatus(files[0]);
 		}
 
@@ -83,51 +83,51 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 					? Messages.ok
 					: Messages.FileModificationValidator_someReadOnly,
 			null);
-    }
+	}
 
-    private IFile[] getReadOnly(IFile[] files) {
-        List<IFile> result = new ArrayList<>(files.length);
-        for (int i = 0; i < files.length; i++) {
-            IFile file = files[i];
-            if (file.isReadOnly()) {
-                result.add(file);
-            }
-        }
-        return result.toArray(new IFile[result.size()]);
-    }
+	private IFile[] getReadOnly(IFile[] files) {
+		List<IFile> result = new ArrayList<>(files.length);
+		for (int i = 0; i < files.length; i++) {
+			IFile file = files[i];
+			if (file.isReadOnly()) {
+				result.add(file);
+			}
+		}
+		return result.toArray(new IFile[result.size()]);
+	}
 
 	@Override
 	public IStatus validateSave(IFile file) {
-	    if (!file.isReadOnly())
-	        return Status.OK_STATUS;
-	    synchronized (this) {
-	        if (uiValidator == null)
-	            uiValidator = loadUIValidator();
-	    }
-	    if (uiValidator != null) {
-	        return uiValidator.validateSave(file);
-	    }
+		if (!file.isReadOnly())
+			return Status.OK_STATUS;
+		synchronized (this) {
+			if (uiValidator == null)
+				uiValidator = loadUIValidator();
+		}
+		if (uiValidator != null) {
+			return uiValidator.validateSave(file);
+		}
 		return getDefaultStatus(file);
 	}
 
-    private FileModificationValidator loadUIValidator() {
-        IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.DEFAULT_FILE_MODIFICATION_VALIDATOR_EXTENSION);
+	private FileModificationValidator loadUIValidator() {
+		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.DEFAULT_FILE_MODIFICATION_VALIDATOR_EXTENSION);
 		if (extension != null) {
 			IExtension[] extensions =  extension.getExtensions();
 			if (extensions.length > 0) {
 				IConfigurationElement[] configElements = extensions[0].getConfigurationElements();
 				if (configElements.length > 0) {
 					try {
-                        Object o = configElements[0].createExecutableExtension("class"); //$NON-NLS-1$
-                        if (o instanceof FileModificationValidator) {
-                            return (FileModificationValidator)o;
-                        }
-                    } catch (CoreException e) {
-                        TeamPlugin.log(e);
-                    }
+						Object o = configElements[0].createExecutableExtension("class"); //$NON-NLS-1$
+						if (o instanceof FileModificationValidator) {
+							return (FileModificationValidator)o;
+						}
+					} catch (CoreException e) {
+						TeamPlugin.log(e);
+					}
 				}
 			}
 		}
 		return null;
-    }
+	}
 }

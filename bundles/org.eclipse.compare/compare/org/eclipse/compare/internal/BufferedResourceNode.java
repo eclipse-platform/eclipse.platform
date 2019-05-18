@@ -45,11 +45,11 @@ public class BufferedResourceNode extends ResourceNode {
 		super(resource);
 	}
 
-    /*
-     * Returns <code>true</code> if buffer contains uncommitted changes.
-     */
+	/*
+	 * Returns <code>true</code> if buffer contains uncommitted changes.
+	 */
 	public boolean isDirty() {
-	    return fDirty;
+		return fDirty;
 	}
 
 	@Override

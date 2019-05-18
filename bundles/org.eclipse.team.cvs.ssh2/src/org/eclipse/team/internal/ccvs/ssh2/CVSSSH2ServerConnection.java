@@ -45,20 +45,20 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 	private static final String SSH1_COMPATIBILITY_CLASS = "org.eclipse.team.internal.ccvs.ssh.SSHServerConnection"; //$NON-NLS-1$
 	
 	private final class SSH2IOException extends IOException {
-        private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 
-        private final JSchException e;
+		private final JSchException e;
 
-        SSH2IOException(String s, JSchException e) {
-            super(s);
-            this.e = e;
-        }
+		SSH2IOException(String s, JSchException e) {
+			super(s);
+			this.e = e;
+		}
 
-        public Throwable getCause() {
-            return e;
-        }
-    }
-    private static final String COMMAND = "cvs server"; //$NON-NLS-1$
+		public Throwable getCause() {
+			return e;
+		}
+	}
+	private static final String COMMAND = "cvs server"; //$NON-NLS-1$
 	private ICVSRepositoryLocation location;
 	private String password;
 	private InputStream inputStream;
@@ -130,10 +130,10 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 		try {
 			OutputStream channel_out = null;
 			InputStream channel_in = null;
-            boolean firstTime = true;
-            boolean tryAgain = false;
+			boolean firstTime = true;
+			boolean tryAgain = false;
 			while (firstTime || tryAgain) {
-                tryAgain = false; // reset the try again flag
+				tryAgain = false; // reset the try again flag
 				session = JSchSession.getSession(location, location.getUsername(), password, location.getHost(), location.getPort(), monitor);
 				channel = session.getSession().openChannel("exec"); //$NON-NLS-1$
 				((ChannelExec) channel).setCommand(COMMAND);
@@ -142,24 +142,24 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 				try {
 					channel.connect();
 				} catch (JSchException ee) {
-                    // This strange logic is here due to how the JSch client shares sessions.
-                    // It is possible that we have obtained a session that thinks it is connected
-                    // but is not. Channel connection only works if the session is connected so the
-                    // above channel connect may fail because the session is down. For this reason,
-                    // we want to retry if the connection fails.
-                    try {
-                        if (firstTime && (isSessionDownError(ee) || isChannelNotOpenError(ee))) {
-                            tryAgain = true;
-                        }
-                        if (!tryAgain) {
-                            throw ee;
-                        }
-                    } finally {
-                        // Always dispose of the current session when a failure occurs so we can start from scratch
-                        session.dispose();
-                    }
+					// This strange logic is here due to how the JSch client shares sessions.
+					// It is possible that we have obtained a session that thinks it is connected
+					// but is not. Channel connection only works if the session is connected so the
+					// above channel connect may fail because the session is down. For this reason,
+					// we want to retry if the connection fails.
+					try {
+						if (firstTime && (isSessionDownError(ee) || isChannelNotOpenError(ee))) {
+							tryAgain = true;
+						}
+						if (!tryAgain) {
+							throw ee;
+						}
+					} finally {
+						// Always dispose of the current session when a failure occurs so we can start from scratch
+						session.dispose();
+					}
 				}
-                firstTime = false; // the first time is done
+				firstTime = false; // the first time is done
 			}
 			int timeout = location.getTimeout();
 			inputStream = new PollingInputStream(new TimeoutInputStream(new FilterInputStream(channel_in) {
@@ -182,31 +182,31 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 							CVSSSH2Messages.CVSSSH2ServerConnection_4, e);
 				}
 				ssh1.open(monitor);
-            } else {
-			    String message = e.getMessage();
-			    if (JSchSession.isAuthenticationFailure(e)) {
-                    // Do not retry as the Jsh library has it's own retry logic
-                    throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_0, CVSAuthenticationException.NO_RETRY,location, e); 
-			    } else if (message.startsWith("Session.connect: ")) { //$NON-NLS-1$
-			        // Jsh has messages formatted like "Session.connect: java.net.NoRouteToHostException: ..."
-			        // Strip of the exception and try to convert it to a more meaningfull string
-			        int start = message.indexOf(": ") + 1; //$NON-NLS-1$
-			        if (start != -1) {
-				        int end = message.indexOf(": ", start); //$NON-NLS-1$
-				        if (end != -1) {
-				            String exception = message.substring(start, end).trim();
-				            if (exception.indexOf("NoRouteToHostException") != -1) { //$NON-NLS-1$
-				                message = NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_1, new String[] { location.getHost() }); 
-				                throw new NoRouteToHostException(message);
-				            } else if (exception.indexOf("java.net.UnknownHostException") != -1) { //$NON-NLS-1$
-				                throw new UnknownHostException(location.getHost());
-				            } else {
-				                message = message.substring(end + 1).trim();
-				            }
-				        }
-			        }
-			    }
- 				throw new SSH2IOException(message, e);
+			} else {
+				String message = e.getMessage();
+				if (JSchSession.isAuthenticationFailure(e)) {
+					// Do not retry as the Jsh library has it's own retry logic
+					throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_0, CVSAuthenticationException.NO_RETRY,location, e); 
+				} else if (message.startsWith("Session.connect: ")) { //$NON-NLS-1$
+					// Jsh has messages formatted like "Session.connect: java.net.NoRouteToHostException: ..."
+					// Strip of the exception and try to convert it to a more meaningfull string
+					int start = message.indexOf(": ") + 1; //$NON-NLS-1$
+					if (start != -1) {
+						int end = message.indexOf(": ", start); //$NON-NLS-1$
+						if (end != -1) {
+							String exception = message.substring(start, end).trim();
+							if (exception.indexOf("NoRouteToHostException") != -1) { //$NON-NLS-1$
+								message = NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_1, new String[] { location.getHost() }); 
+								throw new NoRouteToHostException(message);
+							} else if (exception.indexOf("java.net.UnknownHostException") != -1) { //$NON-NLS-1$
+								throw new UnknownHostException(location.getHost());
+							} else {
+								message = message.substring(end + 1).trim();
+							}
+						}
+					}
+				}
+				throw new SSH2IOException(message, e);
 			}
 		}
 	}
@@ -247,14 +247,14 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 		}
 		return null;
 	}
-    
-    private boolean isChannelNotOpenError(JSchException ee) {
-        return ee.getMessage().indexOf("channel is not opened") != -1; //$NON-NLS-1$
-    }
-    private boolean isSessionDownError(JSchException ee) {
-        return ee.getMessage().equals("session is down"); //$NON-NLS-1$
-    }
-    private boolean isSSH2Unsupported(JSchException e) {
-        return e.toString().indexOf("invalid server's version string") != -1; //$NON-NLS-1$
-    }
+	
+	private boolean isChannelNotOpenError(JSchException ee) {
+		return ee.getMessage().indexOf("channel is not opened") != -1; //$NON-NLS-1$
+	}
+	private boolean isSessionDownError(JSchException ee) {
+		return ee.getMessage().equals("session is down"); //$NON-NLS-1$
+	}
+	private boolean isSSH2Unsupported(JSchException e) {
+		return e.toString().indexOf("invalid server's version string") != -1; //$NON-NLS-1$
+	}
 }

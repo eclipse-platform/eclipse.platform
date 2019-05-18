@@ -24,7 +24,7 @@ public class CVSCommunicationException extends CVSException {
 
 	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
 	 * Create a new <code>CVSCommunicationException</code> with the
 	 * given status.
 	 */
@@ -75,18 +75,18 @@ public class CVSCommunicationException extends CVSException {
 	}
 	
 	public static String getMessageFor(Throwable throwable) {
-        String message = Policy.getMessage(getMessageKey(throwable));
-        if (message == null) {
-            message = NLS.bind(CVSMessages.CVSCommunicationException_io, (new Object[] {throwable.toString()}));
-        } else {
-            message = NLS.bind(message, (new Object[] {throwable.getMessage()}));
-        }
+		String message = Policy.getMessage(getMessageKey(throwable));
+		if (message == null) {
+			message = NLS.bind(CVSMessages.CVSCommunicationException_io, (new Object[] {throwable.toString()}));
+		} else {
+			message = NLS.bind(message, (new Object[] {throwable.getMessage()}));
+		}
 		return message;
 	}
-    
-    private static String getMessageKey(Throwable t) {
-        String name = t.getClass().getName();
-        name = name.replace('.', '_');
-        return name;
-    }
+	
+	private static String getMessageKey(Throwable t) {
+		String name = t.getClass().getName();
+		name = name.replace('.', '_');
+		return name;
+	}
 }

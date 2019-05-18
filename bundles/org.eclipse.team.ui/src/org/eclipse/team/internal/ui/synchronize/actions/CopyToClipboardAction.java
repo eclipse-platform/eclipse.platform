@@ -53,36 +53,36 @@ import org.eclipse.ui.part.ResourceTransfer;
  */
 class CopyToClipboardAction extends SelectionListenerAction {
 
-    private static final String EOL = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+	private static final String EOL = System.getProperty("line.separator", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    private final static String ID= TeamUIPlugin.PLUGIN_ID + ".synchronize.action.copy";  //$NON-NLS-1$
+	private final static String ID= TeamUIPlugin.PLUGIN_ID + ".synchronize.action.copy";  //$NON-NLS-1$
 
-    private final Shell fShell;
-    private final Clipboard fClipboard;
+	private final Shell fShell;
+	private final Clipboard fClipboard;
 
 	private final INavigatorContentService navigatorContentService;
 
-    protected CopyToClipboardAction(Shell shell, INavigatorContentService navigatorContentService) {
-        super(TeamUIMessages.CopyToClipboardAction_1);
+	protected CopyToClipboardAction(Shell shell, INavigatorContentService navigatorContentService) {
+		super(TeamUIMessages.CopyToClipboardAction_1);
 		this.navigatorContentService = navigatorContentService;
-        Assert.isNotNull(shell);
-        fShell= shell;
-        fClipboard= new Clipboard(shell.getDisplay());
-        setToolTipText(TeamUIMessages.CopyToClipboardAction_2);
-        setId(ID);
-    }
+		Assert.isNotNull(shell);
+		fShell= shell;
+		fClipboard= new Clipboard(shell.getDisplay());
+		setToolTipText(TeamUIMessages.CopyToClipboardAction_2);
+		setId(ID);
+	}
 
-    @Override
+	@Override
 	public void run() {
 		copyResources(getSelectedResources(), getTextualClipboardContents());
 	}
 
-    /*
-     * Return a text representation of all selected elements.
-     * Use the name from the tree node so what is copied
-     * matches what appears in the tree.
-     */
-    private String getTextualClipboardContents() {
+	/*
+	 * Return a text representation of all selected elements.
+	 * Use the name from the tree node so what is copied
+	 * matches what appears in the tree.
+	 */
+	private String getTextualClipboardContents() {
 		StringBuilder buf = new StringBuilder();
 		int i = 0;
 		IStructuredSelection structuredSelection = getStructuredSelection();
@@ -177,36 +177,36 @@ class CopyToClipboardAction extends SelectionListenerAction {
 	 * @param fileNames file names of the resources to copy to the clipboard
 	 * @param names string representation of all names
 	 */
-    private void setClipboard(IResource[] resources, String[] fileNames, String names) {
-        try {
-            // set the clipboard contents
-        	List data = new ArrayList();
-        	List<Transfer> dataTypes = new ArrayList<>();
-        	 if (resources.length > 0) {
-        		 data.add(resources);
-        		 dataTypes.add(ResourceTransfer.getInstance());
-        	 }
-            if (fileNames.length > 0) {
-       		 	data.add(fileNames);
-       		 	dataTypes.add(FileTransfer.getInstance());
-            }
-            if (names != null && names.length() > 0) {
-       		 	data.add(names);
-       		 	dataTypes.add(TextTransfer.getInstance());
-            }
-            if (!data.isEmpty())
-                fClipboard.setContents(
-                		data.toArray(),
-                		dataTypes.toArray(new Transfer[dataTypes.size()]));
-        } catch (SWTError e) {
-            if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
-                throw e;
-            if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4))
-                setClipboard(resources, fileNames, names);
-        }
-    }
+	private void setClipboard(IResource[] resources, String[] fileNames, String names) {
+		try {
+			// set the clipboard contents
+			List data = new ArrayList();
+			List<Transfer> dataTypes = new ArrayList<>();
+			if (resources.length > 0) {
+				data.add(resources);
+				dataTypes.add(ResourceTransfer.getInstance());
+			}
+			if (fileNames.length > 0) {
+				data.add(fileNames);
+				dataTypes.add(FileTransfer.getInstance());
+			}
+			if (names != null && names.length() > 0) {
+				data.add(names);
+				dataTypes.add(TextTransfer.getInstance());
+			}
+			if (!data.isEmpty())
+				fClipboard.setContents(
+						data.toArray(),
+						dataTypes.toArray(new Transfer[dataTypes.size()]));
+		} catch (SWTError e) {
+			if (e.code != DND.ERROR_CANNOT_SET_CLIPBOARD)
+				throw e;
+			if (MessageDialog.openQuestion(fShell, TeamUIMessages.CopyToClipboardAction_3, TeamUIMessages.CopyToClipboardAction_4))
+				setClipboard(resources, fileNames, names);
+		}
+	}
 
-    @Override
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		if (!super.updateSelection(selection))
 			return false;
@@ -250,7 +250,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 
 	@Override
 	protected List<? extends IResource> getSelectedResources() {
-    	// Calling our own selection utility because the elements in the
+		// Calling our own selection utility because the elements in the
 		// synchronize view can't adapt to IResource because we don't want the usual object
 		// contribution/ on them.
 		return Arrays.asList(Utils.getResources(getStructuredSelection().toArray()));

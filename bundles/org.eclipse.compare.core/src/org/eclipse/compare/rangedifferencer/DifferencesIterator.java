@@ -42,8 +42,8 @@ import java.util.List;
 	}
 
 	/*
-	  * Returns the number of RangeDifferences
-	  */
+	 * Returns the number of RangeDifferences
+	 */
 	int getCount() {
 		return this.fRange.size();
 	}
@@ -72,8 +72,8 @@ import java.util.List;
 	}
 
 	/*
-	  * Removes all <code>RangeDifference</code>s
-	  */
+	 * Removes all <code>RangeDifference</code>s
+	 */
 	void removeAll() {
 		this.fRange.clear();
 	}

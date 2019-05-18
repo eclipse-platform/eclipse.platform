@@ -55,7 +55,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	public static final String CONTEXT_MENU_CONTRIBUTION_GROUP_3 = "context_group_3"; //$NON-NLS-1$
 	public static final String CONTEXT_MENU_CONTRIBUTION_GROUP_4 = "context_group_4"; //$NON-NLS-1$
 
-    private WorkspaceChangeSetCapability capability;
+	private WorkspaceChangeSetCapability capability;
 
 	/**
 	 * CVS workspace action contribution
@@ -145,39 +145,39 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	}
 	
 	public class WorkspaceChangeSetCapability extends CVSChangeSetCapability {
-        @Override
+		@Override
 		public ActiveChangeSet createChangeSet(ISynchronizePageConfiguration configuration, IDiff[] infos) {
-	        ActiveChangeSet set = getActiveChangeSetManager().createSet(CVSUIMessages.WorkspaceChangeSetCapability_1, new IDiff[0]); 
+			ActiveChangeSet set = getActiveChangeSetManager().createSet(CVSUIMessages.WorkspaceChangeSetCapability_1, new IDiff[0]); 
 			CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, getResources(infos), CommitSetDialog.NEW);  
 			dialog.open();
 			if (dialog.getReturnCode() != Window.OK) return null;
 			set.add(infos);
 			return set;
-        }
+		}
 
-        private IResource[] getResources(IDiff[] diffs) {
+		private IResource[] getResources(IDiff[] diffs) {
 			Set<IResource> result = new HashSet<>();
-        	for (int i = 0; i < diffs.length; i++) {
+			for (int i = 0; i < diffs.length; i++) {
 				IDiff diff = diffs[i];
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (resource != null)
 					result.add(resource);
 			}
-            return result.toArray(new IResource[result.size()]);
-        }
-        
-        @Override
+			return result.toArray(new IResource[result.size()]);
+		}
+		
+		@Override
 		public void editChangeSet(ISynchronizePageConfiguration configuration, ActiveChangeSet set) {
-	        CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, set.getResources(), CommitSetDialog.EDIT);
+			CommitSetDialog dialog = new CommitSetDialog(configuration.getSite().getShell(), set, set.getResources(), CommitSetDialog.EDIT);
 			dialog.open();
 			if (dialog.getReturnCode() != Window.OK) return;
 			// Nothing to do here as the set was updated by the dialog 
-        }
+		}
 
-        @Override
+		@Override
 		public ActiveChangeSetManager getActiveChangeSetManager() {
-            return CVSUIPlugin.getPlugin().getChangeSetManager();
-        }
+			return CVSUIPlugin.getPlugin().getChangeSetManager();
+		}
 	}
 	
 	/**
@@ -285,7 +285,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 	}
 	
 	protected  ILabelDecorator getLabelDecorator(ISynchronizePageConfiguration configuration) {
-	    return new CVSParticipantLabelDecorator(configuration);
+		return new CVSParticipantLabelDecorator(configuration);
 	}
 	
 	@Override
@@ -293,36 +293,36 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 		return TeamUI.getSynchronizeManager().getParticipantDescriptor(ID);
 	}
 	
-    @Override
+	@Override
 	public void prepareCompareInput(ISynchronizeModelElement element, CompareConfiguration config, IProgressMonitor monitor) throws TeamException {
-        monitor.beginTask(null, 100);
-        CVSParticipant.deriveBaseContentsFromLocal(element, Policy.subMonitorFor(monitor, 10));
-        super.prepareCompareInput(element, config, Policy.subMonitorFor(monitor, 80));
-        CVSParticipant.updateLabelsForCVS(element, config, Policy.subMonitorFor(monitor, 10));
-        monitor.done();
-    }
-    
-    @Override
+		monitor.beginTask(null, 100);
+		CVSParticipant.deriveBaseContentsFromLocal(element, Policy.subMonitorFor(monitor, 10));
+		super.prepareCompareInput(element, config, Policy.subMonitorFor(monitor, 80));
+		CVSParticipant.updateLabelsForCVS(element, config, Policy.subMonitorFor(monitor, 10));
+		monitor.done();
+	}
+	
+	@Override
 	public PreferencePage[] getPreferencePages() {
-        return CVSParticipant.addCVSPreferencePages(super.getPreferencePages());
-    }
-    
-    @Override
+		return CVSParticipant.addCVSPreferencePages(super.getPreferencePages());
+	}
+	
+	@Override
 	public ChangeSetCapability getChangeSetCapability() {
-        if (capability == null) {
-            capability = new WorkspaceChangeSetCapability();
-        }
-        return capability;
-    }
-    
-    @Override
+		if (capability == null) {
+			capability = new WorkspaceChangeSetCapability();
+		}
+		return capability;
+	}
+	
+	@Override
 	protected boolean isViewerContributionsSupported() {
-        return true;
-    }
+		return true;
+	}
 
-    public void refresh(IResource[] resources, IWorkbenchPartSite site) {
-        refresh(resources, getShortTaskName(), getLongTaskName(resources), site);
-    }
+	public void refresh(IResource[] resources, IWorkbenchPartSite site) {
+		refresh(resources, getShortTaskName(), getLongTaskName(resources), site);
+	}
 
 	@Override
 	public void dispose() {

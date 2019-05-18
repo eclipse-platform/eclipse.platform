@@ -58,7 +58,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 	private final CompareEditorInput editorInput;
 	private boolean isSaving;
 	private IContentChangeListener contentChangeListener;
-    private ITypedElement fileElement;
+	private ITypedElement fileElement;
 	private IDocument document;
 
 	/**
@@ -123,7 +123,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		// Discard of the buffer
 		ITypedElement left = getFileElement();
 		if (left instanceof LocalResourceTypedElement)
-			 ((LocalResourceTypedElement) left).discardBuffer();
+			((LocalResourceTypedElement) left).discardBuffer();
 		document = null;
 	}
 
@@ -245,7 +245,7 @@ public abstract class LocalResourceSaveableComparison extends SaveableComparison
 		// Only the left is ever editable
 		ITypedElement left = getFileElement();
 		if (left instanceof LocalResourceTypedElement)
-			 ((LocalResourceTypedElement) left).discardBuffer();
+			((LocalResourceTypedElement) left).discardBuffer();
 	}
 
 	@Override

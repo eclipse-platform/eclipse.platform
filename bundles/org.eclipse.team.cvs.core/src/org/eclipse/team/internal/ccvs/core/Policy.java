@@ -74,39 +74,39 @@ public class Policy {
 	}
 	
 	public static boolean isDebugProtocol() {
-	    return DEBUG_CVS_PROTOCOL || recorder != null;
+		return DEBUG_CVS_PROTOCOL || recorder != null;
 	}
 	
 	public static void printProtocolLine(String line) {
-	    printProtocol(line, true);
+		printProtocol(line, true);
 	}
 
-    public static void printProtocol(String string, boolean newLine) {
-        if (DEBUG_CVS_PROTOCOL) {
-	        System.out.print(string);
-	        if (newLine) {
-	            System.out.println();
-	        }
-        }
-        if (recorder != null) {
-            recorder.print(string);
-            if (newLine) {
-                recorder.println();
-            }
-        }
-    }
-    
-    public static String getMessage(String key) {
-        try {
-            Field f = CVSMessages.class.getDeclaredField(key);
-            Object o = f.get(null);
-            if (o instanceof String)
-                return (String)o;
-        } catch (SecurityException e) {
-        } catch (NoSuchFieldException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        }
-        return null;
-    }
+	public static void printProtocol(String string, boolean newLine) {
+		if (DEBUG_CVS_PROTOCOL) {
+			System.out.print(string);
+			if (newLine) {
+				System.out.println();
+			}
+		}
+		if (recorder != null) {
+			recorder.print(string);
+			if (newLine) {
+				recorder.println();
+			}
+		}
+	}
+	
+	public static String getMessage(String key) {
+		try {
+			Field f = CVSMessages.class.getDeclaredField(key);
+			Object o = f.get(null);
+			if (o instanceof String)
+				return (String)o;
+		} catch (SecurityException e) {
+		} catch (NoSuchFieldException e) {
+		} catch (IllegalArgumentException e) {
+		} catch (IllegalAccessException e) {
+		}
+		return null;
+	}
 }

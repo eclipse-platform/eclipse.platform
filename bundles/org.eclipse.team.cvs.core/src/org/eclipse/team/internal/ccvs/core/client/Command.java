@@ -79,7 +79,7 @@ public abstract class Command extends Request {
 	// Empty local option array
 	public static final LocalOption[] NO_LOCAL_OPTIONS = new LocalOption[0];
 	// valid for: annotate checkout commit diff export log rdiff remove rtag status tag update
-    public static final LocalOption RECURSE = new LocalOption("-R"); //$NON-NLS-1$
+	public static final LocalOption RECURSE = new LocalOption("-R"); //$NON-NLS-1$
 	public static final LocalOption DO_NOT_RECURSE = new LocalOption("-l"); //$NON-NLS-1$	
 	// valid for: checkout export update
 	public static final LocalOption PRUNE_EMPTY_DIRECTORIES = new LocalOption("-P"); //$NON-NLS-1$
@@ -324,7 +324,7 @@ public abstract class Command extends Request {
 			
 			// run the command
 			try {
-			    session.setCurrentCommand(Command.this);
+				session.setCurrentCommand(Command.this);
 				status[0] = doExecute(session, gOptions, lOptions, arguments, listener, monitor);
 				notifyConsoleOnCompletion(session, status[0], null);
 			} catch (CVSException e1) {
@@ -560,28 +560,28 @@ public abstract class Command extends Request {
 			session.sendArgument(option);
 			if (argument != null) session.sendArgument(argument);
 		}
-        public LocalOption[] addTo(LocalOption[] options) {
-            if (this.isElementOf(options)) {
-                return options;
-            }
-            LocalOption[] newOptions = new LocalOption[options.length + 1];
-            System.arraycopy(options, 0, newOptions, 0, options.length);
-            newOptions[options.length] = this;
-            return newOptions;
-        }
-        public LocalOption[] removeFrom(LocalOption[] options) {
-            if (!this.isElementOf(options)) {
-                return options;
-            }
-            List result = new ArrayList();
-            for (int i = 0; i < options.length; i++) {
-                Command.LocalOption option = options[i];
-                if (!option.equals(this)) {
-                    result.add(option);
-                }
-            }
-            return (LocalOption[]) result.toArray(new LocalOption[result.size()]);
-        }
+		public LocalOption[] addTo(LocalOption[] options) {
+			if (this.isElementOf(options)) {
+				return options;
+			}
+			LocalOption[] newOptions = new LocalOption[options.length + 1];
+			System.arraycopy(options, 0, newOptions, 0, options.length);
+			newOptions[options.length] = this;
+			return newOptions;
+		}
+		public LocalOption[] removeFrom(LocalOption[] options) {
+			if (!this.isElementOf(options)) {
+				return options;
+			}
+			List result = new ArrayList();
+			for (int i = 0; i < options.length; i++) {
+				Command.LocalOption option = options[i];
+				if (!option.equals(this)) {
+					result.add(option);
+				}
+			}
+			return (LocalOption[]) result.toArray(new LocalOption[result.size()]);
+		}
 	}
 	/**
 	 * Options subtype for keyword substitution options.
@@ -654,40 +654,40 @@ public abstract class Command extends Request {
 		 */
 		public String getShortDisplayText() {
 			if (isUnknownMode)
-                return NLS.bind(CVSMessages.KSubstOption_unknown_short, new String[] { option }); 
-            if (option.equals("-kb")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kb_short;
-            if (option.equals("-kkv")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kkv_short;
-            if (option.equals("-ko")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__ko_short;
-            if (option.equals("-kk")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kk_short;
-            if (option.equals("-kv")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kv_short;
-            if (option.equals("-kkvl")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kkvl_short;
-            return NLS.bind(CVSMessages.KSubstOption_unknown_short, new String[] { option }); 
+				return NLS.bind(CVSMessages.KSubstOption_unknown_short, new String[] { option }); 
+			if (option.equals("-kb")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kb_short;
+			if (option.equals("-kkv")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kkv_short;
+			if (option.equals("-ko")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__ko_short;
+			if (option.equals("-kk")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kk_short;
+			if (option.equals("-kv")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kv_short;
+			if (option.equals("-kkvl")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kkvl_short;
+			return NLS.bind(CVSMessages.KSubstOption_unknown_short, new String[] { option }); 
 		}
 		/**
 		 * Returns a long localized text string describing this mode.
 		 */
 		public String getLongDisplayText() {
 			if (isUnknownMode)
-                return NLS.bind(CVSMessages.KSubstOption_unknown_long, new String[] { option }); 
-            if (option.equals("-kb")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kb_long;
-            if (option.equals("-kkv")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kkv_long;
-            if (option.equals("-ko")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__ko_long;
-            if (option.equals("-kk")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kk_long;
-            if (option.equals("-kv")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kv_long;
-            if (option.equals("-kkvl")) //$NON-NLS-1$
-                return CVSMessages.KSubstOption__kkvl_long;
-            return NLS.bind(CVSMessages.KSubstOption_unknown_long, new String[] { option }); 
+				return NLS.bind(CVSMessages.KSubstOption_unknown_long, new String[] { option }); 
+			if (option.equals("-kb")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kb_long;
+			if (option.equals("-kkv")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kkv_long;
+			if (option.equals("-ko")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__ko_long;
+			if (option.equals("-kk")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kk_long;
+			if (option.equals("-kv")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kv_long;
+			if (option.equals("-kkvl")) //$NON-NLS-1$
+				return CVSMessages.KSubstOption__kkvl_long;
+			return NLS.bind(CVSMessages.KSubstOption_unknown_long, new String[] { option }); 
 		}
 		/**
 		 * Return the text mode that will be used by default

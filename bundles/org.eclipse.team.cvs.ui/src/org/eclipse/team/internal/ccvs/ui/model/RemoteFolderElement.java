@@ -30,36 +30,36 @@ import org.eclipse.ui.progress.IElementCollector;
 
 public class RemoteFolderElement extends RemoteResourceElement implements IDeferredWorkbenchAdapter {
 
-    /**
-     * Overridden to append the version name to remote folders which
-     * have version tags and are top-level folders.
-     */
-    public String getLabel(Object o) {
-        if (!(o instanceof ICVSRemoteFolder))
-            return null;
-        ICVSRemoteFolder folder = (ICVSRemoteFolder) o;
-        CVSTag tag = folder.getTag();
-        if (tag != null && tag.getType() != CVSTag.HEAD) {
-            if (folder.getRemoteParent() == null) {
-                return NLS.bind(CVSUIMessages.RemoteFolderElement_nameAndTag, new String[] { folder.getName(), tag.getName() }); 
-            }
-        }
-        return folder.getName();
-    }
+	/**
+	 * Overridden to append the version name to remote folders which
+	 * have version tags and are top-level folders.
+	 */
+	public String getLabel(Object o) {
+		if (!(o instanceof ICVSRemoteFolder))
+			return null;
+		ICVSRemoteFolder folder = (ICVSRemoteFolder) o;
+		CVSTag tag = folder.getTag();
+		if (tag != null && tag.getType() != CVSTag.HEAD) {
+			if (folder.getRemoteParent() == null) {
+				return NLS.bind(CVSUIMessages.RemoteFolderElement_nameAndTag, new String[] { folder.getName(), tag.getName() }); 
+			}
+		}
+		return folder.getName();
+	}
 
-    public ImageDescriptor getImageDescriptor(Object object) {
-        if (!(object instanceof ICVSRemoteFolder))
-            return null;
-        ICVSRemoteFolder folder = (ICVSRemoteFolder) object;
-        if (folder.isDefinedModule()) {
-            return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_MODULE);
-        }
-        return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER);
-    }
+	public ImageDescriptor getImageDescriptor(Object object) {
+		if (!(object instanceof ICVSRemoteFolder))
+			return null;
+		ICVSRemoteFolder folder = (ICVSRemoteFolder) object;
+		if (folder.isDefinedModule()) {
+			return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_MODULE);
+		}
+		return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER);
+	}
 
-    public Object[] fetchChildren(Object o, IProgressMonitor monitor) throws TeamException {
-        if (!(o instanceof ICVSRemoteFolder))
-            return new Object[0];
+	public Object[] fetchChildren(Object o, IProgressMonitor monitor) throws TeamException {
+		if (!(o instanceof ICVSRemoteFolder))
+			return new Object[0];
 		try {
 			monitor = Policy.monitorFor(monitor);
 			monitor.beginTask(NLS.bind(
@@ -80,8 +80,8 @@ public class RemoteFolderElement extends RemoteResourceElement implements IDefer
 		}
 	}
 
-    public void fetchDeferredChildren(Object o, IElementCollector collector, IProgressMonitor monitor) {
-    	// If it's not a folder, return an empty array
+	public void fetchDeferredChildren(Object o, IElementCollector collector, IProgressMonitor monitor) {
+		// If it's not a folder, return an empty array
 		if (!(o instanceof ICVSRemoteFolder)) {
 			collector.add(new Object[0], monitor);
 		}
@@ -104,20 +104,20 @@ public class RemoteFolderElement extends RemoteResourceElement implements IDefer
 					folder, collector);
 			operation.run(Policy.subMonitorFor(monitor, 50));
 		} catch (InvocationTargetException e) {
-            handle(collector, e);
+			handle(collector, e);
 		} catch (InterruptedException e) {
 			// Cancelled by the user;
 		} catch (CVSException e) {
 			handle(collector, e);
 		} finally {
-            monitor.done();
-        }
-    }
+			monitor.done();
+		}
+	}
 
-    public ISchedulingRule getRule(Object element) {
-    	ICVSRepositoryLocation location = getRepositoryLocation(element);
-        return new RepositoryLocationSchedulingRule(location); 
-    }
+	public ISchedulingRule getRule(Object element) {
+		ICVSRepositoryLocation location = getRepositoryLocation(element);
+		return new RepositoryLocationSchedulingRule(location); 
+	}
 
 	private ICVSRepositoryLocation getRepositoryLocation(Object o) {
 		if (!(o instanceof ICVSRemoteFolder))
@@ -126,6 +126,6 @@ public class RemoteFolderElement extends RemoteResourceElement implements IDefer
 	}
 
 	public boolean isContainer() {
-        return true;
-    }
+		return true;
+	}
 }

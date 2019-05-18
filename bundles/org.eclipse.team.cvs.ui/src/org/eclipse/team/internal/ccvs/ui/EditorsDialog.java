@@ -54,7 +54,7 @@ public class EditorsDialog extends TrayDialog {
 		editorsView.setInput(editorsInfo);
 		
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IHelpContextIds.EDITORS_DIALOG);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IHelpContextIds.EDITORS_DIALOG);
 		
 		Dialog.applyDialogFont(parent);
 

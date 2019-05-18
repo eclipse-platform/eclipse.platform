@@ -28,63 +28,63 @@ import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
  * Core validator that will load the UI validator only if a prompt is needed
  */
 public class CVSCoreFileModificationValidator extends FileModificationValidator implements ICVSFileModificationValidator {
-    
-    FileModificationValidator uiValidator;
+	
+	FileModificationValidator uiValidator;
 
-    @Override
-    public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
-	    IFile[] unmanagedReadOnlyFiles = getUnmanagedReadOnlyFiles(files);
-	    if (unmanagedReadOnlyFiles.length > 0) {
-	        IStatus status = setWritable(unmanagedReadOnlyFiles);
-	        if (!status.isOK()) {
-	            return status;
-	        }
-	    }
+	@Override
+	public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
+		IFile[] unmanagedReadOnlyFiles = getUnmanagedReadOnlyFiles(files);
+		if (unmanagedReadOnlyFiles.length > 0) {
+			IStatus status = setWritable(unmanagedReadOnlyFiles);
+			if (!status.isOK()) {
+				return status;
+			}
+		}
 		IFile[] readOnlyFiles = getManagedReadOnlyFiles(files);
 		if (readOnlyFiles.length == 0) return Status.OK_STATUS;
 		return edit(readOnlyFiles, context);
-    }
+	}
 
-    @Override
-    public IStatus validateSave(IFile file) {
+	@Override
+	public IStatus validateSave(IFile file) {
 		if (!needsCheckout(file)) {
-		    if (file.isReadOnly()) {
-		        setWritable(new IFile[] { file } );
-		    }
-		    return Status.OK_STATUS;
+			if (file.isReadOnly()) {
+				setWritable(new IFile[] { file } );
+			}
+			return Status.OK_STATUS;
 		}
 		return edit(new IFile[] {file}, (FileModificationValidationContext)null);
-    }
+	}
 
-    /**
-     * Method for editing a set of files. Is overriden by the
-     * UI to prompt the user. Default behavior is to try and load the
-     * UI validator and, failing that, to edit without 
-     * prompting.
-     * @param readOnlyFiles
-     * @param context
-     * @return
-     */
-    protected IStatus edit(IFile[] readOnlyFiles, FileModificationValidationContext context) {
-        FileModificationValidator override = getUIValidator();
-        if (override != null) {
-            return override.validateEdit(readOnlyFiles, context);
-        } else {
-	        performEdit(readOnlyFiles);
-	        return Status.OK_STATUS;
-        }
-    }
+	/**
+	 * Method for editing a set of files. Is overriden by the
+	 * UI to prompt the user. Default behavior is to try and load the
+	 * UI validator and, failing that, to edit without 
+	 * prompting.
+	 * @param readOnlyFiles
+	 * @param context
+	 * @return
+	 */
+	protected IStatus edit(IFile[] readOnlyFiles, FileModificationValidationContext context) {
+		FileModificationValidator override = getUIValidator();
+		if (override != null) {
+			return override.validateEdit(readOnlyFiles, context);
+		} else {
+			performEdit(readOnlyFiles);
+			return Status.OK_STATUS;
+		}
+	}
 
-    private FileModificationValidator getUIValidator() {
-        synchronized(this) {
-	        if (uiValidator == null) {
-	            uiValidator = getPluggedInValidator();
-	        }
-        }
-        return uiValidator;
-    }
-    
-    @Override
+	private FileModificationValidator getUIValidator() {
+		synchronized(this) {
+			if (uiValidator == null) {
+				uiValidator = getPluggedInValidator();
+			}
+		}
+		return uiValidator;
+	}
+	
+	@Override
 	public IStatus validateMoveDelete(IFile[] files, IProgressMonitor monitor) {
 		IFile[] readOnlyFiles = getManagedReadOnlyFiles(files);
 		if (readOnlyFiles.length == 0) return Status.OK_STATUS;
@@ -93,30 +93,30 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 		return Status.OK_STATUS;
 	}
 	
-    /*
-     * Perform the headless edit check in the background.
-     * The user will be notified of any errors that occurred.
-     */
+	/*
+	 * Perform the headless edit check in the background.
+	 * The user will be notified of any errors that occurred.
+	 */
 	protected void performEdit(final IFile[] readOnlyFiles) {
-        setWritable(readOnlyFiles);
-        Job job = new Job(CVSMessages.CVSCoreFileModificationValidator_editJob) {
-            protected IStatus run(IProgressMonitor monitor) {
-                try {
-                    performEdit(readOnlyFiles, monitor);
-                } catch (CVSException e) {
-                    return e.getStatus();
-                }
-                return Status.OK_STATUS;
-            }          
-        };
-        scheduleEditJob(job);
-    }
+		setWritable(readOnlyFiles);
+		Job job = new Job(CVSMessages.CVSCoreFileModificationValidator_editJob) {
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
+					performEdit(readOnlyFiles, monitor);
+				} catch (CVSException e) {
+					return e.getStatus();
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		scheduleEditJob(job);
+	}
 
-    protected void scheduleEditJob(Job job) {
-        job.schedule();
-    }
+	protected void scheduleEditJob(Job job) {
+		job.schedule();
+	}
 
-    protected CVSTeamProvider getProvider(IFile[] files) {
+	protected CVSTeamProvider getProvider(IFile[] files) {
 		CVSTeamProvider provider = (CVSTeamProvider)RepositoryProvider.getProvider(files[0].getProject(), CVSProviderPlugin.getTypeId());
 		return provider;
 	}
@@ -130,7 +130,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 			if (file.isReadOnly()) {
 				ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(file);
 				boolean managed = cvsFile.isManaged();
-                return managed;
+				return managed;
 			}
 		} catch (CVSException e) {
 			// Log the exception and assume we don't need a checkout
@@ -140,21 +140,21 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 	}
 	
 	protected IStatus setWritable(final IFile[] files) {
-        for (int i = 0; i < files.length; i++) {
-        	IFile file = files[i];
-        	ResourceAttributes attributes = file.getResourceAttributes();
-        	if (attributes != null) {
-        		attributes.setReadOnly(false);
-        	}
-        	try {
-        		file.setResourceAttributes(attributes);
-        	} catch (CoreException e) {
-        		return CVSException.wrapException(e).getStatus();
-        	}
-        }
-        return Status.OK_STATUS;
-    }
-    
+		for (int i = 0; i < files.length; i++) {
+			IFile file = files[i];
+			ResourceAttributes attributes = file.getResourceAttributes();
+			if (attributes != null) {
+				attributes.setReadOnly(false);
+			}
+			try {
+				file.setResourceAttributes(attributes);
+			} catch (CoreException e) {
+				return CVSException.wrapException(e).getStatus();
+			}
+		}
+		return Status.OK_STATUS;
+	}
+
 	private IFile[] getManagedReadOnlyFiles(IFile[] files) {
 		List readOnlys = new ArrayList();
 		for (int i = 0; i < files.length; i++) {
@@ -166,7 +166,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 		return (IFile[]) readOnlys.toArray(new IFile[readOnlys.size()]);
 	}
 	
-    protected IFile[] getUnmanagedReadOnlyFiles(IFile[] files) {
+	protected IFile[] getUnmanagedReadOnlyFiles(IFile[] files) {
 		List readOnlys = new ArrayList();
 		for (int i = 0; i < files.length; i++) {
 			IFile iFile = files[i];
@@ -175,8 +175,8 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 			}
 		}
 		return (IFile[]) readOnlys.toArray(new IFile[readOnlys.size()]);
-    }
-    
+	}
+
 	private static FileModificationValidator getPluggedInValidator() {
 		IExtension[] extensions = Platform.getExtensionRegistry().getExtensionPoint(CVSProviderPlugin.ID, CVSProviderPlugin.PT_FILE_MODIFICATION_VALIDATOR).getExtensions();
 		if (extensions.length == 0)
@@ -195,45 +195,45 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 			return null;
 		}
 	}
-    
-    public ISchedulingRule validateEditRule(CVSResourceRuleFactory factory, IResource[] resources) {
-        FileModificationValidator override = getUIValidator();
-        if (override instanceof CVSCoreFileModificationValidator && override != this) {
-            CVSCoreFileModificationValidator ui = (CVSCoreFileModificationValidator) override;
-            return ui.validateEditRule(factory, resources);
-        }
-        return internalValidateEditRule(factory, resources);
-    }
 
-    protected final ISchedulingRule internalValidateEditRule(CVSResourceRuleFactory factory, IResource[] resources) {
-        if (resources.length == 0)
-            return null;
-        //optimize rule for single file
-        if (resources.length == 1)
-            return isReadOnly(resources[0]) ? factory.getParent(resources[0]) : null;
-        //need a lock on the parents of all read-only files
-        HashSet rules = new HashSet();
-        for (int i = 0; i < resources.length; i++)
-            if (isReadOnly(resources[i]))
-                rules.add(factory.getParent(resources[i]));
-        return createSchedulingRule(rules);
-    }
+	public ISchedulingRule validateEditRule(CVSResourceRuleFactory factory, IResource[] resources) {
+		FileModificationValidator override = getUIValidator();
+		if (override instanceof CVSCoreFileModificationValidator && override != this) {
+			CVSCoreFileModificationValidator ui = (CVSCoreFileModificationValidator) override;
+			return ui.validateEditRule(factory, resources);
+		}
+		return internalValidateEditRule(factory, resources);
+	}
 
-    protected ISchedulingRule createSchedulingRule(Set rules) {
-        if (rules.isEmpty())
-            return null;
-        if (rules.size() == 1)
-            return (ISchedulingRule) rules.iterator().next();
-        ISchedulingRule[] ruleArray = (ISchedulingRule[]) rules
-                .toArray(new ISchedulingRule[rules.size()]);
-        return new MultiRule(ruleArray);
-    }
-    
-    protected final boolean isReadOnly(IResource resource) {
-        ResourceAttributes a = resource.getResourceAttributes();
-        if (a != null) {
-            return a.isReadOnly();
-        }
-        return false;
-    }
+	protected final ISchedulingRule internalValidateEditRule(CVSResourceRuleFactory factory, IResource[] resources) {
+		if (resources.length == 0)
+			return null;
+		//optimize rule for single file
+		if (resources.length == 1)
+			return isReadOnly(resources[0]) ? factory.getParent(resources[0]) : null;
+		//need a lock on the parents of all read-only files
+		HashSet rules = new HashSet();
+		for (int i = 0; i < resources.length; i++)
+			if (isReadOnly(resources[i]))
+				rules.add(factory.getParent(resources[i]));
+		return createSchedulingRule(rules);
+	}
+
+	protected ISchedulingRule createSchedulingRule(Set rules) {
+		if (rules.isEmpty())
+			return null;
+		if (rules.size() == 1)
+			return (ISchedulingRule) rules.iterator().next();
+		ISchedulingRule[] ruleArray = (ISchedulingRule[]) rules
+				.toArray(new ISchedulingRule[rules.size()]);
+		return new MultiRule(ruleArray);
+	}
+
+	protected final boolean isReadOnly(IResource resource) {
+		ResourceAttributes a = resource.getResourceAttributes();
+		if (a != null) {
+			return a.isReadOnly();
+		}
+		return false;
+	}
 }

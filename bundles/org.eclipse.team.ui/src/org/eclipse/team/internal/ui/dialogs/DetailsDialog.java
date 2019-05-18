@@ -107,10 +107,10 @@ abstract public class DetailsDialog extends TrayDialog {
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText(title);
-        String helpContextId = getHelpContextId();
-        if (helpContextId != null) {
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, helpContextId);
-        }
+		String helpContextId = getHelpContextId();
+		if (helpContextId != null) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, helpContextId);
+		}
 	}
 
 	@Override
@@ -149,13 +149,13 @@ abstract public class DetailsDialog extends TrayDialog {
 		// create composite
 		Composite composite = (Composite)super.createDialogArea(parent);
 		if (!isMainGrabVertical()) {
-		    composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		}
 
-        String helpContextId = getHelpContextId();
-        if (helpContextId != null) {
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
-        }
+		String helpContextId = getHelpContextId();
+		if (helpContextId != null) {
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
+		}
 
 		// create image
 		String key = getImageKey();
@@ -194,7 +194,7 @@ abstract public class DetailsDialog extends TrayDialog {
 			right.setLayoutData(new GridData(GridData.FILL_BOTH));
 			createMainDialogArea(right);
 		} else {
-		    createMainDialogArea(composite);
+			createMainDialogArea(composite);
 		}
 
 		if(includeErrorMessage()) {
@@ -205,32 +205,32 @@ abstract public class DetailsDialog extends TrayDialog {
 			errorMessageLabel.setForeground(getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
 		}
 
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 		return composite;
 	}
 
-    /**
-     * Return the help context id to be used for the dialog.
-     * This context Id will be registered by this class.
-     * By default, this method returns <code>null</code>.
-     * @return the help context id to be used for the dialog.
-     */
+	/**
+	 * Return the help context id to be used for the dialog.
+	 * This context Id will be registered by this class.
+	 * By default, this method returns <code>null</code>.
+	 * @return the help context id to be used for the dialog.
+	 */
 	protected String getHelpContextId() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
+	/**
 	 * Return whether the main area should grab excess vertical space.
 	 * The default is <code>true</code> but subclasses can override
 	 * in cases where the main is more or less fixed but the details
 	 * needs to grab.
-     * @return whether the main area should grab excess vertical space
-     */
-    protected boolean isMainGrabVertical() {
-        return true;
-    }
+	 * @return whether the main area should grab excess vertical space
+	 */
+	protected boolean isMainGrabVertical() {
+		return true;
+	}
 
-    /**
+	/**
 	 * Creates the dialog's top composite
 	 *
 	 * @param parent the parent composite
@@ -262,7 +262,7 @@ abstract public class DetailsDialog extends TrayDialog {
 			detailsCreated = true;
 			detailsButton.setText(getDetailsButtonLabelHide());
 		}
-        Dialog.applyDialogFont(getContents());
+		Dialog.applyDialogFont(getContents());
 		Point newSize = getContents().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
 		getShell().setSize(new Point(windowSize.x, windowSize.y + (newSize.y - oldSize.y)));

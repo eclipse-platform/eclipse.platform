@@ -37,21 +37,21 @@ public class UpdateWizard extends ResizableWizard {
 	private TagSelectionWizardPage tagSelectionPage;
 	
 	public UpdateWizard(IWorkbenchPart part, ResourceMapping[] mappers) {
-        super("UpdateWizard", CVSUIPlugin.getPlugin().getDialogSettings()); //$NON-NLS-1$
+		super("UpdateWizard", CVSUIPlugin.getPlugin().getDialogSettings()); //$NON-NLS-1$
 		this.part = part;
 		this.mappers = mappers;
 		setWindowTitle(CVSUIMessages.UpdateWizard_title); 
 	}
 	
-    public static void run(IWorkbenchPart part, ResourceMapping[] mappers) {
-        final UpdateWizard wizard = new UpdateWizard(part, mappers);
-        open(part.getSite().getShell(), wizard);
-    }
-    
+	public static void run(IWorkbenchPart part, ResourceMapping[] mappers) {
+		final UpdateWizard wizard = new UpdateWizard(part, mappers);
+		open(part.getSite().getShell(), wizard);
+	}
+	
 	@Override
 	public void addPages() {
 		ImageDescriptor substImage = CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_WIZBAN_CHECKOUT);
-        tagSelectionPage = new TagSelectionWizardPage("tagPage", CVSUIMessages.UpdateWizard_0, substImage, CVSUIMessages.UpdateWizard_1, TagSource.create(mappers), TagSourceWorkbenchAdapter.INCLUDE_ALL_TAGS); //$NON-NLS-1$  
+		tagSelectionPage = new TagSelectionWizardPage("tagPage", CVSUIMessages.UpdateWizard_0, substImage, CVSUIMessages.UpdateWizard_1, TagSource.create(mappers), TagSourceWorkbenchAdapter.INCLUDE_ALL_TAGS); //$NON-NLS-1$  
 		tagSelectionPage.setAllowNoTag(true);
 		tagSelectionPage.setHelpContxtId(IHelpContextIds.UPDATE_TAG_SELETION_PAGE);
 		CVSTag tag = getInitialSelection();
@@ -62,27 +62,27 @@ public class UpdateWizard extends ResizableWizard {
 	}
 	
 	/**
-     * @return
-     */
-    private CVSTag getInitialSelection() {
-        try {
-            for (int i = 0; i < mappers.length; i++) {
-                ResourceMapping mapper = mappers[i];
-                IProject[] projects = mapper.getProjects();
-                for (int k = 0; k < projects.length; k++) {
-                    IProject project = projects[k];
-                    ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
-                    FolderSyncInfo info = folder.getFolderSyncInfo();
-                    if (info != null) {
-                        return info.getTag();
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            CVSUIPlugin.log(e);
-        }
-        return null;
-    }
+	 * @return
+	 */
+	private CVSTag getInitialSelection() {
+		try {
+			for (int i = 0; i < mappers.length; i++) {
+				ResourceMapping mapper = mappers[i];
+				IProject[] projects = mapper.getProjects();
+				for (int k = 0; k < projects.length; k++) {
+					IProject project = projects[k];
+					ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
+					FolderSyncInfo info = folder.getFolderSyncInfo();
+					if (info != null) {
+						return info.getTag();
+					}
+				}
+			}
+		} catch (CoreException e) {
+			CVSUIPlugin.log(e);
+		}
+		return null;
+	}
 
 	@Override
 	public boolean performFinish() {

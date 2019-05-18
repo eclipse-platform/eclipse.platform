@@ -20,7 +20,7 @@ package org.eclipse.team.internal.ccvs.core.client;
  */
 public class Annotate extends AbstractMessageCommand {
 
-    public static final Object FORCE_BINARY_ANNOTATE = new LocalOption("-F"); //$NON-NLS-1$
+	public static final Object FORCE_BINARY_ANNOTATE = new LocalOption("-F"); //$NON-NLS-1$
 
 	protected Annotate() { }
 	

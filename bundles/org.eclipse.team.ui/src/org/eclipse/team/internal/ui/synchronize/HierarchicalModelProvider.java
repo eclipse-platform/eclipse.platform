@@ -83,12 +83,12 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		super(configuration, set);
 	}
 
-    public HierarchicalModelProvider(
-            AbstractSynchronizeModelProvider parentProvider,
-            ISynchronizeModelElement modelRoot,
-            ISynchronizePageConfiguration configuration, SyncInfoSet set) {
-        super(parentProvider, modelRoot, configuration, set);
-    }
+	public HierarchicalModelProvider(
+			AbstractSynchronizeModelProvider parentProvider,
+			ISynchronizeModelElement modelRoot,
+			ISynchronizePageConfiguration configuration, SyncInfoSet set) {
+		super(parentProvider, modelRoot, configuration, set);
+	}
 
 	@Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
@@ -159,24 +159,24 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 	protected void addResources(IResource[] added) {
 		for (int i = 0; i < added.length; i++) {
 			IResource resource = added[i];
-            addResource(resource);
+			addResource(resource);
 		}
 	}
 
-    private void addResource(IResource resource) {
-        ISynchronizeModelElement node = getModelObject(resource);
-        if (node != null) {
-        	// Somehow the node exists. Remove it and read it to ensure
-        	// what is shown matches the contents of the sync set
-        	removeFromViewer(resource);
-        }
-        // Build the sub-tree rooted at this node
-        ISynchronizeModelElement parent = getModelObject(resource.getParent());
-        if (parent != null) {
-        	node = createModelObject(parent, resource);
-        	buildModelObjects(node);
-        }
-    }
+	private void addResource(IResource resource) {
+		ISynchronizeModelElement node = getModelObject(resource);
+		if (node != null) {
+			// Somehow the node exists. Remove it and read it to ensure
+			// what is shown matches the contents of the sync set
+			removeFromViewer(resource);
+		}
+		// Build the sub-tree rooted at this node
+		ISynchronizeModelElement parent = getModelObject(resource.getParent());
+		if (parent != null) {
+			node = createModelObject(parent, resource);
+			buildModelObjects(node);
+		}
+	}
 
 	@Override
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
@@ -222,13 +222,13 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		}
 	}
 
-    @Override
+	@Override
 	protected ISynchronizeModelElement createModelObject(ISynchronizeModelElement parent, SyncInfo info) {
-        return createModelObject(parent, info.getLocal());
-    }
+		return createModelObject(parent, info.getLocal());
+	}
 
-    @Override
+	@Override
 	protected void addResource(SyncInfo info) {
-        addResource(info.getLocal());
-    }
+		addResource(info.getLocal());
+	}
 }

@@ -26,39 +26,39 @@ import org.eclipse.compare.rangedifferencer.IRangeComparator;
  */
 class LineComparator implements IRangeComparator {
 
-    private String[] fLines;
+	private String[] fLines;
 
-    public LineComparator(InputStream is, String encoding) throws IOException {
+	public LineComparator(InputStream is, String encoding) throws IOException {
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
-        String line;
-        ArrayList<String> ar = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            ar.add(line);
-        }
-        // It is the responsibility of the caller to close the stream
-        fLines = ar.toArray(new String[ar.size()]);
-    }
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, encoding));
+		String line;
+		ArrayList<String> ar = new ArrayList<>();
+		while ((line = br.readLine()) != null) {
+			ar.add(line);
+		}
+		// It is the responsibility of the caller to close the stream
+		fLines = ar.toArray(new String[ar.size()]);
+	}
 
-    String getLine(int ix) {
-        return fLines[ix];
-    }
+	String getLine(int ix) {
+		return fLines[ix];
+	}
 
-    @Override
+	@Override
 	public int getRangeCount() {
-        return fLines.length;
-    }
+		return fLines.length;
+	}
 
-    @Override
+	@Override
 	public boolean rangesEqual(int thisIndex, IRangeComparator other,
-            int otherIndex) {
-        String s1 = fLines[thisIndex];
-        String s2 = ((LineComparator) other).fLines[otherIndex];
-        return s1.equals(s2);
-    }
+			int otherIndex) {
+		String s1 = fLines[thisIndex];
+		String s2 = ((LineComparator) other).fLines[otherIndex];
+		return s1.equals(s2);
+	}
 
-    @Override
+	@Override
 	public boolean skipRangeComparison(int length, int maxLength, IRangeComparator other) {
-        return false;
-    }
+		return false;
+	}
 }

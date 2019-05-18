@@ -24,21 +24,21 @@ package org.eclipse.team.core;
  */
 public interface IStringMapping {
 
-    /**
-     * The string part of the mapping
-     *
-     * @return the string
-     *
-     * @since 3.1
-     */
-    String getString();
+	/**
+	 * The string part of the mapping
+	 *
+	 * @return the string
+	 *
+	 * @since 3.1
+	 */
+	String getString();
 
-    /**
-     * The content type associated with the string
-     *
-     * @return the content type
-     *
-     * @since 3.1
-     */
-    int getType();
+	/**
+	 * The content type associated with the string
+	 *
+	 * @return the content type
+	 *
+	 * @since 3.1
+	 */
+	int getType();
 }

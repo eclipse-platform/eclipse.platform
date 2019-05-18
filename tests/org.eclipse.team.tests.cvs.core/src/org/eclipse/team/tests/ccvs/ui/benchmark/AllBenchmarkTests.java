@@ -32,7 +32,7 @@ public class AllBenchmarkTests extends EclipseTest {
 		TestSuite suite = new TestSuite();
 		suite.addTest(WorkflowTests.suite());
 		suite.addTest(SyncTests.suite());
-        // TODO: Enable decorators?
+		// TODO: Enable decorators?
 		return new CVSTestSetup(suite);
 	}
 }

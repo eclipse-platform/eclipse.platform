@@ -203,12 +203,12 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 		internalRefresh(resources, shortTaskName, longTaskName, site, listener);
 	}
 
-    /**
+	/**
 	 * Refresh a participant. The returned status describes the result of the refresh.
-     * @param resources
-     * @param taskName
-     * @param monitor
-     * @return a status
+	 * @param resources
+	 * @param taskName
+	 * @param monitor
+	 * @return a status
 	 */
 	public final IStatus refreshNow(IResource[] resources, String taskName, IProgressMonitor monitor) {
 		Job.getJobManager().cancel(this);
@@ -239,7 +239,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * @since 3.1
 	 */
 	protected final String getShortName() {
-	    return super.getName();
+		return super.getName();
 	}
 
 	/**
@@ -361,10 +361,10 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 			if (refreshSchedule != null) {
 				refreshSchedule.dispose();
 			}
-	        this.refreshSchedule = schedule;
+			this.refreshSchedule = schedule;
 		}
 		// Always fir the event since the schedule may have been changed
-        firePropertyChange(this, AbstractSynchronizeParticipant.P_SCHEDULED, schedule, schedule);
+		firePropertyChange(this, AbstractSynchronizeParticipant.P_SCHEDULED, schedule, schedule);
 	}
 
 	/**
@@ -413,32 +413,32 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * Returns the long task name to describe the behavior of the
 	 * refresh operation to the user. This is typically shown in the status line when this subscriber is refreshed
 	 * in the background.
-     * @param resources
-     * @return the long task name
-     * @since 3.1
-     */
-    protected String getLongTaskName(IResource[] resources) {
-        int resourceCount = 0;
-        if (getResources().length == resources.length) {
-            // Assume that the resources are the same as the roots.
-            // If we are wrong, the message may no mention the specific resources which is OK
-            ISynchronizeScope scope = getScope();
-	        if (scope instanceof ResourceScope) {
-	            resourceCount = scope.getRoots().length;
-	        }
-        } else {
-            resourceCount = resources.length;
-        }
-        if (resourceCount == 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), resources[0].getFullPath().toString() });
-        } else if (resourceCount > 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(resourceCount) });
-        }
-        // A resource count of zero means that it is a non-resource scope so we can print the scope name
-        return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, new String[] { getName() });
-    }
+	 * @param resources
+	 * @return the long task name
+	 * @since 3.1
+	 */
+	protected String getLongTaskName(IResource[] resources) {
+		int resourceCount = 0;
+		if (getResources().length == resources.length) {
+			// Assume that the resources are the same as the roots.
+			// If we are wrong, the message may no mention the specific resources which is OK
+			ISynchronizeScope scope = getScope();
+			if (scope instanceof ResourceScope) {
+				resourceCount = scope.getRoots().length;
+			}
+		} else {
+			resourceCount = resources.length;
+		}
+		if (resourceCount == 1) {
+			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), resources[0].getFullPath().toString() });
+		} else if (resourceCount > 1) {
+			return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(resourceCount) });
+		}
+		// A resource count of zero means that it is a non-resource scope so we can print the scope name
+		return NLS.bind(TeamUIMessages.Participant_synchronizingDetails, new String[] { getName() });
+	}
 
-    /**
+	/**
 	 * This method is invoked before the given configuration is used to
 	 * create the page (see <code>createPage(ISynchronizePageConfiguration)</code>).
 	 * The configuration would have been initialized by
@@ -501,9 +501,9 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 */
 	private void internalRefresh(IResource[] resources, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
 		if (jobName == null)
-		    jobName = getShortTaskName();
+			jobName = getShortTaskName();
 		if (taskName == null)
-		    taskName = getLongTaskName(resources);
+			taskName = getLongTaskName(resources);
 		Job.getJobManager().cancel(this);
 		RefreshParticipantJob job = new RefreshSubscriberParticipantJob(this, jobName, taskName, resources, listener);
 		job.setUser(true);

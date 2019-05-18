@@ -151,7 +151,7 @@ import org.eclipse.core.runtime.*;
 	 * @param length The number of non-empty (i.e non-zero) entries in LCS
 	 * @param comparator The comparator used to generate the LCS
 	 */
-	 private void compactAndShiftLCS(int[] lcsSide, int length,
+	private void compactAndShiftLCS(int[] lcsSide, int length,
 			IRangeComparator comparator) {
 		// If the LCS is empty, just return
 		if (length == 0)

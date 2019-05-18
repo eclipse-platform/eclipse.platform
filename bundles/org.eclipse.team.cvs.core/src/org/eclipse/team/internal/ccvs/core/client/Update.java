@@ -171,9 +171,9 @@ public class Update extends Command {
 				folder = resources[i].getParent();
 			}
 			if (folder==null || (!folder.isCVSFolder() && folder.exists())) {
-                if (folder == null)
-                    folder = (ICVSFolder)resources[i];
-                IStatus status = new CVSStatus(IStatus.ERROR,CVSStatus.ERROR,NLS.bind(CVSMessages.Command_argumentNotManaged, new String[] { folder.getName() }),session.getLocalRoot());
+				if (folder == null)
+					folder = (ICVSFolder)resources[i];
+				IStatus status = new CVSStatus(IStatus.ERROR,CVSStatus.ERROR,NLS.bind(CVSMessages.Command_argumentNotManaged, new String[] { folder.getName() }),session.getLocalRoot());
 				throw new CVSException(status);
 			}
 		}

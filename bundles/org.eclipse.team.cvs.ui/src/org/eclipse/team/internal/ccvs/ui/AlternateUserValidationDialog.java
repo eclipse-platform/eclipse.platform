@@ -144,7 +144,7 @@ public class AlternateUserValidationDialog extends Dialog {
 		data.widthHint = 70;
 		b.setLayoutData(data);
 		b.addListener(SWT.Selection, event -> cancelPressed());
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 		return main;
 	}
 

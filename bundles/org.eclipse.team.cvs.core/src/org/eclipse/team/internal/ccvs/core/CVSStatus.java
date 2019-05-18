@@ -98,46 +98,46 @@ public class CVSStatus extends TeamStatus {
 		return message;
 	}
 
-    /**
-     * Return whether this status is wrapping an internal error.
-     * An internal error is any error for which the wrapped exception 
-     * is not a CVS exception. Check deeply to make sure there isn't
-     * an internal error buried deep down.
-     * @return whether this status is wrapping an internal error
-     */
-    public boolean isInternalError() {
-        Throwable ex = getException();
-        if (ex instanceof CVSException) {
-            CVSException cvsEx = (CVSException) ex;
-            IStatus status = cvsEx.getStatus();
-            return isInternalError(status);
-        }
-        return ex != null;
-    }
+	/**
+	 * Return whether this status is wrapping an internal error.
+	 * An internal error is any error for which the wrapped exception 
+	 * is not a CVS exception. Check deeply to make sure there isn't
+	 * an internal error buried deep down.
+	 * @return whether this status is wrapping an internal error
+	 */
+	public boolean isInternalError() {
+		Throwable ex = getException();
+		if (ex instanceof CVSException) {
+			CVSException cvsEx = (CVSException) ex;
+			IStatus status = cvsEx.getStatus();
+			return isInternalError(status);
+		}
+		return ex != null;
+	}
 
-    /**
-     * Return whether this status is wrapping an internal error.
-     * An internal error is any error for which the wrapped exception 
-     * is not a CVS exception. Check deeply to make sure there isn't
-     * an internal error buried deep down.
-     * @return whether this status is wrapping an internal error
-     */
-    public static boolean isInternalError(IStatus status) {
-        if (status instanceof CVSStatus) {
-            return ((CVSStatus)status).isInternalError();
-        }
-        if (status.isMultiStatus()) {
-            IStatus[] children = status.getChildren();
-            for (int i = 0; i < children.length; i++) {
-                IStatus child = children[i];
-                if (isInternalError(child)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
+	/**
+	 * Return whether this status is wrapping an internal error.
+	 * An internal error is any error for which the wrapped exception 
+	 * is not a CVS exception. Check deeply to make sure there isn't
+	 * an internal error buried deep down.
+	 * @return whether this status is wrapping an internal error
+	 */
+	public static boolean isInternalError(IStatus status) {
+		if (status instanceof CVSStatus) {
+			return ((CVSStatus)status).isInternalError();
+		}
+		if (status.isMultiStatus()) {
+			IStatus[] children = status.getChildren();
+			for (int i = 0; i < children.length; i++) {
+				IStatus child = children[i];
+				if (isInternalError(child)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
+	}
 
 	public ICVSRepositoryLocation getCvsLocation() {
 		if (cvsLocation==null){

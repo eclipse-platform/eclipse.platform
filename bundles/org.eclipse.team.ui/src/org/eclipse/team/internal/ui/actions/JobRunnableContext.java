@@ -43,53 +43,53 @@ public class JobRunnableContext implements ITeamRunnableContext {
 	 * that subclasses can do belongsTo family checking.
 	 */
 	public interface IContextJob {
-	    IRunnableWithProgress getRunnable();
+		IRunnableWithProgress getRunnable();
 	}
 
 	/*
 	 * Class that provides a basic job (i.e. no resource specific interactions)
 	 */
 	private class BasicJob extends Job implements IContextJob {
-        private final IRunnableWithProgress runnable;
-        public BasicJob(String name, IRunnableWithProgress runnable) {
-            super(name);
-            this.runnable = runnable;
-        }
-        @Override
+		private final IRunnableWithProgress runnable;
+		public BasicJob(String name, IRunnableWithProgress runnable) {
+			super(name);
+			this.runnable = runnable;
+		}
+		@Override
 		public IStatus run(IProgressMonitor monitor) {
 			return JobRunnableContext.this.run(runnable, monitor);
 		}
 		@Override
 		public boolean belongsTo(Object family) {
-		    return JobRunnableContext.this.belongsTo(this, family);
+			return JobRunnableContext.this.belongsTo(this, family);
 		}
-        @Override
+		@Override
 		public IRunnableWithProgress getRunnable() {
-            return runnable;
-        }
+			return runnable;
+		}
 	}
 
 	/*
 	 * Class that provides a resource job (i.e. resource specific interactions)
 	 */
 	private class ResourceJob extends WorkspaceJob implements IContextJob {
-        private final IRunnableWithProgress runnable;
-        public ResourceJob(String name, IRunnableWithProgress runnable) {
-            super(name);
-            this.runnable = runnable;
-        }
-        @Override
+		private final IRunnableWithProgress runnable;
+		public ResourceJob(String name, IRunnableWithProgress runnable) {
+			super(name);
+			this.runnable = runnable;
+		}
+		@Override
 		public IStatus runInWorkspace(IProgressMonitor monitor) {
 			return JobRunnableContext.this.run(runnable, monitor);
 		}
 		@Override
 		public boolean belongsTo(Object family) {
-		    return JobRunnableContext.this.belongsTo(this, family);
+			return JobRunnableContext.this.belongsTo(this, family);
 		}
-        @Override
+		@Override
 		public IRunnableWithProgress getRunnable() {
-            return runnable;
-        }
+			return runnable;
+		}
 	}
 	public JobRunnableContext(String jobName, IJobChangeListener listener, IWorkbenchSite site) {
 		this.jobName = jobName;
@@ -122,7 +122,7 @@ public class JobRunnableContext implements ITeamRunnableContext {
 		if (schedulingRule != null) {
 			job.setRule(schedulingRule);
 		}
-	    job.setUser(isUser());
+		job.setUser(isUser());
 	}
 
 	/**
@@ -165,19 +165,19 @@ public class JobRunnableContext implements ITeamRunnableContext {
 	 * Return the completions status for the job.
 	 * By default, <code>Status.OK_STATUS</code>
 	 * is returned.
-     * @return the completions status for the job
-     */
-    protected IStatus getCompletionStatus() {
-        return Status.OK_STATUS;
-    }
+	 * @return the completions status for the job
+	 */
+	protected IStatus getCompletionStatus() {
+		return Status.OK_STATUS;
+	}
 
-    /**
+	/**
 	 * Return whether the job for this context is in the given family.
 	 * By default, <code>false</code> is returned. Subclasses may override.
-     * @param family the job family being queried
-     */
-    protected boolean belongsTo(IContextJob job, Object family) {
-        return false;
-    }
+	 * @param family the job family being queried
+	 */
+	protected boolean belongsTo(IContextJob job, Object family) {
+		return false;
+	}
 
 }

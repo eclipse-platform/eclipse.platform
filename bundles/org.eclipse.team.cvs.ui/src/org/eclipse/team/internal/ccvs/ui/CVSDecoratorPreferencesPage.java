@@ -344,8 +344,8 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 			final Composite composite= SWTUtils.createHFillComposite(parent, SWTUtils.MARGINS_DEFAULT);
 			Dialog.applyDialogFont(composite);
 			
-            SWTUtils.createPreferenceLink((IWorkbenchPreferenceContainer) getContainer(), composite, CVSUIMessages.CVSDecoratorPreferencesPage_36, CVSUIMessages.CVSDecoratorPreferencesPage_37); 
-            
+			SWTUtils.createPreferenceLink((IWorkbenchPreferenceContainer) getContainer(), composite, CVSUIMessages.CVSDecoratorPreferencesPage_36, CVSUIMessages.CVSDecoratorPreferencesPage_37); 
+			
 			fShowDirty= SWTUtils.createCheckBox(composite, CVSUIMessages.CVSDecoratorPreferencesPage_16); 
 			SWTUtils.createLabel(composite, CVSUIMessages.CVSDecoratorPreferencesPage_17); 
 			
@@ -407,7 +407,7 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		private final TreeViewer fViewer; 
 		
 		public Preview(Composite composite) {
-            SWTUtils.createLabel(composite, CVSUIMessages.CVSDecoratorPreferencesPage_39);
+			SWTUtils.createLabel(composite, CVSUIMessages.CVSDecoratorPreferencesPage_39);
 			fImageCache= new LocalResourceManager(JFaceResources.getResources());
 			fViewer = new TreeViewer(composite);
 			fViewer.getControl().setLayoutData(SWTUtils.createHVFillGridData());
@@ -472,7 +472,7 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 
 		@Override
 		public void dispose() {
-            fImageCache.dispose();
+			fImageCache.dispose();
 		}
 
 		@Override
@@ -528,11 +528,11 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 			if (overlay == null)
 				return baseImage;
 			try {
-                return fImageCache.createImage(new DecorationOverlayIcon(baseImage, overlay, IDecoration.BOTTOM_RIGHT));
-            } catch (DeviceResourceException e) {
-                CVSUIPlugin.log(new Status(IStatus.ERROR, CVSUIPlugin.ID, 0, "Error creating decorator image", e)); //$NON-NLS-1$
-            }
-            return null;
+				return fImageCache.createImage(new DecorationOverlayIcon(baseImage, overlay, IDecoration.BOTTOM_RIGHT));
+			} catch (DeviceResourceException e) {
+				CVSUIPlugin.log(new Status(IStatus.ERROR, CVSUIPlugin.ID, 0, "Error creating decorator image", e)); //$NON-NLS-1$
+			}
+			return null;
 		}
 	}
 	
@@ -570,7 +570,7 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		FOLDER_BINDINGS.put(CVSDecoratorConfiguration.REMOTELOCATION_USER, CVSUIMessages.CVSDecoratorPreferencesPage_32);  
 		FOLDER_BINDINGS.put(CVSDecoratorConfiguration.REMOTELOCATION_ROOT, CVSUIMessages.CVSDecoratorPreferencesPage_33);  
 		FOLDER_BINDINGS.put(CVSDecoratorConfiguration.REMOTELOCATION_REPOSITORY, CVSUIMessages.CVSDecoratorPreferencesPage_34);  
-        FOLDER_BINDINGS.put(CVSDecoratorConfiguration.REMOTELOCATION_LABEL, CVSUIMessages.CVSDecoratorPreferencesPage_38);  
+		FOLDER_BINDINGS.put(CVSDecoratorConfiguration.REMOTELOCATION_LABEL, CVSUIMessages.CVSDecoratorPreferencesPage_38);  
 		FOLDER_BINDINGS.put(CVSDecoratorConfiguration.NEW_DIRTY_FLAG, CVSUIMessages.CVSDecoratorPreferencesPage_35); 
 		
 		final PreviewFile project= new PreviewFile("Project", IResource.PROJECT, false, false, false, false, true, null, "v1_0"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -617,7 +617,7 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		fGeneralTab.addObserver(fPreview);
 
 		initializeValues();
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.DECORATORS_PREFERENCE_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.DECORATORS_PREFERENCE_PAGE);
 		Dialog.applyDialogFont(parent);
 		
 		PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(fThemeListener= new ThemeListener(fPreview));
@@ -629,8 +629,8 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 	public void dispose() {
 		if (fThemeListener != null)
 			PlatformUI.getWorkbench().getThemeManager().removePropertyChangeListener(fThemeListener);
-        if (fPreview != null)
-            fPreview.dispose();
+		if (fPreview != null)
+			fPreview.dispose();
 	}
 	
 	/**
@@ -660,10 +660,10 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		fTextTab.performOk(store);
 		fIconTab.performOk(store);
 		fGeneralTab.performOk(store);
-        if (store.needsSaving()) {
-    		CVSUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, CVSUIPlugin.P_DECORATORS_CHANGED, null, null));
-    		CVSUIPlugin.getPlugin().savePluginPreferences();
-        }
+		if (store.needsSaving()) {
+			CVSUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, CVSUIPlugin.P_DECORATORS_CHANGED, null, null));
+			CVSUIPlugin.getPlugin().savePluginPreferences();
+		}
 		return true;
 	}
 

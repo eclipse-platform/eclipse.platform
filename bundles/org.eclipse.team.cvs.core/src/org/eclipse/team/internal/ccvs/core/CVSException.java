@@ -34,14 +34,14 @@ public class CVSException extends TeamException {
 
 	private static final long serialVersionUID = 1L;
 
-    public CVSException(CoreException e) {
-    	super(e);
+	public CVSException(CoreException e) {
+		super(e);
 	}
 
 	public CVSException(String message) {
 		this(new CVSStatus(IStatus.ERROR, message));
 	}
-    
+
 	public CVSException(IStatus status) {
 		super(status);
 	}
@@ -76,7 +76,7 @@ public class CVSException extends TeamException {
 		//TODO: fix the caller to setup the error code
 		return new CVSException(new CVSStatus(IStatus.ERROR, UNABLE, t.getMessage() != null ? t.getMessage() : "", t, (IResource)null)); //$NON-NLS-1$
 	}
-	
+
 	public static CVSException wrapException(CoreException e) {
 		if (e instanceof CVSException) { 
 			return (CVSException)e;

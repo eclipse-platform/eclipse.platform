@@ -99,12 +99,12 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		super(configuration, set);
 	}
 
-    public CompressedFoldersModelProvider(
-            AbstractSynchronizeModelProvider parentProvider,
-            ISynchronizeModelElement modelRoot,
-            ISynchronizePageConfiguration configuration, SyncInfoSet set) {
-        super(parentProvider, modelRoot, configuration, set);
-    }
+	public CompressedFoldersModelProvider(
+			AbstractSynchronizeModelProvider parentProvider,
+			ISynchronizeModelElement modelRoot,
+			ISynchronizePageConfiguration configuration, SyncInfoSet set) {
+		super(parentProvider, modelRoot, configuration, set);
+	}
 
 	@Override
 	public ISynchronizeModelProviderDescriptor getDescriptor() {
@@ -272,27 +272,27 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 				if (resource.getType() == IResource.FILE) {
 					if (isCompressedParentEmpty(resource) && !isOutOfSync(resource.getParent())) {
 						// The parent compressed folder is also empty so remove it
-					    resourcesToRemove.add(resource.getParent());
+						resourcesToRemove.add(resource.getParent());
 					} else {
-					    resourcesToRemove.add(resource);
+						resourcesToRemove.add(resource);
 					}
 				} else {
 					// A folder has been removed (i.e. is in-sync)
 					// but may still contain children
-				    resourcesToRemove.add(resource);
-				    resourcesToAdd.addAll(Arrays.asList(getSyncInfosForFileMembers((IContainer)resource)));
+					resourcesToRemove.add(resource);
+					resourcesToAdd.addAll(Arrays.asList(getSyncInfosForFileMembers((IContainer)resource)));
 				}
 			}
 		}
 		if (!resourcesToRemove.isEmpty()) {
-		    removeFromViewer(resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
+			removeFromViewer(resourcesToRemove.toArray(new IResource[resourcesToRemove.size()]));
 		}
 		if (!resourcesToAdd.isEmpty()) {
-		    addResources(resourcesToAdd.toArray(new SyncInfo[resourcesToAdd.size()]));
+			addResources(resourcesToAdd.toArray(new SyncInfo[resourcesToAdd.size()]));
 		}
 	}
 
-    @Override
+	@Override
 	protected int getLogicalModelDepth(IResource resource) {
 		if(resource.getType() == IResource.PROJECT) {
 			return IResource.DEPTH_INFINITE;
@@ -326,16 +326,16 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 
 	private SyncInfo[] getSyncInfosForFileMembers(IContainer parent) {
 		// Check if the sync set has any file children of the parent
-	    List<SyncInfo> result = new ArrayList<>();
+		List<SyncInfo> result = new ArrayList<>();
 		IResource[] members = getSyncInfoTree().members(parent);
 		for (int i = 0; i < members.length; i++) {
 			SyncInfo info = getSyncInfoTree().getSyncInfo(members[i]);
 			if (info != null) {
-			    result.add(info);
+				result.add(info);
 			}
-		    if (members[i] instanceof IContainer) {
-		    	result.addAll(Arrays.asList(this.getSyncInfosForFileMembers((IContainer)members[i])));
-		    }
+			if (members[i] instanceof IContainer) {
+				result.addAll(Arrays.asList(this.getSyncInfosForFileMembers((IContainer)members[i])));
+			}
 		}
 		return result.toArray(new SyncInfo[result.size()]);
 	}

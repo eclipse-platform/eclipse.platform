@@ -29,8 +29,8 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 	// static private final String EXPLANATION = "Performance decrease caused by changes in the compare framework, see bug 210688";
 
 	public RangeDifferencerTest(String name) {
-        super(name);
-    }
+		super(name);
+	}
 
 	/*
 	 * Creates document with 5000 lines.

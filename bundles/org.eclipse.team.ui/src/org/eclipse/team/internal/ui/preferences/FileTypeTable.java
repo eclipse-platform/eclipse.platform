@@ -42,26 +42,26 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 
 public class FileTypeTable implements ICellModifier, IStructuredContentProvider, ITableLabelProvider {
 
-    private final static int COMBO_INDEX_BINARY= 0;
-    private final static int COMBO_INDEX_TEXT= 1;
-    private final static String [] MODES_TEXT= { TeamUIMessages.FileTypeTable_0, TeamUIMessages.FileTypeTable_1 }; //
+	private final static int COMBO_INDEX_BINARY= 0;
+	private final static int COMBO_INDEX_TEXT= 1;
+	private final static String [] MODES_TEXT= { TeamUIMessages.FileTypeTable_0, TeamUIMessages.FileTypeTable_1 }; //
 
-    private final static int COMBO_INDEX_SAVE= 0;
-    private final static int COMBO_INDEX_DONT_SAVE= 1;
-    private static final String [] SAVE_TEXT= { TeamUIMessages.FileTypeTable_2, TeamUIMessages.FileTypeTable_3 }; //
+	private final static int COMBO_INDEX_SAVE= 0;
+	private final static int COMBO_INDEX_DONT_SAVE= 1;
+	private static final String [] SAVE_TEXT= { TeamUIMessages.FileTypeTable_2, TeamUIMessages.FileTypeTable_3 }; //
 
-    private static final class FileTypeComparator extends ViewerComparator {
+	private static final class FileTypeComparator extends ViewerComparator {
 
-    	public FileTypeComparator() {
-    	}
+		public FileTypeComparator() {
+		}
 
 		private int getCategory(Object element) {
-		    if (element instanceof Extension)
-		        return 0;
-		    if (element instanceof Name) {
-		        return 1;
-		    }
-		    return 2;
+			if (element instanceof Extension)
+				return 0;
+			if (element instanceof Name) {
+				return 1;
+			}
+			return 2;
 		}
 
 		@Override
@@ -74,41 +74,41 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 	}
 
 	public abstract static class Item implements Comparable {
-        public final String name;
-        public boolean save;
-        public int mode;
-        public boolean contributed;
+		public final String name;
+		public boolean save;
+		public int mode;
+		public boolean contributed;
 
-        public Item(String name, boolean contributed) { this.name= name; this.contributed = contributed; save= true; mode= Team.BINARY; }
+		public Item(String name, boolean contributed) { this.name= name; this.contributed = contributed; save= true; mode= Team.BINARY; }
 
 		@Override
 		public int compareTo(Object o) {
 			return name.compareTo(((Item)o).name);
 		}
-    }
+	}
 
-    public static class Extension extends Item {
-        public Extension(String name, boolean contributed) { super(name, contributed); }
-    }
+	public static class Extension extends Item {
+		public Extension(String name, boolean contributed) { super(name, contributed); }
+	}
 
-    public static class Name extends Item {
-        public Name(String name, boolean contributed) { super(name, contributed); }
-    }
+	public static class Name extends Item {
+		public Name(String name, boolean contributed) { super(name, contributed); }
+	}
 
-    private final static int COLUMN_PADDING = 5;
+	private final static int COLUMN_PADDING = 5;
 
-    protected static final String ITEM = "item"; //$NON-NLS-1$
-    protected static final String PROPERTY_MODE= "mode"; //$NON-NLS-1$
-    protected static final String PROPERTY_SAVE= "save"; //$NON-NLS-1$
+	protected static final String ITEM = "item"; //$NON-NLS-1$
+	protected static final String PROPERTY_MODE= "mode"; //$NON-NLS-1$
+	protected static final String PROPERTY_SAVE= "save"; //$NON-NLS-1$
 
-    private final TableViewer fTableViewer;
-    private final List fItems;
-    private final boolean fShowSaveColumn;
+	private final TableViewer fTableViewer;
+	private final List fItems;
+	private final boolean fShowSaveColumn;
 
 	public FileTypeTable(Composite composite, List items, boolean showSaveColumn) {
 
-	    fShowSaveColumn= showSaveColumn;
-	    fItems= items;
+		fShowSaveColumn= showSaveColumn;
+		fItems= items;
 
 
 		/**
@@ -119,7 +119,7 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 
-        final PixelConverter converter= SWTUtils.createDialogPixelConverter(composite);
+		final PixelConverter converter= SWTUtils.createDialogPixelConverter(composite);
 
 		/**
 		 * The 'Extension' column
@@ -133,24 +133,24 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		 */
 		final TableColumn modeColumn = new TableColumn(table, SWT.NONE, 1);
 		int length;
-        try {
-            length = TeamUIMessages.FileTypeTable_5.length();
-            length = Math.max(length, TeamUIMessages.FileTypeTable_0.length());
-            length = Math.max(length, TeamUIMessages.FileTypeTable_1.length());
-        } catch (RuntimeException e) {
-            // There may be an unbound message so just pick a reasonable length
-            length = 15;
-        }
-        modeColumn.setWidth(converter.convertWidthInCharsToPixels(length + COLUMN_PADDING));
+		try {
+			length = TeamUIMessages.FileTypeTable_5.length();
+			length = Math.max(length, TeamUIMessages.FileTypeTable_0.length());
+			length = Math.max(length, TeamUIMessages.FileTypeTable_1.length());
+		} catch (RuntimeException e) {
+			// There may be an unbound message so just pick a reasonable length
+			length = 15;
+		}
+		modeColumn.setWidth(converter.convertWidthInCharsToPixels(length + COLUMN_PADDING));
 		modeColumn.setText(TeamUIMessages.FileTypeTable_5);
 
 		/**
 		 * The 'Save' column
 		 */
 		if (fShowSaveColumn) {
-		    final TableColumn saveColumn = new TableColumn(table, SWT.NONE, 2);
-		    saveColumn.setWidth(converter.convertWidthInCharsToPixels(TeamUIMessages.FileTypeTable_6.length() + COLUMN_PADDING));
-		    saveColumn.setText(TeamUIMessages.FileTypeTable_6);
+			final TableColumn saveColumn = new TableColumn(table, SWT.NONE, 2);
+			saveColumn.setWidth(converter.convertWidthInCharsToPixels(TeamUIMessages.FileTypeTable_6.length() + COLUMN_PADDING));
+			saveColumn.setText(TeamUIMessages.FileTypeTable_6);
 		}
 
 		/**
@@ -170,11 +170,11 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		final CellEditor saveEditor= new ComboBoxCellEditor(table, SAVE_TEXT, SWT.READ_ONLY);
 
 		if (fShowSaveColumn) {
-		    fTableViewer.setCellEditors(new CellEditor[] { null, modeEditor, saveEditor });
-		    fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE, PROPERTY_SAVE });
+			fTableViewer.setCellEditors(new CellEditor[] { null, modeEditor, saveEditor });
+			fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE, PROPERTY_SAVE });
 		} else {
-		    fTableViewer.setCellEditors(new CellEditor [] { null, modeEditor });
-		    fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE });
+			fTableViewer.setCellEditors(new CellEditor [] { null, modeEditor });
+			fTableViewer.setColumnProperties(new String [] { ITEM, PROPERTY_MODE });
 		}
 
 		fTableViewer.setCellModifier(this);
@@ -183,116 +183,116 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 	}
 
 
-    @Override
+	@Override
 	public Object getValue(Object element, String property) {
 
-        final Item item= (Item)element;
+		final Item item= (Item)element;
 
-        if (PROPERTY_MODE.equals(property)) {
-            if (item.mode == Team.BINARY)
-                return Integer.valueOf(COMBO_INDEX_BINARY);
-            if (item.mode == Team.TEXT)
-                return Integer.valueOf(COMBO_INDEX_TEXT);
-        }
+		if (PROPERTY_MODE.equals(property)) {
+			if (item.mode == Team.BINARY)
+				return Integer.valueOf(COMBO_INDEX_BINARY);
+			if (item.mode == Team.TEXT)
+				return Integer.valueOf(COMBO_INDEX_TEXT);
+		}
 
-        if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
-            return Integer.valueOf(item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE);
-        }
-        return null;
-    }
+		if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
+			return Integer.valueOf(item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE);
+		}
+		return null;
+	}
 
-    @Override
+	@Override
 	public boolean canModify(Object element, String property) {
-    	return PROPERTY_MODE.equals(property) || (fShowSaveColumn && PROPERTY_SAVE.equals(property));
-    }
+		return PROPERTY_MODE.equals(property) || (fShowSaveColumn && PROPERTY_SAVE.equals(property));
+	}
 
-    @Override
+	@Override
 	public void modify(Object element, String property, Object value) {
 
-        final IStructuredSelection selection = fTableViewer.getStructuredSelection();
-        final Item item= (Item)selection.getFirstElement();
-        if (item == null)
-            return;
+		final IStructuredSelection selection = fTableViewer.getStructuredSelection();
+		final Item item= (Item)selection.getFirstElement();
+		if (item == null)
+			return;
 
-        final int comboIndex = ((Integer)value).intValue();
+		final int comboIndex = ((Integer)value).intValue();
 
-        if (PROPERTY_MODE.equals(property)) {
-    	    if (comboIndex == COMBO_INDEX_BINARY)
-    	        item.mode= Team.BINARY;
-    	    if (comboIndex == COMBO_INDEX_TEXT)
-    	        item.mode= Team.TEXT;
-        }
+		if (PROPERTY_MODE.equals(property)) {
+			if (comboIndex == COMBO_INDEX_BINARY)
+				item.mode= Team.BINARY;
+			if (comboIndex == COMBO_INDEX_TEXT)
+				item.mode= Team.TEXT;
+		}
 
-        if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
-    	    item.save= COMBO_INDEX_SAVE == comboIndex;
-        }
-        fTableViewer.refresh(item);
-    }
+		if (fShowSaveColumn && PROPERTY_SAVE.equals(property)) {
+			item.save= COMBO_INDEX_SAVE == comboIndex;
+		}
+		fTableViewer.refresh(item);
+	}
 
-    @Override
+	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-    	return null;
-    }
+		return null;
+	}
 
-    @Override
+	@Override
 	public String getColumnText(Object element, int columnIndex) {
 
-        final Item item= (Item) element;
+		final Item item= (Item) element;
 
-        if (columnIndex == 0) {
-            String label = (item instanceof Extension ? "*." : "") + item.name; //$NON-NLS-1$ //$NON-NLS-2$
-            label = TextProcessor.process(label, ".*"); //$NON-NLS-1$
+		if (columnIndex == 0) {
+			String label = (item instanceof Extension ? "*." : "") + item.name; //$NON-NLS-1$ //$NON-NLS-2$
+			label = TextProcessor.process(label, ".*"); //$NON-NLS-1$
 			return label;
-        }
+		}
 
-        if (columnIndex == 1) {
-            if (item.mode == Team.BINARY) {
-                return MODES_TEXT[COMBO_INDEX_BINARY];
-            } else if (item.mode == Team.TEXT) {
-                return MODES_TEXT[COMBO_INDEX_TEXT];
-            }
-        }
+		if (columnIndex == 1) {
+			if (item.mode == Team.BINARY) {
+				return MODES_TEXT[COMBO_INDEX_BINARY];
+			} else if (item.mode == Team.TEXT) {
+				return MODES_TEXT[COMBO_INDEX_TEXT];
+			}
+		}
 
-        if (columnIndex == 2) {
-            if (fShowSaveColumn) return SAVE_TEXT[item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE];
-        }
+		if (columnIndex == 2) {
+			if (fShowSaveColumn) return SAVE_TEXT[item.save ? COMBO_INDEX_SAVE : COMBO_INDEX_DONT_SAVE];
+		}
 
-    	return null;
-    }
+		return null;
+	}
 
-    @Override
+	@Override
 	public void addListener(ILabelProviderListener listener) {}
 
-    @Override
+	@Override
 	public void dispose() {}
 
-    @Override
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
-        return false;
-    }
+		return false;
+	}
 
-    @Override
+	@Override
 	public void removeListener(ILabelProviderListener listener) {}
 
-    @Override
+	@Override
 	public Object[] getElements(Object inputElement) {
-    	return ((Collection)inputElement).toArray();
-    }
+		return ((Collection)inputElement).toArray();
+	}
 
-    @Override
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
-    public IStructuredSelection getSelection() {
-        return fTableViewer.getStructuredSelection();
-    }
+	public IStructuredSelection getSelection() {
+		return fTableViewer.getStructuredSelection();
+	}
 
-    public void setInput(List items) {
-        fItems.clear();
-        fItems.addAll(items);
-        fTableViewer.refresh();
-    }
+	public void setInput(List items) {
+		fItems.clear();
+		fItems.addAll(items);
+		fTableViewer.refresh();
+	}
 
-    public TableViewer getViewer() {
-        return fTableViewer;
-    }
+	public TableViewer getViewer() {
+		return fTableViewer;
+	}
 }

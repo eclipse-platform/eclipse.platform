@@ -175,10 +175,10 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 		try {
 			IPath path = this.parentFolder.getRelativePathFromRootRelativePath(commandRoot, new Path(null, stringPath));
 			if (path.segmentCount() == 1) {
-			    String pathName = path.lastSegment();
-			    if (!pathName.equals(".")) { //$NON-NLS-1$
-			        recordFolder(path.lastSegment());
-			    }
+				String pathName = path.lastSegment();
+				if (!pathName.equals(".")) { //$NON-NLS-1$
+					recordFolder(path.lastSegment());
+				}
 			}
 		} catch (CVSException e) {
 			exceptions.add(e);

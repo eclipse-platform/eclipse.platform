@@ -54,12 +54,12 @@ public class CVSWorkspaceRoot {
 		if ( ! info.equals(folderInfo)) {
 			throw new CVSException(new CVSStatus(IStatus.ERROR, NLS.bind(CVSMessages.CVSProvider_infoMismatch, new String[] { project.getName() })));
 		}
-        
-        // Ensure that the repository location format is supported
-        String root = info.getRoot();
-        // This will try to create a repository location for the root.
-        // If it fails, an exception is thrown.
-        KnownRepositories.getInstance().getRepository(root);
+		
+		// Ensure that the repository location format is supported
+		String root = info.getRoot();
+		// This will try to create a repository location for the root.
+		// If it fails, an exception is thrown.
+		KnownRepositories.getInstance().getRepository(root);
 		
 		// Register the project with Team
 		RepositoryProvider.map(project, CVSProviderPlugin.getTypeId());

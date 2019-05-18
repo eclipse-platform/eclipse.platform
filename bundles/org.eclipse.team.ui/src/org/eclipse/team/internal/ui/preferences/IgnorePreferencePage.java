@@ -100,8 +100,8 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		setButtonLayoutData(addButton);
 		setButtonLayoutData(removeButton);
 
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.IGNORE_PREFERENCE_PAGE);
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
 		return parent;
 	}

@@ -17,11 +17,11 @@ package org.eclipse.team.internal.ccvs.core;
 import org.eclipse.team.internal.ccvs.core.client.Command.LocalOption;
 
  /**
-  * This interface represents a remote folder in a repository. It provides
-  * access to the members (remote files and folders) of a remote folder
-  * 
-  * Clients are not expected to implement this interface.
-  */
+ * This interface represents a remote folder in a repository. It provides
+ * access to the members (remote files and folders) of a remote folder
+ * 
+ * Clients are not expected to implement this interface.
+ */
 public interface ICVSRemoteFolder extends ICVSRemoteResource, ICVSFolder {
 	
 	// This constant is the name of the folder at the root of a repository

@@ -41,53 +41,53 @@ import org.eclipse.ui.activities.WorkbenchActivityHelper;
  * @since 3.0
  */
 public class TeamCapabilityHelper {
-    /**
-     * Mapping from repository provider id to IPluginContribution.  Used for proper
-     * activity mapping of natures.
-     */
-    private Map<String, IPluginContribution> providerIdToPluginId;
+	/**
+	 * Mapping from repository provider id to IPluginContribution.  Used for proper
+	 * activity mapping of natures.
+	 */
+	private Map<String, IPluginContribution> providerIdToPluginId;
 
-    /**
-     * Singleton instance.
-     */
-    private static TeamCapabilityHelper singleton;
+	/**
+	 * Singleton instance.
+	 */
+	private static TeamCapabilityHelper singleton;
 
-    /**
-     * Get the singleton instance of this class.
-     * @return the singleton instance of this class.
-     * @since 3.0
-     */
-    public static TeamCapabilityHelper getInstance() {
-        if (singleton == null) {
-            singleton = new TeamCapabilityHelper();
-        }
-        return singleton;
-    }
+	/**
+	 * Get the singleton instance of this class.
+	 * @return the singleton instance of this class.
+	 * @since 3.0
+	 */
+	public static TeamCapabilityHelper getInstance() {
+		if (singleton == null) {
+			singleton = new TeamCapabilityHelper();
+		}
+		return singleton;
+	}
 
-    /**
-     * Create a new <code>IDEWorkbenchActivityHelper</code> which will listen
-     * for workspace changes and promote activities accordingly.
-     */
-    private TeamCapabilityHelper() {
-    	providerIdToPluginId = new HashMap<String, IPluginContribution>();
-        loadRepositoryProviderIds();
+	/**
+	 * Create a new <code>IDEWorkbenchActivityHelper</code> which will listen
+	 * for workspace changes and promote activities accordingly.
+	 */
+	private TeamCapabilityHelper() {
+		providerIdToPluginId = new HashMap<String, IPluginContribution>();
+		loadRepositoryProviderIds();
 
-        // crawl the initial projects
-        IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
-        for (int i = 0; i < projects.length; i++) {
-            try {
-                processProject(projects[i], workbenchActivitySupport);
-            } catch (CoreException e) {
-                // do nothing
-            }
-        }
-   }
+		// crawl the initial projects
+		IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
+		for (int i = 0; i < projects.length; i++) {
+			try {
+				processProject(projects[i], workbenchActivitySupport);
+			} catch (CoreException e) {
+				// do nothing
+			}
+		}
+	}
 
-   /**
-    * Loads the list of registered provider types
-    */
-   public void loadRepositoryProviderIds() {
+	/**
+	 * Loads the list of registered provider types
+	 */
+	public void loadRepositoryProviderIds() {
 		providerIdToPluginId.clear();
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.team.core.repository"); //$NON-NLS-1$
 		if (point != null) {
@@ -120,25 +120,25 @@ public class TeamCapabilityHelper {
 		}
 	}
 
-    /**
-     * Handle natures for the given project.
-     *
-     * @param project the project
-     * @param workbenchActivitySupport the activity support
-     */
-    protected void processProject(IProject project, IWorkbenchActivitySupport workbenchActivitySupport) throws CoreException {
+	/**
+	 * Handle natures for the given project.
+	 *
+	 * @param project the project
+	 * @param workbenchActivitySupport the activity support
+	 */
+	protected void processProject(IProject project, IWorkbenchActivitySupport workbenchActivitySupport) throws CoreException {
 		if (!project.isOpen())
 			return;
 		String id = getProviderIdFor(project);
 		processRepositoryId(id, workbenchActivitySupport);
 	}
 
-    /**
-     * Helper method that enables the activities for the given repository provider.
-     *
-     * @param id the repository provider id
-     * @param workbenchActivitySupport the activity support
-     */
+	/**
+	 * Helper method that enables the activities for the given repository provider.
+	 *
+	 * @param id the repository provider id
+	 * @param workbenchActivitySupport the activity support
+	 */
 	public void processRepositoryId(String id, IWorkbenchActivitySupport workbenchActivitySupport) {
 		if (id == null)
 			return;
@@ -159,27 +159,27 @@ public class TeamCapabilityHelper {
 			workbenchActivitySupport.setEnabledActivityIds(activities);
 	}
 
-    /**
-     * Returns the provider id for this project or <code>null</code> if no providers are mapped
-     * to this project. Note that this won't instantiate the provider, but instead will simply query
-     * the persistent property
-     *
-     * @param project the project to query.
-     * @return the provider id for this project or <code>null</code> if no providers are mapped
-     * to this project
-     * @throws CoreException
-     */
-    public String getProviderIdFor(IProject project) throws CoreException {
-    	if(project.isAccessible()) {
+	/**
+	 * Returns the provider id for this project or <code>null</code> if no providers are mapped
+	 * to this project. Note that this won't instantiate the provider, but instead will simply query
+	 * the persistent property
+	 *
+	 * @param project the project to query.
+	 * @return the provider id for this project or <code>null</code> if no providers are mapped
+	 * to this project
+	 * @throws CoreException
+	 */
+	public String getProviderIdFor(IProject project) throws CoreException {
+		if(project.isAccessible()) {
 			//First, look for the session property
 			Object prop = project.getSessionProperty(TeamPlugin.PROVIDER_PROP_KEY);
 			if(prop != null && prop instanceof RepositoryProvider) {
-                RepositoryProvider provider = (RepositoryProvider) prop;
-                return provider.getID();
-            }
+				RepositoryProvider provider = (RepositoryProvider) prop;
+				return provider.getID();
+			}
 			//Next, check if it has the ID as a persistent property
 			return project.getPersistentProperty(TeamPlugin.PROVIDER_PROP_KEY);
-    	}
-    	return null;
-    }
+		}
+		return null;
+	}
 }

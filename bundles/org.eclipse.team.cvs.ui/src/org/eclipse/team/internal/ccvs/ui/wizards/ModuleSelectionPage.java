@@ -73,7 +73,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 		Composite composite = createComposite(parent, 2, false);
 
 		if (helpContextId != null)
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
 		
 		Listener listener = event -> updateEnablements(false);
 		
@@ -114,7 +114,7 @@ public class ModuleSelectionPage extends CVSWizardPage {
 			useModuleAndProjectNameButton.setSelection(false);
 		updateEnablements(false);
 		setControl(composite);
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 	
 	private void updateText() {

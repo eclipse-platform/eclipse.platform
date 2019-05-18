@@ -58,17 +58,17 @@ public class FilePatch2 implements IFilePatch2 {
 	 * @param newPath the path of the after state
 	 * @param newDate the timestamp of the after state
 	 */
- 	public FilePatch2(IPath oldPath, long oldDate, IPath newPath, long newDate) {
+	public FilePatch2(IPath oldPath, long oldDate, IPath newPath, long newDate) {
 		this.fOldPath= oldPath;
 		this.oldDate = oldDate;
 		this.fNewPath= newPath;
 		this.newDate = newDate;
 	}
 
- 	/**
- 	 * Return the parent project or <code>null</code> if there isn't one.
- 	 * @return the parent project or <code>null</code>
- 	 */
+	/**
+	 * Return the parent project or <code>null</code> if there isn't one.
+	 * @return the parent project or <code>null</code>
+	 */
 	public DiffProject getProject() {
 		return this.fProject;
 	}

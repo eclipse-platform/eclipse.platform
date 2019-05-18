@@ -66,17 +66,17 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	
 	// format for timings printed to console
 	private static final DateFormat TIME_FORMAT;
-    
-    static {
-        DateFormat format;
-        try {
-            format = new SimpleDateFormat(CVSUIMessages.Console_resultTimeFormat); 
-        } catch (RuntimeException e) {
-            // This can happen if the bundle contains an invalid  format
-            format = new SimpleDateFormat("'(took 'm:ss.SSS')')"); //$NON-NLS-1$
-        }
-        TIME_FORMAT = format;
-    }
+	
+	static {
+		DateFormat format;
+		try {
+			format = new SimpleDateFormat(CVSUIMessages.Console_resultTimeFormat); 
+		} catch (RuntimeException e) {
+			// This can happen if the bundle contains an invalid  format
+			format = new SimpleDateFormat("'(took 'm:ss.SSS')')"); //$NON-NLS-1$
+		}
+		TIME_FORMAT = format;
+	}
 
 	// Indicates whether the console is visible in the Console view
 	private boolean visible = false;
@@ -86,7 +86,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	/*
 	 * Constant used for indenting error status printing
 	 */
-    private static final String NESTING = "   "; //$NON-NLS-1$
+	private static final String NESTING = "   "; //$NON-NLS-1$
 	
 	/**
 	 * Used to notify this console of lifecycle methods <code>init()</code>
@@ -220,7 +220,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		}
 	}
 
-    private void showConsole() {
+	private void showConsole() {
 		show(false);
 	}
 	
@@ -255,7 +255,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 
 	@Override
 	public void commandInvoked(Session session, String line) {
-	    if (!session.isOutputToConsole()) return;
+		if (!session.isOutputToConsole()) return;
 		commandStarted = System.currentTimeMillis();
 		appendLine(ConsoleDocument.COMMAND, CVSUIMessages.Console_preExecutionDelimiter); 
 		appendLine(ConsoleDocument.COMMAND, line);
@@ -263,21 +263,21 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 
 	@Override
 	public void messageLineReceived(Session session, String line, IStatus status) {
-	    if (session.isOutputToConsole()) {
-	        appendLine(ConsoleDocument.MESSAGE, "  " + line); //$NON-NLS-1$
-	    }
+		if (session.isOutputToConsole()) {
+			appendLine(ConsoleDocument.MESSAGE, "  " + line); //$NON-NLS-1$
+		}
 	}
 
 	@Override
 	public void errorLineReceived(Session session, String line, IStatus status) {
-	    if (session.isOutputToConsole()) {
-	        appendLine(ConsoleDocument.ERROR, "  " + line); //$NON-NLS-1$
-	    }
+		if (session.isOutputToConsole()) {
+			appendLine(ConsoleDocument.ERROR, "  " + line); //$NON-NLS-1$
+		}
 	}
 	
 	@Override
 	public void commandCompleted(Session session, IStatus status, Exception exception) {
-	    if (!session.isOutputToConsole()) return;
+		if (!session.isOutputToConsole()) return;
 		long commandRuntime = System.currentTimeMillis() - commandStarted;
 		String time;
 		try {
@@ -288,7 +288,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		}
 		String statusText;
 		if (status != null) {
-		    boolean includeRoot = true;
+			boolean includeRoot = true;
 			if (status.getCode() == CVSStatus.SERVER_ERROR) {
 				statusText = NLS.bind(CVSUIMessages.Console_resultServerError, new String[] { status.getMessage(), time }); 
 				includeRoot = false;
@@ -305,7 +305,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 			}
 			appendLine(ConsoleDocument.COMMAND, statusText);
 			if (exception instanceof CoreException) {
-			    outputStatus(((CoreException)exception).getStatus(), true, 1);
+				outputStatus(((CoreException)exception).getStatus(), true, 1);
 			}
 		} else {
 			statusText = NLS.bind(CVSUIMessages.Console_resultOk, new String[] { time }); 
@@ -316,14 +316,14 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	
 	private void outputStatus(IStatus status, boolean includeParent, int nestingLevel) {
 		if (includeParent && !status.isOK()) {
-            outputStatusMessage(status, nestingLevel);
-            nestingLevel++;
+			outputStatusMessage(status, nestingLevel);
+			nestingLevel++;
 		}
 		
 		// Include a CoreException in the status
 		Throwable t = status.getException();
 		if (t instanceof CoreException) {
-		    outputStatus(((CoreException)t).getStatus(), true, nestingLevel);
+			outputStatus(((CoreException)t).getStatus(), true, nestingLevel);
 		}
 		
 		// Include child status
@@ -333,14 +333,14 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		}
 	}
 	
-    private void outputStatusMessage(IStatus status, int nesting) {
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < nesting; i++) {
-            buffer.append(NESTING);
-        }
-        buffer.append(messageLineForStatus(status));
-        appendLine(ConsoleDocument.COMMAND, buffer.toString());
-    }
+	private void outputStatusMessage(IStatus status, int nesting) {
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < nesting; i++) {
+			buffer.append(NESTING);
+		}
+		buffer.append(messageLineForStatus(status));
+		appendLine(ConsoleDocument.COMMAND, buffer.toString());
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
@@ -407,21 +407,21 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		return new Color(display, rgb);
 	}
 
-    /**
-     * Show the console.
-     * @param showNoMatterWhat ignore preferences if <code>true</code>
-     */
-    public void show(boolean showNoMatterWhat) {
+	/**
+	 * Show the console.
+	 * @param showNoMatterWhat ignore preferences if <code>true</code>
+	 */
+	public void show(boolean showNoMatterWhat) {
 		if(showNoMatterWhat || showOnMessage) {
 			if(!visible)
 				CVSConsoleFactory.showConsole();
 			else
 				consoleManager.showConsoleView(this);
 		}
-    }
-    
-    @Override
+	}
+	
+	@Override
 	public String getHelpContextId() {
-    	return IHelpContextIds.CONSOLE_VIEW;
-    }
+		return IHelpContextIds.CONSOLE_VIEW;
+	}
 }

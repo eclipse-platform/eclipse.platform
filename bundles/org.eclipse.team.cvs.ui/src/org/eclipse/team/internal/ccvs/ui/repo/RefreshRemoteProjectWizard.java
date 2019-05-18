@@ -35,11 +35,11 @@ import org.eclipse.team.internal.ccvs.ui.Policy;
  * Wizard for refreshing the tags for a CVS repository location
  */
 public class RefreshRemoteProjectWizard extends Wizard {
-    
-    // The initial size of this wizard.
-    private final static int INITIAL_WIDTH = 300;
-    private final static int INITIAL_HEIGHT = 350;
-    
+	
+	// The initial size of this wizard.
+	private final static int INITIAL_WIDTH = 300;
+	private final static int INITIAL_HEIGHT = 350;
+	
 	private ICVSRepositoryLocation root;
 	private ICVSRemoteResource[] rootFolders;
 	private RefreshRemoteProjectSelectionPage projectSelectionPage;
@@ -128,27 +128,27 @@ public class RefreshRemoteProjectWizard extends Wizard {
 	/*
 	 * Refresh the tags of the given resources and return those for which no tags were found.
 	 */
-    private ICVSRemoteResource[] internalRefresh(final RepositoryManager manager, final ICVSRemoteResource[] selectedFolders, final boolean recurse, IProgressMonitor monitor) throws InvocationTargetException {
-        List failedFolders = new ArrayList();
-        monitor.beginTask(null, 100 * selectedFolders.length);
-        	for (int i = 0; i < selectedFolders.length; i++) {
-        		try {
+	private ICVSRemoteResource[] internalRefresh(final RepositoryManager manager, final ICVSRemoteResource[] selectedFolders, final boolean recurse, IProgressMonitor monitor) throws InvocationTargetException {
+		List failedFolders = new ArrayList();
+		monitor.beginTask(null, 100 * selectedFolders.length);
+			for (int i = 0; i < selectedFolders.length; i++) {
+				try {
 					ICVSRemoteResource resource = selectedFolders[i];
 					if (resource instanceof ICVSFolder) {
 						CVSTag[] tags = manager.refreshDefinedTags((ICVSFolder)resource, recurse, true /* notify */, Policy.subMonitorFor(monitor, 100));
 						if (tags.length == 0) {
-						    failedFolders.add(resource);
+							failedFolders.add(resource);
 						}
 					}
 				} catch (TeamException e) {
 					CVSUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred while fetching the tags for {0}", selectedFolders[i].getName()), e); //$NON-NLS-1$
 				}
-        	}
-        	return (ICVSRemoteResource[]) failedFolders.toArray(new ICVSRemoteResource[failedFolders.size()]);
-    }
+			}
+			return (ICVSRemoteResource[]) failedFolders.toArray(new ICVSRemoteResource[failedFolders.size()]);
+	}
 
-    private boolean promptForDeepRefresh(final ICVSRemoteResource[] folders) {
-        final boolean[] prompt = new boolean[] { false };
+	private boolean promptForDeepRefresh(final ICVSRemoteResource[] folders) {
+		final boolean[] prompt = new boolean[] { false };
 		getShell().getDisplay().syncExec(() -> {
 			MessageDialog dialog = new MessageDialog(getShell(), CVSUIMessages.RefreshRemoteProjectWizard_0, null,
 					getNoTagsMessage(folders), MessageDialog.INFORMATION, new String[] {
@@ -160,13 +160,13 @@ public class RefreshRemoteProjectWizard extends Wizard {
 			}
 
 		});
-        return prompt[0];
-    }
+		return prompt[0];
+	}
 
-    private String getNoTagsMessage(ICVSRemoteResource[] folders) {
-        if (folders.length == 1) {
-            return NLS.bind(CVSUIMessages.RefreshRemoteProjectWizard_3, new String[] { folders[0].getRepositoryRelativePath() }); 
-        }
-        return NLS.bind(CVSUIMessages.RefreshRemoteProjectWizard_4, new String[] { Integer.toString(folders.length) }); 
-    }
+	private String getNoTagsMessage(ICVSRemoteResource[] folders) {
+		if (folders.length == 1) {
+			return NLS.bind(CVSUIMessages.RefreshRemoteProjectWizard_3, new String[] { folders[0].getRepositoryRelativePath() }); 
+		}
+		return NLS.bind(CVSUIMessages.RefreshRemoteProjectWizard_4, new String[] { Integer.toString(folders.length) }); 
+	}
 }

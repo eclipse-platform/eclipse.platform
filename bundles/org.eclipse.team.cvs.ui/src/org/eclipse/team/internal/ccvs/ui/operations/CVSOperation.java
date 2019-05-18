@@ -176,7 +176,7 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 	 */
 	protected final void handleErrors(IStatus[] errors) throws CVSException {
 		// We are only concerned with reportable errors.
-	    // Others will appear in the console
+		// Others will appear in the console
 		List<IStatus> reportableErrors = new ArrayList<>();
 		for (int i = 0; i < errors.length; i++) {
 			IStatus status = errors[i];
@@ -194,7 +194,7 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 			}
 		}
 		if (!reportableErrors.isEmpty())
-		    asException(reportableErrors.toArray(new IStatus[reportableErrors.size()]));
+			asException(reportableErrors.toArray(new IStatus[reportableErrors.size()]));
 	}
 
 	/**
@@ -203,11 +203,11 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 	 * @param status an error status
 	 * @return whether the status is reportable or should be ignored
 	 */
-    protected boolean isReportableError(IStatus status) {
-        return status.getCode() == CVSStatus.SERVER_ERROR || CVSStatus.isInternalError(status) || status.getCode() == TeamException.UNABLE;
-    }
+	protected boolean isReportableError(IStatus status) {
+		return status.getCode() == CVSStatus.SERVER_ERROR || CVSStatus.isInternalError(status) || status.getCode() == TeamException.UNABLE;
+	}
 
-    protected String getErrorMessage(IStatus[] failures, int totalOperations) {
+	protected String getErrorMessage(IStatus[] failures, int totalOperations) {
 		return NLS.bind(CVSUIMessages.CVSOperation_0, new String[] { String.valueOf(failures.length), String.valueOf(totalOperations) }); 
 	}
 
@@ -298,29 +298,29 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 		return true;
 	}
 	
-    @Override
+	@Override
 	protected boolean isSameFamilyAs(TeamOperation operation) {
-        // Trat all CVS operations as a single family
-        return operation instanceof CVSOperation;
-    }
-    
-    /*
-     * Action to show the console that can be used by subclasses
-     * that wish to link the progress service to the console
-     */
-    protected IAction getShowConsoleAction() {
-        // Show the console as the goto action
-        return new Action(CVSUIMessages.CVSOperation_1) { 
-            @Override
+		// Trat all CVS operations as a single family
+		return operation instanceof CVSOperation;
+	}
+	
+	/*
+	 * Action to show the console that can be used by subclasses
+	 * that wish to link the progress service to the console
+	 */
+	protected IAction getShowConsoleAction() {
+		// Show the console as the goto action
+		return new Action(CVSUIMessages.CVSOperation_1) { 
+			@Override
 			public void run() {
-                CVSOutputConsole console = CVSUIPlugin.getPlugin().getConsole();
-                if (console != null)
-                    console.show(true);
-            }
-            @Override
+				CVSOutputConsole console = CVSUIPlugin.getPlugin().getConsole();
+				if (console != null)
+					console.show(true);
+			}
+			@Override
 			public String getToolTipText() {
-                return CVSUIMessages.CVSOperation_2; 
-            }
-        };
-    }
+				return CVSUIMessages.CVSOperation_2; 
+			}
+		};
+	}
 }

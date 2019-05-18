@@ -81,19 +81,19 @@ public class WorkingSetSelectionArea extends DialogArea {
 			}
 		}
 	};
-    private final IDialogSettings settings;
-    private final Shell shell;
+	private final IDialogSettings settings;
+	private final Shell shell;
 		
 	public WorkingSetSelectionArea(Shell shell, String noWorkingSetText, String workingSetText, IDialogSettings settings) {
 		this.shell = shell;
-        this.noWorkingSetText = noWorkingSetText;
+		this.noWorkingSetText = noWorkingSetText;
 		this.workingSetText = workingSetText;
-        this.settings = settings;
+		this.settings = settings;
 	}
 	
 	@Override
 	public void createArea(Composite parent) {
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 		final Composite composite = createComposite(parent, 2, false);
 		initializeDialogUnits(composite);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

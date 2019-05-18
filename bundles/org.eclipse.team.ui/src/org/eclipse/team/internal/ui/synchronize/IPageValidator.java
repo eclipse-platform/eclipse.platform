@@ -18,8 +18,8 @@ package org.eclipse.team.internal.ui.synchronize;
  * @since 3.0
  */
 public interface IPageValidator {
-    /**
-  	 * If errorMessage in <code>null</code> then the page is complete otherwise
+	/**
+	 * If errorMessage in <code>null</code> then the page is complete otherwise
 	 * the error message indicates that the reason why the page is not complete.
 	 */
 	public void setComplete(String errorMessage);

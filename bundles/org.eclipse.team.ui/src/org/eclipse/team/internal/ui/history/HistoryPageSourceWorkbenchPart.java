@@ -31,7 +31,7 @@ public class HistoryPageSourceWorkbenchPart implements IWorkbenchPart {
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof HistoryPageSourceWorkbenchPart) &&
-		    source.equals(((HistoryPageSourceWorkbenchPart)obj).getSource());
+			source.equals(((HistoryPageSourceWorkbenchPart)obj).getSource());
 	}
 
 	@Override

@@ -87,7 +87,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 		top.setLayoutData(data);
 		setControl(top);
 
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_RESOURCE_SELECTION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_RESOURCE_SELECTION_PAGE);
 
 		Label l = new Label(top, SWT.NULL);
 		l.setText(TeamUIMessages.GlobalRefreshResourceSelectionPage_5);
@@ -379,9 +379,9 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	}
 
 	protected void setWorkspaceSelected(boolean selected) {
-		 workingSetScope.setSelection(!selected);
-		 selectedResourcesScope.setSelection(!selected);
-		 participantScope.setSelection(selected);
+		workingSetScope.setSelection(!selected);
+		selectedResourcesScope.setSelection(!selected);
+		participantScope.setSelection(selected);
 	}
 
 	protected boolean isWorkingSetSelected() {

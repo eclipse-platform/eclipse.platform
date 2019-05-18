@@ -65,24 +65,24 @@ public class SyncAction extends WorkspaceTraversalAction {
 			TeamUI.getSynchronizeManager().addSynchronizeParticipants(new ISynchronizeParticipant[] {participant});
 			participant.run(getTargetPart());
 		} else {
-	        IResource[] resources = getResourcesToCompare(getWorkspaceSubscriber());
+			IResource[] resources = getResourcesToCompare(getWorkspaceSubscriber());
 			if (resources == null || resources.length == 0) return;
 			// First check if there is an existing matching participant
 			WorkspaceSynchronizeParticipant participant = (WorkspaceSynchronizeParticipant)SubscriberParticipant.getMatchingParticipant(WorkspaceSynchronizeParticipant.ID, resources);
 			// If there isn't, create one and add to the manager
 			if (participant == null) {
-                ISynchronizeScope scope;
-                if (includesAllCVSProjects(resources)) {
-                    scope = new WorkspaceScope();
-                } else {
-                    IWorkingSet[] sets = getSelectedWorkingSets();            
-                    if (sets != null) {
-                        scope = new WorkingSetScope(sets);
-                    } else {
-                        scope = new ResourceScope(resources);
-                    }
-                }
-                participant = new WorkspaceSynchronizeParticipant(scope);
+				ISynchronizeScope scope;
+				if (includesAllCVSProjects(resources)) {
+					scope = new WorkspaceScope();
+				} else {
+					IWorkingSet[] sets = getSelectedWorkingSets();            
+					if (sets != null) {
+						scope = new WorkingSetScope(sets);
+					} else {
+						scope = new ResourceScope(resources);
+					}
+				}
+				participant = new WorkspaceSynchronizeParticipant(scope);
 				TeamUI.getSynchronizeManager().addSynchronizeParticipants(new ISynchronizeParticipant[] {participant});
 			}
 			participant.refresh(resources, getTargetPart().getSite());
@@ -98,53 +98,53 @@ public class SyncAction extends WorkspaceTraversalAction {
 	}
 
 	private IWorkingSet[] getSelectedWorkingSets() {
-        ResourceMapping[] mappings = getCVSResourceMappings();
+		ResourceMapping[] mappings = getCVSResourceMappings();
 		List<IWorkingSet> sets = new ArrayList<>();
-        for (int i = 0; i < mappings.length; i++) {
-            ResourceMapping mapping = mappings[i];
-            if (mapping.getModelObject() instanceof IWorkingSet) {
-                IWorkingSet set = (IWorkingSet) mapping.getModelObject();
-                sets.add(set);
-            } else {
-                return null;
-            }
-        }
-        if (sets.isEmpty())
-            return null;
-        return sets.toArray(new IWorkingSet[sets.size()]);
-    }
+		for (int i = 0; i < mappings.length; i++) {
+			ResourceMapping mapping = mappings[i];
+			if (mapping.getModelObject() instanceof IWorkingSet) {
+				IWorkingSet set = (IWorkingSet) mapping.getModelObject();
+				sets.add(set);
+			} else {
+				return null;
+			}
+		}
+		if (sets.isEmpty())
+			return null;
+		return sets.toArray(new IWorkingSet[sets.size()]);
+	}
 
-    private boolean includesAllCVSProjects(IResource[] resources) {
-        // First, make sure all the selected thinsg are projects
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
-            if (resource.getType() != IResource.PROJECT)
-                return false;
-        }
-        IProject[] cvsProjects = getAllCVSProjects();
-        return cvsProjects.length == resources.length;
-    }
+	private boolean includesAllCVSProjects(IResource[] resources) {
+		// First, make sure all the selected thinsg are projects
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			if (resource.getType() != IResource.PROJECT)
+				return false;
+		}
+		IProject[] cvsProjects = getAllCVSProjects();
+		return cvsProjects.length == resources.length;
+	}
 
-    private IProject[] getAllCVSProjects() {
-        IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+	private IProject[] getAllCVSProjects() {
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		Set<IProject> cvsProjects = new HashSet<>();
-        for (int i = 0; i < projects.length; i++) {
-            IProject project = projects[i];
-            if (RepositoryProvider.isShared(project) && RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId()) != null) {
-                cvsProjects.add(project);
-            }
-        }
-        return cvsProjects.toArray(new IProject[cvsProjects.size()]);
-    }
+		for (int i = 0; i < projects.length; i++) {
+			IProject project = projects[i];
+			if (RepositoryProvider.isShared(project) && RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId()) != null) {
+				cvsProjects.add(project);
+			}
+		}
+		return cvsProjects.toArray(new IProject[cvsProjects.size()]);
+	}
 
-    /**
-     * Return whether it is OK to open the selected file directly in a compare editor.
-     * It is not OK to show the single file if the file is part of a logical model element
-     * that spans files.
-     * @param file the file
-     * @return whether it is OK to open the selected file directly in a compare editor
-     */
-    public static boolean isOKToShowSingleFile(IFile file) {
+	/**
+	 * Return whether it is OK to open the selected file directly in a compare editor.
+	 * It is not OK to show the single file if the file is part of a logical model element
+	 * that spans files.
+	 * @param file the file
+	 * @return whether it is OK to open the selected file directly in a compare editor
+	 */
+	public static boolean isOKToShowSingleFile(IFile file) {
 		if (!isShowModelSync())
 			return true;
 		IModelProviderDescriptor[] descriptors = ModelProvider.getModelProviderDescriptors();
@@ -178,8 +178,8 @@ public class SyncAction extends WorkspaceTraversalAction {
 		}
 		return true;
 	}
-    
-    /**
+	
+	/**
 	 * Refresh the subscriber directly and show the resulting synchronization state in a compare editor. If there
 	 * is no difference the user is prompted.
 	 * 

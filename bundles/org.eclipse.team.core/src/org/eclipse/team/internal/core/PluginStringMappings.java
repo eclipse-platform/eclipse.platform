@@ -29,63 +29,63 @@ import org.eclipse.team.core.Team;
  */
 public class PluginStringMappings {
 
-    private final String fExtensionID;
-    private final String fAttributeName;
+	private final String fExtensionID;
+	private final String fAttributeName;
 
-    private SortedMap<String, Integer> fMappings;
+	private SortedMap<String, Integer> fMappings;
 
-    public PluginStringMappings(String extensionID, String stringAttributeName) {
-        fExtensionID= extensionID;
-        fAttributeName= stringAttributeName;
-    }
+	public PluginStringMappings(String extensionID, String stringAttributeName) {
+		fExtensionID= extensionID;
+		fAttributeName= stringAttributeName;
+	}
 
-    /**
-     * Load all the extension patterns contributed by plugins.
-     * @return a map with the patterns
-     */
-    private SortedMap<String, Integer> loadPluginPatterns() {
+	/**
+	 * Load all the extension patterns contributed by plugins.
+	 * @return a map with the patterns
+	 */
+	private SortedMap<String, Integer> loadPluginPatterns() {
 
-        final SortedMap<String, Integer> result= new TreeMap<>();
+		final SortedMap<String, Integer> result= new TreeMap<>();
 
-        final TeamPlugin plugin = TeamPlugin.getPlugin();
-        if (plugin == null)
-            return result;
+		final TeamPlugin plugin = TeamPlugin.getPlugin();
+		if (plugin == null)
+			return result;
 
-        final IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, fExtensionID);//TeamPlugin.FILE_TYPES_EXTENSION);
-        if (extension == null)
-            return result;
+		final IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, fExtensionID);//TeamPlugin.FILE_TYPES_EXTENSION);
+		if (extension == null)
+			return result;
 
-        final IExtension[] extensions =  extension.getExtensions();
+		final IExtension[] extensions =  extension.getExtensions();
 
-        for (int i = 0; i < extensions.length; i++) {
-            IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
+		for (int i = 0; i < extensions.length; i++) {
+			IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
 
-            for (int j = 0; j < configElements.length; j++) {
+			for (int j = 0; j < configElements.length; j++) {
 
-                final String ext = configElements[j].getAttribute(fAttributeName);//"extension");
-                final String type = configElements[j].getAttribute("type"); //$NON-NLS-1$
-                if (ext == null || type == null)
-                    continue;
+				final String ext = configElements[j].getAttribute(fAttributeName);//"extension");
+				final String type = configElements[j].getAttribute("type"); //$NON-NLS-1$
+				if (ext == null || type == null)
+					continue;
 
-                if (type.equals("text")) { //$NON-NLS-1$
-                    result.put(ext, Integer.valueOf(Team.TEXT));
-                } else if (type.equals("binary")) { //$NON-NLS-1$
-                    result.put(ext, Integer.valueOf(Team.BINARY));
-                }
-            }
-        }
-        return result;
-    }
+				if (type.equals("text")) { //$NON-NLS-1$
+					result.put(ext, Integer.valueOf(Team.TEXT));
+				} else if (type.equals("binary")) { //$NON-NLS-1$
+					result.put(ext, Integer.valueOf(Team.BINARY));
+				}
+			}
+		}
+		return result;
+	}
 
-    public Map<String, Integer> referenceMap() {
-        if (fMappings == null) {
-            fMappings= loadPluginPatterns();
-        }
-        return fMappings;
-    }
+	public Map<String, Integer> referenceMap() {
+		if (fMappings == null) {
+			fMappings= loadPluginPatterns();
+		}
+		return fMappings;
+	}
 
-    public int getType(String filename) {
-        final Map<String, Integer> mappings= referenceMap();
-        return mappings.containsKey(filename) ? mappings.get(filename).intValue() : Team.UNKNOWN;
-    }
+	public int getType(String filename) {
+		final Map<String, Integer> mappings= referenceMap();
+		return mappings.containsKey(filename) ? mappings.get(filename).intValue() : Team.UNKNOWN;
+	}
 }

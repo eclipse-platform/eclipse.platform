@@ -34,7 +34,7 @@ public class RLog extends RemoteCommand {
 	 * ==== ==== =================================
 	 * date  	date		date<date (all revisions between date and later)
 	 * tag		tag		tag:tag (all revisions between tag and tag, must be on same branch)
- 	 * branch date 	>date (all revisions of date or later)
+	 * branch date 	>date (all revisions of date or later)
 	 * branch tag		tag: (all revisions from tag to the end of branchs tip)
 	 * 
 	 * Valid for: rlog

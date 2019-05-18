@@ -36,19 +36,19 @@ public class CheckoutAction extends CVSAction {
 	}
 	
 	@Override
-   public boolean isEnabled() {
-	   ICVSRemoteFolder[] folders = getSelectedRemoteFolders();
-	   if (folders.length == 0) return false;
-	   // only enabled when all folders are in the same repository
-	   ICVSRepositoryLocation location = folders[0].getRepository();
-	   for (int i = 1; i < folders.length; i++) {
-		   ICVSRemoteFolder folder = folders[i];
-		   if (!folder.getRepository().equals(location)) {
-			   return false;
-		   }
-	   }
-	   return true;
-   }
+	public boolean isEnabled() {
+		ICVSRemoteFolder[] folders = getSelectedRemoteFolders();
+		if (folders.length == 0) return false;
+		// only enabled when all folders are in the same repository
+		ICVSRepositoryLocation location = folders[0].getRepository();
+		for (int i = 1; i < folders.length; i++) {
+			ICVSRemoteFolder folder = folders[i];
+			if (!folder.getRepository().equals(location)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Get selected CVS remote folders, and add Project Description 

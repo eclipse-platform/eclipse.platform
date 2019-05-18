@@ -376,14 +376,14 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 
 	/*
 	 * FIXME!
- 	 */
+	 */
 	protected void setMessage(String message) {
 		fMessage= message;
 	}
 
 	/*
 	 * FIXME!
- 	 */
+	 */
 	public String getMessage() {
 		return fMessage;
 	}

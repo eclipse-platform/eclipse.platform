@@ -48,7 +48,7 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 	private static final int NODE_UNKNOWN = 2;
 	
 	String toolTipText;
-    private String title;
+	private String title;
 	
 	/**
 	 * Creates a new CVSCompareEditorInput.
@@ -412,52 +412,52 @@ public class CVSCompareEditorInput extends CompareEditorInput {
 			setLabels(cc, event.getStructuredSelection());
 		});
 		((StructuredViewer)viewer).addOpenListener(event -> {
-		    ISelection selection = event.getSelection();
-		    if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
-		        Object o = ((IStructuredSelection)selection).getFirstElement();
-		        if (o instanceof DiffNode) {
-		            updateLabelsFor((DiffNode)o);
-		        }
-		    }
+			ISelection selection = event.getSelection();
+			if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
+				Object o = ((IStructuredSelection)selection).getFirstElement();
+				if (o instanceof DiffNode) {
+					updateLabelsFor((DiffNode)o);
+				}
+			}
 		});
-        ((StructuredViewer)viewer).addDoubleClickListener(event -> {
-		    ISelection selection = event.getSelection();
-		    if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
-		        Object o = ((IStructuredSelection)selection).getFirstElement();
-		        if (o instanceof DiffNode) {
-		            DiffNode diffNode = ((DiffNode)o);
-		            if (diffNode.hasChildren()) {
-		                AbstractTreeViewer atv = ((AbstractTreeViewer)viewer);
-		                atv.setExpandedState(o, !atv.getExpandedState(o));
-		            }
-		        }
-		    }
+		((StructuredViewer)viewer).addDoubleClickListener(event -> {
+			ISelection selection = event.getSelection();
+			if (! selection.isEmpty() && selection instanceof IStructuredSelection) {
+				Object o = ((IStructuredSelection)selection).getFirstElement();
+				if (o instanceof DiffNode) {
+					DiffNode diffNode = ((DiffNode)o);
+					if (diffNode.hasChildren()) {
+						AbstractTreeViewer atv = ((AbstractTreeViewer)viewer);
+						atv.setExpandedState(o, !atv.getExpandedState(o));
+					}
+				}
+			}
 		});
 		return viewer;
 	}
 	
 	/*
 	 * Update the labels for the given DiffNode
-     */
-    protected void updateLabelsFor(DiffNode node) {
-        CompareConfiguration cc = getCompareConfiguration();
-        ITypedElement l = node.getLeft();
-        if (l == null) {
-            cc.setLeftLabel(CVSUIMessages.CVSCompareEditorInput_0); 
-            cc.setLeftImage(null);
-        } else {
-	        cc.setLeftLabel(getLabel(l));
-	        cc.setLeftImage(l.getImage());
-        }
-        ITypedElement r = node.getRight();
-        if (r == null) {
-            cc.setRightLabel(CVSUIMessages.CVSCompareEditorInput_1); 
-            cc.setRightImage(null);
-        } else {
-	        cc.setRightLabel(getLabel(r));
-	        cc.setRightImage(r.getImage());
-        }
-    }
+	 */
+	protected void updateLabelsFor(DiffNode node) {
+		CompareConfiguration cc = getCompareConfiguration();
+		ITypedElement l = node.getLeft();
+		if (l == null) {
+			cc.setLeftLabel(CVSUIMessages.CVSCompareEditorInput_0); 
+			cc.setLeftImage(null);
+		} else {
+			cc.setLeftLabel(getLabel(l));
+			cc.setLeftImage(l.getImage());
+		}
+		ITypedElement r = node.getRight();
+		if (r == null) {
+			cc.setRightLabel(CVSUIMessages.CVSCompareEditorInput_1); 
+			cc.setRightImage(null);
+		} else {
+			cc.setRightLabel(getLabel(r));
+			cc.setRightImage(r.getImage());
+		}
+	}
 
 	@Override
 	public String getToolTipText() {

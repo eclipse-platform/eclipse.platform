@@ -70,22 +70,22 @@ public class CheckoutAsWizard extends Wizard {
 		}
 	}
 	
-    /**
-     * Return the settings used for all CheckoutAsWizard pages
-     */
-    public static IDialogSettings getCheckoutAsDialogSettings() {
-        IDialogSettings workbenchSettings = CVSUIPlugin.getPlugin().getDialogSettings();
-        IDialogSettings section = workbenchSettings.getSection("CheckoutAsWizard");//$NON-NLS-1$
-        if (section == null) {
-            section = workbenchSettings.addNewSection("CheckoutAsWizard");//$NON-NLS-1$
-        }
-        return section;
-    }
-    
+	/**
+	 * Return the settings used for all CheckoutAsWizard pages
+	 */
+	public static IDialogSettings getCheckoutAsDialogSettings() {
+		IDialogSettings workbenchSettings = CVSUIPlugin.getPlugin().getDialogSettings();
+		IDialogSettings section = workbenchSettings.getSection("CheckoutAsWizard");//$NON-NLS-1$
+		if (section == null) {
+			section = workbenchSettings.addNewSection("CheckoutAsWizard");//$NON-NLS-1$
+		}
+		return section;
+	}
+	
 	public CheckoutAsWizard(IWorkbenchPart part, ICVSRemoteFolder[] remoteFolders, boolean allowProjectConfiguration) {
 		this.part = part;
 		this.remoteFolders = remoteFolders;
-        setDialogSettings(getCheckoutAsDialogSettings());
+		setDialogSettings(getCheckoutAsDialogSettings());
 		setWindowTitle(CVSUIMessages.CheckoutAsWizard_title); 
 		this.allowProjectConfiguration = allowProjectConfiguration;
 	}
@@ -105,11 +105,11 @@ public class CheckoutAsWizard extends Wizard {
 		addPage(locationSelectionPage);
 		
 		tagSelectionPage = new TagSelectionWizardPage("tagPage", CVSUIMessages.CheckoutAsWizard_3, substImage, CVSUIMessages.CheckoutAsWizard_4, TagSource.create(remoteFolders), //$NON-NLS-1$    
-		        TagSelectionArea.INCLUDE_HEAD_TAG |
-		        TagSelectionArea.INCLUDE_BRANCHES |
-		        TagSelectionArea.INCLUDE_VERSIONS |
-		        TagSelectionArea.INCLUDE_DATES
-		        );
+				TagSelectionArea.INCLUDE_HEAD_TAG |
+				TagSelectionArea.INCLUDE_BRANCHES |
+				TagSelectionArea.INCLUDE_VERSIONS |
+				TagSelectionArea.INCLUDE_DATES
+				);
 		if (remoteFolders.length > 0) {
 			try {
 				CVSTag selectedTag = remoteFolders[0].getFolderSyncInfo().getTag();

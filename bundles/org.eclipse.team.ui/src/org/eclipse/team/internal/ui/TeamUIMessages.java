@@ -37,7 +37,7 @@ public class TeamUIMessages extends NLS {
 
 	public static String TextPreferencePage_ExtensionNotCompleted;
 
-    public static String CompareInputChangeNotifier_0;
+	public static String CompareInputChangeNotifier_0;
 
 	public static String CompareInputChangeNotifier_1;
 
@@ -279,7 +279,7 @@ public class TeamUIMessages extends NLS {
 	public static String SyncInfoCompareInput_1;
 	public static String SyncInfoCompareInput_2;
 	public static String SyncInfoCompareInput_3;
-    public static String SyncInfoCompareInput_tooltip;
+	public static String SyncInfoCompareInput_tooltip;
 
 	public static String SyncViewerPreferencePage_43;
 	public static String SyncViewerPreferencePage_44;
@@ -528,7 +528,7 @@ public class TeamUIMessages extends NLS {
 	public static String HierarchicalModelProvider_0;
 	public static String UIProjectSetSerializationContext_0;
 	public static String UIProjectSetSerializationContext_1;
-    public static String UIProjectSetSerializationContext_2;
+	public static String UIProjectSetSerializationContext_2;
 	public static String RemoveSynchronizeParticipantAction_0;
 	public static String RemoveSynchronizeParticipantAction_1;
 

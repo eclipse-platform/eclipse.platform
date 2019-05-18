@@ -26,7 +26,7 @@ public class CVSServerException extends CVSException {
 	
 	private static final long serialVersionUID = 1L;
 
-    /**
+	/**
 	 * Return true if the exception from the cvs server is the no tag error, and false
 	 * otherwise.
 	 */

@@ -136,8 +136,8 @@ public class RemoveSynchronizeParticipantAction extends Action {
 	}
 
 	private boolean promptToSave(List dirtyModels) {
-        if (dirtyModels.size() == 1) {
-        	Saveable model = (Saveable) dirtyModels.get(0);
+		if (dirtyModels.size() == 1) {
+			Saveable model = (Saveable) dirtyModels.get(0);
 			String message = NLS.bind(TeamUIMessages.RemoveSynchronizeParticipantAction_2, model.getName());
 			// Show a dialog.
 			String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL };
@@ -159,28 +159,28 @@ public class RemoveSynchronizeParticipantAction extends Action {
 			case 2: // cancel
 				return false;
 			}
-        } else {
-            ListSelectionDialog dlg = new ListSelectionDialog(
-                    view.getSite().getShell(), dirtyModels,
-                    new ArrayContentProvider(),
-                    new WorkbenchPartLabelProvider(), TeamUIMessages.RemoveSynchronizeParticipantAction_4);
-            dlg.setInitialSelections(dirtyModels.toArray());
-            dlg.setTitle(TeamUIMessages.RemoveSynchronizeParticipantAction_5);
+		} else {
+			ListSelectionDialog dlg = new ListSelectionDialog(
+					view.getSite().getShell(), dirtyModels,
+					new ArrayContentProvider(),
+					new WorkbenchPartLabelProvider(), TeamUIMessages.RemoveSynchronizeParticipantAction_4);
+			dlg.setInitialSelections(dirtyModels.toArray());
+			dlg.setTitle(TeamUIMessages.RemoveSynchronizeParticipantAction_5);
 
-        	int result = dlg.open();
-            //Just return false to prevent the operation continuing
-            if (result == IDialogConstants.CANCEL_ID)
-                return false;
+			int result = dlg.open();
+			//Just return false to prevent the operation continuing
+			if (result == IDialogConstants.CANCEL_ID)
+				return false;
 
-            dirtyModels = Arrays.asList(dlg.getResult());
-        }
+			dirtyModels = Arrays.asList(dlg.getResult());
+		}
 
-	    // If the editor list is empty return.
-	    if (dirtyModels.isEmpty())
-	        return true;
+		// If the editor list is empty return.
+		if (dirtyModels.isEmpty())
+			return true;
 
 		// Create save block.
-	    final List finalModels = dirtyModels;
+		final List finalModels = dirtyModels;
 		IRunnableWithProgress progressOp = monitor -> {
 			monitor.beginTask(null, finalModels.size());
 			for (Iterator i = finalModels.iterator(); i.hasNext();) {

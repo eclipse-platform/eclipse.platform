@@ -240,20 +240,20 @@ public class CompareEditor extends EditorPart
 			ErrorDialog.openError(getSite().getShell(), title, msg, s);
 			return;
 		}
-        doSetInput(input);
-        // Need to refresh the contributor (see #67888)
-        refreshActionBarsContributor();
+		doSetInput(input);
+		// Need to refresh the contributor (see #67888)
+		refreshActionBarsContributor();
 	}
 
 	public void refreshActionBarsContributor() {
 		IEditorSite editorSite= getEditorSite();
-        if (editorSite != null) {
-	        IEditorActionBarContributor actionBarContributor= editorSite.getActionBarContributor();
-	        if (actionBarContributor != null) {
-	        		actionBarContributor.setActiveEditor(null);
-	        		actionBarContributor.setActiveEditor(this);
-	        }
-        }
+		if (editorSite != null) {
+			IEditorActionBarContributor actionBarContributor= editorSite.getActionBarContributor();
+			if (actionBarContributor != null) {
+					actionBarContributor.setActiveEditor(null);
+					actionBarContributor.setActiveEditor(this);
+			}
+		}
 	}
 
 	private void doSetInput(IEditorInput input) {
@@ -299,12 +299,12 @@ public class CompareEditor extends EditorPart
 			initializeInBackground(cei, hadPreviousInput);
 		}
 
-        firePropertyChange(IWorkbenchPartConstants.PROP_INPUT);
+		firePropertyChange(IWorkbenchPartConstants.PROP_INPUT);
 
-        // We only need to notify of new Saveables if we are changing inputs
-        if (hadPreviousInput && hasResult) {
-        	registerSaveable();
-        }
+		// We only need to notify of new Saveables if we are changing inputs
+		if (hadPreviousInput && hasResult) {
+			registerSaveable();
+		}
 	}
 
 	private void registerSaveable() {

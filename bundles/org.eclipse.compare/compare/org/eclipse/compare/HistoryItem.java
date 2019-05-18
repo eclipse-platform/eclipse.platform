@@ -78,19 +78,19 @@ public class HistoryItem implements IEncodedStreamContentAccessor, ITypedElement
 
 	@Override
 	public String getCharset() throws CoreException {
-	    String charset= fFileState.getCharset();
-	    if (charset == null) {
-		    IResource resource= getResource();
-		    if (resource instanceof IEncodedStorage)
-		    	charset= ((IEncodedStorage)resource).getCharset();
-	    }
+		String charset= fFileState.getCharset();
+		if (charset == null) {
+			IResource resource= getResource();
+			if (resource instanceof IEncodedStorage)
+				charset= ((IEncodedStorage)resource).getCharset();
+		}
 		return charset;
 	}
 
 	@Override
 	public IResource getResource() {
-	    IPath fullPath= fFileState.getFullPath();
-	    return ResourcesPlugin.getWorkspace().getRoot().findMember(fullPath);
+		IPath fullPath= fFileState.getFullPath();
+		return ResourcesPlugin.getWorkspace().getRoot().findMember(fullPath);
 	}
 }
 

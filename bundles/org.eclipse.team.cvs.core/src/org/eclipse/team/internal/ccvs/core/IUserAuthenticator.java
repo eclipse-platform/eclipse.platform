@@ -129,14 +129,14 @@ public interface IUserAuthenticator {
 	 */
 	public int prompt(ICVSRepositoryLocation location, int promptType, String title, String message, int[] promptResponses, int defaultResponseIndex);
 
-    /**
-     * The host key for the given location has changed.
-     * @param location
-     * @return true if new host key should be accepted
-     */
-    public boolean promptForHostKeyChange(ICVSRepositoryLocation location);
-    
-    /**
+	/**
+	 * The host key for the given location has changed.
+	 * @param location
+	 * @return true if new host key should be accepted
+	 */
+	public boolean promptForHostKeyChange(ICVSRepositoryLocation location);
+	
+	/**
 	 * If the project set contains only partial repository information (some of
 	 * location are unknown) we will display a dialog to associate each project
 	 * set repository with a known repository location or create a new one or at

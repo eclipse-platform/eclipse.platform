@@ -42,28 +42,28 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DefaultUIFileModificationValidator extends DefaultFileModificationValidator {
 
-    public static class FileListDialog extends DetailsDialog {
+	public static class FileListDialog extends DetailsDialog {
 
-        private final IFile[] files;
+		private final IFile[] files;
 
-        public static boolean openQuestion(Shell shell, IFile[] files) {
-            FileListDialog dialog = new FileListDialog(shell, files);
-            int code = dialog.open();
-            return code == OK;
-        }
+		public static boolean openQuestion(Shell shell, IFile[] files) {
+			FileListDialog dialog = new FileListDialog(shell, files);
+			int code = dialog.open();
+			return code == OK;
+		}
 
-        public FileListDialog(Shell parentShell, IFile[] files) {
-            super(parentShell, TeamUIMessages.DefaultUIFileModificationValidator_0);
-            this.files = files;
+		public FileListDialog(Shell parentShell, IFile[] files) {
+			super(parentShell, TeamUIMessages.DefaultUIFileModificationValidator_0);
+			this.files = files;
 			setImageKey(DLG_IMG_WARNING);
-        }
+		}
 
-        @Override
+		@Override
 		protected void createMainDialogArea(Composite parent) {
 			createWrappingLabel(parent, TeamUIMessages.DefaultUIFileModificationValidator_1);
-        }
+		}
 
-        @Override
+		@Override
 		protected Composite createDropDownDialogArea(Composite parent) {
 			Composite composite = createComposite(parent);
 			createWrappingLabel(composite, TeamUIMessages.DefaultUIFileModificationValidator_2);
@@ -78,65 +78,65 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 				fileList.add(files[i].getFullPath().toString());
 			}
 			return composite;
-        }
+		}
 
-        @Override
+		@Override
 		protected void updateEnablements() {
-            // Nothing to do
-        }
+			// Nothing to do
+		}
 
-        @Override
+		@Override
 		protected boolean includeCancelButton() {
-            return false;
-        }
+			return false;
+		}
 
-        @Override
+		@Override
 		protected boolean includeOkButton() {
-            return false;
-        }
+			return false;
+		}
 
-        @Override
+		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
-            createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
-            createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
-            super.createButtonsForButtonBar(parent);
-        }
+			createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL, true);
+			createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL, true);
+			super.createButtonsForButtonBar(parent);
+		}
 
-        @Override
+		@Override
 		protected void buttonPressed(int id) {
-            if (IDialogConstants.YES_ID == id) {
-                okPressed();
-            } else if (IDialogConstants.NO_ID == id) {
-                cancelPressed();
-            } else {
-                super.buttonPressed(id);
-            }
-        }
-    }
+			if (IDialogConstants.YES_ID == id) {
+				okPressed();
+			} else if (IDialogConstants.NO_ID == id) {
+				cancelPressed();
+			} else {
+				super.buttonPressed(id);
+			}
+		}
+	}
 
-    @Override
+	@Override
 	public IStatus validateEdit(final IFile[] allFiles, FileModificationValidationContext context) {
-    	final IFile[] readOnlyFiles = getReadOnlyFiles(allFiles);
-        if (readOnlyFiles.length > 0 && context != null) {
-            final Shell shell = getShell(context);
-            final boolean[] ok = new boolean[] { false };
-            if (readOnlyFiles.length == 1) {
-                syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
-            } else {
-                syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
-            }
-            if (ok[0]) {
-                setWritable(readOnlyFiles);
-            };
-        } else if (readOnlyFiles.length > 0 && context == null) {
-        	if (isMakeWrittableWhenContextNotProvided()) {
-        		setWritable(readOnlyFiles);
-        	}
-        }
-        return getStatus(readOnlyFiles);
-    }
+		final IFile[] readOnlyFiles = getReadOnlyFiles(allFiles);
+		if (readOnlyFiles.length > 0 && context != null) {
+			final Shell shell = getShell(context);
+			final boolean[] ok = new boolean[] { false };
+			if (readOnlyFiles.length == 1) {
+				syncExec(() -> ok[0] = MessageDialog.openQuestion(shell, TeamUIMessages.DefaultUIFileModificationValidator_3, NLS.bind(TeamUIMessages.DefaultUIFileModificationValidator_4, new String[] { readOnlyFiles[0].getFullPath().toString() })));
+			} else {
+				syncExec(() -> ok[0] = FileListDialog.openQuestion(shell, readOnlyFiles));
+			}
+			if (ok[0]) {
+				setWritable(readOnlyFiles);
+			};
+		} else if (readOnlyFiles.length > 0 && context == null) {
+			if (isMakeWrittableWhenContextNotProvided()) {
+				setWritable(readOnlyFiles);
+			}
+		}
+		return getStatus(readOnlyFiles);
+	}
 
-    private Shell getShell(FileModificationValidationContext context) {
+	private Shell getShell(FileModificationValidationContext context) {
 		if (context.getShell() != null)
 			return (Shell)context.getShell();
 		IWorkbench workbench = PlatformUI.getWorkbench();
@@ -147,21 +147,21 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 		return null;
 	}
 
-    private static void syncExec(Runnable runnable) {
+	private static void syncExec(Runnable runnable) {
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		display.syncExec(runnable);
 	}
 
 	@Override
 	public IStatus validateSave(IFile file) {
-    	if (file.isReadOnly() && isMakeWrittableWhenContextNotProvided()) {
-    		IFile[] readOnlyFiles = new IFile[] { file };
-    		setWritable(readOnlyFiles);
-    		return getStatus(readOnlyFiles);
-    	} else {
-    		return getDefaultStatus(file);
-    	}
-    }
+		if (file.isReadOnly() && isMakeWrittableWhenContextNotProvided()) {
+			IFile[] readOnlyFiles = new IFile[] { file };
+			setWritable(readOnlyFiles);
+			return getStatus(readOnlyFiles);
+		} else {
+			return getDefaultStatus(file);
+		}
+	}
 
 	private boolean isMakeWrittableWhenContextNotProvided() {
 		return TeamUIPlugin.getPlugin().getPreferenceStore().getBoolean(IPreferenceIds.MAKE_FILE_WRITTABLE_IF_CONTEXT_MISSING);
@@ -179,18 +179,18 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 	}
 
 	protected IStatus setWritable(final IFile[] files) {
-        for (int i = 0; i < files.length; i++) {
-        	IFile file = files[i];
-        	ResourceAttributes attributes = file.getResourceAttributes();
-        	if (attributes != null) {
-        		attributes.setReadOnly(false);
-        	}
-        	try {
-        		file.setResourceAttributes(attributes);
-        	} catch (CoreException e) {
-        		return e.getStatus();
-        	}
-        }
-        return Status.OK_STATUS;
-    }
+		for (int i = 0; i < files.length; i++) {
+			IFile file = files[i];
+			ResourceAttributes attributes = file.getResourceAttributes();
+			if (attributes != null) {
+				attributes.setReadOnly(false);
+			}
+			try {
+				file.setResourceAttributes(attributes);
+			} catch (CoreException e) {
+				return e.getStatus();
+			}
+		}
+		return Status.OK_STATUS;
+	}
 }

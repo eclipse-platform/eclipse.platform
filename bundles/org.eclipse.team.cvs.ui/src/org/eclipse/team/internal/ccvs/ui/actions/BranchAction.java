@@ -32,30 +32,30 @@ public class BranchAction extends WorkspaceTraversalAction {
 	@Override
 	public void execute(IAction action) throws InvocationTargetException, InterruptedException {
 		ResourceMapping[] resourceMappings = getCVSResourceMappings();
-        if (resourceMappings == null || resourceMappings.length == 0) {
-            // Could be a sync element tat is selected
-            IResource[] resources = getSelectedResources();
-            resourceMappings = getResourceMappings(resources);
-        }
-        if (resourceMappings == null || resourceMappings.length == 0) {
-            // Nothing is select so just return
-            return;
-        }
-        new BranchOperation(getTargetPart(), resourceMappings).run();
+		if (resourceMappings == null || resourceMappings.length == 0) {
+			// Could be a sync element tat is selected
+			IResource[] resources = getSelectedResources();
+			resourceMappings = getResourceMappings(resources);
+		}
+		if (resourceMappings == null || resourceMappings.length == 0) {
+			// Nothing is select so just return
+			return;
+		}
+		new BranchOperation(getTargetPart(), resourceMappings).run();
 	}
 	
 	private ResourceMapping[] getResourceMappings(IResource[] resources) {
 		List<ResourceMapping> mappings = new ArrayList<>();
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
-            Object o = getAdapter(resource, ResourceMapping.class);
-            if (o instanceof ResourceMapping) {
-                ResourceMapping mapping = (ResourceMapping) o;
-                mappings.add(mapping);
-            }
-        }
-        return mappings.toArray(new ResourceMapping[mappings.size()]);
-    }
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			Object o = getAdapter(resource, ResourceMapping.class);
+			if (o instanceof ResourceMapping) {
+				ResourceMapping mapping = (ResourceMapping) o;
+				mappings.add(mapping);
+			}
+		}
+		return mappings.toArray(new ResourceMapping[mappings.size()]);
+	}
 
 	@Override
 	public String getId() {

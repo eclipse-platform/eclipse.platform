@@ -44,11 +44,11 @@ public class ChangeSetModelSorter extends ViewerSorter {
 
 	protected int classComparison(Object element) {
 		if (element instanceof ChangeSetDiffNode) {
-		    ChangeSet set = ((ChangeSetDiffNode)element).getSet();
-		    if (set instanceof ActiveChangeSet) {
-		        return 0;
-		    }
-		    return 1;
+			ChangeSet set = ((ChangeSetDiffNode)element).getSet();
+			if (set instanceof ActiveChangeSet) {
+				return 0;
+			}
+			return 1;
 		}
 		return 2;
 	}
@@ -75,14 +75,14 @@ public class ChangeSetModelSorter extends ViewerSorter {
 		//if one or both objects are not resources, returned a comparison
 		//based on class.
 		if (o1 instanceof  ChangeSetDiffNode && o2 instanceof ChangeSetDiffNode) {
-		    ChangeSet s1 = ((ChangeSetDiffNode) o1).getSet();
-		    ChangeSet s2 = ((ChangeSetDiffNode) o2).getSet();
-		    if (s1 instanceof ActiveChangeSet && s2 instanceof ActiveChangeSet) {
-		        return compareNames(((ActiveChangeSet)s1).getTitle(), ((ActiveChangeSet)s2).getTitle());
-		    }
-		    if (s1 instanceof CheckedInChangeSet && s2 instanceof CheckedInChangeSet) {
-		        CheckedInChangeSet r1 = (CheckedInChangeSet)s1;
-		        CheckedInChangeSet r2 = (CheckedInChangeSet)s2;
+			ChangeSet s1 = ((ChangeSetDiffNode) o1).getSet();
+			ChangeSet s2 = ((ChangeSetDiffNode) o2).getSet();
+			if (s1 instanceof ActiveChangeSet && s2 instanceof ActiveChangeSet) {
+				return compareNames(((ActiveChangeSet)s1).getTitle(), ((ActiveChangeSet)s2).getTitle());
+			}
+			if (s1 instanceof CheckedInChangeSet && s2 instanceof CheckedInChangeSet) {
+				CheckedInChangeSet r1 = (CheckedInChangeSet)s1;
+				CheckedInChangeSet r2 = (CheckedInChangeSet)s2;
 				if (commentCriteria == DATE)
 					return compareDates(r1.getDate(), r2.getDate());
 				else if (commentCriteria == COMMENT)
@@ -91,25 +91,25 @@ public class ChangeSetModelSorter extends ViewerSorter {
 					return compareNames(r1.getAuthor(), r2.getAuthor());
 				else
 					return 0;
-		    }
-		    if (s1 instanceof ActiveChangeSet) {
-		        return -1;
-		    } else if (s2 instanceof ActiveChangeSet) {
-		        return 1;
-		    }
-		    if (s1 instanceof CheckedInChangeSet) {
-		        return -1;
-		    } else if (s2 instanceof CheckedInChangeSet) {
-		        return 1;
-		    }
+			}
+			if (s1 instanceof ActiveChangeSet) {
+				return -1;
+			} else if (s2 instanceof ActiveChangeSet) {
+				return 1;
+			}
+			if (s1 instanceof CheckedInChangeSet) {
+				return -1;
+			} else if (s2 instanceof CheckedInChangeSet) {
+				return 1;
+			}
 		}
 
 		if (o1 instanceof ISynchronizeModelElement && o2 instanceof ISynchronizeModelElement) {
 			ViewerSorter embeddedSorter = provider.getEmbeddedSorter();
 			if (embeddedSorter != null) {
-			    return embeddedSorter.compare(viewer, o1, o2);
+				return embeddedSorter.compare(viewer, o1, o2);
 			} else {
-			    return compareNames(((ISynchronizeModelElement)o1).getName(), ((ISynchronizeModelElement)o2).getName());
+				return compareNames(((ISynchronizeModelElement)o1).getName(), ((ISynchronizeModelElement)o2).getName());
 			}
 		} else if (o1 instanceof ISynchronizeModelElement)
 			return 1;

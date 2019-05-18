@@ -83,9 +83,9 @@ public class FuzzFactorDialog extends Dialog {
 		Button guessButton = new Button(composite, SWT.NONE);
 		guessButton.setText(TeamUIMessages.FuzzFactorDialog_guess);
 		data = new GridData();
-        int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-        Point minSize = guessButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-        data.widthHint = Math.max(widthHint, minSize.x);
+		int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		Point minSize = guessButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+		data.widthHint = Math.max(widthHint, minSize.x);
 		guessButton.setLayoutData(data);
 		guessButton.addSelectionListener(new SelectionAdapter() {
 			@Override

@@ -61,10 +61,10 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 	 * changes in the context for the model provider of this merger.
 	 * By default, return a rule that covers all the projects for the mappings
 	 * that belong to the model provider of this merger.
-     * @param context the context that contains the changes to be merged
-     * @return the scheduling rule required by this merger to merge all
-     * the changes in the given context belonging to the merger's
-     * model provider.
+	 * @param context the context that contains the changes to be merged
+	 * @return the scheduling rule required by this merger to merge all
+	 * the changes in the given context belonging to the merger's
+	 * model provider.
 	 * @see org.eclipse.team.core.mapping.IResourceMappingMerger#getMergeRule(org.eclipse.team.core.mapping.IMergeContext)
 	 */
 	@Override

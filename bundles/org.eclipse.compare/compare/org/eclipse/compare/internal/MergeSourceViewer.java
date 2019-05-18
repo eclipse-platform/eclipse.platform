@@ -307,7 +307,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 				MergeSourceViewer.this.getSourceViewer().setSelectedRange(selectionStart, selectionLength);
 
-				 markInNavigationHistory();
+				markInNavigationHistory();
 			}
 			widget.setRedraw(true);
 		}

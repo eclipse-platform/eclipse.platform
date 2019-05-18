@@ -29,13 +29,13 @@ import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
  */
 public interface ISynchronizeModelProvider {
 
-    /**
-     * Property constant used to indicate that the viewer sorter has changed.
-     * Property change notifications for the viewer sorter change do not include
-     * the old and new viewer sorter. Instead, clients should re-obtain the sorter
-     * from the provider.
-     */
-    public static final String P_VIEWER_SORTER = TeamUIPlugin.ID  + ".P_VIEWER_SORTER"; //$NON-NLS-1$
+	/**
+	 * Property constant used to indicate that the viewer sorter has changed.
+	 * Property change notifications for the viewer sorter change do not include
+	 * the old and new viewer sorter. Instead, clients should re-obtain the sorter
+	 * from the provider.
+	 */
+	public static final String P_VIEWER_SORTER = TeamUIPlugin.ID  + ".P_VIEWER_SORTER"; //$NON-NLS-1$
 
 	/**
 	 * Returns the sync set this model provider is showing.

@@ -171,8 +171,8 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
 				TeamPlugin.log(IStatus.ERROR, "Could not flag meta-files as team-private for " + cvsDir.getFullPath(), e); //$NON-NLS-1$
 			}
 		}
-        if (CVSProviderPlugin.getPlugin().isAutoshareOnImport())
-            getAutoShareJob().share(project);
+		if (CVSProviderPlugin.getPlugin().isAutoshareOnImport())
+			getAutoShareJob().share(project);
 	}
 	
 	@Override

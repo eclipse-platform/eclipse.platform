@@ -23,7 +23,7 @@ import org.eclipse.team.internal.ccvs.ui.IHelpContextIds;
 import org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation;
 
 public class ReplaceWithRemoteAction extends WorkspaceTraversalAction {
-    
+	
 	@Override
 	public void execute(IAction action)  throws InvocationTargetException, InterruptedException {
 		

@@ -86,7 +86,7 @@ public class RepositorySelectionPage extends CVSWizardPage {
 	public void createControl(Composite parent) {
 		Composite composite = createComposite(parent, 1, false);
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARING_SELECT_REPOSITORY_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.SHARING_SELECT_REPOSITORY_PAGE);
 		if (extendedDescription == null) {
 			extendedDescription = CVSUIMessages.RepositorySelectionPage_description; 
 		}
@@ -103,39 +103,39 @@ public class RepositorySelectionPage extends CVSWizardPage {
 					traverseRepositories(e.character);
 				}
 			}
-        });
+		});
 		
 		table = createTable(composite, 1);
 		table.setContentProvider(new WorkbenchContentProvider());
 		table.setLabelProvider(new DecoratingRepoLabelProvider()/*WorkbenchLabelProvider()*/);
 		table.setComparator(new RepositoryComparator());
-        table.addDoubleClickListener(event -> getContainer().showPage(getNextPage()));
-        table.getTable().addKeyListener(new KeyAdapter() {
+		table.addDoubleClickListener(event -> getContainer().showPage(getNextPage()));
+		table.getTable().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				traverseRepositories(e.character);
 			}
-        });
+		});
 
 		setControl(composite);
 
 		initializeValues();
-        Dialog.applyDialogFont(parent);
-        
-        table.addSelectionChangedListener(event -> {
-		    result = (ICVSRepositoryLocation)table.getStructuredSelection().getFirstElement();
-		    setPageComplete(true);
+		Dialog.applyDialogFont(parent);
+		
+		table.addSelectionChangedListener(event -> {
+			result = (ICVSRepositoryLocation)table.getStructuredSelection().getFirstElement();
+			setPageComplete(true);
 		});
-        
-        useExistingRepo.addListener(SWT.Selection, event -> {
-		    if (useNewRepo.getSelection()) {
-		        table.getTable().setEnabled(false);
-		        result = null;
-		    } else {
-		        table.getTable().setEnabled(true);
-		        result = (ICVSRepositoryLocation)table.getStructuredSelection().getFirstElement();
-		    }
-		    setPageComplete(true);
+		
+		useExistingRepo.addListener(SWT.Selection, event -> {
+			if (useNewRepo.getSelection()) {
+				table.getTable().setEnabled(false);
+				result = null;
+			} else {
+				table.getTable().setEnabled(true);
+				result = (ICVSRepositoryLocation)table.getStructuredSelection().getFirstElement();
+			}
+			setPageComplete(true);
 		});
 	}
 	/**
@@ -147,16 +147,16 @@ public class RepositorySelectionPage extends CVSWizardPage {
 		table.setInput(input);
 		if (locations.length == 0) {
 			useNewRepo.setSelection(true);
-            useExistingRepo.setSelection(false);
-            table.getTable().setEnabled(false);
+			useExistingRepo.setSelection(false);
+			table.getTable().setEnabled(false);
 		} else {
-            useNewRepo.setSelection(false);
+			useNewRepo.setSelection(false);
 			useExistingRepo.setSelection(true);
-            table.getTable().setEnabled(true);
-            result = locations[0];
+			table.getTable().setEnabled(true);
+			result = locations[0];
 			table.setSelection(new StructuredSelection(result));
 		}
-        setPageComplete(true);
+		setPageComplete(true);
 	}
 	
 	public ICVSRepositoryLocation getLocation() {

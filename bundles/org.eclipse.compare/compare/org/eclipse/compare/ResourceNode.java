@@ -121,7 +121,7 @@ public class ResourceNode extends BufferedContent
 
 	/**
 	 * Returns the hash code of the name.
-     * @return a hash code value for this object.
+	 * @return a hash code value for this object.
 	 */
 	@Override
 	public int hashCode() {

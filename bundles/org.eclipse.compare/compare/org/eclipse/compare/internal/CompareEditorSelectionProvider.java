@@ -45,17 +45,17 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 			doSelectionChanged(event);
 		}
 
-	    @Override
+		@Override
 		public void focusGained(FocusEvent e) {
-	    	// expecting a StyledText widget here
-	    	doFocusChanged(e.widget);
-	    }
+			// expecting a StyledText widget here
+			doFocusChanged(e.widget);
+		}
 
-	    @Override
+		@Override
 		public void focusLost(FocusEvent e) {
-	    	// do not reset due to focus behavior on GTK
-	    	//fViewerInFocus= null;
-	    }
+			// do not reset due to focus behavior on GTK
+			//fViewerInFocus= null;
+		}
 	}
 
 	private class InternalPostSelectionListener implements ISelectionChangedListener {

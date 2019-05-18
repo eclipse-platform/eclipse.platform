@@ -58,7 +58,7 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 			throws CVSException {
 			
 			if (mFile instanceof RemoteFile) {
-			    try {
+				try {
 					((RemoteFile)mFile).aboutToReceiveContents(entryLine.getBytes());
 					super.receiveTargetFile(
 						session,
@@ -69,9 +69,9 @@ public class CheckoutToRemoteFolderOperation extends CheckoutOperation {
 						readOnly,
 						executable, 
 						monitor);
-			    } finally {
-			        ((RemoteFile)mFile).doneReceivingContents();
-			    }
+				} finally {
+					((RemoteFile)mFile).doneReceivingContents();
+				}
 			} else {
 				super.receiveTargetFile(
 						session,

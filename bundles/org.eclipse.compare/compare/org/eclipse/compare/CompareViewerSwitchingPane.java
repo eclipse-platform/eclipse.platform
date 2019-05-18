@@ -204,7 +204,7 @@ public abstract class CompareViewerSwitchingPane extends CompareViewerPane {
 	@Override
 	public void setSelection(ISelection s) {
 		if (fViewer != null)
-			 fViewer.setSelection(s);
+			fViewer.setSelection(s);
 	}
 
 	private boolean hasFocus2() {

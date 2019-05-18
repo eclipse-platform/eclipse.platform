@@ -590,15 +590,15 @@ public class Utils {
 		}
 	}
 
-    public static String getString(String key, ResourceBundle b) {
-        try {
-            return b.getString(key);
-        } catch (MissingResourceException e) {
-            return key;
-        } catch (NullPointerException e) {
-            return "!" + key + "!"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-    }
+	public static String getString(String key, ResourceBundle b) {
+		try {
+			return b.getString(key);
+		} catch (MissingResourceException e) {
+			return key;
+		} catch (NullPointerException e) {
+			return "!" + key + "!"; //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
 
 	public static String modeToString(int mode) {
 		switch (mode) {
@@ -628,42 +628,42 @@ public class Utils {
 			boolean isResource = false;
 			if (element instanceof IResource) {
 				resources.add((IResource) element);
-                isResource = true;
+				isResource = true;
 			} else if (element instanceof ISynchronizeModelElement){
-                IResource resource = ((ISynchronizeModelElement) element).getResource();
-                if (resource != null) {
-                    resources.add(resource);
-                    isResource = true;
-                }
-            } else if (element instanceof ResourceMapping) {
-            	if (includeMappingResources) {
-	                isResource = true;
-	                getResources((ResourceMapping)element, resources);
-            	}
+				IResource resource = ((ISynchronizeModelElement) element).getResource();
+				if (resource != null) {
+					resources.add(resource);
+					isResource = true;
+				}
+			} else if (element instanceof ResourceMapping) {
+				if (includeMappingResources) {
+					isResource = true;
+					getResources((ResourceMapping)element, resources);
+				}
 			} else if (element != null) {
-                Object adapted;
-                if (isContributed) {
-                    adapted = getResource(element);
-                } else {
-                    adapted = Adapters.adapt(element, IResource.class);
-                }
-                if (adapted instanceof IResource) {
-                    IResource resource = (IResource) adapted;
-                    isResource = true;
-                    if (resource.getType() != IResource.ROOT) {
-                        resources.add(resource);
-                    }
-                } else {
-                    if (isContributed) {
-                        adapted = getResourceMapping(element);
-                    } else {
-                        adapted = Adapters.adapt(element, ResourceMapping.class);
-                    }
-                    if (adapted instanceof ResourceMapping && includeMappingResources) {
-                        isResource = true;
-                        getResources((ResourceMapping) adapted, resources);
-                    }
-                }
+				Object adapted;
+				if (isContributed) {
+					adapted = getResource(element);
+				} else {
+					adapted = Adapters.adapt(element, IResource.class);
+				}
+				if (adapted instanceof IResource) {
+					IResource resource = (IResource) adapted;
+					isResource = true;
+					if (resource.getType() != IResource.ROOT) {
+						resources.add(resource);
+					}
+				} else {
+					if (isContributed) {
+						adapted = getResourceMapping(element);
+					} else {
+						adapted = Adapters.adapt(element, ResourceMapping.class);
+					}
+					if (adapted instanceof ResourceMapping && includeMappingResources) {
+						isResource = true;
+						getResources((ResourceMapping) adapted, resources);
+					}
+				}
 			}
 			if (!isResource) {
 				if (nonResources != null)
@@ -673,21 +673,21 @@ public class Utils {
 		return resources.toArray(new IResource[resources.size()]);
 	}
 
-    private static void getResources(ResourceMapping element, List<IResource> resources) {
-        try {
-            ResourceTraversal[] traversals = element.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
-            for (int k = 0; k < traversals.length; k++) {
-                ResourceTraversal traversal = traversals[k];
-                IResource[] resourceArray = traversal.getResources();
-                for (int j = 0; j < resourceArray.length; j++) {
-                    IResource resource = resourceArray[j];
-                    resources.add(resource);
-                }
-            }
-        } catch (CoreException e) {
-            TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, "Error traversing resource mapping", e)); //$NON-NLS-1$
-        }
-    }
+	private static void getResources(ResourceMapping element, List<IResource> resources) {
+		try {
+			ResourceTraversal[] traversals = element.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
+			for (int k = 0; k < traversals.length; k++) {
+				ResourceTraversal traversal = traversals[k];
+				IResource[] resourceArray = traversal.getResources();
+				for (int j = 0; j < resourceArray.length; j++) {
+					IResource resource = resourceArray[j];
+					resources.add(resource);
+				}
+			}
+		} catch (CoreException e) {
+			TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, "Error traversing resource mapping", e)); //$NON-NLS-1$
+		}
+	}
 
 	public static Object[] getNonResources(Object[] elements) {
 		List<Object> nonResources = new ArrayList<>();
@@ -699,9 +699,9 @@ public class Utils {
 		return getResources(element, null, false /* isContributed */, false /* includeMappingResources */);
 	}
 
-    public static IResource[] getContributedResources(Object[] elements) {
-        return getResources(elements, null, true /* isContributed */, true /* isIncudeMappings */);
-    }
+	public static IResource[] getContributedResources(Object[] elements) {
+		return getResources(elements, null, true /* isContributed */, true /* isIncudeMappings */);
+	}
 
 	/**
 	 * Return whether any sync nodes in the given selection or their
@@ -820,7 +820,7 @@ public class Utils {
 	}
 
 	public static String getKey(String id, String secondaryId) {
-	    return secondaryId == null ? id : id + '/' + secondaryId;
+		return secondaryId == null ? id : id + '/' + secondaryId;
 	}
 
 	public static String convertSelection(IResource[] resources) {
@@ -862,21 +862,21 @@ public class Utils {
 		return manager.getParticipantDescriptor(participant.getId()).getName();
 	}
 
-    /**
-     * The viewer will only be updated if the viewer is not null, the control is not disposed, and
-     * this code is being run from the UI thread.
-     * @param viewer the viewer to be updated
-     * @return whether it is safe to update the viewer
-     */
-    public static boolean canUpdateViewer(StructuredViewer viewer) {
+	/**
+	 * The viewer will only be updated if the viewer is not null, the control is not disposed, and
+	 * this code is being run from the UI thread.
+	 * @param viewer the viewer to be updated
+	 * @return whether it is safe to update the viewer
+	 */
+	public static boolean canUpdateViewer(StructuredViewer viewer) {
 		if(viewer == null || viewer.getControl().isDisposed()) return false;
 		Display display = viewer.getControl().getDisplay();
 		if (display == null) return false;
 		if (display.getThread() != Thread.currentThread ()) return false;
 		return true;
-    }
+	}
 
-    public static void asyncExec(final Runnable r, StructuredViewer v) {
+	public static void asyncExec(final Runnable r, StructuredViewer v) {
 		if(v == null) return;
 		final Control ctrl = v.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
@@ -888,11 +888,11 @@ public class Utils {
 		}
 	}
 
-    public static void syncExec(final Runnable r, StructuredViewer v) {
+	public static void syncExec(final Runnable r, StructuredViewer v) {
 		if(v == null) return;
 		final Control ctrl = v.getControl();
 		syncExec(r, ctrl);
-    }
+	}
 
 	public static void syncExec(final Runnable r, final Control ctrl) {
 		if (ctrl != null && !ctrl.isDisposed()) {
@@ -914,12 +914,12 @@ public class Utils {
 		}
 	}
 
-    public static SyncInfo getSyncInfo(ISynchronizeModelElement node) {
-        if (node instanceof IAdaptable) {
-            return ((IAdaptable) node).getAdapter(SyncInfo.class);
-        }
-        return null;
-    }
+	public static SyncInfo getSyncInfo(ISynchronizeModelElement node) {
+		if (node instanceof IAdaptable) {
+			return ((IAdaptable) node).getAdapter(SyncInfo.class);
+		}
+		return null;
+	}
 
 	public static ISynchronizationCompareAdapter getCompareAdapter(Object element) {
 		ModelProvider provider = getModelProvider(element);

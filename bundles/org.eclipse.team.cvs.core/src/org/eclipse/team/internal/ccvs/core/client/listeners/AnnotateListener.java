@@ -32,7 +32,7 @@ public class AnnotateListener extends CommandOutputListener {
 	int lineNumber;
 	
 	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
-        String error = null;
+		String error = null;
 		CVSAnnotateBlock aBlock = new CVSAnnotateBlock(line, lineNumber++);
 		if (!aBlock.isValid()) {
 			error = line;
@@ -49,8 +49,8 @@ public class AnnotateListener extends CommandOutputListener {
 		} catch (IOException e) {
 		}
 		add(aBlock);
-        if (error != null)
-            return new CVSStatus(IStatus.ERROR, CVSStatus.ERROR_LINE_PARSE_FAILURE, error, commandRoot);
+		if (error != null)
+			return new CVSStatus(IStatus.ERROR, CVSStatus.ERROR_LINE_PARSE_FAILURE, error, commandRoot);
 		return OK;
 	}
 	

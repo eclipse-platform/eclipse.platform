@@ -144,16 +144,16 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 
 		// Confirm the projects to be loaded
 		Map infoMap = new HashMap(referenceStrings.length);
- 		IProject[] projects = asProjects(referenceStrings, infoMap);
+		IProject[] projects = asProjects(referenceStrings, infoMap);
 		
- 		projects = confirmOverwrite(context, projects);
+		projects = confirmOverwrite(context, projects);
 		if (projects == null || projects.length == 0 /* No projects to import */)
 			return new IProject[0];
 
 		Map suggestedRepositoryLocations = CVSRepositoryLocationMatcher
 				.prepareSuggestedRepositoryLocations(projects, infoMap);
- 		applySinglePerfectMatchesToInfoMap(suggestedRepositoryLocations, infoMap);
- 		if (CVSRepositoryLocationMatcher.isPromptRequired(suggestedRepositoryLocations)) {
+		applySinglePerfectMatchesToInfoMap(suggestedRepositoryLocations, infoMap);
+		if (CVSRepositoryLocationMatcher.isPromptRequired(suggestedRepositoryLocations)) {
 			// Display the dialog
 			Map userSelectedRepositoryLocations = promptForAdditionRepositoryInformation(suggestedRepositoryLocations);
 			// Replace repository location from a project load info with one from the prompter
@@ -165,8 +165,8 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 			}
 		}
 		
- 		// Load the projects
- 		return checkout(projects, infoMap, monitor);
+		// Load the projects
+		return checkout(projects, infoMap, monitor);
 	}
 
 	private void applySinglePerfectMatchesToInfoMap(

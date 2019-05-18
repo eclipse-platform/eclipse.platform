@@ -33,7 +33,7 @@ public class SynchronizeViewWorkbenchPart implements IWorkbenchPart {
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof SynchronizeViewWorkbenchPart) &&
-		    participant.equals(((SynchronizeViewWorkbenchPart)obj).getParticipant());
+			participant.equals(((SynchronizeViewWorkbenchPart)obj).getParticipant());
 	}
 
 	@Override

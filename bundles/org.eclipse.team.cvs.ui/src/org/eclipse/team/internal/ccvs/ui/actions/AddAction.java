@@ -30,19 +30,19 @@ import org.eclipse.team.internal.ccvs.ui.wizards.AddWizard;
  * container is selected, its children are recursively added.
  */
 public class AddAction extends WorkspaceTraversalAction {
-    
+	
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
-        if (!promptForAddOfIgnored()) return;
-        if (!promptForAdd()) return;
-        AddOperation op = new AddOperation(getTargetPart(), getCVSResourceMappings());
-        AddWizard.run(getShell(), op);
+		if (!promptForAddOfIgnored()) return;
+		if (!promptForAdd()) return;
+		AddOperation op = new AddOperation(getTargetPart(), getCVSResourceMappings());
+		AddWizard.run(getShell(), op);
 	}
 
 	/*
 	 * Prompt the user to avoid accidental adding a resource to version control
 	 */
-    private boolean promptForAdd() {
+	private boolean promptForAdd() {
 		return MessageDialog.openQuestion(getShell(), 
 				CVSUIMessages.AddAction_confirmAddingResourcesTitle,
 				CVSUIMessages.AddAction_confirmAddingResourcesMessage);
@@ -52,8 +52,8 @@ public class AddAction extends WorkspaceTraversalAction {
 	 * Prompt whether explicitly selected ignored resources should be added
 	 */
 	private boolean promptForAddOfIgnored() {
-	    // Prompt if any of the traversal roots are ignored
-	    // TODO: What about non-root resources that are part of the model but would be ignored?
+		// Prompt if any of the traversal roots are ignored
+		// TODO: What about non-root resources that are part of the model but would be ignored?
 		IResource[] resources = getSelectedResourcesWithOverlap();
 		boolean prompt = false;
 		for (int i = 0; i < resources.length; i++) {

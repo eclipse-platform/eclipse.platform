@@ -209,16 +209,16 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 
 				private XMLMemento getXMLMementoRoot() {
 					Document document;
-			        try {
-			            document = DocumentBuilderFactory.newInstance()
-			                    .newDocumentBuilder().newDocument();
-			            Element element = document.createElement("psf"); //$NON-NLS-1$
-			            element.setAttribute("version", "2.0"); //$NON-NLS-1$ //$NON-NLS-2$
-			            document.appendChild(element);
-			            return new XMLMemento(document, element);
-			        } catch (ParserConfigurationException e) {
-			            throw new Error(e.getMessage());
-			        }
+					try {
+						document = DocumentBuilderFactory.newInstance()
+								.newDocumentBuilder().newDocument();
+						Element element = document.createElement("psf"); //$NON-NLS-1$
+						element.setAttribute("version", "2.0"); //$NON-NLS-1$ //$NON-NLS-2$
+						document.appendChild(element);
+						return new XMLMemento(document, element);
+					} catch (ParserConfigurationException e) {
+						throw new Error(e.getMessage());
+					}
 				}
 
 			});

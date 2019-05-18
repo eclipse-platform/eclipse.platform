@@ -209,7 +209,7 @@ public class EditorsView extends ViewPart {
 		tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		tableViewer.setLabelProvider(new EditorsLabelProvider());
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(tableViewer.getControl(), IHelpContextIds.CVS_EDITORS_VIEW);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(tableViewer.getControl(), IHelpContextIds.CVS_EDITORS_VIEW);
 	}
 	public void setInput(EditorsInfo[] infos) {
 		tableViewer.setInput(infos);

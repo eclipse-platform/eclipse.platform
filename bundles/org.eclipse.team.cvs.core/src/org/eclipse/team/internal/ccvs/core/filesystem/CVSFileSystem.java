@@ -57,7 +57,7 @@ public class CVSFileSystem extends FileSystem {
 	
 
 	public CVSFileTree refreshTree(URI uri, IProgressMonitor monitor){
-	    CVSURI cvsURI = CVSURI.fromUri(uri);
+		CVSURI cvsURI = CVSURI.fromUri(uri);
 		
 		//Make sure that we're building the tree from the topmost level - keep cycling until you hit null
 		ICVSRemoteFolder folder = cvsURI.getProjectURI().toFolder();

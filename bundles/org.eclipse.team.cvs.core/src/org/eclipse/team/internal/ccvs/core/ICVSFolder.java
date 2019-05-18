@@ -57,7 +57,7 @@ public interface ICVSFolder extends ICVSResource {
 	 * Answers and array of <code>ICVSResource</code> elements that are immediate 
 	 * children of this remote resource, in no particular order. The server may be contacted.
 	 * 
- 	 * @param monitor a progress monitor to indicate the duration of the operation, or
+	 * @param monitor a progress monitor to indicate the duration of the operation, or
 	 * <code>null</code> if progress reporting is not required.
 	 * 
 	 * @return array of immediate children of this remote resource. 

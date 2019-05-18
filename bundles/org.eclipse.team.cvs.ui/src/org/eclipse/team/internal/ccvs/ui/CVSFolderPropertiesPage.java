@@ -106,8 +106,8 @@ public class CVSFolderPropertiesPage extends CVSPropertiesPage {
 			// Display error text
 			createLabel(composite, CVSUIMessages.CVSFilePropertiesPage_error, 2); 
 		}
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.FOLDER_PROPERTY_PAGE);
-        Dialog.applyDialogFont(parent);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.FOLDER_PROPERTY_PAGE);
+		Dialog.applyDialogFont(parent);
 		return composite;
 	}
 

@@ -67,7 +67,7 @@ public class ResourcePropertiesPage extends PropertyPage {
 		} catch (TeamException e) {
 			createPair(composite, CVSUIMessages.ResourcePropertiesPage_error, e.getMessage()); 
 		}
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 		return composite;
 	}
 

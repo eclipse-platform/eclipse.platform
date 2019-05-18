@@ -123,10 +123,10 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	protected String getDefaultProviderId() {
 		String defaultLayout = TeamUIPlugin.getPlugin().getPreferenceStore().getString(IPreferenceIds.SYNCVIEW_DEFAULT_LAYOUT);
 		if (defaultLayout.equals(IPreferenceIds.TREE_LAYOUT)) {
-		    return HierarchicalModelProvider.HierarchicalModelProviderDescriptor.ID;
+			return HierarchicalModelProvider.HierarchicalModelProviderDescriptor.ID;
 		}
 		if (defaultLayout.equals(IPreferenceIds.FLAT_LAYOUT)) {
-		    return FlatModelProvider.FlatModelProviderDescriptor.ID;
+			return FlatModelProvider.FlatModelProviderDescriptor.ID;
 		}
 		// Return compressed folder is the others were not a match
 		return CompressedFoldersModelProvider.CompressedFolderModelProviderDescriptor.ID;
@@ -156,7 +156,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 	 */
 	protected void setInput(String id, IProgressMonitor monitor) {
 		if(modelProvider != null) {
-		    modelProvider.saveState();
+			modelProvider.saveState();
 			modelProvider.dispose();
 		}
 		modelProvider = createModelProvider(id);
@@ -248,7 +248,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 			}
 			setInput(defaultProviderId, null);
 		} else {
-		    setInput();
+			setInput();
 		}
 	}
 

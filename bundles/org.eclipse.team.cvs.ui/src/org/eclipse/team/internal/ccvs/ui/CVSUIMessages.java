@@ -198,10 +198,10 @@ public class CVSUIMessages extends NLS {
 	public static String CVSDecoratorPreferencesPage_33;
 	public static String CVSDecoratorPreferencesPage_34;
 	public static String CVSDecoratorPreferencesPage_35;
-    public static String CVSDecoratorPreferencesPage_36;
-    public static String CVSDecoratorPreferencesPage_37;
-    public static String CVSDecoratorPreferencesPage_38;  // repository label
-    public static String CVSDecoratorPreferencesPage_39;
+	public static String CVSDecoratorPreferencesPage_36;
+	public static String CVSDecoratorPreferencesPage_37;
+	public static String CVSDecoratorPreferencesPage_38;  // repository label
+	public static String CVSDecoratorPreferencesPage_39;
 	public static String CVSDecoratorConfiguration_0;
 	public static String CVSDecoratorConfiguration_1;
 	public static String CVSDecoratorConfiguration_2;
@@ -278,8 +278,8 @@ public class CVSUIMessages extends NLS {
 	public static String CVSPreferencesPage_39;
 	public static String CVSPreferencesPage_40;
 	public static String CVSPreferencesPage_41;
-    public static String CVSPreferencesPage_44;
-    public static String CVSPreferencesPage_45;
+	public static String CVSPreferencesPage_44;
+	public static String CVSPreferencesPage_45;
 	public static String CVSPropertiesPage_virtualModule;
 
 
@@ -680,7 +680,7 @@ public class CVSUIMessages extends NLS {
 	public static String TagConfigurationDialog_20;
 	public static String TagConfigurationDialog_21;
 	public static String TagConfigurationDialog_22;
-    public static String TagConfigurationDialog_AddDateTag;
+	public static String TagConfigurationDialog_AddDateTag;
 
 	public static String ConfigureTagsFromRepoViewConfigure_Tag_Error_1;
 	public static String RemoteRootAction_label;
@@ -766,7 +766,7 @@ public class CVSUIMessages extends NLS {
 	public static String WatchEditPreferencePage_checkoutReadOnly;
 	public static String WatchEditPreferencePage_validateEditSaveAction;
 	public static String WatchEditPreferencePage_edit;
-    public static String WatchEditPreferencePage_editInBackground;
+	public static String WatchEditPreferencePage_editInBackground;
 	public static String WatchEditPreferencePage_highjack;
 	public static String WatchEditPreferencePage_editPrompt;
 	public static String WatchEditPreferencePage_neverPrompt;
@@ -891,21 +891,21 @@ public class CVSUIMessages extends NLS {
 	public static String CommitCommentArea_2;
 	public static String CommitCommentArea_3;
 	public static String CommitCommentArea_4;
-    public static String CommitCommentArea_5;
-    public static String CommitCommentArea_6;
-    
-    public static String CommentTemplatesPreferencePage_Description;
-    public static String CommentTemplatesPreferencePage_New;
-    public static String CommentTemplatesPreferencePage_Edit;
-    public static String CommentTemplatesPreferencePage_Remove;
-    public static String CommentTemplatesPreferencePage_Preview;
-    public static String CommentTemplatesPreferencePage_EditCommentTemplateTitle;
-    public static String CommentTemplatesPreferencePage_EditCommentTemplateMessage;
+	public static String CommitCommentArea_5;
+	public static String CommitCommentArea_6;
+	
+	public static String CommentTemplatesPreferencePage_Description;
+	public static String CommentTemplatesPreferencePage_New;
+	public static String CommentTemplatesPreferencePage_Edit;
+	public static String CommentTemplatesPreferencePage_Remove;
+	public static String CommentTemplatesPreferencePage_Preview;
+	public static String CommentTemplatesPreferencePage_EditCommentTemplateTitle;
+	public static String CommentTemplatesPreferencePage_EditCommentTemplateMessage;
 
 	public static String CheckoutProjectOperation_8;
 	public static String CheckoutProjectOperation_9;
 	public static String CheckoutProjectOperation_0;
-    public static String CheckoutProjectOperation_1;
+	public static String CheckoutProjectOperation_1;
 	public static String CVSOperation_0;
 	public static String CVSOperation_1;
 	public static String CVSOperation_2;
@@ -970,8 +970,8 @@ public class CVSUIMessages extends NLS {
 
 	public static String FileModificationValidator_3;
 	public static String FileModificationValidator_4;
-    public static String FileModificationValidator_5;
-    public static String FileModificationValidator_6;
+	public static String FileModificationValidator_5;
+	public static String FileModificationValidator_6;
 	public static String CVSSynchronizeWizard_0;
 	public static String Participant_comparing;
 	public static String Participant_merging;
@@ -998,8 +998,8 @@ public class CVSUIMessages extends NLS {
 	public static String SharingWizardSyncPage_8;
 	public static String SharingWizardSyncPage_9;
 	public static String SharingWizardSyncPage_12;
-    public static String ShareProjectOperation_2;
-    public static String ShareProjectOperation_3;
+	public static String ShareProjectOperation_2;
+	public static String ShareProjectOperation_3;
 	public static String CVSProjectPropertiesPage_31;
 	public static String CVSProjectPropertiesPage_32;
 	public static String CVSProjectPropertiesPage_33;
@@ -1072,9 +1072,9 @@ public class CVSUIMessages extends NLS {
 	public static String ReplaceWithTagAction_2;
 	public static String AddWizard_0;
 	
-    public static String OpenChangeSetAction_0;
-    public static String OpenChangeSetAction_1;
-    
+	public static String OpenChangeSetAction_0;
+	public static String OpenChangeSetAction_1;
+	
 	
 	public static String WorkInProgressPage_0;
 	public static String WorkInProgressPage_1;

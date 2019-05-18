@@ -47,12 +47,12 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 	private Button selectTagButton;
 	private boolean useResourceTag = false;
 	private String helpContextId;
-    private TagSelectionArea tagArea;
-    private TagSource tagSource;
+	private TagSelectionArea tagArea;
+	private TagSource tagSource;
 	
 	public TagSelectionWizardPage(String pageName, String title, ImageDescriptor titleImage, String description, TagSource tagSource, int includeFlags) {
 		super(pageName, title, titleImage, description);
-        this.tagSource = tagSource;
+		this.tagSource = tagSource;
 		this.includeFlags = includeFlags;
 	}
 
@@ -64,7 +64,7 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 	public void setHelpContxtId(String helpContextId) {
 		this.helpContextId = helpContextId;
 	}
-    
+	
 	@Override
 	public void createControl(Composite parent) {
 		
@@ -77,7 +77,7 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 		
 		// set F1 help
 		if (helpContextId != null)
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, helpContextId);
 		
 		if (allowNoTag) {
 			SelectionListener listener = new SelectionAdapter() {
@@ -103,29 +103,29 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 	
 	private void createTagArea() {
 		tagArea = new TagSelectionArea(getShell(), tagSource, includeFlags, null);
-	    tagArea.setRunnableContext(getContainer());
+		tagArea.setRunnableContext(getContainer());
 		tagArea.createArea(composite);
 		tagArea.addPropertyChangeListener(new IPropertyChangeListener() {
-            @Override
+			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-                if (event.getProperty().equals(TagSelectionArea.SELECTED_TAG)) {
-                    selectedTag = tagArea.getSelection();
-    				updateEnablement();
-                } else if (event.getProperty().equals(TagSelectionArea.OPEN_SELECTED_TAG)) {
-                    if (selectedTag != null)
-                        gotoNextPage();
-                }
+				if (event.getProperty().equals(TagSelectionArea.SELECTED_TAG)) {
+					selectedTag = tagArea.getSelection();
+					updateEnablement();
+				} else if (event.getProperty().equals(TagSelectionArea.OPEN_SELECTED_TAG)) {
+					if (selectedTag != null)
+						gotoNextPage();
+				}
 
-            }
-        });
+			}
+		});
 		refreshTagArea();
-    }
+	}
 
-    private void refreshTagArea() {
-        if (tagArea != null) {
-            tagArea.refresh();
-            tagArea.setSelection(selectedTag);
-        }
+	private void refreshTagArea() {
+		if (tagArea != null) {
+			tagArea.refresh();
+			tagArea.setSelection(selectedTag);
+		}
 	}
 	
 	protected void updateEnablement() {
@@ -159,26 +159,26 @@ public class TagSelectionWizardPage extends CVSWizardPage {
 		}
 	}
 
-    /**
-     * Set the tag source used by this wizard page
-     * @param source the tag source
-     */
-    public void setTagSource(TagSource source) {
-        this.tagSource = source;
-        tagArea.setTagSource(tagSource);
-        setSelection(null);
-        refreshTagArea();
-    }
+	/**
+	 * Set the tag source used by this wizard page
+	 * @param source the tag source
+	 */
+	public void setTagSource(TagSource source) {
+		this.tagSource = source;
+		tagArea.setTagSource(tagSource);
+		setSelection(null);
+		refreshTagArea();
+	}
 
-    /**
-     * Set the selection of the page to the given tag
-     * @param selectedTag
-     */
-    public void setSelection(CVSTag selectedTag) {
+	/**
+	 * Set the selection of the page to the given tag
+	 * @param selectedTag
+	 */
+	public void setSelection(CVSTag selectedTag) {
 		if (selectedTag == null && (includeFlags & TagSelectionArea.INCLUDE_HEAD_TAG) > 0) {
 			this.selectedTag = CVSTag.DEFAULT;
 		} else {
-		    this.selectedTag = selectedTag;
+			this.selectedTag = selectedTag;
 		}
-    }
+	}
 }

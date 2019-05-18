@@ -88,8 +88,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 * @see #setMinimumPageSize(Point)
 	 */
 	private Point fMinimumPageSize = new Point(200,200);
-    private TabFolder tabFolder;
-    private Map<TabItem, PreferencePage> pageMap = new HashMap<>();
+	private TabFolder tabFolder;
+	private Map<TabItem, PreferencePage> pageMap = new HashMap<>();
 
 	/**
 	 * Must declare our own images as the JFaceResource images will not be created unless
@@ -111,9 +111,9 @@ public class PreferencePageContainerDialog extends TrayDialog
 	@Override
 	protected void okPressed() {
 		for (int i = 0; i < pages.length; i++) {
-            PreferencePage page = pages[i];
+			PreferencePage page = pages[i];
 			page.performOk();
-        }
+		}
 
 		handleSave();
 
@@ -139,9 +139,9 @@ public class PreferencePageContainerDialog extends TrayDialog
 		createDescriptionArea(composite);
 
 		if (isSinglePage()) {
-		    createSinglePageArea(composite, pages[0]);
+			createSinglePageArea(composite, pages[0]);
 		} else {
-		    createMultiplePageArea(composite);
+			createMultiplePageArea(composite);
 		}
 
 		// Build the separator line
@@ -158,63 +158,63 @@ public class PreferencePageContainerDialog extends TrayDialog
 		return composite;
 	}
 
-    private void createMultiplePageArea(Composite composite) {
+	private void createMultiplePageArea(Composite composite) {
 		// create a tab folder for the page
 		tabFolder = new TabFolder(composite, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		for (int i = 0; i < pages.length; i++) {
-            PreferencePage page = pages[i];
+			PreferencePage page = pages[i];
 			// text decoration options
 			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 			tabItem.setText(page.getTitle());//
 			tabItem.setControl(createPageArea(tabFolder, page));
 			pageMap.put(tabItem, page);
-        }
+		}
 
 		tabFolder.addSelectionListener(new SelectionAdapter() {
-            @Override
+			@Override
 			public void widgetSelected(SelectionEvent e) {
-                updatePageSelection();
-            }
-        });
+				updatePageSelection();
+			}
+		});
 		updatePageSelection();
-    }
+	}
 
-    protected void updatePageSelection() {
-        TabItem[] items = tabFolder.getSelection();
-        if (items.length == 1) {
-            currentPage = pageMap.get(items[0]);
-            updateMessage();
-        }
-        firePageChanged(new PageChangedEvent(this, currentPage));
-    }
+	protected void updatePageSelection() {
+		TabItem[] items = tabFolder.getSelection();
+		if (items.length == 1) {
+			currentPage = pageMap.get(items[0]);
+			updateMessage();
+		}
+		firePageChanged(new PageChangedEvent(this, currentPage));
+	}
 
-    private boolean isSinglePage() {
-        return pages.length == 1;
-    }
+	private boolean isSinglePage() {
+		return pages.length == 1;
+	}
 
-    /*
-     * Create the page contents for a single preferences page
-     */
-    private void createSinglePageArea(Composite composite, PreferencePage page) {
+	/*
+	 * Create the page contents for a single preferences page
+	 */
+	private void createSinglePageArea(Composite composite, PreferencePage page) {
 		createPageArea(composite, page);
 		currentPage = page;
 		updateMessage();
-    }
+	}
 
-    private Control createPageArea(Composite composite, PreferencePage page) {
-        // Build the Page container
+	private Control createPageArea(Composite composite, PreferencePage page) {
+		// Build the Page container
 		fPageContainer = createPageContainer(composite);
 		fPageContainer.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		page.setContainer(this);
 		page.createControl(fPageContainer);
 		return fPageContainer;
-    }
+	}
 
-    private void createDescriptionArea(Composite composite) {
-        // Build the title area and separator line
+	private void createDescriptionArea(Composite composite) {
+		// Build the title area and separator line
 		Composite titleComposite = new Composite(composite, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
@@ -229,9 +229,9 @@ public class PreferencePageContainerDialog extends TrayDialog
 		Label titleBarSeparator = new Label(titleComposite, SWT.HORIZONTAL | SWT.SEPARATOR);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		titleBarSeparator.setLayoutData(gd);
-    }
+	}
 
-    /**
+	/**
 	 * Creates the dialog's title area.
 	 *
 	 * @param parent the SWT parent for the title area composite
@@ -371,7 +371,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	@Override
 	public void updateMessage() {
-	    if (currentPage != null) {
+		if (currentPage != null) {
 			String pageMessage = currentPage.getMessage();
 			String pageErrorMessage = currentPage.getErrorMessage();
 
@@ -383,19 +383,19 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 			// Set the message and error message
 			if (pageMessage == null) {
-			    if (isSinglePage()) {
-			        setMessage(TeamUIMessages.PreferencePageContainerDialog_6);
-			    } else {
-			    	//remove mnemonic see bug 75886
-			    	String title = currentPage.getTitle();
-			    	title = title.replaceAll("&", "");//$NON-NLS-1$ //$NON-NLS-2$
-			    	setMessage(title);
-			    }
+				if (isSinglePage()) {
+					setMessage(TeamUIMessages.PreferencePageContainerDialog_6);
+				} else {
+					//remove mnemonic see bug 75886
+					String title = currentPage.getTitle();
+					title = title.replaceAll("&", "");//$NON-NLS-1$ //$NON-NLS-2$
+					setMessage(title);
+				}
 			} else {
 				setMessage(pageMessage);
 			}
 			setErrorMessage(pageErrorMessage);
-	    }
+		}
 	}
 
 	@Override
@@ -406,14 +406,14 @@ public class PreferencePageContainerDialog extends TrayDialog
 	@Override
 	public void updateButtons() {
 		if (fOkButton != null) {
-		    boolean isValid = true;
-		    for (int i = 0; i < pages.length; i++) {
-	            PreferencePage page = pages[i];
-	            if (!page.isValid()) {
-	                isValid = false;
-	                break;
-	            }
-		    }
+			boolean isValid = true;
+			for (int i = 0; i < pages.length; i++) {
+				PreferencePage page = pages[i];
+				if (!page.isValid()) {
+					isValid = false;
+					break;
+				}
+			}
 			fOkButton.setEnabled(isValid);
 		}
 	}
@@ -442,8 +442,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 */
 	protected void handleSave() {
 		// Save now in case tbe workbench does not shutdown cleanly
-	    for (int i = 0; i < pages.length; i++) {
-            PreferencePage page = pages[i];
+		for (int i = 0; i < pages.length; i++) {
+			PreferencePage page = pages[i];
 			IPreferenceStore store = page.getPreferenceStore();
 			if (store != null
 				&& store.needsSaving()
@@ -454,13 +454,13 @@ public class PreferencePageContainerDialog extends TrayDialog
 					Utils.handle(e);
 				}
 			}
-        }
+		}
 	}
 
 
-    @Override
+	@Override
 	public void addPageChangedListener(final IPageChangedListener listener) {
-    	pageChangedListeners.add(listener);
+		pageChangedListeners.add(listener);
 	}
 
 	@Override
@@ -474,17 +474,17 @@ public class PreferencePageContainerDialog extends TrayDialog
 	}
 
 	private void firePageChanged(final PageChangedEvent event) {
-        Object[] listeners = pageChangedListeners.getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IPageChangedListener l = (IPageChangedListener) listeners[i];
-            SafeRunnable.run(new SafeRunnable() {
-                @Override
+		Object[] listeners = pageChangedListeners.getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IPageChangedListener l = (IPageChangedListener) listeners[i];
+			SafeRunnable.run(new SafeRunnable() {
+				@Override
 				public void run() {
-                    l.pageChanged(event);
-                }
-            });
-        }
-    }
+					l.pageChanged(event);
+				}
+			});
+		}
+	}
 
 
 }

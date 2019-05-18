@@ -122,7 +122,7 @@ public class UserValidationDialog extends Dialog {
 
 		createUsernameFields(main);
 		createPasswordFields(main);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(main,
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(main,
 				"org.eclipse.update.ui.UserValidationDialog"); //$NON-NLS-1$
 		return main;
 	}

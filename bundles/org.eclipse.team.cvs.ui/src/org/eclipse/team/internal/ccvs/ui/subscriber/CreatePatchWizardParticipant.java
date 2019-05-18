@@ -19,26 +19,26 @@ import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.ISynchronizeScope;
 
 public class CreatePatchWizardParticipant extends WorkspaceSynchronizeParticipant {
-	 
-    final GenerateDiffFileWizard fWizard;
-    
-    public CreatePatchWizardParticipant(ISynchronizeScope scope, GenerateDiffFileWizard wizard) {
-        super(scope);
-        fWizard= wizard;
-    }
+	
+	final GenerateDiffFileWizard fWizard;
+	
+	public CreatePatchWizardParticipant(ISynchronizeScope scope, GenerateDiffFileWizard wizard) {
+		super(scope);
+		fWizard= wizard;
+	}
 
 	@Override
-    protected void initializeConfiguration( ISynchronizePageConfiguration configuration) {
-        super.initializeConfiguration(configuration);
-        configuration.setProperty(ISynchronizePageConfiguration.P_TOOLBAR_MENU, new String[] {ISynchronizePageConfiguration.LAYOUT_GROUP});
-        configuration.setProperty(ISynchronizePageConfiguration.P_CONTEXT_MENU, ISynchronizePageConfiguration.DEFAULT_CONTEXT_MENU);
-        ((SynchronizePageConfiguration)configuration).setViewerStyle(SynchronizePageConfiguration.CHECKBOX);
-        configuration.setSupportedModes(ISynchronizePageConfiguration.OUTGOING_MODE);
-        configuration.setMode(ISynchronizePageConfiguration.OUTGOING_MODE);
-    }
+	protected void initializeConfiguration( ISynchronizePageConfiguration configuration) {
+		super.initializeConfiguration(configuration);
+		configuration.setProperty(ISynchronizePageConfiguration.P_TOOLBAR_MENU, new String[] {ISynchronizePageConfiguration.LAYOUT_GROUP});
+		configuration.setProperty(ISynchronizePageConfiguration.P_CONTEXT_MENU, ISynchronizePageConfiguration.DEFAULT_CONTEXT_MENU);
+		((SynchronizePageConfiguration)configuration).setViewerStyle(SynchronizePageConfiguration.CHECKBOX);
+		configuration.setSupportedModes(ISynchronizePageConfiguration.OUTGOING_MODE);
+		configuration.setMode(ISynchronizePageConfiguration.OUTGOING_MODE);
+	}
 
 	@Override
-    public boolean doesSupportSynchronize() {
-        return false;
-    }
+	public boolean doesSupportSynchronize() {
+		return false;
+	}
 }

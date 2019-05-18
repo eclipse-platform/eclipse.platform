@@ -21,10 +21,10 @@ import org.eclipse.osgi.service.debug.DebugOptionsListener;
 import org.eclipse.team.internal.core.InfiniteSubProgressMonitor;
 
 public class Policy {
-    
-    private static String ACTION_BUNDLE = "org.eclipse.team.internal.ccvs.ui.actions.actions"; //$NON-NLS-1$
-    private static ResourceBundle actionBundle = null;
-    
+	
+	private static String ACTION_BUNDLE = "org.eclipse.team.internal.ccvs.ui.actions.actions"; //$NON-NLS-1$
+	private static ResourceBundle actionBundle = null;
+	
 	public static boolean DEBUG_CONSOLE_BUFFERING = false;
 	public static boolean DEBUG_HISTORY = false;
 
@@ -68,9 +68,9 @@ public class Policy {
 	}
 	
 	public static ResourceBundle getActionBundle() {
-        ResourceBundle tmpBundle = actionBundle;
-        if (tmpBundle != null)
-            return tmpBundle;
-        return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
+		ResourceBundle tmpBundle = actionBundle;
+		if (tmpBundle != null)
+			return tmpBundle;
+		return actionBundle = ResourceBundle.getBundle(ACTION_BUNDLE);
 	}
 }

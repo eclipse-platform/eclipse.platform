@@ -42,116 +42,116 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CommitWizardFileTypePage extends WizardPage {
 
-    private final Collection fExtensions;
+	private final Collection fExtensions;
 	private final Collection<Item> fNames;
-    
-    public CommitWizardFileTypePage(Collection unknownExtensions, Collection unknownNames) {
-        super(CVSUIMessages.CommitWizardFileTypePage_0); 
-        setTitle(CVSUIMessages.CommitWizardFileTypePage_0); 
-        setDescription(CVSUIMessages.CommitWizardFileTypePage_2); 
-        
+	
+	public CommitWizardFileTypePage(Collection unknownExtensions, Collection unknownNames) {
+		super(CVSUIMessages.CommitWizardFileTypePage_0); 
+		setTitle(CVSUIMessages.CommitWizardFileTypePage_0); 
+		setDescription(CVSUIMessages.CommitWizardFileTypePage_2); 
+		
 		fNames = new ArrayList<>();
-        for (final Iterator iter = unknownNames.iterator(); iter.hasNext();) {
-            final String name = (String) iter.next();
-            fNames.add(new FileTypeTable.Name(name, false));
-        }
-        
-        fExtensions= new ArrayList();
-        for (final Iterator iter = unknownExtensions.iterator(); iter.hasNext();) {
-            final String extension= (String)iter.next();
-            fExtensions.add(new FileTypeTable.Extension(extension, false));
-        }
-    }
-    
-    @Override
+		for (final Iterator iter = unknownNames.iterator(); iter.hasNext();) {
+			final String name = (String) iter.next();
+			fNames.add(new FileTypeTable.Name(name, false));
+		}
+		
+		fExtensions= new ArrayList();
+		for (final Iterator iter = unknownExtensions.iterator(); iter.hasNext();) {
+			final String extension= (String)iter.next();
+			fExtensions.add(new FileTypeTable.Extension(extension, false));
+		}
+	}
+	
+	@Override
 	public void createControl(Composite parent) {
-        
-        initializeDialogUnits(parent);
-        
-        final Composite composite= new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(1, false));
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.COMMIT_FILE_TYPES_PAGE);
-        
-	    final Label label= new Label(composite, SWT.WRAP);
-	    label.setText(CVSUIMessages.CommitWizardFileTypePage_3); 
-	    label.setLayoutData(SWTUtils.createHFillGridData());
-	    Dialog.applyDialogFont(composite);
-        
-        final List items= new ArrayList();
-        items.addAll(fNames);
-        items.addAll(fExtensions);
-        
-        new FileTypeTable(composite, items, true);
+		
+		initializeDialogUnits(parent);
+		
+		final Composite composite= new Composite(parent, SWT.NONE);
+		composite.setLayout(new GridLayout(1, false));
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.COMMIT_FILE_TYPES_PAGE);
+		
+		final Label label= new Label(composite, SWT.WRAP);
+		label.setText(CVSUIMessages.CommitWizardFileTypePage_3); 
+		label.setLayoutData(SWTUtils.createHFillGridData());
+		Dialog.applyDialogFont(composite);
+		
+		final List items= new ArrayList();
+		items.addAll(fNames);
+		items.addAll(fExtensions);
+		
+		new FileTypeTable(composite, items, true);
 
-        setControl(composite);
-        
-    }
+		setControl(composite);
+		
+	}
 
 	public void getModesForExtensions(Map toSave, Map notToSave) {
-	    getModes(fExtensions, toSave, notToSave);
+		getModes(fExtensions, toSave, notToSave);
 	}
 
 	public void getModesForNames(Map toSave, Map notToSave) {
-	    getModes(fNames, toSave, notToSave);
+		getModes(fNames, toSave, notToSave);
 	}
 
-    private static void getModes(Collection items, Map toSave, Map notToSave) {
-	    for (final Iterator iter = items.iterator(); iter.hasNext();) {
-	        final FileTypeTable.Item item= (FileTypeTable.Item)iter.next();
-	        final Map destination= item.save ? toSave : notToSave;
-	        destination.put(item.name, Integer.valueOf(item.mode));
-	    }
-    }
+	private static void getModes(Collection items, Map toSave, Map notToSave) {
+		for (final Iterator iter = items.iterator(); iter.hasNext();) {
+			final FileTypeTable.Item item= (FileTypeTable.Item)iter.next();
+			final Map destination= item.save ? toSave : notToSave;
+			destination.put(item.name, Integer.valueOf(item.mode));
+		}
+	}
 
-    public KSubstOption getOption(IFile file) throws CVSException {
-        final String extension= file.getFileExtension();
-        if (extension != null) {
-            for (Iterator iter = fExtensions.iterator(); iter.hasNext();) {
-                final FileTypeTable.Item element = (FileTypeTable.Item) iter.next();
-                if (element.name.equals(extension)) {
-                    return element.mode == Team.TEXT ? KSubstOption.getDefaultTextMode() : Command.KSUBST_BINARY;
-                }
-            }
-        } else {
-            final String name= file.getName();
-            for (Iterator iter = fNames.iterator(); iter.hasNext();) {
-                FileTypeTable.Item item = (FileTypeTable.Item) iter.next();
-                if (item.name.equals(name)) {
-                    return item.mode == Team.TEXT ? KSubstOption.getDefaultTextMode() : Command.KSUBST_BINARY;
-                }
-            }
-        }
-        final ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(file);
+	public KSubstOption getOption(IFile file) throws CVSException {
+		final String extension= file.getFileExtension();
+		if (extension != null) {
+			for (Iterator iter = fExtensions.iterator(); iter.hasNext();) {
+				final FileTypeTable.Item element = (FileTypeTable.Item) iter.next();
+				if (element.name.equals(extension)) {
+					return element.mode == Team.TEXT ? KSubstOption.getDefaultTextMode() : Command.KSUBST_BINARY;
+				}
+			}
+		} else {
+			final String name= file.getName();
+			for (Iterator iter = fNames.iterator(); iter.hasNext();) {
+				FileTypeTable.Item item = (FileTypeTable.Item) iter.next();
+				if (item.name.equals(name)) {
+					return item.mode == Team.TEXT ? KSubstOption.getDefaultTextMode() : Command.KSUBST_BINARY;
+				}
+			}
+		}
+		final ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(file);
 		ResourceSyncInfo fileInfo = cvsFile.getSyncInfo();
 		return fileInfo != null ? fileInfo.getKeywordMode() : KSubstOption.fromFile(file);
-    }
-    
-    public static void saveExtensionMappings(Map modesToPersist) {
-        
-        final String [] extensions= new String [modesToPersist.size()];
-        final int [] modes= new int[modesToPersist.size()];
-        
-        int index= 0;
-        for (Iterator iter= modesToPersist.keySet().iterator(); iter.hasNext();) {
-            extensions[index]= (String) iter.next();
-            modes[index]= ((Integer)modesToPersist.get(extensions[index])).intValue();
-            ++index;
-        }
-        Team.getFileContentManager().addExtensionMappings(extensions, modes);
-    }
-    
-    public static void saveNameMappings(Map modesToPersist) {
-        
-        final String [] names= new String [modesToPersist.size()];
-        final int [] modes= new int[modesToPersist.size()];
-        
-        int index= 0;
-        for (Iterator iter= modesToPersist.keySet().iterator(); iter.hasNext();) {
-            names[index]= (String) iter.next();
-            modes[index]= ((Integer)modesToPersist.get(names[index])).intValue();
-            ++index;
-        }
-        Team.getFileContentManager().addNameMappings(names, modes);
-    }
+	}
+	
+	public static void saveExtensionMappings(Map modesToPersist) {
+		
+		final String [] extensions= new String [modesToPersist.size()];
+		final int [] modes= new int[modesToPersist.size()];
+		
+		int index= 0;
+		for (Iterator iter= modesToPersist.keySet().iterator(); iter.hasNext();) {
+			extensions[index]= (String) iter.next();
+			modes[index]= ((Integer)modesToPersist.get(extensions[index])).intValue();
+			++index;
+		}
+		Team.getFileContentManager().addExtensionMappings(extensions, modes);
+	}
+	
+	public static void saveNameMappings(Map modesToPersist) {
+		
+		final String [] names= new String [modesToPersist.size()];
+		final int [] modes= new int[modesToPersist.size()];
+		
+		int index= 0;
+		for (Iterator iter= modesToPersist.keySet().iterator(); iter.hasNext();) {
+			names[index]= (String) iter.next();
+			modes[index]= ((Integer)modesToPersist.get(names[index])).intValue();
+			++index;
+		}
+		Team.getFileContentManager().addNameMappings(names, modes);
+	}
 }

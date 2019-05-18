@@ -197,10 +197,10 @@ public abstract class DialogArea {
 	}
 
 	protected int convertVerticalDLUsToPixels(int dlus) {
-	    return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
+		return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
 	}
 
 	protected int convertHorizontalDLUsToPixels(int dlus) {
-	    return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
+		return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
 	}
 }

@@ -42,7 +42,7 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 	
 	@Override
 	public void execute() {
-    	final List resources = new ArrayList();
+		final List resources = new ArrayList();
 		try {
 			final IStructuredSelection selection = getActualSelection();
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
@@ -61,12 +61,12 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 			Utils.handleError(getConfiguration().getSite().getShell(), e, null, null);
 		}
 		if (!resources.isEmpty() && ((IResource[])resources.get(0)).length > 0) {
-	        Shell shell= getConfiguration().getSite().getShell();
-	        try {
-	            CommitWizard.run(getConfiguration().getSite().getPart(), shell, ((IResource[])resources.get(0)));
-	        } catch (CVSException e) {
-	            CVSUIPlugin.log(e);
-	        }
+			Shell shell= getConfiguration().getSite().getShell();
+			try {
+				CommitWizard.run(getConfiguration().getSite().getPart(), shell, ((IResource[])resources.get(0)));
+			} catch (CVSException e) {
+				CVSUIPlugin.log(e);
+			}
 		}
 	}
 	
@@ -76,7 +76,7 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 
 	protected abstract ResourceTraversal[] getCommitTraversals(IStructuredSelection selection, IProgressMonitor monitor) throws CoreException;
 	
-    public static IResource[] getOutgoingChanges(final IResourceDiffTree tree, ResourceTraversal[] traversals, IProgressMonitor monitor) {
+	public static IResource[] getOutgoingChanges(final IResourceDiffTree tree, ResourceTraversal[] traversals, IProgressMonitor monitor) {
 		final List<IResource> resources = new ArrayList<>();
 		IDiff[] diffs = tree.getDiffs(traversals);
 		for (int i = 0; i < diffs.length; i++) {
@@ -88,8 +88,8 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 			}
 		}
 		return resources.toArray(new IResource[resources.size()]);
-    }
-    
+	}
+	
 	public static boolean hasLocalChange(IDiff diff) {
 		if (diff instanceof IThreeWayDiff) {
 			IThreeWayDiff twd = (IThreeWayDiff) diff;

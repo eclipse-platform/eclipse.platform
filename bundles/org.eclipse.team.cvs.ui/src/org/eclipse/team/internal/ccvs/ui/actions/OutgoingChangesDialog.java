@@ -126,16 +126,16 @@ public class OutgoingChangesDialog extends DetailsDialog {
 		return false;
 	}
 	
-    @Override
+	@Override
 	protected void updateEnablements() {
-        // Can always finish
-        setPageComplete(true);
-    }
-    
-    @Override
+		// Can always finish
+		setPageComplete(true);
+	}
+	
+	@Override
 	protected boolean includeErrorMessage() {
-        return false;
-    }
+		return false;
+	}
 
 	public void setHelpContextId(String helpContextId) {
 		this.helpContextId = helpContextId;	

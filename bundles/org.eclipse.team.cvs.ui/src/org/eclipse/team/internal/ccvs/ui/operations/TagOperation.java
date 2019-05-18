@@ -84,12 +84,12 @@ public class TagOperation extends RepositoryProviderOperation implements ITagOpe
 	public IStatus tag(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor progress) throws CVSException {
 						
 		LocalOption[] commandOptions = localOptions.toArray(new LocalOption[localOptions.size()]);
-        if (recurse) {
-            commandOptions = Command.DO_NOT_RECURSE.removeFrom(commandOptions);
-        } else {
-            commandOptions = Command.RECURSE.removeFrom(commandOptions);
-            commandOptions = Command.DO_NOT_RECURSE.addTo(commandOptions);
-        }
+		if (recurse) {
+			commandOptions = Command.DO_NOT_RECURSE.removeFrom(commandOptions);
+		} else {
+			commandOptions = Command.RECURSE.removeFrom(commandOptions);
+			commandOptions = Command.DO_NOT_RECURSE.addTo(commandOptions);
+		}
 				
 		// Build the arguments list
 		String[] arguments = getStringArguments(resources);
@@ -150,21 +150,21 @@ public class TagOperation extends RepositoryProviderOperation implements ITagOpe
 		}
 	}
 
-    private ICVSResource[] getCVSResources() {
-        IResource[] resources = getTraversalRoots();
-        ICVSResource[] cvsResources = new ICVSResource[resources.length];
-        for (int i = 0; i < resources.length; i++) {
-            cvsResources[i] = CVSWorkspaceRoot.getCVSResourceFor(resources[i]);
-        }
-        return cvsResources;
-    }
+	private ICVSResource[] getCVSResources() {
+		IResource[] resources = getTraversalRoots();
+		ICVSResource[] cvsResources = new ICVSResource[resources.length];
+		for (int i = 0; i < resources.length; i++) {
+			cvsResources[i] = CVSWorkspaceRoot.getCVSResourceFor(resources[i]);
+		}
+		return cvsResources;
+	}
 
-    @Override
+	@Override
 	public TagSource getTagSource() {
-       return TagSource.create(getProjects());
-    }
+		return TagSource.create(getProjects());
+	}
 
-    private IProject[] getProjects() {
+	private IProject[] getProjects() {
 		ResourceMapping[] mappings = getSelectedMappings();
 		Set<IProject> projects = new HashSet<>();
 		for (int i = 0; i < mappings.length; i++) {
@@ -176,12 +176,12 @@ public class TagOperation extends RepositoryProviderOperation implements ITagOpe
 
 	@Override
 	protected boolean isReportableError(IStatus status) {
-        return super.isReportableError(status)
-        	|| status.getCode() == CVSStatus.TAG_ALREADY_EXISTS;
-    }
+		return super.isReportableError(status)
+			|| status.getCode() == CVSStatus.TAG_ALREADY_EXISTS;
+	}
 
-    @Override
+	@Override
 	public boolean isEmpty() {
-        return getSelectedMappings().length == 0;
-    }
+		return getSelectedMappings().length == 0;
+	}
 }

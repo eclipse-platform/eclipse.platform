@@ -104,11 +104,11 @@ public class OpenInCompareAction extends Action {
 			// all files
 			IResource resources[] = Utils.getResources(elements);
 			for (int i = 0; i < resources.length; i++) {
-	            if (resources[i].getType() != IResource.FILE) {
-	                // Only supported if all the items are files.
-	                return false;
-	            }
-	        }
+				if (resources[i].getType() != IResource.FILE) {
+					// Only supported if all the items are files.
+					return false;
+				}
+			}
 		}
 		return true;
 	}
@@ -210,32 +210,32 @@ public class OpenInCompareAction extends Action {
 		return page;
 	}
 
-    public static void openCompareEditor(CompareEditorInput input, IWorkbenchPage page) {
-    	// try to reuse editors, if possible
+	public static void openCompareEditor(CompareEditorInput input, IWorkbenchPage page) {
+		// try to reuse editors, if possible
 		openCompareEditor(input, page, true);
 	}
 
-    public static void openCompareEditor(CompareEditorInput input, IWorkbenchPage page, boolean reuseEditorIfPossible) {
-        if (page == null || input == null)
-            return;
+	public static void openCompareEditor(CompareEditorInput input, IWorkbenchPage page, boolean reuseEditorIfPossible) {
+		if (page == null || input == null)
+			return;
 		IEditorPart editor = Utils.findReusableCompareEditor(input, page,
 				new Class[] { SyncInfoCompareInput.class,
 						ModelCompareEditorInput.class });
-        // reuse editor only for single selection
-        if(editor != null && reuseEditorIfPossible) {
-        	IEditorInput otherInput = editor.getEditorInput();
-        	if(otherInput.equals(input)) {
-        		// simply provide focus to editor
-        		page.activate(editor);
-        	} else {
-        		// if editor is currently not open on that input either re-use existing
-        		CompareUI.reuseCompareEditor(input, (IReusableEditor)editor);
-        		page.activate(editor);
-        	}
-        } else {
-        	CompareUI.openCompareEditorOnPage(input, page);
-        }
-    }
+		// reuse editor only for single selection
+		if(editor != null && reuseEditorIfPossible) {
+			IEditorInput otherInput = editor.getEditorInput();
+			if(otherInput.equals(input)) {
+				// simply provide focus to editor
+				page.activate(editor);
+			} else {
+				// if editor is currently not open on that input either re-use existing
+				CompareUI.reuseCompareEditor(input, (IReusableEditor)editor);
+				page.activate(editor);
+			}
+		} else {
+			CompareUI.openCompareEditorOnPage(input, page);
+		}
+	}
 
 	/**
 	 * Returns an editor handle if a SyncInfoCompareInput compare editor is opened on

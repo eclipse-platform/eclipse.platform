@@ -213,7 +213,7 @@ public class ModelSynchronizeParticipant extends
 	 * @since 3.1
 	 */
 	protected final String getShortName() {
-	    return super.getName();
+		return super.getName();
 	}
 
 	@Override
@@ -365,9 +365,9 @@ public class ModelSynchronizeParticipant extends
 
 	private void internalRefresh(ResourceMapping[] mappings, String jobName, String taskName, IWorkbenchSite site, IRefreshSubscriberListener listener) {
 		if (jobName == null)
-		    jobName = getShortTaskName();
+			jobName = getShortTaskName();
 		if (taskName == null)
-		    taskName = getLongTaskName(mappings);
+			taskName = getLongTaskName(mappings);
 		Job.getJobManager().cancel(this);
 		RefreshParticipantJob job = new RefreshModelParticipantJob(this, jobName, taskName, mappings, listener);
 		job.setUser(true);
@@ -401,22 +401,22 @@ public class ModelSynchronizeParticipant extends
 	 * @return the long task name
 	 * @since 3.1
 	 */
-    protected String getLongTaskName(ResourceMapping[] mappings) {
-        if (mappings == null) {
-        	// If the mappings are null, assume we are refreshing everything
-            mappings = getContext().getScope().getMappings();
-        }
-        int mappingCount = mappings.length;
-        if (mappingCount == getContext().getScope().getMappings().length) {
-        	// Assume we are refreshing everything and only use the input mapping count
-        	mappings = getContext().getScope().getInputMappings();
-        	mappingCount = mappings.length;
-        }
-        if (mappingCount == 1) {
-            return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), Utils.getLabel(mappings[0]) });
-        }
-        return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(mappingCount) });
-    }
+	protected String getLongTaskName(ResourceMapping[] mappings) {
+		if (mappings == null) {
+			// If the mappings are null, assume we are refreshing everything
+			mappings = getContext().getScope().getMappings();
+		}
+		int mappingCount = mappings.length;
+		if (mappingCount == getContext().getScope().getMappings().length) {
+			// Assume we are refreshing everything and only use the input mapping count
+			mappings = getContext().getScope().getInputMappings();
+			mappingCount = mappings.length;
+		}
+		if (mappingCount == 1) {
+			return NLS.bind(TeamUIMessages.Participant_synchronizingMoreDetails, new String[] { getShortName(), Utils.getLabel(mappings[0]) });
+		}
+		return NLS.bind(TeamUIMessages.Participant_synchronizingResources, new String[] { getShortName(), Integer.toString(mappingCount) });
+	}
 
 	private IRefreshable createRefreshable() {
 		return new IRefreshable() {
@@ -576,10 +576,10 @@ public class ModelSynchronizeParticipant extends
 			if (refreshSchedule != null) {
 				refreshSchedule.dispose();
 			}
-	        this.refreshSchedule = schedule;
+			this.refreshSchedule = schedule;
 		}
 		// Always fir the event since the schedule may have been changed
-        firePropertyChange(this, AbstractSynchronizeParticipant.P_SCHEDULED, schedule, schedule);
+		firePropertyChange(this, AbstractSynchronizeParticipant.P_SCHEDULED, schedule, schedule);
 	}
 
 	/**

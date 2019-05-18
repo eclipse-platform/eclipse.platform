@@ -227,8 +227,8 @@ public class CVSProjectPropertiesPage extends CVSPropertiesPage {
 		});
 		
 		initializeValues(oldLocation);
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.PROJECT_PROPERTY_PAGE);
-        Dialog.applyDialogFont(parent);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.PROJECT_PROPERTY_PAGE);
+		Dialog.applyDialogFont(parent);
 		return composite;
 	}
 	/**
@@ -308,7 +308,7 @@ public class CVSProjectPropertiesPage extends CVSPropertiesPage {
 			hostText.setText(location.getHost());
 			int port = location.getPort();
 			if (port == ICVSRepositoryLocation.USE_DEFAULT_PORT) {
-                portText.setText(CVSUIMessages.CVSPropertiesPage_defaultPort); 
+				portText.setText(CVSUIMessages.CVSPropertiesPage_defaultPort); 
 			} else {
 				portText.setText("" + port); //$NON-NLS-1$
 			}

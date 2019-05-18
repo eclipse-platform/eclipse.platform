@@ -28,7 +28,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.ReplaceOperation;
  * Action for replace with tag.
  */
 public abstract class ReplaceWithTagAction extends WorkspaceTraversalAction {
-    
+	
 	@Override
 	public void execute(IAction action) throws InterruptedException, InvocationTargetException {
 		final ReplaceOperation replaceOperation= createReplaceOperation();

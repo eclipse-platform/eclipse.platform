@@ -39,7 +39,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * refreshed.
  */
 public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
-    
+	
 	private ICVSRemoteResource[] rootFolders;
 	private ListSelectionArea listArea;
 	private WorkingSetSelectionArea workingSetArea;
@@ -102,7 +102,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 		setControl(composite);
 		
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.REFRESH_REMOTE_PROJECT_SELECTION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.REFRESH_REMOTE_PROJECT_SELECTION_PAGE);
 		
 		listArea = new ListSelectionArea( 
 			new InputElement(), 
@@ -129,7 +129,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 			}
 		});
 		workingSetArea.createArea(composite);
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	/**

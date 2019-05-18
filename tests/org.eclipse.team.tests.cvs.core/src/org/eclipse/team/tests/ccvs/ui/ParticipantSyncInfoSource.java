@@ -33,13 +33,13 @@ import org.eclipse.ui.part.IPage;
 
 public class ParticipantSyncInfoSource extends SyncInfoSource {
 
-    public static ISynchronizePage getSyncViewPage(ISynchronizeParticipant participant) throws PartInitException {
+	public static ISynchronizePage getSyncViewPage(ISynchronizeParticipant participant) throws PartInitException {
 		IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
 		ISynchronizeView view = (ISynchronizeView)activePage.showView(ISynchronizeView.VIEW_ID);
 		IPage page = ((SynchronizeView)view).getPage(participant);
 		return (ISynchronizePage)page;
 	}
-    
+	
 	public ParticipantSyncInfoSource() {
 		IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
 		try {
@@ -91,13 +91,13 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 	 * @param subscriber the subscriber
 	 */
 	public void assertViewMatchesModel(Subscriber subscriber) {
-	    // Default is to do nothing. Subclasses may override
+		// Default is to do nothing. Subclasses may override
 	}
 	
-    public void refresh(Subscriber subscriber, IResource[] resources)
-            throws TeamException {
-        super.refresh(subscriber, resources);
+	public void refresh(Subscriber subscriber, IResource[] resources)
+			throws TeamException {
+		super.refresh(subscriber, resources);
 		assertViewMatchesModel(subscriber);
-    }
+	}
 
 }

@@ -733,9 +733,9 @@ public class ModeWizardSelectionPage extends WizardPage {
 		 * The main composite with the vertical sash
 		 */
 		final Composite mainComposite= SWTUtils.createHVFillComposite(parent, SWTUtils.MARGINS_DEFAULT);
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(mainComposite, IHelpContextIds.KEYWORD_SUBSTITUTION_PAGE);
-        
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(mainComposite, IHelpContextIds.KEYWORD_SUBSTITUTION_PAGE);
+		
 		final SashForm mainSash= new SashForm(mainComposite, SWT.VERTICAL);
 		mainSash.setLayoutData(SWTUtils.createHVFillGridData());
 		

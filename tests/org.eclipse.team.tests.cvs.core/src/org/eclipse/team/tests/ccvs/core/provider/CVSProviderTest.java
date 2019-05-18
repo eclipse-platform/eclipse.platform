@@ -513,13 +513,13 @@ public class CVSProviderTest extends EclipseTest {
 			
 			IProject project = createProject("test33984", new String[] { "a.txt", "b.txt" });
 			setContentsAndEnsureModified(project.getFile("a.txt"), "line 1");
-		    setContentsAndEnsureModified(project.getFile("b.txt"), ("line 1" + EOL + "line 2" + EOL + "line3"));
+			setContentsAndEnsureModified(project.getFile("b.txt"), ("line 1" + EOL + "line 2" + EOL + "line3"));
 
 		Map<IFile, KSubstOption> kMode = new HashMap<>();
 			kMode.put(project.getFile("a.txt"), Command.KSUBST_TEXT);
 			kMode.put(project.getFile("b.txt"), Command.KSUBST_TEXT);
 			getProvider(project).setKeywordSubstitution(kMode, "", null);
-		    
+			
 			commitProject(project);
 			
 
@@ -531,7 +531,7 @@ public class CVSProviderTest extends EclipseTest {
 			// TEST 1: simulate modifying same file by different users
 			// b.txt has non-conflicting changes 
 			setContentsAndEnsureModified(copy.getFile("b.txt"), ("line 1a" + EOL + "line 2" + EOL + "line3"));
-		    
+			
 			commitProject(copy);
 			
 			// user updates which would cause a merge with conflict, a commit should not be allowed
@@ -542,7 +542,7 @@ public class CVSProviderTest extends EclipseTest {
 
 			// TEST 2: a.txt has conflicting changes
 			setContentsAndEnsureModified(copy.getFile("a.txt"), "line 1dfgdfne3");
-  
+	
 			commitProject(copy);
 			
 			// user updates which would cause a merge with conflict, a commit should not be allowed
@@ -591,7 +591,7 @@ public class CVSProviderTest extends EclipseTest {
 		assertTrue(status.isOK());
 	}
 
-    private IStatus executeCommand(IProject project, Update update, LocalOption[] options) throws CVSException {
+	private IStatus executeCommand(IProject project, Update update, LocalOption[] options) throws CVSException {
 		Session session = new Session(getRepository(), CVSWorkspaceRoot.getCVSFolderFor(project));
 		session.open(DEFAULT_MONITOR);
 		try {
@@ -607,81 +607,81 @@ public class CVSProviderTest extends EclipseTest {
 		}
 		
 	}
-    
+	
 	private void setOnlyLookAtTimestamps(boolean b) {
 		CVSUIPlugin.getPlugin().getPreferenceStore().setValue(ICVSUIConstants.PREF_CONSIDER_CONTENTS, !b);
 	}
 
-    public void testUpdateWithNoChange() throws TeamException, CoreException {
-        IProject project = createProject(new String[] { "a.txt"});
-        setContentsAndEnsureModified(project.getFile("a.txt"), "contents");
-        commitProject(project);
-        setOnlyLookAtTimestamps(true);
-        // set the contents to the same value but ensure the local timestamp is different
-        setContentsAndEnsureModified(project.getFile("a.txt"), "contents");
-        // Update and ensure file timestamp is what is was before out edit
-        updateProject(project, null, false);
-        Date modDate = CVSWorkspaceRoot.getCVSFileFor(project.getFile("a.txt")).getSyncInfo().getTimeStamp();
-        assertEquals("Timestamp was not properly reset", modDate, CVSWorkspaceRoot.getCVSFileFor(project.getFile("a.txt")).getTimeStamp());
-        setOnlyLookAtTimestamps(false);
-    }
-    
-    public void testBinaryAddition() throws CoreException {
-    	// See bug 132255
-    	KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
-    	try {
-	    	CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
-	    	IProject project = createProject(new String[] { "a.txt"});
-	    	IProject copy = checkoutCopy(project, "-copy");
-	    	create(copy.getFile("binaryFile"), true);
-	    	setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
-	    	addResources(new IResource[] { copy.getFile("binaryFile") });
-	    	commitProject(copy);
-	    	updateProject(project, null, false);
-	    	assertContentsEqual(copy.getFile("binaryFile"), project.getFile("binaryFile"));
-    	} finally {
-    		CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
-    	}
-    }
-    
-    public void testDeletedPhantom139250() throws CoreException {
-    	IProject project = createProject(new String[] { "a.txt"});
-    	// Create a phantom folder that is mapped to a remote folder
-    	// but for which no remote exists
-    	ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project.getFolder("phantom"));
-    	ICVSFolder projectFolder = CVSWorkspaceRoot.getCVSFolderFor(project);
-    	FolderSyncInfo projectInfo = projectFolder.getFolderSyncInfo();
-    	String repo = Util.appendPath(projectInfo.getRepository(), "phantom");
-    	FolderSyncInfo info = new FolderSyncInfo(repo, projectInfo.getRoot(), projectInfo.getTag(), false);
-    	folder.setFolderSyncInfo(info);
-    	updateProject(project, null, false);
-    }
-    
-    public void testUpdateOfDeletedFile140007() throws CoreException {
-    	IProject project = createProject(new String[] { "a.txt"});
-    	IProject copy = checkoutCopy(project, "-copy");
-    	deleteResources(copy, new String[] { "a.txt"}, true);
-    	updateResources(project, new String[] { "a.txt"}, false);
-    }
-    
-    public void testUpdateOfRemotelyRemovedFile() throws CoreException, IOException {
-    	IProject project = createProject(new String[] { "a.txt"});
-    	IProject copy = checkoutCopy(project, "-copy");
-    	//Create a file and add it to version control (but don't commit)
-    	addResources(copy, new String[] { "b.txt"}, false);
-    	// Change the revision of the file so it appears to exist remotely
-    	ICVSFile file = CVSWorkspaceRoot.getCVSFileFor(copy.getFile("b.txt"));
-    	byte[] syncBytes = file.getSyncBytes();
-    	syncBytes = ResourceSyncInfo.setRevision(syncBytes, "1.1");
-    	file.setSyncBytes(syncBytes, ICVSFile.UNKNOWN);
-    	file.checkedIn(null, true);
-    	// Update the project and verify that the file gets removed
-    	updateProject(copy, null, false);
-    	assertEquals(project, copy);
-    	
-    }
-    
-    public void testMergeWithTrailingLineFeeds() throws CoreException, IOException {
+	public void testUpdateWithNoChange() throws TeamException, CoreException {
+		IProject project = createProject(new String[] { "a.txt"});
+		setContentsAndEnsureModified(project.getFile("a.txt"), "contents");
+		commitProject(project);
+		setOnlyLookAtTimestamps(true);
+		// set the contents to the same value but ensure the local timestamp is different
+		setContentsAndEnsureModified(project.getFile("a.txt"), "contents");
+		// Update and ensure file timestamp is what is was before out edit
+		updateProject(project, null, false);
+		Date modDate = CVSWorkspaceRoot.getCVSFileFor(project.getFile("a.txt")).getSyncInfo().getTimeStamp();
+		assertEquals("Timestamp was not properly reset", modDate, CVSWorkspaceRoot.getCVSFileFor(project.getFile("a.txt")).getTimeStamp());
+		setOnlyLookAtTimestamps(false);
+	}
+	
+	public void testBinaryAddition() throws CoreException {
+		// See bug 132255
+		KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
+		try {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
+			IProject project = createProject(new String[] { "a.txt"});
+			IProject copy = checkoutCopy(project, "-copy");
+			create(copy.getFile("binaryFile"), true);
+			setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
+			addResources(new IResource[] { copy.getFile("binaryFile") });
+			commitProject(copy);
+			updateProject(project, null, false);
+			assertContentsEqual(copy.getFile("binaryFile"), project.getFile("binaryFile"));
+		} finally {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
+		}
+	}
+	
+	public void testDeletedPhantom139250() throws CoreException {
+		IProject project = createProject(new String[] { "a.txt"});
+		// Create a phantom folder that is mapped to a remote folder
+		// but for which no remote exists
+		ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project.getFolder("phantom"));
+		ICVSFolder projectFolder = CVSWorkspaceRoot.getCVSFolderFor(project);
+		FolderSyncInfo projectInfo = projectFolder.getFolderSyncInfo();
+		String repo = Util.appendPath(projectInfo.getRepository(), "phantom");
+		FolderSyncInfo info = new FolderSyncInfo(repo, projectInfo.getRoot(), projectInfo.getTag(), false);
+		folder.setFolderSyncInfo(info);
+		updateProject(project, null, false);
+	}
+	
+	public void testUpdateOfDeletedFile140007() throws CoreException {
+		IProject project = createProject(new String[] { "a.txt"});
+		IProject copy = checkoutCopy(project, "-copy");
+		deleteResources(copy, new String[] { "a.txt"}, true);
+		updateResources(project, new String[] { "a.txt"}, false);
+	}
+	
+	public void testUpdateOfRemotelyRemovedFile() throws CoreException, IOException {
+		IProject project = createProject(new String[] { "a.txt"});
+		IProject copy = checkoutCopy(project, "-copy");
+		//Create a file and add it to version control (but don't commit)
+		addResources(copy, new String[] { "b.txt"}, false);
+		// Change the revision of the file so it appears to exist remotely
+		ICVSFile file = CVSWorkspaceRoot.getCVSFileFor(copy.getFile("b.txt"));
+		byte[] syncBytes = file.getSyncBytes();
+		syncBytes = ResourceSyncInfo.setRevision(syncBytes, "1.1");
+		file.setSyncBytes(syncBytes, ICVSFile.UNKNOWN);
+		file.checkedIn(null, true);
+		// Update the project and verify that the file gets removed
+		updateProject(copy, null, false);
+		assertEquals(project, copy);
+		
+	}
+	
+	public void testMergeWithTrailingLineFeeds() throws CoreException, IOException {
 		IProject project = createProject("testFileConflict", new String[] { "file1.txt"});
 		// Set the contents of file1.txt to ensure proper merging 
 		// Ensure there is a trailing LF
@@ -701,56 +701,56 @@ public class CVSProviderTest extends EclipseTest {
 		assertTrue("File contents are not correct after merge", compareContent(
 				new ByteArrayInputStream(("line0" + eol + "line1" + eol + "line2" + eol + "line2.5" + eol + "line3" + eol).getBytes()), 
 						project.getFile("file1.txt").getContents()));
-    }
-    
-    public void testRevertToBaseHeadTag() throws CoreException, IOException{
-    	IProject project = createProject("testRevertToBase", new String[] {"file1.txt"});
-    	setContentsAndEnsureModified(project.getFile("file1.txt"), "line1" + eol + "line2" + eol + "line3" + eol);
-    	commitProject(project);
-    	IProject copy = checkoutCopy(project, "-copy");
-    	appendText(project.getFile("file1.txt"), "line0" + eol, true);
-    	updateProject(project, CVSTag.BASE, true);
-    	assertTrue("File has changed after revert to base",
-    			compareContent(new ByteArrayInputStream(("line1" + eol + "line2" + eol + "line3" + eol).getBytes()),
-    					project.getFile("file1.txt").getContents()));
-    	assertEquals(getRepositoryProvider(copy), getRepositoryProvider(project), false, true);
-    }
-    
-    private CVSTeamProvider getRepositoryProvider(IProject project) {
+	}
+	
+	public void testRevertToBaseHeadTag() throws CoreException, IOException{
+		IProject project = createProject("testRevertToBase", new String[] {"file1.txt"});
+		setContentsAndEnsureModified(project.getFile("file1.txt"), "line1" + eol + "line2" + eol + "line3" + eol);
+		commitProject(project);
+		IProject copy = checkoutCopy(project, "-copy");
+		appendText(project.getFile("file1.txt"), "line0" + eol, true);
+		updateProject(project, CVSTag.BASE, true);
+		assertTrue("File has changed after revert to base",
+				compareContent(new ByteArrayInputStream(("line1" + eol + "line2" + eol + "line3" + eol).getBytes()),
+						project.getFile("file1.txt").getContents()));
+		assertEquals(getRepositoryProvider(copy), getRepositoryProvider(project), false, true);
+	}
+	
+	private CVSTeamProvider getRepositoryProvider(IProject project) {
 		return (CVSTeamProvider)RepositoryProvider.getProvider(project);
 	}
 
 	public void testRevertToBaseNonHeadTag() throws CoreException, IOException{
-    	IProject project = createProject("testRevertToBaseNonHead", new String[] {"file1.txt"});
-    	setContentsAndEnsureModified(project.getFile("file1.txt"), "line1" + eol + "line2" + eol);
-    	commitProject(project);
-    	tagProject(project, new CVSTag("testtag", CVSTag.BRANCH), true);
-    	appendText(project.getFile("file1.txt"), "line3" + eol, true);
-    	commitProject(project);
-    	IProject copy = checkoutCopy(project, "-copy");
-    	appendText(copy.getFile("file1.txt"), "line0" + eol, true);
-    	updateProject(copy, CVSTag.BASE, true);
-    	assertTrue("File has changed after revert to base",
-    			compareContent(new ByteArrayInputStream(("line3" + eol + "line1" + eol + "line2" + eol).getBytes()),
-    					copy.getFile("file1.txt").getContents()));
-    	assertEquals(getRepositoryProvider(project), getRepositoryProvider(copy), false, true);
-    }
+		IProject project = createProject("testRevertToBaseNonHead", new String[] {"file1.txt"});
+		setContentsAndEnsureModified(project.getFile("file1.txt"), "line1" + eol + "line2" + eol);
+		commitProject(project);
+		tagProject(project, new CVSTag("testtag", CVSTag.BRANCH), true);
+		appendText(project.getFile("file1.txt"), "line3" + eol, true);
+		commitProject(project);
+		IProject copy = checkoutCopy(project, "-copy");
+		appendText(copy.getFile("file1.txt"), "line0" + eol, true);
+		updateProject(copy, CVSTag.BASE, true);
+		assertTrue("File has changed after revert to base",
+				compareContent(new ByteArrayInputStream(("line3" + eol + "line1" + eol + "line2" + eol).getBytes()),
+						copy.getFile("file1.txt").getContents()));
+		assertEquals(getRepositoryProvider(project), getRepositoryProvider(copy), false, true);
+	}
 	
-    public void testSwitchTagForModifiedFile()throws CoreException, IOException {
-    	// it's a similar scenario as in https://bugs.eclipse.org/bugs/show_bug.cgi?id=192392
-    	// create a project
-    	IProject project = createProject("testSwitchTagForModifiedFile", new String[] {"file"});
-    	commitProject(project);
-    	// tag it
-    	CVSTag tag = new CVSTag("A", CVSTag.BRANCH);
-    	tagProject(project, tag, true);
-    	// modify a file
-    	appendText(project.getFile("file"), "changed in head" + eol, false);
-    	// switch to the tag
-    	updateProject(project, tag, false);
-    	ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(project.getFile("file"));
-    	// we expect the file to have the same tag used when switching 
-    	assertEquals(tag, cvsFile.getSyncInfo().getTag());
-    }
+	public void testSwitchTagForModifiedFile()throws CoreException, IOException {
+		// it's a similar scenario as in https://bugs.eclipse.org/bugs/show_bug.cgi?id=192392
+		// create a project
+		IProject project = createProject("testSwitchTagForModifiedFile", new String[] {"file"});
+		commitProject(project);
+		// tag it
+		CVSTag tag = new CVSTag("A", CVSTag.BRANCH);
+		tagProject(project, tag, true);
+		// modify a file
+		appendText(project.getFile("file"), "changed in head" + eol, false);
+		// switch to the tag
+		updateProject(project, tag, false);
+		ICVSFile cvsFile = CVSWorkspaceRoot.getCVSFileFor(project.getFile("file"));
+		// we expect the file to have the same tag used when switching 
+		assertEquals(tag, cvsFile.getSyncInfo().getTag());
+	}
 }
 

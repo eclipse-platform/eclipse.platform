@@ -667,14 +667,14 @@ public class SyncInfoSet {
 		return errors.values().toArray(new ITeamStatus[errors.size()]);
 	}
 
-    /**
-     * Return an iterator over all <code>SyncInfo</code>
-     * contained in this set.
-     * @return an iterator over all <code>SyncInfo</code>
-     * contained in this set.
-     * @since 3.1
-     */
-    public Iterator iterator() {
-        return resources.values().iterator();
-    }
+	/**
+	 * Return an iterator over all <code>SyncInfo</code>
+	 * contained in this set.
+	 * @return an iterator over all <code>SyncInfo</code>
+	 * contained in this set.
+	 * @since 3.1
+	 */
+	public Iterator iterator() {
+		return resources.values().iterator();
+	}
 }

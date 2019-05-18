@@ -98,10 +98,10 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 	}
 	
 	protected static SyncInfo getSyncInfo(ISynchronizeModelElement element) {
-	    if (element instanceof IAdaptable) {
-		    return ((IAdaptable)element).getAdapter(SyncInfo.class);
-	    }
-	    return null;
+		if (element instanceof IAdaptable) {
+			return ((IAdaptable)element).getAdapter(SyncInfo.class);
+		}
+		return null;
 	}
 	
 	public void prepareCompareInput(ISynchronizeModelElement element,

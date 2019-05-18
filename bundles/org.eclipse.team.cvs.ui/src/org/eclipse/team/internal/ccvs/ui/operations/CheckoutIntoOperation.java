@@ -250,10 +250,10 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 					FolderSyncInfo info = folder.getFolderSyncInfo();
 					if (info.isSameMapping(remoteInfo)) {
 						throw new CVSException(NLS.bind(CVSUIMessages.CheckoutIntoOperation_mappingAlreadyExists, (new Object[] {
-                        	remoteFolder.getName(), 
-                        	targetFolder.getIResource().getFullPath().toString(),
-                        	resource.getFullPath().toString()
-                        })));
+							remoteFolder.getName(), 
+							targetFolder.getIResource().getFullPath().toString(),
+							resource.getFullPath().toString()
+						})));
 					}
 					folder.acceptChildren(this);
 				}
@@ -418,9 +418,9 @@ public class CheckoutIntoOperation extends CheckoutOperation {
 		//use the modfiy rule for the time being
 		//TODO: Just lock the project not the entire workspace (so can't use modifyRule)
 		//since the project already exists 
-		 IProject tempProject = getLocalFolder().getIResource().getProject();
-		 IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace().getRuleFactory();
-		 return ruleFactory.modifyRule(tempProject);
+		IProject tempProject = getLocalFolder().getIResource().getProject();
+		IResourceRuleFactory ruleFactory = ResourcesPlugin.getWorkspace().getRuleFactory();
+		return ruleFactory.modifyRule(tempProject);
 	}
 
 }

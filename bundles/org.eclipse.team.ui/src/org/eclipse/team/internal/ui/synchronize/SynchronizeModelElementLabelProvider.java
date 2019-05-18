@@ -210,7 +210,7 @@ public class SynchronizeModelElementLabelProvider extends LabelProvider implemen
 
 	@Override
 	public void dispose() {
-        workbenchLabelProvider.dispose();
+		workbenchLabelProvider.dispose();
 		if(busyFont != null) {
 			busyFont.dispose();
 		}

@@ -148,20 +148,20 @@ public class SyncInfo implements IAdaptable {
 	/*====================================================================
 	 * Members:
 	 *====================================================================*/
-	 private IResource local;
-	 private IResourceVariant base;
-	 private IResourceVariant remote;
-	 private IResourceVariantComparator comparator;
+	private IResource local;
+	private IResourceVariant base;
+	private IResourceVariant remote;
+	private IResourceVariantComparator comparator;
 
-	 private int syncKind;
+	private int syncKind;
 
-	 /**
-	  * Construct a sync info object.
-	  * @param local the local resource. Must be non-null but may not exist.
-	  * @param base the base resource variant or <code>null</code>
-	  * @param remote the remote resource variant or <code>null</code>
-	  * @param comparator the comparator used to determine if resources differ
-	  */
+	/**
+	 * Construct a sync info object.
+	 * @param local the local resource. Must be non-null but may not exist.
+	 * @param base the base resource variant or <code>null</code>
+	 * @param remote the remote resource variant or <code>null</code>
+	 * @param comparator the comparator used to determine if resources differ
+	 */
 	public SyncInfo(IResource local, IResourceVariant base, IResourceVariant remote, IResourceVariantComparator comparator) {
 		Assert.isNotNull(local);
 		Assert.isNotNull(comparator);

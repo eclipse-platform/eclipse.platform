@@ -63,10 +63,10 @@ public class ReentrantLock extends BatchingLock {
 	}
 	
 	@Override
-    protected ThreadInfo createThreadInfo(IFlushOperation operation) {
-        return new CVSThreadInfo(operation);
-    }
-    
+	protected ThreadInfo createThreadInfo(IFlushOperation operation) {
+		return new CVSThreadInfo(operation);
+	}
+	
 	public void folderChanged(IContainer folder) {
 		CVSThreadInfo info = (CVSThreadInfo)getThreadInfo();
 		Assert.isNotNull(info, "Folder changed outside of resource lock"); //$NON-NLS-1$

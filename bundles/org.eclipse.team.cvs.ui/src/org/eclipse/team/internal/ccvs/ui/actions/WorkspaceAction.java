@@ -353,7 +353,7 @@ public abstract class WorkspaceAction extends CVSAction {
 		return true;
 	}
 
-    /**
+	/**
 	 * Method isEnabledForCVSResource.
 	 * @param cvsResource
 	 * @return boolean

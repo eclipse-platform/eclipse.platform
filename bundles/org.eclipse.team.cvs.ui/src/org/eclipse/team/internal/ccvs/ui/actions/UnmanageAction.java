@@ -91,7 +91,7 @@ public class UnmanageAction extends WorkspaceAction {
 			radio1.setSelection(deleteContent);
 			radio2.setSelection(!deleteContent);
 			
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.DISCONNECT_ACTION);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.DISCONNECT_ACTION);
 			
 			return composite;
 		}

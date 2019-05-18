@@ -24,18 +24,18 @@ import org.eclipse.team.internal.ccvs.ui.model.CVSTagElement;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class TagElement implements IWorkbenchAdapter, IAdaptable {
-    Object parent;
+	Object parent;
 	CVSTag tag;
 	
 	public static ImageDescriptor getImageDescriptor(CVSTag tag) {
-        if (tag.getType() == CVSTag.BRANCH || tag.equals(CVSTag.DEFAULT)) {
+		if (tag.getType() == CVSTag.BRANCH || tag.equals(CVSTag.DEFAULT)) {
 			return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_TAG);
 		} else if (tag.getType() == CVSTag.DATE){
 			return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_DATE);
 		}else {
 			return CVSUIPlugin.getPlugin().getImageDescriptor(ICVSUIConstants.IMG_PROJECT_VERSION);
 		}
-    }
+	}
 	
 	/**
 	 * @deprecated
@@ -46,7 +46,7 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 		this(null, tag);
 	}
 	public TagElement(Object parent, CVSTag tag) {
-	    this.parent = parent;
+		this.parent = parent;
 		this.tag = tag;
 	}
 	@Override
@@ -62,7 +62,7 @@ public class TagElement implements IWorkbenchAdapter, IAdaptable {
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return getImageDescriptor(tag);
 	}
-    @Override
+	@Override
 	public String getLabel(Object o) {
 		if(tag.getType() == CVSTag.DATE){
 			Date date = tag.asDate();

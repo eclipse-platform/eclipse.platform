@@ -310,15 +310,15 @@ public abstract class SubscriberEventHandler extends BackgroundEventHandler {
 					break;
 				case SubscriberEvent.CHANGE :
 					collect(
-					    event.getResource(),
-					    ((ResourceEvent)event).getDepth(),
+						event.getResource(),
+						((ResourceEvent)event).getDepth(),
 						monitor);
 					break;
 				case SubscriberEvent.INITIALIZE :
 					monitor.subTask(NLS.bind(Messages.SubscriberEventHandler_2, new String[] { event.getResource().getFullPath().toString() }));
 					collectAll(
-					        event.getResource(),
-					        ((ResourceEvent)event).getDepth(),
+							event.getResource(),
+							((ResourceEvent)event).getDepth(),
 							Policy.subMonitorFor(monitor, 64));
 					break;
 			}

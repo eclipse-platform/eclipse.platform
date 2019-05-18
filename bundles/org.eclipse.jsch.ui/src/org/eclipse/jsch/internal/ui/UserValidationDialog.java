@@ -62,7 +62,7 @@ public class UserValidationDialog extends TrayDialog {
 	 */
 	public UserValidationDialog(Shell parentShell, String location, String defaultName, String message) {
 		super(parentShell);
-        setShellStyle(getShellStyle() | SWT.RESIZE);
+		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.defaultUsername = defaultName;
 		this.domain = location;
 		this.message = message;
@@ -72,7 +72,7 @@ public class UserValidationDialog extends TrayDialog {
 		super.configureShell(newShell);
 		newShell.setText(Messages.UserValidationDialog_0);
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.USER_VALIDATION_DIALOG);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.USER_VALIDATION_DIALOG);
 	}
 	@Override
 	public void create() {
@@ -153,7 +153,7 @@ public class UserValidationDialog extends TrayDialog {
 			});
 		}
 
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 
 		return main;
 	}
@@ -234,9 +234,9 @@ public class UserValidationDialog extends TrayDialog {
 
 	@Override
 	protected void cancelPressed(){
-	  password = null;
-	  username = null;
-	  super.cancelPressed();
+		password = null;
+		username = null;
+		super.cancelPressed();
 	}
 
 	/**

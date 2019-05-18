@@ -60,26 +60,26 @@ public class StorageStreamMerger implements IStorageMerger {
 			if (status.getCode() == IStreamMerger.CONFLICT)
 				return new Status(status.getSeverity(), status.getPlugin(), CONFLICT, status.getMessage(), status.getException());
 			return status;
-        } finally {
-            try {
-                if (ancestorStream != null)
-                    ancestorStream.close();
-            } catch (IOException e) {
-                // Ignore
-            }
-            try {
-                if (remoteStream != null)
-                    remoteStream.close();
-            } catch (IOException e) {
-                // Ignore
-            }
-            try {
-                if (targetStream != null)
-                    targetStream.close();
-            } catch (IOException e) {
-                // Ignore
-            }
-        }
+		} finally {
+			try {
+				if (ancestorStream != null)
+					ancestorStream.close();
+			} catch (IOException e) {
+				// Ignore
+			}
+			try {
+				if (remoteStream != null)
+					remoteStream.close();
+			} catch (IOException e) {
+				// Ignore
+			}
+			try {
+				if (targetStream != null)
+					targetStream.close();
+			} catch (IOException e) {
+				// Ignore
+			}
+		}
 	}
 
 	private String getEncoding(IStorage ancestorStorage, String outputEncoding) {

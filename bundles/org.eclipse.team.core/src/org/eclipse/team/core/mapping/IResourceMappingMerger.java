@@ -49,7 +49,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 public interface IResourceMappingMerger {
 
-    /**
+	/**
 	 * Attempt to automatically merge the mappings of the merge context(<code>MergeContext#getMappings()</code>).
 	 * The merge context provides access to the out-of-sync resources (<code>MergeContext#getSyncInfoTree()</code>)
 	 * associated with the mappings to be merged. The set of provided mappings
@@ -86,48 +86,48 @@ public interface IResourceMappingMerger {
 	 *         <code>MergeStatus#getConflictingMappings()</code>
 	 * @throws CoreException if errors occurred
 	 */
-    public IStatus merge(IMergeContext mergeContext,
-            IProgressMonitor monitor) throws CoreException;
+	public IStatus merge(IMergeContext mergeContext,
+			IProgressMonitor monitor) throws CoreException;
 
-    /**
-     * Return the scheduling rule that is required to merge
-     * all the changes that apply to this merger in the given
-     * context. When calling {@link #merge(IMergeContext, IProgressMonitor)},
-     * clients must ensure that they either have obtained
-     * a rule that covers the rule returned by this method or
-     * they must not hold any rule.
-     * @param context the context that contains the changes to be merged
-     * @return the scheduling rule required by this merger to merge all
-     * the changes in the given context belonging to the merger's
-     * model provider.
-     */
-    public ISchedulingRule getMergeRule(IMergeContext context);
+	/**
+	 * Return the scheduling rule that is required to merge
+	 * all the changes that apply to this merger in the given
+	 * context. When calling {@link #merge(IMergeContext, IProgressMonitor)},
+	 * clients must ensure that they either have obtained
+	 * a rule that covers the rule returned by this method or
+	 * they must not hold any rule.
+	 * @param context the context that contains the changes to be merged
+	 * @return the scheduling rule required by this merger to merge all
+	 * the changes in the given context belonging to the merger's
+	 * model provider.
+	 */
+	public ISchedulingRule getMergeRule(IMergeContext context);
 
-    /**
-     * Validate an auto-merge for the given context. This
-     * method must be invoked for all mergers involved
-     * in the merge before the auto-merge is attempted.
-     * The purpose of the validation is to indicate whether there
-     * are conditions in the merge context that make an auto-merge
-     * undesirable. The purpose is not to indicate that conflicts
-     * exist (this is done by the <code>merge</code> method) but instead
-     * to indicate that the nature of one of more incoming changes
-     * is such that performing an auto-merge may be undesirable.
-     * <p>
-     * Clients should validate before performing the merge and, if
-     * any of the returned status are not OK, should prompt the
-     * user to make them aware of the potential side effects.
-     * The user may still decide to attempt an auto-merge, in which case
-     * the client may still invoke the <code>merge</code> method.
-     *
+	/**
+	 * Validate an auto-merge for the given context. This
+	 * method must be invoked for all mergers involved
+	 * in the merge before the auto-merge is attempted.
+	 * The purpose of the validation is to indicate whether there
+	 * are conditions in the merge context that make an auto-merge
+	 * undesirable. The purpose is not to indicate that conflicts
+	 * exist (this is done by the <code>merge</code> method) but instead
+	 * to indicate that the nature of one of more incoming changes
+	 * is such that performing an auto-merge may be undesirable.
+	 * <p>
+	 * Clients should validate before performing the merge and, if
+	 * any of the returned status are not OK, should prompt the
+	 * user to make them aware of the potential side effects.
+	 * The user may still decide to attempt an auto-merge, in which case
+	 * the client may still invoke the <code>merge</code> method.
+	 *
 	 * @param mergeContext a context that provides access to the resources
 	 *            involved in the merge. The context must not be
 	 *            <code>null</code>.
 	 * @param monitor a progress monitor
-     * @return a status indicating any potential side effects of
-     * performing an auto-merge.
-     */
-    public IStatus validateMerge(IMergeContext mergeContext,
-            IProgressMonitor monitor);
+	 * @return a status indicating any potential side effects of
+	 * performing an auto-merge.
+	 */
+	public IStatus validateMerge(IMergeContext mergeContext,
+			IProgressMonitor monitor);
 
 }

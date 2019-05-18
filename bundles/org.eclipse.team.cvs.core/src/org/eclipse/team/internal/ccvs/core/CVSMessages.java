@@ -85,7 +85,7 @@ public class CVSMessages extends NLS {
 	public static String CVSTeamProvider_errorGettingWatchEdit;
 	public static String CVSTeamProvider_errorSettingWatchEdit;
 	public static String CVSTeamProvider_updatingFolder;
-    public static String CVSCoreFileModificationValidator_editJob;
+	public static String CVSCoreFileModificationValidator_editJob;
 
 	public static String ResourceDeltaVisitor_visitError;
 
@@ -110,7 +110,7 @@ public class CVSMessages extends NLS {
 	public static String Session_transferNoSize;
 	public static String Session_calculatingCompressedSize;
 	public static String Session_0;
-    public static String Session_sending;
+	public static String Session_sending;
 
 	public static String Command_receivingResponses;
 	public static String Command_warnings;
@@ -122,8 +122,8 @@ public class CVSMessages extends NLS {
 	public static String Command_noOpenSession;
 	public static String Command_seriousServerError;
 
-    public static String Add_invalidParent;
-    
+	public static String Add_invalidParent;
+
 	public static String Commit_syncInfoMissing;
 	public static String Commit_timestampReset;
 
@@ -166,9 +166,9 @@ public class CVSMessages extends NLS {
 	public static String CVSRepositoryLocation_invalidFormat;
 	public static String CVSRepositoryLocation_openingConnection;
 	public static String CVSRepositoryLocation_usernameRequired;
-    public static String CVSRepositoryLocation_hostRequired;
-    public static String CVSRepositoryLocation_rootRequired;
-    public static String CVSRepositoryLocation_noAuthenticator;
+	public static String CVSRepositoryLocation_hostRequired;
+	public static String CVSRepositoryLocation_rootRequired;
+	public static String CVSRepositoryLocation_noAuthenticator;
 
 	public static String Util_timeout;
 	public static String Util_processTimeout;
@@ -197,7 +197,7 @@ public class CVSMessages extends NLS {
 	public static String EclipseFile_Problem_writing_resource;
 	public static String EclipseFolder_problem_creating;
 	public static String EclipseFolder_isModifiedProgress;
-    public static String EclipseFolder_0;
+	public static String EclipseFolder_0;
 
 	public static String EclipseSynchronizer_UpdatingSyncEndOperation;
 	public static String EclipseSynchronizer_UpdatingSyncEndOperationCancelled;

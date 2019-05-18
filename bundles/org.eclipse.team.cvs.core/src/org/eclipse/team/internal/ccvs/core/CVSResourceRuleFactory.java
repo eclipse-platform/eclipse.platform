@@ -18,12 +18,12 @@ import org.eclipse.core.resources.team.ResourceRuleFactory;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 public class CVSResourceRuleFactory extends ResourceRuleFactory {
-    public ISchedulingRule validateEditRule(IResource[] resources) {
-    	return CVSTeamProvider.internalGetFileModificationValidator().validateEditRule(this, resources);
-    }
-    
-    public ISchedulingRule getParent(IResource resource) {
-        return parent(resource);
-    }
-    
+	public ISchedulingRule validateEditRule(IResource[] resources) {
+		return CVSTeamProvider.internalGetFileModificationValidator().validateEditRule(this, resources);
+	}
+	
+	public ISchedulingRule getParent(IResource resource) {
+		return parent(resource);
+	}
+	
 }

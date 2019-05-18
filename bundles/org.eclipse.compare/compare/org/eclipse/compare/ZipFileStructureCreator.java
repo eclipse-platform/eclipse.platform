@@ -175,16 +175,16 @@ public class ZipFileStructureCreator implements IStructureCreator {
 		}
 
 		void appendBytes(byte[] buffer, int length) {
-	    	if (length > 0) {
+			if (length > 0) {
 				int oldLen= 0;
 				if (fContents != null)
 					oldLen= fContents.length;
 				byte[] newBuf= new byte[oldLen + length];
 				if (oldLen > 0)
-		    		System.arraycopy(fContents, 0, newBuf, 0, oldLen);
-	    		System.arraycopy(buffer, 0, newBuf, oldLen, length);
-	    		fContents= newBuf;
-	    	}
+					System.arraycopy(fContents, 0, newBuf, 0, oldLen);
+				System.arraycopy(buffer, 0, newBuf, oldLen, length);
+				fContents= newBuf;
+			}
 		}
 	}
 

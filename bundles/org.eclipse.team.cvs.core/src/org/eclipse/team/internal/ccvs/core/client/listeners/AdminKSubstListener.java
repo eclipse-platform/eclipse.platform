@@ -80,7 +80,7 @@ public class AdminKSubstListener extends CommandOutputListener {
 			IPath relativeFilePath = rcsFilePath.removeFirstSegments(remoteRootPath.segmentCount());
 			ICVSFile file = commandRoot.getFile(relativeFilePath.toString());
 			if (file.isManaged() && isMatchingPath(file, rcsFilePath)) {
-			    return file;
+				return file;
 			}
 		}
 		
@@ -90,7 +90,7 @@ public class AdminKSubstListener extends CommandOutputListener {
 		if (parent != null) {
 			ICVSFile file = parent.getFile(rcsFilePath.lastSegment());
 			if (file.isManaged()) {
-			    return file;
+				return file;
 			}
 		}
 		
@@ -99,30 +99,30 @@ public class AdminKSubstListener extends CommandOutputListener {
 				NLS.bind(CVSMessages.AdminKSubstListener_expectedChildOfCommandRoot, new String[] { rcsFilePath.toString(), remoteRootPath.toString() })));
 	}
 
-    private ICVSFolder findFolder(ICVSFolder commandRoot, IPath path) throws CVSException {
-        final String remotePath = path.toString();
-        final ICVSFolder[] result = new ICVSFolder[] { null };
-        commandRoot.accept(new ICVSResourceVisitor() {
-            public void visitFile(ICVSFile file) throws CVSException {
-                // Nothing to do for files
-            }
-            public void visitFolder(ICVSFolder folder) throws CVSException {
-                FolderSyncInfo info = folder.getFolderSyncInfo();
-                if (info != null && info.getRemoteLocation().equals(remotePath)) {
-                    // We found the folder we're looking for
-                    result[0] = folder;
-                }
-                if (result[0] == null) {
-                    folder.acceptChildren(this);
-                }
-            }
-        });
-        return result[0];
-    }
+	private ICVSFolder findFolder(ICVSFolder commandRoot, IPath path) throws CVSException {
+		final String remotePath = path.toString();
+		final ICVSFolder[] result = new ICVSFolder[] { null };
+		commandRoot.accept(new ICVSResourceVisitor() {
+			public void visitFile(ICVSFile file) throws CVSException {
+				// Nothing to do for files
+			}
+			public void visitFolder(ICVSFolder folder) throws CVSException {
+				FolderSyncInfo info = folder.getFolderSyncInfo();
+				if (info != null && info.getRemoteLocation().equals(remotePath)) {
+					// We found the folder we're looking for
+					result[0] = folder;
+				}
+				if (result[0] == null) {
+					folder.acceptChildren(this);
+				}
+			}
+		});
+		return result[0];
+	}
 
-    private boolean isMatchingPath(ICVSFile file, IPath rcsFilePath) throws CVSException {
-        FolderSyncInfo info = file.getParent().getFolderSyncInfo();
-        return info != null 
-           && info.getRemoteLocation().equals(rcsFilePath.removeLastSegments(1).toString());
-    }
+	private boolean isMatchingPath(ICVSFile file, IPath rcsFilePath) throws CVSException {
+		FolderSyncInfo info = file.getParent().getFolderSyncInfo();
+		return info != null 
+			&& info.getRemoteLocation().equals(rcsFilePath.removeLastSegments(1).toString());
+	}
 }

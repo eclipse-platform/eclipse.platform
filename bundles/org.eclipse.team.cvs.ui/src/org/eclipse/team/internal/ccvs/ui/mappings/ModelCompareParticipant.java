@@ -58,9 +58,9 @@ public class ModelCompareParticipant extends CVSModelSynchronizeParticipant impl
 	
 	@Override
 	public ChangeSetCapability getChangeSetCapability() {
-        if (capability == null) {
-            capability = new CompareChangeSetCapability();
-        }
-        return capability;
+		if (capability == null) {
+			capability = new CompareChangeSetCapability();
+		}
+		return capability;
 	}
 }

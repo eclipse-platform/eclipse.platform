@@ -163,7 +163,7 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		newRoots.addAll(Arrays.asList(resources));
 		newRoots.removeAll(removals);
 		resources = (IResource[]) newRoots.toArray(new IResource[newRoots.size()]);
-		 
+		
 		// Create the deltas for the removals
 		SubscriberChangeEvent[] deltas = new SubscriberChangeEvent[removals.size()];
 		for (int i = 0; i < deltas.length; i++) {
@@ -245,24 +245,24 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		}
 	}
 
-    /**
-     * Return the tag associated with the given root resource
-     * or <code>null</code> if there is only a single tag
-     * for the subscriber.
-     * @param root the root resource
-     * @return the tag associated with the given root resource
-     */
-    public CVSTag getTag(IResource root) {
-        return tree.getTag(root);
-    }
-    
-    /**
-     * Return <code>true</code> if the tag against which each
-     * root is compared may differ. 
-     * @return whether the tag on each root may differ.
-     */
-    public boolean isMultipleTagComparison() {
-        return getTag() == null;
-    }
+	/**
+	 * Return the tag associated with the given root resource
+	 * or <code>null</code> if there is only a single tag
+	 * for the subscriber.
+	 * @param root the root resource
+	 * @return the tag associated with the given root resource
+	 */
+	public CVSTag getTag(IResource root) {
+		return tree.getTag(root);
+	}
+
+	/**
+	 * Return <code>true</code> if the tag against which each
+	 * root is compared may differ. 
+	 * @return whether the tag on each root may differ.
+	 */
+	public boolean isMultipleTagComparison() {
+		return getTag() == null;
+	}
 
 }

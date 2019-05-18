@@ -37,68 +37,68 @@ import org.eclipse.ui.PlatformUI;
  * A dialog for keyboard-interactive authentication for the ssh2 connection.
  */
 public class KeyboardInteractiveDialog extends TrayDialog {
-  // widgets
-  private Text[] texts;
-  protected Image keyLockImage;
-  protected Button allowCachingButton;
-  protected Text usernameField;
+	// widgets
+	private Text[] texts;
+	protected Image keyLockImage;
+	protected Button allowCachingButton;
+	protected Text usernameField;
 
-  protected String userName;
-  protected String domain;
-  protected String destination;
-  protected String name;
-  protected String instruction;
-  protected String lang;
-  protected String[] prompt;
-  protected boolean[] echo;
-  private String message;
-  private String[] result;
-  protected boolean allowCaching=false;
+	protected String userName;
+	protected String domain;
+	protected String destination;
+	protected String name;
+	protected String instruction;
+	protected String lang;
+	protected String[] prompt;
+	protected boolean[] echo;
+	private String message;
+	private String[] result;
+	protected boolean allowCaching=false;
 
-  private boolean isPasswordAuth=false;
+	private boolean isPasswordAuth=false;
 
 
-  /**
-   * Creates a new KeyboardInteractiveDialog.
-   *
-   * @param parentShell the parent shell
-   * @param location
-   * @param destination
-   * @param name the name
-   * @param userName
-   * @param instruction the instruction
-   * @param prompt the titles for text fields
-   * @param echo '*' should be used or not
-   */
-  public KeyboardInteractiveDialog(Shell parentShell,
-				   String location,
-				   String destination,
-				   String name,
-				   String userName,
-				   String instruction,
-				   String[] prompt,
-				   boolean[] echo){
-    super(parentShell);
-    this.domain=location;
-    this.destination=destination;
-    this.name=name;
-    this.userName=userName;
-    this.instruction=instruction;
-    this.prompt=prompt;
-    this.echo=echo;
-    if (name!=null && name.length()>0) {
-    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_0, new String[] { destination, name });
-    } else {
-    	this.message=NLS.bind(Messages.KeyboardInteractiveDialog_1, destination);
-    }
+	/**
+	 * Creates a new KeyboardInteractiveDialog.
+	 *
+	 * @param parentShell the parent shell
+	 * @param location
+	 * @param destination
+	 * @param name the name
+	 * @param userName
+	 * @param instruction the instruction
+	 * @param prompt the titles for text fields
+	 * @param echo '*' should be used or not
+	 */
+	public KeyboardInteractiveDialog(Shell parentShell,
+						String location,
+						String destination,
+						String name,
+						String userName,
+						String instruction,
+						String[] prompt,
+						boolean[] echo){
+		super(parentShell);
+		this.domain=location;
+		this.destination=destination;
+		this.name=name;
+		this.userName=userName;
+		this.instruction=instruction;
+		this.prompt=prompt;
+		this.echo=echo;
+		if (name!=null && name.length()>0) {
+			this.message=NLS.bind(Messages.KeyboardInteractiveDialog_0, new String[] { destination, name });
+		} else {
+			this.message=NLS.bind(Messages.KeyboardInteractiveDialog_1, destination);
+		}
 
-    if(KeyboardInteractiveDialog.isPasswordAuth(prompt)){
-        isPasswordAuth=true;
-      }
-  }
+		if(KeyboardInteractiveDialog.isPasswordAuth(prompt)){
+			isPasswordAuth=true;
+		}
+	}
 
 	@Override
-  protected void configureShell(Shell newShell) {
+	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		if (isPasswordAuth) {
 			newShell.setText(Messages.KeyboardInteractiveDialog_2);
@@ -112,7 +112,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 	}
 
 	@Override
-  public void create() {
+	public void create() {
 		super.create();
 
 		if (isPasswordAuth && usernameField != null && userName != null) {
@@ -124,7 +124,7 @@ public class KeyboardInteractiveDialog extends TrayDialog {
 			texts[0].setFocus();
 		}
 	}
-  @Override
+	@Override
 protected Control createDialogArea(Composite parent) {
 		Composite top = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -212,109 +212,109 @@ protected Control createDialogArea(Composite parent) {
 		return main;
 	}
 
-  /**
-   * Creates the three widgets that represent the user name entry area.
-   *
-   * @param parent  the parent of the widgets
-   */
-  protected void createUsernameFields(Composite parent){
-    new Label(parent, SWT.NONE).setText(Messages.KeyboardInteractiveDialog_6);
+	/**
+	 * Creates the three widgets that represent the user name entry area.
+	 *
+	 * @param parent  the parent of the widgets
+	 */
+	protected void createUsernameFields(Composite parent){
+		new Label(parent, SWT.NONE).setText(Messages.KeyboardInteractiveDialog_6);
 
-    usernameField=new Text(parent, SWT.BORDER);
-    GridData data=new GridData(GridData.FILL_HORIZONTAL);
-    data.horizontalSpan=2;
-    data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
-    usernameField.setLayoutData(data);
-  }
+		usernameField=new Text(parent, SWT.BORDER);
+		GridData data=new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan=2;
+		data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+		usernameField.setLayoutData(data);
+	}
 
-  /**
+	/**
 	 * Creates the widgets that represent the entry area.
 	 *
 	 * @param parent
 	 *            the parent of the widgets
 	 */
-  protected void createPasswordFields(Composite parent) {
-	    texts=new Text[prompt.length];
+	protected void createPasswordFields(Composite parent) {
+		texts=new Text[prompt.length];
 
-	    for(int i=0; i<prompt.length; i++){
-	      new Label(parent, SWT.NONE).setText(prompt[i]);
-	      int flag=SWT.BORDER;
-	      if(!echo[i]){
-	        flag|=SWT.PASSWORD;
-	      }
-	      texts[i]=new Text(parent, flag);
-	      GridData data=new GridData(GridData.FILL_HORIZONTAL);
-	      data.horizontalSpan=2;
-	      data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
-	      texts[i].setLayoutData(data);
-	      if(!echo[i]){
-	        texts[i].setEchoChar('*');
-	      }
-	    }
-  }
-  /**
-   * Returns the entered values, or null
-   * if the user canceled.
-   *
-   * @return the entered values
-   */
-  public String[] getResult() {
-    return result;
-  }
+		for(int i=0; i<prompt.length; i++){
+			new Label(parent, SWT.NONE).setText(prompt[i]);
+			int flag=SWT.BORDER;
+			if(!echo[i]){
+				flag|=SWT.PASSWORD;
+			}
+			texts[i]=new Text(parent, flag);
+			GridData data=new GridData(GridData.FILL_HORIZONTAL);
+			data.horizontalSpan=2;
+			data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+			texts[i].setLayoutData(data);
+			if(!echo[i]){
+				texts[i].setEchoChar('*');
+			}
+		}
+	}
+	/**
+	 * Returns the entered values, or null
+	 * if the user canceled.
+	 *
+	 * @return the entered values
+	 */
+	public String[] getResult() {
+		return result;
+	}
 
-  /**
-   * Returns <code>true</code> if the save password checkbox was selected.
-   * @return <code>true</code> if the save password checkbox was selected and <code>false</code>
-   * otherwise.
-   */
-  public boolean getAllowCaching(){
-    return allowCaching;
-  }
+	/**
+	 * Returns <code>true</code> if the save password checkbox was selected.
+	 * @return <code>true</code> if the save password checkbox was selected and <code>false</code>
+	 * otherwise.
+	 */
+	public boolean getAllowCaching(){
+		return allowCaching;
+	}
 
-  /**
-   * Notifies that the ok button of this dialog has been pressed.
-   * <p>
-   * The default implementation of this framework method sets
-   * this dialog's return code to <code>Window.OK</code>
-   * and closes the dialog. Subclasses may override.
-   * </p>
-   */
-  @Override
+	/**
+	 * Notifies that the ok button of this dialog has been pressed.
+	 * <p>
+	 * The default implementation of this framework method sets
+	 * this dialog's return code to <code>Window.OK</code>
+	 * and closes the dialog. Subclasses may override.
+	 * </p>
+	 */
+	@Override
 protected void okPressed() {
-    result=new String[prompt.length];
-    for(int i=0; i<texts.length; i++){
-      result[i]=texts[i].getText();
-    }
-    super.okPressed();
-  }
-  /**
-   * Notifies that the cancel button of this dialog has been pressed.
-   * <p>
-   * The default implementation of this framework method sets
-   * this dialog's return code to <code>Window.CANCEL</code>
-   * and closes the dialog. Subclasses may override.
-   * </p>
-   */
-  @Override
+		result=new String[prompt.length];
+		for(int i=0; i<texts.length; i++){
+			result[i]=texts[i].getText();
+		}
+		super.okPressed();
+	}
+	/**
+	 * Notifies that the cancel button of this dialog has been pressed.
+	 * <p>
+	 * The default implementation of this framework method sets
+	 * this dialog's return code to <code>Window.CANCEL</code>
+	 * and closes the dialog. Subclasses may override.
+	 * </p>
+	 */
+	@Override
 protected void cancelPressed() {
-    result=null;
-    super.cancelPressed();
-  }
+		result=null;
+		super.cancelPressed();
+	}
 
-  @Override
-  public boolean close(){
-    if(keyLockImage!=null){
-      keyLockImage.dispose();
-    }
-    return super.close();
-  }
+	@Override
+	public boolean close(){
+		if(keyLockImage!=null){
+			keyLockImage.dispose();
+		}
+		return super.close();
+	}
 
-  /**
-   * Guesses if this dialog is used for password authentication.
-   * @param prompt prompts for keyboard-interactive authentication method.
-   * @return <code>true</code> if this dialog is used for password authentication.
-   */
-  static boolean isPasswordAuth(String[] prompt) {
+	/**
+	 * Guesses if this dialog is used for password authentication.
+	 * @param prompt prompts for keyboard-interactive authentication method.
+	 * @return <code>true</code> if this dialog is used for password authentication.
+	 */
+	static boolean isPasswordAuth(String[] prompt) {
 		return prompt != null && prompt.length == 1
 				&& prompt[0].trim().equalsIgnoreCase("password:");  //$NON-NLS-1$
 	}

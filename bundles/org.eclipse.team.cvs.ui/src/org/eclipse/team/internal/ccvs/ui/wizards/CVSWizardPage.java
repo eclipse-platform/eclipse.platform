@@ -40,7 +40,7 @@ import org.eclipse.ui.views.navigator.ResourceComparator;
  * for widget creation.
  */
 public abstract class CVSWizardPage extends WizardPage {
-    
+	
 	protected static final int LABEL_WIDTH_HINT = 400;
 	protected static final int LABEL_INDENT_WIDTH = 32;
 	protected static final int LIST_HEIGHT_HINT = 100;

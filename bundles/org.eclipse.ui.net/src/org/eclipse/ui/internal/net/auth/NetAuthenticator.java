@@ -25,8 +25,8 @@ public class NetAuthenticator extends Authenticator {
 		String prompt = getRequestingPrompt(); // realm or message, not documented that can be null
 		// String scheme = getRequestingScheme(); // not documented that can be null
 
-		 // get the host name from the address since #getRequestingHost
-		 // is not available in the foundation 1.0 class libraries
+		// get the host name from the address since #getRequestingHost
+		// is not available in the foundation 1.0 class libraries
 		String hostString = null;
 		if (address != null) {
 			hostString = address.getHostName();

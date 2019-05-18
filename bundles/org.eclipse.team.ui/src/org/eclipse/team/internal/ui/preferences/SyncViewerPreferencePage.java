@@ -49,8 +49,8 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 
 	private BooleanFieldEditor showSyncInLabels = null;
 	private RadioGroupFieldEditor synchronizePerspectiveSwitch = null;
-    private RadioGroupFieldEditor defaultLayout = null;
-    private boolean includeDefaultLayout = true;
+	private RadioGroupFieldEditor defaultLayout = null;
+	private boolean includeDefaultLayout = true;
 
 	private static class PerspectiveDescriptorComparator implements Comparator {
 		@Override
@@ -74,8 +74,8 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_PREFERENCE_PAGE);
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.SYNC_PREFERENCE_PAGE);
 	}
 
 	@Override
@@ -84,45 +84,45 @@ public class SyncViewerPreferencePage extends FieldEditorPreferencePage implemen
 		addField(showSyncInLabels);
 
 		addField(new BooleanFieldEditor(
-		        SHOW_AUTHOR_IN_COMPARE_EDITOR,
-		        TeamUIMessages.SyncViewerPreferencePage_43,
+				SHOW_AUTHOR_IN_COMPARE_EDITOR,
+				TeamUIMessages.SyncViewerPreferencePage_43,
 				BooleanFieldEditor.DEFAULT,
 				getFieldEditorParent()));
 
 		addField(new BooleanFieldEditor(
 				MAKE_FILE_WRITTABLE_IF_CONTEXT_MISSING,
-		        TeamUIMessages.SyncViewerPreferencePage_44,
+				TeamUIMessages.SyncViewerPreferencePage_44,
 				BooleanFieldEditor.DEFAULT,
 				getFieldEditorParent()));
 
 		addField(new BooleanFieldEditor(
 				REUSE_OPEN_COMPARE_EDITOR,
-		        TeamUIMessages.SyncViewerPreferencePage_45,
+				TeamUIMessages.SyncViewerPreferencePage_45,
 				BooleanFieldEditor.DEFAULT,
 				getFieldEditorParent()));
 
 		addField(new BooleanFieldEditor(
 				RUN_IMPORT_IN_BACKGROUND,
-		        TeamUIMessages.SyncViewerPreferencePage_46,
+				TeamUIMessages.SyncViewerPreferencePage_46,
 				BooleanFieldEditor.DEFAULT,
 				getFieldEditorParent()));
 
 		addField(new BooleanFieldEditor(
 				APPLY_PATCH_IN_SYNCHRONIZE_VIEW,
-		        TeamUIMessages.SyncViewerPreferencePage_47,
+				TeamUIMessages.SyncViewerPreferencePage_47,
 				BooleanFieldEditor.DEFAULT,
 				getFieldEditorParent()));
 
 		if (isIncludeDefaultLayout()) {
-		    defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT,
-		            TeamUIMessages.SyncViewerPreferencePage_0, 3,
-		            new String[][] {
-		            	{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT},
-		            	{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT},
-		            	{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT}
-		    		},
-		    		getFieldEditorParent(), true /* use a group */);
-		    addField(defaultLayout);
+			defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT,
+					TeamUIMessages.SyncViewerPreferencePage_0, 3,
+					new String[][] {
+						{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT},
+						{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT},
+						{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT}
+					},
+					getFieldEditorParent(), true /* use a group */);
+			addField(defaultLayout);
 		}
 
 		synchronizePerspectiveSwitch= new RadioGroupFieldEditor(SYNCHRONIZING_COMPLETE_PERSPECTIVE, TeamUIMessages.SyncViewerPreferencePage_13, 3,

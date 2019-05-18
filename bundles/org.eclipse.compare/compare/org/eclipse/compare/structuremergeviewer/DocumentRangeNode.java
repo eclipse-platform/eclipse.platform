@@ -255,8 +255,8 @@ public class DocumentRangeNode
 
 	/**
 	 * Implementation based on <code>getID</code>.
-     * @param other the object to compare this <code>DocumentRangeNode</code> against.
-     * @return <code>true</code> if the <code>DocumentRangeNodes</code>are equal; <code>false</code> otherwise.
+	 * @param other the object to compare this <code>DocumentRangeNode</code> against.
+	 * @return <code>true</code> if the <code>DocumentRangeNodes</code>are equal; <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(Object other) {

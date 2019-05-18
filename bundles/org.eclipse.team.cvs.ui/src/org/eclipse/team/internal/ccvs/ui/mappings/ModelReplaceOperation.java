@@ -84,10 +84,10 @@ public class ModelReplaceOperation extends ModelUpdateOperation {
 			result[0] = dialog.open();
 
 		});
-        if (result[0] == 2)
-        	throw new OperationCanceledException();
-        hasPrompted = true;
-        return result[0] == 0;
+		if (result[0] == 2)
+			throw new OperationCanceledException();
+		hasPrompted = true;
+		return result[0] == 0;
 	}
 
 	private boolean hasLocalChanges() {

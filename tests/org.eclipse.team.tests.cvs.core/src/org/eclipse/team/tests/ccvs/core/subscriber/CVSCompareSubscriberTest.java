@@ -125,58 +125,58 @@ public class CVSCompareSubscriberTest extends CVSSyncSubscriberTest {
 				SyncInfo.DELETION});
 	}
 	
-    public void testBinaryAddition() throws CoreException {
-    	// See bug 132255
-    	KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
-    	try {
-	    	CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
-	    	IProject project = createProject(new String[] { "a.txt"});
+	public void testBinaryAddition() throws CoreException {
+		// See bug 132255
+		KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
+		try {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
+			IProject project = createProject(new String[] { "a.txt"});
 			// Checkout and branch a copy
 			CVSTag v1 = new CVSTag("v1", CVSTag.VERSION);
 			// Add a binary file that contains LFs
-	    	IProject copy = checkoutCopy(project, "-copy");
-	    	create(copy.getFile("binaryFile"), true);
-	    	setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
-	    	addResources(new IResource[] { copy.getFile("binaryFile") });
-	    	commitProject(copy);
-	    	// Tag the project
-	    	tagProject(copy, v1, false);
-	    	// Compare with the tag and merge the changes
-	    	CVSCompareSubscriber subscriber = getSyncInfoSource().createCompareSubscriber(project, v1);
-	    	getSyncInfoSource().refresh(subscriber, project);
-	    	getSyncInfoSource().overrideAndUpdateResources(subscriber, false, new IResource[] { project.getFile("binaryFile") });
-	    	assertContentsEqual(copy.getFile("binaryFile"), project.getFile("binaryFile"));
-    	} finally {
-    		CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
-    	}
-    }
-    
-    public void testBinaryMarkAsMerged() throws CoreException, InvocationTargetException, InterruptedException {
-    	// See bug 132255
-    	KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
-    	try {
-	    	CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
-	    	IProject project = createProject(new String[] { "a.txt"});
+			IProject copy = checkoutCopy(project, "-copy");
+			create(copy.getFile("binaryFile"), true);
+			setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
+			addResources(new IResource[] { copy.getFile("binaryFile") });
+			commitProject(copy);
+			// Tag the project
+			tagProject(copy, v1, false);
+			// Compare with the tag and merge the changes
+			CVSCompareSubscriber subscriber = getSyncInfoSource().createCompareSubscriber(project, v1);
+			getSyncInfoSource().refresh(subscriber, project);
+			getSyncInfoSource().overrideAndUpdateResources(subscriber, false, new IResource[] { project.getFile("binaryFile") });
+			assertContentsEqual(copy.getFile("binaryFile"), project.getFile("binaryFile"));
+		} finally {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
+		}
+	}
+	
+	public void testBinaryMarkAsMerged() throws CoreException, InvocationTargetException, InterruptedException {
+		// See bug 132255
+		KSubstOption option = CVSProviderPlugin.getPlugin().getDefaultTextKSubstOption();
+		try {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(Command.KSUBST_TEXT_KEYWORDS_ONLY);
+			IProject project = createProject(new String[] { "a.txt"});
 			// Checkout and branch a copy
 			CVSTag v1 = new CVSTag("v1", CVSTag.VERSION);
 			// Add a binary file that contains LFs
-	    	IProject copy = checkoutCopy(project, "-copy");
-	    	create(copy.getFile("binaryFile"), true);
-	    	setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
-	    	addResources(new IResource[] { copy.getFile("binaryFile") });
-	    	commitProject(copy);
-	    	// Tag the project
-	    	tagProject(copy, v1, false);
-	    	// Add the same file to the project but don't share it
-	    	create(project.getFile("binaryFile"), true);
-	    	setContentsAndEnsureModified(project.getFile("binaryFile"), "/n/nSome Content\n\n");
-	    	// Compare with the tag and merge the changes
-	    	CVSCompareSubscriber subscriber = getSyncInfoSource().createCompareSubscriber(project, v1);
-	    	getSyncInfoSource().refresh(subscriber, project);
-	    	getSyncInfoSource().markAsMerged(subscriber, new IResource[] { project.getFile("binaryFile") });
-	    	assertIsBinary(project.getFile("binaryFile"));
-    	} finally {
-    		CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
-    	}
-    }
+			IProject copy = checkoutCopy(project, "-copy");
+			create(copy.getFile("binaryFile"), true);
+			setContentsAndEnsureModified(copy.getFile("binaryFile"), "/n/n\n\n");
+			addResources(new IResource[] { copy.getFile("binaryFile") });
+			commitProject(copy);
+			// Tag the project
+			tagProject(copy, v1, false);
+			// Add the same file to the project but don't share it
+			create(project.getFile("binaryFile"), true);
+			setContentsAndEnsureModified(project.getFile("binaryFile"), "/n/nSome Content\n\n");
+			// Compare with the tag and merge the changes
+			CVSCompareSubscriber subscriber = getSyncInfoSource().createCompareSubscriber(project, v1);
+			getSyncInfoSource().refresh(subscriber, project);
+			getSyncInfoSource().markAsMerged(subscriber, new IResource[] { project.getFile("binaryFile") });
+			assertIsBinary(project.getFile("binaryFile"));
+		} finally {
+			CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(option);
+		}
+	}
 }

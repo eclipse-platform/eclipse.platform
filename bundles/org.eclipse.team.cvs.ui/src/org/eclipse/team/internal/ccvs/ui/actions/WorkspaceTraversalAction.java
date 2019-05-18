@@ -41,71 +41,71 @@ import org.eclipse.ui.PlatformUI;
  */
 public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 
-    /**
-     * Return the selected mappings that contain resources 
-     * within a CVS managed project.
-     * @return the selected mappings that contain resources 
-     * within a CVS managed project
-     */
-    protected ResourceMapping[] getCVSResourceMappings() {
-        return getSelectedResourceMappings(CVSProviderPlugin.getTypeId());
-    }
+	/**
+	 * Return the selected mappings that contain resources 
+	 * within a CVS managed project.
+	 * @return the selected mappings that contain resources 
+	 * within a CVS managed project
+	 */
+	protected ResourceMapping[] getCVSResourceMappings() {
+		return getSelectedResourceMappings(CVSProviderPlugin.getTypeId());
+	}
 
-    private static ResourceTraversal[] getTraversals(IWorkbenchPart part, ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
-    	try {
-    		BuildScopeOperation op = new BuildScopeOperation(part, manager);
-    		op.run(monitor);
-    		return manager.getScope().getTraversals();
-    	} catch (InvocationTargetException e) {
+	private static ResourceTraversal[] getTraversals(IWorkbenchPart part, ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
+		try {
+			BuildScopeOperation op = new BuildScopeOperation(part, manager);
+			op.run(monitor);
+			return manager.getScope().getTraversals();
+		} catch (InvocationTargetException e) {
 			throw TeamException.asTeamException(e);
 		} catch (InterruptedException e) {
 			throw new OperationCanceledException();
 		}
-    }
-    
-    private static IResource[] getRootTraversalResources(ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
-		Set<IResource> result = new HashSet<>();
-    	ResourceTraversal[] traversals = getTraversals(null, manager, monitor);
-    	for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
-            IResource[] resources = traversal.getResources();
-            for (int k = 0; k < resources.length; k++) {
-                IResource resource = resources[k];
-                if (RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId()) != null) {
-                    result.add(resource);
-                }
-            }
-        }
-        return result.toArray(new IResource[result.size()]);
-    }
-
-    protected Subscriber getWorkspaceSubscriber() {
-        return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
-    }
-    
-	public static IResource[] getResourcesToCompare(ResourceMapping[] mappings, Subscriber subscriber) throws InvocationTargetException {
-    	ISynchronizationScopeManager manager = new SynchronizationScopeManager("",  //$NON-NLS-1$
-    			mappings, SubscriberResourceMappingContext.createContext(subscriber), true);
-    	try {
-    		return getResourcesToCompare(manager);
-    	} finally {
-    		manager.dispose();
-    	}
 	}
 	
-    protected IResource[] getResourcesToCompare(final Subscriber subscriber) throws InvocationTargetException {
-    	return getResourcesToCompare(getCVSResourceMappings(), subscriber);
-    }
-    
-    protected ResourceMappingContext getResourceMappingContext() {
+	private static IResource[] getRootTraversalResources(ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
+		Set<IResource> result = new HashSet<>();
+		ResourceTraversal[] traversals = getTraversals(null, manager, monitor);
+		for (int i = 0; i < traversals.length; i++) {
+			ResourceTraversal traversal = traversals[i];
+			IResource[] resources = traversal.getResources();
+			for (int k = 0; k < resources.length; k++) {
+				IResource resource = resources[k];
+				if (RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId()) != null) {
+					result.add(resource);
+				}
+			}
+		}
+		return result.toArray(new IResource[result.size()]);
+	}
+
+	protected Subscriber getWorkspaceSubscriber() {
+		return CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
+	}
+	
+	public static IResource[] getResourcesToCompare(ResourceMapping[] mappings, Subscriber subscriber) throws InvocationTargetException {
+		ISynchronizationScopeManager manager = new SynchronizationScopeManager("",  //$NON-NLS-1$
+				mappings, SubscriberResourceMappingContext.createContext(subscriber), true);
+		try {
+			return getResourcesToCompare(manager);
+		} finally {
+			manager.dispose();
+		}
+	}
+	
+	protected IResource[] getResourcesToCompare(final Subscriber subscriber) throws InvocationTargetException {
+		return getResourcesToCompare(getCVSResourceMappings(), subscriber);
+	}
+	
+	protected ResourceMappingContext getResourceMappingContext() {
 		return SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber());
 	}
 
 	public static IResource[] getResourcesToCompare(final ISynchronizationScopeManager manager) throws InvocationTargetException {
-        // Determine what resources need to be synchronized.
-        // Use a resource mapping context to include any relevant remote resources
-        final IResource[][] resources = new IResource[][] { null };
-        try {
+		// Determine what resources need to be synchronized.
+		// Use a resource mapping context to include any relevant remote resources
+		final IResource[][] resources = new IResource[][] { null };
+		try {
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 				try {
 					resources[0] = getRootTraversalResources(manager, monitor);
@@ -113,50 +113,50 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 					throw new InvocationTargetException(e);
 				}
 			});
-        } catch (InterruptedException e) {
-            // Canceled
-            return null;
-        }
-        return resources[0];
-    }
-    
-    public static IResource[] getProjects(IResource[] resources) {
+		} catch (InterruptedException e) {
+			// Canceled
+			return null;
+		}
+		return resources[0];
+	}
+	
+	public static IResource[] getProjects(IResource[] resources) {
 		Set<IProject> projects = new HashSet<>();
-        for (int i = 0; i < resources.length; i++) {
-            IResource resource = resources[i];
-            projects.add(resource.getProject());
-        }
-        return projects.toArray(new IResource[projects.size()]);
-    }
-    
-    /**
-     * 
-     * @param mappings
-     * @return
-     * 
-     * @deprecated need to find a better way to do this
-     */
-    @Deprecated
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			projects.add(resource.getProject());
+		}
+		return projects.toArray(new IResource[projects.size()]);
+	}
+	
+	/**
+	 * 
+	 * @param mappings
+	 * @return
+	 * 
+	 * @deprecated need to find a better way to do this
+	 */
+	@Deprecated
 	public static boolean isLogicalModel(ResourceMapping[] mappings) {
-        for (int i = 0; i < mappings.length; i++) {
-            ResourceMapping mapping = mappings[i];
-            if (! (mapping.getModelObject() instanceof IResource) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    protected IFile getSelectedFile() {
-    	ResourceMapping[] mappings = getCVSResourceMappings();
-    	if (mappings.length == 1) {
-    		IResource resource = Utils.getResource(mappings[0].getModelObject());
-    		if (resource != null && resource.getType() == IResource.FILE)
-    			return (IFile)resource;
-    	}
-    	return null;
-    }
-    
+		for (int i = 0; i < mappings.length; i++) {
+			ResourceMapping mapping = mappings[i];
+			if (! (mapping.getModelObject() instanceof IResource) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected IFile getSelectedFile() {
+		ResourceMapping[] mappings = getCVSResourceMappings();
+		if (mappings.length == 1) {
+			IResource resource = Utils.getResource(mappings[0].getModelObject());
+			if (resource != null && resource.getType() == IResource.FILE)
+				return (IFile)resource;
+		}
+		return null;
+	}
+	
 	protected boolean hasOutgoingChanges(final RepositoryProviderOperation operation) throws InvocationTargetException, InterruptedException {
 		final boolean[] hasChange = new boolean[] { false };
 		PlatformUI.getWorkbench().getProgressService().run(true, true, monitor -> {
@@ -198,8 +198,8 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 	 */
 	protected SynchronizationScopeManager getScopeManager() {
 		return new SynchronizationScopeManager(
-    			"",  //$NON-NLS-1$
-    			getCVSResourceMappings(), 
-    			getResourceMappingContext(), true);
+				"",  //$NON-NLS-1$
+				getCVSResourceMappings(), 
+				getResourceMappingContext(), true);
 	}
 }

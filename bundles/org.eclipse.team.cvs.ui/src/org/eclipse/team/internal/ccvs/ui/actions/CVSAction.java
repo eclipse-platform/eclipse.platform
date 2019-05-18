@@ -166,17 +166,17 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	@Override
 	public void dispose() {
 		super.dispose();
-        IWorkbenchWindow window = getWindow();
-        if (window != null) {
-            IPartService partService = window.getPartService();
-            if (partService != null)
-                partService.removePartListener(retargetAction);
-        }
-        
-        if(retargetAction != null) {
-        	retargetAction.dispose();
-        	retargetAction = null;
-        }
+		IWorkbenchWindow window = getWindow();
+		if (window != null) {
+			IPartService partService = window.getPartService();
+			if (partService != null)
+				partService.removePartListener(retargetAction);
+		}
+		
+		if(retargetAction != null) {
+			retargetAction.dispose();
+			retargetAction = null;
+		}
 	}
 	
 	@Override
@@ -593,23 +593,23 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	/*
 	 * @see org.eclipse.team.internal.ui.actions.TeamAction#getSelectedResources()
 	 */
-    protected final IResource[] getSelectedResourcesWithOverlap() {
-    	IStructuredSelection selection = getSelection();
-        CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
-        if (props == null) {
-            return Utils.getContributedResources(selection.toArray());
-        }
-        return props.getAllSelectedResources();
-    }
-    
+	protected final IResource[] getSelectedResourcesWithOverlap() {
+		IStructuredSelection selection = getSelection();
+		CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
+		if (props == null) {
+			return Utils.getContributedResources(selection.toArray());
+		}
+		return props.getAllSelectedResources();
+	}
+	
 	@Override
 	protected final IResource[] getSelectedResources() {
 		IStructuredSelection selection = getSelection();
-        CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
-        if (props == null) {
-            return CVSActionSelectionProperties.getNonOverlapping(Utils.getContributedResources(selection.toArray()));
-        }
-        return props.getNonoverlappingSelectedResources();
+		CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
+		if (props == null) {
+			return CVSActionSelectionProperties.getNonOverlapping(Utils.getContributedResources(selection.toArray()));
+		}
+		return props.getNonoverlappingSelectedResources();
 	}
 	
 	@Override
@@ -633,16 +633,16 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 	public boolean isHandled() {
 		return true;
 	}
-    
-    protected final ICVSResource getCVSResourceFor(IResource resource) {
-        CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
-        if (props == null) {
-            return CVSWorkspaceRoot.getCVSResourceFor(resource);
-        }
-        return props.getCVSResourceFor(resource);
-    }
+	
+	protected final ICVSResource getCVSResourceFor(IResource resource) {
+		CVSActionSelectionProperties props = CVSActionSelectionProperties.getProperties(getSelection());
+		if (props == null) {
+			return CVSWorkspaceRoot.getCVSResourceFor(resource);
+		}
+		return props.getCVSResourceFor(resource);
+	}
 
-    public static CVSTag getAccurateFileTag(ICVSResource cvsResource) throws CVSException {
+	public static CVSTag getAccurateFileTag(ICVSResource cvsResource) throws CVSException {
 		CVSTag tag = null;
 		if (cvsResource != null) {
 			return Util.getAccurateFileTag(cvsResource,  getTags(cvsResource));

@@ -100,8 +100,8 @@ public class ResourceVariantCache {
 
 	public static synchronized void shutdown() {
 		String[] keys = caches.keySet().toArray(new String[caches.size()]);
-        for (int i = 0; i < keys.length; i++) {
-            String id = keys[i];
+		for (int i = 0; i < keys.length; i++) {
+			String id = keys[i];
 			disableCache(id);
 		}
 	}

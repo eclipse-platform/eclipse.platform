@@ -25,7 +25,7 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
  * These are elements created to display synchronization state to the user. These elements are found in
  * the generated diff tree viewer created by a {@link SubscriberParticipant}. Since it implements
  * {@link ITypedElement} and {@link ICompareInput} they can be used as input to compare components.
-  * <p>
+ * <p>
  * Clients typically use this interface as is, but may implement it if required.
  * </p>
  * @since 3.0

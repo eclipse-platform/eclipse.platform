@@ -71,8 +71,8 @@ public class BranchOperation extends RepositoryProviderOperation {
 		} catch (InterruptedException e1) {
 			throw new OperationCanceledException();
 		}
-    	
-        IResource[] resources = getTraversalRoots();
+		
+		IResource[] resources = getTraversalRoots();
 		boolean allSticky = areAllResourcesSticky(resources);
 		String initialVersionName = calculateInitialVersionName(resources,allSticky);
 		final BranchPromptDialog dialog = new BranchPromptDialog(getShell(),
@@ -134,7 +134,7 @@ public class BranchOperation extends RepositoryProviderOperation {
 		try {
 			// Build the arguments list
 			ICVSResource[] arguments = getCVSArguments(resources);
-            LocalOption[] localOptions = getLocalOptions(recurse);
+			LocalOption[] localOptions = getLocalOptions(recurse);
 			
 			// Tag the remote resources
 			IStatus status = null;
@@ -176,7 +176,7 @@ public class BranchOperation extends RepositoryProviderOperation {
 				Session session = new Session(getRemoteLocation(provider), getLocalRoot(provider), true /* output to console */);
 				session.open(Policy.subMonitorFor(monitor, 5), true /* open for modification */);
 				try {
-                    status = Command.CUSTOM_TAG.execute(
+					status = Command.CUSTOM_TAG.execute(
 						session,
 						Command.NO_GLOBAL_OPTIONS,
 						localOptions,

@@ -1068,7 +1068,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 		}
 
 		super.handleDispose(event);
-  	}
+	}
 
 	/**
 	 * Updates the enabled state of the toolbar items.

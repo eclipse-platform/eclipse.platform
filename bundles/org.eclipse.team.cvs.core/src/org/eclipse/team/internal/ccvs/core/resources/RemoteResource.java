@@ -62,13 +62,13 @@ public abstract class RemoteResource extends CachedResourceVariant implements IC
 	
 	public abstract ICVSRepositoryLocation getRepository();
 	
- 	public int getWorkspaceSyncState() {
- 		return workspaceSyncState;
- 	}
- 	
- 	public void setWorkspaceSyncState(int workspaceSyncState) {
- 		this.workspaceSyncState = workspaceSyncState;
- 	}
+	public int getWorkspaceSyncState() {
+		return workspaceSyncState;
+	}
+	
+	public void setWorkspaceSyncState(int workspaceSyncState) {
+		this.workspaceSyncState = workspaceSyncState;
+	}
 	
 	public void delete() {
 		// For now, do nothing but we could provide this in the future.
@@ -92,7 +92,7 @@ public abstract class RemoteResource extends CachedResourceVariant implements IC
 
 	public ICVSFolder getParent() {
 		return parent;
- 	}
+	}
 
 	public boolean isIgnored() {
 		return false;

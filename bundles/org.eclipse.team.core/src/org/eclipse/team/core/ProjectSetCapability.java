@@ -244,9 +244,9 @@ public abstract class ProjectSetCapability {
 			IProject eachProj = projects[i];
 			if (eachProj.exists()) {
 				existingProjects.add(eachProj);
-            } else if (new File(eachProj.getParent().getLocation().toFile(), eachProj.getName()).exists()) {
-                existingProjects.add(eachProj);
-            }
+			} else if (new File(eachProj.getParent().getLocation().toFile(), eachProj.getName()).exists()) {
+				existingProjects.add(eachProj);
+			}
 		}
 		if (existingProjects.size() == 0)
 			return projects;

@@ -25,7 +25,7 @@ import org.eclipse.team.internal.ccvs.ui.operations.TagOperation;
  * Action that tags the local workspace with a version tag.
  */
 public class TagLocalAction extends TagAction {
-    
+	
 	@Override
 	protected boolean performPrompting(ITagOperation operation)  {
 		if (operation instanceof TagOperation) {
@@ -53,7 +53,7 @@ public class TagLocalAction extends TagAction {
 		return false;
 	}
 
-    @Override
+	@Override
 	protected ITagOperation createTagOperation() {
 		return new TagOperation(getTargetPart(), getCVSResourceMappings());
 	}

@@ -36,22 +36,22 @@ import org.eclipse.team.internal.core.Policy;
  */
 public abstract class SynchronizationContext extends PlatformObject implements ISynchronizationContext {
 
-    private final int type;
-    private final IResourceDiffTree diffTree;
-    private Cache cache;
+	private final int type;
+	private final IResourceDiffTree diffTree;
+	private Cache cache;
 	private final ISynchronizationScopeManager manager;
 
-    /**
-     * Create a synchronization context.
-     * @param manager the manager that defines the scope of the synchronization
-     * @param type the type of synchronization (ONE_WAY or TWO_WAY)
-     * @param diffTree the sync info tree that contains all out-of-sync resources
-     */
-    protected SynchronizationContext(ISynchronizationScopeManager manager, int type, IResourceDiffTree diffTree) {
-    	this.manager = manager;
+	/**
+	 * Create a synchronization context.
+	 * @param manager the manager that defines the scope of the synchronization
+	 * @param type the type of synchronization (ONE_WAY or TWO_WAY)
+	 * @param diffTree the sync info tree that contains all out-of-sync resources
+	 */
+	protected SynchronizationContext(ISynchronizationScopeManager manager, int type, IResourceDiffTree diffTree) {
+		this.manager = manager;
 		this.type = type;
 		this.diffTree = diffTree;
-    }
+	}
 
 	@Override
 	public ISynchronizationScope getScope() {

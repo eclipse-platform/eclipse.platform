@@ -251,7 +251,7 @@ public class DocLineComparator implements ITokenComparator {
 	 * Extract a single line from the underlying document.
 	 *
 	 * @param line the number of the line to extract
-     * @param whether to include the line separator
+	 * @param whether to include the line separator
 	 * @return the contents of the line as a String
 	 */
 	private String extract(int line, boolean includeSeparator) {

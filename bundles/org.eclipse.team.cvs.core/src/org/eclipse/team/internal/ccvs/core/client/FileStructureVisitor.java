@@ -73,9 +73,9 @@ class FileStructureVisitor extends AbstractStructureVisitor {
 		ICVSResource[] children = mFolder.members(ICVSFolder.ALL_UNIGNORED_MEMBERS);
 		sendFiles(children);
 		sendQuestionableFolders(children);
-        if (isRecurse()) {
-    		sendManagedFolders(children);
-        }
+		if (isRecurse()) {
+			sendManagedFolders(children);
+		}
 	}
 
 	/**

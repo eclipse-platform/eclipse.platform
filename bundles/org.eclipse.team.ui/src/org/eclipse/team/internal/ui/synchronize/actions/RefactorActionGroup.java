@@ -77,13 +77,13 @@ public class RefactorActionGroup extends ActionGroup {
 		parentMenu.appendToGroup(groupId, renameAction);
 	}
 
- 	@Override
+	@Override
 	public void fillActionBars(IActionBars actionBars) {
-    	actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
-    	actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
-    	actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), renameAction);
-    	actionBars.setGlobalActionHandler(ActionFactory.MOVE.getId(), moveAction);
-    }
+		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copyAction);
+		actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), deleteAction);
+		actionBars.setGlobalActionHandler(ActionFactory.RENAME.getId(), renameAction);
+		actionBars.setGlobalActionHandler(ActionFactory.MOVE.getId(), moveAction);
+	}
 
 	@Override
 	public void updateActionBars() {
@@ -150,22 +150,22 @@ public class RefactorActionGroup extends ActionGroup {
 				.setActionDefinitionId(IWorkbenchCommandConstants.FILE_RENAME);
 	}
 
-    private IStructuredSelection getSelection() {
-        final ISelection selection= getContext().getSelection();
+	private IStructuredSelection getSelection() {
+		final ISelection selection= getContext().getSelection();
 
-        if (!(selection instanceof IStructuredSelection))
-            return new StructuredSelection();
+		if (!(selection instanceof IStructuredSelection))
+			return new StructuredSelection();
 
-    	return new StructuredSelection(Utils.getResources(((IStructuredSelection)selection).toArray()));
+		return new StructuredSelection(Utils.getResources(((IStructuredSelection)selection).toArray()));
 	}
 
-    private IStructuredSelection getObjectSelection() {
-        final ISelection selection= getContext().getSelection();
+	private IStructuredSelection getObjectSelection() {
+		final ISelection selection= getContext().getSelection();
 
-        if (!(selection instanceof IStructuredSelection))
-            return new StructuredSelection();
+		if (!(selection instanceof IStructuredSelection))
+			return new StructuredSelection();
 
-    	return (IStructuredSelection)selection;
+		return (IStructuredSelection)selection;
 	}
 
 	private boolean allResourcesAreOfType(IStructuredSelection selection, int resourceMask) {

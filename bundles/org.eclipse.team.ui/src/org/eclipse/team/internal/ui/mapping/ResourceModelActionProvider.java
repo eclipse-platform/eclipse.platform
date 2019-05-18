@@ -93,7 +93,7 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 	@Override
 	public void updateActionBars() {
 		super.updateActionBars();
-		 if (refactorActions != null) refactorActions.updateActionBars();
+		if (refactorActions != null) refactorActions.updateActionBars();
 	}
 
 	@Override
@@ -102,9 +102,9 @@ public class ResourceModelActionProvider extends SynchronizationActionProvider {
 		if (refactorActions != null) refactorActions.dispose();
 	}
 
-    @Override
+	@Override
 	public void setContext(ActionContext context) {
-        super.setContext(context);
-        if (refactorActions != null) refactorActions.setContext(context);
-    }
+		super.setContext(context);
+		if (refactorActions != null) refactorActions.setContext(context);
+	}
 }

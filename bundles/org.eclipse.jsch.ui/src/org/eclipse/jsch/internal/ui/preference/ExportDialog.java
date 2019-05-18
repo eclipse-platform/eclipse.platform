@@ -28,76 +28,76 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 class ExportDialog extends Dialog{
-  protected Text field;
-  protected String target=null;
-  protected String title=null;
-  protected String message=null;
+	protected Text field;
+	protected String target=null;
+	protected String title=null;
+	protected String message=null;
 
-  public ExportDialog(Shell parentShell, String title, String message){
-    super(parentShell);
-    this.title=title;
-    this.message=message;
-  }
+	public ExportDialog(Shell parentShell, String title, String message){
+		super(parentShell);
+		this.title=title;
+		this.message=message;
+	}
 
-  protected void configureShell(Shell newShell){
-    super.configureShell(newShell);
-    newShell.setText(title);
-  }
+	protected void configureShell(Shell newShell){
+		super.configureShell(newShell);
+		newShell.setText(title);
+	}
 
-  public void create(){
-    super.create();
-    field.setFocus();
-  }
+	public void create(){
+		super.create();
+		field.setFocus();
+	}
 
-  protected Control createDialogArea(Composite parent){
-    initializeDialogUnits(parent);
-    Composite main=new Composite(parent, SWT.NONE);
-    GridLayout layout=new GridLayout();
-    layout.numColumns=2;
-    layout.marginHeight=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-    layout.marginWidth=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-    layout.verticalSpacing=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-    layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-    main.setLayout(layout);
-    main.setLayoutData(new GridData(GridData.FILL_BOTH));
+	protected Control createDialogArea(Composite parent){
+		initializeDialogUnits(parent);
+		Composite main=new Composite(parent, SWT.NONE);
+		GridLayout layout=new GridLayout();
+		layout.numColumns=2;
+		layout.marginHeight=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		layout.marginWidth=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		layout.verticalSpacing=convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		layout.horizontalSpacing=convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		main.setLayout(layout);
+		main.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-    if(message!=null){
-      Label messageLabel=new Label(main, SWT.WRAP);
-      messageLabel.setText(message);
-      GridData data=new GridData(GridData.FILL_HORIZONTAL);
-      data.horizontalSpan=2;
-      messageLabel.setLayoutData(data);
-    }
+		if(message!=null){
+			Label messageLabel=new Label(main, SWT.WRAP);
+			messageLabel.setText(message);
+			GridData data=new GridData(GridData.FILL_HORIZONTAL);
+			data.horizontalSpan=2;
+			messageLabel.setLayoutData(data);
+		}
 
-    createTargetFields(main);
-    Dialog.applyDialogFont(main);
-    return main;
-  }
+		createTargetFields(main);
+		Dialog.applyDialogFont(main);
+		return main;
+	}
 
-  protected void createTargetFields(Composite parent){
-    new Label(parent, SWT.NONE).setText(Messages.CVSSSH2PreferencePage_125);
+	protected void createTargetFields(Composite parent){
+		new Label(parent, SWT.NONE).setText(Messages.CVSSSH2PreferencePage_125);
 
-    field=new Text(parent, SWT.BORDER);
-    GridData data=new GridData(GridData.FILL_HORIZONTAL);
-    data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
-    field.setLayoutData(data);
-  }
+		field=new Text(parent, SWT.BORDER);
+		GridData data=new GridData(GridData.FILL_HORIZONTAL);
+		data.widthHint=convertHorizontalDLUsToPixels(IDialogConstants.ENTRY_FIELD_WIDTH);
+		field.setLayoutData(data);
+	}
 
-  public String getTarget(){
-    return target;
-  }
+	public String getTarget(){
+		return target;
+	}
 
-  protected void okPressed(){
-    String _target=field.getText();
-    if(_target==null||_target.length()==0){
-      return;
-    }
-    target=_target;
-    super.okPressed();
-  }
+	protected void okPressed(){
+		String _target=field.getText();
+		if(_target==null||_target.length()==0){
+			return;
+		}
+		target=_target;
+		super.okPressed();
+	}
 
-  protected void cancelPressed(){
-    target=null;
-    super.cancelPressed();
-  }
+	protected void cancelPressed(){
+		target=null;
+		super.cancelPressed();
+	}
 }

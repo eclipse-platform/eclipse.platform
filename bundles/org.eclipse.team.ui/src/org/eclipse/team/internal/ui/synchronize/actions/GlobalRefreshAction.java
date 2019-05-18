@@ -173,7 +173,7 @@ public class GlobalRefreshAction extends Action implements IMenuCreator, IWorkbe
 					return null;
 				}
 			};
-	        syncLatest = hs.activateHandler("org.eclipse.team.ui.synchronizeLast", handler);	 //$NON-NLS-1$
+			syncLatest = hs.activateHandler("org.eclipse.team.ui.synchronizeLast", handler);	 //$NON-NLS-1$
 		}
 		setMenuCreator(this);
 		TeamUI.getSynchronizeManager().addSynchronizeParticipantListener(this);

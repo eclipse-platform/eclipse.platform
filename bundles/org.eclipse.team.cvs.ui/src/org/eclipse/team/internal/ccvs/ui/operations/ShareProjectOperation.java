@@ -110,7 +110,7 @@ public class ShareProjectOperation extends CVSOperation {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		purgeAnyCVSFolders(Policy.subMonitorFor(monitor, IProgressMonitor.UNKNOWN));
 		// Link the project to the newly created module
-        monitor.subTask(NLS.bind(CVSUIMessages.ShareProjectOperation_3, new String[] { project.getName(), remote.getRepositoryRelativePath() }));
+		monitor.subTask(NLS.bind(CVSUIMessages.ShareProjectOperation_3, new String[] { project.getName(), remote.getRepositoryRelativePath() }));
 		ICVSFolder folder = (ICVSFolder)CVSWorkspaceRoot.getCVSResourceFor(project);
 		folder.setFolderSyncInfo(remote.getFolderSyncInfo());
 		//Register it with Team.  If it already is, no harm done.
@@ -187,7 +187,7 @@ public class ShareProjectOperation extends CVSOperation {
 	 */
 	private void purgeAnyCVSFolders(final IProgressMonitor monitor) {
 		try {
-            monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+			monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 			ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
 			folder.accept(new ICVSResourceVisitor() {
 				@Override
@@ -196,7 +196,7 @@ public class ShareProjectOperation extends CVSOperation {
 				}
 				@Override
 				public void visitFolder(ICVSFolder folder) throws CVSException {
-                    monitor.subTask(NLS.bind(CVSUIMessages.ShareProjectOperation_2, new String[] { folder.getIResource().getFullPath().toString() } ));
+					monitor.subTask(NLS.bind(CVSUIMessages.ShareProjectOperation_2, new String[] { folder.getIResource().getFullPath().toString() } ));
 					if (folder.isCVSFolder()) {
 						// for now, just unmanage
 						folder.unmanage(null);
@@ -207,7 +207,7 @@ public class ShareProjectOperation extends CVSOperation {
 			// log the exception and return null
 			CVSUIPlugin.log(e);
 		} finally {
-		    monitor.done();
-        }
+			monitor.done();
+		}
 	}
 }

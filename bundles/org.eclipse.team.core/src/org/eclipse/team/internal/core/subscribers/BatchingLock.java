@@ -86,7 +86,7 @@ public class BatchingLock {
 				} finally {
 					if (!success) {
 						try {
-						    // The begin was canceled (or some other problem occurred).
+							// The begin was canceled (or some other problem occurred).
 							// Free the scheduling rule
 							// so the clients of ReentrantLock don't need to
 							// do an endRule when the operation is canceled.
@@ -195,9 +195,9 @@ public class BatchingLock {
 				handleAbortedFlush(e);
 				throw e;
 			} finally {
-			    // We have to clear the resources no matter what since the next attempt
+				// We have to clear the resources no matter what since the next attempt
 				// to flush may not have an appropriate scheduling rule
-			    changedResources.clear();
+				changedResources.clear();
 			}
 		}
 		private boolean isFlushRequired() {
@@ -295,21 +295,21 @@ public class BatchingLock {
 	 * Create the ThreadInfo instance used to cache the lock state for the
 	 * current thread. Subclass can override to provide a subclass of
 	 * ThreadInfo.
-     * @param operation the flush operation
-     * @return a ThreadInfo instance
-     */
-    protected ThreadInfo createThreadInfo(IFlushOperation operation) {
-        return new ThreadInfo(operation);
-    }
+	 * @param operation the flush operation
+	 * @return a ThreadInfo instance
+	 */
+	protected ThreadInfo createThreadInfo(IFlushOperation operation) {
+		return new ThreadInfo(operation);
+	}
 
-    /**
+	/**
 	 * Release the lock held on any resources by this thread. The provided rule must
 	 * be identical to the rule returned by the corresponding acquire(). If the rule
 	 * for the release is non-null and all remaining rules held by the lock are null,
 	 * the the flush operation provided in the acquire method will be executed.
-     * @param rule the scheduling rule
-     * @param monitor a progress monitor
-     * @throws TeamException
+	 * @param rule the scheduling rule
+	 * @param monitor a progress monitor
+	 * @throws TeamException
 	 */
 	public void release(ISchedulingRule rule, IProgressMonitor monitor) throws TeamException {
 		ThreadInfo info = getThreadInfo();

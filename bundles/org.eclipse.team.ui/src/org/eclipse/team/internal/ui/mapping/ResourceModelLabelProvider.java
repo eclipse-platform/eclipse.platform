@@ -175,7 +175,7 @@ public class ResourceModelLabelProvider extends
 
 		if (!handledResources.isEmpty()) {
 			final IResource[] resources = handledResources.toArray(new IResource[handledResources.size()]);
-		    updateLabels(resources);
+			updateLabels(resources);
 		}
 	}
 

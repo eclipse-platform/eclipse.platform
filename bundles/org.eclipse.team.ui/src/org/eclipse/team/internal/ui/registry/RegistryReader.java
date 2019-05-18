@@ -34,55 +34,55 @@ public abstract class RegistryReader {
 	protected static final String TAG_DESCRIPTION = "description"; //$NON-NLS-1$
 	protected static Hashtable<String, IExtension[]> extensionPoints = new Hashtable<>();
 
-    /**
-     * Creates an extension.  If the extension plugin has not
-     * been loaded a busy cursor will be activated during the duration of
-     * the load.
-     *
-     * @param element the configuration element defining the extension
-     * @param classAttribute the name of the attribute carrying the class
-     * @return the extension object
-     * @throws CoreException if the extension cannot be created
-     */
-    public static Object createExtension(final IConfigurationElement element,
-            final String classAttribute) throws CoreException {
-        try {
-            // If plugin has been loaded create extension.
-            // Otherwise, show busy cursor then create extension.
-            if (isActivated(element.getDeclaringExtension()
-                    .getContributor().getName())) {
-                return element.createExecutableExtension(classAttribute);
-            }
-            final Object[] ret = new Object[1];
-            final CoreException[] exc = new CoreException[1];
-            BusyIndicator.showWhile(null, () -> {
-			    try {
-			        ret[0] = element
-			                .createExecutableExtension(classAttribute);
-			    } catch (CoreException e) {
-			        exc[0] = e;
-			    }
+	/**
+	 * Creates an extension.  If the extension plugin has not
+	 * been loaded a busy cursor will be activated during the duration of
+	 * the load.
+	 *
+	 * @param element the configuration element defining the extension
+	 * @param classAttribute the name of the attribute carrying the class
+	 * @return the extension object
+	 * @throws CoreException if the extension cannot be created
+	 */
+	public static Object createExtension(final IConfigurationElement element,
+			final String classAttribute) throws CoreException {
+		try {
+			// If plugin has been loaded create extension.
+			// Otherwise, show busy cursor then create extension.
+			if (isActivated(element.getDeclaringExtension()
+					.getContributor().getName())) {
+				return element.createExecutableExtension(classAttribute);
+			}
+			final Object[] ret = new Object[1];
+			final CoreException[] exc = new CoreException[1];
+			BusyIndicator.showWhile(null, () -> {
+				try {
+					ret[0] = element
+							.createExecutableExtension(classAttribute);
+				} catch (CoreException e) {
+					exc[0] = e;
+				}
 			});
-            if (exc[0] != null) {
+			if (exc[0] != null) {
 				throw exc[0];
 			}
-            return ret[0];
+			return ret[0];
 
-        } catch (CoreException core) {
-            throw core;
-        } catch (Exception e) {
-            throw new CoreException(new Status(IStatus.ERROR, TeamUIPlugin.ID,
-                    IStatus.ERROR, NLS.bind(TeamUIMessages.RegistryReader_0, element.getNamespaceIdentifier(), element.getName()),e));
-        }
-    }
+		} catch (CoreException core) {
+			throw core;
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, TeamUIPlugin.ID,
+					IStatus.ERROR, NLS.bind(TeamUIMessages.RegistryReader_0, element.getNamespaceIdentifier(), element.getName()),e));
+		}
+	}
 
-    private static boolean isActivated(String bundleId) {
-        return isActivated(Platform.getBundle(bundleId));
-    }
+	private static boolean isActivated(String bundleId) {
+		return isActivated(Platform.getBundle(bundleId));
+	}
 
-    private static boolean isActivated(Bundle bundle) {
-        return bundle != null && (bundle.getState() & (Bundle.ACTIVE | Bundle.STOPPING)) != 0;
-    }
+	private static boolean isActivated(Bundle bundle) {
+		return bundle != null && (bundle.getState() & (Bundle.ACTIVE | Bundle.STOPPING)) != 0;
+	}
 
 	/**
 	 * The constructor.

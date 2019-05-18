@@ -26,7 +26,7 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
  * A tag source for a single ICVSFile
  */
 public class SingleFileTagSource extends TagSource {
-    
+	
 	public static CVSTag[] fetchTagsFor(ICVSFile file, IProgressMonitor monitor) throws TeamException {
 		Set<CVSTag> tagSet = new HashSet<>();
 		ILogEntry[] entries = file.getLogEntries(monitor);
@@ -39,51 +39,51 @@ public class SingleFileTagSource extends TagSource {
 		return tagSet.toArray(new CVSTag[tagSet.size()]);
 	}
 	
-    private ICVSFile file;
-    private TagSource parentFolderTagSource;
-    
-    /* package */ /**
-     * 
-     */
-    public SingleFileTagSource(ICVSFile file) {
-        this.file = file;
-        parentFolderTagSource = TagSource.create(new ICVSResource[] { file.getParent() });
-    }
+	private ICVSFile file;
+	private TagSource parentFolderTagSource;
+	
+	/* package */ /**
+	 * 
+	 */
+	public SingleFileTagSource(ICVSFile file) {
+		this.file = file;
+		parentFolderTagSource = TagSource.create(new ICVSResource[] { file.getParent() });
+	}
 
-    @Override
+	@Override
 	public CVSTag[] getTags(int type) {
-        return parentFolderTagSource.getTags(type);
-    }
+		return parentFolderTagSource.getTags(type);
+	}
 
-    @Override
+	@Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
-        CVSTag[] tags = fetchTagsFor(file, monitor); 
-        commit(tags, false, monitor);
-        fireChange();
-        return tags;
-    }
+		CVSTag[] tags = fetchTagsFor(file, monitor); 
+		commit(tags, false, monitor);
+		fireChange();
+		return tags;
+	}
 
-    @Override
+	@Override
 	public ICVSRepositoryLocation getLocation() {
 		RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
 		ICVSRepositoryLocation location = mgr.getRepositoryLocationFor(file);
 		return location;
-    }
+	}
 
-    @Override
+	@Override
 	public String getShortDescription() {
-        return file.getName();
-    }
+		return file.getName();
+	}
 
-    @Override
+	@Override
 	public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
-        parentFolderTagSource.commit(tags, replace, monitor);
-        fireChange();
-    }
+		parentFolderTagSource.commit(tags, replace, monitor);
+		fireChange();
+	}
 
-    @Override
+	@Override
 	public ICVSResource[] getCVSResources() {
-        return new ICVSResource[] { file };
-    }
+		return new ICVSResource[] { file };
+	}
 
 }

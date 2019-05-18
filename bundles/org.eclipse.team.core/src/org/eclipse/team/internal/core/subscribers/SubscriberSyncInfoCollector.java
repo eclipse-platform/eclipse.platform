@@ -51,7 +51,7 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 	 * @param roots the roots of the out-of-sync resources to be collected
 	 */
 	public SubscriberSyncInfoCollector(Subscriber subscriber, IResource[] roots) {
-	    super(subscriber);
+		super(subscriber);
 		this.roots = roots;
 		this.eventHandler = new SubscriberSyncInfoEventHandler(subscriber, roots);
 		this.subscriberInput = eventHandler.getSyncSetInput();
@@ -196,18 +196,18 @@ public final class SubscriberSyncInfoCollector extends SubscriberResourceCollect
 		reset();
 	}
 
-    @Override
+	@Override
 	protected boolean hasMembers(IResource resource) {
-        return getSubscriberSyncInfoSet().hasMembers(resource);
-    }
+		return getSubscriberSyncInfoSet().hasMembers(resource);
+	}
 
-    @Override
+	@Override
 	protected void remove(IResource resource) {
-        eventHandler.remove(resource);
-    }
+		eventHandler.remove(resource);
+	}
 
-    @Override
+	@Override
 	protected void change(IResource resource, int depth) {
-        eventHandler.change(resource, depth);
-    }
+		eventHandler.change(resource, depth);
+	}
 }

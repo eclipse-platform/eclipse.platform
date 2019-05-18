@@ -93,7 +93,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 					ISubscriberChangeEvent delta = deltas[i];
 					IResource resource = delta.getResource();
 					if(resource.getType() == IResource.FILE && 
-					   fLastSyncState != null && resource.equals(fLastSyncState.getLocal())) {
+						fLastSyncState != null && resource.equals(fLastSyncState.getLocal())) {
 						if(delta.getFlags() == ISubscriberChangeEvent.SYNC_CHANGED) {
 							fetchContentsInJob();
 						}
@@ -143,7 +143,7 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	@Override
 	public void setActiveEditor(ITextEditor targetEditor) {
 		IEditorInput editorInput = targetEditor.getEditorInput();
-        if (editorInput == null || ResourceUtil.getFile(editorInput) == null) return;
+		if (editorInput == null || ResourceUtil.getFile(editorInput) == null) return;
 		fEditor = targetEditor;
 		fDocumentProvider= fEditor.getDocumentProvider();
 		
@@ -318,10 +318,10 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 	private IFile getFileFromEditor() {
 		if(fEditor != null) {
 			IEditorInput input= fEditor.getEditorInput();
-            if (input != null) {
-                IFile file = ResourceUtil.getFile(input);
-                return file;
-            }
+			if (input != null) {
+				IFile file = ResourceUtil.getFile(input);
+				return file;
+			}
 		}
 		return null;
 	}

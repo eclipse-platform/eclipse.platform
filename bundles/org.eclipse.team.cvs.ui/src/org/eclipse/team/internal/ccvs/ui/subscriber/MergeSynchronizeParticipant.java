@@ -266,10 +266,10 @@ public class MergeSynchronizeParticipant extends CVSParticipant {
 	protected String getShortTaskName() {
 		return CVSUIMessages.Participant_merging; 
 	}
-    
-    @Override
+	
+	@Override
 	protected CVSChangeSetCapability createChangeSetCapability() {
-        // See bug 84561 for a description of the problems with Merge Change Sets
-        return null;
-    }
+		// See bug 84561 for a description of the problems with Merge Change Sets
+		return null;
+	}
 }

@@ -100,26 +100,26 @@ public class CVSTeamProvider extends RepositoryProvider {
 	 * @param project the project
 	 */
 	public static void markAsTempShare(IProject project) {
-    	if (RepositoryProvider.isShared(project))
-    		return;
-    	try {
-    		project.setSessionProperty(CVSTeamProvider.TEMP_SHARED, Boolean.TRUE);
+		if (RepositoryProvider.isShared(project))
+			return;
+		try {
+			project.setSessionProperty(CVSTeamProvider.TEMP_SHARED, Boolean.TRUE);
 		} catch (CoreException e) {
 			CVSProviderPlugin.log(e);
 		}
 	}
 	
-    /**
-     * Return the file modification validator used for all CVS repository providers.
-     * @return the file modification validator used for all CVS repository providers
-     */
-    protected static CVSCoreFileModificationValidator internalGetFileModificationValidator() {
-        if (CVSTeamProvider.fileModificationValidator == null) {
-            CVSTeamProvider.fileModificationValidator = new CVSCoreFileModificationValidator();
-        }
-        return CVSTeamProvider.fileModificationValidator;
-    }
-    
+	/**
+	 * Return the file modification validator used for all CVS repository providers.
+	 * @return the file modification validator used for all CVS repository providers
+	 */
+	protected static CVSCoreFileModificationValidator internalGetFileModificationValidator() {
+		if (CVSTeamProvider.fileModificationValidator == null) {
+			CVSTeamProvider.fileModificationValidator = new CVSCoreFileModificationValidator();
+		}
+		return CVSTeamProvider.fileModificationValidator;
+	}
+	
 	/**
 	 * No-arg Constructor for IProjectNature conformance
 	 */
@@ -184,13 +184,13 @@ public class CVSTeamProvider extends RepositoryProvider {
 	/*
 	 * Generate an exception if the resource is not a child of the project
 	 */
-	 private void checkIsChild(IResource resource) throws CVSException {
-	 	if (!isChildResource(resource))
-	 		throw new CVSException(new Status(IStatus.ERROR, CVSProviderPlugin.ID, TeamException.UNABLE, 
-	 			NLS.bind(CVSMessages.CVSTeamProvider_invalidResource, (new Object[] {resource.getFullPath().toString(), project.getName()})), 
-	 			null));
-	 }
-	 
+	private void checkIsChild(IResource resource) throws CVSException {
+		if (!isChildResource(resource))
+			throw new CVSException(new Status(IStatus.ERROR, CVSProviderPlugin.ID, TeamException.UNABLE, 
+				NLS.bind(CVSMessages.CVSTeamProvider_invalidResource, (new Object[] {resource.getFullPath().toString(), project.getName()})), 
+				null));
+	}
+	
 	/*
 	 * Get the arguments to be passed to a commit or update
 	 */
@@ -242,8 +242,8 @@ public class CVSTeamProvider extends RepositoryProvider {
 							FolderSyncInfo info = folder.getFolderSyncInfo();
 							if (info != null) {
 								monitor1.subTask(NLS.bind(CVSMessages.CVSTeamProvider_updatingFolder, new String[] { info.getRepository() })); 
-			                    MutableFolderSyncInfo newInfo = info.cloneMutable();
-			                    newInfo.setRoot(root);
+								MutableFolderSyncInfo newInfo = info.cloneMutable();
+								newInfo.setRoot(root);
 								folder.setFolderSyncInfo(newInfo);
 								folder.acceptChildren(this);
 							}
@@ -833,9 +833,9 @@ public class CVSTeamProvider extends RepositoryProvider {
 
 	@Override
 	public IFileHistoryProvider getFileHistoryProvider() {
-		   if (CVSTeamProvider.fileHistoryProvider == null) {
-	            CVSTeamProvider.fileHistoryProvider = new CVSFileHistoryProvider();
-	        }
-	        return CVSTeamProvider.fileHistoryProvider;
+			if (CVSTeamProvider.fileHistoryProvider == null) {
+				CVSTeamProvider.fileHistoryProvider = new CVSFileHistoryProvider();
+			}
+			return CVSTeamProvider.fileHistoryProvider;
 	}
 }

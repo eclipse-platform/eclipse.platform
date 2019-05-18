@@ -27,100 +27,100 @@ import org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener;
  */
 public class ConsoleListeners implements IConsoleListener {
 
-    private static ConsoleListeners instance = new ConsoleListeners();
-    private Set listeners = new HashSet();
-    
-    /**
-     * Return the console listeners
-     * @return the console listeners
-     */
-    public static ConsoleListeners getInstance() {
-        return instance;
-    }
-    
-    public void addListener(IConsoleListener listener) {
-        synchronized(listeners) {
-            listeners.add(listener);
-        }
-    }
-    
-    public void removeListener(IConsoleListener listener) {
-        synchronized(listeners) {
-            listeners.remove(listener);
-        }
-    }
+	private static ConsoleListeners instance = new ConsoleListeners();
+	private Set listeners = new HashSet();
+	
+	/**
+	 * Return the console listeners
+	 * @return the console listeners
+	 */
+	public static ConsoleListeners getInstance() {
+		return instance;
+	}
+	
+	public void addListener(IConsoleListener listener) {
+		synchronized(listeners) {
+			listeners.add(listener);
+		}
+	}
+	
+	public void removeListener(IConsoleListener listener) {
+		synchronized(listeners) {
+			listeners.remove(listener);
+		}
+	}
 
-    private IConsoleListener[] getListeners() {
-        synchronized(listeners) {
-            return (IConsoleListener[]) listeners.toArray(new IConsoleListener[listeners.size()]);
-        }
-    }
-    
-    @Override
-    public void commandInvoked(final Session session, final String line) {
-        if (listeners.isEmpty()) return;
-        IConsoleListener[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IConsoleListener listener = listeners[i];
-            Platform.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
-                    // Exception logged by Platform
-                }
-                public void run() throws Exception {
-                    listener.commandInvoked(session, line);
-                }
-            });
-        }
-    }
+	private IConsoleListener[] getListeners() {
+		synchronized(listeners) {
+			return (IConsoleListener[]) listeners.toArray(new IConsoleListener[listeners.size()]);
+		}
+	}
+	
+	@Override
+	public void commandInvoked(final Session session, final String line) {
+		if (listeners.isEmpty()) return;
+		IConsoleListener[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IConsoleListener listener = listeners[i];
+			Platform.run(new ISafeRunnable() {
+				public void handleException(Throwable exception) {
+					// Exception logged by Platform
+				}
+				public void run() throws Exception {
+					listener.commandInvoked(session, line);
+				}
+			});
+		}
+	}
 
-    @Override
-    public void messageLineReceived(final Session session, final String line, final IStatus status) {
-        if (listeners.isEmpty()) return;
-        IConsoleListener[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IConsoleListener listener = listeners[i];
-            Platform.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
-                    // Exception logged by Platform
-                }
-                public void run() throws Exception {
-                    listener.messageLineReceived(session, line, status);
-                }
-            });
-        }
-    }
+	@Override
+	public void messageLineReceived(final Session session, final String line, final IStatus status) {
+		if (listeners.isEmpty()) return;
+		IConsoleListener[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IConsoleListener listener = listeners[i];
+			Platform.run(new ISafeRunnable() {
+				public void handleException(Throwable exception) {
+					// Exception logged by Platform
+				}
+				public void run() throws Exception {
+					listener.messageLineReceived(session, line, status);
+				}
+			});
+		}
+	}
 
-    @Override
-    public void errorLineReceived(final Session session, final String line, final IStatus status) {
-        if (listeners.isEmpty()) return;
-        IConsoleListener[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IConsoleListener listener = listeners[i];
-            Platform.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
-                    // Exception logged by Platform
-                }
-                public void run() throws Exception {
-                    listener.errorLineReceived(session, line, status);
-                }
-            });
-        }
-    }
+	@Override
+	public void errorLineReceived(final Session session, final String line, final IStatus status) {
+		if (listeners.isEmpty()) return;
+		IConsoleListener[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IConsoleListener listener = listeners[i];
+			Platform.run(new ISafeRunnable() {
+				public void handleException(Throwable exception) {
+					// Exception logged by Platform
+				}
+				public void run() throws Exception {
+					listener.errorLineReceived(session, line, status);
+				}
+			});
+		}
+	}
 
-    @Override
-    public void commandCompleted(final Session session, final IStatus status, final Exception exception) {
-        if (listeners.isEmpty()) return;
-        IConsoleListener[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IConsoleListener listener = listeners[i];
-            Platform.run(new ISafeRunnable() {
-                public void handleException(Throwable exception) {
-                    // Exception logged by Platform
-                }
-                public void run() throws Exception {
-                    listener.commandCompleted(session, status, exception);
-                }
-            });
-        }
-    }
+	@Override
+	public void commandCompleted(final Session session, final IStatus status, final Exception exception) {
+		if (listeners.isEmpty()) return;
+		IConsoleListener[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IConsoleListener listener = listeners[i];
+			Platform.run(new ISafeRunnable() {
+				public void handleException(Throwable exception) {
+					// Exception logged by Platform
+				}
+				public void run() throws Exception {
+					listener.commandCompleted(session, status, exception);
+				}
+			});
+		}
+	}
 }

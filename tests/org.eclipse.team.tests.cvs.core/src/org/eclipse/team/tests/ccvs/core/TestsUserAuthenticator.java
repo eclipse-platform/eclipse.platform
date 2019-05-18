@@ -39,10 +39,10 @@ public class TestsUserAuthenticator implements IUserAuthenticator {
 		return prompt;
 	}
 
-    @Override
+	@Override
 	public boolean promptForHostKeyChange(ICVSRepositoryLocation location) {
-        return false;
-    }
+		return false;
+	}
 
 	@Override
 	public Map<ICVSRepositoryLocation, List<String>> promptToConfigureRepositoryLocations(Map<ICVSRepositoryLocation, List<String>> alternativeMap) {

@@ -24,7 +24,7 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
  * CVSRevisionNumberCompareCriteria
  */
  public class CVSRevisionNumberCompareCriteria implements IResourceVariantComparator {
- 	
+	
 	private boolean isThreeWay;
 
 	public CVSRevisionNumberCompareCriteria(boolean isThreeWay) {

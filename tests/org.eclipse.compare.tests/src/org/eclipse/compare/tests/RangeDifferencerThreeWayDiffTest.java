@@ -28,8 +28,8 @@ public class RangeDifferencerThreeWayDiffTest extends TestCase {
 	static final String S= System.getProperty("line.separator"); //$NON-NLS-1$
 
 	public RangeDifferencerThreeWayDiffTest(String name) {
-        super(name);
-    }
+		super(name);
+	}
 
 	public void testInsertConflict() {
 		String a = "A" + S + "B" + S           + "C" + S + "D"; //$NON-NLS-1$

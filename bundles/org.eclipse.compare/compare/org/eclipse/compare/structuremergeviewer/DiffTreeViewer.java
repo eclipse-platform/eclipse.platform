@@ -370,8 +370,8 @@ public class DiffTreeViewer extends TreeViewer {
 	/**
 	 * Overridden to avoid expanding {@code DiffNode}s that shouldn't expand.
 	 *
-     * @param node the node to expand
-     * @param level non-negative level, or {@code ALL_LEVELS} to collapse all levels of the tree
+	 * @param node the node to expand
+	 * @param level non-negative level, or {@code ALL_LEVELS} to collapse all levels of the tree
 	 */
 	@Override
 	protected void internalExpandToLevel(Widget node, int level) {

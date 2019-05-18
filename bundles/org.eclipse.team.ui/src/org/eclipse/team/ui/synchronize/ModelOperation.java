@@ -392,24 +392,24 @@ public abstract class ModelOperation extends TeamOperation {
 		return showAllMappings(requestPreviewMessage);
 	}
 
-    private boolean showAllMappings(final String requestPreviewMessage) {
-        final boolean[] canceled = new boolean[] { false };
-        final boolean[] forcePreview = new boolean[] { false };
-        Display.getDefault().syncExec(() -> {
-		    AdditionalMappingsDialog dialog = new AdditionalMappingsDialog(getShell(), TeamUIMessages.ResourceMappingOperation_0, getScope(), getContext());
-		    dialog.setPreviewMessage(requestPreviewMessage);
-		    int result = dialog.open();
-		    canceled[0] = result != Window.OK;
-		    if (requestPreviewMessage != null) {
-		    	forcePreview[0] = dialog.isForcePreview();
-		    }
+	private boolean showAllMappings(final String requestPreviewMessage) {
+		final boolean[] canceled = new boolean[] { false };
+		final boolean[] forcePreview = new boolean[] { false };
+		Display.getDefault().syncExec(() -> {
+			AdditionalMappingsDialog dialog = new AdditionalMappingsDialog(getShell(), TeamUIMessages.ResourceMappingOperation_0, getScope(), getContext());
+			dialog.setPreviewMessage(requestPreviewMessage);
+			int result = dialog.open();
+			canceled[0] = result != Window.OK;
+			if (requestPreviewMessage != null) {
+				forcePreview[0] = dialog.isForcePreview();
+			}
 		});
 
-        if (canceled[0]) {
-            throw new OperationCanceledException();
-        }
-        return forcePreview[0];
-    }
+		if (canceled[0]) {
+			throw new OperationCanceledException();
+		}
+		return forcePreview[0];
+	}
 
 	/**
 	 * Return the synchronization context for the operation or <code>null</code>

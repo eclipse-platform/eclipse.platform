@@ -267,7 +267,7 @@ public class PessimisticPreferencesPage
 
 		int selectionIndex = filesAreEditedCombo.getSelectionIndex();
 		if (selectionIndex != -1)
-	        store.setValue(
+			store.setValue(
 				IPessimisticFilesystemConstants.PREF_CHECKED_IN_FILES_EDITED,
 				EDIT_OPTION_KEYS[selectionIndex]);
 		selectionIndex = filesAreEditedNoPromptCombo.getSelectionIndex();

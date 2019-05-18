@@ -205,7 +205,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 	protected void dispatchEvents(SubscriberEvent[] events,
 			IProgressMonitor monitor) {
 		try {
-        	tree.beginInput();
+			tree.beginInput();
 			for (int i = 0; i < events.length; i++) {
 				SubscriberEvent event = events[i];
 				switch (event.getType()) {

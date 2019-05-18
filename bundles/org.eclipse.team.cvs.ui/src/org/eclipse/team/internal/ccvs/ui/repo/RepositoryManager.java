@@ -55,10 +55,10 @@ public class RepositoryManager {
 	// new state file
 	private static final String REPOSITORIES_VIEW_FILE = "repositoriesView.xml"; //$NON-NLS-1$
 	private static final String COMMENT_HIST_FILE = "commitCommentHistory.xml"; //$NON-NLS-1$
-    private static final String COMMENT_TEMPLATES_FILE = "commentTemplates.xml"; //$NON-NLS-1$
+	private static final String COMMENT_TEMPLATES_FILE = "commentTemplates.xml"; //$NON-NLS-1$
 	static final String ELEMENT_COMMIT_COMMENT = "CommitComment"; //$NON-NLS-1$
 	static final String ELEMENT_COMMIT_HISTORY = "CommitComments"; //$NON-NLS-1$
-    static final String ELEMENT_COMMENT_TEMPLATES = "CommitCommentTemplates"; //$NON-NLS-1$
+	static final String ELEMENT_COMMENT_TEMPLATES = "CommitCommentTemplates"; //$NON-NLS-1$
 
 	private Map<String, RepositoryRoot> repositoryRoots = new HashMap<>();
 	
@@ -66,7 +66,7 @@ public class RepositoryManager {
 
 	// The previously remembered comment
 	static String[] previousComments = new String[0];
-    static String[] commentTemplates = new String[0];
+	static String[] commentTemplates = new String[0];
 	
 	public static boolean notifyRepoView = true;
 	
@@ -375,7 +375,7 @@ public class RepositoryManager {
 	public void startup() {
 		loadState();
 		loadCommentHistory();
-        loadCommentTemplates();
+		loadCommentTemplates();
 		CVSProviderPlugin.getPlugin().addRepositoryListener(new ICVSListener() {
 			@Override
 			public void repositoryAdded(ICVSRepositoryLocation root) {
@@ -406,7 +406,7 @@ public class RepositoryManager {
 	public void shutdown() throws TeamException {
 		saveState();
 		saveCommentHistory();
-        saveCommentTemplates();
+		saveCommentTemplates();
 	}
 	
 	private void loadState() {
@@ -463,23 +463,23 @@ public class RepositoryManager {
 			CVSUIPlugin.log(e);
 		}
 	}
-    private void loadCommentTemplates() {
-        IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation().append(COMMENT_TEMPLATES_FILE);
-        File file = pluginStateLocation.toFile();
-        if (!file.exists()) return;
-        try {
-            BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-            try {
-                readCommentTemplates(is);
-            } finally {
-                is.close();
-            }
-        } catch (IOException e) {
-            CVSUIPlugin.log(IStatus.ERROR, CVSUIMessages.RepositoryManager_ioException, e);
-        } catch (TeamException e) {
-            CVSUIPlugin.log(e);
-        }
-    }
+	private void loadCommentTemplates() {
+		IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation().append(COMMENT_TEMPLATES_FILE);
+		File file = pluginStateLocation.toFile();
+		if (!file.exists()) return;
+		try {
+			BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
+			try {
+				readCommentTemplates(is);
+			} finally {
+				is.close();
+			}
+		} catch (IOException e) {
+			CVSUIPlugin.log(IStatus.ERROR, CVSUIMessages.RepositoryManager_ioException, e);
+		} catch (TeamException e) {
+			CVSUIPlugin.log(e);
+		}
+	}
 	
 	protected void saveState() throws TeamException {
 		IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation();
@@ -608,22 +608,22 @@ public class RepositoryManager {
 		File tempFile = pluginStateLocation.append(COMMENT_HIST_FILE + ".tmp").toFile(); //$NON-NLS-1$
 		File histFile = pluginStateLocation.append(COMMENT_HIST_FILE).toFile();
 		try {
-				 XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)));
-		 		 try {
-		 		 		 writeCommentHistory(writer);
-		 		 } finally {
-		 		 		 writer.close();
-		 		 }
-		 		 if (histFile.exists()) {
-		 		 		 histFile.delete();
-		 		 }
-		 		 boolean renamed = tempFile.renameTo(histFile);
-		 		 if (!renamed) {
-		 		 		 throw new TeamException(new Status(IStatus.ERROR, CVSUIPlugin.ID, TeamException.UNABLE, NLS.bind(CVSUIMessages.RepositoryManager_rename, new String[] { tempFile.getAbsolutePath() }), null)); 
-		 		 }
-		 } catch (IOException e) {
-		 		 throw new TeamException(new Status(IStatus.ERROR, CVSUIPlugin.ID, TeamException.UNABLE, NLS.bind(CVSUIMessages.RepositoryManager_save, new String[] { histFile.getAbsolutePath() }), e)); 
-		 }
+			XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)));
+			try {
+				writeCommentHistory(writer);
+			} finally {
+				writer.close();
+			}
+			if (histFile.exists()) {
+				histFile.delete();
+			}
+			boolean renamed = tempFile.renameTo(histFile);
+			if (!renamed) {
+				throw new TeamException(new Status(IStatus.ERROR, CVSUIPlugin.ID, TeamException.UNABLE, NLS.bind(CVSUIMessages.RepositoryManager_rename, new String[] { tempFile.getAbsolutePath() }), null)); 
+			}
+		} catch (IOException e) {
+			throw new TeamException(new Status(IStatus.ERROR, CVSUIPlugin.ID, TeamException.UNABLE, NLS.bind(CVSUIMessages.RepositoryManager_save, new String[] { histFile.getAbsolutePath() }), e)); 
+		}
 	}
 	private void writeCommentHistory(XMLWriter writer) {
 		writer.startTag(ELEMENT_COMMIT_HISTORY, null, false);
@@ -631,7 +631,7 @@ public class RepositoryManager {
 			writer.printSimpleTag(ELEMENT_COMMIT_COMMENT, previousComments[i]);
 		writer.endTag(ELEMENT_COMMIT_HISTORY);
 	}
-		 
+		
 	public void addRepositoryListener(IRepositoryListener listener) {
 		listeners.add(listener);
 	}

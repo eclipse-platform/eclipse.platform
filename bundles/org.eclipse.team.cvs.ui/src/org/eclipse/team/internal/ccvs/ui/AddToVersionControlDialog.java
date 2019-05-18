@@ -57,7 +57,7 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		Composite composite = new Composite(parent, SWT.NULL);
 		composite.setLayout(new GridLayout());
 		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-			 
+			
 		// add a description label
 		if (unaddedResources.length==1) {
 			createWrappingLabel(composite, NLS.bind(CVSUIMessages.AddToVersionControlDialog_thereIsAnUnaddedResource, new String[] { Integer.valueOf(unaddedResources.length).toString() }));  
@@ -66,10 +66,10 @@ public class AddToVersionControlDialog extends DetailsDialog {
 		}
 	}
 
-    @Override
+	@Override
 	protected String getHelpContextId() {
-        return IHelpContextIds.ADD_TO_VERSION_CONTROL_DIALOG;
-    }
+		return IHelpContextIds.ADD_TO_VERSION_CONTROL_DIALOG;
+	}
 
 	@Override
 	protected Composite createDropDownDialogArea(Composite parent) {

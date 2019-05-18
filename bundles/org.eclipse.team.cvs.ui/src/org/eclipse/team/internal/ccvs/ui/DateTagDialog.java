@@ -161,7 +161,7 @@ public class DateTagDialog extends TrayDialog {
 		updateWidgetEnablements();
 		
 		// set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(topLevel, IHelpContextIds.DATE_TAG_DIALOG);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(topLevel, IHelpContextIds.DATE_TAG_DIALOG);
 		Dialog.applyDialogFont(parent);
 		return topLevel;
 	}

@@ -28,81 +28,81 @@ import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
  * @author Eugene Kuleshov
  */
 public final class CVSResourceTransfer extends ByteArrayTransfer {
-    
-    public static final String TYPE_NAME = "CVS-resource-transfer-format"; //$NON-NLS-1$
+	
+	public static final String TYPE_NAME = "CVS-resource-transfer-format"; //$NON-NLS-1$
 
-    public static int TYPE = registerType(TYPE_NAME);
+	public static int TYPE = registerType(TYPE_NAME);
 
-    private static CVSResourceTransfer instance = new CVSResourceTransfer();
+	private static CVSResourceTransfer instance = new CVSResourceTransfer();
 
-    
-    private CVSResourceTransfer() {
-    }
+	
+	private CVSResourceTransfer() {
+	}
 
-    public static CVSResourceTransfer getInstance() {
-        return instance;
-    }
+	public static CVSResourceTransfer getInstance() {
+		return instance;
+	}
 
-    
-    @Override
+	
+	@Override
 	protected int[] getTypeIds() {
-        return new int[] { TYPE };
-    }
+		return new int[] { TYPE };
+	}
 
-    @Override
+	@Override
 	protected String[] getTypeNames() {
-        return new String[] { TYPE_NAME };
-    }
+		return new String[] { TYPE_NAME };
+	}
 
-    @Override
+	@Override
 	public void javaToNative(Object object, TransferData transferData) {
-        if (!isSupportedType(transferData)) {
-            DND.error(DND.ERROR_INVALID_DATA);
-        }
+		if (!isSupportedType(transferData)) {
+			DND.error(DND.ERROR_INVALID_DATA);
+		}
 
-        final byte[] bytes = toByteArray((ICVSRemoteFile) object);
-        if (bytes != null) {
-            super.javaToNative(bytes, transferData);
-        }
-    }
+		final byte[] bytes = toByteArray((ICVSRemoteFile) object);
+		if (bytes != null) {
+			super.javaToNative(bytes, transferData);
+		}
+	}
 
-    @Override
+	@Override
 	protected Object nativeToJava(TransferData transferData) {
-        byte[] bytes = (byte[]) super.nativeToJava(transferData);
-        return fromByteArray(bytes);
-    }
+		byte[] bytes = (byte[]) super.nativeToJava(transferData);
+		return fromByteArray(bytes);
+	}
 
-    
-    public Object fromByteArray(byte[] bytes) {
-        final DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
+	
+	public Object fromByteArray(byte[] bytes) {
+		final DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
 
-        try {
-            String location = in.readUTF();
-            String filePath = in.readUTF();
-            String fileRevision = in.readUTF();
-            
-            ICVSRepositoryLocation repositoryLocation = KnownRepositories.getInstance().getRepository(location);
-            RemoteFile file = RemoteFile.create( filePath, repositoryLocation);
-            file.setRevision(fileRevision);
-            file.setReadOnly(true);
-            return file;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
+		try {
+			String location = in.readUTF();
+			String filePath = in.readUTF();
+			String fileRevision = in.readUTF();
+			
+			ICVSRepositoryLocation repositoryLocation = KnownRepositories.getInstance().getRepository(location);
+			RemoteFile file = RemoteFile.create( filePath, repositoryLocation);
+			file.setRevision(fileRevision);
+			file.setReadOnly(true);
+			return file;
+		} catch (Exception ex) {
+			return null;
+		}
+	}
 
-    public byte[] toByteArray(ICVSRemoteFile file) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(bos);
-        try {
-            dos.writeUTF(file.getRepository().getLocation(false));
-            dos.writeUTF(file.getRepositoryRelativePath());
-            dos.writeUTF(file.getRevision());
-            return bos.toByteArray();
-        } catch (Exception ex) {
-            // ex.printStackTrace();
-            return null;
-        }
-    }
+	public byte[] toByteArray(ICVSRemoteFile file) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		DataOutputStream dos = new DataOutputStream(bos);
+		try {
+			dos.writeUTF(file.getRepository().getLocation(false));
+			dos.writeUTF(file.getRepositoryRelativePath());
+			dos.writeUTF(file.getRevision());
+			return bos.toByteArray();
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			return null;
+		}
+	}
 
 }

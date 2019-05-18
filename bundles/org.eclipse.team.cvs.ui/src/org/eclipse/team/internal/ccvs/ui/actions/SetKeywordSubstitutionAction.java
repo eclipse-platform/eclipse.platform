@@ -24,7 +24,7 @@ public class SetKeywordSubstitutionAction extends WorkspaceTraversalAction {
 
 	@Override
 	public void execute(IAction action) {
-	    ModeWizard.run(getShell(), getSelectedResources());
+		ModeWizard.run(getShell(), getSelectedResources());
 	}
 	
 	@Override

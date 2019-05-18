@@ -35,10 +35,10 @@ public class ModelSynchronizeWizard extends ParticipantSynchronizeWizard {
 
 	private GlobalRefreshElementSelectionPage selectionPage;
 	
-    private boolean isShowModelSync() {
+	private boolean isShowModelSync() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore().getBoolean(ICVSUIConstants.PREF_ENABLE_MODEL_SYNC);
 	}
-    
+	
 	@Override
 	protected void createParticipant() {
 		if (isShowModelSync()) {

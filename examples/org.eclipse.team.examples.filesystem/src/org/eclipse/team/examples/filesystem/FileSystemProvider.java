@@ -235,10 +235,10 @@ public class FileSystemProvider extends RepositoryProvider {
 	
 	@Override
 	public IFileHistoryProvider getFileHistoryProvider() {
-		  if (FileSystemProvider.fileHistoryProvider == null) {
-			  FileSystemProvider.fileHistoryProvider = new FileSystemHistoryProvider();
-	        }
-	        return FileSystemProvider.fileHistoryProvider;
+		if (FileSystemProvider.fileHistoryProvider == null) {
+			FileSystemProvider.fileHistoryProvider = new FileSystemHistoryProvider();
+		}
+		return FileSystemProvider.fileHistoryProvider;
 	}
 
 }

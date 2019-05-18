@@ -57,35 +57,35 @@ public class RefreshSubscriberParticipantJob extends RefreshParticipantJob {
 		return numChanges;
 	}
 
-    @Override
+	@Override
 	protected int getIncomingChangeCount() {
-      return getChangesInMode(SyncInfo.INCOMING);
-    }
+		return getChangesInMode(SyncInfo.INCOMING);
+	}
 
-    @Override
+	@Override
 	protected int getOutgoingChangeCount() {
-      return getChangesInMode(SyncInfo.OUTGOING);
-    }
+		return getChangesInMode(SyncInfo.OUTGOING);
+	}
 
-    private int getChangesInMode(int kind) {
-        int numChanges = 0;
-        SubscriberSyncInfoCollector collector = getCollector();
-        if (collector != null) {
-            SyncInfoTree set = collector.getSyncInfoSet();
-            for (int i = 0; i < resources.length; i++) {
-                IResource resource = resources[i];
-                SyncInfo[] infos = set.getSyncInfos(resource, IResource.DEPTH_INFINITE);
-                if(infos != null && infos.length > 0) {
-                    for(int j = 0; j < infos.length; j++) {
-                        if((infos[j].getKind() & kind)>0) {
-                          numChanges++;
-                        }
-                    }
-                }
-            }
-        }
-        return numChanges;
-    }
+	private int getChangesInMode(int kind) {
+		int numChanges = 0;
+		SubscriberSyncInfoCollector collector = getCollector();
+		if (collector != null) {
+			SyncInfoTree set = collector.getSyncInfoSet();
+			for (int i = 0; i < resources.length; i++) {
+				IResource resource = resources[i];
+				SyncInfo[] infos = set.getSyncInfos(resource, IResource.DEPTH_INFINITE);
+				if(infos != null && infos.length > 0) {
+					for(int j = 0; j < infos.length; j++) {
+						if((infos[j].getKind() & kind)>0) {
+							numChanges++;
+						}
+					}
+				}
+			}
+		}
+		return numChanges;
+	}
 
 	@Override
 	protected RefreshParticipantJob.IChangeDescription createChangeDescription() {

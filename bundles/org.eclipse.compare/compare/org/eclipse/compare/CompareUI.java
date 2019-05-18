@@ -94,10 +94,10 @@ public final class CompareUI {
 
 	/**
 	 * Name of the title property of a compare viewer.
- 	 * If a property with this name is set
- 	 * on the top level SWT control of a viewer, it is used as a title in the pane's
- 	 * title bar.
- 	 */
+	 * If a property with this name is set
+	 * on the top level SWT control of a viewer, it is used as a title in the pane's
+	 * title bar.
+	 */
 	public static final String COMPARE_VIEWER_TITLE= "org.eclipse.compare.CompareUI.CompareViewerTitle"; //$NON-NLS-1$
 
 	private CompareUI() {
@@ -283,7 +283,7 @@ public final class CompareUI {
 	 */
 	@Deprecated
 	public static IStreamMerger createStreamMerger(IContentType type) {
-	    return CompareUIPlugin.getDefault().createStreamMerger(type);
+		return CompareUIPlugin.getDefault().createStreamMerger(type);
 	}
 
 	/**
@@ -298,7 +298,7 @@ public final class CompareUI {
 	 */
 	@Deprecated
 	public static IStreamMerger createStreamMerger(String type) {
-	    return CompareUIPlugin.getDefault().createStreamMerger(type);
+		return CompareUIPlugin.getDefault().createStreamMerger(type);
 	}
 
 	/**

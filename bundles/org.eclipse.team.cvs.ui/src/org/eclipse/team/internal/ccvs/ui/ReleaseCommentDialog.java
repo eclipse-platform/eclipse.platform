@@ -35,7 +35,7 @@ public class ReleaseCommentDialog extends DetailsDialog {
 	//	dialogs settings that are persistent between workbench sessions
 	private IDialogSettings settings;
 	
-    private static final int DEFAULT_WIDTH_IN_CHARS= 80;
+	private static final int DEFAULT_WIDTH_IN_CHARS= 80;
 
 	private static final String HEIGHT_KEY = "width-key"; //$NON-NLS-1$
 	private static final String WIDTH_KEY = "height-key"; //$NON-NLS-1$
@@ -89,23 +89,23 @@ public class ReleaseCommentDialog extends DetailsDialog {
 			}
 		});
 		
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	@Override
-    protected String getHelpContextId() {
-        return IHelpContextIds.RELEASE_COMMENT_DIALOG;
-    }
-    
+	protected String getHelpContextId() {
+		return IHelpContextIds.RELEASE_COMMENT_DIALOG;
+	}
+	
 	@Override
 	protected Point getInitialSize() {
 		try {
-		    return new Point(settings.getInt(WIDTH_KEY), settings.getInt(HEIGHT_KEY));
+			return new Point(settings.getInt(WIDTH_KEY), settings.getInt(HEIGHT_KEY));
 		} catch(NumberFormatException e) {
-		    final Point size= super.getInitialSize();
-		    size.x= convertWidthInCharsToPixels(DEFAULT_WIDTH_IN_CHARS);
-		    size.y += convertHeightInCharsToPixels(8);
-		    return size;
+			final Point size= super.getInitialSize();
+			size.x= convertWidthInCharsToPixels(DEFAULT_WIDTH_IN_CHARS);
+			size.y += convertHeightInCharsToPixels(8);
+			return size;
 		}
 	}
 	

@@ -134,10 +134,10 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		if (participant == null) return null;
 		SubscriberSyncInfoCollector syncInfoCollector = participant.getSubscriberSyncInfoCollector();
 		EclipseTest.waitForSubscriberInputHandling(syncInfoCollector);
-        SubscriberParticipantPage page = getPage(subscriber);
-        SynchronizeModelManager manager = (SynchronizeModelManager)page.getConfiguration().getProperty(SynchronizePageConfiguration.P_MODEL_MANAGER);
-        AbstractSynchronizeModelProvider provider = (AbstractSynchronizeModelProvider)manager.getActiveModelProvider();
-        provider.waitUntilDone(new IProgressMonitor() {
+		SubscriberParticipantPage page = getPage(subscriber);
+		SynchronizeModelManager manager = (SynchronizeModelManager)page.getConfiguration().getProperty(SynchronizePageConfiguration.P_MODEL_MANAGER);
+		AbstractSynchronizeModelProvider provider = (AbstractSynchronizeModelProvider)manager.getActiveModelProvider();
+		provider.waitUntilDone(new IProgressMonitor() {
 			@Override
 			public void beginTask(String name, int totalWork) {
 			}
@@ -211,91 +211,91 @@ public class SubscriberParticipantSyncInfoSource extends ParticipantSyncInfoSour
 		return findSyncInfo(root, resource);
 	}
 	
-    private SyncInfo findSyncInfo(ISynchronizeModelElement node, IResource resource) {
-        if (node instanceof SyncInfoModelElement) {
-            SyncInfoModelElement element = (SyncInfoModelElement)node;
-            if (element.getResource().equals(resource)) {
-                return element.getSyncInfo();
-            }
-        }
-        IDiffElement[] children = node.getChildren();
-        for (IDiffElement element : children) {
-            ISynchronizeModelElement child = (ISynchronizeModelElement)element;
-            SyncInfo info = findSyncInfo(child, resource);
-            if (info != null)
-                return info;
-        }
-        return null;
-    }
-    
-    @Override
+	private SyncInfo findSyncInfo(ISynchronizeModelElement node, IResource resource) {
+		if (node instanceof SyncInfoModelElement) {
+			SyncInfoModelElement element = (SyncInfoModelElement)node;
+			if (element.getResource().equals(resource)) {
+				return element.getSyncInfo();
+			}
+		}
+		IDiffElement[] children = node.getChildren();
+		for (IDiffElement element : children) {
+			ISynchronizeModelElement child = (ISynchronizeModelElement)element;
+			SyncInfo info = findSyncInfo(child, resource);
+			if (info != null)
+				return info;
+		}
+		return null;
+	}
+	
+	@Override
 	public void assertViewMatchesModel(Subscriber subscriber) {
-    	// Getting the collector waits for the subscriber input handlers
-    	getCollector(subscriber);
+		// Getting the collector waits for the subscriber input handlers
+		getCollector(subscriber);
 		ISynchronizeModelElement root = getModelRoot(subscriber);
 		TreeItem[] rootItems = getTreeItems(subscriber);
 		assertMatchingTrees(root, rootItems, root.getChildren());
-    }
+	}
 
-    private ISynchronizeModelElement getModelRoot(Subscriber subscriber) {
-        SubscriberParticipantPage page = getPage(subscriber);
-        return ((TreeViewerAdvisor)page.getViewerAdvisor()).getModelManager().getModelRoot();
-    }
-    
-    private TreeItem[] getTreeItems(Subscriber subscriber) {
-        SubscriberParticipantPage page = getPage(subscriber);
-        Viewer v = page.getViewer();
-        if (v instanceof TreeViewer) {
-            TreeViewer treeViewer = (TreeViewer)v;
-            treeViewer.expandAll();
-            Tree t = (treeViewer).getTree();
-            return t.getItems();
-        }
-        throw new AssertionFailedError("The tree for " + subscriber.getName() + " could not be retrieved");
-    }
+	private ISynchronizeModelElement getModelRoot(Subscriber subscriber) {
+		SubscriberParticipantPage page = getPage(subscriber);
+		return ((TreeViewerAdvisor)page.getViewerAdvisor()).getModelManager().getModelRoot();
+	}
+	
+	private TreeItem[] getTreeItems(Subscriber subscriber) {
+		SubscriberParticipantPage page = getPage(subscriber);
+		Viewer v = page.getViewer();
+		if (v instanceof TreeViewer) {
+			TreeViewer treeViewer = (TreeViewer)v;
+			treeViewer.expandAll();
+			Tree t = (treeViewer).getTree();
+			return t.getItems();
+		}
+		throw new AssertionFailedError("The tree for " + subscriber.getName() + " could not be retrieved");
+	}
 
-    private static SubscriberParticipantPage getPage(Subscriber subscriber) {
-        try {
-            SubscriberParticipant participant = getParticipant(subscriber);
-            if (participant == null)
-            	throw new AssertionFailedError("The participant for " + subscriber.getName() + " could not be retrieved");
-            IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
-            ISynchronizeView view = (ISynchronizeView)activePage.showView(ISynchronizeView.VIEW_ID);
-            IPage page = ((SynchronizeView)view).getPage(participant);
-            if (page instanceof SubscriberParticipantPage) {
-            	SubscriberParticipantPage subscriberPage = (SubscriberParticipantPage)page;
-            	return subscriberPage;
-            }
-        } catch (PartInitException e) {
-            throw new AssertionFailedError("Cannot show sync view in active page");
-        }
-        throw new AssertionFailedError("The page for " + subscriber.getName() + " could not be retrieved");
-    }
-    
-    private void assertMatchingTrees(IDiffElement parent, TreeItem[] items, IDiffElement[] children) {
-        if ((items == null || items.length == 0) && (children == null || children.length == 0)) {
-            // No children in either case so just return
-            return;
-        }
-        if (items == null || children == null || items.length != children.length) {
-            throw new AssertionFailedError("The number of children of " + parent.getName() + " is " + 
-                    (children == null ? 0: children.length) + " but the view has " + 
-                    (items == null ? 0 : items.length));
-        }
-        for (IDiffElement element : children) {
-            TreeItem foundItem = null;
-            for (TreeItem item : items) {
-                if (item.getData() == element) {
-                    foundItem = item;
-                    break;
-                }
-            }
-            if (foundItem == null) {
-                throw new AssertionFailedError("Element" + element.getName() + " is in the model but not in the view");
-            } else {
-                assertMatchingTrees(element, foundItem.getItems(), ((IDiffContainer)element).getChildren());
-            }
-        }
-        
-    }
+	private static SubscriberParticipantPage getPage(Subscriber subscriber) {
+		try {
+			SubscriberParticipant participant = getParticipant(subscriber);
+			if (participant == null)
+				throw new AssertionFailedError("The participant for " + subscriber.getName() + " could not be retrieved");
+			IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
+			ISynchronizeView view = (ISynchronizeView)activePage.showView(ISynchronizeView.VIEW_ID);
+			IPage page = ((SynchronizeView)view).getPage(participant);
+			if (page instanceof SubscriberParticipantPage) {
+				SubscriberParticipantPage subscriberPage = (SubscriberParticipantPage)page;
+				return subscriberPage;
+			}
+		} catch (PartInitException e) {
+			throw new AssertionFailedError("Cannot show sync view in active page");
+		}
+		throw new AssertionFailedError("The page for " + subscriber.getName() + " could not be retrieved");
+	}
+	
+	private void assertMatchingTrees(IDiffElement parent, TreeItem[] items, IDiffElement[] children) {
+		if ((items == null || items.length == 0) && (children == null || children.length == 0)) {
+			// No children in either case so just return
+			return;
+		}
+		if (items == null || children == null || items.length != children.length) {
+			throw new AssertionFailedError("The number of children of " + parent.getName() + " is " + 
+					(children == null ? 0: children.length) + " but the view has " + 
+					(items == null ? 0 : items.length));
+		}
+		for (IDiffElement element : children) {
+			TreeItem foundItem = null;
+			for (TreeItem item : items) {
+				if (item.getData() == element) {
+					foundItem = item;
+					break;
+				}
+			}
+			if (foundItem == null) {
+				throw new AssertionFailedError("Element" + element.getName() + " is in the model but not in the view");
+			} else {
+				assertMatchingTrees(element, foundItem.getItems(), ((IDiffContainer)element).getChildren());
+			}
+		}
+		
+	}
 }

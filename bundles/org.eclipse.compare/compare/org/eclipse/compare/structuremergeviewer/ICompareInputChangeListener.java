@@ -32,7 +32,7 @@ package org.eclipse.compare.structuremergeviewer;
 public interface ICompareInputChangeListener {
 	/**
 	 * Called whenever the value (not the content) of one or more of the three sides
- 	 * of a {@link ICompareInput} has changed.
+	 * of a {@link ICompareInput} has changed.
 	 *
 	 * @param source the {@link ICompareInput} that has changed
 	 */

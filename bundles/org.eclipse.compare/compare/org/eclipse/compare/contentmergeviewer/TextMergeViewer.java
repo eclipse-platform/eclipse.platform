@@ -505,7 +505,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return null;
 		}
 
-	    private Diff findDiff(Position p, boolean left) {
+		private Diff findDiff(Position p, boolean left) {
 			for (Iterator<?> iterator = fMerger.rangesIterator(); iterator.hasNext();) {
 				Diff diff = (Diff) iterator.next();
 				Position diffPos;
@@ -1650,11 +1650,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private ChainedPreferenceStore createChainedPreferenceStore() {
-    	List<IPreferenceStore> stores= new ArrayList<>(2);
+		List<IPreferenceStore> stores= new ArrayList<>(2);
 		stores.add(getCompareConfiguration().getPreferenceStore());
 		stores.add(EditorsUI.getPreferenceStore());
 		return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));
-    }
+	}
 
 	/**
 	 * Creates a color from the information stored in the given preference store.
@@ -2012,7 +2012,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		// don't add anything here, disposing colors should be done last
 		super.handleDispose(event);
-  	}
+	}
 
 	private void disconnect(ContributorInfo legInfo) {
 		if (legInfo != null)
@@ -2102,16 +2102,16 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		});
 		fRight.getSourceViewer().addTextPresentationListener(new ChangeHighlighter(fRight));
 
-		 IWorkbenchPart part = getCompareConfiguration().getContainer().getWorkbenchPart();
-		 // part is not available for contexts different than editor
-		 if (part != null) {
-			 ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
-			 if (selectionProvider instanceof CompareEditorSelectionProvider) {
-				 CompareEditorSelectionProvider cesp = (CompareEditorSelectionProvider) selectionProvider;
-				 SourceViewer focusSourceViewer = fFocusPart == null ? null	: fFocusPart.getSourceViewer();
-				 cesp.setViewers(new SourceViewer[] { fLeft.getSourceViewer(), fRight.getSourceViewer(), fAncestor.getSourceViewer() }, focusSourceViewer);
-			 }
-		 }
+		IWorkbenchPart part = getCompareConfiguration().getContainer().getWorkbenchPart();
+		// part is not available for contexts different than editor
+		if (part != null) {
+			ISelectionProvider selectionProvider = part.getSite().getSelectionProvider();
+			if (selectionProvider instanceof CompareEditorSelectionProvider) {
+				CompareEditorSelectionProvider cesp = (CompareEditorSelectionProvider) selectionProvider;
+				SourceViewer focusSourceViewer = fFocusPart == null ? null	: fFocusPart.getSourceViewer();
+				cesp.setViewers(new SourceViewer[] { fLeft.getSourceViewer(), fRight.getSourceViewer(), fAncestor.getSourceViewer() }, focusSourceViewer);
+			}
+		}
 
 		hsynchViewport(fAncestor.getSourceViewer(), fLeft.getSourceViewer(), fRight.getSourceViewer());
 		hsynchViewport(fLeft.getSourceViewer(), fAncestor.getSourceViewer(), fRight.getSourceViewer());
@@ -2197,13 +2197,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		sb1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-			    if (fSynchronizedScrolling) {
+				if (fSynchronizedScrolling) {
 					int v= sb1.getSelection();
 					if (st2.isVisible())
 						st2.setHorizontalPixel(v);
 					if (st3.isVisible())
 						st3.setHorizontalPixel(v);
-			    }
+				}
 			}
 		});
 	}
@@ -2331,7 +2331,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		for (Iterator<?> iterator = fMerger.rangesIterator(); iterator.hasNext();) {
 			Diff diff = (Diff) iterator.next();
 			int h= fSynchronizedScrolling ? diff.getMaxDiffHeight()
-										  : diff.getRightHeight();
+											: diff.getRightHeight();
 
 			if (fMerger.useChange(diff)) {
 
@@ -2928,20 +2928,20 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (input instanceof IDiffElement) {
 				IDiffContainer parent= ((IDiffElement) input).getParent();
 				if (parent instanceof ICompareInput) {
-				    ICompareInput ci= (ICompareInput) parent;
+					ICompareInput ci= (ICompareInput) parent;
 
-				    if (ci.getAncestor() instanceof IDocumentRange
-				    		|| ci.getLeft() instanceof IDocumentRange
-				    		|| ci.getRight() instanceof IDocumentRange) {
-				    	if (left instanceof IDocumentRange)
-				    		leftRange= ((IDocumentRange) left).getRange();
-				    	if (right instanceof IDocumentRange)
-				    		rightRange= ((IDocumentRange) right).getRange();
+					if (ci.getAncestor() instanceof IDocumentRange
+							|| ci.getLeft() instanceof IDocumentRange
+							|| ci.getRight() instanceof IDocumentRange) {
+						if (left instanceof IDocumentRange)
+							leftRange= ((IDocumentRange) left).getRange();
+						if (right instanceof IDocumentRange)
+							rightRange= ((IDocumentRange) right).getRange();
 
-				    	ancestor= ci.getAncestor();
-				    	left= getCompareConfiguration().isMirrored() ? ci.getRight() : ci.getLeft();
-				    	right= getCompareConfiguration().isMirrored() ? ci.getLeft() : ci.getRight();
-				    }
+						ancestor= ci.getAncestor();
+						left= getCompareConfiguration().isMirrored() ? ci.getRight() : ci.getLeft();
+						right= getCompareConfiguration().isMirrored() ? ci.getLeft() : ci.getRight();
+					}
 				}
 			}
 		}
@@ -3024,9 +3024,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					Diff selectDiff= null;
 					if (FIX_47640) {
 						if (leftRange != null)
-						    selectDiff= fMerger.findDiff(LEFT_CONTRIBUTOR, leftRange);
+							selectDiff= fMerger.findDiff(LEFT_CONTRIBUTOR, leftRange);
 						else if (rightRange != null)
-						    selectDiff= fMerger.findDiff(RIGHT_CONTRIBUTOR, rightRange);
+							selectDiff= fMerger.findDiff(RIGHT_CONTRIBUTOR, rightRange);
 					}
 					if (selectDiff != null)
 						setCurrentDiff(selectDiff, true);
@@ -3386,9 +3386,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	@Override
-  	protected final void handleResizeLeftRight(int x, int y, int width1, int centerWidth, int width2,  int height) {
-  		if (fBirdsEyeCanvas != null)
-  			width2-= BIRDS_EYE_VIEW_WIDTH;
+		protected final void handleResizeLeftRight(int x, int y, int width1, int centerWidth, int width2,  int height) {
+			if (fBirdsEyeCanvas != null)
+				width2-= BIRDS_EYE_VIEW_WIDTH;
 
 		Rectangle trim= fLeft.getSourceViewer().getTextWidget().computeTrim(0, 0, 0, 0);
 		int scrollbarHeight= trim.height + trim.x;
@@ -3422,7 +3422,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		int scrollbarWidth= 0;
 		if (fSynchronizedScrolling && fScrollCanvas != null) {
 			trim= fLeft.getSourceViewer().getTextWidget().computeTrim(0, 0, 0, 0);
-	  		// one pixel was cut off
+				// one pixel was cut off
 			scrollbarWidth= trim.width + 2*trim.x+1;
 		}
 		int rightTextWidth= width2-scrollbarWidth;
@@ -3440,18 +3440,18 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				fScrollCanvas.setBounds(x, y, scrollbarWidth, height-scrollbarHeight);
 		}
 
-  		if (fBirdsEyeCanvas != null) {
-  			int verticalScrollbarButtonHeight= scrollbarWidth;
+			if (fBirdsEyeCanvas != null) {
+				int verticalScrollbarButtonHeight= scrollbarWidth;
 			int horizontalScrollbarButtonHeight= scrollbarHeight;
 			if (fIsMac) {
 				verticalScrollbarButtonHeight+= 2;
 				horizontalScrollbarButtonHeight= 18;
 			}
-  			if (fSummaryHeader != null)
+				if (fSummaryHeader != null)
 				fSummaryHeader.setBounds(x+scrollbarWidth, y, BIRDS_EYE_VIEW_WIDTH, verticalScrollbarButtonHeight);
-  			y+= verticalScrollbarButtonHeight;
-  			fBirdsEyeCanvas.setBounds(x+scrollbarWidth, y, BIRDS_EYE_VIEW_WIDTH, height-(2*verticalScrollbarButtonHeight+horizontalScrollbarButtonHeight));
-   		}
+				y+= verticalScrollbarButtonHeight;
+				fBirdsEyeCanvas.setBounds(x+scrollbarWidth, y, BIRDS_EYE_VIEW_WIDTH, height-(2*verticalScrollbarButtonHeight+horizontalScrollbarButtonHeight));
+			}
 
 		// doesn't work since TextEditors don't have their correct size yet.
 		updateVScrollBar();

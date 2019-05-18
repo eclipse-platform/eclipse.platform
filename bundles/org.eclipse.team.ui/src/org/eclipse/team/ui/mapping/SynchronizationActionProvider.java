@@ -166,7 +166,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 				manager.registerHandler(actionId, handlers.get(actionId));
 			}
 		}
-        final IContributionItem fileGroup = menu.find(ISynchronizePageConfiguration.FILE_GROUP);
+		final IContributionItem fileGroup = menu.find(ISynchronizePageConfiguration.FILE_GROUP);
 		if (openWithActions != null && fileGroup != null) {
 			openWithActions.fillContextMenu(menu, fileGroup.getId());
 		}

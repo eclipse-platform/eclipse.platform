@@ -104,18 +104,18 @@ public class TagInRepositoryOperation extends RemoteOperation implements ITagOpe
 	}
 
 	@Override
-    public TagSource getTagSource() {
-        return TagSource.create(getCVSResources());
-    }
-    
-    @Override
+	public TagSource getTagSource() {
+		return TagSource.create(getCVSResources());
+	}
+	
+	@Override
 	protected boolean isReportableError(IStatus status) {
-        return super.isReportableError(status)
-        	|| status.getCode() == CVSStatus.TAG_ALREADY_EXISTS;
-    }
+		return super.isReportableError(status)
+			|| status.getCode() == CVSStatus.TAG_ALREADY_EXISTS;
+	}
 
 	@Override
-    public boolean isEmpty() {
-        return getCVSResources().length == 0;
-    }
+	public boolean isEmpty() {
+		return getCVSResources().length == 0;
+	}
 }

@@ -27,7 +27,7 @@ public class Messages extends NLS {
 	public static String ok;
 	public static String concatStrings;
 
-    public static String AbstractResourceVariantTree_0;
+	public static String AbstractResourceVariantTree_0;
 
 	public static String Assert_assertionFailed;
 
@@ -44,7 +44,7 @@ public class Messages extends NLS {
 	public static String RepositoryProvider_linkedURIsNotSupported;
 	public static String RepositoryProvider_couldNotClearAfterError;
 	public static String RepositoryProvider_invalidClass;
-    public static String RepositoryProvider_toString;
+	public static String RepositoryProvider_toString;
 
 	public static String SubscriberDiffTreeEventHandler_0;
 
@@ -99,15 +99,15 @@ public class Messages extends NLS {
 	public static String ProjectSetCapability_0;
 	public static String ProjectSetCapability_1;
 
-    public static String SubscriberResourceMappingContext_0;
-    public static String SubscriberResourceMappingContext_1;
+	public static String SubscriberResourceMappingContext_0;
+	public static String SubscriberResourceMappingContext_1;
 	public static String MergeContext_0;
 	public static String MergeContext_1;
 	public static String MergeContext_2;
 	public static String MergeContext_3;
 	public static String MergeContext_4;
 
-    public static String LocalFileRevision_currentVersion;
+	public static String LocalFileRevision_currentVersion;
 	public static String LocalFileRevision_currentVersionTag;
 	public static String LocalFileRevision_localRevisionTag;
 	static {

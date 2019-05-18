@@ -20,14 +20,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.TeamException;
 
  /**
-  * This interface represents a file in a repository.
-  * Instances of this interface can be used to fetch the contents
-  * of the remote file.
-  * 
-  * In the future, additional information should be available (tags, revisions, etc.)
-  * 
-  * Clients are not expected to implement this interface.
-  */
+ * This interface represents a file in a repository.
+ * Instances of this interface can be used to fetch the contents
+ * of the remote file.
+ * 
+ * In the future, additional information should be available (tags, revisions, etc.)
+ * 
+ * Clients are not expected to implement this interface.
+ */
 public interface ICVSRemoteFile extends ICVSRemoteResource, ICVSFile {
 
 	/**

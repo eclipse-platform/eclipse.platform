@@ -32,57 +32,57 @@ import org.eclipse.team.internal.ccvs.ui.repo.RepositoryManager;
  */
 public class MultiFolderTagSource extends SingleFolderTagSource {
 
-    private final ICVSFolder[] folders;
+	private final ICVSFolder[] folders;
 
-    /* package */ MultiFolderTagSource(ICVSFolder[] folders) {
-        super(folders[0]);
-        this.folders = folders;
-    }
-    
-    @Override
+	/* package */ MultiFolderTagSource(ICVSFolder[] folders) {
+		super(folders[0]);
+		this.folders = folders;
+	}
+	
+	@Override
 	public String getShortDescription() {
-        return NLS.bind(CVSUIMessages.MultiFolderTagSource_0, new String[] { Integer.toString(folders.length) }); 
-    }
-    
-    @Override
+		return NLS.bind(CVSUIMessages.MultiFolderTagSource_0, new String[] { Integer.toString(folders.length) }); 
+	}
+	
+	@Override
 	public CVSTag[] getTags(int type) {
-        if (type == CVSTag.HEAD || type == BASE) {
-            return super.getTags(type);
-        }
+		if (type == CVSTag.HEAD || type == BASE) {
+			return super.getTags(type);
+		}
 		Set<CVSTag> tags = new HashSet<>();
-        for (int i= 0; i < folders.length; i++) {
+		for (int i= 0; i < folders.length; i++) {
 			tags.addAll(Arrays.asList(getTags(folders[i], type)));
 		}
-        return tags.toArray(new CVSTag[tags.size()]);
-    }
-    
-    @Override
+		return tags.toArray(new CVSTag[tags.size()]);
+	}
+	
+	@Override
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask("", folders.length);  //$NON-NLS-1$
 		Set<CVSTag> result = new HashSet<>();
-    	for (int i= 0; i < folders.length; i++) {
+		for (int i= 0; i < folders.length; i++) {
 			ICVSFolder folder= folders[i];
 			CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(folder, bestEffort /* recurse */, true /* notify */, Policy.subMonitorFor(monitor, 1));
 			result.addAll(Arrays.asList(tags));
 		}
-    	monitor.done();
-        fireChange();
-        return result.toArray(new CVSTag[result.size()]);
-    }
-    
-    @Override
+		monitor.done();
+		fireChange();
+		return result.toArray(new CVSTag[result.size()]);
+	}
+	
+	@Override
 	public ICVSResource[] getCVSResources() {
-        return folders;
-    }
-    
-    public ICVSFolder[] getFolders(){
-    	return folders;
-    }
-    
-    @Override
+		return folders;
+	}
+	
+	public ICVSFolder[] getFolders(){
+		return folders;
+	}
+	
+	@Override
 	public void commit(final CVSTag[] tags, final boolean replace, IProgressMonitor monitor) throws CVSException {
 		try {
-            final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
+			final RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();	
 			manager.run(monitor1 -> {
 				try {
 					ICVSFolder[] folders = getFolders();
@@ -97,11 +97,11 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
 					throw new InvocationTargetException(e);
 				}
 			}, monitor);
-        } catch (InvocationTargetException e) {
-            throw CVSException.wrapException(e);
-        } catch (InterruptedException e) {
-            // Ignore
-        }
-        fireChange();
-    }
+		} catch (InvocationTargetException e) {
+			throw CVSException.wrapException(e);
+		} catch (InterruptedException e) {
+			// Ignore
+		}
+		fireChange();
+	}
 }

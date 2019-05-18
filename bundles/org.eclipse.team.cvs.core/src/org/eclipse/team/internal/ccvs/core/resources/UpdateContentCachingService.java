@@ -97,10 +97,10 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 			// Handle execute
 			try {
 				if (executable) mFile.setExecutable(true);
-	        } catch (CVSException e) {
-	            // Just log and keep going
-	            CVSProviderPlugin.log(e);
-	        }
+			} catch (CVSException e) {
+				// Just log and keep going
+				CVSProviderPlugin.log(e);
+			}
 		}
 	}
 	
@@ -164,14 +164,14 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 			IProgressMonitor subProgress = Policy.infiniteSubMonitorFor(progress, 100);
 			subProgress.beginTask(null, 512);  
 			subProgress.subTask(NLS.bind(CVSMessages.RemoteFolderTreeBuilder_buildingBase, new String[] { root.getName() })); 
-	 		RemoteFolder tree = builder.buildBaseTree(null, root, subProgress);
-	 		if (tree == null) {
-	 			// The local tree is empty and was pruned.
-	 			// Return the root folder so that the operation can proceed
-	 			FolderSyncInfo folderSyncInfo = root.getFolderSyncInfo();
-	 			if (folderSyncInfo == null) return null;
-	 			return new RemoteFolderSandbox(null, root.getName(), repository, folderSyncInfo.getRepository(), folderSyncInfo.getTag(), folderSyncInfo.getIsStatic());
-	 		}
+			RemoteFolder tree = builder.buildBaseTree(null, root, subProgress);
+			if (tree == null) {
+				// The local tree is empty and was pruned.
+				// Return the root folder so that the operation can proceed
+				FolderSyncInfo folderSyncInfo = root.getFolderSyncInfo();
+				if (folderSyncInfo == null) return null;
+				return new RemoteFolderSandbox(null, root.getName(), repository, folderSyncInfo.getRepository(), folderSyncInfo.getTag(), folderSyncInfo.getIsStatic());
+			}
 			return tree;
 		} finally {
 			progress.done();
@@ -250,8 +250,8 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 	private boolean isReportableError(IStatus status) {
 		return CVSStatus.isInternalError(status) 
 			|| status.getCode() == TeamException.UNABLE
-        	|| status.getCode() == CVSStatus.INVALID_LOCAL_RESOURCE_PATH
-        	|| status.getCode() == CVSStatus.RESPONSE_HANDLING_FAILURE;
+			|| status.getCode() == CVSStatus.INVALID_LOCAL_RESOURCE_PATH
+			|| status.getCode() == CVSStatus.RESPONSE_HANDLING_FAILURE;
 	}
 
 	private LocalOption[] getLocalOptions() {

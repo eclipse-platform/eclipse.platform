@@ -65,7 +65,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			return 0;
 		}
 	}
-    
+	
 	
 	private abstract class Field {
 		protected final String fKey;
@@ -86,7 +86,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			super(key);
 			fCheckbox= new Button(composite, SWT.CHECK);
 			fCheckbox.setText(label);
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(fCheckbox, helpID);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(fCheckbox, helpID);
 		}
 		
 		public void initializeValue(IPreferenceStore store) {
@@ -117,7 +117,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				label.setLayoutData(SWTUtils.createGridData(SWT.DEFAULT, SWT.DEFAULT, false, false));
 			}
 			
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(fCombo, helpID);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(fCombo, helpID);
 		}
 		
 		public Combo getCombo() {
@@ -191,16 +191,16 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				fButtons[i].setText(labels[i]);
 			}
 			SWTUtils.equalizeControls(SWTUtils.createDialogPixelConverter(composite), fButtons, 0, fButtons.length - 2);
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(fGroup, helpID);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(fGroup, helpID);
 		}
 		
 		public void initializeValue(IPreferenceStore store) {
 			final Object value= loadValue(store, fKey);
 			final int index= fValues.indexOf(value);
-            for (int i = 0; i < fButtons.length; i++) {
-                Button b = fButtons[i];
-                b.setSelection(index == i);
-            }
+			for (int i = 0; i < fButtons.length; i++) {
+				Button b = fButtons[i];
+				b.setSelection(index == i);
+			}
 		}
 
 		public void performOk(IPreferenceStore store) {
@@ -258,10 +258,10 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			label.setLayoutData(SWTUtils.createGridData(SWT.DEFAULT, SWT.DEFAULT, false, false));
 			
 			fText= SWTUtils.createText(composite);
-            fText.addModifyListener(this);
+			fText.addModifyListener(this);
 			
-            if (helpID != null)
-                PlatformUI.getWorkbench().getHelpSystem().setHelp(fText, helpID);
+			if (helpID != null)
+				PlatformUI.getWorkbench().getHelpSystem().setHelp(fText, helpID);
 		}
 		
 		public void initializeValue(IPreferenceStore store) {
@@ -273,10 +273,10 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			store.setValue(fKey, fText.getText());
 		}
 		
-        public void modifyText(ModifyEvent e) {
-            modifyText(fText);
-        }
-        
+		public void modifyText(ModifyEvent e) {
+			modifyText(fText);
+		}
+		
 		protected abstract void modifyText(Text text);
 	}
 	
@@ -334,9 +334,9 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			COMPRESSION_VALUES[i]= Integer.valueOf(i);
 		}
 		
-	    final IPerspectiveDescriptor [] perspectives= PlatformUI.getWorkbench().getPerspectiveRegistry().getPerspectives();
-	    PERSPECTIVE_VALUES= new String[perspectives.length + 1];
-	    PERSPECTIVE_LABELS= new String [perspectives.length + 1];
+		final IPerspectiveDescriptor [] perspectives= PlatformUI.getWorkbench().getPerspectiveRegistry().getPerspectives();
+		PERSPECTIVE_VALUES= new String[perspectives.length + 1];
+		PERSPECTIVE_LABELS= new String [perspectives.length + 1];
 		Arrays.sort(perspectives, new PerspectiveDescriptorComparator());
 		PERSPECTIVE_VALUES[0]= ICVSUIConstants.OPTION_NO_PERSPECTIVE;
 		PERSPECTIVE_LABELS[0]= CVSUIMessages.CVSPreferencesPage_10; 
@@ -363,7 +363,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		
 		Dialog.applyDialogFont(parent);
 		
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.GENERAL_PREFERENCE_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.GENERAL_PREFERENCE_PAGE);
 		return tabFolder;
 	}
 
@@ -376,54 +376,54 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		new Checkbox(composite, ICVSUIConstants.PREF_CONFIRM_MOVE_TAG, CVSUIMessages.CVSPreferencesPage_16, IHelpContextIds.PREF_CONFIRM_MOVE_TAG);
 		new Checkbox(composite, ICVSUIConstants.PREF_DEBUG_PROTOCOL, CVSUIMessages.CVSPreferencesPage_17, IHelpContextIds.PREF_DEBUG_PROTOCOL);
 		new Checkbox(composite, ICVSUIConstants.PREF_AUTO_REFRESH_TAGS_IN_TAG_SELECTION_DIALOG, CVSUIMessages.CVSPreferencesPage_18, IHelpContextIds.PREF_AUTOREFRESH_TAG);
-        new Checkbox(composite, ICVSUIConstants.PREF_AUTO_SHARE_ON_IMPORT, CVSUIMessages.CVSPreferencesPage_44, null);
-        new Checkbox(composite, ICVSUIConstants.PREF_USE_PROJECT_NAME_ON_CHECKOUT, CVSUIMessages.CVSPreferencesPage_45, null);
-        
-        final Composite textComposite= SWTUtils.createHFillComposite(composite, SWTUtils.MARGINS_NONE, 2);
-        new TextField(
-                textComposite, 
-                ICVSUIConstants.PREF_COMMIT_FILES_DISPLAY_THRESHOLD, 
-                CVSUIMessages.CVSPreferencesPage_20, 
-                null) {
-            protected void modifyText(Text text) {
-                // Parse the timeout value
-                try {
-                    final int x = Integer.parseInt(text.getText());
-                    if (x >= 0) {
-                        setErrorMessage(null);
-                        setValid(true);
-                    } else {
-                        setErrorMessage(CVSUIMessages.CVSPreferencesPage_21); 
-                        setValid(false);
-                    }
-                } catch (NumberFormatException ex) {
-                    setErrorMessage(CVSUIMessages.CVSPreferencesPage_22); 
-                    setValid(false);
-                }
-            }
-        };
-        new TextField(
-        		textComposite, 
-        		ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY, 
-        		CVSUIMessages.CVSPreferencesPage_47, 
-        		null) {
-        	protected void modifyText(Text text) {
-        		try {
-        			final int x = Integer.parseInt(text.getText());
-        			if (x > 0) {
-        				setErrorMessage(null);
-        				setValid(true);
-        			} else {
-        				setErrorMessage(CVSUIMessages.CVSPreferencesPage_48); 
-        				setValid(false);
-        			}
-        		} catch (NumberFormatException ex) {
-        			setErrorMessage(CVSUIMessages.CVSPreferencesPage_49); 
-        			setValid(false);
-        		}
-        	}
-        };
-        
+		new Checkbox(composite, ICVSUIConstants.PREF_AUTO_SHARE_ON_IMPORT, CVSUIMessages.CVSPreferencesPage_44, null);
+		new Checkbox(composite, ICVSUIConstants.PREF_USE_PROJECT_NAME_ON_CHECKOUT, CVSUIMessages.CVSPreferencesPage_45, null);
+		
+		final Composite textComposite= SWTUtils.createHFillComposite(composite, SWTUtils.MARGINS_NONE, 2);
+		new TextField(
+				textComposite, 
+				ICVSUIConstants.PREF_COMMIT_FILES_DISPLAY_THRESHOLD, 
+				CVSUIMessages.CVSPreferencesPage_20, 
+				null) {
+			protected void modifyText(Text text) {
+				// Parse the timeout value
+				try {
+					final int x = Integer.parseInt(text.getText());
+					if (x >= 0) {
+						setErrorMessage(null);
+						setValid(true);
+					} else {
+						setErrorMessage(CVSUIMessages.CVSPreferencesPage_21); 
+						setValid(false);
+					}
+				} catch (NumberFormatException ex) {
+					setErrorMessage(CVSUIMessages.CVSPreferencesPage_22); 
+					setValid(false);
+				}
+			}
+		};
+		new TextField(
+				textComposite, 
+				ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY, 
+				CVSUIMessages.CVSPreferencesPage_47, 
+				null) {
+			protected void modifyText(Text text) {
+				try {
+					final int x = Integer.parseInt(text.getText());
+					if (x > 0) {
+						setErrorMessage(null);
+						setValid(true);
+					} else {
+						setErrorMessage(CVSUIMessages.CVSPreferencesPage_48); 
+						setValid(false);
+					}
+				} catch (NumberFormatException ex) {
+					setErrorMessage(CVSUIMessages.CVSPreferencesPage_49); 
+					setValid(false);
+				}
+			}
+		};
+		
 		return composite;
 	}
 	
@@ -531,37 +531,37 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				ICVSUIConstants.PREF_SAVE_DIRTY_EDITORS, 
 				CVSUIMessages.CVSPreferencesPage_41,  
 				IHelpContextIds.PREF_SAVE_DIRTY_EDITORS, 
-	    		YES_NO_PROMPT,
-	    		new Integer [] { Integer.valueOf(ICVSUIConstants.OPTION_AUTOMATIC),	Integer.valueOf(ICVSUIConstants.OPTION_NEVER), 	Integer.valueOf(ICVSUIConstants.OPTION_PROMPT)});
+				YES_NO_PROMPT,
+				new Integer [] { Integer.valueOf(ICVSUIConstants.OPTION_AUTOMATIC),	Integer.valueOf(ICVSUIConstants.OPTION_NEVER), 	Integer.valueOf(ICVSUIConstants.OPTION_PROMPT)});
 		
-	    new StringRadioButtons(
-	    		composite, 
-	    		ICVSUIConstants.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT, 
-	    		CVSUIMessages.CVSPreferencesPage_46, 
-	    		IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
-	    		YES_NO_PROMPT,
-	    		new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
-	    		);
-	    
-	    new StringRadioButtons(
-	    		composite, 
-	    		ICVSUIConstants.PREF_ALLOW_COMMIT_WITH_WARNINGS, 
-	    		CVSUIMessages.CVSPreferencesPage_50, 
-	    		IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
-	    		YES_NO_PROMPT,
-	    		new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
-	    		);
+		new StringRadioButtons(
+				composite, 
+				ICVSUIConstants.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT, 
+				CVSUIMessages.CVSPreferencesPage_46, 
+				IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
+				YES_NO_PROMPT,
+				new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
+				);
+		
+		new StringRadioButtons(
+				composite, 
+				ICVSUIConstants.PREF_ALLOW_COMMIT_WITH_WARNINGS, 
+				CVSUIMessages.CVSPreferencesPage_50, 
+				IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
+				YES_NO_PROMPT,
+				new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
+				);
 
-	    new StringRadioButtons(
-	    		composite, 
-	    		ICVSUIConstants.PREF_ALLOW_COMMIT_WITH_ERRORS, 
-	    		CVSUIMessages.CVSPreferencesPage_51, 
-	    		IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
-	    		YES_NO_PROMPT,
-	    		new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
-	    		);
-	    SWTUtils.createPlaceholder(composite, 1);
-	  
+		new StringRadioButtons(
+				composite, 
+				ICVSUIConstants.PREF_ALLOW_COMMIT_WITH_ERRORS, 
+				CVSUIMessages.CVSPreferencesPage_51, 
+				IHelpContextIds.PREF_INCLUDE_CHANGE_SETS_IN_COMMIT,
+				YES_NO_PROMPT,
+				new String [] { MessageDialogWithToggle.ALWAYS, MessageDialogWithToggle.NEVER,	MessageDialogWithToggle.PROMPT }
+				);
+		SWTUtils.createPlaceholder(composite, 1);
+	
 		return composite;
 	}
 	
@@ -597,7 +597,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		CVSProviderPlugin.getPlugin().setDefaultTextKSubstOption(newKSubst);
 		CVSProviderPlugin.getPlugin().setUsePlatformLineend(store.getBoolean(ICVSUIConstants.PREF_USE_PLATFORM_LINEEND));
 		CVSProviderPlugin.getPlugin().setDetermineVersionEnabled(store.getBoolean(ICVSUIConstants.PREF_DETERMINE_SERVER_VERSION));
-        CVSProviderPlugin.getPlugin().setAutoshareOnImport(store.getBoolean(ICVSUIConstants.PREF_AUTO_SHARE_ON_IMPORT));
+		CVSProviderPlugin.getPlugin().setAutoshareOnImport(store.getBoolean(ICVSUIConstants.PREF_AUTO_SHARE_ON_IMPORT));
 		
 		// changing the default keyword substitution mode for text files may affect
 		// information displayed in the decorators
@@ -617,13 +617,13 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		}
 	}
 
-   /**
-	* Returns preference store that belongs to the our plugin.
-	* This is important because we want to store
-	* our preferences separately from the desktop.
-	*
-	* @return the preference store for this plugin
-	*/
+	/**
+	 * Returns preference store that belongs to the our plugin.
+	 * This is important because we want to store
+	 * our preferences separately from the desktop.
+	 *
+	 * @return the preference store for this plugin
+	 */
 	protected IPreferenceStore doGetPreferenceStore() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore();
 	}

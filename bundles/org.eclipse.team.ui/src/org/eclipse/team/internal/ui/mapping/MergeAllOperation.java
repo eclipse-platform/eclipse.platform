@@ -82,16 +82,16 @@ public final class MergeAllOperation extends SynchronizationOperation {
 				return (IMergeContext)getContext();
 			}
 			private boolean promptToContinue(final IStatus status) {
-		    	final boolean[] result = new boolean[] { false };
-		    	Runnable runnable = () -> {
+				final boolean[] result = new boolean[] { false };
+				Runnable runnable = () -> {
 					ErrorDialog dialog = new ErrorDialog(getShell(), TeamUIMessages.ModelMergeOperation_0, TeamUIMessages.ModelMergeOperation_1, status, IStatus.ERROR | IStatus.WARNING | IStatus.INFO) {
 						@Override
 						protected void createButtonsForButtonBar(Composite parent) {
-					        createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
-					                false);
+							createButton(parent, IDialogConstants.YES_ID, IDialogConstants.YES_LABEL,
+									false);
 							createButton(parent, IDialogConstants.NO_ID, IDialogConstants.NO_LABEL,
 									true);
-					        createDetailsButton(parent);
+							createDetailsButton(parent);
 						}
 
 						@Override

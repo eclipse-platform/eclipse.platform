@@ -28,55 +28,55 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class TagSourceResourceAdapter implements IAdaptable, IWorkbenchAdapter {
 
-    public static Object getViewerInput(TagSource tagSource) {
-        return new TagSourceResourceAdapter(tagSource);
-    }
-    
-    TagSource tagSource;
+	public static Object getViewerInput(TagSource tagSource) {
+		return new TagSourceResourceAdapter(tagSource);
+	}
+	
+	TagSource tagSource;
 
-    private TagSourceResourceAdapter(TagSource tagSource) {
-        this.tagSource = tagSource;
-    }
-  
-    @Override
+	private TagSourceResourceAdapter(TagSource tagSource) {
+		this.tagSource = tagSource;
+	}
+	
+	@Override
 	public Object[] getChildren(Object o) {
-        ICVSResource[] children = tagSource.getCVSResources();
-        if (children.length == 0) return new Object[0];
+		ICVSResource[] children = tagSource.getCVSResources();
+		if (children.length == 0) return new Object[0];
 		List<CVSResourceElement> result = new ArrayList<>();
-        for (int i = 0; i < children.length; i++) {
-            ICVSResource resource = children[i];
-            if (resource.isFolder()) {
-                result.add(new CVSFolderElement((ICVSFolder)resource, false));
-            } else {
-                result.add(new CVSFileElement((ICVSFile)resource));
-            }
-        }
-        return result.toArray(new Object[result.size()]);
-    }
+		for (int i = 0; i < children.length; i++) {
+			ICVSResource resource = children[i];
+			if (resource.isFolder()) {
+				result.add(new CVSFolderElement((ICVSFolder)resource, false));
+			} else {
+				result.add(new CVSFileElement((ICVSFile)resource));
+			}
+		}
+		return result.toArray(new Object[result.size()]);
+	}
 
-    @Override
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
-        // No image descriptor
-        return null;
-    }
+		// No image descriptor
+		return null;
+	}
 
-    @Override
+	@Override
 	public String getLabel(Object o) {
-        return tagSource.getShortDescription();
-    }
+		return tagSource.getShortDescription();
+	}
 
-    @Override
+	@Override
 	public Object getParent(Object o) {
-        // No parent
-        return null;
-    }
+		// No parent
+		return null;
+	}
 
-    @Override
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-        if (adapter == IWorkbenchAdapter.class) {
-            return adapter.cast(this);
-        }
-        return null;
-    }
+		if (adapter == IWorkbenchAdapter.class) {
+			return adapter.cast(this);
+		}
+		return null;
+	}
 
 }

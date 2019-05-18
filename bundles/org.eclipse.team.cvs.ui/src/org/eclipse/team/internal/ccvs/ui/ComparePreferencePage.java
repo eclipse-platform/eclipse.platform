@@ -29,17 +29,17 @@ public class ComparePreferencePage extends CVSFieldEditorPreferencePage {
 	private BooleanFieldEditor contents;
 	private StringFieldEditor regex;
 
-    @Override
+	@Override
 	protected String getPageHelpContextId() {
-        return IHelpContextIds.COMPARE_PREFERENCE_PAGE;
-    }
+		return IHelpContextIds.COMPARE_PREFERENCE_PAGE;
+	}
 
-    @Override
+	@Override
 	protected String getPageDescription() {
-        return CVSUIMessages.ComparePreferencePage_0;
-    }
+		return CVSUIMessages.ComparePreferencePage_0;
+	}
 
-    @Override
+	@Override
 	protected void createFieldEditors() {
 		IPreferenceStore store = getPreferenceStore();
 

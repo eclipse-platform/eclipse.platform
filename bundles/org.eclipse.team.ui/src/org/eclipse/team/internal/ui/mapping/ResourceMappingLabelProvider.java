@@ -34,16 +34,16 @@ public class ResourceMappingLabelProvider extends LabelProvider {
 			ModelProvider provider = (ModelProvider) element;
 			return provider.getDescriptor().getLabel();
 		}
-        String text = provider.getText(element);
-        if (text != null && text.length() > 0)
-            return text;
-        return super.getText(element);
+		String text = provider.getText(element);
+		if (text != null && text.length() > 0)
+			return text;
+		return super.getText(element);
 	}
 	@Override
 	public Image getImage(Object element) {
-        Image image = provider.getImage(element);
-        if (image != null)
-            return image;
+		Image image = provider.getImage(element);
+		if (image != null)
+			return image;
 		if (element instanceof ResourceMapping) {
 			ResourceMapping mapping = (ResourceMapping) element;
 			image = provider.getImage(mapping.getModelObject());
@@ -52,9 +52,9 @@ public class ResourceMappingLabelProvider extends LabelProvider {
 		}
 		return super.getImage(element);
 	}
-    @Override
+	@Override
 	public void dispose() {
-        provider.dispose();
-        super.dispose();
-    }
+		provider.dispose();
+		super.dispose();
+	}
 }

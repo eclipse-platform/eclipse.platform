@@ -30,9 +30,9 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter {
 
-    /**
-     * Constants for configuring which types of tags should be displayed.
-     */
+	/**
+	 * Constants for configuring which types of tags should be displayed.
+	 */
 	public static final int INCLUDE_HEAD_TAG = 1;
 	public static final int INCLUDE_BASE_TAG = 2;
 	public static final int INCLUDE_BRANCHES = 4;
@@ -86,26 +86,26 @@ public class TagSourceWorkbenchAdapter implements IAdaptable, IWorkbenchAdapter 
 	}
 
 	
-    /**
-     * Create a viewer input for the tag source
-     * @param tagSource the tag source
-     * @param includeFlags the types of tags to include
-     * @return a tree viewer input
-     */
-    public static Object createInput(TagSource tagSource, int includeFlags) {
-        if (includeFlags == INCLUDE_VERSIONS) {
-            // Versions only is requested by the merge start page.
-            // Only need to show version tags
-            return new TagRootElement(null, tagSource, CVSTag.VERSION);
-        }
-        return new TagSourceWorkbenchAdapter(tagSource, includeFlags);
-    }
-    
+	/**
+	 * Create a viewer input for the tag source
+	 * @param tagSource the tag source
+	 * @param includeFlags the types of tags to include
+	 * @return a tree viewer input
+	 */
+	public static Object createInput(TagSource tagSource, int includeFlags) {
+		if (includeFlags == INCLUDE_VERSIONS) {
+			// Versions only is requested by the merge start page.
+			// Only need to show version tags
+			return new TagRootElement(null, tagSource, CVSTag.VERSION);
+		}
+		return new TagSourceWorkbenchAdapter(tagSource, includeFlags);
+	}
+	
 	public TagSourceWorkbenchAdapter(TagSource tagSource, int includeFlags) {
 		this.includeFlags = includeFlags;
 		if (this.includeFlags == 0) this.includeFlags = INCLUDE_ALL_TAGS;
 		if ((includeFlags & INCLUDE_BRANCHES) > 0) {	
-            branches = new TagRootElement(this, tagSource, CVSTag.BRANCH);
+			branches = new TagRootElement(this, tagSource, CVSTag.BRANCH);
 		}
 		if ((includeFlags & INCLUDE_VERSIONS) > 0) {
 			versions = new TagRootElement(this, tagSource, CVSTag.VERSION);

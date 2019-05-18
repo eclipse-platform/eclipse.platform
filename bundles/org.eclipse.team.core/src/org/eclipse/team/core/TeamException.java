@@ -32,10 +32,10 @@ import org.eclipse.team.internal.core.TeamPlugin;
  */
 public class TeamException extends CoreException {
 
-    // Field required to avoid compiler warning
+	// Field required to avoid compiler warning
 	private static final long serialVersionUID = 1L;
 
-    // The operation completed successfully.
+	// The operation completed successfully.
 	public static final int OK = 0;
 
 	// The operation failed because the resource is not checked-in.

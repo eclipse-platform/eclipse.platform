@@ -179,8 +179,8 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * Preference key to save
 	 */
 	private static final String KEY_LAST_ACTIVE_PARTICIPANT_ID = "lastactiveparticipant_id"; //$NON-NLS-1$
-    private static final String KEY_LAST_ACTIVE_PARTICIPANT_SECONDARY_ID = "lastactiveparticipant_sec_id"; //$NON-NLS-1$
-    private static final String KEY_LINK_WITH_EDITOR = "linkWithEditor"; //$NON-NLS-1$
+	private static final String KEY_LAST_ACTIVE_PARTICIPANT_SECONDARY_ID = "lastactiveparticipant_sec_id"; //$NON-NLS-1$
+	private static final String KEY_LINK_WITH_EDITOR = "linkWithEditor"; //$NON-NLS-1$
 	private static final String KEY_SETTINGS_SECTION= "SynchronizeViewSettings"; //$NON-NLS-1$
 
 
@@ -338,14 +338,14 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		getSite().getPage().removePartListener(fLinkWithEditorListener);
 	}
 
-    /**
-     *
-     */
-    private void rememberCurrentParticipant() {
-        IDialogSettings section = getDialogSettings();
-        section.put(KEY_LAST_ACTIVE_PARTICIPANT_ID, activeParticipantRef.getId());
-        section.put(KEY_LAST_ACTIVE_PARTICIPANT_SECONDARY_ID, activeParticipantRef.getSecondaryId());
-    }
+	/**
+	 *
+	 */
+	private void rememberCurrentParticipant() {
+		IDialogSettings section = getDialogSettings();
+		section.put(KEY_LAST_ACTIVE_PARTICIPANT_ID, activeParticipantRef.getId());
+		section.put(KEY_LAST_ACTIVE_PARTICIPANT_SECONDARY_ID, activeParticipantRef.getSecondaryId());
+	}
 
 	@Override
 	protected IPage createDefaultPage(PageBook book) {
@@ -659,7 +659,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	private String getSettingsKey(ISynchronizeParticipant participant) {
 		String id = participant.getId();
 		String secondaryId = participant.getSecondaryId();
-	    return secondaryId == null ? id : id + '.' + secondaryId;
+		return secondaryId == null ? id : id + '.' + secondaryId;
 	}
 
 	private IDialogSettings getDialogSettings(ISynchronizeParticipant participant) {
@@ -1104,7 +1104,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 			if (input instanceof IEditorInput) {
 				return showInput(getInputFromEditor((IEditorInput) input));
 			}
-			 return showInput(input);
+			return showInput(input);
 		}
 		return false;
 	}

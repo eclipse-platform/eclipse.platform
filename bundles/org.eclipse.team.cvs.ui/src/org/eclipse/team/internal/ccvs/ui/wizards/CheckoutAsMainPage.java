@@ -74,7 +74,7 @@ public class CheckoutAsMainPage extends CVSWizardPage {
 		Composite composite = createComposite(parent, 1, false);
 		setControl(composite);
 		
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.CHECKOUT_CONFIGURATION_PAGE);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, IHelpContextIds.CHECKOUT_CONFIGURATION_PAGE);
 		
 		if (isSingleFolder()) {
 			createSingleFolderArea(composite);
@@ -83,7 +83,7 @@ public class CheckoutAsMainPage extends CVSWizardPage {
 		}
 
 		updateEnablements();
-        Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 	}
 
 	/*

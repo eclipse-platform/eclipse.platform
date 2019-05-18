@@ -107,11 +107,11 @@ public class LFtoCRLFInputStream extends FilterInputStream {
 				count++;
 			}
 			buffer[off++] = b;
- 		}
- 		if (iioe != null) {
- 			iioe.bytesTransferred = count;
- 			throw iioe;
- 		}
+		}
+		if (iioe != null) {
+			iioe.bytesTransferred = count;
+			throw iioe;
+		}
 		return count;
 	}
 

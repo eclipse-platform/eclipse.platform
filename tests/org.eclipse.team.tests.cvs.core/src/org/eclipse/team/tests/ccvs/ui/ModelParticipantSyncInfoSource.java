@@ -553,21 +553,21 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 	}
 
 	private ModelSynchronizePage getPage(Subscriber subscriber) {
-        try {
-            ModelSynchronizeParticipant participant = getParticipant(subscriber);
-            if (participant == null)
-            	throw new AssertionFailedError("The participant for " + subscriber.getName() + " could not be retrieved");
-            IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
-            ISynchronizeView view = (ISynchronizeView)activePage.showView(ISynchronizeView.VIEW_ID);
-            IPage page = ((SynchronizeView)view).getPage(participant);
-            if (page instanceof ModelSynchronizePage) {
-            	ModelSynchronizePage subscriberPage = (ModelSynchronizePage)page;
-            	return subscriberPage;
-            }
-        } catch (PartInitException e) {
-            throw new AssertionFailedError("Cannot show sync view in active page");
-        }
-        throw new AssertionFailedError("The page for " + subscriber.getName() + " could not be retrieved");
+		try {
+			ModelSynchronizeParticipant participant = getParticipant(subscriber);
+			if (participant == null)
+				throw new AssertionFailedError("The participant for " + subscriber.getName() + " could not be retrieved");
+			IWorkbenchPage activePage = TeamUIPlugin.getActivePage();
+			ISynchronizeView view = (ISynchronizeView)activePage.showView(ISynchronizeView.VIEW_ID);
+			IPage page = ((SynchronizeView)view).getPage(participant);
+			if (page instanceof ModelSynchronizePage) {
+				ModelSynchronizePage subscriberPage = (ModelSynchronizePage)page;
+				return subscriberPage;
+			}
+		} catch (PartInitException e) {
+			throw new AssertionFailedError("Cannot show sync view in active page");
+		}
+		throw new AssertionFailedError("The page for " + subscriber.getName() + " could not be retrieved");
 	}
 	
 	@Override
@@ -584,7 +584,7 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 		assertTreeMatchesDiffs(rootItems, copy);
 	}
 	
-    private void assertTreeMatchesDiffs(TreeItem[] rootItems, ResourceDiffTree copy) {
+	private void assertTreeMatchesDiffs(TreeItem[] rootItems, ResourceDiffTree copy) {
 		assertItemsInDiffTree(rootItems, copy);
 		if (!copy.isEmpty()) {
 			new AssertionFailedError("Viewer is not showing all diffs");
@@ -592,10 +592,10 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 	}
 
 	private void assertItemsInDiffTree(TreeItem[] items, ResourceDiffTree copy) {
-        if (items == null || items.length == 0) {
-            return;
-        }
-        for (TreeItem item : items) {
+		if (items == null || items.length == 0) {
+			return;
+		}
+		for (TreeItem item : items) {
 			assertItemInTree(item, copy);
 		}
 		
@@ -623,15 +623,15 @@ public class ModelParticipantSyncInfoSource extends ParticipantSyncInfoSource {
 	}
 
 	private TreeItem[] getTreeItems(Subscriber subscriber) {
-    	ModelSynchronizePage page = getPage(subscriber);
-        Viewer v = page.getViewer();
-        if (v instanceof TreeViewer) {
-            TreeViewer treeViewer = (TreeViewer)v;
-            treeViewer.expandAll();
-            Tree t = (treeViewer).getTree();
-            return t.getItems();
-        }
-        throw new AssertionFailedError("The tree for " + subscriber.getName() + " could not be retrieved");
-    }
+		ModelSynchronizePage page = getPage(subscriber);
+		Viewer v = page.getViewer();
+		if (v instanceof TreeViewer) {
+			TreeViewer treeViewer = (TreeViewer)v;
+			treeViewer.expandAll();
+			Tree t = (treeViewer).getTree();
+			return t.getItems();
+		}
+		throw new AssertionFailedError("The tree for " + subscriber.getName() + " could not be retrieved");
+	}
 	
 }

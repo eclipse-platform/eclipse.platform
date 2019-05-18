@@ -228,44 +228,44 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	}
 
 	/**
-     * Return the selected resource mappins that contain resources in
-     * projects that are associated with a repository of the given id.
-     * @param providerId the repository provider id
-     * @return the resource mappings that contain resources associated with the given provider
+	 * Return the selected resource mappins that contain resources in
+	 * projects that are associated with a repository of the given id.
+	 * @param providerId the repository provider id
+	 * @return the resource mappings that contain resources associated with the given provider
 	 */
-    protected ResourceMapping[] getSelectedResourceMappings(String providerId) {
-        Object[] elements = getSelection().toArray();
-        ArrayList<ResourceMapping> providerMappings = new ArrayList<>();
-        for (int i = 0; i < elements.length; i++) {
-            Object object = elements[i];
-            Object adapted = getResourceMapping(object);
-            if (adapted instanceof ResourceMapping) {
-                ResourceMapping mapping = (ResourceMapping) adapted;
-                if (providerId == null || isMappedToProvider(mapping, providerId)) {
-                    providerMappings.add(mapping);
-                }
-            }
-        }
-        return providerMappings.toArray(new ResourceMapping[providerMappings.size()]);
-    }
+	protected ResourceMapping[] getSelectedResourceMappings(String providerId) {
+		Object[] elements = getSelection().toArray();
+		ArrayList<ResourceMapping> providerMappings = new ArrayList<>();
+		for (int i = 0; i < elements.length; i++) {
+			Object object = elements[i];
+			Object adapted = getResourceMapping(object);
+			if (adapted instanceof ResourceMapping) {
+				ResourceMapping mapping = (ResourceMapping) adapted;
+				if (providerId == null || isMappedToProvider(mapping, providerId)) {
+					providerMappings.add(mapping);
+				}
+			}
+		}
+		return providerMappings.toArray(new ResourceMapping[providerMappings.size()]);
+	}
 
-    private Object getResourceMapping(Object object) {
-        if (object instanceof ResourceMapping)
-            return object;
-        return Utils.getResourceMapping(object);
-    }
+	private Object getResourceMapping(Object object) {
+		if (object instanceof ResourceMapping)
+			return object;
+		return Utils.getResourceMapping(object);
+	}
 
-    private boolean isMappedToProvider(ResourceMapping element, String providerId) {
-        IProject[] projects = element.getProjects();
-        for (int k = 0; k < projects.length; k++) {
-            IProject project = projects[k];
-            RepositoryProvider provider = RepositoryProvider.getProvider(project);
-            if (provider != null && provider.getID().equals(providerId)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean isMappedToProvider(ResourceMapping element, String providerId) {
+		IProject[] projects = element.getProjects();
+		for (int k = 0; k < projects.length; k++) {
+			IProject project = projects[k];
+			RepositoryProvider provider = RepositoryProvider.getProvider(project);
+			if (provider != null && provider.getID().equals(providerId)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Convenience method for getting the current shell.
@@ -276,7 +276,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		if (shell != null) {
 			return shell;
 		} else if (targetPart != null) {
-		    return targetPart.getSite().getShell();
+			return targetPart.getSite().getShell();
 		} else if (window != null) {
 			return window.getShell();
 		} else {
@@ -413,13 +413,13 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * @return IWorkbenchPart
 	 */
 	protected IWorkbenchPart getTargetPart() {
-        if(targetPart == null) {
-            IWorkbenchPage  page = TeamUIPlugin.getActivePage();
-            if (page != null) {
-                targetPart = page.getActivePart();
-            }
-        }
-        return targetPart;
+		if(targetPart == null) {
+			IWorkbenchPage  page = TeamUIPlugin.getActivePage();
+			if (page != null) {
+				targetPart = page.getActivePart();
+			}
+		}
+		return targetPart;
 
 	}
 
@@ -478,10 +478,10 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 			targetPartListener = null;
 		}
 		// Don't hold on to anything when we are disposed to prevent memory leaks (see bug 195521)
-        selection = null;
-        window = null;
-        targetPart = null;
-        shell = null;
+		selection = null;
+		window = null;
+		targetPart = null;
+		shell = null;
 	}
 
 	/**
@@ -573,24 +573,24 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		handle(e, TeamUIMessages.TeamAction_errorTitle, null);
 	}
 
-    /**
-     * The <code>TeamAction</code> implementation of this
-     * <code>IActionDelegate2</code> method does nothing. Subclasses may
-     * reimplement.
-     */
-    @Override
+	/**
+	 * The <code>TeamAction</code> implementation of this
+	 * <code>IActionDelegate2</code> method does nothing. Subclasses may
+	 * reimplement.
+	 */
+	@Override
 	public void init(IAction action) {
-    }
+	}
 
-    /**
-     * The <code>TeamAction</code> implementation of this
-     * <code>IActionDelegate2</code> method redirects to the <code>run</code>
-     * method. Subclasses may reimplement.
-     */
-    @Override
+	/**
+	 * The <code>TeamAction</code> implementation of this
+	 * <code>IActionDelegate2</code> method redirects to the <code>run</code>
+	 * method. Subclasses may reimplement.
+	 */
+	@Override
 	final public void runWithEvent(IAction action, Event event) {
-        run(action);
-    }
+		run(action);
+	}
 
 	@Override
 	public void setEnabled(Object evaluationContext) {

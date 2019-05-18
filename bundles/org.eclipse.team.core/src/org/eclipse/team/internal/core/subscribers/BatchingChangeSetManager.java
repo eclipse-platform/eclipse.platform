@@ -123,16 +123,16 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 		}
 	}
 
-    private void fireChanges(final IProgressMonitor monitor) {
-    	if (changes.isEmpty()) {
-    		return;
-    	}
-    	final CollectorChangeEvent event = changes;
-    	changes = new CollectorChangeEvent(this);
-        Object[] listeners = getListeners();
-        for (int i = 0; i < listeners.length; i++) {
-            final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
-            if (listener instanceof IChangeSetCollectorChangeListener) {
+	private void fireChanges(final IProgressMonitor monitor) {
+		if (changes.isEmpty()) {
+			return;
+		}
+		final CollectorChangeEvent event = changes;
+		changes = new CollectorChangeEvent(this);
+		Object[] listeners = getListeners();
+		for (int i = 0; i < listeners.length; i++) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			if (listener instanceof IChangeSetCollectorChangeListener) {
 				final IChangeSetCollectorChangeListener csccl = (IChangeSetCollectorChangeListener) listener;
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
@@ -145,44 +145,44 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 					}
 				});
 			}
-        }
+		}
 	}
 
-    @Override
+	@Override
 	public void add(ChangeSet set) {
-    	try {
-    		beginInput();
-    		super.add(set);
-    		changes.setAdded(set);
-    	} finally {
-    		endInput(null);
-    	}
-    }
+		try {
+			beginInput();
+			super.add(set);
+			changes.setAdded(set);
+		} finally {
+			endInput(null);
+		}
+	}
 
-    @Override
+	@Override
 	public void remove(ChangeSet set) {
-    	try {
-    		beginInput();
-    		super.remove(set);
-    		changes.setRemoved(set);
-    	} finally {
-    		endInput(null);
-    	}
-    }
+		try {
+			beginInput();
+			super.remove(set);
+			changes.setRemoved(set);
+		} finally {
+			endInput(null);
+		}
+	}
 
-    @Override
+	@Override
 	protected void fireResourcesChangedEvent(ChangeSet changeSet, IPath[] allAffectedResources) {
-    	super.fireResourcesChangedEvent(changeSet, allAffectedResources);
-    	try {
-    		beginInput();
-    		changes.changed(changeSet, allAffectedResources);
-    	} finally {
-    		endInput(null);
-    	}
-    }
+		super.fireResourcesChangedEvent(changeSet, allAffectedResources);
+		try {
+			beginInput();
+			changes.changed(changeSet, allAffectedResources);
+		} finally {
+			endInput(null);
+		}
+	}
 
-    @Override
+	@Override
 	protected void initializeSets() {
-    	// Nothing to do
-    }
+		// Nothing to do
+	}
 }

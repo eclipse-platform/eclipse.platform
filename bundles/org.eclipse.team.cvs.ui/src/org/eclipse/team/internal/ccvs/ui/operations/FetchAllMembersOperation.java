@@ -33,37 +33,37 @@ import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class FetchAllMembersOperation extends RemoteOperation {
-   
+	
 	class RLogTreeBuilder {
-		    
-		    private ICVSRepositoryLocation location;
+			
+			private ICVSRepositoryLocation location;
 			private RemoteFolderTree tree;
 			private CVSTag tag;
 
-	        public RLogTreeBuilder(ICVSRepositoryLocation location, CVSTag tag) {
-	            this.tag = tag;
-	            this.location = location;
-	            reset();
-	        }
+			public RLogTreeBuilder(ICVSRepositoryLocation location, CVSTag tag) {
+				this.tag = tag;
+				this.location = location;
+				reset();
+			}
 			
-	        public RemoteFolderTree getTree() {
-	            return tree;
-	        }
-	       
-	        /**
-	         * Reset the builder to prepare for a new build
-	         */
-	        public void reset() {
-	        	tree = new RemoteFolderTree(null, location, ICVSRemoteFolder.REPOSITORY_ROOT_FOLDER_NAME, tag);
-	        	tree.setChildren(new ICVSRemoteResource[0]);
-	        }
-	        
+			public RemoteFolderTree getTree() {
+				return tree;
+			}
+		
+			/**
+			 * Reset the builder to prepare for a new build
+			 */
+			public void reset() {
+				tree = new RemoteFolderTree(null, location, ICVSRemoteFolder.REPOSITORY_ROOT_FOLDER_NAME, tag);
+				tree.setChildren(new ICVSRemoteResource[0]);
+			}
+			
 		/*
 		 * @see
 		 * org.eclipse.team.internal.ccvs.core.client.listeners.RDiffSummaryListener.
 		 * IFileDiffListener#newFile(java.lang.String, java.lang.String)
 		 */
-	        public void newFile(IPath remoteFilePath, ICVSRemoteFile remoteFile) {
+			public void newFile(IPath remoteFilePath, ICVSRemoteFile remoteFile) {
 				try {
 					addFile(tree,tag,remoteFile, remoteFilePath);
 				} catch (CVSException e) {
@@ -89,7 +89,7 @@ public class FetchAllMembersOperation extends RemoteOperation {
 				tree.setChildren(newChildren);
 			}
 			
-		    /* 
+			/* 
 			 * Get the folder at the given path in the given tree, creating any missing folders as needed.
 			 */
 			private ICVSRemoteFolder getFolder(RemoteFolderTree tree, CVSTag tag, IPath remoteFolderPath, IPath parentPath) throws CVSException {
@@ -130,7 +130,7 @@ public class FetchAllMembersOperation extends RemoteOperation {
 			try {
 				operation.run(monitor);	
 				ICVSRemoteResource[] remoteRes = getRemoteResources(); 
-			    final ICVSRemoteFolder project = (ICVSRemoteFolder) remoteRes[0];
+				final ICVSRemoteFolder project = (ICVSRemoteFolder) remoteRes[0];
 				//Get the entry paths
 				String[] entry = cache.getCachedFilePaths();
 				//Strip repo + project info from entries

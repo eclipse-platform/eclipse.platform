@@ -29,7 +29,7 @@ public class ClipboardDiffOperation extends DiffOperation {
 
 	private static final Object DESTINATION_CLIPBOARD = CVSUIMessages.ClipboardDiffOperation_Clipboard;
 
-    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+	final ByteArrayOutputStream os = new ByteArrayOutputStream();
 
 	public ClipboardDiffOperation(IWorkbenchPart part, ResourceMapping[] mappings, LocalOption[] options, boolean isMultiPatch, boolean includeFullPathInformation, IPath patchRoot) {
 		super(part, mappings, options, isMultiPatch, includeFullPathInformation, patchRoot, DESTINATION_CLIPBOARD);
@@ -37,24 +37,24 @@ public class ClipboardDiffOperation extends DiffOperation {
 
 	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
-	    super.execute(monitor);
-	    
-	    if (os.size() == 0 ||
-	    	(!patchHasContents && !patchHasNewFiles)) {
-            reportEmptyDiff();
-        } else {
-            copyToClipboard(os);
-        }
-     }
+		super.execute(monitor);
+		
+		if (os.size() == 0 ||
+			(!patchHasContents && !patchHasNewFiles)) {
+			reportEmptyDiff();
+		} else {
+			copyToClipboard(os);
+		}
+	}
 	
-	 private void copyToClipboard(final ByteArrayOutputStream baos) {
+	private void copyToClipboard(final ByteArrayOutputStream baos) {
 		getShell().getDisplay().syncExec(() -> {
 			TextTransfer plainTextTransfer = TextTransfer.getInstance();
 			Clipboard clipboard = new Clipboard(getShell().getDisplay());
 			clipboard.setContents(new String[] { baos.toString() }, new Transfer[] { plainTextTransfer });
 			clipboard.dispose();
 		});
-	 }
+	}
 
 	@Override
 	protected PrintStream openStream() {

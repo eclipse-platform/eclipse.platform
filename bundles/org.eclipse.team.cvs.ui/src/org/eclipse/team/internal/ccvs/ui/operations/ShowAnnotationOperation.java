@@ -57,21 +57,21 @@ import com.ibm.icu.text.DateFormat;
  * display them in the annotations view.
  */
 public class ShowAnnotationOperation extends CVSOperation {
-    
-    private final ICVSResource fCVSResource;
-    private final String fRevision;
-    private final boolean fBinary;
+	
+	private final ICVSResource fCVSResource;
+	private final String fRevision;
+	private final boolean fBinary;
 
-    public ShowAnnotationOperation(IWorkbenchPart part, ICVSResource cvsResource, String revision, boolean binary) {
-        super(part);
-        fCVSResource= cvsResource;
-        fRevision= revision;
-        fBinary = binary;
-    }
+	public ShowAnnotationOperation(IWorkbenchPart part, ICVSResource cvsResource, String revision, boolean binary) {
+		super(part);
+		fCVSResource= cvsResource;
+		fRevision= revision;
+		fBinary = binary;
+	}
 
-    @Override
+	@Override
 	protected void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
-    	
+		
 		monitor.beginTask(null, 100);
 
 		// Get the annotations from the repository.
@@ -100,35 +100,35 @@ public class ShowAnnotationOperation extends CVSOperation {
 		
 		monitor.done();
 	}
-    
-    /**
-     * Shows the history view, creating it if necessary, but does not give it focus.
-     * 
-     * @param page the workbench page to operate in
-     * @param editor the editor that is showing the file
-     * @return the history view
-     * @throws PartInitException
-     */
-    private IHistoryView showHistoryView(IWorkbenchPage page, AbstractDecoratedTextEditor editor) throws PartInitException {
-    	Object object = fCVSResource.getIResource();
-    	if (object == null)
-    		object = editor.getEditorInput();
+	
+	/**
+	 * Shows the history view, creating it if necessary, but does not give it focus.
+	 * 
+	 * @param page the workbench page to operate in
+	 * @param editor the editor that is showing the file
+	 * @return the history view
+	 * @throws PartInitException
+	 */
+	private IHistoryView showHistoryView(IWorkbenchPage page, AbstractDecoratedTextEditor editor) throws PartInitException {
+		Object object = fCVSResource.getIResource();
+		if (object == null)
+			object = editor.getEditorInput();
 		IHistoryView historyView= TeamUI.showHistoryFor(page, object, null);
-    	IHistoryPage historyPage = historyView.getHistoryPage();
-    	if (historyPage instanceof CVSHistoryPage){
-    		CVSHistoryPage cvsHistoryPage = (CVSHistoryPage) historyPage;
-    		cvsHistoryPage.setMode(CVSHistoryPage.REMOTE_MODE);
-    		// We need to call link to ensure that the history page gets linked
+		IHistoryPage historyPage = historyView.getHistoryPage();
+		if (historyPage instanceof CVSHistoryPage){
+			CVSHistoryPage cvsHistoryPage = (CVSHistoryPage) historyPage;
+			cvsHistoryPage.setMode(CVSHistoryPage.REMOTE_MODE);
+			// We need to call link to ensure that the history page gets linked
 			// even if the page input did not change
-    		cvsHistoryPage.linkWithEditor();
-    	}
-    	return historyView;
-    }
+			cvsHistoryPage.linkWithEditor();
+		}
+		return historyView;
+	}
 
-    @Override
+	@Override
 	protected String getTaskName() {
-        return CVSUIMessages.ShowAnnotationOperation_taskName;
-    }
+		return CVSUIMessages.ShowAnnotationOperation_taskName;
+	}
 
 	protected boolean hasCharset(ICVSResource cvsResource, InputStream contents) {
 		try {
@@ -147,45 +147,45 @@ public class ShowAnnotationOperation extends CVSOperation {
 		if (fCVSResource instanceof ICVSRemoteResource) {
 			return RevisionAnnotationController.openEditor(getPart().getSite().getPage(), fCVSResource, new RemoteAnnotationStorage((ICVSRemoteFile)fCVSResource, listener.getContents()));
 		}
-        return null;
+		return null;
 	}
 
 	private void fetchAnnotation(AnnotateListener listener, ICVSResource cvsResource, String revision, IProgressMonitor monitor) throws CVSException {
-    
-        monitor = Policy.monitorFor(monitor);
-        monitor.beginTask(null, 100);
-        
-        final ICVSFolder folder = cvsResource.getParent();
-        final FolderSyncInfo info = folder.getFolderSyncInfo();
-        final ICVSRepositoryLocation location = KnownRepositories.getInstance().getRepository(info.getRoot());
-        
-        final Session session = new Session(location, folder, true /*output to console*/);
-        session.open(Policy.subMonitorFor(monitor, 10), false /* read-only */);
-        try {
-            final Command.QuietOption quietness = CVSProviderPlugin.getPlugin().getQuietness();
-            try {
-                CVSProviderPlugin.getPlugin().setQuietness(Command.VERBOSE);
+	
+		monitor = Policy.monitorFor(monitor);
+		monitor.beginTask(null, 100);
+		
+		final ICVSFolder folder = cvsResource.getParent();
+		final FolderSyncInfo info = folder.getFolderSyncInfo();
+		final ICVSRepositoryLocation location = KnownRepositories.getInstance().getRepository(info.getRoot());
+		
+		final Session session = new Session(location, folder, true /*output to console*/);
+		session.open(Policy.subMonitorFor(monitor, 10), false /* read-only */);
+		try {
+			final Command.QuietOption quietness = CVSProviderPlugin.getPlugin().getQuietness();
+			try {
+				CVSProviderPlugin.getPlugin().setQuietness(Command.VERBOSE);
 				List<Object> localOptions = new ArrayList<>();
-                if (revision != null) {
-                    localOptions.add(Annotate.makeRevisionOption(revision));
-                }
-                if (fBinary) {
-                    localOptions.add(Annotate.FORCE_BINARY_ANNOTATE);
-                }
-                final IStatus status = Command.ANNOTATE.execute(session, Command.NO_GLOBAL_OPTIONS, localOptions.toArray(new LocalOption[localOptions.size()]), new ICVSResource[]{cvsResource}, listener, Policy.subMonitorFor(monitor, 90));
-                if (status.getCode() == CVSStatus.SERVER_ERROR) {
-                    throw new CVSServerException(status);
-                }
-            } finally {
-                CVSProviderPlugin.getPlugin().setQuietness(quietness);
-                monitor.done();
-            }
-        } finally {
-            session.close();
-        }
-    }
+				if (revision != null) {
+					localOptions.add(Annotate.makeRevisionOption(revision));
+				}
+				if (fBinary) {
+					localOptions.add(Annotate.FORCE_BINARY_ANNOTATE);
+				}
+				final IStatus status = Command.ANNOTATE.execute(session, Command.NO_GLOBAL_OPTIONS, localOptions.toArray(new LocalOption[localOptions.size()]), new ICVSResource[]{cvsResource}, listener, Policy.subMonitorFor(monitor, 90));
+				if (status.getCode() == CVSStatus.SERVER_ERROR) {
+					throw new CVSServerException(status);
+				}
+			} finally {
+				CVSProviderPlugin.getPlugin().setQuietness(quietness);
+				monitor.done();
+			}
+		} finally {
+			session.close();
+		}
+	}
 
-    private RevisionInformation createRevisionInformation(final AnnotateListener listener, IProgressMonitor monitor) throws CVSException {
+	private RevisionInformation createRevisionInformation(final AnnotateListener listener, IProgressMonitor monitor) throws CVSException {
 		Map<String, ILogEntry> logEntriesByRevision = new HashMap<>();
 		if (fCVSResource instanceof ICVSFile) {
 			try {

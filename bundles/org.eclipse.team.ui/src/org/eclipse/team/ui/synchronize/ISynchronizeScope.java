@@ -34,7 +34,7 @@ public interface ISynchronizeScope {
 
 	/**
 	 * Property used to indicate when the name of the scope has changed.
-     * @since 3.1
+	 * @since 3.1
 	 */
 	public static final String NAME = "prop_name"; //$NON-NLS-1$
 

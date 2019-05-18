@@ -94,9 +94,9 @@ public abstract class AbstractMatching {
 	}
 
 /* for testing */
- 	public Vector getMatches() {
-  		return fMatches;
-   	}
+	public Vector getMatches() {
+		return fMatches;
+	}
 
 	protected class XMLComparator implements IRangeComparator {
 	

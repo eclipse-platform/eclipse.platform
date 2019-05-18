@@ -38,21 +38,21 @@ public class ResourceModelPreferencePage extends FieldEditorPreferencePage imple
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-        // set F1 help
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.RESOURCE_MODEL_PREFERENCE_PAGE);
+		// set F1 help
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.RESOURCE_MODEL_PREFERENCE_PAGE);
 	}
 
 	@Override
 	protected void createFieldEditors() {
-	    defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT,
-	    		TeamUIMessages.SyncViewerPreferencePage_0, 3,
-	            new String[][] {
-	            	{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT},
-	            	{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT},
-	            	{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT}
-	    		},
-	    		getFieldEditorParent(), true /* use a group */);
-	    addField(defaultLayout);
+		defaultLayout = new RadioGroupFieldEditor(SYNCVIEW_DEFAULT_LAYOUT,
+				TeamUIMessages.SyncViewerPreferencePage_0, 3,
+				new String[][] {
+					{TeamUIMessages.SyncViewerPreferencePage_1, FLAT_LAYOUT},
+					{TeamUIMessages.SyncViewerPreferencePage_2, TREE_LAYOUT},
+					{TeamUIMessages.SyncViewerPreferencePage_3, COMPRESSED_LAYOUT}
+				},
+				getFieldEditorParent(), true /* use a group */);
+		addField(defaultLayout);
 	}
 
 	@Override

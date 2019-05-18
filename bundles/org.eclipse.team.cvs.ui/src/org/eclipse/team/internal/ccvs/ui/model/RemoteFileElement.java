@@ -45,7 +45,7 @@ public class RemoteFileElement extends RemoteResourceElement {
 		try {
 			return NLS.bind(CVSUIMessages.nameAndRevision, new String[] { file.getName(), file.getRevision() }); 
 		} catch (TeamException e) {
-		    handle(null, null, e);
+			handle(null, null, e);
 			return null;
 		}
 	}

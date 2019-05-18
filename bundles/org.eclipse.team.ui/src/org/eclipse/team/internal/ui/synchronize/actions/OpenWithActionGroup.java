@@ -89,11 +89,11 @@ public class OpenWithActionGroup extends ActionGroup {
 	 */
 	private void fillOpenWithMenu(IMenuManager menu, String groupId, IStructuredSelection selection) {
 
-        // Only supported if at least one file is selected.
-        if (selection == null || selection.size() < 1)
-            return;
-        Object[] elements = selection.toArray();
-        IResource resources[] = Utils.getResources(elements);
+		// Only supported if at least one file is selected.
+		if (selection == null || selection.size() < 1)
+			return;
+		Object[] elements = selection.toArray();
+		IResource resources[] = Utils.getResources(elements);
 		if (resources.length == 0) {
 			if (openInCompareAction != null) {
 				// We can still show the compare editor open if the element has
@@ -118,12 +118,12 @@ public class OpenWithActionGroup extends ActionGroup {
 			return;
 		}
 
-        if (elements.length != resources.length){
-        	// Only supported if all the items are resources.
-        	return;
-        }
+		if (elements.length != resources.length){
+			// Only supported if all the items are resources.
+			return;
+		}
 
-        boolean allFiles = true;
+		boolean allFiles = true;
 		for (int i = 0; i < resources.length; i++) {
 			if (resources[i].getType() != IResource.FILE) {
 				// Open actions are only supported if all the items are files.
@@ -173,7 +173,7 @@ public class OpenWithActionGroup extends ActionGroup {
 			showInSubmenu.add(showInMenu);
 			menu.appendToGroup(groupId, showInSubmenu);
 		}
-    }
+	}
 
 	/**
 	 * {@link SaveablesCompareEditorInput#getShowInMenuLabel}

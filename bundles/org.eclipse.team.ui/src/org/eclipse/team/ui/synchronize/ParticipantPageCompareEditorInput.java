@@ -186,7 +186,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
 		monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
-        monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
+		monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
 		try {
 			// First, see if the active buffer is changing
 			checkForBufferChange(pageConfiguration.getSite().getShell(), input, false /* cancel not allowed */, monitor);
@@ -205,8 +205,8 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		} finally {
-            monitor.done();
-        }
+			monitor.done();
+		}
 	}
 
 	private void checkForBufferChange(Shell shell, final ICompareInput input, boolean cancelAllowed, IProgressMonitor monitor) throws CoreException {
@@ -257,11 +257,11 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 	private static void commit(IProgressMonitor pm, DiffNode node) throws CoreException {
 		ITypedElement left = node.getLeft();
 		if (left instanceof LocalResourceTypedElement)
-			 ((LocalResourceTypedElement) left).commit(pm);
+			((LocalResourceTypedElement) left).commit(pm);
 
 		ITypedElement right = node.getRight();
 		if (right instanceof LocalResourceTypedElement)
-			 ((LocalResourceTypedElement) right).commit(pm);
+			((LocalResourceTypedElement) right).commit(pm);
 
 		IDiffElement[] children = node.getChildren();
 		for (int i = 0; i < children.length; i++) {
@@ -276,7 +276,7 @@ public class ParticipantPageCompareEditorInput extends PageCompareEditorInput {
 			if (source instanceof DiffNode) {
 				commit(new NullProgressMonitor(), (DiffNode) source);
 			} else if (source instanceof LocalResourceTypedElement) {
-				 ((LocalResourceTypedElement) source).commit(new NullProgressMonitor());
+				((LocalResourceTypedElement) source).commit(new NullProgressMonitor());
 			}
 		} catch (CoreException e) {
 			Utils.handle(e);

@@ -238,30 +238,30 @@ public class WorkspaceModelParticipant extends
 		return WorkspaceSubscriberContext.createWorkspaceScopeManager(mappings, true, isConsultChangeSets);
 	}
 	
-    @Override
+	@Override
 	public ChangeSetCapability getChangeSetCapability() {
-        if (capability == null) {
-            capability = new WorkspaceChangeSetCapability();
-        }
-        return capability;
+		if (capability == null) {
+			capability = new WorkspaceChangeSetCapability();
+		}
+		return capability;
 	}
-    
-    @Override
+	
+	@Override
 	public void saveState(IMemento memento) {
-    	super.saveState(memento);
-    	memento.putString(CTX_CONSULT_CHANGE_SETS, Boolean.toString(isConsultChangeSets));
-    }
-    
-    @Override
+		super.saveState(memento);
+		memento.putString(CTX_CONSULT_CHANGE_SETS, Boolean.toString(isConsultChangeSets));
+	}
+	
+	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
-    	try {
-    		String consult = memento.getString(CTX_CONSULT_CHANGE_SETS);
-    		if (consult != null)
-    			isConsultChangeSets = Boolean.valueOf(consult).booleanValue();
-    	} finally {
-    		super.init(secondaryId, memento);
-    	}
-    }
+		try {
+			String consult = memento.getString(CTX_CONSULT_CHANGE_SETS);
+			if (consult != null)
+				isConsultChangeSets = Boolean.valueOf(consult).booleanValue();
+		} finally {
+			super.init(secondaryId, memento);
+		}
+	}
 
 	private boolean isConsultChangeSets(ISynchronizationScopeManager manager) {
 		if (manager instanceof ChangeSetSubscriberScopeManager) {

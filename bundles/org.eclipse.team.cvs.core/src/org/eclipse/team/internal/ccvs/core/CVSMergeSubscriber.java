@@ -347,6 +347,6 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		if(! (other instanceof CVSMergeSubscriber)) return false;
 		CVSMergeSubscriber s = (CVSMergeSubscriber)other;
 		return getEndTag().equals(s.getEndTag()) && 
-			   getStartTag().equals(s.getStartTag()) && rootsEqual(s);		
+				getStartTag().equals(s.getStartTag()) && rootsEqual(s);		
 	}
 }

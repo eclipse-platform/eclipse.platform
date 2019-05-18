@@ -42,8 +42,8 @@ public class FileDiffOperation extends DiffOperation {
 
 	@Override
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
-	    super.execute(monitor);
-     
+		super.execute(monitor);
+	
 		if (tempFile.length() == 0) {
 			tempFile.delete();
 			reportEmptyDiff();
@@ -57,7 +57,7 @@ public class FileDiffOperation extends DiffOperation {
 			return;
 		}
 		
-		 copyFile();
+		copyFile();
 	}
 	
 	protected void copyFile() throws CVSException {

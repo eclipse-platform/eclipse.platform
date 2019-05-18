@@ -185,7 +185,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			IResource resource = syncNode.getResource();
 			if (syncNode != null && resource != null && resource.getType() == IResource.FILE) {
 				// The open is handled by the open strategy but say we handled
-			    // it so that overriding methods will not do anything
+				// it so that overriding methods will not do anything
 				return true;
 			}
 		}

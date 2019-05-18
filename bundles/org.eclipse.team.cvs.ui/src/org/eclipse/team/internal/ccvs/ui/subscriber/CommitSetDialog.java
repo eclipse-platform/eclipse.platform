@@ -34,75 +34,75 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CommitSetDialog extends TitleAreaDialog {
 
-    public final static short NEW = 0;
-    public final static short EDIT = 1;
-    
+	public final static short NEW = 0;
+	public final static short EDIT = 1;
+	
 	private static final int DEFAULT_WIDTH_IN_CHARS= 80;
-    
-    private final ActiveChangeSet set;
-    private CommitCommentArea commitCommentArea;
-    private Text nameText;
-    private Button customTitleButton;
-    private final String title;
-    private final String description;
-    private String comment;
-    private short mode;
+	
+	private final ActiveChangeSet set;
+	private CommitCommentArea commitCommentArea;
+	private Text nameText;
+	private Button customTitleButton;
+	private final String title;
+	private final String description;
+	private String comment;
+	private short mode;
 	protected String customTitle;
 
-    public CommitSetDialog(Shell parentShell, ActiveChangeSet set, IResource[] files, short mode) {
-        super(parentShell);
-        this.set = set;
-        this.mode = mode;
+	public CommitSetDialog(Shell parentShell, ActiveChangeSet set, IResource[] files, short mode) {
+		super(parentShell);
+		this.set = set;
+		this.mode = mode;
 		this.title = mode == NEW ? CVSUIMessages.WorkspaceChangeSetCapability_2
 				: CVSUIMessages.WorkspaceChangeSetCapability_7;
 		this.description = mode == NEW ? CVSUIMessages.WorkspaceChangeSetCapability_3
 				: CVSUIMessages.WorkspaceChangeSetCapability_8;
-        
-        if (files == null) {
-            files = set.getResources();
-        }
-        
+		
+		if (files == null) {
+			files = set.getResources();
+		}
+		
 		int shellStyle = getShellStyle();
 		setShellStyle(shellStyle | SWT.RESIZE | SWT.MAX);
 		commitCommentArea = new CommitCommentArea();
 		// Get a project from which the commit template can be obtained
 		if (files.length > 0) 
-		    commitCommentArea.setProject(files[0].getProject());
-    }
-    
-    @Override
+			commitCommentArea.setProject(files[0].getProject());
+	}
+	
+	@Override
 	protected Control createContents(Composite parent) {
-        Control contents = super.createContents(parent);
-        setTitle(title);
-        setMessage(description);
-        return contents;
-    }
-    
-    @Override
+		Control contents = super.createContents(parent);
+		setTitle(title);
+		setMessage(description);
+		return contents;
+	}
+	
+	@Override
 	protected Control createDialogArea(Composite parent) {
-        Composite parentComposite = (Composite) super.createDialogArea(parent);
+		Composite parentComposite = (Composite) super.createDialogArea(parent);
 
-        // create a composite with standard margins and spacing
-        Composite composite = new Composite(parentComposite, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-        layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
-        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-        layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-        composite.setLayout(layout);
-        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        composite.setFont(parentComposite.getFont());
+		// create a composite with standard margins and spacing
+		Composite composite = new Composite(parentComposite, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+		composite.setFont(parentComposite.getFont());
 		
 		if (hasCommitTemplate()) {
-		    if (set.hasComment()) {
-		        // Only set the comment if the set has a custom comment.
-		        // Otherwise, the template should be used
-		        comment = set.getComment();
-		        commitCommentArea.setProposedComment(comment);
-		    }
+			if (set.hasComment()) {
+				// Only set the comment if the set has a custom comment.
+				// Otherwise, the template should be used
+				comment = set.getComment();
+				commitCommentArea.setProposedComment(comment);
+			}
 		} else {
-		    comment = set.getComment();
-		    commitCommentArea.setProposedComment(comment);
+			comment = set.getComment();
+			commitCommentArea.setProposedComment(comment);
 		}
 		
 		commitCommentArea.createArea(composite);
@@ -124,19 +124,19 @@ public class CommitSetDialog extends TitleAreaDialog {
 		initializeValues();
 		updateEnablements();
 		
-        Dialog.applyDialogFont(parent);
-        return composite;
-    }
-    
+		Dialog.applyDialogFont(parent);
+		return composite;
+	}
+	
 	@Override
 	protected Point getInitialSize() {
-	    final Point size= super.getInitialSize();
-	    size.x= convertWidthInCharsToPixels(DEFAULT_WIDTH_IN_CHARS);
-	    size.y += convertHeightInCharsToPixels(8);
-	    return size;
+		final Point size= super.getInitialSize();
+		size.x= convertWidthInCharsToPixels(DEFAULT_WIDTH_IN_CHARS);
+		size.y += convertHeightInCharsToPixels(8);
+		return size;
 	}
 
-    private void createNameArea(Composite parent) {
+	private void createNameArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginHeight = 0;
@@ -158,20 +158,20 @@ public class CommitSetDialog extends TitleAreaDialog {
 			customTitle = nameText.getText();
 			updateEnablements();
 		});
-    }
+	}
 
-    private void initializeValues() {
-        String initialText = set.getTitle();
-        if (initialText == null) initialText = ""; //$NON-NLS-1$
-        nameText.setText(initialText);
-        nameText.setSelection(0, initialText.length());
-        
-        if (customTitleButton != null) {
-            customTitleButton.setSelection(!commitCommentArea.getFirstLineOfComment().equals(initialText));
-        }
-    }
-    
-    private void createOptionsArea(Composite composite) {
+	private void initializeValues() {
+		String initialText = set.getTitle();
+		if (initialText == null) initialText = ""; //$NON-NLS-1$
+		nameText.setText(initialText);
+		nameText.setSelection(0, initialText.length());
+		
+		if (customTitleButton != null) {
+			customTitleButton.setSelection(!commitCommentArea.getFirstLineOfComment().equals(initialText));
+		}
+	}
+	
+	private void createOptionsArea(Composite composite) {
 		Composite radioArea = new Composite(composite, SWT.NONE);
 		RowLayout radioAreaLayout = new RowLayout(SWT.VERTICAL);
 		radioAreaLayout.marginLeft = 0;
@@ -180,29 +180,29 @@ public class CommitSetDialog extends TitleAreaDialog {
 		radioAreaLayout.marginBottom = 0;
 		radioArea.setLayout(radioAreaLayout);
 		
-        customTitleButton = createCheckButton(radioArea, CVSUIMessages.CommitSetDialog_2); 
-        SelectionAdapter listener = new SelectionAdapter() {
-            @Override
+		customTitleButton = createCheckButton(radioArea, CVSUIMessages.CommitSetDialog_2); 
+		SelectionAdapter listener = new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
-            	if (customTitleButton.getSelection()) {
-            		nameText.setText(customTitle);
-            	} else {
-            		nameText.setText(commitCommentArea.getFirstLineOfComment());
-            	}
-                updateEnablements();
-            }
-        };
-        customTitleButton.addSelectionListener(listener);
-        
-    }
-    
+				if (customTitleButton.getSelection()) {
+					nameText.setText(customTitle);
+				} else {
+					nameText.setText(commitCommentArea.getFirstLineOfComment());
+				}
+				updateEnablements();
+			}
+		};
+		customTitleButton.addSelectionListener(listener);
+		
+	}
+	
 	private Button createCheckButton(Composite parent, String label) {
 		Button button = new Button(parent, SWT.CHECK);
 		button.setText(label);
 		return button;
 	}
 	
-    private void updateEnablements() {
+	private void updateEnablements() {
 		setErrorMessage(null);
 		String name;
 		
@@ -218,7 +218,7 @@ public class CommitSetDialog extends TitleAreaDialog {
 			setPageComplete(false);
 			return;
 		}
-        
+		
 		// check if the new change set already exists
 		if (mode == NEW 
 				&& CVSUIPlugin.getPlugin().getChangeSetManager().getSet(name) != null) {
@@ -236,36 +236,36 @@ public class CommitSetDialog extends TitleAreaDialog {
 			return;
 		}
 
-        
-        setPageComplete(true);
-    }
-    
+		
+		setPageComplete(true);
+	}
+	
 	final protected void setPageComplete(boolean complete) {
-	    Button okButton = getButton(IDialogConstants.OK_ID);
+		Button okButton = getButton(IDialogConstants.OK_ID);
 		if(okButton != null ) {
 			okButton.setEnabled(complete);
 		}
 	}
 	
-    private boolean hasCommitTemplate() {
-        return commitCommentArea.hasCommitTemplate();
-    }
-    
-    @Override
+	private boolean hasCommitTemplate() {
+		return commitCommentArea.hasCommitTemplate();
+	}
+	
+	@Override
 	protected void okPressed() {
-    	String title = null;
-    	if (customTitleButton.getSelection()) {
+		String title = null;
+		if (customTitleButton.getSelection()) {
 			title= customTitle;
 		} else {
 			title= commitCommentArea.getFirstLineOfComment();
 		}
-    	
-        set.setTitle(title);
-        // Call getComment so the comment gets saved
-        set.setComment(commitCommentArea.getComment(true));
-        
-        super.okPressed();
-    }
+		
+		set.setTitle(title);
+		// Call getComment so the comment gets saved
+		set.setComment(commitCommentArea.getComment(true));
+		
+		super.okPressed();
+	}
 
 
 	protected Label createWrappingLabel(Composite parent, String text) {
@@ -281,13 +281,13 @@ public class CommitSetDialog extends TitleAreaDialog {
 		return label;
 	}
 	
-    @Override
+	@Override
 	protected Control createButtonBar(Composite parent) {
-        Control control = super.createButtonBar(parent);
-        updateEnablements();
-        return control;
-    }
-    
+		Control control = super.createButtonBar(parent);
+		updateEnablements();
+		return control;
+	}
+	
 	@Override
 	protected void configureShell(Shell shell) {
 		super.configureShell(shell);

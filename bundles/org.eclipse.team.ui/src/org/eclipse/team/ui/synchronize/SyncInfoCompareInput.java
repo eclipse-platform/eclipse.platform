@@ -64,7 +64,7 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	private MyDiffNode node;
 	private String description;
 	private IResource resource;
-    private ISynchronizeParticipant participant;
+	private ISynchronizeParticipant participant;
 	private ISynchronizePageConfiguration synchronizeConfiguration;
 
 	/*
@@ -107,37 +107,37 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 	 * @param participant the participant from which the sync info was obtained. The
 	 * name of the participant is used as the description which is displayed to the user.
 	 * @param sync the <code>SyncInfo</code> used as the base for the compare input.
-     *
-     * @since 3.1
-     */
-    public SyncInfoCompareInput(ISynchronizeParticipant participant, SyncInfo sync) {
-        this(participant.getName(), sync);
-        this.participant = participant;
-    }
+	 *
+	 * @since 3.1
+	 */
+	public SyncInfoCompareInput(ISynchronizeParticipant participant, SyncInfo sync) {
+		this(participant.getName(), sync);
+		this.participant = participant;
+	}
 
-    public SyncInfoCompareInput(ISynchronizePageConfiguration configuration,
+	public SyncInfoCompareInput(ISynchronizePageConfiguration configuration,
 			SyncInfo info) {
 		this(configuration.getParticipant(), info);
 		this.synchronizeConfiguration = configuration;
 	}
 
-    @Override
+	@Override
 	protected void handleDispose() {
-    	super.handleDispose();
-    	if (synchronizeConfiguration != null) {
-	    	ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
-	    	if (navigator != null && navigator == super.getNavigator()) {
-	    		synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
+		super.handleDispose();
+		if (synchronizeConfiguration != null) {
+			ICompareNavigator navigator = (ICompareNavigator)synchronizeConfiguration.getProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR);
+			if (navigator != null && navigator == super.getNavigator()) {
+				synchronizeConfiguration.setProperty(SynchronizePageConfiguration.P_INPUT_NAVIGATOR, new CompareNavigator() {
 					@Override
 					protected INavigatable[] getNavigatables() {
 						return new INavigatable[0];
 					}
 				});
-	    	}
-    	}
-    }
+			}
+		}
+	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (IFile.class.equals(adapter) && resource.getType() == IResource.FILE) {
@@ -183,20 +183,20 @@ public final class SyncInfoCompareInput extends SaveableCompareEditorInput imple
 		// update the title now that the remote revision number as been fetched
 		// from the server
 		setTitle(getTitle());
-        monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
-        monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
+		monitor.beginTask(TeamUIMessages.SyncInfoCompareInput_3, 100);
+		monitor.setTaskName(TeamUIMessages.SyncInfoCompareInput_3);
 		try {
 			if (participant != null) {
-			    participant.prepareCompareInput(node, getCompareConfiguration(), Policy.subMonitorFor(monitor, 100));
+				participant.prepareCompareInput(node, getCompareConfiguration(), Policy.subMonitorFor(monitor, 100));
 			} else {
-			    Utils.updateLabels(node.getSyncInfo(), getCompareConfiguration(), monitor);
+				Utils.updateLabels(node.getSyncInfo(), getCompareConfiguration(), monitor);
 				node.cacheContents(Policy.subMonitorFor(monitor, 100));
 			}
 		} catch (TeamException e) {
 			throw new InvocationTargetException(e);
 		} finally {
-            monitor.done();
-        }
+			monitor.done();
+		}
 		return node;
 	}
 

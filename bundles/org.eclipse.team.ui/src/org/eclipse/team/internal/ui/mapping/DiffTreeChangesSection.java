@@ -499,9 +499,9 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		IModelProviderDescriptor oldDesc = ModelProvider.getModelProviderDescriptor(oldId);
 		String message;
 		String modeToString = Utils.modeToString(getConfiguration().getMode());
-        message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0, new String[] {
-            		provider.getDescriptor().getLabel(),
-            		modeToString });
+		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_0, new String[] {
+					provider.getDescriptor().getLabel(),
+					modeToString });
 		message = NLS.bind(TeamUIMessages.DiffTreeChangesSection_1, new String[] { modeToString, oldDesc.getLabel(), message });
 
 		createDescriptionLabel(composite, message);

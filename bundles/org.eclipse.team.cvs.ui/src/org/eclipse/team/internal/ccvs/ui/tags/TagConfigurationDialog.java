@@ -80,9 +80,9 @@ public class TagConfigurationDialog extends TrayDialog {
 	// dialogs settings that are persistent between workbench sessions
 	private IDialogSettings settings;
 
-    private final TagSource tagSource;
+	private final TagSource tagSource;
 
-    private final TagSourceWrapper wrappedTagSource;
+	private final TagSourceWrapper wrappedTagSource;
 	
 	class FileComparator extends ViewerComparator {
 		@Override
@@ -103,105 +103,105 @@ public class TagConfigurationDialog extends TrayDialog {
 	 */
 	class TagSourceWrapper extends TagSource {
 
-        private final TagSource tagSource;
+		private final TagSource tagSource;
 		private final List<CVSTag> branches = new ArrayList<>();
 		private final List<CVSTag> versions = new ArrayList<>();
 		private final List<CVSTag> dates = new ArrayList<>();
 
-        public TagSourceWrapper(TagSource tagSource) {
-            this.tagSource = tagSource;
-            branches.addAll(Arrays.asList(tagSource.getTags(CVSTag.BRANCH)));
-            versions.addAll(Arrays.asList(tagSource.getTags(CVSTag.VERSION)));
-            dates.addAll(Arrays.asList(tagSource.getTags(CVSTag.DATE)));
-        }
-	    
-        @Override
+		public TagSourceWrapper(TagSource tagSource) {
+			this.tagSource = tagSource;
+			branches.addAll(Arrays.asList(tagSource.getTags(CVSTag.BRANCH)));
+			versions.addAll(Arrays.asList(tagSource.getTags(CVSTag.VERSION)));
+			dates.addAll(Arrays.asList(tagSource.getTags(CVSTag.DATE)));
+		}
+		
+		@Override
 		public CVSTag[] getTags(int type) {
-            if (type == CVSTag.HEAD || type == BASE) {
-                return super.getTags(type);
-            }
+			if (type == CVSTag.HEAD || type == BASE) {
+				return super.getTags(type);
+			}
 			List<CVSTag> list = getTagList(type);
-            if (list != null)
-                return list.toArray(new CVSTag[list.size()]);
-            return tagSource.getTags(type);
-        }
+			if (list != null)
+				return list.toArray(new CVSTag[list.size()]);
+			return tagSource.getTags(type);
+		}
 
 		private List<CVSTag> getTagList(int type) {
-            switch (type) {
-            case CVSTag.VERSION: 
-                return versions;
-            case CVSTag.BRANCH:
-                return branches;
-            case CVSTag.DATE:
-                return dates;
-        }
-            return null;
-        }
-        
-        @Override
+			switch (type) {
+			case CVSTag.VERSION: 
+				return versions;
+			case CVSTag.BRANCH:
+				return branches;
+			case CVSTag.DATE:
+				return dates;
+		}
+			return null;
+		}
+		
+		@Override
 		public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
-            // The wrapper is never refreshed
-            return new CVSTag[0];
-        }
+			// The wrapper is never refreshed
+			return new CVSTag[0];
+		}
 
-        @Override
+		@Override
 		public ICVSRepositoryLocation getLocation() {
-            return tagSource.getLocation();
-        }
+			return tagSource.getLocation();
+		}
 
-        @Override
+		@Override
 		public String getShortDescription() {
-            return tagSource.getShortDescription();
-        }
+			return tagSource.getShortDescription();
+		}
 
-        public void remove(CVSTag[] tags) {
-            for (int i = 0; i < tags.length; i++) {
-                CVSTag tag = tags[i];
-                List list = getTagList(tag.getType());
-                if (list != null)
-                    list.remove(tag);        
-            }
-        }
+		public void remove(CVSTag[] tags) {
+			for (int i = 0; i < tags.length; i++) {
+				CVSTag tag = tags[i];
+				List list = getTagList(tag.getType());
+				if (list != null)
+					list.remove(tag);        
+			}
+		}
 
-        public void add(CVSTag[] tags) {
-            for (int i = 0; i < tags.length; i++) {
-                CVSTag tag = tags[i];
+		public void add(CVSTag[] tags) {
+			for (int i = 0; i < tags.length; i++) {
+				CVSTag tag = tags[i];
 				List<CVSTag> list = getTagList(tag.getType());
-                if (list != null)
-                    list.add(tag);        
-            }
-        }
+				if (list != null)
+					list.add(tag);        
+			}
+		}
 
-        public void removeAll() {
-            versions.clear();
-            branches.clear();
-            dates.clear();
-        }
+		public void removeAll() {
+			versions.clear();
+			branches.clear();
+			dates.clear();
+		}
 
-        /**
-         * Remember the state that has been accumulated
-         * @param monitor
-         * @throws CVSException
-         */
-        public void commit(IProgressMonitor monitor) throws CVSException {
-            tagSource.commit(getTags(new int[] { CVSTag.VERSION, CVSTag.BRANCH, CVSTag.DATE }), true /* replace */, monitor);
-        }
+		/**
+		 * Remember the state that has been accumulated
+		 * @param monitor
+		 * @throws CVSException
+		 */
+		public void commit(IProgressMonitor monitor) throws CVSException {
+			tagSource.commit(getTags(new int[] { CVSTag.VERSION, CVSTag.BRANCH, CVSTag.DATE }), true /* replace */, monitor);
+		}
 
-        @Override
+		@Override
 		public void commit(CVSTag[] tags, boolean replace, IProgressMonitor monitor) throws CVSException {
-            // Not invoked
-        }
+			// Not invoked
+		}
 
-        @Override
+		@Override
 		public ICVSResource[] getCVSResources() {
-            return tagSource.getCVSResources();
-        }
+			return tagSource.getCVSResources();
+		}
 	}
 	
 	public TagConfigurationDialog(Shell shell, TagSource tagSource) {
 		super(shell);
-        this.tagSource = tagSource;
-        wrappedTagSource = new TagSourceWrapper(tagSource);
+		this.tagSource = tagSource;
+		wrappedTagSource = new TagSourceWrapper(tagSource);
 		setShellStyle(SWT.CLOSE|SWT.RESIZE|SWT.APPLICATION_MODAL);
 		allowSettingAutoRefreshFiles = getSingleFolder(tagSource, false) != null;
 		IDialogSettings workbenchSettings = CVSUIPlugin.getPlugin().getDialogSettings();
@@ -225,8 +225,8 @@ public class TagConfigurationDialog extends TrayDialog {
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 2;
 		gridLayout.makeColumnsEqualWidth = true;
-	    gridLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
-	    gridLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);        
+		gridLayout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		gridLayout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);        
 		shell.setLayout (gridLayout);
 		
 		Composite comp = new Composite(shell, SWT.NULL);
@@ -467,7 +467,7 @@ public class TagConfigurationDialog extends TrayDialog {
 					autoRefreshFileList.setFocus();
 				}
 			});			
-            PlatformUI.getWorkbench().getHelpSystem().setHelp(autoRefreshFileList, IHelpContextIds.TAG_CONFIGURATION_REFRESHLIST);
+			PlatformUI.getWorkbench().getHelpSystem().setHelp(autoRefreshFileList, IHelpContextIds.TAG_CONFIGURATION_REFRESHLIST);
 		}
 			
 		Label seperator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -475,14 +475,14 @@ public class TagConfigurationDialog extends TrayDialog {
 		data.horizontalSpan = 2;
 		seperator.setLayoutData(data);
 	
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, IHelpContextIds.TAG_CONFIGURATION_OVERVIEW);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(shell, IHelpContextIds.TAG_CONFIGURATION_OVERVIEW);
 	
 		updateEnablements();
-	    Dialog.applyDialogFont(parent);
+		Dialog.applyDialogFont(parent);
 		return shell;
 	}
 
-    private void updateShownTags() {
+	private void updateShownTags() {
 		final CVSFileElement[] filesSelection = getSelectedFiles();
 		final Set<CVSTag> tags = new HashSet<>();
 		if(filesSelection.length!=0) {
@@ -576,7 +576,7 @@ public class TagConfigurationDialog extends TrayDialog {
 			tagsToAdd.add(tag);
 		}
 		if (!tagsToAdd.isEmpty()) {
-		    wrappedTagSource.add(tagsToAdd.toArray(new CVSTag[tagsToAdd.size()]));
+			wrappedTagSource.add(tagsToAdd.toArray(new CVSTag[tagsToAdd.size()]));
 			cvsDefinedTagsTree.refresh();
 		}
 	}
@@ -595,7 +595,7 @@ public class TagConfigurationDialog extends TrayDialog {
 			}
 		}
 		if (!tagsToRemove.isEmpty()) {
-		    wrappedTagSource.remove(tagsToRemove.toArray(new CVSTag[tagsToRemove.size()]));
+			wrappedTagSource.remove(tagsToRemove.toArray(new CVSTag[tagsToRemove.size()]));
 			cvsDefinedTagsTree.refresh();
 			cvsDefinedTagsTree.getTree().setFocus();
 		}
@@ -662,16 +662,16 @@ public class TagConfigurationDialog extends TrayDialog {
 			CVSUIPlugin.openError(getShell(), null, null, e);
 		}
 	}
-	 
-    protected ICVSFolder getSingleFolder(TagSource tagSource, boolean bestEffort) {
-        if (!bestEffort && tagSource instanceof MultiFolderTagSource)
-            return null;
-        if (tagSource instanceof SingleFolderTagSource)
-            return ((SingleFolderTagSource)tagSource).getFolder();
-        return null;
-    }
+	
+	protected ICVSFolder getSingleFolder(TagSource tagSource, boolean bestEffort) {
+		if (!bestEffort && tagSource instanceof MultiFolderTagSource)
+			return null;
+		if (tagSource instanceof SingleFolderTagSource)
+			return ((SingleFolderTagSource)tagSource).getFolder();
+		return null;
+	}
 
-    @Override
+	@Override
 	protected Point getInitialSize() {
 		int width, height;
 		if(allowSettingAutoRefreshFiles) {
@@ -700,7 +700,7 @@ public class TagConfigurationDialog extends TrayDialog {
 	private GridData getStandardButtonData(Button button) {
 		GridData data = new GridData();
 		data.heightHint = convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
-        //don't crop labels with large font
+		//don't crop labels with large font
 		//int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		//data.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
 		return data;

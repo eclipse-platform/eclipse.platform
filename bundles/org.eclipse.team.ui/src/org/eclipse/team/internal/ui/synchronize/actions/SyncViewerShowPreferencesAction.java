@@ -20,7 +20,7 @@ import org.eclipse.team.internal.ui.dialogs.PreferencePageContainerDialog;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 
 public class SyncViewerShowPreferencesAction extends Action {
-    private final ISynchronizePageConfiguration configuration;
+	private final ISynchronizePageConfiguration configuration;
 
 	public SyncViewerShowPreferencesAction(ISynchronizePageConfiguration configuration) {
 		this.configuration = configuration;
@@ -29,8 +29,8 @@ public class SyncViewerShowPreferencesAction extends Action {
 
 	@Override
 	public void run() {
-	    PreferencePage[] pages = configuration.getParticipant().getPreferencePages();
-        PreferencePageContainerDialog dialog = new PreferencePageContainerDialog(configuration.getSite().getShell(), pages);
+		PreferencePage[] pages = configuration.getParticipant().getPreferencePages();
+		PreferencePageContainerDialog dialog = new PreferencePageContainerDialog(configuration.getSite().getShell(), pages);
 		dialog.setBlockOnOpen(true);
 		dialog.open();
 	}

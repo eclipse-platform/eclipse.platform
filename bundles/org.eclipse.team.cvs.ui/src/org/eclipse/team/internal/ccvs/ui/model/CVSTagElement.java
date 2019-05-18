@@ -169,12 +169,12 @@ public class CVSTagElement extends CVSModelElement implements IDeferredWorkbench
 			try {
 				collector.add(fetchChildren(o, monitor), monitor);
 			} catch (TeamException e) {
-			    handle(collector, e);
+				handle(collector, e);
 			}
 		}
 	}
 
-    public ISchedulingRule getRule(Object element) {
+	public ISchedulingRule getRule(Object element) {
 		return new RepositoryLocationSchedulingRule(root); 
 	}
 	

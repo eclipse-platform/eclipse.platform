@@ -60,7 +60,7 @@ public class RepositoriesViewContentHandler extends DefaultHandler {
 	private List autoRefreshFiles;
 	private boolean ignoreElements;
 
-    private long lastAccessTime;
+	private long lastAccessTime;
 
 	public RepositoriesViewContentHandler(RepositoryManager manager) {
 		this.manager = manager;
@@ -97,7 +97,7 @@ public class RepositoriesViewContentHandler extends DefaultHandler {
 				currentRepositoryRoot.addTags(currentRemotePath, 
 					(CVSTag[]) tags.toArray(new CVSTag[tags.size()]));
 				if (lastAccessTime > 0)
-				    currentRepositoryRoot.setLastAccessedTime(currentRemotePath, lastAccessTime);
+					currentRepositoryRoot.setLastAccessedTime(currentRemotePath, lastAccessTime);
 				currentRepositoryRoot.setAutoRefreshFiles(currentRemotePath,
 					(String[]) autoRefreshFiles.toArray(new String[autoRefreshFiles.size()]));
 			}
@@ -171,12 +171,12 @@ public class RepositoriesViewContentHandler extends DefaultHandler {
 			long cachedTime = 0;
 			String cachedTimeString = atts.getValue(LAST_ACCESS_TIME_ATTRIBUTE);
 			if (cachedTimeString != null) {
-			    try {
-			        Long time = Long.valueOf(cachedTimeString);
-			        cachedTime = time.longValue();
-                } catch (NumberFormatException e) {
-                    // Ignore
-                }
+				try {
+					Long time = Long.valueOf(cachedTimeString);
+					cachedTime = time.longValue();
+				} catch (NumberFormatException e) {
+					// Ignore
+				}
 			}
 			startModule(path, cachedTime);
 		} else if (elementName.equals(TAG_TAG)) {

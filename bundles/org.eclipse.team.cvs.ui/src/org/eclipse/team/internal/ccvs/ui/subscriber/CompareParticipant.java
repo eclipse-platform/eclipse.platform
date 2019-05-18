@@ -120,7 +120,7 @@ public class CompareParticipant extends CVSParticipant implements IPreferenceCha
 	}
 
 	public CompareParticipant(CVSCompareSubscriber subscriber) {
-	    setSubscriber(subscriber);
+		setSubscriber(subscriber);
 	}
 
 	@Override
@@ -152,9 +152,9 @@ public class CompareParticipant extends CVSParticipant implements IPreferenceCha
 			ISynchronizeParticipantReference reference = refs[i];
 			if (reference.getId().equals(CVSCompareSubscriber.ID)) {
 				try {
-				    CompareParticipant p = (CompareParticipant) reference.getParticipant();
+					CompareParticipant p = (CompareParticipant) reference.getParticipant();
 					if (p.matches(resources, tag)) {
-					    return p;
+						return p;
 					}
 				} catch (TeamException e) {
 					continue;
@@ -188,11 +188,11 @@ public class CompareParticipant extends CVSParticipant implements IPreferenceCha
 
 	/**
 	 * Return the subscriber as an instance of CVSCompareSubscriber.
-     * @return the subscriber as an instance of CVSCompareSubscriber
-     */
-    public CVSCompareSubscriber getCVSCompareSubscriber() {
-        return (CVSCompareSubscriber)getSubscriber();
-    }
+	 * @return the subscriber as an instance of CVSCompareSubscriber
+	 */
+	public CVSCompareSubscriber getCVSCompareSubscriber() {
+		return (CVSCompareSubscriber)getSubscriber();
+	}
 
 	@Override
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
@@ -235,18 +235,18 @@ public class CompareParticipant extends CVSParticipant implements IPreferenceCha
 		return CVSUIMessages.Participant_comparing; 
 	}
 	
-    @Override
+	@Override
 	protected CVSChangeSetCapability createChangeSetCapability() {
-        return new CVSChangeSetCapability() {
-            @Override
+		return new CVSChangeSetCapability() {
+			@Override
 			public ActiveChangeSetManager getActiveChangeSetManager() {
-                return CVSUIPlugin.getPlugin().getChangeSetManager();
-            }
-            @Override
+				return CVSUIPlugin.getPlugin().getChangeSetManager();
+			}
+			@Override
 			public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
-                return super.enableActiveChangeSetsFor(configuration) ||
-                	configuration.getComparisonType() == ISynchronizePageConfiguration.TWO_WAY;
-            }
-        };
-    }
+				return super.enableActiveChangeSetsFor(configuration) ||
+					configuration.getComparisonType() == ISynchronizePageConfiguration.TWO_WAY;
+			}
+		};
+	}
 }

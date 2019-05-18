@@ -24,13 +24,13 @@ import org.eclipse.core.runtime.CoreException;
  */
 public interface IResourceMappingResourceFilter {
 
-    /**
-     * Return whether the resource should be included in this filter.
-     * @param resource the resource
-     * @param mapping the mapping chiehc containes the resource
-     * @param traversal the traversal from which the resource was obtained
-     * @return whether the resource passes the filter
-     * @throws CoreException
-     */
-    boolean select(IResource resource, ResourceMapping mapping, ResourceTraversal traversal) throws CoreException;
+	/**
+	 * Return whether the resource should be included in this filter.
+	 * @param resource the resource
+	 * @param mapping the mapping chiehc containes the resource
+	 * @param traversal the traversal from which the resource was obtained
+	 * @return whether the resource passes the filter
+	 * @throws CoreException
+	 */
+	boolean select(IResource resource, ResourceMapping mapping, ResourceTraversal traversal) throws CoreException;
 }
