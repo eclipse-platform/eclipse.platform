@@ -106,7 +106,7 @@ public class StaticProxyConfig {
 	}
 
 	private IProxyData[] getUniversalProxiesData() {
-		if (universalProxies.size() == 0) {
+		if (universalProxies.isEmpty()) {
 			return new IProxyData[0];
 		}
 		IProxyData[] data = new IProxyData[KNOWN_TYPES.length];

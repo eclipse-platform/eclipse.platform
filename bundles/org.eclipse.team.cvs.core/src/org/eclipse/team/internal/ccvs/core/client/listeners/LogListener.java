@@ -227,7 +227,7 @@ public class LogListener extends CommandOutputListener {
 				CVSTag tag = new CVSTag(CVSTag.HEAD_BRANCH, CVSTag.HEAD_REVISION, CVSTag.HEAD);
 				thisRevisionBranches.add(tag);
 			} else {
-				if ( thisRevisionBranches.size() == 0) {
+				if ( thisRevisionBranches.isEmpty()) {
 					CVSTag cvsTag = new CVSTag(CVSTag.UNKNOWN_BRANCH, branchRevision, CVSTag.BRANCH);
 					thisRevisionBranches.add(cvsTag);
 				}			

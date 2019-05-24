@@ -357,7 +357,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 					// commit files that changed from binary to text
 					// NOTE: The files are committed as text with conversions even if the
 					//       resource sync info still says "binary".
-					if (filesToCommitAsText.size() != 0) {
+					if (!filesToCommitAsText.isEmpty()) {
 						Session session1 = new Session(workspaceRoot.getRemoteLocation(), workspaceRoot.getLocalRoot(), true /* output to console */);
 						session1.open(Policy.subMonitorFor(monitor1, 1), true /* open for modification */);
 						try {

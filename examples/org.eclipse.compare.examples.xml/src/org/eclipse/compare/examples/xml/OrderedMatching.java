@@ -69,9 +69,9 @@ public class OrderedMatching extends AbstractMatching {
 		// perform unordered matching on attributes
 		// this updates fDT and fDT_Matchings
 		if (xc_attrsAL.size() > 0 || yc_attrsAL.size() > 0) {
-			if (xc_attrsAL.size() == 0)
+			if (xc_attrsAL.isEmpty())
 				distance += yc_attrsAL.size();
-			else if (yc_attrsAL.size() == 0)
+			else if (yc_attrsAL.isEmpty())
 				distance += xc_attrsAL.size();
 			else {
 				//unorderedMatch(x, y, xc_attrs, yc_attrs);

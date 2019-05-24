@@ -1673,7 +1673,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 			//Assume that some revisions have been found
 			boolean revisionsFound = true;
 			
-			if (finalCategories.size() == 0){
+			if (finalCategories.isEmpty()){
 				//no revisions found for the current mode, so add a message category
 				finalCategories.add(getErrorMessage());
 				revisionsFound = false;

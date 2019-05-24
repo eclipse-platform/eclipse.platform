@@ -885,7 +885,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 					finalCategories.add(tempCategories[i]);
 			}
 
-			if (finalCategories.size() == 0){
+			if (finalCategories.isEmpty()){
 				//no revisions found for the current mode, so add a message category
 				finalCategories.add(getErrorMessage());
 			}

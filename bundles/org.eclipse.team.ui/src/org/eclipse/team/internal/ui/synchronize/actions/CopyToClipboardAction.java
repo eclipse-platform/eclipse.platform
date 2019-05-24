@@ -215,7 +215,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		// contribution/ on them.
 		List selectedResources = getSelectedResources();
 		List selectedNonResources = getSelectedNonResources();
-		if (selectedResources.size() > 0 && selectedNonResources.size() == 0) {
+		if (selectedResources.size() > 0 && selectedNonResources.isEmpty()) {
 			boolean projSelected = selectionIsOfType(IResource.PROJECT);
 			boolean fileFoldersSelected = selectionIsOfType(IResource.FILE | IResource.FOLDER);
 			if (!projSelected && !fileFoldersSelected)
@@ -237,7 +237,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 					return false;
 			}
 			return true;
-		} else if (selectedNonResources.size() > 0 && selectedResources.size() == 0) {
+		} else if (selectedNonResources.size() > 0 && selectedResources.isEmpty()) {
 			return true;
 		}
 		return false;

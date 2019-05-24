@@ -517,7 +517,7 @@ public class Utilities {
 	public static boolean validateResources(IResource[] resources, Shell shell, String title) {
 		// get all readonly files
 		List<IResource> readOnlyFiles= getReadonlyFiles(resources);
-		if (readOnlyFiles.size() == 0)
+		if (readOnlyFiles.isEmpty())
 			return true;
 
 		// get timestamps of readonly files before validateEdit

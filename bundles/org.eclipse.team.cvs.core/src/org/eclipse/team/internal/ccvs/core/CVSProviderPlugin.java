@@ -713,7 +713,7 @@ public class CVSProviderPlugin extends Plugin {
 
 	public void setProxyAuth(String proxyUser, String proxyPass) {
 		Map authInfo = getAuthInfo();
-		if (authInfo.size()==0) {
+		if (authInfo.isEmpty()) {
 			authInfo = new java.util.HashMap(4);
 		}
 		if (proxyUser != null) {

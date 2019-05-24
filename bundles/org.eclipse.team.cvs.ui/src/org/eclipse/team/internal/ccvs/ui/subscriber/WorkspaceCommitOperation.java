@@ -197,7 +197,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 			makeOutgoing(makeOutgoing.toArray(new SyncInfo[makeInSync.size()]), Policy.subMonitorFor(monitor, 25));			
 		}
 
-		if (additions.size() != 0) {
+		if (!additions.isEmpty()) {
 			add(project, additions.toArray(new IResource[0]), Policy.subMonitorFor(monitor, 50));
 		}
 		commit(project, commits.toArray(new IResource[commits.size()]), Policy.subMonitorFor(monitor, 100));		

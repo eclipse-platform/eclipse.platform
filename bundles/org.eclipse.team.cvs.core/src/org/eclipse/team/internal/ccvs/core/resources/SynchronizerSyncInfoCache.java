@@ -311,7 +311,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 					cachedResources.add(resource);
 			}
 			
-			if (cachedResources.size() != 0){
+			if (!cachedResources.isEmpty()){
 				IResource[] resources = folder.members(true);
 				IResource[] cachedResourcesArray = cachedResources.toArray(new IResource[cachedResources.size()]);
 				IResource[]finalResources = new IResource[resources.length + cachedResourcesArray.length];

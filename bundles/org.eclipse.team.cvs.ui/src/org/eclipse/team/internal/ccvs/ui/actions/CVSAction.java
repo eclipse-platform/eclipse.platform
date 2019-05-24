@@ -325,7 +325,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 			}
 		}
 		// Handle the case where there are no problem status
-		if (problems.size() == 0) {
+		if (problems.isEmpty()) {
 			if (exception == null) return;
 			handle(exception, getErrorTitle(), null);
 			return;

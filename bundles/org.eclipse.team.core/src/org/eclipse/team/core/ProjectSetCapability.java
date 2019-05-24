@@ -248,7 +248,7 @@ public abstract class ProjectSetCapability {
 				existingProjects.add(eachProj);
 			}
 		}
-		if (existingProjects.size() == 0)
+		if (existingProjects.isEmpty())
 			return projects;
 
 		// Confirm the overwrite

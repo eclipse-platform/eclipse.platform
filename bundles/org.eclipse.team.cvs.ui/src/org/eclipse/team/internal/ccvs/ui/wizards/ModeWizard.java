@@ -165,7 +165,7 @@ public class ModeWizard extends ResizableWizard {
 		try {
 			final List<IStatus> messages = new ArrayList<>();
 			final List changes= fPage.getChanges();
-			if (changes.size() == 0)
+			if (changes.isEmpty())
 				return true;
 			
 			final String comment = fPage.getComment(getShell());
