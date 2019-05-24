@@ -466,8 +466,7 @@ public class ResourceMapperTests extends EclipseTest {
 
 		if (e instanceof InterruptedIOException
 				&& e.getMessage() != null
-				&& e.getMessage().indexOf(
-						"Timeout while writing to output stream") >= 0) {
+				&& e.getMessage().contains("Timeout while writing to output stream")) {
 			return true;
 		}
 

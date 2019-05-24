@@ -637,11 +637,11 @@ public class EditionSelectionDialog extends ResizableDialog {
 	}
 
 	private boolean hasDoubleQuotes(String string) {
-		return string.indexOf("''") != -1; //$NON-NLS-1$
+		return string.contains("''"); //$NON-NLS-1$
 	}
 
 	private boolean hasVariable(String string) {
-		return string.indexOf("{0}") != -1; //$NON-NLS-1$
+		return string.contains("{0}"); //$NON-NLS-1$
 	}
 
 	/**

@@ -83,7 +83,7 @@ class ImportStructureVisitor implements ICVSResourceVisitor {
 		
 		for (int i = 0; i < wrappers.length; i++) {
 			
-			if (wrappers[i].indexOf(KEYWORD_OPTION) == -1) {
+			if (!wrappers[i].contains(KEYWORD_OPTION)) {
 				continue;
 			}
 			

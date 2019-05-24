@@ -71,7 +71,7 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 		if (comment != null) {
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
-				if (!(comment.indexOf(((String) iter.next()).toLowerCase()) == -1))
+				if (!!comment.contains(((String) iter.next()).toLowerCase()))
 					return true;
 			}
 		}
@@ -96,7 +96,7 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 			String tag = branches[i].getName().toLowerCase();
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
-				if (!(tag.indexOf(((String) iter.next()).toLowerCase()) == -1))
+				if (!!tag.contains(((String) iter.next()).toLowerCase()))
 					return true;
 			}
 		}
@@ -110,7 +110,7 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 			String tag = tags[i].getName().toLowerCase();
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
-				if (!(tag.indexOf(((String) iter.next()).toLowerCase()) == -1))
+				if (!!tag.contains(((String) iter.next()).toLowerCase()))
 					return true;
 			}
 		}
@@ -123,7 +123,7 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 		if (rev != null) {
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
-				if (!(rev.indexOf(((String) iter.next()).toLowerCase()) == -1))
+				if (!!rev.contains(((String) iter.next()).toLowerCase()))
 					return true;
 			}
 		}

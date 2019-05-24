@@ -234,7 +234,7 @@ public class PServerConnection implements IServerConnection {
 			message += separator + line.substring(ERROR_MESSAGE.length() + 1);
 		else
 			message += separator + line;
-		if (message.indexOf(NO_SUCH_USER) != -1)
+		if (message.contains(NO_SUCH_USER))
 			throw new CVSAuthenticationException(NLS.bind(CVSMessages.PServerConnection_invalidUser, (new Object[] {message})), CVSAuthenticationException.RETRY,cvsroot);
 		throw new IOException(NLS.bind(CVSMessages.PServerConnection_connectionRefused, (new Object[] { message })));
 	}

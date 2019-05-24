@@ -88,8 +88,8 @@ public class UpdatedHandler extends ResponseHandler {
 		ICVSFile mFile = getTargetFile(mParent, fileName, entryBytes);
 		
 		boolean binary = ResourceSyncInfo.isBinary(entryBytes);
-		boolean readOnly = permissionsLine.indexOf(READ_ONLY_FLAG) == -1;
-		boolean executable = permissionsLine.indexOf(EXECUTE_FLAG) != -1;
+		boolean readOnly = !permissionsLine.contains(READ_ONLY_FLAG);
+		boolean executable = permissionsLine.contains(EXECUTE_FLAG);
 		
 		try {
 			// The file may have been set as read-only by a previous checkout/update

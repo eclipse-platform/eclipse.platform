@@ -325,7 +325,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 	public ICVSResource getChild(String path) throws CVSException {
 		if (path.equals(Session.CURRENT_LOCAL_FOLDER) || path.length() == 0)
 			return this;
-		if (path.indexOf(Session.SERVER_SEPARATOR) != -1) {
+		if (path.contains(Session.SERVER_SEPARATOR)) {
 			IPath p = new Path(null, path);
 			try {
 				return ((RemoteFolder)getChild(p.segment(0))).getChild(p.removeFirstSegments(1).toString());

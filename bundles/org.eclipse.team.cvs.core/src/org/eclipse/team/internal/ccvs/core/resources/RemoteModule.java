@@ -357,7 +357,7 @@ public class RemoteModule extends RemoteFolder {
 		// path and re-invoke this method so we only need to check for one segment here
 		// and use the inherited method in the other cases
 		if (referencedModules != null) {
-			if (path.indexOf(Session.SERVER_SEPARATOR) == -1) {
+			if (!path.contains(Session.SERVER_SEPARATOR)) {
 				for (int i=0;i<referencedModules.length;i++) {
 					if (referencedModules[i].getName().equals(path))
 						return referencedModules[i];

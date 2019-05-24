@@ -623,7 +623,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 			}
 		}
 		// look for // and inform the user that we support use of C:\cvs\root instead of /c//cvs/root
-		if (pathString.indexOf("//") != -1) { //$NON-NLS-1$
+		if (pathString.contains("//")) { //$NON-NLS-1$
 			if (pathString.indexOf("//") == 2) { //$NON-NLS-1$
 				// The user is probably trying to specify a CVSNT path
 				return new Status(IStatus.ERROR, CVSUIPlugin.ID, INVALID_FIELD_CONTENTS,

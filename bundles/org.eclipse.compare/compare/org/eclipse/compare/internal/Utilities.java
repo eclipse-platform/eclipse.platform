@@ -294,7 +294,7 @@ public class Utilities {
 			String dPath;
 			String ePath;
 
-			if (relPath.indexOf("/") >= 0) { //$NON-NLS-1$
+			if (relPath.contains("/")) { //$NON-NLS-1$
 				String path= relPath.substring(1);
 				dPath= 'd' + path;
 				ePath= 'e' + path;

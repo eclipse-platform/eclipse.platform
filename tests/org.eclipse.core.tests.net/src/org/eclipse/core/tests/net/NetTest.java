@@ -454,7 +454,7 @@ public class NetTest {
 		String sysPropNonProxyHosts = System.getProperty("http.nonProxyHosts");
 		String assertMessage = "http.nonProxyHost should contain '" + testHost + "', but its current value is '"
 				+ sysPropNonProxyHosts + "'";
-		assertTrue(assertMessage, sysPropNonProxyHosts.indexOf(testHost) > -1);
+		assertTrue(assertMessage, sysPropNonProxyHosts.contains(testHost));
 
 		this.getProxyManager().setNonProxiedHosts(oldHosts);
 	}

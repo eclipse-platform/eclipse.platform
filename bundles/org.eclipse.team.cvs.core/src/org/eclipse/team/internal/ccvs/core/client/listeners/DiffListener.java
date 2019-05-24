@@ -84,7 +84,7 @@ public class DiffListener extends CommandOutputListener {
 		}
 		
 		//Check to see if this is a no such directory message
-		if (line.indexOf(ERR_NOSUCHDIRECTORY) != -1){
+		if (line.contains(ERR_NOSUCHDIRECTORY)){
 			return OK;
 		}
 		return super.errorLine(line, location, commandRoot, monitor);

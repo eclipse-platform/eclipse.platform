@@ -412,19 +412,19 @@ public class ResourceSyncInfo {
 		// having outgoing changes.
 		// The purpose for having the two different timestamp options for merges is to 
 		// dissallow commit of files that have conflicts until they have been manually edited.			
-		if(date.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED) != -1) {
+		if(date.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED)) {
 			syncType = TYPE_MERGED;
 			date = null;
-		} else if(date.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT) != -1) {
+		} else if(date.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT)) {
 			syncType = TYPE_MERGED_WITH_CONFLICTS;
 			date = null;
-		} else if(date.indexOf(TIMESTAMP_MERGED_WITH_CONFLICT)!=-1) {
+		} else if(date.contains(TIMESTAMP_MERGED_WITH_CONFLICT)) {
 			date = date.substring(date.indexOf("+") + 1); //$NON-NLS-1$
 			syncType = TYPE_MERGED_WITH_CONFLICTS;
-		} else if(date.indexOf(TIMESTAMP_MERGED)!=-1) {
+		} else if(date.contains(TIMESTAMP_MERGED)) {
 			syncType = TYPE_MERGED;
 			date = null;
-		} else if (date.indexOf(TIMESTAMP_DELETED_AND_RESTORED) != -1) {
+		} else if (date.contains(TIMESTAMP_DELETED_AND_RESTORED)) {
 			syncType = TYPE_DELETED_AND_RESTORED;
 			date = date.substring(date.indexOf("+") + 1); //$NON-NLS-1$
 		}
@@ -777,13 +777,13 @@ public class ResourceSyncInfo {
 	 */
 	private static Date getTimestamp(String syncTimestamp) {
 		String dateString= syncTimestamp;
-		if(syncTimestamp.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED) != -1) {
+		if(syncTimestamp.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED)) {
 			dateString = null;
-		} else if(syncTimestamp.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT) != -1) {
+		} else if(syncTimestamp.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT)) {
 			dateString = null;
-		} else if(syncTimestamp.indexOf(TIMESTAMP_MERGED_WITH_CONFLICT)!=-1) {
+		} else if(syncTimestamp.contains(TIMESTAMP_MERGED_WITH_CONFLICT)) {
 			dateString = syncTimestamp.substring(syncTimestamp.indexOf("+") + 1); //$NON-NLS-1$
-		} else if(syncTimestamp.indexOf(TIMESTAMP_MERGED)!=-1) {
+		} else if(syncTimestamp.contains(TIMESTAMP_MERGED)) {
 			dateString = null;
 		}
 		
@@ -806,15 +806,15 @@ public class ResourceSyncInfo {
 	 * @return int
 	 */
 	private static int getSyncType(String date) {
-		if(date.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED) != -1) {
+		if(date.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED)) {
 			return TYPE_MERGED;
-		} else if(date.indexOf(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT) != -1) {
+		} else if(date.contains(ResourceSyncInfo.TIMESTAMP_SERVER_MERGED_WITH_CONFLICT)) {
 			return TYPE_MERGED_WITH_CONFLICTS;
-		} else if(date.indexOf(TIMESTAMP_MERGED_WITH_CONFLICT)!=-1) {
+		} else if(date.contains(TIMESTAMP_MERGED_WITH_CONFLICT)) {
 			return TYPE_MERGED_WITH_CONFLICTS;
-		} else if(date.indexOf(TIMESTAMP_MERGED)!=-1) {
+		} else if(date.contains(TIMESTAMP_MERGED)) {
 			return TYPE_MERGED;
-		} else if (date.indexOf(TIMESTAMP_DELETED_AND_RESTORED) != -1) {
+		} else if (date.contains(TIMESTAMP_DELETED_AND_RESTORED)) {
 			return TYPE_DELETED_AND_RESTORED;
 		}
 		return TYPE_REGULAR;

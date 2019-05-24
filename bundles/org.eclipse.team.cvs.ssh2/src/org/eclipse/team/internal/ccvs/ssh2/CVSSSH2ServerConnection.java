@@ -195,10 +195,10 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 						int end = message.indexOf(": ", start); //$NON-NLS-1$
 						if (end != -1) {
 							String exception = message.substring(start, end).trim();
-							if (exception.indexOf("NoRouteToHostException") != -1) { //$NON-NLS-1$
+							if (exception.contains("NoRouteToHostException")) { //$NON-NLS-1$
 								message = NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_1, new String[] { location.getHost() }); 
 								throw new NoRouteToHostException(message);
-							} else if (exception.indexOf("java.net.UnknownHostException") != -1) { //$NON-NLS-1$
+							} else if (exception.contains("java.net.UnknownHostException")) { //$NON-NLS-1$
 								throw new UnknownHostException(location.getHost());
 							} else {
 								message = message.substring(end + 1).trim();

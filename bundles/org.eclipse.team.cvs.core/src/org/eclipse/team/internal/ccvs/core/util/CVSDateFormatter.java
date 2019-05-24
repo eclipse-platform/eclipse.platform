@@ -84,10 +84,10 @@ public class CVSDateFormatter {
 			return TimeZone.getTimeZone("GMT");//$NON-NLS-1$ 
 		String tz = null;
 		StringBuilder resultTz = new StringBuilder("GMT");//$NON-NLS-1$
-		if (dateFromServer.indexOf("-") != -1) {//$NON-NLS-1$
+		if (dateFromServer.contains("-")) {//$NON-NLS-1$
 			resultTz.append("-");//$NON-NLS-1$
 			tz = dateFromServer.substring(dateFromServer.indexOf("-"));//$NON-NLS-1$
-		} else if (dateFromServer.indexOf("+") != -1) {//$NON-NLS-1$
+		} else if (dateFromServer.contains("+")) {//$NON-NLS-1$
 			resultTz.append('+');
 			tz = dateFromServer.substring(dateFromServer.indexOf("+"));//$NON-NLS-1$
 		}

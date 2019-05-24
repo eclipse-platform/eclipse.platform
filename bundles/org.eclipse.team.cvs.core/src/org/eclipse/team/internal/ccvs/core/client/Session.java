@@ -236,7 +236,7 @@ public class Session {
 	 */
 	public boolean isValidRequest(String request) {
 		return (validRequests == null) ||
-			(validRequests.indexOf(" " + request + " ") != -1); //$NON-NLS-1$ //$NON-NLS-2$
+			(validRequests.contains(" " + request + " ")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	public boolean isCVSNT() {

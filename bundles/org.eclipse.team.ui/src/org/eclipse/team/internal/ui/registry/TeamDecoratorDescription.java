@@ -58,10 +58,10 @@ public class TeamDecoratorDescription {
 				if (flags == null) {
 					decoratedDirection = IThreeWayDiff.INCOMING | IThreeWayDiff.OUTGOING;
 				} else {
-					if (flags.indexOf(INCOMING_FLAG) != -1) {
+					if (flags.contains(INCOMING_FLAG)) {
 						decoratedDirection |= IThreeWayDiff.INCOMING;
 					}
-					if (flags.indexOf(OUTGOING_FLAG) != -1) {
+					if (flags.contains(OUTGOING_FLAG)) {
 						decoratedDirection |= IThreeWayDiff.OUTGOING;
 					}
 					if (decoratedDirection == 0) {

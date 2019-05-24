@@ -82,7 +82,7 @@ public class ProxyBypass {
 	 * @return
 	 */
 	private static boolean isLocal(String host) {
-		return host.indexOf(".") == -1; //$NON-NLS-1$
+		return !host.contains("."); //$NON-NLS-1$
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class ProxyBypass {
 	 * @return
 	 */
 	private static boolean isBypassLocalAddresses(String proxyBypass) {
-		return proxyBypass.indexOf(BYPASS_LOCAL_ADDESSES_TOKEN) != -1;
+		return proxyBypass.contains(BYPASS_LOCAL_ADDESSES_TOKEN);
 	}
 
 	public String[] getNonProxiedHosts() {
