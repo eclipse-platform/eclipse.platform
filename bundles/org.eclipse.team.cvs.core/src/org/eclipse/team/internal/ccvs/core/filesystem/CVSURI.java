@@ -78,7 +78,7 @@ public class CVSURI {
 	}
 
 	private static URI convert(URI uri) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String ssp = uri.getSchemeSpecificPart();
 		int i = ssp.lastIndexOf(':');
 		sb.append(ssp.substring(0, i)).append('#');

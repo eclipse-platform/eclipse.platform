@@ -623,7 +623,7 @@ public class RemoteResourceTest extends EclipseTest {
 	}
 
 	private String asString(InputStream stream) throws IOException {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		int b = stream.read();
 		while (b != -1) {
 			buffer.append((char)b);

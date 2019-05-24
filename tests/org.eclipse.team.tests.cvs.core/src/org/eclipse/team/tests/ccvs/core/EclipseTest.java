@@ -250,7 +250,7 @@ public class EclipseTest extends ResourceTest {
 	public void appendText(IResource resource, String text, boolean prepend) throws CoreException, IOException, CVSException {
 		IFile file = (IFile)resource;
 		String contents = getFileContents(file);
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (prepend) {
 			buffer.append(text);
 		}
@@ -270,7 +270,7 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	public static String getFileContents(IFile file) throws IOException, CoreException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		Reader reader = new InputStreamReader(new BufferedInputStream(file.getContents()));
 		try {
 			int c;
@@ -907,7 +907,7 @@ public class EclipseTest extends ResourceTest {
 		return (CVSTeamProvider)RepositoryProvider.getProvider(resource.getProject());
 	}
 	protected static InputStream getRandomContents(int sizeAtLeast) {
-		StringBuffer randomStuff = new StringBuffer(sizeAtLeast + 100);
+		StringBuilder randomStuff = new StringBuilder(sizeAtLeast + 100);
 		while (randomStuff.length() < sizeAtLeast) {
 			randomStuff.append(getRandomSnippet() + eol);
 		}
@@ -1461,7 +1461,7 @@ public class EclipseTest extends ResourceTest {
 			fail("#ensureDoesNotExistInWorkspace(IResource[])", e);
 		}
 		if (!failures.isEmpty()) {
-			StringBuffer text = new StringBuffer();
+			StringBuilder text = new StringBuilder();
 			text.append("Could not delete all projects: ");
 			for (Iterator<IProject> iter = failures.keySet().iterator(); iter.hasNext();) {
 				IProject project = iter.next();

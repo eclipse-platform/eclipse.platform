@@ -205,7 +205,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 	 * @return Returns the content of the stripped URI as a string.
 	 */
 	private static String removeTag(URI scmUri) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(scmUri.getScheme()).append(':');
 		String ssp = scmUri.getSchemeSpecificPart();
 		int j = ssp.indexOf(';');

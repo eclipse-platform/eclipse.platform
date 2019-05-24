@@ -447,7 +447,7 @@ public class ResourceSyncInfo {
 		} else {
 			// It turns out that CVS supports slashes (/) in the tag even though this breaks the spec
 			// See http://dev.eclipse.org/bugs/show_bug.cgi?id=26717
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			for (int i = 5; i < strings.length; i++) {
 				buffer.append(strings[i]);
 				if (i < strings.length - 1) {
@@ -465,7 +465,7 @@ public class ResourceSyncInfo {
 	}
 	
 	private String getEntryLine(boolean includeTimeStamp, String timestampOverride) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		
 		if(isDirectory) {
 			result.append(DIRECTORY_PREFIX);

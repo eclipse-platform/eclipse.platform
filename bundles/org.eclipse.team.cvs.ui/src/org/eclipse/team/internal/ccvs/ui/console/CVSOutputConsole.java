@@ -334,7 +334,7 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 	}
 	
 	private void outputStatusMessage(IStatus status, int nesting) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < nesting; i++) {
 			buffer.append(NESTING);
 		}

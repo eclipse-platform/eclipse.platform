@@ -221,7 +221,7 @@ public abstract class JUnitTestCase extends TestCase {
 	 * Generates random content meant to be written in a file.
 	 */
 	protected static String createRandomContent() {
-		StringBuffer content = new StringBuffer();
+		StringBuilder content = new StringBuilder();
 		int contentSize;
 		
 		content.append("Random file generated for test" + PLATFORM_NEWLINE);

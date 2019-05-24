@@ -103,7 +103,7 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 	}
 	
 	private String asReference(CVSRepositoryLocation location, ICVSFolder folder, IProject project) throws TeamException {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append("1.0,"); //$NON-NLS-1$
 
 		String repoLocation = location.getLocation();

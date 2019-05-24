@@ -120,7 +120,7 @@ public class WorkspaceTest extends ResourceTest {
 	 * @return InputStream The input stream containing random text.
 	 */
 	protected static InputStream getRandomContents(int sizeAtLeast) {
-		StringBuffer randomStuff = new StringBuffer(sizeAtLeast + 100);
+		StringBuilder randomStuff = new StringBuilder(sizeAtLeast + 100);
 		while (randomStuff.length() < sizeAtLeast) {
 			randomStuff.append(getRandomSnippet());
 		}

@@ -432,7 +432,7 @@ public abstract class Command extends Request {
 	 */
 	private String constructCommandInvocationString(IPath commandRootPath, GlobalOption[] globalOptions,
 		LocalOption[] localOptions, String[] arguments) {
-		StringBuffer commandLine = new StringBuffer("cvs"); //$NON-NLS-1$
+		StringBuilder commandLine = new StringBuilder("cvs"); //$NON-NLS-1$
 		for (int i = 0; i < globalOptions.length; ++i) {
 			String option = globalOptions[i].toString();
 			if (option.length() == 0) continue;

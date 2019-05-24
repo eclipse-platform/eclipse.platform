@@ -100,7 +100,7 @@ public class NotifyInfo {
 	 * @return String
 	 */
 	public String getNotifyLine() {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(getName());
 		buffer.append(ResourceSyncInfo.SEPARATOR);
 		buffer.append(notificationType);
@@ -122,7 +122,7 @@ public class NotifyInfo {
 	 * @return String
 	 */
 	public String getServerLine(ICVSFolder parent) throws CVSException {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(notificationType);
 		buffer.append(TAB_SEPARATOR);
 		buffer.append(getServerTimestamp());

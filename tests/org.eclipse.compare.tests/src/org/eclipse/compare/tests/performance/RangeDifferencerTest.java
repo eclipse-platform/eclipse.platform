@@ -37,7 +37,7 @@ public class RangeDifferencerTest extends PerformanceTestCase {
 	 * Parameter code determines where additional lines are added.
 	 */
 	private IDocument createDocument(int code) {
-		StringBuffer sb= new StringBuffer();
+		StringBuilder sb= new StringBuilder();
 		for (int i= 0; i < 5000; i++) {
 			sb.append("line "); //$NON-NLS-1$
 			sb.append(Integer.toString(i));

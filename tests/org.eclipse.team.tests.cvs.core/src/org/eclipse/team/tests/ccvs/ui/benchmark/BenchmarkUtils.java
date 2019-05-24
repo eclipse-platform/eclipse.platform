@@ -259,7 +259,7 @@ public class BenchmarkUtils {
 	 * @return the new name
 	 */
 	public static String makeUniqueName(SequenceGenerator gen, String prefix, String extension) {
-		StringBuffer name = new StringBuffer(prefix);
+		StringBuilder name = new StringBuilder(prefix);
 		name.append('-');
 		if (gen == null) {
 			name.append(SequenceGenerator.nextGloballyUniqueLong());

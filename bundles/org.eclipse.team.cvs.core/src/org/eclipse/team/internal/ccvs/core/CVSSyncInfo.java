@@ -328,7 +328,7 @@ public class CVSSyncInfo extends SyncInfo {
 	public String toString() {
 		IResourceVariant base = getBase();
 		IResourceVariant remote = getRemote();
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append("Local: "); //$NON-NLS-1$
 		result.append(getLocal().toString());
 		result.append(" Base: "); //$NON-NLS-1$

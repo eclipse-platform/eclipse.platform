@@ -469,7 +469,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	 */
 	private static String getPluggedInConnectionMethodNames() {
 		IConnectionMethod[] methods = getPluggedInConnectionMethods();
-		StringBuffer methodNames = new StringBuffer();
+		StringBuilder methodNames = new StringBuilder();
 		for(int i=0; i<methods.length; i++) {
 			String name = methods[i].getName();
 			if (i>0)

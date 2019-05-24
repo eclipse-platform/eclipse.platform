@@ -40,7 +40,7 @@ public class BaserevInfo {
 	 * @return String
 	 */
 	public String getEntryLine() {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		result.append(BASEREV_PREFIX);
 		result.append(name);
 		result.append(ResourceSyncInfo.SEPARATOR);

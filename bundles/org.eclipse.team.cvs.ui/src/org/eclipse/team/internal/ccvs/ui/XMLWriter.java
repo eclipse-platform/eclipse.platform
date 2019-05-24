@@ -55,7 +55,7 @@ private void printTag(String name, HashMap parameters, boolean tab, boolean newL
 	printTag(name, parameters, tab, newLine, false);
 }
 private void printTag(String name, HashMap parameters, boolean tab, boolean newLine, boolean end) {
-	StringBuffer sb = new StringBuffer();
+	StringBuilder sb = new StringBuilder();
 	sb.append("<"); //$NON-NLS-1$
 	sb.append(name);
 	if (parameters != null)

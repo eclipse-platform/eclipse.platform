@@ -50,7 +50,7 @@ public class CVSDateFormatter {
 	static synchronized public Date entryLineToDate(String text) throws ParseException {
 		try {
 			if (text.charAt(ENTRYLINE_TENS_DAY_OFFSET) == ' ') {
-				StringBuffer buf = new StringBuffer(text);
+				StringBuilder buf = new StringBuilder(text);
 				buf.setCharAt(ENTRYLINE_TENS_DAY_OFFSET, '0');
 				text = buf.toString();
 			}
@@ -64,7 +64,7 @@ public class CVSDateFormatter {
 		if (date == null) return ""; //$NON-NLS-1$
 		String passOne = entryLineFormat.format(date);
 		if (passOne.charAt(ENTRYLINE_TENS_DAY_OFFSET) != '0') return passOne;
-		StringBuffer passTwo = new StringBuffer(passOne);
+		StringBuilder passTwo = new StringBuilder(passOne);
 		passTwo.setCharAt(ENTRYLINE_TENS_DAY_OFFSET, ' ');
 		return passTwo.toString();
 	}
@@ -83,7 +83,7 @@ public class CVSDateFormatter {
 		if (dateFromServer.lastIndexOf("0000") != -1)  //$NON-NLS-1$
 			return TimeZone.getTimeZone("GMT");//$NON-NLS-1$ 
 		String tz = null;
-		StringBuffer resultTz = new StringBuffer("GMT");//$NON-NLS-1$
+		StringBuilder resultTz = new StringBuilder("GMT");//$NON-NLS-1$
 		if (dateFromServer.indexOf("-") != -1) {//$NON-NLS-1$
 			resultTz.append("-");//$NON-NLS-1$
 			tz = dateFromServer.substring(dateFromServer.indexOf("-"));//$NON-NLS-1$

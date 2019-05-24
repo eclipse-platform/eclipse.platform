@@ -242,7 +242,7 @@ public class FileDiffResultTest extends WorkspaceTest {
 	 */
 	private String createPatchAddingFile(IProject project, String filename,
 			boolean sameContents) throws IOException, CoreException {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(WorkspacePatcherUI.getWorkspacePatchHeader() + "\n");
 		sb.append(WorkspacePatcherUI.getWorkspacePatchProjectHeader(project)
 				+ "\n");

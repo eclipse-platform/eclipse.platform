@@ -589,7 +589,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 
 	public void appendText(IFile file, String text, boolean prepend) throws CoreException, IOException {
 		String contents = getFileContents(file);
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		if (prepend) {
 			buffer.append(text);
 		}
@@ -601,7 +601,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	}
 
 	public static String getFileContents(IFile file) throws IOException, CoreException {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		Reader reader = new InputStreamReader(new BufferedInputStream(file.getContents()));
 		try {
 			int c;

@@ -45,7 +45,7 @@ public class TableViewerAction extends Action {
 			if (!selection.isEmpty()) {
 				Iterator selectionIter = selection.iterator();
 				
-				StringBuffer buf = new StringBuffer();
+				StringBuilder buf = new StringBuilder();
 				ITag firstTag = (ITag) selectionIter.next();
 				buf.append(firstTag.getName());
 				while (selectionIter.hasNext()) {

@@ -79,7 +79,7 @@ public class HistoryTableProvider {
 					return revision;
 				case COL_BRANCHES:
 					CVSTag[] branches = entry.getBranches();
-					StringBuffer result = new StringBuffer();
+					StringBuilder result = new StringBuilder();
 					for (int i = 0; i < branches.length; i++) {
 						result.append(branches[i].getName());
 						if (i < branches.length - 1) {
@@ -87,9 +87,10 @@ public class HistoryTableProvider {
 						}
 					}
 					return result.toString();
+
 				case COL_TAGS:
 					CVSTag[] tags = entry.getTags();
-					result = new StringBuffer();
+					result = new StringBuilder();
 					for (int i = 0; i < tags.length; i++) {
 						result.append(tags[i].getName());
 						if (i < tags.length - 1) {

@@ -176,7 +176,7 @@ public class PServerConnection implements IServerConnection {
 		String user = cvsroot.getUsername();
 		OutputStream out = getOutputStream();
 		
-		StringBuffer request = new StringBuffer();
+		StringBuilder request = new StringBuilder();
 		request.append(BEGIN);
 		request.append(NEWLINE);
 		request.append(cvsroot.getRootDirectory());

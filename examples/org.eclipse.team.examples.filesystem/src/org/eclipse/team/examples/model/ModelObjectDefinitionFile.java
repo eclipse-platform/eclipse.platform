@@ -107,7 +107,7 @@ public class ModelObjectDefinitionFile extends ModelFile {
 	}
 
 	private void writeLines(String[] strings) throws CoreException {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (String string : strings) {
 			buffer.append(string);
 			buffer.append("\n");

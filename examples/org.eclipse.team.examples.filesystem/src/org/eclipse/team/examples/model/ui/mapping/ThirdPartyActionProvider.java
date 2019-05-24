@@ -78,7 +78,7 @@ public class ThirdPartyActionProvider extends CommonActionProvider {
 		exampleAction = new Action("3rd Party Action") {
 			@Override
 			public void run() {
-				StringBuffer buffer = new StringBuffer();
+				StringBuilder buffer = new StringBuilder();
 				boolean addComma = false;
 				IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 				ResourceMapping[] mappings = getResourceMappings(selection.toArray());

@@ -32,7 +32,7 @@ public class CopyRepositoryNameAction extends CVSAction {
 		if (locations.length == 0)
 			return;
 
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < locations.length; i++) {
 			buffer.append(locations[i].getLocation(true));
 			if (i < locations.length - 1) buffer.append("\n"); //$NON-NLS-1$

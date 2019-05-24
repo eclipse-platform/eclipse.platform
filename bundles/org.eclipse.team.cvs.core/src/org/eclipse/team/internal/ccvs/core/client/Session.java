@@ -972,7 +972,7 @@ public class Session {
 	 * @return a space-delimited list of all valid response strings
 	 */
 	private String makeResponseList() {
-		StringBuffer result = new StringBuffer("ok error M E");  //$NON-NLS-1$
+		StringBuilder result = new StringBuilder("ok error M E");  //$NON-NLS-1$
 		Iterator elements = getReponseHandlers().keySet().iterator();
 		while (elements.hasNext()) {
 			result.append(' ');

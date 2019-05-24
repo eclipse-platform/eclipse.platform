@@ -216,7 +216,7 @@ public class CreatePatchTest extends EclipseTest {
 		BufferedReader reader = new BufferedReader(
 				new InputStreamReader(stream));
 		String line = null;
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		try {
 			while ((line = reader.readLine()) != null) {
 				boolean ignore = false;

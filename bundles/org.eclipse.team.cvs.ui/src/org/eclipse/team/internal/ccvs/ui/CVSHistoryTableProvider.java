@@ -228,7 +228,7 @@ public class CVSHistoryTableProvider {
 					return revision;
 				case COL_BRANCHES:
 					ITag[] branches = entry.getBranches();
-					StringBuffer resultBranches = new StringBuffer();
+					StringBuilder resultBranches = new StringBuilder();
 					for (int i = 0; i < branches.length; i++) {
 						resultBranches.append(branches[i].getName());
 						if (i < branches.length - 1) {
@@ -236,9 +236,10 @@ public class CVSHistoryTableProvider {
 						}
 					}
 					return resultBranches.toString();
+
 				case COL_TAGS:
 					ITag[] tags = entry.getTags();
-					StringBuffer result = new StringBuffer();
+					StringBuilder result = new StringBuilder();
 					for (int i = 0; i < tags.length; i++) {
 						result.append(tags[i].getName());
 						if (i < tags.length - 1) {
@@ -246,6 +247,7 @@ public class CVSHistoryTableProvider {
 						}
 					}
 					return result.toString();
+
 				case COL_DATE :
 					long date = entry.getTimestamp();
 					Date dateFromLong = new Date(date);

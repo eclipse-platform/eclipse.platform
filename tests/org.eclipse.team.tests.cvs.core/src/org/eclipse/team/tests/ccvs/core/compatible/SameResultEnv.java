@@ -469,7 +469,7 @@ public final class SameResultEnv extends JUnitTestCase {
 		String hostAndPath = root.substring(indexOfHostSeparator);
 		root = root.substring(0, indexOfHostSeparator);
 		StringTokenizer tok = new StringTokenizer(root, ":", true);
-		StringBuffer filteredRoot = new StringBuffer();
+		StringBuilder filteredRoot = new StringBuilder();
 		int colonCounter = 3;
 		while (tok.hasMoreTokens()) {
 			String token = tok.nextToken();

@@ -71,7 +71,7 @@ public class CVSParticipantLabelDecorator extends LabelProvider implements IProp
 				decoration.setRevision(getRevisionNumber(elementOrPath));
 				decoration.compute();
 				// Update label
-				StringBuffer output = new StringBuffer(25);
+				StringBuilder output = new StringBuilder(25);
 				if (decoration.getPrefix() != null) {
 					output.append(decoration.getPrefix());
 				}
@@ -131,7 +131,7 @@ public class CVSParticipantLabelDecorator extends LabelProvider implements IProp
 				local = getBase(elementOrPath);
 			}
 			String localRevision = getRevisionString(local);
-			StringBuffer revisionString = new StringBuffer();
+			StringBuilder revisionString = new StringBuilder();
 			IResourceVariant remote = getRemote(elementOrPath);
 			String remoteRevision = getRevisionString(remote);
 			if(localRevision != null) {

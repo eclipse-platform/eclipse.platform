@@ -419,7 +419,7 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 	 * Get a proposed comment by looking at the active change sets
 	 */
 	private String getProposedComment(IResource[] resourcesToCommit) {
-		StringBuffer comment = new StringBuffer();
+		StringBuilder comment = new StringBuilder();
 		ChangeSet[] sets = CVSUIPlugin.getPlugin().getChangeSetManager().getSets();
 		Arrays.sort(sets, new ChangeSetComparator());
 		int numMatchedSets = 0;

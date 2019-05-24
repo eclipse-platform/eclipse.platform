@@ -36,7 +36,7 @@ public class LogEntry extends PlatformObject implements ILogEntry {
 	 * Flatten the text in the multi-line comment
 	 */
 	public static String flattenText(String string) {
-		StringBuffer buffer = new StringBuffer(string.length() + 20);
+		StringBuilder buffer = new StringBuilder(string.length() + 20);
 		boolean skipAdjacentLineSeparator = true;
 		for (int i = 0; i < string.length(); i++) {
 			char c = string.charAt(i);

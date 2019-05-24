@@ -148,7 +148,7 @@ public class ResourceContentTests extends TeamTest {
 	}
 
 	private String toString(Set set) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		boolean addComma = false;
 		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
 			Object resource = iterator.next();

@@ -148,7 +148,7 @@ class LogEntryCache implements ILogEntryListener {
 	String getPredecessorRevision(String revision) {
 		int digits[] = Util.convertToDigits(revision);
 		digits[digits.length - 1]--;
-		StringBuffer buffer = new StringBuffer(revision.length());
+		StringBuilder buffer = new StringBuilder(revision.length());
 		for (int i = 0; i < digits.length; i++) {
 			buffer.append(Integer.toString(digits[i]));
 			if (i < digits.length - 1) {
@@ -177,7 +177,7 @@ class LogEntryCache implements ILogEntryListener {
 		if (length % 2 == 1) {
 			length--;
 		}
-		StringBuffer buffer = new StringBuffer(revision.length());
+		StringBuilder buffer = new StringBuilder(revision.length());
 		for (int i = 0; i < length; i++) {
 			buffer.append(Integer.toString(digits[i]));
 			if (i < length - 1) {

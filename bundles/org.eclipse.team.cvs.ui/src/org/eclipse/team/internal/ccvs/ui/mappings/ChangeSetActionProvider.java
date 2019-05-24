@@ -93,7 +93,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			return x;
 
 		int len = x.length();
-		StringBuffer sb = new StringBuffer(2 * len + 1);
+		StringBuilder sb = new StringBuilder(2 * len + 1);
 		int doneIndex = 0;
 		while (ampersandIndex != -1) {
 			sb.append(x.substring(doneIndex, ampersandIndex));
