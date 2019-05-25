@@ -435,8 +435,7 @@ public final class Team {
 		File f = pluginStateLocation.toFile();
 		if (!f.exists()) return false;
 		try {
-			DataInputStream dis = new DataInputStream(new FileInputStream(f));
-			try {
+			try (DataInputStream dis = new DataInputStream(new FileInputStream(f))) {
 				int ignoreCount = 0;
 				try {
 					ignoreCount = dis.readInt();
@@ -450,8 +449,6 @@ public final class Team {
 					boolean enabled = dis.readBoolean();
 					globalIgnore.put(pattern, Boolean.valueOf(enabled));
 				}
-			} finally {
-				dis.close();
 			}
 			f.delete();
 		} catch (FileNotFoundException e) {

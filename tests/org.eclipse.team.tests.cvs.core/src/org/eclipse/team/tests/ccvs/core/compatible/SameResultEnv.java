@@ -369,22 +369,18 @@ public final class SameResultEnv extends JUnitTestCase {
 		assertEquals(mFile1.isReadOnly(), mFile2.isReadOnly());
 					
 		// Compare the content of the files
-		try {
-			InputStream in1 = mFile1.getContents();
-			InputStream in2 = mFile2.getContents();
-			byte[] buffer1 = new byte[(int)mFile1.getSize()];
-			byte[] buffer2 = new byte[(int)mFile2.getSize()];
+		byte[] buffer1 = new byte[(int) mFile1.getSize()];
+		byte[] buffer2 = new byte[(int) mFile2.getSize()];
+		try (InputStream in1 = mFile1.getContents(); InputStream in2 = mFile2.getContents()) {
 			// This is not the right way to do it, because the Stream
 			// may read less than the whole file
 			in1.read(buffer1);
 			in2.read(buffer2);
-			in1.close();
-			in2.close();
-			assertEquals("Length differs for file " + mFile1.getName(), buffer1.length, buffer2.length);
-			assertEquals("Contents differs for file " + mFile1.getName(), new String(buffer1),new String(buffer2));
 		} catch (IOException e) {
 			throw new CVSException("Error in TestCase");
 		}
+		assertEquals("Length differs for file " + mFile1.getName(), buffer1.length, buffer2.length);
+		assertEquals("Contents differs for file " + mFile1.getName(), new String(buffer1),new String(buffer2));
 
 		// We can not do the check, because the reference client does
 		// check out dirty files ?!?

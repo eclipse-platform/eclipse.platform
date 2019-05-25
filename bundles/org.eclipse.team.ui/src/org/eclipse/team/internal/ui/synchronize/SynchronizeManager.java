@@ -641,11 +641,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 			ref.save(participantData);
 		}
 		try {
-			Writer writer = new BufferedWriter(new FileWriter(getStateFile()));
-			try {
+			try (Writer writer = new BufferedWriter(new FileWriter(getStateFile()))) {
 				xmlMemento.save(writer);
-			} finally {
-				writer.close();
 			}
 		} catch (IOException e) {
 			TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 1, TeamUIMessages.SynchronizeManager_10, e));

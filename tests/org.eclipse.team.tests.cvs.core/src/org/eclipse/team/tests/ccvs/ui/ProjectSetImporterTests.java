@@ -94,10 +94,8 @@ public class ProjectSetImporterTests extends EclipseTest {
 		IProject project2 = createProject("testImportProject",
 				new String[] { "file.txt", "folder1/", "folder1/a.txt" });
 
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(PSF_FILE)),
-					true);
+		try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(PSF_FILE)),
+				true)) {
 
 			out.println(psf_header_0);
 			out.println(psf_header_1);
@@ -123,9 +121,6 @@ public class ProjectSetImporterTests extends EclipseTest {
 			fail("1.", e.getCause());
 		} catch (IOException e) {
 			fail("2.", e);
-		} finally {
-			if (out != null)
-				out.close();
 		}
 	}
 
@@ -136,11 +131,9 @@ public class ProjectSetImporterTests extends EclipseTest {
 		IProject project2 = createProject("testBug234149_aFewProviders",
 				new String[0]);
 
-		// create psf with two providers
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(PSF_FILE)),
-					true);
+		try ( // create psf with two providers
+				PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(PSF_FILE)),
+						true)) {
 
 			// add first provider to psf
 			out.println(psf_header_0);
@@ -172,9 +165,6 @@ public class ProjectSetImporterTests extends EclipseTest {
 			fail("1.", e.getCause());
 		} catch (IOException e) {
 			fail("2.", e);
-		} finally {
-			if (out != null)
-				out.close();
 		}
 	}
 

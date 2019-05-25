@@ -66,18 +66,13 @@ public class TemplateHandler extends ResponseHandler {
 					IProgressMonitor monitor)
 					throws CVSException {
 
-					try {
-						// Transfer the contents
-						OutputStream out = new ByteArrayOutputStream();
-						try {
-							byte[] buffer = new byte[1024];
-							int read;
-							while ((read = stream.read(buffer)) >= 0) {
-								Policy.checkCanceled(monitor);
-								out.write(buffer, 0, read);
-							}
-						} finally {
-							out.close();
+					try ( // Transfer the contents
+							OutputStream out = new ByteArrayOutputStream()) {
+						byte[] buffer = new byte[1024];
+						int read;
+						while ((read = stream.read(buffer)) >= 0) {
+							Policy.checkCanceled(monitor);
+							out.write(buffer, 0, read);
 						}
 					} catch (IOException e) {
 						throw CVSException.wrapException(e); 

@@ -144,8 +144,7 @@ public abstract class JUnitTestCase extends TestCase {
 	protected static void writeToFile(IFile file, String[] contents)
 			throws IOException, CoreException {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		PrintStream os = new PrintStream(bos);
-		try {
+		try (PrintStream os = new PrintStream(bos)) {
 			for (String content : contents) {
 				os.println(content);
 			}
@@ -156,8 +155,6 @@ public abstract class JUnitTestCase extends TestCase {
 				mkdirs(file.getParent());
 				file.create(bis, false /*force*/, null);
 			}
-		} finally {
-			os.close();
 		}
 	}
 	

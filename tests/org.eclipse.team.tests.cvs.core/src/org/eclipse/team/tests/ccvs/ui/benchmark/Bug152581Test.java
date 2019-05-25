@@ -93,8 +93,7 @@ public class Bug152581Test extends BenchmarkTest {
 
 	private IProject createProject(String filename) throws IOException, CoreException {
 		File file = BenchmarkTestSetup.getTestFile(filename + ".txt");
-		InputStream content = getContents(file, "Could not read seed file " + filename + ".txt");
-		try {
+		try (InputStream content = getContents(file, "Could not read seed file " + filename + ".txt")) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(content));
 			IProject project = getUniqueTestProject(filename);
 			populateProject(reader, project);
@@ -102,8 +101,6 @@ public class Bug152581Test extends BenchmarkTest {
 			// Perform an update to prune any empty directories
 			updateProject(project, null, false);
 			return project;
-		} finally {
-			content.close();
 		}
 	}
 	

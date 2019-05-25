@@ -491,13 +491,10 @@ public class SyncFileWriter {
 		try {
 			InputStream in = getInputStream(file);
 			if (in != null) {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(in), 512);
-				try {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(in), 512)) {
 					String line = reader.readLine();
 					if (line == null) return ""; //$NON-NLS-1$
 					return line;
-				} finally {
-					reader.close();
 				}
 			}
 			return null;

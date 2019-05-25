@@ -272,21 +272,15 @@ public class FileSystemOperations {
 			// so nothing needs to be done
 			return;
 		}
-		try {
-			//Copy from the local file to the remote file:
-			InputStream source = null;
-			try {
-				// Get the remote file content.
-				source = remote.getContents();
-				// Set the local file content to be the same as the remote file.
-				if (localFile.exists())
-					localFile.setContents(source, false, false, progress);
-				else
-					localFile.create(source, false, progress);
-			} finally {
-				if (source != null)
-					source.close();
-			}
+		// Copy from the local file to the remote file:
+		// Get the remote file content.
+		try (InputStream source = remote.getContents()) {
+			// Set the local file content to be the same as the remote file.
+			if (localFile.exists())
+				localFile.setContents(source, false, false, progress);
+			else
+				localFile.create(source, false, progress);
+
 			// Mark as read-only to force a checkout before editing
 			localFile.setReadOnly(true);
 			synchronizer.setBaseBytes(localFile, remote.asBytes());

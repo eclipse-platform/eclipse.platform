@@ -569,12 +569,10 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					} catch (CoreException e) { // in case .project file or folder has been deleted
 						IPath projectPath = stateLocation.append(TMP_PROJECT_NAME);
 						projectPath.toFile().mkdirs();
-						FileOutputStream output = new FileOutputStream(
-								projectPath.append(".project").toOSString()); //$NON-NLS-1$
-						try {
+						try (FileOutputStream output = new FileOutputStream(
+								projectPath.append(".project").toOSString()) //$NON-NLS-1$
+						) {
 							output.write(TMP_PROJECT_FILE.getBytes());
-						} finally {
-							output.close();
 						}
 						project.open(null);
 					}

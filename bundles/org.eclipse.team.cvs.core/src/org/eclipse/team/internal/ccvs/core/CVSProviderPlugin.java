@@ -507,9 +507,9 @@ public class CVSProviderPlugin extends Plugin {
 			File file = pluginStateLocation.toFile();
 			if (file.exists()) {
 				try {
-					DataInputStream dis = new DataInputStream(new FileInputStream(file));
-					readOldState(dis);
-					dis.close();
+					try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
+						readOldState(dis);
+					}
 					// The file is no longer needed as the state is
 					// persisted in the user settings
 					file.delete();

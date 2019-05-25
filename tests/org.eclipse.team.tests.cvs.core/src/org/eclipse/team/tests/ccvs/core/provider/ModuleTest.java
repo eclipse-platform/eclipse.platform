@@ -82,11 +82,8 @@ public class ModuleTest extends EclipseTest {
 		waitMsec(1000);
 
 		IProject cvsroot = checkoutProject(null, "CVSROOT", null);
-		InputStream in = url.openStream();
-		try {
+		try (InputStream in = url.openStream()) {
 			cvsroot.getFile("modules").setContents(in, false, false, DEFAULT_MONITOR);
-		} finally {
-			in.close();
 		}
 		commitProject(cvsroot);
 		

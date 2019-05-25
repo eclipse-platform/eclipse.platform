@@ -156,15 +156,12 @@ public class ResourceDeltaTest extends EclipseTest {
 		// wait to ensure the timestamp differs from the one Core has
 		waitMsec(1500);
 		InputStream in = new BufferedInputStream(getRandomContents());
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(ioFile));
-		try {
+		try (OutputStream out = new BufferedOutputStream(new FileOutputStream(ioFile))) {
 			int next = in.read();
 			while (next != -1) {
 				out.write(next);
 				next = in.read();
 			}
-		} finally {
-			out.close();
 		}
 	}
 	

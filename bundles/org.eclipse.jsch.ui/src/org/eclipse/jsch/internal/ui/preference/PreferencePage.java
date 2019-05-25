@@ -1440,9 +1440,9 @@ protected Control createContents(Composite parent){
 				}
 
 				try{
-					ByteArrayInputStream bis=new ByteArrayInputStream(pkey);
-					c.put(bis, "authorized_keys", null, ChannelSftp.APPEND); //$NON-NLS-1$
-					bis.close();
+					try (ByteArrayInputStream bis = new ByteArrayInputStream(pkey)) {
+						c.put(bis, "authorized_keys", null, ChannelSftp.APPEND); //$NON-NLS-1$
+					}
 					checkPermission(c, "authorized_keys"); //$NON-NLS-1$
 					checkPermission(c, "."); // .ssh //$NON-NLS-1$
 					c.cd(".."); //$NON-NLS-1$

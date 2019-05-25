@@ -156,18 +156,19 @@ public class BenchmarkUtils {
 			fileSize = (int) Math.abs(gen.nextGaussian() * variance + meanSize);
 		} while (fileSize > meanSize + variance * 4); // avoid huge files
 		
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		String fileName;
-		if (gen.nextInt(100) < probBinary) {
-			fileName = makeUniqueName(gen, "file", "class"); // binary
-			writeRandomBytes(gen, os, fileSize);
-		} else {
-			fileName = makeUniqueName(gen, "file", "txt"); // text
-			writeRandomText(gen, os, fileSize);
+		IFile file;
+		try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+			String fileName;
+			if (gen.nextInt(100) < probBinary) {
+				fileName = makeUniqueName(gen, "file", "class"); // binary
+				writeRandomBytes(gen, os, fileSize);
+			} else {
+				fileName = makeUniqueName(gen, "file", "txt"); // text
+				writeRandomText(gen, os, fileSize);
+			}	
+			file = parent.getFile(new Path(fileName));
+			file.create(new ByteArrayInputStream(os.toByteArray()), true, new NullProgressMonitor());
 		}
-		IFile file = parent.getFile(new Path(fileName));
-		file.create(new ByteArrayInputStream(os.toByteArray()), true, new NullProgressMonitor());
-		os.close();
 		return file;
 	}
 
@@ -221,10 +222,7 @@ public class BenchmarkUtils {
 	 */
 	public static void modifyFile(SequenceGenerator gen, IFile file)
 		throws IOException, CoreException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		try {
-			InputStream is = file.getContents(true);
-			try {
+		try (ByteArrayOutputStream os = new ByteArrayOutputStream(); InputStream is = file.getContents(true)) {
 				byte[] buffer = new byte[8192];
 				int rsize;
 				boolean changed = false;
@@ -240,11 +238,6 @@ public class BenchmarkUtils {
 				}
 				if (! changed) os.write('!'); // make sure we actually did change the file
 				file.setContents(new ByteArrayInputStream(os.toByteArray()), false /*force*/, true /*keepHistory*/, null);
-			} finally {
-				is.close();
-			}
-		} finally {
-			os.close();
 		}
 	}
 	

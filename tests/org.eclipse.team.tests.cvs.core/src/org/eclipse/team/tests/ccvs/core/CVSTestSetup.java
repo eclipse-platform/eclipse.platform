@@ -13,16 +13,29 @@
  *******************************************************************************/
 package org.eclipse.team.tests.ccvs.core;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 
-import junit.extensions.TestSetup;
-import junit.framework.Test;
-
-import org.eclipse.core.runtime.*;
-import org.eclipse.team.internal.ccvs.core.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.team.internal.ccvs.core.CVSException;
+import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
+import org.eclipse.team.internal.ccvs.core.CVSStatus;
+import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.connection.CVSCommunicationException;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
 
 public class CVSTestSetup extends TestSetup {
 	public static final String REPOSITORY_LOCATION;
@@ -62,18 +75,14 @@ public class CVSTestSetup extends TestSetup {
 		if (propertiesFile == null) return;
 		File file = new File(propertiesFile);
 		if (file.isDirectory()) file = new File(file, "repository.properties");
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			try {
-				for (String line; (line = reader.readLine()) != null; ) {
-					if (line.startsWith("#")) continue;					
-					int sep = line.indexOf("=");
-					String property = line.substring(0, sep).trim();
-					String value = line.substring(sep + 1).trim();
-					System.setProperty("eclipse.cvs." + property, value);
-				}
-			} finally {
-				reader.close();
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			for (String line; (line = reader.readLine()) != null;) {
+				if (line.startsWith("#"))
+					continue;
+				int sep = line.indexOf("=");
+				String property = line.substring(0, sep).trim();
+				String value = line.substring(sep + 1).trim();
+				System.setProperty("eclipse.cvs." + property, value);
 			}
 		} catch (Exception e) {
 			System.err.println("Could not read repository properties file: " + file.getAbsolutePath());

@@ -405,13 +405,8 @@ public class RepositoryManager {
 		IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation().append(REPOSITORIES_VIEW_FILE);
 		File file = pluginStateLocation.toFile();
 		if (file.exists()) {
-			try {
-				BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-				try {
-					readState(is);
-				} finally {
-					is.close();
-				}
+			try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+				readState(is);
 			} catch (IOException e) {
 				CVSUIPlugin.log(IStatus.ERROR, CVSUIMessages.RepositoryManager_ioException, e); 
 			} catch (TeamException e) {
@@ -422,11 +417,8 @@ public class RepositoryManager {
 			file = oldPluginStateLocation.toFile();
 			if (file.exists()) {
 				try {
-					DataInputStream dis = new DataInputStream(new FileInputStream(file));
-					try {
+					try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
 						readOldState(dis);
-					} finally {
-						dis.close();
 					}
 					saveState();
 					file.delete();
@@ -442,13 +434,8 @@ public class RepositoryManager {
 		IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation().append(COMMENT_HIST_FILE);
 		File file = pluginStateLocation.toFile();
 		if (!file.exists()) return;
-		try {
-			BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-			try {
-				readCommentHistory(is);
-			} finally {
-				is.close();
-			}
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+			readCommentHistory(is);
 		} catch (IOException e) {
 			CVSUIPlugin.log(IStatus.ERROR, CVSUIMessages.RepositoryManager_ioException, e); 
 		} catch (TeamException e) {
@@ -459,13 +446,8 @@ public class RepositoryManager {
 		IPath pluginStateLocation = CVSUIPlugin.getPlugin().getStateLocation().append(COMMENT_TEMPLATES_FILE);
 		File file = pluginStateLocation.toFile();
 		if (!file.exists()) return;
-		try {
-			BufferedInputStream is = new BufferedInputStream(new FileInputStream(file));
-			try {
-				readCommentTemplates(is);
-			} finally {
-				is.close();
-			}
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+			readCommentTemplates(is);
 		} catch (IOException e) {
 			CVSUIPlugin.log(IStatus.ERROR, CVSUIMessages.RepositoryManager_ioException, e);
 		} catch (TeamException e) {
@@ -478,11 +460,8 @@ public class RepositoryManager {
 		File tempFile = pluginStateLocation.append(REPOSITORIES_VIEW_FILE + ".tmp").toFile(); //$NON-NLS-1$
 		File stateFile = pluginStateLocation.append(REPOSITORIES_VIEW_FILE).toFile();
 		try {
-			XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)));
-			try {
+			try (XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)))) {
 				writeState(writer);
-			} finally {
-				writer.close();
 			}
 			if (stateFile.exists()) {
 				stateFile.delete();
@@ -600,11 +579,8 @@ public class RepositoryManager {
 		File tempFile = pluginStateLocation.append(COMMENT_HIST_FILE + ".tmp").toFile(); //$NON-NLS-1$
 		File histFile = pluginStateLocation.append(COMMENT_HIST_FILE).toFile();
 		try {
-			XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)));
-			try {
+			try (XMLWriter writer = new XMLWriter(new BufferedOutputStream(new FileOutputStream(tempFile)))) {
 				writeCommentHistory(writer);
-			} finally {
-				writer.close();
 			}
 			if (histFile.exists()) {
 				histFile.delete();
@@ -944,12 +920,9 @@ public class RepositoryManager {
 		File histFile = pluginStateLocation.append(COMMENT_TEMPLATES_FILE)
 				.toFile();
 		try {
-			XMLWriter writer = new XMLWriter(new BufferedOutputStream(
-					new FileOutputStream(tempFile)));
-			try {
+			try (XMLWriter writer = new XMLWriter(new BufferedOutputStream(
+					new FileOutputStream(tempFile)))) {
 				writeCommentTemplates(writer);
-			} finally {
-				writer.close();
 			}
 			if (histFile.exists()) {
 				histFile.delete();
