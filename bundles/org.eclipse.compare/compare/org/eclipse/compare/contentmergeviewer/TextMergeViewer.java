@@ -19,6 +19,7 @@
  *     Stephan Herrmann (stephan@cs.tu-berlin.de) - Bug 291695: Element compare fails to use source range
  *     Robin Stocker (robin@nibor.org) - Bug 398594: [Edit] Enable center arrow buttons when editable and for both sides
  *     Robin Stocker (robin@nibor.org) - Bug 399960: [Edit] Make merge arrow buttons easier to hit
+ *     John Hendrikx (hjohn@xs4all.nl) - Bug 541401 - [regression] Vertical scrollbar thumb size is wrong in compare view
  *******************************************************************************/
 package org.eclipse.compare.contentmergeviewer;
 
@@ -2163,6 +2164,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fBirdsEyeCanvas= new BufferedCanvas(composite, SWT.NONE) {
 			@Override
 			public void doPaint(GC gc) {
+				updateVScrollBar(); // Update scroll bar here as initially viewport height is wrong
 				paintBirdsEyeView(this, gc);
 			}
 		};
