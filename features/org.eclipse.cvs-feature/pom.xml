@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.cvs.feature</groupId>
   <artifactId>org.eclipse.cvs</artifactId>
-  <version>1.4.900-SNAPSHOT</version>
+  <version>1.4.1000-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 
   <build>
