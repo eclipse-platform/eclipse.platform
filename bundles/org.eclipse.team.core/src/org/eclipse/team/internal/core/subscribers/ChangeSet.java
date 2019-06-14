@@ -69,8 +69,7 @@ public abstract class ChangeSet {
 	 * @param resources the resources to be removed
 	 */
 	public void remove(IResource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			remove(resource);
 		}
 	}

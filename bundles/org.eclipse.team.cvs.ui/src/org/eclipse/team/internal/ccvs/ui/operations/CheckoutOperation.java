@@ -43,8 +43,7 @@ public abstract class CheckoutOperation extends RemoteOperation {
 	 */
 	protected void checkout(ICVSRemoteFolder[] folders, IProgressMonitor monitor) throws CVSException {
 		monitor.beginTask(null, folders.length * 100);
-		for (int i = 0; i < folders.length; i++) {
-			ICVSRemoteFolder folder = folders[i];
+		for (ICVSRemoteFolder folder : folders) {
 			IStatus result = checkout(folder, Policy.subMonitorFor(monitor, 100));
 			collectStatus(result);
 			Policy.checkCanceled(monitor);

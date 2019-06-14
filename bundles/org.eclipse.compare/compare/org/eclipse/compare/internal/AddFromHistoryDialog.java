@@ -197,8 +197,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		String prefix= root.getFullPath().toString();
 
 		if (fMemberTable != null && !fMemberTable.isDisposed()) {
-			for (int i = 0; i < files.length; i++) {
-				IFile file = files[i];
+			for (IFile file : files) {
 				String path = file.getFullPath().toString();
 
 				// ignore a recently deleted file at the same path as the

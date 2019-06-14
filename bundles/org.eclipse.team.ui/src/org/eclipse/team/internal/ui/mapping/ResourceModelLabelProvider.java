@@ -161,17 +161,16 @@ public class ResourceModelLabelProvider extends
 
 		// Accumulate all distinct resources that have had problem marker
 		// changes
-		for (int idx = 0; idx < markerTypes.length; idx++) {
-			IMarkerDelta[] markerDeltas = event.findMarkerDeltas(markerTypes[idx], true);
-				for (int i = 0; i < markerDeltas.length; i++) {
-					IMarkerDelta delta = markerDeltas[i];
-					IResource resource = delta.getResource();
-					while (resource != null && resource.getType() != IResource.ROOT && !handledResources.contains(resource)) {
-						handledResources.add(resource);
-						resource = resource.getParent();
-					}
+		for (String markerType : markerTypes) {
+			IMarkerDelta[] markerDeltas = event.findMarkerDeltas(markerType, true);
+			for (IMarkerDelta delta : markerDeltas) {
+				IResource resource = delta.getResource();
+				while (resource != null && resource.getType() != IResource.ROOT && !handledResources.contains(resource)) {
+					handledResources.add(resource);
+					resource = resource.getParent();
 				}
 			}
+		}
 
 		if (!handledResources.isEmpty()) {
 			final IResource[] resources = handledResources.toArray(new IResource[handledResources.size()]);

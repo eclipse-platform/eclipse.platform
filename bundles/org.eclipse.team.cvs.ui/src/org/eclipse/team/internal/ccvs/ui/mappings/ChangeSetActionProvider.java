@@ -124,8 +124,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			} else {
 				ChangeSet[] sets = getActiveChangeSetManager().getSets();
 				IResource[] resources = getResources(diffArray);
-				for (int i = 0; i < sets.length; i++) {
-					ActiveChangeSet activeSet = (ActiveChangeSet) sets[i];
+				for (ChangeSet s : sets) {
+					ActiveChangeSet activeSet = (ActiveChangeSet) s;
 					activeSet.remove(resources);
 				}
 			}
@@ -188,8 +188,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			IDiff[] diffArray = getLocalChanges(getStructuredSelection());
 			ChangeSet[] sets = getActiveChangeSetManager().getSets();
 			IResource[] resources = getResources(diffArray);
-			for (int i = 0; i < sets.length; i++) {
-				ActiveChangeSet activeSet = (ActiveChangeSet) sets[i];
+			for (ChangeSet set : sets) {
+				ActiveChangeSet activeSet = (ActiveChangeSet) set;
 				activeSet.remove(resources);
 			}
 		}
@@ -336,8 +336,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 
 	private IResource[] getResources(IDiff[] diffArray) {
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < diffArray.length; i++) {
-			IDiff diff = diffArray[i];
+		for (IDiff diff : diffArray) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource != null) {
 				result.add(resource);
@@ -392,8 +391,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		createChangeSet.selectionChanged(selection);
 		manager.add(createChangeSet);
 		manager.add(new Separator());
-		for (int i = 0; i < sets.length; i++) {
-			ActiveChangeSet set = (ActiveChangeSet) sets[i];
+		for (ChangeSet s : sets) {
+			ActiveChangeSet set = (ActiveChangeSet) s;
 			AddToChangeSetAction action = new AddToChangeSetAction(
 					getSynchronizePageConfiguration(), set, selection);
 			manager.add(action);
@@ -458,11 +457,9 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			ITreeSelection ts = (ITreeSelection) selection;
 			TreePath[] paths = ts.getPaths();
 			List<IDiff> result = new ArrayList<>();
-			for (int i = 0; i < paths.length; i++) {
-				TreePath path = paths[i];
+			for (TreePath path : paths) {
 				IDiff[] diffs = getLocalChanges(path);
-				for (int j = 0; j < diffs.length; j++) {
-					IDiff diff = diffs[j];
+				for (IDiff diff : diffs) {
 					result.add(diff);
 				}
 			}
@@ -489,10 +486,11 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		IDiff[] diffArray = getLocalChanges(selection);
 		ChangeSet[] activeChangeSets = getActiveChangeSetManager().getSets();
 		IResource[] resources = getResources(diffArray);
-		for (int i = 0; i < activeChangeSets.length; i++) {
-			for (int j = 0; j < resources.length; j++) {
-				if (activeChangeSets[i].contains(resources[j]))
+		for (ChangeSet activeChangeSet : activeChangeSets) {
+			for (IResource resource : resources) {
+				if (activeChangeSet.contains(resource)) {
 					return false;
+				}
 			}
 		}
 		return true;
@@ -502,8 +500,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 		if (selection instanceof ITreeSelection) {
 			ITreeSelection ts = (ITreeSelection) selection;
 			TreePath[] paths = ts.getPaths();
-			for (int i = 0; i < paths.length; i++) {
-				TreePath path = paths[i];
+			for (TreePath path : paths) {
 				if (!containsOnlyLocalChanges(path)) {
 					return false;
 				}

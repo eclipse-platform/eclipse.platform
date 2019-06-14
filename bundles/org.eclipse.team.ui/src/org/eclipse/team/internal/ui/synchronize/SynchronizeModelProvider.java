@@ -131,8 +131,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 */
 	protected void removeFromViewer(IResource[] resources) {
 		List<ISynchronizeModelElement> elements = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			ISynchronizeModelElement element = getModelObject(resource);
 			if(element != null) {
 				elements.add(element);
@@ -195,8 +194,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	protected void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
 		// Refresh the viewer for each changed resource
 		SyncInfo[] infos = event.getChangedResources();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			IResource local = info.getLocal();
 			ISynchronizeModelElement diffNode = getModelObject(local);
 			if (diffNode != null) {
@@ -233,8 +231,7 @@ public abstract class SynchronizeModelProvider extends AbstractSynchronizeModelP
 	 * @param added the added infos
 	 */
 	protected void addResources(SyncInfo[] added) {
-		for (int i = 0; i < added.length; i++) {
-			SyncInfo info = added[i];
+		for (SyncInfo info : added) {
 			addResource(info);
 		}
 	}

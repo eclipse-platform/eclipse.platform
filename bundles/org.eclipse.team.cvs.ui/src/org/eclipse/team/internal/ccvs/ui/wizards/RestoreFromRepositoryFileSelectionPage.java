@@ -355,8 +355,7 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 			revisionsTable.setChecked(selectedEntry, true);
 		}
 		// Disable entries that represent deletions since they can't be loaded
-		for (int i = 0; i < entries.length; i++) {
-			ILogEntry entry = entries[i];
+		for (ILogEntry entry : entries) {
 			if (entry.isDeletion()) {
 				revisionsTable.setGrayed(entry, true);
 			}

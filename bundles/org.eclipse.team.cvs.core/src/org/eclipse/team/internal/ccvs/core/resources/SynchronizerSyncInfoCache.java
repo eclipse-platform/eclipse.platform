@@ -254,8 +254,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		
 		String indicator = NOT_DIRTY_INDICATOR;
 		ICVSResource[] children = cvsFolder.members(ICVSFolder.MANAGED_MEMBERS | ICVSFolder.PHANTOM_MEMBERS);
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			// keep looking into phantom folders until a managed phantom file 
 			// is found.
 			if (resource.isFolder()) {
@@ -305,8 +304,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 		IResource[] pendingWrites = getPendingCacheWrites();
 		if (pendingWrites != null){
 			HashSet<IResource> cachedResources = new HashSet<>();
-			for (int i = 0; i < pendingWrites.length; i++) {
-				IResource resource = pendingWrites[i];
+			for (IResource resource : pendingWrites) {
 				if (resource.getParent().equals(folder))
 					cachedResources.add(resource);
 			}

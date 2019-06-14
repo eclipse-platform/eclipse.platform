@@ -84,8 +84,8 @@ public class DocLineComparator implements ITokenComparator {
 		boolean cacheFilteredLines = false;
 		if (compareFilters != null && compareFilters.length > 0) {
 			cacheFilteredLines = true;
-			for (int i = 0; i < compareFilters.length; i++) {
-				if (!compareFilters[i].canCacheFilteredRegions()) {
+			for (ICompareFilter compareFilter : compareFilters) {
+				if (!compareFilter.canCacheFilteredRegions()) {
 					cacheFilteredLines = false;
 					break;
 				}

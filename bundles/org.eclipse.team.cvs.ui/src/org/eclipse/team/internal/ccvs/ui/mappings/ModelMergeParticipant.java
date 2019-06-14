@@ -149,8 +149,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		}
 		
 		List<IResource> resources = new ArrayList<>();
-		for (int i = 0; i < rootNodes.length; i++) {
-			IMemento rootNode = rootNodes[i];
+		for (IMemento rootNode : rootNodes) {
 			IPath path = new Path(rootNode.getString(CTX_ROOT_PATH)); 
 			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path, true /* include phantoms */);
 			if(resource != null) {
@@ -178,8 +177,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 		
 		// resource roots
 		IResource[] roots = s.roots();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			IMemento rootNode = memento.createChild(CTX_ROOT);
 			rootNode.putString(CTX_ROOT_PATH, resource.getFullPath().toString());
 		}
@@ -221,8 +219,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 	 */
 	public static ModelMergeParticipant getMatchingParticipant(ResourceMapping[] mappings, CVSTag startTag, CVSTag endTag) {
 		ISynchronizeParticipantReference[] refs = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference reference = refs[i];
+		for (ISynchronizeParticipantReference reference : refs) {
 			if (reference.getId().equals(ID)) {
 				ModelMergeParticipant p;
 				try {
@@ -234,9 +231,7 @@ public class ModelMergeParticipant extends CVSModelSynchronizeParticipant {
 				ResourceMapping[] roots = scope.getMappings();
 				if (roots.length == mappings.length) {
 					boolean match = true;
-					for (int j = 0; j < mappings.length; j++) {
-						
-						ResourceMapping mapping = mappings[j];
+					for (ResourceMapping mapping : mappings) {
 						if (scope.getTraversals(mapping) == null) {
 							// The mapping is not in the scope so the participants don't match
 							match = false;

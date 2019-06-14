@@ -61,8 +61,7 @@ public class LocalProjectTagSource extends TagSource {
 	private static ICVSRemoteFolder[] getProjectRemoteFolders() {
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		List<ICVSRemoteFolder> result = new ArrayList<>();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			try {
 				if (project.isAccessible() && RepositoryProvider.isShared(project)) {
 					ICVSRemoteFolder remote = (ICVSRemoteFolder)CVSWorkspaceRoot.getRemoteResourceFor(project);
@@ -111,8 +110,7 @@ public class LocalProjectTagSource extends TagSource {
 		}
 		// Accumulate the tags for all folders
 		Set<CVSTag> allTags = new HashSet<>();
-		for (int i = 0; i < remoteFolders.length; i++) {
-			ICVSRemoteFolder folder = remoteFolders[i];
+		for (ICVSRemoteFolder folder : remoteFolders) {
 			CVSTag[] tags = SingleFolderTagSource.getTags(folder, type);
 			allTags.addAll(Arrays.asList(tags));
 		}

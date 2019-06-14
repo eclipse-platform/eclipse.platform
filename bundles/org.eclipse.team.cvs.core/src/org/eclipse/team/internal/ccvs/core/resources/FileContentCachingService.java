@@ -122,8 +122,7 @@ public class FileContentCachingService {
 	private String[] getUncachedFiles() {
 		if (fileDiffs.length == 0) return fileDiffs;
 		List<String> existing = new ArrayList<>();
-		for (int i = 0; i < fileDiffs.length; i++) {
-			String filePath = fileDiffs[i];
+		for (String filePath : fileDiffs) {
 			try {
 				ICVSFile file = remoteRoot.getFile(filePath);
 				if (file instanceof RemoteFile) {

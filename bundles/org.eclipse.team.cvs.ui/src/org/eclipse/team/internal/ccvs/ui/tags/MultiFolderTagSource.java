@@ -50,8 +50,8 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
 			return super.getTags(type);
 		}
 		Set<CVSTag> tags = new HashSet<>();
-		for (int i= 0; i < folders.length; i++) {
-			tags.addAll(Arrays.asList(getTags(folders[i], type)));
+		for (ICVSFolder folder : folders) {
+			tags.addAll(Arrays.asList(getTags(folder, type)));
 		}
 		return tags.toArray(new CVSTag[tags.size()]);
 	}
@@ -60,8 +60,7 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
 	public CVSTag[] refresh(boolean bestEffort, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask("", folders.length);  //$NON-NLS-1$
 		Set<CVSTag> result = new HashSet<>();
-		for (int i= 0; i < folders.length; i++) {
-			ICVSFolder folder= folders[i];
+		for (ICVSFolder folder : folders) {
 			CVSTag[] tags = CVSUIPlugin.getPlugin().getRepositoryManager().refreshDefinedTags(folder, bestEffort /* recurse */, true /* notify */, Policy.subMonitorFor(monitor, 1));
 			result.addAll(Arrays.asList(tags));
 		}
@@ -86,12 +85,12 @@ public class MultiFolderTagSource extends SingleFolderTagSource {
 			manager.run(monitor1 -> {
 				try {
 					ICVSFolder[] folders = getFolders();
-					for (int i = 0; i < folders.length; i++) {
+					for (ICVSFolder folder : folders) {
 						if (replace) {
-							CVSTag[] oldTags = manager.getKnownTags(folders[i]);
-							manager.removeTags(folders[i], oldTags);
+							CVSTag[] oldTags = manager.getKnownTags(folder);
+							manager.removeTags(folder, oldTags);
 						}
-						manager.addTags(folders[i], tags);
+						manager.addTags(folder, tags);
 					}
 				} catch (CVSException e) {
 					throw new InvocationTargetException(e);

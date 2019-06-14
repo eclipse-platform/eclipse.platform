@@ -53,8 +53,7 @@ public class CheckoutAsWizard extends Wizard {
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta root = event.getDelta();
 			IResourceDelta[] projectDeltas = root.getAffectedChildren();
-			for (int i = 0; i < projectDeltas.length; i++) {							
-				IResourceDelta delta = projectDeltas[i];
+			for (IResourceDelta delta : projectDeltas) {
 				IResource resource = delta.getResource();
 				if (delta.getKind() == IResourceDelta.ADDED) {
 					newProject = (IProject)resource;

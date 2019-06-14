@@ -43,8 +43,7 @@ public class TagSourceResourceAdapter implements IAdaptable, IWorkbenchAdapter {
 		ICVSResource[] children = tagSource.getCVSResources();
 		if (children.length == 0) return new Object[0];
 		List<CVSResourceElement> result = new ArrayList<>();
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			if (resource.isFolder()) {
 				result.add(new CVSFolderElement((ICVSFolder)resource, false));
 			} else {

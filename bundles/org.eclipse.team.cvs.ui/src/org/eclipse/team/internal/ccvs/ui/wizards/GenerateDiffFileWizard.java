@@ -148,9 +148,9 @@ public class GenerateDiffFileWizard extends Wizard {
 						return allProjects;
 
 					ArrayList<IProject> accessibleProjects = new ArrayList<>();
-					for (int i = 0; i < allProjects.length; i++) {
-						if (allProjects[i].isOpen()) {
-							accessibleProjects.add(allProjects[i]);
+					for (IProject project : allProjects) {
+						if (project.isOpen()) {
+							accessibleProjects.add(project);
 						}
 					}
 					return accessibleProjects.toArray();
@@ -894,8 +894,8 @@ public class GenerateDiffFileWizard extends Wizard {
 				Viewer viewer = page.getViewer();
 				if (viewer instanceof CheckboxTreeViewer) {
 					TreeItem[] items=((CheckboxTreeViewer)viewer).getTree().getItems();
-					for (int i = 0; i < items.length; i++) {
-						((CheckboxTreeViewer)viewer).setChecked(items[i].getData(), true);
+					for (TreeItem item : items) {
+						((CheckboxTreeViewer)viewer).setChecked(item.getData(), true);
 					}
 				}
 			}
@@ -909,8 +909,7 @@ public class GenerateDiffFileWizard extends Wizard {
 					Object[] elements = ((CheckboxTreeViewer)viewer).getCheckedElements();
 					IResource[]selectedResources = Utils.getResources(elements);
 					ArrayList<IResource> result = new ArrayList<>();
-					for (int i = 0; i < selectedResources.length; i++) {
-						IResource resource = selectedResources[i];
+					for (IResource resource : selectedResources) {
 						if (fConfiguration.getSyncInfoSet().getSyncInfo(resource) != null) {
 							result.add(resource);
 						}

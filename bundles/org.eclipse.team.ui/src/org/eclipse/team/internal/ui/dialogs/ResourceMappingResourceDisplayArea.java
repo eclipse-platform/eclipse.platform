@@ -97,11 +97,9 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 		public Object[] getChildren(Object o) {
 			ResourceTraversal[] traversals = getTraversals();
 			List<ResourceTraversalElement> result = new ArrayList<>();
-			for (int i = 0; i < traversals.length; i++) {
-				ResourceTraversal traversal = traversals[i];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
+				for (IResource resource : resources) {
 					if (isIncludedInFilter(resource, traversal))
 						result.add(new ResourceTraversalElement(this, traversal, resource, context));
 				}
@@ -180,8 +178,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 				if (resource.getType() != IResource.FILE) {
 					IResource[] members = members(((IContainer)resource));
 					List<ResourceTraversalElement> result = new ArrayList<ResourceTraversalElement>();
-					for (int i = 0; i < members.length; i++) {
-						IResource child = members[i];
+					for (IResource child : members) {
 						if ((includeFolders || child.getType() == IResource.FILE)
 								&& isIncludedInFilter(child, traversal))
 							result.add(new ResourceTraversalElement(this, traversal, child, context));
@@ -320,8 +317,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 					try {
 						monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 						ResourceTraversal[] traversals = mapping.getTraversals(context, Policy.subMonitorFor(monitor, IProgressMonitor.UNKNOWN));
-						for (int i = 0; i < traversals.length; i++) {
-							ResourceTraversal traversal = traversals[i];
+						for (ResourceTraversal traversal : traversals) {
 							buildFilteredResourceMap(mapping, traversal, Policy.subMonitorFor(monitor, IProgressMonitor.UNKNOWN), result);
 						}
 					} catch (CoreException e) {
@@ -404,8 +400,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 
 	/* private */ static boolean isTraversalRoot(ResourceTraversal traversal, IResource resource) {
 		IResource[] resources = traversal.getResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource root = resources[i];
+		for (IResource root : resources) {
 			if (root.equals(resource)) {
 				return true;
 			}

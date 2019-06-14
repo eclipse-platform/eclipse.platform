@@ -160,9 +160,9 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 
 		if (head) {
 			// modify tags on bundle import descriptions
-			for (int i = 0; i < descriptions.length; i++) {
-				URI scmUri = descriptions[i].getUri();
-				descriptions[i].setUrl(removeTag(scmUri));
+			for (ScmUrlImportDescription description : descriptions) {
+				URI scmUri = description.getUri();
+				description.setUrl(removeTag(scmUri));
 			}
 		}
 		
@@ -212,15 +212,16 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 		if (j != -1) {
 			sb.append(ssp.substring(0, j));
 			String[] params = ssp.substring(j).split(";"); //$NON-NLS-1$
-			for (int k = 0; k < params.length; k++) {
+			for (String param : params) {
 				// PDE way of providing tags
-				if (params[k].startsWith("tag=")) { //$NON-NLS-1$
+				if (param.startsWith("tag=")) { //$NON-NLS-1$
 					// ignore
-				} else if (params[k].startsWith("version=")) { //$NON-NLS-1$
+				} else if (param.startsWith("version=")) { //$NON-NLS-1$
 					// ignore
 				} else {
-					if (params[k] != null && !params[k].equals("")) //$NON-NLS-1$
-						sb.append(';').append(params[k]);
+					if (param != null && !param.equals("")) { //$NON-NLS-1$
+						sb.append(';').append(param);
+					}
 				}
 			}
 		} else {

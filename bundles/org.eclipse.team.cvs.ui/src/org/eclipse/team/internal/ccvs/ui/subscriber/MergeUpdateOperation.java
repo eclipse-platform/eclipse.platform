@@ -70,8 +70,8 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		// indicate an outgoing deletion
 		try {
 			monitor.beginTask(null, 100 * nodes.length);
-			for (int i = 0; i < nodes.length; i++) {
-				IResource resource = nodes[i].getLocal();
+			for (SyncInfo node : nodes) {
+				IResource resource = node.getLocal();
 				if (resource.getType() == IResource.FILE) {
 					((IFile)resource).delete(false /* force */, true /* keep local history */, Policy.subMonitorFor(monitor, 100));
 				}
@@ -93,8 +93,7 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 			// Incoming additions require different handling then incoming changes and deletions
 			List<SyncInfo> additions = new ArrayList<>();
 			List<SyncInfo> changes = new ArrayList<>();
-			for (int i = 0; i < nodes.length; i++) {
-				SyncInfo resource = nodes[i];
+			for (SyncInfo resource : nodes) {
 				int kind = resource.getKind();
 				if ((kind & SyncInfo.CHANGE_MASK) == SyncInfo.ADDITION) {
 					additions.add(resource);
@@ -151,8 +150,8 @@ public class MergeUpdateOperation extends SafeUpdateOperation {
 		setSubscriber(nodes[0]);
 		monitor.beginTask(null, 1000 * nodes.length);
 		try {
-			for (int i = 0; i < nodes.length; i++) {
-				makeRemoteLocal(nodes[i], Policy.subMonitorFor(monitor, 1000));
+			for (SyncInfo node : nodes) {
+				makeRemoteLocal(node, Policy.subMonitorFor(monitor, 1000));
 			}
 		} finally {
 			monitor.done();

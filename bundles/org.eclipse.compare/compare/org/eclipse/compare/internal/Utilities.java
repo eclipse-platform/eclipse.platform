@@ -127,8 +127,9 @@ public class Utilities {
 
 	public static void setEnableComposite(Composite composite, boolean enable) {
 		Control[] children= composite.getChildren();
-		for (int i= 0; i < children.length; i++)
-			children[i].setEnabled(enable);
+		for (Control c : children) {
+			c.setEnabled(enable);
+		}
 	}
 
 	public static boolean getBoolean(CompareConfiguration cc, String key, boolean dflt) {
@@ -188,20 +189,20 @@ public class Utilities {
 		if (selection instanceof IStructuredSelection) {
 			Object[] s= ((IStructuredSelection) selection).toArray();
 
-			for (int i= 0; i < s.length; i++) {
+			for (Object o : s) {
 				IResource resource= null;
-				Object o= s[i];
 				if (type.isInstance(o)) {
 					resource= (IResource) o;
 				} else if (o instanceof ResourceMapping) {
 					try {
 						ResourceTraversal[] travs= ((ResourceMapping)o).getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
 						if (travs != null) {
-							for (int k= 0; k < travs.length; k++) {
-								IResource[] resources= travs[k].getResources();
-								for (int j= 0; j < resources.length; j++) {
-									if (type.isInstance(resources[j]) && resources[j].isAccessible())
-										tmp.add(resources[j]);
+							for (ResourceTraversal trav : travs) {
+								IResource[] resources = trav.getResources();
+								for (IResource r : resources) {
+									if (type.isInstance(r) && r.isAccessible()) {
+										tmp.add(r);
+									}
 								}
 							}
 						}
@@ -809,10 +810,10 @@ public class Utilities {
 	 */
 	public static boolean setReadTimeout(URLConnection connection, int timeout) {
 		Method[] methods = connection.getClass().getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			if (methods[i].getName().equals("setReadTimeout")) { //$NON-NLS-1$
+		for (Method method : methods) {
+			if (method.getName().equals("setReadTimeout")) { //$NON-NLS-1$
 				try {
-					methods[i].invoke(connection, new Object[] {Integer.valueOf(timeout)});
+					method.invoke(connection, new Object[] {Integer.valueOf(timeout)});
 					return true;
 				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 					// ignore
@@ -891,12 +892,12 @@ public class Utilities {
 		}
 
 		boolean[] ignored = new boolean[thisLine.length()];
-		for (int j = 0; j < ignoredRegions.length; j++) {
-			if (ignoredRegions[j] != null) {
-				for (int k = 0; k < ignoredRegions[j].length; k++) {
-					if (ignoredRegions[j][k] != null) {
-						for (int l = 0; l < ignoredRegions[j][k].getLength(); l++) {
-							ignored[ignoredRegions[j][k].getOffset() + l] = true;
+		for (IRegion[] regions : ignoredRegions) {
+			if (regions != null) {
+				for (IRegion region : regions) {
+					if (region != null) {
+						for (int l = 0; l < region.getLength(); l++) {
+							ignored[region.getOffset() + l] = true;
 						}
 					}
 				}

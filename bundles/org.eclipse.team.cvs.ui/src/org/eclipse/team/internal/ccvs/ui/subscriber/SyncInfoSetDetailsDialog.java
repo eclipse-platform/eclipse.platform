@@ -170,8 +170,10 @@ public abstract class SyncInfoSetDetailsDialog extends DetailsDialog {
 				@Override
 				public boolean select(SyncInfo info) {
 					IResource local = info.getLocal();
-					for (int i = 0; i < selectedResources.length; i++) {
-						if (local.equals(selectedResources[i])) return true;
+					for (Object selectedResource : selectedResources) {
+						if (local.equals(selectedResource)) {
+							return true;
+						}
 					}
 					return false;
 				}

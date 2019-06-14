@@ -73,8 +73,8 @@ public class BundleImporterExtension implements IBundleImporter {
 					if (supportedValues == null) {
 						IConfigurationElement[] supported = element.getChildren("supports"); //$NON-NLS-1$
 						supportedValues = new HashSet<>(supported.length);
-						for (int i = 0; i < supported.length; i++) {
-							supportedValues.add(supported[i].getAttribute("prefix")); //$NON-NLS-1$
+						for (IConfigurationElement s : supported) {
+							supportedValues.add(s.getAttribute("prefix")); //$NON-NLS-1$
 						}
 					}
 					return supportedValues;

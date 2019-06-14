@@ -92,9 +92,10 @@ public class SelectionPropertyTester extends PropertyTester {
 	private static Method findMethod(Class clazz, String method)
 			throws Exception {
 		Method[] methods = clazz.getMethods();
-		for (int i = 0; i < methods.length; i++) {
-			if (methods[i].getName().equals(method))
-				return methods[i];
+		for (Method m : methods) {
+			if (m.getName().equals(method)) {
+				return m;
+			}
 		}
 		return null;
 	}

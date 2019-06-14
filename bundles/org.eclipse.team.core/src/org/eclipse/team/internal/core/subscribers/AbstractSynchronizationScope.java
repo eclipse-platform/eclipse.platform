@@ -40,11 +40,9 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 	public IResource[] getRoots() {
 		List<IResource> result = new ArrayList<>();
 		ResourceTraversal[] traversals = getTraversals();
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
-			for (int j = 0; j < resources.length; j++) {
-				IResource resource = resources[j];
+			for (IResource resource : resources) {
 				accumulateRoots(result, resource);
 			}
 		}
@@ -54,8 +52,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 	@Override
 	public boolean contains(IResource resource) {
 		ResourceTraversal[] traversals = getTraversals();
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			if (traversal.contains(resource))
 				return true;
 		}
@@ -89,8 +86,7 @@ public abstract class AbstractSynchronizationScope implements ISynchronizationSc
 	 */
 	public void fireTraversalsChangedEvent(final ResourceTraversal[] newTraversals, final ResourceMapping[] newMappings) {
 		Object[] allListeners = listeners.getListeners();
-		for (int i = 0; i < allListeners.length; i++) {
-			final Object listener = allListeners[i];
+		for (Object listener : allListeners) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {

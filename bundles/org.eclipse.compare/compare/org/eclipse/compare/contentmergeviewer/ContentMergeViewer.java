@@ -1398,9 +1398,9 @@ public abstract class ContentMergeViewer extends ContentViewer
 		}
 		if (source != null) {
 			Saveable[] saveables = source.getSaveables();
-			for (int i = 0; i < saveables.length; i++) {
-				if (saveables[i] instanceof ISavingSaveable) {
-					ISavingSaveable saveable = (ISavingSaveable) saveables[i];
+			for (Saveable s : saveables) {
+				if (s instanceof ISavingSaveable) {
+					ISavingSaveable saveable = (ISavingSaveable) s;
 					if (saveable.isSaving())
 						return true;
 				}

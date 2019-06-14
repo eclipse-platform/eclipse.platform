@@ -85,8 +85,7 @@ public class Checkout extends Command {
 		
 		// Send the information about the local workspace resources to the server
 		List resourcesToSend = new ArrayList(resources.length);
-		for (int i = 0; i < resources.length; i++) {
-			ICVSResource resource = resources[i];
+		for (ICVSResource resource : resources) {
 			if (resource.exists() && resource.isFolder() && ((ICVSFolder)resource).isCVSFolder()) {
 				resourcesToSend.add(resource);
 			}

@@ -14,7 +14,6 @@
 package org.eclipse.compare.internal;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -148,8 +147,7 @@ public class ShowWhitespaceAction extends TextEditorPropertyAction {
 
 	private void hideWhitespace() {
 		Map<MergeSourceViewer, WhitespaceCharacterPainter> painters = getPainters();
-		for (Iterator<MergeSourceViewer> iterator = painters.keySet().iterator(); iterator.hasNext();) {
-			MergeSourceViewer viewer = iterator.next();
+		for (MergeSourceViewer viewer : painters.keySet()) {
 			WhitespaceCharacterPainter painter = painters.get(viewer);
 			if (painter != null) {
 				viewer.getSourceViewer().removePainter(painter);

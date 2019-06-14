@@ -124,8 +124,8 @@ public class CompareEditorTests extends CVSSyncSubscriberTest {
 	private IEditorPart findOpenEditor(IEditorInput input) {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorReference[] editorRefs = page.getEditorReferences();						
-		for (int i = 0; i < editorRefs.length; i++) {
-			final IEditorPart part = editorRefs[i].getEditor(false /* don't restore editor */);
+		for (IEditorReference editorRef : editorRefs) {
+			final IEditorPart part = editorRef.getEditor(false /* don't restore editor */);
 			if(part != null) {
 				IEditorInput testInput = part.getEditorInput();
 				if (testInput == input)

@@ -125,8 +125,7 @@ public abstract class CVSSubscriberMergeContext extends SubscriberMergeContext {
 		// the local file
 		List<IDiff> fileDeletions = new ArrayList<>();
 		
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource.getType() == IResource.FILE) {
 				if (isIncomingDeletion(diff, ignoreLocalChanges)) {

@@ -42,8 +42,7 @@ public class TeamStateChangeEvent implements ITeamStateChangeEvent {
 	 * @param deltas the set of subscriber changes
 	 */
 	public TeamStateChangeEvent(ISubscriberChangeEvent[] deltas) {
-		for (int i = 0; i < deltas.length; i++) {
-			ISubscriberChangeEvent event = deltas[i];
+		for (ISubscriberChangeEvent event : deltas) {
 			IResource resource = event.getResource();
 			if ((event.getFlags() & ISubscriberChangeEvent.ROOT_ADDED) != 0)
 				rootAdded(resource);

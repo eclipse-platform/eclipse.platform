@@ -66,11 +66,9 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 	private static IResource[] getRootTraversalResources(ISynchronizationScopeManager manager, IProgressMonitor monitor) throws CoreException {
 		Set<IResource> result = new HashSet<>();
 		ResourceTraversal[] traversals = getTraversals(null, manager, monitor);
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
-			for (int k = 0; k < resources.length; k++) {
-				IResource resource = resources[k];
+			for (IResource resource : resources) {
 				if (RepositoryProvider.getProvider(resource.getProject(), CVSProviderPlugin.getTypeId()) != null) {
 					result.add(resource);
 				}
@@ -122,8 +120,7 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 	
 	public static IResource[] getProjects(IResource[] resources) {
 		Set<IProject> projects = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			projects.add(resource.getProject());
 		}
 		return projects.toArray(new IResource[projects.size()]);
@@ -138,8 +135,7 @@ public abstract class WorkspaceTraversalAction extends WorkspaceAction {
 	 */
 	@Deprecated
 	public static boolean isLogicalModel(ResourceMapping[] mappings) {
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			if (! (mapping.getModelObject() instanceof IResource) ) {
 				return true;
 			}

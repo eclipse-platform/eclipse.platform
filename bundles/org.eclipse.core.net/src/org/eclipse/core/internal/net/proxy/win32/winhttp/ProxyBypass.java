@@ -68,8 +68,7 @@ public class ProxyBypass {
 	 * @return
 	 */
 	private boolean isInBypassList(String host) {
-		for (int i = 0; i < proxyBypassEntries.length; i++) {
-			String entry = proxyBypassEntries[i];
+		for (String entry : proxyBypassEntries) {
 			if (StringUtil.hostMatchesFilter(host, entry)) {
 				return true;
 			}

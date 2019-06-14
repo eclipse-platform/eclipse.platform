@@ -178,9 +178,10 @@ public abstract class RegistryReader {
 	 * Logs an error if the element was not recognized.
 	 */
 	protected void readElements(IConfigurationElement[] elements) {
-		for (int i = 0; i < elements.length; i++) {
-			if (!readElement(elements[i]))
-				logUnknownElement(elements[i]);
+		for (IConfigurationElement element : elements) {
+			if (!readElement(element)) {
+				logUnknownElement(element);
+			}
 		}
 	}
 	/**
@@ -206,7 +207,8 @@ public abstract class RegistryReader {
 			extensions = point.getExtensions();
 			extensionPoints.put(pointId, extensions);
 		}
-		for (int i = 0; i < extensions.length; i++)
-			readExtension(extensions[i]);
+		for (IExtension extension : extensions) {
+			readExtension(extension);
+		}
 	}
 }

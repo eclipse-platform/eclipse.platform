@@ -226,8 +226,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 			listeners = propertyChangeListeners.getListeners();
 		}
 		final PropertyChangeEvent event = new PropertyChangeEvent(this, key, oldValue, newValue);
-		for (int i = 0; i < listeners.length; i++) {
-			final IPropertyChangeListener listener = (IPropertyChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IPropertyChangeListener listener = (IPropertyChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -254,8 +254,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 			actionState = INITIALIZED;
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -276,8 +276,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -302,8 +302,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -330,8 +330,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -351,8 +351,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -372,8 +372,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		synchronized(actionContributions) {
 			listeners = actionContributions.getListeners();
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -395,8 +395,8 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 			listeners = actionContributions.getListeners();
 			actionState = DISPOSED;
 		}
-		for (int i= 0; i < listeners.length; i++) {
-			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup)listeners[i];
+		for (Object listener : listeners) {
+			final SynchronizePageActionGroup contribution = (SynchronizePageActionGroup) listener;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -433,8 +433,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 		if (groups == null) {
 			groups = getDefault(menuPropertyId);
 		}
-		for (int i = 0; i < groups.length; i++) {
-			String string = groups[i];
+		for (String string : groups) {
 			if (string.equals(groupId)) return true;
 		}
 		return false;
@@ -459,8 +458,7 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 			decorators = new ILabelDecorator[0];
 		}
 		// Ensure we don't have it registered already
-		for (int i = 0; i < decorators.length; i++) {
-			ILabelDecorator d = decorators[i];
+		for (ILabelDecorator d : decorators) {
 			if (d == decorator) {
 				return;
 			}

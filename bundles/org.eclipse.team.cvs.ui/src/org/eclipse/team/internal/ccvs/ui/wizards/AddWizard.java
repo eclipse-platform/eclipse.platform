@@ -58,11 +58,9 @@ public class AddWizard extends ResizableWizard {
 		final List<IResource> unadded = new ArrayList<>();
 		PlatformUI.getWorkbench().getProgressService().busyCursorWhile(monitor -> {
 			final IFileContentManager manager = Team.getFileContentManager();
-			for (int i = 0; i < traversals.length; i++) {
-				ResourceTraversal traversal = traversals[i];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (int j = 0; j < resources.length; j++) {
-					final IResource resource = resources[j];
+				for (IResource resource : resources) {
 					try {
 						resource.accept((IResourceVisitor) resource1 -> {
 							if (resource1.getType() == IResource.FILE) {
@@ -120,9 +118,7 @@ public class AddWizard extends ResizableWizard {
 		
 		final IFileContentManager manager= Team.getFileContentManager();
 		
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
-			
+		for (IFile file : files) {
 			final String extension= file.getFileExtension();
 			if (extension != null && !manager.isKnownExtension(extension)) {
 				extensions.add(extension);

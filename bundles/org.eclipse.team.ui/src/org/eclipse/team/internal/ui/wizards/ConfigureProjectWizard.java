@@ -141,10 +141,9 @@ public class ConfigureProjectWizard extends Wizard {
 		IExtensionPoint point = registry.getExtensionPoint(TeamUIPlugin.PLUGIN_ID, PT_CONFIGURATION);
 		if (point != null) {
 			IExtension[] extensions = point.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IConfigurationElement[] elements = extensions[i].getConfigurationElements();
-				for (int j = 0; j < elements.length; j++) {
-					IConfigurationElement element = elements[j];
+			for (IExtension extension : extensions) {
+				IConfigurationElement[] elements = extension.getConfigurationElements();
+				for (IConfigurationElement element : elements) {
 					if (element.getName().equals(TAG_WIZARD)) {
 						ConfigurationWizardElement wizard = createWizardElement(element);
 						if (wizard != null && filterItem(element)) {

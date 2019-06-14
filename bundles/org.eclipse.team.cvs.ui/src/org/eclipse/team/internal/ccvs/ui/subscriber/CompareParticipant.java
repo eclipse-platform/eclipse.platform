@@ -148,8 +148,7 @@ public class CompareParticipant extends CVSParticipant implements IPreferenceCha
 	 */
 	public static CompareParticipant getMatchingParticipant(IResource[] resources, CVSTag tag) {
 		ISynchronizeParticipantReference[] refs = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference reference = refs[i];
+		for (ISynchronizeParticipantReference reference : refs) {
 			if (reference.getId().equals(CVSCompareSubscriber.ID)) {
 				try {
 					CompareParticipant p = (CompareParticipant) reference.getParticipant();

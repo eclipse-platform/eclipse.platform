@@ -55,8 +55,7 @@ public class CreatePatchAction extends CVSModelProviderAction implements IDiffCh
 		final Set resources = new HashSet();
 		final IResourceDiffTree diffTree = getSynchronizationContext().getDiffTree();
 		IDiff[] diffs = diffTree.getDiffs(traversals);
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			IResource child = diffTree.getResource(diff);
 			if (child.getType() == IResource.FILE && diff instanceof IThreeWayDiff) {
 				IThreeWayDiff twd = (IThreeWayDiff) diff;

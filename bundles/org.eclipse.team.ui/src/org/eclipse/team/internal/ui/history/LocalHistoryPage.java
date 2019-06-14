@@ -843,16 +843,16 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 	private Object[] mapExpandedElements(AbstractHistoryCategory[] categories, Object[] expandedElements) {
 		// Store the names of the currently expanded categories in a set.
 		HashSet<String> names = new HashSet<>();
-		for (int i = 0; i < expandedElements.length; i++){
-			names.add(((DateHistoryCategory) expandedElements[i]).getName());
+		for (Object expandedElement : expandedElements) {
+			names.add(((DateHistoryCategory) expandedElement).getName());
 		}
 
 		//Go through the new categories and keep track of the previously expanded ones
 		ArrayList<AbstractHistoryCategory> expandable = new ArrayList<>();
-		for (int i = 0; i < categories.length; i++){
+		for (AbstractHistoryCategory category : categories) {
 			// Check to see if this category is currently expanded.
-			if (names.contains(categories[i].getName())){
-				expandable.add(categories[i]);
+			if (names.contains(category.getName())) {
+				expandable.add(category);
 			}
 		}
 		return expandable.toArray(new Object[expandable.size()]);
@@ -879,10 +879,11 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			tempCategories[3] = new DateHistoryCategory(TeamUIMessages.HistoryPage_Previous, null, monthCal);
 
 			ArrayList<AbstractHistoryCategory> finalCategories = new ArrayList<AbstractHistoryCategory>();
-			for (int i = 0; i<tempCategories.length; i++){
-				tempCategories[i].collectFileRevisions(revisions, false);
-				if (tempCategories[i].hasRevisions())
-					finalCategories.add(tempCategories[i]);
+			for (DateHistoryCategory tempCategory : tempCategories) {
+				tempCategory.collectFileRevisions(revisions, false);
+				if (tempCategory.hasRevisions()) {
+					finalCategories.add(tempCategory);
+				}
 			}
 
 			if (finalCategories.isEmpty()){

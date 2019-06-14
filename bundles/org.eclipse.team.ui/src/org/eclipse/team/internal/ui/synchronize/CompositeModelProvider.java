@@ -15,7 +15,6 @@ package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -76,12 +75,10 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 			return ((AbstractSynchronizeModelProvider)providers[0]).getClosestExistingParents(resource);
 		}
 		List<ISynchronizeModelElement> result = new ArrayList<>();
-		for (int i = 0; i < providers.length; i++) {
-			ISynchronizeModelProvider provider = providers[i];
+		for (ISynchronizeModelProvider provider : providers) {
 			if (provider instanceof AbstractSynchronizeModelProvider) {
 				ISynchronizeModelElement[] elements = ((AbstractSynchronizeModelProvider)provider).getClosestExistingParents(resource);
-				for (int j = 0; j < elements.length; j++) {
-					ISynchronizeModelElement element = elements[j];
+				for (ISynchronizeModelElement element : elements) {
 					result.add(element);
 				}
 			}
@@ -108,8 +105,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 			return new ISynchronizeModelProvider[0];
 		}
 		List<ISynchronizeModelProvider> result = new ArrayList<>();
-		for (Iterator<ISynchronizeModelElement> iter = elements.iterator(); iter.hasNext();) {
-			ISynchronizeModelElement element = iter.next();
+		for (ISynchronizeModelElement element : elements) {
 			result.add(getProvider(element));
 		}
 		return result.toArray(new ISynchronizeModelProvider[result.size()]);
@@ -126,8 +122,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	 * @param resources
 	 */
 	protected void handleAdditions(SyncInfo[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			SyncInfo info = resources[i];
+		for (SyncInfo info : resources) {
 			handleAddition(info);
 		}
 	}
@@ -141,8 +136,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	@Override
 	protected final void handleResourceChanges(ISyncInfoTreeChangeEvent event) {
 		SyncInfo[] infos = event.getChangedResources();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			handleChange(info);
 		}
 	}
@@ -160,8 +154,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	@Override
 	protected final void handleResourceRemovals(ISyncInfoTreeChangeEvent event) {
 		IResource[] resources = event.getRemovedResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			handleRemoval(resource);
 		}
 	}
@@ -172,8 +165,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	 */
 	protected void handleRemoval(IResource resource) {
 		ISynchronizeModelProvider[] providers = getProvidersContaining(resource);
-		for (int i = 0; i < providers.length; i++) {
-			ISynchronizeModelProvider provider = providers[i];
+		for (ISynchronizeModelProvider provider : providers) {
 			removeFromProvider(resource, provider);
 		}
 	}
@@ -232,8 +224,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 	}
 
 	private void clearProviders() {
-		for (Iterator iter = providers.iterator(); iter.hasNext();) {
-			ISynchronizeModelProvider provider = (ISynchronizeModelProvider) iter.next();
+		for (ISynchronizeModelProvider provider : providers) {
 			provider.dispose();
 		}
 		providers.clear();

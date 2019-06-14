@@ -157,8 +157,7 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 	}
 
 	protected void addResources(IResource[] added) {
-		for (int i = 0; i < added.length; i++) {
-			IResource resource = added[i];
+		for (IResource resource : added) {
 			addResource(resource);
 		}
 	}
@@ -181,8 +180,7 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 	@Override
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
 		IDiffElement[] children = createModelObjects(node);
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ISynchronizeModelElement) {
 				buildModelObjects((ISynchronizeModelElement) element);
 			}
@@ -194,8 +192,7 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 	protected void handleResourceAdditions(ISyncInfoTreeChangeEvent event) {
 		SyncInfo[] infos = event.getAddedResources();
 		HashSet<IProject> set = new HashSet<>();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			set.add(info.getLocal().getProject());
 		}
 		for (Iterator it = set.iterator(); it.hasNext(); ) {
@@ -211,8 +208,7 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		// We have to look for folders that may no longer be in the set
 		// (i.e. are in-sync) but still have descendants in the set
 		IResource[] removedResources = event.getRemovedResources();
-		for (int i = 0; i < removedResources.length; i++) {
-			IResource resource = removedResources[i];
+		for (IResource resource : removedResources) {
 			if (resource.getType() != IResource.FILE) {
 				ISynchronizeModelElement node = getModelObject(resource);
 				if (node != null) {

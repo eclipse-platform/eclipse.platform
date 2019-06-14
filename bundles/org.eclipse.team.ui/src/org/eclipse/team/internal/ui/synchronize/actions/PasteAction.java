@@ -151,9 +151,10 @@ public class PasteAction extends SelectionListenerAction {
 
 	private static boolean isAvailable(Transfer transfer,
 			TransferData[] availableDataTypes) {
-		for (int i = 0; i < availableDataTypes.length; i++) {
-			if (transfer.isSupportedType(availableDataTypes[i]))
+		for (TransferData availableDataType : availableDataTypes) {
+			if (transfer.isSupportedType(availableDataType)) {
 				return true;
+			}
 		}
 		return false;
 	}

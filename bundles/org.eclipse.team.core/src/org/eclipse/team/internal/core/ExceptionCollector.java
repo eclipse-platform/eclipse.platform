@@ -104,8 +104,7 @@ public class ExceptionCollector {
 		IStatus status = new Status(exceptionStatus.getSeverity(), exceptionStatus.getPlugin(), exceptionStatus.getCode(), exceptionStatus.getMessage(), exception);
 		recordStatus(status);
 		IStatus[] children = status.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IStatus status2 = children[i];
+		for (IStatus status2 : children) {
 			recordStatus(status2);
 		}
 	}

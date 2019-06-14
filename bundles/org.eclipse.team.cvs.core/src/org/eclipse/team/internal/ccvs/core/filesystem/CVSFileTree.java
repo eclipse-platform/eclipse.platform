@@ -130,8 +130,7 @@ public class CVSFileTree {
 			
 			ICVSRemoteResource[] children =remoteFolder.getChildren();
 			ICVSResource resource = null;
-			for (int i = 0; i < children.length; i++) {
-				ICVSResource child = children[i];
+			for (ICVSRemoteResource child : children) {
 				if (child.getName().equals(resourceName)) {
 					resource = child;
 					break;

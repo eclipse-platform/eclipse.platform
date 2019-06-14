@@ -35,8 +35,8 @@ public class CVSServerException extends CVSException {
 		if ( ! status.isMultiStatus())
 			return false;
 		IStatus[] children = ((MultiStatus)status).getChildren();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i].getCode() == CVSStatus.NO_SUCH_TAG) {
+		for (IStatus child : children) {
+			if (child.getCode() == CVSStatus.NO_SUCH_TAG) {
 				return true;
 			}
 		}
@@ -51,9 +51,10 @@ public class CVSServerException extends CVSException {
 		if ( ! status.isMultiStatus())
 			return status.getSeverity() == IStatus.ERROR;
 		IStatus[] children = ((MultiStatus)status).getChildren();
-		for (int i=0;i<children.length;i++) {
-			if (children[i].getSeverity() == IStatus.ERROR)
+		for (IStatus child : children) {
+			if (child.getSeverity() == IStatus.ERROR) {
 				return true;
+			}
 		}
 		return false;
 	}

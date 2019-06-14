@@ -176,10 +176,10 @@ public class EditorsView extends ViewPart {
 		 */
 		private long extractDate(String dateString) {
 			if (dateString != null) {
-				for (int i = 0; i < dateFormats.length; i++) {
-					dateFormats[i].setLenient(true);
+				for (DateFormat dateFormat : dateFormats) {
+					dateFormat.setLenient(true);
 					try {
-						return dateFormats[i].parse(dateString).getTime();
+						return dateFormat.parse(dateString).getTime();
 					} catch (ParseException ex) {
 						// silently ignored
 					}

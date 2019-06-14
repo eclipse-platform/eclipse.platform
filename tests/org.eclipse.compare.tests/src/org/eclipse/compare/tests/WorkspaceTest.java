@@ -99,9 +99,10 @@ public class WorkspaceTest extends ResourceTest {
 		resources.addAll(Arrays.asList(buildResources(container, hierarchy)));
 		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		ensureExistsInWorkspace(result, true);
-		for (int i = 0; i < result.length; i++) {
-			if (result[i].getType() == IResource.FILE) // 3786 bytes is the average size of Eclipse Java files!
-				((IFile) result[i]).setContents(getRandomContents(100), true, false, null);
+		for (IResource r : result) {
+			if (r.getType() == IResource.FILE) {
+				((IFile) r).setContents(getRandomContents(100), true, false, null);
+			}
 		}
 		return result;
 	}

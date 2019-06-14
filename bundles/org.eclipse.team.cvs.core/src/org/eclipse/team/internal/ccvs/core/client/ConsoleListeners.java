@@ -60,8 +60,7 @@ public class ConsoleListeners implements IConsoleListener {
 	public void commandInvoked(final Session session, final String line) {
 		if (listeners.isEmpty()) return;
 		IConsoleListener[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConsoleListener listener = listeners[i];
+		for (IConsoleListener listener : listeners) {
 			Platform.run(new ISafeRunnable() {
 				public void handleException(Throwable exception) {
 					// Exception logged by Platform
@@ -77,8 +76,7 @@ public class ConsoleListeners implements IConsoleListener {
 	public void messageLineReceived(final Session session, final String line, final IStatus status) {
 		if (listeners.isEmpty()) return;
 		IConsoleListener[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConsoleListener listener = listeners[i];
+		for (IConsoleListener listener : listeners) {
 			Platform.run(new ISafeRunnable() {
 				public void handleException(Throwable exception) {
 					// Exception logged by Platform
@@ -94,8 +92,7 @@ public class ConsoleListeners implements IConsoleListener {
 	public void errorLineReceived(final Session session, final String line, final IStatus status) {
 		if (listeners.isEmpty()) return;
 		IConsoleListener[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConsoleListener listener = listeners[i];
+		for (IConsoleListener listener : listeners) {
 			Platform.run(new ISafeRunnable() {
 				public void handleException(Throwable exception) {
 					// Exception logged by Platform
@@ -111,8 +108,7 @@ public class ConsoleListeners implements IConsoleListener {
 	public void commandCompleted(final Session session, final IStatus status, final Exception exception) {
 		if (listeners.isEmpty()) return;
 		IConsoleListener[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IConsoleListener listener = listeners[i];
+		for (IConsoleListener listener : listeners) {
 			Platform.run(new ISafeRunnable() {
 				public void handleException(Throwable exception) {
 					// Exception logged by Platform

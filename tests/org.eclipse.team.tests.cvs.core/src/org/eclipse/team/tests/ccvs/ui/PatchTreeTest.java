@@ -98,16 +98,17 @@ public class PatchTreeTest extends EclipseTest {
 		Object[] expected = { nodeC, nodeB, element, nodeA, nodeD };
 		assertEquals(expected.length, treeChildren.length);
 
-		for (int i = 0; i < treeChildren.length; i++) {
-			assertEquals(1, countByData(treeChildren, treeChildren[i]));
+		for (Item treeChild : treeChildren) {
+			assertEquals(1, countByData(treeChildren, treeChild));
 		}
 	}
 
 	private int countByData(final Item[] a, Item o) {
 		int c = 0;
-		for (int i = 0; i < a.length; i++) {
-			if (a[i].getData() == o.getData())
+		for (Item a1 : a) {
+			if (a1.getData() == o.getData()) {
 				c++;
+			}
 		}
 		return c;
 	}

@@ -154,8 +154,7 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 			throw new CVSException(errors[0]);
 		}
 		MultiStatus result = new MultiStatus(CVSUIPlugin.ID, 0, getErrorMessage(errors, statusCount), null);
-		for (int i = 0; i < errors.length; i++) {
-			IStatus s = errors[i];
+		for (IStatus s : errors) {
 			if (s.isMultiStatus()) {
 				result.add(new CVSStatus(s.getSeverity(), s.getMessage(), s.getException()));
 				result.addAll(s);
@@ -178,14 +177,12 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 		// We are only concerned with reportable errors.
 		// Others will appear in the console
 		List<IStatus> reportableErrors = new ArrayList<>();
-		for (int i = 0; i < errors.length; i++) {
-			IStatus status = errors[i];
+		for (IStatus status : errors) {
 			if (isReportableError(status)) {
 				reportableErrors.add(status);
 			} else if (status.isMultiStatus()) {
 				IStatus[] children = status.getChildren();
-				for (int j = 0; j < children.length; j++) {
-					IStatus child = children[j];
+				for (IStatus child : children) {
 					if (isReportableError(child)) {
 						reportableErrors.add(status);
 						break;
@@ -262,8 +259,7 @@ public abstract class CVSOperation extends TeamOperation implements IShellProvid
 			if (isReportableError(status)) return true;
 			if (status.isMultiStatus()) {
 				IStatus[] children = status.getChildren();
-				for (int j = 0; j < children.length; j++) {
-					IStatus child = children[j];
+				for (IStatus child : children) {
 					if (isReportableError(child)) {
 						return true;
 					}

@@ -219,8 +219,8 @@ public class ProxyEntryDialog extends StatusDialog {
 
 	protected void updateStatus() {
 		String type = typeText.getText();
-		for (int i = 0; i < addedTypes.length; i++) {
-			if (addedTypes[i].equalsIgnoreCase(type)) {
+		for (String addedType : addedTypes) {
+			if (addedType.equalsIgnoreCase(type)) {
 				updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 						IStatus.OK, NetUIMessages.ProxyEntryDialog_9, null));
 				return;

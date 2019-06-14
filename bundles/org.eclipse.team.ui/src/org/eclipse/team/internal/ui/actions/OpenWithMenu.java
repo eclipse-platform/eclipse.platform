@@ -236,8 +236,7 @@ public class OpenWithMenu extends ContributionItem {
 		// if the same editor goes to two mappings.
 		ArrayList<IEditorDescriptor> alreadyMapped = new ArrayList<>();
 
-		for (int i = 0; i < editors.length; i++) {
-			IEditorDescriptor editor = editors[i];
+		for (IEditorDescriptor editor : editors) {
 			if (!alreadyMapped.contains(editor)) {
 				createMenuItem(menu, editor, preferredEditor);
 				if (defaultTextEditor != null
@@ -325,8 +324,7 @@ public class OpenWithMenu extends ContributionItem {
 
 		Object[] objArray = structSel.toArray();
 
-		for (int i = 0; i < objArray.length; i++) {
-			Object tempRevision = objArray[i];
+		for (Object tempRevision : objArray) {
 			// If not a revision, don't try opening
 			if (tempRevision instanceof AbstractHistoryCategory)
 				continue;

@@ -619,8 +619,8 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 		if (!inputChangeListeners.isEmpty()) {
 			Object[] allListeners = inputChangeListeners.getListeners();
 			final ICompareInput compareResult = (ICompareInput) getCompareResult();
-			for (int i = 0; i < allListeners.length; i++) {
-				final ICompareInputChangeListener listener = (ICompareInputChangeListener) allListeners[i];
+			for (Object l : allListeners) {
+				final ICompareInputChangeListener listener = (ICompareInputChangeListener) l;
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void run() throws Exception {

@@ -714,9 +714,9 @@ public class PreviewPatchPage2 extends WizardPage {
 
 			fPatcher.countLines();
 			FilePatch2[] fileDiffs = fPatcher.getDiffs();
-			for (int i = 0; i < fileDiffs.length; i++) {
-				added += fileDiffs[i].getAddedLines();
-				removed += fileDiffs[i].getRemovedLines();
+			for (FilePatch2 fileDiff : fileDiffs) {
+				added += fileDiff.getAddedLines();
+				removed += fileDiff.getRemovedLines();
 			}
 
 		} else {
@@ -724,13 +724,9 @@ public class PreviewPatchPage2 extends WizardPage {
 			Pattern addedPattern = Pattern.compile(addedLinesRegex);
 			Pattern removedPattern = Pattern.compile(removedLinesRegex);
 
-			FilePatch2[] fileDiffs = fPatcher.getDiffs();
-			for (int i = 0; i < fileDiffs.length; i++) {
-				IHunk[] hunks = fileDiffs[i].getHunks();
-				for (int j = 0; j < hunks.length; j++) {
-					String[] lines = ((Hunk) hunks[j]).getLines();
-					for (int k = 0; k < lines.length; k++) {
-						String line = lines[k];
+			for (FilePatch2 fileDiff : fPatcher.getDiffs()) {
+				for (IHunk hunk : fileDiff.getHunks()) {
+					for (String line : ((Hunk) hunk).getLines()) {
 						if (addedPattern.matcher(line).find())
 							added++;
 						if (removedPattern.matcher(line).find())

@@ -51,19 +51,18 @@ public abstract class RemoteCommand extends Command {
 		Session openSession)
 		throws CVSException {
 		
-			// Convert arguments
-			List stringArguments = new ArrayList(arguments.length);
-			for (int i = 0; i < arguments.length; i++) {
-				ICVSResource resource = arguments[i];
-				String remotePath;
-				if (isDefinedModule(resource)) {
-					remotePath = resource.getName();
-				} else {
-					remotePath = resource.getRepositoryRelativePath();
-					
-				}
-				stringArguments.add(remotePath);
+		// Convert arguments
+		List stringArguments = new ArrayList(arguments.length);
+		for (ICVSResource resource : arguments) {
+			String remotePath;
+			if (isDefinedModule(resource)) {
+				remotePath = resource.getName();
+			} else {
+				remotePath = resource.getRepositoryRelativePath();
+
 			}
+			stringArguments.add(remotePath);
+		}
 			return (String[]) stringArguments.toArray(new String[stringArguments.size()]);
 	}
 

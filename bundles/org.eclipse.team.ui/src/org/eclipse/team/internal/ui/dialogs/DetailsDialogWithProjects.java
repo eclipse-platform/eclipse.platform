@@ -88,8 +88,8 @@ public class DetailsDialogWithProjects extends DetailsDialog {
 		detailsList.setLayoutData(data);
 
 
-		for (int i = 0; i < projects.length; i++) {
-			detailsList.add(projects[i].getName());
+		for (IProject project : projects) {
+			detailsList.add(project.getName());
 		}
 		return composite;
 	}

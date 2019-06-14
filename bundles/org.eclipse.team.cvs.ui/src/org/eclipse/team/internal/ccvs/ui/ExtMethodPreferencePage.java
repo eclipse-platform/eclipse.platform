@@ -255,8 +255,8 @@ public class ExtMethodPreferencePage extends PreferencePage implements IWorkbenc
 		cvsRshParameters.setText(parameters);
 		cvsServer.setText(server);
 		IConnectionMethod[] methods = CVSRepositoryLocation.getPluggedInConnectionMethods();
-		for (int i = 0; i < methods.length; i++) {
-			String name = methods[i].getName();
+		for (IConnectionMethod m : methods) {
+			String name = m.getName();
 			if (!name.equals("ext")) { //$NON-NLS-1$
 				methodType.add(name);
 			}

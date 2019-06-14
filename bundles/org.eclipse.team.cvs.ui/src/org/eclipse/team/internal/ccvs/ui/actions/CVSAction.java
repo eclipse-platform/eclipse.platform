@@ -295,8 +295,8 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 			return problems[0];
 		}
 		MultiStatus combinedStatus = new MultiStatus(CVSUIPlugin.ID, 0, getMultiStatusMessage(), null); 
-		for (int i = 0; i < problems.length; i++) {
-			combinedStatus.merge(problems[i]);
+		for (IStatus problem : problems) {
+			combinedStatus.merge(problem);
 		}
 		return combinedStatus;
 	}
@@ -317,8 +317,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		List<IStatus> problems = new ArrayList<>();
 		IStatus[] status = getAccumulatedStatus();
 		if (status != null) {
-			for (int i = 0; i < status.length; i++) {
-				IStatus iStatus = status[i];
+			for (IStatus iStatus : status) {
 				if ( ! iStatus.isOK() || iStatus.getCode() == CVSStatus.SERVER_ERROR) {
 					problems.add(iStatus);
 				}
@@ -535,8 +534,7 @@ abstract public class CVSAction extends TeamAction implements IEditorActionDeleg
 		
 		final boolean[] result = new boolean[] { true };
 		
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (resource.getType() != IResource.PROJECT) {
 				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 				CVSTag parentTag = cvsResource.getParent().getFolderSyncInfo().getTag();

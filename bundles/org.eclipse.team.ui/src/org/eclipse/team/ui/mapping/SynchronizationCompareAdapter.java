@@ -14,7 +14,6 @@
 package org.eclipse.team.ui.mapping;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
@@ -106,8 +105,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 			} while (parent != null);
 			if (!segments.isEmpty()) {
 				IPath path = Path.EMPTY;
-				for (Iterator iter = segments.iterator(); iter.hasNext();) {
-					String segment = (String) iter.next();
+				for (String segment : segments) {
 					path = path.append(segment);
 				}
 				return path.toString();

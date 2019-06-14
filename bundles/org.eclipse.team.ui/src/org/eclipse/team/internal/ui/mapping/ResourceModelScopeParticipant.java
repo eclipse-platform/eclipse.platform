@@ -55,8 +55,7 @@ public class ResourceModelScopeParticipant implements
 
 	private boolean hasWorkingSetMappings() {
 		ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			Object modelObject = mapping.getModelObject();
 			if (modelObject instanceof IWorkingSet) {
 				return true;
@@ -67,8 +66,7 @@ public class ResourceModelScopeParticipant implements
 
 	private boolean hasWorkspaceMapping() {
 		ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			Object modelObject = mapping.getModelObject();
 			if (modelObject instanceof IResource) {
 				IResource resource = (IResource) modelObject;
@@ -90,8 +88,7 @@ public class ResourceModelScopeParticipant implements
 			ISynchronizationScope scope, IResource[] resources,
 			IProject[] projects) {
 		Set<ResourceMapping> result = new HashSet<>();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			collectMappings(project, result);
 		}
 		return result.toArray(new ResourceMapping[result.size()]);
@@ -99,20 +96,17 @@ public class ResourceModelScopeParticipant implements
 
 	private void collectMappings(IProject project, Set<ResourceMapping> result) {
 		ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			boolean refresh = false;
 			Object modelObject = mapping.getModelObject();
 			if (modelObject instanceof IWorkingSet) {
 				IWorkingSet set = (IWorkingSet)modelObject;
 				IAdaptable[] elements = set.getElements();
-				for (int j = 0; j < elements.length; j++) {
-					IAdaptable adaptable = elements[j];
+				for (IAdaptable adaptable : elements) {
 					ResourceMapping m = Adapters.adapt(adaptable, ResourceMapping.class);
 					if (m != null) {
 						IProject[] p = m.getProjects();
-						for (int k = 0; k < p.length; k++) {
-							IProject mp = p[k];
+						for (IProject mp : p) {
 							if (mp.equals(project)) {
 								refresh = true;
 								break;
@@ -156,12 +150,11 @@ public class ResourceModelScopeParticipant implements
 		// Only interested in project additions and removals
 		Set<ResourceMapping> result = new HashSet<>();
 		IResourceDelta[] children = event.getDelta().getAffectedChildren();
-		for (int i = 0; i < children.length; i++) {
-			IResourceDelta delta = children[i];
+		for (IResourceDelta delta : children) {
 			IResource resource = delta.getResource();
 			if (resource.getType() == IResource.PROJECT
 					&& ((delta.getKind() & (IResourceDelta.ADDED | IResourceDelta.REMOVED)) != 0
-						|| (delta.getFlags() & IResourceDelta.OPEN) != 0)) {
+					|| (delta.getFlags() & IResourceDelta.OPEN) != 0)) {
 				if (isInContext(resource))
 					collectMappings((IProject)resource, result);
 			}
@@ -174,8 +167,7 @@ public class ResourceModelScopeParticipant implements
 
 	private boolean isInContext(IResource resource) {
 		IProject[] projects = scope.getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if (project.equals(resource.getProject())) {
 				return true;
 			}
@@ -192,8 +184,7 @@ public class ResourceModelScopeParticipant implements
 		if (event.getProperty() == IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE) {
 			IWorkingSet newSet = (IWorkingSet) event.getNewValue();
 			ResourceMapping[] mappings = scope.getMappings(provider.getDescriptor().getId());
-			for (int i = 0; i < mappings.length; i++) {
-				ResourceMapping mapping = mappings[i];
+			for (ResourceMapping mapping : mappings) {
 				if (newSet == mapping.getModelObject()) {
 					fireChange(new ResourceMapping[] { mapping });
 				}

@@ -114,8 +114,7 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 			}
 		}
 		Object[] children = super.getChildren(element);
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			if (object instanceof CVSModelElement) 
 				((CVSModelElement)object).setWorkingSet(getWorkingSet());
 		}
@@ -124,8 +123,7 @@ public class RemoteContentProvider extends WorkbenchContentProvider {
 
 	public void cancelJobs(RepositoryRoot[] roots) {
 		if (manager != null) {
-			for (int i = 0; i < roots.length; i++) {
-				RepositoryRoot root = roots[i];
+			for (RepositoryRoot root : roots) {
 				cancelJobs(root.getRoot());
 			}
 		}

@@ -87,8 +87,7 @@ public class CVSProjectPropertiesPage extends CVSPropertiesPage {
 		private void initialize(ICVSRepositoryLocation oldLocation) {
 			allLocations = CVSUIPlugin.getPlugin().getRepositoryManager().getKnownRepositoryLocations();
 			List locations = new ArrayList();
-			for (int i = 0; i < allLocations.length; i++) {
-				ICVSRepositoryLocation location = allLocations[i];
+			for (ICVSRepositoryLocation location : allLocations) {
 				if (isCompatible(location, oldLocation)) {
 					locations.add(location);
 				}

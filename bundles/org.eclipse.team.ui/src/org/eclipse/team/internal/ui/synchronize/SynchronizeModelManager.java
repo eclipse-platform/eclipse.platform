@@ -233,8 +233,7 @@ public abstract class SynchronizeModelManager extends SynchronizePageActionGroup
 		// We only need switching of layouts if there is more than one model provider
 		if (providers.length > 1) {
 			toggleModelProviderActions = new ArrayList();
-			for (int i = 0; i < providers.length; i++) {
-				final ISynchronizeModelProviderDescriptor provider = providers[i];
+			for (ISynchronizeModelProviderDescriptor provider : providers) {
 				toggleModelProviderActions.add(new ToggleModelProviderAction(provider));
 			}
 		}

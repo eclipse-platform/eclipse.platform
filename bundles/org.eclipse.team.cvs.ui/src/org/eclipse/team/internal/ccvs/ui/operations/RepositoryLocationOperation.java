@@ -58,8 +58,7 @@ public abstract class RepositoryLocationOperation extends RemoteOperation {
 	 */
 	private Map getLocationMapping(ICVSRemoteResource[] remoteResources) {
 		Map locationsMap = new HashMap();
-		for (int i = 0; i < remoteResources.length; i++) {
-			ICVSRemoteResource resource = remoteResources[i];
+		for (ICVSRemoteResource resource : remoteResources) {
 			ICVSRepositoryLocation location = resource.getRepository();
 			List resources = (List)locationsMap.get(location);
 			if (resources == null) {

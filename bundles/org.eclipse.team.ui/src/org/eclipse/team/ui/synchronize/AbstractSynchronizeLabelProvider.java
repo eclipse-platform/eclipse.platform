@@ -319,8 +319,7 @@ public abstract class AbstractSynchronizeLabelProvider implements ILabelProvider
 		if (mapping != null) {
 			try {
 				IMarker[] markers = mapping.findMarkers(IMarker.PROBLEM, true, null);
-				for (int i = 0; i < markers.length; i++) {
-					IMarker marker = markers[i];
+				for (IMarker marker : markers) {
 					Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
 					if (severity != null) {
 						if (severity.intValue() == IMarker.SEVERITY_ERROR) {

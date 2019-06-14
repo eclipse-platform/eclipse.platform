@@ -44,8 +44,7 @@ public class OverrideAndUpdateSubscriberOperation extends CVSSubscriberOperation
 		try {
 			SyncInfo[] conflicts = set.getNodes(getConflictingAdditionFilter());
 			List<IResource> conflictingResources = new ArrayList<>();
-			for (int i = 0; i < conflicts.length; i++) {
-				SyncInfo info = conflicts[i];
+			for (SyncInfo info : conflicts) {
 				conflictingResources.add(info.getLocal());
 			}
 			new OverrideAndUpdateOperation(getPart(), project, set.getResources(), conflictingResources.toArray(new IResource[conflictingResources.size()]), null /* tag */, false /* recurse */).run(monitor);

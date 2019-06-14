@@ -146,8 +146,8 @@ public abstract class JUnitTestCase extends TestCase {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		PrintStream os = new PrintStream(bos);
 		try {
-			for (int i = 0; i < contents.length; i++) {
-				os.println(contents[i]);
+			for (String content : contents) {
+				os.println(content);
 			}
 			ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
 			if (file.exists()) {
@@ -299,8 +299,8 @@ public abstract class JUnitTestCase extends TestCase {
 	 */
 	protected static void createRandomFile(IContainer parent, String[] fileNameArray) 
 		throws IOException, CoreException {
-		for (int i = 0; i < fileNameArray.length; i++) {
-			IFile file = parent.getFile(new Path(fileNameArray[i]));
+		for (String fileName : fileNameArray) {
+			IFile file = parent.getFile(new Path(fileName));
 			createRandomFile(file);
 		}
 	}

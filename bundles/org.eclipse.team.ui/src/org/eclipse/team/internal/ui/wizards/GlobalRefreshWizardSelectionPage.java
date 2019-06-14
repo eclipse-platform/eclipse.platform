@@ -173,9 +173,9 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 
 		final SynchronizeManager syncManager= (SynchronizeManager)TeamUI.getSynchronizeManager();
 		final SynchronizeWizardDescription [] wizards= syncManager.getWizardDescriptors();
-		for (int i = 0; i < wizards.length; i++) {
-			if (defaultSelection.equals(wizards[i].getId())) {
-				return wizards[i];
+		for (SynchronizeWizardDescription w : wizards) {
+			if (defaultSelection.equals(w.getId())) {
+				return w;
 			}
 		}
 		return null;

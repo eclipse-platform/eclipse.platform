@@ -72,8 +72,7 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		ResourceDiffTree tree = (ResourceDiffTree)getSynchronizationContext().getDiffTree();
 		try {
 			tree.beginInput();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				tree.remove(resource);
 			}
 		} finally {
@@ -85,8 +84,7 @@ public class RemoveFromViewAction extends ResourceModelParticipantAction {
 		ResourceTraversal[] traversals = getResourceTraversals(getStructuredSelection(), monitor);
 		IDiff[] diffs = getSynchronizationContext().getDiffTree().getDiffs(traversals);
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			if (isVisible(diff)) {
 				result.add(ResourceDiffTree.getResourceFor(diff));
 			}

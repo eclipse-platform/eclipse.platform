@@ -101,8 +101,8 @@ public class CommentTemplatesPreferencePage extends PreferencePage implements
 		// populate list
 		String[] templates =
 			CVSUIPlugin.getPlugin().getRepositoryManager().getCommentTemplates();
-		for (int i = 0; i < templates.length; i++) {
-			viewer.add(templates[i]);
+		for (String template : templates) {
+			viewer.add(template);
 		}
 
 		createButtons(listAndButtons);

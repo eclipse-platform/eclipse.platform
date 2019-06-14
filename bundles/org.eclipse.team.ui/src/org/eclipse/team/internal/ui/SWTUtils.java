@@ -328,8 +328,8 @@ public class SWTUtils {
 
 	public static int getWidthInCharsForLongest(PixelConverter converter, String [] strings) {
 		int minimum= 0;
-		for (int i = 0; i < strings.length; i++) {
-			final int length= converter.convertWidthInCharsToPixels(strings[i].length());
+		for (String string : strings) {
+			final int length = converter.convertWidthInCharsToPixels(string.length());
 			if (minimum < length)
 				minimum= length;
 		}

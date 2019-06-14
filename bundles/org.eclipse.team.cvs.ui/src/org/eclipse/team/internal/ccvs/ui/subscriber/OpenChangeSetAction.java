@@ -78,8 +78,7 @@ class OpenChangeSetAction extends SynchronizeModelAction {
 	
 	private ChangeSet getChangeSet(Object[] elements) {
 		ChangeSet foundSet = null;
-		for (int i = 0; i < elements.length; i++) {
-			Object object = elements[i];
+		for (Object object : elements) {
 			ChangeSet set = getChangeSet((ISynchronizeModelElement)object);
 			if (set == null) return null;
 			if (foundSet == null) {
@@ -141,8 +140,7 @@ class OpenChangeSetAction extends SynchronizeModelAction {
 
 			private String getCompareToolTip() {
 				IDiffElement[] elements = getSelectedDiffElements();
-				for (int i = 0; i < elements.length; i++) {
-					IDiffElement element = elements[i];
+				for (IDiffElement element : elements) {
 					while (element != null) {
 						if (element instanceof ChangeSetDiffNode) {
 							return ((ChangeSetDiffNode)element).getName();
@@ -179,8 +177,7 @@ class OpenChangeSetAction extends SynchronizeModelAction {
 			 * Build the trees that will be compared
 			 */
 			private boolean buildTrees(CompareTreeBuilder builder, SyncInfo[] infos) {
-				for (int i = 0; i < infos.length; i++) {
-					SyncInfo info = infos[i];
+				for (SyncInfo info : infos) {
 					IResourceVariant remote = info.getRemote();
 					if (remote == null) {
 						IResourceVariant predecessor = info.getBase();

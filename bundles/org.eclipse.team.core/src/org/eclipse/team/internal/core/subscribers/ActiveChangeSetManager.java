@@ -60,8 +60,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	protected ChangeSet getChangeSet(IResourceDiffTree tree) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet changeSet = sets[i];
+		for (ChangeSet changeSet : sets) {
 			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
 				return changeSet;
 			}
@@ -143,8 +142,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	public ActiveChangeSet getSet(String name) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set.getName().equals(name) && set instanceof ActiveChangeSet) {
 				return (ActiveChangeSet)set;
 			}
@@ -162,8 +160,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	 */
 	public ActiveChangeSet createSet(String title, IFile[] files) throws CoreException {
 		List<IDiff> infos = new ArrayList<>();
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			IDiff diff = getDiff(file);
 			if (diff != null) {
 				infos.add(diff);
@@ -214,18 +211,15 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 	private IPath[] getAllResources(IDiffChangeEvent event) {
 		Set<IPath> allResources = new HashSet<>();
 		IDiff[] addedResources = event.getAdditions();
-		for (int i = 0; i < addedResources.length; i++) {
-			IDiff diff = addedResources[i];
+		for (IDiff diff : addedResources) {
 			allResources.add(diff.getPath());
 		}
 		IDiff[] changedResources = event.getChanges();
-		for (int i = 0; i < changedResources.length; i++) {
-			IDiff diff = changedResources[i];
+		for (IDiff diff : changedResources) {
 			allResources.add(diff.getPath());
 		}
 		IPath[] removals = event.getRemovals();
-		for (int i = 0; i < removals.length; i++) {
-			IPath path = removals[i];
+		for (IPath path : removals) {
 			allResources.add(path);
 		}
 		return allResources.toArray(new IPath[allResources.size()]);
@@ -244,8 +238,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			}
 			// Remove the added files from any other set that contains them
 			ChangeSet[] sets = getSets();
-			for (int i = 0; i < sets.length; i++) {
-				ChangeSet otherSet = sets[i];
+			for (ChangeSet otherSet : sets) {
 				if (otherSet != set && ((ActiveChangeSet)otherSet).isUserCreated()) {
 					otherSet.remove(resources);
 				}
@@ -309,8 +302,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		CompoundResourceTraversal traversal = new CompoundResourceTraversal();
 		traversal.addTraversals(traversals);
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			handleIntersect(traversal, set);
 		}
 		return traversal.asTraversals();
@@ -318,8 +310,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 
 	private void handleIntersect(CompoundResourceTraversal traversal, ChangeSet set) {
 		IResource[] resources = set.getResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (traversal.isCovered(resource, IResource.DEPTH_ZERO)) {
 				traversal.addResources(resources, IResource.DEPTH_ZERO);
 				return;
@@ -339,16 +330,14 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		// Clear the persisted state before saving the new state
 		try {
 			String[] oldSetNames = prefs.childrenNames();
-			for (int i = 0; i < oldSetNames.length; i++) {
-				String string = oldSetNames[i];
+			for (String string : oldSetNames) {
 				prefs.node(string).removeNode();
 			}
 		} catch (BackingStoreException e) {
 			TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.SubscriberChangeSetCollector_5, new String[] { getName() }), e);
 		}
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set instanceof ActiveChangeSet && !set.isEmpty()) {
 				// Since the change set title is stored explicitly, the name of
 				// the child preference node doesn't matter as long as it
@@ -408,8 +397,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 		String defaultSetTitle = prefs.get(CTX_DEFAULT_SET, null);
 		try {
 			String[] childNames = prefs.childrenNames();
-			for (int i = 0; i < childNames.length; i++) {
-				String string = childNames[i];
+			for (String string : childNames) {
 				Preferences childPrefs = prefs.node(string);
 				ActiveChangeSet set = createSet(childPrefs);
 				if (!set.isEmpty()) {

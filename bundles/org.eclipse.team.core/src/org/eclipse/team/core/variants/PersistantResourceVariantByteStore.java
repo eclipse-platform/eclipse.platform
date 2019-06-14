@@ -138,8 +138,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 			// Filter and return only resources that have sync bytes in the cache.
 			IResource[] members = ((IContainer)resource).members(true /* include phantoms */);
 			List<IResource> filteredMembers = new ArrayList<>(members.length);
-			for (int i = 0; i < members.length; i++) {
-				IResource member = members[i];
+			for (IResource member : members) {
 				if(getBytes(member) != null) {
 					filteredMembers.add(member);
 				}

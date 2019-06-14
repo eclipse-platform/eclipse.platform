@@ -84,8 +84,7 @@ public class SyncFileWriter {
 		String[] entries = readLines(cvsSubDir.getFile(ENTRIES));
 		if (entries == null) return null;
 		Map infos = new TreeMap();
-		for (int i = 0; i < entries.length; i++) {
-			String line = entries[i];
+		for (String line : entries) {
 			if(!FOLDER_TAG.equals(line) && !"".equals(line)) { //$NON-NLS-1$
 				try {
 					ResourceSyncInfo info = new ResourceSyncInfo(line, null);
@@ -93,7 +92,7 @@ public class SyncFileWriter {
 				} catch (CVSException e) {
 					// There was a problem parsing the entry line.
 					// Log the problem and skip the entry
-					CVSProviderPlugin.log(new CVSStatus(IStatus.ERROR, NLS.bind(CVSMessages.SyncFileWriter_0, new String[] { parent.getFullPath().toString() }), e)); 
+					CVSProviderPlugin.log(new CVSStatus(IStatus.ERROR, NLS.bind(CVSMessages.SyncFileWriter_0, new String[] { parent.getFullPath().toString() }), e));
 				}			
 			}
 		}
@@ -101,8 +100,7 @@ public class SyncFileWriter {
 		// process Entries.log file contents
 		String[] entriesLog = readLines(cvsSubDir.getFile(ENTRIES_LOG));
 		if (entriesLog != null) {
-			for (int i = 0; i < entriesLog.length; i++) {
-				String line = entriesLog[i];
+			for (String line : entriesLog) {
 				if (line.startsWith(ADD_TAG)) {
 					line = line.substring(ADD_TAG.length());
 					ResourceSyncInfo info = new ResourceSyncInfo(line, null);
@@ -279,8 +277,7 @@ public class SyncFileWriter {
 				return null;
 			// Split each line on spaces and tabs.
 			ArrayList/*<String>*/ entries = new ArrayList/*<String>*/();
-			for (int ln = 0; ln < lines.length; ln++) {
-				String line = lines[ln];
+			for (String line : lines) {
 				int pos = 0;
 				while (pos < line.length()) {
 					if (line.charAt(pos) == ' ' || line.charAt(pos) == '\t')
@@ -336,8 +333,7 @@ public class SyncFileWriter {
 		String[] entries = readLines(cvsSubDir.getFile(NOTIFY));
 		if (entries == null) return null;
 		Map infos = new TreeMap();
-		for (int i = 0; i < entries.length; i++) {
-			String line = entries[i];
+		for (String line : entries) {
 			if(!"".equals(line)) { //$NON-NLS-1$
 				try {
 					NotifyInfo info = new NotifyInfo(parent, line);
@@ -402,8 +398,7 @@ public class SyncFileWriter {
 		String[] entries = readLines(cvsSubDir.getFile(BASEREV));
 		if (entries == null) return null;
 		Map infos = new TreeMap();
-		for (int i = 0; i < entries.length; i++) {
-			String line = entries[i];
+		for (String line : entries) {
 			if(!"".equals(line)) { //$NON-NLS-1$
 				BaserevInfo info = new BaserevInfo(line);
 				infos.put(info.getName(), info);
@@ -616,8 +611,8 @@ public class SyncFileWriter {
 		byte[] lineEnd = getLineDelimiter();
 		try {
 			try {
-				for (int i = 0; i < contents.length; i++) {
-					os.write(contents[i].getBytes());
+				for (String content : contents) {
+					os.write(content.getBytes());
 					os.write(lineEnd);
 				}
 			} finally {

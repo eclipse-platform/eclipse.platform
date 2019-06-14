@@ -73,8 +73,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		}
 		@Override
 		public boolean select(SyncInfo info) {
-			for (int i = 0; i < filters.length; i++) {
-				FastSyncInfoFilter filter = filters[i];
+			for (FastSyncInfoFilter filter : filters) {
 				if (!filter.select(info)) {
 					return false;
 				}
@@ -116,8 +115,7 @@ public class FastSyncInfoFilter extends SyncInfoFilter {
 		}
 		@Override
 		public boolean select(SyncInfo info) {
-			for (int i = 0; i < filters.length; i++) {
-				FastSyncInfoFilter filter = filters[i];
+			for (FastSyncInfoFilter filter : filters) {
 				if (filter.select(info)) {
 					return true;
 				}

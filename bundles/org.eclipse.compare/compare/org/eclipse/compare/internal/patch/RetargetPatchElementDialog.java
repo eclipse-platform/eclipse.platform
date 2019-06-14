@@ -57,9 +57,9 @@ class RetargetPatchElementDialog extends Dialog {
 				// Don't show closed projects
 				IProject[] allProjects= ((IWorkspaceRoot) element).getProjects();
 				ArrayList<IProject> accessibleProjects= new ArrayList<>();
-				for (int i= 0; i<allProjects.length; i++) {
-					if (allProjects[i].isOpen()) {
-						accessibleProjects.add(allProjects[i]);
+				for (IProject allProject : allProjects) {
+					if (allProject.isOpen()) {
+						accessibleProjects.add(allProject);
 					}
 				}
 				return accessibleProjects.toArray();

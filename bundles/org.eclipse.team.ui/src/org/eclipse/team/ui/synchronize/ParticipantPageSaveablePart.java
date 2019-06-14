@@ -293,8 +293,8 @@ public class ParticipantPageSaveablePart extends PageSaveablePart implements ICo
 			((LocalResourceTypedElement) right).commit(pm);
 
 		IDiffElement[] children = node.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			commit(pm, (DiffNode)children[i]);
+		for (IDiffElement c : children) {
+			commit(pm, (DiffNode) c);
 		}
 	}
 

@@ -108,8 +108,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		ISynchronizeParticipantReference[] refs = manager.getSynchronizeParticipants();
 		ArrayList<ISynchronizeParticipant> removals = new ArrayList<>();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference reference = refs[i];
+		for (ISynchronizeParticipantReference reference : refs) {
 			ISynchronizeParticipant p;
 			try {
 				p = reference.getParticipant();
@@ -211,8 +210,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 
 	private List<Saveable> getDirtyModels(ISynchronizeParticipant[] participants) {
 		List<Saveable> result = new ArrayList<>();
-		for (int i = 0; i < participants.length; i++) {
-			ISynchronizeParticipant participant = participants[i];
+		for (ISynchronizeParticipant participant : participants) {
 			if (participant instanceof ModelSynchronizeParticipant) {
 				ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
 				Saveable s = msp.getActiveSaveable();

@@ -49,8 +49,8 @@ public abstract class ChangeSetManager {
 			return;
 		if (contains(set)) {
 			Object[] listeners = getListeners();
-			for (int i = 0; i < listeners.length; i++) {
-				final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+			for (Object l : listeners) {
+				final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void handleException(Throwable exception) {
@@ -75,8 +75,8 @@ public abstract class ChangeSetManager {
 		if (initializing)
 			return;
 		Object[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -109,8 +109,8 @@ public abstract class ChangeSetManager {
 		if (initializing)
 			return;
 		Object[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -143,8 +143,8 @@ public abstract class ChangeSetManager {
 		if (initializing)
 			return;
 		Object[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -208,8 +208,8 @@ public abstract class ChangeSetManager {
 		if (initializing)
 			return;
 		Object[] listeners = getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IChangeSetChangeListener listener = (IChangeSetChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IChangeSetChangeListener listener = (IChangeSetChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

@@ -77,14 +77,14 @@ public class StaticProxyConfig {
 		} else {
 			IProxyData[] data = getUniversalProxiesData();
 			if (uri.getScheme() != null) {
-				for (int i = 0; i < data.length; i++) {
-					if (uri.getScheme().equalsIgnoreCase(data[i].getType())) {
-						proxies.add(data[i]);
+				for (IProxyData d : data) {
+					if (uri.getScheme().equalsIgnoreCase(d.getType())) {
+						proxies.add(d);
 					}
 				}
 			} else {
-				for (int i = 0; i < data.length; i++) {
-					proxies.add(data[i]);
+				for (IProxyData d : data) {
+					proxies.add(d);
 				}
 			}
 		}

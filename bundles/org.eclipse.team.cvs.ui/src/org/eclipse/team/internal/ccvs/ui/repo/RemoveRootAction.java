@@ -96,25 +96,24 @@ public class RemoveRootAction extends SelectionListenerAction {
 		if(!proceed[0]){
 			return;
 		}
-		for (int i = 0; i < roots.length; i++) {
-			final ICVSRepositoryLocation root = roots[i];
+		for (ICVSRepositoryLocation root : roots) {
 			try {	
 				// Check if any projects are shared with the repository
 				IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 				final ArrayList shared = new ArrayList();
-				for (int j = 0; j < projects.length; j++) {
-					RepositoryProvider teamProvider = RepositoryProvider.getProvider(projects[j], CVSProviderPlugin.getTypeId());
+				for (IProject project : projects) {
+					RepositoryProvider teamProvider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
 					if (teamProvider!=null) {
 						CVSTeamProvider cvsProvider = (CVSTeamProvider)teamProvider;
-						if (cvsProvider.getCVSWorkspaceRoot().getRemoteLocation().equals(roots[i])) {
-							shared.add(projects[j]);
+						if (cvsProvider.getCVSWorkspaceRoot().getRemoteLocation().equals(root)) {
+							shared.add(project);
 						}
 					}
 				}
 			
 				// This will notify the RepositoryManager of the removal
 				if (!shared.isEmpty()) {
-					final String location = roots[i].getLocation(true);
+					final String location = root.getLocation(true);
 					shell.getDisplay().syncExec(() -> {
 						DetailsDialogWithProjects dialog = new DetailsDialogWithProjects(shell,
 								CVSUIMessages.RemoteRootAction_Unable_to_Discard_Location_1,

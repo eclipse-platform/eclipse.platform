@@ -1284,8 +1284,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				return;
 			IRegion region= textPresentation.getExtent();
 			Diff[] changeDiffs = fMerger.getChangeDiffs(getLeg(viewer), region);
-			for (int i = 0; i < changeDiffs.length; i++) {
-				Diff diff = changeDiffs[i];
+			for (Diff diff : changeDiffs) {
 				StyleRange range = getStyleRange(diff, region);
 				if (range != null)
 					textPresentation.mergeStyleRange(range);
@@ -3052,9 +3051,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 	private boolean isCursorLinePainterInstalled(SourceViewer viewer) {
 		Listener[] listeners = viewer.getTextWidget().getListeners(3001/*StyledText.LineGetBackground*/);
-		for (int i = 0; i < listeners.length; i++) {
-			if (listeners[i] instanceof TypedListener) {
-				TypedListener listener = (TypedListener) listeners[i];
+		for (Listener l : listeners) {
+			if (l instanceof TypedListener) {
+				TypedListener listener = (TypedListener) l;
 				if (listener.getEventListener() instanceof CursorLinePainter)
 					return true;
 			}
@@ -3894,10 +3893,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			currentFiltersMatch = true;
 			@SuppressWarnings("unchecked")
 			List<ChangeCompareFilterPropertyAction> currentFilterActions = (List<ChangeCompareFilterPropertyAction>) current;
-			for (int i = 0; i < compareFilterDescriptors.length; i++) {
+			for (CompareFilterDescriptor compareFilterDescriptor : compareFilterDescriptors) {
 				boolean match = false;
 				for (int j = 0; j < currentFilterActions.size(); j++) {
-					if (compareFilterDescriptors[i].getFilterId().equals(currentFilterActions.get(j).getFilterId())) {
+					if (compareFilterDescriptor.getFilterId().equals(currentFilterActions.get(j).getFilterId())) {
 						match = true;
 						break;
 					}
@@ -3913,9 +3912,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					Boolean.TRUE);
 			disposeCompareFilterActions(true);
 			fCompareFilterActions.clear();
-			for (int i = 0; i < compareFilterDescriptors.length; i++) {
-				ChangeCompareFilterPropertyAction compareFilterAction = new ChangeCompareFilterPropertyAction(
-						compareFilterDescriptors[i], getCompareConfiguration());
+			for (CompareFilterDescriptor compareFilterDescriptor : compareFilterDescriptors) {
+				ChangeCompareFilterPropertyAction compareFilterAction = new ChangeCompareFilterPropertyAction(compareFilterDescriptor, getCompareConfiguration());
 				compareFilterAction.setInput(input, ancestor, left, right);
 				fCompareFilterActions.add(compareFilterAction);
 				fLeft.addTextAction(compareFilterAction);

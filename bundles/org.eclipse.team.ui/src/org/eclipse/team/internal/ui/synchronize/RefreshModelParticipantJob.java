@@ -51,13 +51,11 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 		@Override
 		public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 			IDiff[] additions = event.getAdditions();
-			for (int i = 0; i < additions.length; i++) {
-				IDiff node = additions[i];
+			for (IDiff node : additions) {
 				changes.put(node.getPath(), node);
 			}
 			IDiff[] changed = event.getChanges();
-			for (int i = 0; i < changed.length; i++) {
-				IDiff node = changed[i];
+			for (IDiff node : changed) {
 				changes.put(node.getPath(), node);
 			}
 		}

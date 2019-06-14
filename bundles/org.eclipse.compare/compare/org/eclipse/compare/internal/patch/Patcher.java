@@ -203,15 +203,14 @@ public class Patcher implements IHunkFilter {
 
 	public void countLines() {
 		FilePatch2[] fileDiffs = getDiffs();
-		for (int i = 0; i < fileDiffs.length; i++) {
+		for (FilePatch2 fileDiff : fileDiffs) {
 			int addedLines = 0;
 			int removedLines = 0;
-			FilePatch2 fileDiff = fileDiffs[i];
 			for (int j = 0; j < fileDiff.getHunkCount(); j++) {
 				IHunk hunk = fileDiff.getHunks()[j];
 				String[] lines = ((Hunk) hunk).getLines();
-				for (int k = 0; k < lines.length; k++) {
-					char c = lines[k].charAt(0);
+				for (String line : lines) {
+					char c = line.charAt(0);
 					switch (c) {
 					case '+':
 						addedLines++;
@@ -517,8 +516,7 @@ public class Patcher implements IHunkFilter {
 		//path segment contained in all diffs.
 		int length= 99;
 		if (fDiffs!=null) {
-			for (int i= 0; i<fDiffs.length; i++) {
-				FilePatch2 diff= fDiffs[i];
+			for (FilePatch2 diff : fDiffs) {
 				length= Math.min(length, diff.segmentCount());
 			}
 			if (ResourcesPlugin.getWorkspace().getRoot().equals(fTarget))
@@ -537,9 +535,9 @@ public class Patcher implements IHunkFilter {
 	public void removeDiff(FilePatch2 diffToRemove){
 		FilePatch2[] temp = new FilePatch2[fDiffs.length - 1];
 		int counter = 0;
-		for (int i = 0; i < fDiffs.length; i++) {
-			if (fDiffs[i] != diffToRemove){
-				temp[counter++] = fDiffs[i];
+		for (FilePatch2 diff : fDiffs) {
+			if (diff != diffToRemove) {
+				temp[counter++] = diff;
 			}
 		}
 		fDiffs = temp;
@@ -556,15 +554,15 @@ public class Patcher implements IHunkFilter {
 
 	private void setEnabledProject(DiffProject projectDiff, boolean enabled) {
 		FilePatch2[] diffFiles = projectDiff.getFileDiffs();
-		for (int i = 0; i < diffFiles.length; i++) {
-			setEnabledFile(diffFiles[i], enabled);
+		for (FilePatch2 diffFile : diffFiles) {
+			setEnabledFile(diffFile, enabled);
 		}
 	}
 
 	private void setEnabledFile(FilePatch2 fileDiff, boolean enabled) {
 		IHunk[] hunks = fileDiff.getHunks();
-		for (int i = 0; i < hunks.length; i++) {
-			setEnabledHunk((Hunk) hunks[i], enabled);
+		for (IHunk hunk : hunks) {
+			setEnabledHunk((Hunk) hunk, enabled);
 		}
 	}
 
@@ -619,8 +617,7 @@ public class Patcher implements IHunkFilter {
 			if (diffs==null||diffs.length<=0)
 				return -1;
 			int fuzz= -1;
-			for (int i= 0; i<diffs.length; i++) {
-				FilePatch2 d= diffs[i];
+			for (FilePatch2 d : diffs) {
 				IFile file= getTargetFile(d);
 				if (file != null && file.exists()) {
 					List<String> lines= LineReader.load(file, false);
@@ -642,8 +639,7 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public void refresh(FilePatch2[] diffs) {
-		for (int i = 0; i < diffs.length; i++) {
-			FilePatch2 diff = diffs[i];
+		for (FilePatch2 diff : diffs) {
 			FileDiffResult result = getDiffResult(diff);
 			((WorkspaceFileDiffResult)result).refresh();
 		}

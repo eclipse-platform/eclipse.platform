@@ -138,8 +138,7 @@ public class ActiveChangeSet extends DiffChangeSet {
 		if (!isEmpty()) {
 			StringBuilder buffer = new StringBuilder();
 			IResource[] resources = getResources();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				buffer.append(resource.getFullPath().toString());
 				buffer.append('\n');
 			}
@@ -207,8 +206,7 @@ public class ActiveChangeSet extends DiffChangeSet {
 	 */
 	public void add(IResource[] resources) throws CoreException {
 		List<IDiff> toAdd = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IDiff diff = getManager().getDiff(resource);
 			if (diff != null) {
 				toAdd.add(diff);

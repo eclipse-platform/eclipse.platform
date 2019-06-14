@@ -89,8 +89,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		members.addAll(Arrays.asList(super.members(resource)));
 		try {
 			IResource[]  localMembers = EclipseSynchronizer.getInstance().members((IContainer) resource); //((IContainer)resource).members(true);
-			for (int i = 0; i < localMembers.length; i++) {
-				IResource local = localMembers[i];
+			for (IResource local : localMembers) {
 				if (local.getType() != IResource.FILE) {
 					ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor((IContainer)local);
 					if (folder.isCVSFolder()) {
@@ -248,8 +247,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 		List children = new ArrayList();
 		List changedResources = new ArrayList();
 		children.addAll(Arrays.asList(members));
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (!children.contains(resource)) {
 				// These sync bytes are stale. Purge them
 				flushVariants(resource, IResource.DEPTH_INFINITE);
@@ -273,8 +271,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 			if (local.getType() != IResource.FILE && (local.exists() || local.isPhantom())) {
 				IResource[] allChildren = ((IContainer)local).members(true /* include phantoms */);
 				List childrenWithSyncBytes = new ArrayList();
-				for (int i = 0; i < allChildren.length; i++) {
-					IResource resource = allChildren[i];
+				for (IResource resource : allChildren) {
 					if (getByteStore().getBytes(resource) != null) {
 						childrenWithSyncBytes.add(resource);
 					}
@@ -333,8 +330,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 	private boolean isJobInFamilyRunning(Object family) {
 		Job[] jobs = Job.getJobManager().find(family);
 		if (jobs != null && jobs.length > 0) {
-			for (int i = 0; i < jobs.length; i++) {
-				Job job = jobs[i];
+			for (Job job : jobs) {
 				if (job.getState() != Job.NONE) {
 					return true;
 				}
@@ -366,8 +362,7 @@ public class CVSResourceVariantTree extends ResourceVariantTree {
 			RemoteFolderTree remote = RemoteFolderTree.fromBytes(parent, resource, remoteBytes);
 			IResource[] members = members(resource);
 			List children = new ArrayList();
-			for (int i = 0; i < members.length; i++) {
-				IResource member = members[i];
+			for (IResource member : members) {
 				ICVSRemoteResource child = buildTree(remote, member, immutable, monitor);
 				if (child != null)
 					children.add(child);

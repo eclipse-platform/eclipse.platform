@@ -171,8 +171,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		ITypedElement localEdition = null;
 		try {
 			localEdition = createLocalEdition(structureCreator, localFileElement, element);
-			for (int i = 0; i < revisions.length; i++) {
-				IFileRevision revision = revisions[i];
+			for (IFileRevision revision : revisions) {
 				ITypedElement edition = createEdition(structureCreator, element, new FileRevisionTypedElement(revision));
 				if (edition != null && !contentsEqual(structureCreator, localEdition, edition)) {
 					return edition;
@@ -245,8 +244,7 @@ public class EditionHistoryPage extends LocalHistoryPage {
 		List<IFileRevision> result = new ArrayList<IFileRevision>();
 		sortDescending(revisions);
 		editions.clear();
-		for (int i = 0; i < revisions.length; i++) {
-			IFileRevision revision = revisions[i];
+		for (IFileRevision revision : revisions) {
 			ITypedElement edition = createEdition(new FileRevisionTypedElement(revision));
 			if (edition != null && !contentsEqual(structureCreator, previousEdition, edition)) {
 				editions.put(revision, edition);

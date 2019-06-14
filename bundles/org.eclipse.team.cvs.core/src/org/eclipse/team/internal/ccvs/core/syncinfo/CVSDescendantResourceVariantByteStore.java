@@ -79,8 +79,7 @@ public class CVSDescendantResourceVariantByteStore extends DescendantResourceVar
 	public IStatus handleResourceChanges(IResource[] changedResources, boolean canModifyWorkspace) {
 		// IMPORTANT NOTE: This will throw exceptions if performed during the POST_CHANGE delta phase!!!
 		List errors = new ArrayList();
-		for (int i = 0; i < changedResources.length; i++) {
-			IResource resource = changedResources[i];
+		for (IResource resource : changedResources) {
 			try {
 				if (!isInCVSProject(resource)) continue;
 				if (resource.getType() == IResource.FILE

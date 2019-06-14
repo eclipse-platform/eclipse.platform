@@ -178,8 +178,7 @@ public abstract class Request {
 				} else {
 					// look for particularly bad errors in the accumulated statuses
 					IStatus[] errors = session.getErrors();
-					for (int i = 0; i < errors.length; i++) {
-						IStatus s = errors[i];
+					for (IStatus s : errors) {
 						if (s.getCode() == CVSStatus.PROTOCOL_ERROR) {
 							throw new CVSServerException(status);
 						}

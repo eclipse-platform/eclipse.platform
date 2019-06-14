@@ -124,8 +124,8 @@ public class BenchmarkUtils {
 	public static IStatus findStatusByCode(IStatus status, int code) {
 		if (status.getCode() == code) return status;
 		IStatus[] children = status.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IStatus found = findStatusByCode(children[i], code);
+		for (IStatus child : children) {
+			IStatus found = findStatusByCode(child, code);
 			if (found != null) return found;
 		}
 		return null;
@@ -485,8 +485,8 @@ public class BenchmarkUtils {
 	 */
 	public static boolean isFolderEmpty(IFolder folder) throws CoreException {
 		IResource[] members = folder.members();
-		for (int i = 0; i < members.length; ++i) {
-			if (isValidFile(members[i]) || isValidFolder(members[i])) return false;
+		for (IResource member : members) {
+			if (isValidFile(member) || isValidFolder(member)) return false;
 		}
 		return true;
 	}
@@ -536,8 +536,8 @@ public class BenchmarkUtils {
 	 */
 	public static IResource[] filterResources(IResource[] resources) {
 		List<IResource> list = new ArrayList<>(resources.length);
-		for (int i = 0; i < resources.length; ++i) {
-			if (isValidResource(resources[i])) list.add(resources[i]);
+		for (IResource resource : resources) {
+			if (isValidResource(resource)) list.add(resource);
 		}
 		if (list.size() != resources.length) {
 			resources = list.toArray(new IResource[list.size()]);
@@ -552,8 +552,10 @@ public class BenchmarkUtils {
 		if (node == null) return true;
 		if (node.getKind() != 0) return false;
 		IDiffElement[] children = node.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			if (!isEmpty(children[i])) return false;
+		for (IDiffElement child : children) {
+			if (!isEmpty(child)) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -562,8 +564,10 @@ public class BenchmarkUtils {
 		if (element.getKind() != 0) return false;
 		if (element instanceof IDiffContainer) {
 			IDiffElement[] children = ((DiffNode)element).getChildren();
-			for (int i = 0; i < children.length; i++) {
-				if (!isEmpty(children[i])) return false;
+			for (IDiffElement child : children) {
+				if (!isEmpty(child)) {
+					return false;
+				}
 			}
 		}
 		return true;

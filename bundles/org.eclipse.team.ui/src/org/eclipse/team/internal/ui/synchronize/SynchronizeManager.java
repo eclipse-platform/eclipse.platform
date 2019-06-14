@@ -173,8 +173,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 			fChanged = participants;
 			fType = update;
 			Object[] copiedListeners = fListeners.getListeners();
-			for (int i = 0; i < copiedListeners.length; i++) {
-				fListener = (ISynchronizeParticipantListener) copiedListeners[i];
+			for (Object copiedListener : copiedListeners) {
+				fListener = (ISynchronizeParticipantListener) copiedListener;
 				SafeRunner.run(this);
 			}
 			fChanged = null;
@@ -364,8 +364,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	public synchronized void addSynchronizeParticipants(ISynchronizeParticipant[] participants) {
 		// renamed to createSynchronizeParticipant(id)
 		List<ISynchronizeParticipant> added = new ArrayList<>(participants.length);
-		for (int i = 0; i < participants.length; i++) {
-			ISynchronizeParticipant participant = participants[i];
+		for (ISynchronizeParticipant participant : participants) {
 			String key = Utils.getKey(participant.getId(), participant.getSecondaryId());
 			if(! participantReferences.containsKey(key)) {
 				try {
@@ -390,8 +389,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		ISynchronizeParticipantReference[] refs = get(id);
 		if (refs.length > 0) {
 			// Find an un-pinned participant and replace it
-			for (int i = 0; i < refs.length; i++) {
-				ISynchronizeParticipantReference reference = refs[i];
+			for (ISynchronizeParticipantReference reference : refs) {
 				ISynchronizeParticipant p;
 				try {
 					p = reference.getParticipant();
@@ -420,8 +418,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	@Override
 	public synchronized void removeSynchronizeParticipants(ISynchronizeParticipant[] participants) {
 		List<ISynchronizeParticipant> removed = new ArrayList<>(participants.length);
-		for (int i = 0; i < participants.length; i++) {
-			ISynchronizeParticipant participant = participants[i];
+		for (ISynchronizeParticipant participant : participants) {
 			String key = Utils.getKey(participant.getId(), participant.getSecondaryId());
 			if(participantReferences.containsKey(key)) {
 				ParticipantInstance ref = (ParticipantInstance)participantReferences.remove(key);
@@ -447,8 +444,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 	public ISynchronizeParticipantReference[] get(String id) {
 		ISynchronizeParticipantReference[] refs = getSynchronizeParticipants();
 		ArrayList<ISynchronizeParticipantReference> refsForId = new ArrayList<>();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference reference = refs[i];
+		for (ISynchronizeParticipantReference reference : refs) {
 			if(reference.getId().equals(id)) {
 				refsForId.add(reference);
 			}
@@ -606,8 +602,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 		}
 		IMemento memento = XMLMemento.createReadRoot(reader);
 		IMemento[] participantNodes = memento.getChildren(CTX_PARTICIPANT);
-		for (int i = 0; i < participantNodes.length; i++) {
-			IMemento memento2 = participantNodes[i];
+		for (IMemento memento2 : participantNodes) {
 			String id = memento2.getString(CTX_ID);
 			String secondayId = memento2.getString(CTX_SECONDARY_ID);
 			if (secondayId != null) {

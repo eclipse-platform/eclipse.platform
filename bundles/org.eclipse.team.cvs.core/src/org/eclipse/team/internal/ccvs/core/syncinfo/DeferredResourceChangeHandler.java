@@ -107,8 +107,7 @@ public class DeferredResourceChangeHandler extends BackgroundEventHandler {
 		}
 		IResource[] deletions = (IResource[]) conflictingDeletion.toArray(new IResource[conflictingDeletion.size()]);
 		conflictingDeletion.clear();
-		for (int i = 0; i < deletions.length; i++) {
-			IResource resource = deletions[i];
+		for (IResource resource : deletions) {
 			ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 			try {
 				if(!cvsResource.isFolder() && cvsResource.isManaged()) {
@@ -124,8 +123,7 @@ public class DeferredResourceChangeHandler extends BackgroundEventHandler {
 	
 	private Map getResourcesByProject(IResource[] resources) {
 		Map result = new HashMap();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IProject project = resource.getProject();
 			List projectResources = (List)result.get(project);
 			if (projectResources == null) {

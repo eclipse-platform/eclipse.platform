@@ -127,8 +127,7 @@ public class ReconcileProjectOperation extends ShareProjectOperation {
 					// Traverse the children of the remote
 					// (The members were prefetched).
 					ICVSRemoteResource[] members = remote.members(monitor);
-					for (int i = 0; i < members.length; i++) {
-						ICVSRemoteResource member = members[i];
+					for (ICVSRemoteResource member : members) {
 						populateWorkspace(getLocalChild((IContainer)resource, member), member, monitor);
 					}
 				}

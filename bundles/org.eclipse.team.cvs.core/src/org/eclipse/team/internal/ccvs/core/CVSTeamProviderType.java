@@ -153,8 +153,7 @@ public class CVSTeamProviderType extends RepositoryProviderType implements IAdap
 	
 	@Override
 	public void metaFilesDetected(IProject project, IContainer[] containers) {
-		for (int i = 0; i < containers.length; i++) {
-			IContainer container = containers[i];
+		for (IContainer container : containers) {
 			IContainer cvsDir = null;
 			if (container.getName().equals("CVS")) { //$NON-NLS-1$
 				cvsDir = container;

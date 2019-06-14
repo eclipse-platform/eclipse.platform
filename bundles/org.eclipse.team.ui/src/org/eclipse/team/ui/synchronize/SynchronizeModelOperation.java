@@ -99,8 +99,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	}
 
 	private void markBusy(IDiffElement[] elements, boolean isBusy) {
-		for (int i = 0; i < elements.length; i++) {
-			IDiffElement element = elements[i];
+		for (IDiffElement element : elements) {
 			if (element instanceof ISynchronizeModelElement) {
 				((ISynchronizeModelElement)element).setPropertyToRoot(ISynchronizeModelElement.BUSY_PROPERTY, isBusy);
 			}
@@ -114,8 +113,7 @@ public abstract class SynchronizeModelOperation extends TeamOperation {
 	 */
 	private SyncInfo[] getSyncInfos() {
 		List<SyncInfo> filtered = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++) {
-			IDiffElement e = elements[i];
+		for (IDiffElement e : elements) {
 			if (e instanceof SyncInfoModelElement) {
 				filtered.add(((SyncInfoModelElement)e).getSyncInfo());
 			}

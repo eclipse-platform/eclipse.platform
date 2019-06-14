@@ -57,8 +57,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 				IResourceChangeEvent.POST_CHANGE);
 		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
 				.getProjects();
-		for (int i = 0; i < allProjects.length; i++) {
-			IProject project = allProjects[i];
+		for (IProject project : allProjects) {
 			handleProject(project);
 		}
 	}
@@ -143,8 +142,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 
 	private String getProviderId(IProject[] projects) {
 		String id = null;
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			String nextId = getProviderId(project);
 			if (id == null)
 				id = nextId;
@@ -211,8 +209,7 @@ public class WorkspaceTeamStateProvider extends TeamStateProvider
 		IResourceDelta[] projectDeltas = delta
 				.getAffectedChildren(IResourceDelta.ADDED
 						| IResourceDelta.CHANGED);
-		for (int i = 0; i < projectDeltas.length; i++) {
-			IResourceDelta projectDelta = projectDeltas[i];
+		for (IResourceDelta projectDelta : projectDeltas) {
 			IResource resource = projectDelta.getResource();
 			if ((projectDelta.getFlags() & IResourceDelta.OPEN) != 0
 					&& resource.getType() == IResource.PROJECT) {

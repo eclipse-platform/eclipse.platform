@@ -86,8 +86,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	@Override
 	public void reject(final IDiff[] diffs, IProgressMonitor monitor) throws CoreException {
 		run(monitor1 -> {
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff node = diffs[i];
+			for (IDiff node : diffs) {
 				reject(node, monitor1);
 			}
 		}, getMergeRule(diffs), IResource.NONE, monitor);
@@ -96,8 +95,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	@Override
 	public void markAsMerged(final IDiff[] nodes, final boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
 		run(monitor1 -> {
-			for (int i = 0; i < nodes.length; i++) {
-				IDiff node = nodes[i];
+			for (IDiff node : nodes) {
 				markAsMerged(node, inSyncHint, monitor1);
 			}
 		}, getMergeRule(nodes), IResource.NONE, monitor);
@@ -109,8 +107,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 		run(monitor1 -> {
 			try {
 				monitor1.beginTask(null, deltas.length * 100);
-				for (int i = 0; i < deltas.length; i++) {
-					IDiff delta = deltas[i];
+				for (IDiff delta : deltas) {
 					IStatus s = merge(delta, force, Policy.subMonitorFor(monitor1, 100));
 					if (!s.isOK()) {
 						if (s.getCode() == IMergeStatus.CONFLICTS) {
@@ -459,8 +456,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	@Override
 	public ISchedulingRule getMergeRule(IDiff[] deltas) {
 		ISchedulingRule result = null;
-		for (int i = 0; i < deltas.length; i++) {
-			IDiff node = deltas[i];
+		for (IDiff node : deltas) {
 			ISchedulingRule rule = getMergeRule(node);
 			if (result == null) {
 				result = rule;

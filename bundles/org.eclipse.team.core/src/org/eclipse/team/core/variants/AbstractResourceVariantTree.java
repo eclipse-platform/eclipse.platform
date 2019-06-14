@@ -66,8 +66,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	public IResource[] refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
 		List<IResource> changedResources = new ArrayList<>();
 		monitor.beginTask(null, 100 * resources.length);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IResource[] changed = refresh(resource, depth, Policy.subMonitorFor(monitor, 100));
 			changedResources.addAll(Arrays.asList(changed));
 		}
@@ -223,8 +222,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 
 			if (localChildren.length > 0) {
 				localSet = new HashMap<>(10);
-				for (int i = 0; i < localChildren.length; i++) {
-					IResource localChild = localChildren[i];
+				for (IResource localChild : localChildren) {
 					String name = localChild.getName();
 					localSet.put(name, localChild);
 					allSet.add(name);
@@ -233,38 +231,34 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 
 			if (remoteChildren.length > 0) {
 				remoteSet = new HashMap<>(10);
-				for (int i = 0; i < remoteChildren.length; i++) {
-					IResourceVariant remoteChild = remoteChildren[i];
+				for (IResourceVariant remoteChild : remoteChildren) {
 					String name = remoteChild.getName();
 					remoteSet.put(name, remoteChild);
 					allSet.add(name);
 				}
 			}
 
-			Iterator e = allSet.iterator();
-			while (e.hasNext()) {
-				String keyChildName = (String) e.next();
-
+			for (String keyChildName : allSet) {
 				Policy.checkCanceled(progress);
 
 				IResource localChild =
-					localSet != null ? (IResource) localSet.get(keyChildName) : null;
-
-					IResourceVariant remoteChild =
+						localSet != null ? (IResource) localSet.get(keyChildName) : null;
+				
+				IResourceVariant remoteChild =
 						remoteSet != null ? (IResourceVariant) remoteSet.get(keyChildName) : null;
-
-					if (localChild == null) {
-						// there has to be a remote resource available if we got this far
-						Assert.isTrue(remoteChild != null);
-						boolean isContainer = remoteChild.isContainer();
-						localChild = getResourceChild(local /* parent */, keyChildName, isContainer);
-					}
-					if (localChild == null) {
-						TeamPlugin.log(IStatus.ERROR, NLS.bind("File {0} cannot be the parent of remote resource {1}", //$NON-NLS-1$
-								new Object[] { local.getFullPath(), keyChildName }), null);
-					} else {
-						mergedResources.put(localChild, remoteChild);
-					}
+				
+				if (localChild == null) {
+					// there has to be a remote resource available if we got this far
+					Assert.isTrue(remoteChild != null);
+					boolean isContainer = remoteChild.isContainer();
+					localChild = getResourceChild(local /* parent */, keyChildName, isContainer);
+				}
+				if (localChild == null) {
+					TeamPlugin.log(IStatus.ERROR, NLS.bind("File {0} cannot be the parent of remote resource {1}", //$NON-NLS-1$
+							new Object[] { local.getFullPath(), keyChildName }), null);
+				} else {
+					mergedResources.put(localChild, remoteChild);
+				}
 			}
 		}
 		return mergedResources;

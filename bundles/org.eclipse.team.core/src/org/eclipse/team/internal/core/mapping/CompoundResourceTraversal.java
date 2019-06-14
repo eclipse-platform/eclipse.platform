@@ -36,16 +36,14 @@ public class CompoundResourceTraversal {
 	private Set<IResource> files = new HashSet<>();
 
 	public synchronized void addTraversals(ResourceTraversal[] traversals) {
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			addTraversal(traversal);
 		}
 	}
 
 	public synchronized void addTraversal(ResourceTraversal traversal) {
 		IResource[] resources = traversal.getResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			addResource(resource, traversal.getDepth());
 		}
 	}
@@ -175,8 +173,7 @@ public class CompoundResourceTraversal {
 	}
 
 	public synchronized void addResources(IResource[] resources, int depth) {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			addResource(resource, depth);
 		}
 

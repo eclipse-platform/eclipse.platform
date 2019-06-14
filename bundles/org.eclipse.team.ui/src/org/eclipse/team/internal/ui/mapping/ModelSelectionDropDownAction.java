@@ -148,8 +148,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 		Set<ModelProvider> result = new HashSet<>();
 		ModelProvider[] providers = ((ModelSynchronizeParticipant)configuration.getParticipant()).getEnabledModelProviders();
 		providers = ModelMergeOperation.sortByExtension(providers);
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 			if (desc != null && desc.isEnabled()) {
 				result.add(provider);
@@ -160,8 +159,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 
 	private void addModelsToMenu(ModelProvider[] modelProviders) {
 		String id = getActiveProviderId();
-		for (int i = 0; i < modelProviders.length; i++) {
-			ModelProvider provider = modelProviders[i];
+		for (ModelProvider provider : modelProviders) {
 			Action action = new ShowModelProviderAction(configuration, provider);
 			action.setChecked(provider.getDescriptor().getId().equals(id));
 			menuManager.add(action);
@@ -206,8 +204,7 @@ public class ModelSelectionDropDownAction extends Action implements ISynchroniza
 			showAllAction.setChecked(getActiveProviderId().equals(ModelSynchronizeParticipant.ALL_MODEL_PROVIDERS_VISIBLE));
 			showAllFlatAction.setChecked(isFlatEnabled());
 			IContributionItem[] items = menuManager.getItems();
-			for (int i = 0; i < items.length; i++) {
-				IContributionItem item = items[i];
+			for (IContributionItem item : items) {
 				if (item instanceof ActionContributionItem) {
 					ActionContributionItem aci = (ActionContributionItem) item;
 					IAction a = aci.getAction();

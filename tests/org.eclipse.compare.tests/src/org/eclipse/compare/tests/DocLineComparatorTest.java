@@ -261,13 +261,12 @@ public class DocLineComparatorTest extends TestCase {
 		IRangeComparator l, r;
 		for (int i=0;i<docs.length;i++)
 			for (int j=i+1;j<docs.length;j++)
-				for (int k=0;k<filters.length;k++) {
-					l = new DocLineComparator(docs[i], null, false, filters[k], 'L');
-					r = new DocLineComparator(docs[j], null, false, filters[k], 'R');
+				for (ICompareFilter[] filter : filters) {
+					l = new DocLineComparator(docs[i], null, false, filter, 'L');
+					r = new DocLineComparator(docs[j], null, false, filter, 'R');
 					Assert.assertFalse(l.rangesEqual(0, r, 0));
-
-					l = new DocLineComparator(docs[i], null, true, filters[k], 'L');
-					r = new DocLineComparator(docs[j], null, true, filters[k], 'R');
+					l = new DocLineComparator(docs[i], null, true, filter, 'L');
+					r = new DocLineComparator(docs[j], null, true, filter, 'R');
 					Assert.assertTrue(l.rangesEqual(0, r, 0));
 			}
 	}

@@ -86,8 +86,7 @@ public class HunkDiffNode extends PatchDiffNode {
 		if (fuzz > 0) {
 			String[] lines = result.getHunk().getLines();
 			int contextLines = 0;
-			for (int i = 0; i < lines.length; i++) {
-				String line = lines[i];
+			for (String line : lines) {
 				char c = line.charAt(0);
 				if (c == ' ') {
 					contextLines++;

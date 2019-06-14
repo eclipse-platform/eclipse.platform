@@ -223,8 +223,7 @@ public class FilePatch2 implements IFilePatch2 {
 			adjustedNewPath = new Path(null, this.fProject.getName()).append(this.fNewPath);
 		}
 		FilePatch2 diff = create(adjustedOldPath, 0, adjustedNewPath, 0);
-		for (Iterator<Hunk> iterator = this.fHunks.iterator(); iterator.hasNext();) {
-			Hunk hunk = iterator.next();
+		for (Hunk hunk : this.fHunks) {
 			// Creating the hunk adds it to the parent diff
 			new Hunk(diff, hunk);
 		}

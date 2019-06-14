@@ -219,8 +219,8 @@ public class BranchOperation extends RepositoryProviderOperation {
 
 				// Visit all the children folders in order to set the root in the folder sync
 				// info
-				for (int i = 0; i < resources.length; i++) {
-					CVSWorkspaceRoot.getCVSResourceFor(resources[i]).accept(new ICVSResourceVisitor() {
+				for (IResource resource : resources) {
+					CVSWorkspaceRoot.getCVSResourceFor(resource).accept(new ICVSResourceVisitor() {
 						@Override
 						public void visitFile(ICVSFile file) throws CVSException {
 							monitor1.worked(1);
@@ -255,10 +255,9 @@ public class BranchOperation extends RepositoryProviderOperation {
 	
 	private void updateRememberedTags(IResource[] providerResources) throws CVSException {
 		if (rootVersionTag != null || update) {
-			for (int i = 0; i < providerResources.length; i++) {
-				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(providerResources[i]);
+			for (IResource providerResource : providerResources) {
+				ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(providerResource);
 				RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();
-
 				if (rootVersionTag != null) {
 					manager.addTags(cvsResource, new CVSTag[] { rootVersionTag });
 				}
@@ -283,8 +282,10 @@ public class BranchOperation extends RepositoryProviderOperation {
 	 * Answers <code>true</code> if all resources in the array have a sticky tag
 	 */
 	private boolean areAllResourcesSticky(IResource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			if(!hasStickyTag(resources[i])) return false;
+		for (IResource resource : resources) {
+			if (!hasStickyTag(resource)) {
+				return false;
+			}
 		}
 		return true;
 	}

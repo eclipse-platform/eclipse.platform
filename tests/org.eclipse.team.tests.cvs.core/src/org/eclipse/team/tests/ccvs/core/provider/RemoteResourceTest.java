@@ -71,9 +71,10 @@ public class RemoteResourceTest extends EclipseTest {
 	protected void getMembers(ICVSRemoteFolder folder, boolean deep) throws TeamException {
 		ICVSRemoteResource[] children = folder.members(DEFAULT_MONITOR);
 		if (deep) {
-			for (int i=0;i<children.length;i++) {
-				if (children[i].isContainer())
-					getMembers((ICVSRemoteFolder)children[i], deep);
+			for (ICVSRemoteResource c : children) {
+				if (c.isContainer()) {
+					getMembers((ICVSRemoteFolder) c, deep);
+				}
 			}
 		}
 	}
@@ -243,10 +244,9 @@ public class RemoteResourceTest extends EclipseTest {
 
 		ICVSRemoteFile remote = (ICVSRemoteFile)CVSWorkspaceRoot.getRemoteResourceFor(project.getFile("file.txt"));
 		ILogEntry[] entries = remote.getLogEntries(DEFAULT_MONITOR);
-		for (int i=0;i<entries.length;i++) {
-			InputStream in = entries[i].getRemoteFile().getContents(DEFAULT_MONITOR);
-			
-			if (entries[i].getRevision().equals("1.2")) {
+		for (ILogEntry entry : entries) {
+			InputStream in = entry.getRemoteFile().getContents(DEFAULT_MONITOR);
+			if (entry.getRevision().equals("1.2")) {
 				int count = 0;
 				byte[] buffer = new byte[1024];
 				int c;
@@ -256,7 +256,7 @@ public class RemoteResourceTest extends EclipseTest {
 				}
 				String contents = new String(buffer, 0, count);
 				assertEquals("the contents of revision 1.2 are not equal", contents, "hi there");
-			} else if (entries[i].getRevision().equals("1.3")) {
+			} else if (entry.getRevision().equals("1.3")) {
 				int count = 0;
 				byte[] buffer = new byte[1024];
 				int c;
@@ -378,18 +378,20 @@ public class RemoteResourceTest extends EclipseTest {
 	}
 
 	private LogEntry getLogEntryByRevision(ILogEntry[] entries, String revision) {
-		for (int i = 0; i < entries.length; i++) {
-			if (entries[i].getRevision().equals(revision) && entries[i] instanceof LogEntry) {
-				return (LogEntry) entries[i];
+		for (ILogEntry entry : entries) {
+			if (entry.getRevision().equals(revision) && entry instanceof LogEntry) {
+				return (LogEntry) entry;
 			}
 		}
 		return null;
 	}
 
 	private CVSTag getTagByName(CVSTag[] tags, String name) {
-		for (int i = 0; i < tags.length; i++)
-			if (tags[i].getName().equals(name))
-				return tags[i];
+		for (CVSTag tag : tags) {
+			if (tag.getName().equals(name)) {
+				return tag;
+			}
+		}
 		return null;
 	}
 

@@ -110,8 +110,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	@Override
 	protected void okPressed() {
-		for (int i = 0; i < pages.length; i++) {
-			PreferencePage page = pages[i];
+		for (PreferencePage page : pages) {
 			page.performOk();
 		}
 
@@ -163,8 +162,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 		tabFolder = new TabFolder(composite, SWT.NONE);
 		tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		for (int i = 0; i < pages.length; i++) {
-			PreferencePage page = pages[i];
+		for (PreferencePage page : pages) {
 			// text decoration options
 			TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 			tabItem.setText(page.getTitle());//
@@ -407,8 +405,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 	public void updateButtons() {
 		if (fOkButton != null) {
 			boolean isValid = true;
-			for (int i = 0; i < pages.length; i++) {
-				PreferencePage page = pages[i];
+			for (PreferencePage page : pages) {
 				if (!page.isValid()) {
 					isValid = false;
 					break;
@@ -442,12 +439,11 @@ public class PreferencePageContainerDialog extends TrayDialog
 	 */
 	protected void handleSave() {
 		// Save now in case tbe workbench does not shutdown cleanly
-		for (int i = 0; i < pages.length; i++) {
-			PreferencePage page = pages[i];
+		for (PreferencePage page : pages) {
 			IPreferenceStore store = page.getPreferenceStore();
 			if (store != null
-				&& store.needsSaving()
-				&& store instanceof IPersistentPreferenceStore) {
+					&& store.needsSaving()
+					&& store instanceof IPersistentPreferenceStore) {
 				try {
 					((IPersistentPreferenceStore) store).save();
 				} catch (IOException e) {
@@ -475,8 +471,8 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	private void firePageChanged(final PageChangedEvent event) {
 		Object[] listeners = pageChangedListeners.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IPageChangedListener l = (IPageChangedListener) listeners[i];
+		for (Object listener : listeners) {
+			final IPageChangedListener l = (IPageChangedListener) listener;
 			SafeRunnable.run(new SafeRunnable() {
 				@Override
 				public void run() {

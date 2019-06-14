@@ -91,10 +91,10 @@ public class ProxyEntriesLabelProvider extends BaseLabelProvider implements
 				NetUIMessages.ProxyPreferencePage_6,
 				NetUIMessages.ProxyPreferencePage_7,
 				NetUIMessages.ProxyPreferencePage_8 };
-		for (int i = 0; i < titles.length; i++) {
+		for (String title : titles) {
 			TableColumn column = new TableViewerColumn(viewer, SWT.NONE)
 					.getColumn();
-			column.setText(titles[i]);
+			column.setText(title);
 			column.setResizable(true);
 		}
 	}

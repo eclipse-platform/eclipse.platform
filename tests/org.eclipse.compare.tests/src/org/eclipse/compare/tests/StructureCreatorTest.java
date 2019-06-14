@@ -168,17 +168,14 @@ public class StructureCreatorTest extends TestCase {
 		DocumentRangeNode l, r;
 		for (int i = 0; i < docs.length; i++)
 			for (int j = i + 1; j < docs.length; j++)
-				for (int k = 0; k < filters.length; k++) {
-
+				for (ICompareFilter[] filter : filters) {
 					l = new DocumentRangeNode(1, "ID", docs[i], 0,
 							docs[i].getLength());
 					r = new DocumentRangeNode(1, "ID", docs[j], 0,
 							docs[j].getLength());
-					creator.contentsEquals(l, 'L', r, 'R', true, filters[k]);
-					Assert.assertFalse(creator.contentsEquals(l, 'L', r, 'R',
-							false, filters[k]));
-					Assert.assertTrue(creator.contentsEquals(l, 'L', r, 'R',
-							true, filters[k]));
-				}
+					creator.contentsEquals(l, 'L', r, 'R', true, filter);
+					Assert.assertFalse(creator.contentsEquals(l, 'L', r, 'R', false, filter));
+					Assert.assertTrue(creator.contentsEquals(l, 'L', r, 'R', true, filter));
+			}
 	}
 }

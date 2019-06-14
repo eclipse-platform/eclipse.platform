@@ -154,8 +154,7 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 				EclipseSynchronizer.getInstance().adjustDirtyStateRecursively(container, RECOMPUTE_INDICATOR);
 			}
 			IResource[] members = container.members();
-			for (int i = 0; i < members.length; i++) {
-				IResource resource = members[i];
+			for (IResource resource : members) {
 				purgeResourceSyncCache(resource);
 				flushed.add(resource);
 				if (deep && resource.getType() != IResource.FILE) {
@@ -406,12 +405,11 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 			} else {
 				projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 			}
-			for (int i = 0; i < projects.length; i++) {
-				IProject project = projects[i];
+			for (IProject project : projects) {
 				RepositoryProvider provider = RepositoryProvider.getProvider(
-														project,
-														CVSProviderPlugin.getTypeId());
-														
+						project,
+						CVSProviderPlugin.getTypeId());
+
 				// found a project managed by CVS, convert each session property on a
 				// folder to a sync object.
 				if (provider != null) {
@@ -462,8 +460,8 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 			if (resource.getType() != IResource.FILE) {
 				ResourcesPlugin.getWorkspace().getSynchronizer().flushSyncInfo(FOLDER_DIRTY_STATE_KEY, resource, IResource.DEPTH_INFINITE);
 				IResource[] members = ((IContainer)resource).members();
-				for (int i = 0; i < members.length; i++) {
-					purgeDirtyCache(members[i]);
+				for (IResource member : members) {
+					purgeDirtyCache(member);
 				}
 			}
 		} catch (CoreException e) {

@@ -54,9 +54,9 @@ public class Commit extends Command {
 		
 		// Send the changed files as arguments (because this is what other cvs clients do)
 		ICVSFile[] changedFiles = visitor.getModifiedFiles();
-		for (int i = 0; i < changedFiles.length; i++) {
+		for (ICVSFile changedFile : changedFiles) {
 			// escape file names, see bug 149683
-			String fileName = changedFiles[i].getRelativePath(session.getLocalRoot());
+			String fileName = changedFile.getRelativePath(session.getLocalRoot());
 			if(fileName.startsWith("-")){ //$NON-NLS-1$
 				fileName = "./" + fileName; //$NON-NLS-1$
 			}
@@ -84,10 +84,9 @@ public class Commit extends Command {
 		// Reset the timestamps of any committed files that are still dirty.
 		// Only do so if there were no E messages from the server
 		if (status.isOK()) {
-			for (int i = 0; i < resources.length; i++) {
-				ICVSResource resource = resources[i];
+			for (ICVSResource resource : resources) {
 				if (!resource.isFolder()) {
-					ICVSFile cvsFile = (ICVSFile)resources[i];
+					ICVSFile cvsFile = (ICVSFile) resource;
 					if (cvsFile.exists() && cvsFile.isModified(null)) {
 						status = mergeStatus(status, clearModifiedState(cvsFile));
 					}

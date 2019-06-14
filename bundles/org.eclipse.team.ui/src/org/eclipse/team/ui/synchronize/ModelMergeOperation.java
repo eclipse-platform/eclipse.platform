@@ -76,8 +76,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 			ModelProvider[] providers = context.getScope().getModelProviders();
 			monitor.beginTask(null, 100 * providers.length);
 			List<IStatus> notOK = new ArrayList<>();
-			for (int i = 0; i < providers.length; i++) {
-				ModelProvider provider = providers[i];
+			for (ModelProvider provider : providers) {
 				IStatus status = validateMerge(provider, context, Policy.subMonitorFor(monitor, 100));
 				if (!status.isOK())
 					notOK.add(status);
@@ -288,8 +287,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 				try {
 					int ticks = 100;
 					monitor1.beginTask(null, ticks + ((providers.length - 1) * 10));
-					for (int i = 0; i < providers.length; i++) {
-						ModelProvider provider = providers[i];
+					for (ModelProvider provider : providers) {
 						IStatus status = performMerge(provider, Policy.subMonitorFor(monitor1, ticks));
 						ticks = 10;
 						if (!status.isOK()) {

@@ -429,8 +429,7 @@ public class CVSProviderPlugin extends Plugin {
 		synchronized(decoratorEnablementListeners) {
 			listeners = (ICVSDecoratorEnablementListener[]) decoratorEnablementListeners.toArray(new ICVSDecoratorEnablementListener[decoratorEnablementListeners.size()]);
 		}
-		for (int i = 0; i < listeners.length; i++) {
-			final ICVSDecoratorEnablementListener listener = listeners[i];
+		for (ICVSDecoratorEnablementListener listener : listeners) {
 			ISafeRunnable code = new ISafeRunnable() {
 				public void run() throws Exception {
 					listener.decoratorEnablementChanged(enabled);

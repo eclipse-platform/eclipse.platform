@@ -128,8 +128,7 @@ public class CVSStatus extends TeamStatus {
 		}
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IStatus child = children[i];
+			for (IStatus child : children) {
 				if (isInternalError(child)) {
 					return true;
 				}

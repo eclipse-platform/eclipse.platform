@@ -40,8 +40,7 @@ public class ScopeBuildingTests extends TeamTest {
 						IProgressMonitor monitor) throws CoreException {
 					super.initialize(monitor);
 					// Add the additional test mappings to the scope
-					for (int i = 0; i < additionalMappings.length; i++) {
-						ResourceMapping mapping = additionalMappings[i];
+					for (ResourceMapping mapping : additionalMappings) {
 						ResourceTraversal[] traversals = mapping.getTraversals(getContext(), monitor);
 						((ResourceMappingScope)getScope()).addMapping(mapping, traversals);
 						// TODO: The additional mappings and additional resources boolean will not be set

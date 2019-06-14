@@ -441,13 +441,13 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 			fOrderedElements.remove( IdMapName );
 			//All the corresponding ID Mappings must be removed as well
 			TableItem[] itemsMappings = fMappingsTable.getItems();
-			for (int i=0; i<itemsMappings.length; i++) {
-				itemsMappings[i].dispose();
+			for (TableItem itemsMapping : itemsMappings) {
+				itemsMapping.dispose();
 			}
 			//All the corresponding Ordered entries must be removed as well
 			TableItem[] itemsOrdered= fOrderedTable.getItems();
-			for (int i= 0; i < itemsOrdered.length; i++) {
-				itemsOrdered[i].dispose();
+			for (TableItem itemsOrd : itemsOrdered) {
+				itemsOrd.dispose();
 			}
 			//Remove extension
 			if (!itemsIdMap[0].getText(2).equals("")) { //$NON-NLS-1$

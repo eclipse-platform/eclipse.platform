@@ -360,9 +360,8 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 	
 	private void change(SyncInfo[] collected) {
 		Subscriber subscriber = getSubscriber();
-		for (int i = 0; i < collected.length; i++) {
+		for (SyncInfo info : collected) {
 			try {
-				SyncInfo info = collected[i];
 				SyncInfo newInfo = subscriber.getSyncInfo(info.getLocal());
 				if (newInfo == null || !newInfo.equals(info)) {
 					// The cached log entry no longer applies to the new sync info.
@@ -468,8 +467,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 		for (Iterator iter = fetches.iterator(); iter.hasNext();) {
 			FetchRequest request = (FetchRequest) iter.next();
 			SyncInfo[] infos = request.getInfos();
-			for (int i = 0; i < infos.length; i++) {
-				SyncInfo info = infos[i];
+			for (SyncInfo info : infos) {
 				IProject project = info.getLocal().getProject();
 				SyncInfoSet infoSet = result.get(project);
 				if (infoSet == null) {
@@ -624,8 +622,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 		for (Iterator iter = set.iterator(); iter.hasNext();) {
 			SyncInfo info = (SyncInfo) iter.next();
 			IPath localPath = info.getLocal().getFullPath();
-			for (int j = 0; j < roots.length; j++) {
-				IResource resource = roots[j];
+			for (IResource resource : roots) {
 				if (resource.getFullPath().isPrefixOf(localPath)) {
 					SyncInfoSet infoList = rootToInfosMap.get(resource);
 					if (infoList == null) {
@@ -652,8 +649,7 @@ public class LogEntryCacheUpdateHandler extends BackgroundEventHandler {
 	
 	private ICVSRemoteResource[] getRemotesToFetch(SyncInfo[] infos) {
 		List<ICVSRemoteResource> remotes = new ArrayList<>();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			if (isFetchRequired(info)) {
 				ICVSRemoteResource remote = getRemoteResource(info);
 				if(remote != null) {

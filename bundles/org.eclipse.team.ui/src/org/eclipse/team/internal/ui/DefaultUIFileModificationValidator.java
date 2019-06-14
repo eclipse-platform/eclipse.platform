@@ -74,8 +74,8 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 			data.grabExcessHorizontalSpace = true;
 			fileList.setLayoutData(data);
 			fileList.setFont(parent.getFont());
-			for (int i = 0; i < files.length; i++) {
-				fileList.add(files[i].getFullPath().toString());
+			for (IFile file : files) {
+				fileList.add(file.getFullPath().toString());
 			}
 			return composite;
 		}
@@ -169,8 +169,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 
 	private IFile[] getReadOnlyFiles(IFile[] files) {
 		List<IFile> result = new ArrayList<>();
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			if (file.isReadOnly()) {
 				result.add(file);
 			}
@@ -179,8 +178,7 @@ public class DefaultUIFileModificationValidator extends DefaultFileModificationV
 	}
 
 	protected IStatus setWritable(final IFile[] files) {
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			ResourceAttributes attributes = file.getResourceAttributes();
 			if (attributes != null) {
 				attributes.setReadOnly(false);

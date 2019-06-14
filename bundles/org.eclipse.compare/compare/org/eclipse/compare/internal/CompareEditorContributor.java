@@ -124,21 +124,20 @@ public class CompareEditorContributor extends EditorActionBarContributor {
 			IContributionItem[] items = actionBars.getToolBarManager()
 					.getItems();
 			boolean inFilters = false;
-			for (int i = 0; i < items.length; i++) {
-				if (items[i].getId().equals(FILTER_SEPARATOR)) {
+			for (IContributionItem item : items) {
+				if (item.getId().equals(FILTER_SEPARATOR)) {
 					inFilters = true;
-				} else if (items[i].getId().equals(BUILTIN_SEPARATOR)) {
+				} else if (item.getId().equals(BUILTIN_SEPARATOR)) {
 					break;
 				} else if (inFilters) {
-					if (items[i] instanceof ActionContributionItem) {
-						String definitionId = ((ActionContributionItem) items[i])
-								.getAction().getActionDefinitionId();
+					if (item instanceof ActionContributionItem) {
+						String definitionId = ((ActionContributionItem) item).getAction().getActionDefinitionId();
 						if (definitionId != null) {
 							actionBars.setGlobalActionHandler(definitionId,
 									null);
 						}
 					}
-					actionBars.getToolBarManager().remove(items[i]);
+					actionBars.getToolBarManager().remove(item);
 				}
 			}
 

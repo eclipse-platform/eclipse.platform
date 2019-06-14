@@ -68,19 +68,19 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 		try {
 			beginInput();
 			IResource[] roots = getRoots();
-			for (int i = 0; i < deltas.length; i++) {
-				switch (deltas[i].getFlags()) {
-					case ISubscriberChangeEvent.SYNC_CHANGED :
-						if (isAllRootsIncluded() || isDescendantOfRoot(deltas[i].getResource(), roots)) {
-							change(deltas[i].getResource(), IResource.DEPTH_ZERO);
+			for (ISubscriberChangeEvent delta : deltas) {
+				switch (delta.getFlags()) {
+					case ISubscriberChangeEvent.SYNC_CHANGED:
+						if (isAllRootsIncluded() || isDescendantOfRoot(delta.getResource(), roots)) {
+							change(delta.getResource(), IResource.DEPTH_ZERO);
 						}
 						break;
-					case ISubscriberChangeEvent.ROOT_REMOVED :
-						remove(deltas[i].getResource());
+					case ISubscriberChangeEvent.ROOT_REMOVED:
+						remove(delta.getResource());
 						break;
-					case ISubscriberChangeEvent.ROOT_ADDED :
-						if (isAllRootsIncluded() || isDescendantOfRoot(deltas[i].getResource(), roots)) {
-							change(deltas[i].getResource(), IResource.DEPTH_INFINITE);
+					case ISubscriberChangeEvent.ROOT_ADDED:
+						if (isAllRootsIncluded() || isDescendantOfRoot(delta.getResource(), roots)) {
+							change(delta.getResource(), IResource.DEPTH_INFINITE);
 						}
 						break;
 				}
@@ -168,8 +168,8 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 		// Handle changed children
 		if (visitChildren || isAncestorOfRoot(resource, roots)) {
 			IResourceDelta[] affectedChildren = delta.getAffectedChildren(IResourceDelta.CHANGED | IResourceDelta.REMOVED | IResourceDelta.ADDED);
-			for (int i = 0; i < affectedChildren.length; i++) {
-				processDelta(affectedChildren[i], roots);
+			for (IResourceDelta c : affectedChildren) {
+				processDelta(c, roots);
 			}
 		}
 	}
@@ -222,8 +222,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 	private boolean isAncestorOfRoot(IResource parent, IResource[] roots) {
 		// Always traverse into projects in case a root was removed
 		if (parent.getType() == IResource.ROOT) return true;
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			if (parent.getFullPath().isPrefixOf(resource.getFullPath())) {
 				return true;
 			}
@@ -232,8 +231,7 @@ public abstract class SubscriberResourceCollector implements IResourceChangeList
 	}
 
 	private boolean isDescendantOfRoot(IResource resource, IResource[] roots) {
-		for (int i = 0; i < roots.length; i++) {
-			IResource root = roots[i];
+		for (IResource root : roots) {
 			if (root.getFullPath().isPrefixOf(resource.getFullPath())) {
 				return true;
 			}

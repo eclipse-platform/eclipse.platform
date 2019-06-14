@@ -403,8 +403,8 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		private void addListenersToRadioButtons() {
 			final ContentTypeElement[] elements = new ContentTypeElement[] { workspaceContent,
 					externalFileContent, externalFolderContent };
-			for (int i = 0; i < elements.length; i++) {
-				elements[i].getRadioButton().addListener(SWT.Selection, event -> {
+			for (ContentTypeElement e : elements) {
+				e.getRadioButton().addListener(SWT.Selection, event -> {
 					for (ContentTypeElement element : elements) {
 						if (event.widget != element.getRadioButton())
 							element.setEnabled(false);

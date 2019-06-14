@@ -114,8 +114,8 @@ public class ImportProjectSetOperation extends TeamOperation {
 	private void createWorkingSet(IWorkingSet[] workingSets, IProject[] projects) {
 		IWorkingSetManager manager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
 		String workingSetName;
-		for (int i = 0; i < workingSets.length; i++) {
-			workingSetName = workingSets[i].getName();
+		for (IWorkingSet workingSet : workingSets) {
+			workingSetName = workingSet.getName();
 			IWorkingSet oldSet = manager.getWorkingSet(workingSetName);
 			if (oldSet == null) {
 				IWorkingSet newSet = manager.createWorkingSet(workingSetName, projects);

@@ -260,8 +260,7 @@ public class Differencer {
 
 			if (ancestorChildren != null) {
 				ancestorSet= new HashMap<>(10);
-				for (int i= 0; i < ancestorChildren.length; i++) {
-					Object ancestorChild= ancestorChildren[i];
+				for (Object ancestorChild : ancestorChildren) {
 					ancestorSet.put(ancestorChild, ancestorChild);
 					allSet.add(ancestorChild);
 				}
@@ -269,8 +268,7 @@ public class Differencer {
 
 			if (rightChildren != null) {
 				rightSet= new HashMap<>(10);
-				for (int i= 0; i < rightChildren.length; i++) {
-					Object rightChild= rightChildren[i];
+				for (Object rightChild : rightChildren) {
 					rightSet.put(rightChild, rightChild);
 					allSet.add(rightChild);
 				}
@@ -278,8 +276,7 @@ public class Differencer {
 
 			if (leftChildren != null) {
 				leftSet= new HashMap<>(10);
-				for (int i= 0; i < leftChildren.length; i++) {
-					Object leftChild= leftChildren[i];
+				for (Object leftChild : leftChildren) {
 					leftSet.put(leftChild, leftChild);
 					allSet.add(leftChild);
 				}

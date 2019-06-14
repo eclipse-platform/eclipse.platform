@@ -206,8 +206,7 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 			IProgressMonitor monitor) {
 		try {
 			tree.beginInput();
-			for (int i = 0; i < events.length; i++) {
-				SubscriberEvent event = events[i];
+			for (SubscriberEvent event : events) {
 				switch (event.getType()) {
 					case SubscriberEvent.CHANGE :
 						if (event instanceof SubscriberDiffChangedEvent) {
@@ -220,10 +219,9 @@ public class SubscriberDiffTreeEventHandler extends SubscriberEventHandler {
 							}
 						}
 						break;
-					case SubscriberEvent.REMOVAL :
+					case SubscriberEvent.REMOVAL:
 						IDiff[] nodesToRemove = tree.getDiffs(new ResourceTraversal[] { event.asTraversal() });
-						for (int j = 0; j < nodesToRemove.length; j++) {
-							IDiff node = nodesToRemove[j];
+						for (IDiff node : nodesToRemove) {
 							tree.remove(node.getPath());
 						}
 						break;

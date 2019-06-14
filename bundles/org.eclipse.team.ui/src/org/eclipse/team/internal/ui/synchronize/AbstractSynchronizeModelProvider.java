@@ -262,8 +262,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		if (resource != null && resource.exists()) {
 			try {
 				IMarker[] markers = resource.findMarkers(IMarker.PROBLEM, true, getLogicalModelDepth(resource));
-				for (int i = 0; i < markers.length; i++) {
-					IMarker marker = markers[i];
+				for (IMarker marker : markers) {
 					try {
 						Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
 						if (severity != null) {
@@ -300,8 +299,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		} else if (resource == null) {
 			// For non-resource elements, show the same propogaqted marker as the children
 			IDiffElement[] children = element.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IDiffElement child = children[i];
+			for (IDiffElement child : children) {
 				if (child instanceof ISynchronizeModelElement) {
 					ISynchronizeModelElement childElement = (ISynchronizeModelElement)child;
 					if (childElement.getProperty(ISynchronizeModelElement.PROPAGATED_ERROR_MARKER_PROPERTY)) {
@@ -416,15 +414,13 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected IResource[] getExpandedResources() {
 		Set<IResource> expanded = new HashSet<>();
 		IResource[] savedExpansionState = getCachedResources(P_VIEWER_EXPANSION_STATE);
-		for (int i = 0; i < savedExpansionState.length; i++) {
-			IResource resource = savedExpansionState[i];
+		for (IResource resource : savedExpansionState) {
 			expanded.add(resource);
 		}
 		StructuredViewer viewer = getViewer();
 		Object[] objects = ((AbstractTreeViewer) viewer).getVisibleExpandedElements();
 		IResource[] currentExpansionState = getResources(objects);
-		for (int i = 0; i < currentExpansionState.length; i++) {
-			IResource resource = currentExpansionState[i];
+		for (IResource resource : currentExpansionState) {
 			expanded.add(resource);
 		}
 		return expanded.toArray(new IResource[expanded.size()]);
@@ -462,13 +458,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void expandResources(IResource[] resources) {
 		Set<ISynchronizeModelElement> expandedElements = new HashSet<>();
 		StructuredViewer viewer = getViewer();
-		for (int j = 0; j < resources.length; j++) {
-			IResource resource = resources[j];
+		for (IResource resource : resources) {
 			ISynchronizeModelElement[] elements = getModelObjects(resource);
 			// Only expand when there is one element per resource
 			if (elements.length == 1) {
-				for (int i = 0; i < elements.length; i++) {
-					ISynchronizeModelElement element = elements[i];
+				for (ISynchronizeModelElement element : elements) {
 					// Add all parents of the element to the expansion set
 					while (element != null) {
 						expandedElements.add(element);
@@ -484,9 +478,9 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected IResource[] getResources(Object[] objects) {
 		Set<IResource> result = new HashSet<>();
 		if (objects.length > 0) {
-			for (int i = 0; i < objects.length; i++) {
-				if (objects[i] instanceof ISynchronizeModelElement) {
-					IResource resource = ((ISynchronizeModelElement)objects[i]).getResource();
+			for (Object object : objects) {
+				if (object instanceof ISynchronizeModelElement) {
+					IResource resource = ((ISynchronizeModelElement) object).getResource();
 					if(resource != null)
 						result.add(resource);
 				}
@@ -503,8 +497,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		if (resources.length > 0) {
 			ISynchronizePageConfiguration config = getConfiguration();
 			ArrayList<String> paths = new ArrayList<>();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				String path = resource.getFullPath().toString();
 				if (resource.getType() != IResource.FILE && path.charAt(path.length() - 1) != IPath.SEPARATOR) {
 					// Include a trailing slash on folders and projects.
@@ -591,8 +584,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void selectResources(IResource[] resourcesToSelect) {
 		StructuredViewer viewer = getViewer();
 		final ArrayList<ISynchronizeModelElement> selectedElements = new ArrayList<>();
-		for (int i = 0; i < resourcesToSelect.length; i++) {
-			IResource resource = resourcesToSelect[i];
+		for (IResource resource : resourcesToSelect) {
 			ISynchronizeModelElement[] elements = getModelObjects(resource);
 			// Only preserve the selection if there is one element for the resource
 			if (elements.length == 1) {
@@ -613,16 +605,13 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		if (!(viewer instanceof CheckboxTreeViewer))
 			return;
 
-		for (int j = 0; j < resourcesToCheck.length; j++) {
-			IResource resource = resourcesToCheck[j];
+		for (IResource resource : resourcesToCheck) {
 			if (resource.getType() != IResource.FILE)
 				continue;
-
 			ISynchronizeModelElement[] elements = getModelObjects(resource);
 			// Only expand when there is one element per resource
 			if (elements.length == 1) {
-				for (int i = 0; i < elements.length; i++) {
-					ISynchronizeModelElement element = elements[i];
+				for (ISynchronizeModelElement element : elements) {
 					checkedElements.add(element);
 				}
 			}
@@ -845,8 +834,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	 */
 	protected void removeFromViewer(ISynchronizeModelElement[] nodes) {
 		List<ISynchronizeModelElement> rootsToClear = new ArrayList<>();
-		for (int i = 0; i < nodes.length; i++) {
-			ISynchronizeModelElement node = nodes[i];
+		for (ISynchronizeModelElement node : nodes) {
 			if (DEBUG) {
 				System.out.println("Removing model element " + node.getName()); //$NON-NLS-1$
 			}
@@ -864,8 +852,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		if (Utils.canUpdateViewer(getViewer())) {
 			doRemove(roots);
 		}
-		for (int i = 0; i < roots.length; i++) {
-			ISynchronizeModelElement element = roots[i];
+		for (ISynchronizeModelElement element : roots) {
 			updateHandler.nodeRemoved(element, this);
 		}
 	}
@@ -886,8 +873,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 		recursiveClearModelObjects(rootToClear);
 		if (node == getModelRoot()) {
 			IDiffElement[] children = node.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IDiffElement element = children[i];
+			for (IDiffElement element : children) {
 				((SynchronizeModelElement)node).remove(element);
 			}
 		} else {
@@ -903,8 +889,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void recursiveClearModelObjects(ISynchronizeModelElement node) {
 		// Clear all the children of the node
 		IDiffElement[] children = node.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ISynchronizeModelElement) {
 				ISynchronizeModelElement sme = (ISynchronizeModelElement) element;
 				ISynchronizeModelProvider provider = getProvider(sme);
@@ -979,8 +964,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			TeamUIPlugin.log(IStatus.ERROR, "An error occurred removing elements from the synchronize view", e); //$NON-NLS-1$
 		}
 		if (DEBUG) {
-			for (int i = 0; i < elements.length; i++) {
-				ISynchronizeModelElement element = elements[i];
+			for (ISynchronizeModelElement element : elements) {
 				System.out.println("Removing view item " + element.getName()); //$NON-NLS-1$
 			}
 		}
@@ -1048,8 +1032,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			allListeners = listeners.getListeners();
 		}
 		final PropertyChangeEvent event = new PropertyChangeEvent(this, key, oldValue, newValue);
-		for (int i = 0; i < allListeners.length; i++) {
-			final IPropertyChangeListener listener = (IPropertyChangeListener)allListeners[i];
+		for (Object l : allListeners) {
+			final IPropertyChangeListener listener = (IPropertyChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

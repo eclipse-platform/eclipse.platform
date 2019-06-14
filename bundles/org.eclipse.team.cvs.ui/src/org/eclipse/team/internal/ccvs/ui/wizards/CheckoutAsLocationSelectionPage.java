@@ -191,11 +191,12 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 		if (settings != null) {
 			String[] previouseLocations = settings.getArray(STORE_PREVIOUS_LOCATIONS);
 			if (previouseLocations != null) {
-				for (int i = 0; i < previouseLocations.length; i++) {
-					if(isSingleFolder())
-						locationPathField.add(new Path(previouseLocations[i]).append(getSingleProject().getName()).toOSString());
-					else
-						locationPathField.add(previouseLocations[i]);
+				for (String previouseLocation : previouseLocations) {
+					if (isSingleFolder()) {
+						locationPathField.add(new Path(previouseLocation).append(getSingleProject().getName()).toOSString());
+					} else {
+						locationPathField.add(previouseLocation);
+					}
 				}
 			}
 		}
@@ -283,11 +284,11 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 				if (!locationStatus.isOK())
 					return locationStatus.getMessage();
 			} else {
-				for (int i = 0; i < remoteFolders.length; i++) {
-					String projectName = getPreferredFolderName(remoteFolders[i]);
+				for (ICVSRemoteFolder remoteFolder : remoteFolders) {
+					String projectName = getPreferredFolderName(remoteFolder);
 					IStatus locationStatus = ResourcesPlugin.getWorkspace().validateProjectLocation(
-						ResourcesPlugin.getWorkspace().getRoot().getProject(projectName),
-						new Path(targetLocation).append(projectName));
+							ResourcesPlugin.getWorkspace().getRoot().getProject(projectName),
+							new Path(targetLocation).append(projectName));
 					if (!locationStatus.isOK())
 						return locationStatus.getMessage();
 				}

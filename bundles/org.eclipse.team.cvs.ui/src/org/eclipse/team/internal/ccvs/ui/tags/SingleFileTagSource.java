@@ -29,11 +29,9 @@ public class SingleFileTagSource extends TagSource {
 	
 	public static CVSTag[] fetchTagsFor(ICVSFile file, IProgressMonitor monitor) throws TeamException {
 		Set<CVSTag> tagSet = new HashSet<>();
-		ILogEntry[] entries = file.getLogEntries(monitor);
-		for (int j = 0; j < entries.length; j++) {
-			CVSTag[] tags = entries[j].getTags();
-			for (int k = 0; k < tags.length; k++) {
-				tagSet.add(tags[k]);
+		for (ILogEntry entry : file.getLogEntries(monitor)) {
+			for (CVSTag tag : entry.getTags()) {
+				tagSet.add(tag);
 			}
 		}
 		return tagSet.toArray(new CVSTag[tagSet.size()]);

@@ -58,8 +58,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		public IResource[] refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
 			// Only refresh the base of a resource once as it should not change
 			List unrefreshed = new ArrayList();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (!hasResourceVariant(resource)) {
 					unrefreshed.add(resource);
 				}
@@ -172,8 +171,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 	}
 
 	public void merged(IResource[] resources) throws TeamException {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			internalMerged(resource);
 		}
 		fireTeamResourceChange(SubscriberChangeEvent.asSyncChangedDeltas(this, resources));
@@ -279,8 +277,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 	 * @see org.eclipse.team.core.subscribers.ITeamResourceChangeListener#teamResourceChanged(org.eclipse.team.core.subscribers.TeamDelta[])
 	 */
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {		
-		for (int i = 0; i < deltas.length; i++) {
-			ISubscriberChangeEvent delta = deltas[i];
+		for (ISubscriberChangeEvent delta : deltas) {
 			switch(delta.getFlags()) {
 				case ISubscriberChangeEvent.ROOT_REMOVED:
 					IResource resource = delta.getResource();
@@ -317,8 +314,7 @@ public class CVSMergeSubscriber extends CVSSyncTreeSubscriber implements IResour
 		SyncInfoFilter.ContentComparisonSyncInfoFilter contentFilter =
 			new SyncInfoFilter.ContentComparisonSyncInfoFilter();
 		monitor.beginTask(null, refreshed.length * 100);
-		for (int i = 0; i < refreshed.length; i++) {
-			IResource resource = refreshed[i];
+		for (IResource resource : refreshed) {
 			if (resource.getType() == IResource.FILE) {
 				ICVSFile local = CVSWorkspaceRoot.getCVSFileFor((IFile)resource);
 				byte[] localBytes = local.getSyncBytes();

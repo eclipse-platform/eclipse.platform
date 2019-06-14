@@ -73,8 +73,7 @@ public class AddToBranchAction extends CVSAction {
 	protected ICVSRemoteFolder getSelectedRootFolder() {
 		ICVSRemoteFolder[] folders = getSelectedRemoteFolders();
 		ICVSRemoteFolder selectedFolder = null;
-		for (int i = 0; i < folders.length; i++) {
-			ICVSRemoteFolder folder = folders[i];
+		for (ICVSRemoteFolder folder : folders) {
 			if (folder.isDefinedModule() || new Path(null, folder.getRepositoryRelativePath()).segmentCount()==1) {
 				// only return a folder if one valid one is selected.
 				if (selectedFolder != null) return null;

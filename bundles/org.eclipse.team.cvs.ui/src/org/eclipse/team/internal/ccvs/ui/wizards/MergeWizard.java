@@ -128,8 +128,7 @@ public class MergeWizard extends Wizard {
 	
 	private IResource[] getProjects(IResource[] resources) {
 		Set<IProject> projects = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			projects.add(resource.getProject());
 		}
 		return projects.toArray(new IResource[projects.size()]);

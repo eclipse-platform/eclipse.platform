@@ -198,8 +198,7 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	protected final IDiffElement[] getFilteredDiffElements() {
 		IDiffElement[] elements = getSelectedDiffElements();
 		List<IDiffElement> filtered = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++) {
-			IDiffElement e = elements[i];
+		for (IDiffElement e : elements) {
 			if (e instanceof SyncInfoModelElement) {
 				SyncInfo info = ((SyncInfoModelElement) e).getSyncInfo();
 				if (info != null && getSyncInfoFilter().select(info)) {

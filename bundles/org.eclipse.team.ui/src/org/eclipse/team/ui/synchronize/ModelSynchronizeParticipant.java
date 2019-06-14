@@ -473,8 +473,7 @@ public class ModelSynchronizeParticipant extends
 	private void saveMappings(IMemento settings) {
 		ISynchronizationScope inputScope = getContext().getScope().asInputScope();
 		ModelProvider[] providers = inputScope.getModelProviders();
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(provider);
 			if (adapter != null) {
 				IMemento child = settings.createChild(CTX_PARTICIPANT_MAPPINGS);
@@ -511,8 +510,7 @@ public class ModelSynchronizeParticipant extends
 	private ResourceMapping[] loadMappings(IMemento settings) throws PartInitException {
 		List<ResourceMapping> result = new ArrayList<>();
 		IMemento[] children = settings.getChildren(CTX_PARTICIPANT_MAPPINGS);
-		for (int i = 0; i < children.length; i++) {
-			IMemento memento = children[i];
+		for (IMemento memento : children) {
 			String id = memento.getString(CTX_MODEL_PROVIDER_ID);
 			if (id != null) {
 				IModelProviderDescriptor desc = ModelProvider.getModelProviderDescriptor(id);
@@ -521,8 +519,7 @@ public class ModelSynchronizeParticipant extends
 					ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(provider);
 					if (adapter != null) {
 						ResourceMapping[] mappings = adapter.restore(memento.getChild(CTX_MODEL_PROVIDER_MAPPINGS));
-						for (int j = 0; j < mappings.length; j++) {
-							ResourceMapping mapping = mappings[j];
+						for (ResourceMapping mapping : mappings) {
 							result.add(mapping);
 						}
 					}
@@ -657,8 +654,7 @@ public class ModelSynchronizeParticipant extends
 		pages.add(syncViewerPreferencePage);
 		pages.add(new ModelEnablementPreferencePage());
 		ITeamContentProviderDescriptor[] descriptors = TeamUI.getTeamContentProviderManager().getDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			ITeamContentProviderDescriptor descriptor = descriptors[i];
+		for (ITeamContentProviderDescriptor descriptor : descriptors) {
 			if (isIncluded(descriptor)) {
 				try {
 					PreferencePage page = (PreferencePage)descriptor.createPreferencePage();
@@ -678,8 +674,7 @@ public class ModelSynchronizeParticipant extends
 
 	private boolean isIncluded(ITeamContentProviderDescriptor descriptor) {
 		ModelProvider[] providers = getEnabledModelProviders();
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			if (provider.getId().equals(descriptor.getModelProviderId())) {
 				return true;
 			}

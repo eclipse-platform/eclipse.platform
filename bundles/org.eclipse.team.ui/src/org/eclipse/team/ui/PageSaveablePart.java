@@ -15,7 +15,6 @@ package org.eclipse.team.ui;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
@@ -413,10 +412,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	}
 
 	private void flushViewers(IProgressMonitor monitor) {
-		Iterator iter = fDirtyViewers.iterator();
-
-		for (int i=0; i<fDirtyViewers.size(); i++){
-			Object element = iter.next();
+		for (Object element : fDirtyViewers) {
 			IFlushable flushable = Adapters.adapt(element, IFlushable.class);
 			if (flushable != null)
 				flushable.flush(monitor);

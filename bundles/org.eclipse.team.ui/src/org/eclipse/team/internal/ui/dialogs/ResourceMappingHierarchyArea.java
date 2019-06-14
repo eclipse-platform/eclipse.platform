@@ -88,8 +88,7 @@ public class ResourceMappingHierarchyArea extends DialogArea implements INavigat
 			return new Object[0];
 		ResourceMapping[] mappings = scope.getMappings();
 		List<Object> result = new ArrayList<>();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			result.add(mapping.getModelObject());
 		}
 		return result.toArray(new Object[result.size()]);

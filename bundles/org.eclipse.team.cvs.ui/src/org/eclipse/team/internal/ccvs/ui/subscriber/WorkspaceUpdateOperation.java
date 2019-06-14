@@ -42,8 +42,7 @@ public class WorkspaceUpdateOperation extends SafeUpdateOperation {
 	@Override
 	protected void runUpdateDeletions(SyncInfo[] nodes, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask(null, nodes.length * 100);
-		for (int i = 0; i < nodes.length; i++) {
-			SyncInfo node = nodes[i];
+		for (SyncInfo node : nodes) {
 			unmanage(node, Policy.subMonitorFor(monitor, 50));
 			deleteAndKeepHistory(node.getLocal(), Policy.subMonitorFor(monitor, 50));
 		}

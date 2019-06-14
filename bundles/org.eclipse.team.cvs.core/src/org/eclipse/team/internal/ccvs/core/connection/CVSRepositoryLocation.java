@@ -427,8 +427,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				connectionMethods.add(new PServerConnectionMethod());
 			} else {
 				IExtension[] extensions = Platform.getExtensionRegistry().getExtensionPoint(CVSProviderPlugin.ID, CVSProviderPlugin.PT_CONNECTIONMETHODS).getExtensions();
-				for(int i=0; i<extensions.length; i++) {
-					IExtension extension = extensions[i];
+				for (IExtension extension : extensions) {
 					IConfigurationElement[] configs = extension.getConfigurationElements();
 					if (configs.length == 0) {
 						CVSProviderPlugin.log(IStatus.ERROR, NLS.bind("Connection method {0} is missing required fields", new Object[] {extension.getUniqueIdentifier()}), null);//$NON-NLS-1$ 
@@ -456,9 +455,10 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	private static IConnectionMethod getPluggedInConnectionMethod(String methodName) {
 		Assert.isNotNull(methodName);
 		IConnectionMethod[] methods = getPluggedInConnectionMethods();
-		for(int i=0; i<methods.length; i++) {
-			if(methodName.equals(methods[i].getName()))
-				return methods[i];
+		for (IConnectionMethod m : methods) {
+			if (methodName.equals(m.getName())) {
+				return m;
+			}
 		}
 		return null;		
 	}
@@ -642,8 +642,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				// There is the off chance that there is a file in the root of the repository.
 				// This is not supported by cvs so we need to make sure there are no files
 				List<ICVSRemoteResource> folders = new ArrayList<ICVSRemoteResource>(resources.length);
-				for (int i = 0; i < resources.length; i++) {
-					ICVSRemoteResource remoteResource = resources[i];
+				for (ICVSRemoteResource remoteResource : resources) {
 					if (remoteResource.isContainer()) {
 						folders.add(remoteResource);
 					}

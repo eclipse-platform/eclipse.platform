@@ -71,11 +71,9 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 	public ISchedulingRule getMergeRule(IMergeContext context) {
 		ResourceMapping[] mappings = context.getScope().getMappings(getModelProvider().getId());
 		ISchedulingRule rule = null;
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			IProject[] mappingProjects = mapping.getProjects();
-			for (int j = 0; j < mappingProjects.length; j++) {
-				IProject project = mappingProjects[j];
+			for (IProject project : mappingProjects) {
 				if (rule == null) {
 					rule = project;
 				} else {
@@ -105,12 +103,10 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 	private IDiff[] getSetToMerge(IMergeContext mergeContext) {
 		ResourceMapping[] mappings = mergeContext.getScope().getMappings(getModelProvider().getDescriptor().getId());
 		Set<IDiff> result = new HashSet<>();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = mergeContext.getScope().getTraversals(mapping);
 			IDiff[] deltas = mergeContext.getDiffTree().getDiffs(traversals);
-			for (int j = 0; j < deltas.length; j++) {
-				IDiff delta = deltas[j];
+			for (IDiff delta : deltas) {
 				result.add(delta);
 			}
 		}

@@ -56,8 +56,8 @@ public class AddAction extends WorkspaceTraversalAction {
 		// TODO: What about non-root resources that are part of the model but would be ignored?
 		IResource[] resources = getSelectedResourcesWithOverlap();
 		boolean prompt = false;
-		for (int i = 0; i < resources.length; i++) {
-			ICVSResource resource = getCVSResourceFor(resources[i]);
+		for (IResource r : resources) {
+			ICVSResource resource = getCVSResourceFor(r);
 			try {
 				if (resource.isIgnored()) {
 					prompt = true;

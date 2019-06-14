@@ -86,18 +86,15 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		private IPath[] getAffectedPaths(IDiffChangeEvent event) {
 			Set<IPath> result = new HashSet<>();
 			IPath[] removed = event.getRemovals();
-			for (int i = 0; i < removed.length; i++) {
-				IPath path = removed[i];
+			for (IPath path : removed) {
 				result.add(path);
 			}
 			IDiff[] diffs = event.getAdditions();
-			for (int j = 0; j < diffs.length; j++) {
-				IDiff diff = diffs[j];
+			for (IDiff diff : diffs) {
 				result.add(diff.getPath());
 			}
 			diffs = event.getChanges();
-			for (int j = 0; j < diffs.length; j++) {
-				IDiff diff = diffs[j];
+			for (IDiff diff : diffs) {
 				result.add(diff.getPath());
 			}
 			return result.toArray(new IPath[result.size()]);
@@ -144,8 +141,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	
 	protected ChangeSet getChangeSet(IDiffTree tree) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet changeSet = sets[i];
+		for (ChangeSet changeSet : sets) {
 			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
 				return changeSet;
 			}
@@ -159,8 +155,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		removals.addAll(Arrays.asList(event.getRemovals()));
 		additions.addAll(Arrays.asList(event.getAdditions()));
 		IDiff[] changed = event.getChanges();
-		for (int i = 0; i < changed.length; i++) {
-			IDiff diff = changed[i];
+		for (IDiff diff : changed) {
 			additions.add(diff);
 			removals.add(diff.getPath());
 		}
@@ -174,8 +169,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	
 	protected void remove(IPath[] paths) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			DiffChangeSet set = (DiffChangeSet)sets[i];
+		for (ChangeSet s : sets) {
+			DiffChangeSet set = (DiffChangeSet) s;
 			set.remove(paths);
 		}
 	}
@@ -222,8 +217,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 	
 	private SyncInfo[] getSyncInfos(IDiff[] diffs) {
 		SyncInfoSet set = new SyncInfoSet();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			set.add(getConverter().asSyncInfo(diff, getSubscriber().getResourceComparator()));
 		}
 		return set.getSyncInfos();
@@ -282,8 +276,8 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		try {
 			monitor.beginTask(null, commentInfos.length * 10);
 			if (logs != null) {
-				for (int i = 0; i < commentInfos.length; i++) {
-					addSyncInfoToCommentNode(commentInfos[i], logs);
+				for (SyncInfo commentInfo : commentInfos) {
+					addSyncInfoToCommentNode(commentInfo, logs);
 					monitor.worked(10);
 				}
 			}
@@ -326,8 +320,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 				String remoteRevision = ((ICVSRemoteFile) remoteResource).getRevision();
 				if (isDeletedRemotely(info)) {
 					ILogEntry[] logEntries = logs.getLogEntries(remoteResource);
-					for (int i = 0; i < logEntries.length; i++) {
-						ILogEntry entry = logEntries[i];
+					for (ILogEntry entry : logEntries) {
 						String revision = entry.getRevision();
 						if (entry.isDeletion() && ResourceSyncInfo.isLaterRevision(revision, remoteRevision)) {
 							logEntry = entry;
@@ -355,8 +348,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 			// remote.
 			addRemoteChange(info, null, null);
 		} else {
-			for (int i = 0; i < logEntries.length; i++) {
-				ILogEntry entry = logEntries[i];
+			for (ILogEntry entry : logEntries) {
 				addRemoteChange(info, remoteResource, entry);
 			}
 		}
@@ -418,8 +410,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 
 	private CVSCheckedInChangeSet getChangeSetFor(ILogEntry logEntry) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set instanceof CVSCheckedInChangeSet &&
 					set.getComment().equals(logEntry.getComment()) &&
 					((CVSCheckedInChangeSet)set).getAuthor().equals(logEntry.getAuthor())) {

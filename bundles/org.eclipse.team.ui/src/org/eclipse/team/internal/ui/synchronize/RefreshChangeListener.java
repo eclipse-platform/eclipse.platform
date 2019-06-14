@@ -36,8 +36,7 @@ public class RefreshChangeListener implements ISubscriberChangeListener, IChange
 	}
 	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
-		for (int i = 0; i < deltas.length; i++) {
-			ISubscriberChangeEvent delta = deltas[i];
+		for (ISubscriberChangeEvent delta : deltas) {
 			if (delta.getFlags() == ISubscriberChangeEvent.SYNC_CHANGED) {
 				changes.add(delta);
 			}

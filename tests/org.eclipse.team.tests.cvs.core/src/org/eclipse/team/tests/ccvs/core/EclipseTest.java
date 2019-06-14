@@ -286,8 +286,8 @@ public class EclipseTest extends ResourceTest {
 	 */
 	public IResource[] changeResources(IContainer container, String[] hierarchy, boolean checkin) throws CoreException, TeamException {
 		List<IResource> changedResources = new ArrayList<>(hierarchy.length);
-		for (int i=0;i<hierarchy.length;i++) {
-			IResource resource = container.findMember(hierarchy[i]);
+		for (String h : hierarchy) {
+			IResource resource = container.findMember(h);
 			if (resource.getType() == IResource.FILE) {
 				changedResources.add(resource);
 				setContentsAndEnsureModified((IFile)resource);
@@ -316,8 +316,7 @@ public class EclipseTest extends ResourceTest {
 	 */
 	protected void deleteResources(IResource[] resources) throws TeamException, CoreException {
 		if (resources.length == 0) return;
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			delete(resource, IResource.NONE, DEFAULT_MONITOR);
 		}
 	}
@@ -330,8 +329,8 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void unmanageResources(IResource[] resources) throws TeamException, CoreException {
-		for (int i=0;i<resources.length;i++) {
-			CVSWorkspaceRoot.getCVSResourceFor(resources[i]).unmanage(null);
+		for (IResource resource : resources) {
+			CVSWorkspaceRoot.getCVSResourceFor(resource).unmanage(null);
 		}
 	}
 	
@@ -552,10 +551,11 @@ public class EclipseTest extends ResourceTest {
 			resources.add(container);
 		IResource[] result = resources.toArray(new IResource[resources.size()]);
 		ensureExistsInWorkspace(result, true);
-		for (int i = 0; i < result.length; i++) {
-			if (result[i].getType() == IResource.FILE)
+		for (IResource r : result) {
+			if (r.getType() == IResource.FILE) {
 				// 3786 bytes is the average size of Eclipse Java files!
-				((IFile) result[i]).setContents(getRandomContents(RANDOM_CONTENT_SIZE), true, false, null);
+				((IFile) r).setContents(getRandomContents(RANDOM_CONTENT_SIZE), true, false, null);
+			}
 		}
 		return result;
 	}
@@ -645,8 +645,8 @@ public class EclipseTest extends ResourceTest {
 		assertTrue("The number of resource in " + c1.getProjectRelativePath().toString() + " differs", 
 			c1.members().length == c2.members().length);
 		IResource[] resources = c1.members();
-		for (int i= 0;i <resources.length;i++) {
-			assertContentsEqual(resources[i], c2.findMember(resources[i].getName()));
+		for (IResource resource : resources) {
+			assertContentsEqual(resource, c2.findMember(resource.getName()));
 		}
 	}
 	
@@ -699,8 +699,8 @@ public class EclipseTest extends ResourceTest {
 			container1.members(ICVSFolder.ALL_EXISTING_MEMBERS).length 
 			== container2.members(ICVSFolder.ALL_EXISTING_MEMBERS).length);
 		ICVSResource[] resources = container1.members(ICVSFolder.ALL_EXISTING_MEMBERS);
-		for (int i= 0;i <resources.length;i++) {
-			assertEquals(path, resources[i], container2.getChild(resources[i].getName()), includeTimestamps, includeTags);
+		for (ICVSResource resource : resources) {
+			assertEquals(path, resource, container2.getChild(resource.getName()), includeTimestamps, includeTags);
 		}
 
 	}
@@ -787,13 +787,13 @@ public class EclipseTest extends ResourceTest {
 		ICVSRemoteResource[] members2 = container2.getMembers(DEFAULT_MONITOR);
 		assertTrue("Number of members differ for " + path, members1.length == members2.length);
 		Map<String, ICVSRemoteResource> memberMap2 = new HashMap<>();
-		for (int i= 0; i < members2.length; i++) {
-			memberMap2.put(members2[i].getName(), members2[i]);
+		for (ICVSRemoteResource m : members2) {
+			memberMap2.put(m.getName(), m);
 		}
-		for (int i= 0; i < members1.length; i++) {
-			ICVSRemoteResource member2 = memberMap2.get(members1[i].getName());
-			assertNotNull("Resource does not exist: " + path.append(members1[i].getName()) + member2);
-			assertEquals(path, members1[i], member2, includeTags);
+		for (ICVSRemoteResource m : members1) {
+			ICVSRemoteResource member2 = memberMap2.get(m.getName());
+			assertNotNull("Resource does not exist: " + path.append(m.getName()) + member2);
+			assertEquals(path, m, member2, includeTags);
 		}
 	}
 	protected void assertEquals(IPath parent, ICVSRemoteResource resource1, ICVSRemoteResource resource2, boolean includeTags) throws CoreException, TeamException, IOException {
@@ -820,8 +820,9 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void assertHasNoRemote(String prefix, IResource[] resources) {
-		for (int i=0;i<resources.length;i++) 
-			assertHasNoRemote(prefix, resources[i]);
+		for (IResource resource : resources) {
+			assertHasNoRemote(prefix, resource);
+		}
 	}
 	
 	protected void assertHasNoRemote(String prefix, IResource resource) {
@@ -829,8 +830,9 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void assertHasRemote(String prefix, IResource[] resources) {
-		for (int i=0;i<resources.length;i++) 
-			assertHasRemote(prefix, resources[i]);
+		for (IResource resource : resources) {
+			assertHasRemote(prefix, resource);
+		}
 	}
 	
 	protected void assertHasRemote(String prefix, IResource resource) {
@@ -838,8 +840,9 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void assertIsModified(String prefix, IResource[] resources) throws TeamException {
-		for (int i=0;i<resources.length;i++) 
-			assertIsModified(prefix, resources[i]);
+		for (IResource resource : resources) {
+			assertIsModified(prefix, resource);
+		}
 	}
 	
 	protected void assertIsModified(String prefix, IResource resource) throws TeamException {
@@ -849,8 +852,9 @@ public class EclipseTest extends ResourceTest {
 	}
 	
 	protected void assertNotModified(String prefix, IResource[] resources) throws TeamException {
-		for (int i=0;i<resources.length;i++) 
-			assertNotModified(prefix, resources[i]);
+		for (IResource resource : resources) {
+			assertNotModified(prefix, resource);
+		}
 	}
 	
 	protected void assertNotModified(String prefix, IResource resource) throws TeamException {
@@ -869,8 +873,7 @@ public class EclipseTest extends ResourceTest {
 	}
 
 	protected void assertReadOnly(IResource[] resources, final boolean isReadOnly, final boolean recurse) throws CoreException {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			resource.accept(resource1 -> {
 				if (resource1.getType() == IResource.FILE) {
 					assertEquals(isReadOnly, resource1.getResourceAttributes().isReadOnly());
@@ -1001,9 +1004,9 @@ public class EclipseTest extends ResourceTest {
 	protected void commitNewProject(IProject project) throws CoreException, CVSException, TeamException {
 		List<IResource> resourcesToAdd = new ArrayList<IResource>();
 		IResource[] members = project.members();
-		for (int i = 0; i < members.length; i++) {
-			if ( ! CVSWorkspaceRoot.getCVSResourceFor(members[i]).isIgnored()) {
-				resourcesToAdd.add(members[i]);
+		for (IResource member : members) {
+			if (!CVSWorkspaceRoot.getCVSResourceFor(member).isIgnored()) {
+				resourcesToAdd.add(member);
 			}
 		}
 		addResources(resourcesToAdd.toArray(new IResource[resourcesToAdd.size()]));
@@ -1082,8 +1085,7 @@ public class EclipseTest extends ResourceTest {
 	protected static void waitForDecorator() {
 		// Wait for the decorator job
 		Job[] decorators = Job.getJobManager().find(DecoratorManager.FAMILY_DECORATE);
-		for (int i = 0; i < decorators.length; i++) {
-			Job job = decorators[i];
+		for (Job job : decorators) {
 			waitForJobCompletion(job);
 		}
 	}
@@ -1335,8 +1337,9 @@ public class EclipseTest extends ResourceTest {
 
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			for (int i = 0; i < children.length; i++)
-				write(children[i], indent + 1);
+			for (IStatus child : children) {
+				write(child, indent + 1);
+			}
 		}
 	}
 	
@@ -1371,8 +1374,7 @@ public class EclipseTest extends ResourceTest {
 		if (status.getException() instanceof CVSCommunicationException) return true;
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IStatus child = children[i];
+			for (IStatus child : children) {
 				if (child.getException() instanceof CVSCommunicationException) return true;
 			}
 		}
@@ -1395,8 +1397,7 @@ public class EclipseTest extends ResourceTest {
 				if (allJobs.length == 0) {
 					System.out.println("None"); //$NON-NLS-1$
 				}
-				for (int i = 0; i < allJobs.length; i++) {
-					Job job = allJobs[i];
+				for (Job job : allJobs) {
 					System.out.println(job.getName() + ": " + job.getState());
 				}
 				if (CVSTestSetup.FAIL_IF_EXCEPTION_LOGGED) {
@@ -1474,8 +1475,7 @@ public class EclipseTest extends ResourceTest {
 	protected void assertStatusContainsCode(IStatus status, int code) {
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IStatus child = children[i];
+			for (IStatus child : children) {
 				if (child.getCode() == code)
 					return;
 			}

@@ -57,16 +57,13 @@ public class PluginStringMappings {
 
 		final IExtension[] extensions =  extension.getExtensions();
 
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
-
-			for (int j = 0; j < configElements.length; j++) {
-
-				final String ext = configElements[j].getAttribute(fAttributeName);//"extension");
-				final String type = configElements[j].getAttribute("type"); //$NON-NLS-1$
+		for (IExtension e : extensions) {
+			IConfigurationElement[] configElements = e.getConfigurationElements();
+			for (IConfigurationElement configElement : configElements) {
+				final String ext = configElement.getAttribute(fAttributeName); //"extension");
+				final String type = configElement.getAttribute("type"); //$NON-NLS-1$
 				if (ext == null || type == null)
 					continue;
-
 				if (type.equals("text")) { //$NON-NLS-1$
 					result.put(ext, Integer.valueOf(Team.TEXT));
 				} else if (type.equals("binary")) { //$NON-NLS-1$

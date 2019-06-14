@@ -266,8 +266,8 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 				return;
 			}
 			FileNameMatcher matcher = new FileNameMatcher(new String[] { customPattern });
-			for (int i = 0; i < resources.length; i++) {
-				String name = resources[i].getName();
+			for (IResource resource : resources) {
+				String name = resource.getName();
 				if (! matcher.match(name)) {
 					setError(NLS.bind(CVSUIMessages.IgnoreResourcesDialog_patternDoesNotMatchFile, new String[] { name })); 
 					return;
@@ -329,25 +329,28 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 	}
 
 	private IResource getResourceWithSpace() {
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i].getName().indexOf(" ") != -1) //$NON-NLS-1$
-				return resources[i];
+		for (IResource resource : resources) {
+			if (resource.getName().indexOf(" ") != -1) { //$NON-NLS-1$
+				return resource;
+			}
 		}
 		return null;
 	}
 
 	private boolean checkIfAllResourcesWithSpacesHaveExtensions() {
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i].getName().indexOf(" ") != -1 && resources[i].getFileExtension() == null) //$NON-NLS-1$
+		for (IResource resource : resources) {
+			if (resource.getName().indexOf(" ") != -1 && resource.getFileExtension() == null) { //$NON-NLS-1$
 				return false;
+			}
 		}
 		return true;
 	}
 
 	private boolean checkIfAllResourcesHaveExtensions() {
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i].getFileExtension() != null)
+		for (IResource resource : resources) {
+			if (resource.getFileExtension() != null) {
 				return true;
+			}
 		}
 		// couldn't find a resource with an extension
 		return false;

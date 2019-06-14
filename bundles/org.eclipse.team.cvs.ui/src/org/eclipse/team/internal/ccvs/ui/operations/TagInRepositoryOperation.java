@@ -41,8 +41,8 @@ public class TagInRepositoryOperation extends RemoteOperation implements ITagOpe
 	public void execute(IProgressMonitor monitor) throws CVSException, InterruptedException {
 		ICVSRemoteResource[] resources = getRemoteResources();
 		monitor.beginTask(null, 1000 * resources.length);
-		for (int i = 0; i < resources.length; i++) {
-			IStatus status = resources[i].tag(getTag(), getLocalOptions(), SubMonitor.convert(monitor, 1000));
+		for (ICVSRemoteResource resource : resources) {
+			IStatus status = resource.tag(getTag(), getLocalOptions(), SubMonitor.convert(monitor, 1000));
 			collectStatus(status);
 		}
 		if (!errorsOccurred()) {

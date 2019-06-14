@@ -623,8 +623,7 @@ public class Utils {
 	private static IResource[] getResources(Object[] elements, List<Object> nonResources,
 			boolean isContributed, boolean includeMappingResources) {
 		List<IResource> resources = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++) {
-			Object element = elements[i];
+		for (Object element : elements) {
 			boolean isResource = false;
 			if (element instanceof IResource) {
 				resources.add((IResource) element);
@@ -676,11 +675,9 @@ public class Utils {
 	private static void getResources(ResourceMapping element, List<IResource> resources) {
 		try {
 			ResourceTraversal[] traversals = element.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
-			for (int k = 0; k < traversals.length; k++) {
-				ResourceTraversal traversal = traversals[k];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resourceArray = traversal.getResources();
-				for (int j = 0; j < resourceArray.length; j++) {
-					IResource resource = resourceArray[j];
+				for (IResource resource : resourceArray) {
 					resources.add(resource);
 				}
 			}
@@ -731,8 +728,7 @@ public class Utils {
 			}
 		}
 		IDiffElement[] children = element.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement child = children[i];
+		for (IDiffElement child : children) {
 			if (child instanceof ISynchronizeModelElement) {
 				if (hasMatchingDescendant((ISynchronizeModelElement)child, filter)) {
 					return true;
@@ -751,8 +747,7 @@ public class Utils {
 	 */
 	public static IDiffElement[] getDiffNodes(Object[] selected) {
 		Set<IDiffElement> result = new HashSet<>();
-		for (int i = 0; i < selected.length; i++) {
-			Object object = selected[i];
+		for (Object object : selected) {
 			if(object instanceof IDiffElement) {
 				collectAllNodes((IDiffElement)object, result);
 			}
@@ -766,8 +761,8 @@ public class Utils {
 		}
 		if(element instanceof IDiffContainer) {
 			IDiffElement[] children = ((IDiffContainer)element).getChildren();
-			for (int i = 0; i < children.length; i++) {
-				collectAllNodes(children[i], nodes);
+			for (IDiffElement c : children) {
+				collectAllNodes(c, nodes);
 			}
 		}
 	}
@@ -985,8 +980,7 @@ public class Utils {
 
 	public static ResourceMapping[] getResourceMappings(Object[] objects) {
 		List<ResourceMapping> result = new ArrayList<>();
-		for (int i = 0; i < objects.length; i++) {
-			Object object = objects[i];
+		for (Object object : objects) {
 			ResourceMapping mapping = getResourceMapping(object);
 			if (mapping != null)
 				result.add(mapping);
@@ -1033,8 +1027,7 @@ public class Utils {
 	public static String convertSelection(ResourceMapping[] mappings) {
 		StringBuilder  buffer = new StringBuilder();
 		boolean hadOne = false;
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping resourceMapping = mappings[i];
+		for (ResourceMapping resourceMapping : mappings) {
 			String label = getLabel(resourceMapping);
 			if (label != null) {
 				if(hadOne) buffer.append(", "); //$NON-NLS-1$
@@ -1047,8 +1040,7 @@ public class Utils {
 
 	public static ResourceTraversal[] getTraversals(Object[] elements) throws CoreException {
 		CompoundResourceTraversal traversal = new CompoundResourceTraversal();
-		for (int i = 0; i < elements.length; i++) {
-			Object object = elements[i];
+		for (Object object : elements) {
 			ResourceMapping mapping = getResourceMapping(object);
 			if (mapping != null) {
 				traversal.addTraversals(mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null));
@@ -1224,15 +1216,15 @@ public class Utils {
 			Class[] editorInputClasses) {
 		IEditorReference[] editorRefs = page.getEditorReferences();
 		// first loop looking for an editor with the same input
-		for (int i = 0; i < editorRefs.length; i++) {
-			IEditorPart part = editorRefs[i].getEditor(false);
+		for (IEditorReference editorRef : editorRefs) {
+			IEditorPart part = editorRef.getEditor(false);
 			if (part != null && part instanceof IReusableEditor) {
-				for (int j = 0; j < editorInputClasses.length; j++) {
+				for (Class editorInputClasse : editorInputClasses) {
 					// check if the editor input type
 					// complies with the types given by the caller
-					if (editorInputClasses[j].isInstance(part.getEditorInput())
-							&& part.getEditorInput().equals(input))
+					if (editorInputClasse.isInstance(part.getEditorInput()) && part.getEditorInput().equals(input)) {
 						return part;
+					}
 				}
 			}
 		}
@@ -1240,8 +1232,8 @@ public class Utils {
 		// a non-dirty editor
 		if (TeamUIPlugin.getPlugin().getPreferenceStore()
 				.getBoolean(IPreferenceIds.REUSE_OPEN_COMPARE_EDITOR)) {
-			for (int i = 0; i < editorRefs.length; i++) {
-				IEditorPart part = editorRefs[i].getEditor(false);
+			for (IEditorReference editorRef : editorRefs) {
+				IEditorPart part = editorRef.getEditor(false);
 				if (part != null
 						&& (part.getEditorInput() instanceof SaveableCompareEditorInput)
 						&& part instanceof IReusableEditor && !part.isDirty()) {

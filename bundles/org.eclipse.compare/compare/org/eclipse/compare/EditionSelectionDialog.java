@@ -466,8 +466,9 @@ public class EditionSelectionDialog extends ResizableDialog {
 			if (sco != null) {
 				Object[] children= sco.getChildren();
 				if (children != null)
-					for (int i= 0; i < children.length; i++)
-						current.add(children[i]);
+					for (Object child : children) {
+						current.add(child);
+				}
 			}
 
 			final IStructureCreator sc= structureCreator;
@@ -489,8 +490,8 @@ public class EditionSelectionDialog extends ResizableDialog {
 						if (sco2 != null) {
 							Object[] children= sco2.getChildren();
 							if (children != null) {
-								for (int i2= 0; i2 < children.length; i2++) {
-									ITypedElement child= (ITypedElement) children[i2];
+								for (Object c : children) {
+									ITypedElement child = (ITypedElement) c;
 									if (!current.contains(child))
 										sendPair(new Pair(sc, edition, child));
 								}

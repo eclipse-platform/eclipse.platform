@@ -259,8 +259,7 @@ protected Control createContents(Composite parent){
 					dir+=java.io.File.separator;
 				}
 
-				for(int i=0; i<files.length; i++){
-					String foo=files[i];
+				for (String foo : files) {
 					if(keys.length()!=0)
 						keys=keys+","; //$NON-NLS-1$
 					keys=keys+dir+foo;
@@ -788,10 +787,10 @@ protected Control createContents(Composite parent){
 
 				// Check if the generated key has been included in pkeys?
 				String[] pkeysa=pkeys.split(","); //$NON-NLS-1$
-				for(int i=0; i<pkeysa.length; i++){
-					File pkey=new java.io.File(pkeysa[i]);
-					if(!pkey.isAbsolute()){
-						pkey=new java.io.File(home, pkeysa[i]);
+				for (String p : pkeysa) {
+					File pkey = new java.io.File(p);
+					if (!pkey.isAbsolute()) {
+						pkey = new java.io.File(home, p);
 					}
 					if(pkey.equals(mypkey))
 						return;
@@ -1069,11 +1068,10 @@ protected Control createContents(Composite parent){
 		Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
 		String[] order = Utils.getMethodsOrder().split(","); //$NON-NLS-1$
-
-		for(int i=0; i<order.length; i++){
+		for (String o : order) {
 			TableItem tableItem= new TableItem(preferedAuthMethodTable, SWT.NONE);
-			tableItem.setText(0, order[i]);
-			if(smethods.contains(order[i])){
+			tableItem.setText(0, o);
+			if (smethods.contains(o)) {
 				tableItem.setChecked(true);
 			}
 		}
@@ -1198,11 +1196,10 @@ protected Control createContents(Composite parent){
 		Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
 		String[] order = Utils.getKEXMethodsOrder().split(","); //$NON-NLS-1$
-
-		for(int i=0; i<order.length; i++){
+		for (String o : order) {
 			TableItem tableItem= new TableItem(preferedKeyExchangeMethodTable, SWT.NONE);
-			tableItem.setText(0, order[i]);
-			if(smethods.contains(order[i])){
+			tableItem.setText(0, o);
+			if (smethods.contains(o)) {
 				tableItem.setChecked(true);
 			}
 		}
@@ -1351,14 +1348,14 @@ protected Control createContents(Composite parent){
 		preferedSSHAgentTable.removeAll();
 		String[] methods = Utils.getAvailableSSHAgents().split(","); //$NON-NLS-1$
 		String[] selected = Utils.getSelectedSSHAgent().split(","); //$NON-NLS-1$
-
-		for(int i=0; i<methods.length; i++){
-			if(methods[i].length()==0)
+		for (String method : methods) {
+			if (method.length() == 0) {
 				continue;
+			}
 			TableItem tableItem= new TableItem(preferedSSHAgentTable, SWT.NONE);
-			tableItem.setText(0, methods[i]);
-			for(int j=0; j<selected.length; j++){
-				if(selected[j].equals(methods[i])){
+			tableItem.setText(0, method);
+			for (String s : selected) {
+				if (s.equals(method)) {
 					tableItem.setChecked(true);
 					break;
 				}
@@ -1372,11 +1369,10 @@ protected Control createContents(Composite parent){
 		Set<String> smethods = new HashSet<>(Arrays.asList(methods));
 
 		String[] order = Utils.getMACMethodsOrder().split(","); //$NON-NLS-1$
-
-		for(int i=0; i<order.length; i++){
+		for (String o : order) {
 			TableItem tableItem= new TableItem(preferedMACMethodTable, SWT.NONE);
-			tableItem.setText(0, order[i]);
-			if(smethods.contains(order[i])){
+			tableItem.setText(0, o);
+			if (smethods.contains(o)) {
 				tableItem.setChecked(true);
 			}
 		}

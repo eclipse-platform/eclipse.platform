@@ -15,7 +15,6 @@ package org.eclipse.team.internal.core.subscribers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -79,8 +78,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 			ResourceDiffTree[] locked = null;
 			try {
 				locked = beginDispath();
-				for (Iterator iter = dispatchEvents.iterator(); iter.hasNext();) {
-					Event event = (Event) iter.next();
+				for (Event event : dispatchEvents) {
 					switch (event.getType()) {
 					case RESOURCE_REMOVAL:
 						handleRemove(event.getResource());
@@ -115,8 +113,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 			ChangeSet[] sets = getSets();
 			List<ResourceDiffTree> lockedSets = new ArrayList<>();
 			try {
-				for (int i = 0; i < sets.length; i++) {
-					ActiveChangeSet set = (ActiveChangeSet)sets[i];
+				for (ChangeSet s : sets) {
+					ActiveChangeSet set = (ActiveChangeSet) s;
 					ResourceDiffTree tree = set.internalGetDiffTree();
 					lockedSets.add(tree);
 					tree.beginInput();
@@ -124,8 +122,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 				return lockedSets.toArray(new ResourceDiffTree[lockedSets.size()]);
 			} catch (RuntimeException e) {
 				try {
-					for (Iterator iter = lockedSets.iterator(); iter.hasNext();) {
-						ResourceDiffTree tree = (ResourceDiffTree) iter.next();
+					for (ResourceDiffTree tree : lockedSets) {
 						try {
 							tree.endInput(null);
 						} catch (Throwable e1) {
@@ -145,8 +142,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 				return;
 			}
 			monitor.beginTask(null, 100 * locked.length);
-			for (int i = 0; i < locked.length; i++) {
-				ResourceDiffTree tree = locked[i];
+			for (ResourceDiffTree tree : locked) {
 				try {
 					tree.endInput(Policy.subMonitorFor(monitor, 100));
 				} catch (RuntimeException e) {
@@ -170,8 +166,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		 */
 		private void handleRemove(IResource resource) {
 			ChangeSet[] sets = getSets();
-			for (int i = 0; i < sets.length; i++) {
-				ChangeSet set = sets[i];
+			for (ChangeSet set : sets) {
 				// This will remove any descendants from the set and callback to
 				// resourcesChanged which will batch changes
 				if (!set.isEmpty()) {
@@ -197,8 +192,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 						getDefaultSet().add(diff);
 					}
 				} else {
-					for (int i = 0; i < containingSets.length; i++) {
-						ActiveChangeSet set = containingSets[i];
+					for (ActiveChangeSet set : containingSets) {
 						// Update the sync info in the set
 						set.add(diff);
 					}
@@ -208,8 +202,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 			}
 			if (depth != IResource.DEPTH_ZERO) {
 				IResource[] members = getSubscriber().members(resource);
-				for (int i = 0; i < members.length; i++) {
-					IResource member = members[i];
+				for (IResource member : members) {
 					handleChange(member, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
 				}
 			}
@@ -218,8 +211,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		private void removeFromAllSets(IResource resource) {
 			List<ChangeSet> toRemove = new ArrayList<>();
 			ChangeSet[] sets = getSets();
-			for (int i = 0; i < sets.length; i++) {
-				ChangeSet set = sets[i];
+			for (ChangeSet set : sets) {
 				if (set.contains(resource)) {
 					set.remove(resource);
 					if (set.isEmpty()) {
@@ -236,8 +228,7 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 		private ActiveChangeSet[] getContainingSets(IResource resource) {
 			Set<ActiveChangeSet> result = new HashSet<>();
 			ChangeSet[] sets = getSets();
-			for (int i = 0; i < sets.length; i++) {
-				ChangeSet set = sets[i];
+			for (ChangeSet set : sets) {
 				if (set.contains(resource)) {
 					result.add((ActiveChangeSet) set);
 				}
@@ -282,8 +273,8 @@ public class SubscriberChangeSetManager extends ActiveChangeSetManager {
 
 	public boolean hasMembers(IResource resource) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ActiveChangeSet set = (ActiveChangeSet)sets[i];
+		for (ChangeSet s : sets) {
+			ActiveChangeSet set = (ActiveChangeSet) s;
 			if (set.getDiffTree().getChildren(resource.getFullPath()).length > 0)
 				return true;
 		}

@@ -89,8 +89,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 		if (structuredSelection instanceof TreeSelection) {
 			TreeSelection ts = (TreeSelection) structuredSelection;
 			TreePath[] paths = ts.getPaths();
-			for (int j = 0; j < paths.length; j++) {
-				TreePath path = paths[j];
+			for (TreePath path : paths) {
 				String text = getTextFor(path);
 				if (text != null && text.length() > 0) {
 					if (i > 0)

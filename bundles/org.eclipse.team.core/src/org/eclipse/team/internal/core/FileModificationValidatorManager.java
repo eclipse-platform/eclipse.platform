@@ -44,8 +44,7 @@ public class FileModificationValidatorManager extends FileModificationValidator 
 		Map<RepositoryProvider, List<IFile>> providersToFiles = new HashMap<>(files.length);
 
 		//for each file, determine which provider, map providers to files
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			RepositoryProvider provider = RepositoryProvider.getProvider(file.getProject());
 
 			if (!providersToFiles.containsKey(provider)) {

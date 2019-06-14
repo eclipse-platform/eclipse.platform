@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -102,8 +101,8 @@ public class FileDiffResult implements IFilePatchResult {
 			this.fBeforeLines = new ArrayList<>(getLines(content, false));
 			this.fAfterLines = this.fMatches ? new ArrayList<>() : this.fBeforeLines;
 			IHunk[] hunks = this.fDiff.getHunks();
-			for (int i = 0; i < hunks.length; i++) {
-				Hunk hunk = (Hunk) hunks[i];
+			for (IHunk h : hunks) {
+				Hunk hunk = (Hunk) h;
 				hunk.setCharset(getCharset());
 				HunkResult result = getHunkResult(hunk);
 				result.setMatches(false);
@@ -118,8 +117,8 @@ public class FileDiffResult implements IFilePatchResult {
 				// Check to see if we have at least one hunk that matches
 				this.fMatches = false;
 				IHunk[] hunks = this.fDiff.getHunks();
-				for (int i = 0; i < hunks.length; i++) {
-					Hunk hunk = (Hunk) hunks[i];
+				for (IHunk h : hunks) {
+					Hunk hunk = (Hunk) h;
 					HunkResult result = getHunkResult(hunk);
 					if (result.isOK()) {
 						this.fMatches = true;
@@ -161,8 +160,8 @@ public class FileDiffResult implements IFilePatchResult {
 		}
 		int shift= 0;
 		IHunk[] hunks = this.fDiff.getHunks();
-		for (int i = 0; i < hunks.length; i++) {
-			Hunk hunk = (Hunk) hunks[i];
+		for (IHunk h : hunks) {
+			Hunk hunk = (Hunk) h;
 			hunk.setCharset(getCharset());
 			HunkResult result = getHunkResult(hunk);
 			result.setShift(shift);
@@ -184,8 +183,7 @@ public class FileDiffResult implements IFilePatchResult {
 	public boolean containsProblems() {
 		if (this.fDiffProblem)
 			return true;
-		for (Iterator<HunkResult> iterator = this.fHunkResults.values().iterator(); iterator.hasNext();) {
-			HunkResult result = iterator.next();
+		for (HunkResult result : this.fHunkResults.values()) {
 			if (!result.isOK())
 				return true;
 		}
@@ -263,8 +261,8 @@ public class FileDiffResult implements IFilePatchResult {
 	public List<Hunk> getFailedHunks() {
 		List<Hunk> failedHunks = new ArrayList<>();
 		IHunk[] hunks = this.fDiff.getHunks();
-		for (int i = 0; i < hunks.length; i++) {
-			HunkResult result = this.fHunkResults.get(hunks[i]);
+		for (IHunk hunk : hunks) {
+			HunkResult result = this.fHunkResults.get(hunk);
 			if (result != null && !result.isOK())
 				failedHunks.add(result.getHunk());
 		}
@@ -287,8 +285,8 @@ public class FileDiffResult implements IFilePatchResult {
 		// return hunk results in the same order as hunks are placed in file diff
 		List<HunkResult> results = new ArrayList<>();
 		IHunk[] hunks = this.fDiff.getHunks();
-		for (int i = 0; i < hunks.length; i++) {
-			HunkResult result = this.fHunkResults.get(hunks[i]);
+		for (IHunk hunk : hunks) {
+			HunkResult result = this.fHunkResults.get(hunk);
 			if (result != null) {
 				results.add(result);
 			}

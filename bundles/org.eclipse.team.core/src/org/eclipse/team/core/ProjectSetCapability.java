@@ -240,8 +240,7 @@ public abstract class ProjectSetCapability {
 		// Build a collection of existing projects
 
 		final Collection<IProject> existingProjects = new ArrayList<>();
-		for (int i = 0; i < projects.length; i++) {
-			IProject eachProj = projects[i];
+		for (IProject eachProj : projects) {
 			if (eachProj.exists()) {
 				existingProjects.add(eachProj);
 			} else if (new File(eachProj.getParent().getLocation().toFile(), eachProj.getName()).exists()) {
@@ -267,8 +266,7 @@ public abstract class ProjectSetCapability {
 		Collection<IProject> result = new ArrayList<>(projects.length);
 		result.addAll(Arrays.asList(projects));
 		result.removeAll(existingProjects);
-		for (int i = 0; i < confirmed.length; i++) {
-			IProject eachProj = confirmed[i];
+		for (IProject eachProj : confirmed) {
 			if (existingProjects.contains(eachProj))
 				result.add(eachProj);
 		}

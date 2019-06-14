@@ -148,8 +148,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	@Override
 	public final void refresh(ResourceTraversal[] traversals, int flags, IProgressMonitor monitor) throws CoreException {
 		subscriber.refresh(traversals, monitor);
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			refreshed(traversal.getResources(), traversal.getDepth());
 		}
 	}
@@ -178,8 +177,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * @param depth the depth to which the resources were refreshed
 	 */
 	protected final void refreshed(IResource[] resources, int depth) {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			// Include files and depth-one folders as shallow
 			if (depth == IResource.DEPTH_ONE || resource.getType() == IResource.FILE) {
 				shallowRefresh.add(resource);
@@ -293,8 +291,7 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	public IProject[] getProjects() {
 		Set<IProject> projects = new HashSet<>();
 		IResource[] roots = subscriber.roots();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			projects.add(resource.getProject());
 		}
 		return projects.toArray(new IProject[projects.size()]);

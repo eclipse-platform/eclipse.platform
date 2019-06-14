@@ -78,9 +78,8 @@ public class RemoteLogger {
 		String[] entry = this.cache.getCachedFilePaths();
 
 		treeBuilder = new RLogTreeBuilder(project.getRepository(), tag, cache);
-		for (int i = 0; i < entry.length; i++) {
-			ILogEntry[] logEntry = this.cache.getLogEntries(entry[i]);
-
+		for (String e : entry) {
+			ILogEntry[] logEntry = this.cache.getLogEntries(e);
 			//might not have state if this a branch entry
 			if (logEntry[0].getState() != null && logEntry[0].getState().equals(DEAD_STATE))
 				continue;

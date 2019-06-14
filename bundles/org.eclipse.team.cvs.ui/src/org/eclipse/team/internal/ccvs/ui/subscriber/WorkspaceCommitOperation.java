@@ -132,8 +132,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		// A list of out-of-sync folders that must be made in-sync
 		final List<SyncInfo> makeInSync = new ArrayList<>();
 		
-		for (int i = 0; i < changed.length; i++) {
-			SyncInfo changedNode = changed[i];
+		for (SyncInfo changedNode : changed) {
 			int kind = changedNode.getKind();
 			IResource resource = changedNode.getLocal();
 			
@@ -279,8 +278,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		ChangeSet[] sets = CVSUIPlugin.getPlugin().getChangeSetManager().getSets();
 		Arrays.sort(sets, new ChangeSetComparator());
 		int numMatchedSets = 0;
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (containsOne(set, resourcesToCommit)) {
 				if(numMatchedSets > 0) comment.append(System.getProperty("line.separator")); //$NON-NLS-1$
 				comment.append(set.getComment());
@@ -291,8 +289,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 	}
 	
 	private boolean containsOne(ChangeSet set, IResource[] resourcesToCommit) {
-		for (int j = 0; j < resourcesToCommit.length; j++) {
-			IResource resource = resourcesToCommit[j];
+		for (IResource resource : resourcesToCommit) {
 			if (set.contains(resource)) {
 				return true;
 			}
@@ -320,11 +317,9 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		// remove unshared resources that were not selected by the user
 		if (unadded != null && unadded.length > 0) {
 			List<IResource> resourcesToRemove = new ArrayList<>(unadded.length);
-			for (int i = 0; i < unadded.length; i++) {
-				IResource unaddedResource = unadded[i];
+			for (IResource unaddedResource : unadded) {
 				boolean included = false;
-				for (int j = 0; j < toBeAdded.length; j++) {
-					IResource resourceToAdd = toBeAdded[j];
+				for (IResource resourceToAdd : toBeAdded) {
 					if (unaddedResource.equals(resourceToAdd)) {
 						included = true;
 						break;
@@ -343,8 +338,7 @@ public class WorkspaceCommitOperation extends CVSSubscriberOperation {
 		// could be considered to be under version control already)
 		IResource[] resources = syncSet.getResources();
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (!isAdded(resource)) {
 				result.add(resource);
 			}

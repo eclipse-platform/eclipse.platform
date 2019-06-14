@@ -49,8 +49,7 @@ public class ConfirmMergedOperation extends CVSSubscriberOperation {
 		SyncInfo[] syncResources = syncSet.getSyncInfos();
 		monitor.beginTask(null, 100 * syncResources.length);
 		try {
-			for (int i = 0; i < syncResources.length; i++) {
-				SyncInfo info = syncResources[i];
+			for (SyncInfo info : syncResources) {
 				if (!makeOutgoing(info, Policy.subMonitorFor(monitor, 100))) {
 					// Failure was logged in makeOutgoing
 				}

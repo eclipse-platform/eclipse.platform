@@ -17,7 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -100,8 +99,7 @@ public class ResourceVariantCache {
 
 	public static synchronized void shutdown() {
 		String[] keys = caches.keySet().toArray(new String[caches.size()]);
-		for (int i = 0; i < keys.length; i++) {
-			String id = keys[i];
+		for (String id : keys) {
 			disableCache(id);
 		}
 	}
@@ -131,8 +129,7 @@ public class ResourceVariantCache {
 		long current = new Date().getTime();
 		if ((lastCacheCleanup!=-1) && (current - lastCacheCleanup < CACHE_FILE_LIFESPAN)) return;
 		List<ResourceVariantCacheEntry> stale = new ArrayList<>();
-		for (Iterator iter = cacheEntries.values().iterator(); iter.hasNext();) {
-			ResourceVariantCacheEntry entry = (ResourceVariantCacheEntry) iter.next();
+		for (ResourceVariantCacheEntry entry : cacheEntries.values()) {
 			long lastHit = entry.getLastAccessTimeStamp();
 			if ((current - lastHit) > CACHE_FILE_LIFESPAN){
 				stale.add(entry);
@@ -199,8 +196,8 @@ public class ResourceVariantCache {
 			if(children == null) {
 				throw new TeamException(NLS.bind(Messages.RemoteContentsCache_fileError, new String[] { file.getAbsolutePath() }));
 			}
-			for (int i = 0; i < children.length; i++) {
-				deleteFile(children[i]);
+			for (File f : children) {
+				deleteFile(f);
 			}
 		}
 		if (! file.delete()) {

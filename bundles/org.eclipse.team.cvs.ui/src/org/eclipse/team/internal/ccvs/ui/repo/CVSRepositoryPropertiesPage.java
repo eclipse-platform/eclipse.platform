@@ -281,8 +281,8 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 		connectionInfoChanged = false;
 		
 		IConnectionMethod[] methods = CVSRepositoryLocation.getPluggedInConnectionMethods();
-		for (int i = 0; i < methods.length; i++) {
-			methodType.add(methods[i].getName());
+		for (IConnectionMethod method : methods) {
+			methodType.add(method.getName());
 		}
 		String method = location.getMethod().getName();
 		methodType.select(methodType.indexOf(method));
@@ -364,12 +364,12 @@ public class CVSRepositoryPropertiesPage extends PropertyPage {
 							// For each project shared with the old location, set connection info to the new one
 							List projects = new ArrayList();
 							IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-							for (int i = 0; i < allProjects.length; i++) {
-								RepositoryProvider teamProvider = RepositoryProvider.getProvider(allProjects[i], CVSProviderPlugin.getTypeId());
+							for (IProject project : allProjects) {
+								RepositoryProvider teamProvider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
 								if (teamProvider != null) {
 									CVSTeamProvider cvsProvider = (CVSTeamProvider)teamProvider;
 									if (cvsProvider.getCVSWorkspaceRoot().getRemoteLocation().equals(location)) {
-										projects.add(allProjects[i]);
+										projects.add(project);
 									}
 								}
 							}

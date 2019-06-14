@@ -68,8 +68,7 @@ public class TagContentAssistProcessor implements ISubjectControlContentAssistPr
 			CVSTag[] matching = tags.getMatchingTags();
 			if (matching.length > 0) {
 				List<CompletionProposal> proposals = new ArrayList<>();
-				for (int i = 0; i < matching.length; i++) {
-					CVSTag tag = matching[i];
+				for (CVSTag tag : matching) {
 					String name = tag.getName();
 					ImageDescriptor desc = TagElement.getImageDescriptor(tag);
 					Image image = null;

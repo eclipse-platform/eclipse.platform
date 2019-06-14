@@ -161,8 +161,7 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 		super.fillContextMenu(menu);
 		if (menu instanceof CommonMenuManager) {
 			CommonMenuManager manager = (CommonMenuManager) menu;
-			for (Iterator iter = handlers.keySet().iterator(); iter.hasNext();) {
-				String actionId = (String) iter.next();
+			for (String actionId : handlers.keySet()) {
 				manager.registerHandler(actionId, handlers.get(actionId));
 			}
 		}

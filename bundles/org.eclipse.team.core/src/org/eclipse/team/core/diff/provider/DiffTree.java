@@ -15,7 +15,6 @@ package org.eclipse.team.core.diff.provider;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -93,8 +92,7 @@ public class DiffTree implements IDiffTree {
 			if (depth == IResource.DEPTH_ZERO)
 				return;
 			IPath[] children = getChildren(path);
-			for (int i = 0; i < children.length; i++) {
-				IPath child = children[i];
+			for (IPath child : children) {
 				accept(child, visitor, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
 			}
 		}
@@ -244,8 +242,8 @@ public class DiffTree implements IDiffTree {
 
 		if(event.isEmpty() && ! event.isReset() && propertyChanges.isEmpty()) return;
 		Object[] listeners = this.listeners.getListeners();
-		for (int i = 0; i < listeners.length; i++) {
-			final IDiffChangeListener listener = (IDiffChangeListener)listeners[i];
+		for (Object l : listeners) {
+			final IDiffChangeListener listener = (IDiffChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {
@@ -257,8 +255,7 @@ public class DiffTree implements IDiffTree {
 						lockedForModification = true;
 						if (!event.isEmpty() || event.isReset())
 							listener.diffsChanged(event, Policy.subMonitorFor(monitor, 100));
-						for (Iterator<Integer> iter = propertyChanges.keySet().iterator(); iter.hasNext();) {
-							Integer key = iter.next();
+						for (Integer key : propertyChanges.keySet()) {
 							Set<IPath> paths = propertyChanges.get(key);
 							listener.propertyChanged(DiffTree.this, key.intValue(), paths.toArray(new IPath[paths
 									.size()]));
@@ -371,8 +368,7 @@ public class DiffTree implements IDiffTree {
 			changes = new HashSet<>();
 			propertyChanges.put(key, changes);
 		}
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			changes.add(path);
 		}
 	}
@@ -386,8 +382,7 @@ public class DiffTree implements IDiffTree {
 	public void setBusy(IDiff[] diffs, IProgressMonitor monitor) {
 		try {
 			beginInput();
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff node = diffs[i];
+			for (IDiff node : diffs) {
 				setPropertyToRoot(node, P_BUSY_HINT, true);
 			}
 		} finally {
@@ -400,8 +395,7 @@ public class DiffTree implements IDiffTree {
 		try {
 			beginInput();
 			IPath[] paths = pathTree.getPaths();
-			for (int i = 0; i < paths.length; i++) {
-				IPath path = paths[i];
+			for (IPath path : paths) {
 				IPath[] changed = pathTree.setPropogatedProperty(path, P_BUSY_HINT, false);
 				accumulatePropertyChanges(P_BUSY_HINT, changed);
 			}

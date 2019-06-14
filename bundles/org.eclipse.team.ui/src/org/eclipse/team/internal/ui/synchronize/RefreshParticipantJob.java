@@ -403,8 +403,7 @@ public abstract class RefreshParticipantJob extends Job {
 	private boolean isJobInFamilyRunning(Object family) {
 		Job[] jobs = Job.getJobManager().find(family);
 		if (jobs != null && jobs.length > 0) {
-			for (int i = 0; i < jobs.length; i++) {
-				Job job = jobs[i];
+			for (Job job : jobs) {
 				if (job.getState() != Job.NONE) {
 					return true;
 				}
@@ -583,8 +582,7 @@ public abstract class RefreshParticipantJob extends Job {
 			listenerArray = listeners.toArray(new IRefreshSubscriberListener[listeners.size()]);
 		}
 		// Notify each listener in a safe manner (i.e. so their exceptions don't kill us)
-		for (int i = 0; i < listenerArray.length; i++) {
-			IRefreshSubscriberListener listener = listenerArray[i];
+		for (IRefreshSubscriberListener listener : listenerArray) {
 			Notification notification = new Notification() {
 				@Override
 				protected void notify(IRefreshSubscriberListener listener) {

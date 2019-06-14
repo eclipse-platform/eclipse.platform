@@ -217,8 +217,7 @@ public abstract class RevisionAnnotationController {
 	}
 
 	private static AbstractDecoratedTextEditor findTextEditor(IWorkbenchPage page, IEditorPart[] editors, IEditorInput input) {
-		for (int i = 0; i < editors.length; i++) {
-			IEditorPart editor = editors[i];
+		for (IEditorPart editor : editors) {
 			AbstractDecoratedTextEditor te = findTextEditorPart(page, editor, input);
 			if (te != null)
 				return te;
@@ -232,8 +231,7 @@ public abstract class RevisionAnnotationController {
 		if (editor instanceof MultiPageEditorPart) {
 			MultiPageEditorPart mpep = (MultiPageEditorPart) editor;
 			IEditorPart[] parts = mpep.findEditors(input);
-			for (int i = 0; i < parts.length; i++) {
-				IEditorPart editorPart = parts[i];
+			for (IEditorPart editorPart : parts) {
 				if (editorPart instanceof AbstractDecoratedTextEditor) {
 					page.activate(mpep);
 					mpep.setActiveEditor(editorPart);
@@ -247,8 +245,7 @@ public abstract class RevisionAnnotationController {
 	private static IEditorPart[] findOpenEditorsForFile(IWorkbenchPage page, FileEditorInput input) {
 		final IEditorReference[] references= page.findEditors(input, null, IWorkbenchPage.MATCH_INPUT);
 		final List<IEditorPart> editors = new ArrayList<>();
-		for (int i= 0; i < references.length; i++) {
-			IEditorReference reference= references[i];
+		for (IEditorReference reference : references) {
 			IEditorPart editor= reference.getEditor(false);
 			editors.add(editor);
 		}
@@ -266,8 +263,7 @@ public abstract class RevisionAnnotationController {
 		final IWorkbench workbench= PlatformUI.getWorkbench();
 		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 		IEditorReference[] references= window.getActivePage().getEditorReferences();
-		for (int i= 0; i < references.length; i++) {
-			IEditorReference reference= references[i];
+		for (IEditorReference reference : references) {
 			try {
 				if (object.equals(reference.getEditorInput())) {
 					IEditorPart editor= reference.getEditor(false);

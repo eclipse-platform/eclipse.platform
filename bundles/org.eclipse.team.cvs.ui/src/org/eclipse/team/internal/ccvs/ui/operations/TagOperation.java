@@ -167,8 +167,7 @@ public class TagOperation extends RepositoryProviderOperation implements ITagOpe
 	private IProject[] getProjects() {
 		ResourceMapping[] mappings = getSelectedMappings();
 		Set<IProject> projects = new HashSet<>();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			projects.addAll(Arrays.asList(mapping.getProjects()));
 		}
 		return projects.toArray(new IProject[projects.size()]);

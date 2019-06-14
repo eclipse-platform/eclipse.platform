@@ -102,17 +102,17 @@ public class RemoteFolderSandbox extends RemoteFolder {
 	public void acceptChildren(ICVSResourceVisitor visitor) throws CVSException {
 		ICVSRemoteResource[] children = getChildren();
 		if (children == null) return;
-		for (int i=0; i<children.length; i++) {
-			((ICVSResource)children[i]).accept(visitor);
+		for (ICVSRemoteResource c : children) {
+			((ICVSResource) c).accept(visitor);
 		}
 	}
 
 	public void remove(RemoteFile file) {
 		ICVSRemoteResource[] children = getChildren();
 		ArrayList<ICVSRemoteResource> results = new ArrayList<>();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] != file){
-				results.add(children[i]);
+		for (ICVSRemoteResource c : children) {
+			if (c != file) {
+				results.add(c);
 			}
 		}
 		setChildren(results.toArray(new ICVSRemoteResource[results.size()]));		

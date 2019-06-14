@@ -156,12 +156,14 @@ public final class Team {
 
 	private static boolean matchesEnabledIgnore(IResource resource) {
 		StringMatcher[] matchers = getStringMatchers();
-		for (int i = 0; i < matchers.length; i++) {
+		for (StringMatcher matcher : matchers) {
 			String resourceName = resource.getName();
-			if(matchers[i].isPathPattern()) {
+			if (matcher.isPathPattern()) {
 				resourceName = resource.getFullPath().toString();
 			}
-			if (matchers[i].match(resourceName)) return true;
+			if (matcher.match(resourceName)) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -249,9 +251,9 @@ public final class Team {
 		if (ignoreMatchers==null) {
 			IIgnoreInfo[] ignorePatterns = getAllIgnores();
 			ArrayList<StringMatcher> matchers = new ArrayList<>(ignorePatterns.length);
-			for (int i = 0; i < ignorePatterns.length; i++) {
-				if (ignorePatterns[i].getEnabled()) {
-					matchers.add(new StringMatcher(ignorePatterns[i].getPattern(), true, false));
+			for (IIgnoreInfo ignorePattern : ignorePatterns) {
+				if (ignorePattern.getEnabled()) {
+					matchers.add(new StringMatcher(ignorePattern.getPattern(), true, false));
 				}
 			}
 			ignoreMatchers = new StringMatcher[matchers.size()];
@@ -295,13 +297,11 @@ public final class Team {
 		}
 		// Now set into preferences
 		StringBuilder buf = new StringBuilder();
-		Iterator e = globalIgnore.entrySet().iterator();
-		while (e.hasNext()) {
-			Map.Entry entry = (Entry) e.next();
+		for (Map.Entry entry : globalIgnore.entrySet()) {
 			String pattern = (String) entry.getKey();
 			Boolean value = (Boolean) entry.getValue();
 			boolean isCustom = (!pluginIgnore.containsKey(pattern)) ||
-				!pluginIgnore.get(pattern).equals(value);
+					!pluginIgnore.get(pattern).equals(value);
 			if (isCustom) {
 				buf.append(pattern);
 				buf.append(PREF_TEAM_SEPARATOR);
@@ -309,7 +309,6 @@ public final class Team {
 				buf.append(en);
 				buf.append(PREF_TEAM_SEPARATOR);
 			}
-
 		}
 		TeamPlugin.getPlugin().getPluginPreferences().setValue(PREF_TEAM_IGNORES, buf.toString());
 	}
@@ -328,15 +327,15 @@ public final class Team {
 			IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.IGNORE_EXTENSION);
 			if (extension != null) {
 				IExtension[] extensions =  extension.getExtensions();
-				for (int i = 0; i < extensions.length; i++) {
-					IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-					for (int j = 0; j < configElements.length; j++) {
-						String pattern = configElements[j].getAttribute("pattern"); //$NON-NLS-1$
+				for (IExtension ext : extensions) {
+					IConfigurationElement[] configElements = ext.getConfigurationElements();
+					for (IConfigurationElement configElement : configElements) {
+						String pattern = configElement.getAttribute("pattern"); //$NON-NLS-1$
 						if (pattern != null) {
-							String selected = configElements[j].getAttribute("enabled"); //$NON-NLS-1$
+							String selected = configElement.getAttribute("enabled"); //$NON-NLS-1$
 							if (selected == null) {
 								// Check for selected because this used to be the field name
-								selected = configElements[j].getAttribute("selected"); //$NON-NLS-1$
+								selected = configElement.getAttribute("selected"); //$NON-NLS-1$
 							}
 							boolean enabled = selected != null
 									&& selected.equalsIgnoreCase("true"); //$NON-NLS-1$
@@ -382,17 +381,15 @@ public final class Team {
 			String patternToFind, IExtension[] extensions) {
 		StringBuilder sb = new StringBuilder();
 		boolean isFirst = true;
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement[] configElements = extensions[i]
-					.getConfigurationElements();
-			for (int j = 0; j < configElements.length; j++) {
-				if (patternToFind.equals(configElements[j]
-						.getAttribute("pattern"))) { //$NON-NLS-1$
+		for (IExtension extension : extensions) {
+			IConfigurationElement[] configElements = extension.getConfigurationElements();
+			for (IConfigurationElement configElement : configElements) {
+				if (patternToFind.equals(configElement.getAttribute("pattern"))) { //$NON-NLS-1$
 					if (!isFirst) {
 						sb.append(", "); //$NON-NLS-1$
 					}
 					isFirst = false;
-					sb.append(extensions[i].getContributor().getName());
+					sb.append(extension.getContributor().getName());
 				}
 			}
 		}
@@ -494,13 +491,13 @@ public final class Team {
 			IExtensionPoint extension = RegistryFactory.getRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.PROJECT_SET_EXTENSION);
 			if (extension != null) {
 				IExtension[] extensions =  extension.getExtensions();
-				for (int i = 0; i < extensions.length; i++) {
-					IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-					for (int j = 0; j < configElements.length; j++) {
-						String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
+				for (IExtension ext : extensions) {
+					IConfigurationElement[] configElements = ext.getConfigurationElements();
+					for (IConfigurationElement configElement : configElements) {
+						String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
 						if (extensionId != null && extensionId.equals(id)) {
 							try {
-								return (IProjectSetSerializer)configElements[j].createExecutableExtension("class"); //$NON-NLS-1$
+								return (IProjectSetSerializer) configElement.createExecutableExtension("class"); //$NON-NLS-1$
 							} catch (CoreException e) {
 								TeamPlugin.log(e);
 								return null;
@@ -642,8 +639,8 @@ public final class Team {
 			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.EXTENSION_POINT_BUNDLE_IMPORTERS);
 			if (point != null) {
 				IConfigurationElement[] infos = point.getConfigurationElements();
-				for (int i = 0; i < infos.length; i++) {
-					fBundleImporters.add(new BundleImporterExtension(infos[i]));
+				for (IConfigurationElement info : infos) {
+					fBundleImporters.add(new BundleImporterExtension(info));
 				}
 			}
 		}

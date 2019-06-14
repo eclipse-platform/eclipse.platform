@@ -378,8 +378,8 @@ public abstract class StructureCreator implements IStructureCreator2 {
 		if (tree != null) {
 			Object[] children= tree.getChildren();
 			if (children != null) {
-				for (int i= 0; i < children.length; i++) {
-					IStructureComparator child= (IStructureComparator) children[i];
+				for (Object c : children) {
+					IStructureComparator child = (IStructureComparator) c;
 					if (child instanceof ITypedElement && child instanceof DocumentRangeNode) {
 						String n1= ((DocumentRangeNode)child).getId();
 						if (n1 == null) {

@@ -132,9 +132,8 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 	private boolean isTargetingInaccessibleProjects() {
 		DiffProject[] diffProjects = getPatcher().getDiffProjects();
 		if (diffProjects != null) {
-			for (int i = 0; i < diffProjects.length; i++) {
-				IProject project = ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(diffProjects[i].getName());
+			for (DiffProject diffProject : diffProjects) {
+				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
 				if (!project.isAccessible())
 					return true;
 			}
@@ -175,8 +174,7 @@ public class ApplyPatchSynchronizationWizard extends PatchWizard implements
 						IStatus.ERROR,
 						TeamUIMessages.PatchInaccessibleProjectsPage_openingProjects,
 						null);
-				for (int i = 0; i < projects.length; i++) {
-					IProject project = projects[i];
+				for (IProject project : projects) {
 					try {
 						project.open(SubMonitor.convert(monitor, 1));
 					} catch (CoreException e) {

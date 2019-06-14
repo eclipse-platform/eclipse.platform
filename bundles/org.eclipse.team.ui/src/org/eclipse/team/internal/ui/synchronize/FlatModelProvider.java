@@ -246,8 +246,7 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 		if (node == getModelRoot());
 		SyncInfo[] infos = getSyncInfoSet().getSyncInfos();
 		List result = new ArrayList();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			result.add(createModelObject(node, info));
 		}
 		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);

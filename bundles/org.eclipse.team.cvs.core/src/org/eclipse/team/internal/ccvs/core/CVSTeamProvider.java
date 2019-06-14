@@ -196,9 +196,9 @@ public class CVSTeamProvider extends RepositoryProvider {
 	 */
 	private String[] getValidArguments(IResource[] resources, LocalOption[] options) throws CVSException {
 		List arguments = new ArrayList(resources.length);
-		for (int i=0;i<resources.length;i++) {
-			checkIsChild(resources[i]);
-			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
+		for (IResource resource : resources) {
+			checkIsChild(resource);
+			IPath cvsPath = resource.getFullPath().removeFirstSegments(1);
 			if (cvsPath.segmentCount() == 0) {
 				arguments.add(Session.CURRENT_LOCAL_FOLDER);
 			} else {

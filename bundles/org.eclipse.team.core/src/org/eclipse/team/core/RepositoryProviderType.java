@@ -14,7 +14,6 @@
 package org.eclipse.team.core;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
@@ -107,8 +106,7 @@ public abstract class RepositoryProviderType extends PlatformObject {
 	 * @since 3.2
 	 */
 	public static RepositoryProviderType getTypeForScheme(String scheme) {
-		for (Iterator iter = allProviderTypes.values().iterator(); iter.hasNext();) {
-			RepositoryProviderType type = (RepositoryProviderType) iter.next();
+		for (RepositoryProviderType type : allProviderTypes.values()) {
 			if (type.getFileSystemScheme() != null && type.getFileSystemScheme().equals(scheme))
 				return type;
 		}
@@ -119,11 +117,11 @@ public abstract class RepositoryProviderType extends PlatformObject {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
 			IExtension[] extensions =  extension.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-				for (int j = 0; j < configElements.length; j++) {
-					String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
-					String typeScheme = configElements[j].getAttribute("fileSystemScheme"); //$NON-NLS-1$
+			for (IExtension ext : extensions) {
+				IConfigurationElement[] configElements = ext.getConfigurationElements();
+				for (IConfigurationElement configElement : configElements) {
+					String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
+					String typeScheme = configElement.getAttribute("fileSystemScheme"); //$NON-NLS-1$
 					if (typeScheme != null && typeScheme.equals(scheme) && extensionId != null) {
 						return newProviderType(extensionId);
 					}
@@ -141,30 +139,28 @@ public abstract class RepositoryProviderType extends PlatformObject {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
 			IExtension[] extensions =  extension.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-				for (int j = 0; j < configElements.length; j++) {
-					String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
-
+			for (IExtension ext : extensions) {
+				IConfigurationElement[] configElements = ext.getConfigurationElements();
+				for (IConfigurationElement configElement : configElements) {
+					String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
 					if (extensionId != null && extensionId.equals(id)) {
 						try {
 							RepositoryProviderType providerType;
 							//Its ok not to have a typeClass extension.  In this case, a default instance will be created.
-							if(configElements[j].getAttribute("typeClass") == null) { //$NON-NLS-1$
+							if (configElement.getAttribute("typeClass") == null) { //$NON-NLS-1$
 								providerType = new DefaultRepositoryProviderType();
 							} else {
-								providerType = (RepositoryProviderType) configElements[j].createExecutableExtension("typeClass"); //$NON-NLS-1$
+								providerType = (RepositoryProviderType) configElement.createExecutableExtension("typeClass"); //$NON-NLS-1$
 							}
-
 							providerType.setID(id);
 							allProviderTypes.put(id, providerType);
-							String scheme = configElements[j].getAttribute("fileSystemScheme"); //$NON-NLS-1$
+							String scheme = configElement.getAttribute("fileSystemScheme"); //$NON-NLS-1$
 							providerType.setFileSystemScheme(scheme);
 							return providerType;
 						} catch (CoreException e) {
 							TeamPlugin.log(e);
 						} catch (ClassCastException e) {
-							String className = configElements[j].getAttribute("typeClass"); //$NON-NLS-1$
+							String className = configElement.getAttribute("typeClass"); //$NON-NLS-1$
 							TeamPlugin.log(IStatus.ERROR, "Class " + className + " registered for repository provider type id " + id + " is not a subclass of RepositoryProviderType", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 						}
 						return null;

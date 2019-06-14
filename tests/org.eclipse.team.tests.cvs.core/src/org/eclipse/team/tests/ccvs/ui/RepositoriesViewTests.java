@@ -44,9 +44,8 @@ public class RepositoriesViewTests extends EclipseTest {
 		// clear repository root cache
 		RepositoryRoot repositoryRoot = getRepositoryRoot();
 		String remotePaths[] = repositoryRoot.getKnownRemotePaths();
-		for (int i = 0; i < remotePaths.length; i++) {
-			repositoryRoot.removeTags(remotePaths[i],
-					repositoryRoot.getAllKnownTags(remotePaths[i]));
+		for (String remotePath : remotePaths) {
+			repositoryRoot.removeTags(remotePath, repositoryRoot.getAllKnownTags(remotePath));
 		}
 	}
 
@@ -54,8 +53,8 @@ public class RepositoriesViewTests extends EclipseTest {
 		RemoteContentProvider rcp = new RemoteContentProvider();
 		AllRootsElement are = new AllRootsElement();
 		Object[] repositoryRoots = rcp.getElements(are);
-		for (int i = 0; i < repositoryRoots.length; i++) {
-			RepositoryRoot repositoryRoot = (RepositoryRoot) repositoryRoots[i];
+		for (Object root : repositoryRoots) {
+			RepositoryRoot repositoryRoot = (RepositoryRoot) root;
 			if (getRepository().equals(repositoryRoot.getRoot())) {
 				return repositoryRoot;
 			}
@@ -150,11 +149,9 @@ public class RepositoriesViewTests extends EclipseTest {
 		// check if version exists for module
 		assertTrue(categories[2] instanceof VersionCategory);
 		Object[] modules = rcp.getChildren(categories[2]);
-		for (int i = 0; i < modules.length; i++) {
-			if (modules[i] instanceof RemoteModule
-					&& ((RemoteModule) (modules[i])).getCVSResource().getName()
-							.equals(moduleName)) {
-				Object folders[] = rcp.getChildren(modules[i]);
+		for (Object module : modules) {
+			if (module instanceof RemoteModule && ((RemoteModule) (module)).getCVSResource().getName().equals(moduleName)) {
+				Object[] folders = rcp.getChildren(module);
 				assertEquals(1, folders.length);
 				assertEquals(versionName, ((RemoteFolder) folders[0]).getTag()
 						.getName());
@@ -228,17 +225,15 @@ public class RepositoriesViewTests extends EclipseTest {
 		// [Branch_1]/Module_1/Project_1
 		// [Branch_1]/Module_1/Module_2
 		assertEquals(2, modules.length);
-		for (int i = 0; i < modules.length; i++) {
-			if (((RemoteResource) (modules[i])).getName().equals(
-					project1.getName())) {
+		for (Object module : modules) {
+			if (((RemoteResource) (module)).getName().equals(project1.getName())) {
 				// Project_1 should have contents retrieved from CVS
-				assertTrue(rcp.hasChildren(modules[i]));
-			} else if (((RemoteResource) (modules[i])).getName().equals(
-					secondModule)) {
+				assertTrue(rcp.hasChildren(module));
+			} else if (((RemoteResource) (module)).getName().equals(secondModule)) {
 				// should be only [Branch_1]/Module_1/Module_2/Project_2.
 				// [Branch_1]/Module_1/Module_2/Project_3 should NOT be on the
 				// list, it is not branched with Branch_1
-				Object[] module2Children = rcp.getChildren(modules[i]);
+				Object[] module2Children = rcp.getChildren(module);
 				assertEquals(1, module2Children.length);
 				assertEquals(project2.getName(),
 						((RemoteResource) module2Children[0]).getName());

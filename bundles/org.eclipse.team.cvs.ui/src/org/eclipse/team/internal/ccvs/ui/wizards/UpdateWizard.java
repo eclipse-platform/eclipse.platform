@@ -66,11 +66,9 @@ public class UpdateWizard extends ResizableWizard {
 	 */
 	private CVSTag getInitialSelection() {
 		try {
-			for (int i = 0; i < mappers.length; i++) {
-				ResourceMapping mapper = mappers[i];
+			for (ResourceMapping mapper : mappers) {
 				IProject[] projects = mapper.getProjects();
-				for (int k = 0; k < projects.length; k++) {
-					IProject project = projects[k];
+				for (IProject project : projects) {
 					ICVSFolder folder = CVSWorkspaceRoot.getCVSFolderFor(project);
 					FolderSyncInfo info = folder.getFolderSyncInfo();
 					if (info != null) {

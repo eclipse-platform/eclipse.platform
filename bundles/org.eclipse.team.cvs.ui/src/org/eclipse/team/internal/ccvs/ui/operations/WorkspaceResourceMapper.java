@@ -46,8 +46,7 @@ public final class WorkspaceResourceMapper extends ResourceMapping {
 	 */
 	public static ResourceMapping[] asResourceMappers(final IResource[] resources, int depth) {
 		List<WorkspaceResourceMapper> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			result.add(new WorkspaceResourceMapper(resource, depth));
 		}
 		return result.toArray(new ResourceMapping[result.size()]);

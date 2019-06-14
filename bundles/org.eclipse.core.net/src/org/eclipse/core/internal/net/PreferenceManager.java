@@ -283,8 +283,7 @@ public class PreferenceManager {
 
 		// migrate proxy data
 		PreferenceManager instanceManager = PreferenceManager.createInstanceManager(instanceScope);
-		for (int i = 0; i < proxies.length; i++) {
-			ProxyType type = proxies[i];
+		for (ProxyType type : proxies) {
 			IProxyData data = type.getProxyData(ProxyType.DO_NOT_VERIFY);
 			if (data.getHost() == null) {
 				ProxyType instanceType = new ProxyType(type.getName(), instanceManager);
@@ -315,8 +314,7 @@ public class PreferenceManager {
 			if (httpProxyHost != null) {
 				ProxyData proxyData = new ProxyData(IProxyData.HTTP_PROXY_TYPE,
 						httpProxyHost, port, false, null);
-				for (int i = 0; i < proxies.length; i++) {
-					ProxyType type = proxies[i];
+				for (ProxyType type : proxies) {
 					if (type.getName().equals(proxyData.getType())) {
 						type.updatePreferencesIfMissing(proxyData);
 					}

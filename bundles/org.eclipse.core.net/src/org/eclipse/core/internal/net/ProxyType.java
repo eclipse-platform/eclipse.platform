@@ -104,9 +104,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	public static String[] convertPropertyStringToHosts(String property) {
 		String hosts[] = StringUtil.split(property, new String[] { "|" }); //$NON-NLS-1$
 		ArrayList<String> ret = new ArrayList<>();
-		for (int i = 0; i < hosts.length; i++) {
-			if (hosts[i].length() != 0) {
-				ret.add(hosts[i]);
+		for (String host : hosts) {
+			if (host.length() != 0) {
+				ret.add(host);
 			}
 		}
 		return ret.toArray(new String[0]);
@@ -436,9 +436,9 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	private IProxyData getProxyData(String type) {
 		IProxyData data[] = ProxySelector.getProxyData(ProxySelector
 				.getDefaultProvider());
-		for (int i = 0; i < data.length; i++) {
-			if (data[i].getType().equalsIgnoreCase(type)) {
-				return data[i];
+		for (IProxyData d : data) {
+			if (d.getType().equalsIgnoreCase(type)) {
+				return d;
 			}
 		}
 		return new ProxyData(type, null, -1, false, null);

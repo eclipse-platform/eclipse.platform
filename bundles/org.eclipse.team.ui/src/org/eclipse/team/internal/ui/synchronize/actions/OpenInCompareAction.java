@@ -94,17 +94,17 @@ public class OpenInCompareAction extends Action {
 		// model synchronize
 		if (participant instanceof ModelSynchronizeParticipant) {
 			ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
-			for (int i = 0; i < elements.length; i++) {
+			for (Object element : elements) {
 				// TODO: This is inefficient
-				if (!msp.hasCompareInputFor(elements[i])) {
+				if (!msp.hasCompareInputFor(element)) {
 					return false;
 				}
 			}
 		} else {
 			// all files
 			IResource resources[] = Utils.getResources(elements);
-			for (int i = 0; i < resources.length; i++) {
-				if (resources[i].getType() != IResource.FILE) {
+			for (IResource resource : resources) {
+				if (resource.getType() != IResource.FILE) {
 					// Only supported if all the items are files.
 					return false;
 				}
@@ -248,8 +248,8 @@ public class OpenInCompareAction extends Action {
 	public static IEditorPart findOpenCompareEditor(IWorkbenchPartSite site, IResource resource) {
 		IWorkbenchPage page = site.getPage();
 		IEditorReference[] editorRefs = page.getEditorReferences();
-		for (int i = 0; i < editorRefs.length; i++) {
-			final IEditorPart part = editorRefs[i].getEditor(false /* don't restore editor */);
+		for (IEditorReference editorRef : editorRefs) {
+			final IEditorPart part = editorRef.getEditor(false /* don't restore editor */);
 			if(part != null) {
 				IEditorInput input = part.getEditorInput();
 				if(part != null && input instanceof SyncInfoCompareInput) {
@@ -279,8 +279,8 @@ public class OpenInCompareAction extends Action {
 		}
 		IWorkbenchPage page = site.getPage();
 		IEditorReference[] editorRefs = page.getEditorReferences();
-		for (int i = 0; i < editorRefs.length; i++) {
-			final IEditorPart part = editorRefs[i].getEditor(false /* don't restore editor */);
+		for (IEditorReference editorRef : editorRefs) {
+			final IEditorPart part = editorRef.getEditor(false /* don't restore editor */);
 			if(part != null) {
 				IEditorInput input = part.getEditorInput();
 				if(input instanceof ModelCompareEditorInput) {

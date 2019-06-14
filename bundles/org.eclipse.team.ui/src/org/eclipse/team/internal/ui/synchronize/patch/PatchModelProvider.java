@@ -88,16 +88,17 @@ public class PatchModelProvider extends ModelProvider {
 		if (resource.getType() == IResource.PROJECT) {
 			if (patcher.isWorkspacePatch()) {
 				DiffProject[] diffProjects = patcher.getDiffProjects();
-				for (int i = 0; i < diffProjects.length; i++) {
-					if (diffProjects[i].getName().equals(resource.getName()))
-						return diffProjects[i];
+				for (DiffProject diffProject : diffProjects) {
+					if (diffProject.getName().equals(resource.getName())) {
+						return diffProject;
+					}
 				}
 			}
 		} else if (resource.getType() == IResource.FILE) {
 			FilePatch2[] diffs = patcher.getDiffs();
-			for (int i = 0; i < diffs.length; i++) {
-				if (resource.equals(getFile(diffs[i], patcher))) {
-					return diffs[i];
+			for (FilePatch2 diff : diffs) {
+				if (resource.equals(getFile(diff, patcher))) {
+					return diff;
 				}
 			}
 		}

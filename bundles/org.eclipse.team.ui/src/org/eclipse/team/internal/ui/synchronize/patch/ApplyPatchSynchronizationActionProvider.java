@@ -39,8 +39,8 @@ public class ApplyPatchSynchronizationActionProvider extends
 				super.updateEnablement(selection);
 				// disable merge for hunks
 				Object[] elements = getOperation().getElements();
-				for (int i = 0; i < elements.length; i++) {
-					if (elements[i] instanceof HunkDiffNode) {
+				for (Object element : elements) {
+					if (element instanceof HunkDiffNode) {
 						setEnabled(false);
 						return;
 					}
@@ -54,8 +54,8 @@ public class ApplyPatchSynchronizationActionProvider extends
 				super.updateEnablement(selection);
 				// disable mark as merged for hunks
 				Object[] elements = getOperation().getElements();
-				for (int i = 0; i < elements.length; i++) {
-					if (elements[i] instanceof HunkDiffNode) {
+				for (Object element : elements) {
+					if (element instanceof HunkDiffNode) {
 						setEnabled(false);
 						return;
 					}

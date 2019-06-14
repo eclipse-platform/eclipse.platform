@@ -47,15 +47,16 @@ public class LocalFileHistory extends FileHistory {
 		//the predecessor is the file with a timestamp that is the largest timestamp
 		//from the set of all timestamps smaller than the root file's timestamp
 		IFileRevision fileRevision = null;
-		for (int i = 0; i < revisions.length; i++) {
-			if (((LocalFileRevision) revisions[i]).isPredecessorOf(revision)) {
+		for (IFileRevision r : revisions) {
+			if (((LocalFileRevision) r).isPredecessorOf(revision)) {
 				//no revision has been set as of yet
-				if (fileRevision == null)
-					fileRevision = revisions[i];
+				if (fileRevision == null) {
+					fileRevision = r;
+				}
 				//this revision is a predecessor - now check to see if it comes
 				//after the current predecessor, if it does make it the current predecessor
-				if (fileRevision != null && revisions[i].getTimestamp() > fileRevision.getTimestamp()) {
-					fileRevision = revisions[i];
+				if (fileRevision != null && r.getTimestamp() > fileRevision.getTimestamp()) {
+					fileRevision = r;
 				}
 			}
 		}
@@ -67,8 +68,7 @@ public class LocalFileHistory extends FileHistory {
 	@Override
 	public IFileRevision getFileRevision(String id) {
 		if (revisions != null) {
-			for (int i = 0; i < revisions.length; i++) {
-				IFileRevision revision = revisions[i];
+			for (IFileRevision revision : revisions) {
 				if (revision.getContentIdentifier().equals(id)) {
 					return revision;
 				}
@@ -89,9 +89,9 @@ public class LocalFileHistory extends FileHistory {
 		IFileRevision[] revisions = getFileRevisions();
 		ArrayList<IFileRevision> directDescendents = new ArrayList<>();
 
-		for (int i = 0; i < revisions.length; i++) {
-			if (((LocalFileRevision) revisions[i]).isDescendentOf(revision)) {
-				directDescendents.add(revisions[i]);
+		for (IFileRevision r : revisions) {
+			if (((LocalFileRevision) r).isDescendentOf(revision)) {
+				directDescendents.add(r);
 			}
 		}
 		return directDescendents.toArray(new IFileRevision[directDescendents.size()]);

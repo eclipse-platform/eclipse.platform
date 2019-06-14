@@ -105,8 +105,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
 	public void add(SyncInfo[] infos) {
 		try {
 			set.beginInput();
-			for (int i = 0; i < infos.length; i++) {
-				SyncInfo info = infos[i];
+			for (SyncInfo info : infos) {
 				add(info);
 			}
 		} finally {
@@ -131,8 +130,7 @@ public abstract class CheckedInChangeSet extends ChangeSet {
 	 */
 	@Override
 	public void remove(IResource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			remove(resource);
 		}
 	}

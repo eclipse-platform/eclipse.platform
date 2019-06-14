@@ -418,8 +418,7 @@ public class ThreeWaySynchronizer {
 			allListeners = listeners.toArray(new ISynchronizerChangeListener[listeners.size()]);
 		}
 		// Notify the listeners safely so all will receive notification
-		for (int i = 0; i < allListeners.length; i++) {
-			final ISynchronizerChangeListener listener = allListeners[i];
+		for (ISynchronizerChangeListener listener : allListeners) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

@@ -106,8 +106,9 @@ public class EditionAction extends BaseCompareAction {
 	@Override
 	protected void run(ISelection selection) {
 		IFile[] files= Utilities.getFiles(selection);
-		for (int i= 0; i < files.length; i++)
-			doFromHistory(files[i]);
+		for (IFile file : files) {
+			doFromHistory(file);
+		}
 	}
 
 	private void doFromHistory(final IFile file) {
@@ -228,12 +229,10 @@ public class EditionAction extends BaseCompareAction {
 
 		FileEditorInput test= new FileEditorInput(file);
 
-		for (int i= 0; i < ws.length; i++) {
-			IWorkbenchWindow w= ws[i];
+		for (IWorkbenchWindow w : ws) {
 			IWorkbenchPage[] wps= w.getPages();
 			if (wps != null) {
-				for (int j= 0; j < wps.length; j++) {
-					IWorkbenchPage wp= wps[j];
+				for (IWorkbenchPage wp : wps) {
 					IEditorPart ep= wp.findEditor(test);
 					if (ep instanceof ITextEditor) {
 						ITextEditor te= (ITextEditor) ep;

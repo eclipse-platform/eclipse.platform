@@ -222,8 +222,7 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		if (!provider.canHandleLinkedResources()) {
 			try {
 				IResource[] members = project.members();
-				for (int i = 0; i < members.length; i++) {
-					IResource resource = members[i];
+				for (IResource resource : members) {
 					if (resource.isLinked()) {
 						throw new TeamException(new Status(IStatus.ERROR, TeamPlugin.ID, IResourceStatus.LINKING_NOT_ALLOWED, NLS.bind(Messages.RepositoryProvider_linkedResourcesExist, new String[] { project.getName(), id }), null));
 					}
@@ -502,13 +501,12 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 		Set<String> teamSet = new HashSet<>();
 
 		teamSet.addAll(AllProviderTypeIds);	// add in all the ones we know via extension point
-
 		//fall back to old method of nature ID to find any for backwards compatibility
-		for (int i = 0; i < desc.length; i++) {
-			String[] setIds = desc[i].getNatureSetIds();
-			for (int j = 0; j < setIds.length; j++) {
-				if(setIds[j].equals(TEAM_SETID)) {
-					teamSet.add(desc[i].getNatureId());
+		for (IProjectNatureDescriptor d : desc) {
+			String[] setIds = d.getNatureSetIds();
+			for (String setId : setIds) {
+				if (setId.equals(TEAM_SETID)) {
+					teamSet.add(d.getNatureId());
 				}
 			}
 		}
@@ -550,14 +548,14 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				// for every nature id on this project, find it's natures sets and check if it is
 				// in the team set.
-				for (int i = 0; i < natureIds.length; i++) {
-					IProjectNatureDescriptor desc = workspace.getNatureDescriptor(natureIds[i]);
+				for (String natureId : natureIds) {
+					IProjectNatureDescriptor desc = workspace.getNatureDescriptor(natureId);
 					// The descriptor can be null if the nature doesn't exist
 					if (desc != null) {
 						String[] setIds = desc.getNatureSetIds();
-						for (int j = 0; j < setIds.length; j++) {
-							if(setIds[j].equals(TEAM_SETID)) {
-								return getProvider(project, natureIds[i]);
+						for (String setId : setIds) {
+							if (setId.equals(TEAM_SETID)) {
+								return getProvider(project, natureId);
 							}
 						}
 					}
@@ -631,8 +629,8 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 					return null;
 
 				String[] setIds = desc.getNatureSetIds();
-				for (int i = 0; i < setIds.length; i++) {
-					if(setIds[i].equals(TEAM_SETID)) {
+				for (String setId : setIds) {
+					if (setId.equals(TEAM_SETID)) {
 						return (RepositoryProvider)project.getNature(id);
 					}
 				}
@@ -714,10 +712,10 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 			if (extension != null) {
 				IExtension[] extensions =  extension.getExtensions();
-				for (int i = 0; i < extensions.length; i++) {
-					IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-					for (int j = 0; j < configElements.length; j++) {
-						String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
+				for (IExtension e : extensions) {
+					IConfigurationElement[] configElements = e.getConfigurationElements();
+					for (IConfigurationElement configElement : configElements) {
+						String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
 						allIDs.add(extensionId);
 					}
 				}
@@ -732,17 +730,17 @@ public abstract class RepositoryProvider implements IProjectNature, IAdaptable {
 			IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 			if (extension != null) {
 				IExtension[] extensions =  extension.getExtensions();
-				for (int i = 0; i < extensions.length; i++) {
-					IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-					for (int j = 0; j < configElements.length; j++) {
-						String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
+				for (IExtension ext : extensions) {
+					IConfigurationElement[] configElements = ext.getConfigurationElements();
+					for (IConfigurationElement configElement : configElements) {
+						String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
 						if (extensionId != null && extensionId.equals(id)) {
 							try {
-								return (RepositoryProvider) configElements[j].createExecutableExtension("class"); //$NON-NLS-1$
+								return (RepositoryProvider) configElement.createExecutableExtension("class"); //$NON-NLS-1$
 							} catch (CoreException e) {
 								TeamPlugin.log(e);
 							} catch (ClassCastException e) {
-								String className = configElements[j].getAttribute("class"); //$NON-NLS-1$
+								String className = configElement.getAttribute("class"); //$NON-NLS-1$
 								TeamPlugin.log(IStatus.ERROR, NLS.bind(Messages.RepositoryProvider_invalidClass, new String[] { id, className }), e);
 							}
 							return null;

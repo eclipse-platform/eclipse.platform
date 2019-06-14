@@ -117,9 +117,9 @@ public class PatchSyncContentProvider extends SynchronizationContentProvider {
 	public Object[] getChildren(Object parent) {
 		Object[] children = super.getChildren(parent);
 		List result = new ArrayList();
-		for (int i = 0; i < children.length; i++) {
-			if (children[i] instanceof PatchDiffNode) {
-				PatchDiffNode node = (PatchDiffNode) children[i];
+		for (Object c : children) {
+			if (c instanceof PatchDiffNode) {
+				PatchDiffNode node = (PatchDiffNode) c;
 				if (node.isEnabled())
 					result.add(node); // hide disabled nodes
 			}

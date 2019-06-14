@@ -29,8 +29,7 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 	@Override
 	public ResourceMapping getMapping(Object modelObject) {
 		ResourceMapping[] mappings = getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			if (mapping.getModelObject().equals(modelObject))
 				return mapping;
 		}
@@ -41,8 +40,7 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 	public ResourceMapping[] getMappings(String id) {
 		Set<ResourceMapping> result = new HashSet<>();
 		ResourceMapping[] mappings = getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			if (mapping.getModelProviderId().equals(id)) {
 				result.add(mapping);
 			}
@@ -55,8 +53,7 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 	public ResourceTraversal[] getTraversals(String modelProviderId) {
 		ResourceMapping[] mappings = getMappings(modelProviderId);
 		CompoundResourceTraversal traversal = new CompoundResourceTraversal();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = getTraversals(mapping);
 			if (traversals != null)
 				traversal.addTraversals(traversals);
@@ -68,8 +65,7 @@ public abstract class AbstractResourceMappingScope extends AbstractSynchronizati
 	public ModelProvider[] getModelProviders() {
 		Set<ModelProvider> result = new HashSet<>();
 		ResourceMapping[] mappings = getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ModelProvider modelProvider = mapping.getModelProvider();
 			if (modelProvider != null)
 				result.add(modelProvider);

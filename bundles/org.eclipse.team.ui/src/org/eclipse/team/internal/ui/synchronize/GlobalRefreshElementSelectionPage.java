@@ -229,8 +229,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	 */
 	private boolean areAnyElementsChecked() {
 		TreeItem[] item = fViewer.getTree().getItems();
-		for (int i = 0; i < item.length; i++) {
-			TreeItem child = item[i];
+		for (TreeItem child : item) {
 			if(child.getChecked() || child.getGrayed()) {
 				return true;
 			}
@@ -247,8 +246,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 	public Object[] getRootElement() {
 		TreeItem[] item = fViewer.getTree().getItems();
 		List checked = new ArrayList();
-		for (int i = 0; i < item.length; i++) {
-			TreeItem child = item[i];
+		for (TreeItem child : item) {
 			collectCheckedItems(child, checked);
 		}
 		return checked.toArray(new Object[checked.size()]);
@@ -348,8 +346,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 			checked.add(item.getData());
 		} else if(item.getGrayed()) {
 			TreeItem[] children = item.getItems();
-			for (int i = 0; i < children.length; i++) {
-				TreeItem child = children[i];
+			for (TreeItem child : children) {
 				collectCheckedItems(child, checked);
 			}
 		}

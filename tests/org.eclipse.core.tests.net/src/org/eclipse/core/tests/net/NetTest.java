@@ -54,8 +54,7 @@ public class NetTest {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
 		IProxyData[] data = getProxyManager().getProxyData();
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			proxyData.disable();
 		}
 		getProxyManager().setProxyData(data);
@@ -227,8 +226,7 @@ public class NetTest {
 	private void performSettingData() throws CoreException {
 		IProxyData[] data = (IProxyData[]) dataCache.values().toArray(new IProxyData[dataCache.size()]);
 		this.getProxyManager().setProxyData(data);
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			assertProxyDataEqual(proxyData);
 		}
 		isSetEnabled = true;
@@ -241,8 +239,7 @@ public class NetTest {
 		setDataTest(IProxyData.HTTPS_PROXY_TYPE);
 		setDataTest(IProxyData.SOCKS_PROXY_TYPE);
 		IProxyData[] data = this.getProxyManager().getProxyData();
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			disableProxy(proxyData);
 		}
 	}
@@ -257,8 +254,7 @@ public class NetTest {
 
 		delaySettingData();
 		IProxyData[] data = this.getProxyManager().getProxyData();
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			disableProxy(proxyData);
 		}
 		performSettingData();

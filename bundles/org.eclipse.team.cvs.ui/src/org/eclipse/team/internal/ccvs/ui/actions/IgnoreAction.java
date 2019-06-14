@@ -54,8 +54,7 @@ public class IgnoreAction extends WorkspaceTraversalAction {
 		protected void execute(CVSTeamProvider provider, IResource[] resources, boolean recurse, IProgressMonitor monitor) throws CVSException, InterruptedException {
 			try {
 				monitor.beginTask(null, resources.length);
-				for (int i = 0; i < resources.length; i++) {
-					IResource resource = resources[i];
+				for (IResource resource : resources) {
 					String pattern = dialog.getIgnorePatternFor(resource);
 					ICVSResource cvsResource = getCVSResourceFor(resource);
 					cvsResource.setIgnoredAs(pattern);

@@ -56,14 +56,15 @@ public class ApplyPatchSubscriberMergeContext extends SubscriberMergeContext {
 		Object object = PatchModelProvider.getPatchObject(resource, patcher);
 		if (object instanceof FilePatch2) {
 			HunkResult[] hunkResults = patcher.getDiffResult((FilePatch2) object).getHunkResults();
-			for (int i = 0; i < hunkResults.length; i++) {
+			for (HunkResult hunkResult : hunkResults) {
 				if (inSyncHint) {
 					// clean Merge > disable hunks that have merged
-					if (hunkResults[i].isOK())
-						patcher.setEnabled(hunkResults[i].getHunk(), false);
+					if (hunkResult.isOK()) {
+						patcher.setEnabled(hunkResult.getHunk(), false);
+					}
 				} else {
 					// Mark as Merged > mark *all* hunks from the file as manually merged
-					patcher.setManuallyMerged(hunkResults[i].getHunk(), true);
+					patcher.setManuallyMerged(hunkResult.getHunk(), true);
 				}
 			}
 		} else {
@@ -88,12 +89,12 @@ public class ApplyPatchSubscriberMergeContext extends SubscriberMergeContext {
 			Object object = PatchModelProvider.getPatchObject(resource, patcher);
 			if (object instanceof FilePatch2) {
 				HunkResult[] hunkResults = patcher.getDiffResult((FilePatch2) object).getHunkResults();
-				for (int i = 0; i < hunkResults.length; i++) {
+				for (HunkResult hunkResult : hunkResults) {
 					// ... unmark them and exclude those properly merged
-					if (patcher.isManuallyMerged(hunkResults[i].getHunk())) {
-						patcher.setManuallyMerged(hunkResults[i].getHunk(), false);
-						if (hunkResults[i].isOK()) {
-							patcher.setEnabled(hunkResults[i].getHunk(), false);
+					if (patcher.isManuallyMerged(hunkResult.getHunk())) {
+						patcher.setManuallyMerged(hunkResult.getHunk(), false);
+						if (hunkResult.isOK()) {
+							patcher.setEnabled(hunkResult.getHunk(), false);
 						}
 					}
 				}

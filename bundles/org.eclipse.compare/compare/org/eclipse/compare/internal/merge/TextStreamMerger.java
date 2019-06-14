@@ -53,8 +53,7 @@ public class TextStreamMerger implements IStreamMerger {
 
 			RangeDifference[] diffs= RangeDifferencer.findRanges(monitor, a, t, o);
 
-			for (int i= 0; i < diffs.length; i++) {
-				RangeDifference rd= diffs[i];
+			for (RangeDifference rd : diffs) {
 				switch (rd.kind()) {
 				case RangeDifference.ANCESTOR: // pseudo conflict
 				case RangeDifference.NOCHANGE:

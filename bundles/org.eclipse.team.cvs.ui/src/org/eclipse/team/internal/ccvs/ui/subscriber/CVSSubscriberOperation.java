@@ -107,8 +107,7 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 		// node itself. We must do this for all incoming folder creations (recursively)
 		// in the case where there are multiple levels of incoming folder creations.
 		monitor.beginTask(null, folders.length);
-		for (int i = 0; i < folders.length; i++) {
-			SyncInfo resource = folders[i];
+		for (SyncInfo resource : folders) {
 			makeInSync(resource);
 			monitor.worked(1);
 		}
@@ -154,8 +153,7 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 		// node itself. We must do this for all incoming folder creations (recursively)
 		// in the case where there are multiple levels of incoming folder creations.
 		monitor.beginTask(null, 100 * folders.length);
-		for (int i = 0; i < folders.length; i++) {
-			SyncInfo info = folders[i];
+		for (SyncInfo info : folders) {
 			makeOutgoing(info, Policy.subMonitorFor(monitor, 100));
 		}
 		monitor.done();
@@ -228,8 +226,8 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 
 	protected IResource[] getIResourcesFrom(SyncInfo[] nodes) {
 		List resources = new ArrayList(nodes.length);
-		for (int i = 0; i < nodes.length; i++) {
-			resources.add(nodes[i].getLocal());
+		for (SyncInfo node : nodes) {
+			resources.add(node.getLocal());
 		}
 		return (IResource[]) resources.toArray(new IResource[resources.size()]);
 	}
@@ -320,8 +318,7 @@ public abstract class CVSSubscriberOperation extends SynchronizeModelOperation {
 		Map map = new HashMap();
 		SyncInfoSet all = getSyncInfoSet();
 		SyncInfo[] infos = all.getSyncInfos();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			IProject project = info.getLocal().getProject();
 			SyncInfoSet set = (SyncInfoSet)map.get(project);
 			if (set == null) {

@@ -164,8 +164,8 @@ public class LocalHistoryTableProvider {
 			if (currentRevisionFont == null) {
 				Font defaultFont = JFaceResources.getDefaultFont();
 				FontData[] data = defaultFont.getFontData();
-				for (int i = 0; i < data.length; i++) {
-					data[i].setStyle(SWT.BOLD);
+				for (FontData d : data) {
+					d.setStyle(SWT.BOLD);
 				}
 				currentRevisionFont = new Font(viewer.getTree().getDisplay(), data);
 			}

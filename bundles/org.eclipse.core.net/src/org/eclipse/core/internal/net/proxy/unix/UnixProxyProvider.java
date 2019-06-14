@@ -55,8 +55,8 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		String[] nonProxyHosts = getNonProxiedHosts();
 		if (nonProxyHosts != null) {
 			String host = uri.getHost();
-			for (int npIndex = 0; npIndex < nonProxyHosts.length; npIndex++) {
-				if (StringUtil.hostMatchesFilter(host, nonProxyHosts[npIndex])) {
+			for (String nonProxyHost : nonProxyHosts) {
+				if (StringUtil.hostMatchesFilter(host, nonProxyHost)) {
 					return new IProxyData[0];
 				}
 			}
@@ -70,8 +70,9 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		}
 		if (Policy.DEBUG) {
 			Policy.debug("UnixProxyProvider#select result for [" + uri + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-			for (int i = 0; i < proxies.length; i++)
-				System.out.println("	" + proxies[i]); //$NON-NLS-1$
+			for (IProxyData proxy : proxies) {
+				System.out.println("	" + proxy); //$NON-NLS-1$
+			}
 		}
 		return proxies;
 	}
@@ -85,8 +86,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 
 	private IProxyData[] getProxyForTypes(String[] types) {
 		ArrayList<IProxyData> allData = new ArrayList<>();
-		for (int i = 0; i < types.length; i++) {
-			String type = types[i];
+		for (String type : types) {
 			ProxyData pd = getSystemProxyInfo(type);
 			if (pd != null && pd.getHost() != null) {
 				allData.add(pd);

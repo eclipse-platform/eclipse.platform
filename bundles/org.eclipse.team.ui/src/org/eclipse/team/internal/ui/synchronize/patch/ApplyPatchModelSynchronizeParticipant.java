@@ -124,8 +124,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 	public ModelProvider[] getEnabledModelProviders() {
 		ModelProvider[] enabledProviders = super.getEnabledModelProviders();
 		// add Patch model provider if it's not there
-		for (int i = 0; i < enabledProviders.length; i++) {
-			ModelProvider provider = enabledProviders[i];
+		for (ModelProvider provider : enabledProviders) {
 			if (provider.getId().equals(PatchModelProvider.ID))
 				return enabledProviders;
 		}

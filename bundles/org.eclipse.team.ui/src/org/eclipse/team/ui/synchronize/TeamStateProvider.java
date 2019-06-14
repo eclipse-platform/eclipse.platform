@@ -101,8 +101,8 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	 */
 	protected final void fireStateChangeEvent(final ITeamStateChangeEvent event) {
 		Object[] allListeners = listeners.getListeners();
-		for (int i = 0; i < allListeners.length; i++) {
-			final ITeamStateChangeListener listener = (ITeamStateChangeListener)allListeners[i];
+		for (Object l : allListeners) {
+			final ITeamStateChangeListener listener = (ITeamStateChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {
@@ -119,8 +119,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 	private int internalGetDecoratedStateMask(IProject[] projects) {
 		int stateMask = 0;
 		String[] providerIds = getProviderIds(projects);
-		for (int i = 0; i < providerIds.length; i++) {
-			String providerId = providerIds[i];
+		for (String providerId : providerIds) {
 			stateMask |= internalGetDecoratedStateMask(providerId);
 		}
 		return stateMask;
@@ -136,8 +135,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 
 	private String[] getProviderIds(IProject[] projects) {
 		Set<String> providerIds = new HashSet<>();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			String id = getProviderId(project);
 			if (id != null)
 				providerIds.add(id);
@@ -154,8 +152,7 @@ public abstract class TeamStateProvider implements ITeamStateProvider {
 
 	private boolean internalIsDecorationEnabled(IProject[] projects) {
 		String[] providerIds = getProviderIds(projects);
-		for (int i = 0; i < providerIds.length; i++) {
-			String providerId = providerIds[i];
+		for (String providerId : providerIds) {
 			if (internalIsDecorationEnabled(providerId)) {
 				return true;
 			}

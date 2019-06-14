@@ -217,10 +217,8 @@ public class RemoteCompareOperation extends RemoteOperation {
 			String[] leftFiles = getFilePaths(leftTree);
 			String[] rightFiles = getFilePaths(rightTree);
 			Set<String> set = new HashSet<>();
-			for (int i = 0; i < rightFiles.length; i++) {
-				String rightFile = rightFiles[i];
-				for (int j = 0; j < leftFiles.length; j++) {
-					String leftFile = leftFiles[j];
+			for (String rightFile : rightFiles) {
+				for (String leftFile : leftFiles) {
 					if (leftFile.equals(rightFile)) {
 						set.add(leftFile);
 					}
@@ -236,8 +234,7 @@ public class RemoteCompareOperation extends RemoteOperation {
 		private String[] getFilePaths(RemoteFolderTree tree) {
 			ICVSRemoteResource[] children = tree.getChildren();
 			List<String> result = new ArrayList<>();
-			for (int i = 0; i < children.length; i++) {
-				ICVSRemoteResource resource = children[i];
+			for (ICVSRemoteResource resource : children) {
 				if (resource.isContainer()) {
 					result.addAll(Arrays.asList(getFilePaths((RemoteFolderTree)resource)));
 				} else {

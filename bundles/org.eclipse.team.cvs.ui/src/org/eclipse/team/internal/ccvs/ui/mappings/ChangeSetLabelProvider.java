@@ -99,8 +99,7 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 		if (element instanceof DiffChangeSet) {
 			DiffChangeSet dcs = (DiffChangeSet) element;
 			IResource[] resources = dcs.getResources();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (getContext().getDiffTree().getProperty(resource.getFullPath(), IDiffTree.P_BUSY_HINT))
 					return true;
 			}
@@ -114,8 +113,7 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 		if (element instanceof DiffChangeSet) {
 			DiffChangeSet dcs = (DiffChangeSet) element;
 			IResource[] resources = dcs.getResources();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (getContext().getDiffTree().getProperty(resource.getFullPath(), IDiffTree.P_HAS_DESCENDANT_CONFLICTS))
 					return true;
 			}
@@ -149,8 +147,7 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 			Set projects = new HashSet();
 			IResource[] resources = dcs.getResources();
 			int severity = -1;
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				IProject project = resource.getProject();
 				if (!projects.contains(project)) {
 					projects.add(project);
@@ -172,14 +169,12 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 
 	private Object[] addSetsContainingElements(Object[] elements) {
 		Set result = new HashSet();
-		for (int i = 0; i < elements.length; i++) {
-			Object object = elements[i];
+		for (Object object : elements) {
 			result.add(object);
 			if (object instanceof IProject) {
 				IProject project = (IProject) object;
 				ChangeSet[] sets = getSetsContaing(project);
-				for (int j = 0; j < sets.length; j++) {
-					ChangeSet set = sets[j];
+				for (ChangeSet set : sets) {
 					result.add(set);
 				}
 			}

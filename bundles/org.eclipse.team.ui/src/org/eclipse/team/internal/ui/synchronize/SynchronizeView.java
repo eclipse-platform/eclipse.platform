@@ -357,8 +357,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 
 	@Override
 	public void participantsAdded(final ISynchronizeParticipant[] participants) {
-		for (int i = 0; i < participants.length; i++) {
-			ISynchronizeParticipant participant = participants[i];
+		for (ISynchronizeParticipant participant : participants) {
 			if (isAvailable() && select(TeamUI.getSynchronizeManager().get(participant.getId(), participant.getSecondaryId()))) {
 				SynchronizeViewWorkbenchPart part = new SynchronizeViewWorkbenchPart(participant, getSite());
 				fParticipantToPart.put(participant, part);
@@ -372,8 +371,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	public void participantsRemoved(final ISynchronizeParticipant[] participants) {
 		if (isAvailable()) {
 			Runnable r = () -> {
-				for (int i = 0; i < participants.length; i++) {
-					ISynchronizeParticipant participant = participants[i];
+				for (ISynchronizeParticipant participant : participants) {
 					if (isAvailable()) {
 						SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart)fParticipantToPart.get(participant);
 						if (part != null) {
@@ -612,8 +610,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		// create pages
 		List<ISynchronizeParticipantReference> participants = new ArrayList<>();
 		ISynchronizeParticipantReference[] refs = manager.getSynchronizeParticipants();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference ref =refs[i];
+		for (ISynchronizeParticipantReference ref : refs) {
 			if(select(ref)) {
 				participants.add(ref);
 			}
@@ -718,8 +715,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		if (saveables.length == 0)
 			return;
 		monitor.beginTask(null, 100* saveables.length);
-		for (int i = 0; i < saveables.length; i++) {
-			Saveable saveable = saveables[i];
+		for (Saveable saveable : saveables) {
 			try {
 				saveable.doSave(Policy.subMonitorFor(monitor, 100));
 			} catch (CoreException e) {
@@ -739,8 +735,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	@Override
 	public boolean isDirty() {
 		Saveable[] saveables = getSaveables();
-		for (int i = 0; i < saveables.length; i++) {
-			Saveable saveable = saveables[i];
+		for (Saveable saveable : saveables) {
 			if (saveable.isDirty())
 				return true;
 		}
@@ -1014,10 +1009,11 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 				IEditorPart editor = p.findEditor(input);
 				if (editor == null) {
 					IEditorReference[] er = p.getEditorReferences();
-					for (int i = 0; i < er.length; i++)
-						if (er[i].getId().equals(
-								"org.eclipse.compare.CompareEditor") && matches(er[i], input)) //$NON-NLS-1$
-							editor = er[i].getEditor(false);
+					for (IEditorReference e : er) {
+						if (e.getId().equals("org.eclipse.compare.CompareEditor") && matches(e, input)) { //$NON-NLS-1$
+							editor = e.getEditor(false);
+						}
+					}
 				}
 				return editor;
 			}

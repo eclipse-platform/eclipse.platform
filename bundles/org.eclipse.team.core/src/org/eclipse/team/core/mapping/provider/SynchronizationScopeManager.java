@@ -99,8 +99,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		Set<ResourceMapping> result = new HashSet<>();
 		IModelProviderDescriptor[] descriptors = ModelProvider
 				.getModelProviderDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			IModelProviderDescriptor descriptor = descriptors[i];
+		for (IModelProviderDescriptor descriptor : descriptors) {
 			ResourceMapping[] mappings = getMappings(descriptor, traversals,
 					context, monitor);
 			result.addAll(Arrays.asList(mappings));
@@ -153,8 +152,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	public ISchedulingRule getSchedulingRule() {
 		Set<IProject> projects = new HashSet<>();
 		ResourceMapping[] mappings = scope.getInputMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			Object modelObject = mapping.getModelObject();
 			if (modelObject instanceof IResource) {
 				IResource resource = (IResource) modelObject;
@@ -229,8 +227,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		ScopeChangeEvent change = new ScopeChangeEvent(scope);
 		CompoundResourceTraversal refreshTraversals = new CompoundResourceTraversal();
 		CompoundResourceTraversal removedTraversals = new CompoundResourceTraversal();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] previousTraversals = scope.getTraversals(mapping);
 			ResourceTraversal[] mappingTraversals = mapping.getTraversals(
 					context, Policy.subMonitorFor(monitor, 100));
@@ -289,8 +286,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 
 	private ResourceMapping findAncestor(ResourceMapping mapping) {
 		ResourceMapping[] mappings = scope.getMappings(mapping.getModelProviderId());
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping m = mappings[i];
+		for (ResourceMapping m : mappings) {
 			if (m.contains(mapping)) {
 				return m;
 			}
@@ -389,8 +385,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 			IProgressMonitor monitor) throws CoreException {
 		CompoundResourceTraversal result = new CompoundResourceTraversal();
 		ResourceMappingContext context = this.context;
-		for (int i = 0; i < targetMappings.length; i++) {
-			ResourceMapping mapping = targetMappings[i];
+		for (ResourceMapping mapping : targetMappings) {
 			if (scope.getTraversals(mapping) == null) {
 				ResourceTraversal[] traversals = mapping.getTraversals(context,
 						Policy.subMonitorFor(monitor, 100));
@@ -421,12 +416,10 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		ResourceMapping[] mappings = scope.getMappings();
 		if (inputMappings.length == mappings.length) {
 			Set<ResourceMapping> testSet = new HashSet<>();
-			for (int i = 0; i < mappings.length; i++) {
-				ResourceMapping mapping = mappings[i];
+			for (ResourceMapping mapping : mappings) {
 				testSet.add(mapping);
 			}
-			for (int i = 0; i < inputMappings.length; i++) {
-				ResourceMapping mapping = inputMappings[i];
+			for (ResourceMapping mapping : inputMappings) {
 				if (!testSet.contains(mapping)) {
 					return true;
 				}

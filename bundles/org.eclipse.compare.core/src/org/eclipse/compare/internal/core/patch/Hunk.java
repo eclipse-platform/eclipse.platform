@@ -92,8 +92,7 @@ public class Hunk implements IHunk {
 	 */
 	public String getContent() {
 		StringBuilder sb= new StringBuilder();
-		for (int i= 0; i < this.fLines.length; i++) {
-			String line= this.fLines[i];
+		for (String line : this.fLines) {
 			sb.append(line.substring(0, LineReader.length(line)));
 			sb.append('\n');
 		}
@@ -183,8 +182,7 @@ public class Hunk implements IHunk {
 		List<String> contextLines = new ArrayList<>();
 		boolean contextLinesMatched = true;
 		boolean precedingLinesChecked = false;
-		for (int i= 0; i < this.fLines.length; i++) {
-			String s = this.fLines[i];
+		for (String s : this.fLines) {
 			Assert.isTrue(s.length() > 0);
 			String line = s.substring(1);
 			char controlChar = s.charAt(0);
@@ -332,25 +330,24 @@ public class Hunk implements IHunk {
 		boolean precedingLinesChecked = false;
 		String lineDelimiter = getLineDelimiter(lines);
 
-		for (int i= 0; i < this.fLines.length; i++) {
-			String s= this.fLines[i];
+		for (String s : this.fLines) {
 			Assert.isTrue(s.length() > 0);
 			String line= s.substring(1);
 			char controlChar= s.charAt(0);
 			if (controlChar == ' ') {
 				// context lines
-					Assert.isTrue(pos < lines.size(), "doPatch: inconsistency in context"); //$NON-NLS-1$
-					contextLines.add(line);
-					if (linesMatch(configuration, line, lines.get(pos))) {
-						pos++;
-						continue;
-					} else if (fuzz > 0) {
-						// doesn't match, use the fuzz factor
-						contextLinesMatched = false;
-						pos++;
-						continue;
-					}
-					Assert.isTrue(false, "doPatch: context doesn't match"); //$NON-NLS-1$
+				Assert.isTrue(pos < lines.size(), "doPatch: inconsistency in context"); //$NON-NLS-1$
+				contextLines.add(line);
+				if (linesMatch(configuration, line, lines.get(pos))) {
+					pos++;
+					continue;
+				} else if (fuzz > 0) {
+					// doesn't match, use the fuzz factor
+					contextLinesMatched = false;
+					pos++;
+					continue;
+				}
+				Assert.isTrue(false, "doPatch: context doesn't match"); //$NON-NLS-1$
 //					pos++;
 			} else if (isDeletedDelimeter(controlChar, reverse)) {
 				// deleted lines
@@ -463,8 +460,7 @@ public class Hunk implements IHunk {
 
 	public String getContents(boolean isAfterState, boolean reverse) {
 		StringBuilder result= new StringBuilder();
-		for (int i= 0; i<this.fLines.length; i++) {
-			String line= this.fLines[i];
+		for (String line : this.fLines) {
 			String rest= line.substring(1);
 			char c = line.charAt(0);
 			if (c == ' ') {

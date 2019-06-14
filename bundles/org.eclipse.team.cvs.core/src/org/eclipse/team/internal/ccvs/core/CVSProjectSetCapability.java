@@ -221,8 +221,8 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 	 */
 	public static IProject[] asProjects(String[] referenceStrings, Map infoMap) throws CVSException {
 		Collection result = new ArrayList();
-		for (int i = 0; i < referenceStrings.length; i++) {
-			StringTokenizer tokenizer = new StringTokenizer(referenceStrings[i], ","); //$NON-NLS-1$
+		for (String referenceString : referenceStrings) {
+			StringTokenizer tokenizer = new StringTokenizer(referenceString, ","); //$NON-NLS-1$
 			String version = tokenizer.nextToken();
 			// If this is a newer version, then ignore it
 			if (!version.equals("1.0")) //$NON-NLS-1$
@@ -351,10 +351,9 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 		if (useKnown && (newLocation.getUsername() == null || newLocation.getUsername().length() == 0)) {
 			// look for an existing location that matches
 			ICVSRepositoryLocation[] locations = CVSProviderPlugin.getPlugin().getKnownRepositories();
-			for (int i = 0; i < locations.length; i++) {
-				ICVSRepositoryLocation location = locations[i];
+			for (ICVSRepositoryLocation location : locations) {
 				if (CVSRepositoryLocationMatcher.isMatching(newLocation, location))
-						return location;
+					return location;
 			}
 		}
 		if (addIfNotFound)
@@ -520,8 +519,8 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 			return ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[0]);
 		} else {
 			Set rules = new HashSet();
-			for (int i = 0; i < projects.length; i++) {
-				ISchedulingRule modifyRule = ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[i]);
+			for (IProject project : projects) {
+				ISchedulingRule modifyRule = ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(project);
 				if (modifyRule instanceof IResource && ((IResource)modifyRule).getType() == IResource.ROOT) {
 					// One of the projects is mapped to a provider that locks the workspace.
 					// Just return the workspace root rule
@@ -538,8 +537,7 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 	/* internal use only */ static void refreshProjects(IProject[] projects, IProgressMonitor monitor) throws CoreException, TeamException {
 		monitor.beginTask(CVSMessages.CVSProvider_Creating_projects_2, projects.length * 100); 
 		try {
-			for (int i = 0; i < projects.length; i++) {
-				IProject project = projects[i];
+			for (IProject project : projects) {
 				// Register the project with Team
 				RepositoryProvider.map(project, CVSProviderPlugin.getTypeId());
 				CVSTeamProvider provider = (CVSTeamProvider)RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
@@ -561,8 +559,7 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 		}
 		monitor.beginTask(CVSMessages.CVSProvider_Scrubbing_projects_1, projects.length * 100); 
 		try {	
-			for (int i=0;i<projects.length;i++) {
-				IProject project = projects[i];
+			for (IProject project : projects) {
 				if (project != null && project.exists()) {
 					if(!project.isOpen()) {
 						project.open(Policy.subMonitorFor(monitor, 10));
@@ -577,9 +574,9 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 					IProgressMonitor subMonitor = Policy.subMonitorFor(monitor, 80);
 					subMonitor.beginTask(null, children.length * 100);
 					try {
-						for (int j = 0; j < children.length; j++) {
-							if ( ! children[j].getName().equals(".project")) {//$NON-NLS-1$
-								children[j].delete(true /*force*/, Policy.subMonitorFor(subMonitor, 100));
+						for (IResource c : children) {
+							if (!c.getName().equals(".project")) { //$NON-NLS-1$
+								c.delete(true /*force*/, Policy.subMonitorFor(subMonitor, 100));
 							}
 						}
 					} finally {
@@ -606,8 +603,8 @@ public class CVSProjectSetCapability extends ProjectSetCapability {
 			if(fileList == null) {
 				throw new CVSException("Content from directory '" + resource.getAbsolutePath() + "' can not be listed."); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-			for (int i = 0; i < fileList.length; i++) {
-				deepDelete(fileList[i]);
+			for (File f : fileList) {
+				deepDelete(f);
 			}
 		}
 		resource.delete();

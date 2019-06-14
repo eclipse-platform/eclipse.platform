@@ -75,9 +75,9 @@ public class TeamCapabilityHelper {
 		// crawl the initial projects
 		IProject [] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
-		for (int i = 0; i < projects.length; i++) {
+		for (IProject project : projects) {
 			try {
-				processProject(projects[i], workbenchActivitySupport);
+				processProject(project, workbenchActivitySupport);
 			} catch (CoreException e) {
 				// do nothing
 			}
@@ -92,11 +92,9 @@ public class TeamCapabilityHelper {
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.team.core.repository"); //$NON-NLS-1$
 		if (point != null) {
 			IExtension[] extensions = point.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IExtension extension = extensions[i];
+			for (IExtension extension : extensions) {
 				IConfigurationElement[] elements = extension.getConfigurationElements();
-				for (int j = 0; j < elements.length; j++) {
-					IConfigurationElement element = elements[j];
+				for (IConfigurationElement element : elements) {
 					final String pluginId = extension.getNamespace();
 					if (element.getName().equals(TeamPlugin.REPOSITORY_EXTENSION)) {
 						final String id = element.getAttribute("id"); //$NON-NLS-1$

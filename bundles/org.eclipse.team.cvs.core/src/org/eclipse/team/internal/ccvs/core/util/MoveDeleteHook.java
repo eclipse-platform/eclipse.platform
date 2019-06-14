@@ -270,8 +270,7 @@ public class MoveDeleteHook implements IMoveDeleteHook {
 		final List readOnlyFiles = new ArrayList();
 		try {
 			// Find any read-only files
-			for (int i = 0; i < folders.length; i++) {
-				IFolder folder = folders[i];
+			for (IFolder folder : folders) {
 				if (folder.exists()) {
 					folder.accept(resource -> {
 						if (resource.getType() == IResource.FILE) {

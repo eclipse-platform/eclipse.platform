@@ -188,9 +188,9 @@ public class WorkingSetSelectionArea extends DialogArea {
 			}
 			// remove deleted working sets from the mru list box
 			String[] mruNames = mruList.getItems();
-			for (int i = 0; i < mruNames.length; i++) {
-				if (workingSetManager.getWorkingSet(mruNames[i]) == null) {
-					mruList.remove(mruNames[i]);
+			for (String mruName : mruNames) {
+				if (workingSetManager.getWorkingSet(mruName) == null) {
+					mruList.remove(mruName);
 				}
 			}
 		}
@@ -232,10 +232,10 @@ public class WorkingSetSelectionArea extends DialogArea {
 	private void initializeMru() {
 		IWorkingSet[] workingSets = PlatformUI.getWorkbench().getWorkingSetManager().getRecentWorkingSets();
 
-		for (int i = 0; i < workingSets.length; i++) {
-			String workingSetName = workingSets[i].getName();
+		for (IWorkingSet w : workingSets) {
+			String workingSetName = w.getName();
 			mruList.add(workingSetName);
-			mruList.setData(workingSetName, workingSets[i]);
+			mruList.setData(workingSetName, w);
 		}
 		if (workingSets.length > 0) {
 			mruList.setText(workingSets[0].getName());

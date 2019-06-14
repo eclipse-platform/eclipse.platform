@@ -218,8 +218,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 		
 		monitor.beginTask(null,100);
 		final IProgressMonitor subMonitor = Policy.subMonitorFor(monitor,10);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);
 			cvsResource.accept(new ICVSResourceVisitor() {
 				@Override
@@ -261,10 +260,9 @@ public abstract class DiffOperation extends SingleCommandOperation {
 		int format = STANDARD_FORMAT;
 	
 		LocalOption[] localoptions = getLocalOptions(recurse);
-		for (int i = 0; i < localoptions.length; i++)  {
-			LocalOption option = localoptions[i];
+		for (LocalOption option : localoptions) {
 			if (option.equals(Diff.UNIFIED_FORMAT) ||
-				isMultiPatch)  {
+					isMultiPatch)  {
 				format = UNIFIED_FORMAT;
 			} else if (option.equals(Diff.CONTEXT_FORMAT))  {
 				format = CONTEXT_FORMAT;
@@ -338,15 +336,14 @@ public abstract class DiffOperation extends SingleCommandOperation {
 		List<IStatus> toShow = new ArrayList<>();
 		IStatus children[] = status.getChildren();
 		boolean may = true;
-		for (int i = 0; i < children.length; i++) {
+		for (IStatus child : children) {
 			// ignore all errors except those found by DiffListener
-			if (children[i].getCode() == CVSStatus.BINARY_FILES_DIFFER
-					|| children[i].getCode() == CVSStatus.PROTOCOL_ERROR
-					|| children[i].getCode() == CVSStatus.ERROR_LINE) {
-				toShow.add(children[i]);
-				if (children[i].getCode() == CVSStatus.BINARY_FILES_DIFFER)
+			if (child.getCode() == CVSStatus.BINARY_FILES_DIFFER || child.getCode() == CVSStatus.PROTOCOL_ERROR || child.getCode() == CVSStatus.ERROR_LINE) {
+				toShow.add(child);
+				if (child.getCode() == CVSStatus.BINARY_FILES_DIFFER) {
 					// the patch does not contain some changes for sure
 					may = false;
+				}
 			}
 		}
 		if (toShow.size() > 0) {

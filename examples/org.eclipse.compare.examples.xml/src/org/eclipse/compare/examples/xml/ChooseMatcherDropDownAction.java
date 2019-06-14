@@ -65,8 +65,8 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 		}
 		Object[] internalIdMapsA= internalIdMapsAL.toArray();
 		Arrays.sort(internalIdMapsA);
-		for (int i= 0; i < internalIdMapsA.length; i++) {
-			addActionToMenu(menu, new SelectMatcherAction((String)internalIdMapsA[i], fViewer));
+		for (Object internalIdA : internalIdMapsA) {
+			addActionToMenu(menu, new SelectMatcherAction((String) internalIdA, fViewer));
 		}
 		new MenuItem(menu, SWT.SEPARATOR);
 
@@ -87,8 +87,8 @@ class ChooseMatcherDropDownAction extends Action implements IMenuCreator {
 
 		Object[] userIdMapsA= userIdMapsAL.toArray();
 		Arrays.sort(userIdMapsA);
-		for (int i= 0; i < userIdMapsA.length; i++) {
-			addActionToMenu(menu, new SelectMatcherAction((String)userIdMapsA[i], fViewer));
+		for (Object userIdA : userIdMapsA) {
+			addActionToMenu(menu, new SelectMatcherAction((String) userIdA, fViewer));
 		}
 		
 		return menu;

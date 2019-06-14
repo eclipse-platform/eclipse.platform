@@ -132,8 +132,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	public void setNonProxiedHosts(String[] hosts) {
 		checkMigrated();
 		Assert.isNotNull(hosts);
-		for (int i = 0; i < hosts.length; i++) {
-			String host = hosts[i];
+		for (String host : hosts) {
 			Assert.isNotNull(host);
 			Assert.isTrue(host.length() > 0);
 		}
@@ -192,8 +191,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private IProxyData[] internalSetProxyData(IProxyData[] proxyDatas) {
 		List<IProxyData> result = new ArrayList<>();
-		for (int i = 0; i < proxyDatas.length; i++) {
-			IProxyData proxyData = proxyDatas[i];
+		for (IProxyData proxyData : proxyDatas) {
 			ProxyType type = getType(proxyData);
 			if (type != null && type.setProxyData(proxyData)) {
 				result.add(proxyData);
@@ -203,8 +201,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 	private ProxyType getType(IProxyData proxyData) {
-		for (int i = 0; i < proxies.length; i++) {
-			ProxyType type = proxies[i];
+		for (ProxyType type : proxies) {
 			if (type.getName().equals(proxyData.getType())) {
 				return type;
 			}
@@ -252,8 +249,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 	private void updateSystemProperties() {
-		for (int i = 0; i < proxies.length; i++) {
-			ProxyType type = proxies[i];
+		for (ProxyType type : proxies) {
 			type.updateSystemProperties(internalGetProxyData(type.getName(), ProxyType.DO_NOT_VERIFY));
 		}
 	}
@@ -262,8 +258,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		checkMigrated();
 		preferenceManager.addPreferenceChangeListener(PreferenceManager.ROOT, this);
 		// Now initialize each proxy type
-		for (int i = 0; i < proxies.length; i++) {
-			ProxyType type = proxies[i];
+		for (ProxyType type : proxies) {
 			type.initialize();
 		}
 		registerAuthenticator();
@@ -276,8 +271,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 	private IProxyData internalGetProxyData(String type, int verifySystemProperties) {
-		for (int i = 0; i < proxies.length; i++) {
-			ProxyType pt = proxies[i];
+		for (ProxyType pt : proxies) {
 			if (pt.getName().equals(type)) {
 				return pt.getProxyData(verifySystemProperties);
 			}
@@ -303,8 +297,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			return new IProxyData[0];
 		IProxyData[] data = getProxyData();
 		List<IProxyData> result = new ArrayList<>();
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			if (proxyData.getHost() != null)
 				result.add(proxyData);
 		}
@@ -326,8 +319,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	private boolean isHostFiltered(URI uri) {
 		String[] filters = getNonProxiedHosts();
-		for (int i = 0; i < filters.length; i++) {
-			String filter = filters[i];
+		for (String filter : filters) {
 			if (StringUtil.hostMatchesFilter(uri.getHost(), filter))
 				return true;
 		}
@@ -350,8 +342,7 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 			}
 
 		IProxyData[] data = getProxyDataForHost(host);
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			if (proxyData.getType().equalsIgnoreCase(type)
 					&& proxyData.getHost() != null)
 				return resolveType(proxyData);
@@ -457,8 +448,8 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 		if (data == null) {
 			return null;
 		}
-		for (int i = 0; i < data.length; i++) {
-			resolveType(data[i]);
+		for (IProxyData d : data) {
+			resolveType(d);
 		}
 		return data;
 	}

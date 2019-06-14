@@ -230,8 +230,7 @@ public class CommitWizard extends ResizableWizard {
 		IResource[] resources = getDiffTree().getAffectedResources();
 		int mostSeriousSeverity = -1;
 		
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			try {
 				int severity = resource.findMaxProblemSeverity(IMarker.PROBLEM, true, IResource.DEPTH_ZERO);
 				if (severity > mostSeriousSeverity) {
@@ -439,9 +438,7 @@ public class CommitWizard extends ResizableWizard {
 
 		final IFileContentManager manager= Team.getFileContentManager();
 
-		for (int i = 0; i < resources.length; i++) {
-
-			IResource local = resources[i];
+		for (IResource local : resources) {
 			if (local instanceof IFile && manager.getType((IFile)local) == Team.UNKNOWN) {
 				final String extension= local.getFileExtension();
 				if (extension != null && !manager.isKnownExtension(extension)) {
@@ -457,9 +454,9 @@ public class CommitWizard extends ResizableWizard {
 	
 	private IResource[] getUnaddedResources(IResource[] resources) throws CVSException {
 		List/* <IResource> */<IResource> unadded = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			if (!isAdded(resources[i])) {
-				unadded.add(resources[i]);
+		for (IResource resource : resources) {
+			if (!isAdded(resource)) {
+				unadded.add(resource);
 			}
 		}
 		return unadded.toArray(new IResource[0]);
@@ -467,9 +464,10 @@ public class CommitWizard extends ResizableWizard {
 
 	private IResource[] getFiles(IResource[] resources) {
 		final List<IResource> files = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i].getType() == IResource.FILE)
-				files.add(resources[i]);
+		for (IResource resource : resources) {
+			if (resource.getType() == IResource.FILE) {
+				files.add(resource);
+			}
 		}
 		return files.toArray(new IResource[0]);
 	}
@@ -484,8 +482,7 @@ public class CommitWizard extends ResizableWizard {
 
 	private static IResource[] getDeepResourcesToCommit(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
 		List<IResource> roots = new ArrayList<>();
-		for (int j = 0; j < traversals.length; j++) {
-			ResourceTraversal traversal = traversals[j];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
 			if (traversal.getDepth() == IResource.DEPTH_INFINITE) {
 				roots.addAll(Arrays.asList(resources));
@@ -493,8 +490,7 @@ public class CommitWizard extends ResizableWizard {
 				collectShallowFiles(resources, roots);
 			} else if (traversal.getDepth() == IResource.DEPTH_ONE) {
 				collectShallowFiles(resources, roots);
-				for (int k = 0; k < resources.length; k++) {
-					IResource resource = resources[k];
+				for (IResource resource : resources) {
 					if (resource.getType() != IResource.FILE) {
 						collectShallowFiles(members(resource), roots);
 					}
@@ -509,8 +505,7 @@ public class CommitWizard extends ResizableWizard {
 	}
 
 	private static void collectShallowFiles(IResource[] resources, List<IResource> roots) {
-		for (int k = 0; k < resources.length; k++) {
-			IResource resource = resources[k];
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.FILE)
 				roots.add(resource);
 		}

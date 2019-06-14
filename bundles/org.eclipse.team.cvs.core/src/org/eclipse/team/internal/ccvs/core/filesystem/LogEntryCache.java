@@ -132,8 +132,7 @@ class LogEntryCache implements ILogEntryListener {
 	 * Return null if the revision wasn't found.
 	 */
 	ICVSRemoteFile findRevison(ILogEntry[] allLogs, String predecessorRevision) throws TeamException {
-		for (int i = 0; i < allLogs.length; i++) {
-			ILogEntry entry = allLogs[i];
+		for (ILogEntry entry : allLogs) {
 			ICVSRemoteFile file = entry.getRemoteFile();
 			if (file.getRevision().equals(predecessorRevision)) {
 				return file;

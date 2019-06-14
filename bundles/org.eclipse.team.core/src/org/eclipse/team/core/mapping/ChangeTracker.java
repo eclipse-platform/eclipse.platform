@@ -59,8 +59,7 @@ public abstract class ChangeTracker {
 			if (disposed) return;
 			IResourceDelta delta = event.getDelta();
 			IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.CHANGED | IResourceDelta.REMOVED);
-			for (int i = 0; i < projectDeltas.length; i++) {
-				IResourceDelta projectDelta = projectDeltas[i];
+			for (IResourceDelta projectDelta : projectDeltas) {
 				IResource resource = projectDelta.getResource();
 				if (resource.getType() == IResource.PROJECT) {
 					IProject project = (IProject)resource;
@@ -117,8 +116,7 @@ public abstract class ChangeTracker {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(changeListener, IResourceChangeEvent.POST_CHANGE);
 		RepositoryProviderManager.getInstance().addListener(changeListener);
 		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (int i = 0; i < allProjects.length; i++) {
-			IProject project = allProjects[i];
+		for (IProject project : allProjects) {
 			if (isProjectOfInterest(project))
 				trackProject(project);
 		}

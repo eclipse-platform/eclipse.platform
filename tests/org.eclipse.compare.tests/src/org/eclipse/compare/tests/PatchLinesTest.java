@@ -113,11 +113,9 @@ public class PatchLinesTest extends TestCase {
 		int fileDiffSum = 0;
 
 		FilePatch2[] diffs = patcher.getDiffs();
-		for (int i = 0; i < diffs.length; i++) {
-			FilePatch2 fileDiff = diffs[i];
+		for (FilePatch2 fileDiff : diffs) {
 			IHunk[] hunks = fileDiff.getHunks();
-			for (int j = 0; j < hunks.length; j++) {
-				IHunk hunk = hunks[j];
+			for (IHunk hunk : hunks) {
 				hunksLengthSum += getNewLength(hunk);
 				hunksLengthSum -= getOldLength(hunk);
 			}

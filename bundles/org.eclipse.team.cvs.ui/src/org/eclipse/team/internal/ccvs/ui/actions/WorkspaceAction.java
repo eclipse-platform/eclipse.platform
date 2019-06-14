@@ -77,8 +77,7 @@ public abstract class WorkspaceAction extends CVSAction {
 	private boolean handleOrphanedSubtrees() {
 		// invoke the inherited method so that overlaps are maintained
 		IResource[] resources = getSelectedResources();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			handleOrphanedSubtree(resource);
 		}
 		return false;
@@ -169,8 +168,7 @@ public abstract class WorkspaceAction extends CVSAction {
 				if (e.getStatus().getCode() == IResourceStatus.OUT_OF_SYNC_LOCAL) {
 					// determine the projects of the resources involved
 					Set<IProject> projects = new HashSet<>();
-					for (int i = 0; i < resources.length; i++) {
-						IResource resource = resources[i];
+					for (IResource resource : resources) {
 						projects.add(resource.getProject());
 					}
 					// prompt to refresh
@@ -302,9 +300,7 @@ public abstract class WorkspaceAction extends CVSAction {
 		// validate enabled for each resource in the selection
 		List<IPath> folderPaths = new ArrayList<>();
 		List<IPath> filePaths = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
-			
+		for (IResource resource : resources) {
 			// only enable for accessible resources
 			if(resource.getType() == IResource.PROJECT) {
 				if (! resource.isAccessible()) return false;
@@ -464,16 +460,16 @@ public abstract class WorkspaceAction extends CVSAction {
 			boolean sameTagType = true;
 			boolean multipleSameNames = true;
 			
-			for (int i = 0; i < resources.length; i++) {
-				ICVSResource cvsResource = getCVSResourceFor(resources[i]);
+			for (IResource resource : resources) {
+				ICVSResource cvsResource = getCVSResourceFor(resource);
 				CVSTag tag = null;
-				if(cvsResource.isFolder()) {
+				if (cvsResource.isFolder()) {
 					FolderSyncInfo info = ((ICVSFolder)cvsResource).getFolderSyncInfo();
 					if(info != null) {
 						tag = info.getTag();
 					}
 					if (tag != null && tag.getType() == CVSTag.BRANCH) {
-						tag = Util.getAccurateFolderTag(resources[i], tag);
+						tag = Util.getAccurateFolderTag(resource, tag);
 					}
 				} else {
 					tag = CVSAction.getAccurateFileTag(cvsResource);
@@ -535,8 +531,7 @@ public abstract class WorkspaceAction extends CVSAction {
 			monitor = Policy.monitorFor(monitor);
 			monitor.beginTask(null, selectedResources.length * 100);
 			monitor.setTaskName(CVSUIMessages.ReplaceWithAction_calculatingDirtyResources);
-			for (int i = 0; i < selectedResources.length; i++) {
-				IResource resource = selectedResources[i];
+			for (IResource resource : selectedResources) {
 				ICVSResource cvsResource = getCVSResourceFor(resource);
 				if(cvsResource.isModified(Policy.subMonitorFor(monitor, 100))) {
 					dirtyResources.add(resource);

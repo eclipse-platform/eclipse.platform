@@ -126,8 +126,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 	 */
 	protected void remove(IResource[] resources) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			set.remove(resources);
 		}
 	}
@@ -157,8 +156,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 	public void reset(SyncInfoSet seedSet) {
 		// First, remove all the sets
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set2 = sets[i];
+		for (ChangeSet set2 : sets) {
 			remove(set2);
 		}
 		if (seedSet != null) {
@@ -186,8 +184,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 		removals.addAll(Arrays.asList(event.getRemovedResources()));
 		additions.addAll(Arrays.asList(event.getAddedResources()));
 		SyncInfo[] changed = event.getChangedResources();
-		for (int i = 0; i < changed.length; i++) {
-			SyncInfo info = changed[i];
+		for (SyncInfo info : changed) {
 			additions.add(info);
 			removals.add(info.getLocal());
 		}
@@ -267,8 +264,7 @@ public abstract class SyncInfoSetChangeSetCollector extends ChangeSetManager {
 	 */
 	protected ChangeSet getChangeSet(SyncInfoSet set) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet changeSet = sets[i];
+		for (ChangeSet changeSet : sets) {
 			if (((CheckedInChangeSet)changeSet).getSyncInfoSet() == set) {
 				return changeSet;
 			}

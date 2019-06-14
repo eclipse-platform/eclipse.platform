@@ -140,8 +140,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 	}
 	
 	protected IStatus setWritable(final IFile[] files) {
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			ResourceAttributes attributes = file.getResourceAttributes();
 			if (attributes != null) {
 				attributes.setReadOnly(false);
@@ -157,8 +156,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 
 	private IFile[] getManagedReadOnlyFiles(IFile[] files) {
 		List readOnlys = new ArrayList();
-		for (int i = 0; i < files.length; i++) {
-			IFile iFile = files[i];
+		for (IFile iFile : files) {
 			if (needsCheckout(iFile)) {
 				readOnlys.add(iFile);
 			}
@@ -168,8 +166,7 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 	
 	protected IFile[] getUnmanagedReadOnlyFiles(IFile[] files) {
 		List readOnlys = new ArrayList();
-		for (int i = 0; i < files.length; i++) {
-			IFile iFile = files[i];
+		for (IFile iFile : files) {
 			if (iFile.isReadOnly() && !needsCheckout(iFile)) {
 				readOnlys.add(iFile);
 			}
@@ -213,9 +210,11 @@ public class CVSCoreFileModificationValidator extends FileModificationValidator 
 			return isReadOnly(resources[0]) ? factory.getParent(resources[0]) : null;
 		//need a lock on the parents of all read-only files
 		HashSet rules = new HashSet();
-		for (int i = 0; i < resources.length; i++)
-			if (isReadOnly(resources[i]))
-				rules.add(factory.getParent(resources[i]));
+		for (IResource resource : resources) {
+			if (isReadOnly(resource)) {
+				rules.add(factory.getParent(resource));
+			}
+		}
 		return createSchedulingRule(rules);
 	}
 

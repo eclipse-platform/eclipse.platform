@@ -78,8 +78,8 @@ public class SyncInfoSet {
 	public SyncInfoSet(SyncInfo[] infos) {
 		this();
 		// use the internal add since we can't have listeners at this point anyway
-		for (int i = 0; i < infos.length; i++) {
-			internalAdd(infos[i]);
+		for (SyncInfo info : infos) {
+			internalAdd(info);
 		}
 	}
 
@@ -102,8 +102,7 @@ public class SyncInfoSet {
 	public IResource[] getResources() {
 		SyncInfo[] infos = getSyncInfos();
 		List<IResource> resources = new ArrayList<>();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			resources.add(info.getLocal());
 		}
 		return resources.toArray(new IResource[resources.size()]);
@@ -346,8 +345,8 @@ public class SyncInfoSet {
 		try {
 			beginInput();
 			SyncInfo[] infos = set.getSyncInfos();
-			for (int i = 0; i < infos.length; i++) {
-				add(infos[i]);
+			for (SyncInfo info : infos) {
+				add(info);
 			}
 		} finally {
 			endInput(null);
@@ -377,8 +376,8 @@ public class SyncInfoSet {
 	public void removeAll(IResource[] resources) {
 		try {
 			beginInput();
-			for (int i = 0; i < resources.length; i++) {
-				remove(resources[i]);
+			for (IResource resource : resources) {
+				remove(resource);
 			}
 		} finally {
 			endInput(null);
@@ -414,8 +413,7 @@ public class SyncInfoSet {
 	 */
 	public boolean hasNodes(FastSyncInfoFilter filter) {
 		SyncInfo[] infos = getSyncInfos();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			if (info != null && filter.select(info)) {
 				return true;
 			}
@@ -433,8 +431,7 @@ public class SyncInfoSet {
 		try {
 			beginInput();
 			SyncInfo[] infos = getSyncInfos();
-			for (int i = 0; i < infos.length; i++) {
-				SyncInfo info = infos[i];
+			for (SyncInfo info : infos) {
 				if (info == null || !filter.select(info)) {
 					remove(info.getLocal());
 				}
@@ -454,8 +451,7 @@ public class SyncInfoSet {
 		try {
 			beginInput();
 			SyncInfo[] infos = getSyncInfos();
-			for (int i = 0; i < infos.length; i++) {
-				SyncInfo info = infos[i];
+			for (SyncInfo info : infos) {
 				if (info != null && filter.select(info)) {
 					remove(info.getLocal());
 				}
@@ -474,8 +470,7 @@ public class SyncInfoSet {
 	public SyncInfo[] getNodes(FastSyncInfoFilter filter) {
 		List<SyncInfo> result = new ArrayList<>();
 		SyncInfo[] infos = getSyncInfos();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			if (info != null && filter.select(info)) {
 				result.add(info);
 			}
@@ -580,8 +575,7 @@ public class SyncInfoSet {
 		// Fire the events using an ISafeRunnable
 		final ITeamStatus[] newErrors = event.getErrors();
 		monitor.beginTask(null, 100 + (newErrors.length > 0 ? 50 : 0) * allListeners.length);
-		for (int i = 0; i < allListeners.length; i++) {
-			final ISyncInfoSetChangeListener listener = allListeners[i];
+		for (ISyncInfoSetChangeListener listener : allListeners) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

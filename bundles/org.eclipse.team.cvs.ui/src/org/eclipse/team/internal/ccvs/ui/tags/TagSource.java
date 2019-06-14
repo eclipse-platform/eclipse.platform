@@ -117,8 +117,8 @@ public abstract class TagSource {
 
 	private static ICVSFolder[] getFolders(ICVSResource[] resources) {
 		HashSet<ICVSFolder> result = new HashSet<>();
-		for (int i= 0; i < resources.length; i++) {
-			result.add(getFirstFolder(resources[i]));
+		for (ICVSResource resource : resources) {
+			result.add(getFirstFolder(resource));
 		}
 		return result.toArray(new ICVSFolder[result.size()]);
 	}
@@ -143,8 +143,7 @@ public abstract class TagSource {
 	
 	private static IResource[] getProjects(ResourceMapping[] mappers) {
 		Set<IProject> projects = new HashSet<>();
-		for (int i = 0; i < mappers.length; i++) {
-			ResourceMapping mapper = mappers[i];
+		for (ResourceMapping mapper : mappers) {
 			projects.addAll(Arrays.asList(mapper.getProjects()));
 		}
 		return projects.toArray(new IResource[projects.size()]);
@@ -152,8 +151,7 @@ public abstract class TagSource {
 
 	private static IResource[] getProjects(IResource[] resources) {
 		Set<IProject> result = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			result.add(resource.getProject());
 		}
 		return result.toArray(new IResource[result.size()]);
@@ -170,8 +168,7 @@ public abstract class TagSource {
 	
 	private static ICVSResource[] getCVSResources(IResource[] resources) {
 		List<ICVSResource> cvsResources = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			cvsResources.add(CVSWorkspaceRoot.getCVSResourceFor(resource));
 		}
 		return cvsResources.toArray(new ICVSResource[cvsResources.size()]);
@@ -249,8 +246,8 @@ public abstract class TagSource {
 	 */
 	public void fireChange() {
 		Object[] list = listeners.getListeners();
-		for (int i = 0; i < list.length; i++) {
-			final ITagSourceChangeListener listener = (ITagSourceChangeListener)list[i];
+		for (Object o : list) {
+			final ITagSourceChangeListener listener = (ITagSourceChangeListener) o;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void handleException(Throwable exception) {

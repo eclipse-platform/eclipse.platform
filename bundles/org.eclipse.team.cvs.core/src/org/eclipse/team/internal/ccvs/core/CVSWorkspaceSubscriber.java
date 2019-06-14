@@ -85,8 +85,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	public IResource[] roots() {
 		List result = new ArrayList();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if(project.isOpen()) {
 				RepositoryProvider provider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
 				if(provider != null) {
@@ -161,8 +160,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	@Override
 	public void collectOutOfSync(IResource[] resources, int depth, final SyncInfoSet set, final IProgressMonitor monitor) {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			try {
 				if (!isSupervised(resource)) {
 					return;
@@ -206,8 +204,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 		boolean keepGoing = visitor.visit(resource);
 		if (keepGoing && depth != IResource.DEPTH_ZERO) {
 			IResource[] members = members(resource);
-			for (int i = 0; i < members.length; i++) {
-				IResource member = members[i];
+			for (IResource member : members) {
 				visit(member, visitor, depth == IResource.DEPTH_ONE ? IResource.DEPTH_ZERO : IResource.DEPTH_INFINITE);
 			}
 		}
@@ -306,11 +303,9 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	
 	private int getOutgoingKind(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
 		int kind = 0;
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
-			for (int j = 0; j < resources.length; j++) {
-				IResource resource = resources[j];
+			for (IResource resource : resources) {
 				IDiff node = getDiff(resource);
 				if (node == null)
 					return IDiff.CHANGE;
@@ -329,41 +324,35 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	 */
 	public boolean hasLocalChanges(ResourceTraversal[] traversals, IProgressMonitor monitor) throws CoreException {
 		monitor = Policy.monitorFor(monitor);
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
 			switch (traversal.getDepth()) {
-			case IResource.DEPTH_ZERO:
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
-					if (isDirectlyDirty(resource, monitor)) {
-						return true;
-					}
-				}
-				break;
-			case IResource.DEPTH_INFINITE:
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
-					if (isDirty(resource, monitor)) {
-						return true;
-					}
-				}
-				break;
-			case IResource.DEPTH_ONE:
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
-					if (isDirectlyDirty(resource, monitor)) {
-						return true;
-					}
-					IResource[] children = members(resource);
-					for (int k = 0; k < children.length; k++) {
-						IResource child = children[k];				
-						if (isDirectlyDirty(child, monitor)) {
+				case IResource.DEPTH_ZERO:
+					for (IResource resource : resources) {
+						if (isDirectlyDirty(resource, monitor)) {
 							return true;
 						}
 					}
-				}
-				break;
+					break;
+				case IResource.DEPTH_INFINITE:
+					for (IResource resource : resources) {
+						if (isDirty(resource, monitor)) {
+							return true;
+						}
+					}
+					break;
+				case IResource.DEPTH_ONE:
+					for (IResource resource : resources) {
+						if (isDirectlyDirty(resource, monitor)) {
+							return true;
+						}	IResource[] children = members(resource);
+						for (IResource child : children) {
+							if (isDirectlyDirty(child, monitor)) {
+								return true;
+							}
+						}
+					}
+					break;
 			}
 		}
 		return false;

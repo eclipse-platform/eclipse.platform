@@ -95,10 +95,10 @@ public class PServerSSH2ServerConnection implements IServerConnection {
 				String[] list = session.getPortForwardingL();
 				String name = ":" + rhost + ":" + rport; //$NON-NLS-1$ //$NON-NLS-2$
 				boolean done = false;
-				for (int i = 0; i < list.length; i++) {
-					if (list[i].endsWith(name)) {
+				for (String l : list) {
+					if (l.endsWith(name)) {
 						try {
-							String foo = list[i].substring(0, list[i].indexOf(':'));
+							String foo = l.substring(0, l.indexOf(':'));
 							lport = Integer.parseInt(foo);
 						} catch (Exception ee) {
 							// Ignore

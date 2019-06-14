@@ -110,14 +110,13 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 	private ISchedulingRule getUpdateRule(SynchronizationScopeManager manager) {
 		ISchedulingRule rule = null;
 		ResourceMapping[] mappings = manager.getScope().getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			IProject[] mappingProjects = mapping.getProjects();
-			for (int j = 0; j < mappingProjects.length; j++) {
+			for (IProject mappingProject : mappingProjects) {
 				if (rule == null) {
-					rule = mappingProjects[j];
+					rule = mappingProject;
 				} else {
-					rule = MultiRule.combine(rule, mappingProjects[j]);
+					rule = MultiRule.combine(rule, mappingProject);
 				}
 			}
 		}
@@ -171,8 +170,7 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		FastSyncInfoFilter failFilter = getKnownFailureCases();
 		SyncInfo[] willFail = syncSet.getNodes(failFilter);
 		syncSet.rejectNodes(failFilter);
-		for (int i = 0; i < willFail.length; i++) {
-			SyncInfo info = willFail[i];
+		for (SyncInfo info : willFail) {
 			skipped.add(info);
 		}
 		return syncSet;
@@ -220,9 +218,7 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 		// We do these first to avoid case conflicts
 		List<SyncInfo> updateDeletions = new ArrayList<>();
 	
-		for (int i = 0; i < changed.length; i++) {
-			SyncInfo changedNode = changed[i];
-			
+		for (SyncInfo changedNode : changed) {
 			// Make sure that parent folders exist
 			SyncInfo parent = getParent(changedNode);
 			if (parent != null && isOutOfSync(parent)) {
@@ -440,8 +436,7 @@ public abstract class SafeUpdateOperation extends CVSSubscriberOperation {
 	
 	private void addSkippedFiles(IFile[] files) {
 		SyncInfoSet set = getSyncInfoSet();
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			skipped.add(set.getSyncInfo(file));
 		}
 	}

@@ -87,8 +87,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 		 * @param traversals the traversals
 		 */
 		public void add(ResourceTraversal[] traversals) {
-			for (int i = 0; i < traversals.length; i++) {
-				ResourceTraversal traversal = traversals[i];
+			for (ResourceTraversal traversal : traversals) {
 				add(traversal);
 			}
 		}
@@ -98,8 +97,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 		 */
 		public void add(ResourceTraversal traversal) {
 			IResource[] resources = traversal.getResources();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (resource.getProject().equals(provider.getProject())) {
 					if (resource.getType() == IResource.FILE) {
 						files.add(resource);
@@ -327,12 +325,10 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	Map getProviderTraversalMapping(IProgressMonitor monitor) throws CoreException {
 		Map<RepositoryProvider, TraversalMapEntry> result = new HashMap<>();
 		ResourceMapping[] mappings = getScope().getMappings();
-		for (int j = 0; j < mappings.length; j++) {
-			ResourceMapping mapping = mappings[j];
+		for (ResourceMapping mapping : mappings) {
 			IProject[] projects = mapping.getProjects();
 			ResourceTraversal[] traversals = getScope().getTraversals(mapping);
-			for (int k = 0; k < projects.length; k++) {
-				IProject project = projects[k];
+			for (IProject project : projects) {
 				RepositoryProvider provider = RepositoryProvider.getProvider(project, CVSProviderPlugin.getTypeId());
 				if (provider != null) {
 					TraversalMapEntry entry = result.get(provider);
@@ -394,8 +390,8 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	 */
 	protected String[] getStringArguments(IResource[] resources) throws CVSException {
 		List<String> arguments = new ArrayList<>(resources.length);
-		for (int i=0;i<resources.length;i++) {
-			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
+		for (IResource resource : resources) {
+			IPath cvsPath = resource.getFullPath().removeFirstSegments(1);
 			if (cvsPath.segmentCount() == 0) {
 				arguments.add(Session.CURRENT_LOCAL_FOLDER);
 			} else {
@@ -429,8 +425,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	protected void updateWorkspaceSubscriber(CVSTeamProvider provider, ICVSResource[] resources, boolean recurse, IProgressMonitor monitor) {
 		CVSWorkspaceSubscriber s = CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
 		monitor.beginTask(null, 100 * resources.length);
-		for (int i = 0; i < resources.length; i++) {
-			ICVSResource resource = resources[i];
+		for (ICVSResource resource : resources) {
 			if (resource.isFolder()) {
 				try {
 					s.updateRemote(provider, (ICVSFolder)resource, recurse, Policy.subMonitorFor(monitor, 100));
@@ -464,8 +459,7 @@ public abstract class RepositoryProviderOperation extends CVSOperation {
 	protected IResource[] getTraversalRoots() {
 		List<IResource> result = new ArrayList<>();
 		ResourceTraversal[] traversals = getTraversals();
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			result.addAll(Arrays.asList(traversal.getResources()));
 		}
 		return result.toArray(new IResource[result.size()]);

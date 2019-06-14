@@ -292,9 +292,11 @@ class ResourceCompareInput extends CompareEditorInput {
 	}
 
 	private boolean checkSelection(IResource[] resources) {
-		for (int i = 0; i < resources.length; i++)
-			if (resources[i] == null)
+		for (IResource resource : resources) {
+			if (resource == null) {
 				return false;
+			}
+		}
 		return true;
 	}
 
@@ -492,8 +494,7 @@ class ResourceCompareInput extends CompareEditorInput {
 
 		IDiffElement[] children= node.getChildren();
 		if (children != null) {
-			for (int i= 0; i < children.length; i++) {
-				IDiffElement element= children[i];
+			for (IDiffElement element : children) {
 				if (element instanceof DiffNode)
 					commit(pm, (DiffNode) element);
 			}
@@ -546,8 +547,7 @@ class ResourceCompareInput extends CompareEditorInput {
 
 			IDiffElement[] children= node.getChildren();
 			if (children != null) {
-				for (int i= 0; i < children.length; i++) {
-					IDiffElement element= children[i];
+				for (IDiffElement element : children) {
 					if (element instanceof DiffNode)
 						collectDirtyResources(element, collector);
 				}

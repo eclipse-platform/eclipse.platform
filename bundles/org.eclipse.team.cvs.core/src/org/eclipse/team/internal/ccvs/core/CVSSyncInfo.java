@@ -369,10 +369,10 @@ public class CVSSyncInfo extends SyncInfo {
 		if (entries == null || entries.length == 0)
 			return null;
 		
-		for (int i = 0; i < entries.length; i++) {
+		for (ILogEntry entry : entries) {
 			try {
-				if (localRevision.equals(entries[i].getRemoteFile().getRevision())) {
-					return entries[i].getAuthor();
+				if (localRevision.equals(entry.getRemoteFile().getRevision())) {
+					return entry.getAuthor();
 				}
 			} catch (TeamException e) {
 				CVSProviderPlugin.log(e);

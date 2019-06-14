@@ -294,9 +294,7 @@ public final class RangeDifferencer {
 		int mstart= 0;
 		int ystart= 0;
 
-		for (int i= 0; i < in.length; i++) {
-			RangeDifference es= in[i];
-
+		for (RangeDifference es : in) {
 			rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, es.rightStart() - mstart, ystart, es.leftStart() - ystart);
 			if (rd.maxLength() != 0)
 				out.add(rd);
@@ -375,9 +373,7 @@ public final class RangeDifferencer {
 		int ystart= 0;
 		int astart= 0;
 
-		for (int i= 0; i < in.length; i++) {
-			RangeDifference es= in[i];
-
+		for (RangeDifference es : in) {
 			rd= factory.createRangeDifference(RangeDifference.NOCHANGE, mstart, es.rightStart() - mstart, ystart, es.leftStart() - ystart, astart, es.ancestorStart() - astart);
 			if (rd.maxLength() > 0)
 				out.add(rd);

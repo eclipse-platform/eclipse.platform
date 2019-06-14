@@ -277,8 +277,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				// same mode before offering to change modes.
 				ModelProvider[] providers =findModelsWithChangesInMode(getConfiguration().getMode());
 				ModelProvider currentProvider = null;
-				for (int i = 0; i < providers.length; i++) {
-					ModelProvider provider = providers[i];
+				for (ModelProvider provider : providers) {
 					if (isEnabled(provider)) {
 						if (provider.getDescriptor().getId().equals(id)) {
 							currentProvider = provider;
@@ -300,8 +299,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 
 	private boolean isAtLeastOneProviderDisabled() {
 		ModelProvider[] providers =findModelsWithChangesInMode(getConfiguration().getMode());
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			if (!isEnabled(provider)) {
 				return true;
 			}
@@ -313,8 +311,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		ModelProvider[] providers =context.getScope().getModelProviders();
 		providers = ModelOperation.sortByExtension(providers);
 		List<ModelProvider> result = new ArrayList<>();
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(provider);
 			if (adapter != null) {
 				boolean hasChanges = hasChangesInMode(provider.getId(), adapter, getConfiguration().getMode());
@@ -367,8 +364,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 				ModelProvider[] providers = participant.getEnabledModelProviders();
 				Set<ITeamContentProviderDescriptor> toEnable = new HashSet<>();
 				toEnable.addAll(Arrays.asList(descriptors));
-				for (int i = 0; i < providers.length; i++) {
-					ModelProvider provider = providers[i];
+				for (ModelProvider provider : providers) {
 					ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 					if (desc != null && !desc.isEnabled()) {
 						toEnable.add(desc);
@@ -389,8 +385,7 @@ public class DiffTreeChangesSection extends ForwardingChangesSection implements 
 		ModelSynchronizeParticipant participant = (ModelSynchronizeParticipant)getConfiguration().getParticipant();
 		ModelProvider[] providers = participant.getEnabledModelProviders();
 		Set<ITeamContentProviderDescriptor> result = new HashSet<>();
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : providers) {
 			ITeamContentProviderDescriptor desc = TeamUI.getTeamContentProviderManager().getDescriptor(provider.getId());
 			if (desc != null && desc.isEnabled())
 				result.add(desc);

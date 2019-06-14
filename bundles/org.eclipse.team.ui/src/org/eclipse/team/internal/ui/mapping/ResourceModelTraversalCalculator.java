@@ -113,8 +113,7 @@ public class ResourceModelTraversalCalculator {
 	private Object[] getCompressedChildren(IResourceDiffTree diffTree, IProject project, Object[] children) {
 		Set<Object> result = new HashSet<>();
 		IDiff[] diffs = diffTree.getDiffs(project, IResource.DEPTH_INFINITE);
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			IResource resource = diffTree.getResource(diff);
 			if (resource.getType() == IResource.FILE) {
 				IContainer parent = resource.getParent();
@@ -133,8 +132,7 @@ public class ResourceModelTraversalCalculator {
 	 */
 	private Object[] getCompressedChildren(IResourceDiffTree diffTree, IFolder folder, Object[] children) {
 		Set<Object> result = new HashSet<>();
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			if (object instanceof IResource) {
 				IResource resource = (IResource) object;
 				if (resource.getType() == IResource.FILE)
@@ -142,8 +140,7 @@ public class ResourceModelTraversalCalculator {
 			}
 		}
 		IDiff[] diffs = diffTree.getDiffs(folder, IResource.DEPTH_ONE);
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			IResource resource = diffTree.getResource(diff);
 			if (resource.getType() == IResource.FILE)
 				result.add(resource);
@@ -155,8 +152,7 @@ public class ResourceModelTraversalCalculator {
 		Object[] allChildren;
 		IDiff[] diffs = diffTree.getDiffs(resource, IResource.DEPTH_INFINITE);
 		ArrayList<Object> result = new ArrayList<>();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			result.add(diffTree.getResource(diff));
 		}
 		allChildren = result.toArray();
@@ -165,13 +161,11 @@ public class ResourceModelTraversalCalculator {
 
 	private Object[] getTreeChildren(IResourceDiffTree diffTree, IResource resource, Object[] children) {
 		Set<Object> result = new HashSet<>();
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			result.add(object);
 		}
 		IResource[] setChildren = getChildren(diffTree, resource);
-		for (int i = 0; i < setChildren.length; i++) {
-			IResource child = setChildren[i];
+		for (IResource child : setChildren) {
 			result.add(child);
 		}
 		Object[] allChildren = result.toArray(new Object[result.size()]);
@@ -181,8 +175,7 @@ public class ResourceModelTraversalCalculator {
 	public static IResource[] getChildren(IResourceDiffTree diffTree, IResource resource) {
 		Set<IResource> result = new HashSet<>();
 		IPath[] childPaths = diffTree.getChildren(resource.getFullPath());
-		for (int i = 0; i < childPaths.length; i++) {
-			IPath path = childPaths[i];
+		for (IPath path : childPaths) {
 			IDiff delta = diffTree.getDiff(path);
 			IResource child;
 			if (delta == null) {
@@ -215,8 +208,7 @@ public class ResourceModelTraversalCalculator {
 			IResource resource = (IResource) o;
 			int depth = getLayoutDepth(resource, tp);
 			IDiff[] diffs = dcs.getDiffTree().getDiffs(resource, depth);
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				IResource r = ResourceDiffTree.getResourceFor(diff);
 				if (r != null)
 					result.add(r);
@@ -325,8 +317,7 @@ public class ResourceModelTraversalCalculator {
 				if (members.length > 0) {
 					if (depth == IResource.DEPTH_INFINITE)
 						return true;
-					for (int i = 0; i < members.length; i++) {
-						IResource resource = members[i];
+					for (IResource resource : members) {
 						if (resource.getType() == IResource.FILE)
 							return true;
 					}
@@ -361,8 +352,7 @@ public class ResourceModelTraversalCalculator {
 				resourcePath[i] = parent;
 				parent = parent.getParent();
 			}
-			for (int i = 0; i < resourcePath.length; i++) {
-				IResource r = resourcePath[i];
+			for (IResource r : resourcePath) {
 				treePath = treePath.createChildPath(r);
 			}
 			return treePath;

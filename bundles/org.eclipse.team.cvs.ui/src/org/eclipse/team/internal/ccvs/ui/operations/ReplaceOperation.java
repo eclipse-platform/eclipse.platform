@@ -132,8 +132,7 @@ public class ReplaceOperation extends UpdateOperation {
 		// Accumulate the managed resources from the list of provided resources
 		List<ICVSResource> managedResources = new ArrayList<>();
 		monitor.beginTask(null, resources.length * 100);
-		for (int i = 0; i < resources.length; i++) {
-			ICVSResource resource = resources[i];
+		for (ICVSResource resource : resources) {
 			if ((resource.isFolder() && ((ICVSFolder)resource).isCVSFolder())) {
 				addResourceIfTagExists(managedResources, resource, Policy.subMonitorFor(monitor, 100));
 			} else if (!resource.isFolder()){

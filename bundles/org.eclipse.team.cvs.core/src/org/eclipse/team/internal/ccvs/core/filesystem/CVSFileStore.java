@@ -102,8 +102,7 @@ public class CVSFileStore extends FileStore {
 		}
 		ICVSResource[] children = folder.fetchChildren(monitor);
 		ICVSResource resource = null;
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource child = children[i];
+		for (ICVSResource child : children) {
 			if (child.getName().equals(getName())) {
 				resource = child;
 				break;

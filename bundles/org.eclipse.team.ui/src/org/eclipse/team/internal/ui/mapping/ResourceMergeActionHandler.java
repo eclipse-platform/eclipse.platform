@@ -65,17 +65,14 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 		IStructuredSelection selection = getStructuredSelection();
 		Object[] objects = selection.toArray();
 		Set<IResource> roots = new HashSet<>();
-		for (int i = 0; i < objects.length; i++) {
-			Object object = objects[i];
+		for (Object object : objects) {
 			ResourceMapping mapping = Utils.getResourceMapping(object);
 			if (mapping != null) {
 				try {
 					ResourceTraversal[] traversals = mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
-					for (int j = 0; j < traversals.length; j++) {
-						ResourceTraversal traversal = traversals[j];
+					for (ResourceTraversal traversal : traversals) {
 						IResource[] resources = traversal.getResources();
-						for (int k = 0; k < resources.length; k++) {
-							IResource resource = resources[k];
+						for (IResource resource : resources) {
 							roots.add(resource);
 						}
 					}

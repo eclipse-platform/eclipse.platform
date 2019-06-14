@@ -125,8 +125,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 	protected boolean checkWorkingSetElements() {
 		List allWorkingSetResources = new ArrayList();
 		IWorkingSet[] workingSets = getWorkingSets();
-		for (int i = 0; i < workingSets.length; i++) {
-			IWorkingSet set = workingSets[i];
+		for (IWorkingSet set : workingSets) {
 			allWorkingSetResources.addAll(IDE.computeSelectedResources(new StructuredSelection(set.getElements())));
 		}
 		getViewer().setCheckedElements(allWorkingSetResources.toArray(new IResource[allWorkingSetResources.size()]));

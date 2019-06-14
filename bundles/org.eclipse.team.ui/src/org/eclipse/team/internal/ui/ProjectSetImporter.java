@@ -112,14 +112,14 @@ public class ProjectSetImporter {
 				UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(shell, filename);
 				List<TeamException> errors = new ArrayList<TeamException>();
 				IMemento[] providers = xmlMemento.getChildren("provider"); //$NON-NLS-1$
-				for (int i = 0; i < providers.length; i++) {
+				for (IMemento provider : providers) {
 					ArrayList<String> referenceStrings= new ArrayList<>();
-					IMemento[] projects = providers[i].getChildren("project"); //$NON-NLS-1$
-					for (int j = 0; j < projects.length; j++) {
-						referenceStrings.add(projects[j].getString("reference")); //$NON-NLS-1$
+					IMemento[] projects = provider.getChildren("project"); //$NON-NLS-1$
+					for (IMemento project : projects) {
+						referenceStrings.add(project.getString("reference")); //$NON-NLS-1$
 					}
 					try {
-						String id = providers[i].getString("id"); //$NON-NLS-1$
+						String id = provider.getString("id"); //$NON-NLS-1$
 						TeamCapabilityHelper.getInstance().processRepositoryId(id,
 								PlatformUI.getWorkbench().getActivitySupport());
 						RepositoryProviderType providerType = RepositoryProviderType.getProviderType(id);
@@ -157,8 +157,8 @@ public class ProjectSetImporter {
 				boolean mergeAll = false;
 				boolean skipAll = false;
 
-				for (int i = 0; i < sets.length; i++) {
-					IWorkingSet newWs = wsManager.createWorkingSet(sets[i]);
+				for (IMemento set : sets) {
+					IWorkingSet newWs = wsManager.createWorkingSet(set);
 					if (newWs != null) {
 						IWorkingSet oldWs = wsManager.getWorkingSet(newWs
 								.getName());

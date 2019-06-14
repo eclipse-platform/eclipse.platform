@@ -63,11 +63,9 @@ public class FindCommittersTest extends EclipseTest {
 		private Set<String> getAuthors(RemoteLogOperation.LogEntryCache logEntryCache) {
 			String[] paths = logEntryCache.getCachedFilePaths();
 			Set<String> authors = new HashSet<>();
-			for (int i = 0; i < paths.length; i++) {
-				String path = paths[i];
+			for (String path : paths) {
 				ILogEntry[] entries = logEntryCache.getLogEntries(path);
-				for (int j = 0; j < entries.length; j++) {
-					ILogEntry entry = entries[j];
+				for (ILogEntry entry : entries) {
 					authors.add(entry.getAuthor());
 				}
 			}

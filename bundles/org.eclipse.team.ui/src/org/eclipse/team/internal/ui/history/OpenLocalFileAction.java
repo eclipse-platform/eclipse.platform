@@ -42,8 +42,8 @@ public class OpenLocalFileAction extends BaseSelectionListenerAction {
 
 			Object[] objArray = structSel.toArray();
 
-			for (int i = 0; i < objArray.length; i++) {
-				IFileState state = (IFileState) objArray[i];
+			for (Object obj : objArray) {
+				IFileState state = (IFileState) obj;
 				if (!state.exists()) {
 					MessageDialog.openError(TeamUIPlugin.getActivePage().getActivePart().getSite().getShell(), TeamUIMessages.OpenRevisionAction_DeletedRevisionTitle, TeamUIMessages.OpenRevisionAction_DeletedRevisionMessage);
 				} else {
@@ -53,7 +53,6 @@ public class OpenLocalFileAction extends BaseSelectionListenerAction {
 						page.openEditor(new FileRevisionEditorInput(state), id);
 					}
 				}
-
 			}
 
 		} catch (Exception e) {

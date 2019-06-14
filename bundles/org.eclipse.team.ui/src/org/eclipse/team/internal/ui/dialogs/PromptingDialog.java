@@ -62,8 +62,7 @@ public class PromptingDialog extends MultipleYesNoPrompter {
 	 */
 	public IResource[] promptForMultiple() throws InterruptedException {
 		List<IResource> targetResources = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (!condition.needsPrompt(resource) || shouldInclude(condition.promptMessage(resource))) {
 				targetResources.add(resource);
 			}

@@ -227,8 +227,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		ResourceMapping mapping = Utils.getResourceMapping(internalGetElement(element));
 		if (mapping != null) {
 			ResourceMapping[] mappings = scope.getMappings(mapping.getModelProviderId());
-			for (int i = 0; i < mappings.length; i++) {
-				ResourceMapping sm = mappings[i];
+			for (ResourceMapping sm : mappings) {
 				if (mapping.contains(sm)) {
 					return true;
 				}
@@ -466,8 +465,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 	 */
 	protected Object[] getChildrenInScope(ISynchronizationScope scope, Object parent, Object[] children) {
 		List<Object> result = new ArrayList<>();
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			if (object != null && isInScope(scope, parent, object)) {
 				result.add(object);
 			}
@@ -506,19 +504,18 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		if (children.length == 0)
 			return setChildren;
 		Set<Object> result = new HashSet<>(children.length);
-		for (int i = 0; i < children.length; i++) {
-			result.add(children[i]);
+		for (Object c : children) {
+			result.add(c);
 		}
-		for (int i = 0; i < setChildren.length; i++) {
-			result.add(setChildren[i]);
+		for (IResource s : setChildren) {
+			result.add(s);
 		}
 		return result.toArray();
 	}
 
 	private Object[] internalGetChildren(ISynchronizationContext context, Object parent, Object[] children) {
 		List<Object> result = new ArrayList<>(children.length);
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			// If the parent is a TreePath then the subclass is
 			// TreePath aware and we can send a TrePath to the
 			// isVisible method
@@ -559,8 +556,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 
 	private boolean isVisible(IDiff[] diffs) {
 		if (diffs.length > 0) {
-			for (int j = 0; j < diffs.length; j++) {
-				IDiff diff = diffs[j];
+			for (IDiff diff : diffs) {
 				if (isVisible(diff)) {
 					return true;
 				}
@@ -628,8 +624,7 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		ResourceMapping mapping = Utils.getResourceMapping(internalGetElement(element));
 		if (mapping != null) {
 			ResourceMapping[] mappings = scope.getMappings(mapping.getModelProviderId());
-			for (int i = 0; i < mappings.length; i++) {
-				ResourceMapping sm = mappings[i];
+			for (ResourceMapping sm : mappings) {
 				if (mapping.contains(sm)) {
 					return true;
 				}

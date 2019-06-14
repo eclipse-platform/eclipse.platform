@@ -196,8 +196,7 @@ public class CheckoutAsProjectSelectionPage extends CVSWizardPage {
 		List<IProject> validTargets = new ArrayList<>();
 		try {
 			IResource[] projects = ResourcesPlugin.getWorkspace().getRoot().members();
-			for (int i = 0; i < projects.length; i++) {
-				IResource resource = projects[i];
+			for (IResource resource : projects) {
 				if (resource instanceof IProject) {
 					IProject project = (IProject) resource;
 					if (project.isAccessible()) {

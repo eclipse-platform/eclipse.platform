@@ -68,8 +68,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 			List<IResource> filesInSet = new ArrayList<>();
 			getFileChildren(node, filesInSet);
 			assertTrue("The number of files in the set do not match the expected number", files[i].length == filesInSet.size());
-			for (int j = 0; j < files[i].length; j++) {
-				IFile file = files[i][j];
+			for (IFile file : files[i]) {
 				assertTrue("File " + file.getFullPath() + " is not in the set", filesInSet.contains(file));
 			}
 		}
@@ -88,8 +87,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	}
 
 	private void removeTreeItemsFromList(List<?> nodeList, TreeItem[] items) {
-		for (int i = 0; i < items.length; i++) {
-			TreeItem item = items[i];
+		for (TreeItem item : items) {
 			nodeList.remove(item.getData());
 			TreeItem[] children = item.getItems();
 			removeTreeItemsFromList(nodeList, children);
@@ -99,8 +97,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	private ChangeSetDiffNode[] getCheckedInChangeSetNodes(ISynchronizeModelElement root) {
 		List<ChangeSetDiffNode> result = new ArrayList<>();
 		IDiffElement[] children = root.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ChangeSetDiffNode) {
 				ChangeSetDiffNode node = (ChangeSetDiffNode)element;
 				if (node.getSet() instanceof CheckedInChangeSet) {
@@ -114,8 +111,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	private ChangeSetDiffNode[] getActiveChangeSetNodes(ISynchronizeModelElement root) {
 		List<ChangeSetDiffNode> result = new ArrayList<>();
 		IDiffElement[] children = root.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ChangeSetDiffNode) {
 				ChangeSetDiffNode node = (ChangeSetDiffNode)element;
 				if (node.getSet() instanceof ActiveChangeSet) {
@@ -135,8 +131,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 			list.add(resource);
 		}
 		IDiffElement[] children = node.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement child = children[i];
+		for (IDiffElement child : children) {
 			getFileChildren((ISynchronizeModelElement)child, list);
 		}
 		return;
@@ -144,8 +139,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 
 	private ChangeSetDiffNode getCommitSetFor(ISynchronizeModelElement root, String message) {
 		IDiffElement[] children = root.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ChangeSetDiffNode) {
 				ChangeSetDiffNode node = (ChangeSetDiffNode)element;
 				if (node.getSet().getComment().equals(message)) {
@@ -235,11 +229,9 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 		assertResourcesAreTheSame(resources, outOfSync, true);
 		// Assert that all active sets are visible in the view
 		ChangeSet[] sets = getActiveChangeSetManager().getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet changeSet = sets[i];
+		for (ChangeSet changeSet : sets) {
 			node = getChangeSetNodeFor(root, changeSet);
 			assertNotNull("The node for set " + set.getName() + " is not in the view", node);
-			
 		}
 		ChangeSetDiffNode[] nodes = getActiveChangeSetNodes(root);
 		assertNodesInViewer(getWorkspaceSubscriber(), nodes);
@@ -247,8 +239,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	
 	private ChangeSetDiffNode getChangeSetNodeFor(ISynchronizeModelElement root, ChangeSet set) {
 		IDiffElement[] children = root.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ChangeSetDiffNode) {
 				ChangeSetDiffNode node = (ChangeSetDiffNode)element;
 				if (node.getSet() == set) {
@@ -281,8 +272,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 			list.add(info);
 		}
 		IDiffElement[] children = node.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement child = children[i];
+		for (IDiffElement child : children) {
 			getOutOfSync((ISynchronizeModelElement)child, list);
 		}
 		return;
@@ -299,23 +289,19 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 		if (doNotAllowExtra) {
 			if (resources1.length != resources2.length) {
 				System.out.println("Expected");
-				for (int i = 0; i < resources1.length; i++) {
-					IResource resource = resources1[i];
+				for (IResource resource : resources1) {
 					System.out.println(resource.getFullPath().toString());
 				}
 				System.out.println("Actual");
-				for (int i = 0; i < resources2.length; i++) {
-					IResource resource = resources2[i];
+				for (IResource resource : resources2) {
 					System.out.println(resource.getFullPath().toString());
 				}
 			}
 			assertEquals("The number of resources do not match the expected number", resources1.length, resources2.length);
 		}
-		for (int i = 0; i < resources1.length; i++) {
-			IResource resource = resources1[i];
+		for (IResource resource : resources1) {
 			boolean found = false;
-			for (int j = 0; j < resources2.length; j++) {
-				IResource resource2 = resources2[j];
+			for (IResource resource2 : resources2) {
 				if (resource2.equals(resource)) {
 					found = true;
 					break;
@@ -333,8 +319,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	private void assertInRootSet(IResource[] resources) throws CoreException {
 		ISynchronizeModelElement[] nodes = getNonChangeSetRoots(getModelRoot(((SubscriberChangeSetManager)getActiveChangeSetManager()).getSubscriber()));
 		List<SyncInfo> list = new ArrayList<>();
-		for (int i = 0; i < nodes.length; i++) {
-			ISynchronizeModelElement element = nodes[i];
+		for (ISynchronizeModelElement element : nodes) {
 			getOutOfSync(element, list);
 		}
 		IResource[] outOfSync = getResources(list.toArray(new SyncInfo[list.size()]));
@@ -348,8 +333,7 @@ public class CVSChangeSetTests extends CVSSyncSubscriberTest {
 	private ISynchronizeModelElement[] getNonChangeSetRoots(ISynchronizeModelElement modelRoot) {
 		List<ISynchronizeModelElement> result = new ArrayList<>();
 		IDiffElement[] children = modelRoot.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (!(element instanceof ChangeSetDiffNode)) {
 				result.add((ISynchronizeModelElement) element);
 			}

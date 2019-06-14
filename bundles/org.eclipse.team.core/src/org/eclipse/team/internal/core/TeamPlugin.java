@@ -184,12 +184,12 @@ final public class TeamPlugin extends Plugin {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
 			IExtension[] extensions =  extension.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-				for (int j = 0; j < configElements.length; j++) {
-					String aliasId = configElements[j].getAttribute("canImportId"); //$NON-NLS-1$
+			for (IExtension ext : extensions) {
+				IConfigurationElement[] configElements = ext.getConfigurationElements();
+				for (IConfigurationElement configElement : configElements) {
+					String aliasId = configElement.getAttribute("canImportId"); //$NON-NLS-1$
 					if (aliasId != null && aliasId.equals(id)) {
-						String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
+						String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
 						if (extensionId != null) {
 							return RepositoryProviderType.getProviderType(extensionId);
 						}
@@ -204,11 +204,11 @@ final public class TeamPlugin extends Plugin {
 		IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(TeamPlugin.ID, TeamPlugin.REPOSITORY_EXTENSION);
 		if (extension != null) {
 			IExtension[] extensions =  extension.getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IConfigurationElement [] configElements = extensions[i].getConfigurationElements();
-				for (int j = 0; j < configElements.length; j++) {
-					String extensionId = configElements[j].getAttribute("id"); //$NON-NLS-1$
-					String metaFilePaths = configElements[j].getAttribute("metaFilePaths"); //$NON-NLS-1$
+			for (IExtension ext : extensions) {
+				IConfigurationElement[] configElements = ext.getConfigurationElements();
+				for (IConfigurationElement configElement : configElements) {
+					String extensionId = configElement.getAttribute("id"); //$NON-NLS-1$
+					String metaFilePaths = configElement.getAttribute("metaFilePaths"); //$NON-NLS-1$
 					if (extensionId != null && extensionId.equals(id) && metaFilePaths != null) {
 						return getPaths(metaFilePaths);
 

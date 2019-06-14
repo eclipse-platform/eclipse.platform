@@ -85,8 +85,7 @@ public class ScopeTests extends TeamTest {
 
 	private boolean isInWorkingSet(IProject project) {
 		IAdaptable[] elements = workingSet.getElements();
-		for (int i = 0; i < elements.length; i++) {
-			IAdaptable adaptable = elements[i];
+		for (IAdaptable adaptable : elements) {
 			if (adaptable.equals(project))
 				return true;
 		}

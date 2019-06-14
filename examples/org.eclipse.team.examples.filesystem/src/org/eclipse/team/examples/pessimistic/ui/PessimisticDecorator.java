@@ -89,8 +89,8 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 	private void postLabelEvents(final LabelProviderChangedEvent[] events) {
 		if (events != null && events.length > 0) {
 			Display.getDefault().asyncExec(() -> {
-				for (int i= 0; i < events.length; i++) {
-					fireLabelProviderChanged(events[i]);
+				for (LabelProviderChangedEvent event : events) {
+					fireLabelProviderChanged(event);
 				}
 			});
 		}

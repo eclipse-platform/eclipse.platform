@@ -119,8 +119,7 @@ public abstract class ResourceVariantTreeSubscriber extends Subscriber {
 		List<IStatus> cancels = new ArrayList<>();
 		try {
 			monitor.beginTask(null, 1000 * resources.length);
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (resource.getProject().isAccessible()) {
 					IStatus status = refresh(resource, depth, Policy.subMonitorFor(monitor, 1000));
 					if (status.getSeverity() == IStatus.CANCEL) {

@@ -55,8 +55,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 			if (selection instanceof ITreeSelection) {
 				ITreeSelection ts = (ITreeSelection) selection;
 				TreePath[] paths = ts.getPaths();
-				for (int i = 0; i < paths.length; i++) {
-					TreePath path = paths[i];
+				for (TreePath path : paths) {
 					ResourceTraversal[] traversals = getTraversals(path, Policy.subMonitorFor(monitor, 100));
 					traversal.addTraversals(traversals);
 				}
@@ -113,8 +112,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 					int depth = getTraversalCalculator().getLayoutDepth(resource, path);
 					IDiff[] diffs = set.getDiffTree().getDiffs(resource, depth);
 					Set<IResource> resources = new HashSet<>();
-					for (int i = 0; i < diffs.length; i++) {
-						IDiff diff = diffs[i];
+					for (IDiff diff : diffs) {
 						IResource r = ResourceDiffTree.getResourceFor(diff);
 						if (r != null)
 							resources.add(r);

@@ -94,8 +94,8 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 		} else {
 			resources = members(ICVSFolder.FILE_MEMBERS);
 		}
-		for (int i = 0; i < resources.length; i++) {
-			resources[i].accept(visitor, recurse);
+		for (ICVSResource resource : resources) {
+			resource.accept(visitor, recurse);
 		}
 	}
 	
@@ -233,8 +233,7 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 		boolean includeManaged = (((flags & MANAGED_MEMBERS) != 0) || ((flags & (MANAGED_MEMBERS | UNMANAGED_MEMBERS | IGNORED_MEMBERS)) == 0));
 		boolean includeUnmanaged = (((flags & UNMANAGED_MEMBERS) != 0) || ((flags & (MANAGED_MEMBERS | UNMANAGED_MEMBERS | IGNORED_MEMBERS)) == 0));
 		boolean includeIgnored = ((flags & IGNORED_MEMBERS) != 0);
-		for (int i = 0; i < resources.length; i++) {
-			ICVSResource cvsResource = resources[i];
+		for (ICVSRemoteResource cvsResource : resources) {
 			if ((includeFiles && ( ! cvsResource.isFolder())) 
 					|| (includeFolders && (cvsResource.isFolder()))) {
 				boolean isManaged = cvsResource.isManaged();
@@ -340,9 +339,10 @@ public class RemoteFolder extends RemoteResource implements ICVSRemoteFolder, IC
 				IStatus status = new CVSStatus(IStatus.ERROR, CHILD_DOES_NOT_EXIST, NLS.bind(CVSMessages.RemoteFolder_invalidChild, new String[] { path, getName() }),repository);
 				throw new CVSException(status);
 			}
-			for (int i=0;i<children.length;i++) {
-				if (children[i].getName().equals(path))
-					return children[i];
+			for (ICVSRemoteResource c : children) {
+				if (c.getName().equals(path)) {
+					return c;
+				}
 			}
 		}
 		IStatus status = new CVSStatus(IStatus.ERROR, CHILD_DOES_NOT_EXIST, NLS.bind(CVSMessages.RemoteFolder_invalidChild, new String[] { path, getName() }),repository);

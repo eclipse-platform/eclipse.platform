@@ -53,8 +53,7 @@ public class CompareEditorInputNavigator extends CompareNavigator {
 	protected INavigatable[] getNavigatables() {
 		List<INavigatable> result = new ArrayList<>();
 		Object[] panes = getPanes();
-		for (int i = 0; i < panes.length; i++) {
-			Object pane = panes[i];
+		for (Object pane : panes) {
 			INavigatable navigator= getNavigator(pane);
 			if (navigator != null)
 				result.add(navigator);

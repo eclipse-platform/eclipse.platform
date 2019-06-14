@@ -53,8 +53,7 @@ public class SessionResourceVariantByteStore extends ResourceVariantByteStore {
 		if (getSyncBytesCache().containsKey(resource)) {
 			if (depth != IResource.DEPTH_ZERO) {
 				IResource[] members = members(resource);
-				for (int i = 0; i < members.length; i++) {
-					IResource child = members[i];
+				for (IResource child : members) {
 					flushBytes(child, (depth == IResource.DEPTH_INFINITE) ? IResource.DEPTH_INFINITE: IResource.DEPTH_ZERO);
 				}
 			}

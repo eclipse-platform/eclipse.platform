@@ -67,8 +67,7 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 					if (getSupportedValues().contains(prefix)) {
 						try {
 							ManifestElement[] elements = ManifestElement.parseHeader(ECLIPSE_SOURCE_REFERENCES, value);
-							for (int j = 0; j < elements.length; j++) {
-								ManifestElement element = elements[j];
+							for (ManifestElement element : elements) {
 								String url = element.toString();
 								String project = element.getAttribute(ATTR_PROJECT);
 								if (project == null) {
@@ -97,8 +96,7 @@ public abstract class BundleImporterDelegate implements IBundleImporterDelegate 
 		IProject[] result = null;
 		if (psfCapability != null) {
 			// collect and validate all header values
-			for (int i = 0; i < descriptions.length; i++) {
-				ScmUrlImportDescription description = descriptions[i];
+			for (ScmUrlImportDescription description : descriptions) {
 				references.add(psfCapability.asReference(description.getUri(), description.getProject()));
 			}
 			// create projects

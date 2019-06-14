@@ -317,8 +317,8 @@ public class CVSHistoryTableProvider {
 			if (currentRevisionFont == null) {
 				Font defaultFont = JFaceResources.getDefaultFont();
 				FontData[] data = defaultFont.getFontData();
-				for (int i = 0; i < data.length; i++) {
-					data[i].setStyle(SWT.BOLD);
+				for (FontData d : data) {
+					d.setStyle(SWT.BOLD);
 				}
 				currentRevisionFont = new Font(viewer.getTree().getDisplay(), data);
 			}
@@ -593,8 +593,8 @@ public class CVSHistoryTableProvider {
 				getSettingsInt(COL_AUTHOR_NAME),
 				getSettingsInt(COL_COMMENT_NAME) };
 		ColumnLayoutData weightData[] = getWeightData(widths);
-		for (int i = 0; i < weightData.length; i++) {
-			layout.addColumnData(weightData[i]);
+		for (ColumnLayoutData w : weightData) {
+			layout.addColumnData(w);
 		}
 
 		String sortName = settings.get(SORT_COL_NAME);
@@ -685,9 +685,8 @@ public class CVSHistoryTableProvider {
 
 	public void saveColumnLayout() {
 		TreeColumn columns[] = viewer.getTree().getColumns();
-		for (int i = 0; i < columns.length; i++) {
-			settings.put((String) columns[i].getData(COL_NAME), columns[i]
-					.getWidth());
+		for (TreeColumn column : columns) {
+			settings.put((String) column.getData(COL_NAME), column.getWidth());
 		}
 		settings.put(SORT_COL_NAME, (String) viewer.getTree().getSortColumn()
 				.getData(COL_NAME));

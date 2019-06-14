@@ -1154,9 +1154,9 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 	
 	private IFileRevision getFileRevision(String revision) {
 		if (entries != null) {
-			for (int i = 0; i < entries.length; i++) {
-				if (entries[i].getContentIdentifier().equals(revision)) {
-					return entries[i];
+			for (IFileRevision entry : entries) {
+				if (entry.getContentIdentifier().equals(revision)) {
+					return entry;
 				}
 			}
 		} else if (cvsFileHistory != null) {
@@ -1172,17 +1172,17 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 	public void selectLocalRevision(long timeStamp){
 		IFileRevision entry = null;
 		if (entries != null) {
-			for (int i = 0; i < entries.length; i++) {
-				if (entries[i].getTimestamp() == timeStamp) {
-					entry = entries[i];
+			for (IFileRevision e : entries) {
+				if (e.getTimestamp() == timeStamp) {
+					entry = e;
 					break;
 				}
 			}
 		}else if (cvsFileHistory != null) {
 			IFileRevision[] tempEntries = cvsFileHistory.getFileRevisions();
-			for (int i = 0; i < tempEntries.length; i++) {
-				if (tempEntries[i].getTimestamp() == timeStamp) {
-					entry = tempEntries[i];
+			for (IFileRevision tempEntry : tempEntries) {
+				if (tempEntry.getTimestamp() == timeStamp) {
+					entry = tempEntry;
 					break;
 				}
 			}
@@ -1627,16 +1627,16 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 		private void mapExpandedElements(Object[] expandedElements) {
 			//store the names of the currently expanded categories in a map
 			HashMap elementMap = new HashMap();
-			for (int i=0; i<expandedElements.length; i++){
-				elementMap.put(((DateHistoryCategory)expandedElements[i]).getName(), null);
+			for (Object expandedElement : expandedElements) {
+				elementMap.put(((DateHistoryCategory) expandedElement).getName(), null);
 			}
 			
 			//Go through the new categories and keep track of the previously expanded ones
 			ArrayList expandable = new ArrayList();
-			for (int i = 0; i<categories.length; i++){
+			for (AbstractHistoryCategory category : categories) {
 				//check to see if this category is currently expanded
-				if (elementMap.containsKey(categories[i].getName())){
-					expandable.add(categories[i]);
+				if (elementMap.containsKey(category.getName())) {
+					expandable.add(category);
 				}
 			}
 			

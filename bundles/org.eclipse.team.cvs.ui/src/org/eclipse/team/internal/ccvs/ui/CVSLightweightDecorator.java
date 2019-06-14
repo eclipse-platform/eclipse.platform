@@ -90,12 +90,11 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	private void ensureFontAndColorsCreated(final String[] fonts, final String[] colors) {
 		CVSUIPlugin.getStandardDisplay().syncExec(() -> {
 			ITheme theme = PlatformUI.getWorkbench().getThemeManager().getCurrentTheme();
-			for (int i1 = 0; i1 < colors.length; i1++) {
-				theme.getColorRegistry().get(colors[i1]);
-
+			for (String color : colors) {
+				theme.getColorRegistry().get(color);
 			}
-			for (int i2 = 0; i2 < fonts.length; i2++) {
-				theme.getFontRegistry().get(fonts[i2]);
+			for (String font : fonts) {
+				theme.getFontRegistry().get(font);
 			}
 		});
 	}
@@ -188,8 +187,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	private boolean isMappedToCVS(ResourceMapping mapping) {
 		IProject[] projects = mapping.getProjects();
 		boolean foundOne = false;
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if (project != null) {
 				RepositoryProvider provider = RepositoryProvider.getProvider(project);
 				if (provider instanceof CVSTeamProvider) {
@@ -248,8 +246,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	
 	private static boolean isSupervised(Object element) throws CoreException {
 		IResource[] resources = getTraversalRoots(element);
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (getSubscriber().isSupervised(resource))
 				return true;
 		}
@@ -261,11 +258,9 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		if (mapping != null) {
 			ResourceTraversal[] traversals = mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
-			for (int i = 0; i < traversals.length; i++) {
-				ResourceTraversal traversal = traversals[i];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
+				for (IResource resource : resources) {
 					result.add(resource);
 				}
 			}
@@ -391,8 +386,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		IResource[] resources = getTraversalRoots(element);
 		boolean first = true;
 		CVSTag tag = null;
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (getSubscriber().isSupervised(resource)) {
 				CVSTag nextTag = getTagToShow(resource);
 				if (first) {
@@ -522,9 +516,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		IPreferenceStore store = CVSUIPlugin.getPlugin().getPreferenceStore();
 		boolean showingDeepDirtyIndicators = store.getBoolean(ICVSUIConstants.PREF_CALCULATE_DIRTY);
 
-		for (int i = 0; i < changedResources.length; i++) {
-			IResource resource = changedResources[i];
-
+		for (IResource resource : changedResources) {
 			if(showingDeepDirtyIndicators) {
 				addWithParents(resource, resourcesToUpdate);
 			} else {
@@ -584,8 +576,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 		}
 		ResourceMapping mapping = Utils.getResourceMapping(element);
 		IProject[] projects = mapping.getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if (!project.isAccessible()) {
 				return;
 			}

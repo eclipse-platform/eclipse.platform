@@ -46,8 +46,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	private boolean isIncluded(IResource resource) {
 		// otherwise, if their is a parent of the resource in the set,
 		// it is included
-		for (int i = 0; i < resources.length; i++) {
-			IResource setResource = resources[i];
+		for (IResource setResource : resources) {
 			if (isParent(setResource, resource)) {
 				return true;
 			}
@@ -65,8 +64,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 
 		// filter the roots by the selected working set
 		Set<IResource> result = new HashSet<>();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			result.addAll(Arrays.asList(getIntersectionWithSet(subscriber, resource)));
 		}
 		return result.toArray(new IResource[result.size()]);
@@ -78,8 +76,7 @@ public class SyncInfoWorkingSetFilter extends FastSyncInfoFilter {
 	 */
 	private IResource[] getIntersectionWithSet(Subscriber subscriber, IResource resource) {
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource setResource = resources[i];
+		for (IResource setResource : resources) {
 			if (setResource != null) {
 				if (isParent(resource, setResource)) {
 					try {

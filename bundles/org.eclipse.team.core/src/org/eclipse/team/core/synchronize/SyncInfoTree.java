@@ -59,8 +59,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	 */
 	public SyncInfoTree(SyncInfo[] infos) {
 		super(infos);
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			IResource local = info.getLocal();
 			addToParents(local, local);
 		}
@@ -119,8 +118,7 @@ public class SyncInfoTree extends SyncInfoSet {
 				result.add(info);
 			}
 			IResource[] members = members(resource);
-			for (int i = 0; i < members.length; i++) {
-				IResource member = members[i];
+			for (IResource member : members) {
 				info = getSyncInfo(member);
 				if (info != null) {
 					result.add(info);
@@ -145,8 +143,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	private synchronized SyncInfo[] internalGetDeepSyncInfo(IContainer resource) {
 		List<SyncInfo> infos = new ArrayList<>();
 		IResource[] children = internalGetOutOfSyncDescendants(resource);
-		for (int i = 0; i < children.length; i++) {
-			IResource child = children[i];
+		for (IResource child : children) {
 			SyncInfo info = getSyncInfo(child);
 			if(info != null) {
 				infos.add(info);
@@ -284,16 +281,15 @@ public class SyncInfoTree extends SyncInfoSet {
 			if (depth == IResource.DEPTH_ZERO || resource.getType() == IResource.FILE) return;
 			if (depth == IResource.DEPTH_ONE) {
 				IResource[] members = members(resource);
-				for (int i = 0; i < members.length; i++) {
-					IResource member = members[i];
+				for (IResource member : members) {
 					if (getSyncInfo(member) != null) {
 						remove(member);
 					}
 				}
 			} else if (depth == IResource.DEPTH_INFINITE) {
 				IResource [] toRemove = internalGetOutOfSyncDescendants((IContainer)resource);
-				for (int i = 0; i < toRemove.length; i++) {
-					remove(toRemove[i]);
+				for (IResource t : toRemove) {
+					remove(t);
 				}
 			}
 		} finally {

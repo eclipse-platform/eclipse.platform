@@ -75,11 +75,9 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 	
 	private IResource[] getFilesWithLocalChanges(IResource[] resources, boolean recurse) {
 		ArrayList<IResource> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IDiff[] nodes = getTree().getDiffs(resource, recurse ? IResource.DEPTH_INFINITE: IResource.DEPTH_ONE);
-			for (int j = 0; j < nodes.length; j++) {
-				IDiff node = nodes[j];
+			for (IDiff node : nodes) {
 				if (isFileWithLocalChange(node)) {
 					result.add(getTree().getResource(node));
 				}
@@ -102,8 +100,7 @@ public class CacheBaseContentsOperation extends CacheTreeContentsOperation {
 		final ContentComparisonSyncInfoFilter comparator = new SyncInfoFilter.ContentComparisonSyncInfoFilter(false);
 		folder.run(monitor1 -> {
 			monitor1.beginTask(null, resources.length * 100);
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (resource.exists() && resource.getType() == IResource.FILE) {
 					IResourceVariant remoteResource = (IResourceVariant) CVSWorkspaceRoot
 							.getRemoteResourceFor(resource);

@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -175,23 +174,21 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 
 			// Accumulate all distinct resources that have had problem marker
 			// changes
-			for (int idx = 0; idx < markerTypes.length; idx++) {
-				IMarkerDelta[] markerDeltas = event.findMarkerDeltas(markerTypes[idx], true);
-					for (int i = 0; i < markerDeltas.length; i++) {
-						IMarkerDelta delta = markerDeltas[i];
-						IResource resource = delta.getResource();
-						if (!handledResources.contains(resource)) {
-							handledResources.add(resource);
-							ISynchronizeModelElement[] elements = provider.getClosestExistingParents(delta.getResource());
-							if(elements != null && elements.length > 0) {
-								for (int j = 0; j < elements.length; j++) {
-									ISynchronizeModelElement element = elements[j];
-									changes.add(element);
-								}
-							}
+			for (String markerType : markerTypes) {
+				IMarkerDelta[] markerDeltas = event.findMarkerDeltas(markerType, true);
+				for (IMarkerDelta delta : markerDeltas) {
+					IResource resource = delta.getResource();
+					if (!handledResources.contains(resource)) {
+						handledResources.add(resource);
+						ISynchronizeModelElement[] elements = provider.getClosestExistingParents(delta.getResource());
+						if (elements != null && elements.length > 0) {
+							for (ISynchronizeModelElement element : elements) {
+								changes.add(element);
 						}
 					}
 				}
+			}
+		}
 
 			if (!changes.isEmpty()) {
 				updateMarkersFor(changes.toArray(new ISynchronizeModelElement[changes.size()]));
@@ -216,8 +213,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			// Changes contains all elements that need their labels updated
 			long start = System.currentTimeMillis();
 			ISynchronizeModelElement[] elements = getChangedElements(event);
-			for (int i = 0; i < elements.length; i++) {
-				ISynchronizeModelElement element = elements[i];
+			for (ISynchronizeModelElement element : elements) {
 				propagateProblemMarkers(element);
 				updateParentLabels(element);
 			}
@@ -564,8 +560,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 			if (Utils.canUpdateViewer(viewer)) {
 				try {
 					if (additionsMap != null && !additionsMap.isEmpty() && Utils.canUpdateViewer(viewer)) {
-						for (Iterator iter = additionsMap.keySet().iterator(); iter.hasNext();) {
-							ISynchronizeModelElement parent = (ISynchronizeModelElement) iter.next();
+						for (ISynchronizeModelElement parent : additionsMap.keySet()) {
 							if (Policy.DEBUG_SYNC_MODELS) {
 								System.out.println("Adding child view items of " + parent.getName()); //$NON-NLS-1$
 							}

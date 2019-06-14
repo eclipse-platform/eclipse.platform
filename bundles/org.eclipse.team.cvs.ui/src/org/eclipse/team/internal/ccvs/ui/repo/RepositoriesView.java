@@ -97,8 +97,8 @@ public class RepositoriesView extends RemoteViewPart {
 			if(selection!=null) {            
 				final Object[] array = selection.toArray();
 				// event.doit = Utils.getResources(array).length > 0;
-				for (int i = 0; i < array.length; i++) {
-					if (array[i] instanceof ICVSRemoteFile) {
+				for (Object a : array) {
+					if (a instanceof ICVSRemoteFile) {
 						event.doit = true;
 						return;
 					}
@@ -111,17 +111,17 @@ public class RepositoriesView extends RemoteViewPart {
 		public void dragSetData(DragSourceEvent event) {
 			if (selection!=null && CVSResourceTransfer.getInstance().isSupportedType(event.dataType)) {
 				final Object[] array = selection.toArray();
-				for (int i = 0; i < array.length; i++) {
-					if (array[i] instanceof ICVSRemoteFile) {
-						event.data = array[i];
+				for (Object a : array) {
+					if (a instanceof ICVSRemoteFile) {
+						event.data = a;
 						return;
 					}
 				}
 			} else if (PluginTransfer.getInstance().isSupportedType(event.dataType)) {
 				final Object[] array = selection.toArray();
-				for (int i = 0; i < array.length; i++) {
-					if (array[i] instanceof ICVSRemoteFile) {
-						event.data = new PluginTransferData("org.eclipse.team.cvs.ui.cvsRemoteDrop", CVSResourceTransfer.getInstance().toByteArray((ICVSRemoteFile) array[i])); //$NON-NLS-1$
+				for (Object a : array) {
+					if (a instanceof ICVSRemoteFile) {
+						event.data = new PluginTransferData("org.eclipse.team.cvs.ui.cvsRemoteDrop", CVSResourceTransfer.getInstance().toByteArray((ICVSRemoteFile) a)); //$NON-NLS-1$
 						return;
 					}
 				}
@@ -447,8 +447,8 @@ public class RepositoriesView extends RemoteViewPart {
 				if (event.keyCode == SWT.F5) {
 					if (WorkbenchUserAuthenticator.USE_ALTERNATE_PROMPTER) {
 						ICVSRepositoryLocation[] locations = KnownRepositories.getInstance().getRepositories();
-						for (int i = 0; i < locations.length; i++) {
-							locations[i].flushUserInfo();
+						for (ICVSRepositoryLocation location : locations) {
+							location.flushUserInfo();
 						}
 					} else {
 						refreshAll();

@@ -64,11 +64,9 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 		if (mapping != null) {
 			ResourceTraversal[] traversals = mapping.getTraversals(
 					ResourceMappingContext.LOCAL_CONTEXT, null);
-			for (int i = 0; i < traversals.length; i++) {
-				ResourceTraversal traversal = traversals[i];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (int j = 0; j < resources.length; j++) {
-					IResource resource = resources[j];
+				for (IResource resource : resources) {
 					if (getSubscriber().isSupervised(resource))
 						return true;
 				}
@@ -110,8 +108,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 			return getSubscriber().getState(mapping, stateMask, monitor);
 		} catch (CoreException e) {
 			IProject[] projects = mapping.getProjects();
-			for (int i = 0; i < projects.length; i++) {
-				IProject project = projects[i];
+			for (IProject project : projects) {
 				// Only through the exception if the project for the mapping
 				// is accessible
 				if (project.isAccessible()) {

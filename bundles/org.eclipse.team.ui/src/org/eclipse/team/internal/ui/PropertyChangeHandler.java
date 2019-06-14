@@ -56,8 +56,8 @@ public class PropertyChangeHandler {
 			}
 			fEvent = event;
 			Object[] copiedListeners = fListeners.getListeners();
-			for (int i = 0; i < copiedListeners.length; i++) {
-				fListener = (IPropertyChangeListener) copiedListeners[i];
+			for (Object copiedListener : copiedListeners) {
+				fListener = (IPropertyChangeListener) copiedListener;
 				SafeRunner.run(this);
 			}
 			fListener = null;

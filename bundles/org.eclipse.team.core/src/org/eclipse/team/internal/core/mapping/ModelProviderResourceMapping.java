@@ -55,8 +55,7 @@ public class ModelProviderResourceMapping extends ResourceMapping {
 		try {
 			IResource[] resources = provider.getDescriptor().getMatchingResources(projects);
 			Set<IProject> result = new HashSet<>();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (resource.isAccessible())
 					result.add(resource.getProject());
 			}

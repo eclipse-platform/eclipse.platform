@@ -130,8 +130,7 @@ public class CommitCommentArea extends DialogArea {
 						ICompletionProposal[] computeQuickAssistProposals = sourceViewer.getQuickAssistAssistant()
 								.getQuickAssistProcessor()
 								.computeQuickAssistProposals(sourceViewer.getQuickAssistInvocationContext());
-						for (int i = 0; i < computeQuickAssistProposals.length; i++) {
-							final ICompletionProposal proposal = computeQuickAssistProposals[i];
+						for (ICompletionProposal proposal : computeQuickAssistProposals) {
 							quickFixMenu.add(new Action(proposal.getDisplayString()) {
 
 								@Override
@@ -375,12 +374,12 @@ public class CommitCommentArea extends DialogArea {
 			fCombo.removeAll();
 			
 			fCombo.add(fMessage);
-			for (int i = 0; i < fCommentTemplates.length; i++) {
+			for (String commentTemplate : fCommentTemplates) {
 				fCombo.add(CVSUIMessages.CommitCommentArea_6 + ": " + //$NON-NLS-1$
-						Util.flattenText(fCommentTemplates[i]));
+						Util.flattenText(commentTemplate));
 			}
-			for (int i = 0; i < fComments.length; i++) {
-				fCombo.add(Util.flattenText(fComments[i]));
+			for (String comment : fComments) {
+				fCombo.add(Util.flattenText(comment));
 			}
 			fCombo.setText(fMessage);
 		}

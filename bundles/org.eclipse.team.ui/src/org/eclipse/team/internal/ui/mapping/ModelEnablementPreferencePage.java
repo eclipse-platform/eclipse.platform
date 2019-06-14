@@ -167,8 +167,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 
 	private void updateChecks() {
 		ITeamContentProviderDescriptor[] descriptors = TeamUI.getTeamContentProviderManager().getDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			ITeamContentProviderDescriptor descriptor = descriptors[i];
+		for (ITeamContentProviderDescriptor descriptor : descriptors) {
 			if (descriptor.isEnabled()) {
 				previosulyEnabled.add(descriptor);
 			}
@@ -192,11 +191,10 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 
 	private boolean hasDescriptorEnablementChanged(Object[] checked) {
 		ITeamContentProviderDescriptor[] descriptors = TeamUI.getTeamContentProviderManager().getDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			ITeamContentProviderDescriptor descriptor = descriptors[i];
+		for (ITeamContentProviderDescriptor descriptor : descriptors) {
 			boolean enable = false;
-			for (int j = 0; j < checked.length; j++) {
-				ITeamContentProviderDescriptor checkedDesc = (ITeamContentProviderDescriptor)checked[j];
+			for (Object c : checked) {
+				ITeamContentProviderDescriptor checkedDesc = (ITeamContentProviderDescriptor) c;
 				if (checkedDesc.getModelProviderId().equals(descriptor.getModelProviderId())) {
 					enable = true;
 					break;

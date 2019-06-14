@@ -44,8 +44,8 @@ public abstract class DiffContainer extends DiffElement implements IDiffContaine
 	 */
 	public IDiffElement findChild(String name) {
 		Object[] children= getChildren();
-		for (int i= 0; i < children.length; i++) {
-			IDiffElement child= (IDiffElement) children[i];
+		for (Object c : children) {
+			IDiffElement child = (IDiffElement) c;
 			if (name.equals(child.getName()))
 				return child;
 		}

@@ -172,8 +172,7 @@ public class MergeSynchronizeParticipant extends CVSParticipant {
 	 */
 	public static MergeSynchronizeParticipant getMatchingParticipant(IResource[] resources, CVSTag startTag, CVSTag endTag) {
 		ISynchronizeParticipantReference[] refs = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference reference = refs[i];
+		for (ISynchronizeParticipantReference reference : refs) {
 			if (reference.getId().equals(CVSMergeSubscriber.ID)) {
 				MergeSynchronizeParticipant p;
 				try {
@@ -203,8 +202,7 @@ public class MergeSynchronizeParticipant extends CVSParticipant {
 		
 		// resource roots
 		IResource[] roots = s.roots();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			IMemento rootNode = memento.createChild(CTX_ROOT);
 			rootNode.putString(CTX_ROOT_PATH, resource.getFullPath().toString());
 		}
@@ -220,8 +218,7 @@ public class MergeSynchronizeParticipant extends CVSParticipant {
 		}
 		
 		List<IResource> resources = new ArrayList<>();
-		for (int i = 0; i < rootNodes.length; i++) {
-			IMemento rootNode = rootNodes[i];
+		for (IMemento rootNode : rootNodes) {
 			IPath path = new Path(rootNode.getString(CTX_ROOT_PATH)); 
 			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path, true /* include phantoms */);
 			if(resource != null) {

@@ -49,41 +49,38 @@ public class DateHistoryCategory extends AbstractHistoryCategory {
 		ArrayList<IFileRevision> pertinentRevisions = new ArrayList<>();
 		ArrayList<IFileRevision> nonPertinentRevisions = new ArrayList<>();
 
-		for (int i = 0; i < fileRevisions.length; i++) {
+		for (IFileRevision fileRevision : fileRevisions) {
 			//get the current file revision's date
 			Calendar fileRevDate = Calendar.getInstance();
-			fileRevDate.setTimeInMillis(fileRevisions[i].getTimestamp());
-
+			fileRevDate.setTimeInMillis(fileRevision.getTimestamp());
 			int fileRevDay = fileRevDate.get(Calendar.DAY_OF_YEAR);
 			int fileRevYear = fileRevDate.get(Calendar.YEAR);
-
-			if (fromDate == null){
+			if (fromDate == null) {
 				//check to see if this revision is within the toDate range
 				if (((fileRevDay<toDate.get(Calendar.DAY_OF_YEAR)) && (fileRevYear == toDate.get(Calendar.YEAR))) ||
-					(fileRevYear < toDate.get(Calendar.YEAR))){
-					pertinentRevisions.add(fileRevisions[i]);
+						(fileRevYear < toDate.get(Calendar.YEAR))) {
+					pertinentRevisions.add(fileRevision);
 				} else {
 					//revision is equal or later then the to date, add to rejects list
-					nonPertinentRevisions.add(fileRevisions[i]);
+					nonPertinentRevisions.add(fileRevision);
 				}
-			} else if (toDate == null){
+			} else if (toDate == null) {
 				//check to see if this revision falls on the same day as the fromDate
 				if ((fileRevDay == fromDate.get(Calendar.DAY_OF_YEAR)) &&
-					(fileRevYear == fromDate.get(Calendar.YEAR))){
-					pertinentRevisions.add(fileRevisions[i]);
+						(fileRevYear == fromDate.get(Calendar.YEAR))) {
+					pertinentRevisions.add(fileRevision);
 				} else {
-					nonPertinentRevisions.add(fileRevisions[i]);
+					nonPertinentRevisions.add(fileRevision);
 				}
 			} else {
 				//check the range
 				if ((fileRevYear >= fromDate.get(Calendar.YEAR)) &&
-					(fileRevYear <= toDate.get(Calendar.YEAR)) &&
-					(fileRevDay >= fromDate.get(Calendar.DAY_OF_YEAR)) &&
-					(fileRevDay < toDate.get(Calendar.DAY_OF_YEAR))
-				) {
-					pertinentRevisions.add(fileRevisions[i]);
+						(fileRevYear <= toDate.get(Calendar.YEAR)) &&
+						(fileRevDay >= fromDate.get(Calendar.DAY_OF_YEAR)) &&
+						(fileRevDay < toDate.get(Calendar.DAY_OF_YEAR))) {
+					pertinentRevisions.add(fileRevision);
 				} else {
-					nonPertinentRevisions.add(fileRevisions[i]);
+					nonPertinentRevisions.add(fileRevision);
 				}
 			}
 		}

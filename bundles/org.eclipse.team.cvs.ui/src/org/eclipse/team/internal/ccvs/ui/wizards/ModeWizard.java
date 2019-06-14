@@ -130,8 +130,7 @@ public class ModeWizard extends ResizableWizard {
 		final ArrayList<ModeChange> changes = new ArrayList<>();
 		final HashSet<IResource> visited = new HashSet<>();
 		
-		for (int i = 0; i < resources.length; i++) {
-			final IResource currentResource = resources[i];
+		for (IResource currentResource : resources) {
 			try {
 				currentResource.accept((IResourceVisitor) resource -> {
 					try {

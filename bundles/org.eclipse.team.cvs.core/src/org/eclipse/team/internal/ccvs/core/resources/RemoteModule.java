@@ -70,10 +70,9 @@ public class RemoteModule extends RemoteFolder {
 		Map moduleAliases = new HashMap();
 		
 		// First pass: Create the remote module instances based on remote mapping
-		for (int i = 0; i < moduleDefinitionStrings.length; i++) {
-			
+		for (String moduleDefinitionString : moduleDefinitionStrings) {
 			// Read the module name
-			StringTokenizer tokenizer = new StringTokenizer(moduleDefinitionStrings[i]);
+			StringTokenizer tokenizer = new StringTokenizer(moduleDefinitionString);
 			String moduleName = tokenizer.nextToken();
 			List<LocalOption> localOptionsList;
 			String next;
@@ -108,7 +107,7 @@ public class RemoteModule extends RemoteFolder {
 				}
 			} catch (NoSuchElementException e) {
 				// There is an invalid entry in the modules file. Log it and continue
-				CVSProviderPlugin.log(IStatus.WARNING, NLS.bind(CVSMessages.RemoteModule_invalidDefinition, new String[] { moduleDefinitionStrings[i], repository.getLocation(true) }), null); 
+				CVSProviderPlugin.log(IStatus.WARNING, NLS.bind(CVSMessages.RemoteModule_invalidDefinition, new String[]{moduleDefinitionString, repository.getLocation(true)}), null); 
 				continue;
 			}
 			LocalOption[] localOptions = localOptionsList.toArray(new LocalOption[localOptionsList.size()]);
@@ -172,17 +171,17 @@ public class RemoteModule extends RemoteFolder {
 			String[] expansion = (String[])moduleAliases.get(moduleName);
 			List referencedFolders = new ArrayList();
 			boolean expandable = true;
-			for (int i = 0; i < expansion.length; i++) {
-				if (expansion[i].charAt(0) == '!') {
+			for (String e : expansion) {
+				if (e.charAt(0) == '!') {
 					// XXX Unsupported for now
 					expandable = false;
 				} else {
-					IPath path = new Path(null, expansion[i]);
+					IPath path = new Path(null, e);
 					if (path.segmentCount() > 1) {
 						// XXX Unsupported for now
 						expandable = false;
 					} else {
-						RemoteModule child = (RemoteModule)modules.get(expansion[i]);
+						RemoteModule child = (RemoteModule) modules.get(e);
 						if (child == null) {
 							referencedFolders.add(new RemoteFolder(null, repository, path.toString(), tag));
 						} else {
@@ -214,8 +213,8 @@ public class RemoteModule extends RemoteFolder {
 				RemoteModule module = (RemoteModule)modules.get(moduleName);
 				List<RemoteModule> referencedFolders = new ArrayList<>();
 				boolean expandable = true;
-				for (int i = 0; i < children.length; i++) {
-					RemoteModule child = (RemoteModule)modules.get(children[i].substring(1));
+				for (String c : children) {
+					RemoteModule child = (RemoteModule) modules.get(c.substring(1));
 					if (child == null) {
 						// invalid module definition
 						expandable = false;
@@ -316,8 +315,7 @@ public class RemoteModule extends RemoteFolder {
 			ICVSRemoteResource[] children = getChildren();
 			if (children != null) {
 				List taggedChildren = new ArrayList(children.length);
-				for (int i = 0; i < children.length; i++) {
-					ICVSRemoteResource resource = children[i];
+				for (ICVSRemoteResource resource : children) {
 					taggedChildren.add(((RemoteResource)resource).forTag(r, tagName));
 				}
 				r.setChildren((ICVSRemoteResource[]) taggedChildren.toArray(new ICVSRemoteResource[taggedChildren.size()]));
@@ -325,8 +323,8 @@ public class RemoteModule extends RemoteFolder {
 		}
 		if (referencedModules != null) {
 			List taggedModules = new ArrayList(referencedModules.length);
-			for (int i = 0; i < referencedModules.length; i++) {
-				RemoteModule module = (RemoteModule)referencedModules[i];
+			for (ICVSRemoteResource referencedModule : referencedModules) {
+				RemoteModule module = (RemoteModule) referencedModule;
 				taggedModules.add(module.forTag(r, tagName));
 			}
 			r.setReferencedModules((ICVSRemoteResource[]) taggedModules.toArray(new ICVSRemoteResource[taggedModules.size()]));
@@ -358,9 +356,10 @@ public class RemoteModule extends RemoteFolder {
 		// and use the inherited method in the other cases
 		if (referencedModules != null) {
 			if (!path.contains(Session.SERVER_SEPARATOR)) {
-				for (int i=0;i<referencedModules.length;i++) {
-					if (referencedModules[i].getName().equals(path))
-						return referencedModules[i];
+				for (ICVSRemoteResource referencedModule : referencedModules) {
+					if (referencedModule.getName().equals(path)) {
+						return referencedModule;
+					}
 				}
 			}
 		}

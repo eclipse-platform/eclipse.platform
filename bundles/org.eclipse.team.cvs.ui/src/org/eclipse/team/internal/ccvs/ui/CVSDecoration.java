@@ -466,8 +466,7 @@ public class CVSDecoration {
 	private boolean isRequestedProperty(String[] properties, String property) {
 		if (properties == null)
 			return true;
-		for (int i = 0; i < properties.length; i++) {
-			String string = properties[i];
+		for (String string : properties) {
 			if (string.equals(property))
 				return true;
 		}

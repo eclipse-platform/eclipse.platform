@@ -73,8 +73,7 @@ public class CommandLineCVSClient implements ICVSClient {
 	}
 		
 	private static void appendStrings(StringBuffer commandLine, String[] strings) {	
-		for (int i = 0; i < strings.length; i++) {
-			String string = strings[i];
+		for (String string : strings) {
 			if (string != null && string.length() != 0) {
 				commandLine.append(" \"");
 				commandLine.append(string);

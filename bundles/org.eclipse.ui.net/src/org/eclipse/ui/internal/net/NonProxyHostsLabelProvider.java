@@ -62,10 +62,10 @@ public class NonProxyHostsLabelProvider extends BaseLabelProvider implements
 				"", //$NON-NLS-1$
 				NetUIMessages.ProxyPreferencePage_13,
 				NetUIMessages.ProxyPreferencePage_14 };
-		for (int i = 0; i < titles.length; i++) {
+		for (String title : titles) {
 			TableColumn column = new TableViewerColumn(viewer, SWT.NONE)
 					.getColumn();
-			column.setText(titles[i]);
+			column.setText(title);
 			column.setResizable(true);
 		}
 	}

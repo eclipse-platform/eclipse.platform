@@ -88,10 +88,9 @@ public class ModelUpdateOperation extends AbstractModelMergeOperation {
 			ct.addTraversals(getContext().getScope().getTraversals());
 			IResource[] roots = ct.getRoots();
 			List<ICVSResource> cvsResources = new ArrayList<>();
-			for (int i = 0; i < roots.length; i++) {
-				IResource resource = roots[i];
+			for (IResource resource : roots) {
 				if (resource.getProject().isAccessible()) {
-					cvsResources.add(CVSWorkspaceRoot.getCVSResourceFor(roots[i]));
+					cvsResources.add(CVSWorkspaceRoot.getCVSResourceFor(resource));
 				}
 			}
 			new PruneFolderVisitor().visit(

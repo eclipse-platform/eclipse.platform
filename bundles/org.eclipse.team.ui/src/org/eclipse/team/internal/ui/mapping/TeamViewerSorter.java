@@ -78,14 +78,12 @@ public class TeamViewerSorter extends TreePathViewerSorter {
 
 	private boolean isExtends(ModelProvider mp1, IModelProviderDescriptor desc) {
 		String[] extended = mp1.getDescriptor().getExtendedModels();
-		for (int i = 0; i < extended.length; i++) {
-			String id = extended[i];
+		for (String id : extended) {
 			if (id.equals(desc.getId())) {
 				return true;
 			}
 		}
-		for (int i = 0; i < extended.length; i++) {
-			String id = extended[i];
+		for (String id : extended) {
 			IModelProviderDescriptor desc2 = ModelProvider.getModelProviderDescriptor(id);
 			if (isExtends(mp1, desc2)) {
 				return true;

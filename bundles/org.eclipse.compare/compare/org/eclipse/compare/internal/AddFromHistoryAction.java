@@ -55,8 +55,7 @@ public class AddFromHistoryAction extends BaseCompareAction {
 
 		Object[] s= Utilities.getResources(selection);
 
-		for (int i= 0; i < s.length; i++) {
-			Object o= s[i];
+		for (Object o : s) {
 			if (o instanceof IContainer) {
 				IContainer container= (IContainer) o;
 
@@ -128,11 +127,10 @@ public class AddFromHistoryAction extends BaseCompareAction {
 					String taskName= Utilities.getString(bundle, "taskName"); //$NON-NLS-1$
 					pm.beginTask(taskName, selected.length);
 
-					for (int i= 0; i < selected.length; i++) {
-						IFile file= selected[i].fFile;
-						IFileState fileState= selected[i].fFileState;
+					for (AddFromHistoryDialog.HistoryInput s : selected) {
+						IFile file = s.fFile;
+						IFileState fileState = s.fFileState;
 						createContainers(file);
-
 						SubMonitor subMonitor= SubMonitor.convert(pm, 1);
 						try {
 							file.create(fileState.getContents(), false, subMonitor);

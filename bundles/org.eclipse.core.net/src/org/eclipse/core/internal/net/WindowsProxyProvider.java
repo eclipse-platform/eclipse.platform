@@ -55,8 +55,9 @@ public class WindowsProxyProvider extends AbstractProxyProvider {
 		}
 		if (Policy.DEBUG) {
 			Policy.debug("WindowsProxyProvider#select result for [" + uri + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-			for (int i = 0; i < proxies.length; i++)
-				System.out.println("	" + proxies[i]); //$NON-NLS-1$
+			for (IProxyData proxy : proxies) {
+				System.out.println("	" + proxy); //$NON-NLS-1$
+			}
 		}
 		return proxies;
 	}

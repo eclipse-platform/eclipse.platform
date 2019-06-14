@@ -73,8 +73,7 @@ public class ResourceStateChangeListeners {
 		// Get a snapshot of the listeners so the list doesn't change while we're firing
 		IResourceStateChangeListener[] listeners = getListeners();
 		// Notify each listener in a safe manner (i.e. so their exceptions don't kill us)
-		for (int i = 0; i < listeners.length; i++) {
-			IResourceStateChangeListener listener = listeners[i];
+		for (IResourceStateChangeListener listener : listeners) {
 			notification.run(listener);
 		}
 	}
@@ -149,8 +148,7 @@ public class ResourceStateChangeListeners {
 		System.out.print(" from thread  " + Thread.currentThread().getName()); //$NON-NLS-1$
 		System.out.print(" for the following " + resources.length + " resources"); //$NON-NLS-1$ //$NON-NLS-2$
 		System.out.println(":"); //$NON-NLS-1$
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			System.out.println(resource.getFullPath().toString());
 		}
 	}

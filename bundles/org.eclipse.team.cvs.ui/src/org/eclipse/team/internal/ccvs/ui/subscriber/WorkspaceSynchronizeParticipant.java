@@ -157,8 +157,7 @@ public class WorkspaceSynchronizeParticipant extends ScopableSubscriberParticipa
 
 		private IResource[] getResources(IDiff[] diffs) {
 			Set<IResource> result = new HashSet<>();
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (resource != null)
 					result.add(resource);

@@ -79,8 +79,7 @@ public class ServerMessageLineMatcher {
 	 * Throw an exception if the found variables do not match the expected variables
 	 */
 	private void ensureMatches(String template, List variables, String[] expectedVariables) throws CVSException {
-		for (int i = 0; i < expectedVariables.length; i++) {
-			String expected = expectedVariables[i];
+		for (String expected : expectedVariables) {
 			if (!variables.contains(expected)) {
 				IStatus status = new CVSStatus(IStatus.ERROR,NLS.bind(CVSMessages.ServerMessageLineMatcher_7, new String[] { expected, template }));
 				throw new CVSException(status); 

@@ -135,22 +135,18 @@ public class FetchAllMembersOperation extends RemoteOperation {
 				String[] entry = cache.getCachedFilePaths();
 				//Strip repo + project info from entries
 				RLogTreeBuilder treeBuilder = new RLogTreeBuilder(project.getRepository(),tag);
-				for (int i = 0; i < entry.length; i++) {
-					ILogEntry[] logEntry = cache.getLogEntries(entry[i]);
-					
+				for (String e : entry) {
+					ILogEntry[] logEntry = cache.getLogEntries(e);
 					//might not have state if this a branch entry
 					if (logEntry[0].getState() != null &&
-						logEntry[0].getState().equals(DEAD_STATE))
+							logEntry[0].getState().equals(DEAD_STATE))
 						continue;
-					
-					
 					ICVSRemoteFile remoteFile = logEntry[0].getRemoteFile();
 					//if the current folder tag is a branch tag, we need to take the extra step
 					//of making sure that the file's revision number has been set appropriately
 					if (tag.getType() == CVSTag.BRANCH &&
-						remoteFile.getRevision().equals(LogListener.BRANCH_REVISION))
+							remoteFile.getRevision().equals(LogListener.BRANCH_REVISION))
 						verifyRevision(tag, logEntry[0], remoteFile);
-					
 					IPath logPath = new Path(null,remoteFile.getRepositoryRelativePath());
 					if (logPath.segmentCount()>0)
 						logPath = logPath.removeFirstSegments(1);

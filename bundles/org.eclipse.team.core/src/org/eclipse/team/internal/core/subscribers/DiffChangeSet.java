@@ -101,8 +101,7 @@ public class DiffChangeSet extends ChangeSet {
 	public void add(IDiff[] diffs) {
 		try {
 			tree.beginInput();
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				add(diff);
 			}
 		} finally {
@@ -133,8 +132,7 @@ public class DiffChangeSet extends ChangeSet {
 		if (diffs.length > 0) {
 			try {
 				tree.beginInput();
-				for (int i = 0; i < diffs.length; i++) {
-					IDiff diff = diffs[i];
+				for (IDiff diff : diffs) {
 					IResource r = tree.getResource(diff);
 					if (r != null)
 						tree.remove(r);
@@ -157,8 +155,7 @@ public class DiffChangeSet extends ChangeSet {
 	public void remove(IPath[] paths) {
 		try {
 			tree.beginInput();
-			for (int i = 0; i < paths.length; i++) {
-				IPath path = paths[i];
+			for (IPath path : paths) {
 				tree.remove(path);
 			}
 		} finally {
@@ -170,8 +167,7 @@ public class DiffChangeSet extends ChangeSet {
 	public void remove(IResource[] resources) {
 		try {
 			tree.beginInput();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				tree.remove(resource);
 			}
 		} finally {

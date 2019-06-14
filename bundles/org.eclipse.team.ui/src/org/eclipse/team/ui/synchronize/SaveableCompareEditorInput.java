@@ -378,8 +378,8 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	void propogateInputChange() {
 		if (!inputChangeListeners.isEmpty()) {
 			Object[] allListeners = inputChangeListeners.getListeners();
-			for (int i = 0; i < allListeners.length; i++) {
-				final ICompareInputChangeListener listener = (ICompareInputChangeListener)allListeners[i];
+			for (Object l : allListeners) {
+				final ICompareInputChangeListener listener = (ICompareInputChangeListener) l;
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void run() throws Exception {

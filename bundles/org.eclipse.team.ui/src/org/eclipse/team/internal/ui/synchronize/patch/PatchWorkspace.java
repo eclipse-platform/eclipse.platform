@@ -85,8 +85,8 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processDiffs(FilePatch2[])
 	private IDiffElement[] processDiffs(FilePatch2[] diffs) {
 		List<IDiffElement> result = new ArrayList<>();
-		for (int i = 0; i < diffs.length; i++) {
-			result.addAll(processDiff(diffs[i], this));
+		for (FilePatch2 diff : diffs) {
+			result.addAll(processDiff(diff, this));
 		}
 		return result.toArray(new IDiffElement[result.size()]);
 	}
@@ -94,12 +94,11 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 	// see org.eclipse.compare.internal.patch.PatchCompareEditorInput.processProjects(DiffProject[])
 	private IDiffElement[] processProjects(DiffProject[] diffProjects) {
 		List<IDiffElement> result = new ArrayList<>();
-		for (int i = 0; i < diffProjects.length; i++) {
-			PatchProjectDiffNode projectNode = new PatchProjectDiffNode(this, diffProjects[i], getPatcher().getConfiguration());
+		for (DiffProject diffProject : diffProjects) {
+			PatchProjectDiffNode projectNode = new PatchProjectDiffNode(this, diffProject, getPatcher().getConfiguration());
 			result.add(projectNode);
-			FilePatch2[] diffs = diffProjects[i].getFileDiffs();
-			for (int j = 0; j < diffs.length; j++) {
-				FilePatch2 fileDiff = diffs[j];
+			FilePatch2[] diffs = diffProject.getFileDiffs();
+			for (FilePatch2 fileDiff : diffs) {
 				processDiff(fileDiff, projectNode);
 			}
 		}
@@ -113,8 +112,7 @@ public class PatchWorkspace extends DiffNode implements IAdaptable {
 		PatchFileDiffNode node = new PatchFileDiffNode(diffResult, parent, PatchFileDiffNode.getKind(diffResult), PatchFileDiffNode.getAncestorElement(diffResult), getLeftElement(diffResult), PatchFileDiffNode.getRightElement(diffResult));
 		result.add(node);
 		HunkResult[] hunkResults = diffResult.getHunkResults();
-		for (int i = 0; i < hunkResults.length; i++) {
-			HunkResult hunkResult = hunkResults[i];
+		for (HunkResult hunkResult : hunkResults) {
 			new HunkDiffNode(hunkResult, node, Differencer.CHANGE, HunkDiffNode.getAncestorElement(hunkResult, false), getLeftElement(hunkResult), HunkDiffNode.getRightElement(hunkResult, false));
 			// result.add(hunkDiffNode);
 		}

@@ -79,8 +79,7 @@ public abstract class AbstractCommitAction extends CVSModelProviderAction {
 	public static IResource[] getOutgoingChanges(final IResourceDiffTree tree, ResourceTraversal[] traversals, IProgressMonitor monitor) {
 		final List<IResource> resources = new ArrayList<>();
 		IDiff[] diffs = tree.getDiffs(traversals);
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			if (hasLocalChange(diff)) {
 				IResource resource = ResourceDiffTree.getResourceFor(diff);
 				if (resource != null)

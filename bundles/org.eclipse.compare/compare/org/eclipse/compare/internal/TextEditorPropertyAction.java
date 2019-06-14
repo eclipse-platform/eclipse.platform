@@ -38,8 +38,7 @@ public class TextEditorPropertyAction extends Action implements IPropertyChangeL
 	}
 
 	private void addActionToViewers() {
-		for (int i = 0; i < viewers.length; i++) {
-			MergeSourceViewer viewer = viewers[i];
+		for (MergeSourceViewer viewer : viewers) {
 			viewer.addTextAction(this);
 		}
 	}

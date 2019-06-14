@@ -727,9 +727,11 @@ public class InputPatchPage extends WizardPage {
 			// set filenames history
 			String[] sourceNames= settings.getArray(STORE_PATCH_FILES_ID);
 			if (sourceNames != null)
-				for (int i= 0; i < sourceNames.length; i++)
-					if (sourceNames[i] != null && sourceNames[i].length() > 0)
-						fPatchFileNameField.add(sourceNames[i]);
+				for (String sourceName : sourceNames) {
+					if (sourceName != null && sourceName.length() > 0) {
+						fPatchFileNameField.add(sourceName);
+					}
+				}
 
 			// set patch file path
 			String patchFilePath= settings.get(STORE_PATCH_FILES_ID);
@@ -739,9 +741,11 @@ public class InputPatchPage extends WizardPage {
 			// set URLs history
 			String[] sourceURLs= settings.getArray(STORE_PATCH_URLS_ID);
 			if (sourceURLs != null)
-				for (int i= 0; i < sourceURLs.length; i++)
-					if (sourceURLs[i] != null && sourceURLs[i].length() > 0)
-						fPatchURLField.add(sourceURLs[i]);
+				for (String sourceURL : sourceURLs) {
+					if (sourceURL != null && sourceURL.length() > 0) {
+						fPatchURLField.add(sourceURL);
+					}
+				}
 
 			// If the previous apply patch was used with a clipboard, we need to check
 			// if there is a valid patch on the clipboard. This will be done in adjustToCurrentTarget()

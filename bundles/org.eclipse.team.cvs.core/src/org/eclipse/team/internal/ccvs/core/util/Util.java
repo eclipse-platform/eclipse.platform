@@ -368,8 +368,8 @@ public class Util {
 			return tag;
 		}
 		
-		for (int i = 0; i < members.length; i++) {
-			if (members[i].getType() == IResource.FILE) {
+		for (IResource member : members) {
+			if (member.getType() == IResource.FILE) {
 				return tag;
 			}
 		}

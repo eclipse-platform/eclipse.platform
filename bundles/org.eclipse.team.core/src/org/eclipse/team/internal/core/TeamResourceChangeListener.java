@@ -16,7 +16,6 @@ package org.eclipse.team.internal.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,8 +44,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	static {
 		metaFilePaths = new HashMap<>();
 		String[] ids = RepositoryProvider.getAllProviderTypeIds();
-		for (int i = 0; i < ids.length; i++) {
-			String id = ids[i];
+		for (String id : ids) {
 			IPath[] paths = TeamPlugin.getMetaFilePaths(id);
 			if (paths != null) {
 				metaFilePaths.put(id, paths);
@@ -57,8 +55,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta[] projectDeltas = event.getDelta().getAffectedChildren();
-		for (int i = 0; i < projectDeltas.length; i++) {
-			IResourceDelta delta = projectDeltas[i];
+		for (IResourceDelta delta : projectDeltas) {
 			IResource resource = delta.getResource();
 			IProject project = resource.getProject();
 			if (!RepositoryProvider.isShared(project)) {
@@ -85,8 +82,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		Set<IContainer> metaFileContainers = new HashSet<>();
 		Set<String> badIds = new HashSet<>();
 		IFile[] files = getAddedFiles(delta);
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			String typeId = getMetaFileType(file);
 			if (typeId != null) {
 				// The file path matches the path for the given type id
@@ -112,8 +108,7 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 		IPath[] paths = metaFilePaths.get(typeId);
 		IPath foundPath = null;
 		IPath projectRelativePath = file.getProjectRelativePath();
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			if (isSuffix(projectRelativePath, path)) {
 				foundPath = path;
 			}
@@ -131,11 +126,9 @@ public final class TeamResourceChangeListener implements IResourceChangeListener
 	}
 
 	private String getMetaFileType(IFile file) {
-		for (Iterator<String> iter = metaFilePaths.keySet().iterator(); iter.hasNext();) {
-			String id = iter.next();
+		for (String id : metaFilePaths.keySet()) {
 			IPath[] paths = metaFilePaths.get(id);
-			for (int i = 0; i < paths.length; i++) {
-				IPath path = paths[i];
+			for (IPath path : paths) {
 				if (isSuffix(file.getProjectRelativePath(), path)) {
 					return id;
 				}

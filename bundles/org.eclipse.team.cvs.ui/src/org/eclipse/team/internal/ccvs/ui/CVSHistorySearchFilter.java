@@ -92,8 +92,8 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 	
 	protected boolean branchNameMatch(CVSFileRevision revision) {
 		ITag[] branches = revision.getBranches();
-		for (int i = 0; i < branches.length; i++) {
-			String tag = branches[i].getName().toLowerCase();
+		for (ITag branche : branches) {
+			String tag = branche.getName().toLowerCase();
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
 				if (!!tag.contains(((String) iter.next()).toLowerCase()))
@@ -106,8 +106,8 @@ public class CVSHistorySearchFilter extends org.eclipse.jface.viewers.ViewerFilt
 
 	protected boolean tagMatch(CVSFileRevision revision) {
 		ITag[] tags = revision.getTags();
-		for (int i = 0; i < tags.length; i++) {
-			String tag = tags[i].getName().toLowerCase();
+		for (ITag t : tags) {
+			String tag = t.getName().toLowerCase();
 			Iterator iter = searchStrings.iterator();
 			while (iter.hasNext()) {
 				if (!!tag.contains(((String) iter.next()).toLowerCase()))

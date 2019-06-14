@@ -58,8 +58,8 @@ public class CVSProjectSetImportTest extends TestCase {
 		knownRepositories = KnownRepositories.getInstance();
 		savedRepositories = knownRepositories.getRepositories();
 		// dispose all known repositories
-		for (int i = 0; i < savedRepositories.length; i++) {
-			knownRepositories.disposeRepository(savedRepositories[i]);
+		for (ICVSRepositoryLocation savedRepository : savedRepositories) {
+			knownRepositories.disposeRepository(savedRepository);
 		}
 	}
 
@@ -289,9 +289,8 @@ public class CVSProjectSetImportTest extends TestCase {
 	 */
 	private void _testPrepareSuggestedRepositoryLocations(String[] knownLocations,
 			String[] referenceStrings, String[][] expectedSuggestions) throws Exception {
-		for (int i = 0; i < knownLocations.length; i++) {
-			knownRepositories.addRepository(CVSRepositoryLocation
-					.fromString(knownLocations[i]), false);
+		for (String knownLocation : knownLocations) {
+			knownRepositories.addRepository(CVSRepositoryLocation.fromString(knownLocation), false);
 		}
 
 		Map infoMap = new HashMap(referenceStrings.length);
@@ -369,9 +368,8 @@ public class CVSProjectSetImportTest extends TestCase {
 			String[] referenceStrings, String[] expectedSelections)
 			throws Exception {
 		// set up values to test
-		for (int i = 0; i < knownLocations.length; i++) {
-			knownRepositories.addRepository(CVSRepositoryLocation
-					.fromString(knownLocations[i]), false);
+		for (String knownLocation : knownLocations) {
+			knownRepositories.addRepository(CVSRepositoryLocation.fromString(knownLocation), false);
 		}
 
 		Map infoMap = new HashMap(referenceStrings.length);
@@ -421,8 +419,7 @@ public class CVSProjectSetImportTest extends TestCase {
 		ICVSRepositoryLocation[] repositories = knownRepositories
 				.getRepositories();
 		boolean matchFound = false;
-		for (int j = 0; j < repositories.length; j++) {
-			ICVSRepositoryLocation rl = repositories[j];
+		for (ICVSRepositoryLocation rl : repositories) {
 			if (CVSRepositoryLocationMatcher.isMatching(referenceLocation, rl)) {
 				assertFalse("There should be only one perfect match.",
 						matchFound);

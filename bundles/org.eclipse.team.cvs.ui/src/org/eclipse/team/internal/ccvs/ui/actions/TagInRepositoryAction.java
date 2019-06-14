@@ -24,8 +24,10 @@ public class TagInRepositoryAction extends TagAction {
 	public boolean isEnabled() {
 		ICVSResource[] resources = getSelectedCVSResources();
 		if (resources.length == 0) return false;
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i] instanceof ICVSRepositoryLocation) return false;
+		for (ICVSResource resource : resources) {
+			if (resource instanceof ICVSRepositoryLocation) {
+				return false;
+			}
 		}
 		return true;
 	}

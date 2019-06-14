@@ -217,22 +217,19 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 	public void diffsChanged(IDiffChangeEvent event, IProgressMonitor monitor) {
 		Set<ICompareInput> changedInputs = new HashSet<>();
 		IDiff[] added = event.getAdditions();
-		for (int i = 0; i < added.length; i++) {
-			IDiff diff = added[i];
+		for (IDiff diff : added) {
 			ICompareInput input = findInput(ResourceDiffTree.getResourceFor(diff));
 			if (input != null)
 				changedInputs.add(input);
 		}
 		IDiff[] changed = event.getChanges();
-		for (int i = 0; i < changed.length; i++) {
-			IDiff diff = changed[i];
+		for (IDiff diff : changed) {
 			ICompareInput input = findInput(ResourceDiffTree.getResourceFor(diff));
 			if (input != null)
 				changedInputs.add(input);
 		}
 		IPath[] paths = event.getRemovals();
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			ICompareInput input = findInput(path);
 			if (input != null)
 				changedInputs.add(input);
@@ -265,8 +262,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 	private ICompareInput findInput(IPath path) {
 		ICompareInput[] inputs = getConnectedInputs();
-		for (int i = 0; i < inputs.length; i++) {
-			ICompareInput input = inputs[i];
+		for (ICompareInput input : inputs) {
 			IResource inputResource = getResource(input);
 			if (inputResource != null && inputResource.getFullPath().equals(path)) {
 				return input;
@@ -277,8 +273,7 @@ public class ResourceCompareInputChangeNotifier extends CompareInputChangeNotifi
 
 	private ICompareInput findInput(IResource resource) {
 		ICompareInput[] inputs = getConnectedInputs();
-		for (int i = 0; i < inputs.length; i++) {
-			ICompareInput input = inputs[i];
+		for (ICompareInput input : inputs) {
 			IResource inputResource = getResource(input);
 			if (inputResource != null && inputResource.equals(resource)) {
 				return input;

@@ -174,8 +174,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 			DiffTree tree = ((DiffTree)getDiffTree());
 			try {
 				tree.beginInput();
-				for (int i = 0; i < nodes.length; i++) {
-					IDiff diff = nodes[i];
+				for (IDiff diff : nodes) {
 					tree.remove(diff.getPath());
 				}
 			} finally {
@@ -466,8 +465,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 
 	private ResourceTraversal[] getTraversals(IDiff[] deltas) {
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < deltas.length; i++) {
-			IDiff diff = deltas[i];
+		for (IDiff diff : deltas) {
 			IResource resource = ResourceDiffTree.getResourceFor(diff);
 			if (resource != null) {
 				result.add(resource);
@@ -480,8 +478,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 
 	private IResourceDiffTree getDiffTree(IDiff[] deltas) {
 		ResourceDiffTree tree = new ResourceDiffTree();
-		for (int i = 0; i < deltas.length; i++) {
-			IDiff diff = deltas[i];
+		for (IDiff diff : deltas) {
 			tree.add(diff);
 		}
 		return tree;

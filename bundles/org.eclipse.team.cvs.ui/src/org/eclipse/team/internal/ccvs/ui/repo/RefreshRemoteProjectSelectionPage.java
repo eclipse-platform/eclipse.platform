@@ -155,8 +155,7 @@ public class RefreshRemoteProjectSelectionPage extends CVSWizardPage {
 			listArea.getViewer().setAllChecked(false);
 			RepositoryManager manager = CVSUIPlugin.getPlugin().getRepositoryManager();
 			ICVSRemoteResource[] resources = manager.filterResources(workingSet, rootFolders);
-			for (int i = 0; i < resources.length; i++) {
-				ICVSRemoteResource resource = resources[i];
+			for (ICVSRemoteResource resource : resources) {
 				listArea.getViewer().setChecked(resource, true);
 			}
 		}

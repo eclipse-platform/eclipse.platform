@@ -43,8 +43,9 @@ public abstract class AbstractMatching {
 			leaves.add(root);			
 		} else {
 			Object[] children = root.getChildren();
-			for (int i=0; i<children.length; i++)
-				findLeaves((XMLNode) children[i], leaves);
+			for (Object child : children) {
+				findLeaves((XMLNode) child, leaves);
+			}
 		}
 	}
 
@@ -60,8 +61,9 @@ public abstract class AbstractMatching {
 			numbering.add(root);
 			Object[] children = root.getChildren();
 			if (children != null) {
-				for (int i=0; i<children.length; i++)
-					numberNodes((XMLNode) children[i], numbering);
+				for (Object child : children) {
+					numberNodes((XMLNode) child, numbering);
+				}
 			}
 		}
 	}
@@ -72,8 +74,9 @@ public abstract class AbstractMatching {
 		int count = 1;
 		if (isLeaf(root)) return count;
 		Object[] children = root.getChildren();
-		for (int i=0; i<children.length; i++)
-			count+=countNodes((XMLNode) children[i]);
+		for (Object child : children) {
+			count += countNodes((XMLNode) child);
+		}
 		return count;
 	}
 
@@ -182,8 +185,7 @@ public abstract class AbstractMatching {
 		
 		int cur_pos_left= 0;
 		int cur_pos_right= 0;
-		for (int i= 0; i < differences.length; i++) {
-			RangeDifference rd= differences[i];
+		for (RangeDifference rd : differences) {
 			int equal_length= rd.leftStart();
 			//handle elements before current range which are unchanged
 			while (cur_pos_left < equal_length) {
@@ -197,7 +199,7 @@ public abstract class AbstractMatching {
 				cur_pos_left++;
 				cur_pos_right++;
 			}
-			//now handle RangeDifference rd[i]
+			//now handle RangeDifference rd
 			int smaller_length, greater_length;
 			boolean leftGreater= rd.leftLength() > rd.rightLength();
 			if (leftGreater) {
@@ -207,7 +209,6 @@ public abstract class AbstractMatching {
 				smaller_length= rd.leftLength();
 				greater_length= rd.rightLength();
 			}
-			
 			//handle elements elements in range
 			for (int j=0; j < smaller_length; j++) {
 				distance += dist((XMLNode) xc_elements[cur_pos_left], (XMLNode) yc_elements[cur_pos_right]);
@@ -225,7 +226,7 @@ public abstract class AbstractMatching {
 			} else {
 				for (int j=smaller_length; j < greater_length; j++) {
 					distance += countNodes((XMLNode) yc_elements[cur_pos_right]);
-				DTMatching.add(new Match( null, (XMLNode)yc_elements[cur_pos_right]));
+					DTMatching.add(new Match( null, (XMLNode)yc_elements[cur_pos_right]));
 					cur_pos_right++;
 				}
 			}

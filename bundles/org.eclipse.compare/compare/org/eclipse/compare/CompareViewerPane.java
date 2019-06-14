@@ -308,8 +308,9 @@ public class CompareViewerPane extends ViewForm implements ISelectionProvider,
 	@Override
 	public void open(OpenEvent event) {
 		Object[] listeners= fOpenListener.getListeners();
-		for (int i= 0; i < listeners.length; i++)
-			((IOpenListener) listeners[i]).open(event);
+		for (Object listener : listeners) {
+			((IOpenListener) listener).open(event);
+		}
 	}
 
 	@Override

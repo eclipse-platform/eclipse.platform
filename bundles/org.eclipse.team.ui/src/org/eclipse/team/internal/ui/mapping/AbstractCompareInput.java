@@ -69,8 +69,8 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	protected void fireChange() {
 		if (!listeners.isEmpty()) {
 			Object[] allListeners = listeners.getListeners();
-			for (int i = 0; i < allListeners.length; i++) {
-				final ICompareInputChangeListener listener = (ICompareInputChangeListener)allListeners[i];
+			for (Object l : allListeners) {
+				final ICompareInputChangeListener listener = (ICompareInputChangeListener) l;
 				SafeRunner.run(new ISafeRunnable() {
 					@Override
 					public void run() throws Exception {
@@ -89,8 +89,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 		if (listeners.isEmpty())
 			return false;
 		Object[] allListeners = listeners.getListeners();
-		for (int i = 0; i < allListeners.length; i++) {
-			Object object = allListeners[i];
+		for (Object object : allListeners) {
 			if (object == listener)
 				return true;
 		}

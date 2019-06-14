@@ -65,8 +65,7 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 			throws CoreException {
 		if (event instanceof ResourceMappingEvent) {
 			ResourceMappingEvent rme = (ResourceMappingEvent) event;
-			for (int i = 0; i < rme.mappings.length; i++) {
-				ResourceMapping mapping = rme.mappings[i];
+			for (ResourceMapping mapping : rme.mappings) {
 				toRefresh.add(mapping);
 			}
 		}

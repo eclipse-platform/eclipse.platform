@@ -80,8 +80,7 @@ public class TeamStateDescription implements ITeamStateDescription {
 			if (dsd.getStateFlags() == state) {
 				if (haveSameProperties(this, dsd)) {
 					String[] properties = getPropertyNames();
-					for (int i = 0; i < properties.length; i++) {
-						String property = properties[i];
+					for (String property : properties) {
 						Object o1 = this.getProperty(property);
 						Object o2 = dsd.getProperty(property);
 						if (!o1.equals(o2)) {
@@ -102,11 +101,9 @@ public class TeamStateDescription implements ITeamStateDescription {
 		if (p1.length != p2.length) {
 			return false;
 		}
-		for (int i = 0; i < p1.length; i++) {
-			String s1 = p1[i];
+		for (String s1 : p1) {
 			boolean found = false;
-			for (int j = 0; j < p2.length; j++) {
-				String s2 = p2[j];
+			for (String s2 : p2) {
 				if (s1.equals(s2)) {
 					found = true;
 					break;

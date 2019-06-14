@@ -302,8 +302,7 @@ public class DocumentMerger {
 		public Diff[] getChangeDiffs(int contributor, IRegion region) {
 			if (fDiffs != null && intersectsRegion(contributor, region)) {
 				List<Diff> result = new ArrayList<>();
-				for (Iterator<Diff> iterator = fDiffs.iterator(); iterator.hasNext();) {
-					Diff diff = iterator.next();
+				for (Diff diff : fDiffs) {
 					if (diff.intersectsRegion(contributor, region)) {
 						result.add(diff);
 					}
@@ -450,9 +449,7 @@ public class DocumentMerger {
 					Boolean.FALSE);
 
 		ArrayList<Diff> newAllDiffs = new ArrayList<>();
-		for (int i= 0; i < e.length; i++) {
-			RangeDifference es= e[i];
-
+		for (RangeDifference es : e) {
 			int ancestorStart= 0;
 			int ancestorEnd= 0;
 			if (sancestor != null) {
@@ -589,9 +586,7 @@ public class DocumentMerger {
 		}
 
 		if (e != null) {
-			for (int i= 0; i < e.length; i++) {
-				RangeDifference es= e[i];
-
+			for (RangeDifference es : e) {
 				int kind= es.kind();
 
 				int ancestorStart= 0;
@@ -864,8 +859,7 @@ public class DocumentMerger {
 		ITokenComparator sy= createTokenComparator(s);
 
 		RangeDifference[] e= RangeDifferencer.findRanges(sa, sy, sm);
-		for (int i= 0; i < e.length; i++) {
-			RangeDifference es= e[i];
+		for (RangeDifference es : e) {
 			int kind= es.kind();
 			if (kind != RangeDifference.NOCHANGE) {
 
@@ -977,8 +971,7 @@ public class DocumentMerger {
 	}
 
 	public Diff findDiff(Position p, boolean left) {
-		for (Iterator<Diff> iterator = fAllDiffs.iterator(); iterator.hasNext();) {
-			Diff diff = iterator.next();
+		for (Diff diff : fAllDiffs) {
 			Position diffPos;
 			if (left) {
 				diffPos = diff.fLeftPos;
@@ -1127,11 +1120,9 @@ public class DocumentMerger {
 		if (fChangeDiffs == null)
 			return new Diff[0];
 		List<Diff> intersectingDiffs = new ArrayList<>();
-		for (Iterator<Diff> iterator = fChangeDiffs.iterator(); iterator.hasNext();) {
-			Diff diff = iterator.next();
+		for (Diff diff : fChangeDiffs) {
 			Diff[] changeDiffs = diff.getChangeDiffs(contributor, region);
-			for (int i = 0; i < changeDiffs.length; i++) {
-				Diff changeDiff = changeDiffs[i];
+			for (Diff changeDiff : changeDiffs) {
 				intersectingDiffs.add(changeDiff);
 			}
 		}

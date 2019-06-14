@@ -94,8 +94,8 @@ public class PatchBuilder {
 			IPath newPath, long newDate, IHunk[] hunks) {
 		reorder(hunks);
 		FilePatch2 fileDiff = new FilePatch2(oldPath, oldDate, newPath, newDate);
-		for (int i = 0; i < hunks.length; i++) {
-			fileDiff.add((Hunk) hunks[i]);
+		for (IHunk hunk : hunks) {
+			fileDiff.add((Hunk) hunk);
 		}
 		return fileDiff;
 	}
@@ -165,9 +165,9 @@ public class PatchBuilder {
 
 	private static int getHunkLength(String[] lines, boolean old) {
 		int length = 0;
-		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].length() > 0) {
-				switch (lines[i].charAt(0)) {
+		for (String line : lines) {
+			if (line.length() > 0) {
+				switch (line.charAt(0)) {
 				case ' ':
 					length++;
 					break;
@@ -190,9 +190,9 @@ public class PatchBuilder {
 	}
 
 	private static boolean checkForPrefix(char prefix, String[] lines) {
-		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].length() > 0) {
-				if (lines[i].charAt(0) == prefix) {
+		for (String line : lines) {
+			if (line.length() > 0) {
+				if (line.charAt(0) == prefix) {
 					return true;
 				}
 			}
@@ -210,8 +210,8 @@ public class PatchBuilder {
 	private static IHunk[] removeHunks(IHunk[] hunks, IHunk[] toRemove) {
 		int removed = 0;
 		for (int i = 0; i < hunks.length; i++) {
-			for (int j = 0; j < toRemove.length; j++) {
-				if (toRemove[j] == hunks[i]) {
+			for (IHunk r : toRemove) {
+				if (r == hunks[i]) {
 					hunks[i] = null;
 					removed++;
 				}
@@ -229,8 +229,8 @@ public class PatchBuilder {
 	private static void reorder(IHunk[] hunks) {
 		Arrays.sort(hunks, new HunkComparator());
 		int shift = 0;
-		for (int i = 0; i < hunks.length; i++) {
-			Hunk hunk = (Hunk) hunks[i];
+		for (IHunk h : hunks) {
+			Hunk hunk = (Hunk) h;
 			int start = hunk.getStart(false) + shift;
 			hunk.setStart(start, true);
 			shift += hunk.getLength(true) - hunk.getLength(false);

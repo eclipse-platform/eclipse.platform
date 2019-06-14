@@ -295,12 +295,10 @@ public class RemoteFolderMemberFetcher implements IUpdateMessageListener, IStatu
 	public ICVSRemoteResource[] getFetchedChildren() {
 		ICVSRemoteResource[] resources = new ICVSRemoteResource[folders.size() + files.size()];
 		int count = 0;
-		for (Iterator iter = folders.iterator(); iter.hasNext();) {
-			ICVSRemoteResource resource = (ICVSRemoteResource) iter.next();
+		for (ICVSRemoteResource resource : folders) {
 			resources[count++] = resource;
 		}
-		for (Iterator iter = files.iterator(); iter.hasNext();) {
-			ICVSRemoteResource resource = (ICVSRemoteResource) iter.next();
+		for (ICVSRemoteResource resource : files) {
 			resources[count++] = resource;
 		}
 		return resources;

@@ -159,8 +159,7 @@ public abstract class ThreeWaySubscriber extends ResourceVariantTreeSubscriber i
 	private boolean isChildOfRoot(IResource resource) {
 		IResource[] roots = roots();
 		IPath fullPath = resource.getFullPath();
-		for (int i = 0; i < roots.length; i++) {
-			IResource root = roots[i];
+		for (IResource root : roots) {
 			if (root.getFullPath().isPrefixOf(fullPath)) {
 				return true;
 			}

@@ -46,8 +46,7 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 	public ResourceTraversal[] getTraversals() {
 		CompoundResourceTraversal result = new CompoundResourceTraversal();
 		ResourceMapping[] mappings = getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = getTraversals(mapping);
 			result.addTraversals(traversals);
 		}
@@ -64,8 +63,7 @@ public class ResourceMappingInputScope extends AbstractResourceMappingScope {
 
 	private boolean contains(ResourceMapping mapping) {
 		ResourceMapping[] mappings = getMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping child = mappings[i];
+		for (ResourceMapping child : mappings) {
 			if (child.equals(mapping)) {
 				return true;
 			}

@@ -296,8 +296,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		
 		final KSubstOption[] options = KSubstOption.getAllKSubstOptions();
 		final ArrayList<KSubstOption> KSUBST_MODES= new ArrayList<>();
-		for (int i = 0; i < options.length; i++) {
-			final KSubstOption option = options[i];
+		for (KSubstOption option : options) {
 			if (!option.isBinary()) {
 				KSUBST_MODES.add(option);
 			}

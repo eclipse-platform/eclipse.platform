@@ -155,11 +155,10 @@ public abstract class DescendantResourceVariantByteStore extends ResourceVariant
 		IResource[] remoteMembers = getRemoteStore().members(resource);
 		IResource[] baseMembers = getBaseStore().members(resource);
 		Set<IResource> members = new HashSet<>();
-		for (int i = 0; i < remoteMembers.length; i++) {
-			members.add(remoteMembers[i]);
+		for (IResource remoteMember : remoteMembers) {
+			members.add(remoteMember);
 		}
-		for (int i = 0; i < baseMembers.length; i++) {
-			IResource member = baseMembers[i];
+		for (IResource member : baseMembers) {
 			// Add the base only if the remote does not know about it
 			// (i.e. hasn't marked it as deleted
 			if (!isVariantKnown(member)) {

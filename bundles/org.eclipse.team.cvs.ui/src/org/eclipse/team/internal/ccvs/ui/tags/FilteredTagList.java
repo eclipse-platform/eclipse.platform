@@ -40,8 +40,7 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
 	public Object[] getChildren(Object o) {
 		CVSTag[] tags = getTags();
 		List<TagElement> filtered = new ArrayList<>();
-		for (int i = 0; i < tags.length; i++) {
-			CVSTag tag = tags[i];
+		for (CVSTag tag : tags) {
 			if (select(tag)) {
 				filtered.add(new TagElement(this, tag));
 			}
@@ -89,8 +88,7 @@ public class FilteredTagList implements IWorkbenchAdapter, IAdaptable {
 	public CVSTag[] getMatchingTags() {
 		CVSTag[] tags = getTags();
 		List<CVSTag> filtered = new ArrayList<>();
-		for (int i = 0; i < tags.length; i++) {
-			CVSTag tag = tags[i];
+		for (CVSTag tag : tags) {
 			if (select(tag)) {
 				filtered.add(tag);
 			}

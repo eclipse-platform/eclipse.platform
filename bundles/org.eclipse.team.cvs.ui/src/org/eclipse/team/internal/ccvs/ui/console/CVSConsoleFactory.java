@@ -40,9 +40,10 @@ public class CVSConsoleFactory implements IConsoleFactory {
 			IConsoleManager manager = ConsolePlugin.getDefault().getConsoleManager();
 			IConsole[] existing = manager.getConsoles();
 			boolean exists = false;
-			for (int i = 0; i < existing.length; i++) {
-				if(console == existing[i])
+			for (IConsole e : existing) {
+				if (console == e) {
 					exists = true;
+				}
 			}
 			if(! exists)
 				manager.addConsoles(new IConsole[] {console});

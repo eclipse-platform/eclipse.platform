@@ -246,8 +246,7 @@ public class FileModificationValidator extends CVSCoreFileModificationValidator 
 		try {
 			CVSWorkspaceSubscriber subscriber = CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber();
 			subscriber.refresh(files, IResource.DEPTH_ZERO, monitor);
-			for (int i = 0; i < files.length; i++) {
-				IFile file = files[i];
+			for (IFile file : files) {
 				SyncInfo info = subscriber.getSyncInfo(file);
 				int direction = info.getKind() & SyncInfo.DIRECTION_MASK;
 				if (direction == SyncInfo.CONFLICTING || direction == SyncInfo.INCOMING) {
@@ -279,8 +278,7 @@ public class FileModificationValidator extends CVSCoreFileModificationValidator 
 		if (!isNeverUpdate()) {
 			// We may need to perform an update so we need to obtain the lock on each project
 			Set projects = new HashSet();
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				if (isReadOnly(resource))
 					projects.add(resource.getProject());
 			}

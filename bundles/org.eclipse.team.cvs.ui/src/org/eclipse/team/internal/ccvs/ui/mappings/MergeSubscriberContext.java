@@ -57,8 +57,7 @@ public class MergeSubscriberContext extends CVSSubscriberMergeContext {
 	public void markAsMerged(final IDiff[] diffs, boolean inSyncHint, IProgressMonitor monitor) throws CoreException {
 		run(monitor1 -> {
 			List<IResource> result = new ArrayList<>();
-			for (int i = 0; i < diffs.length; i++) {
-				IDiff diff = diffs[i];
+			for (IDiff diff : diffs) {
 				result.add(getDiffTree().getResource(diff));
 			}
 			((CVSMergeSubscriber) getSubscriber()).merged(result.toArray(new IResource[result.size()]));

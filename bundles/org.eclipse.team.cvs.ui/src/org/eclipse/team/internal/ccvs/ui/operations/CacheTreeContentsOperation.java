@@ -58,11 +58,9 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 	
 	private IResource[] getFilesWithUncachedContents(IResource[] resources, boolean recurse) {
 		ArrayList<IResource> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IDiff[] nodes = tree.getDiffs(resource, recurse ? IResource.DEPTH_INFINITE: IResource.DEPTH_ONE);
-			for (int j = 0; j < nodes.length; j++) {
-				IDiff node = nodes[j];
+			for (IDiff node : nodes) {
 				if (needsContents(node)) {
 					result.add(tree.getResource(node));
 				}
@@ -129,8 +127,7 @@ public abstract class CacheTreeContentsOperation extends SingleCommandOperation 
 	@Override
 	protected ICVSResource[] getCVSArguments(Session session, IResource[] resources) {
 		List<ICVSResource> result = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			try {
 				ICVSResource file = session.getLocalRoot().getChild(resource.getProjectRelativePath().toString());
 				result.add(file);

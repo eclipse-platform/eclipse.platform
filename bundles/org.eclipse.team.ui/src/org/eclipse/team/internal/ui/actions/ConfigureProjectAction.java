@@ -50,8 +50,7 @@ public class ConfigureProjectAction extends TeamAction {
 	@Override
 	public boolean isEnabled() {
 		IProject[] selectedProjects = getSelectedProjects();
-		for (int i = 0; i < selectedProjects.length; i++) {
-			IProject project = selectedProjects[i];
+		for (IProject project : selectedProjects) {
 			if (!project.isAccessible()) return false;
 			if (RepositoryProvider.isShared(project)) return false;
 		}

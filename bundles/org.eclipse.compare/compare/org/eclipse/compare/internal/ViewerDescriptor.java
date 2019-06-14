@@ -58,8 +58,8 @@ public class ViewerDescriptor implements IViewerDescriptor {
 			if (currentViewer != null) {
 				CompareHandlerService[] compareHandlerService = Adapters.adapt(currentViewer, CompareHandlerService[].class);
 				if (compareHandlerService != null) {
-					for (int i = 0; i < compareHandlerService.length; i++) {
-						compareHandlerService[i].dispose();
+					for (CompareHandlerService s : compareHandlerService) {
+						s.dispose();
 					}
 				}
 			}

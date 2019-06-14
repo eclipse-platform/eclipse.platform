@@ -417,9 +417,9 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 					return allProjects;
 
 				ArrayList accessibleProjects = new ArrayList();
-				for (int i = 0; i < allProjects.length; i++) {
-					if (allProjects[i].isOpen()) {
-						accessibleProjects.add(allProjects[i]);
+				for (IProject project : allProjects) {
+					if (project.isOpen()) {
+						accessibleProjects.add(project);
 					}
 				}
 				return accessibleProjects.toArray();

@@ -368,20 +368,20 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 		if (settings != null) {
 			String[] hostNames = settings.getArray(STORE_HOSTNAME_ID);
 			if (hostNames != null) {
-				for (int i = 0; i < hostNames.length; i++) {
-					hostCombo.add(hostNames[i]);
+				for (String hostName : hostNames) {
+					hostCombo.add(hostName);
 				}
 			}
 			String[] paths = settings.getArray(STORE_PATH_ID);
 			if (paths != null) {
-				for (int i = 0; i < paths.length; i++) {
-					repositoryPathCombo.add(paths[i]);
+				for (String path : paths) {
+					repositoryPathCombo.add(path);
 				}
 			}
 			String[] userNames = settings.getArray(STORE_USERNAME_ID);
 			if (userNames != null) {
-				for (int i = 0; i < userNames.length; i++) {
-					userCombo.add(userNames[i]);
+				for (String userName : userNames) {
+					userCombo.add(userName);
 				}
 			}
 			userCombo.add(ANONYMOUS_USER);
@@ -393,8 +393,8 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 
 		// Initialize other values and widget states
 		IConnectionMethod[] methods = CVSRepositoryLocation.getPluggedInConnectionMethods();
-		for (int i = 0; i < methods.length; i++) {
-			connectionMethodCombo.add(methods[i].getName());
+		for (IConnectionMethod method : methods) {
+			connectionMethodCombo.add(method.getName());
 		}
 
 		// pserver is a default connection method
@@ -615,8 +615,7 @@ public class ConfigurationWizardMainPage extends CVSWizardPage {
 		}
 		IPath path = new Path(null, pathString);
 		String[] segments = path.segments();
-		for (int i = 0; i < segments.length; i++) {
-			String string = segments[i];
+		for (String string : segments) {
 			if (string.charAt(0) == ' ' || string.charAt(string.length() -1) == ' ') {
 				return new Status(IStatus.ERROR, CVSUIPlugin.ID, INVALID_FIELD_CONTENTS,
 						CVSUIMessages.ConfigurationWizardMainPage_invalidPathWithSpaces, null);

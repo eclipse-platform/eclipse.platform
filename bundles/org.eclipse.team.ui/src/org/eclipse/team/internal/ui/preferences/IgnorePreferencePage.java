@@ -137,8 +137,7 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 	 * @param ignore
 	 */
 	private void fillTable(IIgnoreInfo[] ignore) {
-		for (int i = 0; i < ignore.length; i++) {
-			IIgnoreInfo info = ignore[i];
+		for (IIgnoreInfo info : ignore) {
 			TableItem item = new TableItem(ignoreTable, SWT.NONE);
 			item.setText(TextProcessor.process(info.getPattern(), ".*")); //$NON-NLS-1$
 			item.setChecked(info.getEnabled());
@@ -162,8 +161,8 @@ public class IgnorePreferencePage extends PreferencePage implements IWorkbenchPr
 		if (pattern.equals("")) return; //$NON-NLS-1$
 		// Check if the item already exists
 		TableItem[] items = ignoreTable.getItems();
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].getText().equals(pattern)) {
+		for (TableItem item : items) {
+			if (item.getText().equals(pattern)) {
 				MessageDialog.openWarning(getShell(), TeamUIMessages.IgnorePreferencePage_patternExistsShort, TeamUIMessages.IgnorePreferencePage_patternExistsLong);
 				return;
 			}

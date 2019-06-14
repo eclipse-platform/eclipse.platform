@@ -64,8 +64,7 @@ public class RootResourceSynchronizationScope extends AbstractResourceMappingSco
 	@Override
 	public ResourceMapping[] getMappings() {
 		List<ResourceMapping> result = new ArrayList<>();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			Object o = resource.getAdapter(ResourceMapping.class);
 			if (o instanceof ResourceMapping) {
 				result.add((ResourceMapping) o);

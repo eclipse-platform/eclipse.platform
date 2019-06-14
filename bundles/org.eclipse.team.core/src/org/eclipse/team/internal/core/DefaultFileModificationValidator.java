@@ -87,8 +87,7 @@ public class DefaultFileModificationValidator extends FileModificationValidator 
 
 	private IFile[] getReadOnly(IFile[] files) {
 		List<IFile> result = new ArrayList<>(files.length);
-		for (int i = 0; i < files.length; i++) {
-			IFile file = files[i];
+		for (IFile file : files) {
 			if (file.isReadOnly()) {
 				result.add(file);
 			}

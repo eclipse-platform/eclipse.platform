@@ -103,8 +103,8 @@ public class OpenWithActionGroup extends ActionGroup {
 					if (participant instanceof ModelSynchronizeParticipant) {
 						ModelSynchronizeParticipant msp = (ModelSynchronizeParticipant) participant;
 						boolean allElementsHaveCompareInput = true;
-						for (int i = 0; i < elements.length; i++) {
-							if (!msp.hasCompareInputFor(elements[i])) {
+						for (Object element : elements) {
+							if (!msp.hasCompareInputFor(element)) {
 								allElementsHaveCompareInput = false;
 								break;
 							}
@@ -124,8 +124,8 @@ public class OpenWithActionGroup extends ActionGroup {
 		}
 
 		boolean allFiles = true;
-		for (int i = 0; i < resources.length; i++) {
-			if (resources[i].getType() != IResource.FILE) {
+		for (IResource resource : resources) {
+			if (resource.getType() != IResource.FILE) {
 				// Open actions are only supported if all the items are files.
 				allFiles = false;
 				break;
@@ -138,8 +138,8 @@ public class OpenWithActionGroup extends ActionGroup {
 			}
 		}
 
-		for (int i = 0; i < resources.length; i++) {
-			if (!resources[i].exists()) {
+		for (IResource resource : resources) {
+			if (!resource.exists()) {
 				// Only support non-compare actions if all resources exist.
 				return;
 			}

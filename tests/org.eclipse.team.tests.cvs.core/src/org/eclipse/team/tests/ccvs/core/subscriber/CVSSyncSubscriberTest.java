@@ -91,11 +91,9 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 
 	protected void assertSyncChangesMatch(ISubscriberChangeEvent[] changes, IResource[] resources) {
 		// First, ensure that all the resources appear in the delta
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			boolean found = false;
-			for (int j = 0; j < changes.length; j++) {
-				ISubscriberChangeEvent delta = changes[j];
+			for (ISubscriberChangeEvent delta : changes) {
 				if (delta.getResource().equals(resource)) {
 					found = true;
 					break;
@@ -119,14 +117,15 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 	 */
 	protected void assertDeleted(String message, IContainer root, String[] resourcePaths) {
 		IResource[] resources = getResources(root, resourcePaths);
-		for (int i=0;i<resources.length;i++) {
+		for (IResource resource : resources) {
 			try {
-				if (! resources[i].exists())
+				if (!resource.exists()) {
 					break;
+				}
 			} catch (AssertionFailedError e) {
 				break;
 			}
-			assertTrue(message + ": resource " + resources[i] + " still exists in some form", false);
+			assertTrue(message + ": resource " + resource + " still exists in some form", false);
 		}
 	}
 	
@@ -139,8 +138,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 	
 	protected IResource[] collect(IResource[] resources, final ResourceCondition condition, int depth) throws CoreException, TeamException {
 		final Set<IResource> affected = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			if (resource.exists() || resource.isPhantom()) {
 				resource.accept(new IResourceVisitor() {
 					public boolean visit(IResource r) throws CoreException {
@@ -165,8 +163,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 	
 	protected IResource[] collectAncestors(IResource[] resources, ResourceCondition condition) throws CoreException, TeamException {
 		Set<IResource> affected = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			while (resource.getType() != IResource.ROOT) {
 				if (condition.matches(resource)) {
 					affected.add(resource);

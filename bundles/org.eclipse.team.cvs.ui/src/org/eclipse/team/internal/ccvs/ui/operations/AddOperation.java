@@ -104,10 +104,7 @@ public class AddOperation extends RepositoryProviderOperation {
 		// and the depth isn't zero
 		final Map /* from KSubstOption to Set */<KSubstOption, Set> files = new HashMap<>();
 		final CVSException[] eHolder = new CVSException[1];
-		for (int i=0; i<resources.length; i++) {
-			
-			final IResource currentResource = resources[i];
-			
+		for (IResource currentResource : resources) {
 			try {		
 				// Auto-add parents if they are not already managed
 				IContainer parent = currentResource.getParent();
@@ -181,20 +178,19 @@ public class AddOperation extends RepositoryProviderOperation {
 					session.close();
 				}
 			}
-			for (Iterator it = files.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
+			for (Map.Entry entry : files.entrySet()) {
 				final KSubstOption ksubst = (KSubstOption) entry.getKey();
 				final Set set = (Set) entry.getValue();
 				Session session = new Session(getRemoteLocation(provider), getLocalRoot(provider), true /* output to console */);
 				session.open(Policy.subMonitorFor(progress, 2), true /* open for modification */);
 				try {
 					IStatus status = Command.ADD.execute(
-						session,
-						Command.NO_GLOBAL_OPTIONS,
-						new LocalOption[] { ksubst },
-						(ICVSResource[])set.toArray(new ICVSResource[set.size()]),
-						null,
-						Policy.subMonitorFor(progress, 8));
+							session,
+							Command.NO_GLOBAL_OPTIONS,
+							new LocalOption[] { ksubst },
+							(ICVSResource[])set.toArray(new ICVSResource[set.size()]),
+							null,
+							Policy.subMonitorFor(progress, 8));
 					if (status.getCode() == CVSStatus.SERVER_ERROR) {
 						throw new CVSServerException(status);
 					}

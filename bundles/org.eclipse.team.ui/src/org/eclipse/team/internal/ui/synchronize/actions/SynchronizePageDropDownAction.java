@@ -99,8 +99,7 @@ public class SynchronizePageDropDownAction extends Action implements IMenuCreato
 
 	protected void addParticipantsToMenu(ISynchronizeParticipantReference[] refs) {
 		ISynchronizeParticipant current = fView.getParticipant();
-		for (int i = 0; i < refs.length; i++) {
-			ISynchronizeParticipantReference page = refs[i];
+		for (ISynchronizeParticipantReference page : refs) {
 			Action action = new ShowSynchronizeParticipantAction(fView, page);
 			try {
 				boolean isCurrent = page.getParticipant().equals(current);

@@ -183,8 +183,8 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 				if (status.getCode() == IResourceStatus.OUT_OF_SYNC_LOCAL) {
 					if (promptToRefresh(parent, resources, status)) {
 						try {
-							for (int i = 0; i < resources.length; i++) {
-								resources[i].refreshLocal(IResource.DEPTH_INFINITE, null);
+							for (IResource resource : resources) {
+								resource.refreshLocal(IResource.DEPTH_INFINITE, null);
 							}
 						} catch (CoreException coreEx) {
 							// Throw the original exception to the caller

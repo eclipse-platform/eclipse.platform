@@ -59,8 +59,7 @@ public class SystemProxyTest extends TestCase {
 		setProxiesEnabled(isProxiesDefault);
 		setSystemProxiesEnabled(isSystemProxiesDefault);
 		IProxyData[] data = getProxyManager().getProxyData();
-		for (int i = 0; i < data.length; i++) {
-			IProxyData proxyData = data[i];
+		for (IProxyData proxyData : data) {
 			proxyData.disable();
 		}
 		getProxyManager().setProxyData(data);
@@ -118,10 +117,9 @@ public class SystemProxyTest extends TestCase {
 		assertNotNull(proxiesData);
 
 		Map<String, String> typeMap = new HashMap<>();
-		for (int i = 0; i < proxiesData.length; i++) {
-			assertProxyDataEqual(proxiesData[i], (IProxyData) proxyDataMap
-					.get(proxiesData[i].getType()));
-			typeMap.put(proxiesData[i].getType(), proxiesData[i].getType());
+		for (IProxyData p : proxiesData) {
+			assertProxyDataEqual(p, (IProxyData) proxyDataMap.get(p.getType()));
+			typeMap.put(p.getType(), p.getType());
 		}
 
 		assertEquals(3, typeMap.size());
@@ -132,10 +130,9 @@ public class SystemProxyTest extends TestCase {
 		assertNotNull(proxiesData);
 
 		Map<String, String> typeMap = new HashMap<>();
-		for (int i = 0; i < proxiesData.length; i++) {
-			assertProxyDataEqual(proxiesData[i], (IProxyData) proxyDataMap
-					.get(proxiesData[i].getType()));
-			typeMap.put(proxiesData[i].getType(), proxiesData[i].getType());
+		for (IProxyData p : proxiesData) {
+			assertProxyDataEqual(p, (IProxyData) proxyDataMap.get(p.getType()));
+			typeMap.put(p.getType(), p.getType());
 		}
 
 		assertEquals(3, typeMap.size());

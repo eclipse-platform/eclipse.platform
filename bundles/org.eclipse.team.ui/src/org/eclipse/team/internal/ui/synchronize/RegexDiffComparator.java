@@ -41,8 +41,7 @@ public class RegexDiffComparator extends RangeDifferenceComparator {
 	protected boolean compareRangeDifferences(RangeDifference[] ranges,
 			IDocument lDoc, IDocument rDoc) {
 		try {
-			for (int i = 0; i < ranges.length; i++) {
-				RangeDifference diff = ranges[i];
+			for (RangeDifference diff : ranges) {
 				if (diff.kind() == RangeDifference.NOCHANGE)
 					continue;
 

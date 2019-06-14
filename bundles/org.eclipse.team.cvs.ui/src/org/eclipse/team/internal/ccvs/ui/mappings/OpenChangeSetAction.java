@@ -128,8 +128,7 @@ class OpenChangeSetAction extends ResourceModelParticipantAction {
 	 * Build the trees that will be compared
 	 */
 	private boolean buildTrees(CompareTreeBuilder builder, IDiff[] diffs) {
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			if (isFileChange(diff)) {
 				IFileRevision remoteRevision = Utils.getRemote(diff);
 				IResourceVariant remote = SyncInfoToDiffConverter.asResourceVariant(remoteRevision);

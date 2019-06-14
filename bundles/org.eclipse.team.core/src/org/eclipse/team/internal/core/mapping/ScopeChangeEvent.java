@@ -69,12 +69,10 @@ public class ScopeChangeEvent {
 			// The number of mappings has increased so we should report the new mappings
 			Set<ResourceMapping> originalSet = new HashSet<>();
 			List<ResourceMapping> result = new ArrayList<>();
-			for (int i = 0; i < originalMappings.length; i++) {
-				ResourceMapping mapping = originalMappings[i];
+			for (ResourceMapping mapping : originalMappings) {
 				originalSet.add(mapping);
 			}
-			for (int i = 0; i < currentMappings.length; i++) {
-				ResourceMapping mapping = currentMappings[i];
+			for (ResourceMapping mapping : currentMappings) {
 				if (!originalSet.contains(mapping)) {
 					result.add(mapping);
 				}
@@ -84,12 +82,10 @@ public class ScopeChangeEvent {
 			// The number of mappings may be smaller so report the removed mappings
 			Set<ResourceMapping> finalSet = new HashSet<>();
 			List<ResourceMapping> result = new ArrayList<>();
-			for (int i = 0; i < currentMappings.length; i++) {
-				ResourceMapping mapping = currentMappings[i];
+			for (ResourceMapping mapping : currentMappings) {
 				finalSet.add(mapping);
 			}
-			for (int i = 0; i < originalMappings.length; i++) {
-				ResourceMapping mapping = originalMappings[i];
+			for (ResourceMapping mapping : originalMappings) {
 				if (!finalSet.contains(mapping)) {
 					result.add(mapping);
 				}

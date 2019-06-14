@@ -235,8 +235,7 @@ public class UpdateContentCachingService implements IUpdateMessageListener {
 					throw new CVSException(status);
 				}
 			}
-			for (Iterator iterator = removed.iterator(); iterator.hasNext();) {
-				ICVSResource resource = (ICVSResource) iterator.next();
+			for (ICVSResource resource : removed) {
 				if (resource.exists())
 					resource.delete();
 			}

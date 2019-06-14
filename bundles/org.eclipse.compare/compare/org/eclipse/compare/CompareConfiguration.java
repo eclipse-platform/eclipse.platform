@@ -17,7 +17,6 @@ package org.eclipse.compare;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -254,8 +253,7 @@ public class CompareConfiguration {
 
 		@Override
 		public void dispose() {
-			for (Iterator<ICompareInputLabelProvider> iterator = labelProviders.values().iterator(); iterator.hasNext();) {
-				ICompareInputLabelProvider lp = iterator.next();
+			for (ICompareInputLabelProvider lp : labelProviders.values()) {
 				lp.removeListener(this);
 			}
 			if (defaultLabelProvider != null)
@@ -413,8 +411,8 @@ public class CompareConfiguration {
 		PropertyChangeEvent event= null;
 		Object[] listeners= fListeners.getListeners();
 		if (listeners != null) {
-			for (int i= 0; i < listeners.length; i++) {
-				IPropertyChangeListener l= (IPropertyChangeListener) listeners[i];
+			for (Object listener : listeners) {
+				IPropertyChangeListener l = (IPropertyChangeListener) listener;
 				if (event == null)
 					event= new PropertyChangeEvent(this, propertyName, oldValue, newValue);
 				l.propertyChange(event);

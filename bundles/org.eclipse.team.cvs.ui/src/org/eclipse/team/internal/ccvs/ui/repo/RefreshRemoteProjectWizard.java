@@ -131,19 +131,19 @@ public class RefreshRemoteProjectWizard extends Wizard {
 	private ICVSRemoteResource[] internalRefresh(final RepositoryManager manager, final ICVSRemoteResource[] selectedFolders, final boolean recurse, IProgressMonitor monitor) throws InvocationTargetException {
 		List failedFolders = new ArrayList();
 		monitor.beginTask(null, 100 * selectedFolders.length);
-			for (int i = 0; i < selectedFolders.length; i++) {
-				try {
-					ICVSRemoteResource resource = selectedFolders[i];
-					if (resource instanceof ICVSFolder) {
-						CVSTag[] tags = manager.refreshDefinedTags((ICVSFolder)resource, recurse, true /* notify */, Policy.subMonitorFor(monitor, 100));
-						if (tags.length == 0) {
-							failedFolders.add(resource);
-						}
+		for (ICVSRemoteResource selectedFolder : selectedFolders) {
+			try {
+				ICVSRemoteResource resource = selectedFolder;
+				if (resource instanceof ICVSFolder) {
+					CVSTag[] tags = manager.refreshDefinedTags((ICVSFolder)resource, recurse, true /* notify */, Policy.subMonitorFor(monitor, 100));
+					if (tags.length == 0) {
+						failedFolders.add(resource);
 					}
-				} catch (TeamException e) {
-					CVSUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred while fetching the tags for {0}", selectedFolders[i].getName()), e); //$NON-NLS-1$
 				}
+			} catch (TeamException e) {
+				CVSUIPlugin.log(IStatus.ERROR, NLS.bind("An error occurred while fetching the tags for {0}", selectedFolder.getName()), e); //$NON-NLS-1$
 			}
+		}
 			return (ICVSRemoteResource[]) failedFolders.toArray(new ICVSRemoteResource[failedFolders.size()]);
 	}
 

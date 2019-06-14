@@ -63,8 +63,7 @@ public class ResourceMarkAsMergedHandler extends ResourceMergeActionHandler {
 				private ISchedulingRule getMergeRule(IMergeContext context,
 						IDiff[] deltas) {
 					ISchedulingRule result = null;
-					for (int i = 0; i < deltas.length; i++) {
-						IDiff node = deltas[i];
+					for (IDiff node : deltas) {
 						ISchedulingRule rule = context.getMergeRule(node);
 						if (result == null) {
 							result = rule;

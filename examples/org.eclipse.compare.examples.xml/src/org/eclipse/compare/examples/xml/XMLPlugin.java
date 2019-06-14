@@ -291,8 +291,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 		IConfigurationElement[] idmaps= registry.getConfigurationElementsFor(PLUGIN_ID, ID_MAPPING_EXTENSION_POINT);
 		fIdMapsInternal = new HashMap();
 		fOrderedElementsInternal= new HashMap();
-		for (int i_idmap= 0; i_idmap < idmaps.length; i_idmap++) {
-			final IConfigurationElement idmap= idmaps[i_idmap];
+		for (IConfigurationElement idmap : idmaps) {
 			//handle IDMAP_NAME_ATTRIBUTE
 			String idmap_name= idmap.getAttribute(IDMAP_NAME_ATTRIBUTE);
 			//ignores idmap if its name equals the reserved name for unordered matching or the the name for ordered matching
@@ -301,8 +300,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				HashMap idmapHM = new HashMap();
 				fIdMapsInternal.put(idmap_name, idmapHM);
 				IConfigurationElement[] mappings = idmap.getChildren(MAPPING_ELEMENT_NAME);
-				for (int i_mapping= 0; i_mapping < mappings.length; i_mapping++) {
-					IConfigurationElement mapping = mappings[i_mapping];
+				for (IConfigurationElement mapping : mappings) {
 					//add SIGN_SEPARATOR at the end because not contained in signatures of plugin.xml
 					//also add prefix at beginning
 					String signature= mapping.getAttribute(MAPPING_SIGNATURE_ATTRIBUTE);
@@ -321,8 +319,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				IConfigurationElement[] orderedEntries= idmap.getChildren(ORDERED_ELEMENT_NAME);
 				if (orderedEntries.length > 0) {
 					ArrayList orderedAL= new ArrayList();
-					for (int i_ordered= 0; i_ordered < orderedEntries.length; i_ordered++) {
-						IConfigurationElement ordered= orderedEntries[i_ordered];
+					for (IConfigurationElement ordered : orderedEntries) {
 						//add SIGN_SEPARATOR at the end because not contained in signatures of plugin.xml
 						//also add prefix at beginning
 						String signature= ordered.getAttribute(ORDERED_SIGNATURE_ATTRIBUTE);
@@ -383,8 +380,8 @@ public final class XMLPlugin extends AbstractUIPlugin {
 			shell= shell.getParent();
 		}
 		Shell shells[]= display.getShells();
-		for (int i= 0; i < shells.length; i++) {
-			Object data= shells[i].getData();
+		for (Shell s : shells) {
+			Object data = s.getData();
 			if (data instanceof IWorkbenchWindow) {
 				windowRef.window= (IWorkbenchWindow)data;
 				return;

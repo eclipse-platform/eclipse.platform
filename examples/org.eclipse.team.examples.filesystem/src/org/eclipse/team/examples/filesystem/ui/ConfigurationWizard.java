@@ -80,8 +80,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 				FileSystemProvider provider = (FileSystemProvider) RepositoryProvider.getProvider(projects[0]);
 				provider.setTargetLocation(mainPage.getLocation());
 			} else {
-				for (int i = 0; i < projects.length; i++) {
-					IProject project = projects[i];
+				for (IProject project : projects) {
 					RepositoryProvider.map(project, FileSystemPlugin.PROVIDER_ID);
 					FileSystemProvider provider = (FileSystemProvider) RepositoryProvider.getProvider(project);
 					String path = new Path(mainPage.getLocation()).append(project.getName()).toOSString();

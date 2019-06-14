@@ -190,8 +190,7 @@ public class ShowAnnotationOperation extends CVSOperation {
 		if (fCVSResource instanceof ICVSFile) {
 			try {
 				ILogEntry[] logEntries= ((ICVSFile) fCVSResource).getLogEntries(monitor);
-				for (int i= 0; i < logEntries.length; i++) {
-					ILogEntry entry= logEntries[i];
+				for (ILogEntry entry : logEntries) {
 					logEntriesByRevision.put(entry.getRevision(), entry);
 				}
 			} catch (CVSException e) {

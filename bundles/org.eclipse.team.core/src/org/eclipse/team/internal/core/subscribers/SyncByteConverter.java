@@ -123,8 +123,7 @@ public class SyncByteConverter {
 
 	public static byte[] toBytes(String[] slots) {
 		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < slots.length; i++) {
-			String string = slots[i];
+		for (String string : slots) {
 			buffer.append(string);
 			buffer.append(new String(new byte[] {SyncByteConverter.SEPARATOR_BYTE }));
 		}

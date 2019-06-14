@@ -112,8 +112,8 @@ public class RefreshUserNotificationPolicy implements IRefreshSubscriberListener
 			SyncInfo[] infos = ((RefreshChangeListener)event.getChangeDescription()).getChanges();
 			List<IResource> selectedResources = new ArrayList<>();
 			selectedResources.addAll(Arrays.asList(((RefreshChangeListener)event.getChangeDescription()).getResources()));
-			for (int i = 0; i < infos.length; i++) {
-				selectedResources.add(infos[i].getLocal());
+			for (SyncInfo info : infos) {
+				selectedResources.add(info.getLocal());
 			}
 			IResource[] resources = selectedResources.toArray(new IResource[selectedResources.size()]);
 

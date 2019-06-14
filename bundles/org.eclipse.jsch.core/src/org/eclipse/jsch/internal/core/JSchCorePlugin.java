@@ -121,11 +121,9 @@ public class JSchCorePlugin extends Plugin{
     String[] selected = Utils.getSelectedSSHAgent().split(","); //$NON-NLS-1$
     IdentityRepository irepo = null;
 
-    for(int i=0; i<selected.length; i++){
-      for(int j=0; j<repositories.length; j++){
-        IdentityRepository _irepo = repositories[j];
-        if(selected[i].equals(_irepo.getName()) &&
-           _irepo.getStatus()==IdentityRepository.RUNNING){
+    for(String s : selected) {
+      for(IdentityRepository _irepo : repositories) {
+        if(s.equals(_irepo.getName()) && _irepo.getStatus()==IdentityRepository.RUNNING) {
           irepo = _irepo;
           break;
         }
@@ -153,8 +151,7 @@ public class JSchCorePlugin extends Plugin{
       return new IdentityRepository[0];
 
     ArrayList<IdentityRepository> tmp = new ArrayList<>();
-    for(int i=0; i<extensions.length; i++){
-      IExtension extension=extensions[i];
+    for(IExtension extension : extensions) {
       IConfigurationElement[] configs=extension.getConfigurationElements();
       if(configs.length==0){
         JSchCorePlugin

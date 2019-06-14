@@ -107,9 +107,7 @@ public class DiffTreeStatistics {
 	@Override
 	public String toString() {
 		StringBuilder out = new StringBuilder();
-		Iterator it = stats.keySet().iterator();
-		while (it.hasNext()) {
-			Integer kind = (Integer) it.next();
+		for (Integer kind : stats.keySet()) {
 			out.append(SyncInfo.kindToString(kind.intValue()) + ": " + stats.get(kind) + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return out.toString();

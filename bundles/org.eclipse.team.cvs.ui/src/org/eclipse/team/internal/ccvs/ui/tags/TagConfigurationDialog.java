@@ -155,8 +155,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		}
 
 		public void remove(CVSTag[] tags) {
-			for (int i = 0; i < tags.length; i++) {
-				CVSTag tag = tags[i];
+			for (CVSTag tag : tags) {
 				List list = getTagList(tag.getType());
 				if (list != null)
 					list.remove(tag);        
@@ -164,8 +163,7 @@ public class TagConfigurationDialog extends TrayDialog {
 		}
 
 		public void add(CVSTag[] tags) {
-			for (int i = 0; i < tags.length; i++) {
-				CVSTag tag = tags[i];
+			for (CVSTag tag : tags) {
 				List<CVSTag> list = getTagList(tag.getType());
 				if (list != null)
 					list.add(tag);        
@@ -462,8 +460,8 @@ public class TagConfigurationDialog extends TrayDialog {
 			removeFileButton.setLayoutData(data);
 			removeFileButton.addListener(SWT.Selection, event -> {
 				String[] selected = autoRefreshFileList.getSelection();
-				for (int i = 0; i < selected.length; i++) {
-					autoRefreshFileList.remove(selected[i]);
+				for (String s : selected) {
+					autoRefreshFileList.remove(s);
 					autoRefreshFileList.setFocus();
 				}
 			});			
@@ -490,8 +488,8 @@ public class TagConfigurationDialog extends TrayDialog {
 				CVSUIPlugin.runWithProgress(getShell(), true /*cancelable*/, monitor -> {
 					monitor.beginTask(CVSUIMessages.TagConfigurationDialog_22, filesSelection.length); 
 					try {
-						for (int i = 0; i < filesSelection.length; i++) {
-							ICVSFile file = filesSelection[i].getCVSFile();
+						for (CVSFileElement f : filesSelection) {
+							ICVSFile file = f.getCVSFile();
 							tags.addAll(Arrays.asList(getTagsFor(file, Policy.subMonitorFor(monitor, 1))));
 						}
 					} catch (TeamException e) {
@@ -571,8 +569,8 @@ public class TagConfigurationDialog extends TrayDialog {
 	private void rememberCheckedTags() {
 		Object[] checked = cvsTagTree.getCheckedElements();
 		List<CVSTag> tagsToAdd = new ArrayList<>();
-		for (int i = 0; i < checked.length; i++) {
-			CVSTag tag = ((TagElement)checked[i]).getTag();
+		for (Object c : checked) {
+			CVSTag tag = ((TagElement) c).getTag();
 			tagsToAdd.add(tag);
 		}
 		if (!tagsToAdd.isEmpty()) {

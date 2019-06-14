@@ -133,8 +133,8 @@ public class SyncFileChangeListener implements IResourceChangeListener {
 					if(isMetaFile(resource)) {
 						IResource[] toBeNotified = handleChangedMetaFile(resource);
 						if(toBeNotified.length>0 && isModifiedBy3rdParty(resource)) {
-							for (int i = 0; i < toBeNotified.length; i++) {
-								changedContainers.add(toBeNotified[i]);							
+							for (IResource t : toBeNotified) {
+								changedContainers.add(t);							
 							}
 							if(Policy.DEBUG_METAFILE_CHANGES) {
 								System.out.println("[cvs] metafile changed by 3rd party: " + resource.getFullPath()); //$NON-NLS-1$

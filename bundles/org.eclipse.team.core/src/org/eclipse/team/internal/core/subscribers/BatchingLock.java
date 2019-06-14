@@ -146,8 +146,7 @@ public class BatchingLock {
 				// Create a MultiRule for all projects from the given rule
 				ISchedulingRule[] rules = ((MultiRule)resourceRule).getChildren();
 				Set<ISchedulingRule> projects = new HashSet<>();
-				for (int i = 0; i < rules.length; i++) {
-					ISchedulingRule childRule = rules[i];
+				for (ISchedulingRule childRule : rules) {
 					if (childRule instanceof IResource) {
 						projects.add(((IResource)childRule).getProject());
 					}
@@ -255,8 +254,7 @@ public class BatchingLock {
 
 	private ThreadInfo getThreadInfo(IResource resource) {
 		synchronized (infos) {
-			for (Iterator iter = infos.values().iterator(); iter.hasNext();) {
-				ThreadInfo info = (ThreadInfo) iter.next();
+			for (ThreadInfo info : infos.values()) {
 				if (info.ruleContains(resource)) {
 					return info;
 				}

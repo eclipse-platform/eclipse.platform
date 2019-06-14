@@ -110,8 +110,7 @@ public abstract class CompareInputChangeNotifier implements
 				}
 			}
 			dispatchChanges(toDispatch, monitor);
-			for (int i = 0; i < events.length; i++) {
-				RunnableEvent event = events[i];
+			for (RunnableEvent event : events) {
 				executeRunnableNow(event, monitor);
 			}
 			return true;
@@ -134,8 +133,7 @@ public abstract class CompareInputChangeNotifier implements
 						InputChangeEvent changeEvent = (InputChangeEvent) event;
 						ICompareInput[] inputs = changeEvent.getChangedInputs();
 						synchronized (changedInputs) {
-							for (int i = 0; i < inputs.length; i++) {
-								ICompareInput input = inputs[i];
+							for (ICompareInput input : inputs) {
 								changedInputs.add(input);
 							}
 						}
@@ -276,8 +274,7 @@ public abstract class CompareInputChangeNotifier implements
 	 */
 	protected void prepareInputs(ICompareInput[] inputs, IProgressMonitor monitor) {
 		monitor.beginTask(null, inputs.length * 100);
-		for (int i = 0; i < inputs.length; i++) {
-			ICompareInput input = inputs[i];
+		for (ICompareInput input : inputs) {
 			prepareInput(input, Policy.subMonitorFor(monitor, 100));
 		}
 		monitor.done();
@@ -303,8 +300,7 @@ public abstract class CompareInputChangeNotifier implements
 	 * @param inputs the changed inputs
 	 */
 	protected void fireChanges(ICompareInput[] inputs) {
-		for (int i = 0; i < inputs.length; i++) {
-			ICompareInput input = inputs[i];
+		for (ICompareInput input : inputs) {
 			fireChange(input);
 		}
 	}
@@ -321,11 +317,9 @@ public abstract class CompareInputChangeNotifier implements
 	public void resourceChanged(IResourceChangeEvent event) {
 		List<ICompareInput> changedInputs = new ArrayList<>();
 		ICompareInput[] inputs = getConnectedInputs();
-		for (int i = 0; i < inputs.length; i++) {
-			ICompareInput input = inputs[i];
+		for (ICompareInput input : inputs) {
 			IResource[] resources = getResources(input);
-			for (int j = 0; j < resources.length; j++) {
-				IResource resource = resources[j];
+			for (IResource resource : resources) {
 				if (resource != null) {
 					IResourceDelta delta = event.getDelta().findMember(resource.getFullPath());
 					if (delta != null) {
@@ -362,8 +356,7 @@ public abstract class CompareInputChangeNotifier implements
 			realChanges = inputs;
 		} else {
 			List<ICompareInput> result = new ArrayList<>();
-			for (int i = 0; i < inputs.length; i++) {
-				ICompareInput input = inputs[i];
+			for (ICompareInput input : inputs) {
 				if (isChanged(input)) {
 					result.add(input);
 				}

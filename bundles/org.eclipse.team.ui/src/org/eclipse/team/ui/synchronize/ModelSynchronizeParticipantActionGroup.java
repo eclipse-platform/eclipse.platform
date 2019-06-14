@@ -139,8 +139,8 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 			if (fileGroup != null) {
 				ModelSynchronizeParticipant msp = ((ModelSynchronizeParticipant)getConfiguration().getParticipant());
 				boolean allElementsHaveCompareInput = true;
-				for (int i = 0; i < elements.length; i++) {
-					if (!msp.hasCompareInputFor(elements[i])) {
+				for (Object element : elements) {
+					if (!msp.hasCompareInputFor(element)) {
 						allElementsHaveCompareInput = false;
 						break;
 					}

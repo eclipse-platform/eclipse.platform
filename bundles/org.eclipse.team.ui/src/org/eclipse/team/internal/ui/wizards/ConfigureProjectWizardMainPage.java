@@ -206,8 +206,7 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 
 	/* package */ IProject[] getUnsharedProjects() {
 		java.util.List<IProject> unshared = new ArrayList<>();
-		for (int i = 0; i < projects.length; i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			if (!RepositoryProvider.isShared(project))
 				unshared.add(project);
 		}
@@ -263,9 +262,9 @@ public class ConfigureProjectWizardMainPage extends WizardPage {
 		// TODO: any checks here?
 		Object[] children = ((AdaptableList) viewer.getInput()).getChildren();
 
-		for (int i = 0; i < children.length; i++) {
+		for (Object child : children) {
 			try {
-				ConfigurationWizardElement element = (ConfigurationWizardElement)children[i];
+				ConfigurationWizardElement element = (ConfigurationWizardElement) child;
 				if (element.getID().equals(selectedWizardId)) {
 					viewer.setSelection(new StructuredSelection(element));
 					return;

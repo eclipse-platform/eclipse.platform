@@ -83,8 +83,7 @@ class FileStructureVisitor extends AbstractStructureVisitor {
 	 * @param children
 	 */
 	private void sendManagedFolders(ICVSResource[] children) throws CVSException {
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			if (resource.isFolder() && resource.isManaged()) {
 				resource.accept(this);
 			}
@@ -96,8 +95,7 @@ class FileStructureVisitor extends AbstractStructureVisitor {
 	 * @param children
 	 */
 	private void sendQuestionableFolders(ICVSResource[] children) throws CVSException {
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			if (resource.isFolder() && ! resource.isManaged()) {
 				resource.accept(this);
 			}
@@ -109,8 +107,7 @@ class FileStructureVisitor extends AbstractStructureVisitor {
 	 * @param children
 	 */
 	private void sendFiles(ICVSResource[] children) throws CVSException {
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			if (!resource.isFolder()) {
 				resource.accept(this);
 			}

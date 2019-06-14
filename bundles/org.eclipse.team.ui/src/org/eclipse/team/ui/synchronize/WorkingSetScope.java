@@ -98,17 +98,15 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 			return null;
 		}
 		HashSet<IResource> roots = new HashSet<>();
-		for (int i = 0; i < sets.length; i++) {
-			IWorkingSet set = sets[i];
+		for (IWorkingSet set : sets) {
 			IResource[] resources = Utils.getResources(set.getElements());
 			addNonOverlapping(roots, resources);
-	}
+		}
 		return roots.toArray(new IResource[roots.size()]);
 	}
 
 	private void addNonOverlapping(HashSet<IResource> roots, IResource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			IResource newResource = resources[i];
+		for (IResource newResource : resources) {
 			boolean add = true;
 			for (Iterator iter = roots.iterator(); iter.hasNext();) {
 				IResource existingResource = (IResource) iter.next();
@@ -137,8 +135,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getProperty() == IWorkingSetManager.CHANGE_WORKING_SET_CONTENT_CHANGE) {
 			IWorkingSet newSet = (IWorkingSet) event.getNewValue();
-			for (int i = 0; i < sets.length; i++) {
-				IWorkingSet set = sets[i];
+			for (IWorkingSet set : sets) {
 				if (newSet == set) {
 					fireRootsChanges();
 					return;
@@ -159,8 +156,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 	@Override
 	public void saveState(IMemento memento) {
 		super.saveState(memento);
-		for (int i = 0; i < sets.length; i++) {
-			IWorkingSet set = sets[i];
+		for (IWorkingSet set : sets) {
 			IMemento rootNode = memento.createChild(CTX_SETS);
 			rootNode.putString(CTX_SET_NAME, set.getName());
 		}
@@ -172,8 +168,7 @@ public class WorkingSetScope extends AbstractSynchronizeScope implements IProper
 		IMemento[] rootNodes = memento.getChildren(CTX_SETS);
 		if (rootNodes != null) {
 			List<IWorkingSet> sets = new ArrayList<>();
-			for (int i = 0; i < rootNodes.length; i++) {
-				IMemento rootNode = rootNodes[i];
+			for (IMemento rootNode : rootNodes) {
 				String setName = rootNode.getString(CTX_SET_NAME);
 				IWorkingSet set = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSet(setName);
 				if (set != null) {

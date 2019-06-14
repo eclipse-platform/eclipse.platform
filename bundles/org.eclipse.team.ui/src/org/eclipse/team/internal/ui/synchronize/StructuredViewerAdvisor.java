@@ -218,8 +218,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 				o = ISynchronizePageConfiguration.DEFAULT_TOOLBAR_MENU;
 			}
 			String[] groups = (String[])o;
-			for (int i = 0; i < groups.length; i++) {
-				String group = groups[i];
+			for (String group : groups) {
 				// The groupIds must be converted to be unique since the toolbar is shared
 				manager.add(new Separator(getGroupId(group)));
 			}
@@ -234,8 +233,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 				}
 				groups = (String[]) o;
 				initializeStatusLine(actionBars);
-				for (int i = 0; i < groups.length; i++) {
-					String group = groups[i];
+				for (String group : groups) {
 					// The groupIds must be converted to be unique since the
 					// view menu is shared
 					menu.add(new Separator(getGroupId(group)));
@@ -289,8 +287,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			@Override
 			public void menuShown(MenuEvent e) {
 				IContributionItem[] items = menuMgr.getItems();
-				for (int i = 0; i < items.length; i++) {
-					IContributionItem item = items[i];
+				for (IContributionItem item : items) {
 					if (item instanceof ActionContributionItem) {
 						IAction actionItem = ((ActionContributionItem) item).getAction();
 						if (actionItem instanceof SynchronizeModelAction) {
@@ -375,8 +372,7 @@ public abstract class StructuredViewerAdvisor extends AbstractViewerAdvisor {
 			o = ISynchronizePageConfiguration.DEFAULT_CONTEXT_MENU;
 		}
 		String[] groups = (String[])o;
-		for (int i = 0; i < groups.length; i++) {
-			String group = groups[i];
+		for (String group : groups) {
 			// There is no need to adjust the group ids in a context menu (see setActionBars)
 			manager.add(new Separator(group));
 		}

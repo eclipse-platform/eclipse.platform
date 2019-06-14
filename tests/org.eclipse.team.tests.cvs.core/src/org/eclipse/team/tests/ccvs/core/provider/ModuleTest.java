@@ -270,8 +270,7 @@ public class ModuleTest extends EclipseTest {
 	}
 	
 	public RemoteModule getRemoteModule(String moduleName) {
-		for (int i = 0; i < remoteModules.length; i++) {
-			RemoteModule module = remoteModules[i];
+		for (RemoteModule module : remoteModules) {
 			// XXX shouldn't be getName
 			if (module.getName().equals(moduleName))
 				return module;

@@ -566,8 +566,7 @@ public class CompareEditor extends EditorPart
 		if (init || knownSaveables == null) {
 			recordSaveables(sourceSaveables);
 		} else {
-			for (int i = 0; i < sourceSaveables.length; i++) {
-				Saveable saveable = sourceSaveables[i];
+			for (Saveable saveable : sourceSaveables) {
 				if (!knownSaveables.contains(saveable)) {
 					CompareUIPlugin.logErrorMessage(NLS.bind("Saveable {0} was not added using a saveables lifecycle event.", saveable.getName())); //$NON-NLS-1$
 					knownSaveables.add(saveable);
@@ -591,8 +590,7 @@ public class CompareEditor extends EditorPart
 		if (sourceSaveables.length != knownSaveables.size()) {
 			return false;
 		}
-		for (int i = 0; i < sourceSaveables.length; i++) {
-			Saveable saveable = sourceSaveables[i];
+		for (Saveable saveable : sourceSaveables) {
 			if (!knownSaveables.contains(saveable)) {
 				return false;
 			}
@@ -717,11 +715,10 @@ public class CompareEditor extends EditorPart
 				return;
 			java.util.List<Saveable> result = new ArrayList<>();
 			Saveable[] all = event.getSaveables();
-			for (int i = 0; i < all.length; i++) {
-				Saveable saveable = all[i];
+			for (Saveable saveable : all) {
 				if (knownSaveables.contains(saveable))
 					result.add(saveable);
-					knownSaveables.remove(saveable);
+				knownSaveables.remove(saveable);
 			}
 			if (result.isEmpty())
 				return;

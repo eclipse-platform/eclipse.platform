@@ -109,8 +109,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 			// Look for any resources that were removed from the set but are still out-of sync.
 			// Re-add those resources
 			final List<SyncInfo> outOfSync = new ArrayList<>();
-			for (int i = 0; i < paths.length; i++) {
-				IPath path = paths[i];
+			for (IPath path : paths) {
 				if (!((DiffChangeSet)set).contains(path)) {
 					SyncInfo info = getSyncInfo(path);
 					if (info != null && info.getKind() != SyncInfo.IN_SYNC) {
@@ -168,8 +167,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		// First, clean up
 		rootSet.clear();
 		ChangeSet[] sets = activeSets.keySet().toArray(new ChangeSet[activeSets.size()]);
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			remove(set);
 		}
 		activeSets.clear();
@@ -179,15 +177,13 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 			if (getConfiguration().getComparisonType() == ISynchronizePageConfiguration.THREE_WAY) {
 				// Show all active change sets even if they are empty
 				sets = getActiveChangeSetManager().getSets();
-				for (int i = 0; i < sets.length; i++) {
-					ChangeSet set = sets[i];
+				for (ChangeSet set : sets) {
 					add(set);
 				}
 				// The above will add all sync info that are contained in sets.
 				// We still need to add uncontained infos to the root set
 				SyncInfo[] syncInfos = seedSet.getSyncInfos();
-				for (int i = 0; i < syncInfos.length; i++) {
-					SyncInfo info = syncInfos[i];
+				for (SyncInfo info : syncInfos) {
 					if (isLocalChange(info)) {
 						ChangeSet[] containingSets = findChangeSets(info);
 						if (containingSets.length == 0) {
@@ -221,8 +217,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		removals.addAll(Arrays.asList(event.getRemovedResources()));
 		additions.addAll(Arrays.asList(event.getAddedResources()));
 		SyncInfo[] changed = event.getChangedResources();
-		for (int i = 0; i < changed.length; i++) {
-			SyncInfo info = changed[i];
+		for (SyncInfo info : changed) {
 			additions.add(info);
 			removals.add(info.getLocal());
 		}
@@ -248,15 +243,13 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	protected void add(SyncInfo[] infos) {
 		rootSet.beginInput();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			if (isLocalChange(info) && select(info)) {
 				ChangeSet[] sets = findChangeSets(info);
 				if (sets.length == 0) {
 					rootSet.add(info);
 				} else {
-					for (int j = 0; j < sets.length; j++) {
-						ChangeSet set = sets[j];
+					for (ChangeSet set : sets) {
 						SyncInfoSet targetSet = getSyncInfoSet(set);
 						if (targetSet == null) {
 							// This will add all the appropriate sync info to the set
@@ -275,8 +268,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 		ActiveChangeSetManager manager = getActiveChangeSetManager();
 		ChangeSet[] sets = manager.getSets();
 		List<ChangeSet> result = new ArrayList<>();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set.contains(info.getLocal())) {
 				result.add(set);
 			}
@@ -353,8 +345,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	private SyncInfoSet asSyncInfoSet(IDiff[] diffs) {
 		SyncInfoSet result = new SyncInfoSet();
-		for (int i = 0; i < diffs.length; i++) {
-			IDiff diff = diffs[i];
+		for (IDiff diff : diffs) {
 			if (select(diff)) {
 				SyncInfo info = asSyncInfo(diff);
 				if (info != null)
@@ -383,8 +374,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	/* private */ IResource[] getResources(SyncInfoSet set, IPath[] paths) {
 		List<IResource> result = new ArrayList<>();
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			SyncInfo info = getSyncInfo(set, path);
 			if (info != null) {
 				result.add(info.getLocal());
@@ -395,8 +385,7 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 
 	private SyncInfo getSyncInfo(SyncInfoSet set, IPath path) {
 		SyncInfo[] infos = set.getSyncInfos();
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			if (info.getLocal().getFullPath().equals(path))
 				return info;
 		}

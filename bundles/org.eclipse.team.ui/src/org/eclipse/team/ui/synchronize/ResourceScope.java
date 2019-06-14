@@ -88,8 +88,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 	@Override
 	public void saveState(IMemento memento) {
 		if (resources != null) {
-			for (int i = 0; i < resources.length; i++) {
-				IResource resource = resources[i];
+			for (IResource resource : resources) {
 				IMemento rootNode = memento.createChild(CTX_ROOT);
 				rootNode.putString(CTX_ROOT_PATH, resource.getFullPath().toString());
 			}
@@ -101,8 +100,7 @@ public class ResourceScope extends AbstractSynchronizeScope {
 		IMemento[] rootNodes = memento.getChildren(CTX_ROOT);
 		if(rootNodes != null) {
 			List<IResource> resources = new ArrayList<>();
-			for (int i = 0; i < rootNodes.length; i++) {
-				IMemento rootNode = rootNodes[i];
+			for (IMemento rootNode : rootNodes) {
 				IPath path = new Path(rootNode.getString(CTX_ROOT_PATH));
 				IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path, true /* include phantoms */);
 				if(resource != null) {

@@ -87,15 +87,15 @@ public class CVSURI {
 			sb.append(ssp.substring(i + 1, j));
 			String[] params = ssp.substring(j).split(";"); //$NON-NLS-1$
 			String projectName = ""; //$NON-NLS-1$
-			for (int k = 0; k < params.length; k++) {
+			for (String param : params) {
 				// PDE way of providing tags
-				if (params[k].startsWith("tag=")) { //$NON-NLS-1$
+				if (param.startsWith("tag=")) { //$NON-NLS-1$
 					sb.append(",version="); //$NON-NLS-1$
-					sb.append(params[k].substring(params[k].indexOf('=') + 1));
-				} else if (params[k].startsWith("version=")) { //$NON-NLS-1$
-					sb.append(',').append(params[k]);
-				} else if (params[k].startsWith("project=")) { //$NON-NLS-1$
-					projectName = params[k].substring(params[k].indexOf('=') + 1);
+					sb.append(param.substring(param.indexOf('=') + 1));
+				} else if (param.startsWith("version=")) { //$NON-NLS-1$
+					sb.append(',').append(param);
+				} else if (param.startsWith("project=")) { //$NON-NLS-1$
+					projectName = param.substring(param.indexOf('=') + 1);
 				}
 			}
 			sb.append(',').append(projectName); // can be ""

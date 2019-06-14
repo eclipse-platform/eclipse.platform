@@ -88,8 +88,7 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		InternalListener listener= new InternalListener();
 		fViewerInFocus= viewerInFocus;
 
-		for (int i= 0; i < fViewers.length; i++) {
-			TextViewer viewer= fViewers[i];
+		for (TextViewer viewer : fViewers) {
 			viewer.addSelectionChangedListener(listener);
 			viewer.addPostSelectionChangedListener(new InternalPostSelectionListener());
 			StyledText textWidget = viewer.getTextWidget();
@@ -98,9 +97,9 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 	}
 
 	private void doFocusChanged(Widget control) {
-		for (int i= 0; i < fViewers.length; i++) {
-			if (fViewers[i].getTextWidget() == control) {
-				propagateFocusChanged(fViewers[i]);
+		for (TextViewer viewer : fViewers) {
+			if (viewer.getTextWidget() == control) {
+				propagateFocusChanged(viewer);
 				return;
 			}
 		}
@@ -198,8 +197,9 @@ public class CompareEditorSelectionProvider implements IPostSelectionProvider {
 		if (fViewers == null)
 			return;
 
-		for (int i= 0; i < fViewers.length; i++)
-			fViewers[i].setVisibleRegion(0, fViewers[i].getDocument().getLength());
+		for (TextViewer viewer : fViewers) {
+			viewer.setVisibleRegion(0, viewer.getDocument().getLength());
+		}
 	}
 
 	/**

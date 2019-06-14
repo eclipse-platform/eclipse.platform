@@ -138,8 +138,8 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		
 			Object[] result = dialog.getResult();
 			
-			for (int i = 0; i < result.length; i++) {
-				fText.insert("{"+((Map.Entry)result[i]).getKey() +"}");   //$NON-NLS-1$ //$NON-NLS-2$
+			for (Object r : result) {
+				fText.insert("{" + ((Map.Entry) r).getKey() + "}"); //$NON-NLS-1$ //$NON-NLS-2$
 			}		
 		}
 
@@ -428,20 +428,20 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		}
 		
 		private void setColorsAndFonts(TreeItem[] items) {
-			for (int i = 0; i < items.length; i++) {
+			for (TreeItem item : items) {
 				if (fGeneralTab.isFontDecorationEnabled()) {
-					Color backGroundColor = getBackground(items[i].getData());
-					items[i].setBackground(backGroundColor);
-					Color foreGroundColor = getForeground(items[i].getData());
-					items[i].setForeground(foreGroundColor);
-					Font font = getFont(items[i].getData());
-					items[i].setFont(font);
+					Color backGroundColor = getBackground(item.getData());
+					item.setBackground(backGroundColor);
+					Color foreGroundColor = getForeground(item.getData());
+					item.setForeground(foreGroundColor);
+					Font font = getFont(item.getData());
+					item.setFont(font);
 				} else {
-					items[i].setBackground(null);
-					items[i].setForeground(null);
-					items[i].setFont(null);
+					item.setBackground(null);
+					item.setForeground(null);
+					item.setFont(null);
 				}
-				setColorsAndFonts(items[i].getItems());
+				setColorsAndFonts(item.getItems());
 			}
 		}
 		

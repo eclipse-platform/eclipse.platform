@@ -228,8 +228,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 						set.add(diffArray);
 					} else {
 						ChangeSet[] sets = getActiveChangeSetManager().getSets();
-						for (int i = 0; i < sets.length; i++) {
-							ActiveChangeSet activeSet = (ActiveChangeSet)sets[i];
+						for (ChangeSet s : sets) {
+							ActiveChangeSet activeSet = (ActiveChangeSet) s;
 							activeSet.remove(resources);
 						}
 					}
@@ -391,8 +391,8 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		createChangeSet.selectionChanged(selection);
 		addToChangeSet.add(createChangeSet);
 		addToChangeSet.add(new Separator());
-		for (int i = 0; i < sets.length; i++) {
-			ActiveChangeSet set = (ActiveChangeSet)sets[i];
+		for (ChangeSet s : sets) {
+			ActiveChangeSet set = (ActiveChangeSet) s;
 			AddToChangeSetAction action = new AddToChangeSetAction(getConfiguration(), set, selection);
 			manager.add(action);
 		}
@@ -472,8 +472,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 	private IDiff[] getDiffs(IResource[] resources) {
 		List<IDiff> diffs = new ArrayList<>();
 		Subscriber s = ((SubscriberParticipant)getConfiguration().getParticipant()).getSubscriber();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			try {
 				IDiff diff = s.getDiff(resource);
 				if (diff != null)

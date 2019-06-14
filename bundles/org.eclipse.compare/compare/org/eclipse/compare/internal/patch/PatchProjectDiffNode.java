@@ -53,8 +53,7 @@ public class PatchProjectDiffNode extends PatchDiffNode {
 
 	private boolean containsProblems() {
 		IDiffElement[] elements = getChildren();
-		for (int i = 0; i < elements.length; i++) {
-			IDiffElement diffElement = elements[i];
+		for (IDiffElement diffElement : elements) {
 			if (diffElement instanceof PatchFileDiffNode) {
 				PatchFileDiffNode node = (PatchFileDiffNode) diffElement;
 				if (node.getDiffResult().containsProblems())

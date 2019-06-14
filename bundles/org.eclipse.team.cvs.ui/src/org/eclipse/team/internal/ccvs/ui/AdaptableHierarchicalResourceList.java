@@ -46,8 +46,7 @@ public class AdaptableHierarchicalResourceList extends AdaptableResourceList {
 	private IResource[] getChildenFor(IContainer parent) {
 		Set children = new HashSet();
 		IPath parentPath = parent.getFullPath();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			IPath resourcePath = resource.getFullPath();
 			if (parent instanceof IWorkspaceRoot) {
 				children.add(((IWorkspaceRoot)parent).getProject(resourcePath.segment(0)));

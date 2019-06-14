@@ -58,9 +58,10 @@ public class ApplyPatchSubscriber extends Subscriber {
 			if (getRemote() != null) {
 				FilePatch2 filePatch2 = ((PatchedFileVariant)getRemote()).getDiff();
 				IHunk[] hunks = filePatch2.getHunks();
-				for (int i = 0; i < hunks.length; i++) {
-					if (patcher.isManuallyMerged((Hunk) hunks[i]))
+				for (IHunk hunk : hunks) {
+					if (patcher.isManuallyMerged((Hunk) hunk)) {
 						return IN_SYNC;
+					}
 				}
 			} else {
 				// deletions don't have the remote variant, but still can be manually merged
@@ -68,9 +69,10 @@ public class ApplyPatchSubscriber extends Subscriber {
 				if (patchObject instanceof FilePatch2) {
 					FilePatch2 filePatch2 = (FilePatch2) patchObject;
 					IHunk[] hunks = filePatch2.getHunks();
-					for (int i = 0; i < hunks.length; i++) {
-						if (patcher.isManuallyMerged((Hunk) hunks[i]))
+					for (IHunk hunk : hunks) {
+						if (patcher.isManuallyMerged((Hunk) hunk)) {
 							return IN_SYNC;
+						}
 					}
 				}
 			}
@@ -147,8 +149,8 @@ public class ApplyPatchSubscriber extends Subscriber {
 
 			// patch members, subscriber location
 			FilePatch2[] diffs = getPatcher().getDiffs();
-			for (int i = 0; i < diffs.length; i++) {
-				IResource file = PatchModelProvider.getFile(diffs[i], getPatcher());
+			for (FilePatch2 diff : diffs) {
+				IResource file = PatchModelProvider.getFile(diff, getPatcher());
 				if (container.getFullPath().isPrefixOf(file.getFullPath())) {
 					// XXX: check segments
 					if (!container.exists(file.getProjectRelativePath())) {
@@ -166,9 +168,8 @@ public class ApplyPatchSubscriber extends Subscriber {
 	public void refresh(IResource[] resources, int depth,
 			IProgressMonitor monitor) throws TeamException {
 		Set<FilePatch2> diffs = new HashSet<>();
-		for (int i = 0; i < resources.length; i++) {
-			Object object = PatchModelProvider.getPatchObject(resources[i],
-					getPatcher());
+		for (IResource resource : resources) {
+			Object object = PatchModelProvider.getPatchObject(resource, getPatcher());
 			if (object instanceof FilePatch2) {
 				FilePatch2 filePatch = (FilePatch2) object;
 				diffs.add(filePatch);
@@ -182,9 +183,9 @@ public class ApplyPatchSubscriber extends Subscriber {
 		Set<IResource> roots = new HashSet<>();
 		if (getPatcher().isWorkspacePatch()) {
 			IDiffElement[] children = PatchModelProvider.getPatchWorkspace(this).getChildren();
-			for (int i = 0; i < children.length; i++) {
+			for (IDiffElement child : children) {
 				// return array of projects from the patch
-				DiffProject diffProject = ((PatchProjectDiffNode)children[i]).getDiffProject();
+				DiffProject diffProject = ((PatchProjectDiffNode) child).getDiffProject();
 				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
 				if (project.isAccessible())
 					roots.add(project);

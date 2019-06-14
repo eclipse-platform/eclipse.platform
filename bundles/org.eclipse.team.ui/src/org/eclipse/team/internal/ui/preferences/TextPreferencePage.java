@@ -131,15 +131,12 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		Set fPluginNames= makeSetOfStrings(manager.getDefaultNameMappings());
 		Set fPluginExtensions= makeSetOfStrings(manager.getDefaultExtensionMappings());
 
-		for (int i = 0; i < extensionInfoArray.length; i++) {
-			final IStringMapping info= extensionInfoArray[i];
+		for (IStringMapping info : extensionInfoArray) {
 			final FileTypeTable.Extension extension= new FileTypeTable.Extension(info.getString(), fPluginExtensions.contains(info.getString()));
 			extension.mode= info.getType();
 			fItems.add(extension);
 		}
-
-		for (int i = 0; i < nameInfoArray.length; i++) {
-			final IStringMapping info= nameInfoArray[i];
+		for (IStringMapping info : nameInfoArray) {
 			final FileTypeTable.Name name= new FileTypeTable.Name(info.getString(), fPluginNames.contains(info.getString()));
 			name.mode= info.getType();
 			fItems.add(name);
@@ -149,8 +146,8 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
 	private static Set<String> makeSetOfStrings(IStringMapping [] mappings) {
 		final Set<String> set= new HashSet<>(mappings.length);
-		for (int i = 0; i < mappings.length; i++) {
-			set.add(mappings[i].getString());
+		for (IStringMapping mapping : mappings) {
+			set.add(mapping.getString());
 		}
 		return set;
 	}

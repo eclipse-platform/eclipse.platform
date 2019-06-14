@@ -46,8 +46,8 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 	protected void fetchInput(IProgressMonitor monitor) {
 		if (inputSyncSet == null) return;
 		SyncInfo[] infos = inputSyncSet.getSyncInfos();
-		for (int i = 0; i < infos.length; i++) {
-			collect(infos[i], monitor);
+		for (SyncInfo info : infos) {
+			collect(info, monitor);
 		}
 	}
 
@@ -66,14 +66,14 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 	}
 
 	private void syncSetChanged(SyncInfo[] infos, IProgressMonitor monitor) {
-		for (int i = 0; i < infos.length; i++) {
-			collect(infos[i], monitor);
+		for (SyncInfo info : infos) {
+			collect(info, monitor);
 		}
 	}
 
 	private void remove(IResource[] resources) {
-		for (int i = 0; i < resources.length; i++) {
-			remove(resources[i]);
+		for (IResource resource : resources) {
+			remove(resource);
 		}
 	}
 
@@ -104,8 +104,7 @@ public class SyncSetInputFromSyncSet extends SyncSetInput implements ISyncInfoSe
 		SubscriberSyncInfoSet syncSet = getSyncSet();
 		try {
 			syncSet.beginInput();
-			for (int i = 0; i < errors.length; i++) {
-				ITeamStatus status = errors[i];
+			for (ITeamStatus status : errors) {
 				syncSet.addError(status);
 			}
 		} finally {

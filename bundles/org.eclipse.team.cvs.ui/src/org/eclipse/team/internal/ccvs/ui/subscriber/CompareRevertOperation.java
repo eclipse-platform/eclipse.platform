@@ -53,9 +53,7 @@ public class CompareRevertOperation extends CVSSubscriberOperation {
 		// (incoming addition or previously pruned)
 		Set parentCreationElements = new HashSet();
 	
-		for (int i = 0; i < changed.length; i++) {
-			SyncInfo changedNode = changed[i];
-			
+		for (SyncInfo changedNode : changed) {
 			// Make sure that parent folders exist
 			SyncInfo parent = getParent(changedNode);
 			if (parent != null && isOutOfSync(parent)) {
@@ -98,8 +96,7 @@ public class CompareRevertOperation extends CVSSubscriberOperation {
 	
 	private void runUpdate(SyncInfo[] infos, IProgressMonitor monitor) throws TeamException {
 		monitor.beginTask(null, 100 * infos.length);
-		for (int i = 0; i < infos.length; i++) {
-			SyncInfo info = infos[i];
+		for (SyncInfo info : infos) {
 			makeRemoteLocal(info, Policy.subMonitorFor(monitor, 100));
 		}
 		monitor.done();

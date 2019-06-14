@@ -134,8 +134,7 @@ public abstract class TagAction extends WorkspaceTraversalAction {
 			@Override
 			public void run(IProgressMonitor monitor) {
 				try {
-					for (int i = 0; i < resources.length; i++) {
-						ICVSResource resource = resources[i];
+					for (ICVSResource resource : resources) {
 						// Cache the new tag creation even if the tag may have had warnings.
 						manager.addTags(getRootParent(resource), new CVSTag[] {tag});
 					}

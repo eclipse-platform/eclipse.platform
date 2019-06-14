@@ -35,11 +35,11 @@ public class RemoveDateTagAction extends SelectionListenerAction {
 	public void run() {
 		CVSTagElement[] elements = getSelectedCVSTagElements();
 		if (elements.length == 0) return;
-		for(int i = 0; i < elements.length; i++){
+		for (CVSTagElement element : elements) {
 			RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
-			CVSTag tag = elements[i].getTag();
-			if(tag.getType() == CVSTag.DATE){
-				mgr.removeDateTag(elements[i].getRoot(),tag);
+			CVSTag tag = element.getTag();
+			if (tag.getType() == CVSTag.DATE) {
+				mgr.removeDateTag(element.getRoot(), tag);
 			}				
 		}
 	}
@@ -54,8 +54,8 @@ public class RemoveDateTagAction extends SelectionListenerAction {
 	private boolean containsDataTag(){
 		CVSTagElement[] elements = getSelectedCVSTagElements();
 		if (elements.length > 0){ 		
-			for(int i = 0; i < elements.length; i++){
-				CVSTag tag = elements[i].getTag();
+			for (CVSTagElement element : elements) {
+				CVSTag tag = element.getTag();
 				if(tag.getType() == CVSTag.DATE){
 					return true;
 				}				

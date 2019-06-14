@@ -52,8 +52,7 @@ public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizePar
 	public ModelProvider[] getEnabledModelProviders() {
 		ModelProvider[] enabledProviders = super.getEnabledModelProviders();
 		if (this instanceof IChangeSetProvider) {
-			for (int i = 0; i < enabledProviders.length; i++) {
-				ModelProvider provider = enabledProviders[i];
+			for (ModelProvider provider : enabledProviders) {
 				if (provider.getId().equals(ChangeSetModelProvider.ID))
 					return enabledProviders;
 			}

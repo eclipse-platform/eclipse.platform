@@ -69,8 +69,8 @@ public class CVSHistoryFilter extends ViewerFilter {
 
 	protected boolean branchMatch(CVSFileRevision revision) {
 		ITag[] branches = revision.getBranches();
-		for (int i = 0; i < branches.length; i++) {
-			if ((branches[i].getName().toLowerCase().indexOf(branchName.toLowerCase()) != -1)) {
+		for (ITag branche : branches) {
+			if (branche.getName().toLowerCase().indexOf(branchName.toLowerCase()) != -1) {
 				return true;
 			}
 		}		

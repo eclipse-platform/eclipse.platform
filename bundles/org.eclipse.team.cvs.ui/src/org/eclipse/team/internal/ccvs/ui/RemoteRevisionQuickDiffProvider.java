@@ -89,11 +89,10 @@ public class RemoteRevisionQuickDiffProvider implements IQuickDiffReferenceProvi
 		@Override
 		public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 			if(fReferenceInitialized) {
-				for (int i = 0; i < deltas.length; i++) {
-					ISubscriberChangeEvent delta = deltas[i];
+				for (ISubscriberChangeEvent delta : deltas) {
 					IResource resource = delta.getResource();
-					if(resource.getType() == IResource.FILE && 
-						fLastSyncState != null && resource.equals(fLastSyncState.getLocal())) {
+					if(resource.getType() == IResource.FILE &&
+							fLastSyncState != null && resource.equals(fLastSyncState.getLocal())) {
 						if(delta.getFlags() == ISubscriberChangeEvent.SYNC_CHANGED) {
 							fetchContentsInJob();
 						}

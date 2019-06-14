@@ -222,8 +222,8 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 		try {
 			monitor.beginTask(null, commentInfos.length * 10);
 			if (logs != null) {
-				for (int i = 0; i < commentInfos.length; i++) {
-					addSyncInfoToCommentNode(commentInfos[i], logs);
+				for (SyncInfo commentInfo : commentInfos) {
+					addSyncInfoToCommentNode(commentInfo, logs);
 					monitor.worked(10);
 				}
 			}
@@ -266,8 +266,7 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 				String remoteRevision = ((ICVSRemoteFile) remoteResource).getRevision();
 				if (isDeletedRemotely(info)) {
 					ILogEntry[] logEntries = logs.getLogEntries(remoteResource);
-					for (int i = 0; i < logEntries.length; i++) {
-						ILogEntry entry = logEntries[i];
+					for (ILogEntry entry : logEntries) {
 						String revision = entry.getRevision();
 						if (entry.isDeletion() && ResourceSyncInfo.isLaterRevision(revision, remoteRevision)) {
 							logEntry = entry;
@@ -295,8 +294,7 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 			// remote.
 			addRemoteChange(info, null, null);
 		} else {
-			for (int i = 0; i < logEntries.length; i++) {
-				ILogEntry entry = logEntries[i];
+			for (ILogEntry entry : logEntries) {
 				addRemoteChange(info, remoteResource, entry);
 			}
 		}
@@ -366,8 +364,7 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 
 	private CheckedInChangeSet getChangeSetFor(ILogEntry logEntry) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set instanceof CheckedInChangeSet &&
 					set.getComment().equals(logEntry.getComment()) &&
 					((CheckedInChangeSet)set).getAuthor().equals(logEntry.getAuthor())) {
@@ -379,8 +376,7 @@ public class CVSChangeSetCollector extends SyncInfoSetChangeSetCollector impleme
 
 	private CheckedInChangeSet getChangeSetFor(String name) {
 		ChangeSet[] sets = getSets();
-		for (int i = 0; i < sets.length; i++) {
-			ChangeSet set = sets[i];
+		for (ChangeSet set : sets) {
 			if (set.getName().equals(name)) {
 				return (CheckedInChangeSet)set;
 			}

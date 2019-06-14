@@ -243,18 +243,17 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 	}
 
 	private void processDiffs(FilePatch2[] diffs) {
-		for (int i = 0; i < diffs.length; i++) {
-			processDiff(diffs[i], getRoot());
+		for (FilePatch2 diff : diffs) {
+			processDiff(diff, getRoot());
 		}
 	}
 
 	private void processProjects(DiffProject[] diffProjects) {
 		//create diffProject nodes
-		for (int i = 0; i < diffProjects.length; i++) {
-			PatchProjectDiffNode projectNode = new PatchProjectDiffNode(getRoot(), diffProjects[i], getPatcher().getConfiguration());
-			FilePatch2[] diffs = diffProjects[i].getFileDiffs();
-			for (int j = 0; j < diffs.length; j++) {
-				FilePatch2 fileDiff = diffs[j];
+		for (DiffProject diffProject : diffProjects) {
+			PatchProjectDiffNode projectNode = new PatchProjectDiffNode(getRoot(), diffProject, getPatcher().getConfiguration());
+			FilePatch2[] diffs = diffProject.getFileDiffs();
+			for (FilePatch2 fileDiff : diffs) {
 				processDiff(fileDiff, projectNode);
 			}
 		}
@@ -264,8 +263,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		FileDiffResult diffResult = getPatcher().getDiffResult(diff);
 		PatchFileDiffNode node = PatchFileDiffNode.createDiffNode(parent, diffResult);
 		HunkResult[] hunkResults = diffResult.getHunkResults();
-		for (int i = 0; i < hunkResults.length; i++) {
-			HunkResult hunkResult = hunkResults[i];
+		for (HunkResult hunkResult : hunkResults) {
 			if (!hunkResult.isOK()) {
 				HunkDiffNode hunkNode = HunkDiffNode.createDiffNode(node, hunkResult, true);
 				Object left = hunkNode.getLeft();
@@ -350,9 +348,8 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 			tbm.removeAll();
 
 			tbm.add(new Separator("contributed")); //$NON-NLS-1$
-
-			for (int i = 0; i < actions.length; i++) {
-				tbm.appendToGroup("contributed", actions[i]); //$NON-NLS-1$
+			for (Action action : actions) {
+				tbm.appendToGroup("contributed", action); //$NON-NLS-1$
 			}
 
 			tbm.update(true);
@@ -369,8 +366,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 
 	public void resetRoot() {
 		IDiffElement[] children = root.getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement child = children[i];
+		for (IDiffElement child : children) {
 			root.remove(child);
 		}
 	}
@@ -403,8 +399,7 @@ public abstract class PatchCompareEditorInput extends CompareEditorInput {
 		boolean atLeastOneIsEnabled = false;
 		if (getViewer() != null) {
 			IDiffElement[] elements = getRoot().getChildren();
-			for (int i = 0; i < elements.length; i++) {
-				IDiffElement element = elements[i];
+			for (IDiffElement element : elements) {
 				if (isEnabled(element)) {
 					atLeastOneIsEnabled = true;
 					break;

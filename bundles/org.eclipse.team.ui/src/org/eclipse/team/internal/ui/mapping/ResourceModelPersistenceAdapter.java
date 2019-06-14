@@ -46,8 +46,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 
 	@Override
 	public void save(ResourceMapping[] mappings, IMemento memento) {
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			Object object = mapping.getModelObject();
 			if (object instanceof IResource) {
 				IResource resource = (IResource) object;
@@ -70,8 +69,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 	public ResourceMapping[] restore(IMemento memento) {
 		IMemento[] children = memento.getChildren(RESOURCES);
 		List<ResourceMapping> result = new ArrayList<>();
-		for (int i = 0; i < children.length; i++) {
-			IMemento child = children[i];
+		for (IMemento child : children) {
 			Integer typeInt = child.getInteger(RESOURCE_TYPE);
 			if (typeInt == null)
 				continue;
@@ -106,8 +104,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 			}
 		}
 		children = memento.getChildren(WORKING_SETS);
-		for (int i = 0; i < children.length; i++) {
-			IMemento child = children[i];
+		for (IMemento child : children) {
 			String name = child.getString(WORKING_SET_NAME);
 			if (name == null)
 				continue;
@@ -119,8 +116,7 @@ public class ResourceModelPersistenceAdapter extends SynchronizationCompareAdapt
 			}
 		}
 		children = memento.getChildren(MODEL_PROVIDERS);
-		for (int i = 0; i < children.length; i++) {
-			IMemento child = children[i];
+		for (IMemento child : children) {
 			String id = child.getString(MODEL_PROVIDER_ID);
 			if (id == null)
 				continue;

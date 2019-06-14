@@ -175,8 +175,9 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 			}
 			IWorkingSet[] ws = getWorkingSets();
 			if (ws != null) {
-				for (int i = 0; i < ws.length; i++)
-					createWorkingSet(ws[i].getName(), targetProjects);
+				for (IWorkingSet w : ws) {
+					createWorkingSet(w.getName(), targetProjects);
+				}
 			}
 			return result[0];
 		} catch (CVSException e) {
@@ -195,8 +196,8 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 			return ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[0]);
 		} else {
 			Set<ISchedulingRule> rules = new HashSet<>();
-			for (int i = 0; i < projects.length; i++) {
-				ISchedulingRule modifyRule = ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(projects[i]);
+			for (IProject project : projects) {
+				ISchedulingRule modifyRule = ResourcesPlugin.getWorkspace().getRuleFactory().modifyRule(project);
 				if (modifyRule instanceof IResource && ((IResource)modifyRule).getType() == IResource.ROOT) {
 					// One of the projects is mapped to a provider that locks the workspace.
 					// Just return the workspace root rule
@@ -326,8 +327,8 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 				} 
 				targetProjectSet.add(ResourcesPlugin.getWorkspace().getRoot().getProject(lastSegment));
 			} else {
-				for (int j = 0; j < expansions.length; j++) {
-					targetProjectSet.add(ResourcesPlugin.getWorkspace().getRoot().getProject(new Path(null, expansions[j]).segment(0)));
+				for (String expansion : expansions) {
+					targetProjectSet.add(ResourcesPlugin.getWorkspace().getRoot().getProject(new Path(null, expansion).segment(0)));
 				}
 			}
 			
@@ -361,8 +362,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		if (projects.length > 1) {
 			setInvolvesMultipleResources(true);
 		}
-		for (int i=0;i<projects.length;i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			Policy.checkCanceled(monitor);
 			if (needsPromptForOverwrite(project) && !promptToOverwrite(remoteFolder, project)) {
 				// User said no to this project but not no to all
@@ -371,8 +371,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 		}
 		// Create the projects and remove any previous content
 		monitor.beginTask(null, projects.length * 100); 
-		for (int i=0;i<projects.length;i++) {
-			IProject project = projects[i];
+		for (IProject project : projects) {
 			createAndOpenProject(project, Policy.subMonitorFor(monitor, 10));
 			scrubProject(project, Policy.subMonitorFor(monitor, 90));
 		}
@@ -392,9 +391,9 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 			monitor.beginTask(null, 100 + children.length * 100);
 			monitor.subTask(NLS.bind(CVSUIMessages.CheckoutOperation_scrubbingProject, new String[] { project.getName() })); //	
 			try {
-				for (int j = 0; j < children.length; j++) {
-					if ( ! children[j].getName().equals(".project")) {//$NON-NLS-1$
-						children[j].delete(true /*force*/, Policy.subMonitorFor(monitor, 100));
+				for (IResource child : children) {
+					if (!child.getName().equals(".project")) { //$NON-NLS-1$
+						child.delete(true /*force*/, Policy.subMonitorFor(monitor, 100));
 					}
 				}
 				// Make sure there is no sync info cached for the project since
@@ -480,8 +479,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 	private void refreshProjects(IProject[] projects, IProgressMonitor monitor) throws CVSException {
 		monitor.beginTask(null, projects.length * 100);
 		try {
-			for (int i = 0; i < projects.length; i++) {
-				IProject project = projects[i];
+			for (IProject project : projects) {
 				// Register the project with Team
 				try {
 					monitor.subTask(NLS.bind(CVSUIMessages.CheckoutOperation_refreshingProject, new String[] { project.getName() })); 

@@ -46,8 +46,7 @@ public class BranchAction extends WorkspaceTraversalAction {
 	
 	private ResourceMapping[] getResourceMappings(IResource[] resources) {
 		List<ResourceMapping> mappings = new ArrayList<>();
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			Object o = getAdapter(resource, ResourceMapping.class);
 			if (o instanceof ResourceMapping) {
 				ResourceMapping mapping = (ResourceMapping) o;

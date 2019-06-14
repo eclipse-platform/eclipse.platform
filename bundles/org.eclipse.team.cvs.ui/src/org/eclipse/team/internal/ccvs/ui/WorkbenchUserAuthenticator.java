@@ -41,15 +41,15 @@ public class WorkbenchUserAuthenticator implements IUserAuthenticator {
 		// Initialize USE_ALTERNATE_PROMPTER
 		IIgnoreInfo[] ignores = Team.getAllIgnores();
 		boolean found = false;
-		for (int i = 0; i < ignores.length; i++) {
-			if (ignores[i].getPattern().equals("*.notes")) { //$NON-NLS-1$
+		for (IIgnoreInfo ignore : ignores) {
+			if (ignore.getPattern().equals("*.notes")) { //$NON-NLS-1$
 				found = true;
 			}
 		}
 		if (!found) return;
 		IStringMapping[] mappings = Team.getFileContentManager().getExtensionMappings();
-		for (int i = 0; i < mappings.length; i++) {
-			if (mappings[i].getString().equals("notes")) { //$NON-NLS-1$
+		for (IStringMapping mapping : mappings) {
+			if (mapping.getString().equals("notes")) { //$NON-NLS-1$
 				USE_ALTERNATE_PROMPTER = true;
 				return;
 			}

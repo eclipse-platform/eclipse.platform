@@ -337,8 +337,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	private void fillMenu(IContributionManager menu, String menuId) {
 		Map<String, List<Object>> groups = menuContributions.get(menuId);
 		if (menu != null && groups != null) {
-			for (Iterator<String> iter = groups.keySet().iterator(); iter.hasNext(); ) {
-				String groupId = iter.next();
+			for (String groupId : groups.keySet()) {
 				List actions = groups.get(groupId);
 				if (actions != null) {
 					for (Iterator iter2 = actions.iterator(); iter2.hasNext();) {

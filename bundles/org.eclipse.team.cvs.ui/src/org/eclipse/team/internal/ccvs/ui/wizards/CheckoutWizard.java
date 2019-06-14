@@ -171,8 +171,7 @@ public class CheckoutWizard extends Wizard implements ICVSWizard, INewWizard {
 		if (page == modulePage) {
 			ICVSRemoteFolder[] selectedModules = getSelectedModules();
 			if (selectedModules.length == 0) return null;
-			for (int i = 0; i < selectedModules.length; i++) {
-				ICVSRemoteFolder folder = selectedModules[i];
+			for (ICVSRemoteFolder folder : selectedModules) {
 				if (folder.isDefinedModule()) {
 					// No further configuration is possible for defined modules
 					return null;

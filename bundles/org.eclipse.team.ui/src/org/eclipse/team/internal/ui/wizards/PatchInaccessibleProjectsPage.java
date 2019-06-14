@@ -140,9 +140,8 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 		DiffProject[] diffProjects = fPatcher.getDiffProjects();
 		List<IProject> projects = new ArrayList<>();
 		if (diffProjects != null) {
-			for (int i = 0; i < diffProjects.length; i++) {
-				IProject project = ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(diffProjects[i].getName());
+			for (DiffProject diffProject : diffProjects) {
+				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(diffProject.getName());
 				if (!project.isAccessible())
 					projects.add(project);
 			}
@@ -169,8 +168,9 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 	public IProject[] getSelectedProjects() {
 		Object elements[] = checkList.getCheckedElements();
 		List<IProject> projects = new ArrayList<>();
-		for (int i = 0; i < elements.length; i++)
-			projects.add((IProject) elements[i]);
+		for (Object element : elements) {
+			projects.add((IProject) element);
+		}
 		return projects.toArray(new IProject[] {});
 	}
 

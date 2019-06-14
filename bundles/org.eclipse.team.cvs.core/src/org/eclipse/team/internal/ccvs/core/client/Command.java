@@ -379,13 +379,13 @@ public abstract class Command extends Request {
 
 			/*** initiate command ***/
 			// send global options
-			for (int i = 0; i < globalOptions.length; i++) {
-				globalOptions[i].send(session);
+			for (GlobalOption globalOption : globalOptions) {
+				globalOption.send(session);
 			}
 			Policy.checkCanceled(monitor);
 			// send local options
-			for (int i = 0; i < localOptions.length; i++) {
-				localOptions[i].send(session);
+			for (LocalOption localOption : localOptions) {
+				localOption.send(session);
 			}
 			Policy.checkCanceled(monitor);
 			// compute the work resources
@@ -574,8 +574,7 @@ public abstract class Command extends Request {
 				return options;
 			}
 			List result = new ArrayList();
-			for (int i = 0; i < options.length; i++) {
-				Command.LocalOption option = options[i];
+			for (LocalOption option : options) {
 				if (!option.equals(this)) {
 					result.add(option);
 				}
@@ -808,8 +807,8 @@ public abstract class Command extends Request {
 	protected String[] convertArgumentsForOpenSession(ICVSResource[] arguments, Session openSession) throws CVSException {
 		// Convert arguments
 		List stringArguments = new ArrayList(arguments.length);
-		for (int i = 0; i < arguments.length; i++) {
-			stringArguments.add(arguments[i].getRelativePath(openSession.getLocalRoot()));
+		for (ICVSResource argument : arguments) {
+			stringArguments.add(argument.getRelativePath(openSession.getLocalRoot()));
 		}
 		return (String[]) stringArguments.toArray(new String[stringArguments.size()]);
 	}

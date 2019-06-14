@@ -248,8 +248,7 @@ public class TagSelectionArea extends DialogArea {
 	private int getMaxWidth(Object[] children) {
 		PixelConverter converter = new PixelConverter(tagTable.getTable());
 		int maxWidth = 0;
-		for (int i = 0; i < children.length; i++) {
-			Object object = children[i];
+		for (Object object : children) {
 			if (object instanceof TagElement) {
 				TagElement tag = (TagElement) object;
 				int width = tag.getTag().getName().length();
@@ -401,9 +400,9 @@ public class TagSelectionArea extends DialogArea {
 	private void deleteDateTag() {
 		TagElement[] selectedDateTagElements = getSelectedDateTagElement();
 		if (selectedDateTagElements.length == 0) return;
-		for(int i = 0; i < selectedDateTagElements.length; i++){
+		for (TagElement selectedDateTagElement : selectedDateTagElements) {
 			RepositoryManager mgr = CVSUIPlugin.getPlugin().getRepositoryManager();
-			CVSTag tag = selectedDateTagElements[i].getTag();
+			CVSTag tag = selectedDateTagElement.getTag();
 			if(tag.getType() == CVSTag.DATE){
 				mgr.removeDateTag(getLocation(),tag);
 			}				

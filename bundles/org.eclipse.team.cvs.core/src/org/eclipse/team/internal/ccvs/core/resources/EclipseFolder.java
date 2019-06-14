@@ -50,8 +50,7 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 		boolean includeIgnored = ((flags & IGNORED_MEMBERS) != 0);
 		boolean includeExisting = (((flags & EXISTING_MEMBERS) != 0) || ((flags & (EXISTING_MEMBERS | PHANTOM_MEMBERS)) == 0));
 		boolean includePhantoms = (((flags & PHANTOM_MEMBERS) != 0) || ((flags & (EXISTING_MEMBERS | PHANTOM_MEMBERS)) == 0));
-		for (int i = 0; i < resources.length; i++) {
-			IResource resource = resources[i];
+		for (IResource resource : resources) {
 			int type = resource.getType();
 			if ((includeFiles && (type==IResource.FILE)) 
 					|| (includeFolders && (type==IResource.FOLDER))) {
@@ -134,12 +133,12 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 		
 		// Visit files and then folders
 		ICVSResource[] subFiles = members(FILE_MEMBERS);
-		for (int i=0; i<subFiles.length; i++) {
-			subFiles[i].accept(visitor);
+		for (ICVSResource subFile : subFiles) {
+			subFile.accept(visitor);
 		}
 		ICVSResource[] subFolders = members(FOLDER_MEMBERS);
-		for (int i=0; i<subFolders.length; i++) {
-			subFolders[i].accept(visitor);
+		for (ICVSResource subFolder : subFolders) {
+			subFolder.accept(visitor);
 		}
 	}
 
@@ -157,8 +156,8 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 		} else {
 			resources = members(ICVSFolder.FILE_MEMBERS);
 		}
-		for (int i = 0; i < resources.length; i++) {
-			resources[i].accept(visitor, recurse);
+		for (ICVSResource r : resources) {
+			r.accept(visitor, recurse);
 		}
 	}
 
@@ -230,9 +229,8 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 			EclipseSynchronizer.getInstance().deleteFolderSync(container);
 	
 			IResource[] members = container.members(true);
-			for (int i = 0; i < members.length; i++) {
+			for (IResource resource : members) {
 				monitor.worked(1);
-				IResource resource = members[i];
 				if (resource.getType() == IResource.FILE) {
 					ResourceAttributes attrs = resource.getResourceAttributes();
 					if (attrs != null && attrs.isReadOnly()) {
@@ -354,8 +352,7 @@ class EclipseFolder extends EclipseResource implements ICVSFolder {
 	private boolean calculateAndSaveChildModificationStates(IProgressMonitor monitor) throws CVSException {
 		ICVSResource[] children = members(ALL_UNIGNORED_MEMBERS);
 
-		for (int i = 0; i < children.length; i++) {
-			ICVSResource resource = children[i];
+		for (ICVSResource resource : children) {
 			if (resource.isModified(null)) {
 				// if a child resource is dirty consider the parent dirty as well, there
 				// is no need to continue checking other siblings.

@@ -343,8 +343,8 @@ public class CreatePatchTest extends EclipseTest {
 					children.length > 0);
 			
 			boolean errorLineOccurred = false;
-			for (int i = 0; i < children.length; i++) {
-				if (children[i].getCode() == CVSStatus.ERROR_LINE) {
+			for (IStatus child : children) {
+				if (child.getCode() == CVSStatus.ERROR_LINE) {
 					errorLineOccurred = true;
 					break;
 				}

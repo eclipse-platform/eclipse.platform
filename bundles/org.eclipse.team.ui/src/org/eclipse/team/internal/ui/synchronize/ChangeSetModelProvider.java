@@ -149,13 +149,11 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 					set.beginInput();
 					set.removeAll(event.getRemovedResources());
 					SyncInfo[] added = event.getAddedResources();
-					for (int i = 0; i < added.length; i++) {
-						SyncInfo info = added[i];
+					for (SyncInfo info : added) {
 						set.add(info);
 					}
 					SyncInfo[] changed = event.getChangedResources();
-					for (int i = 0; i < changed.length; i++) {
-						SyncInfo info = changed[i];
+					for (SyncInfo info : changed) {
 						set.add(info);
 					}
 				} finally {
@@ -318,8 +316,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 	 */
 	protected ISynchronizeModelElement getModelElement(ChangeSet set) {
 		IDiffElement[] children = getModelRoot().getChildren();
-		for (int i = 0; i < children.length; i++) {
-			IDiffElement element = children[i];
+		for (IDiffElement element : children) {
 			if (element instanceof ChangeSetDiffNode && ((ChangeSetDiffNode)element).getSet() == set) {
 				return (ISynchronizeModelElement)element;
 			}

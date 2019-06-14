@@ -163,8 +163,10 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 			}
 		}
 		List result = new ArrayList();
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i] != null) result.add(projects[i]);
+		for (IProject project : projects) {
+			if (project != null) {
+				result.add(project);
+			}
 		}
 		return (IProject[])result.toArray(new IProject[result.size()]);
 	}
@@ -175,13 +177,12 @@ public class CVSProjectSetSerializer implements IProjectSetSerializer {
 		if (newLocation.getUsername() == null || newLocation.getUsername().length() == 0) {
 			// look for an existing location that matched
 			ICVSRepositoryLocation[] locations = KnownRepositories.getInstance().getRepositories();
-			for (int i = 0; i < locations.length; i++) {
-				ICVSRepositoryLocation location = locations[i];
+			for (ICVSRepositoryLocation location : locations) {
 				if (location.getMethod() == newLocation.getMethod()
-					&& location.getHost().equals(newLocation.getHost())
-					&& location.getPort() == newLocation.getPort()
-					&& location.getRootDirectory().equals(newLocation.getRootDirectory()))
-						return location;
+						&& location.getHost().equals(newLocation.getHost())
+						&& location.getPort() == newLocation.getPort()
+						&& location.getRootDirectory().equals(newLocation.getRootDirectory()))
+					return location;
 			}
 		}
 		return newLocation;

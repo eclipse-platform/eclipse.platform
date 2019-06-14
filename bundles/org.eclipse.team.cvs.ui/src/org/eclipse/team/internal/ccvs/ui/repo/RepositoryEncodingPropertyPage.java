@@ -86,8 +86,7 @@ public class RepositoryEncodingPropertyPage extends PropertyPage implements IPro
 		public boolean contains(String name) {
 			try {
 				String[] keys = preferences.keys();
-				for (int i = 0; i < keys.length; i++) {
-					String string = keys[i];
+				for (String string : keys) {
 					if (string.equals(name)) {
 						return true;
 					}

@@ -194,8 +194,7 @@ public class ResourceDeltaTest extends EclipseTest {
 			return true;
 		if (status.isMultiStatus()) {
 			IStatus[] children = status.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				IStatus child = children[i];
+			for (IStatus child : children) {
 				if (containsCode(child,code))
 					return true;
 			}
@@ -233,8 +232,7 @@ public class ResourceDeltaTest extends EclipseTest {
 	public void deleteIOFiles(IProject project, String[] cvsFolders)
 		throws CoreException {
 		IPath rootPath = project.getLocation();
-		for (int i = 0; i < cvsFolders.length; i++) {
-			String childPath = cvsFolders[i];
+		for (String childPath : cvsFolders) {
 			IPath fullPath = rootPath.append(childPath);
 			deepDelete(fullPath.toFile());
 		}
@@ -244,8 +242,8 @@ public class ResourceDeltaTest extends EclipseTest {
 	private static void deepDelete(File resource) {
 		if (resource.isDirectory()) {
 			File[] fileList = resource.listFiles();
-			for (int i = 0; i < fileList.length; i++) {
-				deepDelete(fileList[i]);
+			for (File f : fileList) {
+				deepDelete(f);
 			}
 		}
 		resource.delete();

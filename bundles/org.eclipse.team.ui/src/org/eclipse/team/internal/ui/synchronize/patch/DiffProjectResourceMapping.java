@@ -72,10 +72,10 @@ public class DiffProjectResourceMapping extends ResourceMapping {
 			FileDiffResult filePatch = (FileDiffResult) mapping
 					.getModelObject();
 			FilePatch2[] filePatches = object.getFileDiffs();
-			for (int i = 0; i < filePatches.length; i++) {
-				if (filePatches[i].getPath(false).equals(
-						filePatch.getTargetPath()))
+			for (FilePatch2 filePatche : filePatches) {
+				if (filePatche.getPath(false).equals(filePatch.getTargetPath())) {
 					return true;
+				}
 			}
 		} else if (mapping instanceof HunkResourceMapping) {
 			HunkResult hunk = (HunkResult) mapping.getModelObject();

@@ -226,13 +226,12 @@ public class CompareRevisionAction extends BaseSelectionListenerAction {
 		if (objArray.length == 0)
 			return false;
 
-		for (int i = 0; i < objArray.length; i++) {
-
+		for (Object obj : objArray) {
 			//Don't bother showing if this a category
-			if (objArray[i] instanceof AbstractHistoryCategory)
+			if (obj instanceof AbstractHistoryCategory) {
 				return false;
-
-			IFileRevision revision = (IFileRevision) objArray[i];
+			}
+			IFileRevision revision = (IFileRevision) obj;
 			//check to see if any of the selected revisions are deleted revisions
 			if (revision != null && !revision.exists())
 				return false;

@@ -90,15 +90,15 @@ public class Utils{
     String[] pkey=pkeys.split(","); //$NON-NLS-1$
     String[] _pkey=current_pkeys.split(","); //$NON-NLS-1$
     String result=""; //$NON-NLS-1$
-    for(int i=0; i<pkey.length; i++){
-      file=new java.io.File(pkey[i]);
+    for(String p : pkey){
+      file=new java.io.File(p);
       if(!file.isAbsolute()){
-        file=new java.io.File(ssh_home, pkey[i]);
+        file=new java.io.File(ssh_home, p);
       }
       if(file.exists()){
         boolean notyet=true;
-        for(int j=0; j<_pkey.length; j++){
-          if(pkey[i].equals(_pkey[j])){
+        for(String _p : _pkey){
+          if(p.equals(_p)){
             notyet=false;
             break;
           }
@@ -107,10 +107,10 @@ public class Utils{
           if(notyet)
             jsch.addIdentity(file.getPath());
           if(result.length()==0){
-            result=pkey[i];
+            result=p;
           }
           else{
-            result+=(","+pkey[i]); //$NON-NLS-1$
+            result+=(","+p); //$NON-NLS-1$
           }
         }
         catch(JSchException e){

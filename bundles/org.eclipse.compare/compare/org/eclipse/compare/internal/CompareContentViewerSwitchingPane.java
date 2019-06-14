@@ -221,8 +221,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		new MenuItem(menu, SWT.SEPARATOR);
 
 		// Add others
-		for (int i = 0; i < vd.length; i++) {
-			final ViewerDescriptor vdi = vd[i];
+		for (ViewerDescriptor vdi : vd) {
 			label = vdi.getLabel();
 			if (label == null || label.isEmpty()) {
 				String l = CompareUIPlugin.getDefault().findContentTypeNameOrType((ICompareInput) getInput(),

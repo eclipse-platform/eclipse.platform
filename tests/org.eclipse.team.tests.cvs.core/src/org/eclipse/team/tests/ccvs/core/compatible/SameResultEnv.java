@@ -67,6 +67,7 @@ public final class SameResultEnv extends JUnitTestCase {
 	 * Always to be called in the setUp of the testCase that wants to 
 	 * use the same-result environment.
 	 */
+	@Override
 	public void setUp() throws Exception {
 		super.setUp();
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -91,6 +92,7 @@ public final class SameResultEnv extends JUnitTestCase {
 	 * Always to be called in the tearDown of the testCase that wants to 
 	 * use the same-result environment.
 	 */
+	@Override
 	public void tearDown() throws Exception {
 		// we deliberately don't clean up test projects to simplify debugging
 		super.tearDown();
@@ -158,6 +160,7 @@ public final class SameResultEnv extends JUnitTestCase {
 	/**
 	 * Deletes files on the both of the cvs-servers.
 	 */
+	@Override
 	public void magicDeleteRemote(String remoteName) throws CVSException {
 		super.magicDeleteRemote(CompatibleTestSetup.referenceClientRepository, remoteName);
 		super.magicDeleteRemote(CompatibleTestSetup.eclipseClientRepository, remoteName);		
@@ -181,6 +184,7 @@ public final class SameResultEnv extends JUnitTestCase {
 	 * Set up both of the repos on the cvs-server(s) with a file structure
 	 * resulting for your input in the parameter createResources.
 	 */
+	@Override
 	public void magicSetUpRepo(String projectName, String[] createResources)
 		throws IOException, CoreException, CVSException {
 		magicDeleteRemote(projectName);
@@ -228,8 +232,8 @@ public final class SameResultEnv extends JUnitTestCase {
 		} else if (! pathRelativeToRoot.endsWith("/")) {
 			pathRelativeToRoot += "/";
 		}
-		for (int i = 0; i < relativeFileNames.length; i++) {
-			createRandomFile(pathRelativeToRoot + relativeFileNames[i]);
+		for (String relativeFileName : relativeFileNames) {
+			createRandomFile(pathRelativeToRoot + relativeFileName);
 		}
 	}
 	
@@ -438,16 +442,16 @@ public final class SameResultEnv extends JUnitTestCase {
 		ICVSResource[] resourceList1 = mFolder1.members(ICVSFolder.FILE_MEMBERS | ICVSFolder.FOLDER_MEMBERS);
 		ICVSResource[] resourceList2 = mFolder2.members(ICVSFolder.FILE_MEMBERS | ICVSFolder.FOLDER_MEMBERS);
 		assertEquals(resourceList1.length, resourceList2.length);
-		for (int i=0; i<resourceList1.length; i++) {
+		for (ICVSResource r : resourceList1) {
 			boolean resourceFound = false;
-			for (int j=0; j<resourceList2.length; j++) {
-				if (resourceList1[i].getName().equals(resourceList2[j].getName())) {
-					assertEquals(resourceList1[i], resourceList2[j]);
+			for (ICVSResource _r : resourceList2) {
+				if (r.getName().equals(_r.getName())) {
+					assertEquals(r, _r);
 					resourceFound = true;
 					break;
 				}
 			}
-			assertTrue("Resource " + resourceList1[i].getName() + " not found in the list",resourceFound);
+			assertTrue("Resource " + r.getName() + " not found in the list", resourceFound);
 		}
 	}
 	

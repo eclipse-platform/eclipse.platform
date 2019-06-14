@@ -110,8 +110,7 @@ public class SyncInfoSource {
 	
 	protected void assertProjectRemoved(Subscriber subscriber, IProject project) {
 		IResource[] roots = subscriber.roots();
-		for (int i = 0; i < roots.length; i++) {
-			IResource resource = roots[i];
+		for (IResource resource : roots) {
 			if (resource.equals(project)) {
 				throw new AssertionFailedError();
 			}

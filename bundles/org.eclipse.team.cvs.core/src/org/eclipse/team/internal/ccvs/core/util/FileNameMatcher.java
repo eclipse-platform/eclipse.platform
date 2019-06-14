@@ -36,8 +36,8 @@ public class FileNameMatcher {
 	}
 		
 	void register(String[] patterns) {
-		for (int i = 0; i < patterns.length; i++) {
-			register(patterns[i],TRUE);
+		for (String pattern : patterns) {
+			register(pattern, TRUE);
 		}
 	}
 	

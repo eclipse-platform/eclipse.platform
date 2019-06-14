@@ -83,11 +83,9 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 
 	@Override
 	public void accept(ResourceTraversal[] traversals, IDiffVisitor visitor) {
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
-			for (int j = 0; j < resources.length; j++) {
-				IResource resource = resources[j];
+			for (IResource resource : resources) {
 				accept(resource.getFullPath(), visitor, traversal.getDepth());
 			}
 		}
@@ -96,11 +94,9 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 	@Override
 	public IDiff[] getDiffs(final ResourceTraversal[] traversals) {
 		final Set<IDiff> result = new HashSet<>();
-		for (int i = 0; i < traversals.length; i++) {
-			ResourceTraversal traversal = traversals[i];
+		for (ResourceTraversal traversal : traversals) {
 			IResource[] resources = traversal.getResources();
-			for (int j = 0; j < resources.length; j++) {
-				IResource resource = resources[j];
+			for (IResource resource : resources) {
 				internalGetDiffs(resource, traversal.getDepth(), result);
 			}
 		}
@@ -131,8 +127,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 	public IResource[] members(IResource resource) {
 		List<IResource> result = new ArrayList<>();
 		IPath[] paths = getChildren(resource.getFullPath());
-		for (int i = 0; i < paths.length; i++) {
-			IPath path = paths[i];
+		for (IPath path : paths) {
 			IDiff node = getDiff(path);
 			if (node == null) {
 				result.add(internalGetResource(path, true));
@@ -147,8 +142,7 @@ public class ResourceDiffTree extends DiffTree implements IResourceDiffTree {
 	public IResource[] getAffectedResources() {
 		List<IResource> result = new ArrayList<>();
 		IDiff[] nodes = getDiffs();
-		for (int i = 0; i < nodes.length; i++) {
-			IDiff node = nodes[i];
+		for (IDiff node : nodes) {
 			result.add(getResource(node));
 		}
 		return result.toArray(new IResource[result.size()]);

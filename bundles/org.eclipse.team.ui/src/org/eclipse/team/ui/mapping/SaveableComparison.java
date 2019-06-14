@@ -110,8 +110,7 @@ public abstract class SaveableComparison extends Saveable {
 	 */
 	protected void firePropertyChange(final int property) {
 		Object[] allListeners = listeners.getListeners();
-		for (int i = 0; i < allListeners.length; i++) {
-			final Object object = allListeners[i];
+		for (Object object : allListeners) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {

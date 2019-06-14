@@ -175,12 +175,10 @@ public class TeamUI {
 						IScmUrlImportWizardPage.ATT_EXTENSION);
 		if (elements.length > 0) {
 			Set<IScmUrlImportWizardPage> pages = new HashSet<>();
-			for (int i = 0; i < elements.length; i++) {
-				String pageImporterId = elements[i]
-						.getAttribute(IScmUrlImportWizardPage.ATT_IMPORTER);
+			for (IConfigurationElement element : elements) {
+				String pageImporterId = element.getAttribute(IScmUrlImportWizardPage.ATT_IMPORTER);
 				if (importerId.equals(pageImporterId)) {
-					Object ext = TeamUIPlugin.createExtension(elements[i],
-							IScmUrlImportWizardPage.ATT_PAGE);
+					Object ext = TeamUIPlugin.createExtension(element, IScmUrlImportWizardPage.ATT_PAGE);
 					IScmUrlImportWizardPage page = (IScmUrlImportWizardPage) ext;
 					pages.add(page);
 				}

@@ -62,8 +62,7 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	public String[] getContentProviderIds(ISynchronizationScope scope) {
 		List<String> result = new ArrayList<>();
 		ITeamContentProviderDescriptor[] descriptors = getDescriptors();
-		for (int i = 0; i < descriptors.length; i++) {
-			ITeamContentProviderDescriptor descriptor = descriptors[i];
+		for (ITeamContentProviderDescriptor descriptor : descriptors) {
 			if (descriptor.isEnabled() && scope.getMappings(descriptor.getModelProviderId()).length > 0)
 				result.add(descriptor.getContentExtensionId());
 		}
@@ -106,8 +105,8 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 
 	private void firePropertyChange(final PropertyChangeEvent event) {
 		Object[] allListeners = listeners.getListeners();
-		for (int i = 0; i < allListeners.length; i++) {
-			final IPropertyChangeListener listener = (IPropertyChangeListener)allListeners[i];
+		for (Object l : allListeners) {
+			final IPropertyChangeListener listener = (IPropertyChangeListener) l;
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {
@@ -135,8 +134,8 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 				descriptor.setEnabled(false);
 			}
 		}
-		for (int i = 0; i < descriptors.length; i++) {
-			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor)descriptors[i];
+		for (ITeamContentProviderDescriptor d : descriptors) {
+			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor) d;
 			descriptor.setEnabled(true);
 		}
 		enablementChanged(previouslyEnabled.toArray(new ITeamContentProviderDescriptor[previouslyEnabled.size()]),

@@ -254,8 +254,8 @@ public class HunkResult {
 
 	private boolean isEnabled(PatchConfiguration configuration) {
 		IHunkFilter[] filters = configuration.getHunkFilters();
-		for (int i = 0; i < filters.length; i++) {
-			if (!filters[i].select(this.fHunk)) {
+		for (IHunkFilter filter : filters) {
+			if (!filter.select(this.fHunk)) {
 				return false;
 			}
 		}

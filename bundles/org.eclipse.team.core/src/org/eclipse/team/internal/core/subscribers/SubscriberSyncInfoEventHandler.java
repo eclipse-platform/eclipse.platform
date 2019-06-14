@@ -181,8 +181,7 @@ public class SubscriberSyncInfoEventHandler extends SubscriberEventHandler {
 		SubscriberSyncInfoSet syncSet = syncSetInput.getSyncSet();
 		try {
 			syncSet.beginInput();
-			for (int i = 0; i < events.length; i++) {
-				SubscriberEvent event = events[i];
+			for (SubscriberEvent event : events) {
 				switch (event.getType()) {
 					case SubscriberEvent.CHANGE :
 						if (event instanceof SubscriberSyncInfoEvent) {

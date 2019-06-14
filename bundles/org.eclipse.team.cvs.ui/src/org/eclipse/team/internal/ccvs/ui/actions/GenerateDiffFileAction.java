@@ -60,13 +60,11 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	private IResource[] getDeepResourcesToPatch(IProgressMonitor monitor) throws CoreException {
 		ResourceMapping[] mappings = getCVSResourceMappings();
 		List<IResource> roots = new ArrayList<>();
-		for (int i = 0; i < mappings.length; i++) {
-			ResourceMapping mapping = mappings[i];
+		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = mapping.getTraversals(
 					SubscriberResourceMappingContext.createContext(CVSProviderPlugin.getPlugin().getCVSWorkspaceSubscriber()), 
 					monitor);
-			for (int j = 0; j < traversals.length; j++) {
-				ResourceTraversal traversal = traversals[j];
+			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
 				if (traversal.getDepth() == IResource.DEPTH_INFINITE) {
 					roots.addAll(Arrays.asList(resources));
@@ -74,8 +72,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 					collectShallowFiles(resources, roots);
 				} else if (traversal.getDepth() == IResource.DEPTH_ONE) {
 					collectShallowFiles(resources, roots);
-					for (int k = 0; k < resources.length; k++) {
-						IResource resource = resources[k];
+					for (IResource resource : resources) {
 						if (resource.getType() != IResource.FILE) {
 							collectShallowFiles(members(resource), roots);
 						}
@@ -87,8 +84,7 @@ public class GenerateDiffFileAction extends WorkspaceTraversalAction{
 	}
 	
 	private void collectShallowFiles(IResource[] resources, List<IResource> roots) {
-		for (int k = 0; k < resources.length; k++) {
-			IResource resource = resources[k];
+		for (IResource resource : resources) {
 			if (resource.getType() == IResource.FILE)
 				roots.add(resource);
 		}
