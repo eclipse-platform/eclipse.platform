@@ -66,7 +66,7 @@ public class CommitWizardParticipant extends WorkspaceModelParticipant {
 				@Override
 				public boolean enableActiveChangeSetsFor(ISynchronizePageConfiguration configuration) {
 					return false;
-				};
+				}
 			};
 		}
 		return capability;

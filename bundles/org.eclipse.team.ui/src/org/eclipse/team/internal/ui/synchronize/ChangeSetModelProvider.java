@@ -110,7 +110,7 @@ public class ChangeSetModelProvider extends CompositeModelProvider {
 		public ImageDescriptor getImageDescriptor() {
 			return TeamUIPlugin.getImageDescriptor(ITeamUIImages.IMG_CHANGE_SET);
 		}
-	};
+	}
 	private static final ChangeSetModelProviderDescriptor descriptor = new ChangeSetModelProviderDescriptor();
 
 	protected ChangeSetModelProvider(ISynchronizePageConfiguration configuration, SyncInfoSet set, String subProvierId) {

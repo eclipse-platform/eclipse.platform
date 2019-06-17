@@ -80,7 +80,7 @@ public class PasteAction extends SelectionListenerAction {
 				protected boolean isApplyPatchInSynchronizeView() {
 					// ignore the preference, apply in the sync view
 					return true;
-				};
+				}
 			};
 			operation.openWizard();
 		} else {

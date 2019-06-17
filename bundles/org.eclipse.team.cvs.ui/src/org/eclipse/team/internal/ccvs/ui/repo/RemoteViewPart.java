@@ -128,7 +128,7 @@ public abstract class RemoteViewPart extends ViewPart implements ISelectionListe
 			contentProvider = new RemoteContentProvider();
 		}
 		return contentProvider;
-	};
+	}
 
 	protected KeyAdapter getKeyListener() {
 		return new KeyAdapter() {

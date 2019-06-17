@@ -175,7 +175,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		}
 
-	};
+	}
 
 	private class ExportProjectSetLabelProvider extends WorkbenchLabelProvider {
 

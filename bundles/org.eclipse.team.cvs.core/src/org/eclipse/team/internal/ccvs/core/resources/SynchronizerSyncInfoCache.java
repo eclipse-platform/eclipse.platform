@@ -82,7 +82,7 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
 	
 	boolean hasCachedFolderSync(IContainer container) throws CVSException {
 		return internalGetCachedSyncBytes(container) != null;
-	};
+	}
 	
 	/*
 	 * Retieve the cached sync bytes from the synchronizer. A null

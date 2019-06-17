@@ -118,7 +118,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 			}
 			super.fillActionBars(actionBars);
 		}
-	};
+	}
 
 	@Override
 	public ModelProvider[] getEnabledModelProviders() {

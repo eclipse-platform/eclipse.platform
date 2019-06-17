@@ -19,7 +19,7 @@ import org.eclipse.team.internal.ccvs.core.ICVSResource;
 
 public class SyncUpdate extends Update {
 
-	public SyncUpdate() { };
+	public SyncUpdate() { }
 
 	@Override
 	protected void sendFileStructure(Session session, ICVSResource[] resources,

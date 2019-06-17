@@ -666,7 +666,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 								refresh();
 							}
 						});
-					};
+					}
 				};
 			}
 		};

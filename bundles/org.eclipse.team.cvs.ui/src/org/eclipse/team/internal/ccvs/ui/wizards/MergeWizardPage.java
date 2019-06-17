@@ -118,7 +118,7 @@ public class MergeWizardPage extends CVSWizardPage {
 				super.refresh(background);
 				updateStartTag(startTagField.getText());
 				updateEndTag(endTagField.getText());
-			};
+			}
 		};
 		tagRefreshArea.setRunnableContext(getContainer());
 		tagRefreshArea.createArea(composite); 
