@@ -118,14 +118,17 @@ public class PatchTreeTest extends EclipseTest {
 				null);
 		conf.setPage(new ISynchronizePage() {
 
+			@Override
 			public void init(ISynchronizePageSite site)
 					throws PartInitException {
 			}
 
+			@Override
 			public Viewer getViewer() {
 				return viewer;
 			}
 
+			@Override
 			public boolean aboutToChangeProperty(
 					ISynchronizePageConfiguration configuration, String key,
 					Object newValue) {
@@ -138,6 +141,7 @@ public class PatchTreeTest extends EclipseTest {
 	private class MyModelProvider extends ChangeSetModelProvider implements
 			IPropertyChangeListener {
 
+		@Override
 		public ChangeSetCapability getChangeSetCapability() {
 			return new ChangeSetCapability() {
 			};
@@ -149,6 +153,7 @@ public class PatchTreeTest extends EclipseTest {
 			addPropertyChangeListener(this);
 		}
 
+		@Override
 		public void propertyChange(PropertyChangeEvent event) {
 			// nothing to do
 		}

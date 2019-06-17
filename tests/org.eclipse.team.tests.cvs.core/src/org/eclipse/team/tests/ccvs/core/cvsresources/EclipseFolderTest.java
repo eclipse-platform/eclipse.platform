@@ -48,6 +48,7 @@ public class EclipseFolderTest extends EclipseTest {
 	
 	protected void assertChildrenHaveSync(IContainer root, final boolean hasSync) throws CoreException, CVSException {
 		root.accept(new IResourceVisitor() {
+			@Override
 			public boolean visit(IResource resource) throws CoreException {
 				try {
 					ICVSResource cvsResource = CVSWorkspaceRoot.getCVSResourceFor(resource);

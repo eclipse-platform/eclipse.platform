@@ -33,6 +33,7 @@ public class PreferenceInitializerTest extends EclipseTest {
 	private String KEY_SSH2HOME_value = null;
 	private String KEY_PRIVATEKEY_value = null;
 
+	@Override
 	protected void setUp() throws Exception {
 		if (!Platform.getOS().equals(Platform.OS_WIN32))
 			return;
@@ -49,6 +50,7 @@ public class PreferenceInitializerTest extends EclipseTest {
 		KEY_PRIVATEKEY_value = preferences.get(IConstants.KEY_PRIVATEKEY, null);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		if (!Platform.getOS().equals(Platform.OS_WIN32))
 			return;

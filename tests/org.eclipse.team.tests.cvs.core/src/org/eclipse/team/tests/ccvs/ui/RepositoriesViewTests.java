@@ -39,6 +39,7 @@ public class RepositoriesViewTests extends EclipseTest {
 		super(testName);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		// clear repository root cache

@@ -30,6 +30,7 @@ public class ConflictTest extends JUnitTestCase {
 		env2 = new SameResultEnv(arg + "checkout2");
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		env1.setUp();
 		env2.setUp();
@@ -39,6 +40,7 @@ public class ConflictTest extends JUnitTestCase {
 		env2.deleteFile("proj2");
 	}
 	
+	@Override
 	public void tearDown() throws Exception {
 		env1.tearDown();
 		env2.tearDown();

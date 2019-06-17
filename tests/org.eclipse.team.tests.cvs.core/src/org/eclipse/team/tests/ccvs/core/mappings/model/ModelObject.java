@@ -57,6 +57,7 @@ public abstract class ModelObject extends PlatformObject {
 		return ModelObject.create(getResource().getParent());
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ModelObject) {
 			ModelObject mr = (ModelObject) obj;
@@ -65,6 +66,7 @@ public abstract class ModelObject extends PlatformObject {
 		return super.equals(obj);
 	}
 
+	@Override
 	public int hashCode() {
 		return getResource().hashCode();
 	}

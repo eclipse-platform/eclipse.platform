@@ -71,6 +71,7 @@ public class ModuleTest extends EclipseTest {
 	
 	private static RemoteModule[] remoteModules;
 	
+	@Override
 	public void setUp() throws TeamException, CoreException, IOException {
 		if (isSetUp) return;
 		

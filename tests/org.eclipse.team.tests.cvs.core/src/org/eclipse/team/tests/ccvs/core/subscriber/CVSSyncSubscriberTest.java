@@ -141,6 +141,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 		for (IResource resource : resources) {
 			if (resource.exists() || resource.isPhantom()) {
 				resource.accept(new IResourceVisitor() {
+					@Override
 					public boolean visit(IResource r) throws CoreException {
 						try {
 							if (condition.matches(r)) {
@@ -183,6 +184,7 @@ public abstract class CVSSyncSubscriberTest extends EclipseTest {
 
 	protected ISubscriberChangeListener registerSubscriberListener(Subscriber subscriber) {
 		listener = new ISubscriberChangeListener() {
+			@Override
 			public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 				accumulatedTeamDeltas.addAll(Arrays.asList(deltas));
 			}

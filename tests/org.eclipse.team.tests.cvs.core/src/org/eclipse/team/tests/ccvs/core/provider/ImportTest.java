@@ -86,6 +86,7 @@ public class ImportTest extends EclipseTest {
 	
 	// Assert that the two projects have equal contents ignoreing the project name
 	// and the .vcm_meta file
+	@Override
 	protected void assertEquals(IProject container1, IProject container2) throws CoreException {
 		List<IResource> members1 = new ArrayList<>();
 		members1.addAll(Arrays.asList(container1.members()));

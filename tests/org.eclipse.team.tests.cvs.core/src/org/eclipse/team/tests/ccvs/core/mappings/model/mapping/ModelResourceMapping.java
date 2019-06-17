@@ -40,6 +40,7 @@ public class ModelResourceMapping extends ResourceMapping {
 		return null;
 	}
 
+	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) throws CoreException {
 		return new ResourceTraversal[] { new ResourceTraversal(
@@ -52,18 +53,22 @@ public class ModelResourceMapping extends ResourceMapping {
 		this.object = object;
 	}
 
+	@Override
 	public Object getModelObject() {
 		return object;
 	}
 
+	@Override
 	public String getModelProviderId() {
 		return CustomModelProvider.ID;
 	}
 
+	@Override
 	public IProject[] getProjects() {
 		return new IProject[] { (IProject) object.getProject().getResource() };
 	}
 
+	@Override
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping instanceof ModelResourceMapping) {
 			ModelObject object = (ModelObject) mapping.getModelObject();

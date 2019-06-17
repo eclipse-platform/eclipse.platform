@@ -142,6 +142,7 @@ public class CompareEditorTests extends CVSSyncSubscriberTest {
 		document.set(string);
 	}
 	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		// Need to set both the Compare and Team test flags to true
@@ -155,6 +156,7 @@ public class CompareEditorTests extends CVSSyncSubscriberTest {
 		Utils.TESTING_FLUSH_ON_COMPARE_INPUT_CHANGE = b;
 	}
 	
+	@Override
 	protected void tearDown() throws Exception {
 		closeAllEditors();
 		super.tearDown();

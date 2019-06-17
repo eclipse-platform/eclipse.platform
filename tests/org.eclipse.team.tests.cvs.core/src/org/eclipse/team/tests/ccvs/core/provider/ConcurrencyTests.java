@@ -56,18 +56,22 @@ public class ConcurrencyTests extends EclipseTest {
 		final List<Object> result = new ArrayList<>(); 
 		final boolean[] done = new boolean[] { false };
 		IElementCollector collector = new IElementCollector() {
+			@Override
 			public void add(Object element, IProgressMonitor monitor) {
 				result.add(element);
 			}
+			@Override
 			public void add(Object[] elements, IProgressMonitor monitor) {
 				result.addAll(Arrays.asList(elements));
 			}
+			@Override
 			public void done() {
 				done[0] = true;
 			}
 		};
 		
 		FetchMembersOperation operation = new FetchMembersOperation(null, folder, collector) {
+			@Override
 			public void done(IJobChangeEvent event) {
 				done[0] = true;
 				super.done(event);

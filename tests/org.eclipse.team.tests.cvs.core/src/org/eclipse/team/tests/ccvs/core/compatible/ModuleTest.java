@@ -30,6 +30,7 @@ public class ModuleTest extends JUnitTestCase {
 		run(ModuleTest.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		env1.setUp();
 		env2.setUp();
@@ -41,6 +42,7 @@ public class ModuleTest extends JUnitTestCase {
 		env2.deleteFile("proj2");
 	}
 	
+	@Override
 	public void tearDown() throws Exception {
 		env1.tearDown();
 		env2.tearDown();

@@ -22,6 +22,7 @@ public class TestEditor extends TextEditor {
 		// Nothing to do
 	}
 	
+	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		if (!(input instanceof IFileEditorInput))

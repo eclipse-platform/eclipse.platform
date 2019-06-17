@@ -68,6 +68,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 		return suite;
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		Shell shell = new Shell(Display.getCurrent());
 		Composite composite = new Composite(shell, SWT.NONE);

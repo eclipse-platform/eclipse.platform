@@ -72,6 +72,7 @@ public class Bug152581Test extends BenchmarkTest {
 		ensureExistsInWorkspace(currentDir.getFile(new Path(null,filename)), true);
 	}
 
+	@Override
 	public void ensureExistsInWorkspace(final IResource resource, final boolean local) {
 		IWorkspaceRunnable body = monitor -> create(resource, local);
 		try {

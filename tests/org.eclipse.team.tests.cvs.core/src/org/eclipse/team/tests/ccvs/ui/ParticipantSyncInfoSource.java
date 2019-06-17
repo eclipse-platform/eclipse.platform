@@ -56,6 +56,7 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 		return converter;
 	}
 	
+	@Override
 	public void tearDown() {
 		ISynchronizeParticipantReference[] participants = TeamUI.getSynchronizeManager().getSynchronizeParticipants();
 		for (ISynchronizeParticipantReference ref : participants) {
@@ -93,6 +94,7 @@ public class ParticipantSyncInfoSource extends SyncInfoSource {
 		// Default is to do nothing. Subclasses may override
 	}
 	
+	@Override
 	public void refresh(Subscriber subscriber, IResource[] resources)
 			throws TeamException {
 		super.refresh(subscriber, resources);

@@ -35,10 +35,12 @@ public class CustomModelProvider extends
 		super();
 	}
 
+	@Override
 	public IStatus validateChange(IResourceDelta delta, IProgressMonitor monitor) {
 		return super.validateChange(delta, monitor);
 	}
 
+	@Override
 	public ResourceMapping[] getMappings(IResource resource,
 			ResourceMappingContext context, IProgressMonitor monitor)
 			throws CoreException {

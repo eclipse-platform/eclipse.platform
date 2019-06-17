@@ -29,10 +29,12 @@ public class BatchedTestSetup extends TestSetup {
 		super(test);
 	}
 
+	@Override
 	public void setUp() throws CVSException {
 		rule = EclipseSynchronizer.getInstance().beginBatching(ResourcesPlugin.getWorkspace().getRoot(), null);
 	}
 	
+	@Override
 	public void tearDown() throws CVSException {
 		EclipseSynchronizer.getInstance().endBatching(rule, null);
 	}

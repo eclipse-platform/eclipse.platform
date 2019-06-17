@@ -68,9 +68,11 @@ public class ResourceDeltaTest extends EclipseTest {
 			assertTrue("Folder " + cvsFolder.getName() + " should not be managed", ! cvsFolder.isManaged());
 		assertTrue("Folder " + cvsFolder.getName() + " should not be a cvs folder", ! cvsFolder.isCVSFolder());
 		cvsFolder.acceptChildren(new ICVSResourceVisitor() {
+			@Override
 			public void visitFile(ICVSFile file) throws CVSException {
 				assertNotManaged(file);
 			}
+			@Override
 			public void visitFolder(ICVSFolder folder) throws CVSException {
 				assertNotManaged(folder, false);
 			}
@@ -256,6 +258,7 @@ public class ResourceDeltaTest extends EclipseTest {
 		project.create(null);
 		project.open(null);
 		project.accept(new IResourceProxyVisitor() {
+			@Override
 			public boolean visit(IResourceProxy proxy) throws CoreException {
 				if(proxy.getName().equals("CVS")) {
 					fail("all folders should be marked as team private. This one was not:" + proxy.requestResource().getFullPath());

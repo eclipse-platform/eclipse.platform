@@ -65,6 +65,7 @@ public class WorkflowTests extends BenchmarkTest {
 		runWorkflowTests("testBigWithNoUI", BenchmarkTestSetup.BIG_ZIP_FILE, "CVS Workflow No UI", BenchmarkTestSetup.LOOP_COUNT, false, new SyncInfoSource());
 	}
 	
+	@Override
 	protected void waitForBuild() {
 		super.waitForBuild();
 		// Ensure that we can obtrain the worksapce lock before continuing

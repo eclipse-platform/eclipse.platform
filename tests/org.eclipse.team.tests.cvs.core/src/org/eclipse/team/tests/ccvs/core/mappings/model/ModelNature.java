@@ -25,18 +25,22 @@ public class ModelNature implements IProjectNature {
 
 	private IProject project;
 
+	@Override
 	public void configure() {
 		// Nothing to do
 	}
 
+	@Override
 	public void deconfigure() {
 		// Nothing to do
 	}
 
+	@Override
 	public IProject getProject() {
 		return project;
 	}
 
+	@Override
 	public void setProject(IProject project) {
 		this.project = project;
 	}

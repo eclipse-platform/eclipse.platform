@@ -43,6 +43,7 @@ public class CompatibleTestSetup extends CVSTestSetup {
 	/**
 	 * For compatibility testing, we need to set up two repositories
 	 */
+	@Override
 	public void setUp() throws CVSException {
 		CVSProviderPlugin.getPlugin().setPruneEmptyDirectories(false);
 		CVSProviderPlugin.getPlugin().setFetchAbsentDirectories(false);
@@ -54,6 +55,7 @@ public class CompatibleTestSetup extends CVSTestSetup {
 			eclipseClientRepository = setupRepository(ECLIPSE_REPOSITORY_LOCATION);
 	}
 	
+	@Override
 	public void tearDown() throws CVSException {
 		CVSProviderPlugin.getPlugin().setPruneEmptyDirectories(true);
 		CVSProviderPlugin.getPlugin().setFetchAbsentDirectories(true);

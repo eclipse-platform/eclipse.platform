@@ -53,6 +53,7 @@ public class CVSProjectSetImportTest extends TestCase {
 		return new TestSuite(CVSProjectSetImportTest.class);
 	}
 	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		knownRepositories = KnownRepositories.getInstance();

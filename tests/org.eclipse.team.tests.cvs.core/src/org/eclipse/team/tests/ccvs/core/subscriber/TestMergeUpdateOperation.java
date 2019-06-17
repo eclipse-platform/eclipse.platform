@@ -29,6 +29,7 @@ class TestMergeUpdateOperation extends MergeUpdateOperation {
 		this.allowOverwrite = allowOverwrite;
 	}
 
+	@Override
 	protected boolean promptForOverwrite(SyncInfoSet syncSet) {
 		if (allowOverwrite) return true;
 		if (syncSet.isEmpty()) return true;
@@ -37,6 +38,7 @@ class TestMergeUpdateOperation extends MergeUpdateOperation {
 		return false;
 	}
 	
+	@Override
 	protected boolean canRunAsJob() {
 		return false;
 	}

@@ -49,18 +49,22 @@ public class SyncSetTests extends CVSSyncSubscriberTest {
 	}
 
 	class TestSyncInfo extends SyncInfo {
+		@Override
 		protected int calculateKind() throws TeamException {
 				return 0;
 		}
 		public TestSyncInfo() {
 			super(ResourcesPlugin.getWorkspace().getRoot(), null, null, new IResourceVariantComparator() {
+				@Override
 				public boolean compare(IResource local, IResourceVariant remote) {
 					return false;
 				}
+				@Override
 				public boolean compare(IResourceVariant base,
 						IResourceVariant remote) {
 					return false;
 				}
+				@Override
 				public boolean isThreeWay() {
 					return false;
 				}
@@ -79,6 +83,7 @@ public class SyncSetTests extends CVSSyncSubscriberTest {
 		
 		for(int numJobs = 0; numJobs < 10; numJobs++) {		
 			Job job = new Job("SyncSetTests" + numJobs) {
+				@Override
 				public IStatus run(IProgressMonitor monitor) {
 					while(! done[0]) {
 						try {
@@ -96,6 +101,7 @@ public class SyncSetTests extends CVSSyncSubscriberTest {
 			};
 			
 			job.addJobChangeListener(new JobChangeAdapter() {
+				@Override
 				public void done(IJobChangeEvent event) {
 					if(event.getResult() != Status.OK_STATUS) {
 						error[0] = event.getResult();

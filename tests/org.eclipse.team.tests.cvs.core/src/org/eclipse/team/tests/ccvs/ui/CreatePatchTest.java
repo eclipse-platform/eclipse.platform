@@ -81,11 +81,13 @@ public class CreatePatchTest extends EclipseTest {
 		return suite(CreatePatchTest.class);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		testProject = createProject("ApplyPatchTest", new String[] {});
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		testProject.delete(true, null);
@@ -301,6 +303,7 @@ public class CreatePatchTest extends EclipseTest {
 							asInputStream("server_response_with_error.txt")));
 
 
+			@Override
 			public String readLine() throws CVSException {
 				try {
 					return serverResp.readLine();
@@ -310,6 +313,7 @@ public class CreatePatchTest extends EclipseTest {
 				}
 			}
 
+			@Override
 			public void close() {
 				try {
 					super.close();
