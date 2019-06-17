@@ -249,12 +249,12 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 	}
 	
 	private boolean isChannelNotOpenError(JSchException ee) {
-		return ee.getMessage().indexOf("channel is not opened") != -1; //$NON-NLS-1$
+		return ee.getMessage().contains("channel is not opened"); //$NON-NLS-1$
 	}
 	private boolean isSessionDownError(JSchException ee) {
 		return ee.getMessage().equals("session is down"); //$NON-NLS-1$
 	}
 	private boolean isSSH2Unsupported(JSchException e) {
-		return e.toString().indexOf("invalid server's version string") != -1; //$NON-NLS-1$
+		return e.toString().contains("invalid server's version string"); //$NON-NLS-1$
 	}
 }

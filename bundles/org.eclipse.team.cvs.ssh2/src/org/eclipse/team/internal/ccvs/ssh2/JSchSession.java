@@ -99,7 +99,7 @@ class JSchSession {
 			return jschSession;
 		} catch (JSchException e) {
 			pool.remove(key);
-			if(e.toString().indexOf("Auth cancel")!=-1){  //$NON-NLS-1$
+			if(e.toString().contains("Auth cancel")){  //$NON-NLS-1$
 				throw new OperationCanceledException();
 			}
 			throw e;

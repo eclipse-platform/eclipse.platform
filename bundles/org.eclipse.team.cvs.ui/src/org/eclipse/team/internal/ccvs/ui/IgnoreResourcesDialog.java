@@ -330,7 +330,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 
 	private IResource getResourceWithSpace() {
 		for (IResource resource : resources) {
-			if (resource.getName().indexOf(" ") != -1) { //$NON-NLS-1$
+			if (resource.getName().contains(" ")) { //$NON-NLS-1$
 				return resource;
 			}
 		}
@@ -339,7 +339,7 @@ public class IgnoreResourcesDialog extends TitleAreaDialog {
 
 	private boolean checkIfAllResourcesWithSpacesHaveExtensions() {
 		for (IResource resource : resources) {
-			if (resource.getName().indexOf(" ") != -1 && resource.getFileExtension() == null) { //$NON-NLS-1$
+			if (resource.getName().contains(" ") && resource.getFileExtension() == null) { //$NON-NLS-1$
 				return false;
 			}
 		}

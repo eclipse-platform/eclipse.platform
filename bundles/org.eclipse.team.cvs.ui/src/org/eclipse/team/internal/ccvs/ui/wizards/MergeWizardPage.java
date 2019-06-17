@@ -250,7 +250,7 @@ public class MergeWizardPage extends CVSWizardPage {
 	private CVSTag findCommonBaseTag(CVSTag tag) {
 		CVSTag[] tags = tagSource.getTags(CVSTag.VERSION);
 		for (CVSTag potentialMatch : tags) {
-			if (potentialMatch.getName().indexOf(tag.getName()) != -1) {
+			if (potentialMatch.getName().contains(tag.getName())) {
 				return potentialMatch;
 			}
 		}

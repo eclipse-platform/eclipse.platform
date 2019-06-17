@@ -1409,7 +1409,7 @@ protected Control createContents(Composite parent){
 			session.setTimeout(timeout);
 			try {
 				service.connect(session, timeout, new NullProgressMonitor());
-				if(session.getServerVersion().indexOf("OpenSSH")==-1){ //$NON-NLS-1$
+				if(!session.getServerVersion().contains("OpenSSH")){ //$NON-NLS-1$
 					setErrorMessage(Messages.CVSSSH2PreferencePage_110);
 					return;
 				}

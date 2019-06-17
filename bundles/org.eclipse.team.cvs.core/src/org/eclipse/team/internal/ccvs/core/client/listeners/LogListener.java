@@ -261,11 +261,11 @@ public class LogListener extends CommandOutputListener {
 	 * 
 	 */
 	private String getBranchRevision(String revision) {
-		if (revision.length() == 0 || revision.lastIndexOf(".") == -1) //$NON-NLS-1$
+		if (revision.length() == 0 || !revision.contains(".")) //$NON-NLS-1$
 			throw new IllegalArgumentException(
 					"Revision malformed: " + revision); //$NON-NLS-1$
 		String branchNumber = revision.substring(0, revision.lastIndexOf(".")); //$NON-NLS-1$
-		if (branchNumber.lastIndexOf(".") == -1 || branchNumber.equals(CVSTag.VENDOR_REVISION)) { //$NON-NLS-1$
+		if (!branchNumber.contains(".") || branchNumber.equals(CVSTag.VENDOR_REVISION)) { //$NON-NLS-1$
 			return branchNumber;
 		}
 		String branchPrefix = branchNumber.substring(0,
