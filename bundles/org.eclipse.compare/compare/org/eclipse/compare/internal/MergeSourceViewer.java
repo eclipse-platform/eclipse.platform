@@ -301,14 +301,12 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 
 			StyledText widget= MergeSourceViewer.this.getSourceViewer().getTextWidget();
 			widget.setRedraw(false);
-			{
-				adjustHighlightRange(revealStart, revealLength);
-				MergeSourceViewer.this.getSourceViewer().revealRange(revealStart, revealLength);
+			adjustHighlightRange(revealStart, revealLength);
+			MergeSourceViewer.this.getSourceViewer().revealRange(revealStart, revealLength);
 
-				MergeSourceViewer.this.getSourceViewer().setSelectedRange(selectionStart, selectionLength);
+			MergeSourceViewer.this.getSourceViewer().setSelectedRange(selectionStart, selectionLength);
 
-				markInNavigationHistory();
-			}
+			markInNavigationHistory();
 			widget.setRedraw(true);
 		}
 
