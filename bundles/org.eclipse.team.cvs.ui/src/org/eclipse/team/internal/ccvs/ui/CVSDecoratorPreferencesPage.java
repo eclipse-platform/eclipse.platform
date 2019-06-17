@@ -494,7 +494,7 @@ public class CVSDecoratorPreferencesPage extends PreferencePage implements IWork
 		@Override
 		public String getText(Object element) {
 			final CVSDecoration decoration = getDecoration(element);
-			final StringBuffer buffer = new StringBuffer();
+			final StringBuilder buffer = new StringBuilder();
 			final String prefix = decoration.getPrefix();
 			if (prefix != null)
 				buffer.append(prefix);
