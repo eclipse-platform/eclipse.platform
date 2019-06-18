@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.tags;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,9 +31,7 @@ public class SingleFileTagSource extends TagSource {
 	public static CVSTag[] fetchTagsFor(ICVSFile file, IProgressMonitor monitor) throws TeamException {
 		Set<CVSTag> tagSet = new HashSet<>();
 		for (ILogEntry entry : file.getLogEntries(monitor)) {
-			for (CVSTag tag : entry.getTags()) {
-				tagSet.add(tag);
-			}
+			Collections.addAll(tagSet, entry.getTags());
 		}
 		return tagSet.toArray(new CVSTag[tagSet.size()]);
 	}

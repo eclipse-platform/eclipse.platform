@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.examples.model.mapping;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,9 +50,7 @@ public class ModResourceMapping extends ModelResourceMapping {
 						getResource().getProject().getName(),
 						remoteContext.fetchRemoteContents((IFile)getResource(),
 								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
-				for (IResource resource : remoteResources) {
-					resources.add(resource);
-				}
+				Collections.addAll(resources, remoteResources);
 			}
 			if (remoteContext.isThreeWay()
 					&& remoteContext.hasLocalChange(getResource(), SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN))) {
@@ -59,9 +58,7 @@ public class ModResourceMapping extends ModelResourceMapping {
 						getResource().getProject().getName(),
 						remoteContext.fetchBaseContents((IFile)getResource(),
 								SubMonitor.convert(monitor, IProgressMonitor.UNKNOWN)));
-				for (IResource resource : remoteResources) {
-					resources.add(resource);
-				}
+				Collections.addAll(resources, remoteResources);
 			}
 			monitor.done();
 		}

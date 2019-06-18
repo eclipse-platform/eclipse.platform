@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,9 +62,7 @@ public abstract class ResourceModelProviderOperation extends SynchronizationOper
 		Set<IDiff> result = new HashSet<>();
 		for (Object pathOrElement : pathOrElements) {
 			IDiff[] diffs = getFileDeltas(pathOrElement);
-			for (IDiff node : diffs) {
-				result.add(node);
-			}
+			Collections.addAll(result, diffs);
 		}
 		return result.toArray(new IDiff[result.size()]);
 	}

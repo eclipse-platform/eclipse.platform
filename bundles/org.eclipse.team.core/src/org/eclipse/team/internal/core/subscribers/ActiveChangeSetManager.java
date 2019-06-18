@@ -15,6 +15,7 @@
 package org.eclipse.team.internal.core.subscribers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -219,9 +220,7 @@ public abstract class ActiveChangeSetManager extends ChangeSetManager implements
 			allResources.add(diff.getPath());
 		}
 		IPath[] removals = event.getRemovals();
-		for (IPath path : removals) {
-			allResources.add(path);
-		}
+		Collections.addAll(allResources, removals);
 		return allResources.toArray(new IPath[allResources.size()]);
 	}
 

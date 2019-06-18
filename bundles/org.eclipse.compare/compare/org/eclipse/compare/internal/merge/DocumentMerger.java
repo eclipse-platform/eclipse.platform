@@ -16,6 +16,7 @@ package org.eclipse.compare.internal.merge;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -1122,9 +1123,7 @@ public class DocumentMerger {
 		List<Diff> intersectingDiffs = new ArrayList<>();
 		for (Diff diff : fChangeDiffs) {
 			Diff[] changeDiffs = diff.getChangeDiffs(contributor, region);
-			for (Diff changeDiff : changeDiffs) {
-				intersectingDiffs.add(changeDiff);
-			}
+			Collections.addAll(intersectingDiffs, changeDiffs);
 		}
 		return intersectingDiffs.toArray(new Diff[intersectingDiffs.size()]);
 	}

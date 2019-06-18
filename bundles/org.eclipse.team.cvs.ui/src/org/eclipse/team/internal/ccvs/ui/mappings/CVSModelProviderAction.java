@@ -79,9 +79,7 @@ public abstract class CVSModelProviderAction extends ResourceModelParticipantAct
 					ResourceTraversal[] traversals = mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
 					for (ResourceTraversal traversal : traversals) {
 						IResource[] resources = traversal.getResources();
-						for (IResource resource : resources) {
-							roots.add(resource);
-						}
+						Collections.addAll(roots, resources);
 					}
 				} catch (CoreException e) {
 					TeamUIPlugin.log(e);

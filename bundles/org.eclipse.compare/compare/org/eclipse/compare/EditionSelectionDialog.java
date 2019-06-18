@@ -15,6 +15,7 @@ package org.eclipse.compare;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -466,9 +467,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 			if (sco != null) {
 				Object[] children= sco.getChildren();
 				if (children != null)
-					for (Object child : children) {
-						current.add(child);
-				}
+					Collections.addAll(current, children);
 			}
 
 			final IStructureCreator sc= structureCreator;

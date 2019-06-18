@@ -17,6 +17,7 @@ package org.eclipse.core.internal.net.proxy.win32.winhttp;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,9 +84,7 @@ public class StaticProxyConfig {
 					}
 				}
 			} else {
-				for (IProxyData d : data) {
-					proxies.add(d);
-				}
+				Collections.addAll(proxies, data);
 			}
 		}
 	}

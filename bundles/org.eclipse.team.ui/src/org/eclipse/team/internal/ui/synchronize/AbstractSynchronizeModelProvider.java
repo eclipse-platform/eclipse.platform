@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -414,15 +415,11 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected IResource[] getExpandedResources() {
 		Set<IResource> expanded = new HashSet<>();
 		IResource[] savedExpansionState = getCachedResources(P_VIEWER_EXPANSION_STATE);
-		for (IResource resource : savedExpansionState) {
-			expanded.add(resource);
-		}
+		Collections.addAll(expanded, savedExpansionState);
 		StructuredViewer viewer = getViewer();
 		Object[] objects = ((AbstractTreeViewer) viewer).getVisibleExpandedElements();
 		IResource[] currentExpansionState = getResources(objects);
-		for (IResource resource : currentExpansionState) {
-			expanded.add(resource);
-		}
+		Collections.addAll(expanded, currentExpansionState);
 		return expanded.toArray(new IResource[expanded.size()]);
 	}
 
@@ -611,9 +608,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			ISynchronizeModelElement[] elements = getModelObjects(resource);
 			// Only expand when there is one element per resource
 			if (elements.length == 1) {
-				for (ISynchronizeModelElement element : elements) {
-					checkedElements.add(element);
-				}
+				Collections.addAll(checkedElements, elements);
 			}
 		}
 		if (!checkedElements.isEmpty())

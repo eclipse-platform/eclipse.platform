@@ -14,6 +14,7 @@
 package org.eclipse.team.examples.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -34,9 +35,7 @@ public class ModelProject extends ModelContainer {
 		IProjectDescription description = project.getDescription();
 		String[] natureIds = description.getNatureIds();
 		List<String> result = new ArrayList<>();
-		for (String natureId : natureIds) {
-			result.add(natureId);
-		}
+		Collections.addAll(result, natureIds);
 		result.add(ModelNature.NATURE_ID);
 		description.setNatureIds(result.toArray(new String[result.size()]));
 		project.setDescription(description, monitor);

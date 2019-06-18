@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.mapping;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,9 +73,7 @@ public abstract class ResourceMergeActionHandler extends MergeActionHandler impl
 					ResourceTraversal[] traversals = mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
 					for (ResourceTraversal traversal : traversals) {
 						IResource[] resources = traversal.getResources();
-						for (IResource resource : resources) {
-							roots.add(resource);
-						}
+						Collections.addAll(roots, resources);
 					}
 				} catch (CoreException e) {
 					TeamUIPlugin.log(e);

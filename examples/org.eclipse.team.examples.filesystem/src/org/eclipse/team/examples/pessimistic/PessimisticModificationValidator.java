@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -242,9 +243,7 @@ extends FileModificationValidator {
 					if (status == Window.OK) {
 						Object[] results= dialog.getResult();
 						result[0] = new HashSet(results.length);
-						for (Object result2 : results) {
-							result[0].add(result2);
-						}
+						Collections.addAll(result[0], results);
 					} else if(status == Window.CANCEL) {
 						statusCode[0] = IStatus.CANCEL;
 					}

@@ -14,6 +14,7 @@
 package org.eclipse.team.core.mapping.provider;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -416,9 +417,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 		ResourceMapping[] mappings = scope.getMappings();
 		if (inputMappings.length == mappings.length) {
 			Set<ResourceMapping> testSet = new HashSet<>();
-			for (ResourceMapping mapping : mappings) {
-				testSet.add(mapping);
-			}
+			Collections.addAll(testSet, mappings);
 			for (ResourceMapping mapping : inputMappings) {
 				if (!testSet.contains(mapping)) {
 					return true;

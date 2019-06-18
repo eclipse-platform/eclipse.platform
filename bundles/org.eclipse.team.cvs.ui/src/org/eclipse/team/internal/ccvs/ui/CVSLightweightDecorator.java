@@ -260,9 +260,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 			ResourceTraversal[] traversals = mapping.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
 			for (ResourceTraversal traversal : traversals) {
 				IResource[] resources = traversal.getResources();
-				for (IResource resource : resources) {
-					result.add(resource);
-				}
+				Collections.addAll(result, resources);
 			}
 		}
 		return (IResource[]) result.toArray(new IResource[result.size()]);

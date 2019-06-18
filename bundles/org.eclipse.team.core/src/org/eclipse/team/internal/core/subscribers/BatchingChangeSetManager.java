@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.core.subscribers;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -64,12 +65,8 @@ public class BatchingChangeSetManager extends ChangeSetManager {
 				changed.put(changeSet, allAffectedResources);
 			} else {
 				Set<IPath> allPaths = new HashSet<>();
-				for (IPath path : paths) {
-					allPaths.add(path);
-				}
-				for (IPath path : allAffectedResources) {
-					allPaths.add(path);
-				}
+				Collections.addAll(allPaths, paths);
+				Collections.addAll(allPaths, allAffectedResources);
 				changed.put(changeSet, allPaths.toArray(new IPath[allPaths.size()]));
 			}
 		}

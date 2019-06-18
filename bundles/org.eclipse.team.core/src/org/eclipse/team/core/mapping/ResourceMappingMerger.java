@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.core.mapping;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,9 +107,7 @@ public abstract class ResourceMappingMerger implements IResourceMappingMerger {
 		for (ResourceMapping mapping : mappings) {
 			ResourceTraversal[] traversals = mergeContext.getScope().getTraversals(mapping);
 			IDiff[] deltas = mergeContext.getDiffTree().getDiffs(traversals);
-			for (IDiff delta : deltas) {
-				result.add(delta);
-			}
+			Collections.addAll(result, deltas);
 		}
 		return result.toArray(new IDiff[result.size()]);
 	}

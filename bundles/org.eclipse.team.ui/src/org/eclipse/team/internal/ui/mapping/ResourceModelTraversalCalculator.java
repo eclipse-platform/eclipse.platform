@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -161,13 +162,9 @@ public class ResourceModelTraversalCalculator {
 
 	private Object[] getTreeChildren(IResourceDiffTree diffTree, IResource resource, Object[] children) {
 		Set<Object> result = new HashSet<>();
-		for (Object object : children) {
-			result.add(object);
-		}
+		Collections.addAll(result, children);
 		IResource[] setChildren = getChildren(diffTree, resource);
-		for (IResource child : setChildren) {
-			result.add(child);
-		}
+		Collections.addAll(result, setChildren);
 		Object[] allChildren = result.toArray(new Object[result.size()]);
 		return allChildren;
 	}

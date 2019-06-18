@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -133,9 +134,7 @@ public abstract class CompareInputChangeNotifier implements
 						InputChangeEvent changeEvent = (InputChangeEvent) event;
 						ICompareInput[] inputs = changeEvent.getChangedInputs();
 						synchronized (changedInputs) {
-							for (ICompareInput input : inputs) {
-								changedInputs.add(input);
-							}
+							Collections.addAll(changedInputs, inputs);
 						}
 					}
 					break;

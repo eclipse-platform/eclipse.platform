@@ -14,6 +14,7 @@
 package org.eclipse.team.tests.ccvs.core.mappings.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -38,9 +39,7 @@ public class ModelProject extends ModelObject {
 		IProjectDescription description = project.getDescription();
 		String[] natureIds = description.getNatureIds();
 		List<String> result = new ArrayList<>();
-		for (String natureId : natureIds) {
-			result.add(natureId);
-		}
+		Collections.addAll(result, natureIds);
 		result.add(ModelNature.NATURE_ID);
 		description.setNatureIds(result.toArray(new String[result
 				.size()]));

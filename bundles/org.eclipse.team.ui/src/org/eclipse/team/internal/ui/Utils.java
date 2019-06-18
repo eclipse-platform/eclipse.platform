@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -677,9 +678,7 @@ public class Utils {
 			ResourceTraversal[] traversals = element.getTraversals(ResourceMappingContext.LOCAL_CONTEXT, null);
 			for (ResourceTraversal traversal : traversals) {
 				IResource[] resourceArray = traversal.getResources();
-				for (IResource resource : resourceArray) {
-					resources.add(resource);
-				}
+				Collections.addAll(resources, resourceArray);
 			}
 		} catch (CoreException e) {
 			TeamUIPlugin.log(new Status(IStatus.ERROR, TeamUIPlugin.ID, 0, "Error traversing resource mapping", e)); //$NON-NLS-1$

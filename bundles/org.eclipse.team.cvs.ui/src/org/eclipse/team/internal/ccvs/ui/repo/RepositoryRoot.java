@@ -496,9 +496,7 @@ public class RepositoryRoot extends PlatformObject {
 		ILogEntry[] entries = file.getLogEntries(monitor);
 		for (ILogEntry entry : entries) {
 			CVSTag[] tags = entry.getTags();
-			for (CVSTag tag : tags) {
-				tagSet.add(tag);
-			}
+			Collections.addAll(tagSet, tags);
 		}
 		return tagSet.toArray(new CVSTag[0]);
 	}

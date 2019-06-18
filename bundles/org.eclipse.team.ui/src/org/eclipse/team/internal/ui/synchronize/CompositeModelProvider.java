@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +79,7 @@ public abstract class CompositeModelProvider extends AbstractSynchronizeModelPro
 		for (ISynchronizeModelProvider provider : providers) {
 			if (provider instanceof AbstractSynchronizeModelProvider) {
 				ISynchronizeModelElement[] elements = ((AbstractSynchronizeModelProvider)provider).getClosestExistingParents(resource);
-				for (ISynchronizeModelElement element : elements) {
-					result.add(element);
-				}
+				Collections.addAll(result, elements);
 			}
 		}
 		return result.toArray(new ISynchronizeModelElement[result.size()]);

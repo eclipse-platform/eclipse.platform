@@ -459,9 +459,7 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 			List<IDiff> result = new ArrayList<>();
 			for (TreePath path : paths) {
 				IDiff[] diffs = getLocalChanges(path);
-				for (IDiff diff : diffs) {
-					result.add(diff);
-				}
+				Collections.addAll(result, diffs);
 			}
 			return result.toArray(new IDiff[result.size()]);
 		}

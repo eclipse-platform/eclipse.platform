@@ -15,6 +15,7 @@ package org.eclipse.team.ui.synchronize;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
@@ -519,9 +520,7 @@ public class ModelSynchronizeParticipant extends
 					ISynchronizationCompareAdapter adapter = Utils.getCompareAdapter(provider);
 					if (adapter != null) {
 						ResourceMapping[] mappings = adapter.restore(memento.getChild(CTX_MODEL_PROVIDER_MAPPINGS));
-						for (ResourceMapping mapping : mappings) {
-							result.add(mapping);
-						}
+						Collections.addAll(result, mappings);
 					}
 				} catch (CoreException e) {
 					TeamUIPlugin.log(e);

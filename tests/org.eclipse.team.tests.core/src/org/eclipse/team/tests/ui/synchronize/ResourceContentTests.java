@@ -14,6 +14,7 @@
 package org.eclipse.team.tests.ui.synchronize;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -101,9 +102,7 @@ public class ResourceContentTests extends TeamTest {
 	private void assertContentsMatch(IResource[] resources) {
 		Set paths = getPaths(ResourcesPlugin.getWorkspace().getRoot());
 		Set<Object> resourceSet = new HashSet<>();
-		for (IResource resource : resources) {
-			resourceSet.add(resource);
-		}
+		Collections.addAll(resourceSet, resources);
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();) {
 			TreePath path = (TreePath) iterator.next();
 			Object o = path.getLastSegment();

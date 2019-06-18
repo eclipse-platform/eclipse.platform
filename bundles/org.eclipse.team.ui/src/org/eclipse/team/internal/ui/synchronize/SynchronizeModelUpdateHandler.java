@@ -182,9 +182,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 						handledResources.add(resource);
 						ISynchronizeModelElement[] elements = provider.getClosestExistingParents(delta.getResource());
 						if (elements != null && elements.length > 0) {
-							for (ISynchronizeModelElement element : elements) {
-								changes.add(element);
-						}
+							Collections.addAll(changes, elements);
 					}
 				}
 			}

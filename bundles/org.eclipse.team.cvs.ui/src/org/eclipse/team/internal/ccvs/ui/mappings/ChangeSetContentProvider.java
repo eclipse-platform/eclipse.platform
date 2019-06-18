@@ -545,15 +545,11 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		if (csc.supportsActiveChangeSets()) {
 			ActiveChangeSetManager collector = csc.getActiveChangeSetManager();
 			ChangeSet[] sets = collector.getSets();	
-			for (ChangeSet set : sets) {
-				result.add(set);
-			}
+			Collections.addAll(result, sets);
 		}
 		if (checkedInCollector != null) {
 			ChangeSet[] sets = checkedInCollector.getSets();	
-			for (ChangeSet set : sets) {
-				result.add(set);
-			}
+			Collections.addAll(result, sets);
 		}
 		return (DiffChangeSet[]) result.toArray(new DiffChangeSet[result.size()]);
 	}
@@ -723,9 +719,7 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		Set result = new HashSet();
 		for (IPath path : paths) {
 			ChangeSet[] sets = getSetsShowingPropogatedStateFrom(path);
-			for (ChangeSet set : sets) {
-				result.add(set);
-			}
+			Collections.addAll(result, sets);
 		}
 		return (ChangeSet[]) result.toArray(new ChangeSet[result.size()]);
 	}

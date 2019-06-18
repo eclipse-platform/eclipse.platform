@@ -86,9 +86,7 @@ public class CheckedInChangeSetCollector extends BatchingChangeSetManager implem
 		private IPath[] getAffectedPaths(IDiffChangeEvent event) {
 			Set<IPath> result = new HashSet<>();
 			IPath[] removed = event.getRemovals();
-			for (IPath path : removed) {
-				result.add(path);
-			}
+			Collections.addAll(result, removed);
 			IDiff[] diffs = event.getAdditions();
 			for (IDiff diff : diffs) {
 				result.add(diff.getPath());

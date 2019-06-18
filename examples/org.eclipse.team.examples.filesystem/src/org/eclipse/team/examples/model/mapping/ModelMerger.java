@@ -15,6 +15,7 @@ package org.eclipse.team.examples.model.mapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -262,9 +263,7 @@ public class ModelMerger extends ResourceMappingMerger {
 	private IResource[] getAddedElements(IResource[] baseElements, IResource[] remoteElements) {
 		List<IResource> result = new ArrayList<>();
 		Set<IResource> base = new HashSet<>();
-		for (IResource resource : baseElements) {
-			base.add(resource);
-		}
+		Collections.addAll(base, baseElements);
 		for (IResource resource : remoteElements) {
 			if (!base.contains(resource))
 				result.add(resource);

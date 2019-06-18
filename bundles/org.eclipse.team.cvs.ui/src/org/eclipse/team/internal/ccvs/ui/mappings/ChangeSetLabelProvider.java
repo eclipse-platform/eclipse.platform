@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.mappings;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -174,9 +175,7 @@ public class ChangeSetLabelProvider extends ResourceModelLabelProvider {
 			if (object instanceof IProject) {
 				IProject project = (IProject) object;
 				ChangeSet[] sets = getSetsContaing(project);
-				for (ChangeSet set : sets) {
-					result.add(set);
-				}
+				Collections.addAll(result, sets);
 			}
 		}
 		return result.toArray();

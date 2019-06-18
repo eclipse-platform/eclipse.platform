@@ -14,6 +14,7 @@
 package org.eclipse.team.ui.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -504,12 +505,8 @@ public abstract class SynchronizationContentProvider implements ICommonContentPr
 		if (children.length == 0)
 			return setChildren;
 		Set<Object> result = new HashSet<>(children.length);
-		for (Object c : children) {
-			result.add(c);
-		}
-		for (IResource s : setChildren) {
-			result.add(s);
-		}
+		Collections.addAll(result, children);
+		Collections.addAll(result, setChildren);
 		return result.toArray();
 	}
 

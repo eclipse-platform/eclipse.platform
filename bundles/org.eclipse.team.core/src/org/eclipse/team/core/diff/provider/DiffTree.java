@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.core.diff.provider;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -368,9 +369,7 @@ public class DiffTree implements IDiffTree {
 			changes = new HashSet<>();
 			propertyChanges.put(key, changes);
 		}
-		for (IPath path : paths) {
-			changes.add(path);
-		}
+		Collections.addAll(changes, paths);
 	}
 
 	@Override

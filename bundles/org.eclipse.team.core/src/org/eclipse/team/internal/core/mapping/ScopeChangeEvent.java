@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.core.mapping;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,9 +70,7 @@ public class ScopeChangeEvent {
 			// The number of mappings has increased so we should report the new mappings
 			Set<ResourceMapping> originalSet = new HashSet<>();
 			List<ResourceMapping> result = new ArrayList<>();
-			for (ResourceMapping mapping : originalMappings) {
-				originalSet.add(mapping);
-			}
+			Collections.addAll(originalSet, originalMappings);
 			for (ResourceMapping mapping : currentMappings) {
 				if (!originalSet.contains(mapping)) {
 					result.add(mapping);
@@ -82,9 +81,7 @@ public class ScopeChangeEvent {
 			// The number of mappings may be smaller so report the removed mappings
 			Set<ResourceMapping> finalSet = new HashSet<>();
 			List<ResourceMapping> result = new ArrayList<>();
-			for (ResourceMapping mapping : currentMappings) {
-				finalSet.add(mapping);
-			}
+			Collections.addAll(finalSet, currentMappings);
 			for (ResourceMapping mapping : originalMappings) {
 				if (!finalSet.contains(mapping)) {
 					result.add(mapping);

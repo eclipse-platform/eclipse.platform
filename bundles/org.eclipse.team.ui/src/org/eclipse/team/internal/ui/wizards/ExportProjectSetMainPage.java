@@ -16,6 +16,7 @@ package org.eclipse.team.internal.ui.wizards;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -382,9 +383,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 					IWorkingSet workingSet = (IWorkingSet) temp;
 					if (event.getChecked()){
 						IAdaptable[] elements1 = workingSet.getElements();
-						for (IAdaptable element : elements1) {
-							selectedProjects.add(element);
-						}
+						Collections.addAll(selectedProjects, elements1);
 					} else {
 						IAdaptable[] elements2 = workingSet.getElements();
 						for (IAdaptable element : elements2) {
@@ -415,9 +414,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				tableViewer.setAllChecked(true);
 				selectedProjects.removeAll(selectedProjects);
 				Object[] checked = tableViewer.getCheckedElements();
-				for (Object c : checked) {
-					selectedProjects.add(c);
-				}
+				Collections.addAll(selectedProjects, checked);
 				updateEnablement();
 			});
 
