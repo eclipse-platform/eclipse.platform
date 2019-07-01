@@ -157,9 +157,9 @@ public class ChangeSetContentProvider extends ResourceModelContentProvider imple
 		@Override
 		public void changeSetChanges(final CollectorChangeEvent event, IProgressMonitor monitor) {
 			ChangeSet[] addedSets = event.getAddedSets();
-			final ChangeSet[] visibleAddedSets = getVisibleSets(addedSets);
+			final Object[] visibleAddedSets = getVisibleSets(addedSets);
 			ChangeSet[] removedSets = event.getRemovedSets();
-			final ChangeSet[] visibleRemovedSets = getVisibleSets(removedSets);
+			final Object[] visibleRemovedSets = getVisibleSets(removedSets);
 			ChangeSet[] changedSets = event.getChangedSets();
 			final ChangeSet[] visibleChangedSets = getVisibleSets(changedSets);
 			if (visibleAddedSets.length > 0 || visibleRemovedSets.length > 0 || visibleChangedSets.length > 0) {

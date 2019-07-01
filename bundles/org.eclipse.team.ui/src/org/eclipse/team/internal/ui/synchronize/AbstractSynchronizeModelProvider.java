@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -953,7 +953,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 	protected void doRemove(ISynchronizeModelElement[] elements) {
 		AbstractTreeViewer viewer = (AbstractTreeViewer)getViewer();
 		try {
-			viewer.remove(elements);
+			viewer.remove((Object[]) elements);
 		} catch (SWTException e) {
 			// The remove failed due to an SWT exception. Log it and continue
 			TeamUIPlugin.log(IStatus.ERROR, "An error occurred removing elements from the synchronize view", e); //$NON-NLS-1$
