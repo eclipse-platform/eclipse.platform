@@ -286,7 +286,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		ActionFactory.DELETE.getId(),
 		ActionFactory.SELECT_ALL.getId(),
 		ActionFactory.FIND.getId(),
-		ITextEditorActionDefinitionIds.LINE_GOTO
+		ITextEditorActionDefinitionIds.LINE_GOTO,
+		ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS
 	};
 	private static final String[] TEXT_ACTIONS= {
 		MergeSourceViewer.UNDO_ID,
@@ -297,7 +298,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		MergeSourceViewer.DELETE_ID,
 		MergeSourceViewer.SELECT_ALL_ID,
 		MergeSourceViewer.FIND_ID,
-		MergeSourceViewer.GOTO_LINE_ID
+		MergeSourceViewer.GOTO_LINE_ID,
+		ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS
 	};
 
 	private static final String BUNDLE_NAME= "org.eclipse.compare.contentmergeviewer.TextMergeViewerResources"; //$NON-NLS-1$
@@ -2684,6 +2686,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		contributeChangeEncodingAction(viewer);
 
+		// showWhiteSpaceAction is added in createToolItems when fAncestor, fLeft and
+		// fRight are initialized
+
 		contributeDiffBackgroundListener(viewer);
 
 		return viewer;
@@ -3882,6 +3887,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		showWhitespaceAction = new ShowWhitespaceAction(
 				new MergeSourceViewer[] {fLeft, fRight, fAncestor},
 				new boolean[] {needsLeftPainter, needsRightPainter, needsAncestorPainter });
+		// showWhitespaceAction is registered as global action in connectGlobalActions
+		fLeft.addAction(ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS, showWhitespaceAction);
+		fRight.addAction(ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS, showWhitespaceAction);
+		fAncestor.addAction(ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS, showWhitespaceAction);
 		fHandlerService.registerAction(showWhitespaceAction, ITextEditorActionDefinitionIds.SHOW_WHITESPACE_CHARACTERS);
 
 		toggleLineNumbersAction = new LineNumberRulerToggleAction(CompareMessages.TextMergeViewer_16,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <!--
-    Copyright (c) 2001, 2012 IBM Corporation and others.
+    Copyright (c) 2001, 2019 IBM Corporation and others.
 
     This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
@@ -125,6 +125,16 @@
             class="org.eclipse.compare.internal.CompareEditor"
             id="org.eclipse.compare.CompareEditor">
       </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
+         <part
+               id="org.eclipse.compare.CompareEditor">
+         </part>
+      </actionSetPartAssociation>
    </extension>
 
    <extension
