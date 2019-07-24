@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2019 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -2086,7 +2086,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fLeft.getSourceViewer().getTextWidget().getAccessible().addAccessibleListener(new AccessibleAdapter() {
 			@Override
 			public void getName(AccessibleEvent e) {
-				e.result = NLS.bind(CompareMessages.TextMergeViewer_accessible_left, getCompareConfiguration().getLeftLabel(getInput()));
+				// Check for Mirrored status flag before returning the left label's text.
+				e.result = NLS.bind(CompareMessages.TextMergeViewer_accessible_left,
+						getCompareConfiguration().isMirrored() ? getCompareConfiguration().getRightLabel(getInput())
+								: getCompareConfiguration().getLeftLabel(getInput()));
 			}
 		});
 		fLeft.getSourceViewer().addTextPresentationListener(new ChangeHighlighter(fLeft));
@@ -2096,7 +2099,10 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fRight.getSourceViewer().getTextWidget().getAccessible().addAccessibleListener(new AccessibleAdapter() {
 			@Override
 			public void getName(AccessibleEvent e) {
-				e.result = NLS.bind(CompareMessages.TextMergeViewer_accessible_right, getCompareConfiguration().getRightLabel(getInput()));
+				// Check for Mirrored status flag before returning the right label's text.
+				e.result = NLS.bind(CompareMessages.TextMergeViewer_accessible_right,
+						getCompareConfiguration().isMirrored() ? getCompareConfiguration().getLeftLabel(getInput())
+								: getCompareConfiguration().getRightLabel(getInput()));
 			}
 		});
 		fRight.getSourceViewer().addTextPresentationListener(new ChangeHighlighter(fRight));
