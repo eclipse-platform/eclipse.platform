@@ -76,6 +76,33 @@
             %compareFontDefiniton.description
          </description>
       </fontDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="DELETION_COLOR"
+            label="%compareDeletionColor.label"
+            value="COLOR_RED">
+         <description>
+            %compareDeletionColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="EDITION_COLOR"
+            label="%compareEditionColor.label"
+            value="COLOR_BLACK">
+         <description>
+            %compareEditionColor.description
+         </description>
+      </colorDefinition>
+      <colorDefinition
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="ADDITION_COLOR"
+            label="%compareAdditionColor.label"
+            value="COLOR_DARK_GREEN">
+         <description>
+            %compareAdditionColor.description
+         </description>
+      </colorDefinition>
    </extension>
 
    <extension

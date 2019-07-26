@@ -307,6 +307,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private static final String OUTGOING_COLOR= "OUTGOING_COLOR"; //$NON-NLS-1$
 	private static final String CONFLICTING_COLOR= "CONFLICTING_COLOR"; //$NON-NLS-1$
 	private static final String RESOLVED_COLOR= "RESOLVED_COLOR"; //$NON-NLS-1$
+	private static final String ADDITION_COLOR = "ADDITION_COLOR"; //$NON-NLS-1$
+	private static final String DELETION_COLOR = "DELETION_COLOR"; //$NON-NLS-1$
+	private static final String EDITION_COLOR = "EDITION_COLOR"; //$NON-NLS-1$
 
 	// constants
 	/** Width of left and right vertical bar */
@@ -335,21 +338,43 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private boolean fIsUsingSystemForeground= true;
 	private boolean fIsUsingSystemBackground= true;
 
-	private RGB SELECTED_INCOMING;
-	private RGB INCOMING;
-	private RGB INCOMING_FILL;
-	private RGB INCOMING_TEXT_FILL;
+	private static final class ColorPalette {
+		public final RGB selected;
+		public final RGB normal;
+		public final RGB fill;
+		public final RGB textFill;
 
-	private RGB SELECTED_CONFLICT;
-	private RGB CONFLICT;
-	private RGB CONFLICT_FILL;
-	private RGB CONFLICT_TEXT_FILL;
+		public ColorPalette(RGB background, String registryKey, RGB defaultRGB) {
+			RGB registry = JFaceResources.getColorRegistry().getRGB(registryKey);
+			if (registry != null) {
+				selected = registry;
+			} else {
+				selected = defaultRGB;
+			}
+			normal = interpolate(selected, background, 0.6);
+			fill = interpolate(selected, background, 0.9);
+			textFill = interpolate(selected, background, 0.8);
+		}
 
-	private RGB SELECTED_OUTGOING;
-	private RGB OUTGOING;
-	private RGB OUTGOING_FILL;
-	private RGB OUTGOING_TEXT_FILL;
+		private static RGB interpolate(RGB fg, RGB bg, double scale) {
+			if (fg != null && bg != null)
+				return new RGB((int) ((1.0 - scale) * fg.red + scale * bg.red),
+						(int) ((1.0 - scale) * fg.green + scale * bg.green),
+						(int) ((1.0 - scale) * fg.blue + scale * bg.blue));
+			if (fg != null)
+				return fg;
+			if (bg != null)
+				return bg;
+			return new RGB(128, 128, 128); // a gray
+		}
+	}
 
+	private ColorPalette incomingPalette;
+	private ColorPalette conflictPalette;
+	private ColorPalette outgoingPalette;
+	private ColorPalette additionPalette;
+	private ColorPalette deletionPalette;
+	private ColorPalette editionPalette;
 	private RGB RESOLVED;
 
 	private IPreferenceStore fPreferenceStore;
@@ -1284,16 +1309,17 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				return;
 			IRegion region= textPresentation.getExtent();
 			Diff[] changeDiffs = fMerger.getChangeDiffs(getLeg(viewer), region);
+			boolean allOutgoing = allOutgoing();
 			for (Diff diff : changeDiffs) {
-				StyleRange range = getStyleRange(diff, region);
+				StyleRange range = getStyleRange(diff, region, allOutgoing);
 				if (range != null)
 					textPresentation.mergeStyleRange(range);
 			}
 		}
 
-		private StyleRange getStyleRange(Diff diff, IRegion region) {
+		private StyleRange getStyleRange(Diff diff, IRegion region, boolean showAdditionRemoval) {
 			//Color cText = getColor(null, getTextColor());
-			Color cTextFill = getColor(null, getTextFillColor(diff));
+			Color cTextFill = getColor(null, getTextFillColor(diff, showAdditionRemoval));
 			if (cTextFill == null)
 				return null;
 			Position p = diff.getPosition(getLeg(viewer));
@@ -1315,21 +1341,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return new StyleRange(start, length, null, cTextFill);
 		}
 
-		private RGB getTextFillColor(Diff diff) {
-			if (isThreeWay() && !isIgnoreAncestor()) {
-				switch (diff.getKind()) {
-				case RangeDifference.RIGHT:
-					return getCompareConfiguration().isMirrored() ? OUTGOING_TEXT_FILL : INCOMING_TEXT_FILL;
-				case RangeDifference.ANCESTOR:
-				case RangeDifference.CONFLICT:
-					return CONFLICT_TEXT_FILL;
-				case RangeDifference.LEFT:
-					return getCompareConfiguration().isMirrored() ? INCOMING_TEXT_FILL : OUTGOING_TEXT_FILL;
-				default:
-					return null;
-				}
+		private RGB getTextFillColor(Diff diff, boolean showAdditionRemoval) {
+			ColorPalette palette = getColorPalette(diff, showAdditionRemoval);
+			if (palette == null) {
+				return null;
 			}
-			return OUTGOING_TEXT_FILL;
+			return palette.textFill;
 		}
 	}
 
@@ -1779,30 +1796,18 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		ColorRegistry registry= JFaceResources.getColorRegistry();
 
 		RGB bg= getBackground(display);
-		SELECTED_INCOMING= registry.getRGB(INCOMING_COLOR);
-		if (SELECTED_INCOMING == null)
-			SELECTED_INCOMING= new RGB(0, 0, 255);	// BLUE
-		INCOMING= interpolate(SELECTED_INCOMING, bg, 0.6);
-		INCOMING_FILL= interpolate(SELECTED_INCOMING, bg, 0.97);
-		INCOMING_TEXT_FILL= interpolate(SELECTED_INCOMING, bg, 0.85);
 
-		SELECTED_OUTGOING= registry.getRGB(OUTGOING_COLOR);
-		if (SELECTED_OUTGOING == null)
-			SELECTED_OUTGOING= new RGB(0, 0, 0);	// BLACK
-		OUTGOING= interpolate(SELECTED_OUTGOING, bg, 0.6);
-		OUTGOING_FILL= interpolate(SELECTED_OUTGOING, bg, 0.97);
-		OUTGOING_TEXT_FILL= interpolate(SELECTED_OUTGOING, bg, 0.85);
-
-		SELECTED_CONFLICT= registry.getRGB(CONFLICTING_COLOR);
-		if (SELECTED_CONFLICT == null)
-			SELECTED_CONFLICT= new RGB(255, 0, 0);	// RED
-		CONFLICT= interpolate(SELECTED_CONFLICT, bg, 0.6);
-		CONFLICT_FILL= interpolate(SELECTED_CONFLICT, bg, 0.97);
-		CONFLICT_TEXT_FILL= interpolate(SELECTED_CONFLICT, bg, 0.85);
+		incomingPalette = new ColorPalette(bg, INCOMING_COLOR, new RGB(0, 0, 255));
+		outgoingPalette = new ColorPalette(bg, OUTGOING_COLOR, new RGB(0, 0, 0));
+		conflictPalette = new ColorPalette(bg, CONFLICTING_COLOR, new RGB(255, 0, 0));
+		additionPalette = new ColorPalette(bg, ADDITION_COLOR, new RGB(0, 255, 0));
+		deletionPalette = new ColorPalette(bg, DELETION_COLOR, new RGB(255, 0, 0));
+		editionPalette = new ColorPalette(bg, EDITION_COLOR, new RGB(0, 0, 0));
 
 		RESOLVED= registry.getRGB(RESOLVED_COLOR);
 		if (RESOLVED == null)
 			RESOLVED= new RGB(0, 255, 0);	// GREEN
+
 
 		updatePresentation();
 	}
@@ -2333,8 +2338,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		Display display= canvas.getDisplay();
 		int y= 0;
-		for (Iterator<?> iterator = fMerger.rangesIterator(); iterator.hasNext();) {
-			Diff diff = (Diff) iterator.next();
+		boolean allOutgoing = allOutgoing();
+		for (Iterator<Diff> iterator = fMerger.rangesIterator(); iterator.hasNext();) {
+			Diff diff = iterator.next();
 			int h= fSynchronizedScrolling ? diff.getMaxDiffHeight()
 											: diff.getRightHeight();
 
@@ -2345,12 +2351,12 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (hh < 3)
 					hh= 3;
 
-				c= getColor(display, getFillColor(diff));
+				c = getColor(display, getFillColor(diff, allOutgoing));
 				if (c != null) {
 					gc.setBackground(c);
 					gc.fillRectangle(BIRDS_EYE_VIEW_INSET, yy, size.x-(2*BIRDS_EYE_VIEW_INSET),hh);
 				}
-				c= getColor(display, getStrokeColor(diff));
+				c = getColor(display, getStrokeColor(diff, allOutgoing));
 				if (c != null) {
 					gc.setForeground(c);
 					r.x= BIRDS_EYE_VIEW_INSET;
@@ -2743,7 +2749,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 								// highlights only the event line, not the
 								// whole diff
 								event.lineBackground = getColor(fComposite
-										.getDisplay(), getFillColor(diff));
+										.getDisplay(), getFillColor(diff, allOutgoing()));
 							}
 						}
 					}
@@ -3622,9 +3628,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			}
 
 			if (unresolvedConflicting > 0)
-				rgb= SELECTED_CONFLICT;
+				rgb= conflictPalette.selected;
 			else if (unresolvedIncoming > 0)
-				rgb= SELECTED_INCOMING;
+				rgb= incomingPalette.selected;
 			else
 				rgb= RESOLVED;
 		}
@@ -4033,7 +4039,9 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			updateFont();
 			invalidateLines();
 
-		} else if (key.equals(INCOMING_COLOR) || key.equals(OUTGOING_COLOR) || key.equals(CONFLICTING_COLOR) || key.equals(RESOLVED_COLOR)) {
+		} else if (key.equals(INCOMING_COLOR) || key.equals(OUTGOING_COLOR) || key.equals(CONFLICTING_COLOR)
+				|| key.equals(RESOLVED_COLOR) || key.equals(ADDITION_COLOR) || key.equals(DELETION_COLOR)
+				|| key.equals(EDITION_COLOR)) {
 			updateColors(null);
 			invalidateLines();
 			invalidateTextPresentation();
@@ -4254,6 +4262,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 			Point region= new Point(0, 0);
 
+			boolean allOutgoing = allOutgoing();
 			for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
 				Diff diff = (Diff) iterator.next();
 				if (diff.isDeleted())
@@ -4278,8 +4287,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				fPts[0]= x;	fPts[1]= ly;	fPts[2]= w;	fPts[3]= ry;
 				fPts[6]= x;	fPts[7]= ly+lh;	fPts[4]= w;	fPts[5]= ry+rh;
 
-				Color fillColor= getColor(display, getFillColor(diff));
-				Color strokeColor= getColor(display, getStrokeColor(diff));
+				Color fillColor = getColor(display, getFillColor(diff, allOutgoing));
+				Color strokeColor = getColor(display, getStrokeColor(diff, allOutgoing));
 
 				if (fUseSingleLine) {
 					int w2= 3;
@@ -4393,12 +4402,13 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			return;
 
 		if (fMerger.hasChanges()) {
+			boolean allOutgoing = allOutgoing();
 			int shift= tp.getVerticalScrollOffset() + (2-LW);
 
 			Point region= new Point(0, 0);
 			char leg = getLeg(tp);
-			for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
-				Diff diff = (Diff) iterator.next();
+			for (Iterator<Diff> iterator = fMerger.changesIterator(); iterator.hasNext();) {
+				Diff diff = iterator.next();
 				if (diff.isDeleted())
 					continue;
 
@@ -4414,20 +4424,30 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 				if (y >= visibleHeight)
 					break;
 
-				g.setBackground(getColor(display, getFillColor(diff)));
+				g.setBackground(getColor(display, getFillColor(diff, allOutgoing)));
 				if (right)
 					g.fillRectangle(x, y, w2, h);
 				else
 					g.fillRectangle(x+w2, y, w2, h);
 
 				g.setLineWidth(0 /* LW */);
-				g.setForeground(getColor(display, getStrokeColor(diff)));
+				g.setForeground(getColor(display, getStrokeColor(diff, allOutgoing)));
 				if (right)
 					g.drawRectangle(x-1, y-1, w2, h);
 				else
 					g.drawRectangle(x+w2, y-1, w2, h);
 			}
 		}
+	}
+
+	private boolean allOutgoing() {
+		boolean allOutgoing = !isThreeWay();
+		for (Iterator<Diff> iterator = fMerger.changesIterator(); allOutgoing && iterator.hasNext();) {
+			Diff diff = iterator.next();
+			allOutgoing &= !diff.isDeleted()
+					&& (diff.getKind() == RangeDifference.NOCHANGE || diff.getKind() == RangeDifference.CHANGE);
+		}
+		return allOutgoing;
 	}
 
 	private void paint(PaintEvent event, MergeSourceViewer tp) {
@@ -4452,6 +4472,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Point range= new Point(0, 0);
 
 		char leg = getLeg(tp);
+		boolean allOutgoing = allOutgoing();
 		for (Iterator<?> iterator = fMerger.changesIterator(); iterator.hasNext();) {
 			Diff diff = (Diff) iterator.next();
 			if (diff.isDeleted())
@@ -4469,56 +4490,61 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			if (y > maxh)
 				break;
 
-			g.setBackground(getColor(display, getStrokeColor(diff)));
+			g.setBackground(getColor(display, getStrokeColor(diff, allOutgoing)));
 			g.fillRectangle(0, y-1, w, LW);
 			g.fillRectangle(0, y+h-1, w, LW);
 		}
 	}
 
-	private RGB getFillColor(Diff diff) {
+	private RGB getFillColor(Diff diff, boolean showAdditionRemoval) {
 		boolean selected= fCurrentDiff != null && fCurrentDiff.getParent() == diff;
-		RGB selected_fill= getBackground(null);
-		if (isThreeWay() && !isIgnoreAncestor()) {
-			switch (diff.getKind()) {
-			case RangeDifference.RIGHT:
-				if (!getCompareConfiguration().isMirrored())
-					return selected ? selected_fill : INCOMING_FILL;
-				return selected ? selected_fill : OUTGOING_FILL;
-			case RangeDifference.ANCESTOR:
-			case RangeDifference.CONFLICT:
-				return selected ? selected_fill : CONFLICT_FILL;
-			case RangeDifference.LEFT:
-				if (!getCompareConfiguration().isMirrored())
-					return selected ? selected_fill : OUTGOING_FILL;
-				return selected ? selected_fill : INCOMING_FILL;
-			default:
-				return null;
-			}
+		if (selected) {
+			return getBackground(null);
 		}
-		return selected ? selected_fill : OUTGOING_FILL;
+		ColorPalette palette = getColorPalette(diff, showAdditionRemoval);
+		if (palette == null) {
+			return null;
+		}
+		return palette.fill;
 	}
 
-	private RGB getStrokeColor(Diff diff) {
-		boolean selected= fCurrentDiff != null && fCurrentDiff.getParent() == diff;
-
+	private ColorPalette getColorPalette(Diff diff, boolean showAdditionRemoval) {
 		if (isThreeWay() && !isIgnoreAncestor()) {
 			switch (diff.getKind()) {
 			case RangeDifference.RIGHT:
 				if (!getCompareConfiguration().isMirrored())
-					return selected ? SELECTED_INCOMING : INCOMING;
-				return selected ? SELECTED_OUTGOING : OUTGOING;
+					return incomingPalette;
+				return outgoingPalette;
 			case RangeDifference.ANCESTOR:
 			case RangeDifference.CONFLICT:
-				return selected ? SELECTED_CONFLICT : CONFLICT;
+				return conflictPalette;
 			case RangeDifference.LEFT:
 				if (!getCompareConfiguration().isMirrored())
-					return selected ? SELECTED_OUTGOING : OUTGOING;
-				return selected ? SELECTED_INCOMING : INCOMING;
+					return outgoingPalette;
+				return incomingPalette;
 			default:
 				return null;
 			}
 		}
-		return selected ? SELECTED_OUTGOING : OUTGOING;
+		if (showAdditionRemoval) {
+			if (diff.getPosition(LEFT_CONTRIBUTOR).getLength() == 0) {
+				return deletionPalette;
+			}
+			if (diff.getPosition(RIGHT_CONTRIBUTOR).getLength() == 0) {
+				return additionPalette;
+			}
+			return editionPalette;
+		}
+		return outgoingPalette;
+	}
+
+	private RGB getStrokeColor(Diff diff, boolean showAdditionRemoval) {
+		ColorPalette palette = getColorPalette(diff, showAdditionRemoval);
+		if (palette == null) {
+			return null;
+		}
+		boolean selected = fCurrentDiff != null && fCurrentDiff.getParent() == diff;
+		return selected ? palette.selected : palette.normal;
 	}
 
 	private Color getColor(Display display, RGB rgb) {
@@ -4532,20 +4558,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fColors.put(rgb, c);
 		}
 		return c;
-	}
-
-	static RGB interpolate(RGB fg, RGB bg, double scale) {
-		if (fg != null && bg != null)
-			return new RGB(
-				(int)((1.0-scale) * fg.red + scale * bg.red),
-				(int)((1.0-scale) * fg.green + scale * bg.green),
-				(int)((1.0-scale) * fg.blue + scale * bg.blue)
-			);
-		if (fg != null)
-			return fg;
-		if (bg != null)
-			return bg;
-		return new RGB(128, 128, 128);	// a gray
 	}
 
 	//---- Navigating and resolving Diffs
