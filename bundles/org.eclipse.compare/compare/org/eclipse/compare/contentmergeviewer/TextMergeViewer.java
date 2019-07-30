@@ -4528,9 +4528,15 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		}
 		if (showAdditionRemoval) {
 			if (diff.getPosition(LEFT_CONTRIBUTOR).getLength() == 0) {
+				if (getCompareConfiguration().isMirrored()) {
+					return additionPalette;
+				}
 				return deletionPalette;
 			}
 			if (diff.getPosition(RIGHT_CONTRIBUTOR).getLength() == 0) {
+				if (getCompareConfiguration().isMirrored()) {
+					return deletionPalette;
+				}
 				return additionPalette;
 			}
 			return editionPalette;
