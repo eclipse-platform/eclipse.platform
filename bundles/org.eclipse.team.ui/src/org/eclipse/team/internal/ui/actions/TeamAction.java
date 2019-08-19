@@ -100,7 +100,11 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 
 		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
-			if (targetPart == partRef.getPart(false)) {
+			if(targetPart == null) {
+				return;
+			}
+			IWorkbenchPart part = partRef.getPart(false);
+			if (targetPart == part) {
 				targetPart = null;
 			}
 		}
@@ -425,8 +429,17 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 	 * @return IWorkbenchPage
 	 */
 	protected IWorkbenchPage getTargetPage() {
-		if (getTargetPart() == null) return TeamUIPlugin.getActivePage();
-		return getTargetPart().getSite().getPage();
+		IWorkbenchPart target = getTargetPart();
+		if (target == null) {
+			return TeamUIPlugin.getActivePage();
+		}
+		IWorkbenchPage page = target.getSite().getPage();
+		if(page == null) {
+			// part was disposed => null targetPart to avoid memory leak
+			targetPart = null;
+			return TeamUIPlugin.getActivePage();
+		}
+		return page;
 	}
 
 	/**
@@ -466,7 +479,6 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 
 	@Override
 	public void dispose() {
-		super.dispose();
 		if(window != null) {
 			window.getSelectionService().removePostSelectionListener(selectionListener);
 			if (window.getActivePage() != null) {
@@ -479,6 +491,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		window = null;
 		targetPart = null;
 		shell = null;
+		super.dispose();
 	}
 
 	/**
