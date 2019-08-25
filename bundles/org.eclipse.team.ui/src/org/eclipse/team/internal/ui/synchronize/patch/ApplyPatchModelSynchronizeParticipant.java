@@ -129,9 +129,7 @@ public class ApplyPatchModelSynchronizeParticipant extends
 				return enabledProviders;
 		}
 		ModelProvider[] extended = new ModelProvider[enabledProviders.length + 1];
-		for (int i = 0; i < enabledProviders.length; i++) {
-			extended[i] = enabledProviders[i];
-		}
+		System.arraycopy(enabledProviders, 0, extended, 0, enabledProviders.length);
 		PatchModelProvider provider = PatchModelProvider.getProvider();
 		if (provider == null)
 			return enabledProviders;

@@ -32,9 +32,7 @@ public abstract class RemoteOperation extends CVSOperation {
 	
 	public ICVSResource[] getCVSResources() {
 		ICVSResource[] cvsResources = new ICVSResource[remoteResources.length];
-		for (int i = 0; i < remoteResources.length; i++) {
-			cvsResources[i] = remoteResources[i];
-		}
+		System.arraycopy(remoteResources, 0, cvsResources, 0, remoteResources.length);
 		return cvsResources;
 	}
 

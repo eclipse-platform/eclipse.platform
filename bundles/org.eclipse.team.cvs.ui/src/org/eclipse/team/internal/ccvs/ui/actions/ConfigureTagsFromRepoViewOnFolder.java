@@ -67,9 +67,7 @@ public class ConfigureTagsFromRepoViewOnFolder extends CVSAction {
 			final Shell shell = getShell();
 			shell.getDisplay().syncExec(() -> {
 				ICVSFolder[] cvsFolders = new ICVSFolder[roots.length];
-				for (int i = 0; i < roots.length; i++) {
-					cvsFolders[i] = roots[i];
-				}
+				System.arraycopy(roots, 0, cvsFolders, 0, roots.length);
 				TagConfigurationDialog d = new TagConfigurationDialog(shell, TagSource.create(cvsFolders));
 				d.open();
 			});

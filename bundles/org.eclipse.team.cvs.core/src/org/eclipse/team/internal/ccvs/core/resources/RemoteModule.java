@@ -277,12 +277,8 @@ public class RemoteModule extends RemoteFolder {
 			} else {
 				// Combine two sets of children
 				allChildren = new ICVSRemoteResource[physicalChildren.length + referencedModules.length];
-				for (int i = 0; i < physicalChildren.length; i++) {
-					allChildren[i] = physicalChildren[i];
-				}
-				for (int i = 0; i < referencedModules.length; i++) {
-					allChildren[i + physicalChildren.length] = referencedModules[i];
-				}
+				System.arraycopy(physicalChildren, 0, allChildren, 0, physicalChildren.length);
+				System.arraycopy(referencedModules, 0, allChildren, physicalChildren.length, referencedModules.length);
 			}
 		} else if (physicalChildren != null) {
 			allChildren = physicalChildren;

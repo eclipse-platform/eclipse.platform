@@ -144,9 +144,7 @@ public class CVSParticipant extends SubscriberParticipant implements IChangeSetP
 
 	public static PreferencePage[] addCVSPreferencePages(PreferencePage[] inheritedPages) {
 		PreferencePage[] pages = new PreferencePage[inheritedPages.length + 1];
-		for (int i = 0; i < inheritedPages.length; i++) {
-			pages[i] = inheritedPages[i];
-		}
+		System.arraycopy(inheritedPages, 0, pages, 0, inheritedPages.length);
 		pages[pages.length - 1] = new ComparePreferencePage();
 		pages[pages.length - 1].setTitle(CVSUIMessages.CVSParticipant_2); 
 		return pages;

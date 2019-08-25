@@ -29,9 +29,7 @@ public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizePar
 
 	public static PreferencePage[] addCVSPreferencePages(PreferencePage[] inheritedPages) {
 		PreferencePage[] pages = new PreferencePage[inheritedPages.length + 1];
-		for (int i = 0; i < inheritedPages.length; i++) {
-			pages[i] = inheritedPages[i];
-		}
+		System.arraycopy(inheritedPages, 0, pages, 0, inheritedPages.length);
 		pages[pages.length - 1] = new ComparePreferencePage();
 		pages[pages.length - 1].setTitle(CVSUIMessages.CVSParticipant_2); 
 		return pages;
@@ -57,9 +55,7 @@ public abstract class CVSModelSynchronizeParticipant extends ModelSynchronizePar
 					return enabledProviders;
 			}
 			ModelProvider[] extended = new ModelProvider[enabledProviders.length + 1];
-			for (int i = 0; i < enabledProviders.length; i++) {
-				extended[i] = enabledProviders[i];
-			}
+			System.arraycopy(enabledProviders, 0, extended, 0, enabledProviders.length);
 			ChangeSetModelProvider provider = ChangeSetModelProvider.getProvider();
 			if (provider == null)
 				return enabledProviders;

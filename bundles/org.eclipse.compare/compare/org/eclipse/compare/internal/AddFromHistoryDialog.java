@@ -188,8 +188,7 @@ public class AddFromHistoryDialog extends ResizableDialog {
 		// sort input files
 		final int count= inputFiles.length;
 		final IFile[] files= new IFile[count];
-		for (int i= 0; i < count; i++)
-			files[i]= inputFiles[i];
+		System.arraycopy(inputFiles, 0, files, 0, count);
 		if (count > 1)
 			internalSort(files, 0, count-1);
 
