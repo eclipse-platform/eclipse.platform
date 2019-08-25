@@ -248,7 +248,7 @@ public abstract class DiffOperation extends SingleCommandOperation {
 			}, recurse);
 		}
 
-		final SortedSet<Object> allFiles = new TreeSet<Object>(COMPARATOR);
+		final SortedSet<Object> allFiles = new TreeSet<>(COMPARATOR);
 		allFiles.addAll(existingFiles);
 		allFiles.addAll(newFiles);
 

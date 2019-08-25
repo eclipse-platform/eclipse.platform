@@ -96,9 +96,9 @@ public class RemoteFolderTreeBuilder {
 		this.repository = repository;
 		this.root = root;
 		this.tag = tag;
-		this.fileDeltas = new HashMap<String, Map>();
-		this.changedFiles = new ArrayList<String>();
-		this.remoteFolderTable = new HashMap<String, RemoteFolderTree>();
+		this.fileDeltas = new HashMap<>();
+		this.changedFiles = new ArrayList<>();
+		this.remoteFolderTable = new HashMap<>();
 		
 		// Build the local options
 		List<LocalOption> localOptions = new ArrayList<>();
@@ -563,7 +563,7 @@ public class RemoteFolderTreeBuilder {
 		
 		// Prune any empty child folders
 		if (isPruneEmptyDirectories() && !emptyChildren.isEmpty()) {
-			List<ICVSRemoteResource> newChildren = new ArrayList<ICVSRemoteResource>();
+			List<ICVSRemoteResource> newChildren = new ArrayList<>();
 			newChildren.addAll(Arrays.asList(remote.getChildren()));
 			newChildren.removeAll(emptyChildren);
 			remote.setChildren(newChildren.toArray(new ICVSRemoteResource[newChildren.size()]));
@@ -709,7 +709,7 @@ public class RemoteFolderTreeBuilder {
 	private void fetchFileRevisions(Session session, String[] fileNames, final IProgressMonitor monitor) throws CVSException {
 		
 		// Create a listener for receiving the revision info
-		final List<CVSException> exceptions = new ArrayList<CVSException>();
+		final List<CVSException> exceptions = new ArrayList<>();
 		IStatusListener listener = new IStatusListener() {
 			public void fileStatus(ICVSFolder root, String path, String remoteRevision) {
 				try {

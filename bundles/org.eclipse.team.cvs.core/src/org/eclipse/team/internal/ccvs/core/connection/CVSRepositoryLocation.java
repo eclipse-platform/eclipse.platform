@@ -421,7 +421,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	 */
 	public static IConnectionMethod[] getPluggedInConnectionMethods() {
 		if(pluggedInConnectionMethods==null) {
-			List<Object> connectionMethods = new ArrayList<Object>();
+			List<Object> connectionMethods = new ArrayList<>();
 			
 			if (STANDALONE_MODE) {				
 				connectionMethods.add(new PServerConnectionMethod());
@@ -641,7 +641,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 				ICVSRemoteResource[] resources = root.members(progress);
 				// There is the off chance that there is a file in the root of the repository.
 				// This is not supported by cvs so we need to make sure there are no files
-				List<ICVSRemoteResource> folders = new ArrayList<ICVSRemoteResource>(resources.length);
+				List<ICVSRemoteResource> folders = new ArrayList<>(resources.length);
 				for (ICVSRemoteResource remoteResource : resources) {
 					if (remoteResource.isContainer()) {
 						folders.add(remoteResource);
@@ -1085,7 +1085,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 		CVS_RSH_PARAMETERS = stringReplace(CVS_RSH_PARAMETERS, PORT_VARIABLE, Integer.valueOf(port).toString());
 
 		// Build the command list to be sent to the OS.
-		List<String> commands = new ArrayList<String>();
+		List<String> commands = new ArrayList<>();
 		commands.add(CVS_RSH);
 		StringTokenizer tokenizer = new StringTokenizer(CVS_RSH_PARAMETERS);
 		while (tokenizer.hasMoreTokens()) {

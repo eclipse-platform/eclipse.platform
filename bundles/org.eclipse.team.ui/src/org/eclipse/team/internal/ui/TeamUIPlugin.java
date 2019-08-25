@@ -88,7 +88,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	private WorkspaceTeamStateProvider provider;
 
-	private Map<String, TeamStateProvider> decoratedStateProviders = new HashMap<String, TeamStateProvider>();
+	private Map<String, TeamStateProvider> decoratedStateProviders = new HashMap<>();
 
 	// manages synchronize participants
 	private SynchronizeManager synchronizeManager;

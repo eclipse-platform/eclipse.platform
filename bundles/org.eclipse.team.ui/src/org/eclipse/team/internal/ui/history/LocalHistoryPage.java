@@ -878,7 +878,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			//Everything before after week is previous
 			tempCategories[3] = new DateHistoryCategory(TeamUIMessages.HistoryPage_Previous, null, monthCal);
 
-			ArrayList<AbstractHistoryCategory> finalCategories = new ArrayList<AbstractHistoryCategory>();
+			ArrayList<AbstractHistoryCategory> finalCategories = new ArrayList<>();
 			for (DateHistoryCategory tempCategory : tempCategories) {
 				tempCategory.collectFileRevisions(revisions, false);
 				if (tempCategory.hasRevisions()) {

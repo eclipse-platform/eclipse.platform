@@ -102,8 +102,8 @@ public class AddWizard extends ResizableWizard {
 	@Override
 	public void addPages() {
 		
-		final Collection<String> names= new HashSet<String>();
-		final Collection<String> extensions= new HashSet<String>();
+		final Collection<String> names= new HashSet<>();
+		final Collection<String> extensions= new HashSet<>();
 		getUnknownNamesAndExtension(unknowns, names, extensions);
 		
 		if (names.size() + extensions.size() > 0) {

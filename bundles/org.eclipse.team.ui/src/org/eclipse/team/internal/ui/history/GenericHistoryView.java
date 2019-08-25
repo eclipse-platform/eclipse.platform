@@ -284,7 +284,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 
 		private IAction[] createActions() {
 			NavigationHistoryEntry[] entries = getDropDownEntries();
-			List<NavigationHistoryEntryAction> actions = new ArrayList<NavigationHistoryEntryAction>();
+			List<NavigationHistoryEntryAction> actions = new ArrayList<>();
 			for (NavigationHistoryEntry navigationHistoryEntry : entries) {
 				actions.add(new NavigationHistoryEntryAction(navigationHistoryEntry));
 			}

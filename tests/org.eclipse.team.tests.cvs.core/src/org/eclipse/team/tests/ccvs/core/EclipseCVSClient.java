@@ -82,7 +82,7 @@ public class EclipseCVSClient implements ICVSClient {
 		GlobalOption[] cvsGlobalOptions = globals.toArray(new GlobalOption[globals.size()]);
 		
 		// get local options
-		List<CustomLocalOption> locals = new ArrayList<CustomLocalOption>();
+		List<CustomLocalOption> locals = new ArrayList<>();
 		for (int i = 0; i < localOptions.length; i++) {
 			String option = localOptions[i];
 			String argument = null;

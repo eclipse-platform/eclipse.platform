@@ -177,7 +177,7 @@ public class ResourceMappingResourceDisplayArea extends DialogArea {
 			try {
 				if (resource.getType() != IResource.FILE) {
 					IResource[] members = members(((IContainer)resource));
-					List<ResourceTraversalElement> result = new ArrayList<ResourceTraversalElement>();
+					List<ResourceTraversalElement> result = new ArrayList<>();
 					for (IResource child : members) {
 						if ((includeFolders || child.getType() == IResource.FILE)
 								&& isIncludedInFilter(child, traversal))
