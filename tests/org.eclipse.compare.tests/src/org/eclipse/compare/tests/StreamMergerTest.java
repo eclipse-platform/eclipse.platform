@@ -46,7 +46,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -61,7 +61,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -76,7 +76,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + _123 + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -91,7 +91,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + XYZ + SEPARATOR + FOO;
 		String o= ABC + SEPARATOR + _123 + SEPARATOR + _456 + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -106,7 +106,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + FOO + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + BAR + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -120,7 +120,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + DEF + SEPARATOR + _123 + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -135,7 +135,7 @@ public class StreamMergerTest extends TestCase {
 		String t= ABC + SEPARATOR + XYZ;
 		String o= ABC + SEPARATOR + XYZ;
 
-		StringBuffer output= new StringBuffer();
+		StringBuilder output= new StringBuilder();
 
 		IStatus status= merge(output, a, t, o);
 
@@ -144,7 +144,7 @@ public class StreamMergerTest extends TestCase {
 		assertEquals(output.toString(), ABC + SEPARATOR + XYZ + SEPARATOR);
 	}
 
-	private IStatus merge(StringBuffer output, String a, String m, String y) {
+	private IStatus merge(StringBuilder output, String a, String m, String y) {
 		InputStream ancestor= new ByteArrayInputStream(a.getBytes(StandardCharsets.UTF_8));
 		InputStream target= new ByteArrayInputStream(m.getBytes(StandardCharsets.UTF_8));
 		InputStream other= new ByteArrayInputStream(y.getBytes(StandardCharsets.UTF_8));
@@ -152,7 +152,7 @@ public class StreamMergerTest extends TestCase {
 		return merge(output, ancestor, target, other);
 	}
 
-	private IStatus merge(StringBuffer output, InputStream ancestor,
+	private IStatus merge(StringBuilder output, InputStream ancestor,
 			InputStream target, InputStream other) {
 		ByteArrayOutputStream os= new ByteArrayOutputStream();
 
