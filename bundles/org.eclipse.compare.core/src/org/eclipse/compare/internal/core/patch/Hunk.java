@@ -17,9 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.compare.patch.IFilePatchResult;
-import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.PatchConfiguration;
+import org.eclipse.compare.patch.*;
 import org.eclipse.core.runtime.Assert;
 
 /**
@@ -362,7 +360,7 @@ public class Hunk implements IHunk {
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
 								fuzz, pos, contextLines))
-					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$;
+					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$
 				// else if there is less or equal context line to the fuzz
 				// factor we ignore them all and treat as matching
 
@@ -381,7 +379,7 @@ public class Hunk implements IHunk {
 						&& contextLines.size() >= fuzz
 						&& !checkPrecedingContextLines(configuration, lines,
 								fuzz, pos, contextLines))
-					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$;
+					Assert.isTrue(false, "doPatch: preceding context lines don't match, even though fuzz factor has been used"); //$NON-NLS-1$
 
 				precedingLinesChecked = true;
 				contextLines.clear();
