@@ -212,9 +212,7 @@ public class EditionAction extends BaseCompareAction {
 		try {
 			String text= Utilities.readString(sa);
 			document.replace(0, document.getLength(), text);
-		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
-		} catch (BadLocationException e) {
+		} catch (CoreException | BadLocationException e) {
 			throw new InvocationTargetException(e);
 		}
 	}

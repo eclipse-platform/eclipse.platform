@@ -118,9 +118,7 @@ public class DocumentRangeNode
 		fRange= new Position(start, length);
 		try {
 			fBaseDocument.addPosition(RANGE_CATEGORY, fRange);
-		} catch (BadPositionCategoryException ex) {
-			CompareUIPlugin.log(ex);
-		} catch (BadLocationException ex) {
+		} catch (BadPositionCategoryException | BadLocationException ex) {
 			CompareUIPlugin.log(ex);
 		}
 	}
@@ -222,9 +220,7 @@ public class DocumentRangeNode
 				fBaseDocument.addPosition(RANGE_CATEGORY, p);
 				fAppendPosition= p;
 			}
-		} catch (BadPositionCategoryException ex) {
-			// silently ignored
-		} catch (BadLocationException ex) {
+		} catch (BadPositionCategoryException | BadLocationException ex) {
 			// silently ignored
 		}
 	}
@@ -244,9 +240,7 @@ public class DocumentRangeNode
 				fBaseDocument.addPosition(RANGE_CATEGORY, p);
 				fAppendPosition= p;
 				return fAppendPosition;
-			} catch (BadPositionCategoryException ex) {
-				// silently ignored
-			} catch (BadLocationException ex) {
+			} catch (BadPositionCategoryException | BadLocationException ex) {
 				// silently ignored
 			}
 		}

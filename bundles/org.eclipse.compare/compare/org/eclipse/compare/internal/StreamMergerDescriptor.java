@@ -38,11 +38,7 @@ class StreamMergerDescriptor {
 	public IStreamMerger createStreamMerger() {
 		try {
 			return (IStreamMerger) fElement.createExecutableExtension(CLASS_ATTRIBUTE);
-		} catch (CoreException ex) {
-			//ExceptionHandler.handle(ex, SearchMessages.getString("Search.Error.createSorter.title"), SearchMessages.getString("Search.Error.createSorter.message")); //$NON-NLS-2$ //$NON-NLS-1$
-			return null;
-		} catch (ClassCastException ex) {
-			//ExceptionHandler.displayMessageDialog(ex, SearchMessages.getString("Search.Error.createSorter.title"), SearchMessages.getString("Search.Error.createSorter.message")); //$NON-NLS-2$ //$NON-NLS-1$
+		} catch (CoreException | ClassCastException ex) {
 			return null;
 		}
 	}

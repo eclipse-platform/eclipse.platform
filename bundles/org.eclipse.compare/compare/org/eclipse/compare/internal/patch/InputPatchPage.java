@@ -284,11 +284,7 @@ public class InputPatchPage extends WizardPage {
 								patchFileURL), getContainer());
 						if (contents != null)
 							reader = new StringReader(contents);
-					} catch (MalformedURLException e) {
-						// ignore as we tested it with modify listener on combo
-					} catch (InvocationTargetException e) { // ignore
-					} catch (OperationCanceledException e) { // ignore
-					} catch (InterruptedException e) { // ignore
+					} catch (MalformedURLException | InvocationTargetException | OperationCanceledException | InterruptedException e) { // ignore
 					}
 				}
 				fPatchSource= PatchMessages.InputPatchPage_URL_title;

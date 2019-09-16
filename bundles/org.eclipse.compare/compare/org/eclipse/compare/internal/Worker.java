@@ -72,10 +72,7 @@ public class Worker implements IRunnableWithProgress {
 				try {
 					performNextTask(progress);
 					progress.checkCanceled();
-				} catch (OperationCanceledException e) {
-					// Only cancel all the work if the outer monitor is canceled.
-					progress.checkCanceled();
-				} catch (InterruptedException e) {
+				} catch (OperationCanceledException | InterruptedException e) {
 					// Only cancel all the work if the outer monitor is canceled.
 					progress.checkCanceled();
 				} catch (InvocationTargetException e) {

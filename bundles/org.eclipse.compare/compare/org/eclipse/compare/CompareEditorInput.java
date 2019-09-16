@@ -1467,9 +1467,7 @@ public abstract class CompareEditorInput extends PlatformObject implements IEdit
 				}
 			});
 			return true;
-		} catch (InterruptedException x) {
-			// Ignore
-		} catch (OperationCanceledException x) {
+		} catch (InterruptedException | OperationCanceledException x) {
 			// Ignore
 		} catch (InvocationTargetException x) {
 			ErrorDialog.openError(fComposite.getShell(), CompareMessages.CompareDialog_error_title, null,

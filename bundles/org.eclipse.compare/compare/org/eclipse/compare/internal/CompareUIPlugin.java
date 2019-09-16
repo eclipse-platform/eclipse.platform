@@ -1278,9 +1278,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 						return ITypedElement.UNKNOWN_TYPE;
 				}
 				return ITypedElement.TEXT_TYPE;
-			} catch (CoreException ex) {
-				// be silent and return UNKNOWN_TYPE
-			} catch (IOException ex) {
+			} catch (CoreException | IOException ex) {
 				// be silent and return UNKNOWN_TYPE
 			} finally {
 				if (is != null) {

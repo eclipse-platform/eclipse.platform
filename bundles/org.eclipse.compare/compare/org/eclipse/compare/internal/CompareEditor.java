@@ -521,9 +521,7 @@ public class CompareEditor extends EditorPart
 		try {
 			operation.run(progressMonitor);
 			firePropertyChange(PROP_DIRTY);
-		} catch (InterruptedException x) {
-			// NeedWork
-		} catch (OperationCanceledException x) {
+		} catch (InterruptedException | OperationCanceledException x) {
 			// NeedWork
 		} catch (InvocationTargetException x) {
 			String title= Utilities.getString("CompareEditor.saveError.title"); //$NON-NLS-1$

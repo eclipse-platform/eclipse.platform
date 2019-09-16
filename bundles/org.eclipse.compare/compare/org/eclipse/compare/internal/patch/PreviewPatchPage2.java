@@ -136,8 +136,7 @@ public class PreviewPatchPage2 extends WizardPage {
 		// Initialize the input
 		try {
 			fInput.run(null);
-		} catch (InterruptedException e) {//ignore
-		} catch (InvocationTargetException e) {//ignore
+		} catch (InterruptedException | InvocationTargetException e) {//ignore
 		}
 
 		Label label = new Label(composite, SWT.NONE);
@@ -300,8 +299,7 @@ public class PreviewPatchPage2 extends WizardPage {
 						}
 						monitor.done();
 					});
-				} catch (InvocationTargetException e) { //ignore
-				} catch (InterruptedException e) { //ignore
+				} catch (InvocationTargetException | InterruptedException e) { //ignore
 				}
 			}
 		};
@@ -326,8 +324,7 @@ public class PreviewPatchPage2 extends WizardPage {
 						}
 						monitor.done();
 					});
-				} catch (InvocationTargetException e) { //ignore
-				} catch (InterruptedException e) { //ignore
+				} catch (InvocationTargetException | InterruptedException e) { //ignore
 				}
 
 			}
@@ -657,9 +654,7 @@ public class PreviewPatchPage2 extends WizardPage {
 			PlatformUI.getWorkbench().getProgressService().run(true, true,
 					monitor -> result[0]= patcher.guessFuzzFactor(monitor)
 			);
-		} catch (InvocationTargetException ex) {
-			// NeedWork
-		} catch (InterruptedException ex) {
+		} catch (InvocationTargetException | InterruptedException ex) {
 			// NeedWork
 		}
 		return result[0];
