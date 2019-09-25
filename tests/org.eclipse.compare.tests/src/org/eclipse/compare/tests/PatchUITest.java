@@ -150,7 +150,7 @@ public class PatchUITest extends TestCase {
 		InputStream expectedIS = PatchUtils.asInputStream("exp_addition.txt");
 		InputStream actualIS = testProject.getFile("exp_addition.txt").getContents();
 
-		String expected = PatchUtils.asString(expectedIS).replaceAll("\n", "\r\n");
+		String expected = PatchUtils.asString(expectedIS).replaceAll("\r?\n", "\r\n");
 		String actual = PatchUtils.asString(actualIS);
 
 		assertEquals(expected, actual);
