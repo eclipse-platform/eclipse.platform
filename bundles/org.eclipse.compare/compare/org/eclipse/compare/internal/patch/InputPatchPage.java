@@ -293,13 +293,15 @@ public class InputPatchPage extends WizardPage {
 				IResource[] resources= Utilities.getResources(fTreeViewer.getSelection());
 				IResource patchFile= resources[0];
 				if (patchFile != null) {
-					try {
-						reader= new FileReader(patchFile.getLocation().toFile());
-					} catch (FileNotFoundException ex) {
+					if (patchFile.getLocation() == null) {
 						MessageDialog.openError(null, PatchMessages.InputPatchPage_PatchErrorDialog_title, PatchMessages.InputPatchPage_PatchFileNotFound_message);
-					} catch (NullPointerException nex) {
-						//in case the path doesn't exist (eg. getLocation() returned null)
-						MessageDialog.openError(null, PatchMessages.InputPatchPage_PatchErrorDialog_title, PatchMessages.InputPatchPage_PatchFileNotFound_message);
+					} else {
+						try {
+							reader = new FileReader(patchFile.getLocation().toFile());
+						} catch (FileNotFoundException ex) {
+							MessageDialog.openError(null, PatchMessages.InputPatchPage_PatchErrorDialog_title,
+									PatchMessages.InputPatchPage_PatchFileNotFound_message);
+						}
 					}
 				}
 				fPatchSource= PatchMessages.InputPatchPage_WorkspacePatch_title;
@@ -838,7 +840,7 @@ public class InputPatchPage extends WizardPage {
 		// readjust selection if there is a patch selected in the workspace or on the clipboard
 		// check workspace first
 		IResource patchTarget= fPatchWizard.getTarget();
-		if (patchTarget instanceof IFile) {
+		if (patchTarget instanceof IFile && patchTarget.getLocation() != null) {
 			Reader reader= null;
 			try {
 				try {
@@ -854,10 +856,7 @@ public class InputPatchPage extends WizardPage {
 					}
 				} catch (FileNotFoundException ex) {
 					// silently ignored
-				} catch (NullPointerException nex) {
-					// silently ignored
 				}
-
 			} finally {
 				if (reader != null) {
 					try {
