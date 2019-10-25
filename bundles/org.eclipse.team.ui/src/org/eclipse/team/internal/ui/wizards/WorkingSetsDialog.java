@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.PlatformUI;
 
 public class WorkingSetsDialog extends TitleAreaDialog {
 
@@ -90,7 +90,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 
 		wsTableViewer.setContentProvider(new ArrayContentProvider());
 		wsTableViewer.setLabelProvider(new WorkingSetLabelProvider());
-		wsTableViewer.setInput(TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager().getWorkingSets());
+		wsTableViewer.setInput(PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets());
 
 		setupListeners();
 

@@ -63,6 +63,7 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.ResourceUtil;
 
@@ -281,7 +282,7 @@ public abstract class TeamAction extends AbstractHandler implements IObjectActio
 		} else if (window != null) {
 			return window.getShell();
 		} else {
-			IWorkbench workbench = TeamUIPlugin.getPlugin().getWorkbench();
+			IWorkbench workbench = PlatformUI.getWorkbench();
 			if (workbench == null) return null;
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			if (window == null) return null;

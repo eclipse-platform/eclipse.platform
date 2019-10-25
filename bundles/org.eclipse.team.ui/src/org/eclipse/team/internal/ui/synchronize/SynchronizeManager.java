@@ -459,7 +459,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 
 	@Override
 	public ISynchronizeView showSynchronizeViewInActivePage() {
-		IWorkbench workbench = TeamUIPlugin.getPlugin().getWorkbench();
+		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 
 		boolean switchPerspectives = promptForPerspectiveSwitch();

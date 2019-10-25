@@ -519,7 +519,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	public static void openDialog(Shell providedShell, final IOpenableInShell openable, int flags) {
 		// If no shell was provided, try to get one from the active window
 		if (providedShell == null) {
-			IWorkbenchWindow window = CVSUIPlugin.getPlugin().getWorkbench().getActiveWorkbenchWindow();
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			if (window != null) {
 				providedShell = window.getShell();
 				// sync-exec when we do this just in case
@@ -743,8 +743,7 @@ public class CVSUIPlugin extends AbstractUIPlugin {
 	}
 	
 	public IEditorPart openEditor(ICVSRemoteFile file, IProgressMonitor monitor) throws InvocationTargetException {
-		IWorkbench workbench = getWorkbench();
-		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try {
 			return Utils.openEditor(page, file.getAdapter(IFileRevision.class), monitor);
 		} catch (CoreException e) {

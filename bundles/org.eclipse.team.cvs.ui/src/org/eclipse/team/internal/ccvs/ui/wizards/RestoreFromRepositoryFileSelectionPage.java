@@ -222,7 +222,7 @@ public class RestoreFromRepositoryFileSelectionPage extends CVSWizardPage {
 						return text;
 					}
 				},
-				CVSUIPlugin.getPlugin().getWorkbench().getDecoratorManager().getLabelDecorator()));
+				PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator()));
 		tree.setComparator(new ResourceComparator(ResourceComparator.NAME));
 		tree.setInput(treeInput);
 		

@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.team.internal.ui.ProjectSetImporter;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.TeamOperation;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
+import org.eclipse.ui.PlatformUI;
 
 public class ImportProjectSetOperation extends TeamOperation {
 
@@ -112,7 +112,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	}
 
 	private void createWorkingSet(IWorkingSet[] workingSets, IProject[] projects) {
-		IWorkingSetManager manager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();
 		String workingSetName;
 		for (IWorkingSet workingSet : workingSets) {
 			workingSetName = workingSet.getName();

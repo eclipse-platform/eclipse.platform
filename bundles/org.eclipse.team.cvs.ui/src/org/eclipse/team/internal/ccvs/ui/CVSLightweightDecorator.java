@@ -468,7 +468,7 @@ public class CVSLightweightDecorator extends LabelProvider implements ILightweig
 	* Perform a blanket refresh of all CVS decorations
 	*/
 	public static void refresh() {
-		CVSUIPlugin.getPlugin().getWorkbench().getDecoratorManager().update(CVSUIPlugin.DECORATOR_ID);
+		PlatformUI.getWorkbench().getDecoratorManager().update(CVSUIPlugin.DECORATOR_ID);
 	}
 
 	/*

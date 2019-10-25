@@ -511,7 +511,7 @@ public abstract class CheckoutProjectOperation extends CheckoutOperation {
 	}
 	
 	/* private */ void createWorkingSet(String workingSetName, IProject[] projects) {
-		IWorkingSetManager manager = CVSUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+		IWorkingSetManager manager = PlatformUI.getWorkbench().getWorkingSetManager();
 		IWorkingSet oldSet = manager.getWorkingSet(workingSetName);
 		if (oldSet == null) {
 			IWorkingSet newSet = manager.createWorkingSet(workingSetName, projects);

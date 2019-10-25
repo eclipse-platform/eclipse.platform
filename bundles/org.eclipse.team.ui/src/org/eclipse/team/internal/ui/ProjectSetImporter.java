@@ -152,7 +152,7 @@ public class ProjectSetImporter {
 
 				//try working sets
 				IMemento[] sets = xmlMemento.getChildren("workingSets"); //$NON-NLS-1$
-				IWorkingSetManager wsManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+				IWorkingSetManager wsManager = PlatformUI.getWorkbench().getWorkingSetManager();
 				boolean replaceAll = false;
 				boolean mergeAll = false;
 				boolean skipAll = false;

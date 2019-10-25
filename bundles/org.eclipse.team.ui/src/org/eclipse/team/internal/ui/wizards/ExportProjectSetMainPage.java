@@ -57,7 +57,6 @@ import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.internal.ui.IHelpContextIds;
 import org.eclipse.team.internal.ui.SWTUtils;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
@@ -96,7 +95,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		public TreePath[] getParents(Object element) {
 			if (element instanceof IProject){
 				ArrayList<IWorkingSet> treePaths = new ArrayList<>();
-				IWorkingSet[] workingSets = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager().getWorkingSets();
+				IWorkingSet[] workingSets = PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets();
 				for (IWorkingSet workingSet : workingSets) {
 					IAdaptable[] elements = workingSet.getElements();
 					for (IAdaptable d : elements) {
@@ -556,7 +555,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 				updateEnablement();
 			});
 
-			wsTableViewer.setInput(TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager());
+			wsTableViewer.setInput(PlatformUI.getWorkbench().getWorkingSetManager());
 		}
 
 		private void addButtons(Composite projectComposite){
@@ -621,7 +620,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			newWorkingSet.setLayoutData(data);
 			newWorkingSet.setText(TeamUIMessages.ExportProjectSetMainPage_EditButton);
 			newWorkingSet.addListener(SWT.Selection, event -> {
-				final IWorkingSetManager workingSetManager = TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager();
+				final IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
 				IWorkingSetSelectionDialog wsWizard = workingSetManager.createWorkingSetSelectionDialog(getShell(), false);
 				if (wsWizard != null) {
 					IPropertyChangeListener propListener = null;
@@ -669,7 +668,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 		}
 
 		public void refresh(){
-			wsTableViewer.setInput(TeamUIPlugin.getPlugin().getWorkbench().getWorkingSetManager());
+			wsTableViewer.setInput(PlatformUI.getWorkbench().getWorkingSetManager());
 		}
 
 		private void updateEnablement() {

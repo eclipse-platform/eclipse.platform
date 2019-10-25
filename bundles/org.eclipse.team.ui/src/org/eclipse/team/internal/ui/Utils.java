@@ -311,7 +311,7 @@ public class Utils {
 			if (!shell.isDisposed())
 				return shell;
 		}
-		IWorkbench workbench = TeamUIPlugin.getPlugin().getWorkbench();
+		IWorkbench workbench = PlatformUI.getWorkbench();
 		if (workbench != null) {
 			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 			if (window != null) {

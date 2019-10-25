@@ -152,7 +152,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @return the active workbench page
 	 */
 	public static IWorkbenchPage getActivePage() {
-		IWorkbenchWindow window = getPlugin().getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) return null;
 		return window.getActivePage();
 	}

@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -352,7 +353,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 	}
 	
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
-		IWorkbenchWindow window= fgXMLPlugin.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow window= PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) {
 			final WindowRef windowRef= new WindowRef();
 			Display.getDefault().syncExec(() -> setActiveWorkbenchWindow(windowRef));

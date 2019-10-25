@@ -450,10 +450,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	public static IWorkbench getActiveWorkbench() {
-		CompareUIPlugin plugin= getDefault();
-		if (plugin == null)
-			return null;
-		return plugin.getWorkbench();
+		return PlatformUI.getWorkbench();
 	}
 
 	public static IWorkbenchWindow getActiveWorkbenchWindow() {
@@ -694,7 +691,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 			if (image == null) {
 				if (fgComparePlugin != null) {
 					if (ITypedElement.FOLDER_TYPE.equals(type)) {
-						image= getDefault().getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+						image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
 						//image= SharedImages.getImage(ISharedImages.IMG_OBJ_FOLDER);
 					} else {
 						image= createWorkbenchImage(type);
@@ -749,7 +746,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	}
 
 	private static Image createWorkbenchImage(String type) {
-		IEditorRegistry er= getDefault().getWorkbench().getEditorRegistry();
+		IEditorRegistry er= PlatformUI.getWorkbench().getEditorRegistry();
 		ImageDescriptor id= er.getImageDescriptor("foo." + type); //$NON-NLS-1$
 		return id.createImage();
 	}
@@ -1413,7 +1410,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	public static IEditorPart[] getDirtyEditors() {
 		Set<IEditorInput> inputs= new HashSet<IEditorInput>();
 		List<IEditorPart> result= new ArrayList<IEditorPart>(0);
-		IWorkbench workbench= getDefault().getWorkbench();
+		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow[] windows= workbench.getWorkbenchWindows();
 		for (IWorkbenchWindow window : windows) {
 			IWorkbenchPage[] pages = window.getPages();

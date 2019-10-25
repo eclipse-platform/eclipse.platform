@@ -26,13 +26,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.team.core.history.IFileRevision;
-import org.eclipse.team.examples.filesystem.FileSystemPlugin;
 import org.eclipse.team.ui.history.HistoryPage;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorRegistry;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.ide.IDE;
@@ -47,6 +45,7 @@ public class OpenFileSystemRevisionAction extends BaseSelectionListenerAction {
 		super(text);
 	}
 
+	@Override
 	public void run() {
 		IStructuredSelection structSel = selection;
 
@@ -90,8 +89,7 @@ public class OpenFileSystemRevisionAction extends BaseSelectionListenerAction {
 	}
 
 	/* private */String getEditorID(String fileName, InputStream contents) {
-		IWorkbench workbench = FileSystemPlugin.getPlugin().getWorkbench();
-		IEditorRegistry registry = workbench.getEditorRegistry();
+		IEditorRegistry registry = PlatformUI.getWorkbench().getEditorRegistry();
 		IContentType type = null;
 		if (contents != null) {
 			try {
@@ -114,6 +112,7 @@ public class OpenFileSystemRevisionAction extends BaseSelectionListenerAction {
 		return id;
 	}
 
+	@Override
 	protected boolean updateSelection(IStructuredSelection selection) {
 		this.selection = selection;
 		return shouldShow();
