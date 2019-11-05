@@ -60,12 +60,12 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 	 */
 	public void resetRoots(IResource[] resources, CVSTag[] tags) {
 		if (this.resources != null) {
-			List removed = new ArrayList();
+			List<ISubscriberChangeEvent> removed = new ArrayList<>();
 			for (IResource resource : this.resources) {
 				removed.add(new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_REMOVED, resource));
 			}
 			this.resources = new IResource[0];
-			fireTeamResourceChange((ISubscriberChangeEvent[]) removed.toArray(new ISubscriberChangeEvent[removed.size()]));
+			fireTeamResourceChange(removed.toArray(new ISubscriberChangeEvent[removed.size()]));
 			if (tree != null) {
 				tree.dispose();
 				tree = null;
@@ -116,7 +116,7 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 
 	@Override
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
-		List outgoingDeltas = new ArrayList(deltas.length);
+		List<ISubscriberChangeEvent> outgoingDeltas = new ArrayList<>(deltas.length);
 		for (ISubscriberChangeEvent delta : deltas) {
 			if ((delta.getFlags() & ISubscriberChangeEvent.ROOT_REMOVED) != 0) {
 				IResource resource = delta.getResource();
@@ -134,12 +134,12 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 			}
 		}
 		
-		fireTeamResourceChange((SubscriberChangeEvent[]) outgoingDeltas.toArray(new SubscriberChangeEvent[outgoingDeltas.size()]));
+		fireTeamResourceChange(outgoingDeltas.toArray(new SubscriberChangeEvent[outgoingDeltas.size()]));
 	}
 
 	private SubscriberChangeEvent[] handleRemovedRoot(IResource removedRoot) {
 		// Determine if any of the roots of the compare are affected
-		List removals = new ArrayList(resources.length);
+		List<IResource> removals = new ArrayList<>(resources.length);
 		for (IResource root : resources) {
 			if (removedRoot.getFullPath().isPrefixOf(root.getFullPath())) {
 				// The root is no longer managed by CVS
@@ -156,15 +156,15 @@ public class CVSCompareSubscriber extends CVSSyncTreeSubscriber implements ISubs
 		}
 		
 		// Adjust the roots of the subscriber
-		List newRoots = new ArrayList(resources.length);
+		List<IResource> newRoots = new ArrayList<>(resources.length);
 		newRoots.addAll(Arrays.asList(resources));
 		newRoots.removeAll(removals);
-		resources = (IResource[]) newRoots.toArray(new IResource[newRoots.size()]);
+		resources = newRoots.toArray(new IResource[newRoots.size()]);
 		
 		// Create the deltas for the removals
 		SubscriberChangeEvent[] deltas = new SubscriberChangeEvent[removals.size()];
 		for (int i = 0; i < deltas.length; i++) {
-			deltas[i] = new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_REMOVED, (IResource)removals.get(i));
+			deltas[i] = new SubscriberChangeEvent(this, ISubscriberChangeEvent.ROOT_REMOVED, removals.get(i));
 		}
 		return deltas;
 	}

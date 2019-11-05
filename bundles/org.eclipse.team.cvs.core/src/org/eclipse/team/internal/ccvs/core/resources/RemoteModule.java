@@ -67,7 +67,7 @@ public class RemoteModule extends RemoteFolder {
 		
 		Map modules = new HashMap();
 		Map referencedModulesTable = new HashMap();
-		Map moduleAliases = new HashMap();
+		Map<String,String[]> moduleAliases = new HashMap<>();
 		
 		// First pass: Create the remote module instances based on remote mapping
 		for (String moduleDefinitionString : moduleDefinitionStrings) {
@@ -119,7 +119,7 @@ public class RemoteModule extends RemoteFolder {
 				}
 				
 				// An alias expands to one or more modules or paths
-				List expansions = new ArrayList(10);
+				List<String> expansions = new ArrayList<>(10);
 				expansions.add(next);
 				while (tokenizer.hasMoreTokens())
 					expansions.add(tokenizer.nextToken());
@@ -132,7 +132,7 @@ public class RemoteModule extends RemoteFolder {
 				// The module definition may have a leading directory which can be followed by some files
 				if (!(next.charAt(0) == '&')) {
 					String directory = next;
-					List files = new ArrayList();
+					List<String> files = new ArrayList<>();
 					while (tokenizer.hasMoreTokens() && (next.charAt(0) != '&')) {
 						next = tokenizer.nextToken() ;
 						if ((next.charAt(0) != '&'))
@@ -168,7 +168,7 @@ public class RemoteModule extends RemoteFolder {
 		while (iter.hasNext()) {
 			String moduleName = (String)iter.next();
 			RemoteModule module = (RemoteModule)modules.get(moduleName);
-			String[] expansion = (String[])moduleAliases.get(moduleName);
+			String[] expansion = moduleAliases.get(moduleName);
 			List referencedFolders = new ArrayList();
 			boolean expandable = true;
 			for (String e : expansion) {
@@ -310,20 +310,20 @@ public class RemoteModule extends RemoteFolder {
 		if (folderInfo.getIsStatic()) {
 			ICVSRemoteResource[] children = getChildren();
 			if (children != null) {
-				List taggedChildren = new ArrayList(children.length);
+				List<ICVSRemoteResource> taggedChildren = new ArrayList<>(children.length);
 				for (ICVSRemoteResource resource : children) {
 					taggedChildren.add(((RemoteResource)resource).forTag(r, tagName));
 				}
-				r.setChildren((ICVSRemoteResource[]) taggedChildren.toArray(new ICVSRemoteResource[taggedChildren.size()]));
+				r.setChildren(taggedChildren.toArray(new ICVSRemoteResource[taggedChildren.size()]));
 			}
 		}
 		if (referencedModules != null) {
-			List taggedModules = new ArrayList(referencedModules.length);
+			List<ICVSRemoteResource> taggedModules = new ArrayList<>(referencedModules.length);
 			for (ICVSRemoteResource referencedModule : referencedModules) {
 				RemoteModule module = (RemoteModule) referencedModule;
 				taggedModules.add(module.forTag(r, tagName));
 			}
-			r.setReferencedModules((ICVSRemoteResource[]) taggedModules.toArray(new ICVSRemoteResource[taggedModules.size()]));
+			r.setReferencedModules(taggedModules.toArray(new ICVSRemoteResource[taggedModules.size()]));
 		}
 		return r;
 	}

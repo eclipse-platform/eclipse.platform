@@ -25,31 +25,25 @@ public class CVSRepositoryLocationMatcher {
 	private static final String PSERVER = "pserver"; //$NON-NLS-1$
 	private static final String EXT = "ext"; //$NON-NLS-1$
 
-	private static Comparator COMPATIBLE_LOCATIONS_COMPARATOR = (o1, o2) -> {
-		if (o1 instanceof ICVSRepositoryLocation
-				&& o2 instanceof ICVSRepositoryLocation) {
-			ICVSRepositoryLocation rl1 = (ICVSRepositoryLocation) o1;
-			ICVSRepositoryLocation rl2 = (ICVSRepositoryLocation) o2;
-			String name1 = rl1.getMethod().getName();
-			String name2 = rl2.getMethod().getName();
+	private static Comparator<ICVSRepositoryLocation> COMPATIBLE_LOCATIONS_COMPARATOR = (rl1, rl2) -> {
+		String name1 = rl1.getMethod().getName();
+		String name2 = rl2.getMethod().getName();
 
-			if (!name1.equals(name2) && isCompatible(rl1, rl2, false)) {
-				if (name1.equals(EXTSSH))
-					return -1;
-				if (name2.equals(EXTSSH))
-					return 1;
-				if (name1.equals(PSERVER))
-					return -1;
-				if (name2.equals(PSERVER))
-					return 1;
-				if (name1.equals(EXT))
-					return -1;
-				if (name2.equals(EXT))
-					return 1;
-			}
-			return name1.compareTo(name2);
+		if (!name1.equals(name2) && isCompatible(rl1, rl2, false)) {
+			if (name1.equals(EXTSSH))
+				return -1;
+			if (name2.equals(EXTSSH))
+				return 1;
+			if (name1.equals(PSERVER))
+				return -1;
+			if (name2.equals(PSERVER))
+				return 1;
+			if (name1.equals(EXT))
+				return -1;
+			if (name2.equals(EXT))
+				return 1;
 		}
-		return 0;
+		return name1.compareTo(name2);
 	};
 
 	public static Map<IProject, List<ICVSRepositoryLocation>> prepareSuggestedRepositoryLocations(
@@ -98,9 +92,9 @@ public class CVSRepositoryLocationMatcher {
 				ICVSRepositoryLocation projectSetRepositoryLocation = (ICVSRepositoryLocation) i
 						.next();
 
-				List matching = new ArrayList();
-				List compatible = new ArrayList();
-				List list = new ArrayList();
+				List<ICVSRepositoryLocation> matching = new ArrayList<>();
+				List<ICVSRepositoryLocation> compatible = new ArrayList<>();
+				List<ICVSRepositoryLocation> list = new ArrayList<>();
 				for (Iterator j = knownRepositories.iterator(); j.hasNext();) {
 					ICVSRepositoryLocation knownRepositoryLocation = (ICVSRepositoryLocation) j
 							.next();

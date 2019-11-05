@@ -195,7 +195,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 	 * Get the arguments to be passed to a commit or update
 	 */
 	private String[] getValidArguments(IResource[] resources, LocalOption[] options) throws CVSException {
-		List arguments = new ArrayList(resources.length);
+		List<String> arguments = new ArrayList<>(resources.length);
 		for (IResource resource : resources) {
 			checkIsChild(resource);
 			IPath cvsPath = resource.getFullPath().removeFirstSegments(1);
@@ -205,7 +205,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 				arguments.add(cvsPath.toString());
 			}
 		}
-		return (String[])arguments.toArray(new String[arguments.size()]);
+		return arguments.toArray(new String[arguments.size()]);
 	}
 	
 	private ICVSResource[] getCVSArguments(IResource[] resources) {
@@ -299,7 +299,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 		final IStatus[] result = new IStatus[] { ICommandOutputListener.OK };
 		workspaceRoot.getLocalRoot().run(monitor1 -> {
 			final Map /* from KSubstOption to List of String */ filesToAdmin = new HashMap();
-			final Collection /* of ICVSFile */ filesToCommitAsText = new HashSet(); // need fast lookup
+			final Collection<ICVSFile> filesToCommitAsText = new HashSet<>(); // need fast lookup
 			final boolean useCRLF = IS_CRLF_PLATFORM && (CVSProviderPlugin.getPlugin().isUsePlatformLineend());
 
 			/*** determine the resources to be committed and/or admin'd ***/
@@ -369,7 +369,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 								Command.NO_GLOBAL_OPTIONS,
 								new LocalOption[] { Command.DO_NOT_RECURSE, Commit.FORCE,
 									Command.makeArgumentOption(Command.MESSAGE_OPTION, keywordChangeComment) },
-								(ICVSResource[]) filesToCommitAsText.toArray(new ICVSResource[filesToCommitAsText.size()]),
+								filesToCommitAsText.toArray(new ICVSResource[filesToCommitAsText.size()]),
 								filesToCommitAsText,
 								null, 
 								Policy.subMonitorFor(monitor1, filesToCommitAsText.size()));

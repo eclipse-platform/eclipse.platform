@@ -83,7 +83,7 @@ public class Session {
 	private boolean noLocalChanges = false;
 	private boolean createBackups = true;
 	private int compressionLevel = 0;
-	private List expansions;
+	private List<String> expansions;
 	private Collection /* of ICVSFile */ textTransferOverrideSet = null;
 	
 	// state need to indicate whether 
@@ -91,10 +91,10 @@ public class Session {
 
 	// The resource bundle key that provides the file sending message
 	private String sendFileTitleMessage;
-	private Map responseHandlers;
+	private Map<String,ResponseHandler> responseHandlers;
 	
 	// List of errors accumulated while the command is executing
-	private List errors = new ArrayList();
+	private List<IStatus> errors = new ArrayList<>();
 	
 	private Command currentCommand;
 
@@ -136,7 +136,7 @@ public class Session {
 	 */
 	protected void resetModuleExpansion() {
 		if (expansions == null) 
-			expansions = new ArrayList();
+			expansions = new ArrayList<>();
 		else
 			expansions.clear();
 	}
@@ -268,7 +268,7 @@ public class Session {
 	 */
 	public String[] getModuleExpansions() {
 		if (expansions == null) return new String[0];
-		return (String[]) expansions.toArray(new String[expansions.size()]);
+		return expansions.toArray(new String[expansions.size()]);
 	}
 	
 	/**
@@ -960,7 +960,7 @@ public class Session {
 	 * Get the response handler map to be used for this session. The map is created by making a copy of the global
 	 * reponse handler map.
 	 */
-	protected Map getReponseHandlers() {
+	protected Map<String,ResponseHandler> getReponseHandlers() {
 		if (responseHandlers == null) {
 			responseHandlers = Request.getReponseHandlerMap();
 		}
@@ -990,7 +990,7 @@ public class Session {
 	}
 	
 	public ResponseHandler getResponseHandler(String responseID) {
-		return (ResponseHandler)getReponseHandlers().get(responseID);
+		return getReponseHandlers().get(responseID);
 	}
 
 	/**
@@ -1008,7 +1008,7 @@ public class Session {
 	}
 	
 	public IStatus[] getErrors() {
-		return (IStatus[]) errors.toArray(new IStatus[errors.size()]);
+		return errors.toArray(new IStatus[errors.size()]);
 	}
 	
 	public void clearErrors() {

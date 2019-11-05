@@ -103,7 +103,7 @@ public void start(BundleContext context) throws Exception {
 			store.setValue(IUIConstants.PREF_FIRST_STARTUP, false);
 		}
 
-		tracker = new ServiceTracker(getBundle().getBundleContext(),IJSchService.class.getName(), null);
+		tracker = new ServiceTracker<>(getBundle().getBundleContext(), IJSchService.class.getName(), null);
 		tracker.open();
 	}
 

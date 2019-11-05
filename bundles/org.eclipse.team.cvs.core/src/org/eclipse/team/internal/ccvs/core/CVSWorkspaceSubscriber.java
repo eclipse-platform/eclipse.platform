@@ -83,7 +83,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 	 * @see org.eclipse.team.core.sync.ISyncTreeSubscriber#roots()
 	 */
 	public IResource[] roots() {
-		List result = new ArrayList();
+		List<IProject> result = new ArrayList<>();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (IProject project : projects) {
 			if(project.isOpen()) {
@@ -93,7 +93,7 @@ public class CVSWorkspaceSubscriber extends CVSSyncTreeSubscriber implements IRe
 				}
 			}
 		}
-		return (IProject[]) result.toArray(new IProject[result.size()]);
+		return result.toArray(new IProject[result.size()]);
 	}
 	
 	@Override

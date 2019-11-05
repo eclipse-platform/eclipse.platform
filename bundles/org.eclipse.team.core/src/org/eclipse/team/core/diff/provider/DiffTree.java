@@ -197,7 +197,7 @@ public class DiffTree implements IDiffTree {
 	 * <code>endInput</code> should be done in a finally block as illustrated in the
 	 * following code snippet.
 	 * </p>
-	 * 
+	 *
 	 * <pre>
 	 * try {
 	 * 	set.beginInput();
@@ -337,7 +337,7 @@ public class DiffTree implements IDiffTree {
 	 * @return all the diffs contained in this diff tree
 	 */
 	public IDiff[] getDiffs() {
-		return (IDiff[]) pathTree.values().toArray(new IDiff[pathTree.size()]);
+		return pathTree.values().toArray(new IDiff[pathTree.size()]);
 	}
 
 	@Override

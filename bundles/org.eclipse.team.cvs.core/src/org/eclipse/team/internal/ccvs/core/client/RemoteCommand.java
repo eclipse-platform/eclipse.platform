@@ -52,7 +52,7 @@ public abstract class RemoteCommand extends Command {
 		throws CVSException {
 		
 		// Convert arguments
-		List stringArguments = new ArrayList(arguments.length);
+		List<String> stringArguments = new ArrayList<>(arguments.length);
 		for (ICVSResource resource : arguments) {
 			String remotePath;
 			if (isDefinedModule(resource)) {
@@ -63,7 +63,7 @@ public abstract class RemoteCommand extends Command {
 			}
 			stringArguments.add(remotePath);
 		}
-			return (String[]) stringArguments.toArray(new String[stringArguments.size()]);
+			return stringArguments.toArray(new String[stringArguments.size()]);
 	}
 
 	private boolean isDefinedModule(ICVSResource resource) {

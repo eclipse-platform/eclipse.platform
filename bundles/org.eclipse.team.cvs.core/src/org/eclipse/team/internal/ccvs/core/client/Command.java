@@ -88,7 +88,7 @@ public abstract class Command extends Request {
 
 	/*** Local options: keyword substitution mode ***/
 	// valid for: add admin checkout export import update
-	private static final Map ksubstOptionMap = new HashMap();
+	private static final Map<String, KSubstOption> ksubstOptionMap = new HashMap<>();
 	public static final KSubstOption KSUBST_BINARY = new KSubstOption("-kb"); //$NON-NLS-1$
 	public static final KSubstOption KSUBST_TEXT = new KSubstOption("-ko"); //$NON-NLS-1$
 	public static final KSubstOption KSUBST_TEXT_EXPAND = new KSubstOption("-kkv"); //$NON-NLS-1$
@@ -573,13 +573,13 @@ public abstract class Command extends Request {
 			if (!this.isElementOf(options)) {
 				return options;
 			}
-			List result = new ArrayList();
+			List<LocalOption> result = new ArrayList<>();
 			for (LocalOption option : options) {
 				if (!option.equals(this)) {
 					result.add(option);
 				}
 			}
-			return (LocalOption[]) result.toArray(new LocalOption[result.size()]);
+			return result.toArray(new LocalOption[result.size()]);
 		}
 	}
 	/**
@@ -603,7 +603,7 @@ public abstract class Command extends Request {
 		 */
 		public static KSubstOption fromMode(String mode) {
 			if (mode.length() == 0) mode = "-kkv"; // use default //$NON-NLS-1$
-			KSubstOption option = (KSubstOption) ksubstOptionMap.get(mode);
+			KSubstOption option = ksubstOptionMap.get(mode);
 			if (option == null) option = new KSubstOption(mode, true);
 			return option;
 		}
@@ -622,7 +622,7 @@ public abstract class Command extends Request {
 		 * Returns an array of all valid modes.
 		 */
 		public static KSubstOption[] getAllKSubstOptions() {
-			return (KSubstOption[]) ksubstOptionMap.values().toArray(new KSubstOption[ksubstOptionMap.size()]);
+			return ksubstOptionMap.values().toArray(new KSubstOption[ksubstOptionMap.size()]);
 		}
 		/**
 		 * Returns the entry line mode string for this instance. Note that it might return blank strings
@@ -745,13 +745,13 @@ public abstract class Command extends Request {
 	 * @return an array of all arguments of belonging to matching options
 	 */
 	protected static String[] collectOptionArguments(Option[] array, String option) {
-		List /* of String */ list = new ArrayList();
+		List<String> list = new ArrayList<>();
 		for (int i = 0; i < array.length; ++i) {
 			if (array[i].getOption().equals(option)) {
 				list.add(array[i].argument);
 			}
 		}
-		return (String[]) list.toArray(new String[list.size()]);
+		return list.toArray(new String[list.size()]);
 	}
 	
 	/**
@@ -806,11 +806,11 @@ public abstract class Command extends Request {
 	
 	protected String[] convertArgumentsForOpenSession(ICVSResource[] arguments, Session openSession) throws CVSException {
 		// Convert arguments
-		List stringArguments = new ArrayList(arguments.length);
+		List<String> stringArguments = new ArrayList<>(arguments.length);
 		for (ICVSResource argument : arguments) {
 			stringArguments.add(argument.getRelativePath(openSession.getLocalRoot()));
 		}
-		return (String[]) stringArguments.toArray(new String[stringArguments.size()]);
+		return stringArguments.toArray(new String[stringArguments.size()]);
 	}
 	
 	/**

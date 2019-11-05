@@ -97,7 +97,7 @@ public class CVSProviderPlugin extends Plugin {
 	private static final String REPOSITORIES_STATE_FILE = ".cvsProviderState"; //$NON-NLS-1$
 	// version numbers for the state file (a positive number indicates version 1)
 	private static final int REPOSITORIES_STATE_FILE_VERSION_2 = -1;
-	private static List decoratorEnablementListeners = new ArrayList();
+	private static List<ICVSDecoratorEnablementListener> decoratorEnablementListeners = new ArrayList<>();
 	
 	private CVSWorkspaceSubscriber cvsWorkspaceSubscriber;
 	
@@ -290,7 +290,7 @@ public class CVSProviderPlugin extends Plugin {
 		super.start(context);
 
 		// register debug options listener
-		Hashtable properties = new Hashtable(2);
+		Hashtable<String,String> properties = new Hashtable<>(2);
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
@@ -312,7 +312,7 @@ public class CVSProviderPlugin extends Plugin {
 		// Must load the change set manager on startup since it listens to deltas
 		getChangeSetManager();
 		
-		tracker = new ServiceTracker(getBundle().getBundleContext(), IJSchService.class.getName(), null);
+		tracker = new ServiceTracker<>(getBundle().getBundleContext(), IJSchService.class.getName(), null);
 		tracker.open();
 	}
 	
@@ -427,7 +427,7 @@ public class CVSProviderPlugin extends Plugin {
 	public static void broadcastDecoratorEnablementChanged(final boolean enabled) {
 		ICVSDecoratorEnablementListener[] listeners;
 		synchronized(decoratorEnablementListeners) {
-			listeners = (ICVSDecoratorEnablementListener[]) decoratorEnablementListeners.toArray(new ICVSDecoratorEnablementListener[decoratorEnablementListeners.size()]);
+			listeners = decoratorEnablementListeners.toArray(new ICVSDecoratorEnablementListener[decoratorEnablementListeners.size()]);
 		}
 		for (ICVSDecoratorEnablementListener listener : listeners) {
 			ISafeRunnable code = new ISafeRunnable() {
@@ -704,16 +704,16 @@ public class CVSProviderPlugin extends Plugin {
 		return pass==null ? "" : (String) pass; //$NON-NLS-1$
 	}
 	
-	private Map getAuthInfo() {
+	private Map<String,String> getAuthInfo() {
 		// Retrieve username and password from keyring.
-		Map authInfo = Platform.getAuthorizationInfo(FAKE_URL, "proxy", ""); //$NON-NLS-1$ //$NON-NLS-2$
-		return authInfo!=null ? authInfo : Collections.EMPTY_MAP;
+		Map<String,String> authInfo = Platform.getAuthorizationInfo(FAKE_URL, "proxy", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		return authInfo!=null ? authInfo : Collections.emptyMap();
 	}
 
 	public void setProxyAuth(String proxyUser, String proxyPass) {
-		Map authInfo = getAuthInfo();
+		Map<String,String> authInfo = getAuthInfo();
 		if (authInfo.isEmpty()) {
-			authInfo = new java.util.HashMap(4);
+			authInfo = new java.util.HashMap<>(4);
 		}
 		if (proxyUser != null) {
 			authInfo.put(INFO_PROXY_USER, proxyUser);

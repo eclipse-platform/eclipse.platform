@@ -41,7 +41,7 @@ public class ServerMessageLineMatcher {
 	public ServerMessageLineMatcher(String template, String[] expectedVariables) throws CVSException {
 		// Extract the variable names from the template
 		Matcher matcher = VARIABLE_MATCHING_PATTERN.matcher(template);
-		List variables = new ArrayList();
+		List<String> variables = new ArrayList<>();
 		while (matcher.find()) {
 			if (matcher.groupCount() != 2) {
 				IStatus status = new CVSStatus(IStatus.ERROR,NLS.bind(CVSMessages.ServerMessageLineMatcher_5, new String[] { template }));
@@ -50,7 +50,7 @@ public class ServerMessageLineMatcher {
 			variables.add(matcher.group(2));
 		}
 		ensureMatches(template, variables, expectedVariables);
-		this.variables = (String[]) variables.toArray(new String[variables.size()]);
+		this.variables = variables.toArray(new String[variables.size()]);
 
 		// Modify the template so it can be used to match message lines from the server
 		// (i.e. remove the variable markup)
@@ -91,7 +91,7 @@ public class ServerMessageLineMatcher {
 		Matcher matcher = pattern.matcher(line);
 		if (!matcher.find()) return null;
 		Assert.isTrue(matcher.groupCount() == variables.length);
-		Map result = new HashMap();
+		Map<String,String> result = new HashMap<>();
 		for (int i = 1; i <= matcher.groupCount(); i++) {
 			result.put(variables[i - 1], matcher.group(i));
 		}

@@ -84,14 +84,14 @@ public class Checkout extends Command {
 		Assert.isTrue(session.getLocalRoot().isFolder());
 		
 		// Send the information about the local workspace resources to the server
-		List resourcesToSend = new ArrayList(resources.length);
+		List<ICVSResource> resourcesToSend = new ArrayList<>(resources.length);
 		for (ICVSResource resource : resources) {
 			if (resource.exists() && resource.isFolder() && ((ICVSFolder)resource).isCVSFolder()) {
 				resourcesToSend.add(resource);
 			}
 		}
 		if ( ! resourcesToSend.isEmpty()) {
-			resources = (ICVSResource[]) resourcesToSend.toArray(new ICVSResource[resourcesToSend.size()]);
+			resources = resourcesToSend.toArray(new ICVSResource[resourcesToSend.size()]);
 			new FileStructureVisitor(session, localOptions, true, true).visit(session, resources, monitor);
 		} else {
 			monitor.beginTask(null, 100);

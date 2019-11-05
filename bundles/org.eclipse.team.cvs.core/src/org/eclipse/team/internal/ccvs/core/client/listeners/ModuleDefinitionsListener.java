@@ -32,7 +32,7 @@ public class ModuleDefinitionsListener extends CommandOutputListener {
 	// the last line read from the context (used to accumulate multi-line definitions)
 	private String lastLine = ""; //$NON-NLS-1$
 	
-	private Map moduleMap;
+	private Map<String,String> moduleMap;
 	
 	public ModuleDefinitionsListener() {
 		reset();
@@ -63,10 +63,10 @@ public class ModuleDefinitionsListener extends CommandOutputListener {
 	}
 	
 	public String[] getModuleExpansions() {
-		return (String[])moduleMap.values().toArray(new String[moduleMap.size()]);
+		return moduleMap.values().toArray(new String[moduleMap.size()]);
 	}
 
 	public void reset() {
-		this.moduleMap = new HashMap();
+		this.moduleMap = new HashMap<>();
 	}
 }

@@ -69,7 +69,7 @@ public class RTag extends RemoteCommand {
 		}
 		
 		// Add the source tag to the local options
-		List modifiedLocalOptions = new ArrayList(localOptions.length + 1);
+		List<LocalOption> modifiedLocalOptions = new ArrayList<>(localOptions.length + 1);
 		if (sourceTag==null) sourceTag = CVSTag.DEFAULT;
 		modifiedLocalOptions.addAll(Arrays.asList(localOptions));
 		modifiedLocalOptions.add(makeTagOption(sourceTag));
@@ -87,7 +87,7 @@ public class RTag extends RemoteCommand {
 		System.arraycopy(arguments, 0, newArguments, 1, arguments.length);
 		
 		return execute(session, globalOptions, 
-			(LocalOption[]) modifiedLocalOptions.toArray(new LocalOption[modifiedLocalOptions.size()]), 
+			modifiedLocalOptions.toArray(new LocalOption[modifiedLocalOptions.size()]), 
 			newArguments, null, monitor);
 	}
 	

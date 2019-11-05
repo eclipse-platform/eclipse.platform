@@ -30,7 +30,7 @@ public abstract class Request {
 	public static final ValidRequests VALID_REQUESTS = new ValidRequests();
 
 	/*** Response handler map ***/
-	private static final Map responseHandlers = new HashMap();
+	private static final Map<String,ResponseHandler> responseHandlers = new HashMap<>();
 	
 	private static void initializeHandlerCache() {
 		synchronized(responseHandlers) {
@@ -67,16 +67,15 @@ public abstract class Request {
 	 * 
 	 * @return a map of response handlers
 	 */
-	protected static Map getReponseHandlerMap() {
+	protected static Map<String,ResponseHandler> getReponseHandlerMap() {
 		synchronized(responseHandlers) {
 			if (responseHandlers.isEmpty()) {
 				initializeHandlerCache();
 			}
-			Map copy = new HashMap();
+			Map<String,ResponseHandler> copy = new HashMap<>();
 			for (Iterator iter = responseHandlers.values().iterator(); iter.hasNext();) {
 				ResponseHandler handler = (ResponseHandler) iter.next();
 				copy.put(handler.getResponseID(), handler.getInstance());
-				
 			}
 			return copy;
 		}

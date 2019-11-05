@@ -28,7 +28,7 @@ public class AnnotateListener extends CommandOutputListener {
  * Handle output from the CVS Annotate command.
  */	
 	ByteArrayOutputStream aStream = new ByteArrayOutputStream();
-	List blocks = new ArrayList();
+	List<CVSAnnotateBlock> blocks = new ArrayList<>();
 	int lineNumber;
 	
 	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
@@ -72,7 +72,7 @@ public class AnnotateListener extends CommandOutputListener {
 		if (size == 0) {
 			blocks.add(aBlock);
 		} else {
-			CVSAnnotateBlock lastBlock = (CVSAnnotateBlock) blocks.get(size - 1);
+			CVSAnnotateBlock lastBlock = blocks.get(size - 1);
 			if (lastBlock.getRevision().equals(aBlock.getRevision())) {
 				lastBlock.setEndLine(aBlock.getStartLine());
 			} else {

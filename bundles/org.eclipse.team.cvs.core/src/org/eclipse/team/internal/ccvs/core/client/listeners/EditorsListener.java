@@ -38,7 +38,7 @@ public class EditorsListener extends CommandOutputListener {
 	/**
 	 *  List to store the EditorsInfos
 	 */
-	private List infos = new LinkedList();
+	private List<EditorsInfo> infos = new LinkedList<>();
 	
 	/**
 	 *  Name of the current file 
@@ -99,7 +99,7 @@ public class EditorsListener extends CommandOutputListener {
 	 * @return IEditorsInfo[]
 	 */
 	public EditorsInfo[] getEditorsInfos() {
-		return (EditorsInfo[]) infos.toArray(new EditorsInfo[infos.size()]);
+		return infos.toArray(new EditorsInfo[infos.size()]);
 	}
 
 }

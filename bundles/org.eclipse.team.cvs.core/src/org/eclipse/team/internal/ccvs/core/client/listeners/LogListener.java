@@ -22,6 +22,7 @@ import java.util.*;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.core.history.ITag;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.client.CommandOutputListener;
 import org.eclipse.team.internal.ccvs.core.resources.RemoteFile;
@@ -67,8 +68,8 @@ public class LogListener extends CommandOutputListener {
 	private String revision;
 	private String author;
 	private Date creationDate;
-	private List versions = new ArrayList();
-	private Map internedStrings = new HashMap();
+	private List<VersionInfo> versions = new ArrayList<>();
+	private Map<String,String> internedStrings = new HashMap<>();
 	private final ILogEntryListener listener;
 	
 	/**
@@ -195,10 +196,10 @@ public class LogListener extends CommandOutputListener {
 		}
 		if (state == DONE) {
 			// we are only interested in tag names for this revision, remove all others.
-			List thisRevisionTags = versions.isEmpty() ? Collections.EMPTY_LIST : new ArrayList(3);
-			List thisRevisionBranches = new ArrayList(1);
+			List<ITag> thisRevisionTags = versions.isEmpty() ? Collections.emptyList() : new ArrayList<>(3);
+			List<ITag> thisRevisionBranches = new ArrayList<>(1);
 			//a parallel lists for revision tags (used only for branches with no commits on them)
-			List revisionVersions = versions.isEmpty() ? Collections.EMPTY_LIST : new ArrayList(3);
+			List<String> revisionVersions = versions.isEmpty() ? Collections.emptyList() : new ArrayList<>(3);
 			String branchRevision = this.getBranchRevision(revision);
 			for (Iterator i = versions.iterator(); i.hasNext();) {
 				VersionInfo version = (VersionInfo) i.next();
@@ -307,7 +308,7 @@ public class LogListener extends CommandOutputListener {
 	}
 	
 	private String internAndCopyString(String string) {
-		String internedString = (String) internedStrings.get(string);
+		String internedString = internedStrings.get(string);
 		if (internedString == null) {
 			internedString = new String(string);
 			internedStrings.put(internedString, internedString);
@@ -316,7 +317,7 @@ public class LogListener extends CommandOutputListener {
 	}
 	
 	private String internString(String string) {
-		String internedString = (String) internedStrings.get(string);
+		String internedString = internedStrings.get(string);
 		if (internedString == null) {
 			internedString = string;
 			internedStrings.put(internedString, internedString);

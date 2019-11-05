@@ -263,7 +263,7 @@ public class PathTree {
 	 * Return all the values contained in this path tree.
 	 * @return all the values in the tree
 	 */
-	public synchronized Collection values() {
+	public synchronized Collection<Object> values() {
 		List<Object> result = new ArrayList<>();
 		for (Iterator iter = objects.keySet().iterator(); iter.hasNext();) {
 			IPath path = (IPath) iter.next();

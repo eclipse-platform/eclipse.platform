@@ -44,7 +44,7 @@ public class RemoteFolderTreeBuilder {
 
 	private static final int MAX_REVISION_FETCHES_PER_CONNECTION = 1024;
 	
-	private Map<String, Map> fileDeltas;
+	private Map<String, Map<String, DeltaNode>> fileDeltas;
 	private List<String> changedFiles;
 	private Map<String, RemoteFolderTree> remoteFolderTable;
 	
