@@ -1991,8 +1991,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		disposeCompareFilterActions(false);
 
 		if (fSourceViewerDecorationSupport != null) {
-			for (Iterator<SourceViewerDecorationSupport> iterator = fSourceViewerDecorationSupport.iterator(); iterator.hasNext();) {
-				iterator.next().dispose();
+			for (SourceViewerDecorationSupport sourceViewerDecorationSupport : fSourceViewerDecorationSupport) {
+				sourceViewerDecorationSupport.dispose();
 			}
 			fSourceViewerDecorationSupport = null;
 		}
@@ -3920,8 +3920,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			List<ChangeCompareFilterPropertyAction> currentFilterActions = (List<ChangeCompareFilterPropertyAction>) current;
 			for (CompareFilterDescriptor compareFilterDescriptor : compareFilterDescriptors) {
 				boolean match = false;
-				for (int j = 0; j < currentFilterActions.size(); j++) {
-					if (compareFilterDescriptor.getFilterId().equals(currentFilterActions.get(j).getFilterId())) {
+				for (ChangeCompareFilterPropertyAction currentFilterAction : currentFilterActions) {
+					if (compareFilterDescriptor.getFilterId().equals(currentFilterAction.getFilterId())) {
 						match = true;
 						break;
 					}
@@ -3965,8 +3965,8 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 					fCompareFilterActions);
 			getCompareConfiguration().setProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTERS_INITIALIZING, null);
 		} else {
-			for (int i = 0; i < fCompareFilterActions.size(); i++) {
-				fCompareFilterActions.get(i).setInput(input, ancestor, left, right);
+			for (ChangeCompareFilterPropertyAction action : fCompareFilterActions) {
+				action.setInput(input, ancestor, left, right);
 			}
 		}
 	}
@@ -4570,7 +4570,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		if (rgb == null)
 			return null;
 		if (fColors == null)
-			fColors= new HashMap<RGB, Color>(20);
+			fColors= new HashMap<>(20);
 		Color c= fColors.get(rgb);
 		if (c == null) {
 			c= new Color(display, rgb);

@@ -580,7 +580,7 @@ public class Utilities {
 	}
 
 	private static Map<IFile, Long> createModificationStampMap(List<IResource> files) {
-		Map<IFile, Long> map= new HashMap<IFile, Long>();
+		Map<IFile, Long> map= new HashMap<>();
 		for (IResource file : files) {
 			map.put((IFile) file, file.getModificationStamp());
 		}

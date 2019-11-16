@@ -237,13 +237,13 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	private static CompareUIPlugin fgComparePlugin;
 
 	/** Maps type to icons */
-	private static Map<String, Image> fgImages= new Hashtable<String, Image>(10);
+	private static Map<String, Image> fgImages= new Hashtable<>(10);
 	/** Maps type to ImageDescriptors */
-	private static Map<String, ImageDescriptor> fgImageDescriptors= new Hashtable<String, ImageDescriptor>(10);
+	private static Map<String, ImageDescriptor> fgImageDescriptors= new Hashtable<>(10);
 	/** Maps ImageDescriptors to Images */
-	private static Map<ImageDescriptor, Image> fgImages2= new Hashtable<ImageDescriptor, Image>(10);
+	private static Map<ImageDescriptor, Image> fgImages2= new Hashtable<>(10);
 
-	private static List<Image> fgDisposeOnShutdownImages= new ArrayList<Image>();
+	private static List<Image> fgDisposeOnShutdownImages= new ArrayList<>();
 
 	private ResourceBundle fResourceBundle;
 
@@ -1408,8 +1408,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	 * @return an array of all dirty editor parts.
 	 */
 	public static IEditorPart[] getDirtyEditors() {
-		Set<IEditorInput> inputs= new HashSet<IEditorInput>();
-		List<IEditorPart> result= new ArrayList<IEditorPart>(0);
+		Set<IEditorInput> inputs= new HashSet<>();
+		List<IEditorPart> result= new ArrayList<>(0);
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchWindow[] windows= workbench.getWorkbenchWindows();
 		for (IWorkbenchWindow window : windows) {

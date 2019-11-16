@@ -1293,8 +1293,7 @@ public class DocumentMerger {
 	private Diff findNext(char contributor, List<Diff> v, int start, int end, boolean deep) {
 		if (v == null)
 			return null;
-		for (int i= 0; i < v.size(); i++) {
-			Diff diff= v.get(i);
+		for (Diff diff : v) {
 			Position p= diff.getPosition(contributor);
 			if (p != null) {
 				int startOffset= p.getOffset();

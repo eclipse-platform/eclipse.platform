@@ -59,10 +59,8 @@ public class DiffImageDescriptor extends CompositeImageDescriptor {
 	}
 
 	private int calculateHash(ImageData baseImageData) {
-		byte[] data = baseImageData.data;
 		int hash = baseImageData.width + baseImageData.height;
-		for (int i = 0; i < data.length; i++) {
-			byte b = data[i];
+		for (byte b : baseImageData.data) {
 			hash >>>= 1;
 			hash ^= b;
 		}

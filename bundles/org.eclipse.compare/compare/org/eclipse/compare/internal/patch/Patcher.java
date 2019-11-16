@@ -785,8 +785,7 @@ public class Patcher implements IHunkFilter {
 	}
 
 	public boolean hasRejects() {
-		for (Iterator<FileDiffResult> iterator = diffResults.values().iterator(); iterator.hasNext();) {
-			FileDiffResult result = iterator.next();
+		for (FileDiffResult result : diffResults.values()) {
 			if (result.hasRejects())
 				return true;
 		}

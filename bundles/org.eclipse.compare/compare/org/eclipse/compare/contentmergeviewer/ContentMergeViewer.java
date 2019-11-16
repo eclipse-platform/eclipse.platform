@@ -359,8 +359,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 
 	private ILabelProviderListener labelChangeListener = event -> {
 		Object[] elements = event.getElements();
-		for (int i = 0; i < elements.length; i++) {
-			Object object = elements[i];
+		for (Object object : elements) {
 			if (object == getInput())
 				updateHeader();
 		}

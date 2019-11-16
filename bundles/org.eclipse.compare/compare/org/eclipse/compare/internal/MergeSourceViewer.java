@@ -853,8 +853,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
 		menu.add(new Separator("text")); //$NON-NLS-1$
-		for (Iterator<IAction> iterator = textActions.iterator(); iterator.hasNext();) {
-			IAction action = iterator.next();
+		for (IAction action : textActions) {
 			menu.add(action);
 		}
 

@@ -40,13 +40,13 @@ public class CompareResourceFilter {
 	public boolean filter(String path0, boolean folder, boolean isArchive) {
 		if (!folder && fExtraResourceFileFilters != null) {
 			char[] name= path0.toCharArray();
-			for (int i= 0, l= fExtraResourceFileFilters.length; i < l; i++)
-				if (match(fExtraResourceFileFilters[i], name, true))
+			for (char[] filter : fExtraResourceFileFilters)
+				if (match(filter, name, true))
 					return true;
 		}
 		if (folder && fExtraResourceFolderFilters != null) {
-			for (int i= 0, l= fExtraResourceFolderFilters.length; i < l; i++)
-				if (fExtraResourceFolderFilters[i].equals(path0))
+			for (String filter : fExtraResourceFolderFilters)
+				if (filter.equals(path0))
 					return true;
 		}
 		return false;
@@ -81,25 +81,23 @@ public class CompareResourceFilter {
 			fExtraResourceFolderFilters= null;
 		} else {
 			int fileCount= 0, folderCount= 0;
-			for (int i= 0, l= filters.length; i < l; i++) {
-				char[] f= filters[i];
-				if (f.length == 0)
+			for (char[] filter : filters) {
+				if (filter.length == 0)
 					continue;
-				if (f[f.length - 1] == '/')
+				if (filter[filter.length - 1] == '/')
 					folderCount++;
 				else
 					fileCount++;
 			}
 			fExtraResourceFileFilters= new char[fileCount][];
 			fExtraResourceFolderFilters= new String[folderCount];
-			for (int i= 0, l= filters.length; i < l; i++) {
-				char[] f= filters[i];
-				if (f.length == 0)
+			for (char[] filter : filters) {
+				if (filter.length == 0)
 					continue;
-				if (f[f.length - 1] == '/')
-					fExtraResourceFolderFilters[--folderCount]= new String(subarray(f, 0, f.length - 1));
+				if (filter[filter.length - 1] == '/')
+					fExtraResourceFolderFilters[--folderCount]= new String(subarray(filter, 0, filter.length - 1));
 				else
-					fExtraResourceFileFilters[--fileCount]= f;
+					fExtraResourceFileFilters[--fileCount]= filter;
 			}
 		}
 	}

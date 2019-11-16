@@ -46,6 +46,7 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -120,10 +121,10 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 					event.detail = DND.DROP_NONE;
 			}
 
-			for (int i = 0; i < event.dataTypes.length; i++) {
-				if (resourceTransfer.isSupportedType(event.dataTypes[i])
-						|| textTransfer.isSupportedType(event.dataTypes[i])) {
-					event.currentDataType = event.dataTypes[i];
+			for (TransferData dataType : event.dataTypes) {
+				if (resourceTransfer.isSupportedType(dataType)
+						|| textTransfer.isSupportedType(dataType)) {
+					event.currentDataType = dataType;
 					if (event.detail != DND.DROP_COPY)
 						event.detail = DND.DROP_NONE;
 					break;
