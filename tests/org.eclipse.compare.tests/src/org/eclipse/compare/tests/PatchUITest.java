@@ -50,6 +50,7 @@ public class PatchUITest extends TestCase {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -58,6 +59,7 @@ public class PatchUITest extends TestCase {
 		testProject.open(null);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		testProject.delete(true, null);

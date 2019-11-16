@@ -48,10 +48,12 @@ public class PatchTest extends TestCase {
 		defaultPatchProperties.setProperty("fuzzFactor", "-1");
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		// empty
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

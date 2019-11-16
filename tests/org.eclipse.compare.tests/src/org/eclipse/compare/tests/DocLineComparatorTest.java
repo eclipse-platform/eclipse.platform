@@ -32,10 +32,12 @@ public class DocLineComparatorTest extends TestCase {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		// empty
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
@@ -78,20 +80,24 @@ public class DocLineComparatorTest extends TestCase {
 
 		ICompareFilter filter = new ICompareFilter() {
 
+			@Override
 			public void setInput(Object input, Object ancestor, Object left,
 					Object right) {
 				// EMPTY
 			}
 
+			@Override
 			public IRegion[] getFilteredRegions(HashMap lineComparison) {
 				return new IRegion[] { new Region(0, 2), new Region(4, 1),
 						new Region(8, 2) };
 			}
 
+			@Override
 			public boolean isEnabledInitially() {
 				return false;
 			}
 
+			@Override
 			public boolean canCacheFilteredRegions() {
 				return false;
 			}
@@ -125,19 +131,23 @@ public class DocLineComparatorTest extends TestCase {
 
 		ICompareFilter filter1 = new ICompareFilter() {
 
+			@Override
 			public void setInput(Object input, Object ancestor, Object left,
 					Object right) {
 				// EMPTY
 			}
 
+			@Override
 			public IRegion[] getFilteredRegions(HashMap lineComparison) {
 				return new IRegion[] { new Region(0, 2) };
 			}
 
+			@Override
 			public boolean isEnabledInitially() {
 				return false;
 			}
 
+			@Override
 			public boolean canCacheFilteredRegions() {
 				return false;
 			}
@@ -145,19 +155,23 @@ public class DocLineComparatorTest extends TestCase {
 
 		ICompareFilter filter2 = new ICompareFilter() {
 
+			@Override
 			public void setInput(Object input, Object ancestor, Object left,
 					Object right) {
 				// EMPTY
 			}
 
+			@Override
 			public IRegion[] getFilteredRegions(HashMap lineComparison) {
 				return new IRegion[] { new Region(4, 1) };
 			}
 
+			@Override
 			public boolean isEnabledInitially() {
 				return false;
 			}
 
+			@Override
 			public boolean canCacheFilteredRegions() {
 				return false;
 			}
@@ -165,19 +179,23 @@ public class DocLineComparatorTest extends TestCase {
 
 		ICompareFilter filter3 = new ICompareFilter() {
 
+			@Override
 			public void setInput(Object input, Object ancestor, Object left,
 					Object right) {
 				// EMPTY
 			}
 
+			@Override
 			public IRegion[] getFilteredRegions(HashMap lineComparison) {
 				return new IRegion[] { new Region(8, 2) };
 			}
 
+			@Override
 			public boolean isEnabledInitially() {
 				return false;
 			}
 
+			@Override
 			public boolean canCacheFilteredRegions() {
 				return false;
 			}
@@ -217,19 +235,23 @@ public class DocLineComparatorTest extends TestCase {
 		filters[1] = new ICompareFilter[]{
 				new ICompareFilter() {
 
+					@Override
 					public void setInput(Object input, Object ancestor, Object left,
 							Object right) {
 						// EMPTY
 					}
 
+					@Override
 					public IRegion[] getFilteredRegions(HashMap lineComparison) {
 						return new IRegion[] { new Region(0, 2) };
 					}
 
+					@Override
 					public boolean isEnabledInitially() {
 						return false;
 					}
 
+					@Override
 					public boolean canCacheFilteredRegions() {
 						return true; // cache-able
 					}
@@ -239,19 +261,23 @@ public class DocLineComparatorTest extends TestCase {
 		filters[2] = new ICompareFilter[]{
 				new ICompareFilter() {
 
+					@Override
 					public void setInput(Object input, Object ancestor, Object left,
 							Object right) {
 						// EMPTY
 					}
 
+					@Override
 					public IRegion[] getFilteredRegions(HashMap lineComparison) {
 						return new IRegion[] { new Region(0, 2) };
 					}
 
+					@Override
 					public boolean isEnabledInitially() {
 						return false;
 					}
 
+					@Override
 					public boolean canCacheFilteredRegions() {
 						return false; // not cache-able
 					}

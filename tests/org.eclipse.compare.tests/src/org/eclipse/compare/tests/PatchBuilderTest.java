@@ -34,10 +34,12 @@ public class PatchBuilderTest extends TestCase {
 
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		// Nothing to do
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

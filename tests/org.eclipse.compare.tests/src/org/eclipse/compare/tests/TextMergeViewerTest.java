@@ -75,12 +75,15 @@ public class TextMergeViewerTest  {
 	}
 
 	public static class TestElement implements ITypedElement {
+		@Override
 		public Image getImage() {
 			return null;
 		}
+		@Override
 		public String getName() {
 			return "test";
 		}
+		@Override
 		public String getType() {
 			return UNKNOWN_TYPE;
 		}
@@ -91,9 +94,11 @@ public class TextMergeViewerTest  {
 	 * The purpose of the parent is to be able to copy a child into the destination element.
 	 */
 	public static class ParentTestElement extends TestElement implements IEditableContent {
+		@Override
 		public boolean isEditable() {
 			return false;
 		}
+		@Override
 		public ITypedElement replace(ITypedElement child, ITypedElement other) {
 			if (child == null) {	// add child
 				// clone the other and return it as the new child
@@ -121,6 +126,7 @@ public class TextMergeViewerTest  {
 			}
 			return child;
 		}
+		@Override
 		public void setContent(byte[] newContent) {
 			// Node is not directly editable
 		}
@@ -131,25 +137,32 @@ public class TextMergeViewerTest  {
 		public EditableTestElement(byte[] contents) {
 			this.contents = contents;
 		}
+		@Override
 		public String getType() {
 			return TEXT_TYPE;
 		}
+		@Override
 		public InputStream getContents() {
 			return new ByteArrayInputStream(contents);
 		}
+		@Override
 		protected Object clone() {
 			return new EditableTestElement(contents);
 		}
+		@Override
 		public boolean isEditable() {
 			return true;
 		}
+		@Override
 		public ITypedElement replace(ITypedElement dest, ITypedElement src) {
 			// Nothing to do since this node has no children
 			return null;
 		}
+		@Override
 		public void setContent(byte[] newContent) {
 			contents = newContent;
 		}
+		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof EditableTestElement) {
 				EditableTestElement other = (EditableTestElement) obj;
@@ -171,6 +184,7 @@ public class TextMergeViewerTest  {
 			super(parent, cc);
 		}
 
+		@Override
 		public void copy(boolean leftToRight) {
 			super.copy(leftToRight);
 		}
@@ -199,6 +213,7 @@ public class TextMergeViewerTest  {
 			final CompareConfiguration cc) throws Exception {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		Dialog dialog = new Dialog(shell) {
+			@Override
 			protected Control createDialogArea(Composite parent) {
 				Composite composite = (Composite) super.createDialogArea(parent);
 				viewer = new TestMergeViewer(composite, cc);
@@ -375,12 +390,14 @@ public class TextMergeViewerTest  {
 
 				Map<String, ICompareFilter> filters = new HashMap<>();
 				filters.put("filter.id", new ICompareFilter() {
+					@Override
 					public void setInput(Object input, Object ancestor,
 							Object left, Object right) {
 						assertTrue(leftElement == left);
 						assertTrue(rightElement == right);
 					}
 
+					@Override
 					public IRegion[] getFilteredRegions(
 							HashMap lineComparison) {
 						Object thisLine = lineComparison.get(THIS_LINE);
@@ -409,10 +426,12 @@ public class TextMergeViewerTest  {
 						return new IRegion[] { new Region(0, 2) };
 					}
 
+					@Override
 					public boolean isEnabledInitially() {
 						return false;
 					}
 
+					@Override
 					public boolean canCacheFilteredRegions() {
 						return true;
 					}
@@ -436,14 +455,17 @@ public class TextMergeViewerTest  {
 	public void testDocumentAsTypedElement() throws Exception {
 		class DocumentAsTypedElement extends Document implements ITypedElement {
 
+			@Override
 			public String getName() {
 				return "file";
 			}
 
+			@Override
 			public Image getImage() {
 				return null;
 			}
 
+			@Override
 			public String getType() {
 				return ITypedElement.UNKNOWN_TYPE;
 			}
@@ -463,6 +485,7 @@ public class TextMergeViewerTest  {
 	private void runInDialogWithPartioner(Object input, Runnable runnable, final CompareConfiguration cc) throws Exception {
 		Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		Dialog dialog = new Dialog(shell) {
+			@Override
 			protected Control createDialogArea(Composite parent) {
 				Composite composite = (Composite) super.createDialogArea(parent);
 				viewer = new TestMergeViewerWithPartitioner(composite, cc);
@@ -484,34 +507,42 @@ public class TextMergeViewerTest  {
 	//This viewer is used to provide a dummy partitioner
 	public static class TestMergeViewerWithPartitioner extends TestMergeViewer {
 		public class DummyPartitioner implements IDocumentPartitioner {
+			@Override
 			public void connect(IDocument document) {
 				//Nothing to do
 			}
 
+			@Override
 			public void disconnect() {
 				//Nothing to do
 			}
 
+			@Override
 			public void documentAboutToBeChanged(DocumentEvent event) {
 				//Nothing to do
 			}
 
+			@Override
 			public boolean documentChanged(DocumentEvent event) {
 				return false;
 			}
 
+			@Override
 			public String[] getLegalContentTypes() {
 				return null;
 			}
 
+			@Override
 			public String getContentType(int offset) {
 				return null;
 			}
 
+			@Override
 			public ITypedRegion[] computePartitioning(int offset, int length) {
 				return null;
 			}
 
+			@Override
 			public ITypedRegion getPartition(int offset) {
 				return null;
 			}
@@ -525,9 +556,11 @@ public class TextMergeViewerTest  {
 			super(parent, cc);
 		}
 
+		@Override
 		public void copy(boolean leftToRight) {
 			super.copy(leftToRight);
 		}
+		@Override
 		protected IDocumentPartitioner getDocumentPartitioner() {
 			return new DummyPartitioner();
 		}

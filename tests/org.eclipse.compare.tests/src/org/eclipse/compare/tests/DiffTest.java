@@ -44,6 +44,7 @@ public class DiffTest extends TestCase {
 		super(name);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}

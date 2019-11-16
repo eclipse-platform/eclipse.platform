@@ -30,46 +30,56 @@ import org.eclipse.swt.graphics.Image;
 public class CompareUIPluginTest extends TestCase {
 
 	private static class UnknownTypedElement implements ITypedElement {
+		@Override
 		public Image getImage() {
 			return null;
 		}
 
+		@Override
 		public String getName() {
 			return "test";
 		}
 
+		@Override
 		public String getType() {
 			return UNKNOWN_TYPE;
 		}
 	}
 
 	private static class TextTypedElement implements ITypedElement {
+		@Override
 		public Image getImage() {
 			return null;
 		}
 
+		@Override
 		public String getName() {
 			return "test";
 		}
 
+		@Override
 		public String getType() {
 			return TEXT_TYPE;
 		}
 	}
 
 	private static class TextTypedElementStreamAccessor implements ITypedElement, IStreamContentAccessor {
+		@Override
 		public Image getImage() {
 			return null;
 		}
 
+		@Override
 		public String getName() {
 			return "test";
 		}
 
+		@Override
 		public String getType() {
 			return TEXT_TYPE;
 		}
 
+		@Override
 		public InputStream getContents() throws CoreException {
 			/*
 			 * Whatever we return has no importance as long as it is not "null", this is only to make

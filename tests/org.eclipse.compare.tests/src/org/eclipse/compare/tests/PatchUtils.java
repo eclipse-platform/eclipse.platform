@@ -46,22 +46,27 @@ public class PatchUtils {
 			fileName = old;
 		}
 
+		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			return null;
 		}
 
+		@Override
 		public boolean isReadOnly() {
 			return false;
 		}
 
+		@Override
 		public String getName() {
 			return fileName;
 		}
 
+		@Override
 		public IPath getFullPath() {
 			return null;
 		}
 
+		@Override
 		public InputStream getContents() throws CoreException {
 			return new BufferedInputStream(asInputStream(fileName));
 		}
@@ -74,6 +79,7 @@ public class PatchUtils {
 			this.file = file;
 		}
 
+		@Override
 		public InputStream getContents() throws CoreException {
 			try {
 				return new FileInputStream(file);
@@ -83,18 +89,22 @@ public class PatchUtils {
 			return null;
 		}
 
+		@Override
 		public IPath getFullPath() {
 			return new Path(file.getAbsolutePath());
 		}
 
+		@Override
 		public String getName() {
 			return file.getName();
 		}
 
+		@Override
 		public boolean isReadOnly() {
 			return true;
 		}
 
+		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			return null;
 		}
@@ -109,6 +119,7 @@ public class PatchUtils {
 			this.jarFile = jarFile;
 		}
 
+		@Override
 		public InputStream getContents() throws CoreException {
 			try {
 				return jarFile.getInputStream(jarEntry);
@@ -118,18 +129,22 @@ public class PatchUtils {
 			return null;
 		}
 
+		@Override
 		public IPath getFullPath() {
 			return new Path(jarFile.getName());
 		}
 
+		@Override
 		public String getName() {
 			return jarEntry.getName();
 		}
 
+		@Override
 		public boolean isReadOnly() {
 			return true;
 		}
 
+		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			return null;
 		}
