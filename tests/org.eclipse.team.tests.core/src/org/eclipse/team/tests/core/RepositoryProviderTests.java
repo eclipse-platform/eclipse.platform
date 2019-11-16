@@ -142,9 +142,11 @@ public class RepositoryProviderTests extends TeamTest {
 		final boolean[] called = new boolean[] {false};
 		bicProvider.setModificationValidator(new FileModificationValidator() {
 			// can't test validate edit here because it is only called from editors
+			@Override
 			public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 				return null;
 			}
+			@Override
 			public IStatus validateSave(IFile file) {
 				called[0] = true;
 				return getTeamTestStatus(IStatus.OK);
@@ -159,9 +161,11 @@ public class RepositoryProviderTests extends TeamTest {
 		called[0] = false;
 		bicProvider.setModificationValidator(new FileModificationValidator() {
 			// can't test validate edit here because it is only called from editors
+			@Override
 			public IStatus validateEdit(IFile[] files, FileModificationValidationContext context) {
 				return null;
 			}
+			@Override
 			public IStatus validateSave(IFile file) {
 				called[0] = true;
 				return getTeamTestStatus(IStatus.ERROR);
@@ -190,26 +194,32 @@ public class RepositoryProviderTests extends TeamTest {
 		// only testing that dispatching works, resources plugin is testing the rest of the API
 		final boolean[] called = new boolean[] {false, false, false, false, false, false};
 		IMoveDeleteHook hook = new IMoveDeleteHook() {
+			@Override
 			public boolean deleteFile(IResourceTree tree,	IFile file,	int updateFlags, IProgressMonitor monitor) {
 				called[0] = true;
 				return false;
 			}
+			@Override
 			public boolean deleteFolder(IResourceTree tree, IFolder folder, int updateFlags, IProgressMonitor monitor) {
 				called[1] = true;
 				return false;
 			}
+			@Override
 			public boolean deleteProject(IResourceTree tree, IProject project, int updateFlags, IProgressMonitor monitor) {
 				called[2] = true;
 				return false;
 			}
+			@Override
 			public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
 				called[3] = true;
 				return false;
 			}
+			@Override
 			public boolean moveFolder(IResourceTree tree,	IFolder source,	IFolder destination, int updateFlags, IProgressMonitor monitor) {
 				called[4] = true;
 				return false;
 			}
+			@Override
 			public boolean moveProject(IResourceTree tree, IProject source, IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
 				called[5] = true;
 				return false;
@@ -251,25 +261,31 @@ public class RepositoryProviderTests extends TeamTest {
 		// only testing that dispatching works, resources plugin is testing the rest of the API
 		final boolean[] calledProjectA = new boolean[] {false, false};
 		bicProvider.setMoveDeleteHook(new IMoveDeleteHook() {
+			@Override
 			public boolean deleteFile(IResourceTree tree,	IFile file,	int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean deleteFolder(IResourceTree tree, IFolder folder, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean deleteProject(IResourceTree tree, IProject project, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
 				Assert.assertTrue(bicProvider.getProject().equals(source.getProject()));
 				calledProjectA[0] = true;
 				return false;
 			}
+			@Override
 			public boolean moveFolder(IResourceTree tree,	IFolder source,	IFolder destination, int updateFlags, IProgressMonitor monitor) {
 				Assert.assertTrue(bicProvider.getProject().equals(source.getProject()));
 				calledProjectA[1] = true;
 				return false;
 			}
+			@Override
 			public boolean moveProject(IResourceTree tree, IProject source, IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
@@ -277,25 +293,31 @@ public class RepositoryProviderTests extends TeamTest {
 
 		final boolean[] calledProjectB = new boolean[] {false, false};
 		naishProvider.setMoveDeleteHook(new IMoveDeleteHook() {
+			@Override
 			public boolean deleteFile(IResourceTree tree,	IFile file,	int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean deleteFolder(IResourceTree tree, IFolder folder, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean deleteProject(IResourceTree tree, IProject project, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}
+			@Override
 			public boolean moveFile(IResourceTree tree, IFile source, IFile destination, int updateFlags, IProgressMonitor monitor) {
 				Assert.assertTrue(bicProvider.getProject().equals(destination.getProject()));
 				calledProjectB[0] = true;
 				return false;
 			}
+			@Override
 			public boolean moveFolder(IResourceTree tree, IFolder source,	IFolder destination, int updateFlags, IProgressMonitor monitor) {
 				Assert.assertTrue(bicProvider.getProject().equals(destination.getProject()));
 				calledProjectB[1] = true;
 				return false;
 			}
+			@Override
 			public boolean moveProject(IResourceTree tree, IProject source, IProjectDescription description, int updateFlags, IProgressMonitor monitor) {
 				return false;
 			}

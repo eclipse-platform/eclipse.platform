@@ -42,6 +42,7 @@ public class ScopeTests extends TeamTest {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		project1 = createProject("p1", new String[]{"file.txt"});
@@ -52,6 +53,7 @@ public class ScopeTests extends TeamTest {
 		manager.addWorkingSet(workingSet);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		this.manager.dispose();

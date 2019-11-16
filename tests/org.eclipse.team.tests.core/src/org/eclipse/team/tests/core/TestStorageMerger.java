@@ -23,10 +23,12 @@ public class TestStorageMerger implements IStorageMerger {
 
 	public static final String MERGE_FAILURE = "merge failed";
 
+	@Override
 	public boolean canMergeWithoutAncestor() {
 		return false;
 	}
 
+	@Override
 	public IStatus merge(OutputStream output, String outputEncoding,
 			IStorage ancestor, IStorage target, IStorage other,
 			IProgressMonitor monitor) throws CoreException {

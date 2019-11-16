@@ -68,6 +68,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 	private TestLogListener logListener = new TestLogListener();
 	private IProject project;
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -84,6 +85,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		RuntimeLog.addLogListener(logListener);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		// remove log listener
 		RuntimeLog.removeLogListener(logListener);
@@ -103,20 +105,24 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 			this.file = file;
 		}
 
+		@Override
 		public String getName() {
 			return file.getName();
 		}
 
+		@Override
 		public Image getImage() {
 			return null;
 		}
 
+		@Override
 		public String getType() {
 			return TEXT_TYPE;
 		}
 	}
 
 	private class TestLogListener implements ILogListener {
+		@Override
 		public void logging(IStatus status, String plugin) {
 			if (status.getSeverity() == IStatus.ERROR)
 				fail(status.toString());
@@ -137,6 +143,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 				return null;
 			}
 
+			@Override
 			protected IResource[] getResources(ICompareInput input) {
 
 				List resources = new ArrayList();
@@ -154,19 +161,23 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 			super(Differencer.CHANGE, null, left, right);
 		}
 
+		@Override
 		public void fireChange() {
 			super.fireChange();
 		}
 
+		@Override
 		protected CompareInputChangeNotifier getChangeNotifier() {
 			return notifier;
 		}
 
+		@Override
 		public boolean needsUpdate() {
 			// The remote never changes
 			return false;
 		}
 
+		@Override
 		public void update() {
 			fireChange();
 		}
@@ -178,6 +189,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 		protected ITypedElement right;
 		private ICompareInput input;
 
+		@Override
 		public Object getCompareResult() {
 			return input;
 		}
@@ -190,6 +202,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 			this.right = right;
 		}
 
+		@Override
 		protected ICompareInput prepareCompareInput(IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
 			input = createCompareInput();
@@ -202,6 +215,7 @@ public class SaveableCompareEditorInputTest extends TeamTest {
 			return new TestDiffNode(left, right);
 		}
 
+		@Override
 		protected void fireInputChange() {
 			((TestDiffNode) getCompareResult()).fireChange();
 		}

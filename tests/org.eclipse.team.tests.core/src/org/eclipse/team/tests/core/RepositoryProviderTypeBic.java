@@ -22,14 +22,17 @@ import org.eclipse.team.core.*;
 public class RepositoryProviderTypeBic extends RepositoryProviderType {
 	File createdFile;
 
+	@Override
 	public ProjectSetCapability getProjectSetCapability() {
 		return new ProjectSetCapability() {
+			@Override
 			public IProject[] addToWorkspace(String[] referenceStrings,
 					ProjectSetSerializationContext context,
 					IProgressMonitor monitor) throws TeamException {
 				return new IProject[0];
 			}
 
+			@Override
 			public void projectSetCreated(File file,
 					ProjectSetSerializationContext context,
 					IProgressMonitor monitor) {

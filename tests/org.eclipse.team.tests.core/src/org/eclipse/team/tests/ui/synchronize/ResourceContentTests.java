@@ -47,14 +47,17 @@ public class ResourceContentTests extends TeamTest {
 			this.configuration = configuration;
 		}
 
+		@Override
 		public ISynchronizePageConfiguration getConfiguration() {
 			return configuration;
 		}
 
+		@Override
 		public ISynchronizationContext getContext() {
 			return context;
 		}
 
+		@Override
 		public ISynchronizationScope getScope() {
 			return scope;
 		}
@@ -74,11 +77,13 @@ public class ResourceContentTests extends TeamTest {
 		super(name);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		initializeProvider(null, null, null);
 		super.setUp();
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		cleanupProvider();
 		super.tearDown();

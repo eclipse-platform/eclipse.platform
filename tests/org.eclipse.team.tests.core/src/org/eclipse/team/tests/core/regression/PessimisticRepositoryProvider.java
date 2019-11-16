@@ -37,22 +37,28 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 		soleInstance = this;
 	}
 
+	@Override
 	public void configureProject() {
 	}
 
+	@Override
 	public String getID() {
 		return NATURE_ID;
 	}
 
+	@Override
 	public void deconfigure() {
 	}
+	@Override
 	public boolean canHandleLinkedResourceURI() {
 		return true;
 	}
+	@Override
 	public IFileModificationValidator getFileModificationValidator() {
 		return soleInstance;
 	}
 
+	@Override
 	public IStatus validateEdit(final IFile[] files, Object context) {
 		if (markWritableOnEdit) {
 			try {
@@ -75,6 +81,7 @@ public class PessimisticRepositoryProvider extends RepositoryProvider implements
 		return Status.OK_STATUS;
 	}
 
+	@Override
 	public IStatus validateSave(IFile file) {
 		if (markWritableOnSave) {
 			try {

@@ -24,18 +24,23 @@ import org.eclipse.team.core.variants.IResourceVariantComparator;
 
 public class ScopeTestSubscriber extends Subscriber {
 
+	@Override
 	public String getName() {
 		return "Scope Tests";
 	}
 
+	@Override
 	public IResourceVariantComparator getResourceComparator() {
 		return new IResourceVariantComparator() {
+			@Override
 			public boolean isThreeWay() {
 				return false;
 			}
+			@Override
 			public boolean compare(IResourceVariant base, IResourceVariant remote) {
 				return false;
 			}
+			@Override
 			public boolean compare(IResource local, IResourceVariant remote) {
 				return false;
 			}
@@ -43,14 +48,17 @@ public class ScopeTestSubscriber extends Subscriber {
 		};
 	}
 
+	@Override
 	public SyncInfo getSyncInfo(IResource resource) throws TeamException {
 		return null;
 	}
 
+	@Override
 	public boolean isSupervised(IResource resource) throws TeamException {
 		return false;
 	}
 
+	@Override
 	public IResource[] members(IResource resource) throws TeamException {
 		if (resource instanceof IContainer) {
 			IContainer c = (IContainer) resource;
@@ -63,11 +71,13 @@ public class ScopeTestSubscriber extends Subscriber {
 		return  new IResource[0];
 	}
 
+	@Override
 	public void refresh(IResource[] resources, int depth,
 			IProgressMonitor monitor) throws TeamException {
 		// Nothing to do
 	}
 
+	@Override
 	public IResource[] roots() {
 		return ResourcesPlugin.getWorkspace().getRoot().getProjects();
 	}
