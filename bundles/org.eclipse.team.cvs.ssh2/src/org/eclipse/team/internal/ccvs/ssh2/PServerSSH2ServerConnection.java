@@ -37,17 +37,21 @@ public class PServerSSH2ServerConnection implements IServerConnection {
 		this.password = password;
 	}
 
+	@Override
 	public void close() throws IOException {
 		psc.close();
 	}
 
+	@Override
 	public InputStream getInputStream() {
 		return psc.getInputStream();
 	}
+	@Override
 	public OutputStream getOutputStream() {
 		return psc.getOutputStream();
 	}
 
+	@Override
 	public void open(IProgressMonitor monitor) throws IOException, CVSAuthenticationException {
 		monitor.subTask("PServerSSH2ServerConnection.open"); //$NON-NLS-1$
 		monitor.worked(1);

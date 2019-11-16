@@ -54,6 +54,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 			this.e = e;
 		}
 
+		@Override
 		public Throwable getCause() {
 			return e;
 		}
@@ -71,6 +72,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 		this.location = location;
 		this.password = password;
 	}
+	@Override
 	public void close() throws IOException {
 		if (ssh1 != null) {
 			ssh1.close();
@@ -100,18 +102,21 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 			}
 		} 
 	}
+	@Override
 	public InputStream getInputStream() {
 		if (ssh1 != null) {
 			return ssh1.getInputStream();
 		}
 		return inputStream;
 	}
+	@Override
 	public OutputStream getOutputStream() {
 		if (ssh1 != null) {
 			return ssh1.getOutputStream();
 		}
 		return outputStream;
 	}
+	@Override
 	public void open(IProgressMonitor monitor) throws IOException, CVSAuthenticationException {
 		if (ssh1 != null) {
 			ssh1.open(monitor);
@@ -163,12 +168,14 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 			}
 			int timeout = location.getTimeout();
 			inputStream = new PollingInputStream(new TimeoutInputStream(new FilterInputStream(channel_in) {
+						@Override
 						public void close() {
 							// Don't close the underlying stream as it belongs to the session
 						}
 					},
 					8192 /*bufferSize*/, (timeout>0 ? 1000 : 0) /*readTimeout*/, -1 /*closeTimeout*/, true /* growWhenFull */), timeout > 0 ? timeout : 1, monitor);
 			outputStream = new PollingOutputStream(new TimeoutOutputStream(new FilterOutputStream(channel_out) {
+						@Override
 						public void close() {
 							// Don't close the underlying stream as it belongs to the session
 						}

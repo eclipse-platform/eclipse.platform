@@ -37,6 +37,7 @@ public class CVSSSH2Plugin extends Plugin {
 		plugin = this;
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			// unregister debug options listener
@@ -54,6 +55,7 @@ public class CVSSSH2Plugin extends Plugin {
 		return plugin;
 	}
 	
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 

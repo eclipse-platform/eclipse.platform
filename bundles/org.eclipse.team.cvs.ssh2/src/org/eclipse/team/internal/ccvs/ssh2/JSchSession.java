@@ -67,12 +67,15 @@ class JSchSession {
 				// there is not a place to save the given password for ssh2.
 				if (!location.getMethod().getName().equals("pserverssh2")) { //$NON-NLS-1$
 					IPasswordStore pstore = new IPasswordStore() {
+						@Override
 						public void clear(IJSchLocation l) {
 							location.flushUserInfo();
 						}
+						@Override
 						public boolean isCached(IJSchLocation l) {
 							return location.getUserInfoCached();
 						}
+						@Override
 						public void update(IJSchLocation l) {
 							location.setPassword(l.getPassword());
 							location.setAllowCaching(true);

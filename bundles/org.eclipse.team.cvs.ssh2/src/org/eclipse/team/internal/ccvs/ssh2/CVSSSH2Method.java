@@ -25,14 +25,17 @@ import org.eclipse.team.internal.ccvs.core.*;
  */
 public class CVSSSH2Method implements IConnectionMethod {
 	
+	@Override
 	public String getName() {
 		return "extssh"; //$NON-NLS-1$
 	}
 	
+	@Override
 	public IServerConnection createConnection(ICVSRepositoryLocation root, String password) {
 		return new CVSSSH2ServerConnection(root, password);
 	}
 	
+	@Override
 	public void disconnect(ICVSRepositoryLocation location) {
 	}
 }
