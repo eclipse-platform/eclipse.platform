@@ -19,7 +19,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -82,9 +81,9 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 
 	public static final String TRIGGER_POINT_ID = "org.eclipse.team.ui.activityTriggerPoint"; //$NON-NLS-1$
 
-	private static List<IPropertyChangeListener> propertyChangeListeners = new ArrayList<IPropertyChangeListener>(5);
+	private static List<IPropertyChangeListener> propertyChangeListeners = new ArrayList<>(5);
 
-	private Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<String, ImageDescriptor>(20);
+	private Hashtable<String, ImageDescriptor> imageDescriptors = new Hashtable<>(20);
 
 	private WorkspaceTeamStateProvider provider;
 
@@ -258,8 +257,8 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 		if (provider != null) {
 			provider.dispose();
 		}
-		for (Iterator<TeamStateProvider> iter = decoratedStateProviders.values().iterator(); iter.hasNext();) {
-			SubscriberTeamStateProvider sdsp = (SubscriberTeamStateProvider) iter.next();
+		for (TeamStateProvider teamStateProvider : decoratedStateProviders.values()) {
+			SubscriberTeamStateProvider sdsp = (SubscriberTeamStateProvider) teamStateProvider;
 			sdsp.dispose();
 		}
 	}
@@ -285,8 +284,7 @@ public class TeamUIPlugin extends AbstractUIPlugin {
 	 * @param event the property change event object
 	 */
 	public static void broadcastPropertyChange(PropertyChangeEvent event) {
-		for (Iterator<IPropertyChangeListener> it = propertyChangeListeners.iterator(); it.hasNext();) {
-			IPropertyChangeListener listener = it.next();
+		for (IPropertyChangeListener listener : propertyChangeListeners) {
 			listener.propertyChange(event);
 		}
 	}

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -569,9 +568,9 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();
 		List participants = Arrays.asList(getParticipants());
 		boolean errorOccurred = false;
-		for (int i = 0; i < participants.size(); i++) {
+		for (Object participant : participants) {
 			try {
-				ISynchronizeParticipantReference ref = (ISynchronizeParticipantReference)participants.get(i);
+				ISynchronizeParticipantReference ref = (ISynchronizeParticipantReference)participant;
 				participantsAdded(new ISynchronizeParticipant[] {ref.getParticipant()});
 			} catch (TeamException e) {
 				errorOccurred = true;
@@ -682,8 +681,8 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	@Override
 	public Saveable[] getSaveables() {
 		Set<Saveable> result = new HashSet<>();
-		for (Iterator iter = fPartToParticipant.keySet().iterator(); iter.hasNext();) {
-			SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart) iter.next();
+		for (Object element : fPartToParticipant.keySet()) {
+			SynchronizeViewWorkbenchPart part = (SynchronizeViewWorkbenchPart) element;
 			Saveable saveable = getSaveable(part.getParticipant());
 			if (saveable != null) {
 				result.add(saveable);

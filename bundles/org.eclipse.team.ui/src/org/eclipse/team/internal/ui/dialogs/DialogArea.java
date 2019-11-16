@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.dialogs;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -44,7 +43,7 @@ public abstract class DialogArea {
 	 * Create a dialog area
 	 */
 	protected DialogArea() {
-		this.listeners = new ArrayList<IPropertyChangeListener>();
+		this.listeners = new ArrayList<>();
 	}
 
 	/**
@@ -69,8 +68,7 @@ public abstract class DialogArea {
 
 	protected void firePropertyChangeChange(String property, Object oldValue, Object newValue) {
 		PropertyChangeEvent event = new PropertyChangeEvent(this, property, oldValue, newValue);
-		for (Iterator<IPropertyChangeListener> iter = listeners.iterator(); iter.hasNext();) {
-			IPropertyChangeListener listener = iter.next();
+		for (IPropertyChangeListener listener : listeners) {
 			listener.propertyChange(event);
 		}
 	}

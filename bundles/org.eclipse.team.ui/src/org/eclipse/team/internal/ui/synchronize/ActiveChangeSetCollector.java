@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ui.synchronize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -234,8 +233,8 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	 * @param resources the resources to be removed
 	 */
 	protected void remove(IResource[] resources) {
-		for (Iterator iter = activeSets.values().iterator(); iter.hasNext();) {
-			SyncInfoSet set = (SyncInfoSet) iter.next();
+		for (Object element : activeSets.values()) {
+			SyncInfoSet set = (SyncInfoSet) element;
 			set.removeAll(resources);
 		}
 		rootSet.removeAll(resources);
@@ -412,8 +411,8 @@ public class ActiveChangeSetCollector implements IDiffChangeListener {
 	}
 
 	private ChangeSet getChangeSet(IDiffTree tree) {
-		for (Iterator iter = activeSets.keySet().iterator(); iter.hasNext();) {
-			ChangeSet changeSet = (ChangeSet) iter.next();
+		for (Object element : activeSets.keySet()) {
+			ChangeSet changeSet = (ChangeSet) element;
 			if (((DiffChangeSet)changeSet).getDiffTree() == tree) {
 				return changeSet;
 			}

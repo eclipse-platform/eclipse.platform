@@ -208,9 +208,8 @@ public class LocalHistoryTableProvider {
 			if (date1 == -1 || date2 == -1) {
 				result = super.compare(compareViewer, o1, o2);
 			} else {
-				int[] columnSortOrder = SORT_ORDERS_BY_COLUMN[columnNumber];
-				for (int i = 0; i < columnSortOrder.length; ++i) {
-					result = compareColumnValue(columnSortOrder[i], date1, date2);
+				for (int columnSortOrder : SORT_ORDERS_BY_COLUMN[columnNumber]) {
+					result = compareColumnValue(columnSortOrder, date1, date2);
 					if (result != 0)
 						break;
 				}

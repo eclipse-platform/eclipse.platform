@@ -167,9 +167,8 @@ public class GenericHistoryTableProvider {
 			if (e1 == null || e2 == null) {
 				result = super.compare(viewer, o1, o2);
 			} else {
-				int[] columnSortOrder = SORT_ORDERS_BY_COLUMN[columnNumber];
-				for (int i = 0; i < columnSortOrder.length; ++i) {
-					result = compareColumnValue(columnSortOrder[i], e1, e2);
+				for (int columnSortOrder : SORT_ORDERS_BY_COLUMN[columnNumber]) {
+					result = compareColumnValue(columnSortOrder, e1, e2);
 					if (result != 0)
 						break;
 				}

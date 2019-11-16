@@ -75,7 +75,7 @@ public class PreferencePageContainerDialog extends TrayDialog
 
 	private Button fOkButton;
 
-	private ListenerList<IPageChangedListener> pageChangedListeners = new ListenerList<IPageChangedListener>();
+	private ListenerList<IPageChangedListener> pageChangedListeners = new ListenerList<>();
 
 	/**
 	 * The Composite in which a page is shown.

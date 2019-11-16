@@ -25,7 +25,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -582,8 +581,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 	public void dispose() {
 		// save state and settings for existing participants.
 		saveState();
-		for (Iterator it = participantReferences.values().iterator(); it.hasNext();) {
-			ParticipantInstance ref = (ParticipantInstance) it.next();
+		for (Object element : participantReferences.values()) {
+			ParticipantInstance ref = (ParticipantInstance) element;
 			if((ref).isInstantiated()) {
 				try {
 					ref.getParticipant().dispose();
@@ -631,8 +630,8 @@ public class SynchronizeManager implements ISynchronizeManager {
 	 */
 	private void saveState() {
 		XMLMemento xmlMemento = XMLMemento.createWriteRoot(CTX_PARTICIPANTS);
-		for (Iterator it = participantReferences.values().iterator(); it.hasNext(); ) {
-			ParticipantInstance ref = (ParticipantInstance) it.next();
+		for (Object element : participantReferences.values()) {
+			ParticipantInstance ref = (ParticipantInstance) element;
 			// Participants can opt out of being saved between sessions
 			if(! ref.getDescriptor().isPersistent()) continue;
 			// Create the state placeholder for a participant

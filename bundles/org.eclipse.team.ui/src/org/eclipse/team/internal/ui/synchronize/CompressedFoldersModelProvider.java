@@ -17,7 +17,6 @@ package org.eclipse.team.internal.ui.synchronize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -173,8 +172,8 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 				}
 			}
 		}
-		for (Iterator iter = resourcesToShow.iterator(); iter.hasNext();) {
-			IResource resource = (IResource) iter.next();
+		for (Object element : resourcesToShow) {
+			IResource resource = (IResource) element;
 			result.add(createModelObject(parent, resource));
 		}
 
@@ -260,7 +259,7 @@ public class CompressedFoldersModelProvider extends HierarchicalModelProvider {
 		}
 
 		IResource[] resources = event.getRemovedResources();
-		List<IResource> resourcesToRemove = new ArrayList<IResource>();
+		List<IResource> resourcesToRemove = new ArrayList<>();
 		List<SyncInfo> resourcesToAdd = new ArrayList<>();
 		for (IResource resource : resources) {
 			if (!removedProjects.contains(resource.getProject())) {

@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -134,8 +133,8 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			}
 			@Override
 			public void dispose() {
-				for (Iterator iter = images.values().iterator(); iter.hasNext();) {
-					Image image = (Image) iter.next();
+				for (Object element : images.values()) {
+					Image image = (Image) element;
 					image.dispose();
 				}
 				super.dispose();

@@ -15,7 +15,6 @@ package org.eclipse.team.internal.ui.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,10 +80,10 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_CONTENT_PROVIDERS);
 		IExtension[] extensions = point.getExtensions();
 		descriptors = new HashMap<>(extensions.length * 2);
-		for (int i = 0, imax = extensions.length; i < imax; i++) {
+		for (IExtension extension : extensions) {
 			ITeamContentProviderDescriptor desc = null;
 			try {
-				desc = new TeamContentProviderDescriptor(extensions[i]);
+				desc = new TeamContentProviderDescriptor(extension);
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}
@@ -127,8 +126,8 @@ public class TeamContentProviderManager implements ITeamContentProviderManager {
 	@Override
 	public void setEnabledDescriptors(ITeamContentProviderDescriptor[] descriptors) {
 		List<ITeamContentProviderDescriptor> previouslyEnabled = new ArrayList<>();
-		for (Iterator iter = this.descriptors.values().iterator(); iter.hasNext();) {
-			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor) iter.next();
+		for (Object element : this.descriptors.values()) {
+			TeamContentProviderDescriptor descriptor = (TeamContentProviderDescriptor) element;
 			if (descriptor.isEnabled()) {
 				previouslyEnabled.add(descriptor);
 				descriptor.setEnabled(false);

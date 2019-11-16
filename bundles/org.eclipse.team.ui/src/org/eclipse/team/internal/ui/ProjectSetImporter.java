@@ -110,7 +110,7 @@ public class ProjectSetImporter {
 				}
 			} else {
 				UIProjectSetSerializationContext context = new UIProjectSetSerializationContext(shell, filename);
-				List<TeamException> errors = new ArrayList<TeamException>();
+				List<TeamException> errors = new ArrayList<>();
 				IMemento[] providers = xmlMemento.getChildren("provider"); //$NON-NLS-1$
 				for (IMemento provider : providers) {
 					ArrayList<String> referenceStrings= new ArrayList<>();
@@ -277,7 +277,7 @@ public class ProjectSetImporter {
 		IAdaptable[] oldElements = oldWs.getElements();
 		IAdaptable[] newElements = newWs.getElements();
 
-		Set<IAdaptable> combinedElements = new HashSet<IAdaptable>();
+		Set<IAdaptable> combinedElements = new HashSet<>();
 		combinedElements.addAll(Arrays.asList(oldElements));
 		combinedElements.addAll(Arrays.asList(newElements));
 

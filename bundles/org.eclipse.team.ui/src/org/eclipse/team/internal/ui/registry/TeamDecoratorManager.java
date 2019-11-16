@@ -53,10 +53,10 @@ public class TeamDecoratorManager {
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(TeamUIPlugin.ID, PT_TEAM_DECORATORS);
 		IExtension[] extensions = point.getExtensions();
 		descriptors = new HashMap<>(extensions.length * 2 + 1);
-		for (int i = 0, imax = extensions.length; i < imax; i++) {
+		for (IExtension extension : extensions) {
 			TeamDecoratorDescription desc = null;
 			try {
-				desc = new TeamDecoratorDescription(extensions[i]);
+				desc = new TeamDecoratorDescription(extension);
 			} catch (CoreException e) {
 				TeamUIPlugin.log(e);
 			}

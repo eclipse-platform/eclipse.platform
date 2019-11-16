@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.wizards;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -111,8 +110,8 @@ public class GlobalRefreshWizardSelectionPage extends WizardPage implements IDou
 	@Override
 	public void dispose() {
 		if (createdImages != null) {
-			for (Iterator it = createdImages.iterator(); it.hasNext();) {
-				Image image = (Image) it.next();
+			for (Object element : createdImages) {
+				Image image = (Image) element;
 				image.dispose();
 			}
 		}

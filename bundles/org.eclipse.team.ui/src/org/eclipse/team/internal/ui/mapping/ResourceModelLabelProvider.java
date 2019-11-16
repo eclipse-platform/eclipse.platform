@@ -94,6 +94,7 @@ public class ResourceModelLabelProvider extends
 		return provider ;
 	}
 
+	@Override
 	protected IDiff getDiff(Object elementOrPath) {
 		IResource resource = getResource(elementOrPath);
 		IResourceDiffTree tree = getDiffTree(elementOrPath);

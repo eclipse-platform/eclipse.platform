@@ -256,8 +256,8 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 		// filter out unexportable projects
 		List passedInExportableProjects = new ArrayList();
-		for (Iterator iterator = passedInSelectedProjects.iterator(); iterator.hasNext();) {
-			IProject project = (IProject) iterator.next();
+		for (Object element : passedInSelectedProjects) {
+			IProject project = (IProject) element;
 			if (isProjectExportable(project))
 				passedInExportableProjects.add(project);
 		}
@@ -679,9 +679,8 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			// check if there is at least one exportable project selected
 			if (complete || !pageShown) {
 				complete = false;
-				for (Iterator iterator = selectedProjects.iterator(); iterator
-						.hasNext();) {
-					IProject selectedProject = (IProject) iterator.next();
+				for (Object element : selectedProjects) {
+					IProject selectedProject = (IProject) element;
 					if (isProjectExportable(selectedProject)) {
 						complete = true;
 					} else {
@@ -745,8 +744,7 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 
 			if (!tempSet.isEmpty()) {
 				selectedProjects.removeAll(tempSet);
-				for (Iterator iterator = tempSet.iterator(); iterator.hasNext();) {
-					Object element = iterator.next();
+				for (Object element : tempSet) {
 					referenceCountProjects.remove(element);
 				}
 				selectedProjects.addAll(referenceCountProjects);

@@ -69,7 +69,7 @@ public class TeamCapabilityHelper {
 	 * for workspace changes and promote activities accordingly.
 	 */
 	private TeamCapabilityHelper() {
-		providerIdToPluginId = new HashMap<String, IPluginContribution>();
+		providerIdToPluginId = new HashMap<>();
 		loadRepositoryProviderIds();
 
 		// crawl the initial projects

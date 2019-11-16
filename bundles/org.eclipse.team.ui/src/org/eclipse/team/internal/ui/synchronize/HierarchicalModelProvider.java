@@ -15,7 +15,6 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IProject;
@@ -195,8 +194,8 @@ public class HierarchicalModelProvider extends SynchronizeModelProvider {
 		for (SyncInfo info : infos) {
 			set.add(info.getLocal().getProject());
 		}
-		for (Iterator it = set.iterator(); it.hasNext(); ) {
-			addResource((IResource)it.next());
+		for (Object element : set) {
+			addResource((IResource)element);
 		}
 	}
 

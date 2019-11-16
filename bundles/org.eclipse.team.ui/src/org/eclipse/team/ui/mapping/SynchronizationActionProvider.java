@@ -14,7 +14,6 @@
 package org.eclipse.team.ui.mapping;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.commands.IHandler;
@@ -193,8 +192,8 @@ public class SynchronizationActionProvider extends CommonActionProvider {
 	public void dispose() {
 		super.dispose();
 		if (openWithActions != null) openWithActions.dispose();
-		for (Iterator iter = handlers.values().iterator(); iter.hasNext();) {
-			IHandler handler = (IHandler) iter.next();
+		for (Object element : handlers.values()) {
+			IHandler handler = (IHandler) element;
 			if (handler instanceof MergeActionHandler) {
 				MergeActionHandler mah = (MergeActionHandler) handler;
 				mah.dispose();
