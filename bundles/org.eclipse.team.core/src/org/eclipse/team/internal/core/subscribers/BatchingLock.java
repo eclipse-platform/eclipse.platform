@@ -16,7 +16,6 @@ package org.eclipse.team.internal.core.subscribers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -224,8 +223,7 @@ public class BatchingLock {
 			return rules.remove(rules.size() - 1);
 		}
 		public boolean ruleContains(IResource resource) {
-			for (Iterator iter = rules.iterator(); iter.hasNext();) {
-				ISchedulingRule rule = (ISchedulingRule) iter.next();
+			for (ISchedulingRule rule : rules) {
 				if (rule != NULL_SCHEDULING_RULE && rule.contains(resource)) {
 					return true;
 				}

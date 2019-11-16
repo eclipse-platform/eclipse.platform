@@ -76,8 +76,7 @@ public class CompoundResourceTraversal {
 	public synchronized boolean isCovered(IResource resource, int depth) {
 		IPath fullPath = resource.getFullPath();
 		// Regardless of the depth, look for a deep folder that covers the resource
-		for (Iterator iter = deepFolders.iterator(); iter.hasNext();) {
-			IResource deepFolder = (IResource) iter.next();
+		for (IResource deepFolder : deepFolders) {
 			if (deepFolder.getFullPath().isPrefixOf(fullPath)) {
 				return true;
 			}
@@ -195,26 +194,22 @@ public class CompoundResourceTraversal {
 	 */
 	private IResource[] getUncoveredResources(CompoundResourceTraversal otherTraversal) {
 		Set<IResource> result = new HashSet<>();
-		for (Iterator iter = otherTraversal.files.iterator(); iter.hasNext();) {
-			IResource resource = (IResource) iter.next();
+		for (IResource resource : otherTraversal.files) {
 			if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 				result.add(resource);
 			}
 		}
-		for (Iterator iter = otherTraversal.zeroFolders.iterator(); iter.hasNext();) {
-			IResource resource = (IResource) iter.next();
+		for (IResource resource : otherTraversal.zeroFolders) {
 			if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 				result.add(resource);
 			}
 		}
-		for (Iterator iter = otherTraversal.shallowFolders.iterator(); iter.hasNext();) {
-			IResource resource = (IResource) iter.next();
+		for (IResource resource : otherTraversal.shallowFolders) {
 			if (!isCovered(resource, IResource.DEPTH_ONE)) {
 				result.add(resource);
 			}
 		}
-		for (Iterator iter = otherTraversal.deepFolders.iterator(); iter.hasNext();) {
-			IResource resource = (IResource) iter.next();
+		for (IResource resource : otherTraversal.deepFolders) {
 			if (!isCovered(resource, IResource.DEPTH_INFINITE)) {
 				result.add(resource);
 			}
@@ -257,26 +252,22 @@ public class CompoundResourceTraversal {
 	public ResourceTraversal[] getUncoveredTraversals(CompoundResourceTraversal otherTraversal) {
 		synchronized (otherTraversal) {
 			CompoundResourceTraversal uncovered = new CompoundResourceTraversal();
-			for (Iterator iter = otherTraversal.files.iterator(); iter.hasNext();) {
-				IResource resource = (IResource) iter.next();
+			for (IResource resource : otherTraversal.files) {
 				if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 					uncovered.addResource(resource, IResource.DEPTH_ZERO);
 				}
 			}
-			for (Iterator iter = otherTraversal.zeroFolders.iterator(); iter.hasNext();) {
-				IResource resource = (IResource) iter.next();
+			for (IResource resource : otherTraversal.zeroFolders) {
 				if (!isCovered(resource, IResource.DEPTH_ZERO)) {
 					uncovered.addResource(resource, IResource.DEPTH_ZERO);
 				}
 			}
-			for (Iterator iter = otherTraversal.shallowFolders.iterator(); iter.hasNext();) {
-				IResource resource = (IResource) iter.next();
+			for (IResource resource : otherTraversal.shallowFolders) {
 				if (!isCovered(resource, IResource.DEPTH_ONE)) {
 					uncovered.addResource(resource, IResource.DEPTH_ONE);
 				}
 			}
-			for (Iterator iter = otherTraversal.deepFolders.iterator(); iter.hasNext();) {
-				IResource resource = (IResource) iter.next();
+			for (IResource resource : otherTraversal.deepFolders) {
 				if (!isCovered(resource, IResource.DEPTH_INFINITE)) {
 					uncovered.addResource(resource, IResource.DEPTH_INFINITE);
 				}

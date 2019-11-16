@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -187,8 +186,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 		}
 		if (depth == IResource.DEPTH_ZERO) return;
 		Map<IResource, IResourceVariant> children = mergedMembers(local, remote, monitor);
-		for (Iterator<IResource> it = children.keySet().iterator(); it.hasNext();) {
-			IResource localChild = it.next();
+		for (IResource localChild : children.keySet()) {
 			IResourceVariant remoteChild = children.get(localChild);
 			collectChanges(localChild, remoteChild, changedResources,
 					depth == IResource.DEPTH_INFINITE ? IResource.DEPTH_INFINITE : IResource.DEPTH_ZERO,

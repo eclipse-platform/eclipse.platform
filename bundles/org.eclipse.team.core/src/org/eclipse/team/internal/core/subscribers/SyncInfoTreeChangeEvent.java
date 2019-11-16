@@ -77,8 +77,7 @@ public class SyncInfoTreeChangeEvent extends SyncInfoSetChangeEvent implements I
 	}
 
 	private boolean isDescendantOfAddedRoot(IResource resource) {
-		for (Iterator iter = addedSubtrees.iterator(); iter.hasNext();) {
-			IResource root = (IResource) iter.next();
+		for (IResource root : addedSubtrees) {
 			if (isParent(root, resource)) {
 				// There is a higher added root already in the list
 				return true;

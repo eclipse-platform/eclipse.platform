@@ -56,8 +56,7 @@ public class PathTree {
 		}
 		public boolean descendantHasFlag(int property) {
 			if (hasDescendants()) {
-				for (Iterator<IPath> iter = descendantsWithPayload.iterator(); iter.hasNext();) {
-					IPath path = iter.next();
+				for (IPath path : descendantsWithPayload) {
 					Node child = getNode(path);
 					if (child.hasFlag(property)) {
 						return true;
@@ -250,8 +249,7 @@ public class PathTree {
 	 */
 	public synchronized IPath[] getPaths() {
 		List<IPath> result = new ArrayList<>();
-		for (Iterator iter = objects.keySet().iterator(); iter.hasNext();) {
-			IPath path = (IPath) iter.next();
+		for (IPath path : objects.keySet()) {
 			Node node = getNode(path);
 			if (node.getPayload() != null)
 				result.add(path);
@@ -265,8 +263,7 @@ public class PathTree {
 	 */
 	public synchronized Collection<Object> values() {
 		List<Object> result = new ArrayList<>();
-		for (Iterator iter = objects.keySet().iterator(); iter.hasNext();) {
-			IPath path = (IPath) iter.next();
+		for (IPath path : objects.keySet()) {
 			Node node = getNode(path);
 			if (node.getPayload() != null)
 				result.add(node.getPayload());

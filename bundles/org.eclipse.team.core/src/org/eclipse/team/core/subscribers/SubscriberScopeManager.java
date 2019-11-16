@@ -16,7 +16,6 @@ package org.eclipse.team.core.subscribers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,9 +82,8 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 
 	@Override
 	public void dispose() {
-		for (Iterator iter = participants.values().iterator(); iter.hasNext();) {
-			ISynchronizationScopeParticipant p = (ISynchronizationScopeParticipant) iter.next();
-			p.dispose();
+		for (ISynchronizationScopeParticipant participant : participants.values()) {
+			participant.dispose();
 		}
 		super.dispose();
 	}
@@ -118,9 +116,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 	 * appropriately
 	 */
 	/* private */ void hookupParticipants() {
-		ModelProvider[] providers = getScope().getModelProviders();
-		for (int i = 0; i < providers.length; i++) {
-			ModelProvider provider = providers[i];
+		for (ModelProvider provider : getScope().getModelProviders()) {
 			if (!participants.containsKey(provider)) {
 				ISynchronizationScopeParticipant p = createParticipant(provider);
 				if (p != null) {
@@ -146,8 +142,7 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 	public void subscriberResourceChanged(ISubscriberChangeEvent[] deltas) {
 		List<IResource> changedResources = new ArrayList<>();
 		List<IProject> changedProjects = new ArrayList<>();
-		for (int i = 0; i < deltas.length; i++) {
-			ISubscriberChangeEvent event = deltas[i];
+		for (ISubscriberChangeEvent event : deltas) {
 			if ((event.getFlags() & (ISubscriberChangeEvent.ROOT_ADDED | ISubscriberChangeEvent.ROOT_REMOVED)) != 0) {
 				changedProjects.add(event.getResource().getProject());
 			}
@@ -160,15 +155,12 @@ public class SubscriberScopeManager extends SynchronizationScopeManager implemen
 
 	private void fireChange(final IResource[] resources, final IProject[] projects) {
 		final Set<ResourceMapping> result = new HashSet<>();
-		ISynchronizationScopeParticipant[] handlers = participants.values().toArray(new ISynchronizationScopeParticipant[participants.size()]);
-		for (int i = 0; i < handlers.length; i++) {
-			final ISynchronizationScopeParticipant participant = handlers[i];
+		for (final ISynchronizationScopeParticipant participant : participants.values()) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
 				public void run() throws Exception {
-					ResourceMapping[] mappings = participant.handleContextChange(SubscriberScopeManager.this.getScope(), resources, projects);
-					for (int j = 0; j < mappings.length; j++) {
-						ResourceMapping mapping = mappings[j];
+					for (ResourceMapping mapping : participant
+							.handleContextChange(SubscriberScopeManager.this.getScope(), resources, projects)) {
 						result.add(mapping);
 					}
 				}

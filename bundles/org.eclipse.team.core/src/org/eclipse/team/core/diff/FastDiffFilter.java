@@ -33,8 +33,7 @@ public abstract class FastDiffFilter extends DiffFilter {
 			@Override
 			public boolean select(IDiff node) {
 				int status = ((Diff)node).getStatus();
-				for (int i = 0; i < states.length; i++) {
-					int state = states[i];
+				for (int state : states) {
 					if ((status & mask) == state) {
 						return true;
 					}
