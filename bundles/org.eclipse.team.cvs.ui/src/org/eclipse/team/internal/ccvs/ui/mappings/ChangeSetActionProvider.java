@@ -83,8 +83,8 @@ public class ChangeSetActionProvider extends ResourceModelActionProvider {
 	}
 
 	/**
-	 * Escape a string so it can be used as an action text without '&'
-	 * being interpreted as a mnemonic. Specifically, turn each '&' into '&&'.
+	 * Escape a string so it can be used as an action text without '&amp;'
+	 * being interpreted as a mnemonic. Specifically, turn each '&amp;' into '&amp;&amp;'.
 	 */
 	/* package */static String escapeActionText(String x) {
 		// Loosely based on org.eclipse.jface.action.LegacyActionTools#removeMnemonics

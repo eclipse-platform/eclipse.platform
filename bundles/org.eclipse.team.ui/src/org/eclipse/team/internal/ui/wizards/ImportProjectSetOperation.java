@@ -39,7 +39,7 @@ public class ImportProjectSetOperation extends TeamOperation {
 	 *
 	 * @param context
 	 *            a runnable context,
-	 *            <code>null</null> for running in background
+	 *            <code>null</code> for running in background
 	 * @param psfFileContents
 	 *            the psf file content to load
 	 * @param urlString

@@ -25,7 +25,7 @@ import org.eclipse.core.net.proxy.IProxyData;
 
 /**
  * The <code>WinHttpProxyProvivider</code> gets its settings from the
- * "internet options >> connection settings". For this it uses the Windows
+ * "internet options &gt;&gt; connection settings". For this it uses the Windows
  * WinHttp API.
  *
  * @see "http://msdn2.microsoft.com/en-us/library/aa382925(VS.85).aspx"

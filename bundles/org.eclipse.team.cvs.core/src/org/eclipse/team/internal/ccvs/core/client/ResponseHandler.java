@@ -37,7 +37,8 @@ public abstract class ResponseHandler {
 	 * Handles a server response.
 	 * <p>
 	 * Suppose as a result of performing a command the CVS server responds
-	 * as follows:<br>
+	 * as follows:
+	 * </p>
 	 * <pre>
 	 *   [...]
 	 *   Clear-sticky myDirectory \n
@@ -48,8 +49,7 @@ public abstract class ResponseHandler {
 	 * for <em>Clear-sticky</em> will be invoked with <code>argument</code>
 	 * set to <em>"myDirectory"</em>.  It must then read the remaining
 	 * response data from the connection (<em>"/u/cvsroot/myDirectory"</em>
-	 * including the newline) and take any necessary action.
-	 * </p><p>
+	 * including the newline) and take any necessary action.<p>
 	 * Note:  The type and quantity of additional data that must be read
 	 * from the connection varies on a per-response basis.
 	 * </p>

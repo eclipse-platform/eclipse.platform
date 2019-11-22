@@ -38,9 +38,9 @@ import org.eclipse.team.core.TeamException;
  * which cannot be performed in the delta handler because the workspace is locked.</li>
  * <li>a data structure is not thread safe and requires serialized operations.<li>
  * </ul>
- * </p>
  * <p>
  * The event handler has the following characteristics:
+ * </p>
  * <ol>
  * <li>Incoming events are placed in an incoming queue.</li>
  * <li>Each event is processed by calling the <code>processEvent</code> method
@@ -53,8 +53,7 @@ import org.eclipse.team.core.TeamException;
  * operations.<li>
  * <li>Errors that occur during event processing or dispatch can be accumulated by calling the <code>handle</code>
  * method. Accumulated errors are used to form the status that is returned when the job completes.<li>
- * </ul>
- * </p>
+ * </ol>
  *
  * @since 3.0
  */

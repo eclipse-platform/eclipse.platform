@@ -42,7 +42,6 @@ import org.osgi.framework.BundleContext;
 /**
  * This class is the plug-in runtime class for the 
  * <code>"org.eclipse.compare.xml"</code> plug-in.
- * </p>
  */
 public final class XMLPlugin extends AbstractUIPlugin {
 	

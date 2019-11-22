@@ -272,7 +272,8 @@ public class CVSTeamProvider extends RepositoryProvider {
 	/**
 	 * Sets the keyword substitution mode for the specified resources.
 	 * <p>
-	 * Applies the following rules in order:<br>
+	 * Applies the following rules in order:
+	 * </p>
 	 * <ul>
 	 *   <li>If a file is not managed, skips it.</li>
 	 *   <li>If a file is not changing modes, skips it.</li>
@@ -285,7 +286,6 @@ public class CVSTeamProvider extends RepositoryProvider {
 	 * casually trying to commit pending changes to the repository without first checking out
 	 * a new copy.  This is not a perfect solution, as they could just as easily do an UPDATE
 	 * and not obtain the new keyword sync info.
-	 * </p>
 	 * 
 	 * @param changeSet a map from IFile to KSubstOption
 	 * @param monitor the progress monitor
@@ -419,7 +419,7 @@ public class CVSTeamProvider extends RepositoryProvider {
 	/**
 	 * This method translates the contents of a file from binary into text (ASCII).
 	 * Fixes the line delimiters in the local file to reflect the platform's
-	 * native encoding.  Performs CR/LF -> LF or LF -> CR/LF conversion
+	 * native encoding.  Performs CR/LF -&gt; LF or LF -&gt; CR/LF conversion
 	 * depending on the platform but does not affect delimiters that are
 	 * already correctly encoded.
 	 */

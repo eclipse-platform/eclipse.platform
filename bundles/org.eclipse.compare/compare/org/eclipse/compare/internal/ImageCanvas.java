@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 
 /**
  * A <code>Canvas</code> showing a single centered SWT <code>Image</code>.
- * If the <code>Image</code> is larger than the <code>Canvas<code>,
+ * If the <code>Image</code> is larger than the <code>Canvas</code>,
  * <code>Scrollbars</code> will appear.
  */
 class ImageCanvas extends Canvas {

@@ -127,7 +127,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  pattern = { '?', 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => true
+	 *  pattern = { '?', 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result =&gt; true
 	 * </pre>
 	 *
 	 *
@@ -135,7 +135,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  pattern = { '?', 'b', '?' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => false
+	 *  pattern = { '?', 'b', '?' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result =&gt; false
 	 * </pre>
 	 *
 	 *
@@ -143,7 +143,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  pattern = { 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result => false
+	 *  pattern = { 'b', '*' } name = { 'a', 'b', 'c' , 'd' } isCaseSensitive = true result =&gt; false
 	 * </pre>
 	 *
 	 *
@@ -179,7 +179,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 3 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 4 isCaseSensitive = true result => true
+	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 3 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 4 isCaseSensitive = true result =&gt; true
 	 * </pre>
 	 *
 	 *
@@ -187,7 +187,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 2 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 2 isCaseSensitive = true result => false
+	 *  pattern = { '?', 'b', '*' } patternStart = 1 patternEnd = 2 name = { 'a', 'b', 'c' , 'd' } nameStart = 1 nameEnd = 2 isCaseSensitive = true result =&gt; false
 	 * </pre>
 	 *
 	 *
@@ -278,7 +278,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  divider = 'b' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result => { { 'a' }, { }, { 'a' }, { 'a' } }
+	 *  divider = 'b' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result =&gt; { { 'a' }, { }, { 'a' }, { 'a' } }
 	 * </pre>
 	 *
 	 *
@@ -286,7 +286,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  divider = 'c' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result => { { 'a', 'b', 'b', 'a', 'b', 'a' } }
+	 *  divider = 'c' array = { 'a' , 'b', 'b', 'a', 'b', 'a' } result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
 	 *
 	 *
@@ -294,7 +294,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  divider = 'b' array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' } result => { { 'a' }, { }, { 'a' }, { 'a' } }
+	 *  divider = 'b' array = { 'a' , ' ', 'b', 'b', 'a', 'b', 'a' } result =&gt; { { 'a' }, { }, { 'a' }, { 'a' } }
 	 * </pre>
 	 *
 	 *
@@ -302,7 +302,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  divider = 'c' array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' } result => { { 'a', 'b', 'b', 'a', 'b', 'a' } }
+	 *  divider = 'c' array = { ' ', ' ', 'a' , 'b', 'b', 'a', 'b', 'a', ' ' } result =&gt; { { 'a', 'b', 'b', 'a', 'b', 'a' } }
 	 * </pre>
 	 *
 	 *
@@ -360,7 +360,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  array = { 'a' , 'b' } start = 0 end = 1 result => { 'a' }
+	 *  array = { 'a' , 'b' } start = 0 end = 1 result =&gt; { 'a' }
 	 * </pre>
 	 *
 	 *
@@ -368,7 +368,7 @@ public class CompareResourceFilter {
 	 * <li>
 	 *
 	 * <pre>
-	 *  array = { 'a', 'b' } start = 0 end = -1 result => { 'a' , 'b' }
+	 *  array = { 'a', 'b' } start = 0 end = -1 result =&gt; { 'a' , 'b' }
 	 * </pre>
 	 *
 	 *

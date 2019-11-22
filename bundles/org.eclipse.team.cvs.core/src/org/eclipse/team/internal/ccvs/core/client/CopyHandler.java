@@ -22,7 +22,8 @@ import org.eclipse.team.internal.ccvs.core.*;
  * Handles a "Copy-file" response from the CVS server.
  * <p>
  * Suppose as a result of performing a command the CVS server responds
- * as follows:<br>
+ * as follows:
+ * </p>
  * <pre>
  *   [...]
  *   Copy-file myproject/ \n
@@ -33,7 +34,6 @@ import org.eclipse.team.internal.ccvs.core.*;
  * Then we copy (or optionally rename) the local file "oldfile.txt" in
  * folder "myproject" to "newfile.txt".  This response is used to create
  * a backup copy of an existing file before merging in new changes.
- * </p>
  */
 class CopyHandler extends ResponseHandler {
 	public String getResponseID() {

@@ -25,7 +25,8 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.MutableFolderSyncInfo;
  * Handles any "Set-sticky" and "Clear-stick" responses from the CVS server.
  * <p>
  * Suppose as a result of performing a command the CVS server responds
- * as follows:<br>
+ * as follows:
+ * </p>
  * <pre>
  *   [...]
  *   Set-sticky myproject/ \n
@@ -35,7 +36,6 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.MutableFolderSyncInfo;
  * </pre>
  * Then we set or clear the sticky tag property of the folder "myproject",
  * automatically creating it if it does not exist locally,
- * </p>
  */
 class StickyHandler extends ResponseHandler {
 	private final boolean setSticky;

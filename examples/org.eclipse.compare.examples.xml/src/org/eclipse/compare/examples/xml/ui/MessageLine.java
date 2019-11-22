@@ -89,7 +89,7 @@ public class MessageLine extends CLabel {
 
 	/**
 	 * Get the currently displayed message.
-	 * @return The message. If no message is displayed <code>null<code> is returned.
+	 * @return The message. If no message is displayed <code>null</code> is returned.
 	 */
 	public String getMessage() {
 		return fMessageText;

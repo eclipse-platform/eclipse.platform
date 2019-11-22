@@ -29,7 +29,7 @@ import org.eclipse.team.internal.ccvs.core.connection.CVSAuthenticationException
  * @author Administrator
  *
  * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TestConnection implements IServerConnection {
 	public static TestConnection currentConnection;

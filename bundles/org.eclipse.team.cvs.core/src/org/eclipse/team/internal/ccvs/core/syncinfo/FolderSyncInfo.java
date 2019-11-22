@@ -106,7 +106,7 @@ public class FolderSyncInfo {
 		return true;
 	}
 	/**
-	 * Gets the root, cannot be <code>null.
+	 * Gets the root, cannot be <code>null</code>.
 	 * 
 	 * @return Returns a String
 	 */

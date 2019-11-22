@@ -23,14 +23,14 @@ import org.eclipse.team.internal.ccvs.core.util.Util;
  * Handles a "Checked-in" response from the CVS server.
  * <p>
  * Suppose as a result of performing a command the CVS server responds
- * as follows:<br>
+ * as follows:
+ * </p>
  * <pre>
  *   [...]
  *   Checked-in ??? \n
  *   [...]
  * </pre>
- * Then 
- * </p>
+ * Then
  */
 class CheckedInHandler extends ResponseHandler {
 	public String getResponseID() {

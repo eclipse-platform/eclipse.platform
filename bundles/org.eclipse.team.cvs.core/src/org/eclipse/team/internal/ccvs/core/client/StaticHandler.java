@@ -26,7 +26,8 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.MutableFolderSyncInfo;
  * from the CVS server.
  * <p>
  * Suppose as a result of performing a command the CVS server responds
- * as follows:<br>
+ * as follows:
+ * </p>
  * <pre>
  *   [...]
  *   Set-static-directory myproject/ \n
@@ -35,7 +36,6 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.MutableFolderSyncInfo;
  * </pre>
  * Then we set or clear the static flag of the folder "myproject",
  * automatically creating it if it does not exist locally,
- * </p>
  */
 class StaticHandler extends ResponseHandler {
 	private final boolean setStaticDirectory;

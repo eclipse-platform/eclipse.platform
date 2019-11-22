@@ -177,7 +177,7 @@ public abstract class LCS {
 
 	/**
 	 * Helper function for Myers' LCS algorithm to find the middle snake for
-	 * l1[bottoml1..topl1] and l2[bottoml2..topl2] The x, y coodrdinates of the
+	 * l1[bottoml1..topl1] and l2[bottoml2..topl2] The x, y coordinates of the
 	 * start of the middle snake are saved in snake[0], snake[1] respectively
 	 * and the length of the snake is saved in s[2].
 	 *
@@ -191,7 +191,7 @@ public abstract class LCS {
 	 *            to store furthest reaching D-paths
 	 * @param snake should be allocated as int[3], used to store the beginning
 	 *            x, y coordinates and the length of the middle snake
-	 * @subMonitor subMonitor
+	 * @param subMonitor
 	 *
 	 * @return The number of differences (SES) between l1[bottoml1..topl1] and
 	 *         l2[bottoml2..topl2]

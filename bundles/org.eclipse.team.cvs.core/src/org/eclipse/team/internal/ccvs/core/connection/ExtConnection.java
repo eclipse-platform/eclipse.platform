@@ -89,7 +89,7 @@ public class ExtConnection implements IServerConnection {
 	/**
 	 * Opens the connection and invokes cvs in server mode.
 	 *
-	 * @see Connection.open()
+	 * @see Connection#open()
 	 */
 	public void open(IProgressMonitor monitor) throws IOException {
 		String[] command = ((CVSRepositoryLocation)location).getExtCommand(password);

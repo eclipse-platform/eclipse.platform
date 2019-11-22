@@ -43,7 +43,7 @@ public class DocLineComparator implements ITokenComparator {
 	/**
 	 * Creates a <code>DocLineComparator</code> for the given document range.
 	 * ignoreWhiteSpace controls whether comparing lines (in method
-	 * <code>rangesEqual<code>) should ignore whitespace.
+	 * <code>rangesEqual</code>) should ignore whitespace.
 	 *
 	 * @param document the document from which the lines are taken
 	 * @param region if non-<code>null</code> only lines within this range are taken
@@ -57,7 +57,7 @@ public class DocLineComparator implements ITokenComparator {
 	/**
 	 * Creates a <code>DocLineComparator</code> for the given document range.
 	 * ignoreWhiteSpace controls whether comparing lines (in method
-	 * <code>rangesEqual<code>) should ignore whitespace. Compare filters may be used
+	 * <code>rangesEqual</code>) should ignore whitespace. Compare filters may be used
 	 * to affect the detection of line differences.
 	 *
 	 * @param document

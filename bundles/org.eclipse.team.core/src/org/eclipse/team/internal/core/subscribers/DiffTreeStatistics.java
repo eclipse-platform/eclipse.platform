@@ -25,7 +25,7 @@ import org.eclipse.team.core.synchronize.SyncInfo;
 
 public class DiffTreeStatistics {
 	/**
-	 * {Integer sync kind -> Long number of infos with that sync kind in this sync set}
+	 * {Integer sync kind -&gt; Long number of infos with that sync kind in this sync set}
 	 */
 	protected Map<Integer, Long> stats = Collections.synchronizedMap(new HashMap<>());
 

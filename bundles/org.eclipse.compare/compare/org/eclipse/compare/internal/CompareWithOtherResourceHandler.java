@@ -26,7 +26,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * This is a temporary replacement for CompareWithOtherResourceAction which was
- * available from "Compare With > Other Resource...". See bug 264498.
+ * available from "Compare With &gt; Other Resource...". See bug 264498.
  */
 public class CompareWithOtherResourceHandler extends AbstractHandler {
 

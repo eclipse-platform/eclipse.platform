@@ -87,7 +87,7 @@ public class WorkspaceTest extends ResourceTest {
 	/**
 	 * Creates filesystem 'resources' with the given names and fills them with random text.
 	 * @param container An object that can hold the newly created resources.
-	 * @param hierarchy A list of files & folder names to use as resources
+	 * @param hierarchy A list of files &amp; folder names to use as resources
 	 * @param includeContainer A flag that controls whether the container is included in the list of resources.
 	 * @return IResource[] An array of resources filled with variable amounts of random text
 	 * @throws CoreException

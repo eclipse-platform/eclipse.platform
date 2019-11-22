@@ -71,8 +71,8 @@ public class StatusListener extends CommandOutputListener {
 	 * If the status returns that the file is in the Attic, then remove the
 	 * Attic segment. This is because files added to a branch that are not in
 	 * the main trunk (HEAD) are added to the Attic but cvs does magic on
-	 * updateto put them in the correct location.
-	 * (e.g. /project/Attic/file.txt -> /project/file.txt)
+	 * update to put them in the correct location.
+	 * (e.g. /project/Attic/file.txt -&gt; /project/file.txt)
 	 */ 
 	private String removeAtticSegment(String path) {
 		return Util.removeAtticSegment(path);

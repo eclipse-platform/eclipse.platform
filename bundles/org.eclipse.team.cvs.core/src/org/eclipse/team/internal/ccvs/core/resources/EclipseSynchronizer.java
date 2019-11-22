@@ -101,7 +101,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param folder the folder
 	 * @param info the folder sync info, must not be null
-	 * @see #getFolderSync, #deleteFolderSync
+	 * @see #getFolderSync
+	 * @see #deleteFolderSync
 	 */
 	public void setFolderSync(IContainer folder, FolderSyncInfo info) throws CVSException {
 		Assert.isNotNull(info); // enforce the use of deleteFolderSync
@@ -144,7 +145,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param folder the folder
 	 * @return the folder sync info associated with the folder, or null if none.
-	 * @see #setFolderSync, #deleteFolderSync
+	 * @see #setFolderSync
+	 * @see #deleteFolderSync
 	 */
 	public FolderSyncInfo getFolderSync(IContainer folder) throws CVSException {
 		if (folder.getType() == IResource.ROOT || !isValid(folder)) return null;
@@ -166,7 +168,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * for all of its children.  Does not recurse.
 	 * 
 	 * @param folder the folder
-	 * @see #getFolderSync, #setFolderSync
+	 * @see #getFolderSync
+	 * @see #setFolderSync
 	 */
 	public void deleteFolderSync(IContainer folder) throws CVSException {
 		if (folder.getType() == IResource.ROOT || !isValid(folder)) return;
@@ -211,7 +214,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param resource the resource
 	 * @param info the resource sync info, must not be null
-	 * @see #getResourceSync, #deleteResourceSync
+	 * @see #getResourceSync
+	 * @see #deleteResourceSync
 	 */
 	public void setResourceSync(IResource resource, ResourceSyncInfo info) throws CVSException {
 		Assert.isNotNull(info); // enforce the use of deleteResourceSync
@@ -243,7 +247,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param resource the resource
 	 * @return the resource sync info associated with the resource, or null if none.
-	 * @see #setResourceSync, #deleteResourceSync
+	 * @see #setResourceSync
+	 * @see #deleteResourceSync
 	 */
 	public ResourceSyncInfo getResourceSync(IResource resource) throws CVSException {
 		byte[] info = getSyncBytes(resource);
@@ -256,7 +261,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param resource the resource
 	 * @return the resource sync info associated with the resource, or null if none.
-	 * @see #setResourceSync, #deleteResourceSync
+	 * @see #setResourceSync
+	 * @see #deleteResourceSync
 	 */
 	public byte[] getSyncBytes(IResource resource) throws CVSException {
 		IContainer parent = resource.getParent();
@@ -294,7 +300,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * 
 	 * @param resource the resource
 	 * @param info the resource sync info, must not be null
-	 * @see #getResourceSync, #deleteResourceSync
+	 * @see #getResourceSync
+	 * @see #deleteResourceSync
 	 */
 	public void setSyncBytes(IResource resource, byte[] syncBytes) throws CVSException {
 		Assert.isNotNull(syncBytes); // enforce the use of deleteResourceSync
@@ -325,7 +332,8 @@ public class EclipseSynchronizer implements IFlushOperation {
 	 * Deletes the resource sync info for the specified resource, if it exists.
 	 * 
 	 * @param resource the resource
-	 * @see #getResourceSync, #setResourceSync
+	 * @see #getResourceSync
+	 * @see #setResourceSync
 	 */
 	public void deleteResourceSync(IResource resource) throws CVSException {
 		IContainer parent = resource.getParent();

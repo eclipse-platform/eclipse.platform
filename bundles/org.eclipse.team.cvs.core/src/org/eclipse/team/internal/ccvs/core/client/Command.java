@@ -785,7 +785,7 @@ public abstract class Command extends Request {
 	 * Execute a CVS command on an array of ICVSResource. This method simply converts
 	 * the ICVSResource to String paths relative to the local root of the session and
 	 * invokes <code>execute(Session, GlobalOption[], LocalOption[], String[], ICommandOutputListener, IProgressMonitor)</code>.
-	 * </p>
+	 *
 	 * @param session the open CVS session
 	 * @param globalOptions the array of global options, or NO_GLOBAL_OPTIONS
 	 * @param localOptions the array of local options, or NO_LOCAL_OPTIONS

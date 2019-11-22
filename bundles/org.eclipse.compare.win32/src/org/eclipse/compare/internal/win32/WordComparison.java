@@ -123,8 +123,7 @@ public class WordComparison {
 	 *
 	 * <p>An exception is thrown if the id cannot be retrieved</p>
 	 *
-	 * Reference information for id assignment: <a href="
-	 * http://msdn.microsoft.com/en-us/library/w7a36sdf%28VS.80%29.aspx">http://msdn.microsoft.com/en-us/library/w7a36sdf%28VS.80%29.aspx</a>
+	 * Reference information for id assignment: <a href="http://msdn.microsoft.com/en-us/library/w7a36sdf%28VS.80%29.aspx">http://msdn.microsoft.com/en-us/library/w7a36sdf%28VS.80%29.aspx</a>
 	 *
 	 * @param auto - object from which we want to get the property, must not be <code>null</code>
 	 * @param reference - an reference object from which the property will be obtained.

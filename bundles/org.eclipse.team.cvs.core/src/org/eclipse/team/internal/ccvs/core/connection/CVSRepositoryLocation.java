@@ -266,7 +266,7 @@ public class CVSRepositoryLocation extends PlatformObject implements ICVSReposit
 	 * The status of the exception indicates success or failure. The status
 	 * of the exception contains a specific message suitable for displaying
 	 * to a user who has knowledge of the provided location string.
-	 * @see CVSRepositoryLocation.fromString(String)
+	 * @see CVSRepositoryLocation#fromString(String)
 	 */
 	public static CVSRepositoryLocation fromString(String location, boolean validateOnly) throws CVSException {
 		String errorMessage = null;

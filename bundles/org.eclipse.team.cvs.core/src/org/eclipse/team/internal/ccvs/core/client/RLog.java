@@ -30,13 +30,14 @@ public class RLog extends RemoteCommand {
 	/**
 	 * Makes a -r option for rlog. Here are the currently supported options:
 	 * 
-	 * tag1		tag2		result
-	 * ==== ==== =================================
-	 * date  	date		date<date (all revisions between date and later)
-	 * tag		tag		tag:tag (all revisions between tag and tag, must be on same branch)
-	 * branch date 	>date (all revisions of date or later)
-	 * branch tag		tag: (all revisions from tag to the end of branchs tip)
-	 * 
+	 * <pre>{@code
+	 * tag1   tag2 result
+	 * ====== ==== =================================
+	 * date   date date<date (all revisions between date and later)
+	 * tag	  tag  tag:tag (all revisions between tag and tag, must be on same branch)
+	 * branch date >date (all revisions of date or later)
+	 * branch tag  tag: (all revisions from tag to the end of branchs tip)
+	 * }</pre>
 	 * Valid for: rlog
 	 */
 	public static LocalOption makeTagOption(CVSTag tag1, CVSTag tag2) {

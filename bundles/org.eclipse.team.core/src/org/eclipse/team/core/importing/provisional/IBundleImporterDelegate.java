@@ -26,6 +26,7 @@ import org.eclipse.team.core.ScmUrlImportDescription;
  * on bundle manifest entries.
  * <p>
  * Following is an example extension:
+ * </p>
  *
  * <pre>
  * &lt;extension point=&quot;org.eclipse.team.core.bundleImporters&quot;&gt;
@@ -36,7 +37,6 @@ import org.eclipse.team.core.ScmUrlImportDescription;
  * &lt;/extension&gt;
  * </pre>
  *
- * </p>
  * <p>
  * Clients contributing bundle importer extensions are intended to implement
  * this interface. They can also subclass {@link BundleImporterDelegate}.

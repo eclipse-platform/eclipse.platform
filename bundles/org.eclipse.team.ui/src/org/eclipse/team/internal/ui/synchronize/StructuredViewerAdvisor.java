@@ -59,6 +59,7 @@ import org.eclipse.ui.actions.ActionGroup;
  * viewer can be configured to show object contributions for random id schemes.
  * To enable declarative action contributions for a configuration there are two
  * steps required:
+ * </p>
  * <ul>
  * <li>Create a viewer contribution with a <code>targetID</code> that groups
  * sets of actions that are related. A common practice for synchronize view
@@ -74,7 +75,7 @@ import org.eclipse.ui.actions.ActionGroup;
  * <li>Create a configuration instance with a <code>menuID</code> that
  * matches the targetID in the viewer contribution.
  * </ul>
- * </p><p>
+ * <p>
  * Clients may subclass to add behavior for concrete structured viewers.
  * </p>
  *

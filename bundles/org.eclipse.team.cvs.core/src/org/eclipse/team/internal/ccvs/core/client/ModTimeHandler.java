@@ -26,7 +26,8 @@ import org.eclipse.team.internal.ccvs.core.util.CVSDateFormatter;
  * Handles a "Mod-time" response from the CVS server.
  * <p>
  * Suppose as a result of performing a command the CVS server responds
- * as follows:<br>
+ * as follows:
+ * </p>
  * <pre>
  *   [...]
  *   Mod-time 18 Oct 2001 20:21:13 -0330\n
@@ -34,7 +35,6 @@ import org.eclipse.team.internal.ccvs.core.util.CVSDateFormatter;
  * </pre>
  * Then we parse and remember the date for use in subsequent
  * file transfer responses such as Updated.
- * </p>
  */
 class ModTimeHandler extends ResponseHandler {
 	public String getResponseID() {

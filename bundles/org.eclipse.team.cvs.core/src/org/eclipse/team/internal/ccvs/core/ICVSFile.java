@@ -107,7 +107,7 @@ public interface ICVSFile extends ICVSResource, ICVSStorage {
 	/**
 	 * Answers whether the file is executable or not. 
 	 * 
-	 * @returns <code>false</code> if the platform doesn't support the executable flag.
+	 * @return <code>false</code> if the platform doesn't support the executable flag.
 	 */
 	public boolean isExecutable() throws CVSException;
 	

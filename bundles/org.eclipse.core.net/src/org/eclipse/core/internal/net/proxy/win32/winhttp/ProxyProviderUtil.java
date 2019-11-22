@@ -48,9 +48,9 @@ public final class ProxyProviderUtil {
 	 * or map. <br>
 	 * The proxy list contains one or more of the following strings separated by
 	 * semicolons:<br>
-	 * <code><pre>
+	 * <pre><code>
 	 * ([&lt;scheme&gt;=][&lt;scheme&gt; &quot;://&quot; ]&lt;server&gt;[ &quot;:&quot; &lt;port&gt;])
-	 * </pre></code>
+	 * </code></pre>
 	 *
 	 * @param proxyList
 	 *            the proxy list as a string

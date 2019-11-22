@@ -691,7 +691,7 @@ public class ResourceSyncInfo {
 	}
 	/**
 	 * Method startOfSlot returns the index of the slash that occurs before the
-	 * given slot index. The provided index should be >= 1 which assumes that
+	 * given slot index. The provided index should be &gt;= 1 which assumes that
 	 * slot zero occurs before the first slash.
 	 * 
 	 * @param syncBytes

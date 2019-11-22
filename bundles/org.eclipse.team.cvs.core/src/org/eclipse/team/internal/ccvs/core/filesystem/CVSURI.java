@@ -46,9 +46,9 @@ public class CVSURI {
 	 * note, that URIs with the pipe separator are currently not supported.
 	 * 
 	 * <ul>
-	 * <li>cvs://[:]method:user[:password]@host:[port]/root/path#project/path[,tagName]</li>
-	 * <li>cvs://_method_user[_password]~host_[port]!root!path/project/path[?<version,branch,date,revision>=tagName]</li>
-	 * <li>scm:cvs<delimiter>method<delimiter>[user[<delimiter>password]@]host[<delimiter>port]<delimiter>/root/path<delimiter>project/path[;project="projectName"][;tag=tagName]</li>
+	 * <li>{@literal cvs://[:]method:user[:password]@host:[port]/root/path#project/path[,tagName]}</li>
+	 * <li>{@literal cvs://_method_user[_password]~host_[port]!root!path/project/path[?<version,branch,date,revision>=tagName]}</li>
+	 * <li>{@literal scm:cvs<delimiter>method<delimiter>[user[<delimiter>password]@]host[<delimiter>port]<delimiter>/root/path<delimiter>project/path[;project="projectName"][;tag=tagName]}</li>
 	 * </ul>
 	 * @param uri the URI
 	 * @return a CVS URI
