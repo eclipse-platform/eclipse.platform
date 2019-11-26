@@ -219,7 +219,7 @@ public class CVSScmUrlImportWizardPage extends WizardPage implements IScmUrlImpo
 				} else if (param.startsWith("version=")) { //$NON-NLS-1$
 					// ignore
 				} else {
-					if (param != null && !param.equals("")) { //$NON-NLS-1$
+					if (param != null && !param.isEmpty()) {
 						sb.append(';').append(param);
 					}
 				}

@@ -102,15 +102,15 @@ public class CVSHistoryFilter extends ViewerFilter {
 	}
 
 	protected boolean hasBranchName() {
-		return !branchName.equals(""); //$NON-NLS-1$
+		return !branchName.isEmpty();
 	}
 
 	protected boolean hasAuthor() {
-		return !author.equals(""); //$NON-NLS-1$
+		return !author.isEmpty();
 	}
 
 	protected boolean hasComment() {
-		return !comment.equals(""); //$NON-NLS-1$
+		return !comment.isEmpty();
 	}
 
 	protected boolean hasDate() {

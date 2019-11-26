@@ -841,7 +841,7 @@ public class ModeWizardSelectionPage extends WizardPage {
 	}
 
 	private void validatePage() {
-		if (fCommentArea.getComment(false).equals("")) { //$NON-NLS-1$
+		if (fCommentArea.getComment(false).isEmpty()) {
 			final IPreferenceStore store = CVSUIPlugin.getPlugin()
 					.getPreferenceStore();
 			final String allowEmptyComment = store

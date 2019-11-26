@@ -254,7 +254,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 
 	protected void initializeScopingHint() {
 		String working_sets = settings.get(STORE_WORKING_SETS);
-		if (working_sets == null || working_sets.equals("")) { //$NON-NLS-1$
+		if (working_sets == null || working_sets.isEmpty()) {
 			participantScope.setSelection(true);
 			updateParticipantScope();
 		} else {
@@ -262,7 +262,7 @@ public abstract class GlobalRefreshElementSelectionPage extends WizardPage {
 			ArrayList<IWorkingSet> ws = new ArrayList<>();
 			while (st.hasMoreTokens()) {
 				String workingSetName = st.nextToken();
-				if (workingSetName != null && workingSetName.equals("") == false) { //$NON-NLS-1$
+				if (workingSetName != null && !workingSetName.isEmpty()) {
 					IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
 					IWorkingSet workingSet = workingSetManager.getWorkingSet(workingSetName);
 					if (workingSet != null) {

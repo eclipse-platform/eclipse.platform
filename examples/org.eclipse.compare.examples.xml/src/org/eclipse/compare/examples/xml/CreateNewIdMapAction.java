@@ -58,7 +58,7 @@ public class CreateNewIdMapAction extends Action {
 		if (dialog.open() == Window.OK) {
 			if (!fIdMaps.containsKey(idmap.getName())) {
 				fIdMaps.put(idmap.getName(),new HashMap());
-				if (!idmap.getExtension().equals("")) //$NON-NLS-1$
+				if (!idmap.getExtension().isEmpty())
 					fIdExtensionToName.put(idmap.getExtension(),idmap.getName());
 				XMLPlugin.getDefault().setIdMaps(fIdMaps,fIdExtensionToName,null,false);
 			}

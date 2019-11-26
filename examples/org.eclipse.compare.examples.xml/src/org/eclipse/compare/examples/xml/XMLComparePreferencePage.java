@@ -405,7 +405,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 		if (dialog.open() == Window.OK) {
 			if (!fIdMaps.containsKey(idmap.getName())) {
 				fIdMaps.put(idmap.getName(),new HashMap());
-				if (!idmap.getExtension().equals("")) //$NON-NLS-1$
+				if (!idmap.getExtension().isEmpty())
 					fIdExtensionToName.put(idmap.getExtension(),idmap.getName());
 				newIdMapsTableItem(idmap,true);
 			}
@@ -424,7 +424,7 @@ public class XMLComparePreferencePage extends PreferencePage implements IWorkben
 				fIdMaps.remove(old_name);
 				fIdExtensionToName.remove(old_extension);
 				fIdMaps.put(idmap.getName(),idmapHS);
-				if (!idmap.getExtension().equals("")) //$NON-NLS-1$
+				if (!idmap.getExtension().isEmpty())
 					fIdExtensionToName.put(idmap.getExtension(),idmap.getName());
 				fIdMapsTable.remove(fIdMapsTable.indexOf(itemsIdMaps[0]));
 				newIdMapsTableItem(idmap,true);

@@ -249,7 +249,7 @@ public class XMLStructureCreator implements IStructureCreator {
 							} catch (Exception e) {
 								value= ""; //$NON-NLS-1$
 							}
-							if (value.equals("")) //$NON-NLS-1$
+							if (value.isEmpty())
 								found= true;
 							else if (value.equals(attr_value)) {
 								id_index= element_string.lastIndexOf(attr_name, first_quotes - 1);
@@ -328,7 +328,7 @@ public class XMLStructureCreator implements IStructureCreator {
 					System.out.println("Body Location: line " + locator.getLineNumber() + "  column " + locator.getColumnNumber()); //$NON-NLS-2$ //$NON-NLS-1$
 
 				//if text contains only white space, it will be ignored.
-				if (!trimWhiteSpace(chars).equals("")) { //$NON-NLS-1$
+				if (!trimWhiteSpace(chars).isEmpty()) {
 					if (XMLStructureCreator.DEBUG_MODE)
 						System.out.println("Adding body"); //$NON-NLS-1$
 					try {

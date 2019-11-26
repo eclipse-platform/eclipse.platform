@@ -292,7 +292,7 @@ public class CommitWizardCommitPage extends WizardPage implements IPropertyChang
 		if (allowEmptyComment.equals(MessageDialogWithToggle.NEVER)) {
 			/* but is empty */
 			final String comment = fCommentArea.getComment(false);
-			if (comment.equals("")) { //$NON-NLS-1$
+			if (comment.isEmpty()) {
 				return false; // then the page is not complete
 			}
 		}

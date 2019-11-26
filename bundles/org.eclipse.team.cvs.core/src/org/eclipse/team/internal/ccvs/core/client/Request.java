@@ -153,7 +153,7 @@ public abstract class Request {
 			// handle completion responses
 			if (response.equals("ok")) {  //$NON-NLS-1$
 				break;
-			} else if (response.equals("error") || (isCVSNT && response.equals(""))) {  //$NON-NLS-1$ //$NON-NLS-2$
+			} else if (response.equals("error") || (isCVSNT && response.isEmpty())) {  //$NON-NLS-1$
 				argument = argument.trim();
 				boolean serious = false;
 				if (argument.length() == 0) {

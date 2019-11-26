@@ -388,7 +388,7 @@ public class ExportProjectSetLocationPage extends TeamWizardPage {
 
 			wsFilenameText.addModifyListener(e -> {
 				String patchName = wsFilenameText.getText();
-				if (patchName.trim().equals("")) { //$NON-NLS-1$
+				if (patchName.trim().isEmpty()) {
 					okButton.setEnabled(false);
 					setErrorMessage(TeamUIMessages.ExportProjectSetMainPage_WorkspaceDialogErrorNoFilename);
 				} else if (!(ResourcesPlugin.getWorkspace().validateName(patchName, IResource.FILE)).isOK()) {

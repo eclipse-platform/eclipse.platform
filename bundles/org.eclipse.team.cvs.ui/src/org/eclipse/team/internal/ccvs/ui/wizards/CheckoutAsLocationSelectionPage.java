@@ -265,7 +265,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 			return null;
 		} else {
 			targetLocation = locationPathField.getText();
-			if (targetLocation.equals("")) {//$NON-NLS-1$
+			if (targetLocation.isEmpty()) {
 				return(CVSUIMessages.CheckoutAsLocationSelectionPage_locationEmpty); 
 			}
 			else{
@@ -359,7 +359,7 @@ public class CheckoutAsLocationSelectionPage extends CVSWizardPage {
 		}
 	
 		String dirName = locationPathField.getText();
-		if (!dirName.equals("")) {//$NON-NLS-1$
+		if (!dirName.isEmpty()) {
 			File path = new File(dirName);
 			if (path.exists())
 				dialog.setFilterPath(dirName);

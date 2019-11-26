@@ -157,7 +157,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 				IdMapAttribute = CurrentIdMap.substring(end_of_signature+1,end_of_attribute);
 				String IdMapExtension= CurrentIdMap.substring(end_of_attribute+1,CurrentIdMap.length());
 				//if extension already associated, do not associate with this idmap
-				if (!IdMapExtension.equals("") && !fIdExtensionToName.containsKey(IdMapExtension)) { //$NON-NLS-1$
+				if (!IdMapExtension.isEmpty() && !fIdExtensionToName.containsKey(IdMapExtension)) {
 					fIdExtensionToName.put(IdMapExtension,IdMapName);
 					CompareUI.addStructureViewerAlias(DEFAULT_PREFIX, IdMapExtension);
 				}
@@ -307,8 +307,8 @@ public final class XMLPlugin extends AbstractUIPlugin {
 					String attribute= mapping.getAttribute(MAPPING_ID_ATTRIBUTE);
 					String idsource= mapping.getAttribute(MAPPING_ID_SOURCE);
 					String bodyid= ""; //$NON-NLS-1$
-					if (signature != null && !signature.equals("") //$NON-NLS-1$
-						&& attribute != null && !attribute.equals("")) { //$NON-NLS-1$
+					if (signature != null && !signature.isEmpty()
+						&& attribute != null && !attribute.isEmpty()) {
 						if (idsource != null && idsource.equals(MAPPING_ID_SOURCE_BODY))
 							bodyid= (Character.valueOf(XMLStructureCreator.ID_TYPE_BODY)).toString();
 						idmapHM.put(XMLStructureCreator.ROOT_ID	+ XMLStructureCreator.SIGN_SEPARATOR
@@ -323,7 +323,7 @@ public final class XMLPlugin extends AbstractUIPlugin {
 						//add SIGN_SEPARATOR at the end because not contained in signatures of plugin.xml
 						//also add prefix at beginning
 						String signature= ordered.getAttribute(ORDERED_SIGNATURE_ATTRIBUTE);
-						if (signature != null && !signature.equals("")) //$NON-NLS-1$
+						if (signature != null && !signature.isEmpty())
 							orderedAL.add(XMLStructureCreator.ROOT_ID + XMLStructureCreator.SIGN_SEPARATOR + signature + XMLStructureCreator.SIGN_SEPARATOR);
 					}
 					if (orderedAL.size() > 0)

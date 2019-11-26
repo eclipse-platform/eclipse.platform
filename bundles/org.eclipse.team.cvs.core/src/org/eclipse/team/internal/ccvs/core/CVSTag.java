@@ -135,7 +135,7 @@ public class CVSTag implements ITag {
 	public static IStatus validateTagName(String tagName) {
 		if (tagName == null)
 			return new CVSStatus(IStatus.ERROR, CVSMessages.CVSTag_nullName); 
-		if (tagName.equals(""))  //$NON-NLS-1$
+		if (tagName.isEmpty())
 			return new CVSStatus(IStatus.ERROR, CVSMessages.CVSTag_emptyName); 
 		if (!Character. isLetter(tagName.charAt(0)))
 			return new CVSStatus(IStatus.ERROR, CVSMessages.CVSTag_beginName); 

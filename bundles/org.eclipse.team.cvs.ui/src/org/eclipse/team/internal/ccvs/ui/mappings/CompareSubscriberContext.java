@@ -101,7 +101,7 @@ public class CompareSubscriberContext extends CVSSubscriberMergeContext implemen
 		if (isConsiderContents()) {
 			String pattern = CVSUIPlugin.getPlugin().getPreferenceStore().getString(
 					ICVSUIConstants.PREF_SYNCVIEW_REGEX_FILTER_PATTERN);
-			if (pattern != null && !pattern.equals("")) { //$NON-NLS-1$
+			if (pattern != null && !pattern.isEmpty()) {
 				return new RegexDiffFilter(pattern);
 			}
 		}

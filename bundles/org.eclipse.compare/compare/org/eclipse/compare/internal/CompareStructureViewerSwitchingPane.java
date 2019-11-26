@@ -172,7 +172,7 @@ public class CompareStructureViewerSwitchingPane extends
 		// add others
 		for (ViewerDescriptor vdi : vd) {
 			label = vdi.getLabel();
-			if (label == null || label.equals("")) { //$NON-NLS-1$
+			if (label == null || label.isEmpty()) {
 				String l = CompareUIPlugin.getDefault().findStructureTypeNameOrType((ICompareInput) getInput(), vdi, getCompareConfiguration());
 				if (l == null)
 					// couldn't figure out the label, skip the viewer

@@ -90,7 +90,7 @@ public class InfiniteSubProgressMonitor extends SubProgressMonitor {
 	 */
 	@Override
 	public void subTask(String name) {
-		if(name != null && ! name.equals("")) { //$NON-NLS-1$
+		if(name != null && ! name.isEmpty()) {
 			super.subTask(name);
 		}
 	}

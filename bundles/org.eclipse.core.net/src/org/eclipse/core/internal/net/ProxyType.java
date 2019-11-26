@@ -410,7 +410,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		boolean proxiesEnabled = isProxyEnabled();
 		Assert.isTrue(data.getType().equals(IProxyData.HTTP_PROXY_TYPE));
 		Properties sysProps = System.getProperties();
-		if (!proxiesEnabled || data.getHost() == null || data.getHost().equals("")) { //$NON-NLS-1$
+		if (!proxiesEnabled || data.getHost() == null || data.getHost().isEmpty()) {
 			sysProps.remove("http.proxySet"); //$NON-NLS-1$
 			sysProps.remove("http.proxyHost"); //$NON-NLS-1$
 			sysProps.remove("http.proxyPort"); //$NON-NLS-1$
@@ -469,7 +469,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		boolean proxiesEnabled = isProxyEnabled();
 		Assert.isTrue(data.getType().equals(IProxyData.HTTPS_PROXY_TYPE));
 		Properties sysProps = System.getProperties();
-		if (!proxiesEnabled || data.getHost() == null || data.getHost().equals("")) { //$NON-NLS-1$
+		if (!proxiesEnabled || data.getHost() == null || data.getHost().isEmpty()) {
 			sysProps.remove("https.proxySet"); //$NON-NLS-1$
 			sysProps.remove("https.proxyHost"); //$NON-NLS-1$
 			sysProps.remove("https.proxyPort"); //$NON-NLS-1$
@@ -509,7 +509,7 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		boolean proxiesEnabled = isProxyEnabled();
 		Assert.isTrue(data.getType().equals(IProxyData.SOCKS_PROXY_TYPE));
 		Properties sysProps = System.getProperties();
-		if (!proxiesEnabled || data.getHost() == null || data.getHost().equals("")) { //$NON-NLS-1$
+		if (!proxiesEnabled || data.getHost() == null || data.getHost().isEmpty()) {
 			sysProps.remove("socksProxyHost"); //$NON-NLS-1$
 			sysProps.remove("socksProxyPort"); //$NON-NLS-1$
 		} else {

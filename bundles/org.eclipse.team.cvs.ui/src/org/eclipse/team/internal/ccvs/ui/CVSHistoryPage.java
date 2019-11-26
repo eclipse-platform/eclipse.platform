@@ -1414,7 +1414,7 @@ public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryC
 		@Override
 		public void run() {
 			String searchString = searchField.getText();
-			if (searchString.equals("") || //$NON-NLS-1$
+			if (searchString.isEmpty() ||
 				searchString.equals(CVSUIMessages.CVSHistoryPage_EnterSearchTerm)) {
 				if (searchFilter != null)
 					treeViewer.removeFilter(searchFilter);

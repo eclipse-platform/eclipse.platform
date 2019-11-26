@@ -55,6 +55,6 @@ public class RemoteProjectFolder extends RemoteFolder {
 	}
 	
 	private boolean isProjectNameEmpty() {
-		return projectName == null || projectName.equals(""); //$NON-NLS-1$
+		return projectName == null || projectName.isEmpty();
 	}
 }

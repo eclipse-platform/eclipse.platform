@@ -101,7 +101,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 	protected void okPressed() {
 		selectedWorkingSet = wsNameText.getText();
 
-		if (selectedWorkingSet.equals("")) { //$NON-NLS-1$
+		if (selectedWorkingSet.isEmpty()) {
 			setErrorMessage(TeamUIMessages.WorkingSetsDialog_ErrorMessage);
 			return;
 		}

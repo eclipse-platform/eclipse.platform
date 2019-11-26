@@ -181,7 +181,7 @@ public class CVSURI {
 			int i = f.lastIndexOf(',');
 			if (i != -1) {
 				String s = f.substring(i + 1);
-				if (!s.equals("")) //$NON-NLS-1$
+				if (!s.isEmpty())
 					return s;
 			}
 		}

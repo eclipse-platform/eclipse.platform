@@ -103,7 +103,7 @@ public class ModelEnablementPreferencePage extends PreferencePage implements IWo
 			private String getTextFor(ITeamContentProviderDescriptor teamContentDescriptor) {
 				String name = teamContentDescriptor.getName();
 
-				if (name != null && !name.equals(""))  //$NON-NLS-1$
+				if (name != null && !name.isEmpty())
 					return name;
 
 				String modelProviderID = teamContentDescriptor.getModelProviderId();

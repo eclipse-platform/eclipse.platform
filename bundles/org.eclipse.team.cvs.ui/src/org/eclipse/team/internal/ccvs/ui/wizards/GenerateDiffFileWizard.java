@@ -253,7 +253,7 @@ public class GenerateDiffFileWizard extends Wizard {
 			private void validateDialog() {
 				String fileName = wsFilenameText.getText();
 
-				if (fileName.equals("")) { //$NON-NLS-1$
+				if (fileName.isEmpty()) {
 					if (modified) {
 						setErrorMessage(CVSUIMessages.GenerateDiffFileWizard_2);
 						getButton(IDialogConstants.OK_ID).setEnabled(false);
