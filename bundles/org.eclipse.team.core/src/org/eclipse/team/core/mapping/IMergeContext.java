@@ -306,7 +306,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * match the local state.
 	 * @param diff the diff
 	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public void reject(IDiff diff, IProgressMonitor monitor) throws CoreException;
 
@@ -316,7 +316,7 @@ public interface IMergeContext extends ISynchronizationContext {
 	 * each diff.
 	 * @param diffs the diffs
 	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public void reject(IDiff[] diffs, IProgressMonitor monitor) throws CoreException;
 

@@ -110,7 +110,7 @@ public interface IJSchService{
    * @param monitor
    *          a progress monitor or <code>null</code> if progress and
    *          cancelation is not desired
-   * @throws JSchException
+   * @throws JSchException if errors occur
    */
   public abstract void connect(Proxy proxy, String host, int port, int timeout,
       IProgressMonitor monitor) throws JSchException;

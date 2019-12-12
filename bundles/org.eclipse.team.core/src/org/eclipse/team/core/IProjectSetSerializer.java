@@ -47,7 +47,7 @@ public interface IProjectSetSerializer {
 	 *                 com.ibm.swt.widgets.Shell or it will be null.
 	 * @param monitor  a progress monitor
 	 * @return String[] an array of serialized reference strings uniquely identifying the projects
-	 * @throws TeamException
+	 * @throws TeamException on failures; depends on concrete implementation
 	 */
 	public String[] asReference(IProject[] providerProjects, Object context, IProgressMonitor monitor) throws TeamException;
 
@@ -67,7 +67,7 @@ public interface IProjectSetSerializer {
 	 *                 com.ibm.swt.widgets.Shell or it will be null.
 	 * @param monitor  a progress monitor
 	 * @return IProject[]  an array of projects that were created
-	 * @throws TeamException
+	 * @throws TeamException on failures; depends on concrete implementation
 	 */
 	public IProject[] addToWorkspace(String[] referenceStrings, String filename, Object context, IProgressMonitor monitor) throws TeamException;
 }

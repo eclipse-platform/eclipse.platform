@@ -100,7 +100,7 @@ public abstract class RevisionAnnotationController {
 	 * @param file
 	 *            the file to be edited
 	 * @return the open editor on the file
-	 * @throws PartInitException
+	 * @throws PartInitException swallowed
 	 */
 	public static AbstractDecoratedTextEditor openEditor(IWorkbenchPage page, IFile file) throws PartInitException {
 		if (file == null)
@@ -153,7 +153,7 @@ public abstract class RevisionAnnotationController {
 	 * @param storage
 	 *            the storage that provides access to the contents of the file revision
 	 * @return the open editor on the file revision
-	 * @throws PartInitException
+	 * @throws PartInitException if an error occurs
 	 */
 	public static AbstractDecoratedTextEditor openEditor(IWorkbenchPage page,
 			Object fileRevision, IStorage storage) throws PartInitException {

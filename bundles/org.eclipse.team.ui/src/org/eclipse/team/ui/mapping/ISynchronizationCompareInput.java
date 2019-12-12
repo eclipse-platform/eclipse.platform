@@ -45,7 +45,7 @@ public interface ISynchronizationCompareInput extends ICompareInput {
 	 * the compare configuration.
 	 * @param configuration the compare configuration for the editor that will display the input
 	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	void prepareInput(CompareConfiguration configuration, IProgressMonitor monitor) throws CoreException;
 

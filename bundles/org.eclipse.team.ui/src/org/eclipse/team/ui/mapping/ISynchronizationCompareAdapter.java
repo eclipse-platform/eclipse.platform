@@ -123,7 +123,7 @@ public interface ISynchronizationCompareAdapter {
 	 *            a progress monitor
 	 * @return the synchronization state of the element or -1 if the calculation
 	 *         of the state should be done using the resources of the mapping.
-	 * @throws CoreException
+	 * @throws CoreException on failures; depends on concrete implementation
 	 *
 	 * @since 3.3
 	 */

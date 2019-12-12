@@ -162,7 +162,10 @@ public class SubscriberResourceMappingContext extends RemoteResourceMappingConte
 	 * @param depth the depth of the refresh
 	 * @param flags the flags that indicate extra state that should be fetched
 	 * @param monitor a progress monitor
-	 * @throws TeamException
+	 * @throws TeamException if this method fails. Reasons include:
+	 * <ul>
+	 * <li>The server could not be contacted.</li>
+	 * </ul>
 	 */
 	protected void refresh(IResource[] resources, int depth, int flags, IProgressMonitor monitor) throws TeamException {
 		subscriber.refresh(resources, depth, monitor);

@@ -105,13 +105,19 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	}
 
 	/**
-	 * Return whether the resource variant state for this resource is known.
-	 * This is used to differentiate the case where a resource variant has never been fetched
-	 * from the case where the resource variant is known to not exist. In the later
-	 * case, this method returns <code>true</code> while <code>getBytes</code> returns <code>null</code>
+	 * Return whether the resource variant state for this resource is known. This is
+	 * used to differentiate the case where a resource variant has never been
+	 * fetched from the case where the resource variant is known to not exist. In
+	 * the later case, this method returns <code>true</code> while
+	 * <code>getBytes</code> returns <code>null</code>
+	 * 
 	 * @param resource the local resource
 	 * @return whether the resource variant state for this resource is known
-	 * @throws TeamException
+	 * @throws TeamException if this operation fails. Reasons include:
+	 *                       <ul>
+	 *                       <li><code>IResourceStatus.PARTNER_NOT_REGISTERED</code>
+	 *                       The sync partner is not registered.</li>
+	 *                       </ul>
 	 */
 	public boolean isVariantKnown(IResource resource) throws TeamException {
 		return internalGetSyncBytes(resource) != null;

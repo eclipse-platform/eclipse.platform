@@ -269,7 +269,7 @@ public abstract class ChangeTracker {
 	 * @param project the project
 	 * @param name the unique name used to identify the change set
 	 * @param files the change files to be grouped
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	protected void ensureGrouped(IProject project, String name, IFile[] files) throws CoreException {
 		IChangeGroupingRequestor collector = getCollector(project);
@@ -287,7 +287,8 @@ public abstract class ChangeTracker {
 	 * repository provider associated with the file's project.
 	 * @param file the file
 	 * @return whether the given file is modified
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs while trying to determine the modification state
+	 * of the file
 	 */
 	protected boolean isModified(IFile file) throws CoreException {
 		IChangeGroupingRequestor collector = getCollector(file.getProject());

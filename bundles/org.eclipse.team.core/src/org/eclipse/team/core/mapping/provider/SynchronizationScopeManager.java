@@ -92,7 +92,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	 * @param context the resource mapping context
 	 * @param monitor a progress monitor
 	 * @return the resource mappings
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public static ResourceMapping[] getMappingsFromProviders(ResourceTraversal[] traversals,
 			ResourceMappingContext context,

@@ -169,12 +169,12 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 
 	/**
 	 * Refresh this participants synchronization state and displays the result in a model dialog.
-	 * @param shell
 	 *
+	 * @param shell parent shell for the dialog
 	 * @param resources the resources to be refreshed.
-	 * @param jobName
+	 * @param jobName the job name or <code>null</code>
 	 * @param taskName the task name to be shown to the user
-	 * @param configuration
+	 * @param configuration the configuration
 	 * @param site the site in which to run the refresh
 	 */
 	public final void refreshInDialog(Shell shell, IResource[] resources, String jobName, String taskName, ISynchronizePageConfiguration configuration, IWorkbenchSite site) {
@@ -205,9 +205,10 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 
 	/**
 	 * Refresh a participant. The returned status describes the result of the refresh.
-	 * @param resources
-	 * @param taskName
-	 * @param monitor
+	 *
+	 * @param resources the resources to be refreshed.
+	 * @param taskName the task name to be shown to the user
+	 * @param monitor monitor for job progress
 	 * @return a status
 	 */
 	public final IStatus refreshNow(IResource[] resources, String taskName, IProgressMonitor monitor) {
@@ -412,7 +413,7 @@ public abstract class SubscriberParticipant extends AbstractSynchronizeParticipa
 	 * Returns the long task name to describe the behavior of the
 	 * refresh operation to the user. This is typically shown in the status line when this subscriber is refreshed
 	 * in the background.
-	 * @param resources
+	 * @param resources resources we are working on to get meaningful task name from
 	 * @return the long task name
 	 * @since 3.1
 	 */

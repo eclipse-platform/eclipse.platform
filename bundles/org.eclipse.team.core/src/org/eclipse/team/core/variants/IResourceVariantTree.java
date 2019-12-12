@@ -43,7 +43,7 @@ public interface IResourceVariantTree {
 	 * members can be retrieved using <code>getResourceVariant(IResource)</code>.
 	 * @param resource the local resource
 	 * @return the members of the local resource for which this tree contains resource variants
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract IResource[] members(IResource resource) throws TeamException;
 
@@ -52,7 +52,7 @@ public interface IResourceVariantTree {
 	 * <code>null</code> if there is no variant for the resource.
 	 * @param resource the local resource
 	 * @return the resource's variant in this tree
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract IResourceVariant getResourceVariant(IResource resource) throws TeamException;
 
@@ -60,7 +60,7 @@ public interface IResourceVariantTree {
 	 * Return whether the local resource has a variant in this tree.
 	 * @param resource the local resource
 	 * @return <code>true</code> if the tree contains a variant for the resource
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean hasResourceVariant(IResource resource) throws TeamException;
 
@@ -73,7 +73,7 @@ public interface IResourceVariantTree {
 	 * @param monitor a progress monitor
 	 * @return the array of resources whose corresponding variants have changed
 	 * as a result of the refresh
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public IResource[] refresh(
 			IResource[] resources,
@@ -86,7 +86,7 @@ public interface IResourceVariantTree {
 	 * @param resource the resource
 	 * @param depth the flush depth (one of <code>IResource.DEPTH_ZERO</code>,
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public void flushVariants(IResource resource, int depth) throws TeamException;
 }

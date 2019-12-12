@@ -51,7 +51,7 @@ public abstract class ResourceVariantByteStore {
 	 * fetched or otherwise determined yet.
 	 * @param resource the local resource
 	 * @return the bytes that represent the resource's variant
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract byte[] getBytes(IResource resource) throws TeamException;
 
@@ -64,7 +64,7 @@ public abstract class ResourceVariantByteStore {
 	 * @param resource the local resource
 	 * @param bytes the bytes that represent the resource's variant
 	 * @return <code>true</code> if the bytes changed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract boolean setBytes(IResource resource, byte[] bytes) throws TeamException;
 
@@ -77,7 +77,7 @@ public abstract class ResourceVariantByteStore {
 	 * @param depth the depth of the operation (one of <code>IResource.DEPTH_ZERO</code>,
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
 	 * @return <code>true</code> if there were bytes present which were removed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract boolean flushBytes(IResource resource, int depth) throws TeamException;
 

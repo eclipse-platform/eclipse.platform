@@ -59,7 +59,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
 	 * @param monitor a progress monitor
 	 * @return the array of resources whose corresponding variants have changed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	@Override
 	public IResource[] refresh(IResource[] resources, int depth, IProgressMonitor monitor) throws TeamException {
@@ -87,7 +87,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
 	 * @param monitor a progress monitor
 	 * @return the resource's whose variants have changed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	protected IResource[] refresh(IResource resource, int depth, IProgressMonitor monitor) throws TeamException {
 		IResource[] changedResources = null;
@@ -121,7 +121,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
 	 * @param monitor a progress monitor
 	 * @return the resource's whose variants have changed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	protected IResource[] collectChanges(IResource local, IResourceVariant remote, int depth, IProgressMonitor monitor) throws TeamException {
 		List<IResource> changedResources = new ArrayList<>();
@@ -175,7 +175,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 	 * @param local the local resource
 	 * @param remote the newly fetched resource variant
 	 * @return <code>true</code> if the resource variant changed
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	protected abstract boolean setVariant(IResource local, IResourceVariant remote) throws TeamException;
 

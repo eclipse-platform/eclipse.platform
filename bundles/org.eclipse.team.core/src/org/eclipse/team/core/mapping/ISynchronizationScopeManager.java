@@ -58,7 +58,7 @@ public interface ISynchronizationScopeManager {
 	 * @param monitor a progress monitor
 	 * when building the scope
 	 *
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	void initialize(IProgressMonitor monitor) throws CoreException;
 
@@ -72,7 +72,7 @@ public interface ISynchronizationScopeManager {
 	 * @param mappings the mappings to be refreshed
 	 * @param monitor a progress monitor
 	 * @return a set of traversals that cover the given mappings
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	ResourceTraversal[] refresh(ResourceMapping[] mappings, IProgressMonitor monitor) throws CoreException;
 

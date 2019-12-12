@@ -106,8 +106,8 @@ public abstract class SynchronizeModelAction extends BaseSelectionListenerAction
 	 * by calling <code>getSubscriberOperation</code> and then run. Subclasses may
 	 * override.
 	 *
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
+	 * @throws InvocationTargetException if an error occurs
+	 * @throws InterruptedException if operation is interrupted
 	 * @since 3.1
 	 */
 	protected void runOperation() throws InvocationTargetException, InterruptedException {

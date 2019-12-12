@@ -134,7 +134,7 @@ public class ThreeWaySynchronizer {
 	 *
 	 * @param resource the resource
 	 * @return the base bytes cached with the resource or <code>null</code>
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public byte[] getBaseBytes(IResource resource) throws TeamException {
 		try {
@@ -160,7 +160,7 @@ public class ThreeWaySynchronizer {
 	 *
 	 * @param resource the resource
 	 * @param baseBytes the base bytes that identify the base resource variant
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public void setBaseBytes(IResource resource, byte[] baseBytes) throws TeamException {
 		Assert.isNotNull(baseBytes);
@@ -194,7 +194,7 @@ public class ThreeWaySynchronizer {
 	 * @param resource the resource
 	 * @return <code>true</code> if the resource has been modified since the
 	 * last time the base bytes were set.
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean isLocallyModified(IResource resource) throws TeamException {
 		return ((internalGetSyncBytes(resource) == null && ! isIgnored(resource)) ||
@@ -210,7 +210,7 @@ public class ThreeWaySynchronizer {
 	 *
 	 * @param resource the resource
 	 * @return the remote bytes cached with the resource or <code>null</code>
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public byte[] getRemoteBytes(IResource resource) throws TeamException {
 		try {
@@ -236,7 +236,7 @@ public class ThreeWaySynchronizer {
 	 * @param resource the resource
 	 * @param remoteBytes the base bytes that identify the remote resource variant
 	 * @return <code>true</code> if the remote bytes changed as a result of the set
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean setRemoteBytes(IResource resource, byte[] remoteBytes) throws TeamException {
 		Assert.isNotNull(remoteBytes);
@@ -274,7 +274,7 @@ public class ThreeWaySynchronizer {
 	 * done when the corresponding remote resource variant no longer exists.
 	 * @param resource the resource
 	 * @return <code>true</code> if the remote bytes changed as a result of the removal
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean removeRemoteBytes(IResource resource) throws TeamException {
 		ISchedulingRule rule = null;
@@ -304,7 +304,7 @@ public class ThreeWaySynchronizer {
 	 * Return whether the given resource has sync bytes in the synchronizer.
 	 * @param resource the local resource
 	 * @return whether there are sync bytes cached for the local resources.
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean hasSyncBytes(IResource resource) throws TeamException {
 		return internalGetSyncBytes(resource) != null;
@@ -315,7 +315,7 @@ public class ThreeWaySynchronizer {
 	 * using <code>setIgnored(IResource)</code>.
 	 * @param resource the resource
 	 * @return <code>true</code> if the resource is ignored.
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public boolean isIgnored(IResource resource) throws TeamException {
 		byte[] bytes = cache.getBytes(resource);
@@ -328,7 +328,7 @@ public class ThreeWaySynchronizer {
 	 * are never dirty (see <code>isLocallyModified</code>) and
 	 * do not have base or remote bytes cached for them.
 	 * @param resource the resource to be ignored
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public void setIgnored(IResource resource) throws TeamException {
 		internalSetSyncBytes(resource, IGNORED_BYTES);
@@ -340,7 +340,7 @@ public class ThreeWaySynchronizer {
 	 * @param resource the local resource
 	 * @return the children of the local resource that have cached sync bytes
 	 * or are not ignored
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public IResource[] members(IResource resource) throws TeamException {
 		if (resource.getType() == IResource.FILE) {
@@ -370,7 +370,7 @@ public class ThreeWaySynchronizer {
 	 * @param resource the resource
 	 * @param depth the depth of the flush (one of <code>IResource.DEPTH_ZERO</code>,
 	 * <code>IResource.DEPTH_ONE</code>, or <code>IResource.DEPTH_INFINITE</code>)
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public void flush(IResource resource, int depth) throws TeamException {
 		ISchedulingRule rule = null;
@@ -395,7 +395,7 @@ public class ThreeWaySynchronizer {
 	 * @param resourceRule the scheduling rule that encompasses all modifications
 	 * @param runnable the runnable that performs the sync state modifications
 	 * @param monitor a progress monitor
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public void run(IResource resourceRule, IWorkspaceRunnable runnable, IProgressMonitor monitor) throws TeamException {
 		monitor = Policy.monitorFor(monitor);

@@ -199,7 +199,7 @@ public abstract class ModelMergeOperation extends ModelOperation {
 	 * method must return an instance of {@link IMergeContext}
 	 * that is fully initialized.
 	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	protected abstract void initializeContext(IProgressMonitor monitor) throws CoreException;
 

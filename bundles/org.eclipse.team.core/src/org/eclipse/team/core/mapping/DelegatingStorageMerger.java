@@ -104,7 +104,7 @@ public class DelegatingStorageMerger implements IStorageMerger {
 	 * to create the merger to which the merge should be delegated.
 	 * @param target the storage that contains the target contents of the merge.
 	 * @return a merger for the given storage or <code>null</code>
-	 * @throws CoreException
+	 * @throws CoreException no merger found
 	 */
 	protected IStorageMerger createDelegateMerger(IStorage target) throws CoreException {
 		IStorageMerger merger = null;

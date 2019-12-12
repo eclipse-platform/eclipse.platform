@@ -144,8 +144,8 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	 * Check to see if the target saveable differs from the currently
 	 * active saveable. If it does, prompt to save changes in the
 	 * active saveable if it is dirty.
-	 * @throws InterruptedException
-	 * @throws InvocationTargetException
+	 * @throws InterruptedException if operation is interrupted
+	 * @throws InvocationTargetException if an error occurs
 	 */
 	protected void handleTargetSaveableChange() throws InvocationTargetException, InterruptedException {
 		final SaveableComparison targetSaveable = getTargetSaveable();
@@ -171,8 +171,8 @@ public abstract class ModelParticipantAction extends BaseSelectionListenerAction
 	 * @param activeSaveable the current saveable
 	 * @param allowCancel whether canceling the action is an option
 	 * @param monitor a progress monitor
-	 * @throws CoreException
-	 * @throws InterruptedException
+	 * @throws CoreException if an error occurs
+	 * @throws InterruptedException if operation is interrupted
 	 */
 	public static void handleTargetSaveableChange(Shell shell, SaveableComparison targetSaveable, SaveableComparison activeSaveable, boolean allowCancel, IProgressMonitor monitor) throws CoreException, InterruptedException {
 		if (activeSaveable != null && targetSaveable != activeSaveable) {

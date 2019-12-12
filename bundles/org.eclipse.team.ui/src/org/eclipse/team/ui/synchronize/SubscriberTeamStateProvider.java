@@ -86,7 +86,7 @@ public class SubscriberTeamStateProvider extends TeamStateProvider implements IS
 	 * @param stateMask the state mask that indicates which state flags are desired
 	 * @param monitor a progress monitor
 	 * @return the synchronization state of the element
-	 * @throws CoreException
+	 * @throws CoreException if operation failed
 	 */
 	protected final int getSynchronizationState(Object element, int stateMask,
 			IProgressMonitor monitor) throws CoreException {

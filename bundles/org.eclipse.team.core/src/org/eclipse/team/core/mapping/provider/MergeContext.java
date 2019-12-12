@@ -316,7 +316,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 *            the diff whose local is to be replaced
 	 * @param monitor
 	 *            a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	protected void performReplace(final IDiff diff, IProgressMonitor monitor) throws CoreException {
 		IResourceDiff d;
@@ -356,7 +356,7 @@ public abstract class MergeContext extends SynchronizationContext implements IMe
 	 *            the diff whose local is now in-sync
 	 * @param monitor
 	 *            a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	protected abstract void makeInSync(IDiff diff, IProgressMonitor monitor) throws CoreException;
 

@@ -56,7 +56,7 @@ public interface ITeamContentProviderDescriptor {
 	 * the content provider of this extension.
 	 * @return a preference page that can be displayed to configure
 	 * the content provider of this extension
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public IPreferencePage createPreferencePage() throws CoreException;
 

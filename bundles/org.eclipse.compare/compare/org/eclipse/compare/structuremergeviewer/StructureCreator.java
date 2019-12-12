@@ -152,7 +152,7 @@ public abstract class StructureCreator implements IStructureCreator2 {
 	 * @param monitor a progress monitor or <code>null</code> if progress is not required
 	 *
 	 * @return a structure comparator
-	 * @throws CoreException
+	 * @throws CoreException if creating the comparator failed; depends on actual implementation
 	 */
 	protected abstract IStructureComparator createStructureComparator(
 			final Object element, IDocument document,

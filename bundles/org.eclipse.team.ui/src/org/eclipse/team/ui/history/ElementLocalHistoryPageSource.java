@@ -31,7 +31,7 @@ public abstract class ElementLocalHistoryPageSource extends HistoryPageSource {
 	 * @param file the file containing the element
 	 * @param element the element
 	 * @return the previous edition of the element from the local history or <code>null</code>
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public static ITypedElement getPreviousEdition(IFile file, Object element) throws TeamException {
 		return EditionHistoryPage.getPreviousState(file, element);

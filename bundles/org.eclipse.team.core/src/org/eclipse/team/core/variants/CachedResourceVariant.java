@@ -148,7 +148,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * This method is not intended to be overridden by clients.
 	 * @param stream the stream containing the contents of the resource variant
 	 * @param monitor a progress monitor
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	protected void setContents(InputStream stream, IProgressMonitor monitor) throws TeamException {
 		// Ensure that there is a cache entry to receive the contents
@@ -186,7 +186,7 @@ public abstract class CachedResourceVariant extends PlatformObject implements IR
 	 * <p>
 	 * This method is not intended to be overridden by clients.
 	 * @return the cached contents or <code>null</code>
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	protected InputStream getCachedContents() throws TeamException {
 		if (isContainer() || !isContentsCached()) return null;

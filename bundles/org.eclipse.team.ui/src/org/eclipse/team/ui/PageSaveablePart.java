@@ -285,7 +285,7 @@ public abstract class PageSaveablePart extends SaveablePartAdapter implements IC
 	 * @param input the input
 	 * @param configuration the compare configuration
 	 * @param monitor a progress monitor
-	 * @throws InvocationTargetException
+	 * @throws InvocationTargetException if an error occurs
 	 */
 	protected abstract void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException;
 

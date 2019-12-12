@@ -127,7 +127,7 @@ public abstract class ModelOperation extends TeamOperation {
 	 * {@link ISynchronizationScopeManager} for this operation
 	 * is initialized if it was not previously initialized.
 	 * @param monitor a progress monitor
-	 * @throws InvocationTargetException
+	 * @throws InvocationTargetException if an error occurs
 	 */
 	protected void beginOperation(IProgressMonitor monitor) throws InvocationTargetException {
 		initializeScope(monitor);
@@ -410,8 +410,8 @@ public abstract class ModelOperation extends TeamOperation {
 	 * Execute the operation. This method is invoked after the
 	 * scope has been generated.
 	 * @param monitor a progress monitor
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
+	 * @throws InvocationTargetException if an error occurs
+	 * @throws InterruptedException if operation is interrupted
 	 */
 	protected abstract void execute(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException;

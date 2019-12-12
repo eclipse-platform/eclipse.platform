@@ -547,7 +547,7 @@ public class ModelSynchronizeParticipant extends
 	 * with a progress monitor, long running operations should be avoided.
 	 * @param manager the restored scope
 	 * @return the context for this participant
-	 * @throws CoreException
+	 * @throws CoreException if restoring context failed
 	 */
 	protected MergeContext restoreContext(ISynchronizationScopeManager manager) throws CoreException {
 		throw new PartInitException(NLS.bind(TeamUIMessages.ModelSynchronizeParticipant_1, getId()));
@@ -619,7 +619,7 @@ public class ModelSynchronizeParticipant extends
 	 * @param cancelAllowed whether the display of the compare input can be canceled
 	 * @param monitor a progress monitor or <code>null</code> if progress reporting is not required
 	 * @return whether the user choose to continue with the display of the given compare input
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public boolean checkForBufferChange(Shell shell, ISynchronizationCompareInput input, boolean cancelAllowed, IProgressMonitor monitor) throws CoreException {
 		SaveableComparison currentBuffer = getActiveSaveable();

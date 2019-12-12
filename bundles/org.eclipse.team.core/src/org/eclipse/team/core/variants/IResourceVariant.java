@@ -58,7 +58,7 @@ public interface IResourceVariant {
 	 *
 	 * @return an <code>IStorage</code> that provides access to the contents of
 	 * the remote resource or <code>null</code> if the remote resource is a container.
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	public IStorage getStorage(IProgressMonitor monitor) throws TeamException;
 

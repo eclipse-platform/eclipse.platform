@@ -109,7 +109,7 @@ public abstract class SubscriberMergeContext extends MergeContext {
 	 * Return the sync info for the given resource.
 	 * @param resource the resource
 	 * @return the sync info for the resource obtained from the subscriber
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	protected SyncInfo getSyncInfo(IResource resource) throws CoreException {
 		return handler.getSubscriber().getSyncInfo(resource);

@@ -275,7 +275,7 @@ public abstract class PageCompareEditorInput extends CompareEditorInput implemen
 	 * @param input the input
 	 * @param configuration the compare configuration
 	 * @param monitor a progress monitor
-	 * @throws InvocationTargetException
+	 * @throws InvocationTargetException if an error occurs
 	 */
 	protected abstract void prepareInput(ICompareInput input, CompareConfiguration configuration, IProgressMonitor monitor) throws InvocationTargetException;
 

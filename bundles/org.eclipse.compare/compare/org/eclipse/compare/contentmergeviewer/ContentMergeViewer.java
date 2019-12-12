@@ -1209,7 +1209,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 	 * Note: this method is for internal use only. Clients should not call this method.
 	 *
 	 * @param monitor a progress monitor
-	 * @throws CoreException
+	 * @throws CoreException not thrown anymore
 	 * @deprecated use {@link IFlushable#flush(IProgressMonitor)}.
 	 */
 	@Deprecated

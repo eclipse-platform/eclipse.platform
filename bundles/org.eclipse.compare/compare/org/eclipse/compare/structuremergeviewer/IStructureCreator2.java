@@ -55,7 +55,7 @@ public interface IStructureCreator2 extends IStructureCreator {
 	 * @param monitor a progress monitor or <code>null</code> if progress and cancelation is not required
 	 * @return the root node of the structure or <code>null</code> in case of
 	 *         error
-	 * @throws CoreException
+	 * @throws CoreException if structure creation failed; depends on actual implementation
 	 * @see IStructureCreator#getStructure(Object)
 	 * @see #destroy(Object)
 	 */

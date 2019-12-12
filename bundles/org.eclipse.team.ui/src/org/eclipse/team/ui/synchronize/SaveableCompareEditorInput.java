@@ -310,8 +310,8 @@ public abstract class SaveableCompareEditorInput extends CompareEditorInput impl
 	 *
 	 * @param monitor a progress monitor
 	 * @return the compare input
-	 * @throws InvocationTargetException
-	 * @throws InterruptedException
+	 * @throws InvocationTargetException if an error occurs
+	 * @throws InterruptedException if operation is interrupted
 	 */
 	protected abstract ICompareInput prepareCompareInput(IProgressMonitor monitor)
 		throws InvocationTargetException, InterruptedException;

@@ -230,7 +230,7 @@ public abstract class ProjectSetCapability {
 	 * @return
 	 * 		an array of confirmed projects to be loaded
 	 * 		or <code>null</code> if the operation is to be canceled.
-	 * @throws TeamException
+	 * @throws TeamException on failure
 	 */
 	protected IProject[] confirmOverwrite(
 		ProjectSetSerializationContext context,

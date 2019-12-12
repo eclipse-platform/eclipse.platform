@@ -70,7 +70,7 @@ public interface ITeamStateProvider {
 	 * @param element
 	 *            the element being decorated
 	 * @return whether the given element has any decorated state
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public boolean hasDecoratedState(Object element) throws CoreException;
 
@@ -137,7 +137,7 @@ public interface ITeamStateProvider {
 	 * @param monitor
 	 *            a progress monitor
 	 * @return the state for the given element or <code>null</code>
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public ITeamStateDescription getStateDescription(Object element,
 			int stateMask, String[] properties, IProgressMonitor monitor)

@@ -333,8 +333,8 @@ public class ZipFileStructureCreator implements IStructureCreator {
 	 * additions and deletions.
 	 * <p>
 	 * Note: this method is for internal use only. Clients should not call this method.
-	 * @param differencer
-	 * @param root
+	 * @param differencer the differencer used to rewrite
+	 * @param root the root to rewrite
 	 */
 	public void rewriteTree(Differencer differencer, IDiffContainer root) {
 		// empty default implementation

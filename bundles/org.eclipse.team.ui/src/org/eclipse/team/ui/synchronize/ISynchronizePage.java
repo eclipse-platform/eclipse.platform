@@ -32,7 +32,7 @@ public interface ISynchronizePage {
 	 * but before <code>Page#createControl(Composite)</code>
 	 *
 	 * @param site the workbench part for the view containing the page
-	 * @throws PartInitException
+	 * @throws PartInitException if an error occurs
 	 */
 	public void init(ISynchronizePageSite site) throws PartInitException;
 

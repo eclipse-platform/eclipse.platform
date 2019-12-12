@@ -159,7 +159,7 @@ public abstract class SynchronizationCompareAdapter implements ISynchronizationC
 	 *            a progress monitor
 	 * @return the synchronization state of the element or -1 if the calculation
 	 *         of the state should be done using the resources of the mapping.
-	 * @throws CoreException
+	 * @throws CoreException on failures
 	 *
 	 * @since 3.3
 	 */

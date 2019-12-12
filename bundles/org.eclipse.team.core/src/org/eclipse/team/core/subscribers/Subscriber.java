@@ -99,7 +99,7 @@ abstract public class Subscriber {
 	 * @param resource the resource being tested
 	 * @return <code>true</code> if this resource is supervised, and <code>false</code>
 	 *               otherwise
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	abstract public boolean isSupervised(IResource resource) throws TeamException;
 
@@ -114,7 +114,7 @@ abstract public class Subscriber {
 	 * </p>
 	 * @param resource the resource
 	 * @return a list of member resources
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 */
 	abstract public IResource[] members(IResource resource) throws TeamException;
 
@@ -150,7 +150,7 @@ abstract public class Subscriber {
 	 *
 	 * @param resource the resource of interest
 	 * @return sync info
-	 * @throws TeamException
+	 * @throws TeamException if an error occurs
 	 * @see #getDiff(IResource)
 	 */
 	abstract public SyncInfo getSyncInfo(IResource resource) throws TeamException;
@@ -372,7 +372,7 @@ abstract public class Subscriber {
 	 *
 	 * @param resource the resource of interest
 	 * @return the diff for the resource or <code>null</code>
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 * @throws TeamException if errors occur
 	 * @since 3.2
 	 */
@@ -395,7 +395,7 @@ abstract public class Subscriber {
 	 * </ul>
 	 * @param traversals the traversals to be visited
 	 * @param visitor the visitor
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 * @throws TeamException if errors occur
 	 * @since 3.2
 	 */
@@ -495,7 +495,7 @@ abstract public class Subscriber {
 	 * @param stateMask the mask that identifies the state flags of interested
 	 * @param monitor a progress monitor
 	 * @return the synchronization state of the given resource mapping
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 * @since 3.2
 	 * @see IDiff
 	 * @see IThreeWayDiff

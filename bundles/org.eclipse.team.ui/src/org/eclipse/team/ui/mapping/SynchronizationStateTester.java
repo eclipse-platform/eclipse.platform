@@ -151,7 +151,7 @@ public class SynchronizationStateTester {
 	 *            present
 	 * @param monitor a progress monitor
 	 * @return the synchronization state of the given element
-	 * @throws CoreException
+	 * @throws CoreException if an error occurs
 	 */
 	public int getState(Object element, int stateMask, IProgressMonitor monitor) throws CoreException {
 		ITeamStateDescription desc = getTeamStateProvider().getStateDescription(element, stateMask, new String[0], monitor);
