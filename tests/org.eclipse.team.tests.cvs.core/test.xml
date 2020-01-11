@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Copyright (c) 2002, 2011 IBM Corporation and others.
+    Copyright (c) 2002, 2020 IBM Corporation and others.
 
     This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
@@ -12,6 +12,7 @@
    
     Contributors:
         IBM Corporation - initial API and implementation
+        Paul Pazderski - Bug 391014: remove CVS performance tests (required CVS server not available anymore)
  -->
 
 <project name="CVS Automated Tests" default="run" basedir=".">
@@ -27,9 +28,6 @@
   <property name="org.eclipse.team.tests.cvs.core" value="org.eclipse.team.tests.cvs.core"/>
   <property name="team-home" value="${eclipse-home}/plugins/${org.eclipse.team.tests.cvs.core}"/>
   <property file="${team-home}/repository.properties"/>
-  
-  <!-- define the number of times each perfomance test shouldbe run to get an average performance -->
-  <property name="performance-loop-count" value="5"/>
 
   <!-- This target holds all initialization code that needs to be done for -->
   <!-- all tests that are to be run. Initialization for individual tests -->
@@ -64,27 +62,6 @@
 
   </target>
   
-  <!-- This target defines the performance tests that need to be run. -->
-  <target name="performance-suite">
-    <property name="cvs-performance-folder" 
-              value="${eclipse-home}/cvs_performance_folder"/>
-    <delete dir="${cvs-performance-folder}" quiet="true"/>
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
-      <property name="vmargs" value="-Declipse.cvs.properties=${team-home}/repository.properties -Declipse.cvs.loopCount=20  -Declipse.cvs.recordProtocolTraffic=false"/>
-      <property name="data-dir" value="${cvs-performance-folder}"/>
-      <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" 
-                value="org.eclipse.team.tests.ccvs.ui.benchmark.SyncTests"/>
-    </ant>
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
-      <property name="vmargs" value="-Declipse.cvs.properties=${team-home}/repository.properties -Declipse.cvs.loopCount=20  -Declipse.cvs.recordProtocolTraffic=false"/>
-      <property name="data-dir" value="${cvs-performance-folder}"/>
-      <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" 
-                value="org.eclipse.team.tests.ccvs.ui.benchmark.WorkflowTests"/>
-    </ant>
-  </target>
-  
   <!-- This target holds code to cleanup the testing environment after the tests -->
   <!-- have been run. You can use this to delete temporary files that are created. -->
   <target name="cleanup">
@@ -93,16 +70,6 @@
   <!-- This target runs the test suite. Any actions that need to happen after all -->
   <!-- the tests have been run should go here. -->
   <target name="run" depends="init,suite,cleanup">
-    <ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
-      <property name="includes" value="org*.xml"/>
-      <property name="output-file" value="${plugin-name}.xml"/>
-    </ant>
-  </target>
-
-  <!-- This target runs the performance test suite. Any actions that need to happen -->
-	
-  <!-- after all the tests have been run should go here. -->
-  <target name="performance" depends="init,performance-suite,cleanup">
     <ant target="collect" antfile="${library-file}" dir="${eclipse-home}">
       <property name="includes" value="org*.xml"/>
       <property name="output-file" value="${plugin-name}.xml"/>
