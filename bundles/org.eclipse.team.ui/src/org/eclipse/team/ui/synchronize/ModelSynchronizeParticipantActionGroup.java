@@ -221,22 +221,33 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	 * @param action the action for the given id
 	 */
 	protected void configureMergeAction(String mergeActionId, Action action) {
-		if (mergeActionId == SynchronizationActionProvider.MERGE_ACTION_ID) {
+		if (mergeActionId == null) {
+			return;
+		}
+
+		switch (mergeActionId) {
+		case SynchronizationActionProvider.MERGE_ACTION_ID:
 			Utils.initAction(action, "action.merge."); //$NON-NLS-1$
-		} else if (mergeActionId == SynchronizationActionProvider.OVERWRITE_ACTION_ID) {
+			break;
+		case SynchronizationActionProvider.OVERWRITE_ACTION_ID:
 			if (isTwoWayMerge()) {
 				Utils.initAction(action, "action.replace."); //$NON-NLS-1$
 			} else {
 				Utils.initAction(action, "action.overwrite."); //$NON-NLS-1$
 			}
-		} else if (mergeActionId == SynchronizationActionProvider.MARK_AS_MERGE_ACTION_ID) {
+			break;
+		case SynchronizationActionProvider.MARK_AS_MERGE_ACTION_ID:
 			Utils.initAction(action, "action.markAsMerged."); //$NON-NLS-1$
-		} else if (mergeActionId == MERGE_ALL_ACTION_ID) {
+			break;
+		case MERGE_ALL_ACTION_ID:
 			if (isTwoWayMerge()) {
 				Utils.initAction(action, "action.replaceAll."); //$NON-NLS-1$
 			} else {
 				Utils.initAction(action, "action.mergeAll."); //$NON-NLS-1$
 			}
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -262,18 +273,26 @@ public class ModelSynchronizeParticipantActionGroup extends SynchronizePageActio
 	 * @param manager the context menu manager
 	 */
 	protected void addToContextMenu(String mergeActionId, Action action, IMenuManager manager) {
-		IContributionItem group = null;;
-		if (mergeActionId == SynchronizationActionProvider.MERGE_ACTION_ID) {
-			group = manager.find(MERGE_ACTION_GROUP);
-		} else if (mergeActionId == SynchronizationActionProvider.OVERWRITE_ACTION_ID) {
-			group = manager.find(MERGE_ACTION_GROUP);
-		} else if (mergeActionId == SynchronizationActionProvider.MARK_AS_MERGE_ACTION_ID) {
-			group = manager.find(OTHER_ACTION_GROUP);
-		}
-		if (group != null) {
-			manager.appendToGroup(group.getId(), action);
-		} else {
-			manager.add(action);
+		IContributionItem group = null;
+		if (mergeActionId != null) {
+			switch (mergeActionId) {
+			case SynchronizationActionProvider.MERGE_ACTION_ID:
+				group = manager.find(MERGE_ACTION_GROUP);
+				break;
+			case SynchronizationActionProvider.OVERWRITE_ACTION_ID:
+				group = manager.find(MERGE_ACTION_GROUP);
+				break;
+			case SynchronizationActionProvider.MARK_AS_MERGE_ACTION_ID:
+				group = manager.find(OTHER_ACTION_GROUP);
+				break;
+			default:
+				break;
+			}
+			if (group != null) {
+				manager.appendToGroup(group.getId(), action);
+			} else {
+				manager.add(action);
+			}
 		}
 	}
 

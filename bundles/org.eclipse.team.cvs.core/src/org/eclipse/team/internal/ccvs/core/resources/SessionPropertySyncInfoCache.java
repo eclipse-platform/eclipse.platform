@@ -247,12 +247,16 @@ import org.eclipse.team.internal.ccvs.core.util.SyncFileWriter;
 				byte [] diBytes = ResourcesPlugin.getWorkspace().getSynchronizer().getSyncInfo(FOLDER_DIRTY_STATE_KEY, container);
 				if(diBytes != null && !CVSProviderPlugin.getPlugin().crashOnLastRun()) {
 					di = new String(diBytes);
-					if(di.equals(NOT_DIRTY_INDICATOR)) {
+					switch (di) {
+					case NOT_DIRTY_INDICATOR:
 						di = NOT_DIRTY_INDICATOR;
-					} else if(di.equals(IS_DIRTY_INDICATOR)) {
+						break;
+					case IS_DIRTY_INDICATOR:
 						di = IS_DIRTY_INDICATOR;
-					} else {
+						break;
+					default:
 						di = RECOMPUTE_INDICATOR;
+						break;
 					}
 				} else {
 					di = RECOMPUTE_INDICATOR;

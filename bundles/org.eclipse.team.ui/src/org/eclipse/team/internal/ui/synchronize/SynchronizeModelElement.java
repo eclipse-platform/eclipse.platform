@@ -177,14 +177,21 @@ public abstract class SynchronizeModelElement extends DiffNode implements IAdapt
 	}
 
 	private int getFlag(String propertyName) {
-		if (propertyName == BUSY_PROPERTY) {
+		if (propertyName == null) {
+			return 0;
+		}
+
+		switch (propertyName) {
+		case BUSY_PROPERTY:
 			return BUSY_FLAG;
-		} else if (propertyName == PROPAGATED_CONFLICT_PROPERTY) {
+		case PROPAGATED_CONFLICT_PROPERTY:
 			return PROPAGATED_CONFLICT_FLAG;
-		} else if(propertyName == PROPAGATED_ERROR_MARKER_PROPERTY) {
+		case PROPAGATED_ERROR_MARKER_PROPERTY:
 			return PROPAGATED_ERROR_FLAG;
-		} else if(propertyName == PROPAGATED_WARNING_MARKER_PROPERTY) {
+		case PROPAGATED_WARNING_MARKER_PROPERTY:
 			return PROPAGATED_WARNING_FLAG;
+		default:
+			break;
 		}
 		return 0;
 	}

@@ -440,13 +440,14 @@ public class SynchronizePageConfiguration extends SynchronizePageActionGroup imp
 	}
 
 	protected String[] getDefault(String menuPropertyId) {
-		if (menuPropertyId.equals(P_CONTEXT_MENU)) {
+		switch (menuPropertyId) {
+		case P_CONTEXT_MENU:
 			return DEFAULT_CONTEXT_MENU;
-		} else if (menuPropertyId.equals(P_VIEW_MENU)) {
+		case P_VIEW_MENU:
 			return DEFAULT_VIEW_MENU;
-		} else if (menuPropertyId.equals(P_TOOLBAR_MENU)) {
+		case P_TOOLBAR_MENU:
 			return DEFAULT_TOOLBAR_MENU;
-		} else {
+		default:
 			return new String[0];
 		}
 	}

@@ -344,37 +344,56 @@ public class CVSOutputConsole extends MessageConsole implements IConsoleListener
 		String property = event.getProperty();
 		// colors
 		if (visible) {
-			if (property.equals(ICVSUIConstants.PREF_CONSOLE_COMMAND_COLOR)) {
-				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(), ICVSUIConstants.PREF_CONSOLE_COMMAND_COLOR);
+			switch (property) {
+			case ICVSUIConstants.PREF_CONSOLE_COMMAND_COLOR: {
+				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(),
+						ICVSUIConstants.PREF_CONSOLE_COMMAND_COLOR);
 				commandStream.setColor(newColor);
 				commandColor.dispose();
 				commandColor = newColor;
-			} else if (property.equals(ICVSUIConstants.PREF_CONSOLE_MESSAGE_COLOR)) {
-				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(), ICVSUIConstants.PREF_CONSOLE_MESSAGE_COLOR);
+				return;
+			}
+			case ICVSUIConstants.PREF_CONSOLE_MESSAGE_COLOR: {
+				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(),
+						ICVSUIConstants.PREF_CONSOLE_MESSAGE_COLOR);
 				messageStream.setColor(newColor);
 				messageColor.dispose();
 				messageColor = newColor;
-			} else if (property.equals(ICVSUIConstants.PREF_CONSOLE_ERROR_COLOR)) {
-				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(), ICVSUIConstants.PREF_CONSOLE_ERROR_COLOR);
+				return;
+			}
+			case ICVSUIConstants.PREF_CONSOLE_ERROR_COLOR: {
+				Color newColor = createColor(CVSUIPlugin.getStandardDisplay(),
+						ICVSUIConstants.PREF_CONSOLE_ERROR_COLOR);
 				errorStream.setColor(newColor);
 				errorColor.dispose();
 				errorColor = newColor;
 				// font
-			} else if (property.equals(ICVSUIConstants.PREF_CONSOLE_FONT)) {
+				return;
+			}
+			case ICVSUIConstants.PREF_CONSOLE_FONT:
 				setFont(((FontRegistry) event.getSource()).get(ICVSUIConstants.PREF_CONSOLE_FONT));
+				return;
+			default:
+				break;
 			}
 		}
-		if (property.equals(ICVSUIConstants.PREF_CONSOLE_SHOW_ON_MESSAGE)) {
+		switch (property) {
+		case ICVSUIConstants.PREF_CONSOLE_SHOW_ON_MESSAGE:
 			Object value = event.getNewValue();
 			if (value instanceof String) {
 				showOnMessage = Boolean.valueOf((String) value).booleanValue();
 			} else {
 				showOnMessage = ((Boolean) value).booleanValue();
 			}
-		} else if(property.equals(ICVSUIConstants.PREF_CONSOLE_LIMIT_OUTPUT)) {
+			break;
+		case ICVSUIConstants.PREF_CONSOLE_LIMIT_OUTPUT:
 			initLimitOutput();
-		} else if(property.equals(ICVSUIConstants.PREF_CONSOLE_WRAP)) {
+			break;
+		case ICVSUIConstants.PREF_CONSOLE_WRAP:
 			initWrapSetting();
+			break;
+		default:
+			break;
 		}
 	}
 	

@@ -46,12 +46,17 @@ public class ProxySelector {
 	}
 
 	public static String localizeProvider(String name) {
-		if (DIRECT_PROVIDER.equals(name)) {
-			return Messages.ProxySelector_0;
-		} else if (ECLIPSE_PROVIDER.equals(name)) {
-			return Messages.ProxySelector_1;
-		} else if (NATIVE_PROVIDER.equals(name)) {
-			return Messages.ProxySelector_2;
+		if (name != null) {
+			switch (name) {
+			case DIRECT_PROVIDER:
+				return Messages.ProxySelector_0;
+			case ECLIPSE_PROVIDER:
+				return Messages.ProxySelector_1;
+			case NATIVE_PROVIDER:
+				return Messages.ProxySelector_2;
+			default:
+				break;
+			}
 		}
 		Assert.isTrue(false);
 		return null;
@@ -70,30 +75,36 @@ public class ProxySelector {
 
 	public static void setActiveProvider(String provider) {
 		IProxyService service = ProxyManager.getProxyManager();
-		if (provider.equals(DIRECT_PROVIDER)) {
+		switch (provider) {
+		case DIRECT_PROVIDER:
 			service.setProxiesEnabled(false);
 			service.setSystemProxiesEnabled(false);
-		} else if (provider.equals(ECLIPSE_PROVIDER)) {
+			break;
+		case ECLIPSE_PROVIDER:
 			service.setProxiesEnabled(true);
 			service.setSystemProxiesEnabled(false);
-		} else if (provider.equals(NATIVE_PROVIDER)) {
+			break;
+		case NATIVE_PROVIDER:
 			service.setProxiesEnabled(true);
 			service.setSystemProxiesEnabled(true);
-		} else {
+			break;
+		default:
 			throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 		}
 	}
 
 	public static ProxyData[] getProxyData(String provider) {
 		ProxyManager manager = (ProxyManager) ProxyManager.getProxyManager();
-		if (provider.equals(DIRECT_PROVIDER)) {
+		switch (provider) {
+		case DIRECT_PROVIDER:
 			return new ProxyData[0];
-		} else if (provider.equals(ECLIPSE_PROVIDER)) {
+		case ECLIPSE_PROVIDER:
 			return castArray(manager.getProxyData());
-		} else if (provider.equals(NATIVE_PROVIDER)) {
+		case NATIVE_PROVIDER:
 			return castArray(manager.getNativeProxyData());
+		default:
+			throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 		}
-		throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 	}
 
 	private static ProxyData[] castArray(IProxyData data[]) {
@@ -127,14 +138,16 @@ public class ProxySelector {
 
 	public static String[] getBypassHosts(String provider) {
 		ProxyManager manager = (ProxyManager) ProxyManager.getProxyManager();
-		if (provider.equals(DIRECT_PROVIDER)) {
+		switch (provider) {
+		case DIRECT_PROVIDER:
 			return new String[0];
-		} else if (provider.equals(ECLIPSE_PROVIDER)) {
+		case ECLIPSE_PROVIDER:
 			return manager.getNonProxiedHosts();
-		} else if (provider.equals(NATIVE_PROVIDER)) {
+		case NATIVE_PROVIDER:
 			return manager.getNativeNonProxiedHosts();
+		default:
+			throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 		}
-		throw new IllegalArgumentException("Provider not supported"); //$NON-NLS-1$
 	}
 
 	public static void setBypassHosts(String provider, String hosts[]) {

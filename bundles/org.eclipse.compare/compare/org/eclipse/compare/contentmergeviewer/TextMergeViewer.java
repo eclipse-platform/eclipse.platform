@@ -3604,14 +3604,17 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	private boolean isNavigationButtonEnabled(boolean down, boolean deep) {
 		String value = fPreferenceStore
 				.getString(ICompareUIConstants.PREF_NAVIGATION_END_ACTION);
-		if (value.equals(ICompareUIConstants.PREF_VALUE_DO_NOTHING)) {
+		switch (value) {
+		case ICompareUIConstants.PREF_VALUE_DO_NOTHING:
 			return getNextVisibleDiff(down, deep) != null;
-		} else if (value.equals(ICompareUIConstants.PREF_VALUE_LOOP)) {
+		case ICompareUIConstants.PREF_VALUE_LOOP:
 			return isNavigationPossible();
-		} else if (value.equals(ICompareUIConstants.PREF_VALUE_NEXT)) {
+		case ICompareUIConstants.PREF_VALUE_NEXT:
 			return getNextVisibleDiff(down, deep) != null || hasNextElement(down);
-		} else if (value.equals(ICompareUIConstants.PREF_VALUE_PROMPT)) {
+		case ICompareUIConstants.PREF_VALUE_PROMPT:
 			return isNavigationPossible() || hasNextElement(true);
+		default:
+			break;
 		}
 		Assert.isTrue(false);
 		return false;

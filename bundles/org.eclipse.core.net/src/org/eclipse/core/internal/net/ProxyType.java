@@ -70,12 +70,16 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 		String value = System.getProperty(PROP_SOCKS_SYSTEM_PROPERTY_HANDLING);
 		if (value == null) {
 			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
-		} else if (value.equals("always")) { //$NON-NLS-1$
+		} else switch (value) {
+		case "always": //$NON-NLS-1$
 			socksSystemPropertySetting = ALWAYS_SET;
-		} else if (value.equals("never")) { //$NON-NLS-1$
+			break;
+		case "never": //$NON-NLS-1$
 			socksSystemPropertySetting = NEVER_SET;
-		} else {
+			break;
+		default:
 			socksSystemPropertySetting = ONLY_SET_FOR_1_5_OR_LATER;
+			break;
 		}
 	}
 
@@ -218,12 +222,18 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	/* package */void updateSystemProperties(IProxyData proxyData) {
 		try {
-			if (proxyData.getType().equals(IProxyData.HTTP_PROXY_TYPE)) {
+			switch (proxyData.getType()) {
+			case IProxyData.HTTP_PROXY_TYPE:
 				updateHttpSystemProperties();
-			} else if (proxyData.getType().equals(IProxyData.HTTPS_PROXY_TYPE)) {
+				break;
+			case IProxyData.HTTPS_PROXY_TYPE:
 				updateHttpsSystemProperties();
-			} else if (proxyData.getType().equals(IProxyData.SOCKS_PROXY_TYPE)) {
+				break;
+			case IProxyData.SOCKS_PROXY_TYPE:
 				updateSocksSystemProperties();
+				break;
+			default:
+				break;
 			}
 		} catch (SecurityException e) {
 			Activator.logError("A security exception occurred while trying to put the proxy data into the system properties", e); //$NON-NLS-1$
@@ -233,12 +243,15 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 	private boolean verifyDataMatchesSystemProperties(ProxyData proxyData) {
 		try {
 			boolean proxiesEnabled = ProxyManager.getProxyManager().isProxiesEnabled();
-			if (proxyData.getType().equals(IProxyData.HTTP_PROXY_TYPE)) {
+			switch (proxyData.getType()) {
+			case IProxyData.HTTP_PROXY_TYPE:
 				return verifyDataMatchesHttpSystemProperties(proxyData, proxiesEnabled);
-			} else if (proxyData.getType().equals(IProxyData.HTTPS_PROXY_TYPE)) {
+			case IProxyData.HTTPS_PROXY_TYPE:
 				return verifyDataMatchesHttpsSystemProperties(proxyData, proxiesEnabled);
-			} else if (proxyData.getType().equals(IProxyData.SOCKS_PROXY_TYPE)) {
+			case IProxyData.SOCKS_PROXY_TYPE:
 				return verifyDataMatchesSocksSystemProperties(proxyData, proxiesEnabled);
+			default:
+				break;
 			}
 
 		} catch (SecurityException e) {
@@ -333,12 +346,15 @@ public class ProxyType implements INodeChangeListener, IPreferenceChangeListener
 
 	private boolean verifySystemPropertiesEmpty(String proxyType) {
 		try {
-			if (proxyType.equals(IProxyData.HTTP_PROXY_TYPE)) {
+			switch (proxyType) {
+			case IProxyData.HTTP_PROXY_TYPE:
 				return verifyHttpSystemPropertiesEmpty();
-			} else if (proxyType.equals(IProxyData.HTTPS_PROXY_TYPE)) {
+			case IProxyData.HTTPS_PROXY_TYPE:
 				return verifyHttpsSystemPropertiesEmpty();
-			} else if (proxyType.equals(IProxyData.SOCKS_PROXY_TYPE)) {
+			case IProxyData.SOCKS_PROXY_TYPE:
 				return verifySocksSystemPropertiesEmpty();
+			default:
+				break;
 			}
 		} catch (SecurityException e) {
 			// Just ignore this here since it will be surfaced elsewhere

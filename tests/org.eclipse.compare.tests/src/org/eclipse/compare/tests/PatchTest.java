@@ -224,12 +224,16 @@ public class PatchTest {
 		patchdataUrl = FileLocator.resolve(patchdataUrl);
 
 		Map<String, PatchTestConfiguration> map = null;
-		if (patchdataUrl.getProtocol().equals("file")) {
+		switch (patchdataUrl.getProtocol()) {
+		case "file":
 			map = extractNamesForFileProtocol(patchdataUrl);
-		} else if (patchdataUrl.getProtocol().equals("jar")) {
+			break;
+		case "jar":
 			map = extractNamesForJarProtocol(patchdataUrl);
-		} else {
+			break;
+		default:
 			fail("Unknown protocol");
+			break;
 		}
 		assertNotNull(map);
 
