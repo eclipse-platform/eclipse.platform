@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -143,7 +143,7 @@ public class RemoteModule extends RemoteFolder {
 					if ( ! files.isEmpty()) {
 						ICVSRemoteResource[] children = new ICVSRemoteResource[files.size()];
 						for (int j = 0; j < children.length; j++) {
-							children[j] = new RemoteFile(remoteModule, Update.STATE_NONE, (String)files.get(j), null, null, tag);
+							children[j] = new RemoteFile(remoteModule, Update.STATE_NONE, files.get(j), null, null, tag);
 							remoteModule.setChildren(children);
 						}
 					}
