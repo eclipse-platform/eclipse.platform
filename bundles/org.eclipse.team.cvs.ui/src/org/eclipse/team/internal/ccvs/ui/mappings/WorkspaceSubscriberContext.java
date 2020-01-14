@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -287,7 +287,7 @@ public class WorkspaceSubscriberContext extends CVSSubscriberMergeContext implem
 	protected void ensureRemotesMatch(IResource resource, IDiff node, SyncInfo info) throws CVSException {
 		IResourceVariant variant = info.getRemote();
 		IFileRevision remote = getRemote(node);
-		if (variant != null && remote != null && remote instanceof IFileRevision) {
+		if (variant != null && remote != null) {
 			String ci1 = variant.getContentIdentifier();
 			String ci2 = remote.getContentIdentifier();
 			if (!ci1.equals(ci2)) {
