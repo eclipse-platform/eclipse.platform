@@ -65,8 +65,8 @@ public class RemoteModule extends RemoteFolder {
 	 */
 	public static RemoteModule[] createRemoteModules(String[] moduleDefinitionStrings, ICVSRepositoryLocation repository, CVSTag tag) {
 		
-		Map modules = new HashMap();
-		Map referencedModulesTable = new HashMap();
+		Map<String, RemoteModule> modules = new HashMap<>();
+		Map<String, String[]> referencedModulesTable = new HashMap<>();
 		Map<String,String[]> moduleAliases = new HashMap<>();
 		
 		// First pass: Create the remote module instances based on remote mapping
@@ -167,9 +167,9 @@ public class RemoteModule extends RemoteFolder {
 		Iterator iter = moduleAliases.keySet().iterator();
 		while (iter.hasNext()) {
 			String moduleName = (String)iter.next();
-			RemoteModule module = (RemoteModule)modules.get(moduleName);
+			RemoteModule module = modules.get(moduleName);
 			String[] expansion = moduleAliases.get(moduleName);
-			List referencedFolders = new ArrayList();
+			List<ICVSRemoteResource> referencedFolders = new ArrayList<>();
 			boolean expandable = true;
 			for (String e : expansion) {
 				if (e.charAt(0) == '!') {
@@ -181,7 +181,7 @@ public class RemoteModule extends RemoteFolder {
 						// XXX Unsupported for now
 						expandable = false;
 					} else {
-						RemoteModule child = (RemoteModule) modules.get(e);
+						RemoteModule child = modules.get(e);
 						if (child == null) {
 							referencedFolders.add(new RemoteFolder(null, repository, path.toString(), tag));
 						} else {
@@ -198,7 +198,7 @@ public class RemoteModule extends RemoteFolder {
 			}
 			if (expandable) {
 				//TODO: Make module static??
-				module.setChildren((ICVSRemoteResource[]) referencedFolders.toArray(new ICVSRemoteResource[referencedFolders.size()]));
+				module.setChildren(referencedFolders.toArray(new ICVSRemoteResource[referencedFolders.size()]));
 			} else {
 				module.setExpandable(false);
 			}
@@ -208,13 +208,13 @@ public class RemoteModule extends RemoteFolder {
 		iter = modules.keySet().iterator();
 		while (iter.hasNext()) {
 			String moduleName = (String)iter.next();
-			String[] children = (String[])referencedModulesTable.get(moduleName);
+			String[] children = referencedModulesTable.get(moduleName);
 			if (children != null) {
-				RemoteModule module = (RemoteModule)modules.get(moduleName);
+				RemoteModule module = modules.get(moduleName);
 				List<RemoteModule> referencedFolders = new ArrayList<>();
 				boolean expandable = true;
 				for (String c : children) {
-					RemoteModule child = (RemoteModule) modules.get(c.substring(1));
+					RemoteModule child = modules.get(c.substring(1));
 					if (child == null) {
 						// invalid module definition
 						expandable = false;
@@ -239,7 +239,7 @@ public class RemoteModule extends RemoteFolder {
 			}
 		}
 						
-		return (RemoteModule[])modules.values().toArray(new RemoteModule[modules.size()]);
+		return modules.values().toArray(new RemoteModule[modules.size()]);
 	}
 		
 	public RemoteModule(String label, RemoteFolder parent, ICVSRepositoryLocation repository, String repositoryRelativePath, LocalOption[] localOptions, CVSTag tag, boolean isStatic) {
