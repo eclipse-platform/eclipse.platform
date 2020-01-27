@@ -96,7 +96,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 	private class StructureInfo {
 		private ITypedElement fInput;
 		private IStructureComparator fStructureComparator;
-		private IRunnableWithProgress refreshTask = monitor -> refresh(monitor);
+		private IRunnableWithProgress refreshTask = this::refresh;
 
 		public boolean setInput(ITypedElement newInput, boolean force, IProgressMonitor monitor) {
 			boolean changed = false;
@@ -211,7 +211,7 @@ public class StructureDiffViewer extends DiffTreeViewer {
 
 		setAutoExpandLevel(3);
 
-		fContentChangedListener= changed -> StructureDiffViewer.this.contentChanged(changed);
+		fContentChangedListener= StructureDiffViewer.this::contentChanged;
 		fCompareInputChangeListener = input -> StructureDiffViewer.this.compareInputChanged(input, true);
 	}
 

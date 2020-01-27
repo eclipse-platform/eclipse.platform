@@ -237,7 +237,7 @@ public class DiffTreeViewer extends TreeViewer {
 		// Register for notification with the CompareConfiguration.
 		fCompareConfiguration= configuration;
 		if (fCompareConfiguration != null) {
-			fPropertyChangeListener = event -> propertyChange(event);
+			fPropertyChangeListener = this::propertyChange;
 			fCompareConfiguration.addPropertyChangeListener(fPropertyChangeListener);
 		}
 

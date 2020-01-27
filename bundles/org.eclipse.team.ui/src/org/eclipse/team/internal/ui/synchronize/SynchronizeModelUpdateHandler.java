@@ -257,7 +257,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 		if (pendingLabelUpdates.isEmpty()) {
 			return false;
 		} else {
-			Utils.asyncExec((Runnable) () -> firePendingLabelUpdates(), getViewer());
+			Utils.asyncExec((Runnable) this::firePendingLabelUpdates, getViewer());
 			return true;
 		}
 	}

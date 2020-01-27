@@ -47,7 +47,7 @@ public class HistoryPageCompareEditorInput extends PageCompareEditorInput {
 	private DialogHistoryPageSite site;
 	private final Object object;
 	private final IHistoryPageSource pageSource;
-	private final IPropertyChangeListener changeListener = event -> handlePropertyChange(event);
+	private final IPropertyChangeListener changeListener = this::handlePropertyChange;
 	private boolean isReplace;
 
 	/**

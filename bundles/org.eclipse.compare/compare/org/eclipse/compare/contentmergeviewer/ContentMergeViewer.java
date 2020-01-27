@@ -387,11 +387,11 @@ public abstract class ContentMergeViewer extends ContentViewer
 		fAncestorVisible= Utilities.getBoolean(cc, ICompareUIConstants.PROP_ANCESTOR_VISIBLE, fAncestorVisible);
 		fConfirmSave= Utilities.getBoolean(cc, CompareEditor.CONFIRM_SAVE_PROPERTY, fConfirmSave);
 
-		fCompareInputChangeListener = (input) -> { if (input == getInput()) handleCompareInputChange(); };
+		fCompareInputChangeListener = input -> { if (input == getInput()) handleCompareInputChange(); };
 
 		// Make sure the compare configuration is not null
 		fCompareConfiguration = cc != null ? cc : new CompareConfiguration();
-		fPropertyChangeListener = event -> handlePropertyChangeEvent(event);
+		fPropertyChangeListener = this::handlePropertyChangeEvent;
 		fCompareConfiguration.addPropertyChangeListener(fPropertyChangeListener);
 		fPreferenceChangeListener = event -> {
 			if (event.getProperty().equals(ComparePreferencePage.SWAPPED)) {

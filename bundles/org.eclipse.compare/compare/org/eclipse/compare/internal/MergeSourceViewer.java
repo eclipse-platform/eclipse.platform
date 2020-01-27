@@ -496,7 +496,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		fContainer.registerContextMenu(menu, getSourceViewer());
 
 		// for listening to editor show/hide line number preference value
-		fPreferenceChangeListener= event -> MergeSourceViewer.this.handlePropertyChangeEvent(event);
+		fPreferenceChangeListener= MergeSourceViewer.this::handlePropertyChangeEvent;
 		EditorsUI.getPreferenceStore().addPropertyChangeListener(fPreferenceChangeListener);
 		fShowLineNumber= EditorsUI.getPreferenceStore().getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_LINE_NUMBER_RULER);
 		if(fShowLineNumber){
@@ -1054,7 +1054,7 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 		// when the undo history changes. It could be localized to UNDO and REDO.
 		IUndoContext context = getUndoContext();
 		if (context != null && event.getOperation().hasContext(context)) {
-			Display.getDefault().asyncExec(() -> updateContentDependantActions());
+			Display.getDefault().asyncExec(this::updateContentDependantActions);
 		}
 	}
 

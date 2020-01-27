@@ -64,7 +64,7 @@ public class TimeoutInputStream extends FilterInputStream {
 		this.readTimeout = readTimeout;
 		this.closeTimeout = closeTimeout;
 		this.iobuffer = new byte[bufferSize];
-		thread = new Thread((Runnable) () -> runThread(), "TimeoutInputStream");//$NON-NLS-1$
+		thread = new Thread((Runnable) this::runThread, "TimeoutInputStream");//$NON-NLS-1$
 		thread.setDaemon(true);
 		thread.start();
 	}

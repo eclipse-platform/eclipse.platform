@@ -175,7 +175,7 @@ public class SynchronizationScopeManager extends PlatformObject implements ISync
 	@Override
 	public void initialize(
 			IProgressMonitor monitor) throws CoreException {
-		ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) monitor1 -> internalPrepareContext(monitor1),
+		ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable) this::internalPrepareContext,
 				getSchedulingRule(), IResource.NONE, monitor);
 	}
 

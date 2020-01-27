@@ -335,7 +335,7 @@ public class ChangeSetActionGroup extends SynchronizePageActionGroup {
 		if (getChangeSetCapability().supportsActiveChangeSets()) {
 			addToChangeSet = new MenuManager(TeamUIMessages.ChangeLogModelProvider_12);
 			addToChangeSet.setRemoveAllWhenShown(true);
-			addToChangeSet.addMenuListener(manager -> addChangeSets(manager));
+			addToChangeSet.addMenuListener(this::addChangeSets);
 			createChangeSet = new CreateChangeSetAction(configuration);
 			addToChangeSet.add(createChangeSet);
 			addToChangeSet.add(new Separator());

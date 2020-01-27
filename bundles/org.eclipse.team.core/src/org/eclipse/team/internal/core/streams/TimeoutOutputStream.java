@@ -64,7 +64,7 @@ public class TimeoutOutputStream extends FilterOutputStream {
 		this.writeTimeout = writeTimeout;
 		this.closeTimeout = closeTimeout;
 		this.iobuffer = new byte[bufferSize];
-		thread = new Thread((Runnable) () -> runThread(), "TimeoutOutputStream");//$NON-NLS-1$
+		thread = new Thread((Runnable) this::runThread, "TimeoutOutputStream");//$NON-NLS-1$
 		thread.setDaemon(true);
 		thread.start();
 	}

@@ -366,7 +366,7 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			// Only refresh the view if there is now background update in
 			// progress. If there is, the background update will refresh
 			if (!updateHandler.isPerformingBackgroundUpdate()) {
-				Utils.asyncExec((Runnable) () -> refreshModelRoot(), getViewer());
+				Utils.asyncExec((Runnable) this::refreshModelRoot, getViewer());
 			}
 		}
 	}

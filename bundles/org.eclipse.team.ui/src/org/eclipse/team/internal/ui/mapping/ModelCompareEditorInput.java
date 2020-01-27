@@ -189,7 +189,7 @@ public class ModelCompareEditorInput extends SaveableCompareEditorInput implemen
 		super.registerContextMenu(menu, provider);
 		Saveable saveable = getSaveable();
 		if (saveable instanceof LocalResourceSaveableComparison) {
-			menu.addMenuListener(manager -> handleMenuAboutToShow(manager));
+			menu.addMenuListener(this::handleMenuAboutToShow);
 		}
 	}
 

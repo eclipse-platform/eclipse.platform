@@ -46,7 +46,7 @@ public abstract class MergeActionHandler extends AbstractHandler {
 	private final ISynchronizePageConfiguration configuration;
 	private boolean enabled = false;
 	private IStructuredSelection selection;
-	private ISelectionChangedListener listener = event -> updatedEnablement(event);
+	private ISelectionChangedListener listener = this::updatedEnablement;
 
 	/**
 	 * Return an instance of the default handler for the given merge action id.

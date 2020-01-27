@@ -1376,7 +1376,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		@Override
 		public Point getSelection() {
-			return Optional.ofNullable(getTarget()).map(target -> target.getSelection())
+			return Optional.ofNullable(getTarget()).map(IFindReplaceTarget::getSelection)
 					.orElse(new Point(-1, -1));
 		}
 
@@ -1521,7 +1521,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	public TextMergeViewer(Composite parent, int style, CompareConfiguration configuration) {
 		super(style, ResourceBundle.getBundle(BUNDLE_NAME), configuration);
 
-		operationHistoryListener = event -> TextMergeViewer.this.historyNotification(event);
+		operationHistoryListener = TextMergeViewer.this::historyNotification;
 		OperationHistoryFactory.getOperationHistory()
 				.addOperationHistoryListener(operationHistoryListener);
 
@@ -1611,7 +1611,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 
 		fIsMac= Util.isMac();
 
-		fPreferenceChangeListener= event -> TextMergeViewer.this.handlePropertyChangeEvent(event);
+		fPreferenceChangeListener= TextMergeViewer.this::handlePropertyChangeEvent;
 
 		fPreferenceStore= createChainedPreferenceStore();
 		if (fPreferenceStore != null) {
