@@ -37,16 +37,19 @@ class PassphraseDialog extends Dialog{
 		this.message=message;
 	}
 
+	@Override
 	protected void configureShell(Shell newShell){
 		super.configureShell(newShell);
 		newShell.setText(message);
 	}
 
+	@Override
 	public void create(){
 		super.create();
 		passphraseField.setFocus();
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent){
 		initializeDialogUnits(parent);
 		Composite main=new Composite(parent, SWT.NONE);
@@ -88,6 +91,7 @@ class PassphraseDialog extends Dialog{
 		return passphrase;
 	}
 
+	@Override
 	protected void okPressed(){
 		String _passphrase=passphraseField.getText();
 		if(_passphrase==null||_passphrase.length()==0){
@@ -97,6 +101,7 @@ class PassphraseDialog extends Dialog{
 		super.okPressed();
 	}
 
+	@Override
 	protected void cancelPressed(){
 		passphrase=null;
 		super.cancelPressed();

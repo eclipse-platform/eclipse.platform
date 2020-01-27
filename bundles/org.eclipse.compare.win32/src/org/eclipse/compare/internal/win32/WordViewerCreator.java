@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class WordViewerCreator implements IViewerCreator {
 
+	@Override
 	public Viewer createViewer(Composite parent, CompareConfiguration config) {
 		return new WordMergeViewer(parent, config);
 	}

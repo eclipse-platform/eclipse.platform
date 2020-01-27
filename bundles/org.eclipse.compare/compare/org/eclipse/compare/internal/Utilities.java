@@ -975,6 +975,7 @@ public class Utilities {
 		} else {
 			image = CompareUIPlugin.getImageDescriptor("elcl16/view_menu.png").createImage(); //$NON-NLS-1$
 			item.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent e) {
 					Image img = item.getImage();
 					if ((img != null) && (!img.isDisposed())) {

@@ -39,16 +39,19 @@ class ExportDialog extends Dialog{
 		this.message=message;
 	}
 
+	@Override
 	protected void configureShell(Shell newShell){
 		super.configureShell(newShell);
 		newShell.setText(title);
 	}
 
+	@Override
 	public void create(){
 		super.create();
 		field.setFocus();
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent){
 		initializeDialogUnits(parent);
 		Composite main=new Composite(parent, SWT.NONE);
@@ -87,6 +90,7 @@ class ExportDialog extends Dialog{
 		return target;
 	}
 
+	@Override
 	protected void okPressed(){
 		String _target=field.getText();
 		if(_target==null||_target.length()==0){
@@ -96,6 +100,7 @@ class ExportDialog extends Dialog{
 		super.okPressed();
 	}
 
+	@Override
 	protected void cancelPressed(){
 		target=null;
 		super.cancelPressed();

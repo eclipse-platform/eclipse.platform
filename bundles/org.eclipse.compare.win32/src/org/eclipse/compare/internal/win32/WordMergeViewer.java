@@ -85,6 +85,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		super(configuration);
 		createContentArea(parent);
 		getControl().addDisposeListener(new DisposeListener() {
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				handleDispose();
 			}
@@ -113,6 +114,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		if (configuration.isRightEditable() || configuration.isLeftEditable() 
 				&& (configuration.isRightEditable() != configuration.isLeftEditable())) {
 			saveAction = new Action() {
+				@Override
 				public void run() {
 					saveDocument();
 				}
@@ -122,6 +124,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		}
 		
 		inplaceAction = new Action(CompareWin32Messages.WordMergeViewer_2, Action.AS_CHECK_BOX) {
+			@Override
 			public void run() {
 				toggleInplaceExternalState();
 			}
@@ -268,8 +271,10 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		}
 	}
 	
+	@Override
 	public void flush(IProgressMonitor monitor) {
 		Display.getDefault().syncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (isReallyDirty())
 					saveDocument();
@@ -280,6 +285,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 
 	protected void toggleInplaceExternalState() {
 		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+			@Override
 			public void run() {
 				try {
 					if (isReallyDirty()) {
@@ -379,10 +385,12 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		return CompareWin32Messages.WordMergeViewer_5;
 	}
 
+	@Override
 	public Control getControl() {
 		return composite;
 	}
 	
+	@Override
 	public void setInput(Object input) {
 		super.setInput(input);
 		try {
@@ -395,6 +403,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 	
 	private void updateDirtyFlag() {
 		final Runnable dirtyFlagUpdater = new Runnable() {
+			@Override
 			public void run() {
 				if (wordArea.getFrame().isDisposed())
 					return;
@@ -441,6 +450,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		for (Object allListener : allListeners) {
 			final IPropertyChangeListener listener = (IPropertyChangeListener) allListener;
 			SafeRunner.run(new SafeRunnable() {
+				@Override
 				public void run() throws Exception {
 					listener.propertyChange(event);
 				}
@@ -448,16 +458,19 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		}
 	}
 
+	@Override
 	public void addPropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.add(listener);
 	}
 
+	@Override
 	public void removePropertyChangeListener(IPropertyChangeListener listener) {
 		listeners.remove(listener);
 	}
 
 	private void handleDispose() {
 		BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+			@Override
 			public void run() {
 				wordArea.dispose();
 				formToolkit.dispose();
@@ -466,6 +479,7 @@ public class WordMergeViewer extends AbstractMergeViewer implements IFlushable, 
 		});
 	}
 	
+	@Override
 	protected void reset() {
 		if (wordArea.isOpen()) {
 			wordArea.close();

@@ -59,18 +59,22 @@ public abstract class AbstractMergeViewer extends Viewer {
 		this.configuration = configuration;
 	}
 
+	@Override
 	public Object getInput() {
 		return input;
 	}
 
+	@Override
 	public ISelection getSelection() {
 		return StructuredSelection.EMPTY;
 	}
 
+	@Override
 	public void refresh() {
 		// Nothing to do
 	}
 
+	@Override
 	public void setInput(Object input) {
 		this.input = input;
 		reset();
@@ -91,6 +95,7 @@ public abstract class AbstractMergeViewer extends Viewer {
 		resultFile = null;
 	}
 
+	@Override
 	public void setSelection(ISelection selection, boolean reveal) {
 		// Nothing to do
 	}
