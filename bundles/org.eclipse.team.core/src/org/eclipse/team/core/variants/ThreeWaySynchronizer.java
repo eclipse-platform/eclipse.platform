@@ -36,7 +36,6 @@ import org.eclipse.team.core.TeamException;
 import org.eclipse.team.internal.core.Policy;
 import org.eclipse.team.internal.core.subscribers.BatchingLock;
 import org.eclipse.team.internal.core.subscribers.BatchingLock.IFlushOperation;
-import org.eclipse.team.internal.core.subscribers.BatchingLock.ThreadInfo;
 import org.eclipse.team.internal.core.subscribers.SyncByteConverter;
 
 /**
@@ -52,20 +51,15 @@ import org.eclipse.team.internal.core.subscribers.SyncByteConverter;
  * @since 3.0
  */
 public class ThreeWaySynchronizer {
-
-	private IFlushOperation flushOperation = new IFlushOperation() {
-		/**
-		 * Callback which is invoked when the batching resource lock is released
-		 * or when a flush is requested (see beginBatching(IResource)).
-		 *
-		 * @see BatchingLock#flush(IProgressMonitor)
-		 */
-		@Override
-		public void flush(ThreadInfo info, IProgressMonitor monitor)
-				throws TeamException {
-			if (info != null && !info.isEmpty()) {
-				broadcastSyncChanges(info.getChangedResources());
-			}
+	/**
+	 * Callback which is invoked when the batching resource lock is released or when
+	 * a flush is requested (see beginBatching(IResource)).
+	 *
+	 * @see BatchingLock#flush(IProgressMonitor)
+	 */
+	private IFlushOperation flushOperation = (info, monitor) -> {
+		if (info != null && !info.isEmpty()) {
+			broadcastSyncChanges(info.getChangedResources());
 		}
 	};
 

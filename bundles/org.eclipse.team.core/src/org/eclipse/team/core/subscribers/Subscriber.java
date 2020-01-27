@@ -504,23 +504,20 @@ abstract public class Subscriber {
 		ResourceTraversal[] traversals = mapping.getTraversals(new SubscriberResourceMappingContext(this, true), monitor);
 		final int[] direction = new int[] { 0 };
 		final int[] kind = new int[] { 0 };
-		accept(traversals, new IDiffVisitor() {
-			@Override
-			public boolean visit(IDiff diff) {
-				if (diff instanceof IThreeWayDiff) {
-					IThreeWayDiff twd = (IThreeWayDiff) diff;
-					direction[0] |= twd.getDirection();
-				}
-				// If the traversals contain a combination of kinds, return a CHANGE
-				int diffKind = diff.getKind();
-				if (kind[0] == 0)
-					kind[0] = diffKind;
-				if (kind[0] != diffKind) {
-					kind[0] = IDiff.CHANGE;
-				}
-				// Only need to visit the children of a change
-				return diffKind == IDiff.CHANGE;
+		accept(traversals, diff -> {
+			if (diff instanceof IThreeWayDiff) {
+				IThreeWayDiff twd = (IThreeWayDiff) diff;
+				direction[0] |= twd.getDirection();
 			}
+			// If the traversals contain a combination of kinds, return a CHANGE
+			int diffKind = diff.getKind();
+			if (kind[0] == 0)
+				kind[0] = diffKind;
+			if (kind[0] != diffKind) {
+				kind[0] = IDiff.CHANGE;
+			}
+			// Only need to visit the children of a change
+			return diffKind == IDiff.CHANGE;
 		});
 		return (direction[0] | kind[0]) & stateMask;
 	}

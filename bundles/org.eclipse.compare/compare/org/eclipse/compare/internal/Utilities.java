@@ -86,8 +86,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -974,13 +972,10 @@ public class Utilities {
 			/* IWorkbenchGraphicConstants */"IMG_LCL_VIEW_MENU"); //$NON-NLS-1$
 		} else {
 			image = CompareUIPlugin.getImageDescriptor("elcl16/view_menu.png").createImage(); //$NON-NLS-1$
-			item.addDisposeListener(new DisposeListener() {
-				@Override
-				public void widgetDisposed(DisposeEvent e) {
-					Image img = item.getImage();
-					if ((img != null) && (!img.isDisposed())) {
-						img.dispose();
-					}
+			item.addDisposeListener(e -> {
+				Image img = item.getImage();
+				if ((img != null) && (!img.isDisposed())) {
+					img.dispose();
 				}
 			});
 		}

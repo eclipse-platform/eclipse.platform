@@ -39,12 +39,9 @@ public class ConfigureRefreshScheduleDialog extends DetailsDialog {
 
 	@Override
 	protected void createMainDialogArea(Composite parent) {
-		IPageValidator validator = new IPageValidator() {
-			@Override
-			public void setComplete(String errorMessage) {
-				setPageComplete(errorMessage == null);
-				setErrorMessage(errorMessage);
-			}
+		IPageValidator validator = errorMessage -> {
+			setPageComplete(errorMessage == null);
+			setErrorMessage(errorMessage);
 		};
 		scheduleComposite = new ConfigureSynchronizeScheduleComposite(parent, schedule, validator);
 		Dialog.applyDialogFont(parent);

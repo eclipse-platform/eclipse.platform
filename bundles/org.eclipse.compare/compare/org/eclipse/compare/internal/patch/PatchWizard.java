@@ -20,7 +20,6 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ExceptionHandler;
 import org.eclipse.compare.internal.Utilities;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -166,12 +165,7 @@ public class PatchWizard extends Wizard {
 				@Override
 				protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
-						fPatcher.applyAll(monitor, new Patcher.IFileValidator() {
-							@Override
-							public boolean validateResources(IFile[] resoures) {
-								return Utilities.validateResources(resoures, getShell(), PatchMessages.PatchWizard_title);
-							}
-						});
+						fPatcher.applyAll(monitor, resoures -> Utilities.validateResources(resoures, getShell(), PatchMessages.PatchWizard_title));
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}

@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.core.RepositoryProvider;
@@ -135,14 +134,11 @@ public abstract class ChangeTracker {
 	private IResource[] getProjectChanges(IProject project, IResourceDelta projectDelta) {
 		final List<IResource> result = new ArrayList<>();
 		try {
-			projectDelta.accept(new IResourceDeltaVisitor() {
-				@Override
-				public boolean visit(IResourceDelta delta) throws CoreException {
-					if (isResourceOfInterest(delta.getResource()) & isChangeOfInterest(delta)) {
-						result.add(delta.getResource());
-					}
-					return true;
+			projectDelta.accept(delta -> {
+				if (isResourceOfInterest(delta.getResource()) & isChangeOfInterest(delta)) {
+					result.add(delta.getResource());
 				}
+				return true;
 			});
 		} catch (CoreException e) {
 			TeamPlugin.log(e);
