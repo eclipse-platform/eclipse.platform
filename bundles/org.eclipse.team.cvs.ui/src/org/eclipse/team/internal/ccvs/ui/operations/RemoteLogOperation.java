@@ -66,7 +66,7 @@ public class RemoteLogOperation extends RepositoryLocationOperation {
 		 */
 		public ILogEntry[] getLogEntries(String path) {
 			Map<String, ILogEntry> map = internalGetLogEntries(path);
-			return map.values().toArray(new ILogEntry[map.values().size()]);
+			return map.values().toArray(new ILogEntry[map.size()]);
 		}
 		
 		private ILogEntry internalGetLogEntry(String path, String revision) {

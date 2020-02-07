@@ -143,7 +143,7 @@ public class ProjectSetExportWizard extends Wizard implements IExportWizard {
 						//
 						XMLMemento xmlMemento = getXMLMementoRoot();
 						Iterator it = map.keySet().iterator();
-						monitor.beginTask(null, 1000 * map.keySet().size());
+						monitor.beginTask(null, 1000 * map.size());
 						while (it.hasNext()) {
 							String id = (String)it.next();
 							IMemento memento = xmlMemento.createChild("provider"); //$NON-NLS-1$

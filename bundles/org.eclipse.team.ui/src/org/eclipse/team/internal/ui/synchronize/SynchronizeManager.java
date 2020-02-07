@@ -459,7 +459,7 @@ public class SynchronizeManager implements ISynchronizeManager {
 
 	@Override
 	public synchronized ISynchronizeParticipantReference[] getSynchronizeParticipants() {
-		return participantReferences.values().toArray(new ISynchronizeParticipantReference[participantReferences.values().size()]);
+		return participantReferences.values().toArray(new ISynchronizeParticipantReference[participantReferences.size()]);
 	}
 
 	@Override

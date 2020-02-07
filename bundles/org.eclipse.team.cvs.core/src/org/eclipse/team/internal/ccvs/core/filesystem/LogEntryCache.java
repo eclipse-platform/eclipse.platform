@@ -44,7 +44,7 @@ class LogEntryCache implements ILogEntryListener {
 	 */
 	public ILogEntry[] getLogEntries(String path) {
 		Map map = internalGetLogEntries(path);
-		return (ILogEntry[]) map.values().toArray(new ILogEntry[map.values().size()]);
+		return (ILogEntry[]) map.values().toArray(new ILogEntry[map.size()]);
 	}
 
 	ILogEntry internalGetLogEntry(String path, String revision) {

@@ -193,7 +193,7 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 					monitor);
 		}
 
-		IResource[] cleared = collectedMembers(local, children.keySet().toArray(new IResource[children.keySet().size()]));
+		IResource[] cleared = collectedMembers(local, children.keySet().toArray(new IResource[children.size()]));
 		changedResources.addAll(Arrays.asList(cleared));
 		monitor.worked(1);
 	}
