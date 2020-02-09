@@ -61,8 +61,12 @@ public class UserValidationDialog extends Dialog {
 		}
 		return uio.authentication;
 	}
+
 	/**
-	 * Gets user and password from a user Must be called from UI thread
+	 * Gets user and password from a user. Must be called from UI thread.
+	 *
+	 * @param host    the host name
+	 * @param message the message to be displayed when prompting
 	 *
 	 * @return UserAuthentication that contains the userid and the password or
 	 *         <code>null</code> if the dialog has been cancelled
@@ -73,11 +77,13 @@ public class UserValidationDialog extends Dialog {
 		ui.open();
 		return ui.getAuthentication();
 	}
+
 	/**
 	 * Creates a new UserValidationDialog.
 	 *
-	 * @param parentShell
-	 *            parent Shell or null
+	 * @param parentShell parent Shell or <code>null</code>
+	 * @param host        the host name
+	 * @param message     the message to be displayed when prompting
 	 */
 	protected UserValidationDialog(Shell parentShell, String host,
 			String message) {
@@ -126,8 +132,11 @@ public class UserValidationDialog extends Dialog {
 				"org.eclipse.update.ui.UserValidationDialog"); //$NON-NLS-1$
 		return main;
 	}
+
 	/**
 	 * Creates the three widgets that represent the user name entry area.
+	 *
+	 * @param parent
 	 */
 	protected void createPasswordFields(Composite parent) {
 		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_2);
@@ -139,8 +148,11 @@ public class UserValidationDialog extends Dialog {
 
 		new Label(parent, SWT.NONE); //spacer
 	}
+
 	/**
 	 * Creates the three widgets that represent the user name entry area.
+	 *
+	 * @param parent
 	 */
 	protected void createUsernameFields(Composite parent) {
 		new Label(parent, SWT.NONE).setText(NetUIMessages.UserValidationDialog_3);
