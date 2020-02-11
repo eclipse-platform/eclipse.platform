@@ -33,10 +33,10 @@ import org.eclipse.team.examples.filesystem.FileSystemPlugin;
  * cache the contents of the resource variant.
  */
 public class FileSystemResourceVariant extends CachedResourceVariant {
-	
+
 	private java.io.File ioFile;
 	private byte[] bytes;
-	
+
 	/**
 	 * Create a resource variant for the given file. The bytes will
 	 * be calculated when they are accessed.
@@ -45,7 +45,7 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 	public FileSystemResourceVariant(java.io.File file) {
 		this.ioFile = file;
 	}
-	
+
 	/**
 	 * Create a resource variant for the given file and sync bytes.
 	 * @param file the file
@@ -55,24 +55,24 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 		this.ioFile = file;
 		this.bytes = bytes;
 	}
-	
+
 	@Override
 	protected void fetchContents(IProgressMonitor monitor) throws TeamException {
 		setContents(getContents(), monitor);
 	}
-	
+
 	@Override
 	protected String getCachePath() {
 		// append the timestamp to the file path to give each variant a unique path
 		return getFilePath() + " " + ioFile.lastModified(); //$NON-NLS-1$
 	}
-	
+
 	private String getFilePath() {
 		try {
 			return ioFile.getCanonicalPath();
 		} catch (IOException e) {
 			// Failed for some reason. Try the absolute path.
-			FileSystemPlugin.log(new Status(IStatus.ERROR, FileSystemPlugin.ID, 0, 
+			FileSystemPlugin.log(new Status(IStatus.ERROR, FileSystemPlugin.ID, 0,
 					"Failed to obtain canonical path for " + ioFile.getAbsolutePath(), e)); //$NON-NLS-1$
 			return ioFile.getAbsolutePath();
 		}
@@ -82,30 +82,30 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 	protected String getCacheId() {
 		return FileSystemPlugin.ID;
 	}
-	
+
 	@Override
 	public String getName() {
 		return ioFile.getName();
 	}
-	
+
 	@Override
 	public boolean isContainer() {
 		return ioFile.isDirectory();
 	}
-	
+
 	@Override
 	public String getContentIdentifier() {
 		// Use the modification timestamp as the content identifier
 		return new Date(ioFile.lastModified()).toString();
 	}
-	
+
 	@Override
 	public byte[] asBytes() {
 		if (bytes == null) {
 			// For simplicity, convert the timestamp to it's string representation.
 			// A more optimal storage format would be the 8 bytes that make up the long.
 			bytes = Long.toString(ioFile.lastModified()).getBytes();
-		} 
+		}
 		return bytes;
 	}
 
@@ -138,7 +138,7 @@ public class FileSystemResourceVariant extends CachedResourceVariant {
 			throw new TeamException("Failed to fetch contents for " + getFilePath(), e); //$NON-NLS-1$
 		}
 	}
-	
+
 	public java.io.File getFile(){
 		return ioFile;
 	}

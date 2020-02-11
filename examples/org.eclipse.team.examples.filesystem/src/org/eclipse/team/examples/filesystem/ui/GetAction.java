@@ -25,7 +25,7 @@ public class GetAction extends FileSystemAction {
 
 	protected void execute(IAction action) {
 		try {
-			GetOperation operation = new GetOperation(getTargetPart(), 
+			GetOperation operation = new GetOperation(getTargetPart(),
 								FileSystemOperation.createScopeManager(Policy.bind("GetAction.working"), getSelectedMappings())); //$NON-NLS-1$
 			operation.setOverwriteOutgoing(isOverwriteOutgoing());
 			operation.run();
@@ -35,7 +35,7 @@ public class GetAction extends FileSystemAction {
 			// Ignore
 		}
 	}
-	
+
 	/**
 	 * Indicate whether the action should overwrite outgoing changes.
 	 * By default, the get action does not override local modifications.

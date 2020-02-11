@@ -78,7 +78,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 
 			if (fileHistory != null && !shutdown) {
 				fileHistory.refresh(monitor);
-				//Internal code used for convenience - you can use 
+				//Internal code used for convenience - you can use
 				//your own here
 				Utils.asyncExec((Runnable) () -> tableViewer.setInput(fileHistory), tableViewer);
 			}

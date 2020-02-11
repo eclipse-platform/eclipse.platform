@@ -25,7 +25,7 @@ public class PutAction extends FileSystemAction {
 
 	protected void execute(IAction action) {
 		try {
-			PutOperation operation = new PutOperation(getTargetPart(), 
+			PutOperation operation = new PutOperation(getTargetPart(),
 					FileSystemOperation.createScopeManager(Policy.bind("PutAction.working"), getSelectedMappings())); //$NON-NLS-1$
 			operation.setOverwriteIncoming(isOverrideIncoming());
 			operation.run();
@@ -35,7 +35,7 @@ public class PutAction extends FileSystemAction {
 			// Ignore
 		}
 	}
-	
+
 	/**
 	 * Indicate whether the put should override incoming changes.
 	 * @return whether the put should override incoming changes.

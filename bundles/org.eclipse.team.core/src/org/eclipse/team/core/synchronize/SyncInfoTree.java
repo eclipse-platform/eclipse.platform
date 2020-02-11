@@ -268,7 +268,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	 * <li><code>IResource.DEPTH_INFINITE</code>: the resource and all of it's
 	 * descendants.
 	 * </ul>
-	 * 
+	 *
 	 * @param resource the root of the resource subtree
 	 * @param depth    the depth of the subtree
 	 */

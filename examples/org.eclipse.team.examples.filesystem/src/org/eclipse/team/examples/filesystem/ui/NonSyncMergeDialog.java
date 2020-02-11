@@ -23,7 +23,7 @@ import org.eclipse.team.ui.ISaveableWorkbenchPart;
 import org.eclipse.team.ui.SaveablePartDialog;
 
 /**
- * A dialog that can be used to merge conflicting model elements without 
+ * A dialog that can be used to merge conflicting model elements without
  * using the Synchronization framework. This is experimental.
  * See {@link NonSyncModelMergeOperation}
  * for a description of this work flow and its shortcomings.
@@ -36,11 +36,11 @@ public class NonSyncMergeDialog extends SaveablePartDialog {
 		NonSyncMergeDialog dialog = new NonSyncMergeDialog(operation.getShell(), part);
 		dialog.open();
 	}
-	
+
 	public NonSyncMergeDialog(Shell shell, ISaveableWorkbenchPart input) {
 		super(shell, input);
 	}
-	
+
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == OK) {
 			NonSyncMergePart part = (NonSyncMergePart)getInput();
@@ -55,7 +55,7 @@ public class NonSyncMergeDialog extends SaveablePartDialog {
 
 	private boolean hasUnmergedChanges(IMergeContext context) {
 		return context.getDiffTree().hasMatchingDiffs(
-				ResourcesPlugin.getWorkspace().getRoot().getFullPath(), 
+				ResourcesPlugin.getWorkspace().getRoot().getFullPath(),
 				new FastDiffFilter() {
 					public boolean select(IDiff diff) {
 						if (diff instanceof IThreeWayDiff) {

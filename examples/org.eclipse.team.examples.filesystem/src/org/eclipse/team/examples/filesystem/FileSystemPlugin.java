@@ -25,7 +25,7 @@ import org.osgi.framework.BundleContext;
 
 /**
  * This is the plugin class for the file system examples. It provides the following:
- * 
+ *
  * <ol>
  * <li>public fields for the plugin and provider IDs as defined in the plugin.xml
  * <li>initialization on startup of Policy class that provides internationalization of strings
@@ -34,24 +34,24 @@ import org.osgi.framework.BundleContext;
  * </ol>
  */
 public class FileSystemPlugin extends AbstractUIPlugin {
-	
+
 	/**
 	 * This is the ID of the plugin as defined in the plugin.xml
 	 */
 	public static final String ID = "org.eclipse.team.examples.filesystem"; //$NON-NLS-1$
-	
+
 	/**
 	 * This is the provider ID of the plugin as defined in the plugin.xml
 	 */
 	public static final String PROVIDER_ID = ID + ".FileSystemProvider"; //$NON-NLS-1$
-	
+
 	// This static field will hold the singleton instance of the plugin class
 	private static FileSystemPlugin plugin;
-	
+
 	private PessimisticFilesystemProviderPlugin pessPlugin;
-	
+
 	private PluginManifestChangeTracker tracker;
-	
+
 	/**
 	 * Override the standard plugin constructor.
 	 */
@@ -62,22 +62,22 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 		// Instanctiate pessimistic provider
 		pessPlugin = new PessimisticFilesystemProviderPlugin();
 	}
-	
+
 	/**
 	 * Return the singlton instance of the plugin class to allow other
-	 * classes in the plugin access to plugin instance methods such as 
+	 * classes in the plugin access to plugin instance methods such as
 	 * those for logging errors, etc.
 	 */
 	public static FileSystemPlugin getPlugin() {
 		return plugin;
 	}
-	
+
 	/**
 	 * Helper method to convert a CoreException into a TeamException.
 	 * We do this to maintain the core status and code. This type of
-	 * mapping may not be appropriate in more complicated exception 
+	 * mapping may not be appropriate in more complicated exception
 	 * handling situations.
-	 * 
+	 *
 	 * @param e the CoreException
 	 */
 	public static TeamException wrapException(CoreException e) {
@@ -86,25 +86,25 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Helper method to convert an IOException into a TeamException.
-	 * This type of mapping may not be appropriate in more complicated 
+	 * This type of mapping may not be appropriate in more complicated
 	 * exception handling situations.
-	 * 
+	 *
 	 * @param e the CoreException
 	 */
 	public static TeamException wrapException(IOException e) {
-		return new TeamException(new Status(IStatus.ERROR, FileSystemPlugin.ID, 
+		return new TeamException(new Status(IStatus.ERROR, FileSystemPlugin.ID,
 			TeamException.IO_FAILED, e.getMessage(), e));
 	}
-	
+
 	/**
 	 * Helper method to log an exception status.
-	 * 
+	 *
 	 * @param status the status to be logged
 	 */
 	public static void log(IStatus status) {
 		plugin.getLog().log(status);
 	}
-	
+
 	/**
 	 * Returns the standard display to be used. The method first checks, if
 	 * the thread calling this method has an associated display. If so, this
@@ -115,9 +115,9 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 		if (display == null) {
 			display= Display.getDefault();
 		}
-		return display;		
+		return display;
 	}
-	
+
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		//Call startup on the Pessimistic Plugin
@@ -125,7 +125,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 		tracker = new PluginManifestChangeTracker();
 		tracker.start();
 	}
-	
+
 	public void stop(BundleContext context) throws Exception {
 		try {
 			if (pessPlugin != null)

@@ -31,7 +31,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
 
 public class LocalHistorySynchronizeWizard extends Wizard {
 
-	private class MessagePage extends WizardPage {		
+	private class MessagePage extends WizardPage {
 		protected MessagePage(String pageName, String title, ImageDescriptor titleImage) {
 			super(pageName, title, titleImage);
 		}
@@ -46,11 +46,11 @@ public class LocalHistorySynchronizeWizard extends Wizard {
 			setControl(top);
 		}
 	}
-	
+
 	public LocalHistorySynchronizeWizard() {
 		super();
 	}
-	
+
 	public void addPages() {
 		addPage(new MessagePage("Local History", "Create a local history synchronization", TeamImages.getImageDescriptor(ITeamUIImages.IMG_WIZBAN_SHARE)));  //$NON-NLS-1$//$NON-NLS-2$
 	}

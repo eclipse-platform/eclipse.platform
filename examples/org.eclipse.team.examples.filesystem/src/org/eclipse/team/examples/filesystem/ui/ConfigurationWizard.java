@@ -34,11 +34,11 @@ import org.eclipse.ui.IWorkbench;
  * in order to obtain a target location on disk.
  */
 public class ConfigurationWizard extends Wizard implements IConfigurationWizard, IAdaptable {
-	
+
 	IProject[] projects;
-	
+
 	FileSystemMainPage mainPage;
-	
+
 	public ConfigurationWizard() {
 		// retrieve the remembered dialog settings
 		IDialogSettings workbenchSettings = FileSystemPlugin.getPlugin().getDialogSettings();
@@ -51,13 +51,13 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 
 	/**
 	 * Remember the project so we can map it on finish
-	 * 
+	 *
 	 * @see org.eclipse.team.ui.IConfigurationWizard#init(IWorkbench, IProject)
 	 */
 	public void init(IWorkbench workbench, IProject project) {
 		setProjects(new IProject[] { project } );
 	}
-	
+
 	public void addPages() {
 		mainPage = new FileSystemMainPage(
 			"FileSystemMainPage", //$NON-NLS-1$
@@ -66,7 +66,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 			null);
 		addPage(mainPage);
 	}
-	
+
 	/*
 	 * Using the information entered in the main page set the provider for
 	 * the given project.

@@ -25,7 +25,7 @@ import org.eclipse.team.internal.ui.actions.TeamAction;
  * Action for getting the contents of the selected resources
  */
 public class DisconnectAction extends TeamAction {
-	
+
 	@Override
 	protected void execute(IAction action) {
 		IProject projects[] = getSelectedProjects();
@@ -35,9 +35,9 @@ public class DisconnectAction extends TeamAction {
 			}
 		} catch (TeamException e) {
 			ErrorDialog.openError(getShell(), Policy.bind("DisconnectAction.errorTitle"), null, e.getStatus()); //$NON-NLS-1$
-		} 
+		}
 	}
-	
+
 	@Override
 	public boolean isEnabled() {
 		return true;

@@ -26,7 +26,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
  * in a file-system participant being added to the synchronize view.
  */
 public class SynchronizeAction extends FileSystemAction {
-	
+
 	protected void execute(IAction action) {
 		ResourceMapping[] mappings = getSelectedMappings();
 		if (mappings.length == 0)

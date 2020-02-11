@@ -18,7 +18,7 @@ package org.eclipse.team.examples.filesystem.ui;
  * A replace is simply a get that overwrite local changes
  */
 public class ReplaceAction extends GetAction {
-	
+
 	@Override
 	protected boolean isOverwriteOutgoing() {
 		return true;

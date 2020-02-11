@@ -30,8 +30,8 @@ public class MoeResourceMapping extends ModelResourceMapping {
 	@Override
 	public ResourceTraversal[] getTraversals(ResourceMappingContext context,
 			IProgressMonitor monitor) {
-		return new ResourceTraversal[] { 
-				new ResourceTraversal(new IResource[] { 
+		return new ResourceTraversal[] {
+				new ResourceTraversal(new IResource[] {
 						getResource()
 				}, IResource.DEPTH_ZERO, IResource.NONE)
 			};
@@ -40,7 +40,7 @@ public class MoeResourceMapping extends ModelResourceMapping {
 	private IResource getResource() {
 		return ((ModelResource)getModelObject()).getResource();
 	}
-	
+
 	@Override
 	public boolean contains(ResourceMapping mapping) {
 		if (mapping.equals(this))

@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.CoreException;
 public class ModelObjectElementFile extends ModelFile {
 
 	public static final String MODEL_OBJECT_ELEMENTFILE_EXTENSION = "moe";
-	
+
 	private final ModelObjectDefinitionFile parent;
 
 	public static boolean isMoeFile(IResource resource) {
 		return resource instanceof IFile && MODEL_OBJECT_ELEMENTFILE_EXTENSION.equals(resource.getFileExtension());
 	}
-	
+
 	public ModelObjectElementFile(ModelObjectDefinitionFile parent, IFile file) {
 		super(file);
 		this.parent = parent;
@@ -35,11 +35,11 @@ public class ModelObjectElementFile extends ModelFile {
 	public ModelObject[] getChildren() {
 		return new ModelObject[0];
 	}
-	
+
 	public ModelObject getParent() {
 		return parent;
 	}
-	
+
 	public void delete() throws CoreException {
 		parent.remove(this);
 		super.delete();

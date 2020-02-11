@@ -110,7 +110,7 @@ public class PersistantResourceVariantByteStore extends ResourceVariantByteStore
 	 * fetched from the case where the resource variant is known to not exist. In
 	 * the later case, this method returns <code>true</code> while
 	 * <code>getBytes</code> returns <code>null</code>
-	 * 
+	 *
 	 * @param resource the local resource
 	 * @return whether the resource variant state for this resource is known
 	 * @throws TeamException if this operation fails. Reasons include:

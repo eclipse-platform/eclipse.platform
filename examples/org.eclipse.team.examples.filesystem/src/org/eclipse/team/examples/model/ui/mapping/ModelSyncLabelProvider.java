@@ -31,7 +31,7 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
  * overlay hints for isBusy, conflict propagation and markers.
  */
 public class ModelSyncLabelProvider extends SynchronizationLabelProvider {
-	
+
 	private ModelNavigatorLabelProvider delegate;
 
 	public ModelSyncLabelProvider() {
@@ -44,19 +44,19 @@ public class ModelSyncLabelProvider extends SynchronizationLabelProvider {
 		delegate = new ModelNavigatorLabelProvider();
 		delegate.init(site);
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
 		if (delegate != null)
 			delegate.dispose();
 	}
-	
+
 	@Override
 	protected ILabelProvider getDelegateLabelProvider() {
 		return delegate;
 	}
-	
+
 	@Override
 	protected IDiff getDiff(Object element) {
 		if (element instanceof ModelResource) {
@@ -65,12 +65,12 @@ public class ModelSyncLabelProvider extends SynchronizationLabelProvider {
 		}
 		return super.getDiff(element);
 	}
-	
+
 	@Override
 	protected boolean isIncludeOverlays() {
 		return true;
 	}
-	
+
 	@Override
 	protected boolean isBusy(Object element) {
 		if (element instanceof ModelResource) {
@@ -93,7 +93,7 @@ public class ModelSyncLabelProvider extends SynchronizationLabelProvider {
 		}
 		return super.isBusy(element);
 	}
-	
+
 	@Override
 	protected boolean hasDecendantConflicts(Object element) {
 		if (element instanceof ModelResource) {

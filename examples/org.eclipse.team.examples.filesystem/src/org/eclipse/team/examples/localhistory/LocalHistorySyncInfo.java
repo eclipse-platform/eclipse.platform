@@ -20,7 +20,7 @@ import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
 
 public class LocalHistorySyncInfo extends SyncInfo {
-	
+
 	public LocalHistorySyncInfo(IResource local, IResourceVariant remote, IResourceVariantComparator comparator) {
 		super(local, null, remote, comparator);
 	}

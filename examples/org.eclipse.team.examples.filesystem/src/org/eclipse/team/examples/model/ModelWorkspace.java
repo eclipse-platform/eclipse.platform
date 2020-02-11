@@ -20,11 +20,11 @@ public class ModelWorkspace extends ModelContainer {
 	protected ModelWorkspace() {
 		super(ResourcesPlugin.getWorkspace().getRoot());
 	}
-	
+
 	public String getName() {
 		return "Model Root";
 	}
-	
+
 	public ModelObject getParent() {
 		return null;
 	}

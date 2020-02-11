@@ -26,7 +26,7 @@ import org.eclipse.team.examples.filesystem.FileSystemProvider;
  * the ability to traverse the file system for the creation of resource variants.
  */
 public class FileSystemRemoteTree extends ThreeWayRemoteTree {
-	
+
 	/**
 	 * Create the file system remote resource variant tree
 	 * @param subscriber the file system subscriber
@@ -34,12 +34,12 @@ public class FileSystemRemoteTree extends ThreeWayRemoteTree {
 	public FileSystemRemoteTree(FileSystemSubscriber subscriber) {
 		super(subscriber);
 	}
-	
+
 	@Override
 	protected IResourceVariant[] fetchMembers(IResourceVariant variant, IProgressMonitor progress) {
 		return ((FileSystemResourceVariant)variant).members();
 	}
-	
+
 	@Override
 	protected IResourceVariant fetchVariant(IResource resource, int depth, IProgressMonitor monitor) {
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject(), FileSystemPlugin.PROVIDER_ID);

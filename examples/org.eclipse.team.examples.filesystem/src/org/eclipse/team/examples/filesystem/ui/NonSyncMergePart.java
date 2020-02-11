@@ -39,7 +39,7 @@ import org.eclipse.team.ui.mapping.ISynchronizationCompareInput;
  * to show a manual merge.
  */
 public class NonSyncMergePart extends PageSaveablePart {
-	
+
 	private final NonSyncModelMergePage page;
 
 	protected NonSyncMergePart(Shell shell, CompareConfiguration compareConfiguration, NonSyncModelMergePage page) {
@@ -70,7 +70,7 @@ public class NonSyncMergePart extends PageSaveablePart {
 		}
 		return null;
 	}
-	
+
 	protected static ISynchronizationCompareAdapter getCompareAdapter(Object element) {
 		if (element instanceof ResourceMapping) {
 			ResourceMapping mapping = (ResourceMapping) element;

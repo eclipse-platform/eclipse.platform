@@ -117,11 +117,11 @@ public interface IDiffTree {
 	 * <p>
 	 * For example, this will return the number of outgoing changes in the set:
 	 * </p>
-	 * 
+	 *
 	 * <pre>
 	 * long outgoing = countFor(IThreeWayDiff.OUTGOING, IThreeWayDiff.DIRECTION_MASK);
 	 * </pre>
-	 * 
+	 *
 	 * @param state the sync state
 	 * @param mask  the sync state mask
 	 * @return the number of matching resources in the set.

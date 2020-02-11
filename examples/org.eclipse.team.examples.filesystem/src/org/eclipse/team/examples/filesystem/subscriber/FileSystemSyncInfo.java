@@ -20,7 +20,7 @@ import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
 
 /**
- * Provide a custom sync info that will report files that exist both 
+ * Provide a custom sync info that will report files that exist both
  * locally and remotely as in-sync and will return a null base if there
  * is an incoming change.
  */
@@ -39,7 +39,7 @@ public class FileSystemSyncInfo extends SyncInfo {
 		}
 		return super.calculateKind();
 	}
-	
+
 	@Override
 	public IResourceVariant getBase() {
 		// If the kind has been set and there is an incoming change

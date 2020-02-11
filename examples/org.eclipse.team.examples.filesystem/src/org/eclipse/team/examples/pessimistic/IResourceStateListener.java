@@ -12,7 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic;
- 
+
 import org.eclipse.core.resources.IResource;
 
 /**

@@ -32,14 +32,14 @@ import org.eclipse.ui.internal.wizards.newresource.ResourceMessages;
 public class NewModelProjectWizard extends Wizard implements INewWizard {
 
 	private WizardNewProjectCreationPage mainPage;
-	
+
 	public NewModelProjectWizard() {
 		super();
 	}
-	
+
 	public void addPages() {
 		super.addPages();
-		
+
 		mainPage = new WizardNewProjectCreationPage("basicNewProjectPage");//$NON-NLS-1$
 		mainPage.setTitle(ResourceMessages.NewProject_title);
 		mainPage.setDescription(ResourceMessages.NewProject_description);
@@ -95,14 +95,14 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 
 	/**
 	 * Creates a project resource given the project handle and description.
-	 * 
+	 *
 	 * @param description
 	 *            the project description to create a project resource for
 	 * @param projectHandle
 	 *            the project handle to create a project resource for
 	 * @param monitor
 	 *            the progress monitor to show visual progress with
-	 * 
+	 *
 	 * @exception CoreException
 	 *                if the operation fails
 	 * @exception OperationCanceledException
@@ -127,7 +127,7 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 			monitor.done();
 		}
 	}
-	
+
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// Nothing to do
 	}

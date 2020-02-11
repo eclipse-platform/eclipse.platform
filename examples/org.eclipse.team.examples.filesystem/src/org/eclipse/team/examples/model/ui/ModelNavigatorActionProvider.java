@@ -48,7 +48,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 	public ModelNavigatorActionProvider() {
 		super();
 	}
-	
+
 	public void init(ICommonActionExtensionSite aSite) {
 		super.init(aSite);
 		createActions();
@@ -171,7 +171,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 			}
 		};
 	}
-	
+
 	protected Shell getShell() {
 		return getActionSite().getViewSite().getShell();
 	}
@@ -202,7 +202,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 		}
 		return null;
 	}
-	
+
 	ModelObjectDefinitionFile getSelectedModFile() {
 		IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 		if (selection.size() == 1) {

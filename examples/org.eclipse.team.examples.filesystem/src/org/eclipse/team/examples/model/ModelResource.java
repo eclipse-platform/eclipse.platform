@@ -33,11 +33,11 @@ import org.eclipse.core.runtime.CoreException;
  * <li>Model object folders correspond to workspace folders but only show child
  * folders and MOD files when expanded.</li>
  * </ol>
- * 
+ *
  */
 public abstract class ModelResource extends ModelObject{
 	private final IResource resource;
-	
+
 	protected ModelResource(IResource resource) {
 		this.resource = resource;
 	}
@@ -45,22 +45,22 @@ public abstract class ModelResource extends ModelObject{
 	public IResource getResource() {
 		return resource;
 	}
-	
+
 	@Override
 	public String getName() {
 		return getResource().getName();
 	}
-	
+
 	@Override
 	public String getPath() {
 		return getResource().getFullPath().makeRelative().toString();
 	}
-	
+
 	@Override
 	public ModelObject getParent() {
 		return ModelObject.create(getResource().getParent());
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ModelResource) {
@@ -69,17 +69,17 @@ public abstract class ModelResource extends ModelObject{
 		}
 		return super.equals(obj);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getResource().hashCode();
 	}
-	
+
 	@Override
 	public void delete() throws CoreException {
 		getResource().delete(false, null);
 	}
-	
+
 	@Override
 	public ModelProject getProject() {
 		return (ModelProject)ModelObject.create(getResource().getProject());

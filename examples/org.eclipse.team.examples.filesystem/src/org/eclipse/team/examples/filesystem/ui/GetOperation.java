@@ -65,7 +65,7 @@ public class GetOperation extends FileSystemOperation {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Indicate whether the operation should overwrite outgoing changes.
 	 * By default, the get operation does not override local modifications.
@@ -82,7 +82,7 @@ public class GetOperation extends FileSystemOperation {
 	public void setOverwriteOutgoing(boolean overwriteOutgoing) {
 		this.overwriteOutgoing = overwriteOutgoing;
 	}
-	
+
 	@Override
 	protected String getTaskName() {
 		return Policy.bind("GetAction.working"); //$NON-NLS-1$

@@ -241,10 +241,10 @@ public abstract class AbstractResourceVariantTree implements IResourceVariantTre
 
 				IResource localChild =
 						localSet != null ? (IResource) localSet.get(keyChildName) : null;
-				
+
 				IResourceVariant remoteChild =
 						remoteSet != null ? (IResourceVariant) remoteSet.get(keyChildName) : null;
-				
+
 				if (localChild == null) {
 					// there has to be a remote resource available if we got this far
 					Assert.isTrue(remoteChild != null);

@@ -20,7 +20,7 @@ public abstract class ModelFile extends ModelResource {
 	protected ModelFile(IFile file) {
 		super(file);
 	}
-	
+
 	public String getName() {
 		String name = super.getName();
 		int index = name.lastIndexOf(".");

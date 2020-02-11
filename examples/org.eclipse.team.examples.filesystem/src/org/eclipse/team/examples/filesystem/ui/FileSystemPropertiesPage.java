@@ -23,16 +23,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 /*
- * A property page which displays the  file system specific properties 
+ * A property page which displays the  file system specific properties
  * for the selected resource.
  */
 public class FileSystemPropertiesPage extends PropertyPage {
 	// The resource to show properties for
 	protected IResource resource;
 
-	/*	 
+	/*
 	 * Creates a key-value property pair in the given parent.
-	 * 
+	 *
 	 * @param parent  the parent for the labels
 	 * @param left  the string for the left label
 	 * @param right  the string for the right label
@@ -40,7 +40,7 @@ public class FileSystemPropertiesPage extends PropertyPage {
 	protected void createPair(Composite parent, String left, String right) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(left);
-	
+
 		label = new Label(parent, SWT.NONE);
 		label.setText(right);
 		label.setToolTipText(right);
@@ -50,7 +50,7 @@ public class FileSystemPropertiesPage extends PropertyPage {
 	/*
 	 * Returns the element selected when the properties was run
 	 * @return the selected element
-	 */	
+	 */
 	protected IResource getSelectedElement() {
 		// get the resource that is the source of this property page
 		IResource resource = null;
@@ -65,7 +65,7 @@ public class FileSystemPropertiesPage extends PropertyPage {
 		}
 		return resource;
 	}
-	
+
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -74,7 +74,7 @@ public class FileSystemPropertiesPage extends PropertyPage {
 		layout.marginHeight = layout.marginWidth = 0;
 		composite.setLayout(layout);
 		composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		return composite;
 	}
 }

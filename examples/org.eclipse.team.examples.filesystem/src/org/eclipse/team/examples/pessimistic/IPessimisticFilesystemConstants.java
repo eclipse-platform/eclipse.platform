@@ -16,7 +16,7 @@ package org.eclipse.team.examples.pessimistic;
 /**
  * Preference constants for the <code>PessimisticFilesystemProvider</code>.
  */
-public interface IPessimisticFilesystemConstants {	
+public interface IPessimisticFilesystemConstants {
 	/**
 	 * Preference name's prefix
 	 */
@@ -46,7 +46,7 @@ public interface IPessimisticFilesystemConstants {
 	 * Preference name for the option to add files to the repository provider.
 	 */
 	String PREF_ADD_TO_CONTROL= PREFIX + "AddToControl";
-	
+
 	/**
 	 * Preference option indicating that the user should be prompted.
 	 */
@@ -67,5 +67,5 @@ public interface IPessimisticFilesystemConstants {
 	/**
 	 * Status flag indicating that resources need to be reloaded.
 	 */
-	int STATUS_PROMPT_FOR_RELOAD = 2;	
+	int STATUS_PROMPT_FOR_RELOAD = 2;
 }

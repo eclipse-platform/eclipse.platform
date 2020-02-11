@@ -105,7 +105,7 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		else if  (adapter == IFileState.class){
 			if (storage != null && storage instanceof IFileState)
 				return adapter.cast(storage);
-		} 
+		}
 		return super.getAdapter(adapter);
 	}
 

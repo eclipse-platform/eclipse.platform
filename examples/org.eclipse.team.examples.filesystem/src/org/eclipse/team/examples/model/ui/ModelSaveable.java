@@ -66,7 +66,7 @@ public class ModelSaveable extends Saveable {
 	public boolean isDirty() {
 		return dirty;
 	}
-	
+
 	public void doSave(IProgressMonitor monitor) {
 		dirty = false;
 		modelSaveablesProvider.saved(this);

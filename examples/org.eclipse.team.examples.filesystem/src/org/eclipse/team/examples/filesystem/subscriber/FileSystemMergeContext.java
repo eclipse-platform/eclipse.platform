@@ -61,12 +61,12 @@ public class FileSystemMergeContext extends SubscriberMergeContext {
 			throws CoreException {
 		markAsMerged(diff, false, monitor);
 	}
-	
+
 	@Override
 	public ISchedulingRule getMergeRule(IDiff node) {
 		return ResourceDiffTree.getResourceFor(node).getProject();
 	}
-	
+
 	@Override
 	public IStatus merge(IDiff diff, boolean ignoreLocalChanges, IProgressMonitor monitor) throws CoreException {
 		// Only attempt the merge for non-conflicts. The reason we do this
@@ -83,5 +83,5 @@ public class FileSystemMergeContext extends SubscriberMergeContext {
 		}
 		return super.merge(diff, ignoreLocalChanges, monitor);
 	}
-	
+
 }

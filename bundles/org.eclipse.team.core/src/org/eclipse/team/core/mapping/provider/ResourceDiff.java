@@ -51,7 +51,7 @@ public class ResourceDiff extends TwoWayDiff implements IResourceDiff {
 	 * Convenience constructor for creating a simple folder diff that consists of a
 	 * resource and a kind only. It is equivalent to
 	 * <code>ResourceDiff(resource, kind, 0, null, null)</code>
-	 * 
+	 *
 	 * @param resource a resource
 	 * @param kind     the kind of change (ADDED, REMOVED or CHANGED)
 	 */

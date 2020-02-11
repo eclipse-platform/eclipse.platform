@@ -20,7 +20,7 @@ import org.eclipse.team.core.RepositoryProviderType;
  * The file system repository provider types
  */
 public class FileSystemProviderType extends RepositoryProviderType {
-	
+
 	@Override
 	public ProjectSetCapability getProjectSetCapability() {
 		// Create an empty project set capability to test backwards compatibility

@@ -35,7 +35,7 @@ public class ModelWorkbenchAdapter implements IWorkbenchAdapter {
 
 	// image path
 	private static final String ICON_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
-	
+
 	@Override
 	public Object[] getChildren(Object o) {
 		if (o instanceof ModelObject) {
@@ -86,7 +86,7 @@ public class ModelWorkbenchAdapter implements IWorkbenchAdapter {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Creates an image descriptor.
 	 */

@@ -12,7 +12,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic.ui;
- 
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.team.core.RepositoryProvider;
@@ -30,7 +30,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard 
 	 * The project in question.
 	 */
 	private IProject project;
-	
+
 	@Override
 	public void addPages() {
 		// workaround the wizard problem

@@ -64,7 +64,7 @@ public class NonSyncModelMergeOperation extends ModelMergeOperation {
 			// Create the context
 			context = new FileSystemMergeContext(getScopeManager());
 			// Refresh the context to get the latest remote state
-			context.refresh(getScope().getTraversals(), 
+			context.refresh(getScope().getTraversals(),
 					RemoteResourceMappingContext.FILE_CONTENTS_REQUIRED, SubMonitor.convert(monitor, 75));
 			// What for the context to asynchronously update the diff tree
 			try {
@@ -76,12 +76,12 @@ public class NonSyncModelMergeOperation extends ModelMergeOperation {
 			monitor.done();
 		}
 	}
-	
+
 	@Override
 	protected ISynchronizationContext getContext() {
 		return context;
 	}
-	
+
 	/**
 	 * Handle the preview request by opening a dialog that allows the user to manually merge
 	 * any changes.
@@ -93,7 +93,7 @@ public class NonSyncModelMergeOperation extends ModelMergeOperation {
 		// after the dialog closes
 		Display.getDefault().syncExec(() -> NonSyncMergeDialog.openFor(NonSyncModelMergeOperation.this));
 	}
-	
+
 	@Override
 	public Shell getShell() {
 		// Change method to public

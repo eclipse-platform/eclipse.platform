@@ -22,7 +22,7 @@ import org.eclipse.team.ui.synchronize.ModelMergeOperation;
  * This merge action is contributed as a a popupmenu objectContribution in
  * the plugin.xml. You can change the value return from {@link #isUseSyncFramework()}
  * to try out different dialogs.
- * 
+ *
  * @since 3.2
  */
 public class MergeAction extends FileSystemAction {

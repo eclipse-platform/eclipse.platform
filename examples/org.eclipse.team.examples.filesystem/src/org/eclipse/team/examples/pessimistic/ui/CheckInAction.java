@@ -12,21 +12,21 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.team.examples.pessimistic.ui;
- 
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.examples.pessimistic.PessimisticFilesystemProvider;
 
 /**
- * Performs a check in on the selected resources.  If a folder is 
+ * Performs a check in on the selected resources.  If a folder is
  * selected all of its children are recursively checked in.
  */
 public class CheckInAction extends SourceManagementAction {
 
 	/**
-	 * Answers <code>true</code> if and only if the resource is 
+	 * Answers <code>true</code> if and only if the resource is
 	 * not null, controlled, not ignored, and is checked out.
-	 * 
+	 *
 	 * @see PessimisticProviderAction#shouldEnableFor(IResource)
 	 */
 	@Override
@@ -39,7 +39,7 @@ public class CheckInAction extends SourceManagementAction {
 		if (!provider.isControlled(resource))
 			return false;
 		if (provider.isIgnored(resource))
-			return false;			
+			return false;
 		return provider.isCheckedout(resource);
 	}
 

@@ -36,15 +36,15 @@ import org.eclipse.team.ui.synchronize.SynchronizeModelOperation;
 import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
 
 public class LocalHistoryParticipant extends SubscriberParticipant {
-	
+
 	public static final String ID = "org.eclipse.team.synchronize.example"; //$NON-NLS-1$
 	public static final String CONTEXT_MENU_CONTRIBUTION_GROUP = "context_group_1"; //$NON-NLS-1$
-	
+
 	private class LocalHistoryActionContribution extends SynchronizePageActionGroup {
 		public void initialize(ISynchronizePageConfiguration configuration) {
 			super.initialize(configuration);
 			appendToGroup(
-					ISynchronizePageConfiguration.P_CONTEXT_MENU, CONTEXT_MENU_CONTRIBUTION_GROUP, 
+					ISynchronizePageConfiguration.P_CONTEXT_MENU, CONTEXT_MENU_CONTRIBUTION_GROUP,
 					new SynchronizeModelAction("Revert to latest in local history", configuration) { //$NON-NLS-1$
 						protected SynchronizeModelOperation getSubscriberOperation(ISynchronizePageConfiguration configuration, IDiffElement[] elements) {
 							return new RevertAllOperation(configuration, elements);
@@ -52,7 +52,7 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 					});
 		}
 	}
-	
+
 	private class LocalHistoryDecorator extends LabelProvider implements ILabelDecorator {
 		public String decorateText(String text, Object element) {
 			if(element instanceof ISynchronizeModelElement) {
@@ -67,16 +67,16 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 			}
 			return text;
 		}
-		
+
 		public Image decorateImage(Image image, Object element) {
 			return null;
 		}
 	}
-	
+
 	public LocalHistoryParticipant() {
 		setSubscriber(new LocalHistorySubscriber());
 	}
-	
+
 	protected void setSubscriber(Subscriber subscriber) {
 		super.setSubscriber(subscriber);
 		try {
@@ -87,23 +87,23 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 			// ignore
 		}
 	}
-	
+
 	protected void initializeConfiguration(ISynchronizePageConfiguration configuration) {
 		super.initializeConfiguration(configuration);
 		configuration.addMenuGroup(
-				ISynchronizePageConfiguration.P_CONTEXT_MENU, 
+				ISynchronizePageConfiguration.P_CONTEXT_MENU,
 				CONTEXT_MENU_CONTRIBUTION_GROUP);
 		configuration.addActionContribution(new LocalHistoryActionContribution());
-		configuration.addLabelDecorator(new LocalHistoryDecorator());	
+		configuration.addLabelDecorator(new LocalHistoryDecorator());
 	}
-	
+
 	protected static SyncInfo getSyncInfo(ISynchronizeModelElement element) {
 		if (element instanceof IAdaptable) {
 			return ((IAdaptable)element).getAdapter(SyncInfo.class);
 		}
 		return null;
 	}
-	
+
 	public void prepareCompareInput(ISynchronizeModelElement element,
 			CompareConfiguration config, IProgressMonitor monitor)
 			throws TeamException {

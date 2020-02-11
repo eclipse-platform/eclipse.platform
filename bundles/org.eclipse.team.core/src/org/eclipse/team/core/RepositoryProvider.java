@@ -83,7 +83,7 @@ import org.eclipse.team.internal.core.TeamPlugin;
  * repository provider with a project by invoking
  * <code>RepositoryProvider.map()</code>.
  * </p>
- * 
+ *
  * @see RepositoryProvider#map(IProject, String)
  *
  * @since 2.0

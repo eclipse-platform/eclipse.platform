@@ -32,7 +32,7 @@ public class AdapterFactory implements IAdapterFactory {
 	private ModelMerger modelMerger;
 	private CompareAdapter compareAdapter;
 	private static Object historyPageSource = new FileSystemHistoryPageSource();
-	
+
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof ModelObject)
 			return adapterType.cast(modelAdapter);
@@ -50,11 +50,11 @@ public class AdapterFactory implements IAdapterFactory {
 			}
 			return adapterType.cast(compareAdapter);
 		}
-		
+
 		if (adapterType == IHistoryPageSource.class){
 			return adapterType.cast(historyPageSource);
 		}
-		
+
 		return null;
 	}
 

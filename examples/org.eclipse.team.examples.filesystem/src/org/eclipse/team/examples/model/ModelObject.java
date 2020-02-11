@@ -34,7 +34,7 @@ public abstract class ModelObject extends PlatformObject {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return the name of the model object.
 	 * @return the name of the model object

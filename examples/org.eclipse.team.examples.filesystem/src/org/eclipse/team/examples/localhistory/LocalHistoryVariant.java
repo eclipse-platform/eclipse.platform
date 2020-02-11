@@ -28,7 +28,7 @@ public class LocalHistoryVariant implements IResourceVariant {
 	public LocalHistoryVariant(IFileState state) {
 		this.state = state;
 	}
-	
+
 	public String getName() {
 		return state.getName();
 	}
@@ -48,7 +48,7 @@ public class LocalHistoryVariant implements IResourceVariant {
 	public byte[] asBytes() {
 		return null;
 	}
-	
+
 	public IFileState getFileState() {
 		return state;
 	}

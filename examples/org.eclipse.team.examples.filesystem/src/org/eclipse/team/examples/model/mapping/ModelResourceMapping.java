@@ -36,11 +36,11 @@ public abstract class ModelResourceMapping extends ResourceMapping {
 		}
 		return null;
 	}
-	
+
 	protected ModelResourceMapping(ModelObject object) {
 		this.object = object;
 	}
-	
+
 	@Override
 	public Object getModelObject() {
 		return object;
