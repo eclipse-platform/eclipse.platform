@@ -318,7 +318,7 @@ public class PatchTest extends TestCase {
 		File patchdataFolderFile = patchdataFolderPath.toFile();
 		assertTrue(patchdataFolderFile.isDirectory());
 		File[] listOfSubfolders = patchdataFolderFile
-				.listFiles((FileFilter) pathname -> pathname.isDirectory());
+				.listFiles((FileFilter) File::isDirectory);
 		for (File subfolder : listOfSubfolders) {
 			Path pcPath = new Path(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
 			File pcFile = pcPath.toFile();

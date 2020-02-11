@@ -100,11 +100,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IConfigurationWizardExtension.class) {
-			return adapter.cast(new IConfigurationWizardExtension(){
-				public void init(IWorkbench workbench, IProject[] projects) {
-					setProjects(projects);
-				}
-			});
+			return adapter.cast((IConfigurationWizardExtension) (workbench, projects) -> setProjects(projects));
 		}
 		return null;
 	}
