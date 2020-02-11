@@ -31,7 +31,7 @@ public class CVSSSH2Plugin extends Plugin {
 
 	private ServiceRegistration debugRegistration;
 	private ServiceTracker tracker;
-	
+
 	public CVSSSH2Plugin() {
 		super();
 		plugin = this;
@@ -54,7 +54,7 @@ public class CVSSSH2Plugin extends Plugin {
 	public static CVSSSH2Plugin getDefault() {
 		return plugin;
 	}
-	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -67,7 +67,7 @@ public class CVSSSH2Plugin extends Plugin {
 		tracker = new ServiceTracker(getBundle().getBundleContext(), IJSchService.class.getName(), null);
 		tracker.open();
 	}
-	
+
 	public IJSchService getJSchService() {
 		return (IJSchService)tracker.getService();
 	}

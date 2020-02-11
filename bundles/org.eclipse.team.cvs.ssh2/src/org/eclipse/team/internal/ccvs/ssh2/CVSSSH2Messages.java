@@ -17,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class CVSSSH2Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.team.internal.ccvs.ssh2.messages";//$NON-NLS-1$
-	
+
 	public static String JSchSession_3;
 
 	public static String JSchSession_4;

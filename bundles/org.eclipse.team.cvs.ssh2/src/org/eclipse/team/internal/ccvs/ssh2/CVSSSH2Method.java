@@ -20,21 +20,21 @@ import org.eclipse.team.internal.ccvs.core.*;
  * SSH2 will hijack the 'extssh' method and use the SSH2 protocol instead
  * of SSH1. If the server doesn't support SSH2, the server connection method
  * will try connecting with SSH1.
- * 
+ *
  * @since 3.0
  */
 public class CVSSSH2Method implements IConnectionMethod {
-	
+
 	@Override
 	public String getName() {
 		return "extssh"; //$NON-NLS-1$
 	}
-	
+
 	@Override
 	public IServerConnection createConnection(ICVSRepositoryLocation root, String password) {
 		return new CVSSSH2ServerConnection(root, password);
 	}
-	
+
 	@Override
 	public void disconnect(ICVSRepositoryLocation location) {
 	}

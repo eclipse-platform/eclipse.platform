@@ -30,7 +30,7 @@ import com.jcraft.jsch.*;
 class JSchSession {
 	private static final int SSH_DEFAULT_PORT = 22;
 	private static Hashtable<String, JSchSession> pool = new Hashtable<>();
-	
+
 	private final Session session;
 	private final ICVSRepositoryLocation location;
 
@@ -44,12 +44,12 @@ class JSchSession {
 	public static boolean isAuthenticationFailure(JSchException ee) {
 		return ee.getMessage().equals("Auth fail"); //$NON-NLS-1$
 	}
-	
+
 	static JSchSession getSession(final ICVSRepositoryLocation location, String username, String password, String hostname, int port, IProgressMonitor monitor) throws JSchException {
 		int actualPort = port;
 		if (actualPort == ICVSRepositoryLocation.USE_DEFAULT_PORT)
 			actualPort = getPort(location);
-		
+
 		String key = getPoolKey(username, hostname, actualPort);
 
 		try {
@@ -63,7 +63,7 @@ class JSchSession {
 				IJSchService service = getJSchService();
 				IJSchLocation jlocation=service.getLocation(username, hostname, actualPort);
 
-				// As for the connection method "pserverssh2", 
+				// As for the connection method "pserverssh2",
 				// there is not a place to save the given password for ssh2.
 				if (!location.getMethod().getName().equals("pserverssh2")) { //$NON-NLS-1$
 					IPasswordStore pstore = new IPasswordStore() {
@@ -84,7 +84,7 @@ class JSchSession {
 					jlocation.setPasswordStore(pstore);
 				}
 				jlocation.setComment(NLS.bind(CVSSSH2Messages.JSchSession_3, new String[] {location.toString()}));
-				
+
 				Session session = null;
 				try {
 					session = createSession(service, jlocation, password, monitor);
@@ -156,7 +156,7 @@ class JSchSession {
 	static JSch getJSch() {
 		return getJSchService().getJSch();
 	}
-	
+
 	private JSchSession(Session session, ICVSRepositoryLocation location) {
 		this.session = session;
 		this.location = location;

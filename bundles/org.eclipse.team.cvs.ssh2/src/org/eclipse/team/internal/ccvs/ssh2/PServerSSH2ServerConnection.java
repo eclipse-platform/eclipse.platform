@@ -118,7 +118,7 @@ public class PServerSSH2ServerConnection implements IServerConnection {
 			} catch (JSchException ee) {
 				retry--;
 				if(retry<0){
-					throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_3, CVSAuthenticationException.NO_RETRY, location); 
+					throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_3, CVSAuthenticationException.NO_RETRY, location);
 				}
 				if(session != null && session.isConnected()){
 					session.disconnect();
@@ -129,7 +129,7 @@ public class PServerSSH2ServerConnection implements IServerConnection {
 		}
 		// password for location will be over-written in JSchSession ;-<
 		((CVSRepositoryLocation)location).setPassword(password);
-		
+
 		// CVSROOT=":pserver:localhost:"+lport+""cvs_root
 		try {
 			// If user does not give a password, it must be null.

@@ -38,12 +38,12 @@ import com.jcraft.jsch.JSchException;
 
 /**
  * SSH2 connection method. Has the property of defaulting to SSH1 if the server
- * doesn't support SSH2. 
+ * doesn't support SSH2.
  */
 public class CVSSSH2ServerConnection implements IServerConnection {
-	
+
 	private static final String SSH1_COMPATIBILITY_CLASS = "org.eclipse.team.internal.ccvs.ssh.SSHServerConnection"; //$NON-NLS-1$
-	
+
 	private final class SSH2IOException extends IOException {
 		private static final long serialVersionUID = 1L;
 
@@ -67,7 +67,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 	private JSchSession session;
 	private Channel channel;
 	private IServerConnection ssh1;
-	
+
 	protected CVSSSH2ServerConnection(ICVSRepositoryLocation location, String password) {
 		this.location = location;
 		this.password = password;
@@ -100,7 +100,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 				if (channel != null)
 					channel.disconnect();
 			}
-		} 
+		}
 	}
 	@Override
 	public InputStream getInputStream() {
@@ -122,7 +122,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 			ssh1.open(monitor);
 			return;
 		}
-		monitor.subTask(NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_open, new String[] { location.getHost() })); 
+		monitor.subTask(NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_open, new String[] { location.getHost() }));
 		monitor.worked(1);
 		internalOpen(monitor);
 	}
@@ -193,7 +193,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 				String message = e.getMessage();
 				if (JSchSession.isAuthenticationFailure(e)) {
 					// Do not retry as the Jsh library has it's own retry logic
-					throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_0, CVSAuthenticationException.NO_RETRY,location, e); 
+					throw new CVSAuthenticationException(CVSSSH2Messages.CVSSSH2ServerConnection_0, CVSAuthenticationException.NO_RETRY,location, e);
 				} else if (message.startsWith("Session.connect: ")) { //$NON-NLS-1$
 					// Jsh has messages formatted like "Session.connect: java.net.NoRouteToHostException: ..."
 					// Strip of the exception and try to convert it to a more meaningfull string
@@ -203,7 +203,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 						if (end != -1) {
 							String exception = message.substring(start, end).trim();
 							if (exception.contains("NoRouteToHostException")) { //$NON-NLS-1$
-								message = NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_1, new String[] { location.getHost() }); 
+								message = NLS.bind(CVSSSH2Messages.CVSSSH2ServerConnection_1, new String[] { location.getHost() });
 								throw new NoRouteToHostException(message);
 							} else if (exception.contains("java.net.UnknownHostException")) { //$NON-NLS-1$
 								throw new UnknownHostException(location.getHost());
@@ -217,10 +217,10 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns SSH-1 connection.
-	 * 
+	 *
 	 * @return a connection or <code>null</code>, if SSH-1 is not supported
 	 */
 	private IServerConnection createSSH1Connection() {
@@ -254,7 +254,7 @@ public class CVSSSH2ServerConnection implements IServerConnection {
 		}
 		return null;
 	}
-	
+
 	private boolean isChannelNotOpenError(JSchException ee) {
 		return ee.getMessage().contains("channel is not opened"); //$NON-NLS-1$
 	}
