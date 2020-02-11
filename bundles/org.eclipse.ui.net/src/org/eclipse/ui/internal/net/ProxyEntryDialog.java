@@ -45,6 +45,8 @@ public class ProxyEntryDialog extends StatusDialog {
 	private Label passwordLabel;
 	private Text passwordText;
 
+	private static final String PLUGIN_ID = "org.eclipse.ui.net"; //$NON-NLS-1$
+
 	public ProxyEntryDialog(Shell parent, ProxyData data, String[] addedArray,
 			String title) {
 		super(parent);
@@ -184,12 +186,14 @@ public class ProxyEntryDialog extends StatusDialog {
 			URI uri = new URI(hostText.getText());
 			scheme = uri.getScheme();
 		} catch (URISyntaxException e) {
-			updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+			updateStatus(new Status(IStatus.ERROR,
+					PLUGIN_ID,
 					IStatus.OK, NetUIMessages.ProxyEntryDialog_10, null));
 			return false;
 		}
 		if (scheme != null) {
-			updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+			updateStatus(new Status(IStatus.ERROR,
+					PLUGIN_ID,
 					IStatus.OK, NetUIMessages.ProxyEntryDialog_13, null));
 			return false;
 		}
@@ -221,7 +225,8 @@ public class ProxyEntryDialog extends StatusDialog {
 		String type = typeText.getText();
 		for (String addedType : addedTypes) {
 			if (addedType.equalsIgnoreCase(type)) {
-				updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+				updateStatus(new Status(IStatus.ERROR,
+						PLUGIN_ID,
 						IStatus.OK, NetUIMessages.ProxyEntryDialog_9, null));
 				return;
 			}
@@ -230,25 +235,28 @@ public class ProxyEntryDialog extends StatusDialog {
 			return;
 		}
 		if (hostText.getText().length() == 0) {
-			updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+			updateStatus(new Status(IStatus.ERROR,
+					PLUGIN_ID,
 					IStatus.OK, NetUIMessages.ProxyEntryDialog_10, null));
 			return;
 		}
 		try {
 			int port = Integer.parseInt(portText.getText());
 			if (port < 0) {
-				updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+				updateStatus(new Status(IStatus.ERROR,
+						PLUGIN_ID,
 						IStatus.OK, NetUIMessages.ProxyEntryDialog_11, null));
 				return;
 			}
 		} catch (NumberFormatException e) {
-			updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+			updateStatus(new Status(IStatus.ERROR,
+					PLUGIN_ID,
 					IStatus.OK, NetUIMessages.ProxyEntryDialog_11, null));
 			return;
 		}
 		if (requiresAuthentificationButton.getSelection()) {
 			if (userIdText.getText().length() == 0) {
-				updateStatus(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+				updateStatus(new Status(IStatus.ERROR, PLUGIN_ID,
 						IStatus.OK, NetUIMessages.ProxyEntryDialog_12, null));
 				return;
 			}
