@@ -19,6 +19,12 @@
             contentType="org.eclipse.team.genericeditor.diff.extension.patch">
       </presentationReconciler>
    </extension>
+   <extension point="org.eclipse.ui.editors">
+		<editorContentTypeBinding
+    		contentTypeId="org.eclipse.team.genericeditor.diff.extension.patch"
+    		editorId="org.eclipse.ui.genericeditor.GenericEditor">
+  		</editorContentTypeBinding>
+	</extension>
    <extension
          point="org.eclipse.core.filebuffers.documentSetup">
       <participant
@@ -31,7 +37,7 @@
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             base-type="org.eclipse.core.runtime.text"
-            file-extensions="diff,patch"
+            file-extensions="patch,diff"
             id="org.eclipse.team.genericeditor.diff.extension.patch"
             name="%patch_ContentTypeName"
             priority="normal">
