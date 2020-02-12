@@ -13,21 +13,17 @@
  *******************************************************************************/
 package org.eclipse.compare.examples.xml;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * TestSuite that runs all the XML Compare tests.
  */
+@RunWith(Suite.class)				
+@Suite.SuiteClasses({	
+	TestXMLStructureCreator.class
+})
 public class AllXMLCompareTests {
-
-	public static void main (String[] args) {
-		junit.textui.TestRunner.run (suite());
-	}
-	
-	public static Test suite ( ) {
-		TestSuite suite= new TestSuite("All XML Compare Tests"); //$NON-NLS-1$
-		suite.addTest(TestXMLStructureCreator.suite());
-		return suite;
-	}
+	//test suite
 }
 
