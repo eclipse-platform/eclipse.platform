@@ -13,36 +13,24 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.junit.Assert.assertNull;
+
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.ISharedDocumentAdapter;
-import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
-import org.eclipse.compare.structuremergeviewer.IStructureComparator;
-import org.eclipse.compare.structuremergeviewer.StructureCreator;
+import org.eclipse.compare.structuremergeviewer.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.*;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class StructureCreatorTest extends TestCase {
+public class StructureCreatorTest {
 
-	public StructureCreatorTest() {
-		super();
-	}
-
-	public StructureCreatorTest(String name) {
-		super(name);
-	}
-
+@Test
 	public void testIgnoreWhitespace() {
 		IDocument[] docs = new IDocument[15];
 		docs[0] = new Document();

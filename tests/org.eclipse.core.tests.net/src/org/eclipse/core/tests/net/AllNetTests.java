@@ -16,10 +16,8 @@ package org.eclipse.core.tests.net;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import junit.framework.*;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ NetTest.class, PreferenceModifyListenerTest.class })
-public class AllNetTests extends TestCase {
+public class AllNetTests {
 
 }

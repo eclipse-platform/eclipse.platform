@@ -13,6 +13,10 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -31,12 +35,11 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
+import org.junit.*;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-import junit.framework.TestCase;
-
-public class PatchUITest extends TestCase {
+public class PatchUITest {
 
 	private static final String TEST_PROJECT = "ApplyPatchTest";
 
@@ -46,25 +49,19 @@ public class PatchUITest extends TestCase {
 	private PatchWizardDialog wizardDialog = null;
 	private PatchWizard wizard = null;
 
-	public PatchUITest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		testProject = workspaceRoot.getProject(TEST_PROJECT);
 		testProject.create(null);
 		testProject.open(null);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
 		testProject.delete(true, null);
 	}
-
+@Test
 	public void testApplyClipboardPatch() throws CoreException {
 		// Clipboard support on Mac OS is not reliable when tests are run
 		// through an SSH session, see bug 272870 for details
@@ -92,7 +89,7 @@ public class PatchUITest extends TestCase {
 		InputStream actual = testProject.getFile("context.txt").getContents();
 		compareStreams(expected, actual);
 	}
-
+@Test
 	public void testApplyWorkspacePatch() throws CoreException {
 		copyIntoWorkspace("patch_addition.txt");
 
@@ -121,7 +118,7 @@ public class PatchUITest extends TestCase {
 				.getContents();
 		compareStreams(expected, actual);
 	}
-
+@Test
 	public void testApplyClipboardPatch_AdditionWithWindowsLD() throws Exception {
 		// Clipboard support on Mac OS is not reliable when tests are run
 		// through an SSH session, see bug 272870 for details

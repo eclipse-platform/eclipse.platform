@@ -13,29 +13,22 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.compare.internal.WorkQueue;
 import org.eclipse.compare.internal.Worker;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.*;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class AsyncExecTests {
 
-
-public class AsyncExecTests extends TestCase {
-
-	public AsyncExecTests() {
-		super();
-	}
-
-	public AsyncExecTests(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testQueueAdd() {
 		WorkQueue q = new WorkQueue();
 		assertTrue(q.isEmpty());
@@ -78,6 +71,7 @@ public class AsyncExecTests extends TestCase {
 		assertTrue(q.isEmpty());
 	}
 
+	@Test
 	public void testWorker() {
 		final Worker w = new Worker("");
 		final List<IRunnableWithProgress> worked = new ArrayList<>();
@@ -140,6 +134,7 @@ public class AsyncExecTests extends TestCase {
 		assertEquals(r2, worked.get(0));
 	}
 
+	@Test
 	public void testCancelOnRequeue() {
 		final Worker w = new Worker("");
 		final List<IRunnableWithProgress> worked = new ArrayList<>();

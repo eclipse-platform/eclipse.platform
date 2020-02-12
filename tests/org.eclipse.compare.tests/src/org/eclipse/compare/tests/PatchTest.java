@@ -13,6 +13,12 @@
  *******************************************************************************/
 package org.eclipse.compare.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
@@ -29,18 +35,17 @@ import org.eclipse.compare.tests.PatchUtils.*;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.*;
 import org.junit.Assert;
+import org.junit.Test;
 
 import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
 
-public class PatchTest extends TestCase {
+public class PatchTest {
 
 	private static final String PATCH_CONFIGURATION = "patchConfiguration.properties";
 
 	Properties defaultPatchProperties;
 
-	public PatchTest(String name) {
-		super(name);
+	public PatchTest() {
 		defaultPatchProperties = new Properties();
 		defaultPatchProperties.setProperty("patchFile", "patch.txt");
 		defaultPatchProperties.setProperty("contextFile", "context.txt");
@@ -48,36 +53,32 @@ public class PatchTest extends TestCase {
 		defaultPatchProperties.setProperty("fuzzFactor", "-1");
 	}
 
-	@Override
-	protected void setUp() throws Exception {
-		// empty
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testCreatePatch() throws CoreException, IOException {
 		patch("addition.txt", "patch_addition.txt", "exp_addition.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
+	@Test
 	public void testUnterminatedCreatePatch() throws CoreException, IOException {
 		patch("addition.txt", "patch_addition2.txt", "exp_addition2.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
+	@Test
 	public void testContext0Patch() throws CoreException, IOException {
 		patch("context.txt", "patch_context0.txt", "exp_context.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
+	@Test
 	public void testContext1Patch() throws CoreException, IOException {
 		patch("context.txt", "patch_context1.txt", "exp_context.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
+	@Test
 	public void testContext3Patch() throws CoreException, IOException {
 		patch("context.txt", "patch_context3.txt", "exp_context.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
+	@Test
 	public void testHunkFilter() throws CoreException, IOException {
 		IStorage patchStorage = new StringStorage("patch_hunkFilter.txt");
 		IStorage expStorage = new StringStorage("context.txt");
@@ -88,8 +89,7 @@ public class PatchTest extends TestCase {
 		PatchConfiguration pc = new PatchConfiguration();
 		final IHunk toFilterOut = hunks[3];
 		pc.addHunkFilter(hunk -> hunk != toFilterOut);
-		IFilePatchResult result = patches[0].apply(expStorage, pc,
-				new NullProgressMonitor());
+		IFilePatchResult result = patches[0].apply(expStorage, pc, new NullProgressMonitor());
 		IHunk[] rejects = result.getRejects();
 		assertEquals(2, rejects.length);
 		boolean aFiltered = pc.getHunkFilters()[0].select(rejects[0]);
@@ -105,12 +105,14 @@ public class PatchTest extends TestCase {
 		assertEquals(expected, PatchUtils.asString(actual));
 	}
 
+	@Test
 	public void testContext3PatchWithHeader() throws CoreException, IOException {
 		patch("context.txt", "patch_context3_header.txt", "exp_context.txt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		IStorage patchStorage = new StringStorage("patch_context3_header.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
 		String header = patches[0].getHeader();
-		LineReader reader = new LineReader(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(header.getBytes()))));
+		LineReader reader = new LineReader(
+				new BufferedReader(new InputStreamReader(new ByteArrayInputStream(header.getBytes()))));
 		List<String> lines = reader.readLines();
 		List<String> expected = new ArrayList<>();
 		expected.add("Index: old.txt\n");
@@ -118,6 +120,7 @@ public class PatchTest extends TestCase {
 		assertEquals(LineReader.createString(false, expected), LineReader.createString(false, lines));
 	}
 
+	@Test
 	public void testDateUnknown() throws CoreException {
 		IStorage patchStorage = new StringStorage("patch_dateunknown.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
@@ -125,6 +128,7 @@ public class PatchTest extends TestCase {
 		assertEquals(IFilePatch.DATE_UNKNOWN, patches[0].getAfterDate());
 	}
 
+	@Test
 	public void testDateError() throws CoreException {
 		IStorage patchStorage = new StringStorage("patch_dateerror.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
@@ -132,6 +136,7 @@ public class PatchTest extends TestCase {
 		assertEquals(IFilePatch.DATE_UNKNOWN, patches[0].getAfterDate());
 	}
 
+	@Test
 	public void testDateKnown() throws CoreException {
 		IStorage patchStorage = new StringStorage("patch_datevalid.txt");
 		IFilePatch[] patches = ApplyPatchOperation.parsePatch(patchStorage);
@@ -139,48 +144,83 @@ public class PatchTest extends TestCase {
 		assertFalse(IFilePatch.DATE_UNKNOWN == patches[0].getAfterDate());
 	}
 
-	//Test creation of new workspace patch
-	public void testWorkspacePatch_Create(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{"addition.txt", "addition.txt"}, "patch_workspacePatchAddition.txt", new String[] { "exp_workspacePatchAddition2.txt","exp_workspacePatchAddition.txt"}, false, 0);   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+	// Test creation of new workspace patch
+	@Test
+	public void testWorkspacePatch_Create() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(new String[] { "addition.txt", "addition.txt" }, "patch_workspacePatchAddition.txt", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				new String[] { "exp_workspacePatchAddition2.txt", "exp_workspacePatchAddition.txt" }, false, 0); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	//Test applying the reverse of workspace creation patch
-	public void testWorkspacePatch_Create_Reverse(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{"exp_workspacePatchAddition2.txt","exp_workspacePatchAddition.txt"}, "patch_workspacePatchAddition.txt", new String[] {"addition.txt", "addition.txt"}, true, 0);   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+	// Test applying the reverse of workspace creation patch
+	@Test
+	public void testWorkspacePatch_Create_Reverse() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(new String[] { "exp_workspacePatchAddition2.txt", "exp_workspacePatchAddition.txt" }, //$NON-NLS-1$//$NON-NLS-2$
+				"patch_workspacePatchAddition.txt", new String[] { "addition.txt", "addition.txt" }, true, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	//Test the patching of an already existing file, the creation of a new one and the deletion of elements in a file
-	public void testWorkspacePatch_Modify(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{"exp_workspacePatchAddition2.txt","exp_workspacePatchAddition.txt", "addition.txt"}, "patch_workspacePatchMod.txt", new String[] { "exp_workspacePatchMod1.txt","exp_workspacePatchMod2.txt", "exp_workspacePatchMod3.txt"}, false, 0 );   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+	// Test the patching of an already existing file, the creation of a new one and
+	// the deletion of elements in a file
+	@Test
+	public void testWorkspacePatch_Modify() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(
+				new String[] { "exp_workspacePatchAddition2.txt", "exp_workspacePatchAddition.txt", "addition.txt" }, //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				"patch_workspacePatchMod.txt", new String[] { "exp_workspacePatchMod1.txt", //$NON-NLS-1$ //$NON-NLS-2$
+						"exp_workspacePatchMod2.txt", "exp_workspacePatchMod3.txt" }, //$NON-NLS-1$ //$NON-NLS-2$
+				false, 0);
 	}
 
-	//Test applying the reverse of a workspace modify patch
-	public void testWorkspacePatch_Modify_Reverse(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{ "exp_workspacePatchMod1.txt","exp_workspacePatchMod2.txt", "exp_workspacePatchMod3.txt"}, "patch_workspacePatchMod.txt", new String[] {"exp_workspacePatchAddition2.txt","exp_workspacePatchAddition.txt", "addition.txt"}, true, 0 );   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+	// Test applying the reverse of a workspace modify patch
+	@Test
+	public void testWorkspacePatch_Modify_Reverse() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(
+				new String[] { "exp_workspacePatchMod1.txt", "exp_workspacePatchMod2.txt", //$NON-NLS-1$//$NON-NLS-2$
+						"exp_workspacePatchMod3.txt" }, //$NON-NLS-1$
+				"patch_workspacePatchMod.txt", //$NON-NLS-1$
+				new String[] { "exp_workspacePatchAddition2.txt", "exp_workspacePatchAddition.txt", "addition.txt" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				true, 0);
 	}
 
-	//Tests the deletion of an already existing file, and the modification of another file
-	public void testWorkspacePatch_Delete(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{"exp_workspacePatchMod2.txt","addition.txt", "exp_workspacePatchMod1.txt","addition.txt"}, "patch_workspacePatchDelete.txt", new String[] { "addition.txt","exp_workspacePatchDelete2.txt", "addition.txt", "exp_workspacePatchDelete1.txt"}, false, 0 );   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+	// Tests the deletion of an already existing file, and the modification of
+	// another file
+	@Test
+	public void testWorkspacePatch_Delete() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(
+				new String[] { "exp_workspacePatchMod2.txt", "addition.txt", "exp_workspacePatchMod1.txt", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+						"addition.txt" }, //$NON-NLS-1$
+				"patch_workspacePatchDelete.txt", new String[] { "addition.txt", "exp_workspacePatchDelete2.txt", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						"addition.txt", "exp_workspacePatchDelete1.txt" }, //$NON-NLS-1$ //$NON-NLS-2$
+				false, 0);
 	}
 
-	//Test applying the reverse of a workspace deletion patch
-	public void testWorkspacePatch_Delete_Reverse(){
-		//Note the order that exists in the array of expected results is based purely on the order of the files in the patch
-		patchWorkspace(new String[]{"addition.txt","exp_workspacePatchDelete2.txt", "addition.txt", "exp_workspacePatchDelete1.txt" }, "patch_workspacePatchDelete.txt", new String[] {"exp_workspacePatchMod2.txt","addition.txt", "exp_workspacePatchMod1.txt","addition.txt"}, true, 0 );   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$
+	// Test applying the reverse of a workspace deletion patch
+	@Test
+	public void testWorkspacePatch_Delete_Reverse() {
+		// Note the order that exists in the array of expected results is based purely
+		// on the order of the files in the patch
+		patchWorkspace(
+				new String[] { "addition.txt", "exp_workspacePatchDelete2.txt", "addition.txt", //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+						"exp_workspacePatchDelete1.txt" }, //$NON-NLS-1$
+				"patch_workspacePatchDelete.txt", new String[] { "exp_workspacePatchMod2.txt", "addition.txt", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+						"exp_workspacePatchMod1.txt", "addition.txt" }, //$NON-NLS-1$ //$NON-NLS-2$
+				true, 0);
 	}
 
 	// Keeps track of the failures
 	private List<AssertionError> failures = new ArrayList<>();
 
+	@Test
 	public void testPatchdataSubfolders() throws IOException, CoreException {
-		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"),
-				new Path(PatchUtils.PATCHDATA).toString());
+		URL patchdataUrl = new URL(PatchUtils.getBundle().getEntry("/"), new Path(PatchUtils.PATCHDATA).toString());
 		patchdataUrl = FileLocator.resolve(patchdataUrl);
 
 		Map<String, PatchTestConfiguration> map = null;
@@ -203,8 +243,7 @@ public class PatchTest extends TestCase {
 			PatchConfiguration pc = ptc.pc;
 
 			// create a message to distinguish tests from different subfolders
-			String msg = "Test for subfolder [" + PatchUtils.PATCHDATA + "/"
-					+ sf + "] failed.";
+			String msg = "Test for subfolder [" + PatchUtils.PATCHDATA + "/" + sf + "] failed.";
 
 			try {
 				// test with expected result
@@ -222,8 +261,7 @@ public class PatchTest extends TestCase {
 					continue; // continue with a next subfolder
 				}
 				failures.add(new AssertionError(
-						"\npatchWorkspace should fail for folder ["
-								+ PatchUtils.PATCHDATA + "/" + sf + "]."));
+						"\npatchWorkspace should fail for folder [" + PatchUtils.PATCHDATA + "/" + sf + "]."));
 			}
 		}
 
@@ -255,16 +293,16 @@ public class PatchTest extends TestCase {
 	/**
 	 * @param patchdataUrl
 	 * @return A map with subfolder name as a key and an array of objects as a
-	 *         value. The first object in the array is another array (of
-	 *         Strings) containing file names for the test. The last value in
-	 *         this array can be <code>null</code> as testing against actual
-	 *         result is optional. The second object is an instance of
-	 *         <code>PatchConfiguration</code> class.
+	 *         value. The first object in the array is another array (of Strings)
+	 *         containing file names for the test. The last value in this array can
+	 *         be <code>null</code> as testing against actual result is optional.
+	 *         The second object is an instance of <code>PatchConfiguration</code>
+	 *         class.
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	private Map<String, PatchTestConfiguration> extractNamesForJarProtocol(URL patchdataUrl) throws IOException,
-			CoreException {
+	private Map<String, PatchTestConfiguration> extractNamesForJarProtocol(URL patchdataUrl)
+			throws IOException, CoreException {
 		JarFile jarFile = ((JarURLConnection) patchdataUrl.openConnection()).getJarFile();
 
 		// look for the patchdata folder entry
@@ -292,12 +330,13 @@ public class PatchTest extends TestCase {
 					// a subfolder found
 					ZipEntry patchConf = jarFile.getEntry(entryName + "/" + PATCH_CONFIGURATION);
 					if (patchConf != null) {
-						JarEntryStorage jes = new JarEntryStorage(entry,jarFile);
+						JarEntryStorage jes = new JarEntryStorage(entry, jarFile);
 						Properties properties = new Properties();
 						try {
 							properties.load(jes.getContents());
 						} catch (IOException e) {
-							fail("IOException occured while loading the Patch Configuration file for "+entryName.toString());
+							fail("IOException occured while loading the Patch Configuration file for "
+									+ entryName.toString());
 						}
 						processProperties(result, properties, entryName);
 					} else {
@@ -309,16 +348,14 @@ public class PatchTest extends TestCase {
 		return result;
 	}
 
-	private Map<String, PatchTestConfiguration> extractNamesForFileProtocol(URL patchdataUrl)
-			throws CoreException {
+	private Map<String, PatchTestConfiguration> extractNamesForFileProtocol(URL patchdataUrl) throws CoreException {
 
 		Map<String, PatchTestConfiguration> result = new HashMap<>(); // configuration map
 
 		IPath patchdataFolderPath = new Path(patchdataUrl.getPath());
 		File patchdataFolderFile = patchdataFolderPath.toFile();
 		assertTrue(patchdataFolderFile.isDirectory());
-		File[] listOfSubfolders = patchdataFolderFile
-				.listFiles((FileFilter) File::isDirectory);
+		File[] listOfSubfolders = patchdataFolderFile.listFiles((FileFilter) File::isDirectory);
 		for (File subfolder : listOfSubfolders) {
 			Path pcPath = new Path(subfolder.getPath() + "/" + PATCH_CONFIGURATION);
 			File pcFile = pcPath.toFile();
@@ -330,8 +367,7 @@ public class PatchTest extends TestCase {
 				try {
 					properties.load(new FileInputStream(pcFile));
 				} catch (IOException e) {
-					fail("IOException occured while loading the Patch Configuration file for "
-							+ subfolder.toString());
+					fail("IOException occured while loading the Patch Configuration file for " + subfolder.toString());
 				}
 				processProperties(result, properties, subfolder.getName());
 			} else {
@@ -382,7 +418,7 @@ public class PatchTest extends TestCase {
 		tpc.originalFileNames = cf;
 		tpc.patchFileName = pf;
 		tpc.subfolderName = subfolderName;
-		tpc.expectedFileNames= erf;
+		tpc.expectedFileNames = erf;
 		tpc.actualFileNames = arf;
 		tpc.pc = pc;
 
@@ -395,8 +431,8 @@ public class PatchTest extends TestCase {
 	}
 
 	private void filePatch(final String old, String patch, String expt) throws CoreException, IOException {
-		LineReader lr= new LineReader(PatchUtils.getReader(expt));
-		List<String> inLines= lr.readLines();
+		LineReader lr = new LineReader(PatchUtils.getReader(expt));
+		List<String> inLines = lr.readLines();
 		String expected = LineReader.createString(false, inLines);
 
 		IStorage oldStorage = new StringStorage(old);
@@ -412,30 +448,29 @@ public class PatchTest extends TestCase {
 	}
 
 	private void patcherPatch(String old, String patch, String expt) {
-		LineReader lr= new LineReader(PatchUtils.getReader(old));
-		List<String> inLines= lr.readLines();
+		LineReader lr = new LineReader(PatchUtils.getReader(old));
+		List<String> inLines = lr.readLines();
 
-		WorkspacePatcher patcher= new WorkspacePatcher();
+		WorkspacePatcher patcher = new WorkspacePatcher();
 		try {
 			patcher.parse(PatchUtils.getReader(patch));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		FilePatch2[] diffs= patcher.getDiffs();
+		FilePatch2[] diffs = patcher.getDiffs();
 		Assert.assertEquals(diffs.length, 1);
 
 		FileDiffResult diffResult = patcher.getDiffResult(diffs[0]);
 		diffResult.patch(inLines, null);
 
-		LineReader expectedContents= new LineReader(PatchUtils.getReader(expt));
-		List<String> expectedLines= expectedContents.readLines();
+		LineReader expectedContents = new LineReader(PatchUtils.getReader(expt));
+		List<String> expectedLines = expectedContents.readLines();
 
 		Assert.assertArrayEquals(expectedLines.toArray(), inLines.toArray());
 	}
 
-	private void patchWorkspace(String[] originalFiles, String patch,
-			String[] expectedOutcomeFiles, boolean reverse,
+	private void patchWorkspace(String[] originalFiles, String patch, String[] expectedOutcomeFiles, boolean reverse,
 			int fuzzFactor) {
 		PatchConfiguration pc = new PatchConfiguration();
 		pc.setReversed(reverse);
@@ -450,14 +485,15 @@ public class PatchTest extends TestCase {
 	 * @param originalFiles
 	 * @param patch
 	 * @param expectedOutcomeFiles
-	 * @param patchConfiguration
-	 *            The patch configuration to use. One of its parameters is fuzz
-	 *            factor. If it equals <code>-1</code> it means that the fuzz
-	 *            should be calculated automatically.
+	 * @param patchConfiguration   The patch configuration to use. One of its
+	 *                             parameters is fuzz factor. If it equals
+	 *                             <code>-1</code> it means that the fuzz should be
+	 *                             calculated automatically.
 	 */
-	private void patchWorkspace(String msg, String[] originalFiles, String patch, String[] expectedOutcomeFiles, PatchConfiguration patchConfiguration) {
+	private void patchWorkspace(String msg, String[] originalFiles, String patch, String[] expectedOutcomeFiles,
+			PatchConfiguration patchConfiguration) {
 
-		//ensure that we have the same number of input files as we have expected files
+		// ensure that we have the same number of input files as we have expected files
 		Assert.assertEquals(originalFiles.length, expectedOutcomeFiles.length);
 
 		// Parse the passed in patch and extract all the Diffs
@@ -472,22 +508,23 @@ public class PatchTest extends TestCase {
 			e.printStackTrace();
 		}
 
-		//Sort the diffs by project
-		FilePatch2[] diffs= patcher.getDiffs();
+		// Sort the diffs by project
+		FilePatch2[] diffs = patcher.getDiffs();
 
-		//Iterate through all of the original files, apply the diffs that belong to the file and compare
-		//with the corresponding outcome file
+		// Iterate through all of the original files, apply the diffs that belong to the
+		// file and compare
+		// with the corresponding outcome file
 		for (int i = 0; i < originalFiles.length; i++) {
-			LineReader lr= new LineReader(PatchUtils.getReader(originalFiles[i]));
-			List<String> inLines= lr.readLines();
+			LineReader lr = new LineReader(PatchUtils.getReader(originalFiles[i]));
+			List<String> inLines = lr.readLines();
 
 			FileDiffResult diffResult = patcher.getDiffResult(diffs[i]);
 			diffResult.patch(inLines, null);
 
-			LineReader expectedContents= new LineReader(PatchUtils.getReader(expectedOutcomeFiles[i]));
-			List<String> expectedLines= expectedContents.readLines();
+			LineReader expectedContents = new LineReader(PatchUtils.getReader(expectedOutcomeFiles[i]));
+			List<String> expectedLines = expectedContents.readLines();
 
-			Object[] expected= expectedLines.toArray();
+			Object[] expected = expectedLines.toArray();
 
 			String resultString = LineReader.createString(patcher.isPreserveLineDelimeters(), inLines);
 			LineReader resultReader = new LineReader(new BufferedReader(new StringReader(resultString)));

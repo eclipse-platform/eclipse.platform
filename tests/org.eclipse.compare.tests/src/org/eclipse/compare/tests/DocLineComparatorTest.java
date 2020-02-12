@@ -15,59 +15,44 @@ package org.eclipse.compare.tests;
 
 import java.util.HashMap;
 
-import junit.framework.TestCase;
-
 import org.eclipse.compare.ICompareFilter;
 import org.eclipse.compare.internal.DocLineComparator;
 import org.eclipse.compare.rangedifferencer.IRangeComparator;
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.*;
 import org.junit.Assert;
+import org.junit.Test;
 
-public class DocLineComparatorTest extends TestCase {
+public class DocLineComparatorTest {
 
-	public DocLineComparatorTest(String name) {
-		super(name);
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		// empty
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
-
+	@Test
 	public void testRangesEqual() {
-		IDocument doc1= new Document();
+		IDocument doc1 = new Document();
 		doc1.set("if (s.strip))"); //$NON-NLS-1$
 
-		IDocument doc2= new Document();
+		IDocument doc2 = new Document();
 		doc2.set("if (s.strip)"); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc1, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc2, null, true);
+		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
 		Assert.assertFalse(comp1.rangesEqual(0, comp2, 0));
 	}
 
+	@Test
 	public void testWhitespaceAtEnd() {
-		IDocument doc1= new Document();
+		IDocument doc1 = new Document();
 		doc1.set("if (s.strip))"); //$NON-NLS-1$
 
-		IDocument doc2= new Document();
+		IDocument doc2 = new Document();
 		doc2.set("if (s.strip))   "); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc1, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc2, null, true);
+		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 	}
 
+	@Test
 	public void testOneCompareFilter() {
 		IDocument doc1 = new Document();
 		doc1.set("if (s.strip))"); //$NON-NLS-1$
@@ -81,15 +66,13 @@ public class DocLineComparatorTest extends TestCase {
 		ICompareFilter filter = new ICompareFilter() {
 
 			@Override
-			public void setInput(Object input, Object ancestor, Object left,
-					Object right) {
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
 				// EMPTY
 			}
 
 			@Override
 			public IRegion[] getFilteredRegions(HashMap lineComparison) {
-				return new IRegion[] { new Region(0, 2), new Region(4, 1),
-						new Region(8, 2) };
+				return new IRegion[] { new Region(0, 2), new Region(4, 1), new Region(8, 2) };
 			}
 
 			@Override
@@ -103,25 +86,20 @@ public class DocLineComparatorTest extends TestCase {
 			}
 		};
 
-		IRangeComparator comp1 = new DocLineComparator(doc1, null, false,
-				new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp2 = new DocLineComparator(doc2, null, false,
-				new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp1 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L');
+		IRangeComparator comp2 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter }, 'R');
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 
-		IRangeComparator comp3 = new DocLineComparator(doc1, null, true,
-				new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp4 = new DocLineComparator(doc3, null, true,
-				new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp3 = new DocLineComparator(doc1, null, true, new ICompareFilter[] { filter }, 'L');
+		IRangeComparator comp4 = new DocLineComparator(doc3, null, true, new ICompareFilter[] { filter }, 'R');
 		Assert.assertTrue(comp3.rangesEqual(0, comp4, 0));
 
-		IRangeComparator comp5 = new DocLineComparator(doc1, null, false,
-				new ICompareFilter[] { filter }, 'L');
-		IRangeComparator comp6 = new DocLineComparator(doc3, null, false,
-				new ICompareFilter[] { filter }, 'R');
+		IRangeComparator comp5 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter }, 'L');
+		IRangeComparator comp6 = new DocLineComparator(doc3, null, false, new ICompareFilter[] { filter }, 'R');
 		Assert.assertFalse(comp5.rangesEqual(0, comp6, 0));
 	}
 
+	@Test
 	public void testMultipleCompareFilters() {
 		IDocument doc1 = new Document();
 		doc1.set("if (s.strip))"); //$NON-NLS-1$
@@ -132,8 +110,7 @@ public class DocLineComparatorTest extends TestCase {
 		ICompareFilter filter1 = new ICompareFilter() {
 
 			@Override
-			public void setInput(Object input, Object ancestor, Object left,
-					Object right) {
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
 				// EMPTY
 			}
 
@@ -156,8 +133,7 @@ public class DocLineComparatorTest extends TestCase {
 		ICompareFilter filter2 = new ICompareFilter() {
 
 			@Override
-			public void setInput(Object input, Object ancestor, Object left,
-					Object right) {
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
 				// EMPTY
 			}
 
@@ -180,8 +156,7 @@ public class DocLineComparatorTest extends TestCase {
 		ICompareFilter filter3 = new ICompareFilter() {
 
 			@Override
-			public void setInput(Object input, Object ancestor, Object left,
-					Object right) {
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
 				// EMPTY
 			}
 
@@ -207,13 +182,14 @@ public class DocLineComparatorTest extends TestCase {
 				new ICompareFilter[] { filter1, filter2, filter3 }, 'R');
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 
-		IRangeComparator comp3 = new DocLineComparator(doc1, null, false,
-				new ICompareFilter[] { filter2, filter3 }, 'L');
-		IRangeComparator comp4 = new DocLineComparator(doc2, null, false,
-				new ICompareFilter[] { filter2, filter3 }, 'R');
+		IRangeComparator comp3 = new DocLineComparator(doc1, null, false, new ICompareFilter[] { filter2, filter3 },
+				'L');
+		IRangeComparator comp4 = new DocLineComparator(doc2, null, false, new ICompareFilter[] { filter2, filter3 },
+				'R');
 		Assert.assertFalse(comp3.rangesEqual(0, comp4, 0));
 	}
 
+	@Test
 	public void testWhitespace() {
 		IDocument[] docs = new IDocument[6];
 		docs[0] = new Document();
@@ -224,69 +200,63 @@ public class DocLineComparatorTest extends TestCase {
 		docs[5] = new Document();
 
 		docs[0].set("if (s.strip))\r\n");//$NON-NLS-1$
-		docs[1].set("if (s.strip))\n");  //$NON-NLS-1$
+		docs[1].set("if (s.strip))\n"); //$NON-NLS-1$
 		docs[2].set("if (s .strip))\n"); //$NON-NLS-1$
 		docs[3].set("if (s.str ip))\r"); //$NON-NLS-1$
-		docs[4].set("if (s.strip))");    //$NON-NLS-1$
-		docs[5].set("if (s.stri p))");   //$NON-NLS-1$
+		docs[4].set("if (s.strip))"); //$NON-NLS-1$
+		docs[5].set("if (s.stri p))"); //$NON-NLS-1$
 
 		ICompareFilter[][] filters = new ICompareFilter[3][];
 		filters[0] = null;
-		filters[1] = new ICompareFilter[]{
-				new ICompareFilter() {
+		filters[1] = new ICompareFilter[] { new ICompareFilter() {
 
-					@Override
-					public void setInput(Object input, Object ancestor, Object left,
-							Object right) {
-						// EMPTY
-					}
+			@Override
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
+				// EMPTY
+			}
 
-					@Override
-					public IRegion[] getFilteredRegions(HashMap lineComparison) {
-						return new IRegion[] { new Region(0, 2) };
-					}
+			@Override
+			public IRegion[] getFilteredRegions(HashMap lineComparison) {
+				return new IRegion[] { new Region(0, 2) };
+			}
 
-					@Override
-					public boolean isEnabledInitially() {
-						return false;
-					}
+			@Override
+			public boolean isEnabledInitially() {
+				return false;
+			}
 
-					@Override
-					public boolean canCacheFilteredRegions() {
-						return true; // cache-able
-					}
-				}
-		};
+			@Override
+			public boolean canCacheFilteredRegions() {
+				return true; // cache-able
+			}
+		} };
 
-		filters[2] = new ICompareFilter[]{
-				new ICompareFilter() {
+		filters[2] = new ICompareFilter[] { new ICompareFilter() {
 
-					@Override
-					public void setInput(Object input, Object ancestor, Object left,
-							Object right) {
-						// EMPTY
-					}
+			@Override
+			public void setInput(Object input, Object ancestor, Object left, Object right) {
+				// EMPTY
+			}
 
-					@Override
-					public IRegion[] getFilteredRegions(HashMap lineComparison) {
-						return new IRegion[] { new Region(0, 2) };
-					}
+			@Override
+			public IRegion[] getFilteredRegions(HashMap lineComparison) {
+				return new IRegion[] { new Region(0, 2) };
+			}
 
-					@Override
-					public boolean isEnabledInitially() {
-						return false;
-					}
+			@Override
+			public boolean isEnabledInitially() {
+				return false;
+			}
 
-					@Override
-					public boolean canCacheFilteredRegions() {
-						return false; // not cache-able
-					}
-				}
-		};
+			@Override
+			public boolean canCacheFilteredRegions() {
+				return false; // not cache-able
+			}
+		} };
 
 		IRangeComparator l, r;
-		for (int i=0;i<docs.length;i++)
-			for (int j=i+1;j<docs.length;j++)
+		for (int i = 0; i < docs.length; i++)
+			for (int j = i + 1; j < docs.length; j++)
 				for (ICompareFilter[] filter : filters) {
 					l = new DocLineComparator(docs[i], null, false, filter, 'L');
 					r = new DocLineComparator(docs[j], null, false, filter, 'R');
@@ -294,67 +264,72 @@ public class DocLineComparatorTest extends TestCase {
 					l = new DocLineComparator(docs[i], null, true, filter, 'L');
 					r = new DocLineComparator(docs[j], null, true, filter, 'R');
 					Assert.assertTrue(l.rangesEqual(0, r, 0));
-			}
+				}
 	}
 
+	@Test
 	public void testEmpty() {
-		IDocument doc1= new Document();
+		IDocument doc1 = new Document();
 		doc1.set(""); //$NON-NLS-1$
 
-		IDocument doc2= new Document();
+		IDocument doc2 = new Document();
 		doc2.set("    "); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc1, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc2, null, true);
+		IRangeComparator comp1 = new DocLineComparator(doc1, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc2, null, true);
 
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 	}
 
+	@Test
 	public void testNoContent() {
-		IDocument doc= new Document();
+		IDocument doc = new Document();
 
-		IRangeComparator comp1= new DocLineComparator(doc, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc, new Region(0, doc.getLength()), true);
+		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
 		Assert.assertTrue(comp1.rangesEqual(0, comp2, 0));
 		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
 		Assert.assertEquals(1, comp2.getRangeCount());
 	}
 
+	@Test
 	public void testOneLine() {
 		IDocument doc = new Document();
 		doc.set("line1"); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc, new Region(0, doc.getLength()), true);
+		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
 		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
 		Assert.assertEquals(1, comp2.getRangeCount());
 	}
 
+	@Test
 	public void testTwoLines() {
 		IDocument doc = new Document();
 		doc.set("line1\nline2"); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc, new Region(0, doc.getLength()), true);
+		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
 		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
 		Assert.assertEquals(2, comp2.getRangeCount());
 
-		IRangeComparator comp3= new DocLineComparator(doc, new Region(0, "line1".length()), true);
+		IRangeComparator comp3 = new DocLineComparator(doc, new Region(0, "line1".length()), true);
 		Assert.assertEquals(1, comp3.getRangeCount());
 
-		comp3= new DocLineComparator(doc, new Region(0, "line1".length()+1), true);
+		comp3 = new DocLineComparator(doc, new Region(0, "line1".length() + 1), true);
 		Assert.assertEquals(2, comp3.getRangeCount()); // two lines
 	}
 
+	@Test
 	public void testBug259422() {
 		IDocument doc = new Document();
 		doc.set(""); //$NON-NLS-1$
 
-		IRangeComparator comp1= new DocLineComparator(doc, null, true);
-		IRangeComparator comp2= new DocLineComparator(doc, new Region(0, doc.getLength()), true);
+		IRangeComparator comp1 = new DocLineComparator(doc, null, true);
+		IRangeComparator comp2 = new DocLineComparator(doc, new Region(0, doc.getLength()), true);
 
 		Assert.assertEquals(comp1.getRangeCount(), comp2.getRangeCount());
 	}

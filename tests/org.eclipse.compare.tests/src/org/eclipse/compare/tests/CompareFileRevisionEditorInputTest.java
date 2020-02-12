@@ -21,11 +21,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.team.internal.ui.history.CompareFileRevisionEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class CompareFileRevisionEditorInputTest extends TestCase {
-
+public class CompareFileRevisionEditorInputTest {
+	@Test
 	public void testPrepareCompareInputWithNonLocalResourceTypedElements()
 			throws InvocationTargetException, InterruptedException {
 		TestFriendlyCompareFileRevisionEditorInput input = new TestFriendlyCompareFileRevisionEditorInput(
