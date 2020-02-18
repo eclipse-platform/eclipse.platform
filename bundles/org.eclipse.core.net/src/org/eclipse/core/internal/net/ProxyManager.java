@@ -318,10 +318,13 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 	}
 
 	private boolean isHostFiltered(URI uri) {
-		String[] filters = getNonProxiedHosts();
-		for (String filter : filters) {
-			if (StringUtil.hostMatchesFilter(uri.getHost(), filter))
-				return true;
+		String host = uri.getHost();
+		if (host != null) {
+			String[] filters = getNonProxiedHosts();
+			for (String filter : filters) {
+				if (StringUtil.hostMatchesFilter(host, filter))
+					return true;
+			}
 		}
 		return false;
 	}
@@ -422,9 +425,12 @@ public class ProxyManager implements IProxyService, IPreferenceChangeListener {
 
 	@Override
 	public IProxyData[] select(URI uri) {
-		IProxyData data = getProxyDataForHost(uri.getHost(), uri.getScheme());
-		if (data != null) {
-			return resolveType(new IProxyData[] { data });
+		String host = uri.getHost();
+		if (host != null) {
+			IProxyData data = getProxyDataForHost(host, uri.getScheme());
+			if (data != null) {
+				return resolveType(new IProxyData[] { data });
+			}
 		}
 		return new IProxyData[0];
 	}
