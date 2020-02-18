@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ccvs.core.client;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.internal.ccvs.core.CVSException;
-import org.eclipse.team.internal.ccvs.core.client.Session;
 
 /**
  * Handles a "Valid-requests" response from the CVS server.
