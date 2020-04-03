@@ -45,20 +45,20 @@
     <delete dir="${location}" quiet="true"/>
 
     <!-- Session Test ** CVS Provider ** -->
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+    <!--ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="vmargs" value="-Declipse.cvs.properties=${team-home}/repository.properties -Declipse.cvs.recordProtocolTraffic=true"/>
       <property name="data-dir" value="${location}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="org.eclipse.team.tests.ccvs.core.AllCoreTests"/>
-    </ant>
+    </ant-->
     
     <!-- Session Test ** CVS Provider ** -->
-    <ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
+    <!--ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="vmargs" value="-Declipse.cvs.properties=${team-home}/repository.properties -Declipse.cvs.recordProtocolTraffic=true"/>
       <property name="data-dir" value="${location}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" value="org.eclipse.team.tests.ccvs.core.AllTests"/>
-    </ant>
+    </ant-->
 
   </target>
   
