@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -21,8 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
-
-import junit.framework.Test;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -56,6 +54,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+
+import junit.framework.Test;
 
 public class CreatePatchTest extends EclipseTest {
 
@@ -308,8 +308,7 @@ public class CreatePatchTest extends EclipseTest {
 				try {
 					return serverResp.readLine();
 				} catch (IOException e) {
-					throw new CVSException(new Status(IStatus.ERROR, null,
-							null, e));
+					throw new CVSException(new Status(IStatus.ERROR, CreatePatchTest.class, null, e));
 				}
 			}
 
