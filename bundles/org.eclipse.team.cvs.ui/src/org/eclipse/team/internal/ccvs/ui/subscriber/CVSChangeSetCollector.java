@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.resources.IResource;
@@ -38,8 +39,6 @@ import org.eclipse.team.internal.core.subscribers.CheckedInChangeSet;
 import org.eclipse.team.internal.ui.synchronize.SyncInfoSetChangeSetCollector;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.team.ui.synchronize.SynchronizePageActionGroup;
-
-import com.ibm.icu.text.DateFormat;
 
 /**
  * Collector that fetches the log for incoming CVS change sets

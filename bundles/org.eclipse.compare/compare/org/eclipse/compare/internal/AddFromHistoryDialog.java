@@ -15,7 +15,10 @@ package org.eclipse.compare.internal;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
@@ -52,11 +55,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.MessageFormat;
-import com.ibm.icu.util.Calendar;
-
 
 public class AddFromHistoryDialog extends ResizableDialog {
 

@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui;
 
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.eclipse.core.resources.*;
@@ -41,8 +42,6 @@ import org.eclipse.team.ui.mapping.SynchronizationStateTester;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.themes.ITheme;
 import org.osgi.framework.Bundle;
-
-import com.ibm.icu.text.SimpleDateFormat;
 
 public class CVSLightweightDecorator extends LabelProvider implements ILightweightLabelDecorator, IResourceStateChangeListener, IPropertyChangeListener {
 

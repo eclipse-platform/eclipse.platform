@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui.mappings;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.ResourceTraversal;
@@ -40,8 +41,6 @@ import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.internal.ui.mapping.ResourceModelParticipantAction;
 import org.eclipse.team.ui.synchronize.ISynchronizePageConfiguration;
 import org.eclipse.ui.PlatformUI;
-
-import com.ibm.icu.text.DateFormat;
 
 class OpenChangeSetAction extends ResourceModelParticipantAction {
 

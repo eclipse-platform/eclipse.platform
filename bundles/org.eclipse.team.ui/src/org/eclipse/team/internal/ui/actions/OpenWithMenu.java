@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.actions;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,8 +53,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.statushandlers.IStatusAdapterConstants;
 import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
-
-import com.ibm.icu.text.Collator;
 
 /**
  * A menu for opening file revisions in the workbench.

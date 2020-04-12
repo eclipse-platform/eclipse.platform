@@ -13,8 +13,11 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
+import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,11 +59,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.MessageFormat;
-import com.ibm.icu.util.Calendar;
-
 
 /**
  * A dialog where one input element can be compared against

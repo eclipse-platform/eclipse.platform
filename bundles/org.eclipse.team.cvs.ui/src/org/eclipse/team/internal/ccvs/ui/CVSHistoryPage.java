@@ -18,6 +18,8 @@ package org.eclipse.team.internal.ccvs.ui;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.eclipse.compare.*;
@@ -76,10 +78,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
-import com.ibm.icu.util.Calendar;
 
 public class CVSHistoryPage extends HistoryPage implements IAdaptable, IHistoryCompareAdapter {
 	

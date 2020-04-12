@@ -16,6 +16,7 @@ package org.eclipse.team.internal.ccvs.ui.operations;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.*;
 
 import org.eclipse.core.resources.IFile;
@@ -49,8 +50,6 @@ import org.eclipse.team.ui.history.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-
-import com.ibm.icu.text.DateFormat;
 
 /**
  * An operation to fetch the annotations for a file from the repository and

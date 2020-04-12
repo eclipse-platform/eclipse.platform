@@ -17,16 +17,13 @@
 
 package org.eclipse.team.internal.ccvs.ui;
 
-import com.ibm.icu.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.text.Collator;
+import java.util.*;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -56,6 +53,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 	
 	public static class PerspectiveDescriptorComparator implements Comparator {
+		@Override
 		public int compare(Object o1, Object o2) {
 			if (o1 instanceof IPerspectiveDescriptor && o2 instanceof IPerspectiveDescriptor) {
 				String id1= ((IPerspectiveDescriptor)o1).getLabel();
@@ -89,10 +87,12 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fCheckbox, helpID);
 		}
 		
+		@Override
 		public void initializeValue(IPreferenceStore store) {
 			fCheckbox.setSelection(store.getBoolean(fKey));
 		}
 		
+		@Override
 		public void performOk(IPreferenceStore store) {
 			store.setValue(fKey, fCheckbox.getSelection());
 		}
@@ -124,6 +124,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			return fCombo;
 		}
 		
+		@Override
 		public void initializeValue(IPreferenceStore store) {
 			final Object value= getValue(store, fKey);
 			final int index= fValues.indexOf(value); 
@@ -133,6 +134,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				fCombo.select(0);
 		}
 		
+		@Override
 		public void performOk(IPreferenceStore store) {
 			saveValue(store, fKey, fValues.get(fCombo.getSelectionIndex()));
 		}
@@ -146,10 +148,12 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			super(composite, key, label, helpID, labels, values);
 		}
 
+		@Override
 		protected void saveValue(IPreferenceStore store, String key, Object object) {
 			store.setValue(key, ((Integer)object).intValue());			
 		}
 		
+		@Override
 		protected Object getValue(IPreferenceStore store, String key) {
 			return Integer.valueOf(store.getInt(key));			
 		}
@@ -161,10 +165,12 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			super(composite, key, label, helpID, labels, values);
 		}
 
+		@Override
 		protected Object getValue(IPreferenceStore store, String key) {
 			return store.getString(key);
 		}
 		
+		@Override
 		protected void saveValue(IPreferenceStore store, String key, Object object) {
 			store.setValue(key, (String)object);
 		}
@@ -194,6 +200,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			PlatformUI.getWorkbench().getHelpSystem().setHelp(fGroup, helpID);
 		}
 		
+		@Override
 		public void initializeValue(IPreferenceStore store) {
 			final Object value= loadValue(store, fKey);
 			final int index= fValues.indexOf(value);
@@ -203,6 +210,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			}
 		}
 
+		@Override
 		public void performOk(IPreferenceStore store) {
 			for (int i = 0; i < fButtons.length; ++i) {
 				if (fButtons[i].getSelection()) {
@@ -223,10 +231,12 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			super(composite, key, label, helpID, labels, values);
 		}
 
+		@Override
 		protected Object loadValue(IPreferenceStore store, String key) {
 			return Integer.valueOf(store.getInt(key));
 		}
 
+		@Override
 		protected void saveValue(IPreferenceStore store, String key, Object value) {
 			store.setValue(key, ((Integer)value).intValue());
 		}
@@ -238,10 +248,12 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 			super(composite, key, label, helpID, labels, values);
 		}
 
+		@Override
 		protected Object loadValue(IPreferenceStore store, String key) {
 			return store.getString(key);
 		}
 
+		@Override
 		protected void saveValue(IPreferenceStore store, String key, Object value) {
 			store.setValue(key, (String)value);
 		}
@@ -264,15 +276,18 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				PlatformUI.getWorkbench().getHelpSystem().setHelp(fText, helpID);
 		}
 		
+		@Override
 		public void initializeValue(IPreferenceStore store) {
 			final String value= store.getString(fKey);
 			fText.setText(value);
 		}
 		
+		@Override
 		public void performOk(IPreferenceStore store) {
 			store.setValue(fKey, fText.getText());
 		}
 		
+		@Override
 		public void modifyText(ModifyEvent e) {
 			modifyText(fText);
 		}
@@ -347,6 +362,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		YES_NO_PROMPT= new String [] { CVSUIMessages.CVSPreferencesPage_11, CVSUIMessages.CVSPreferencesPage_12, CVSUIMessages.CVSPreferencesPage_13 }; //  
 	}
 
+	@Override
 	protected Control createContents(Composite parent) {
 		
 		// create a tab folder for the page
@@ -384,6 +400,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				ICVSUIConstants.PREF_COMMIT_FILES_DISPLAY_THRESHOLD, 
 				CVSUIMessages.CVSPreferencesPage_20, 
 				null) {
+			@Override
 			protected void modifyText(Text text) {
 				// Parse the timeout value
 				try {
@@ -406,6 +423,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				ICVSUIConstants.PREF_COMMIT_COMMENTS_MAX_HISTORY, 
 				CVSUIMessages.CVSPreferencesPage_47, 
 				null) {
+			@Override
 			protected void modifyText(Text text) {
 				try {
 					final int x = Integer.parseInt(text.getText());
@@ -438,6 +456,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				ICVSUIConstants.PREF_TIMEOUT, 
 				CVSUIMessages.CVSPreferencesPage_23,  
 				IHelpContextIds.PREF_COMMS_TIMEOUT) {
+			@Override
 			protected void modifyText(Text text) {
 				// Parse the timeout value
 				try {
@@ -465,11 +484,13 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 				new Integer [] { Integer.valueOf(0), Integer.valueOf(1), Integer.valueOf(2)});
 		
 		quietnessCombo.getCombo().addSelectionListener(new SelectionListener() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (getQuietnessOptionFor(quietnessCombo.getCombo().getSelectionIndex()).equals(Command.SILENT)) {
 					MessageDialog.openWarning(getShell(), CVSUIMessages.CVSPreferencesPage_30, CVSUIMessages.CVSPreferencesPage_31);  // 
 				}
 			}
+			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
@@ -574,9 +595,11 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		}
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 
+	@Override
 	public boolean performOk() {
 
 		final IPreferenceStore store = getPreferenceStore();
@@ -608,6 +631,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 		return true;
 	}
 
+	@Override
 	protected void performDefaults() {
 		super.performDefaults();
 		final IPreferenceStore store = getPreferenceStore();
@@ -623,6 +647,7 @@ public class CVSPreferencesPage extends PreferencePage implements IWorkbenchPref
 	 *
 	 * @return the preference store for this plugin
 	 */
+	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
 		return CVSUIPlugin.getPlugin().getPreferenceStore();
 	}

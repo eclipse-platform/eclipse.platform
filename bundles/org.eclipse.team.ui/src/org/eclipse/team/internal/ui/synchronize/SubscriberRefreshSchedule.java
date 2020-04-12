@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.core.runtime.Adapters;
@@ -24,9 +26,6 @@ import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.actions.ActionFactory;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.util.Calendar;
 
 /**
  * Schedule to refresh a subscriber at a specified interval. The schedule can be disabled or enabled

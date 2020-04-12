@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -27,8 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ccvs.core.*;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
-
-import com.ibm.icu.text.DateFormat;
 
 /**
  * This class provides the table and it's required components for a file's revision

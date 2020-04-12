@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.history;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,9 +74,6 @@ import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.part.PluginTransfer;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.eclipse.ui.part.ShowInContext;
-
-import com.ibm.icu.text.SimpleDateFormat;
-
 
 public class GenericHistoryView extends PageBookView implements IHistoryView, IPropertyChangeListener, IShowInTarget {
 	private static final String HISTORY_VIEW_GROUP = "org.eclipse.team.ui.historyView"; //$NON-NLS-1$

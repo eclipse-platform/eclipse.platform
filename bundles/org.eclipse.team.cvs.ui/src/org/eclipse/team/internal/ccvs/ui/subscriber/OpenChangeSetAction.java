@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ccvs.ui.subscriber;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
 
 import org.eclipse.compare.structuremergeviewer.IDiffElement;
 import org.eclipse.core.resources.IResource;
@@ -32,8 +33,6 @@ import org.eclipse.team.internal.core.subscribers.ChangeSet;
 import org.eclipse.team.internal.core.subscribers.CheckedInChangeSet;
 import org.eclipse.team.internal.ui.synchronize.ChangeSetDiffNode;
 import org.eclipse.team.ui.synchronize.*;
-
-import com.ibm.icu.text.DateFormat;
 
 class OpenChangeSetAction extends SynchronizeModelAction {
 

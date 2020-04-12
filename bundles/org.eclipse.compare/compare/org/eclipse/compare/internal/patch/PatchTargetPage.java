@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.patch;
 
+import java.text.MessageFormat;
+
 import org.eclipse.compare.internal.ICompareContextIds;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.resources.IFile;
@@ -38,8 +40,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
-
-import com.ibm.icu.text.MessageFormat;
 
 /***
  * This page only shows up if the user is trying to apply

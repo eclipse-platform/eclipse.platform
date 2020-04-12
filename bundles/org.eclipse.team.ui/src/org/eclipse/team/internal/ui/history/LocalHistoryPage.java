@@ -15,7 +15,9 @@ package org.eclipse.team.internal.ui.history;
 
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -92,9 +94,6 @@ import org.eclipse.ui.OpenAndLinkWithEditorHelper;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.progress.IProgressConstants;
-
-import com.ibm.icu.text.SimpleDateFormat;
-import com.ibm.icu.util.Calendar;
 
 public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdapter {
 	public static final int ON = 1;

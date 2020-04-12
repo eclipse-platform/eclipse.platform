@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
@@ -30,8 +31,6 @@ import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
 import org.eclipse.team.internal.ccvs.ui.actions.CVSAction;
 import org.eclipse.ui.PlatformUI;
-
-import com.ibm.icu.text.DateFormat;
 
 public class CVSFilePropertiesPage extends CVSPropertiesPage {
 	IFile file;

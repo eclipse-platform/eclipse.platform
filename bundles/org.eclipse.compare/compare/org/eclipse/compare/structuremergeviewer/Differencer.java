@@ -15,6 +15,7 @@ package org.eclipse.compare.structuremergeviewer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,8 +31,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-
-import com.ibm.icu.text.MessageFormat;
 
 /**
  * A generic two-way or three-way differencing engine.

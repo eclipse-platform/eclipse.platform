@@ -13,17 +13,17 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
+import java.util.Calendar;
 import java.util.Date;
 
-import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.PlatformUI;
-
-import com.ibm.icu.util.Calendar;
 
 public class CVSHistoryFilterDialog extends TrayDialog {
 
@@ -43,12 +43,14 @@ public class CVSHistoryFilterDialog extends TrayDialog {
 		setHelpAvailable(false); // Disable help controls - F1 will still work
 	}
 
+	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		newShell.setText(CVSUIMessages.HistoryFilterDialog_title);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(newShell, IHelpContextIds.HISTORY_FILTER_DIALOG);
 	}
 
+	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite topLevel = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -143,6 +145,7 @@ public class CVSHistoryFilterDialog extends TrayDialog {
 	/**
 	 * A button has been pressed.  Process the dialog contents.
 	 */
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if (IDialogConstants.CANCEL_ID == buttonId) {
 			super.buttonPressed(buttonId);

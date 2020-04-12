@@ -15,15 +15,12 @@ package org.eclipse.compare.internal.core.patch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.text.ParseException;
+import java.text.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import org.eclipse.compare.patch.IFilePatch2;
 import org.eclipse.core.runtime.*;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
 
 public class PatchReader {
 	private static final boolean DEBUG= false;

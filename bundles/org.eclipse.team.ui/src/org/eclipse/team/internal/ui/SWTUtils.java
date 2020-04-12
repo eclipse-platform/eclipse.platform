@@ -14,6 +14,7 @@
 
 package org.eclipse.team.internal.ui;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
@@ -40,9 +41,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferenceLinkArea;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
-
-import com.ibm.icu.text.MessageFormat;
-
 
 public class SWTUtils {
 

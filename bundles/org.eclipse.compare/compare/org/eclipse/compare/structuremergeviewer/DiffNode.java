@@ -13,13 +13,13 @@
  *******************************************************************************/
 package org.eclipse.compare.structuremergeviewer;
 
+import java.text.MessageFormat;
+
 import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.internal.Utilities;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.graphics.Image;
-
-import com.ibm.icu.text.MessageFormat;
 
 /**
  * Diff node are used as the compare result of the differencing engine.

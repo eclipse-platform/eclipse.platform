@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui;
 
-import java.text.ParseException;
+import java.text.*;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.*;
@@ -27,9 +27,6 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.team.internal.ccvs.core.EditorsInfo;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * 

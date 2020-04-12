@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -38,8 +39,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
-
-import com.ibm.icu.util.Calendar;
 
 /**
  * A composite that allows editing a subscriber refresh schedule. A validator can be used to allow

@@ -13,15 +13,13 @@
  *******************************************************************************/
 package org.eclipse.compare.internal;
 
+import java.text.MessageFormat;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
-
-import com.ibm.icu.text.MessageFormat;
-
 
 public class CompareResourceFilter {
 	private static final char[][] NO_CHAR_CHAR= new char[0][];

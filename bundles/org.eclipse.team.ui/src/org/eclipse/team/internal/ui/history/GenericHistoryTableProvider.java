@@ -14,6 +14,7 @@
 
 package org.eclipse.team.internal.ui.history;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.resources.IFile;
@@ -45,8 +46,6 @@ import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.history.IFileHistory;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-
-import com.ibm.icu.text.DateFormat;
 
 public class GenericHistoryTableProvider {
 	private IFileHistory currentFileHistory;

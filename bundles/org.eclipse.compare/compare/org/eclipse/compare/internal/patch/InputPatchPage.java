@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -71,8 +72,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
-
-import com.ibm.icu.text.MessageFormat;
 
 public class InputPatchPage extends WizardPage {
 

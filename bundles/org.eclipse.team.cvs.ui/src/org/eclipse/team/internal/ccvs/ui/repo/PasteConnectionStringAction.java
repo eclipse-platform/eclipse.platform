@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.repo;
 
+import java.util.StringTokenizer;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -22,8 +24,6 @@ import org.eclipse.ui.*;
 import org.eclipse.ui.actions.ActionDelegate;
 import org.eclipse.ui.actions.ActionFactory;
 
-import com.ibm.icu.util.StringTokenizer;
-
 /**
  * Try to paste a CVS connection string from clipboard as a repository location
  */
@@ -32,6 +32,7 @@ public class PasteConnectionStringAction extends ActionDelegate implements
 
 	private IAction action;
 
+	@Override
 	public void run(IAction action) {
 		Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
 				.getDisplay());
@@ -57,11 +58,13 @@ public class PasteConnectionStringAction extends ActionDelegate implements
 		}
 	}
 
+	@Override
 	public void init(IAction action) {
 		super.init(action);
 		this.action = action;
 	}
 
+	@Override
 	public void init(IViewPart view) {
 		IActionBars actionBars = view.getViewSite().getActionBars();
 		actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), action);

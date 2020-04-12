@@ -16,6 +16,7 @@
 package org.eclipse.compare.internal;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,9 +56,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-
-import com.ibm.icu.text.MessageFormat;
-
 
 /**
  * A two-way or three-way compare for arbitrary IResources.

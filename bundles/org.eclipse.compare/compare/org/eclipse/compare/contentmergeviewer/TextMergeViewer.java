@@ -26,6 +26,7 @@ package org.eclipse.compare.contentmergeviewer;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -206,8 +207,6 @@ import org.eclipse.ui.texteditor.IFindReplaceTargetExtension2;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-
-import com.ibm.icu.text.MessageFormat;
 
 /**
  * A text merge viewer uses the <code>RangeDifferencer</code> to perform a

@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ccvs.ui.console;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.*;
@@ -32,9 +34,6 @@ import org.eclipse.team.internal.ccvs.core.client.listeners.IConsoleListener;
 import org.eclipse.team.internal.ccvs.ui.*;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.*;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Console that shows the output of CVS commands. It is shown as a page in the generic 

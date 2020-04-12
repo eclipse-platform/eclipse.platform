@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.compare;
 
+import java.text.MessageFormat;
+
 import org.eclipse.compare.contentmergeviewer.IFlushable;
 import org.eclipse.compare.internal.CompareMessages;
 import org.eclipse.compare.internal.IFlushable2;
@@ -27,8 +29,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-
-import com.ibm.icu.text.MessageFormat;
 
 /**
  * A custom <code>CompareViewerPane</code> that supports dynamic viewer switching.

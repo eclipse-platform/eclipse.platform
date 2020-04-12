@@ -14,6 +14,7 @@
 package org.eclipse.team.internal.ui.history;
 
 import java.net.URI;
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.compare.ITypedElement;
@@ -24,8 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.history.IFileRevision;
 import org.eclipse.team.internal.ui.StorageTypedElement;
 import org.eclipse.ui.IEditorInput;
-
-import com.ibm.icu.text.DateFormat;
 
 /**
  * An {@link ITypedElement} wrapper for {@link IFileRevision} for use with the

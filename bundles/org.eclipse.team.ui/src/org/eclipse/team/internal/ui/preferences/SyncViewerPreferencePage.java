@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.preferences;
 
+import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -39,8 +40,6 @@ import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-
-import com.ibm.icu.text.Collator;
 
 /**
  * This preference page allows to configure various aspects of the Synchronize View.

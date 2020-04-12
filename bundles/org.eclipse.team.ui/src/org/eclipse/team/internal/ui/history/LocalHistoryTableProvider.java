@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.history;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.compare.IModificationDate;
@@ -49,8 +50,6 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.themes.ITheme;
-
-import com.ibm.icu.text.DateFormat;
 
 public class LocalHistoryTableProvider {
 	/* private */ static final int COL_DATE = 0;

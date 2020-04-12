@@ -15,6 +15,7 @@ package org.eclipse.team.internal.ui.history;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.eclipse.core.resources.IEncodedStorage;
@@ -33,8 +34,6 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-
-import com.ibm.icu.text.DateFormat;
 
 public class FileRevisionEditorInput extends PlatformObject implements IWorkbenchAdapter, IStorageEditorInput {
 	private final Object fileRevision;

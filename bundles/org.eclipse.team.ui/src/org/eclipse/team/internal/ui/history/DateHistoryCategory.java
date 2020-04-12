@@ -14,10 +14,9 @@
 package org.eclipse.team.internal.ui.history;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.eclipse.team.core.history.IFileRevision;
-
-import com.ibm.icu.util.Calendar;
 
 public class DateHistoryCategory extends AbstractHistoryCategory {
 	private String name;

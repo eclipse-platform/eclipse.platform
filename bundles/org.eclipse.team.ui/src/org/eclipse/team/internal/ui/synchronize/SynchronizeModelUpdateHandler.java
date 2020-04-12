@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.team.internal.ui.synchronize;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,9 +50,6 @@ import org.eclipse.team.internal.ui.TeamUIMessages;
 import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.internal.ui.Utils;
 import org.eclipse.team.ui.synchronize.ISynchronizeModelElement;
-
-import com.ibm.icu.text.DateFormat;
-import com.ibm.icu.text.SimpleDateFormat;
 
 /**
  * Handler that serializes the updating of a synchronize model provider.
