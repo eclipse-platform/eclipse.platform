@@ -19,6 +19,6 @@
   </parent>
   <groupId>org.eclipse.team</groupId>
   <artifactId>org.eclipse.team.examples.filesystem</artifactId>
-  <version>3.5.700-SNAPSHOT</version>
+  <version>3.5.800-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
