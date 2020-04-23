@@ -15,6 +15,8 @@ package org.eclipse.core.internal.net;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.text.StringMatcher;
+
 public class StringUtil {
 
 	/**

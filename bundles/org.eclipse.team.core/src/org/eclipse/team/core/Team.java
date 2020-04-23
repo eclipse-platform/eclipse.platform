@@ -52,7 +52,7 @@ import org.eclipse.team.internal.core.FileContentManager;
 import org.eclipse.team.internal.core.Messages;
 import org.eclipse.team.internal.core.Policy;
 import org.eclipse.team.internal.core.StorageMergerRegistry;
-import org.eclipse.team.internal.core.StringMatcher;
+import org.eclipse.team.internal.core.WildcardStringMatcher;
 import org.eclipse.team.internal.core.TeamPlugin;
 import org.eclipse.team.internal.core.TeamResourceChangeListener;
 import org.eclipse.team.internal.core.importing.BundleImporterExtension;
@@ -97,7 +97,7 @@ public final class Team {
 
 	// The ignore list that is read at startup from the persisted file
 	protected static SortedMap<String, Boolean> globalIgnore, pluginIgnore;
-	private static StringMatcher[] ignoreMatchers;
+	private static WildcardStringMatcher[] ignoreMatchers;
 
 	private final static FileContentManager fFileContentManager;
 
@@ -155,8 +155,8 @@ public final class Team {
 	}
 
 	private static boolean matchesEnabledIgnore(IResource resource) {
-		StringMatcher[] matchers = getStringMatchers();
-		for (StringMatcher matcher : matchers) {
+		WildcardStringMatcher[] matchers = getStringMatchers();
+		for (WildcardStringMatcher matcher : matchers) {
 			String resourceName = resource.getName();
 			if (matcher.isPathPattern()) {
 				resourceName = resource.getFullPath().toString();
@@ -247,16 +247,16 @@ public final class Team {
 		return result;
 	}
 
-	private synchronized static StringMatcher[] getStringMatchers() {
+	private synchronized static WildcardStringMatcher[] getStringMatchers() {
 		if (ignoreMatchers==null) {
 			IIgnoreInfo[] ignorePatterns = getAllIgnores();
-			ArrayList<StringMatcher> matchers = new ArrayList<>(ignorePatterns.length);
+			ArrayList<WildcardStringMatcher> matchers = new ArrayList<>(ignorePatterns.length);
 			for (IIgnoreInfo ignorePattern : ignorePatterns) {
 				if (ignorePattern.getEnabled()) {
-					matchers.add(new StringMatcher(ignorePattern.getPattern(), true, false));
+					matchers.add(new WildcardStringMatcher(ignorePattern.getPattern()));
 				}
 			}
-			ignoreMatchers = new StringMatcher[matchers.size()];
+			ignoreMatchers = new WildcardStringMatcher[matchers.size()];
 			ignoreMatchers = matchers.toArray(ignoreMatchers);
 		}
 		return ignoreMatchers;
