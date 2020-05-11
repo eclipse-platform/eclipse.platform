@@ -65,7 +65,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -556,10 +555,6 @@ public class MergeSourceViewer implements ISelectionChangedListener,
 			StyledText c= getSourceViewer().getTextWidget();
 			if (c != null) {
 				c.setEnabled(enabled);
-				Display d= c.getDisplay();
-				if (enabled) {
-					c.setBackground(d.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-				}
 			}
 		}
 	}
