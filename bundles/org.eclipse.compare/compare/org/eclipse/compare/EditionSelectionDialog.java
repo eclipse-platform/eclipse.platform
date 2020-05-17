@@ -1100,7 +1100,7 @@ public class EditionSelectionDialog extends ResizableDialog {
 				fEditionTree.removeAll();
 
 				String pattern= Utilities.getString(fBundle, "treeTitleFormat"); //$NON-NLS-1$
-				String title= MessageFormat.format(pattern, new Object[] { ((Item)w).getText() });
+				String title= MessageFormat.format(pattern, ((Item)w).getText());
 				fEditionPane.setText(title);
 
 				Iterator<Object> iter= editions.iterator();

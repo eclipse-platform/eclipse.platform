@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 public class Messages {
 
 	public static String format(String message, Object object) {
-		return MessageFormat.format(message, new Object[] { object});
+		return MessageFormat.format(message, object);
 	}
 
 	public static String format(String message, Object[] objects) {

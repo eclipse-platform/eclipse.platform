@@ -38,8 +38,7 @@ public class DoNotRemoveTest extends TeamTest {
 	 */
 	public void test_Utils_updateLabels() {
 		try {
-			Method method = Utils.class.getMethod("updateLabels", new Class[] {
-					SyncInfo.class, CompareConfiguration.class });
+			Method method = Utils.class.getMethod("updateLabels", SyncInfo.class, CompareConfiguration.class);
 			assertEquals(Modifier.STATIC | Modifier.PUBLIC,
 					method.getModifiers());
 			assertEquals(Void.TYPE, method.getReturnType());
@@ -56,9 +55,7 @@ public class DoNotRemoveTest extends TeamTest {
 	 */
 	public void testBug312217() {
 		try {
-			Method method = CompareRevisionAction.class.getMethod(
-					"findReusableCompareEditor",
-					new Class[] { IWorkbenchPage.class });
+			Method method = CompareRevisionAction.class.getMethod("findReusableCompareEditor", IWorkbenchPage.class);
 			assertEquals(Modifier.STATIC | Modifier.PUBLIC,
 					method.getModifiers());
 			assertEquals(IEditorPart.class, method.getReturnType());

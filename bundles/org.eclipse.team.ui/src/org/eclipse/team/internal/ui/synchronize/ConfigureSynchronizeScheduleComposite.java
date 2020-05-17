@@ -164,7 +164,7 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 		});
 
 		hoursOrMinutes = new Combo(area, SWT.READ_ONLY);
-		hoursOrMinutes.setItems(new String[] { TeamUIMessages.ConfigureRefreshScheduleDialog_5, TeamUIMessages.ConfigureRefreshScheduleDialog_6 }); //
+		hoursOrMinutes.setItems(TeamUIMessages.ConfigureRefreshScheduleDialog_5, TeamUIMessages.ConfigureRefreshScheduleDialog_6); //
 		hoursOrMinutes.setLayoutData(new GridData());
 
 		final Label label = new Label(area, SWT.WRAP);

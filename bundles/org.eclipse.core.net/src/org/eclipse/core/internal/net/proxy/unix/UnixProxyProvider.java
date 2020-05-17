@@ -212,9 +212,8 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 
 	private static String getEnv(String env) {
 		try {
-			Method m = System.class.getMethod(
-					"getenv", new Class[] { String.class }); //$NON-NLS-1$
-			return (String) m.invoke(null, new Object[] { env });
+			Method m = System.class.getMethod("getenv", String.class); //$NON-NLS-1$
+			return (String) m.invoke(null, env);
 		} catch (Throwable t) {
 			// Fall-back to running 'env' directly. Warning this is very slow...
 			// up to 200ms

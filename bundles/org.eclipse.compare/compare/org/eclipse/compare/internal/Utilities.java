@@ -818,7 +818,7 @@ public class Utilities {
 		for (Method method : methods) {
 			if (method.getName().equals("setReadTimeout")) { //$NON-NLS-1$
 				try {
-					method.invoke(connection, new Object[] {Integer.valueOf(timeout)});
+					method.invoke(connection, Integer.valueOf(timeout));
 					return true;
 				} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
 					// ignore

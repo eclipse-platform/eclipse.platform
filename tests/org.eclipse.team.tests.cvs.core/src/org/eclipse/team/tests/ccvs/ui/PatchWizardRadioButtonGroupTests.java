@@ -248,8 +248,7 @@ public class PatchWizardRadioButtonGroupTests extends TestCase {
 						.forName("org.eclipse.team.internal.ccvs.ui.wizards.GenerateDiffFileWizard$RadioButtonGroup");
 				Constructor<?>[] constructors = clazz.getDeclaredConstructors();
 				constructors[0].setAccessible(true);
-				groupObject = constructors[0]
-						.newInstance(new Object[] { wizard });
+				groupObject = constructors[0].newInstance(wizard);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				fail(e.getMessage());
 			}

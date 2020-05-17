@@ -162,7 +162,7 @@ public class EclipseTest extends ResourceTest {
 			return new CVSTestSetup(suite);
 		} else {
 			try {
-				return new CVSTestSetup((Test) c.getConstructor(new Class[] { String.class }).newInstance(new Object[] {testName}));
+				return new CVSTestSetup((Test) c.getConstructor(new Class[] { String.class }).newInstance(testName));
 			} catch (Exception e) {
 				fail(e.getMessage());
 				// Above will throw so below is never actually reached
