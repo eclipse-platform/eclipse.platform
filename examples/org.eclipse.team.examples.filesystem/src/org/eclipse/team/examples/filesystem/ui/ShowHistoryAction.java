@@ -33,6 +33,7 @@ public class ShowHistoryAction extends ActionDelegate implements IObjectActionDe
 
 	IStructuredSelection fSelection;
 
+	@Override
 	public void run(IAction action) {
 		final Shell shell = Display.getDefault().getActiveShell();
 		try {
@@ -49,12 +50,14 @@ public class ShowHistoryAction extends ActionDelegate implements IObjectActionDe
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		if (sel instanceof IStructuredSelection) {
 			fSelection = (IStructuredSelection) sel;
 		}
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		// do nothing
 	}

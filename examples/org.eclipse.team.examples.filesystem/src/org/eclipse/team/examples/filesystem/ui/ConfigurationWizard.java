@@ -54,10 +54,12 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 	 *
 	 * @see org.eclipse.team.ui.IConfigurationWizard#init(IWorkbench, IProject)
 	 */
+	@Override
 	public void init(IWorkbench workbench, IProject project) {
 		setProjects(new IProject[] { project } );
 	}
 
+	@Override
 	public void addPages() {
 		mainPage = new FileSystemMainPage(
 			"FileSystemMainPage", //$NON-NLS-1$
@@ -71,6 +73,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 	 * Using the information entered in the main page set the provider for
 	 * the given project.
 	 */
+	@Override
 	public boolean performFinish() {
 		mainPage.finish(null);
 		try {
@@ -98,6 +101,7 @@ public class ConfigurationWizard extends Wizard implements IConfigurationWizard,
 		return true;
 	}
 
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IConfigurationWizardExtension.class) {
 			return adapter.cast((IConfigurationWizardExtension) (workbench, projects) -> setProjects(projects));

@@ -118,6 +118,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 		return display;
 	}
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		//Call startup on the Pessimistic Plugin
@@ -126,6 +127,7 @@ public class FileSystemPlugin extends AbstractUIPlugin {
 		tracker.start();
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		try {
 			if (pessPlugin != null)

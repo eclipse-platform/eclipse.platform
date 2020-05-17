@@ -35,6 +35,7 @@ public class ModelSaveable extends Saveable {
 		modelObject = mo;
 	}
 
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof ModelSaveable) {
 			ModelSaveable other = (ModelSaveable) object;
@@ -47,26 +48,32 @@ public class ModelSaveable extends Saveable {
 		return modelObject;
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return ModelWorkbenchAdapter.createImageDescriptor("obj/mod_obj.gif");
 	}
 
+	@Override
 	public String getName() {
 		return modelObject.getName();
 	}
 
+	@Override
 	public String getToolTipText() {
 		return "Saveable for " + getName();
 	}
 
+	@Override
 	public int hashCode() {
 		return modelObject.hashCode();
 	}
 
+	@Override
 	public boolean isDirty() {
 		return dirty;
 	}
 
+	@Override
 	public void doSave(IProgressMonitor monitor) {
 		dirty = false;
 		modelSaveablesProvider.saved(this);
@@ -76,6 +83,7 @@ public class ModelSaveable extends Saveable {
 		dirty = true;
 	}
 
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == ResourceMapping.class) {
 			return Adapters.adapt(getModelObject(), adapter);

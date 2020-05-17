@@ -21,6 +21,7 @@ public abstract class ModelFile extends ModelResource {
 		super(file);
 	}
 
+	@Override
 	public String getName() {
 		String name = super.getName();
 		int index = name.lastIndexOf(".");

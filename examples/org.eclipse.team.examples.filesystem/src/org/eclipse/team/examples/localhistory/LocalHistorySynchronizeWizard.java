@@ -36,6 +36,7 @@ public class LocalHistorySynchronizeWizard extends Wizard {
 			super(pageName, title, titleImage);
 		}
 
+		@Override
 		public void createControl(Composite parent) {
 			Composite top = new Composite(parent, SWT.NONE);
 			top.setLayout(new GridLayout());
@@ -51,10 +52,12 @@ public class LocalHistorySynchronizeWizard extends Wizard {
 		super();
 	}
 
+	@Override
 	public void addPages() {
 		addPage(new MessagePage("Local History", "Create a local history synchronization", TeamImages.getImageDescriptor(ITeamUIImages.IMG_WIZBAN_SHARE)));  //$NON-NLS-1$//$NON-NLS-2$
 	}
 
+	@Override
 	public boolean performFinish() {
 		LocalHistoryParticipant participant = new LocalHistoryParticipant();
 		ISynchronizeManager manager = TeamUI.getSynchronizeManager();

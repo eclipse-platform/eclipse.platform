@@ -72,6 +72,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 			this.fileHistory = fileHistory;
 		}
 
+		@Override
 		public IStatus run(IProgressMonitor monitor) {
 
 			IStatus status = Status.OK_STATUS;
@@ -87,6 +88,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		}
 	}
 
+	@Override
 	public boolean inputSet() {
 		IFile tempFile = getFile();
 		this.file = tempFile;
@@ -118,6 +120,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		return null;
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 
 		localComposite = new Composite(parent, SWT.NONE);
@@ -138,6 +141,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 	private void contributeActions() {
 		openAction = new OpenFileSystemRevisionAction("Open");  //$NON-NLS-1$
 		tableViewer.getTable().addSelectionListener(new SelectionAdapter() {
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				openAction.selectionChanged(tableViewer.getStructuredSelection());
 			}
@@ -159,6 +163,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		TableViewer viewer = fileSystemTableProvider.createTable(parent);
 		viewer.setContentProvider(new IStructuredContentProvider() {
 
+			@Override
 			public Object[] getElements(Object inputElement) {
 				// The entries of already been fetch so return them
 				if (entries != null)
@@ -170,11 +175,13 @@ public class FileSystemHistoryPage extends HistoryPage {
 				return entries;
 			}
 
+			@Override
 			public void dispose() {
 				// TODO Auto-generated method stub
 
 			}
 
+			@Override
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				entries = null;
 			}
@@ -183,14 +190,17 @@ public class FileSystemHistoryPage extends HistoryPage {
 		return viewer;
 	}
 
+	@Override
 	public Control getControl() {
 		return localComposite;
 	}
 
+	@Override
 	public void setFocus() {
 		localComposite.setFocus();
 	}
 
+	@Override
 	public String getDescription() {
 		if (file != null)
 			return file.getFullPath().toString();
@@ -198,6 +208,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		if (file != null)
 			return file.getName();
@@ -205,6 +216,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	public boolean isValidInput(Object object) {
 
 		if (object instanceof IResource && ((IResource) object).getType() == IResource.FILE) {
@@ -216,6 +228,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		return false;
 	}
 
+	@Override
 	public void refresh() {
 		refreshHistory();
 	}
@@ -233,6 +246,7 @@ public class FileSystemHistoryPage extends HistoryPage {
 		Utils.schedule(refreshFileHistoryJob, getWorkbenchSite(parentSite));
 	}
 
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}

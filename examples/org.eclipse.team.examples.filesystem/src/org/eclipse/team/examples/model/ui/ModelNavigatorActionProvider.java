@@ -49,6 +49,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 		super();
 	}
 
+	@Override
 	public void init(ICommonActionExtensionSite aSite) {
 		super.init(aSite);
 		createActions();
@@ -56,6 +57,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 
 	private void createActions() {
 		deleteAction = new Action("Delete") {
+			@Override
 			public void run() {
 				IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 				try {
@@ -72,6 +74,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 			}
 		};
 		newFolderAction = new Action("Create Folder") {
+			@Override
 			public void run() {
 				IContainer container = getSelectedContainer();
 				if (container != null) {
@@ -97,6 +100,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 			}
 		};
 		newModAction = new Action("Create MOD File") {
+			@Override
 			public void run() {
 				IContainer container = getSelectedContainer();
 				if (container != null) {
@@ -124,6 +128,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 			}
 		};
 		newMoeAction = new Action("Create MOE File") {
+			@Override
 			public void run() {
 				ModelObjectDefinitionFile modFile = getSelectedModFile();
 				if (modFile != null) {
@@ -153,6 +158,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 			}
 		};
 		makeDirty = new Action("Make Dirty") {
+			@Override
 			public void run() {
 				IStructuredSelection selection = (IStructuredSelection)getContext().getSelection();
 				for (Iterator iter = selection.iterator(); iter.hasNext();) {
@@ -176,6 +182,7 @@ public class ModelNavigatorActionProvider extends CommonActionProvider {
 		return getActionSite().getViewSite().getShell();
 	}
 
+	@Override
 	public void fillContextMenu(IMenuManager menu) {
 		super.fillContextMenu(menu);
 		menu.add(deleteAction);

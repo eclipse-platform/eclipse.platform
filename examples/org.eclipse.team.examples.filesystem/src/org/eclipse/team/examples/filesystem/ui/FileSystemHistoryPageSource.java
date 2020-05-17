@@ -22,6 +22,7 @@ import org.eclipse.ui.part.Page;
 
 public class FileSystemHistoryPageSource extends HistoryPageSource {
 
+	@Override
 	public boolean canShowHistoryFor(Object object) {
 		if (object instanceof IResource && ((IResource) object).getType() == IResource.FILE) {
 			RepositoryProvider provider = RepositoryProvider.getProvider(((IFile) object).getProject());
@@ -32,6 +33,7 @@ public class FileSystemHistoryPageSource extends HistoryPageSource {
 		return false;
 	}
 
+	@Override
 	public Page createPage(Object object) {
 		FileSystemHistoryPage page = new FileSystemHistoryPage();
 		return page;

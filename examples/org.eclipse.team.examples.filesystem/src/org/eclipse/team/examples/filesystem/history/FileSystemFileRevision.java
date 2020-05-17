@@ -32,17 +32,21 @@ public class FileSystemFileRevision extends FileRevision {
 		this.remoteFile = file;
 	}
 
+	@Override
 	public String getName() {
 		return remoteFile.getName();
 	}
 
+	@Override
 	public long getTimestamp() {
 		return remoteFile.lastModified();
 	}
 
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) {
 		return new IStorage() {
 
+			@Override
 			public InputStream getContents() {
 				try {
 					return new FileInputStream(remoteFile);
@@ -53,18 +57,22 @@ public class FileSystemFileRevision extends FileRevision {
 				return null;
 			}
 
+			@Override
 			public IPath getFullPath() {
 				return new Path(remoteFile.getAbsolutePath());
 			}
 
+			@Override
 			public String getName() {
 				return remoteFile.getName();
 			}
 
+			@Override
 			public boolean isReadOnly() {
 				return true;
 			}
 
+			@Override
 			public <T> T getAdapter(Class<T> adapter) {
 				return null;
 			}
@@ -72,14 +80,17 @@ public class FileSystemFileRevision extends FileRevision {
 		};
 	}
 
+	@Override
 	public boolean isPropertyMissing() {
 		return false;
 	}
 
+	@Override
 	public IFileRevision withAllProperties(IProgressMonitor monitor) {
 		return null;
 	}
 
+	@Override
 	public String getContentIdentifier() {
 		return "[File System Revision]"; //$NON-NLS-1$
 	}

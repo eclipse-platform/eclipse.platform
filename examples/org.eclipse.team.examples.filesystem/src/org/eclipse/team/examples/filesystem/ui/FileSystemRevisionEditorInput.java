@@ -41,14 +41,17 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		}
 	}
 
+	@Override
 	public Object[] getChildren(Object o) {
 		return new Object[0];
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
 		return null;
 	}
 
+	@Override
 	public String getLabel(Object o) {
 		if (storage != null) {
 			return storage.getName();
@@ -56,22 +59,27 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	public Object getParent(Object o) {
 		return null;
 	}
 
+	@Override
 	public IStorage getStorage() {
 		return storage;
 	}
 
+	@Override
 	public boolean exists() {
 		return true;
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		if (fileRevision != null)
 			return fileRevision.getName() + " " + fileRevision.getContentIdentifier();  //$NON-NLS-1$
@@ -82,10 +90,12 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
 
+	@Override
 	public String getToolTipText() {
 		if (fileRevision != null)
 			return getStorage().getFullPath().toString();
@@ -96,6 +106,7 @@ public class FileSystemRevisionEditorInput extends PlatformObject implements IWo
 		return ""; //$NON-NLS-1$
 	}
 
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == IWorkbenchAdapter.class) {
 			return adapter.cast(this);

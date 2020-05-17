@@ -93,10 +93,12 @@ public class FileSystemTableProvider {
 
 	class HistoryLabelProvider extends LabelProvider implements ITableLabelProvider, IColorProvider, IFontProvider {
 
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			IFileRevision entry = adaptToFileRevision(element);
 			if (entry == null)
@@ -115,14 +117,17 @@ public class FileSystemTableProvider {
 			return ""; //$NON-NLS-1$
 		}
 
+		@Override
 		public Color getBackground(Object element) {
 			return null;
 		}
 
+		@Override
 		public Color getForeground(Object element) {
 			return null;
 		}
 
+		@Override
 		public Font getFont(Object element) {
 			return null;
 		}
@@ -152,6 +157,7 @@ public class FileSystemTableProvider {
 		 * Compares two log entries, sorting first by the main column of this sorter,
 		 * then by subsequent columns, depending on the column sort order.
 		 */
+		@Override
 		public int compare(Viewer compareViewer, Object o1, Object o2) {
 			/*if (o1 instanceof AbstractCVSHistoryCategory || o2 instanceof AbstractCVSHistoryCategory)
 			return 0;*/
@@ -250,6 +256,7 @@ public class FileSystemTableProvider {
 			 * presses on the same column header will
 			 * toggle sorting order (ascending/descending).
 			 */
+			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = tableViewer.getTable().indexOf((TableColumn) e.widget);

@@ -35,18 +35,22 @@ public class FileSystemHistory extends FileHistory {
 		this.file = file;
 	}
 
+	@Override
 	public IFileRevision[] getContributors(IFileRevision revision) {
 		return null;
 	}
 
+	@Override
 	public IFileRevision getFileRevision(String id) {
 		return null;
 	}
 
+	@Override
 	public IFileRevision[] getFileRevisions() {
 		return revisions;
 	}
 
+	@Override
 	public IFileRevision[] getTargets(IFileRevision revision) {
 		return null;
 	}

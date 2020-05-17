@@ -47,15 +47,18 @@ public class NonSyncMergePart extends PageSaveablePart {
 		this.page = page;
 	}
 
+	@Override
 	protected Control createPage(Composite parent, ToolBarManager toolBarManager) {
 		page.createControl(parent);
 		return page.getControl();
 	}
 
+	@Override
 	protected ISelectionProvider getSelectionProvider() {
 		return page.getViewer();
 	}
 
+	@Override
 	protected ICompareInput getCompareInput(ISelection selection) {
 		ICompareInput compareInput = super.getCompareInput(selection);
 		if (compareInput != null)
@@ -83,6 +86,7 @@ public class NonSyncMergePart extends PageSaveablePart {
 		return null;
 	}
 
+	@Override
 	protected void prepareInput(ICompareInput input,
 			CompareConfiguration configuration, IProgressMonitor monitor)
 			throws InvocationTargetException {
@@ -103,15 +107,18 @@ public class NonSyncMergePart extends PageSaveablePart {
 		return Adapters.adapt(input, ISynchronizationCompareInput.class);
 	}
 
+	@Override
 	public void contentChanged(IContentChangeNotifier source) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public String getTitle() {
 		return "File System Provider Merge";
 	}
 
+	@Override
 	public Image getTitleImage() {
 		return null;
 	}

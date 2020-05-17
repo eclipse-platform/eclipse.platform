@@ -33,6 +33,7 @@ public class AdapterFactory implements IAdapterFactory {
 	private CompareAdapter compareAdapter;
 	private static Object historyPageSource = new FileSystemHistoryPageSource();
 
+	@Override
 	public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
 		if (adapterType == IWorkbenchAdapter.class && adaptableObject instanceof ModelObject)
 			return adapterType.cast(modelAdapter);
@@ -58,6 +59,7 @@ public class AdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class<?>[] getAdapterList() {
 		return new Class[] { IWorkbenchAdapter.class, ResourceMapping.class, IResourceMappingMerger.class, ISynchronizationCompareAdapter.class };
 	}

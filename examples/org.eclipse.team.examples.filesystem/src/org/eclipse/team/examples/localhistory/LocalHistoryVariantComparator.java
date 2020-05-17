@@ -18,14 +18,17 @@ import org.eclipse.team.core.variants.IResourceVariant;
 import org.eclipse.team.core.variants.IResourceVariantComparator;
 
 public class LocalHistoryVariantComparator implements IResourceVariantComparator {
+	@Override
 	public boolean compare(IResource local, IResourceVariant remote) {
 		return false;
 	}
 
+	@Override
 	public boolean compare(IResourceVariant base, IResourceVariant remote) {
 		return false;
 	}
 
+	@Override
 	public boolean isThreeWay() {
 		return false;
 	}

@@ -29,22 +29,27 @@ public class LocalHistoryVariant implements IResourceVariant {
 		this.state = state;
 	}
 
+	@Override
 	public String getName() {
 		return state.getName();
 	}
 
+	@Override
 	public boolean isContainer() {
 		return false;
 	}
 
+	@Override
 	public IStorage getStorage(IProgressMonitor monitor) {
 		return state;
 	}
 
+	@Override
 	public String getContentIdentifier() {
 		return DateFormat.getDateTimeInstance().format(new Date(state.getModificationTime()));
 	}
 
+	@Override
 	public byte[] asBytes() {
 		return null;
 	}

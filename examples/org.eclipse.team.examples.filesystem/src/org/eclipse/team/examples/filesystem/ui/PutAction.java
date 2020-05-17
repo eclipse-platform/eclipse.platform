@@ -23,6 +23,7 @@ import org.eclipse.team.examples.filesystem.Policy;
  */
 public class PutAction extends FileSystemAction {
 
+	@Override
 	protected void execute(IAction action) {
 		try {
 			PutOperation operation = new PutOperation(getTargetPart(),

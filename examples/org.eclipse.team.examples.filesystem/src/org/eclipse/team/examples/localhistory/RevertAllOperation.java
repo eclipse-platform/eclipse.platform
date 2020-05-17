@@ -28,15 +28,18 @@ public class RevertAllOperation extends SynchronizeModelOperation {
 		super(configuration, elements);
 	}
 
+	@Override
 	protected boolean canRunAsJob() {
 		return true;
 	}
 
+	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		final SyncInfo infos[] = getSyncInfoSet().getSyncInfos();
 		if(infos.length == 0) return;
 
 		WorkspaceModifyOperation operation= new WorkspaceModifyOperation() {
+			@Override
 			public void execute(IProgressMonitor pm) throws InvocationTargetException {
 				try {
 					pm.beginTask("Reverting from local history", 100 * infos.length);	 //$NON-NLS-1$

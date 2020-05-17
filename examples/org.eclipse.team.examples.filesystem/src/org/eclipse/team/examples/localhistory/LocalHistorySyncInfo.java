@@ -25,6 +25,7 @@ public class LocalHistorySyncInfo extends SyncInfo {
 		super(local, null, remote, comparator);
 	}
 
+	@Override
 	protected int calculateKind() throws TeamException {
 		if (getRemote() == null)
 			return IN_SYNC;

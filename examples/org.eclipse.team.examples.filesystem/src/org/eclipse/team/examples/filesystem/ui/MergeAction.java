@@ -27,6 +27,7 @@ import org.eclipse.team.ui.synchronize.ModelMergeOperation;
  */
 public class MergeAction extends FileSystemAction {
 
+	@Override
 	protected void execute(IAction action) {
 		try {
 			ModelMergeOperation operation;

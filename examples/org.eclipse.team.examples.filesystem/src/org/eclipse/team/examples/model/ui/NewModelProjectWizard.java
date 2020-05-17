@@ -37,6 +37,7 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 		super();
 	}
 
+	@Override
 	public void addPages() {
 		super.addPages();
 
@@ -46,6 +47,7 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 		this.addPage(mainPage);
 	}
 
+	@Override
 	public boolean performFinish() {
 		// get a project handle
 		final IProject newProjectHandle = mainPage.getProjectHandle();
@@ -64,6 +66,7 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 
 		// create the new project operation
 		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+			@Override
 			protected void execute(IProgressMonitor monitor)
 					throws CoreException {
 				createProject(description, newProjectHandle, monitor);
@@ -128,6 +131,7 @@ public class NewModelProjectWizard extends Wizard implements INewWizard {
 		}
 	}
 
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// Nothing to do
 	}

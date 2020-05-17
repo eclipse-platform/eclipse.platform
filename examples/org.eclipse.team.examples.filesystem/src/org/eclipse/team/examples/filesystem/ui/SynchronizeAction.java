@@ -27,6 +27,7 @@ import org.eclipse.team.ui.synchronize.ISynchronizeParticipant;
  */
 public class SynchronizeAction extends FileSystemAction {
 
+	@Override
 	protected void execute(IAction action) {
 		ResourceMapping[] mappings = getSelectedMappings();
 		if (mappings.length == 0)

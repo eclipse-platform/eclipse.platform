@@ -41,6 +41,7 @@ public class NonSyncMergeDialog extends SaveablePartDialog {
 		super(shell, input);
 	}
 
+	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == OK) {
 			NonSyncMergePart part = (NonSyncMergePart)getInput();
@@ -57,6 +58,7 @@ public class NonSyncMergeDialog extends SaveablePartDialog {
 		return context.getDiffTree().hasMatchingDiffs(
 				ResourcesPlugin.getWorkspace().getRoot().getFullPath(),
 				new FastDiffFilter() {
+					@Override
 					public boolean select(IDiff diff) {
 						if (diff instanceof IThreeWayDiff) {
 							IThreeWayDiff twd = (IThreeWayDiff) diff;

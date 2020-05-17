@@ -22,14 +22,17 @@ import org.eclipse.team.core.history.provider.FileHistoryProvider;
 
 public class FileSystemHistoryProvider extends FileHistoryProvider {
 
+	@Override
 	public IFileHistory getFileHistoryFor(IResource resource, int flags, IProgressMonitor monitor) {
 		return null;
 	}
 
+	@Override
 	public IFileHistory getFileHistoryFor(IFileStore store, int flags, IProgressMonitor monitor) {
 		return null;
 	}
 
+	@Override
 	public IFileRevision getWorkspaceFileRevision(IResource resource) {
 		return null;
 	}

@@ -36,6 +36,7 @@ public class BlankPage extends WizardPage {
 	/**
 	 * Creates an empty control.
 	 */
+	@Override
 	public void createControl(Composite parent) {
 		Composite client = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();

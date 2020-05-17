@@ -32,14 +32,17 @@ public class ModelObjectElementFile extends ModelFile {
 		this.parent = parent;
 	}
 
+	@Override
 	public ModelObject[] getChildren() {
 		return new ModelObject[0];
 	}
 
+	@Override
 	public ModelObject getParent() {
 		return parent;
 	}
 
+	@Override
 	public void delete() throws CoreException {
 		parent.remove(this);
 		super.delete();

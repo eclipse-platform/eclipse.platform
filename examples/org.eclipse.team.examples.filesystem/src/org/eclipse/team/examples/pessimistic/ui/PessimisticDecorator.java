@@ -35,6 +35,7 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		PessimisticFilesystemProviderPlugin.getInstance().addProviderListener(this);
 	}
 
+	@Override
 	public String decorateText(String text, Object element) {
 		IResource resource= getResource(element);
 		if (resource == null)
@@ -55,6 +56,7 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		return "(not controlled) " + text;
 	}
 
+	@Override
 	public Image decorateImage(Image image, Object element) {
 		return image;
 	}
@@ -96,11 +98,13 @@ public class PessimisticDecorator extends LabelProvider implements ILabelDecorat
 		}
 	}
 
+	@Override
 	public void dispose() {
 		PessimisticFilesystemProviderPlugin.getInstance().removeProviderListener(this);
 		super.dispose();
 	}
 
+	@Override
 	public void stateChanged(IResource[] resources) {
 		if (resources.length > 0) {
 			LabelProviderChangedEvent[] events= new LabelProviderChangedEvent[resources.length];
