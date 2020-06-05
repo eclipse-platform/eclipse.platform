@@ -193,7 +193,7 @@ protected Control createDialogArea(Composite parent) {
 
 		createPasswordFields(main);
 
-		if (isPasswordAuth & domain != null) {
+		if (isPasswordAuth && domain != null) {
 			allowCachingButton = new Button(main, SWT.CHECK);
 			allowCachingButton.setText(Messages.KeyboardInteractiveDialog_4);
 			data = new GridData(GridData.FILL_HORIZONTAL
