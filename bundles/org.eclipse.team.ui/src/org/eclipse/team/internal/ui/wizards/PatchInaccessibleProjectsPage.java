@@ -71,7 +71,7 @@ public class PatchInaccessibleProjectsPage extends WizardPage {
 
 		checkList = CheckboxTableViewer.newCheckList(composite, SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER);
-		checkList.setContentProvider(new ArrayContentProvider());
+		checkList.setContentProvider(ArrayContentProvider.getInstance());
 		checkList.setLabelProvider(new WorkbenchLabelProvider() {
 			@Override
 			public Color getForeground(Object element) {

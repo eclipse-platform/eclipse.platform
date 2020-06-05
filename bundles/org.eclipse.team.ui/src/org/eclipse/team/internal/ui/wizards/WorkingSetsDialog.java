@@ -88,7 +88,7 @@ public class WorkingSetsDialog extends TitleAreaDialog {
 		gd.heightHint = 250;
 		wsTableViewer.getTable().setLayoutData(gd);
 
-		wsTableViewer.setContentProvider(new ArrayContentProvider());
+		wsTableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		wsTableViewer.setLabelProvider(new WorkingSetLabelProvider());
 		wsTableViewer.setInput(PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets());
 
