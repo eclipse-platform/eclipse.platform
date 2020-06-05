@@ -161,7 +161,7 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		} else {
 			ListSelectionDialog dlg = new ListSelectionDialog(
 					view.getSite().getShell(), dirtyModels,
-					new ArrayContentProvider(),
+					ArrayContentProvider.getInstance(),
 					new WorkbenchPartLabelProvider(), TeamUIMessages.RemoveSynchronizeParticipantAction_4);
 			dlg.setInitialSelections(dirtyModels.toArray());
 			dlg.setTitle(TeamUIMessages.RemoveSynchronizeParticipantAction_5);
