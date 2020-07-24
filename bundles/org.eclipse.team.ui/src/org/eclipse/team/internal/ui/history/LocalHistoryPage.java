@@ -496,7 +496,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 			//Contribute actions to popup menu
 			MenuManager menuMgr = new MenuManager();
 			Menu menu = menuMgr.createContextMenu(treeViewer.getTree());
-			menuMgr.addMenuListener(menuMgr1 -> fillTableMenu(menuMgr1));
+			menuMgr.addMenuListener(this::fillTableMenu);
 			menuMgr.setRemoveAllWhenShown(true);
 			treeViewer.getTree().setMenu(menu);
 
