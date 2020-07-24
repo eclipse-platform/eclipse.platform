@@ -232,7 +232,7 @@ public class NonSyncModelMergePage extends Page {
 	private void hookContextMenu(final TreeViewer viewer) {
 		final MenuManager menuMgr = new MenuManager();
 		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(manager -> fillContextMenu(manager));
+		menuMgr.addMenuListener(this::fillContextMenu);
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
 		viewer.getControl().setMenu(menu);
 	}
