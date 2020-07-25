@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -166,7 +166,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 	@Override
 	protected boolean checkWorkingSetElements() {
-		List allWorkingSetElements = new ArrayList();
+		List<Object> allWorkingSetElements = new ArrayList<>();
 		IWorkingSet[] workingSets = getWorkingSets();
 		for (IWorkingSet set : workingSets) {
 			allWorkingSetElements.addAll(computeSelectedResources(new StructuredSelection(set.getElements())));
@@ -175,8 +175,8 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 		return !allWorkingSetElements.isEmpty();
 	}
 
-	private Collection computeSelectedResources(StructuredSelection selection) {
-		List result = new ArrayList();
+	private Collection<Object> computeSelectedResources(StructuredSelection selection) {
+		List<Object> result = new ArrayList<>();
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
 			Object element = iter.next();
 			ResourceMapping mapping = Utils.getResourceMapping(element);

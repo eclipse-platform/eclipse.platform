@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -89,7 +89,7 @@ public abstract class CompareInputChangeNotifier implements
 	private class InputChangeEventHandler extends BackgroundEventHandler {
 
 		private final Set<ICompareInput> changedInputs = new HashSet<>();
-		private final List pendingRunnables = new ArrayList();
+		private final List<Event> pendingRunnables = new ArrayList<>();
 
 		protected InputChangeEventHandler() {
 			super(TeamUIMessages.CompareInputChangeNotifier_0, TeamUIMessages.CompareInputChangeNotifier_1);
@@ -105,7 +105,7 @@ public abstract class CompareInputChangeNotifier implements
 					if (changedInputs.isEmpty() && pendingRunnables.isEmpty())
 						return false;
 					toDispatch = changedInputs.toArray(new ICompareInput[changedInputs.size()]);
-					events = (RunnableEvent[]) pendingRunnables.toArray(new RunnableEvent[pendingRunnables.size()]);
+					events = pendingRunnables.toArray(new RunnableEvent[pendingRunnables.size()]);
 					changedInputs.clear();
 					pendingRunnables.clear();
 				}

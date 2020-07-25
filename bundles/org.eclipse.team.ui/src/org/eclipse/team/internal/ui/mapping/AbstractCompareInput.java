@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -32,7 +32,7 @@ public abstract class AbstractCompareInput implements ICompareInput {
 	private ITypedElement left;
 	private ITypedElement right;
 	private int kind;
-	private final ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private final ListenerList<ICompareInputChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	public AbstractCompareInput(int kind,
 			ITypedElement ancestor,
