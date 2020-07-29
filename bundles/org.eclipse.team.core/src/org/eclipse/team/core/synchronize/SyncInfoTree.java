@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -311,8 +310,7 @@ public class SyncInfoTree extends SyncInfoSet {
 	private synchronized IResource[] internalMembers(IWorkspaceRoot root) {
 		Set possibleChildren = parents.keySet();
 		Set<IResource> children = new HashSet<>();
-		for (Iterator it = possibleChildren.iterator(); it.hasNext();) {
-			Object next = it.next();
+		for (Object next : possibleChildren) {
 			IResource element = root.findMember((IPath)next);
 			if (element != null) {
 				children.add(element.getProject());
@@ -339,8 +337,7 @@ public class SyncInfoTree extends SyncInfoSet {
 		IPath path = parent.getFullPath();
 		Set possibleChildren = parents.get(path);
 		if(possibleChildren != null) {
-			for (Iterator it = possibleChildren.iterator(); it.hasNext();) {
-				Object next = it.next();
+			for (Object next : possibleChildren) {
 				IResource element = (IResource)next;
 				IPath childPath = element.getFullPath();
 				IResource modelObject = null;

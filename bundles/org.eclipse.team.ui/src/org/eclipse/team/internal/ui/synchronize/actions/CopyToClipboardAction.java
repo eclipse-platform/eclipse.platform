@@ -99,8 +99,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 				}
 			}
 		} else {
-			for (Iterator it = structuredSelection.iterator(); it.hasNext();) {
-				Object element = it.next();
+			for (Object element : structuredSelection) {
 				if (element instanceof ITypedElement) {
 					if (i > 0)
 						buf.append(EOL);

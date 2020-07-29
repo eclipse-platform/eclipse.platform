@@ -21,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -258,8 +257,8 @@ public class FileContentManager implements IFileContentManager {
 	private static IStringMapping [] getStringMappings(Map map) {
 		final IStringMapping [] result= new IStringMapping [map.size()];
 		int index= 0;
-		for (final Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
-			final Map.Entry entry= (Map.Entry)iter.next();
+		for (Object element : map.entrySet()) {
+			final Map.Entry entry= (Map.Entry)element;
 			result[index++]= new StringMapping((String)entry.getKey(), ((Integer)entry.getValue()).intValue());
 		}
 		return result;

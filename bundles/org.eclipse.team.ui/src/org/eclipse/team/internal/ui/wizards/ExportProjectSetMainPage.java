@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -153,8 +152,8 @@ public class ExportProjectSetMainPage extends TeamWizardPage {
 			} else if (inputElement instanceof HashSet){
 				Set<IProject> tempList = new HashSet<>();
 				HashSet inputElementSet = (HashSet) inputElement;
-				for (Iterator iterator = inputElementSet.iterator(); iterator.hasNext();) {
-					IProject[] projects = getProjectsForObject(iterator.next());
+				for (Object element : inputElementSet) {
+					IProject[] projects = getProjectsForObject(element);
 					if (projects != null)
 						tempList.addAll(Arrays.asList(projects));
 				}

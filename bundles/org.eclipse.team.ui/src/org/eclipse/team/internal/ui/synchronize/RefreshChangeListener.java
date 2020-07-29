@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.synchronize;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -45,8 +44,8 @@ public class RefreshChangeListener implements ISubscriberChangeListener, IChange
 	public SyncInfo[] getChanges() {
 		List changedSyncInfos = new ArrayList();
 		SyncInfoSet set = collector.getSyncInfoSet();
-		for (Iterator it = changes.iterator(); it.hasNext();) {
-			ISubscriberChangeEvent delta = (ISubscriberChangeEvent) it.next();
+		for (Object change : changes) {
+			ISubscriberChangeEvent delta = (ISubscriberChangeEvent) change;
 			SyncInfo info = set.getSyncInfo(delta.getResource());
 			if (info != null && interestingChange(info)) {
 				changedSyncInfos.add(info);

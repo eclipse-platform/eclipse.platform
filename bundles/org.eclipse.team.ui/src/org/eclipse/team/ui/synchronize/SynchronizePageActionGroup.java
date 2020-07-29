@@ -15,7 +15,6 @@ package org.eclipse.team.ui.synchronize;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -340,8 +339,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 			for (String groupId : groups.keySet()) {
 				List actions = groups.get(groupId);
 				if (actions != null) {
-					for (Iterator iter2 = actions.iterator(); iter2.hasNext();) {
-						Object element = iter2.next();
+					for (Object element : actions) {
 						if (element instanceof IAction) {
 							// Call the internal method to avoid registering the action
 							// as a global handler since it would have been registered

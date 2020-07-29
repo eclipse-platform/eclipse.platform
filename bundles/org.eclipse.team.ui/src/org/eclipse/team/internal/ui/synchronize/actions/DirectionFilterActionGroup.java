@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.synchronize.actions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -143,8 +142,8 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	public void fillActionBars(IActionBars actionBars, String group) {
 		super.fillActionBars(actionBars);
 		IToolBarManager toolBar = actionBars.getToolBarManager();
-		for (Iterator it = actions.iterator(); it.hasNext();) {
-			DirectionFilterAction action = (DirectionFilterAction) it.next();
+		for (Object action2 : actions) {
+			DirectionFilterAction action = (DirectionFilterAction) action2;
 			if(group != null) {
 				toolBar.appendToGroup(group, action);
 			} else {
@@ -154,22 +153,22 @@ public class DirectionFilterActionGroup extends ActionGroup implements IProperty
 	}
 
 	public void fillToolBar(String groupId, IToolBarManager toolBar) {
-		for (Iterator it = actions.iterator(); it.hasNext();) {
-			DirectionFilterAction action = (DirectionFilterAction) it.next();
+		for (Object action2 : actions) {
+			DirectionFilterAction action = (DirectionFilterAction) action2;
 				toolBar.appendToGroup(groupId, action);
 		}
 	}
 
 	public void fillMenu(IContributionManager manager) {
-		for (Iterator it = actions.iterator(); it.hasNext();) {
-			DirectionFilterAction action = (DirectionFilterAction) it.next();
+		for (Object action2 : actions) {
+			DirectionFilterAction action = (DirectionFilterAction) action2;
 				manager.add(action);
 		}
 	}
 
 	private void checkMode(int mode) {
-		for (Iterator it = actions.iterator(); it.hasNext();) {
-			DirectionFilterAction action = (DirectionFilterAction)it.next();
+		for (Object action2 : actions) {
+			DirectionFilterAction action = (DirectionFilterAction)action2;
 			if(action.getModeId() == mode) {
 				action.setChecked(true);
 			} else {

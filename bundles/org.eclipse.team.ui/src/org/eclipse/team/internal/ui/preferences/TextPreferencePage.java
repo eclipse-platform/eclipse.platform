@@ -269,8 +269,8 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 	private static int [] integerListToIntArray(List integers) {
 		final int [] array= new int [integers.size()];
 		int index= 0;
-		for (Iterator iter = integers.iterator(); iter.hasNext();)
-			array[index++]= ((Integer)iter.next()).intValue();
+		for (Object element : integers)
+			array[index++]= ((Integer)element).intValue();
 		return array;
 	}
 
@@ -331,8 +331,8 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		if (selection == null)
 			return;
 
-		for (final Iterator it = selection.iterator(); it.hasNext(); ) {
-			final FileTypeTable.Item item= (FileTypeTable.Item)it.next();
+		for (Object element : selection) {
+			final FileTypeTable.Item item= (FileTypeTable.Item)element;
 			if (item.contributed)
 				continue;
 			fItems.remove(item);
@@ -348,8 +348,8 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		if (selection == null)
 			return;
 
-		for (final Iterator it = selection.iterator(); it.hasNext(); ) {
-			final FileTypeTable.Item item= (FileTypeTable.Item)it.next();
+		for (Object element : selection) {
+			final FileTypeTable.Item item= (FileTypeTable.Item)element;
 			item.mode= item.mode == Team.TEXT ? Team.BINARY : Team.TEXT;
 			fTable.getViewer().refresh(item);
 		}

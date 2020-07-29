@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.mapping;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -60,8 +59,7 @@ public abstract class ResourceModelParticipantAction extends ModelParticipantAct
 					traversal.addTraversals(traversals);
 				}
 			} else {
-				for (Iterator iter = selection.iterator(); iter.hasNext();) {
-					Object element = iter.next();
+				for (Object element : selection) {
 					ResourceTraversal[] traversals = getTraversals(element, Policy.subMonitorFor(monitor, 100));
 					traversal.addTraversals(traversals);
 				}

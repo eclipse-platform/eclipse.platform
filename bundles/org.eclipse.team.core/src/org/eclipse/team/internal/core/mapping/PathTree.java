@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -153,8 +152,7 @@ public class PathTree {
 		if (node != null) {
 			Set possibleChildren = node.descendantsWithPayload;
 			if(possibleChildren != null) {
-				for (Iterator it = possibleChildren.iterator(); it.hasNext();) {
-					Object next = it.next();
+				for (Object next : possibleChildren) {
 					IPath descendantPath = (IPath)next;
 					IPath childPath = null;
 					if(descendantPath.segmentCount() == (path.segmentCount() +  1)) {

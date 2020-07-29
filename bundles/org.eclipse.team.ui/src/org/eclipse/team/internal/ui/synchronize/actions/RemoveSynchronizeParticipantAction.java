@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ui.synchronize.actions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -182,8 +181,8 @@ public class RemoveSynchronizeParticipantAction extends Action {
 		final List finalModels = dirtyModels;
 		IRunnableWithProgress progressOp = monitor -> {
 			monitor.beginTask(null, finalModels.size());
-			for (Iterator i = finalModels.iterator(); i.hasNext();) {
-				Saveable model = (Saveable) i.next();
+			for (Object finalModel : finalModels) {
+				Saveable model = (Saveable) finalModel;
 				if (model.isDirty()) {
 					try {
 						model.doSave(SubMonitor.convert(monitor, 1));

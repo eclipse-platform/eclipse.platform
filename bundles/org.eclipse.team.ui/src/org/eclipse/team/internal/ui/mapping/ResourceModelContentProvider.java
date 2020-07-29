@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ui.mapping;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -559,9 +558,8 @@ public class ResourceModelContentProvider extends SynchronizationContentProvider
 					result.add(resource);
 				} else {
 					// We need to check the list of displayed resources to see if one matches the given path
-					for (Iterator iterator = existingResources.iterator(); iterator
-							.hasNext();) {
-						resource = (IResource) iterator.next();
+					for (Object element : existingResources) {
+						resource = (IResource) element;
 						if (resource.getFullPath().equals(path)) {
 							result.add(resource);
 							break;

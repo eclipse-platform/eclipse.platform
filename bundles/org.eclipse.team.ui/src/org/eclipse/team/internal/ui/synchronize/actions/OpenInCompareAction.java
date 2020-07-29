@@ -14,7 +14,6 @@
 package org.eclipse.team.internal.ui.synchronize.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareUI;
@@ -71,8 +70,7 @@ public class OpenInCompareAction extends Action {
 				return;
 
 			boolean reuseEditorIfPossible = ((IStructuredSelection) selection).size()==1;
-			for (Iterator iterator = ((IStructuredSelection) selection).iterator(); iterator.hasNext();) {
-				Object obj = iterator.next();
+			for (Object obj : ((IStructuredSelection) selection)) {
 				if (obj instanceof SyncInfoModelElement) {
 					SyncInfo info = ((SyncInfoModelElement) obj).getSyncInfo();
 					if (info != null) {

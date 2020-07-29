@@ -155,8 +155,8 @@ public class ConfigureSynchronizeScheduleComposite extends Composite {
 			String string = e.text;
 			char[] chars = new char[string.length()];
 			string.getChars(0, chars.length, chars, 0);
-			for (int i = 0; i < chars.length; i++) {
-				if (!('0' <= chars[i] && chars[i] <= '9')) {
+			for (char element : chars) {
+				if (!('0' <= element && element <= '9')) {
 					e.doit = false;
 					return;
 				}

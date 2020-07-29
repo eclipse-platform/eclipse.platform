@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -708,8 +707,7 @@ public class Utils {
 	 * descendants match the given filter
 	 */
 	public static boolean hasMatchingDescendant(IStructuredSelection selection, FastSyncInfoFilter filter) {
-		for (Iterator iter = selection.iterator(); iter.hasNext();) {
-			Object o = iter.next();
+		for (Object o : selection) {
 			if (o instanceof ISynchronizeModelElement) {
 				if (hasMatchingDescendant((ISynchronizeModelElement)o, filter)) {
 					return true;

@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ui.synchronize;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -515,8 +514,8 @@ public abstract class AbstractSynchronizeModelProvider implements ISynchronizeMo
 			return new IResource[0];
 		IContainer container = ResourcesPlugin.getWorkspace().getRoot();
 		ArrayList<IResource> resources = new ArrayList<>();
-		for (Iterator it = paths.iterator(); it.hasNext();) {
-			String path = (String) it.next();
+		for (Object path2 : paths) {
+			String path = (String) path2;
 			IResource resource = getResourceForPath(container, path);
 			if (resource != null) {
 				resources.add(resource);

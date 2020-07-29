@@ -16,7 +16,6 @@ package org.eclipse.team.internal.ui.mapping;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -177,8 +176,7 @@ public class ModelElementSelectionPage extends GlobalRefreshElementSelectionPage
 
 	private Collection<Object> computeSelectedResources(StructuredSelection selection) {
 		List<Object> result = new ArrayList<>();
-		for (Iterator iter = selection.iterator(); iter.hasNext();) {
-			Object element = iter.next();
+		for (Object element : selection) {
 			ResourceMapping mapping = Utils.getResourceMapping(element);
 			if (mapping != null && scopeContainsMapping(mapping)) {
 				result.add(element);
