@@ -2009,12 +2009,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		fRight = null;
 
 		if (fColors != null) {
-			Iterator<Color> i= fColors.values().iterator();
-			while (i.hasNext()) {
-				Color color= i.next();
-				if (!color.isDisposed())
-					color.dispose();
-			}
 			fColors= null;
 		}
 		// don't add anything here, disposing colors should be done last
