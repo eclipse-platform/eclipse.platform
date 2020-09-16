@@ -245,7 +245,7 @@ public abstract class AbstractSynchronizePage extends Page implements ISynchroni
 			};
 		}
 		if (key == IShowInTargetList.class) {
-			return (T) (IShowInTargetList) () -> new String[] { IPageLayout.ID_RES_NAV };
+			return (T) (IShowInTargetList) () -> new String[] { IPageLayout.ID_PROJECT_EXPLORER };
 		}
 		return null;
 	}
