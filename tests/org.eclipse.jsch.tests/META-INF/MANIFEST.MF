@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JSch Tests Plug-in
 Bundle-SymbolicName: org.eclipse.jsch.tests
-Bundle-Version: 1.1.500.qualifier
+Bundle-Version: 1.1.600.qualifier
 Eclipse-BundleShape: dir
 Bundle-Activator: org.eclipse.jsch.tests.Activator
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.core.runtime
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.eclipse.jsch.tests
