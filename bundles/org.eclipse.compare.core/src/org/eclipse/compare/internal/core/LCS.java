@@ -98,7 +98,7 @@ public abstract class LCS {
 	}
 
 	private boolean isCappingDisabled() {
-		return ComparePlugin.getDefault().isCappingDisabled();
+		return CompareSettings.getDefault().isCappingDisabled();
 	}
 
 	/**

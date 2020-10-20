@@ -13,39 +13,24 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.core;
 
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
-
 /**
  * The activator class controls the plug-in life cycle
  */
-public class ComparePlugin extends Plugin {
+public class CompareSettings {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.compare.core"; //$NON-NLS-1$
 
 	// The shared instance
-	private static ComparePlugin plugin;
+	private static CompareSettings compareSettings;
 
 	private boolean cappingDisabled;
 
 	/**
 	 * The constructor
 	 */
-	public ComparePlugin() {
+	private CompareSettings() {
 		// nothing to do
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
 	}
 
 	/**
@@ -53,8 +38,11 @@ public class ComparePlugin extends Plugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static ComparePlugin getDefault() {
-		return plugin;
+	public static CompareSettings getDefault() {
+		if (compareSettings == null) {
+			compareSettings = new CompareSettings();
+		}
+		return compareSettings;
 	}
 
 	public void setCappingDisabled(boolean disable) {

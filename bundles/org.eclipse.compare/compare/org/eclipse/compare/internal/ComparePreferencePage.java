@@ -27,7 +27,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
-import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.structuremergeviewer.DiffNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.jface.dialogs.Dialog;
@@ -207,7 +207,7 @@ public class ComparePreferencePage extends PreferencePage implements IWorkbenchP
 		editors.forEach(FieldEditor::store);
 		fOverlayStore.propagate();
 
-		ComparePlugin.getDefault().setCappingDisabled(
+		CompareSettings.getDefault().setCappingDisabled(
 				getPreferenceStore().getBoolean(
 						ComparePreferencePage.CAPPING_DISABLED));
 		return true;

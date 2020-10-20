@@ -22,7 +22,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.CompareEditorInput;
 import org.eclipse.compare.CompareViewerSwitchingPane;
 import org.eclipse.compare.Splitter;
-import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
@@ -161,13 +161,13 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 				 */
 				IPreferenceStore preferenceStore = CompareUIPlugin.getDefault().getPreferenceStore();
 				boolean wasDisabled = preferenceStore.getBoolean(ComparePreferencePage.CAPPING_DISABLED);
-				ComparePlugin.getDefault().setCappingDisabled(true);
+				CompareSettings.getDefault().setCappingDisabled(true);
 				preferenceStore.setValue(ComparePreferencePage.CAPPING_DISABLED, true);
 				try {
 					getCompareConfiguration().setProperty(DISABLE_CAPPING_TEMPORARILY, Boolean.TRUE);
 				} finally {
 					if (!wasDisabled) {
-						ComparePlugin.getDefault().setCappingDisabled(false);
+						CompareSettings.getDefault().setCappingDisabled(false);
 						preferenceStore.setValue(ComparePreferencePage.CAPPING_DISABLED, false);
 					}
 				}

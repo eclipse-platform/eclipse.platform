@@ -16,7 +16,7 @@ package org.eclipse.compare.patch;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.internal.core.patch.PatchReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -48,7 +48,7 @@ public class PatchParser {
 			return patchReader.getAdjustedDiffs();
 		} catch (IOException e) {
 			throw new CoreException(new Status(IStatus.ERROR,
-					ComparePlugin.PLUGIN_ID, 0, e.getMessage(), e));
+					CompareSettings.PLUGIN_ID, 0, e.getMessage(), e));
 		} finally {
 			try {
 				reader.close();
