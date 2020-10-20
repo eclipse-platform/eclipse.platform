@@ -18,10 +18,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
-import org.eclipse.compare.internal.core.ComparePlugin;
+import org.eclipse.compare.internal.core.Messages;
 import org.eclipse.compare.patch.ReaderCreator;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.*;
 
 public class LineReader {
 	/**
@@ -36,7 +35,7 @@ public class LineReader {
 				bufferedReader = new BufferedReader(content.createReader());
 				lines = readLines(bufferedReader);
 			} catch (CoreException ex) {
-				ComparePlugin.log(ex);
+				Platform.getLog(LineReader.class).error(Messages.Activator_1, ex);
 			} finally {
 				if (bufferedReader != null) {
 					try {

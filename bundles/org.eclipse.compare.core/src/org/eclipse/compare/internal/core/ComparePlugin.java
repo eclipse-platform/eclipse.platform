@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.core;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -59,17 +57,10 @@ public class ComparePlugin extends Plugin {
 		return plugin;
 	}
 
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID, 0, Messages.Activator_1, e));
-	}
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
-	}
-
 	public void setCappingDisabled(boolean disable) {
 		this.cappingDisabled = disable;
 	}
+
 
 	public boolean isCappingDisabled() {
 		return this.cappingDisabled;

@@ -13,23 +13,12 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.core.patch;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
-import org.eclipse.compare.internal.core.ComparePlugin;
 import org.eclipse.compare.internal.core.Messages;
-import org.eclipse.compare.patch.IFilePatchResult;
-import org.eclipse.compare.patch.IHunk;
-import org.eclipse.compare.patch.PatchConfiguration;
-import org.eclipse.compare.patch.ReaderCreator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.compare.patch.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.osgi.util.NLS;
 
 public class FileDiffResult implements IFilePatchResult {
@@ -332,7 +321,7 @@ public class FileDiffResult implements IFilePatchResult {
 			try {
 				bytes = contents.getBytes(charSet);
 			} catch (UnsupportedEncodingException e) {
-				ComparePlugin.log(e);
+				Platform.getLog(FileDiffResult.class).error(Messages.Activator_1, e);
 			}
 		}
 		if (bytes == null) {
