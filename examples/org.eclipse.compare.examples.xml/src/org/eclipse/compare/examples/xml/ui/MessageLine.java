@@ -115,7 +115,6 @@ public class MessageLine extends CLabel {
 		} else {
 			if (fErrorColor == null) {
 				fErrorColor= new Color(getDisplay(), fErrorRGB);
-				addDisposeListener(e -> fErrorColor.dispose());
 			}
 			setForeground(fErrorColor);
 			setText(message);
