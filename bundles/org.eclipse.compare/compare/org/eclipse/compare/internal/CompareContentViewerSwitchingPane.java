@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -24,6 +24,7 @@ import org.eclipse.compare.CompareViewerSwitchingPane;
 import org.eclipse.compare.Splitter;
 import org.eclipse.compare.internal.core.CompareSettings;
 import org.eclipse.compare.structuremergeviewer.ICompareInput;
+import org.eclipse.jface.layout.RowDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
@@ -40,6 +41,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -120,7 +122,6 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 		cl.setText(null);
 
 		toolBar = new ToolBar(composite, SWT.FLAT);
-		toolBar.setVisible(false); // hide by default
 		final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH, 0);
 		Utilities.setMenuImage(toolItem);
 		toolItem.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_switchButtonTooltip);
@@ -136,18 +137,21 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 				showMenu();
 			}
 		});
+		toolBar.setVisible(false); // hide by default
+		RowDataFactory.swtDefaults().exclude(true).applyTo(toolBar);
 
 		labelOptimized = new CLabel(composite, SWT.NONE);
 		labelOptimized.setToolTipText(CompareMessages.CompareContentViewerSwitchingPane_optimizedTooltip);
 		labelOptimized.setImage(CompareUIPlugin.getImageDescriptor(
 				OPTIMIZED_INFO_IMAGE_NAME).createImage());
-		labelOptimized.setVisible(false); // hide by default
 		labelOptimized.addDisposeListener(e -> {
 			Image img = labelOptimized.getImage();
 			if ((img != null) && (!img.isDisposed())) {
 				img.dispose();
 			}
 		});
+		labelOptimized.setVisible(false); // hide by default
+		RowDataFactory.swtDefaults().exclude(true).applyTo(labelOptimized);
 
 		recomputeLink = new Link(composite, SWT.NONE);
 		recomputeLink.setText(CompareMessages.CompareContentViewerSwitchingPane_optimizedLinkLabel);
@@ -164,7 +168,15 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 				CompareSettings.getDefault().setCappingDisabled(true);
 				preferenceStore.setValue(ComparePreferencePage.CAPPING_DISABLED, true);
 				try {
+					// Setting this property makes the TextMergeViewer re-compute the diff and
+					// refresh itself.
 					getCompareConfiguration().setProperty(DISABLE_CAPPING_TEMPORARILY, Boolean.TRUE);
+					// Hide the link now.
+					labelOptimized.setVisible(false);
+					recomputeLink.setVisible(false);
+					((RowData) labelOptimized.getLayoutData()).exclude = true;
+					((RowData) recomputeLink.getLayoutData()).exclude = true;
+					composite.requestLayout();
 				} finally {
 					if (!wasDisabled) {
 						CompareSettings.getDefault().setCappingDisabled(false);
@@ -174,6 +186,7 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 			}
 		});
 		recomputeLink.setVisible(false);
+		RowDataFactory.swtDefaults().exclude(true).applyTo(recomputeLink);
 
 		return composite;
 	}
@@ -191,12 +204,16 @@ public class CompareContentViewerSwitchingPane extends CompareViewerSwitchingPan
 			return;
 		ViewerDescriptor[] vd = CompareUIPlugin.getDefault()
 				.findContentViewerDescriptor(getViewer(), getInput(), getCompareConfiguration());
-		toolBar.setVisible(vd != null && vd.length > 1);
+		boolean toolbarVisible = vd != null && vd.length > 1;
+		toolBar.setVisible(toolbarVisible);
+		((RowData) toolBar.getLayoutData()).exclude = !toolbarVisible;
 		CompareConfiguration cc = getCompareConfiguration();
 		Boolean isOptimized = (Boolean) cc.getProperty(OPTIMIZED_ALGORITHM_USED);
 		boolean optimizedVisible = isOptimized != null && isOptimized.booleanValue();
 		labelOptimized.setVisible(optimizedVisible);
 		recomputeLink.setVisible(optimizedVisible);
+		((RowData) labelOptimized.getLayoutData()).exclude = !optimizedVisible;
+		((RowData) recomputeLink.getLayoutData()).exclude = !optimizedVisible;
 	}
 
 	private void showMenu() {
