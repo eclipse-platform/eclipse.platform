@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2018 IBM Corporation and others.
+ * Copyright (c) 2000, 2020 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -914,6 +914,17 @@ public abstract class ContentMergeViewer extends ContentViewer
 			fSwitchLeftAndRight = new Action() {
 				@Override
 				public void run() {
+					/*
+					 * Bug 552352: When comparing .txt files with corresponding .txt file editors
+					 * closed and user modifies the content of one of the .txt file in the compare
+					 * view and the compare state becomes 'dirty' and if followed by a 'Swap'
+					 * action, modifications get lost. This data loss is considered a severe
+					 * problem, so to avoid this modified data loss in this scenario, show a
+					 * confirmation dialog to 'save' the file before swapping and let user decide
+					 * and take a call on this. Note: Issue not seen with .java & .properties files.
+					 */
+					doSave(null, getInput());
+
 					IPreferenceStore preferences = getCompareConfiguration().getPreferenceStore();
 					preferences.setValue(ComparePreferencePage.SWAPPED, !getCompareConfiguration().isMirrored());
 					if (preferences instanceof IPersistentPreferenceStore) {
