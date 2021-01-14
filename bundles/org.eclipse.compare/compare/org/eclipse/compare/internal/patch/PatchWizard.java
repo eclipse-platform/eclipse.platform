@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -33,7 +33,9 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.osgi.framework.FrameworkUtil;
 
 public class PatchWizard extends Wizard {
 
@@ -78,7 +80,9 @@ public class PatchWizard extends Wizard {
 	}
 
 	private void initializeDialogSettings() {
-		IDialogSettings workbenchSettings= CompareUIPlugin.getDefault().getDialogSettings();
+		IDialogSettings workbenchSettings = PlatformUI
+				.getDialogSettingsProvider(FrameworkUtil.getBundle(PatchWizard.class)).getDialogSettings();
+
 		IDialogSettings section= workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
 		if (section == null) {
 			fHasNewDialogSettings= true;
@@ -182,7 +186,8 @@ public class PatchWizard extends Wizard {
 
 		// Save the dialog settings
 		if (fHasNewDialogSettings) {
-			IDialogSettings workbenchSettings = CompareUIPlugin.getDefault().getDialogSettings();
+			IDialogSettings workbenchSettings = PlatformUI
+					.getDialogSettingsProvider(FrameworkUtil.getBundle(PatchWizardDialog.class)).getDialogSettings();
 			IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
 			section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
 			setDialogSettings(section);

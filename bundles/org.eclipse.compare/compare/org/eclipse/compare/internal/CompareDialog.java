@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2016 IBM Corporation and others.
+ * Copyright (c) 2000, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is a dialog that can host a {@link CompareEditorInput}.
@@ -199,7 +200,8 @@ public class CompareDialog extends TrayDialog implements IPropertyChangeListener
 
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
-		IDialogSettings compareSettings = CompareUIPlugin.getDefault().getDialogSettings();
+		IDialogSettings compareSettings = PlatformUI
+				.getDialogSettingsProvider(FrameworkUtil.getBundle(CompareDialog.class)).getDialogSettings();
 		String sectionName = this.getClass().getName();
 		IDialogSettings dialogSettings = compareSettings.getSection(sectionName);
 		if (dialogSettings == null) {

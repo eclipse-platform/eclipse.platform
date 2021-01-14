@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2018 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.eclipse.compare.CompareConfiguration;
-import org.eclipse.compare.CompareUI;
 import org.eclipse.compare.internal.ComparePreferencePage;
 import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.compare.internal.ICompareUIConstants;
@@ -58,11 +57,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.framework.FrameworkUtil;
 
 
 public class PreviewPatchPage2 extends WizardPage {
@@ -675,7 +676,8 @@ public class PreviewPatchPage2 extends WizardPage {
 	}
 
 	private void restoreWidgetValues() {
-		IDialogSettings dialogSettings = CompareUI.getPlugin().getDialogSettings();
+		IDialogSettings dialogSettings = PlatformUI
+				.getDialogSettingsProvider(FrameworkUtil.getBundle(PreviewPatchPage2.class)).getDialogSettings();
 		settings = dialogSettings.getSection(PREVIEWPATCHPAGE_NAME);
 		if (settings == null) {
 			settings = dialogSettings.addNewSection(PREVIEWPATCHPAGE_NAME);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 
 /**
@@ -51,7 +52,8 @@ public abstract class ResizableDialog extends Dialog {
 
 		fBundle= bundle;
 
-		fSettings= CompareUIPlugin.getDefault().getDialogSettings();
+		fSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(ResizableDialog.class))
+				.getDialogSettings();
 	}
 
 	public void setHelpContextId(String contextId) {

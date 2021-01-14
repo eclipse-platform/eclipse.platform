@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2017 Aleksandra Wozniak and others.
+ * Copyright (c) 2008, 2021 Aleksandra Wozniak and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -60,10 +60,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.part.ResourceTransfer;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * This is a dialog that can invoke the compare editor on chosen files.
@@ -812,7 +814,9 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
 		String sectionName = getClass().getName() + "_dialogBounds"; //$NON-NLS-1$
-		IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings = PlatformUI
+				.getDialogSettingsProvider(FrameworkUtil.getBundle(CompareWithOtherResourceDialog.class))
+				.getDialogSettings();
 		IDialogSettings section = settings.getSection(sectionName);
 		if (section == null)
 			section = settings.addNewSection(sectionName);

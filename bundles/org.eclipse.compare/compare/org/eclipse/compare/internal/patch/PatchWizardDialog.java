@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2011 IBM Corporation and others.
+ * Copyright (c) 2005, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -13,12 +13,13 @@
  *******************************************************************************/
 package org.eclipse.compare.internal.patch;
 
-import org.eclipse.compare.internal.CompareUIPlugin;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 public class PatchWizardDialog extends WizardDialog {
 	private static final String PATCH_WIZARD_SETTINGS_SECTION = "PatchWizard"; //$NON-NLS-1$
@@ -32,7 +33,8 @@ public class PatchWizardDialog extends WizardDialog {
 
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
-		IDialogSettings settings = CompareUIPlugin.getDefault().getDialogSettings();
+		IDialogSettings settings = PlatformUI
+				.getDialogSettingsProvider(FrameworkUtil.getBundle(PatchWizardDialog.class)).getDialogSettings();
 		IDialogSettings section = settings.getSection(PATCH_WIZARD_SETTINGS_SECTION);
 		if (section == null) {
 			section = settings.addNewSection(PATCH_WIZARD_SETTINGS_SECTION);
