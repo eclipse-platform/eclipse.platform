@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * A dialog that displays a {@link org.eclipse.team.ui.ISaveableWorkbenchPart} and
@@ -108,7 +108,7 @@ public class SaveablePartDialog extends TrayDialog {
 
 	@Override
 	protected IDialogSettings getDialogBoundsSettings() {
-		IDialogSettings compareSettings = TeamUIPlugin.getPlugin().getDialogSettings();
+		IDialogSettings compareSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(SaveablePartDialog.class)).getDialogSettings();
 		String sectionName = this.getClass().getName();
 		IDialogSettings dialogSettings = compareSettings.getSection(sectionName);
 		if (dialogSettings == null) {

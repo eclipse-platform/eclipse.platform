@@ -111,6 +111,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 import org.eclipse.ui.part.ShowInContext;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * Implements a Synchronize View that contains multiple synchronize participants.
@@ -644,7 +645,7 @@ public class SynchronizeView extends PageBookView implements ISynchronizeView, I
 	 * Return the dialog settings for the view
 	 */
 	private IDialogSettings getDialogSettings() {
-		IDialogSettings workbenchSettings = TeamUIPlugin.getPlugin().getDialogSettings();
+		IDialogSettings workbenchSettings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(SynchronizeView.class)).getDialogSettings();
 		IDialogSettings syncViewSettings = workbenchSettings.getSection(KEY_SETTINGS_SECTION);
 		if (syncViewSettings == null) {
 			syncViewSettings = workbenchSettings.addNewSection(KEY_SETTINGS_SECTION);

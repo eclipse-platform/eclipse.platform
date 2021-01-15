@@ -18,10 +18,11 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.team.internal.ui.ITeamUIImages;
 import org.eclipse.team.internal.ui.TeamUIMessages;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
 import org.eclipse.team.ui.TeamImages;
 import org.eclipse.team.ui.synchronize.ISynchronizeParticipantReference;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * The wizard for synchronizing a synchronize participant.
@@ -42,7 +43,7 @@ public class GlobalSynchronizeWizard extends Wizard {
 		setForcePreviousAndNextButtons(true);
 		setNeedsProgressMonitor(false);
 
-		final IDialogSettings pluginSettings= TeamUIPlugin.getPlugin().getDialogSettings();
+		final IDialogSettings pluginSettings= PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(GlobalSynchronizeWizard.class)).getDialogSettings();
 		IDialogSettings wizardSettings= pluginSettings.getSection(DIALOG_SETTINGS_SECTION);
 		if (wizardSettings == null) {
 			pluginSettings.addNewSection(DIALOG_SETTINGS_SECTION);

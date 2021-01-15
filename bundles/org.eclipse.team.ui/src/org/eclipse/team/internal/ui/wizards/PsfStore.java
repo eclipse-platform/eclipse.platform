@@ -16,7 +16,8 @@ package org.eclipse.team.internal.ui.wizards;
 import java.util.Vector;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.team.internal.ui.TeamUIPlugin;
+import org.eclipse.ui.PlatformUI;
+import org.osgi.framework.FrameworkUtil;
 
 public abstract class PsfStore {
 	// Most recently used filename is first in the array.
@@ -87,7 +88,7 @@ public abstract class PsfStore {
 		if (_section != null)
 			return _section;
 
-		IDialogSettings settings = TeamUIPlugin.getPlugin().getDialogSettings();
+		IDialogSettings settings = PlatformUI.getDialogSettingsProvider(FrameworkUtil.getBundle(PsfStore.class)).getDialogSettings();
 		_section = settings.getSection(STORE_SECTION);
 		if (_section != null)
 			return _section;
