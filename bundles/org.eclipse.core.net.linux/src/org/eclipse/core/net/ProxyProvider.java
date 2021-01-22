@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2018 Oakland Software Incorporated and others
+ * Copyright (c) 2021 Red Hat Inc. and others
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -9,14 +9,11 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *		Oakland Software Incorporated - initial API and implementation
- *		IBM Corporation - implementation
- *		Red Hat - GSettings implementation and code clean up (bug 394087)
+ *     Red Hat Inc. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.core.internal.net.proxy.unix;
+package org.eclipse.core.net;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -30,11 +27,30 @@ import org.eclipse.core.internal.net.ProxyData;
 import org.eclipse.core.internal.net.StringUtil;
 import org.eclipse.core.net.proxy.IProxyData;
 
-public class UnixProxyProvider extends AbstractProxyProvider {
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 
-	private static final String LIBRARY_NAME = "gnomeproxy-1.0.0"; //$NON-NLS-1$
+/**
+ * JNA version of org.eclipse.core.internal.net.UnixProxyProvider
+ *
+ * @author jjohnstn
+ *
+ */
+public class ProxyProvider extends AbstractProxyProvider {
+
+	private static LibGio fLibGio;
+
+	private static Pointer proxySettings = Pointer.NULL;
+	private static Pointer httpProxySettings = Pointer.NULL;
+	private static Pointer httpsProxySettings = Pointer.NULL;
+	private static Pointer socksProxySettings = Pointer.NULL;
+	private static Pointer ftpProxySettings = Pointer.NULL;
 
 	private static final String ENABLE_GNOME = Activator.ID + ".enableGnome"; //$NON-NLS-1$
+
+	private static final String LIBRARY_NAME = "gio-2.0"; //$NON-NLS-1$
 
 	private static boolean isGnomeLibLoaded = false;
 
@@ -42,12 +58,12 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		// Load the GSettings JNI library if org.eclipse.core.net.enableGnome is specified
 		String value = System.getProperty(ENABLE_GNOME);
 		if ("".equals(value) || "true".equals(value)) { //$NON-NLS-1$ //$NON-NLS-2$
-			loadGnomeLib();
+			initializeSettings();
 		}
 	}
 
-	public UnixProxyProvider() {
-		// Nothing to initialize
+	public ProxyProvider() {
+		// no initialization required
 	}
 
 	@Override
@@ -69,7 +85,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 			proxies = getProxyData();
 		}
 		if (Policy.DEBUG) {
-			Policy.debug("UnixProxyProvider#select result for [" + uri + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+			Policy.debug("LinuxProxyProvider#select result for [" + uri + "]"); //$NON-NLS-1$ //$NON-NLS-2$
 			for (IProxyData proxy : proxies) {
 				System.out.println("	" + proxy); //$NON-NLS-1$
 			}
@@ -212,8 +228,7 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 
 	private static String getEnv(String env) {
 		try {
-			Method m = System.class.getMethod("getenv", String.class); //$NON-NLS-1$
-			return (String) m.invoke(null, env);
+			return System.getenv(env);
 		} catch (Throwable t) {
 			// Fall-back to running 'env' directly. Warning this is very slow...
 			// up to 200ms
@@ -240,29 +255,122 @@ public class UnixProxyProvider extends AbstractProxyProvider {
 		}
 	}
 
-	private static void loadGnomeLib() {
+	private void debugPrint(String[] strs) {
+		for (int i = 0; i < strs.length; i++)
+			System.out.println(i + ": " + strs[i]); //$NON-NLS-1$
+	}
+
+	private interface LibGio extends Library {
+		Pointer g_settings_new(String schema);
+		boolean g_settings_get_boolean(Pointer settings, String key);
+		Pointer g_settings_get_string(Pointer settings, String key);
+		int g_settings_get_int(Pointer settings, String key);
+		PointerByReference g_settings_get_strv(Pointer Settings, String key);
+		void g_strfreev(PointerByReference p);
+		void g_free(Pointer p);
+	}
+
+	private static void initializeSettings() {
 		try {
-			System.loadLibrary(LIBRARY_NAME);
-			isGnomeLibLoaded = true;
+			fLibGio = Native.load(LIBRARY_NAME, LibGio.class);
+			proxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy"); //$NON-NLS-1$
+			httpProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.http"); //$NON-NLS-1$
+			httpsProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.https"); //$NON-NLS-1$
+			socksProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.socks"); //$NON-NLS-1$
+			ftpProxySettings = fLibGio.g_settings_new ("org.gnome.system.proxy.ftp"); //$NON-NLS-1$
+			isGnomeLibLoaded= true;
 			if (Policy.DEBUG_SYSTEM_PROVIDERS)
 				Policy.debug("Loaded " + //$NON-NLS-1$
 						System.mapLibraryName(LIBRARY_NAME) + " library"); //$NON-NLS-1$
-		} catch (final UnsatisfiedLinkError e) {
-			// Expected on systems that are missing Gnome library
+		} catch (UnsatisfiedLinkError e) {
+			isGnomeLibLoaded= false;
 			if (Policy.DEBUG_SYSTEM_PROVIDERS)
 				Policy.debug("Could not load library: " //$NON-NLS-1$
 						+ System.mapLibraryName(LIBRARY_NAME));
 		}
 	}
 
-	private void debugPrint(String[] strs) {
-		for (int i = 0; i < strs.length; i++)
-			System.out.println(i + ": " + strs[i]); //$NON-NLS-1$
+	protected static ProxyData getGSettingsProxyInfo(String protocol) {
+
+		if (protocol == null) {
+			return null;
+		}
+
+		if (proxySettings == Pointer.NULL) {
+			initializeSettings();
+		}
+
+		ProxyData proxyData = new ProxyData(protocol);
+		boolean useSame = fLibGio.g_settings_get_boolean(proxySettings, "use-same-proxy"); //$NON-NLS-1$
+
+		if (protocol.equalsIgnoreCase("http") || useSame) { //$NON-NLS-1$
+			boolean useProxy = fLibGio.g_settings_get_boolean(httpProxySettings, "enabled"); //$NON-NLS-1$
+			if (!useProxy) {
+				return null;
+			}
+			Pointer host = fLibGio.g_settings_get_string(httpProxySettings, "host"); //$NON-NLS-1$
+			proxyData.setHost(host.getString(0));
+			fLibGio.g_free(host);
+
+			int port = fLibGio.g_settings_get_int(httpProxySettings, "port"); //$NON-NLS-1$
+			proxyData.setPort(port);
+
+			boolean reqAuth = fLibGio.g_settings_get_boolean(httpProxySettings, "use-authentication"); //$NON-NLS-1$
+			if (reqAuth) {
+				Pointer user = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-user"); //$NON-NLS-1$
+				proxyData.setUserid(user.getString(0));
+				fLibGio.g_free(user);
+
+				Pointer password = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-password"); //$NON-NLS-1$
+				proxyData.setPassword(password.getString(0));
+				fLibGio.g_free(password);
+			}
+			return proxyData;
+		}
+
+		// Everything else applies only if the system proxy mode is manual
+		Pointer mode = fLibGio.g_settings_get_string(proxySettings, "mode"); //$NON-NLS-1$
+		if (!mode.getString(0).equalsIgnoreCase("manual")) { //$NON-NLS-1$
+			fLibGio.g_free(mode);
+			return null;
+		}
+		fLibGio.g_free(mode);
+
+		Pointer host;
+		int port;
+
+		if (protocol.equalsIgnoreCase("https")) { //$NON-NLS-1$
+			host = fLibGio.g_settings_get_string(httpsProxySettings, "host"); //$NON-NLS-1$
+			port = fLibGio.g_settings_get_int(httpsProxySettings, "port"); //$NON-NLS-1$
+		} else if (protocol.equalsIgnoreCase("socks")) { //$NON-NLS-1$
+			host = fLibGio.g_settings_get_string(socksProxySettings, "host"); //$NON-NLS-1$
+			port = fLibGio.g_settings_get_int(socksProxySettings, "port"); //$NON-NLS-1$
+		} else if (protocol.equalsIgnoreCase("ftp")) { //$NON-NLS-1$
+			host = fLibGio.g_settings_get_string(ftpProxySettings, "host"); //$NON-NLS-1$
+			port = fLibGio.g_settings_get_int(ftpProxySettings, "port"); //$NON-NLS-1$
+		} else {
+			return null;
+		}
+
+		proxyData.setHost(host.getString(0));
+		fLibGio.g_free(host);
+		proxyData.setPort(port);
+
+		return proxyData;
 	}
 
-	protected static native void gsettingsInit();
+	protected static String[] getGSettingsNonProxyHosts() {
+		if (proxySettings == Pointer.NULL) {
+			initializeSettings();
+		}
 
-	protected static native ProxyData getGSettingsProxyInfo(String protocol);
+		PointerByReference npHostsArray = fLibGio.g_settings_get_strv(proxySettings, "ignore-hosts"); //$NON-NLS-1$
+		String[] npHosts = npHostsArray.getPointer().getStringArray(0);
 
-	protected static native String[] getGSettingsNonProxyHosts();
+		fLibGio.g_strfreev(npHostsArray);
+
+		return npHosts;
+	}
+
 }
+
