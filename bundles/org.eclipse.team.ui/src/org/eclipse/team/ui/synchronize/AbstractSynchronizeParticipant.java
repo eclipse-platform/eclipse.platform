@@ -279,7 +279,7 @@ public abstract class AbstractSynchronizeParticipant extends PlatformObject impl
 	@Override
 	public void init(String secondaryId, IMemento memento) throws PartInitException {
 		setSecondaryId(secondaryId);
-		pinned = Boolean.valueOf(memento.getString(CTX_PINNED)).booleanValue();
+		pinned = Boolean.parseBoolean(memento.getString(CTX_PINNED));
 	}
 
 	@Override

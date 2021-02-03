@@ -79,8 +79,7 @@ public class TeamContentProviderDescriptor implements ITeamContentProviderDescri
 				String supportsFlatLayoutString = element
 						.getAttribute(ATT_SUPPORTS_FLAT_LAYOUT);
 				if (supportsFlatLayoutString != null) {
-					supportsFlatLayout = Boolean.valueOf(
-							supportsFlatLayoutString).booleanValue();
+					supportsFlatLayout = Boolean.parseBoolean(supportsFlatLayoutString);
 				}
 				contentProviderName = extension.getLabel();
 			}

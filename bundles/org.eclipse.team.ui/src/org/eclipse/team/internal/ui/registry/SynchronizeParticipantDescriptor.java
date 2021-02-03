@@ -107,7 +107,7 @@ public class SynchronizeParticipantDescriptor implements ISynchronizeParticipant
 		if(persistentString == null) {
 			persistent = true;
 		} else {
-			persistent = Boolean.valueOf(persistentString).booleanValue();
+			persistent = Boolean.parseBoolean(persistentString);
 		}
 		helpContextId = configElement.getAttribute(ATT_HELP_CONTEXT_ID);
 		// Sanity check.
