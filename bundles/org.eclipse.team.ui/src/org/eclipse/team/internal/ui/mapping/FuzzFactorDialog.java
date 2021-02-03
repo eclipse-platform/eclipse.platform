@@ -78,7 +78,7 @@ public class FuzzFactorDialog extends Dialog {
 		valueText.addModifyListener(e -> validateInput());
 		fuzzFactor = patcher.getFuzz();
 		if (fuzzFactor >= 0)
-			valueText.setText(Integer.valueOf(fuzzFactor).toString());
+			valueText.setText(Integer.toString(fuzzFactor));
 
 		Button guessButton = new Button(composite, SWT.NONE);
 		guessButton.setText(TeamUIMessages.FuzzFactorDialog_guess);
@@ -93,7 +93,7 @@ public class FuzzFactorDialog extends Dialog {
 				patcher.setFuzz(-1);
 				int fuzz = guessFuzzFactor();
 				if (fuzz >= 0) {
-					String value = Integer.valueOf(fuzz).toString();
+					String value = Integer.toString(fuzz);
 					valueText.setText(value);
 				}
 			}

@@ -56,7 +56,7 @@ public class IgnoreLeadingPathSegmentsAction extends Action {
 		InputDialog dlg = new InputDialog(Display.getCurrent().getActiveShell(),
 				TeamUIMessages.IgnoreLeadingPathSegmentsDialog_title,
 				NLS.bind(TeamUIMessages.IgnoreLeadingPathSegmentsDialog_message, Integer.valueOf(maxValue)),
-				Integer.valueOf(oldValue).toString(), input -> {
+				Integer.toString(oldValue), input -> {
 					try {
 						int i = Integer.parseInt(input);
 						if (i < 0 || i > maxValue)
