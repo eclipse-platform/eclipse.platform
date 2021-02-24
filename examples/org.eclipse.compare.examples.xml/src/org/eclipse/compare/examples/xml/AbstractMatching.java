@@ -160,7 +160,7 @@ public abstract class AbstractMatching {
 	}
 
 	/* represents a matching between a node in the Left tree and a node in the Right tree */
-	class Match {
+	static class Match {
 		public XMLNode fx;
 		public XMLNode fy;
 		
