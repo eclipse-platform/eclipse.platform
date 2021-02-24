@@ -57,7 +57,7 @@ public abstract class CompareInputChangeNotifier implements
 	private Map<ICompareInput, CompareInputConnecton> inputs = new HashMap<>();
 	private InputChangeEventHandler eventHandler;
 
-	private class CompareInputConnecton {
+	private static class CompareInputConnecton {
 		private int connections;
 		public void increment() {
 			connections++;
