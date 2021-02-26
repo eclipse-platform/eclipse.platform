@@ -27,9 +27,6 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class BufferedCanvas extends Canvas {
 
-	//private static final boolean USE_DOUBLE_BUFFER= !"carbon".equals(SWT.getPlatform()); //$NON-NLS-1$
-	private static final boolean USE_DOUBLE_BUFFER= true;
-
 	/** The drawable for double buffering */
 	Image fBuffer;
 
@@ -65,11 +62,6 @@ public abstract class BufferedCanvas extends Canvas {
 	 * Double buffer drawing.
 	 */
 	void doubleBufferPaint(GC dest) {
-
-		if (!USE_DOUBLE_BUFFER) {
-			doPaint(dest);
-			return;
-		}
 
 		Point size= getSize();
 
