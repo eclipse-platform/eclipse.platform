@@ -199,6 +199,12 @@
             id="org.eclipse.compare.copyAllLeftToRight">
       </command>
       <command
+            name="%Command.switchLeftAndRight.name"
+            description="%Command.switchLeftAndRight.description"
+            categoryId="org.eclipse.compare.ui.category.compare"
+            id="org.eclipse.compare.switchLeftAndRight">
+      </command>
+      <command
             name="%Command.selectNextChange.name"
             description="%Command.selectNextChange.description"
             categoryId="org.eclipse.compare.ui.category.compare"

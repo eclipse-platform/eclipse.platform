@@ -938,6 +938,7 @@ public abstract class ContentMergeViewer extends ContentViewer
 			};
 			Utilities.initAction(fSwitchLeftAndRight, getResourceBundle(), "action.SwitchLeftAndRight."); //$NON-NLS-1$
 			tbm.appendToGroup("modes", fSwitchLeftAndRight); //$NON-NLS-1$
+			fHandlerService.registerAction(fSwitchLeftAndRight, "org.eclipse.compare.switchLeftAndRight"); //$NON-NLS-1$
 
 			final ChangePropertyAction a= new ChangePropertyAction(fBundle, getCompareConfiguration(), "action.EnableAncestor.", ICompareUIConstants.PROP_ANCESTOR_VISIBLE); //$NON-NLS-1$
 			a.setChecked(fAncestorVisible);
