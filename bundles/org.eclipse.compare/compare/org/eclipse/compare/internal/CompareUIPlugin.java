@@ -973,10 +973,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		String rightType = guessType(input.getRight());
 
 		if (leftType != null || rightType != null) {
-			boolean right_text = rightType != null
-					&& ITypedElement.TEXT_TYPE.equals(rightType);
-			boolean left_text = leftType != null
-					&& ITypedElement.TEXT_TYPE.equals(leftType);
+			boolean right_text = ITypedElement.TEXT_TYPE.equals(rightType);
+			boolean left_text = ITypedElement.TEXT_TYPE.equals(leftType);
 			if ((rightType != null && !right_text)
 					|| (leftType != null && !left_text)) {
 				result.add(BINARY_TYPE);
@@ -1063,10 +1061,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		String rightType= guessType(input.getRight());
 
 		if (leftType != null || rightType != null) {
-			boolean right_text = rightType != null
-					&& ITypedElement.TEXT_TYPE.equals(rightType);
-			boolean left_text = leftType != null
-					&& ITypedElement.TEXT_TYPE.equals(leftType);
+			boolean right_text = ITypedElement.TEXT_TYPE.equals(rightType);
+			boolean left_text = ITypedElement.TEXT_TYPE.equals(leftType);
 			initializeRegistries();
 			if ((rightType != null && !right_text)
 					|| (leftType != null && !left_text)) {
@@ -1499,10 +1495,8 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		String rightType= guessType(input.getRight());
 
 		if (leftType != null || rightType != null) {
-			boolean right_text = rightType != null
-					&& ITypedElement.TEXT_TYPE.equals(rightType);
-			boolean left_text = leftType != null
-					&& ITypedElement.TEXT_TYPE.equals(leftType);
+			boolean right_text = ITypedElement.TEXT_TYPE.equals(rightType);
+			boolean left_text = ITypedElement.TEXT_TYPE.equals(leftType);
 			initializeRegistries();
 			if ((rightType != null && !right_text)
 					|| (leftType != null && !left_text)) {

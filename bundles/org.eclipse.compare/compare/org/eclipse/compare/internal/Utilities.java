@@ -763,7 +763,7 @@ public class Utilities {
 	 * @return whether the left or right side of the input represents a hunk
 	 */
 	public static boolean isHunk(Object input) {
-		if (input != null && input instanceof DiffNode){
+		if (input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			if (Adapters.adapt(right, IHunk.class) != null)
 				return true;
@@ -775,7 +775,7 @@ public class Utilities {
 	}
 
 	public static boolean isHunkOk(Object input) {
-		if (input != null && input instanceof DiffNode){
+		if (input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			HunkResult element = Adapters.adapt(right, HunkResult.class);
 			if (element != null) {

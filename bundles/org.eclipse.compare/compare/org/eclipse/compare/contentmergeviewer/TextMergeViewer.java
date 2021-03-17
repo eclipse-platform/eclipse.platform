@@ -3912,8 +3912,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 		Object current = getCompareConfiguration()
 				.getProperty(ChangeCompareFilterPropertyAction.COMPARE_FILTER_ACTIONS);
 		boolean currentFiltersMatch = false;
-		if (current != null && current instanceof List
-				&& ((List<?>) current).size() == compareFilterDescriptors.length) {
+		if (current instanceof List && ((List<?>) current).size() == compareFilterDescriptors.length) {
 			currentFiltersMatch = true;
 			@SuppressWarnings("unchecked")
 			List<ChangeCompareFilterPropertyAction> currentFilterActions = (List<ChangeCompareFilterPropertyAction>) current;
@@ -5397,7 +5396,7 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	 */
 	private int getHunkStart() {
 		Object input = getInput();
-		if (input != null && input instanceof DiffNode){
+		if (input instanceof DiffNode){
 			ITypedElement right = ((DiffNode) input).getRight();
 			if (right != null) {
 				Object element = Adapters.adapt(right, IHunk.class);
