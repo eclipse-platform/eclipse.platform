@@ -2457,7 +2457,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fLeftToRightButton.setText(COPY_LEFT_TO_RIGHT_INDICATOR);
 			fLeftToRightButton.setToolTipText(
 					Utilities.getString(getResourceBundle(), "action.CopyDiffLeftToRight.tooltip")); //$NON-NLS-1$
-			fLeftToRightButton.pack();
 			fLeftToRightButton.setVisible(false);
 			fLeftToRightButton.addSelectionListener(
 				new SelectionAdapter() {
@@ -2473,7 +2472,6 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 			fRightToLeftButton.setText(COPY_RIGHT_TO_LEFT_INDICATOR);
 			fRightToLeftButton.setToolTipText(
 					Utilities.getString(getResourceBundle(), "action.CopyDiffRightToLeft.tooltip")); //$NON-NLS-1$
-			fRightToLeftButton.pack();
 			fRightToLeftButton.setVisible(false);
 			fRightToLeftButton.addSelectionListener(
 					new SelectionAdapter() {
