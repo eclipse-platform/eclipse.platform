@@ -171,8 +171,7 @@ public class Activator implements BundleActivator {
 		properties.put(DebugOptions.LISTENER_SYMBOLICNAME, ID);
 		debugRegistration = context.registerService(DebugOptionsListener.class, Policy.DEBUG_OPTIONS_LISTENER, properties);
 
-		if (Boolean
-				.valueOf(System.getProperty(PROP_REGISTER_SERVICE, "true")).booleanValue()) { //$NON-NLS-1$
+		if (Boolean.parseBoolean(System.getProperty(PROP_REGISTER_SERVICE, "true"))) { //$NON-NLS-1$
 			ProxyManager proxyManager = (ProxyManager) ProxyManager
 					.getProxyManager();
 			proxyManager.initialize();
