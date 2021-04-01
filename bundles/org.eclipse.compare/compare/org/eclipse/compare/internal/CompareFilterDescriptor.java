@@ -40,7 +40,7 @@ public class CompareFilterDescriptor {
 	private ResourceBundle fResourceBundle;
 	private ImageDescriptor fImageDescriptor;
 
-	private class ConfigurationKeysEnumeration implements Enumeration<String> {
+	private static class ConfigurationKeysEnumeration implements Enumeration<String> {
 
 		private String[] keySet;
 		private int cursor = 0;

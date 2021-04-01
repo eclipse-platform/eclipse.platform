@@ -76,7 +76,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 	private int MIN_HEIGHT_WITH_ANCESTOR = 320;
 	private int MIN_HEIGHT_WITHOUT_ANCESTOR = 238;
 
-	private class FileTextDragListener implements DragSourceListener {
+	private static class FileTextDragListener implements DragSourceListener {
 
 		private ContentTypeElement element;
 
@@ -101,7 +101,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 		}
 	}
 
-	private class FileTextDropListener implements DropTargetListener {
+	private static class FileTextDropListener implements DropTargetListener {
 
 		private ContentTypeElement element;
 		private ResourceTransfer resourceTransfer;
@@ -181,7 +181,7 @@ public class CompareWithOtherResourceDialog extends TitleAreaDialog {
 
 	}
 
-	private abstract class ContentTypeElement {
+	private abstract static class ContentTypeElement {
 
 		private Button radioButton;
 		protected Button mainButton;

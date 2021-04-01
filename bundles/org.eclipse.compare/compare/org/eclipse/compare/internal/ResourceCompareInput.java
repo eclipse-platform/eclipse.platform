@@ -175,7 +175,7 @@ class ResourceCompareInput extends CompareEditorInput {
 		return fDiffViewer;
 	}
 
-	class SelectAncestorDialog extends MessageDialog {
+	static class SelectAncestorDialog extends MessageDialog {
 		private IResource[] theResources;
 		IResource ancestorResource;
 		IResource leftResource;
