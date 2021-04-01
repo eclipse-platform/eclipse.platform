@@ -82,7 +82,7 @@ public abstract class SynchronizePageActionGroup extends ActionGroup {
 	 * page. Selection changed events are sent out when the model roots change
 	 * or their visible children change
 	 */
-	private class VisibleRootsSelectionProvider extends SynchronizePageActionGroup implements ISelectionProvider {
+	private static class VisibleRootsSelectionProvider extends SynchronizePageActionGroup implements ISelectionProvider {
 
 		private ListenerList<ISelectionChangedListener> selectionChangedListeners = new ListenerList<>(ListenerList.IDENTITY);
 		private ISelection selection;

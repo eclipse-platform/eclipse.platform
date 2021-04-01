@@ -40,7 +40,7 @@ public class RefreshModelParticipantJob extends RefreshParticipantJob {
 	private IProgressMonitor group;
 	private int groupTicks;
 
-	public class ChangeDescription implements IChangeDescription, IDiffChangeListener {
+	public static class ChangeDescription implements IChangeDescription, IDiffChangeListener {
 		Map<IPath, IDiff> changes = new HashMap<>();
 
 		@Override

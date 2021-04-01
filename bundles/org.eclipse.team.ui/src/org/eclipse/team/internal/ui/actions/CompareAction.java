@@ -115,7 +115,7 @@ public class CompareAction extends TeamAction {
 
 	// see
 	// org.eclipse.compare.internal.ResourceCompareInput.SelectAncestorDialog
-	private class SelectAncestorDialog extends MessageDialog {
+	private static class SelectAncestorDialog extends MessageDialog {
 		private IResource[] theResources;
 		IResource ancestorResource;
 		IResource leftResource;

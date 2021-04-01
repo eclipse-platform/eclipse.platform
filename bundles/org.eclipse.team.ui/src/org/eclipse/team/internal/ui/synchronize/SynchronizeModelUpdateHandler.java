@@ -78,7 +78,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	/**
 	 * Custom event for posting marker changes
 	 */
-	class MarkerChangeEvent extends Event {
+	static class MarkerChangeEvent extends Event {
 		private final ISynchronizeModelElement[] elements;
 		public MarkerChangeEvent(ISynchronizeModelElement[] elements) {
 			super(MARKERS_CHANGED);
@@ -92,7 +92,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	/**
 	 * Custom event for posting busy state changes
 	 */
-	class BusyStateChangeEvent extends Event {
+	static class BusyStateChangeEvent extends Event {
 
 		private final ISynchronizeModelElement element;
 		private final boolean isBusy;
@@ -112,7 +112,7 @@ public class SynchronizeModelUpdateHandler extends BackgroundEventHandler implem
 	/**
 	 * Custom event for posting sync info set changes
 	 */
-	class SyncInfoSetChangeEvent extends Event {
+	static class SyncInfoSetChangeEvent extends Event {
 		private final ISyncInfoSetChangeEvent event;
 		public SyncInfoSetChangeEvent(ISyncInfoSetChangeEvent event) {
 			super(SYNC_INFO_SET_CHANGED);

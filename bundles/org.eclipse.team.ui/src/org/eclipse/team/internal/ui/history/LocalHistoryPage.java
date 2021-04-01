@@ -131,7 +131,7 @@ public class LocalHistoryPage extends HistoryPage implements IHistoryCompareAdap
 
 	private IFileRevision currentSelection;
 
-	private final class LocalHistoryContentProvider implements ITreeContentProvider {
+	private static final class LocalHistoryContentProvider implements ITreeContentProvider {
 		@Override
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof IFileHistory) {

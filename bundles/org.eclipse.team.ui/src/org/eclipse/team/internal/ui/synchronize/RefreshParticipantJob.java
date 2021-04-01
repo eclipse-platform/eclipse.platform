@@ -176,7 +176,7 @@ public abstract class RefreshParticipantJob extends Job {
 	/**
 	 * Notification for safely notifying listeners of refresh lifecycle.
 	 */
-	private abstract class Notification implements ISafeRunnable {
+	private abstract static class Notification implements ISafeRunnable {
 		private IRefreshSubscriberListener listener;
 		@Override
 		public void handleException(Throwable exception) {

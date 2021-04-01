@@ -216,7 +216,7 @@ public class GenericHistoryView extends PageBookView implements IHistoryView, IP
 		}
 	}
 
-	abstract class MenuCreator implements IMenuCreator {
+	abstract static class MenuCreator implements IMenuCreator {
 		private MenuManager menuManager;
 
 		@Override
