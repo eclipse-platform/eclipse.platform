@@ -4256,6 +4256,11 @@ public class TextMergeViewer extends ContentMergeViewer implements IAdaptable {
 	}
 
 	private void paintCenter(Canvas canvas, GC g) {
+		if (fLeft == null || fRight == null) {
+			// The paint event for the center control can occur before the left / right controls are created.
+			// simply ignore it in this case.
+			return;
+		}
 
 		Display display= canvas.getDisplay();
 
