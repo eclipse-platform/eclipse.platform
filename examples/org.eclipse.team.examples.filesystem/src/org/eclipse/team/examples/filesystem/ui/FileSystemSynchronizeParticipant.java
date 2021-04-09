@@ -69,7 +69,7 @@ public class FileSystemSynchronizeParticipant extends ModelSynchronizeParticipan
 	 * A custom label decorator that will show the remote mapped path for each
 	 * file.
 	 */
-	public class FileSystemParticipantLabelDecorator extends LabelProvider implements ILabelDecorator {
+	public static class FileSystemParticipantLabelDecorator extends LabelProvider implements ILabelDecorator {
 		@Override
 		public Image decorateImage(Image image, Object element) {
 			return image;

@@ -31,7 +31,7 @@ public class TestXMLStructureCreator {
 	Document fdoc;
 	XMLStructureCreator fsc;
 
-	public class TestStream implements IEncodedStreamContentAccessor {
+	public static class TestStream implements IEncodedStreamContentAccessor {
 		String fString;
 
 		public TestStream(String string) {

@@ -55,7 +55,7 @@ public class LocalHistoryParticipant extends SubscriberParticipant {
 		}
 	}
 
-	private class LocalHistoryDecorator extends LabelProvider implements ILabelDecorator {
+	private static class LocalHistoryDecorator extends LabelProvider implements ILabelDecorator {
 		@Override
 		public String decorateText(String text, Object element) {
 			if(element instanceof ISynchronizeModelElement) {
