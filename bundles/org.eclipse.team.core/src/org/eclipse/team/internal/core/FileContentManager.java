@@ -96,18 +96,15 @@ public class FileContentManager implements IFileContentManager {
 			if (!f.exists())
 				return false;
 
-			try {
-				DataInputStream input = new DataInputStream(new FileInputStream(f));
-				try {
+			try (DataInputStream input = new DataInputStream(new FileInputStream(f))) {
 					map.putAll(readOldFormatExtensionMappings(input));
-				} finally {
-					input.close();
-					f.delete();
-				}
 			} catch (IOException ex) {
 				TeamPlugin.log(IStatus.ERROR, ex.getMessage(), ex);
 				return false;
+			} finally {
+				f.delete();
 			}
+
 			return true;
 		}
 
