@@ -14,52 +14,18 @@
 package org.eclipse.core.tests.net;
 
 import org.eclipse.core.net.proxy.IProxyService;
-import org.eclipse.core.runtime.Plugin;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends Plugin {
+public class Activator {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.net.tests";
-
-	// The shared instance
-	private static Activator plugin;
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
-
-	@Override
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
-
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
-
-	public IProxyService getProxyService() {
-		ServiceReference<IProxyService> serviceReference = getBundle().getBundleContext().getServiceReference(IProxyService.class);
+	public static IProxyService getProxyService() {
+		Bundle bundle = FrameworkUtil.getBundle(Activator.class);
+		ServiceReference<IProxyService> serviceReference = bundle.getBundleContext().getServiceReference(IProxyService.class);
 		if (serviceReference != null)
-			return getBundle().getBundleContext().getService(serviceReference);
+			return bundle.getBundleContext().getService(serviceReference);
 		return null;
 	}
 

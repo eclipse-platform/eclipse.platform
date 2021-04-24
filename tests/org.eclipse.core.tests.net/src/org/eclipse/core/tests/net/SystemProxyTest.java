@@ -55,7 +55,7 @@ public class SystemProxyTest {
 	}
 
 	private IProxyService getProxyManager() {
-		return Activator.getDefault().getProxyService();
+		return Activator.getProxyService();
 	}
 
 	private boolean isProxiesEnabled() {

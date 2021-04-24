@@ -61,7 +61,7 @@ public class NetTest {
 	}
 
 	private IProxyService getProxyManager() {
-		return Activator.getDefault().getProxyService();
+		return Activator.getProxyService();
 	}
 
 	private void assertProxyDataEqual(IProxyData expected) {
