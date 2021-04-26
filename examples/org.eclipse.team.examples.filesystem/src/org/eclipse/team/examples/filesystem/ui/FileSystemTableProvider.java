@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2017 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,9 +63,9 @@ public class FileSystemTableProvider {
 		viewer.setLabelProvider(new HistoryLabelProvider());
 
 		// By default, reverse sort by revision.
-		HistorySorter sorter = new HistorySorter(COL_DATE);
+		HistoryComparator sorter = new HistoryComparator(COL_DATE);
 		sorter.setReversed(true);
-		viewer.setSorter(sorter);
+		viewer.setComparator(sorter);
 
 		return viewer;
 	}
@@ -104,15 +104,15 @@ public class FileSystemTableProvider {
 			if (entry == null)
 				return ""; //$NON-NLS-1$
 			switch (columnIndex) {
-				case COL_TYPE :
-					if (entry instanceof FileSystemFileRevision)
-						return "FileSystem revision";  //$NON-NLS-1$
+			case COL_TYPE :
+				if (entry instanceof FileSystemFileRevision)
+					return "FileSystem revision";  //$NON-NLS-1$
 
-					return "Local history revision";  //$NON-NLS-1$
-				case COL_DATE :
-					long date = entry.getTimestamp();
-					Date dateFromLong = new Date(date);
-					return DateFormat.getInstance().format(dateFromLong);
+				return "Local history revision";  //$NON-NLS-1$
+			case COL_DATE :
+				long date = entry.getTimestamp();
+				Date dateFromLong = new Date(date);
+				return DateFormat.getInstance().format(dateFromLong);
 			}
 			return ""; //$NON-NLS-1$
 		}
@@ -137,7 +137,7 @@ public class FileSystemTableProvider {
 	/**
 	 * The history sorter
 	 */
-	class HistorySorter extends ViewerSorter {
+	class HistoryComparator extends ViewerComparator {
 		private boolean reversed = false;
 		private int columnNumber;
 
@@ -149,7 +149,7 @@ public class FileSystemTableProvider {
 		 * The constructor.
 		 * @param columnNumber
 		 */
-		public HistorySorter(int columnNumber) {
+		public HistoryComparator(int columnNumber) {
 			this.columnNumber = columnNumber;
 		}
 
@@ -169,8 +169,8 @@ public class FileSystemTableProvider {
 				result = super.compare(compareViewer, o1, o2);
 			} else {
 				int[] columnSortOrder = SORT_ORDERS_BY_COLUMN[columnNumber];
-				for (int i = 0; i < columnSortOrder.length; ++i) {
-					result = compareColumnValue(columnSortOrder[i], e1, e2);
+				for (int element : columnSortOrder) {
+					result = compareColumnValue(element, e1, e2);
 					if (result != 0)
 						break;
 				}
@@ -185,16 +185,16 @@ public class FileSystemTableProvider {
 		 */
 		int compareColumnValue(int columnNumber, IFileRevision e1, IFileRevision e2) {
 			switch (columnNumber) {
-				case 0 : /* date */
-					long date1 = e1.getTimestamp();
-					long date2 = e2.getTimestamp();
-					if (date1 == date2)
-						return 0;
-
-					return date1 > date2 ? -1 : 1;
-
-				default :
+			case 0 : /* date */
+				long date1 = e1.getTimestamp();
+				long date2 = e2.getTimestamp();
+				if (date1 == date2)
 					return 0;
+
+				return date1 > date2 ? -1 : 1;
+
+			default :
+				return 0;
 			}
 		}
 
@@ -260,12 +260,12 @@ public class FileSystemTableProvider {
 			public void widgetSelected(SelectionEvent e) {
 				// column selected - need to sort
 				int column = tableViewer.getTable().indexOf((TableColumn) e.widget);
-				HistorySorter oldSorter = (HistorySorter) tableViewer.getSorter();
+				HistoryComparator oldSorter = (HistoryComparator) tableViewer.getComparator();
 				if (oldSorter != null && column == oldSorter.getColumnNumber()) {
 					oldSorter.setReversed(!oldSorter.isReversed());
 					tableViewer.refresh();
 				} else {
-					tableViewer.setSorter(new HistorySorter(column));
+					tableViewer.setComparator(new HistoryComparator(column));
 				}
 			}
 		};

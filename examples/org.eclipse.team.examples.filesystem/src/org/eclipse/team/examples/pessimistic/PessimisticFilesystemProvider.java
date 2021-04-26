@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2021 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -311,8 +311,8 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 		DataOutputStream out= new DataOutputStream(byteOut);
 		try {
 			out.writeInt(controlledResources.size());
-			for (Iterator i= controlledResources.iterator(); i.hasNext();) {
-				IResource resource= (IResource) i.next();
+			for (Object element : controlledResources) {
+				IResource resource= (IResource) element;
 				out.writeUTF(resource.getProjectRelativePath().toString());
 			}
 			out.flush();
@@ -672,7 +672,7 @@ public class PessimisticFilesystemProvider extends RepositoryProvider  {
 	 * Answers a collection of all of the resources contained below
 	 * the given resource and the resource itself.
 	 */
-	private Collection getSubtreeMembers(IResource resource) {
+	private Collection<IResource> getSubtreeMembers(IResource resource) {
 		final Set<IResource> resources = new HashSet<>(1);
 		IResourceVisitor visitor= resource1 -> {
 			switch (resource1.getType()) {
