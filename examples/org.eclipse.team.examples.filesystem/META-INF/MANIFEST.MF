@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.team.examples.filesystem; singleton:=true
-Bundle-Version: 3.5.1000.qualifier
+Bundle-Version: 3.6.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.eclipse.team.examples.filesystem,
@@ -31,5 +31,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.navigator
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.team.examples.filesystem.FileSystemPlugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.eclipse.team.examples.filesystem
