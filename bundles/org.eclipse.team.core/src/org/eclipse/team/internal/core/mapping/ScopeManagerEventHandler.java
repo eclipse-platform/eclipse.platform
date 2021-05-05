@@ -33,7 +33,7 @@ public class ScopeManagerEventHandler extends BackgroundEventHandler {
 	private Set<ResourceMapping> toRefresh = new HashSet<>();
 	private ISynchronizationScopeManager manager;
 
-	class ResourceMappingEvent extends Event {
+	static class ResourceMappingEvent extends Event {
 		private final ResourceMapping[] mappings;
 		public ResourceMappingEvent(ResourceMapping[] mappings) {
 			super(REFRESH);

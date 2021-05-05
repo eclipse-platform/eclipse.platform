@@ -59,7 +59,7 @@ public class BatchingLock {
 		}
 	};
 
-	public class ThreadInfo {
+	public static class ThreadInfo {
 		private Set<IResource> changedResources = new HashSet<>();
 		private IFlushOperation operation;
 		private List<ISchedulingRule> rules = new ArrayList<>();
