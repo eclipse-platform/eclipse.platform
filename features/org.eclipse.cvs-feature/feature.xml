@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.cvs"
       label="%featureName"
-      version="1.4.1800.qualifier"
+      version="1.4.1900.qualifier"
       provider-name="%providerName"
       license-feature="org.eclipse.license"
       license-feature-version="0.0.0">
