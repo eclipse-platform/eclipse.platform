@@ -25,7 +25,7 @@ import org.eclipse.team.internal.core.subscribers.SubscriberSyncInfoCollector;
 import org.eclipse.team.internal.ui.synchronize.RefreshParticipantJob.IChangeDescription;
 
 public class RefreshChangeListener implements ISubscriberChangeListener, IChangeDescription {
-	private List changes = new ArrayList();
+	private List<ISubscriberChangeEvent> changes = new ArrayList<>();
 	private SubscriberSyncInfoCollector collector;
 	private IResource[] resources;
 
@@ -42,16 +42,15 @@ public class RefreshChangeListener implements ISubscriberChangeListener, IChange
 		}
 	}
 	public SyncInfo[] getChanges() {
-		List changedSyncInfos = new ArrayList();
+		List<SyncInfo> changedSyncInfos = new ArrayList<>();
 		SyncInfoSet set = collector.getSyncInfoSet();
-		for (Object change : changes) {
-			ISubscriberChangeEvent delta = (ISubscriberChangeEvent) change;
+		for (ISubscriberChangeEvent delta : changes) {
 			SyncInfo info = set.getSyncInfo(delta.getResource());
 			if (info != null && interestingChange(info)) {
 				changedSyncInfos.add(info);
 			}
 		}
-		return (SyncInfo[]) changedSyncInfos.toArray(new SyncInfo[changedSyncInfos.size()]);
+		return changedSyncInfos.toArray(new SyncInfo[changedSyncInfos.size()]);
 	}
 
 	private boolean interestingChange(SyncInfo info) {

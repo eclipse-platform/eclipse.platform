@@ -35,7 +35,7 @@ import org.eclipse.ui.actions.ActionGroup;
 public class DirectionFilterActionGroup extends ActionGroup implements IPropertyChangeListener {
 
 	// The list of created actions
-	private List actions = new ArrayList(3);
+	private List<DirectionFilterAction> actions = new ArrayList<>(3);
 
 	// The modes
 	private DirectionFilterAction incomingMode;

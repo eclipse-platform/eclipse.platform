@@ -59,7 +59,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 		@Override
 		public Object[] getChildren(Object element) {
 			if(element instanceof List) {
-				return ((List)element).toArray(new IResource[((List)element).size()]);
+				return ((List<?>)element).toArray(new IResource[((List)element).size()]);
 			}
 			return super.getChildren(element);
 		}
@@ -123,7 +123,7 @@ public class GlobalRefreshResourceSelectionPage extends GlobalRefreshElementSele
 
 	@Override
 	protected boolean checkWorkingSetElements() {
-		List allWorkingSetResources = new ArrayList();
+		List<IResource> allWorkingSetResources = new ArrayList<>();
 		IWorkingSet[] workingSets = getWorkingSets();
 		for (IWorkingSet set : workingSets) {
 			allWorkingSetResources.addAll(IDE.computeSelectedResources(new StructuredSelection(set.getElements())));

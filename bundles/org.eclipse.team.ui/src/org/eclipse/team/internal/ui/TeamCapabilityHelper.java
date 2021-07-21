@@ -142,7 +142,7 @@ public class TeamCapabilityHelper {
 			return;
 		IActivityManager activityManager = workbenchActivitySupport
 		.getActivityManager();
-		Set activities = new HashSet<>(activityManager.getEnabledActivityIds());
+		Set<String> activities = new HashSet<>(activityManager.getEnabledActivityIds());
 		boolean changed = false;
 
 		IPluginContribution contribution = providerIdToPluginId.get(id);

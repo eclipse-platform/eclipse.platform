@@ -177,7 +177,7 @@ class CopyToClipboardAction extends SelectionListenerAction {
 	private void setClipboard(IResource[] resources, String[] fileNames, String names) {
 		try {
 			// set the clipboard contents
-			List data = new ArrayList();
+			List<Object> data = new ArrayList<>();
 			List<Transfer> dataTypes = new ArrayList<>();
 			if (resources.length > 0) {
 				data.add(resources);

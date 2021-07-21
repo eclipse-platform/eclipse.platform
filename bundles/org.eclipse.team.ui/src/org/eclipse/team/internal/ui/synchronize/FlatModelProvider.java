@@ -245,11 +245,11 @@ public class FlatModelProvider extends SynchronizeModelProvider {
 	protected IDiffElement[] buildModelObjects(ISynchronizeModelElement node) {
 		if (node == getModelRoot());
 		SyncInfo[] infos = getSyncInfoSet().getSyncInfos();
-		List result = new ArrayList();
+		List<IDiffElement> result = new ArrayList<>();
 		for (SyncInfo info : infos) {
 			result.add(createModelObject(node, info));
 		}
-		return (IDiffElement[]) result.toArray(new IDiffElement[result.size()]);
+		return result.toArray(new IDiffElement[result.size()]);
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 	/*
 	 * Scope change listeners
 	 */
-	private ListenerList listeners = new ListenerList(ListenerList.IDENTITY);
+	private ListenerList<IPropertyChangeListener> listeners = new ListenerList<>(ListenerList.IDENTITY);
 
 	/**
 	 * Save the scope to the given memento
@@ -193,11 +193,11 @@ public abstract class AbstractSynchronizeScope implements ISynchronizeScope {
 	 * @since 3.2
 	 */
 	public ResourceMapping[] getMappings() {
-		List result = new ArrayList();
+		List<ResourceMapping> result = new ArrayList<>();
 		IResource[] roots = getRoots();
 		for (IResource resource : roots) {
 			result.add(resource.getAdapter(ResourceMapping.class));
 		}
-		return (ResourceMapping[]) result.toArray(new ResourceMapping[result.size()]);
+		return result.toArray(new ResourceMapping[result.size()]);
 	}
 }

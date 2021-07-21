@@ -103,7 +103,7 @@ public class SaveablesCompareEditorInput extends CompareEditorInput implements
 	private ITypedElement fRightElement;
 
 	private final IWorkbenchPage page;
-	private final ListenerList inputChangeListeners = new ListenerList(
+	private final ListenerList<ICompareInputChangeListener> inputChangeListeners = new ListenerList<>(
 			ListenerList.IDENTITY);
 	private ICompareInputChangeListener compareInputChangeListener;
 
