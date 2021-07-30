@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -906,7 +907,7 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 		}
 
 		ArrayList<CompareFilterDescriptor> list = new ArrayList<>(result);
-		Collections.sort(list, (left, right) -> left.getFilterId().compareTo(right.getFilterId()));
+		Collections.sort(list, Comparator.comparing(CompareFilterDescriptor::getFilterId));
 
 		return result.toArray(new CompareFilterDescriptor[result.size()]);
 	}
