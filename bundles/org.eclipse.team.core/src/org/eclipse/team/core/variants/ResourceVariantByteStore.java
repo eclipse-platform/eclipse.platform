@@ -82,19 +82,24 @@ public abstract class ResourceVariantByteStore {
 	public abstract boolean flushBytes(IResource resource, int depth) throws TeamException;
 
 	/**
-	 * Method called to indicate that it is known that there is no variant associated
-	 * with the local resource. Subclasses may handle this information in different ways.
-	 * The <code>flush(IResource, int)</code> method should be used in the cases
-	 * where a client wishes to remove bytes for other reason.
+	 * Method called to indicate that it is known that there is no variant
+	 * associated with the local resource. Subclasses may handle this information in
+	 * different ways. The <code>flush(IResource, int)</code> method should be used
+	 * in the cases where a client wishes to remove bytes for other reason.
+	 *
 	 * @param resource the local resource
 	 * @return <code>true</code> if this changes the bytes for the variant
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract boolean deleteBytes(IResource resource) throws TeamException;
 
 	/**
-	 * Return the children of the given resource that have resource variants in this tree.
+	 * Return the children of the given resource that have resource variants in this
+	 * tree.
+	 *
 	 * @param resource the parent resource
 	 * @return the members who have resource variants in this tree.
+	 * @throws TeamException if an error occurs
 	 */
 	public abstract IResource[] members(IResource resource) throws TeamException;
 
