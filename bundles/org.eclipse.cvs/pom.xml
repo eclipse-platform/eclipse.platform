@@ -19,7 +19,7 @@
   </parent>
   <groupId>org.eclipse.cvs</groupId>
   <artifactId>org.eclipse.cvs</artifactId>
-  <version>1.4.2000-SNAPSHOT</version>
+  <version>1.4.2100-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <build>
     <plugins>
