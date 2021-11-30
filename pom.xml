@@ -55,22 +55,16 @@
     <module>bundles/org.eclipse.compare</module>
     <module>bundles/org.eclipse.compare.win32</module>
     <module>bundles/org.eclipse.compare.core</module>
-    <module>bundles/org.eclipse.cvs</module>
     <module>bundles/org.eclipse.core.net</module>
     <module>bundles/org.eclipse.jsch.core</module>
     <module>bundles/org.eclipse.jsch.ui</module>
     <module>bundles/org.eclipse.team.core</module>
-    <module>bundles/org.eclipse.team.cvs.core</module>
-    <module>bundles/org.eclipse.team.cvs.ssh2</module>
-    <module>bundles/org.eclipse.team.cvs.ui</module>
     <module>bundles/org.eclipse.team.ui</module>
     <module>bundles/org.eclipse.team.genericeditor.diff.extension</module>
     <module>bundles/org.eclipse.ui.net</module>
     <module>examples/org.eclipse.compare.examples</module>
     <module>examples/org.eclipse.compare.examples.xml</module>
     <module>examples/org.eclipse.team.examples.filesystem</module>
-
-    <module>features/org.eclipse.cvs-feature</module>
 
     <!-- fragments -->
     <module>bundles/org.eclipse.core.net.linux</module>
