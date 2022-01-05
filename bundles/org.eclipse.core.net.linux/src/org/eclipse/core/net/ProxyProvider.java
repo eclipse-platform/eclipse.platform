@@ -300,35 +300,8 @@ public class ProxyProvider extends AbstractProxyProvider {
 			initializeSettings();
 		}
 
-		ProxyData proxyData = new ProxyData(protocol);
-		boolean useSame = fLibGio.g_settings_get_boolean(proxySettings, "use-same-proxy"); //$NON-NLS-1$
-
-		if (protocol.equalsIgnoreCase("http") || useSame) { //$NON-NLS-1$
-			boolean useProxy = fLibGio.g_settings_get_boolean(httpProxySettings, "enabled"); //$NON-NLS-1$
-			if (!useProxy) {
-				return null;
-			}
-			Pointer host = fLibGio.g_settings_get_string(httpProxySettings, "host"); //$NON-NLS-1$
-			proxyData.setHost(host.getString(0));
-			fLibGio.g_free(host);
-
-			int port = fLibGio.g_settings_get_int(httpProxySettings, "port"); //$NON-NLS-1$
-			proxyData.setPort(port);
-
-			boolean reqAuth = fLibGio.g_settings_get_boolean(httpProxySettings, "use-authentication"); //$NON-NLS-1$
-			if (reqAuth) {
-				Pointer user = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-user"); //$NON-NLS-1$
-				proxyData.setUserid(user.getString(0));
-				fLibGio.g_free(user);
-
-				Pointer password = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-password"); //$NON-NLS-1$
-				proxyData.setPassword(password.getString(0));
-				fLibGio.g_free(password);
-			}
-			return proxyData;
-		}
-
 		// Everything else applies only if the system proxy mode is manual
+		// Auto-configuration is not supported
 		Pointer mode = fLibGio.g_settings_get_string(proxySettings, "mode"); //$NON-NLS-1$
 		if (!mode.getString(0).equalsIgnoreCase("manual")) { //$NON-NLS-1$
 			fLibGio.g_free(mode);
@@ -339,22 +312,51 @@ public class ProxyProvider extends AbstractProxyProvider {
 		Pointer host;
 		int port;
 
-		if (protocol.equalsIgnoreCase("https")) { //$NON-NLS-1$
+		switch (protocol.toLowerCase()) {
+		case "http": //$NON-NLS-1$
+			host = fLibGio.g_settings_get_string(httpProxySettings, "host"); //$NON-NLS-1$
+			port = fLibGio.g_settings_get_int(httpProxySettings, "port"); //$NON-NLS-1$
+			break;
+		case "https": //$NON-NLS-1$
 			host = fLibGio.g_settings_get_string(httpsProxySettings, "host"); //$NON-NLS-1$
 			port = fLibGio.g_settings_get_int(httpsProxySettings, "port"); //$NON-NLS-1$
-		} else if (protocol.equalsIgnoreCase("socks")) { //$NON-NLS-1$
-			host = fLibGio.g_settings_get_string(socksProxySettings, "host"); //$NON-NLS-1$
-			port = fLibGio.g_settings_get_int(socksProxySettings, "port"); //$NON-NLS-1$
-		} else if (protocol.equalsIgnoreCase("ftp")) { //$NON-NLS-1$
+			break;
+		case "ftp": //$NON-NLS-1$
 			host = fLibGio.g_settings_get_string(ftpProxySettings, "host"); //$NON-NLS-1$
 			port = fLibGio.g_settings_get_int(ftpProxySettings, "port"); //$NON-NLS-1$
-		} else {
+			break;
+		case "socks": //$NON-NLS-1$
+			host = fLibGio.g_settings_get_string(socksProxySettings, "host"); //$NON-NLS-1$
+			port = fLibGio.g_settings_get_int(socksProxySettings, "port"); //$NON-NLS-1$
+			break;
+		default:
+			// Unknown/invalid proxy type
 			return null;
 		}
 
+		ProxyData proxyData = new ProxyData(protocol);
 		proxyData.setHost(host.getString(0));
 		fLibGio.g_free(host);
 		proxyData.setPort(port);
+
+		// Each proxy type is enabled only if the "host" key is non-empty and its "port" key is non-0
+		if (proxyData.getHost() == null || proxyData.getPort() == 0) {
+			return null;
+		}
+
+		if (protocol.equalsIgnoreCase("http")) { //$NON-NLS-1$
+			// Authentication applies only to http proxies
+			boolean reqAuth = fLibGio.g_settings_get_boolean(httpProxySettings, "use-authentication"); //$NON-NLS-1$
+			if (reqAuth) {
+				Pointer user = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-user"); //$NON-NLS-1$
+				proxyData.setUserid(user.getString(0));
+				fLibGio.g_free(user);
+
+				Pointer password = fLibGio.g_settings_get_string(httpProxySettings,	"authentication-password"); //$NON-NLS-1$
+				proxyData.setPassword(password.getString(0));
+				fLibGio.g_free(password);
+			}
+		}
 
 		return proxyData;
 	}
@@ -363,6 +365,15 @@ public class ProxyProvider extends AbstractProxyProvider {
 		if (proxySettings == Pointer.NULL) {
 			initializeSettings();
 		}
+
+		// Everything else applies only if the system proxy mode is manual
+		// Auto-configuration is not supported
+		Pointer mode = fLibGio.g_settings_get_string(proxySettings, "mode"); //$NON-NLS-1$
+		if (!mode.getString(0).equalsIgnoreCase("manual")) { //$NON-NLS-1$
+			fLibGio.g_free(mode);
+			return null;
+		}
+		fLibGio.g_free(mode);
 
 		PointerByReference npHostsArray = fLibGio.g_settings_get_strv(proxySettings, "ignore-hosts"); //$NON-NLS-1$
 		String[] npHosts = npHostsArray.getPointer().getStringArray(0);
