@@ -736,6 +736,9 @@ public final class CompareUIPlugin extends AbstractUIPlugin {
 	public static Image getImage(IAdaptable adaptable) {
 		if (adaptable != null) {
 			IWorkbenchAdapter o= Adapters.adapt(adaptable, IWorkbenchAdapter.class);
+			if (o == null) {
+				return null;
+			}
 			ImageDescriptor id= o.getImageDescriptor(adaptable);
 			if (id != null) {
 				Image image= fgImages2.get(id);
