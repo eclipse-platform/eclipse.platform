@@ -31,6 +31,7 @@ import org.eclipse.osgi.util.TextProcessor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -114,8 +115,10 @@ public class FileTypeTable implements ICellModifier, IStructuredContentProvider,
 		/**
 		 * Create a table.
 		 */
-		final Table table = new Table(composite, SWT.V_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
-		table.setLayoutData(SWTUtils.createHVFillGridData());
+		final Table table = new Table(composite, SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
+		var gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd.heightHint = 300;
+		table.setLayoutData(gd);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 

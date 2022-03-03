@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -33,6 +32,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.team.core.IFileContentManager;
 import org.eclipse.team.core.IStringMapping;
 import org.eclipse.team.core.Team;
@@ -190,12 +190,13 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 		fRemoveButton= new Button(buttonsComposite, SWT.PUSH);
 		fRemoveButton.setText(TeamUIMessages.TextPreferencePage_remove);
 
-		SWTUtils.createLabel(composite, TeamUIMessages.TextPreferencePage_1, 2);
+		final var label = new Label(composite, SWT.WRAP);
+		label.setText(TeamUIMessages.TextPreferencePage_1);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 2, 1));
 
 		/**
 		 * Calculate and set the button size
 		 */
-		applyDialogFont(composite);
 		final int buttonWidth= SWTUtils.calculateControlSize(converter, new Button [] { addExtensionButton, addNameButton, fChangeButton, fRemoveButton });
 		addExtensionButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
 		addNameButton.setLayoutData(SWTUtils.createGridData(buttonWidth, SWT.DEFAULT, SWT.FILL, SWT.FILL, false, false));
@@ -210,8 +211,6 @@ public class TextPreferencePage extends PreferencePage implements IWorkbenchPref
 
 		fRemoveButton.setEnabled(false);
 		fRemoveButton.addListener(SWT.Selection, e -> removePattern());
-
-		Dialog.applyDialogFont(parent);
 
 		// set F1 help
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IHelpContextIds.FILE_TYPE_PREFERENCE_PAGE);
